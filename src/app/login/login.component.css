@@ -1,0 +1,15 @@
+.modal {
+    position: fixed;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+.modal-form {
+    width: 50%;
+    min-width: 300px;
+    margin: 5% auto 15% auto;
+}
+.modal-form > * {
+    width: 100%;
+}

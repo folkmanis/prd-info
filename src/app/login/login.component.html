@@ -1,0 +1,11 @@
+<div class="modal">
+        <form [formGroup]="loginForm" (submit)="onLogin()" class="modal-form">
+            <mat-form-field>
+                <input matInput placeholder="Lietotājs" formControlName="username" type="text" autocomplete="off">
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput placeholder="Parole" formControlName="pass" type="password">
+            </mat-form-field>
+            <button mat-raised-button type="submit" color="primary" [disabled]="loginForm.status === 'INVALID'">Pieslēgties</button>
+        </form>
+    </div>
