@@ -83,6 +83,6 @@ export class LoginService {
   }
 
   private logoutHttp(): Observable<LogoutResponse> {
-    return this.http.post<LogoutResponse>(this.httpPathLogin + 'login', {}, this.httpOptions);
+    return this.http.post<LogoutResponse>(this.httpPathLogin + 'logout', {}, this.httpOptions);
   }
 }
