@@ -1,11 +1,9 @@
-<div class="xmf-search-flex">
-    <div class="search-flex">
+    <div class="search-box">
         <mat-form-field class="search-input">
             <input matInput [formControl]="searchControl" type="search">
             <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
     </div>
-    <div class="content-flex">
+    <div class="search-content">
         <app-search-table [search$]="searchValue$"></app-search-table>
     </div>
-</div>
