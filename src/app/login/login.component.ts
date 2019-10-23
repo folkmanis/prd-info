@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -11,6 +11,7 @@ import { LoginService, User, Login } from './login.service';
 })
 export class LoginComponent implements OnInit {
 
+  @ViewChild('username', { static: false }) usernameInput: ElementRef;
   constructor(
     private router: Router,
     private snack: MatSnackBar,
@@ -23,6 +24,7 @@ export class LoginComponent implements OnInit {
   });
 
   ngOnInit() {
+    this.loginService.logOut().subscribe((act) => act && this.router.navigate(['/login']));
   }
 
   onLogin() {
@@ -30,8 +32,9 @@ export class LoginComponent implements OnInit {
       if (success) {
         this.router.navigate(['/']);
       } else {
-        this.snack.open('Nepareiza parole vai lietotājs', 'OK', { duration: 5000});
+        this.snack.open('Nepareiza parole vai lietotājs', 'OK', { duration: 5000 });
         this.loginForm.reset();
+        this.usernameInput.nativeElement.focus();
       }
     });
   }

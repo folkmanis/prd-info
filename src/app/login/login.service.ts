@@ -35,8 +35,8 @@ interface LogoutResponse {
 
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, pipe, Subject, BehaviorSubject } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { Observable, pipe, Subject, BehaviorSubject, of } from 'rxjs';
+import { map, tap, catchError } from 'rxjs/operators';
 import { merge } from 'rxjs/index';
 
 @Injectable({
@@ -78,11 +78,19 @@ export class LoginService {
 
   private loginHttp(login: Login): Observable<User | null> {
     return this.http.post<User>(this.httpPathLogin + 'login', login, this.httpOptions).pipe(
-      map((usr) => usr.id ? usr : null)
+      map((usr) => usr.id ? usr : null),
+      catchError(this.handleError('Invalid login: ' + login, null)),
     );
   }
 
   private logoutHttp(): Observable<LogoutResponse> {
     return this.http.post<LogoutResponse>(this.httpPathLogin + 'logout', {}, this.httpOptions);
+  }
+
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      console.error(operation, error);
+      return of(result as T);
+    };
   }
 }
