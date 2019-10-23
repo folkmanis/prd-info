@@ -1,0 +1,26 @@
+.xmf-search-flex {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.search-flex {
+    flex-basis: 80px;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.content-flex {
+    flex-basis: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    padding: 0 16px;;
+}
+
+.search-input {
+    margin: 0 16px;
+    min-width: 8em;
+    max-width: 16em;
+    width: 100%;
+    font-size: 150%;
+}

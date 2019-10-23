@@ -1,0 +1,19 @@
+<div *ngIf="count">
+    <h3>Atrasti <strong>{{count}}</strong> ieraksti</h3>
+    <div *ngFor="let item of archiveSearch; last as lastItem">
+        <div class="jobId">{{item.jdfJobId}}</div>
+        <div>{{item.descriptiveName}}</div>
+        <div class="search-table">
+            <div *ngFor="let row of item.archive">
+                <div class="table-element table-location" [appCopyClipboard]="row.location" (copied)="onCopied($event)">{{row.location}}</div>
+                <div style="display: flex;">
+                    <div style="flex: 0 1 8ch;" class="table-element">{{row.action}}</div>
+                    <div style="flex: 1 1 170px;" class="table-element">{{row.date}}</div>
+                    <div style="flex: 5 1 170px;" class="table-element">{{row.datums}}</div>
+                </div>
+            </div>
+        </div>
+        <mat-divider *ngIf="!lastItem"></mat-divider>
+    </div>
+    <app-scroll-to-top></app-scroll-to-top>
+</div>

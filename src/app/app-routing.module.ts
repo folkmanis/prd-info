@@ -5,6 +5,8 @@ import { LoginComponent } from './login/login.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
+  { path: 'xmf-search', loadChildren: () => import('./xmf-search/xmf-search.module').then(m => m.XmfSearchModule) },
+  { path: '', redirectTo: 'xmf-search', pathMatch: 'full' },
 ];
 
 @NgModule({

@@ -1,0 +1,26 @@
+.jobId {
+    margin-top: 16pt;
+    margin-bottom: 0pt;
+    font-size: 16pt;
+    font-weight: bold;
+}
+
+.search-table {
+    width: 100%;
+    font-size: 12pt;
+    border-collapse: collapse;
+    border: 1px solid #504040;
+    text-align: left;
+    margin-top: 5px;
+    margin-bottom: 20px;
+}
+
+.table-element {
+    padding: 1px;
+    border: 1px solid #504040;
+}
+
+.table-location {
+    background-color: #d0f0f0;
+    min-height: 32px;
+}
