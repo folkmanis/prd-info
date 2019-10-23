@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map, filter, switchMap } from 'rxjs/operators';
+import { map, filter, switchMap, tap } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ArchiveSearchService } from '../services/archive-search.service';
@@ -16,6 +16,7 @@ export class SearchTableComponent implements OnInit {
   @Input() search$: Observable<string>;
 
   count: number;
+  search = '';
   archiveSearch: SearchRecord[];
 
   constructor(
@@ -25,6 +26,7 @@ export class SearchTableComponent implements OnInit {
 
   ngOnInit() {
     this.search$.pipe(
+      tap((q) => this.search = q),
       switchMap((q) => this.archiveSearchService.getSearchResult(q))
     ).
     subscribe((val) => {

@@ -2,7 +2,7 @@
     <h3>Atrasti <strong>{{count}}</strong> ieraksti</h3>
     <div *ngFor="let item of archiveSearch; last as lastItem">
         <div class="jobId">{{item.jdfJobId}}</div>
-        <div>{{item.descriptiveName}}</div>
+        <div><app-tagged-string [text]="item.descriptiveName" [search]="search"></app-tagged-string></div>
         <div class="search-table">
             <div *ngFor="let row of item.archive">
                 <div class="table-element table-location" [appCopyClipboard]="row.location" (copied)="onCopied($event)">{{row.location}}</div>

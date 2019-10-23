@@ -14,10 +14,12 @@ import { MatDividerModule } from '@angular/material/divider';
 
 import { ScrollToTopModule } from './scroll-to-top/scroll-to-top.module';
 import { CopyClipboardDirective } from './directives/copy-clipboard.directive';
+import { TaggedStringComponent } from './tagged-string/tagged-string.component';
 
 @NgModule({
   declarations: [
-    CopyClipboardDirective
+    CopyClipboardDirective,
+    TaggedStringComponent,
   ],
   imports: [
     CommonModule,
@@ -48,6 +50,7 @@ import { CopyClipboardDirective } from './directives/copy-clipboard.directive';
     MatDividerModule,
     ScrollToTopModule,
     CopyClipboardDirective,
+    TaggedStringComponent,
   ]
 })
 export class LibraryModule { }
