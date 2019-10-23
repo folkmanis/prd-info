@@ -7,6 +7,7 @@ export interface ArchiveRecord {
     id: number;
     jdfJobId: string;
     descriptiveName: string;
+    customerName: string;
     location: string;
     action: string;
     date: string;
@@ -21,6 +22,7 @@ export interface SearchRecord {
     id: number;
     jdfJobId: string;
     descriptiveName: string;
+    customerName: string;
     archive:
     {
         location: string;

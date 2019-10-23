@@ -42,6 +42,7 @@ export class ArchiveSearchService {
           id: rec.id,
           jdfJobId: rec.jdfJobId,
           descriptiveName: rec.descriptiveName,
+          customerName: rec.customerName,
           archive: []
         };
         search.push(newRec);
