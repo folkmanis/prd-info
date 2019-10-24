@@ -1,9 +1,9 @@
-    <div class="search-box">
+    <div class="search-box mat-elevation-z4">
         <mat-form-field class="search-input">
             <input matInput [formControl]="searchControl" type="search">
             <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
     </div>
     <div class="search-content">
-        <app-search-table [search$]="searchValue$"></app-search-table>
+        <app-search-table *ngIf="searchControl.value.trim().length > 3" [search$]="searchValue$"></app-search-table>
     </div>

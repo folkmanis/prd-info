@@ -9,22 +9,25 @@ interface Chunk {
 
 @Component({
   selector: 'app-tagged-string',
-  templateUrl: './tagged-string.component.html',
-  styleUrls: ['./tagged-string.component.css']
+  template: `<span *ngFor="let chunk of chunks" [ngStyle]="chunk.style">{{chunk.text}}</span>`,
 })
 export class TaggedStringComponent implements OnInit {
 
   @Input() text = '';
   @Input() search: string;
-  @Input() style = 'font-weight: bold;';
+  @Input('styles') set st(s: { [key: string]: string }) {
+    this.style = s;
+  }
 
   chunks: Chunk[] = [];
-  objectStyles: { [key: string]: string } = {};
+  style: { [key: string]: string } = {
+    'font-weight': 'bold',
+    color: 'red',
+  };
   constructor() { }
 
   ngOnInit() {
-    this.objectStyles['font-weight'] = 'bold';
-    this.objectStyles.color = 'red';
+
     if (!this.search) {
       this.chunks.push({ text: this.text, style: {} });
       return;
@@ -47,7 +50,7 @@ export class TaggedStringComponent implements OnInit {
       this.chunks.push({ text: str.slice(0, idx), style: {} });
     }
     const end = search.length + idx;
-    this.chunks.push({ text: str.slice(idx, end), style: this.objectStyles });
+    this.chunks.push({ text: str.slice(idx, end), style: this.style });
     if (end <= str.length) {
       return str.slice(end);
     }
