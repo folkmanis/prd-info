@@ -44,7 +44,7 @@ import { merge } from 'rxjs/index';
 })
 export class LoginService {
 
-  private userSubj = new BehaviorSubject<User | null>(null);
+  private userSubj = new Subject<User | null>();
   private httpPathLogin = '/data/login/';
   private httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -67,6 +67,12 @@ export class LoginService {
     return this.logoutHttp().pipe(
       map((resp) => resp.affectedRows > 0),
       tap((resp) => !resp || this.userSubj.next(null)),
+    );
+  }
+
+  isLogin(): Observable<boolean> {
+    return this.getUserHttp().pipe(
+      map((usr) => !!usr),
     );
   }
 

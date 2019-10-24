@@ -29,13 +29,11 @@ export class TaggedStringComponent implements OnInit {
       this.chunks.push({ text: this.text, style: {} });
       return;
     }
-    console.log(this.search);
 
     let remainder = this.text;
     while (remainder.length > 0) {
       remainder = this.splitStr(remainder);
     }
-    console.log(this.chunks);
   }
 
   private splitStr(str: string): string {

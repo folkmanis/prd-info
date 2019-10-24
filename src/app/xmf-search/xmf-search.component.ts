@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { FormControl } from '@angular/forms';
-import { map, filter, distinctUntilChanged, delay, debounceTime } from 'rxjs/operators';
+import { map, filter, distinctUntilChanged, delay, debounceTime, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-xmf-search',
@@ -10,8 +10,8 @@ import { map, filter, distinctUntilChanged, delay, debounceTime } from 'rxjs/ope
 })
 export class XmfSearchComponent implements OnInit {
 
-
   constructor() { }
+
   searchControl = new FormControl('');
   searchValue$: Observable<string> = this.searchControl.valueChanges.pipe(
     map((val: string) => val.trim()),
