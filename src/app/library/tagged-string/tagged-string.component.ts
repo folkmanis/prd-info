@@ -1,6 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 /**
- * Tag string with attributes
+ * Meklē fragmentu steksta rindā un izceļ ar stiliem
+ * 
+ * @param text - teksta rinda, kuru jāparāda
+ * @param search - fragments, kurš jāizceļ
+ * @param style - stili izcelšanai, formātā, kuru izmanto ngStyle.
  */
 interface Chunk {
   text: string;
@@ -12,10 +16,9 @@ interface Chunk {
   template: `<span *ngFor="let chunk of chunks" [ngStyle]="chunk.style">{{chunk.text}}</span>`,
 })
 export class TaggedStringComponent implements OnInit {
-
-  @Input() text = '';
+  @Input() text: string;
   @Input() search: string;
-  @Input('styles') set st(s: { [key: string]: string }) {
+  @Input('style') set st(s: { [key: string]: string }) {
     this.style = s;
   }
 
@@ -28,6 +31,10 @@ export class TaggedStringComponent implements OnInit {
 
   ngOnInit() {
 
+    if (!this.text) {
+      return;  // Ja nav teksta, tad nav nekā
+    }
+
     if (!this.search) {
       this.chunks.push({ text: this.text, style: {} });
       return;
@@ -38,7 +45,13 @@ export class TaggedStringComponent implements OnInit {
       remainder = this.splitStr(remainder);
     }
   }
-
+/**
+ * Meklē rindu this.search rindā str.
+ * String daļu pirms atrastā liek this.chunks masīvā bez style
+ * Atrasto daļu liek this.chunks ar stilu this.style
+ * Atgriež atlikušo daļu
+ * @param str teksta rinda apstrādei
+ */
   private splitStr(str: string): string {
     const search = this.search.toUpperCase();
     const idx = str.toUpperCase().indexOf(search);
