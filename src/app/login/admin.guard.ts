@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { CanLoad, Route, UrlSegment, Router, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { Route, Router, UrlSegment, CanLoad, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
-import { LoginService } from './login.service';
 import { tap } from 'rxjs/operators';
+import { LoginService } from './login.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class LoginGuard implements CanLoad {
+export class AdminGuard implements CanLoad {
 
   constructor(
     private loginService: LoginService,
@@ -18,12 +18,8 @@ export class LoginGuard implements CanLoad {
     route: Route,
     segments: UrlSegment[],
   ): Observable<boolean> | Promise<boolean> | boolean {
-    return this.loginService.isLogin().pipe(
-      tap((logged) => {
-        if (!logged) {
-          this.router.navigate(['login']);
-        }
-      })
+    return this.loginService.isAdmin().pipe(
+      tap((admin) => admin || this.router.navigate(['/']))
     );
   }
 

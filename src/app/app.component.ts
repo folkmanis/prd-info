@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 export class AppComponent implements OnInit {
 
   loggedIn = false;
+  isAdmin = false;
   user = '';
 
   constructor(
@@ -21,6 +22,7 @@ export class AppComponent implements OnInit {
     this.loginService.user$.subscribe((usr) => {
       this.loggedIn = !!usr;
       this.user = usr && usr.name;
+      this.isAdmin = !!usr && !!usr.admin;
     });
   }
 

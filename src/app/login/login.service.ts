@@ -21,7 +21,7 @@ export class User {
   id: number;
   username: string;
   name: string;
-  admin: boolean;
+  admin: number;
   lastlogin?: Date;
 }
 export class Login {
@@ -73,6 +73,12 @@ export class LoginService {
   isLogin(): Observable<boolean> {
     return this.getUserHttp().pipe(
       map((usr) => !!usr),
+    );
+  }
+
+  isAdmin(): Observable<boolean> {
+    return this.getUserHttp().pipe(
+      map((usr) => !!usr && !!usr.admin)
     );
   }
 
