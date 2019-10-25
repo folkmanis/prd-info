@@ -1,14 +1,14 @@
 import { Component, OnInit, Input } from '@angular/core';
 /**
  * Meklē fragmentu steksta rindā un izceļ ar stiliem
- * 
+ *
  * @param text - teksta rinda, kuru jāparāda
  * @param search - fragments, kurš jāizceļ
  * @param style - stili izcelšanai, formātā, kuru izmanto ngStyle.
  */
 interface Chunk {
   text: string;
-  style: { [key: string]: string };
+  style?: { [key: string]: string };
 }
 
 @Component({
@@ -36,7 +36,7 @@ export class TaggedStringComponent implements OnInit {
     }
 
     if (!this.search) {
-      this.chunks.push({ text: this.text, style: {} });
+      this.chunks.push({ text: this.text });
       return;
     }
 
@@ -45,22 +45,22 @@ export class TaggedStringComponent implements OnInit {
       remainder = this.splitStr(remainder);
     }
   }
-/**
- * Meklē rindu this.search rindā str.
- * String daļu pirms atrastā liek this.chunks masīvā bez style
- * Atrasto daļu liek this.chunks ar stilu this.style
- * Atgriež atlikušo daļu
- * @param str teksta rinda apstrādei
- */
+  /**
+   * Meklē rindu this.search rindā str.
+   * String daļu pirms atrastā liek this.chunks masīvā bez style
+   * Atrasto daļu liek this.chunks ar stilu this.style
+   * Atgriež atlikušo daļu
+   * @param str teksta rinda apstrādei
+   */
   private splitStr(str: string): string {
     const search = this.search.toUpperCase();
     const idx = str.toUpperCase().indexOf(search);
     if (idx === -1) { // nav atrasts
-      this.chunks.push({ text: str, style: {} });
+      this.chunks.push({ text: str });
       return ''; // atlikumā tukša rinda
     }
     if (idx > 0) {
-      this.chunks.push({ text: str.slice(0, idx), style: {} });
+      this.chunks.push({ text: str.slice(0, idx) });
     }
     const end = search.length + idx;
     this.chunks.push({ text: str.slice(idx, end), style: this.style });
