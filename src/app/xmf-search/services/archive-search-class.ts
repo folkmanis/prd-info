@@ -31,3 +31,10 @@ export interface SearchRecord {
         datums: string;
     }[];
 }
+
+export type PartialSearchQuery = { [P in keyof SearchQuery]?: SearchQuery[P] };
+
+interface SearchQuery {
+  q: string;
+  customers?: string[];
+}

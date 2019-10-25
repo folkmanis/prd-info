@@ -11,6 +11,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 import { ScrollToTopModule } from './scroll-to-top/scroll-to-top.module';
 import { CopyClipboardDirective } from './directives/copy-clipboard.directive';
@@ -34,6 +35,7 @@ import { TaggedStringComponent } from './tagged-string/tagged-string.component';
     MatMenuModule,
     MatListModule,
     MatDividerModule,
+    MatCheckboxModule,
     ScrollToTopModule,
   ],
   exports: [
@@ -48,6 +50,7 @@ import { TaggedStringComponent } from './tagged-string/tagged-string.component';
     MatMenuModule,
     MatListModule,
     MatDividerModule,
+    MatCheckboxModule,
     ScrollToTopModule,
     CopyClipboardDirective,
     TaggedStringComponent,

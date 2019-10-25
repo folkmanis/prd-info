@@ -4,7 +4,7 @@ import { map, filter, switchMap, tap } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ArchiveSearchService } from '../services/archive-search.service';
-import { ArchiveSearch, SearchRecord } from '../services/archive-response';
+import { ArchiveSearch, SearchRecord, PartialSearchQuery } from '../services/archive-search-class';
 
 @Component({
   selector: 'app-search-table',
@@ -12,7 +12,7 @@ import { ArchiveSearch, SearchRecord } from '../services/archive-response';
   styleUrls: ['./search-table.component.css']
 })
 export class SearchTableComponent implements OnInit {
-  @Input() search$: Observable<string>;
+  @Input() search$: Observable<PartialSearchQuery>;
 
   count: number;
   search = '';
@@ -26,7 +26,7 @@ export class SearchTableComponent implements OnInit {
 
   ngOnInit() {
     this.search$.pipe(
-      tap((q) => this.search = q),
+      tap((q) => this.search = q.q),
       switchMap((q) => this.archiveSearchService.getSearchResult(q))
     ).
       subscribe((val) => {

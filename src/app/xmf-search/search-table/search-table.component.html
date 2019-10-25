@@ -1,5 +1,5 @@
+<h3>{{status}}</h3>
 <div *ngIf="count">
-    <h3>{{status}}</h3>
     <div *ngFor="let item of archiveSearch; last as lastItem">
         <app-tagged-string [text]="item.jdfJobId" [search]="search" [style]="{'font-weight': 'bold'}" class="jobId">
         </app-tagged-string>

@@ -1,8 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Subject, Observable, of } from 'rxjs';
-import { FormControl } from '@angular/forms';
-import { map, filter, distinctUntilChanged, delay, debounceTime, tap, share, startWith } from 'rxjs/operators';
+import { FormGroup, FormControl } from '@angular/forms';
+import { map, filter, distinctUntilChanged, delay, debounceTime, tap, share, startWith, single } from 'rxjs/operators';
 import { merge, defer } from 'rxjs/index';
+import { PartialSearchQuery } from './services/archive-search-class';
+
+interface FormValues {
+  q: string;
+  tikaiZemgus: boolean;
+}
 
 @Component({
   selector: 'app-xmf-search',
@@ -11,26 +17,49 @@ import { merge, defer } from 'rxjs/index';
 })
 export class XmfSearchComponent implements OnInit {
 
-  private input: Observable<string>; // filtered value from input
-  private start: Observable<string>; // initial value to start from
+  private input: Observable<PartialSearchQuery>; // filtered value from input
+  private start: Observable<PartialSearchQuery>; // initial value to start from
 
-  searchControl = new FormControl('');
-  searchValue$: Observable<string>;
+  searchForm = new FormGroup({
+    q: new FormControl(''),
+    tikaiZemgus: new FormControl(true),
+  });
+  searchValue$: Observable<PartialSearchQuery>;
 
   constructor() {
-    this.input = this.searchControl.valueChanges.pipe(
-      map((val: string) => val.trim()),
-      filter((val) => val.length > 3),
+    this.input = this.searchForm.valueChanges.pipe(
       debounceTime(300),
-      distinctUntilChanged(),
+      filter((val: FormValues) => val.q.trim().length > 3),
+      distinctUntilChanged(this.changeDetector),
+      map((val) => ({
+        q: val.q.trim(),
+        customers: this.customers(),
+      })),
     );
-    this.start = defer(() => of(this.searchControl.value));
-    this.searchValue$ = merge(this.input, this.start );
+    this.start = defer(() => of({ q: this.searchForm.value.q, customers: this.customers() }));
+    this.searchValue$ = merge(this.input, this.start);
   }
 
   ngOnInit() {
-    setTimeout(() => { this.searchControl.setValue('12345', { emitEvent: true }); }, 1000); // Testēšanai!!! Noņemt!!!
-    // setTimeout(() => { this.searchControl.setValue('ottenst', { emitEvent: true }); }, 1000); // Testēšanai!!! Noņemt!!!
+/*     setTimeout(() => {
+      this.searchForm.setValue(
+        { q: 'ottens', tikaiZemgus: false },
+        { emitEvent: true });
+    }, 1000); // Testēšanai!!! Noņemt!!!
+ */    // setTimeout(() => { this.searchControl.setValue('ottenst', { emitEvent: true }); }, 1000); // Testēšanai!!! Noņemt!!!
+  }
+
+  customers(): string[] {
+    return this.searchForm.value.tikaiZemgus ? ['Zemgus'] : null;
+  }
+
+  private changeDetector = (x: FormValues, y: FormValues): boolean => {
+    for (const k of Object.keys(x)) {
+      if (x[k] !== y[k]) {
+        return false;
+      }
+    }
+    return true;
   }
 
 }

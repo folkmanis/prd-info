@@ -11,7 +11,7 @@ export class HttpOptions {
      */
     constructor(par: { [key: string]: any }) {
         Object.keys(par).forEach((key) => {
-            const val = par[key].toString();
+            const val = par[key] ? par[key] : '';
             if (val.length > 0) {
                 this.params = this.params.set(key, val);
             }
