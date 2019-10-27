@@ -1,14 +1,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+import { LibraryModule } from '../library/library.module';
 import { XmfUploadRoutingModule } from './xmf-upload-routing.module';
-
+import { XmfUploadComponent } from './xmf-upload.component';
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    XmfUploadComponent
+  ],
   imports: [
     CommonModule,
-    XmfUploadRoutingModule
-  ]
+    LibraryModule,
+    XmfUploadRoutingModule,
+  ],
 })
 export class XmfUploadModule { }

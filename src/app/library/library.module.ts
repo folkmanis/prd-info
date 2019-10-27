@@ -11,16 +11,18 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
-import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 import { ScrollToTopModule } from './scroll-to-top/scroll-to-top.module';
 import { CopyClipboardDirective } from './directives/copy-clipboard.directive';
 import { TaggedStringComponent } from './tagged-string/tagged-string.component';
+import { FileDropDirective } from './directives/file-drop.directive';
 
 @NgModule({
   declarations: [
     CopyClipboardDirective,
     TaggedStringComponent,
+    FileDropDirective,
   ],
   imports: [
     CommonModule,
@@ -54,6 +56,7 @@ import { TaggedStringComponent } from './tagged-string/tagged-string.component';
     ScrollToTopModule,
     CopyClipboardDirective,
     TaggedStringComponent,
+    FileDropDirective,
   ]
 })
 export class LibraryModule { }
