@@ -27,6 +27,9 @@ export class XmfSearchComponent implements OnInit {
   searchValue$: Observable<PartialSearchQuery>;
 
   constructor() {
+  }
+
+  ngOnInit() {
     this.input = this.searchForm.valueChanges.pipe(
       debounceTime(300),
       filter((val: FormValues) => val.q.trim().length > 3),
@@ -38,9 +41,6 @@ export class XmfSearchComponent implements OnInit {
     );
     this.start = defer(() => of({ q: this.searchForm.value.q, customers: this.customers() }));
     this.searchValue$ = merge(this.input, this.start);
-  }
-
-  ngOnInit() {
 /*     setTimeout(() => {
       this.searchForm.setValue(
         { q: 'ottens', tikaiZemgus: false },
@@ -49,7 +49,7 @@ export class XmfSearchComponent implements OnInit {
  */    // setTimeout(() => { this.searchControl.setValue('ottenst', { emitEvent: true }); }, 1000); // Testēšanai!!! Noņemt!!!
   }
 
-  customers(): string[] {
+  private customers(): string[] {
     return this.searchForm.value.tikaiZemgus ? ['Zemgus'] : null;
   }
 
