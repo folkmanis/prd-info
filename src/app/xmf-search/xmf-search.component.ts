@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subject, Observable, of } from 'rxjs';
 import { FormGroup, FormControl } from '@angular/forms';
-import { map, filter, distinctUntilChanged, delay, debounceTime, tap, share, startWith, single } from 'rxjs/operators';
-import { merge, defer } from 'rxjs/index';
-import { PartialSearchQuery } from './services/archive-search-class';
+import { map, distinctUntilChanged,  debounceTime } from 'rxjs/operators';
 
 interface FormValues {
   q: string;

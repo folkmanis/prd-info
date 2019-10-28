@@ -1,11 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
-import { map, filter, switchMap, tap } from 'rxjs/operators';
+import { map, filter, switchMap} from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ArchiveSearchService } from '../services/archive-search.service';
-import { ArchiveSearch, SearchRecord, PartialSearchQuery } from '../services/archive-search-class';
+import { SearchRecord, PartialSearchQuery } from '../services/archive-search-class';
 
 @Component({
   selector: 'app-search-table',
