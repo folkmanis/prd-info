@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subject, Observable, of } from 'rxjs';
 import { FormGroup, FormControl } from '@angular/forms';
 import { map, filter, distinctUntilChanged, delay, debounceTime, tap, share, startWith, single } from 'rxjs/operators';
@@ -7,7 +8,7 @@ import { PartialSearchQuery } from './services/archive-search-class';
 
 interface FormValues {
   q: string;
-  tikaiZemgus: boolean;
+  zmg?: boolean;
 }
 
 @Component({
@@ -17,40 +18,55 @@ interface FormValues {
 })
 export class XmfSearchComponent implements OnInit {
 
-  private input: Observable<PartialSearchQuery>; // filtered value from input
-  private start: Observable<PartialSearchQuery>; // initial value to start from
-
   searchForm = new FormGroup({
     q: new FormControl(''),
-    tikaiZemgus: new FormControl(true),
+    zmg: new FormControl(true),
   });
-  searchValue$: Observable<PartialSearchQuery>;
 
-  constructor() {
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {
   }
 
   ngOnInit() {
-    this.input = this.searchForm.valueChanges.pipe(
+    this.searchForm.valueChanges.pipe(
       debounceTime(300),
-      filter((val: FormValues) => val.q.trim().length > 3),
       distinctUntilChanged(this.changeDetector),
-      map((val) => ({
-        q: val.q.trim(),
-        customers: this.customers(),
-      })),
-    );
-    this.start = defer(() => of({ q: this.searchForm.value.q, customers: this.customers() }));
-    this.searchValue$ = merge(this.input, this.start);
-/*     setTimeout(() => {
-      this.searchForm.setValue(
-        { q: 'ottens', tikaiZemgus: false },
-        { emitEvent: true });
-    }, 1000); // Testēšanai!!! Noņemt!!!
- */    // setTimeout(() => { this.searchControl.setValue('ottenst', { emitEvent: true }); }, 1000); // Testēšanai!!! Noņemt!!!
-  }
+      map((val) => {
+        const params: FormValues = { q: val.q };
+        if (val.zmg) {
+          params.zmg = true;
+        }
+        return params;
+      }),
+    ).subscribe((params) => {
+      if (params.q.length > 3) {
+        this.router.navigate(['xmf-search', 's', params]);
+      } else {
+        this.router.navigate(['xmf-search']);
+      }
+    });
 
-  private customers(): string[] {
-    return this.searchForm.value.tikaiZemgus ? ['Zemgus'] : null;
+    const child = this.route.firstChild || null;
+    console.log(child);
+    if (child
+      && child.snapshot.url[0].path === 's'
+      && child.snapshot.paramMap.has('q')
+      && child.snapshot.paramMap.get('q').length > 3) {
+      const form: FormValues = {
+        q: child.snapshot.paramMap.get('q'),
+        zmg: !!child.snapshot.paramMap.get('zmg'),
+      };
+      this.searchForm.setValue(form);
+    }
+
+    /*     setTimeout(() => {
+          this.searchForm.setValue(
+            { q: 'ottens', tikaiZemgus: false },
+            { emitEvent: true });
+        }, 1000); // Testēšanai!!! Noņemt!!!
+     */    // setTimeout(() => { this.searchControl.setValue('ottenst', { emitEvent: true }); }, 1000); // Testēšanai!!! Noņemt!!!
   }
 
   private changeDetector = (x: FormValues, y: FormValues): boolean => {

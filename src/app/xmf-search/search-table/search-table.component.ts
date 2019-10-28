@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, filter, switchMap, tap } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -12,7 +13,6 @@ import { ArchiveSearch, SearchRecord, PartialSearchQuery } from '../services/arc
   styleUrls: ['./search-table.component.css']
 })
 export class SearchTableComponent implements OnInit {
-  @Input() search$: Observable<PartialSearchQuery>;
 
   count: number;
   search = '';
@@ -22,11 +22,21 @@ export class SearchTableComponent implements OnInit {
   constructor(
     private snack: MatSnackBar,
     private archiveSearchService: ArchiveSearchService,
+    private route: ActivatedRoute,
   ) { }
 
   ngOnInit() {
-    this.search$.pipe(
-      tap((q) => this.search = q.q),
+    this.route.paramMap.pipe(
+      filter((param) => param.has('q')),
+      filter((param) => param.get('q').length > 3),
+      map((param) => {
+        const search: PartialSearchQuery = {};
+        this.search = search.q = param.get('q'); // q = jautājums
+        if (param.get('zmg')) {  // zmg = tikai zemgus
+          search.customers = ['Zemgus', 'PD'];
+        }
+        return search;
+      }),
       switchMap((q) => this.archiveSearchService.getSearchResult(q))
     ).
       subscribe((val) => {

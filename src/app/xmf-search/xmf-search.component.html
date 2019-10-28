@@ -4,10 +4,9 @@
             <input matInput formControlName="q" type="search">
             <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
-        <mat-checkbox formControlName="tikaiZemgus">Meklēt tikai Zemgus darbus</mat-checkbox>
+        <mat-checkbox formControlName="zmg">Meklēt tikai Zemgus darbus</mat-checkbox>
     </form>
 </div>
 <div class="search-content">
-    <app-search-table *ngIf="searchForm.value.q.trim().length > 3" [search$]="searchValue$">
-    </app-search-table>
+    <router-outlet></router-outlet>
 </div>
