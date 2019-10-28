@@ -49,7 +49,6 @@ export class XmfSearchComponent implements OnInit {
     });
 
     const child = this.route.firstChild || null;
-    console.log(child);
     if (child
       && child.snapshot.url[0].path === 's'
       && child.snapshot.paramMap.has('q')
