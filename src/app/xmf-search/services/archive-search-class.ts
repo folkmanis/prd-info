@@ -4,33 +4,16 @@ export interface ArchiveResp {
 }
 
 export interface ArchiveRecord {
-    id: number;
-    jdfJobId: string;
-    descriptiveName: string;
-    customerName: string;
-    location: string;
-    action: string;
-    date: string;
-}
-
-export interface ArchiveSearch {
-    count: number;
-    data: SearchRecord[];
-}
-
-export interface SearchRecord {
-    id: number;
-    jdfJobId: string;
-    descriptiveName: string;
-    customerName: string;
-    archive:
-    {
-        location: string;
-        action: string;
-        date: string;
-        datums: string;
+    JDFJobID: string;
+    DescriptiveName: string;
+    CustomerName: string;
+    Archives: {
+        Location: string,
+        Date: string,
+        Action: number,
     }[];
 }
+
 
 export type PartialSearchQuery = { [P in keyof SearchQuery]?: SearchQuery[P] };
 

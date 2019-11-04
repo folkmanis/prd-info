@@ -4,7 +4,7 @@ import { map, filter, switchMap} from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ArchiveSearchService } from '../services/archive-search.service';
-import { SearchRecord, PartialSearchQuery } from '../services/archive-search-class';
+import { ArchiveRecord, PartialSearchQuery } from '../services/archive-search-class';
 
 @Component({
   selector: 'app-search-table',
@@ -15,7 +15,7 @@ export class SearchTableComponent implements OnInit {
 
   count: number;
   search = '';
-  archiveSearch: SearchRecord[];
+  archiveSearch: ArchiveRecord[];
   status = '';
 
   constructor(
