@@ -4,7 +4,7 @@
  * POST /data/login/login
  * {
  * username: string;
- * pass: string;
+ * password: string;
  * }
  *
  * User
@@ -18,7 +18,6 @@
  */
 
 export class User {
-  id: number;
   username: string;
   name: string;
   admin: number;
@@ -26,10 +25,10 @@ export class User {
 }
 export class Login {
   username: string;
-  pass: string;
+  password: string;
 }
 interface LogoutResponse {
-  affectedRows: number;
+  logout: number;
 }
 
 
@@ -65,7 +64,7 @@ export class LoginService {
 
   logOut(): Observable<boolean> {
     return this.logoutHttp().pipe(
-      map((resp) => resp.affectedRows > 0),
+      map((resp) => resp.logout > 0),
       tap((resp) => !resp || this.userSubj.next(null)),
     );
   }
@@ -84,13 +83,13 @@ export class LoginService {
 
   private getUserHttp(): Observable<User | null> {
     return this.http.get<User>(this.httpPathLogin + 'user', this.httpOptions).pipe(
-      map((usr) => usr.id ? usr : null)
+      map((usr) => usr.username ? usr : null)
     );
   }
 
   private loginHttp(login: Login): Observable<User | null> {
     return this.http.post<User>(this.httpPathLogin + 'login', login, this.httpOptions).pipe(
-      map((usr) => usr.id ? usr : null),
+      map((usr) => usr.username ? usr : null),
       catchError(this.handleError('Invalid login: ' + login, null)),
     );
   }

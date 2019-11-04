@@ -4,7 +4,7 @@
                 <input matInput #username placeholder="Lietotājs" formControlName="username" type="text" autocomplete="off">
             </mat-form-field>
             <mat-form-field>
-                <input matInput placeholder="Parole" formControlName="pass" type="password">
+                <input matInput placeholder="Parole" formControlName="password" type="password">
             </mat-form-field>
             <button mat-raised-button type="submit" color="primary" [disabled]="loginForm.status === 'INVALID'">Pieslēgties</button>
         </form>
