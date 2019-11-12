@@ -21,9 +21,22 @@ export class ArchiveSearchService {
   }
 
   getSearchResult(query: PartialSearchQuery): Observable<ArchiveResp> {
-    return this.httpService.searchHttp(query);
+    return this.httpService.searchHttp(query).pipe(
+      map((result) => {
+        if (result.data && result.data.length > 0) {
+          result.data = result.data.map((val) => {
+            if (val.Archives) {
+              val.Archives = val.Archives.map((arch) => {
+                arch.Location = arch.Location.replace(/\//g, '\\');
+                return arch;
+              });
+            }
+            return val;
+          });
+        }
+        return result;
+      })
+    );
   }
-
-  // TODO pārveidot / par \
 
 }
