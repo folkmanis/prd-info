@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { HttpService } from './http.service';
-import { ArchiveResp, ArchiveRecord, PartialSearchQuery } from './archive-search-class';
+import { ArchiveResp, ArchiveRecord, PartialSearchQuery, ArchiveFacet } from './archive-search-class';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -37,6 +37,10 @@ export class ArchiveSearchService {
         return result;
       })
     );
+  }
+
+  getFacet(query: PartialSearchQuery): Observable<ArchiveFacet> {
+    return this.httpService.facetHttp(query);
   }
 
 }

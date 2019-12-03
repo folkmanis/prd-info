@@ -32,7 +32,7 @@ export class SearchTableComponent implements OnInit {
         const search: PartialSearchQuery = {};
         this.search = search.q = param.get('q'); // q = jautājums
         if (param.get('zmg')) {  // zmg = tikai zemgus
-          search.customers = ['Zemgus', 'PD'];
+          search.customers = ['Zemgus'];
         }
         return search;
       }),
@@ -53,7 +53,7 @@ export class SearchTableComponent implements OnInit {
     if (!count || count < 1) {
       return 'Nav rezultātu';
     }
-    const si = (count % 10 === 1 ? 's' : 'i');
+    const si = (count % 10 === 1 && count !== 11 ? 's' : 'i');
     let ret = `Atrast${si} ${count} ierakst${si}`;
     if (count > this.archiveSearch.length) {
       ret += `, rāda ${this.archiveSearch.length}`;

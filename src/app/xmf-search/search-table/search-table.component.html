@@ -1,24 +1,32 @@
-<h3>{{status}}</h3>
-<div *ngIf="count">
-    <div *ngFor="let item of archiveSearch; last as lastItem">
-        <span class="jobId" [ngClass]="item.exactMatch ? 'match' : ''">{{item.JDFJobID}}</span>
-        <div>
-            <app-tagged-string [text]="item.DescriptiveName" [search]="search"></app-tagged-string>
-        </div>
-        <div class="search-table">
-            <div *ngFor="let row of item.Archives">
-                <div class="table-element table-location" [appCopyClipboard]="row.Location" (copied)="onCopied($event)">
-                    {{row.Location}}
-                </div>
-                <div style="display: flex;">
-                    <div style="flex: 0 1 8ch;" class="table-element">{{row.Action}}</div>
-                    <div style="flex: 1 1 170px;" class="table-element">{{row.Date}}</div>
-                    <div style="flex: 5 1 170px;" class="table-element">{{row.datums}}</div>
-                    <div style="flex: 5 1 170px;" class="table-element">{{item.CustomerName}}</div>
-                </div>
-            </div>
-        </div>
-        <mat-divider *ngIf="!lastItem"></mat-divider>
+<div style="display: flex;">
+    <div style="flex: 0 0 200px">
+        Facet box
     </div>
-    <app-scroll-to-top></app-scroll-to-top>
+    <div style="flex: 1 1;">
+        <h3>{{status}}</h3>
+        <div *ngIf="count">
+            <div *ngFor="let item of archiveSearch; last as lastItem">
+                <span class="jobId" [ngClass]="item.exactMatch ? 'match' : ''">{{item.JDFJobID}}</span>
+                <div>
+                    <app-tagged-string [text]="item.DescriptiveName" [search]="search"></app-tagged-string>
+                </div>
+                <div class="search-table">
+                    <div *ngFor="let row of item.Archives">
+                        <div class="table-element table-location" [appCopyClipboard]="row.Location"
+                            (copied)="onCopied($event)">
+                            {{row.Location}}
+                        </div>
+                        <div style="display: flex;">
+                            <div style="flex: 0 1 8ch;" class="table-element">{{row.Action}}</div>
+                            <div style="flex: 1 1 170px;" class="table-element">{{row.Date}}</div>
+                            <div style="flex: 5 1 170px;" class="table-element">{{row.datums}}</div>
+                            <div style="flex: 5 1 170px;" class="table-element">{{item.CustomerName}}</div>
+                        </div>
+                    </div>
+                </div>
+                <mat-divider *ngIf="!lastItem"></mat-divider>
+            </div>
+            <app-scroll-to-top></app-scroll-to-top>
+        </div>
+    </div>
 </div>
