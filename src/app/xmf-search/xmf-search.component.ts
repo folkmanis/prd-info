@@ -57,12 +57,6 @@ export class XmfSearchComponent implements OnInit {
       this.searchForm.setValue(form);
     }
 
-    /*     setTimeout(() => {
-          this.searchForm.setValue(
-            { q: 'ottens', tikaiZemgus: false },
-            { emitEvent: true });
-        }, 1000); // Testēšanai!!! Noņemt!!!
-     */    // setTimeout(() => { this.searchControl.setValue('ottenst', { emitEvent: true }); }, 1000); // Testēšanai!!! Noņemt!!!
   }
 
   private changeDetector = (x: FormValues, y: FormValues): boolean => {
