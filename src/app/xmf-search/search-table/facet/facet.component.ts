@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
 import { ArchiveSearchService } from '../../services/archive-search.service';
-import {PartialSearchQuery, ArchiveFacet } from '../../services/archive-search-class';
+import {SearchQuery, ArchiveFacet } from '../../services/archive-search-class';
 import { map, filter, switchMap, tap} from 'rxjs/operators';
 import { pipe } from 'rxjs';
 
@@ -12,7 +12,7 @@ import { pipe } from 'rxjs';
 export class FacetComponent implements OnInit {
 
   @Input('query')
-  public set query(_q: PartialSearchQuery) {
+  public set query(_q: SearchQuery) {
     this.q = _q;
     console.log(this.q);
     this.archiveSearchService.getFacet(this.q)
@@ -22,7 +22,7 @@ export class FacetComponent implements OnInit {
     .subscribe((facet) => this.facet = facet);
   }
 
-  q: PartialSearchQuery;
+  q: SearchQuery;
   facet: ArchiveFacet;
 
   constructor(

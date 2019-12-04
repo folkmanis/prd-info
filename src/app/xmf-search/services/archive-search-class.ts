@@ -21,12 +21,15 @@ export interface ArchiveFacet {
     month: Count[],
 }
 
+export interface FacetFilter {
+    customerName: string[],
+    year: number[],
+    month: number[],
+}
 
-export type PartialSearchQuery = { [P in keyof SearchQuery]?: SearchQuery[P] };
-
-interface SearchQuery {
+export interface SearchQuery {
   q: string;
   customers?: string[];
-  year?: number;
-  month?: number;
+  year?: number[];
+  month?: number[];
 }
