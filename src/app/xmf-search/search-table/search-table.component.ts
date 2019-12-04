@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { map, filter, switchMap} from 'rxjs/operators';
+import { map, filter, switchMap, tap} from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ArchiveSearchService } from '../services/archive-search.service';
@@ -14,8 +14,9 @@ import { ArchiveRecord, PartialSearchQuery } from '../services/archive-search-cl
 export class SearchTableComponent implements OnInit {
 
   count: number;
-  search = '';
+  search = '';  // Tiek izmantots rezultātu izcelšanai
   archiveSearch: ArchiveRecord[];
+  query: PartialSearchQuery;
   status = '';
 
   constructor(
@@ -29,14 +30,15 @@ export class SearchTableComponent implements OnInit {
       filter((param) => param.has('q')),
       filter((param) => param.get('q').length > 3),
       map((param) => {
-        const search: PartialSearchQuery = {};
-        this.search = search.q = param.get('q'); // q = jautājums
+        const query: PartialSearchQuery = {};
+        this.search = query.q = param.get('q'); // q = jautājums
         if (param.get('zmg')) {  // zmg = tikai zemgus
-          search.customers = ['Zemgus'];
+          query.customers = ['Zemgus'];
         }
-        return search;
+        return query;
       }),
-      switchMap((q) => this.archiveSearchService.getSearchResult(q))
+      tap((query) => this.query = query),
+      switchMap((query) => this.archiveSearchService.getSearchResult(query))
     ).
       subscribe((val) => {
         this.archiveSearch = val.data || [];

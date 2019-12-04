@@ -1,0 +1,5 @@
+<ul *ngIf="facet">
+    <li *ngFor="let item of facet.year">
+        {{item._id}} ({{item.count}})
+    </li>
+</ul>
