@@ -13,7 +13,7 @@ import { FacetComponent } from './search-table/facet/facet.component';
   declarations: [
     XmfSearchComponent,
     SearchTableComponent,
-    FacetComponent
+    FacetComponent,
   ],
   imports: [
     CommonModule,

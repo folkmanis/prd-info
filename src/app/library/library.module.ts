@@ -17,12 +17,14 @@ import { ScrollToTopModule } from './scroll-to-top/scroll-to-top.module';
 import { CopyClipboardDirective } from './directives/copy-clipboard.directive';
 import { TaggedStringComponent } from './tagged-string/tagged-string.component';
 import { FileDropDirective } from './directives/file-drop.directive';
+import { AppMonthPipe } from './pipes/app-month.pipe';
 
 @NgModule({
   declarations: [
     CopyClipboardDirective,
     TaggedStringComponent,
     FileDropDirective,
+    AppMonthPipe,
   ],
   imports: [
     CommonModule,
@@ -57,6 +59,7 @@ import { FileDropDirective } from './directives/file-drop.directive';
     CopyClipboardDirective,
     TaggedStringComponent,
     FileDropDirective,
+    AppMonthPipe,
   ]
 })
 export class LibraryModule { }
