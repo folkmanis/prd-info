@@ -5,6 +5,7 @@ import { Component, OnInit, Input } from '@angular/core';
  * @param text - teksta rinda, kuru jāparāda
  * @param search - fragments, kurš jāizceļ
  * @param style - stili izcelšanai, formātā, kuru izmanto ngStyle.
+ * @param exactMatch - prasīta pilna sakritība
  */
 interface Chunk {
   text: string;

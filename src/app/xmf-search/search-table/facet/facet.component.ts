@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
+import { MatSelectionListChange } from '@angular/material/list';
 import { ArchiveSearchService } from '../../services/archive-search.service';
-import {SearchQuery, ArchiveFacet } from '../../services/archive-search-class';
-import { map, filter, switchMap, tap} from 'rxjs/operators';
+import { SearchQuery, ArchiveFacet, FacetFilter } from '../../services/archive-search-class';
+import { map, filter, switchMap, tap } from 'rxjs/operators';
 import { pipe } from 'rxjs';
 
 @Component({
@@ -11,18 +12,6 @@ import { pipe } from 'rxjs';
 })
 export class FacetComponent implements OnInit {
 
-  @Input('query')
-  public set query(_q: SearchQuery) {
-    this.q = _q;
-    console.log(this.q);
-    this.archiveSearchService.getFacet(this.q)
-    .pipe(
-      tap((facet) => console.log(facet))
-    )
-    .subscribe((facet) => this.facet = facet);
-  }
-
-  q: SearchQuery;
   facet: ArchiveFacet;
 
   constructor(
@@ -30,6 +19,19 @@ export class FacetComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.archiveSearchService.facet$.subscribe((res) => {
+      this.facet = res;
+    });
+  }
+
+  onFacet(event: MatSelectionListChange, key: string) {
+    const facet: string[] | number[] =
+      event.source.selectedOptions.selected.map((e) => e.value);
+    this.archiveSearchService.setFacetFilter(key, facet);
+  }
+
+  comp(o1, o2): boolean {
+    return false;
   }
 
 }

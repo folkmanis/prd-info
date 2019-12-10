@@ -18,10 +18,10 @@ export class HttpService {
   ) { }
 
   searchHttp(query: SearchQuery): Observable<ArchiveResp> {
-    return this.http.get<ArchiveResp>(this.httpPathSearch + 'search', new HttpOptions(query));
+    return this.http.get<ArchiveResp>(this.httpPathSearch + 'search', new HttpOptions({ query: JSON.stringify(query) }));
   }
 
   facetHttp(query: SearchQuery): Observable<ArchiveFacet> {
-    return this.http.get<ArchiveFacet>(this.httpPathSearch + 'facet', new HttpOptions(query));
+    return this.http.get<ArchiveFacet>(this.httpPathSearch + 'facet', new HttpOptions({ query: JSON.stringify(query) }));
   }
 }

@@ -15,10 +15,10 @@ import { ArchiveRecord, SearchQuery, FacetFilter } from '../services/archive-sea
 export class SearchTableComponent implements OnInit {
 
   search = '';  // Tiek izmantots rezultātu izcelšanai
-  archiveSearchResult$: Observable<ArchiveRecord[]>;
+  archiveSearchResult$: Observable< ArchiveRecord[]> = this.archiveSearchService.archiveSearchResult$;
   query: SearchQuery;
   status = '';
-  setFacetFilter = new EventEmitter<FacetFilter>();
+  actions: string[] = [,'Archive', 'Restore', 'Skip','Delete'];
 
   constructor(
     private snack: MatSnackBar,
@@ -37,24 +37,9 @@ export class SearchTableComponent implements OnInit {
       }),
     );
 
-  facetedSearch$ = // meklējums ar filtru
-    this.setFacetFilter.pipe(
-      map((filter) => ({ ...this.query, ...filter })
-      )
-    )
-
   ngOnInit() {
-    this.archiveSearchResult$ = this.archiveSearchService.archiveSearchResult$;
     this.archiveSearchService.count$.subscribe(c => this.setStatus(c));
     this.initialSearch$.subscribe(query => this.archiveSearchService.search = query);
-    // merge(this.initialSearch$, this.facetedSearch$).pipe(
-    //   switchMap((query) => this.archiveSearchService.getSearchResult(query))
-    // )
-    //   .subscribe((val) => {
-    //     this.archiveSearchResult = val.data || [];
-    //     this.status = this.setStatus(val.count);
-    //     this.count = val.count;
-    //   });
   }
 
   onCopied(val: string) {
