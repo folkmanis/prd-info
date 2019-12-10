@@ -1,18 +1,21 @@
 <h4>Gadi</h4>
 <mat-selection-list *ngIf="facet?.year" (selectionChange)="onFacet($event, 'year')" dense  [compareWith]="comp">
     <mat-list-option *ngFor="let item of facet.year" checkboxPosition="before" [value]="item._id">
-       {{item._id}} ({{item.count}})
+        <div *ngIf="item.count; else zeroCount">{{item._id}} ({{item.count}})</div>
+        <ng-template #zeroCount>{{item._id}}</ng-template>
     </mat-list-option>
 </mat-selection-list>
 <h4>Mēneši</h4>
 <mat-selection-list *ngIf="facet?.month" (selectionChange)="onFacet($event, 'month')" dense>
     <mat-list-option *ngFor="let item of facet.month" checkboxPosition="before" [value]="item._id">
-        {{item._id}} ({{item.count}})
+            <div *ngIf="item.count; else zeroCount">{{item._id}} ({{item.count}})</div>
+            <ng-template #zeroCount>{{item._id}}</ng-template>
     </mat-list-option>
 </mat-selection-list>
 <h4>Klienti</h4>
 <mat-selection-list *ngIf="facet?.customerName" (selectionChange)="onFacet($event, 'customerName')" dense>
     <mat-list-option *ngFor="let item of facet.customerName" checkboxPosition="before" [value]="item._id">
-        {{item._id}} ({{item.count}})
+            <div *ngIf="item.count; else zeroCount">{{item._id}} ({{item.count}})</div>
+            <ng-template #zeroCount>{{item._id}}</ng-template>
     </mat-list-option>
 </mat-selection-list>
