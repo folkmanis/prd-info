@@ -17,6 +17,11 @@ const routes: Routes = [
     path: 'xmf-upload',
     loadChildren: () => import('./xmf-upload/xmf-upload.module').then(m => m.XmfUploadModule),
     canLoad: [AdminGuard],
+  },
+  {
+    path: 'admin',
+    loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule),
+    canLoad: [AdminGuard],
   }
 ];
 

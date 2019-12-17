@@ -16,7 +16,7 @@ import { XmfUploadModule } from './xmf-upload/xmf-upload.module';
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent
+    LoginComponent,
   ],
   imports: [
     BrowserModule,
