@@ -45,6 +45,17 @@ export class UsersService {
       tap(resp => resp && this.updateUsers(username, data)),
     );
   }
+  /**
+   * Rezultāts: Observable
+   * true -  ja lietotāja vārds nav aizņemts un derīgs
+   * false - ja lietotāja vārds aizņemts
+   * @param username Pārbaudāmais lietotāja vārds
+   */
+  validateUsername(username: string): Observable<boolean> {
+    return this.getUser(username).pipe(
+      map(res => res ? false : true),
+    );
+  }
 
   private updateUsers(username: string, update: Partial<User>): void {
     const idx = this.findUserIdx(username);
