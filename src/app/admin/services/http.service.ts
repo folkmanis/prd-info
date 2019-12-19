@@ -44,4 +44,8 @@ export class HttpService {
     return this.http.post<UpdateResponse>(this.httpPathUsers + 'update', user);
   }
 
+  addUserHttp(user: User): Observable<UpdateResponse> {
+    return this.http.post<UpdateResponse>(this.httpPathUsers + 'add', user);
+  }
+
 }
