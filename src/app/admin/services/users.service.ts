@@ -56,6 +56,11 @@ export class UsersService {
       tap(resp => resp && this.updateUsers(username, data)),
     );
   }
+  /**
+   * Pievieno lietotāju,
+   * atjauno lietotāju sarakstu
+   * @param data Pilni lietotāja dati
+   */
   addUser(data: User): Observable<boolean> {
     return this.httpService.addUserHttp(data).pipe(
       map(resp => resp.success),
