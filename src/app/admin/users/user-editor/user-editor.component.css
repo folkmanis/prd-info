@@ -1,8 +1,11 @@
-.user-form {
+section {
     padding: 8px 16px;
-    width: 100%;
 }
 
 .input-element {
-    min-width: 300px;
+    width: 100%;
+}
+
+button {
+    margin-right: 8px;
 }
