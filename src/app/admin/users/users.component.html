@@ -1,5 +1,20 @@
-<p>User {{username}} selected</p>
-<p>{{count}}</p>
-<ul>
-    <li *ngFor="let user of users">{{user.username}}</li>
-</ul>
+<div style="display: flex;">
+    <div style="flex: 0 0 250px;">
+        <mat-divider></mat-divider>
+        <mat-nav-list>
+            <mat-list-item *ngFor="let user of users">
+                <a mat-list-item [routerLink]="['/admin/users',{id: user.username}]">{{user.username}}</a>
+                <mat-divider></mat-divider>
+            </mat-list-item>
+            <mat-list-item>
+                <a mat-list-item [routerLink]="['/admin/users',{id: 'new'}]"><b>Jauns lietotājs</b></a>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+        </mat-nav-list>
+    </div>
+    <div style="flex: 0 0 5px;">
+    </div>
+    <div style="flex: auto;">
+        <app-user-editor *ngIf="userSelected" [username]="userSelected"></app-user-editor>
+    </div>
+</div>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-import { pipe } from 'rxjs/index';
+import { pipe, Observable } from 'rxjs/index';
 import { switchMap } from 'rxjs/operators';
 import { UsersService } from '../services/users.service';
 import { User, UserList } from '../services/http.service';
@@ -16,21 +16,23 @@ export class UsersComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private usersService: UsersService,
-  ) { }
+  ) {
+    this.count$ = usersService.count$;
+  }
 
-  count: number = 0;
+  count$: Observable<number>;
   users: User[];
-  username: string = '';
+  userSelected: string;
 
   ngOnInit() {
     this.route.paramMap.subscribe((params: ParamMap) => {
-      this.username = params.get('id');
+      this.userSelected = params.get('id');
     });
 
-    this.usersService.getUsers().subscribe(usrs => {
-      this.count = usrs.count;
-      this.users = usrs.users;
+    this.usersService.users$.subscribe(usrs => {
+      this.users = usrs;
     });
+    this.usersService.getUsers();
   }
 
 }

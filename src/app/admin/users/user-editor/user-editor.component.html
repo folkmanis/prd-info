@@ -1,0 +1,30 @@
+<div *ngIf="user">
+    <section class="user-form">
+        <h2>Lietotājs {{user.username}}</h2>
+        <small>Pēdējoreiz redzēts {{user.last_login | date}}</small>
+    </section>
+    <form [formGroup]="userForm">
+        <section class="user-form">
+            <h3>Informācija par lietotāju</h3>
+            <mat-form-field class="input-element">
+                <input formControlName="name" matInput placeholder="Vārds" autocomplete="off">
+            </mat-form-field>
+            <section>
+                <mat-checkbox formControlName="admin">Administratora tiesības</mat-checkbox>
+            </section>
+        </section>
+        <section class="user-form" formGroupName="preferences">
+            <h3>Lietotāja iestatījumi</h3>
+            <mat-form-field class="input-element">
+                <mat-label>Pieeja klientiem</mat-label>
+                <mat-select formControlName="customers" multiple>
+                    <mat-option *ngFor="let customer of customers" [value]="customer.value">
+                        {{customer.name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </section>
+    </form>
+    Dirty - {{userForm.dirty}}, Pristine - {{userForm.pristine}}
+</div>
+<p>{{user | json}}</p>

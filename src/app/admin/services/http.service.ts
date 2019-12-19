@@ -10,11 +10,19 @@ export interface UserList {
 }
 
 
+interface UpdateResponse {
+  success: boolean;
+  error?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class HttpService {
   private httpPathUsers = '/data/users/';
+  /**   Klientu kodi ir arhīva datubāzē
+   * TODO izveidot klientu datubāzi uz    */
+  private httpPathSearch = '/data/xmf-search/';
 
   constructor(
     private http: HttpClient,
@@ -22,6 +30,18 @@ export class HttpService {
 
   getUsersHttp(): Observable<UserList> {
     return this.http.get<UserList>(this.httpPathUsers + 'list');
+  }
+
+  getUserHttp(username: string): Observable<User> {
+    return this.http.get<User>(this.httpPathUsers + `user?username=${username}`);
+  }
+
+  getCustomersHttp(): Observable<string[]> {
+    return this.http.get<string[]>(this.httpPathSearch + 'customers');
+  }
+
+  updateUserHttp(user: Partial<User>): Observable<UpdateResponse> {
+    return this.http.post<UpdateResponse>(this.httpPathUsers + 'update', user);
   }
 
 }

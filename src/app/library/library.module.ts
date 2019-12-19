@@ -11,7 +11,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSelectModule } from '@angular/material/select';
 
 import { ScrollToTopModule } from './scroll-to-top/scroll-to-top.module';
 import { CopyClipboardDirective } from './directives/copy-clipboard.directive';
@@ -40,6 +42,8 @@ import { AppMonthPipe } from './pipes/app-month.pipe';
     MatListModule,
     MatDividerModule,
     MatCheckboxModule,
+    MatTabsModule,
+    MatSelectModule,
     ScrollToTopModule,
   ],
   exports: [
@@ -55,6 +59,8 @@ import { AppMonthPipe } from './pipes/app-month.pipe';
     MatListModule,
     MatDividerModule,
     MatCheckboxModule,
+    MatTabsModule,
+    MatSelectModule,
     ScrollToTopModule,
     CopyClipboardDirective,
     TaggedStringComponent,
