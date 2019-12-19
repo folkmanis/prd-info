@@ -5,6 +5,7 @@ import { UsersService, Customer } from '../../services/users.service';
 import { User } from '../../services/http.service';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-new-user',
@@ -30,6 +31,7 @@ export class NewUserComponent implements OnInit {
   constructor(
     private usersService: UsersService,
     private router: Router,
+    private snackBar: MatSnackBar,
   ) { }
 
   ngOnInit() {
@@ -37,11 +39,13 @@ export class NewUserComponent implements OnInit {
   }
 
   onSave() {
-    console.log(this.newUserForm.value);
     const username = this.username.value;
     this.usersService.addUser(this.newUserForm.value).subscribe(resp => {
       if (resp) {
-        this.router.navigate(['admin','users', { id: username }]);
+        this.snackBar.open(`Lietotājs ${username} izveidots!`, 'OK', { duration: 3000 });
+        this.router.navigate(['admin', 'users', { id: username }]);
+      } else {
+        this.snackBar.open(`Neizdevās izveidot lietotāju`, 'OK', { duration: 5000 });
       }
     });
   }
