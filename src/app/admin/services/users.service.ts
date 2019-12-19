@@ -57,6 +57,14 @@ export class UsersService {
     );
   }
   /**
+   * Nomaina paroli lietotājam
+   * @param username lietotājvārds
+   * @param password parole
+   */
+  updatePassword(username: string, password: string): Observable<boolean> {
+    return this.httpService.updatePasswordHttp(username, password);
+  }
+  /**
    * Pievieno lietotāju,
    * atjauno lietotāju sarakstu
    * @param data Pilni lietotāja dati
