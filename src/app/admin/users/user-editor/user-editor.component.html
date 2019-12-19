@@ -1,7 +1,7 @@
 <div *ngIf="user">
     <section class="user-form">
         <h2>Lietotājs {{user.username}}</h2>
-        <small>Pēdējoreiz redzēts {{user.last_login | date}}</small>
+        <small *ngIf="user.last_login">Pēdējoreiz redzēts {{user.last_login | date}}</small>
     </section>
     <form [formGroup]="userForm">
         <section class="user-form">
@@ -25,6 +25,13 @@
             </mat-form-field>
         </section>
     </form>
-    Dirty - {{userForm.dirty}}, Pristine - {{userForm.pristine}}
+    <!-- Pogas -->
+    <section>
+        <button mat-raised-button color="warn" (click)="onDelete()">Dzēst lietotāju!</button>
+        <button mat-raised-button color="primary" (click)="onPasswordChange()">Mainīt paroli</button>
+    </section>
 </div>
+
+<!-- Debug -->
+Dirty - {{userForm.dirty}}, Pristine - {{userForm.pristine}}
 <p>{{user | json}}</p>

@@ -41,6 +41,16 @@ export class UserEditorComponent implements OnInit {
     this.usersService.getCustomers().subscribe((cust) => this.customers = cust);
   }
 
+  onDelete() {
+    // TODO prompt dialog
+    console.log('TODO delete user');
+  }
+
+  onPasswordChange() {
+    // TODO password change dialog
+    console.log('TODO password change');
+  }
+
   private setFormValues(usr: Partial<User> | null) {
     // Lai pie formas ielādes neveiktu saglabāšanas darbību
     // vajag atrakstīties no izmaiņu notikuma
