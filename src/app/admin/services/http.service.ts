@@ -45,9 +45,15 @@ export class HttpService {
     return this.http.post<UpdateResponse>(this.httpPathUsers + 'update', user);
   }
 
+  updatePasswordHttp(username: string, password: string): Observable<boolean> {
+    return this.http.post<UpdateResponse>(this.httpPathUsers + 'password', { username, password }).pipe(
+      map(resp => resp.success)
+    );
+  }
+
   addUserHttp(user: Partial<User>): Observable<boolean> {
     return this.http.post<UpdateResponse>(this.httpPathUsers + 'add', user).pipe(
-      map(resp => resp.success ? true : false)
+      map(resp => resp.success)
     );
   }
 
