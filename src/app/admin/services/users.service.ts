@@ -61,7 +61,7 @@ export class UsersService {
    * atjauno lietotāju sarakstu
    * @param data Pilni lietotāja dati
    */
-  addUser(data: User): Observable<boolean> {
+  addUser(data: Partial< User>): Observable<boolean> {
     return this.httpService.addUserHttp(data).pipe(
       map(resp => resp.success),
       tap(resp => resp && this.getUsers()),

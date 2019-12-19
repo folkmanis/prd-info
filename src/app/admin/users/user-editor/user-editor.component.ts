@@ -44,6 +44,7 @@ export class UserEditorComponent implements OnInit {
 
   ngOnInit() {
     this.usersService.getCustomers().subscribe((cust) => this.customers = cust);
+    this.userForm.valueChanges.subscribe(val => console.log(val));
   }
 
   private setFormValues(usr: Partial<User> | null) {
