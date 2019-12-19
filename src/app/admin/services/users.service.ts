@@ -1,7 +1,7 @@
 import { HttpService, User, UserPreferences, UserList } from './http.service';
 import { Injectable } from '@angular/core';
 import { Observable, Subject, of } from 'rxjs';
-import { map, tap, filter } from 'rxjs/operators';
+import { map, tap, filter, switchMap } from 'rxjs/operators';
 
 
 export interface Customer {
@@ -54,6 +54,12 @@ export class UsersService {
     return this.httpService.updateUserHttp({ username, ...data }).pipe(
       map(resp => resp.success),
       tap(resp => resp && this.updateUsers(username, data)),
+    );
+  }
+  addUser(data: User): Observable<boolean> {
+    return this.httpService.addUserHttp(data).pipe(
+      map(resp => resp.success),
+      tap(resp => resp && this.getUsers()),
     );
   }
   /**
