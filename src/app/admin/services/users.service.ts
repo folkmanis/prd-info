@@ -46,9 +46,9 @@ export class UsersService {
     );
   }
   /**
-   * Atjauno lietotāja iestatījumus
+   * Atjauno lietotāja iestatījumus, izņemot paroli
    * @param username Lietotājvārds
-   * @param data Atjaunojamie dati
+   * @param data Atjaunojamie dati, bet ne parole!
    */
   updateUser(username: string, data: Partial<User>): Observable<boolean> {
     return this.httpService.updateUserHttp({ username, ...data }).pipe(
