@@ -25,11 +25,6 @@ export class UserEditorComponent implements OnInit {
   user: User;
   valueChangesSubscription: Subscription;
   @Input('username') set username(_uname: string) {
-    if (_uname === 'new') { // jauns lietotājs
-      this.selectedUsername = null;
-      this.user = null;
-      return;
-    }
     this.selectedUsername = _uname;
     this.usersService.getUser(this.selectedUsername).subscribe(usr => {
       this.user = usr;
@@ -44,7 +39,6 @@ export class UserEditorComponent implements OnInit {
 
   ngOnInit() {
     this.usersService.getCustomers().subscribe((cust) => this.customers = cust);
-    this.userForm.valueChanges.subscribe(val => console.log(val));
   }
 
   private setFormValues(usr: Partial<User> | null) {

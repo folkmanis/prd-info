@@ -1,0 +1,59 @@
+<form [formGroup]="newUserForm" (submit)="onSave()">
+    <section>
+        <h2>Jauns lietotājs</h2>
+        <!-- Lietotājvārds -->
+        <mat-form-field class="input-element">
+            <input formControlName="username" matInput placeholder="Lietotājvārds" autocomplete="off" required>
+            <mat-error *ngIf="username.hasError('minlength') && !username.hasError('symbol')">
+                Jābūt vismaz {{username.errors.minlength.requiredLength}} simboliem
+            </mat-error>
+            <mat-error *ngIf="username.hasError('symbol')">
+                {{username.errors.symbol}}
+            </mat-error>
+            <mat-error *ngIf="username.hasError('existing')">
+                {{username.errors.existing}}
+            </mat-error>
+        </mat-form-field>
+        <!-- Parole -->
+        <mat-form-field class="input-element">
+            <input formControlName="password" matInput placeholder="Parole" autocomplete="off" type="password" required>
+            <mat-error *ngIf="password.hasError('minlength')">
+                Jābūt vismaz {{password.errors.minlength.requiredLength}} simboliem
+            </mat-error>
+        </mat-form-field>
+    </section>
+    <section>
+        <h3>Informācija par lietotāju</h3>
+        <!-- Vārds -->
+        <mat-form-field class="input-element">
+            <input formControlName="name" matInput placeholder="Vārds" autocomplete="off" required>
+            <mat-error *ngIf="name.hasError('required')">
+                Jānorāda obligāti
+            </mat-error>
+        </mat-form-field>
+        <!-- Administrators -->
+        <section>
+            <mat-checkbox formControlName="admin">Administratora tiesības</mat-checkbox>
+        </section>
+    </section>
+    <section formGroupName="preferences">
+        <h3>Lietotāja iestatījumi</h3>
+        <!-- Pieeja klientiem -->
+        <mat-form-field class="input-element">
+            <mat-label>Pieeja klientiem</mat-label>
+            <mat-select formControlName="customers" multiple>
+                <mat-option *ngFor="let customer of customers" [value]="customer.value">
+                    {{customer.name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </section>
+    <!-- Pogas -->
+    <section>
+        <button type="submit" mat-raised-button color="primary" [disabled]="!newUserForm.valid">Saglabāt!</button>
+        <button type="reset" mat-raised-button>Notīrīt</button>
+    </section>
+</form>
+<!-- Debug !!! -->
+<p>{{newUserForm.value | json}}</p>
+<p>{{username.errors | json}}</p>

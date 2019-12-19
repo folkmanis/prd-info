@@ -3,6 +3,7 @@ import { User, UserPreferences } from '/home/dev/prd-info-node/src/lib/user-clas
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 
 export interface UserList {
   count: number,
@@ -44,8 +45,10 @@ export class HttpService {
     return this.http.post<UpdateResponse>(this.httpPathUsers + 'update', user);
   }
 
-  addUserHttp(user: Partial<User>): Observable<UpdateResponse> {
-    return this.http.post<UpdateResponse>(this.httpPathUsers + 'add', user);
+  addUserHttp(user: Partial<User>): Observable<boolean> {
+    return this.http.post<UpdateResponse>(this.httpPathUsers + 'add', user).pipe(
+      map(resp => resp.success ? true : false)
+    );
   }
 
 }

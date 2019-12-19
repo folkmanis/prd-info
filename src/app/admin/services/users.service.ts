@@ -63,7 +63,6 @@ export class UsersService {
    */
   addUser(data: Partial< User>): Observable<boolean> {
     return this.httpService.addUserHttp(data).pipe(
-      map(resp => resp.success),
       tap(resp => resp && this.getUsers()),
     );
   }
