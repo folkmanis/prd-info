@@ -14,13 +14,15 @@ export interface Customer {
 })
 export class UsersService {
 
-  users: User[];
+  users: User[]; // Statiskais lietotāju saraksts
   count$ = new Subject<number>();
   users$ = new Subject<User[]>();
   constructor(
     private httpService: HttpService,
   ) { }
-
+  /**
+   * Saņem lietotāju sarakstu no REST
+   */
   getUsers() {
     this.httpService.getUsersHttp().subscribe(usrs => {
       this.users = usrs.users;
@@ -28,17 +30,26 @@ export class UsersService {
       this.users$.next(usrs.users);
     });
   }
-
+  /**
+   * Saņem lietotāja ierakstu no REST
+   * @param username Lietotājvārds
+   */
   getUser(username: string): Observable<User> {
     return this.httpService.getUserHttp(username);
   }
-
+  /**
+   * Saņem klientu sarakstu no REST
+   */
   getCustomers(): Observable<Customer[]> {
     return this.httpService.getCustomersHttp().pipe(
       map(customer => customer.map(cust => ({ name: cust || 'Nav norādīts', value: cust })))
     );
   }
-
+  /**
+   * Atjauno lietotāja iestatījumus
+   * @param username Lietotājvārds
+   * @param data Atjaunojamie dati
+   */
   updateUser(username: string, data: Partial<User>): Observable<boolean> {
     return this.httpService.updateUserHttp({ username, ...data }).pipe(
       map(resp => resp.success),
@@ -57,6 +68,11 @@ export class UsersService {
     );
   }
 
+  /**
+   * Atsvaidzina statisko lietotāju sarakstu
+   * @param username Lietotājvārds
+   * @param update Izmaiņas
+   */
   private updateUsers(username: string, update: Partial<User>): void {
     const idx = this.findUserIdx(username);
     if (idx === -1) { return; } // Ja lietotājs nav sarakstā
