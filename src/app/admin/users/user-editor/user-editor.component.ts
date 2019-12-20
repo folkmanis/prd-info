@@ -1,9 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { UsersService, Customer } from '../../services/users.service';
 import { User } from '../../services/http.service';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap, filter, tap } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import { PasswordChangeDialogComponent } from "./password-change-dialog/password-change-dialog.component";
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-user-editor',
@@ -32,9 +35,10 @@ export class UserEditorComponent implements OnInit {
     });
   }
 
-
   constructor(
     private usersService: UsersService,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar,
   ) { }
 
   ngOnInit() {
@@ -47,8 +51,18 @@ export class UserEditorComponent implements OnInit {
   }
 
   onPasswordChange() {
-    // TODO password change dialog
-    console.log('TODO password change');
+    const dialogRef = this.dialog.open(PasswordChangeDialogComponent, {
+      width: '300px',
+      data: { username: this.user.username },
+    });
+    dialogRef.afterClosed().pipe(
+      filter(result => result),
+      switchMap(result => this.usersService.updatePassword(this.user.username, result)),
+    ).subscribe(resp => {
+      if (resp) {
+        this.snackBar.open(`Parole nomainita!`, 'OK', { duration: 3000 });
+      }
+    });
   }
 
   private setFormValues(usr: Partial<User> | null) {
