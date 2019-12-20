@@ -6,6 +6,7 @@ import { User } from '../../services/http.service';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Validator } from '../../services/validator';
 
 @Component({
   selector: 'app-new-user',
@@ -15,8 +16,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class NewUserComponent implements OnInit {
 
   newUserForm = new FormGroup({
-    username: new FormControl(null, [Validators.required, this.usernamePatternValidator, Validators.minLength(4)], [this.existingUsernameValidator()]),
-    password: new FormControl(null, [Validators.required, Validators.minLength(4)]),
+    username: new FormControl(null, Validator.username(), Validator.usernameAsync(this.usersService)),
+    password: new FormControl(null, Validator.password()),
     name: new FormControl(null, Validators.required),
     admin: new FormControl(false),
     preferences: new FormGroup({
@@ -48,22 +49,6 @@ export class NewUserComponent implements OnInit {
         this.snackBar.open(`Neizdevās izveidot lietotāju`, 'OK', { duration: 5000 });
       }
     });
-  }
-
-  private existingUsernameValidator(): AsyncValidatorFn {
-    return (control: AbstractControl): Observable<{ [key: string]: any; } | null> => {
-      return this.usersService.validateUsername(control.value).pipe(
-        map(valid => valid ? null : { existing: 'Esošs lietotājvārds' })
-      );
-    };
-  }
-
-  private usernamePatternValidator(control: AbstractControl): ValidationErrors {
-    const val: string = control.value || '';
-    if (val.match(/ /)) {
-      return { symbol: 'Atstarpi nedrīkst izmantot' };
-    }
-    return null;
   }
 
 }
