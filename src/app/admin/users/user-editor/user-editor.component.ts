@@ -1,10 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { Router } from "@angular/router";
+import { Router, ActivatedRoute, ParamMap } from "@angular/router";
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { UsersService, Customer } from '../../services/users.service';
 import { User } from '../../services/http.service';
-import { debounceTime, distinctUntilChanged, switchMap, filter, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap, filter, tap, map } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { PasswordChangeDialogComponent } from "./password-change-dialog/password-change-dialog.component";
 import { ConfirmationDialogComponent } from "../../../library/confirmation-dialog/confirmation-dialog.component";
@@ -29,23 +29,26 @@ export class UserEditorComponent implements OnInit {
   selectedUsername: string;
   user: User;
   valueChangesSubscription: Subscription;
-  @Input('username') set username(_uname: string) {
-    this.selectedUsername = _uname;
-    this.usersService.getUser(this.selectedUsername).subscribe(usr => {
-      this.user = usr;
-      this.setFormValues(usr);
-    });
-  }
 
   constructor(
     private usersService: UsersService,
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
     private router: Router,
+    private route: ActivatedRoute,
   ) { }
 
   ngOnInit() {
     this.usersService.getCustomers().subscribe((cust) => this.customers = cust);
+    this.route.paramMap.pipe(
+      map((params: ParamMap) => params.get('id')),
+      tap(usr => this.selectedUsername = usr),
+      switchMap(username => this.usersService.getUser(username))
+    ).subscribe(usr => {
+      this.user = usr;
+      this.setFormValues(usr);
+    });
+
   }
 
   onDelete() {
@@ -97,7 +100,6 @@ export class UserEditorComponent implements OnInit {
         this.userForm.markAsPristine();
       }
     });
-
   }
 
 }

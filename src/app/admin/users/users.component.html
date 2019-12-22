@@ -3,7 +3,7 @@
         <mat-divider></mat-divider>
         <mat-nav-list>
             <mat-list-item *ngFor="let user of users">
-                <a mat-list-item [routerLink]="['/admin/users',{id: user.username}]">{{user.username}}</a>
+                <a mat-list-item [routerLink]="['/admin/users/edit',{id: user.username}]">{{user.username}}</a>
                 <mat-divider></mat-divider>
             </mat-list-item>
             <mat-list-item>
@@ -13,7 +13,6 @@
         </mat-nav-list>
     </div>
     <div style="flex: 0 1 600px;">
-        <app-user-editor *ngIf="userSelected && userSelected !== 'new'" [username]="userSelected"></app-user-editor>
-        <app-new-user *ngIf="userSelected === 'new'"></app-new-user>
+        <router-outlet></router-outlet>
     </div>
 </div>

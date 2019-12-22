@@ -3,14 +3,27 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { AdminComponent } from './admin.component';
 import { UsersComponent } from './users/users.component';
+import { NewUserComponent } from './users/new-user/new-user.component';
+import { UserEditorComponent } from './users/user-editor/user-editor.component';
+import { CanDeactivateGuard } from "../library/guards/can-deactivate.guard";
 
 const routes: Routes = [
   {
     path: '',
     component: AdminComponent,
     children: [
-      { path: 'users', component: UsersComponent },
-      { path: 'users/:id', component: UsersComponent },
+      {
+        path: 'users',
+        component: UsersComponent,
+        children: [
+          { path: 'edit', component: UserEditorComponent },
+          { 
+            path: 'new', 
+            component: NewUserComponent,
+            canDeactivate: [CanDeactivateGuard],
+          },
+        ]
+      },
     ]
   },
 ];
