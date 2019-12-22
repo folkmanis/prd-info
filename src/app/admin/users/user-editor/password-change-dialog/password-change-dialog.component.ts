@@ -10,14 +10,15 @@ import { Validator } from "../../../services/validator";
 })
 export class PasswordChangeDialogComponent implements OnInit {
 
-  @Inject(MAT_DIALOG_DATA) data: { username: string; };
   passwordForm = new FormGroup({
     password: new FormControl('', Validator.password()),
     password2: new FormControl(''),
-  },{validators: Validator.passwordEqual('password', 'password2')});
+  }, { validators: Validator.passwordEqual('password', 'password2') });
   password = this.passwordForm.get('password');
+  hide = true;
   constructor(
-    private dialogRef: MatDialogRef<PasswordChangeDialogComponent>
+    @Inject(MAT_DIALOG_DATA) public data: { username: string; },
+    private dialogRef: MatDialogRef<PasswordChangeDialogComponent>,
   ) { }
 
   ngOnInit() {

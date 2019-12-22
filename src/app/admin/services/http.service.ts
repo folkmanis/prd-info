@@ -3,6 +3,7 @@ import { User, UserPreferences } from '/home/dev/prd-info-node/src/lib/user-clas
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpOptions } from "../../library/http/http-options";
 import { map } from 'rxjs/operators';
 
 export interface UserList {
@@ -53,6 +54,12 @@ export class HttpService {
 
   addUserHttp(user: Partial<User>): Observable<boolean> {
     return this.http.post<UpdateResponse>(this.httpPathUsers + 'add', user).pipe(
+      map(resp => resp.success)
+    );
+  }
+
+  deleteUserHttp(username: string): Observable<boolean> {
+    return this.http.delete<UpdateResponse>(this.httpPathUsers + 'user', new HttpOptions({ username: username })).pipe(
       map(resp => resp.success)
     );
   }

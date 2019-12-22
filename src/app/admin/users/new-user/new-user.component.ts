@@ -27,6 +27,7 @@ export class NewUserComponent implements OnInit {
   username = this.newUserForm.get('username');
   password = this.newUserForm.get('password');
   name = this.newUserForm.get('name');
+  hide = true; // Paroles ievades laukam
 
   customers: Customer[];
   constructor(

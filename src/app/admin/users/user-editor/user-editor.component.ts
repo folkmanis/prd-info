@@ -1,11 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
+import { Router } from "@angular/router";
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { UsersService, Customer } from '../../services/users.service';
 import { User } from '../../services/http.service';
 import { debounceTime, distinctUntilChanged, switchMap, filter, tap } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { PasswordChangeDialogComponent } from "./password-change-dialog/password-change-dialog.component";
+import { ConfirmationDialogComponent } from "../../../library/confirmation-dialog/confirmation-dialog.component";
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -39,6 +41,7 @@ export class UserEditorComponent implements OnInit {
     private usersService: UsersService,
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
+    private router: Router,
   ) { }
 
   ngOnInit() {
@@ -46,8 +49,16 @@ export class UserEditorComponent implements OnInit {
   }
 
   onDelete() {
-    // TODO prompt dialog
-    console.log('TODO delete user');
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: { prompt: "Tiešām dzēst lietotāju?" }
+    });
+    dialogRef.afterClosed().pipe(
+      filter(resp => resp),
+      switchMap(() => this.usersService.deleteUser(this.user.username)),
+    ).subscribe(resp => {
+      resp && this.snackBar.open(`Lietotājs ${this.user.username} likvidēts`, 'OK', { duration: 5000 });
+      this.router.navigate(['admin', 'users']);
+    });
   }
 
   onPasswordChange() {

@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LibraryModule } from '../library/library.module';
 import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
-import { MatDialogModule } from "@angular/material/dialog";
 
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminComponent } from './admin.component';
@@ -22,7 +21,6 @@ import { PasswordChangeDialogComponent } from './users/user-editor/password-chan
   ],
   imports: [
     CommonModule,
-    MatDialogModule,
     LibraryModule,
     AdminRoutingModule,
   ],

@@ -16,7 +16,13 @@
         </mat-form-field>
         <!-- Parole -->
         <mat-form-field class="input-element">
-            <input formControlName="password" matInput placeholder="Parole" autocomplete="off" type="password" required>
+            <input formControlName="password" matInput placeholder="Parole" autocomplete="off"
+                [type]="hide?'password':'text'" required>
+            <button mat-button matSuffix mat-icon-button (click)="hide=!hide">
+                <mat-icon>
+                    {{hide?'visibility_off':'visibility_on'}}
+                </mat-icon>
+            </button>
             <mat-error *ngIf="password.hasError('minlength')">
                 Jābūt vismaz {{password.errors.minlength.requiredLength}} simboliem
             </mat-error>

@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { HttpOptions } from './http-options';
+import { HttpOptions } from '../../library/http/http-options';
 import { ArchiveResp, SearchQuery, ArchiveFacet } from './archive-search-class';
 
 @Injectable({

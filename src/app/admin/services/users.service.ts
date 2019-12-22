@@ -74,6 +74,15 @@ export class UsersService {
       tap(resp => resp && this.getUsers()),
     );
   }
+/**
+ * Izdzēš lietotāju, atjauno lietotāju sarakstu
+ * @param username Lietotājvārds
+ */
+  deleteUser(username: string): Observable<boolean> {
+    return this.httpService.deleteUserHttp(username).pipe(
+      tap(resp => resp && this.getUsers()),
+    )
+  }
   /**
    * Rezultāts: Observable
    * true -  ja lietotāja vārds nav aizņemts un derīgs
