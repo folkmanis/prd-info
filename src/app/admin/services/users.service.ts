@@ -42,7 +42,7 @@ export class UsersService {
    */
   getCustomers(): Observable<Customer[]> {
     return this.httpService.getCustomersHttp().pipe(
-      map(customer => customer.map(cust => ({ name: cust || 'Nav norādīts', value: cust })))
+      map(customer => customer.map(cust => ({ name: cust || 'Nenoteikts', value: cust })))
     );
   }
   /**
