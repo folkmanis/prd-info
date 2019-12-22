@@ -5,9 +5,10 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dial
 import { UsersService, Customer } from '../../services/users.service';
 import { User } from '../../services/http.service';
 import { debounceTime, distinctUntilChanged, switchMap, filter, tap, map } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { PasswordChangeDialogComponent } from "./password-change-dialog/password-change-dialog.component";
 import { ConfirmationDialogComponent } from "../../../library/confirmation-dialog/confirmation-dialog.component";
+import { CanComponentDeactivate } from "../../../library/guards/can-deactivate.guard";
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -15,7 +16,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './user-editor.component.html',
   styleUrls: ['./user-editor.component.css']
 })
-export class UserEditorComponent implements OnInit {
+export class UserEditorComponent implements OnInit, CanComponentDeactivate {
 
   userForm = new FormGroup({
     name: new FormControl(),
@@ -77,6 +78,20 @@ export class UserEditorComponent implements OnInit {
         this.snackBar.open(`Parole nomainita!`, 'OK', { duration: 3000 });
       }
     });
+  }
+
+  canDeactivate(): Observable<boolean> | boolean {
+    if(this.userForm.pristine) {
+      return true;
+    }
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        prompt: 'Visas izmaiņas vēl nav saglabātas. Ja pametīsiet šo sadaļu, tad tās, iespējams, netiks saglabātas.',
+        yes: 'Jā, pamest!',
+        no: 'Nē, gaidīt!',
+      }
+    })
+    return dialogRef.afterClosed();
   }
 
   private setFormValues(usr: Partial<User> | null) {

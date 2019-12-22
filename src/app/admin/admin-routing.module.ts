@@ -16,9 +16,13 @@ const routes: Routes = [
         path: 'users',
         component: UsersComponent,
         children: [
-          { path: 'edit', component: UserEditorComponent },
-          { 
-            path: 'new', 
+          {
+            path: 'edit',
+            component: UserEditorComponent,
+            canDeactivate: [CanDeactivateGuard],
+          },
+          {
+            path: 'new',
             component: NewUserComponent,
             canDeactivate: [CanDeactivateGuard],
           },
