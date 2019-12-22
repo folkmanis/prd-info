@@ -50,7 +50,7 @@ export class NewUserComponent implements OnInit, CanComponentDeactivate {
       if (resp) {
         this.newUserForm.markAsPristine();
         this.snackBar.open(`Lietotājs ${username} izveidots!`, 'OK', { duration: 3000 });
-        this.router.navigate(['admin', 'users', { id: username }]);
+        this.router.navigate(['admin', 'users', 'edit', { id: username }]);
       } else {
         this.snackBar.open(`Neizdevās izveidot lietotāju`, 'OK', { duration: 5000 });
       }
@@ -67,7 +67,7 @@ export class NewUserComponent implements OnInit, CanComponentDeactivate {
         yes: 'Jā, pamest!',
         no: 'Nē, turpināt!',
       }
-    })
+    });
     return dialogRef.afterClosed();
   }
 
