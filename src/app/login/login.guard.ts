@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { CanLoad, Route, UrlSegment, Router, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
 import { LoginService } from './login.service';
-import { tap } from 'rxjs/operators';
+import { tap, switchMap, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -20,10 +20,13 @@ export class LoginGuard implements CanLoad {
   ): Observable<boolean> | Promise<boolean> | boolean {
     return this.loginService.isLogin().pipe(
       tap((logged) => {
+        console.log(route);
         if (!logged) {
           this.router.navigate(['login']);
         }
-      })
+      }),
+      switchMap((logged) => this.loginService.getUser()),
+      map((user) => !!user.preferences.modules.find(m => m === route.path))
     );
   }
 

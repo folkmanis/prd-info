@@ -1,4 +1,4 @@
-<form [formGroup]="newUserForm" (submit)="onSave()">
+<form [formGroup]="newUserForm">
     <section>
         <h2>Jauns lietotājs</h2>
         <!-- Lietotājvārds -->
@@ -44,6 +44,15 @@
     </section>
     <section formGroupName="preferences">
         <h3>Lietotāja iestatījumi</h3>
+        <!-- Pieejamie moduļi -->
+        <mat-form-field class="input-element">
+            <mat-label>Pieejamie moduļi</mat-label>
+            <mat-select formControlName="modules" multiple>
+                <mat-option *ngFor="let mod of userModules" [value]="mod.value">
+                    {{mod.name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
         <!-- Pieeja klientiem -->
         <mat-form-field class="input-element">
             <mat-label>Pieeja klientiem</mat-label>
@@ -56,7 +65,7 @@
     </section>
     <!-- Pogas -->
     <section>
-        <button type="submit" mat-raised-button color="primary" [disabled]="!newUserForm.valid">Saglabāt!</button>
+        <button mat-raised-button color="primary" [disabled]="!newUserForm.valid" (click)="onSave()">Saglabāt!</button>
         <button type="reset" mat-raised-button>Notīrīt</button>
     </section>
 </form>

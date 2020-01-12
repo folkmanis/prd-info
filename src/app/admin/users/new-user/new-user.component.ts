@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router";
 import { FormGroup, FormControl, Validators, ValidationErrors, AsyncValidator, AsyncValidatorFn, AbstractControl } from '@angular/forms';
-import { UsersService, Customer } from '../../services/users.service';
+import { UsersService, Customer, UserModule } from '../../services/users.service';
 import { User } from '../../services/http.service';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -25,6 +25,7 @@ export class NewUserComponent implements OnInit, CanComponentDeactivate {
     admin: new FormControl(false),
     preferences: new FormGroup({
       customers: new FormControl(),
+      modules: new FormControl(),
     }),
   });
   username = this.newUserForm.get('username');
@@ -33,6 +34,7 @@ export class NewUserComponent implements OnInit, CanComponentDeactivate {
   hide = true; // Paroles ievades laukam
 
   customers: Customer[];
+  userModules: UserModule[];
   constructor(
     private usersService: UsersService,
     private router: Router,
@@ -42,6 +44,7 @@ export class NewUserComponent implements OnInit, CanComponentDeactivate {
 
   ngOnInit() {
     this.usersService.getCustomers().subscribe((cust) => this.customers = cust);
+    this.userModules = this.usersService.getUserModules();
   }
 
   onSave() {

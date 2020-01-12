@@ -17,12 +17,6 @@
  * user: string
  */
 
-export class User {
-  username: string;
-  name: string;
-  admin: number;
-  lastlogin?: Date;
-}
 export class Login {
   username: string;
   password: string;
@@ -30,7 +24,8 @@ export class Login {
 interface LogoutResponse {
   logout: number;
 }
-
+import { User, UserPreferences } from '/home/dev/prd-info-node/src/lib/user-class';
+export { User, UserPreferences } from '/home/dev/prd-info-node/src/lib/user-class';
 
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -58,7 +53,8 @@ export class LoginService {
   logIn(login: Login): Observable<boolean> {
     return this.loginHttp(login).pipe(
       tap((resp) => this.userSubj.next(resp)),
-      map((resp) => !!resp)
+      tap(resp => console.log(resp)),
+      map((resp) => !!resp),
     );
   }
 
@@ -79,6 +75,10 @@ export class LoginService {
     return this.getUserHttp().pipe(
       map((usr) => !!usr && !!usr.admin)
     );
+  }
+
+  getUser(): Observable<User> {
+    return this.getUserHttp();
   }
 
   private getUserHttp(): Observable<User | null> {

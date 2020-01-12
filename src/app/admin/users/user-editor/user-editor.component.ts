@@ -2,14 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Router, ActivatedRoute, ParamMap } from "@angular/router";
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { UsersService, Customer } from '../../services/users.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { UsersService, Customer, UserModule } from '../../services/users.service';
 import { User } from '../../services/http.service';
 import { debounceTime, distinctUntilChanged, switchMap, filter, tap, map } from 'rxjs/operators';
 import { Subscription, Observable } from 'rxjs';
 import { PasswordChangeDialogComponent } from "./password-change-dialog/password-change-dialog.component";
 import { ConfirmationDialogComponent } from "../../../library/confirmation-dialog/confirmation-dialog.component";
 import { CanComponentDeactivate } from "../../../library/guards/can-deactivate.guard";
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-user-editor',
@@ -23,6 +23,7 @@ export class UserEditorComponent implements OnInit, CanComponentDeactivate {
     admin: new FormControl(),
     preferences: new FormGroup({
       customers: new FormControl(),
+      modules: new FormControl(),
     }),
   });
 
@@ -30,6 +31,7 @@ export class UserEditorComponent implements OnInit, CanComponentDeactivate {
   selectedUsername: string;
   user: User;
   valueChangesSubscription: Subscription;
+  userModules: UserModule[] = [];
 
   constructor(
     private usersService: UsersService,
@@ -37,7 +39,7 @@ export class UserEditorComponent implements OnInit, CanComponentDeactivate {
     private snackBar: MatSnackBar,
     private router: Router,
     private route: ActivatedRoute,
-  ) { }
+  ) {   }
 
   ngOnInit() {
     this.usersService.getCustomers().subscribe((cust) => this.customers = cust);
@@ -47,8 +49,9 @@ export class UserEditorComponent implements OnInit, CanComponentDeactivate {
       switchMap(username => this.usersService.getUser(username))
     ).subscribe(usr => {
       this.user = usr;
-      this.setFormValues(usr);
+      this.setFormValues(this.user);
     });
+    this.userModules = this.usersService.getUserModules();
 
   }
 
@@ -104,6 +107,7 @@ export class UserEditorComponent implements OnInit, CanComponentDeactivate {
       admin: usr.admin,
       preferences: {
         customers: usr.preferences.customers,
+        modules: usr.preferences.modules || [],
       }
     });
     // Pēc tam jāpierakstās atpakaļ

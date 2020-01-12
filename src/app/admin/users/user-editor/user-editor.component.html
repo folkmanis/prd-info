@@ -15,6 +15,16 @@
         </section>
         <section class="user-form" formGroupName="preferences">
             <h3>Lietotāja iestatījumi</h3>
+            <!-- Pieejamie moduļi -->
+            <mat-form-field class="input-element">
+                <mat-label>Pieejamie moduļi</mat-label>
+                <mat-select formControlName="modules" multiple>
+                    <mat-option *ngFor="let mod of userModules" [value]="mod.value">
+                        {{mod.name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <!-- Piiejamie klienti -->
             <mat-form-field class="input-element">
                 <mat-label>Pieeja klientiem</mat-label>
                 <mat-select formControlName="customers" multiple>
