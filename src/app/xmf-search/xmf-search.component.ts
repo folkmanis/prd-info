@@ -17,7 +17,6 @@ export class XmfSearchComponent implements OnInit {
 
   searchForm = new FormGroup({
     q: new FormControl(''),
-    zmg: new FormControl(true),
   });
 
   constructor(
@@ -30,13 +29,6 @@ export class XmfSearchComponent implements OnInit {
     this.searchForm.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged(this.changeDetector),
-      map((val) => {
-        const params: FormValues = { q: val.q };
-        if (val.zmg) {
-          params.zmg = true;
-        }
-        return params;
-      }),
     ).subscribe((params) => {
       if (params.q.length > 3) {
         this.router.navigate(['xmf-search', 's', params]);
@@ -52,17 +44,10 @@ export class XmfSearchComponent implements OnInit {
       && child.snapshot.paramMap.get('q').length > 3) {
       const form: FormValues = {
         q: child.snapshot.paramMap.get('q'),
-        zmg: !!child.snapshot.paramMap.get('zmg'),
       };
       this.searchForm.setValue(form);
     }
 
-    /*     setTimeout(() => {
-          this.searchForm.setValue(
-            { q: 'ottens', tikaiZemgus: false },
-            { emitEvent: true });
-        }, 1000); // Testēšanai!!! Noņemt!!!
-     */    // setTimeout(() => { this.searchControl.setValue('ottenst', { emitEvent: true }); }, 1000); // Testēšanai!!! Noņemt!!!
   }
 
   private changeDetector = (x: FormValues, y: FormValues): boolean => {

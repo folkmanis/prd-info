@@ -1,10 +1,10 @@
 <mat-toolbar *ngIf="loggedIn" color="primary">
   <mat-toolbar-row>
     <nav>
-      <a mat-button routerLink='/'>XMF arhīvs</a>
+      <a *ngFor="let mod of userModules" mat-button [routerLink]="mod.route">{{mod.name}}</a>
     </nav>
     <span class="spacer" style="flex: 1 1 auto"></span>
-    <a *ngIf="isAdmin" mat-button routerLink="xmf-upload">Pievienot arhīvu</a>
+    <a *ngIf="isAdmin" mat-button routerLink="admin">Administrēšana</a>
     <button mat-button [matMenuTriggerFor]='userMenu'>
       <i class="material-icons">account_circle</i>
       <i class="material-icons">arrow_drop_down</i>

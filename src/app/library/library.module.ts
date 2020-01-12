@@ -11,18 +11,25 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDialogModule } from "@angular/material/dialog";
 
 import { ScrollToTopModule } from './scroll-to-top/scroll-to-top.module';
 import { CopyClipboardDirective } from './directives/copy-clipboard.directive';
 import { TaggedStringComponent } from './tagged-string/tagged-string.component';
 import { FileDropDirective } from './directives/file-drop.directive';
+import { AppMonthPipe } from './pipes/app-month.pipe';
+import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 
 @NgModule({
   declarations: [
     CopyClipboardDirective,
     TaggedStringComponent,
     FileDropDirective,
+    AppMonthPipe,
+    ConfirmationDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -38,6 +45,9 @@ import { FileDropDirective } from './directives/file-drop.directive';
     MatListModule,
     MatDividerModule,
     MatCheckboxModule,
+    MatTabsModule,
+    MatSelectModule,
+    MatDialogModule,
     ScrollToTopModule,
   ],
   exports: [
@@ -53,10 +63,17 @@ import { FileDropDirective } from './directives/file-drop.directive';
     MatListModule,
     MatDividerModule,
     MatCheckboxModule,
+    MatTabsModule,
+    MatSelectModule,
+    MatDialogModule,
     ScrollToTopModule,
     CopyClipboardDirective,
     TaggedStringComponent,
     FileDropDirective,
+    AppMonthPipe,
+  ],
+  entryComponents: [
+    ConfirmationDialogComponent,
   ]
 })
 export class LibraryModule { }

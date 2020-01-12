@@ -1,8 +1,21 @@
 <div class="flex-content">
     <div class="spacer"></div>
     <div class="drop-zone mat-elevation-z4" appFileDrop (filesEmitter)="onFileDropped($event)">
-        <button type="button" mat-raised-button (click)="file.click()">Izvēlēties failu</button>
-        <input [formControl]="fileInput" hidden (change)="onFileSelected($event)" #file type="file">
+        <div class="spacer-v"></div>
+        <div class="flex-v">
+            <button mat-raised-button (click)="fileInput.click()">Izvēlēties failu</button>
+            <button mat-raised-button (click)="onUpload()" [disabled]="!file">Apstrādāt</button>
+        </div>
+        <div class="flex-v">
+        </div>
+        <div class="flex-v">
+            <mat-form-field>
+                <input matInput [formControl]="fakeInput">
+            </mat-form-field>
+            <input hidden (change)="onFileSelected($event)" #fileInput type="file">
+        </div>
+        <div class="spacer-v"></div>
     </div>
     <div class="spacer"></div>
 </div>
+{{response | json}}

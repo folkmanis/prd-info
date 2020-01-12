@@ -4,6 +4,10 @@
     font-size: 16pt;
 }
 
+.match {
+    font-weight: bold;
+}
+
 .search-table {
     width: 100%;
     font-size: 12pt;

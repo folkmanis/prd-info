@@ -5,6 +5,7 @@ import { Component, OnInit, Input } from '@angular/core';
  * @param text - teksta rinda, kuru jāparāda
  * @param search - fragments, kurš jāizceļ
  * @param style - stili izcelšanai, formātā, kuru izmanto ngStyle.
+ * @param exactMatch - prasīta pilna sakritība
  */
 interface Chunk {
   text: string;
@@ -18,6 +19,7 @@ interface Chunk {
 export class TaggedStringComponent implements OnInit {
   @Input() text: string;
   @Input() search: string;
+  @Input() exactMatch: boolean = false;
   @Input('style') set st(s: { [key: string]: string }) {
     this.style = s;
   }
@@ -40,10 +42,19 @@ export class TaggedStringComponent implements OnInit {
       return;
     }
 
-    let remainder = this.text;
-    while (remainder.length > 0) {
-      remainder = this.splitStr(remainder);
+    if (this.exactMatch) { // Ja prasīta pilna atbilstība
+      if (this.text === this.search) {
+        this.chunks.push({ text: this.text, style: this.style });
+      } else {
+        this.chunks.push({ text: this.text });
+      }
+    } else {
+      let remainder = this.text;
+      while (remainder.length > 0) {
+        remainder = this.splitStr(remainder);
+      }
     }
+
   }
   /**
    * Meklē rindu this.search rindā str.

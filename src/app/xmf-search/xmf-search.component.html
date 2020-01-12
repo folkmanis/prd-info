@@ -2,9 +2,10 @@
     <form [formGroup]="searchForm">
         <mat-form-field class="search-input">
             <input matInput formControlName="q" type="search">
-            <mat-icon matSuffix>search</mat-icon>
+            <button mat-button matSuffix mat-icon-button>
+                <mat-icon>search</mat-icon>
+            </button>
         </mat-form-field>
-        <mat-checkbox formControlName="zmg">Meklēt tikai Zemgus darbus</mat-checkbox>
     </form>
 </div>
 <div class="search-content">

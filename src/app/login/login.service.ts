@@ -4,7 +4,7 @@
  * POST /data/login/login
  * {
  * username: string;
- * pass: string;
+ * password: string;
  * }
  *
  * User
@@ -17,21 +17,15 @@
  * user: string
  */
 
-export class User {
-  id: number;
-  username: string;
-  name: string;
-  admin: number;
-  lastlogin?: Date;
-}
 export class Login {
   username: string;
-  pass: string;
+  password: string;
 }
 interface LogoutResponse {
-  affectedRows: number;
+  logout: number;
 }
-
+import { User, UserPreferences } from '/home/dev/prd-info-node/src/lib/user-class';
+export { User, UserPreferences } from '/home/dev/prd-info-node/src/lib/user-class';
 
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -59,13 +53,14 @@ export class LoginService {
   logIn(login: Login): Observable<boolean> {
     return this.loginHttp(login).pipe(
       tap((resp) => this.userSubj.next(resp)),
-      map((resp) => !!resp)
+      tap(resp => console.log(resp)),
+      map((resp) => !!resp),
     );
   }
 
   logOut(): Observable<boolean> {
     return this.logoutHttp().pipe(
-      map((resp) => resp.affectedRows > 0),
+      map((resp) => resp.logout > 0),
       tap((resp) => !resp || this.userSubj.next(null)),
     );
   }
@@ -82,15 +77,19 @@ export class LoginService {
     );
   }
 
+  getUser(): Observable<User> {
+    return this.getUserHttp();
+  }
+
   private getUserHttp(): Observable<User | null> {
     return this.http.get<User>(this.httpPathLogin + 'user', this.httpOptions).pipe(
-      map((usr) => usr.id ? usr : null)
+      map((usr) => usr.username ? usr : null)
     );
   }
 
   private loginHttp(login: Login): Observable<User | null> {
     return this.http.post<User>(this.httpPathLogin + 'login', login, this.httpOptions).pipe(
-      map((usr) => usr.id ? usr : null),
+      map((usr) => usr.username ? usr : null),
       catchError(this.handleError('Invalid login: ' + login, null)),
     );
   }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { UploadService } from './services/upload.service';
 
 @Component({
   selector: 'app-xmf-upload',
@@ -8,25 +9,45 @@ import { FormControl } from '@angular/forms';
 })
 export class XmfUploadComponent implements OnInit {
 
-  fileInput = new FormControl('');
-  constructor() { }
+  fakeInput = new FormControl('');
+  file: File = null;
+
+  response: any;
+
+  constructor(
+    private uploadService: UploadService,
+  ) { }
 
   ngOnInit() {
+    this.fakeInput.disable();
   }
 
-  onFileSelected(ff: any) {
-    console.log(ff.target.files);
-    const file = ff.target.files[0];
-    const fileReader = new FileReader();
-    fileReader.onload = (e) => {
-      console.log(e);
-    };
-    fileReader.readAsText(file);
-
+  onFileSelected(ev: any) {
+    console.log(ev.target.files);
+    this.file = ev.target.files[0];
+    this.fakeInput.setValue(this.file.name);
   }
 
   onFileDropped(ev: FileList) {
-    console.log(ev);
+    this.file = ev.item(0);
+    this.fakeInput.setValue(this.file.name);
+    }
+
+  onUpload() {
+    this.uploadService.postFile(this.file).subscribe((resp) => this.response = resp);
+  }
+
+  private readFile(list: FileList) {
+    const file = list[0];
+    this.fakeInput.setValue(file.name);
+    console.log(list);
+    const fileReader = new FileReader();
+    fileReader.onload = (e) => {
+      const lines = e.target;
+      // console.log(lines.result);
+    };
+    fileReader.readAsText(file);
+
   }
 
 }

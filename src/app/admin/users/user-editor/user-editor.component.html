@@ -1,0 +1,47 @@
+<div *ngIf="user">
+    <section class="user-form">
+        <h2>Lietotājs {{user.username}}</h2>
+        <small *ngIf="user.last_login">Pēdējoreiz redzēts {{user.last_login | date}}</small>
+    </section>
+    <form [formGroup]="userForm">
+        <section class="user-form">
+            <h3>Informācija par lietotāju</h3>
+            <mat-form-field class="input-element">
+                <input formControlName="name" matInput placeholder="Vārds" autocomplete="off">
+            </mat-form-field>
+            <section>
+                <mat-checkbox formControlName="admin">Administratora tiesības</mat-checkbox>
+            </section>
+        </section>
+        <section class="user-form" formGroupName="preferences">
+            <h3>Lietotāja iestatījumi</h3>
+            <!-- Pieejamie moduļi -->
+            <mat-form-field class="input-element">
+                <mat-label>Pieejamie moduļi</mat-label>
+                <mat-select formControlName="modules" multiple>
+                    <mat-option *ngFor="let mod of userModules" [value]="mod.value">
+                        {{mod.name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <!-- Piiejamie klienti -->
+            <mat-form-field class="input-element">
+                <mat-label>Pieeja klientiem</mat-label>
+                <mat-select formControlName="customers" multiple>
+                    <mat-option *ngFor="let customer of customers" [value]="customer.value">
+                        {{customer.name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </section>
+    </form>
+    <!-- Pogas -->
+    <section>
+        <button mat-raised-button color="warn" (click)="onDelete()">Dzēst lietotāju!</button>
+        <button mat-raised-button color="primary" (click)="onPasswordChange()">Mainīt paroli</button>
+    </section>
+</div>
+
+<!-- Debug -->
+Dirty - {{userForm.dirty}}, Pristine - {{userForm.pristine}}
+<p>{{user | json}}</p>

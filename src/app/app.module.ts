@@ -11,19 +11,17 @@ import { AppComponent } from './app.component';
 
 
 import { LoginComponent } from './login/login.component';
-import { XmfUploadModule } from './xmf-upload/xmf-upload.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent
+    LoginComponent,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
     LibraryModule,
-    XmfUploadModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
