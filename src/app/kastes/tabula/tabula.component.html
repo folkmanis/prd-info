@@ -1,0 +1,68 @@
+<div class="progress">
+  <mat-progress-bar *ngIf="(loaded | async) === false" mode="indeterminate"></mat-progress-bar>
+</div>
+<div class="kopskaiti">
+  <span *ngIf="(loaded | async)" class="mat-small">
+    Pavisam sūtījumu: <span class="mat-body-strong">{{dataSource.total}} | </span>
+    Nav nosūtīti: <span class="mat-body-strong">{{dataSource.kastesRemain}} | </span>
+    Nav uzlīmes: <span class="mat-body-strong">{{dataSource.labelsRemain}}</span>
+  </span>
+</div>
+<div class="mat-elevation-z8 tabula-container">
+  <table mat-table [dataSource]="dataSource" class="full-width-table" aria-label="Kastes">
+    <!-- Id Column -->
+    <ng-container matColumnDef="kods">
+      <th mat-header-cell *matHeaderCellDef class="Nr cipari">Nr</th>
+      <td mat-cell *matCellDef="let row" class="Nr cipari">{{row.kods}}</td>
+    </ng-container>
+
+    <!-- Adrese sleja -->
+    <ng-container matColumnDef="adrese">
+      <th mat-header-cell *matHeaderCellDef mat>Adrese</th>
+      <td mat-cell *matCellDef="let row">{{row.adrese}} <span [class.label]="row.label">({{row.total}})</span></td>
+    </ng-container>
+
+    <!-- Dzeltenā sleja -->
+    <ng-container matColumnDef="yellow">
+      <th mat-header-cell *matHeaderCellDef [style.color]="preferences.yellow" class="cipari">Y</th>
+      <td mat-cell *matCellDef="let row" [style.color]="preferences.yellow" class="cipari">{{row.yellow | hideZero}}
+      </td>
+    </ng-container>
+
+    <!-- Rozā sleja -->
+    <ng-container matColumnDef="rose">
+      <th mat-header-cell *matHeaderCellDef [style.color]="preferences.rose" class="cipari">R</th>
+      <td mat-cell *matCellDef="let row" [style.color]="preferences.rose" class="cipari">{{row.rose | hideZero}}</td>
+    </ng-container>
+
+    <!-- Baltas sleja -->
+    <ng-container matColumnDef="white">
+      <th mat-header-cell *matHeaderCellDef [style.color]="preferences.white" class="cipari">W</th>
+      <td mat-cell *matCellDef="let row" [style.color]="preferences.white" class="cipari">{{row.white | hideZero}}</td>
+    </ng-container>
+    <!-- Gatavs -->
+    <ng-container matColumnDef="gatavs">
+      <th mat-header-cell *matHeaderCellDef class="cipari">OK</th>
+      <td mat-cell *matCellDef="let row" class="cipari">
+        <button mat-button (click)="onGatavs(row.id, row.gatavs)"
+          [color]="row.gatavs ? 'primary' : 'accent'">OK</button>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="kopskaiti">
+      <td mat-footer-cell *matFooterCellDef class="kopskaiti" [colSpan]="displayedColumns.length">
+        <span *ngIf="(loaded | async)" class="mat-small">
+          Pavisam sūtījumu: <span class="mat-body-strong">{{dataSource.total}} | </span>
+          Nav nosūtīti: <span class="mat-body-strong">{{dataSource.kastesRemain}} | </span>
+          Nav uzlīmes: <span class="mat-body-strong">{{dataSource.labelsRemain}}</span>
+        </span>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onSelect(row.id)"
+      [class.selected]="row.id === selectedKaste"></tr>
+    <tr mat-footer-row *matFooterRowDef="['kopskaiti']; sticky: true"></tr>
+  </table>
+</div>
+<app-scroll-to-top></app-scroll-to-top>

@@ -1,0 +1,54 @@
+<div class="mat-elevation-z8">
+    <table mat-table aria-label="Upload Table" multiTemplateDataRows class="full-width-table">
+
+        <ng-container matColumnDef="totals">
+            <th mat-header-cell *matHeaderCellDef="let row" [attr.colspan]="displayedColumns.length">
+                Adreses: {{totals.adreses}} / Kastes: {{totals.boxes}} / Pakas kastē: 
+                <span *ngFor="let apj of totals.apjomi; index as i">
+                    <span *ngIf="apj">
+                        {{i}} - {{apj}} || 
+                    </span>
+                </span>
+            </th>
+        </ng-container>
+        <ng-container matColumnDef="kods">
+            <th mat-header-cell *matHeaderCellDef="let row" [style.width]="widths.kods">Kods</th>
+            <td mat-cell *matCellDef="let row" class="adrese">{{row.kods}}</td>
+        </ng-container>
+        <ng-container matColumnDef="adrese">
+            <th mat-header-cell *matHeaderCellDef="let row" [style.width]="widths.adrese">Adrese</th>
+            <td mat-cell *matCellDef="let row" class="adrese">{{row.adrese}}</td>
+        </ng-container>
+        <ng-container *ngFor="let col of boxColors" [matColumnDef]="col">
+            <th mat-header-cell *matHeaderCellDef="let row" [style.width]="widths[col]" [style.color]="prefs[col]">
+                {{col}}</th>
+        </ng-container>
+        <ng-container matColumnDef="total">
+            <th mat-header-cell *matHeaderCellDef="let row" [style.width]="widths.total">kopā</th>
+        </ng-container>
+
+        <ng-container matColumnDef="editor">
+
+            <td mat-cell *matCellDef="let row" [attr.colspan]="boxColors.length+1">
+                <ng-container *ngIf="!edit[row.kods]">
+                    <div class="cipari">
+                        <div *ngFor="let col of boxColors" class="color-number" [style.color]="prefs[col]">{{row.totals[col]}}
+                        </div>
+                        <div class="color-number total">{{row.total}}</div>
+                    </div>
+                    <div *ngFor="let box of row.box" class="cipari" (click)="onClickEdit(row)">
+                        <div *ngFor="let col of boxColors" class="color-number" [style.color]="prefs[col]">{{box[col]}}
+                        </div>
+                        <div class="color-number total">{{box.yellow + box.rose + box.white}}</div>
+                    </div>
+                </ng-container>
+                <app-editor *ngIf="edit[row.kods]" [adrBox]="row" (finish)="onEditFinish($event, row)"></app-editor>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['totals']; sticky: true"></tr>
+        <tr mat-header-row *matHeaderRowDef="headColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+</div>
+<app-scroll-to-top></app-scroll-to-top>

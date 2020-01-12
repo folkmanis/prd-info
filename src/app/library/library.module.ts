@@ -21,6 +21,7 @@ import { CopyClipboardDirective } from './directives/copy-clipboard.directive';
 import { TaggedStringComponent } from './tagged-string/tagged-string.component';
 import { FileDropDirective } from './directives/file-drop.directive';
 import { AppMonthPipe } from './pipes/app-month.pipe';
+import { HideZeroPipe } from './pipes/hide-zero.pipe';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 
 @NgModule({
@@ -29,6 +30,7 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
     TaggedStringComponent,
     FileDropDirective,
     AppMonthPipe,
+    HideZeroPipe,
     ConfirmationDialogComponent,
   ],
   imports: [
@@ -71,6 +73,7 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
     TaggedStringComponent,
     FileDropDirective,
     AppMonthPipe,
+    HideZeroPipe,
   ],
   entryComponents: [
     ConfirmationDialogComponent,

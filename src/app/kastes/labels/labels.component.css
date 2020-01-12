@@ -1,0 +1,31 @@
+div.result {
+    display: block;
+    margin: 8px;
+    padding: 2px 8px;
+    overflow: hidden;
+    text-align: left;
+    min-height: 24px;
+}
+div.result.adrese {
+    display: block;
+    float: left;
+    padding: 4px;
+    margin: 0;
+}
+div.result.item {
+    margin: 0 4px;
+    float: left;
+    padding: 4px;
+}
+.adrese-form {
+    display: flex;
+    height: 56px;
+    padding: 0 8px;
+    width: 100%;
+}
+.adrese-form button {
+    margin-left: 8px;
+}
+div.result.warn {
+    color: red;
+}

@@ -1,0 +1,39 @@
+.full-width-table {
+  width: 800px;
+}
+
+.full-width-table tr {
+  height: 40px;
+}
+
+.adrese {
+  vertical-align: top;
+  padding-top: 8px;
+}
+
+.cipari {
+  text-align: left;
+  /* padding: 6px 0px 4px 0px; */
+  width: 200px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12)
+}
+
+.no-border {
+  border-bottom-width: 0;
+}
+
+.color-number {
+  display: inline-block;
+  width: 34px;
+  height: 18px;
+  padding: 6px 8px 4px;
+}
+
+.color-number:hover {
+  cursor: pointer;
+}
+
+.total {
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  padding-left: 7px;
+}

@@ -1,0 +1,19 @@
+<div class="adrese-form">
+
+    <form [formGroup]="inputForm" (ngSubmit)="submitForm()">
+        <mat-form-field>
+            <input matInput formControlName="kods" type="number" placeholder="Adreses kods:" autocomplete="off">
+        </mat-form-field>
+        <button mat-raised-button type="submit">Apstiprināt</button>
+    </form>
+    <div class="result" *ngIf="statuss">
+        <div class="result item" [style.color]="preferences.yellow">{{statuss.yellow | hideZero}}</div>
+        <div class="result item" [style.color]="preferences.rose">{{statuss.rose | hideZero}}</div>
+        <div class="result item" [style.color]="preferences.white">{{statuss.white | hideZero}}</div>
+        <div class="result adrese">{{statuss.adrese}}</div>
+    </div>
+    <div class="result warn" *ngIf="bridinajums">
+        Atbilstošs ieraksts netika atrasts!
+    </div>
+</div>
+<app-tabula></app-tabula>

@@ -1,0 +1,51 @@
+<mat-horizontal-stepper [linear]="true" #stepper>
+    <mat-step label="csv faila izvēle" [completed]="fileLoaded">
+        <div class="button-bar">
+            <button mat-raised-button (click)="clearFile()" color="primary">Atcelt</button>
+            <button mat-raised-button matStepperNext [disabled]="!fileLoaded" color="primary">Tālāk!</button>
+            <!-- <button mat-raised-button (click)="onAtmina()" color="primary">Ielasīt no atmiņas</button> -->
+        </div>
+        <div class="drope" appFileDrop (filesEmitter)="onFileDrop($event)">
+            <div class="text-block">
+                {{displayText}}
+                <span *ngIf="file">{{file.name}} / {{file.size}} bytes / {{file.type}}</span>
+            </div>
+        </div>
+    </mat-step>
+    <mat-step label="Adrešu saraksta labošana" [completed]="boxGatavi">
+        <div class="button-bar">
+            <button mat-raised-button [disabled]="!boxGatavi" color="primary" (click)="stepper.next()">Tālāk!</button>
+        </div>
+        <div>
+            <app-upload-adreses *ngIf="fileLoaded" (gatavs)="boxGatavi = $event"></app-upload-adreses>
+        </div>
+    </mat-step>
+    <mat-step label="Pakošanas saraksta pārskats" [completed]="boxGatavi">
+        <div class="button-bar">
+            <button mat-raised-button matStepperNext color="primary">Tālāk!</button>
+        </div>
+        <div>
+            <app-upload-tabula *ngIf="boxGatavi"></app-upload-tabula>
+        </div>
+    </mat-step>
+    <mat-step label="Datu saglabāšana">
+        <form [formGroup]="pasutijumsForm" (submit)="onSubmitAll()">
+            <div>
+                <mat-form-field class="input-text">
+                    <input matInput placeholder="Pasūtījuma nosaukums" formControlName="pasutijumsName" id="name"
+                        [errorStateMatcher]="formErrorMatcher" autocomplete="off">
+                    <mat-error *ngIf="pasutijumsForm.get('pasutijumsName').hasError('existPasutijumsName')">
+                        Pasūtījums ar tādu nosaukumu ir jau reģistrēts
+                    </mat-error>
+                    <mat-error *ngIf="pasutijumsForm.get('pasutijumsName').hasError('required')">
+                        Nosaukums ir jāievada obligāti
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="button-bar">
+                <button type="submit" mat-raised-button matStepperNext color="primary"
+                    [disabled]="!pasutijumsForm.valid">Saglabāt!</button>
+            </div>
+        </form>
+    </mat-step>
+</mat-horizontal-stepper>

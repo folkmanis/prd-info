@@ -1,0 +1,8 @@
+<nav mat-tab-nav-bar *ngIf="loaded">
+    <a mat-tab-link *ngFor="let kaste of kastes" [routerLink]="['/selector', kaste]" (click)="selected=kaste" [active]="kaste === selected">
+        {{kaste}}
+    </a>
+</nav>
+<!-- <router-outlet></router-outlet> -->
+<app-tabula *ngIf="loaded" [setApjoms]="selected"></app-tabula>
+<!-- <app-saraksts *ngIf="selected" [apjoms]="selected"></app-saraksts> -->
