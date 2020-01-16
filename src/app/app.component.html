@@ -11,11 +11,10 @@
     </button>
     <mat-menu #userMenu="matMenu">
       <span class="mat-caption username">Lietotājs: <strong>{{user}}</strong></span>
-      <button mat-menu-item (click)="onLogout()">Atslēgties</button>
+      <button *ngFor="let item of userMenuItems" mat-menu-item [routerLink]="item.route">{{item.text}}</button>
     </mat-menu>
   </mat-toolbar-row>
 </mat-toolbar>
-
 <div style="padding: 64px 0px;">
   <router-outlet></router-outlet>
 </div>

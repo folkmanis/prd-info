@@ -24,8 +24,8 @@ export class LoginGuard implements CanLoad {
           this.router.navigate(['login']);
         }
       }),
-      switchMap(() => this.loginService.getUser()),
-      map((user) => !!user.preferences.modules.find(m => m === route.path))
+      switchMap(() => this.loginService.isModule(route.path)),
+      // map((user) => !!user.preferences.modules.find(m => m === route.path))
     );
   }
 
