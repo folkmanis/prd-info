@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SidenavService } from '../library/services/sidenav.service';
 
 @Component({
   selector: 'app-admin',
@@ -14,9 +15,12 @@ export class AdminComponent implements OnInit {
     }
   ];
   activeLink = null;
-  constructor() { }
+  constructor(
+    private sidenavService: SidenavService,
+  ) { }
 
   ngOnInit() {
+    this.sidenavService.setTitle('Sistēmas iestatījumi');
   }
 
 }

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
-import { map, distinctUntilChanged,  debounceTime } from 'rxjs/operators';
+import { map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
+import { SidenavService } from '../library/services/sidenav.service';
 
 interface FormValues {
   q: string;
@@ -22,10 +23,11 @@ export class XmfSearchComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-  ) {
-  }
+    private sidenavService: SidenavService,
+  ) { }
 
   ngOnInit() {
+    this.sidenavService.setModule('xmf-search');
     this.searchForm.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged(this.changeDetector),
@@ -57,6 +59,6 @@ export class XmfSearchComponent implements OnInit {
       }
     }
     return true;
-  }
+  };
 
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { UploadService } from './services/upload.service';
+import { SidenavService } from '../library/services/sidenav.service';
 
 @Component({
   selector: 'app-xmf-upload',
@@ -16,9 +17,11 @@ export class XmfUploadComponent implements OnInit {
 
   constructor(
     private uploadService: UploadService,
+    private sidenavService: SidenavService,
   ) { }
 
   ngOnInit() {
+    this.sidenavService.setModule('xmf-upload');
     this.fakeInput.disable();
   }
 

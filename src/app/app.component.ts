@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { LoginService, User } from './login/login.service';
 import { USER_MODULES, UserModule } from './user-modules';
-import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { SidenavService } from './library/services/sidenav.service';
 
 @Component({
   selector: 'app-root',
@@ -16,12 +18,20 @@ export class AppComponent implements OnInit {
   user = '';
   userModules: UserModule[];
   userMenuItems: { route: string[], text: string; }[] = [];
-
-  constructor(
-    private loginService: LoginService,
-    private router: Router,
-  ) { }
-
+  toolbarTitle = this.sidenavService.title$;
+  
+  isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
+  .pipe(
+    map(result => result.matches),
+    shareReplay()
+    );
+    
+    constructor(
+      private loginService: LoginService,
+      private breakpointObserver: BreakpointObserver,
+      private sidenavService: SidenavService,
+      ) { }
+      
   ngOnInit() {
     this.loginService.user$.subscribe((usr) => {
       this.loggedIn = !!usr;
@@ -30,6 +40,12 @@ export class AppComponent implements OnInit {
       this.initUserMenu(usr);
       this.initModulesMenu(usr);
     });
+  }
+
+  onNavigate(t?: string) {
+    this.sidenavService.setTitle(t || '');
+    // this.router.navigate(path);
+    // this.toolbarTitle = path;
   }
 
   private initUserMenu(usr?: User) {
@@ -49,7 +65,6 @@ export class AppComponent implements OnInit {
         }
       });
     }
-
   }
 
 }

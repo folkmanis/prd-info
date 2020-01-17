@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SidenavService } from '../library/services/sidenav.service';
 
 @Component({
   selector: 'app-user-preferences',
@@ -7,9 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UserPreferencesComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private sidenavService: SidenavService,
+  ) { }
 
   ngOnInit() {
+    this.sidenavService.setModule('user-preferences');
   }
 
 }
