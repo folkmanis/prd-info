@@ -81,6 +81,12 @@ export class LoginService {
     return this.getUserHttp();
   }
 
+  isModule(mod: string): Observable<boolean> {
+    return this.getUser().pipe(
+      map(usr => !!usr.preferences.modules.find(m => m === mod))
+    );
+  }
+
   private getUserHttp(): Observable<User | null> {
     return this.http.get<User>(this.httpPathLogin + 'user', this.httpOptions).pipe(
       map((usr) => usr.username ? usr : null)

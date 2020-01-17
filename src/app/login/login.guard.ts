@@ -20,13 +20,12 @@ export class LoginGuard implements CanLoad {
   ): Observable<boolean> | Promise<boolean> | boolean {
     return this.loginService.isLogin().pipe(
       tap((logged) => {
-        console.log(route);
         if (!logged) {
           this.router.navigate(['login']);
         }
       }),
-      switchMap((logged) => this.loginService.getUser()),
-      map((user) => !!user.preferences.modules.find(m => m === route.path))
+      switchMap(() => this.loginService.isModule(route.path)),
+      // map((user) => !!user.preferences.modules.find(m => m === route.path))
     );
   }
 

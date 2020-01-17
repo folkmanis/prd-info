@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { LoginService } from './login/login.service';
+import { LoginService, User } from './login/login.service';
 import { USER_MODULES, UserModule } from './user-modules';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +15,7 @@ export class AppComponent implements OnInit {
   isAdmin = false;
   user = '';
   userModules: UserModule[];
+  userMenuItems: { route: string[], text: string; }[] = [];
 
   constructor(
     private loginService: LoginService,
@@ -25,19 +27,29 @@ export class AppComponent implements OnInit {
       this.loggedIn = !!usr;
       this.user = usr && usr.name;
       this.isAdmin = !!usr && !!usr.admin;
-      this.userModules = [];
-      if (usr) {
-        usr.preferences.modules.forEach(mod => {
-          const m = USER_MODULES.find(val => val.value === mod);
-          if (m) {
-            this.userModules.push(m);
-          }
-        });
-      }
+      this.initUserMenu(usr);
+      this.initModulesMenu(usr);
     });
   }
 
-  onLogout() {
-    this.loginService.logOut().subscribe((act) => act && this.router.navigate(['/login']));
+  private initUserMenu(usr?: User) {
+    this.userMenuItems = [{ route: ['/login'], text: 'Atslēgties' }];
+    if (usr && usr.preferences.modules.includes('user-preferences')) {
+      this.userMenuItems.push({ route: ['user-preferences'], text: 'Lietotāja iestatījumi' });
+    }
   }
+
+  private initModulesMenu(usr?: User) {
+    this.userModules = [];
+    if (usr) {
+      usr.preferences.modules.forEach(mod => {
+        const m = USER_MODULES.find(val => val.value === mod);
+        if (m) {
+          this.userModules.push(m);
+        }
+      });
+    }
+
+  }
+
 }
