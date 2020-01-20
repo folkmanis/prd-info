@@ -34,23 +34,10 @@ export class XmfUploadComponent implements OnInit {
   onFileDropped(ev: FileList) {
     this.file = ev.item(0);
     this.fakeInput.setValue(this.file.name);
-    }
+  }
 
   onUpload() {
     this.uploadService.postFile(this.file).subscribe((resp) => this.response = resp);
-  }
-
-  private readFile(list: FileList) {
-    const file = list[0];
-    this.fakeInput.setValue(file.name);
-    console.log(list);
-    const fileReader = new FileReader();
-    fileReader.onload = (e) => {
-      const lines = e.target;
-      // console.log(lines.result);
-    };
-    fileReader.readAsText(file);
-
   }
 
 }
