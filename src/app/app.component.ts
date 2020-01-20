@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LoginService, User } from './login/login.service';
 import { USER_MODULES, UserModule } from './user-modules';
 import { Observable } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { map, shareReplay, delay, tap } from 'rxjs/operators';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { SidenavService } from './library/services/sidenav.service';
 
@@ -18,20 +18,22 @@ export class AppComponent implements OnInit {
   user = '';
   userModules: UserModule[];
   userMenuItems: { route: string[], text: string; }[] = [];
-  toolbarTitle = this.sidenavService.title$;
-  
+  toolbarTitle$ = this.sidenavService.title$.pipe(
+    delay(200),
+  );
+
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
-  .pipe(
-    map(result => result.matches),
-    shareReplay()
+    .pipe(
+      map(result => result.matches),
+      shareReplay()
     );
-    
-    constructor(
-      private loginService: LoginService,
-      private breakpointObserver: BreakpointObserver,
-      private sidenavService: SidenavService,
-      ) { }
-      
+
+  constructor(
+    private loginService: LoginService,
+    private breakpointObserver: BreakpointObserver,
+    private sidenavService: SidenavService,
+  ) { }
+
   ngOnInit() {
     this.loginService.user$.subscribe((usr) => {
       this.loggedIn = !!usr;
