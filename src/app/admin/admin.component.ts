@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SidenavService } from '../library/services/sidenav.service';
+import { SidenavService } from '../login/sidenav.service';
 
 @Component({
   selector: 'app-admin',

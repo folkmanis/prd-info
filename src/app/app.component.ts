@@ -4,7 +4,7 @@ import { USER_MODULES, UserModule } from './user-modules';
 import { Observable } from 'rxjs';
 import { map, shareReplay, delay, tap } from 'rxjs/operators';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { SidenavService } from './library/services/sidenav.service';
+import { SidenavService } from './login/sidenav.service';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +16,7 @@ export class AppComponent implements OnInit {
   loggedIn = false;
   isAdmin = false;
   user = '';
-  userModules: UserModule[];
+  userModules: UserModule[] = [];
   userMenuItems: { route: string[], text: string; }[] = [];
   toolbarTitle$ = this.sidenavService.title$.pipe(
     delay(200),
@@ -58,15 +58,12 @@ export class AppComponent implements OnInit {
   }
 
   private initModulesMenu(usr?: User) {
-    this.userModules = [];
-    if (usr) {
-      usr.preferences.modules.forEach(mod => {
-        const m = USER_MODULES.find(val => val.value === mod);
-        if (m) {
-          this.userModules.push(m);
-        }
-      });
-    }
+    this.userModules = USER_MODULES.reduce((acc, curr) => {
+      if (usr && usr.preferences.modules.includes(curr.value)) {
+        acc.push(curr);
+      }
+      return acc;
+    }, []);
   }
 
 }

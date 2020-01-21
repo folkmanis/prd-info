@@ -81,9 +81,7 @@ export class LoginService {
   }
 
   isModule(mod: string): Observable<boolean> {
-    console.log('ismod ', mod);
     return this.getUser().pipe(
-      tap(m => console.log('find ', m)),
       map(usr => !!usr.preferences.modules.find(m => m === mod)),
     );
   }

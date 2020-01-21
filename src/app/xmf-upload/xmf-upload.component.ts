@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { UploadService } from './services/upload.service';
-import { SidenavService } from '../library/services/sidenav.service';
+import { SidenavService } from '../login/sidenav.service';
 
 @Component({
   selector: 'app-xmf-upload',

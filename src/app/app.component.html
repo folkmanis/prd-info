@@ -1,5 +1,4 @@
 <mat-toolbar color="primary">
-  <!-- <mat-toolbar *ngIf="loggedIn" color="primary"> -->
   <ng-container *ngIf="loggedIn">
     <span style="flex: 0 0 auto">
       <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
@@ -25,10 +24,7 @@
   <mat-sidenav #drawer class="sidenav" fixedInViewport [fixedTopGap]="(isHandset$ | async) ? 56 : 64"
     [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'" [mode]="(isHandset$ | async) ? 'over' : 'side'"
     [opened]="(isHandset$ | async) === false && loggedIn">
-    <mat-nav-list>
-      <a *ngFor="let mod of userModules" mat-list-item [routerLink]="mod.route">{{mod.name}}</a>
-      <a *ngIf="isAdmin" mat-list-item routerLink="admin">Administrēšana</a>
-    </mat-nav-list>
+    <app-side-menu></app-side-menu>
   </mat-sidenav>
   <mat-sidenav-content class="content">
     <router-outlet></router-outlet>

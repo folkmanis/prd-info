@@ -16,6 +16,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatTreeModule, MatTree } from '@angular/material/tree';
+
 import { LayoutModule } from '@angular/cdk/layout';
 
 import { ScrollToTopModule } from './scroll-to-top/scroll-to-top.module';
@@ -51,6 +53,7 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
     MatSelectModule,
     MatDialogModule,
     MatSidenavModule,
+    MatTreeModule,
     ScrollToTopModule,
     LayoutModule,
   ],
@@ -71,6 +74,7 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
     MatSelectModule,
     MatDialogModule,
     MatSidenavModule,
+    MatTreeModule,
     LayoutModule,
     ScrollToTopModule,
     CopyClipboardDirective,
