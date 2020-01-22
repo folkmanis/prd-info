@@ -10,7 +10,9 @@ export interface SideMenuData {
   route: string[];
   childMenu?: SideMenuData[];
 }
-
+/**
+ * Sānu izvēles MatTree datu objekts
+ */
 export class MenuDataSource implements DataSource<SideMenuData> {
   dataChange = new BehaviorSubject<SideMenuData[]>([]);
   get data(): SideMenuData[] { return this.dataChange.value; }
@@ -18,7 +20,11 @@ export class MenuDataSource implements DataSource<SideMenuData> {
   constructor(
     private loginService: LoginService,
   ) { }
-
+  /**
+   * Datu struktūras obligātā funkcija. Parakstās uz lietotāja objektu
+   * Mainoties lietotājam, mainās arī izvēlne
+   * @param collectionViewer 
+   */
   connect(collectionViewer: CollectionViewer): Observable<SideMenuData[]> {
     this.loginService.user$.subscribe(usr => {
       const data = usr ? this.toSideMenu(USER_MODULES.filter(mod => usr.preferences.modules.includes(mod.value))) : [];
@@ -31,7 +37,11 @@ export class MenuDataSource implements DataSource<SideMenuData> {
   disconnect() {
     this.dataChange.unsubscribe();
   }
-
+  /**
+   * Pārveido UserModule tipa objektu par izvēlnes 'koku'
+   * @param item UserModule objekta daļa
+   * @param rte augstākā līmeņa ceļi kā masīvs (vai tukšs augstākā līmeņa objektam)
+   */
   private toSideMenu(item: Partial<UserModule>[], rte: string[] = []): SideMenuData[] {
     return item.reduce((acc, val) => {
       const mItem: SideMenuData = { name: val.name, route: [...rte, val.route] };
@@ -71,7 +81,5 @@ export class SidenavService {
   setModule(mod: string) {
     this.setTitle(USER_MODULES.find(m => m.value === mod).description);
   }
-
-
 
 }

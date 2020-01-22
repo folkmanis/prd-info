@@ -8,13 +8,6 @@ import { SidenavService } from '../login/sidenav.service';
 })
 export class AdminComponent implements OnInit {
 
-  items = [
-    {
-      name: 'Lietotāji',
-      route: 'users',
-    }
-  ];
-  activeLink = null;
   constructor(
     private sidenavService: SidenavService,
   ) { }
