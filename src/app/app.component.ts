@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { LoginService, User } from './login/login.service';
 import { USER_MODULES, UserModule } from './user-modules';
-import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { map, shareReplay, delay, tap } from 'rxjs/operators';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { SidenavService } from './login/sidenav.service';
 
 @Component({
   selector: 'app-root',
@@ -14,12 +16,22 @@ export class AppComponent implements OnInit {
   loggedIn = false;
   isAdmin = false;
   user = '';
-  userModules: UserModule[];
+  userModules: UserModule[] = [];
   userMenuItems: { route: string[], text: string; }[] = [];
+  toolbarTitle$ = this.sidenavService.title$.pipe(
+    delay(200),
+  );
+
+  isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
+    .pipe(
+      map(result => result.matches),
+      shareReplay()
+    );
 
   constructor(
     private loginService: LoginService,
-    private router: Router,
+    private breakpointObserver: BreakpointObserver,
+    private sidenavService: SidenavService,
   ) { }
 
   ngOnInit() {
@@ -32,6 +44,12 @@ export class AppComponent implements OnInit {
     });
   }
 
+  onNavigate(t?: string) {
+    this.sidenavService.setTitle(t || '');
+    // this.router.navigate(path);
+    // this.toolbarTitle = path;
+  }
+
   private initUserMenu(usr?: User) {
     this.userMenuItems = [{ route: ['/login'], text: 'Atslēgties' }];
     if (usr && usr.preferences.modules.includes('user-preferences')) {
@@ -40,16 +58,12 @@ export class AppComponent implements OnInit {
   }
 
   private initModulesMenu(usr?: User) {
-    this.userModules = [];
-    if (usr) {
-      usr.preferences.modules.forEach(mod => {
-        const m = USER_MODULES.find(val => val.value === mod);
-        if (m) {
-          this.userModules.push(m);
-        }
-      });
-    }
-
+    this.userModules = USER_MODULES.reduce((acc, curr) => {
+      if (usr && usr.preferences.modules.includes(curr.value)) {
+        acc.push(curr);
+      }
+      return acc;
+    }, []);
   }
 
 }

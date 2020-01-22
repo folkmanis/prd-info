@@ -15,6 +15,10 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from "@angular/material/dialog";
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatTreeModule, MatTree } from '@angular/material/tree';
+
+import { LayoutModule } from '@angular/cdk/layout';
 
 import { ScrollToTopModule } from './scroll-to-top/scroll-to-top.module';
 import { CopyClipboardDirective } from './directives/copy-clipboard.directive';
@@ -50,7 +54,10 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
     MatTabsModule,
     MatSelectModule,
     MatDialogModule,
+    MatSidenavModule,
+    MatTreeModule,
     ScrollToTopModule,
+    LayoutModule,
   ],
   exports: [
     FormsModule,
@@ -68,6 +75,9 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
     MatTabsModule,
     MatSelectModule,
     MatDialogModule,
+    MatSidenavModule,
+    MatTreeModule,
+    LayoutModule,
     ScrollToTopModule,
     CopyClipboardDirective,
     TaggedStringComponent,

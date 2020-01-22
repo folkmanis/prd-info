@@ -53,7 +53,6 @@ export class LoginService {
   logIn(login: Login): Observable<boolean> {
     return this.loginHttp(login).pipe(
       tap((resp) => this.userSubj.next(resp)),
-      tap(resp => console.log(resp)),
       map((resp) => !!resp),
     );
   }
@@ -83,7 +82,7 @@ export class LoginService {
 
   isModule(mod: string): Observable<boolean> {
     return this.getUser().pipe(
-      map(usr => !!usr.preferences.modules.find(m => m === mod))
+      map(usr => !!usr.preferences.modules.find(m => m === mod)),
     );
   }
 

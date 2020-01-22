@@ -11,11 +11,13 @@ import { AppComponent } from './app.component';
 
 
 import { LoginComponent } from './login/login.component';
+import { SideMenuComponent } from './side-menu/side-menu.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
+    SideMenuComponent,
   ],
   imports: [
     BrowserModule,
