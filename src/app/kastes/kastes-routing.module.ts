@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { PasutijumsGuard } from './services/pasutijums.guard';
 import { SelectorComponent } from './selector/selector.component';
 import { LabelsComponent } from './labels/labels.component';
 
@@ -10,13 +9,12 @@ const routes: Routes = [
     path: 'selector/:id',
     component: SelectorComponent,
   },
-  { path: 'selector', redirectTo: '/selector/0', },
+  { path: 'selector', redirectTo: 'selector/0', },
   {
     path: 'labels',
     component: LabelsComponent,
-    canActivate: [PasutijumsGuard],
   },
-  { path: '**', redirectTo: '/selector/0' },
+  { path: '**', redirectTo: 'selector/0' },
 ];
 
 @NgModule({

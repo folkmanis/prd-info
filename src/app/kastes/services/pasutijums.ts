@@ -1,4 +1,4 @@
-export class Pasutijums {
-    id: number;
-    pasutijums: string;
+export interface Pasutijums {
+    _id: string;
+    name: string;
 }

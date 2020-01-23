@@ -3,7 +3,8 @@ import { Router } from '@angular/router';
 import { FormControl, FormGroup, Validators, AsyncValidatorFn, AbstractControl, FormGroupDirective } from '@angular/forms';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { UploadService } from './upload.service';
-import { PreferencesService } from '../services/preferences.service';
+import { KastesPreferencesService } from '../services/kastes-preferences.service';
+import { PasutijumiService } from '../services/pasutijumi.service';
 import { map } from 'rxjs/operators';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { UploadTabulaComponent } from './upload-tabula/upload-tabula.component';
@@ -40,7 +41,8 @@ export class UploadComponent implements OnInit {
 
   constructor(
     private uploadService: UploadService,
-    private preferencesService: PreferencesService,
+    private kastesPreferencesService: KastesPreferencesService,
+    private pasutijumiService: PasutijumiService,
     public dialog: MatDialog,
     private router: Router,
   ) { }
@@ -82,9 +84,9 @@ export class UploadComponent implements OnInit {
 
   existPasutijumsName(): AsyncValidatorFn {
     return (control: AbstractControl) => {
-      return this.preferencesService.getPasutijumi().pipe(
+      return this.pasutijumiService.pasutijumi.pipe(
         map((pas) =>
-          pas.find((el) => el.pasutijums === control.value) ? { existPasutijumsName: { value: control.value } } : null
+          pas.find((el) => el.name === control.value) ? { existPasutijumsName: { value: control.value } } : null
         )
       );
     };

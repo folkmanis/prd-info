@@ -1,8 +1,10 @@
 import { Component, Input, Output, OnInit, EventEmitter } from '@angular/core';
 import { FormControl, FormGroup, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { AdreseBox, Box } from '../../adrese-box';
-import { PreferencesService, Preferences } from '../../../services/preferences.service';
 import { TotalValidatorDirective } from './total-validator.directive';
+import { KastesPreferencesService } from '../../../services/kastes-preferences.service';
+import { KastesPreferences } from '../../../services/preferences';
+
 
 @Component({
   selector: 'app-editor',
@@ -13,17 +15,17 @@ export class EditorComponent implements OnInit {
   @Input() adrBox: AdreseBox;
   @Output() finish: EventEmitter<boolean> = new EventEmitter(); // false - ja atcēla, true - ja izmainīja
   boxColors = ['yellow', 'rose', 'white'];
-  prefs: Preferences = new Preferences();
+  prefs: KastesPreferences;
   editorForm: FormGroup;
   rowSums: number[] = [];
   colSums: Box = new Box();
 
-  constructor(
-    private preferencesService: PreferencesService,
-  ) { }
+  constructor( 
+    private kastesPreferencesService: KastesPreferencesService,
+   ) { }
 
   ngOnInit() {
-    this.preferencesService.getPreferences().subscribe((pr) => this.prefs = pr);
+    this.kastesPreferencesService.preferences.subscribe((pr) => this.prefs = pr);
     this.createFormCtr(this.adrBox.box);
     ({ row: this.rowSums, col: this.colSums } = TotalValidatorDirective.calcTotals(this.editorForm.value));
     this.editorForm.valueChanges.subscribe((val) => {

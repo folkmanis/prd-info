@@ -9,12 +9,9 @@ export class HttpOptions {
      * @param par: { [key: string]: any } http query parametri
      * tiks nodoti kā ?key=value&key=value...
      */
-    constructor(par: { [key: string]: any }) {
+    constructor(par: { [key: string]: any; }) {
         Object.keys(par).forEach((key) => {
-            const val = par[key] ? par[key] : '';
-            if (val.length > 0) {
-                this.params = this.params.set(key, val);
-            }
+            this.params = this.params.set(key, par[key]);
         });
     }
     /**

@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Kaste } from '../services/kastes.service';
 import { TabulaComponent } from '../tabula/tabula.component';
-import { PreferencesService, Preferences } from '../services/preferences.service';
 
 @Component({
   selector: 'app-labels',
@@ -13,19 +12,15 @@ export class LabelsComponent implements OnInit {
   @ViewChild(TabulaComponent, { static: false }) tabula: TabulaComponent;
   statuss: Kaste;
   bridinajums = false;
-  preferences: Preferences = {};
+  preferences = {yellow: 'yellow', rose: 'red', white: 'gray'};
   inputForm = new FormGroup({
     kods: new FormControl(''),
   });
 
   constructor(
-    private preferencesService: PreferencesService,
   ) { }
 
   ngOnInit() {
-    this.preferencesService.getPreferences().subscribe((prefs) => {
-      this.preferences = prefs;
-    });
   }
 
   submitForm() {

@@ -1,12 +1,12 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { switchMap } from 'rxjs/operators';
 import { Observable, of, merge } from 'rxjs';
-import { PreferencesService } from '../services/preferences.service';
 import { Kaste } from '../services/kastes.service';
 import { AdresesCsv } from './adrese-csv';
 import { AdreseBox, AdresesBox, AdrBoxTotals, Totals } from './adrese-box';
-import { AdminHttpService } from '../services/admin-http.service';
-import { AdminPasutijumsService } from '../services/admin-pasutijums.service';
+import { KastesPreferencesService } from '../services/kastes-preferences.service';
+import { PasutijumiService } from '../services/pasutijumi.service';
+import { KastesService } from '../services/kastes.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,9 +19,9 @@ export class UploadService {
   adresesBox$: Observable<AdreseBox[]>;
 
   constructor(
-    private preferencesService: PreferencesService,
-    private adminPasutijumsService: AdminPasutijumsService,
-    private adminHttpService: AdminHttpService,
+    private kastesPreferencesService: KastesPreferencesService,
+    private pasutijumiService: PasutijumiService,
+    private kastesService: KastesService,
   ) { }
 
   loadCsv(csv: string, delimiter: string = ',') {
@@ -70,18 +70,19 @@ export class UploadService {
     this.adresesBox$ = this.adresesBox.init(this.adresesCsv, colMap, { toPakas });
   }
 
-  savePasutijums(pasutijumsName: string): Observable<{ affectedRows: number }> {
+  savePasutijums(pasutijumsName: string): Observable<{ affectedRows: number; }> {
     /* Pievieno pasūtījuma nosaukumu datubāzei, saņem pasūtījuma id */
-    return this.adminPasutijumsService.addPasutijums(pasutijumsName).pipe(
+    return this.pasutijumiService.addPasutijums(pasutijumsName).pipe(
       /* Uzliek jaunā pasūtījuma id preferencēs kā aktīvo */
-      switchMap((id) => this.preferencesService.setPreferences({ pasutijums: id })),
+      switchMap((id) => this.kastesPreferencesService.update({ pasutijums: id })),
       /* Ielādē pasūtījuma datus datubāzē */
-      switchMap((prefs) =>
-        this.adminHttpService.uploadTableHttp<Kaste>(this.adresesBox.uploadRow.map((sel, idx) => {
-          /* Array.map funkcija pievieno trūkstošos lauciņus,
-          lai veidotos pilns Kastes json objekts */
-          return { ...sel, gatavs: 0, label: 0, pasutijums: prefs.pasutijums, Nr: idx + 1 };
-        }))),
+      // switchMap((prefs) =>
+      //   this.adminHttpService.uploadTableHttp<Kaste>(this.adresesBox.uploadRow.map((sel, idx) => {
+      //     /* Array.map funkcija pievieno trūkstošos lauciņus,
+      //     lai veidotos pilns Kastes json objekts */
+      //     return { ...sel, gatavs: 0, label: 0, pasutijums: prefs.pasutijums, Nr: idx + 1 };
+      //   }))),
+      switchMap(() => of({ affectedRows: 0 }))
     );
   }
 

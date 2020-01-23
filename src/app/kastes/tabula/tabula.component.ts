@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild, Input, EventEmitter, OnChanges } from '@angular/core';
 import { MatTable } from '@angular/material/table';
-import { ActivatedRoute, ParamMap } from '@angular/router';
 
 import { TabulaDataSource } from './tabula-datasource';
 import { KastesService, Kaste } from '../services/kastes.service';
-import { PreferencesService, Preferences } from '../services/preferences.service';
+import { KastesPreferencesService } from '../services/kastes-preferences.service';
+import { KastesPreferences } from '../services/preferences';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -24,20 +24,20 @@ export class TabulaComponent implements OnInit {
   selectedKaste: number;
   apjomsChange = new EventEmitter<number>();
   rowChange = new EventEmitter<number>();
-  preferences: Preferences = {};
+  preferences: KastesPreferences;
   loaded: EventEmitter<boolean> = new EventEmitter();
   displayedColumns = ['kods', 'adrese', 'yellow', 'rose', 'white', 'gatavs'];
   private apjoms = 0;
 
   constructor(
     private kastesService: KastesService,
-    public preferencesService: PreferencesService,
+    public preferencesService: KastesPreferencesService,
   ) {
     this.dataSource = new TabulaDataSource(this.kastesService, this.apjomsChange, this.rowChange, this.apjoms, this.loaded);
   }
 
   ngOnInit() {
-    this.preferencesService.getPreferences().subscribe((pref) => this.preferences = pref);
+    this.preferencesService.preferences.subscribe((pref) => this.preferences = pref);
   }
 
   onSelect(id: number) {

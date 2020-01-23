@@ -3,7 +3,8 @@ import { UploadTabulaDataSource } from './upload-tabula-datasource';
 import { UploadService } from '../upload.service';
 import { MatTable } from '@angular/material/table';
 import { AdreseBox, AdrBoxTotals } from '../adrese-box';
-import { PreferencesService, Preferences } from '../../services/preferences.service';
+import { KastesPreferencesService } from '../../services/kastes-preferences.service';
+import { KastesPreferences } from '../../services/preferences';
 
 @Component({
   selector: 'app-upload-tabula',
@@ -27,20 +28,19 @@ export class UploadTabulaComponent implements OnInit, AfterViewInit {
   };
   dataSource: UploadTabulaDataSource;
   totals: AdrBoxTotals;
-  prefs: Preferences = new Preferences();
+  prefs: KastesPreferences;
   edit: boolean[] = [];
   editActive = false;
 
   constructor(
     private uploadService: UploadService,
-    private preferencesService: PreferencesService,
+    private kastesPreferencesService: KastesPreferencesService,
   ) { }
 
   ngOnInit() {
-    this.preferencesService.getPreferences().subscribe((pr) => this.prefs = pr);
+    this.kastesPreferencesService.preferences.subscribe((pr) => this.prefs = pr);
     this.dataSource = new UploadTabulaDataSource(this.uploadService);
     this.totals = this.uploadService.adresesBoxTotals;
-
   }
 
   ngAfterViewInit() {
