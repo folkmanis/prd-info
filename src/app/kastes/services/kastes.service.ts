@@ -10,17 +10,19 @@ import { KastesPreferences } from './preferences';
 import { Veikals } from './veikals';
 
 export class Kaste {
-  id?: number;
-  Nr: number;
+  _id: string;
   kods: number;
   adrese: string;
-  yellow: number;
-  rose: number;
-  white: number;
-  gatavs: number;
-  total?: number;
-  label: number;
-  pasutijums?: number;
+  pasutijums: string;
+  kastes: {
+    yellow: number;
+    rose: number;
+    white: number;
+    gatavs: boolean;
+    total?: number;
+    uzlime: boolean;
+  };
+  kaste: number;
 }
 
 @Injectable({
@@ -35,32 +37,20 @@ export class KastesService {
   ) { }
 
   getTotals(): Observable<number[]> {
-    return this.makeReq<{ total: number; }>('totals').pipe(
+    return this.makeReq<{ total: number; }[]>('totals').pipe(
       map((totals) => totals.map((val) => val.total))
     );
   }
 
   getKastes(apjoms: number): Observable<Kaste[]> {
-    return this.makeReq<Kaste>(`kastes`, { apjoms });
+    return this.makeReq<Kaste[]>(`kastes`, { apjoms });
   }
 
-  /**
-   * Saņem no servera vienas kastes ierakstu
-   * @param id ieraksta numurs
-   */
-  getKaste(id: number): Observable<Kaste> {
-    return this.makeReq<Kaste>(`numbers?id=${id}`).pipe(map((res) => res[0]));
+  setGatavs(body:{field:string, id: string, kaste: number, yesno: boolean}): Observable<{ changedRows: number; }> {
+    return this.kastesHttpService.setGatavsHttp(body);
   }
-  setGatavs(id: number, yesno: number): Observable<{ changedRows: number; }> {
-    // const path = `gatavs/${yesno}?id=${id}`;
-    return this.kastesHttpService.setGatavsHttp({ id, yesno });
-  }
-  // /data/label/:yesno?nr=XXX
-  setLabel(nr: number, yesno: number): Observable<Kaste[]> {
-    return this.makeReq<Kaste>(`label/${yesno}?nr=${nr}`);
-  }
-
-  private makeReq<T>(path: string, opt?: { [key: string]: any; }): Observable<T[]> {
+  
+  private makeReq<T>(path: string, opt?: { [key: string]: any; }): Observable<T> {
     return this.kastesPreferencesService.preferences.pipe(
       switchMap(pref => this.kastesHttpService.getKastesHttp<T>(path, { pasutijums: pref.pasutijums, ...opt })
       )

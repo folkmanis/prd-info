@@ -5,7 +5,7 @@ import { TabulaDataSource } from './tabula-datasource';
 import { KastesService, Kaste } from '../services/kastes.service';
 import { KastesPreferencesService } from '../services/kastes-preferences.service';
 import { KastesPreferences } from '../services/preferences';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-tabula',
@@ -17,7 +17,7 @@ export class TabulaComponent implements OnInit {
   @Input()
   set setApjoms(apj: number) {
     this.apjoms = apj;
-    this.loaded.emit(false);
+    this.loaded$.next(false);
     this.apjomsChange.emit(this.apjoms);
   }
   dataSource: TabulaDataSource;
@@ -25,38 +25,41 @@ export class TabulaComponent implements OnInit {
   apjomsChange = new EventEmitter<number>();
   rowChange = new EventEmitter<number>();
   preferences: KastesPreferences;
-  loaded: EventEmitter<boolean> = new EventEmitter();
+  private loaded$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   displayedColumns = ['kods', 'adrese', 'yellow', 'rose', 'white', 'gatavs'];
   private apjoms = 0;
+  loaded = false;
 
   constructor(
     private kastesService: KastesService,
     public preferencesService: KastesPreferencesService,
   ) {
-    this.dataSource = new TabulaDataSource(this.kastesService, this.apjomsChange, this.rowChange, this.apjoms, this.loaded);
+    this.dataSource = new TabulaDataSource(this.kastesService, this.apjomsChange, this.rowChange, this.apjoms, this.loaded$);
   }
 
   ngOnInit() {
-    this.preferencesService.preferences.subscribe((pref) => this.preferences = pref);
+    this.preferencesService.preferences.subscribe((pref) => { this.preferences = pref; console.log(this.preferences); });
+    this.loaded$.subscribe(ld => this.loaded = ld);
   }
 
   onSelect(id: number) {
     this.selectedKaste = id;
   }
 
-  onGatavs(id: number, gatavs: number): void {
-    let action = 1;
+  onGatavs(id: string, kaste: number, gatavs: boolean): void {
+    let action = true;
     if (gatavs) {
       if (!confirm('Tiešām?')) {
         return;
       } else {
-        action = 0;
+        action = false;
       }
     }
-    this.dataSource.setGatavs(id, action);
+    console.log(id, kaste, action);
+    this.dataSource.setGatavs(id, kaste, action);
   }
 
-  setLabel(nr: number): Observable<Kaste | null> {
-    return this.dataSource.setLabel(nr);
+  setLabel(kods: number): Observable<Kaste | null> {
+    return this.dataSource.setLabel(kods);
   }
 }

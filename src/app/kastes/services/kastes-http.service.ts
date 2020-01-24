@@ -53,8 +53,8 @@ export class KastesHttpService {
    * @param path pieprasījuma ceļš
    * @param opt parametri
    */
-  getKastesHttp<T>(path: string, opt: { [key: string]: any; }): Observable<T[]> {
-    return this.http.get<T[]>(this.httpPathKastes + path, new HttpOptions(opt));
+  getKastesHttp<T>(path: string, opt: { [key: string]: any; }): Observable<T> {
+    return this.http.get<T>(this.httpPathKastes + path, new HttpOptions(opt));
   }
   /**
    * Atgriež vienas kastes ierakstu
@@ -64,8 +64,8 @@ export class KastesHttpService {
     return this.http.get<T[]>(this.httpPathKastes + path);
   }
 
-  setGatavsHttp(body: { id: number, yesno: number; }, path: string = 'gatavs/'): Observable<{ changedRows: number; }> {
-    return this.http.post<{ changedRows: number; }>(this.httpPathKastes + path, body, this.httpOptions);
+  setGatavsHttp(body: {field: string, id: string, kaste: number, yesno: boolean; }): Observable<{ changedRows: number; }> {
+    return this.http.post<{ changedRows: number; }>(this.httpPathKastes + 'gatavs', body, this.httpOptions);
   }
 
   uploadTableHttp(veikali: Veikals[]): Observable<number> {

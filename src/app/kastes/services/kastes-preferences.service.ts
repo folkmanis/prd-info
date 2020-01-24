@@ -4,17 +4,17 @@ import { KastesPreferences } from './preferences';
 import { KastesHttpService } from './kastes-http.service';
 import { map, switchMap, tap } from 'rxjs/operators';
 
-class defaultPreferences implements KastesPreferences {
-  pasutijums: '';
-  yellow: 'yellow'; rose: 'red'; white: 'gray';
-}
+const defaultPreferences: KastesPreferences = {
+  pasutijums: '',
+  yellow: 'yellow', rose: 'red', white: 'gray',
+};
 
 @Injectable({
   providedIn: 'root'
 })
 export class KastesPreferencesService {
 
-  private preferences$ = new BehaviorSubject(new defaultPreferences());
+  private preferences$ = new BehaviorSubject(defaultPreferences);
   private initialised = false;
   constructor(
     private kastesHttpService: KastesHttpService,
@@ -24,7 +24,7 @@ export class KastesPreferencesService {
     if (!this.initialised) {
       return this.kastesHttpService.getPreferencesHttp().pipe(
         tap(changes => {
-          this.updatePreferences(changes)
+          this.updatePreferences(changes);
           this.initialised = true;
         }),
         switchMap(() => this.preferences$)

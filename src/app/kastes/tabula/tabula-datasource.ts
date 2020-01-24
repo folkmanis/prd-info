@@ -1,7 +1,7 @@
 import { EventEmitter } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
-import { map, tap, startWith, switchMap } from 'rxjs/operators';
-import { Observable, of as observableOf, merge } from 'rxjs';
+import { map, tap, startWith, switchMap, filter } from 'rxjs/operators';
+import { Observable, of as observableOf, merge, of, BehaviorSubject } from 'rxjs';
 
 import { KastesService, Kaste } from '../services/kastes.service';
 
@@ -21,7 +21,7 @@ export class TabulaDataSource extends DataSource<Kaste> {
     private apjomsChanged: EventEmitter<number>,
     private rowChanged: EventEmitter<number>,
     private apjoms: number,
-    private loaded: EventEmitter<boolean>,
+    private loaded: BehaviorSubject<boolean>,
   ) {
     super();
   }
@@ -40,7 +40,7 @@ export class TabulaDataSource extends DataSource<Kaste> {
       this.rowChanged
     ).pipe(
       map(() => this.data),
-      tap(() => this.loaded.emit(true)));
+      tap(() => this.loaded.next(true)));
   }
 
   private getServerData(): Observable<Kaste[]> {
@@ -49,8 +49,8 @@ export class TabulaDataSource extends DataSource<Kaste> {
         tap((dat) => {
           this.data = dat;
           this.total = dat.length;
-          this.kastesRemain = dat.reduce((total, curr) => total += curr.gatavs ? 0 : 1, 0);
-          this.labelsRemain = dat.reduce((total, curr) => total += curr.label ? 0 : 1, 0);
+          this.kastesRemain = dat.reduce((total, curr) => total += curr.kastes.gatavs ? 0 : 1, 0);
+          this.labelsRemain = dat.reduce((total, curr) => total += curr.kastes.uzlime ? 0 : 1, 0);
         })
       );
   }
@@ -64,14 +64,14 @@ export class TabulaDataSource extends DataSource<Kaste> {
   /**
    * Uzliek gatavības iezīmi ierakstam.
    * @param id ieraksta id numurs
-   * @param act 0 - noņem gatavības iezīmi, 1 - uzliek gatavibas iezīmi
+   * @param yesno false - noņem gatavības iezīmi, true - uzliek gatavibas iezīmi
    */
-  setGatavs(id: number, act: number) {
-    const idx = this.data.findIndex((val: Kaste) => val.id === id);
-    this.kastesService.setGatavs(id, act).subscribe(atbilde => {
+  setGatavs(id: string, kaste: number, yesno: boolean) {
+    const idx = this.data.findIndex((val: Kaste) => val._id === id && val.kaste === kaste);
+    this.kastesService.setGatavs({ field: 'gatavs', id, kaste, yesno }).subscribe(atbilde => {
       if (atbilde.changedRows === 1) {
-        this.kastesRemain += (act ? -1 : +1);
-        this.data[idx].gatavs = act;
+        this.kastesRemain += (yesno ? -1 : +1);
+        this.data[idx].kastes.gatavs = yesno;
         this.rowChanged.emit(idx);
       }
     });
@@ -81,18 +81,16 @@ export class TabulaDataSource extends DataSource<Kaste> {
    * @param kods Veikala kods
    */
   setLabel(kods: number): Observable<Kaste | null> {
-    return this.kastesService.setLabel(kods, 1)
+    const idx = this.data.findIndex(k => k.kods === kods && !k.kastes.uzlime);
+    if (idx === -1) { return of(null); }
+    return this.kastesService.setGatavs({ field: 'uzlime', id: this.data[idx]._id, kaste: this.data[idx].kaste, yesno: true })
       .pipe(
-        map((resp) => {
-          if (resp.length) {
-            const idx = this.data.findIndex((val: Kaste) => val.id === resp[0].id);
-            this.labelsRemain--;
-            this.data[idx].label = 1;
-            this.rowChanged.emit(idx);
-            return resp[0];
-          } else {
-            return null;
-          }
+        filter(resp => !!resp.changedRows),
+        map(() => {
+          this.labelsRemain--;
+          this.data[idx].kastes.uzlime = true;
+          this.rowChanged.emit(idx);
+          return this.data[idx];
         })
       );
   }

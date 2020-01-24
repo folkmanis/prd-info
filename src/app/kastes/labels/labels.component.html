@@ -1,15 +1,16 @@
+<app-select-pasutijums></app-select-pasutijums>
 <div class="adrese-form">
 
-    <form [formGroup]="inputForm" (ngSubmit)="submitForm()">
+    <form [formGroup]="inputForm">
         <mat-form-field>
             <input matInput formControlName="kods" type="number" placeholder="Adreses kods:" autocomplete="off">
         </mat-form-field>
         <button mat-raised-button type="submit">Apstiprināt</button>
     </form>
     <div class="result" *ngIf="statuss">
-        <div class="result item" [style.color]="preferences.yellow">{{statuss.yellow | hideZero}}</div>
-        <div class="result item" [style.color]="preferences.rose">{{statuss.rose | hideZero}}</div>
-        <div class="result item" [style.color]="preferences.white">{{statuss.white | hideZero}}</div>
+        <div class="result item" [style.color]="preferences.yellow">{{statuss.kastes.yellow | hideZero}}</div>
+        <div class="result item" [style.color]="preferences.rose">{{statuss.kastes.rose | hideZero}}</div>
+        <div class="result item" [style.color]="preferences.white">{{statuss.kastes.white | hideZero}}</div>
         <div class="result adrese">{{statuss.adrese}}</div>
     </div>
     <div class="result warn" *ngIf="bridinajums">
