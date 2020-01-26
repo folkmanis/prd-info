@@ -3,13 +3,15 @@
     min-width: 400px;
     width: 100%;
     display: block;
-    border: solid 2px rgba(255, 255, 255, 0.3);
+    border: solid 2px rgba(0, 0, 0, 0.5);
     /* margin: 10px; */
 }
+
 .text-block {
     vertical-align: middle;
     text-align: center;
 }
+
 .input-text {
     width: 100%;
     max-width: 600px;
@@ -23,6 +25,7 @@
     padding: 8px;
     margin: 8px 0;
 }
+
 .button-bar button {
     margin-right: 8px;
 }

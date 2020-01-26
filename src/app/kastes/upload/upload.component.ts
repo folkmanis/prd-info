@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, Validators, AsyncValidatorFn, AbstractControl, FormGroupDirective } from '@angular/forms';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { UploadService } from './upload.service';
+import { UploadService } from './services/upload.service';
 import { KastesPreferencesService } from '../services/kastes-preferences.service';
 import { PasutijumiService } from '../services/pasutijumi.service';
 import { map } from 'rxjs/operators';

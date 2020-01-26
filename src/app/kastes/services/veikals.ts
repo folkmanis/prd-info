@@ -1,5 +1,5 @@
 export interface Veikals {
-    kods: string;
+    kods: number;
     adrese: string;
     pasutijums: string;
     kastes: Kaste[];

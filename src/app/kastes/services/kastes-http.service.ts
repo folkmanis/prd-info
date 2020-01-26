@@ -68,8 +68,8 @@ export class KastesHttpService {
     return this.http.post<{ changedRows: number; }>(this.httpPathKastes + 'gatavs', body, this.httpOptions);
   }
 
-  uploadTableHttp(veikali: Veikals[]): Observable<number> {
-    return this.http.post<number>(this.httpPathKastes + 'table', { veikali }, this.httpOptions);
+  uploadTableHttp(veikali: Veikals[]): Observable<{affectedRows: number}> {
+    return this.http.post<{affectedRows: number}>(this.httpPathKastes + 'table', { veikali }, this.httpOptions);
 
   }
 

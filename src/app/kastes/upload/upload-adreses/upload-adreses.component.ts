@@ -2,10 +2,10 @@ import { Component, OnInit, ViewChild, AfterViewInit, Output, EventEmitter } fro
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
-import { UploadService } from '../upload.service';
-import { UploadRow } from '../upload-row';
-import { DragData } from '../drag-drop.directive';
-import { Totals } from '../adrese-box';
+import { UploadService } from '../services/upload.service';
+import { TABLE_COLUMNS } from '../services/upload-row';
+import { DragData } from '../services/drag-drop.directive';
+import { Totals } from '../services/adrese-box';
 
 /**
  * Forma ķekšišu elementiem
@@ -145,7 +145,7 @@ export class UploadAdresesComponent implements OnInit, AfterViewInit {
   }
 
   private resetChips() {
-    this.colChipsAvailable = Object.getOwnPropertyNames(new UploadRow());
+    this.colChipsAvailable = TABLE_COLUMNS;
     this.colChipsAssigned.clear();
   }
 }

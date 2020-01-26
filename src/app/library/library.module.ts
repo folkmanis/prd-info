@@ -19,6 +19,9 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTreeModule} from '@angular/material/tree';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatChipsModule } from '@angular/material/chips';
 
 import { LayoutModule } from '@angular/cdk/layout';
 
@@ -60,6 +63,9 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
     MatTreeModule,
     MatProgressBarModule,
     MatTableModule,
+    MatStepperModule,
+    MatFormFieldModule,
+    MatChipsModule,
     ScrollToTopModule,
     LayoutModule,
   ],
@@ -83,6 +89,9 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
     MatTreeModule,
     MatProgressBarModule,
     MatTableModule,
+    MatStepperModule,
+    MatFormFieldModule,
+    MatChipsModule,
     LayoutModule,
     ScrollToTopModule,
     CopyClipboardDirective,

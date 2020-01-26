@@ -1,12 +1,14 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, tap, map } from 'rxjs/operators';
 import { Observable, of, merge } from 'rxjs';
-import { Kaste } from '../services/kastes.service';
+import { Kaste } from '../../services/kastes.service';
 import { AdresesCsv } from './adrese-csv';
 import { AdreseBox, AdresesBox, AdrBoxTotals, Totals } from './adrese-box';
-import { KastesPreferencesService } from '../services/kastes-preferences.service';
-import { PasutijumiService } from '../services/pasutijumi.service';
-import { KastesService } from '../services/kastes.service';
+import { KastesPreferencesService } from '../../services/kastes-preferences.service';
+import { PasutijumiService } from '../../services/pasutijumi.service';
+import { KastesService } from '../../services/kastes.service';
+
+import { UploadRow } from './upload-row';
 
 @Injectable({
   providedIn: 'root'
@@ -72,17 +74,14 @@ export class UploadService {
 
   savePasutijums(pasutijumsName: string): Observable<{ affectedRows: number; }> {
     /* Pievieno pasūtījuma nosaukumu datubāzei, saņem pasūtījuma id */
+    let affectedRows: number = 0;
+    let pasutijums: string;
     return this.pasutijumiService.addPasutijums(pasutijumsName).pipe(
-      /* Uzliek jaunā pasūtījuma id preferencēs kā aktīvo */
-      switchMap((id) => this.kastesPreferencesService.update({ pasutijums: id })),
-      /* Ielādē pasūtījuma datus datubāzē */
-      // switchMap((prefs) =>
-      //   this.adminHttpService.uploadTableHttp<Kaste>(this.adresesBox.uploadRow.map((sel, idx) => {
-      //     /* Array.map funkcija pievieno trūkstošos lauciņus,
-      //     lai veidotos pilns Kastes json objekts */
-      //     return { ...sel, gatavs: 0, label: 0, pasutijums: prefs.pasutijums, Nr: idx + 1 };
-      //   }))),
-      switchMap(() => of({ affectedRows: 0 }))
+      tap(pasId => pasutijums = pasId),
+      switchMap(pasId => this.kastesService.uploadTable(this.adresesBox.uploadRow(pasId))),
+      tap(res => affectedRows = res.affectedRows),
+      switchMap(() => this.kastesPreferencesService.update({ pasutijums })),
+      map(() => ({ affectedRows }))
     );
   }
 

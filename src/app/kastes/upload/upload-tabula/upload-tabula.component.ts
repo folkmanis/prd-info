@@ -1,8 +1,8 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { UploadTabulaDataSource } from './upload-tabula-datasource';
-import { UploadService } from '../upload.service';
+import { UploadService } from '../services/upload.service';
 import { MatTable } from '@angular/material/table';
-import { AdreseBox, AdrBoxTotals } from '../adrese-box';
+import { AdreseBox, AdrBoxTotals } from '../services/adrese-box';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
 import { KastesPreferences } from '../../services/preferences';
 

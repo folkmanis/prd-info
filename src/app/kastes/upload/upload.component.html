@@ -3,7 +3,6 @@
         <div class="button-bar">
             <button mat-raised-button (click)="clearFile()" color="primary">Atcelt</button>
             <button mat-raised-button matStepperNext [disabled]="!fileLoaded" color="primary">Tālāk!</button>
-            <!-- <button mat-raised-button (click)="onAtmina()" color="primary">Ielasīt no atmiņas</button> -->
         </div>
         <div class="drope" appFileDrop (filesEmitter)="onFileDrop($event)">
             <div class="text-block">

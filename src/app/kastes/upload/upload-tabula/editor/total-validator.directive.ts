@@ -1,7 +1,7 @@
 import { Directive } from '@angular/core';
 import { ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Box } from '../../adrese-box';
-import { Totals } from '../../adrese-box';
+import { Box } from '../../services/adrese-box';
+import { Totals } from '../../services/adrese-box';
 
 @Directive({
   selector: '[appTotalValidator]'

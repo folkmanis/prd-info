@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { LibraryModule } from '../library/library.module';
+import { UploadModule } from './upload/upload.module';
 import { KastesComponent } from './kastes.component';
 import { SelectorComponent } from './selector/selector.component';
 import { LabelsComponent } from './labels/labels.component';
@@ -21,6 +22,7 @@ import { SelectPasutijumsComponent } from './select-pasutijums/select-pasutijums
     CommonModule,
     LibraryModule,
     AppRoutingModule,
+    UploadModule,
   ],
 })
 export class KastesModule { }

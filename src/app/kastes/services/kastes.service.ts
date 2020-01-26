@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 
 import { KastesHttpService } from './kastes-http.service';
@@ -48,6 +48,10 @@ export class KastesService {
 
   setGatavs(body:{field:string, id: string, kaste: number, yesno: boolean}): Observable<{ changedRows: number; }> {
     return this.kastesHttpService.setGatavsHttp(body);
+  }
+
+  uploadTable(table: Veikals[]): Observable<{ affectedRows: number }> {
+    return this.kastesHttpService.uploadTableHttp(table)
   }
   
   private makeReq<T>(path: string, opt?: { [key: string]: any; }): Observable<T> {

@@ -1,5 +1,5 @@
-import { UploadRow } from '../upload-row';
-import { AdresesCsv } from '../adrese-csv';
+import { UploadRow, Kaste } from './upload-row';
+import { AdresesCsv } from './adrese-csv';
 import { Observable, of } from 'rxjs';
 
 export const MaxPakas = 5;
@@ -159,13 +159,17 @@ export class AdreseBox {
         }, init);
     }
     /**
-     * No pakojuma
+     * No pakojuma uz tabulas ierakstu
      */
-    reduce(): UploadRow[] {
-        const data: UploadRow[] = [];
-        for (const box of this.box) {
-            data.push({ kods: this.kods, adrese: this.adrese, ...box });
-        }
+    reduce(pasutijums: string): UploadRow {
+        const data: UploadRow = {
+            kods: this.kods,
+            adrese: this.adrese,
+            pasutijums,
+            kastes: this.box.map(bx => (
+                { ...bx, total: bx.sum(), gatavs: false, uzlime: false } as Kaste)
+            )
+        };
         return data;
     }
 }
@@ -193,14 +197,14 @@ export class AdresesBox {
         return of(this.data);
     }
 
-    public get values(): AdreseBox[] {
+    get values(): AdreseBox[] {
         return this.data;
     }
 
-    public get uploadRow(): UploadRow[] {
+    uploadRow(pasutijums: string): UploadRow[] {
         const ur: UploadRow[] = [];
-        for (const adr of this.data) {
-            ur.push(...adr.reduce());
+        for (const veikals of this.data) {
+            ur.push(veikals.reduce(pasutijums));
         }
         return ur;
     }
