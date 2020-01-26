@@ -19,26 +19,30 @@
     <!-- Adrese sleja -->
     <ng-container matColumnDef="adrese">
       <th mat-header-cell *matHeaderCellDef mat>Adrese</th>
-      <td mat-cell *matCellDef="let row">{{row.adrese}} <span [class.label]="row.kastes.uzlime">({{row.kastes.total}})</span></td>
+      <td mat-cell *matCellDef="let row">{{row.adrese}} <span
+          [class.label]="row.kastes.uzlime">({{row.kastes.total}})</span></td>
     </ng-container>
 
     <!-- Dzeltenā sleja -->
     <ng-container matColumnDef="yellow">
       <th mat-header-cell *matHeaderCellDef [style.color]="preferences.yellow" class="cipari">Y</th>
-      <td mat-cell *matCellDef="let row" [style.color]="preferences.yellow" class="cipari">{{row.kastes.yellow | hideZero}}
+      <td mat-cell *matCellDef="let row" [style.color]="preferences.yellow" class="cipari">
+        {{row.kastes.yellow | hideZero}}
       </td>
     </ng-container>
 
     <!-- Rozā sleja -->
     <ng-container matColumnDef="rose">
       <th mat-header-cell *matHeaderCellDef [style.color]="preferences.rose" class="cipari">R</th>
-      <td mat-cell *matCellDef="let row" [style.color]="preferences.rose" class="cipari">{{row.kastes.rose | hideZero}}</td>
+      <td mat-cell *matCellDef="let row" [style.color]="preferences.rose" class="cipari">{{row.kastes.rose | hideZero}}
+      </td>
     </ng-container>
 
     <!-- Baltas sleja -->
     <ng-container matColumnDef="white">
       <th mat-header-cell *matHeaderCellDef [style.color]="preferences.white" class="cipari">W</th>
-      <td mat-cell *matCellDef="let row" [style.color]="preferences.white" class="cipari">{{row.kastes.white | hideZero}}</td>
+      <td mat-cell *matCellDef="let row" [style.color]="preferences.white" class="cipari">
+        {{row.kastes.white | hideZero}}</td>
     </ng-container>
     <!-- Gatavs -->
     <ng-container matColumnDef="gatavs">
@@ -60,8 +64,8 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onSelect(row._id)"
-      [class.selected]="row._id === selectedKaste"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selectedKaste=row"
+      [class.selected]="row === selectedKaste"></tr>
     <tr mat-footer-row *matFooterRowDef="['kopskaiti']; sticky: true"></tr>
   </table>
 </div>

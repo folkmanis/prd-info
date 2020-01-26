@@ -13,6 +13,7 @@ export class LabelsComponent implements OnInit {
   @ViewChild(TabulaComponent, { static: false }) tabula: TabulaComponent;
   statuss: Kaste;
   bridinajums = false;
+  locked = false;
   preferences = { yellow: 'yellow', rose: 'red', white: 'gray' };
   inputForm = new FormGroup({
     kods: new FormControl(''),
@@ -22,12 +23,22 @@ export class LabelsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.inputForm.valueChanges.pipe(
-      filter<{ kods: number; }>((frm) => +frm.kods !== NaN),
-      map(frm => frm.kods),
-      switchMap(kods => this.tabula.setLabel(kods)),
-      tap(kaste => this.changeStatus(kaste))
-    ).subscribe();
+    // this.inputForm.valueChanges.pipe(
+    //   filter<{ kods: number; }>((frm) => +frm.kods !== NaN),
+    //   map(frm => frm.kods),
+    //   switchMap(kods => this.tabula.setLabel(kods)),
+    // ).subscribe();
+  }
+
+  onSubmit() {
+    const kods = this.inputForm.get('kods');
+    if (+kods.value !== NaN) {
+      this.locked = true;
+      this.tabula.setLabel(+kods.value).pipe(
+        tap(kaste => this.changeStatus(kaste)),
+      ).subscribe(() => this.locked = false);
+    }
+    this.inputForm.reset();
   }
 
   private changeStatus(ev: Kaste | null) {

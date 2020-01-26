@@ -1,11 +1,11 @@
 <app-select-pasutijums></app-select-pasutijums>
 <div class="adrese-form">
 
-    <form [formGroup]="inputForm">
+    <form [formGroup]="inputForm" (submit)="onSubmit()">
         <mat-form-field>
             <input matInput formControlName="kods" type="number" placeholder="Adreses kods:" autocomplete="off">
         </mat-form-field>
-        <button mat-raised-button type="submit">Apstiprināt</button>
+        <button mat-raised-button type="submit" [disabled]="locked">Apstiprināt</button>
     </form>
     <div class="result" *ngIf="statuss">
         <div class="result item" [style.color]="preferences.yellow">{{statuss.kastes.yellow | hideZero}}</div>

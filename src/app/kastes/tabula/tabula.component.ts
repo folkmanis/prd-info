@@ -21,7 +21,7 @@ export class TabulaComponent implements OnInit {
     this.apjomsChange.emit(this.apjoms);
   }
   dataSource: TabulaDataSource;
-  selectedKaste: number;
+  selectedKaste: Kaste;
   apjomsChange = new EventEmitter<number>();
   rowChange = new EventEmitter<number>();
   preferences: KastesPreferences;
@@ -42,10 +42,6 @@ export class TabulaComponent implements OnInit {
     this.loaded$.subscribe(ld => this.loaded = ld);
   }
 
-  onSelect(id: number) {
-    this.selectedKaste = id;
-  }
-
   onGatavs(id: string, kaste: number, gatavs: boolean): void {
     let action = true;
     if (gatavs) {
@@ -55,7 +51,6 @@ export class TabulaComponent implements OnInit {
         action = false;
       }
     }
-    console.log(id, kaste, action);
     this.dataSource.setGatavs(id, kaste, action);
   }
 
