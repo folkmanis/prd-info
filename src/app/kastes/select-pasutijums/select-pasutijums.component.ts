@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PasutijumiService } from '../services/pasutijumi.service';
 import { KastesPreferencesService } from '../services/kastes-preferences.service';
-import { switchMap, distinctUntilChanged } from 'rxjs/operators';
+import { switchMap, distinctUntilChanged, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-select-pasutijums',
@@ -23,6 +23,7 @@ export class SelectPasutijumsComponent implements OnInit {
     this.kastesPreferencesService.preferences.subscribe(pref => this.pasControl.setValue(pref.pasutijums));
     this.pasControl.valueChanges.pipe(
       distinctUntilChanged(),
+      tap(pasutijums => console.log(pasutijums)),
       switchMap(val => this.pasutijumiService.setPasutijums(val as string))
     ).subscribe();
   }
