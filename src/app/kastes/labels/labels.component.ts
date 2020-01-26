@@ -17,17 +17,12 @@ export class LabelsComponent implements OnInit {
   preferences = { yellow: 'yellow', rose: 'red', white: 'gray' };
   inputForm = new FormGroup({
     kods: new FormControl(''),
-  }, { updateOn: 'submit' });
+  });
 
   constructor(
   ) { }
 
   ngOnInit() {
-    // this.inputForm.valueChanges.pipe(
-    //   filter<{ kods: number; }>((frm) => +frm.kods !== NaN),
-    //   map(frm => frm.kods),
-    //   switchMap(kods => this.tabula.setLabel(kods)),
-    // ).subscribe();
   }
 
   onSubmit() {
