@@ -5,6 +5,7 @@
 .tabula-container {
   /* height: 500px; */
   overflow: auto;
+  margin-bottom: 50px;
 }
 
 .Nr {
