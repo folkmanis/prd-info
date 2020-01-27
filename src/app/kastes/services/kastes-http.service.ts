@@ -13,10 +13,6 @@ import { Veikals } from './veikals';
 export class KastesHttpService {
   private httpPathKastes = '/data/kastes/';
 
-  private httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-  };
-
   constructor(
     private http: HttpClient,
   ) { }
@@ -27,17 +23,17 @@ export class KastesHttpService {
    * Atgriež Observable masīvu no Pasūtījumu objekta
    */
   getPasutijumiHttp(): Observable<Pasutijums[]> {
-    return this.http.get<Pasutijums[]>(this.httpPathKastes + 'pasnames', this.httpOptions);
-  }
-  deletePasutijumsHttp(pasId: string): Observable<boolean> {
-    return this.http.delete<boolean>(this.httpPathKastes + 'pasutijums', new HttpOptions({ id: pasId }));
+    return this.http.get<Pasutijums[]>(this.httpPathKastes + 'pasnames', new HttpOptions());
   }
   addPasutijumsHttp(name: string): Observable<{ _id: string; }> {
-    return this.http.post<{ _id: string; }>(this.httpPathKastes + 'addpasutijums', { pasutijums: name }, this.httpOptions);
+    return this.http.post<{ _id: string; }>(this.httpPathKastes + 'addpasutijums', { pasutijums: name }, new HttpOptions());
+  }
+  updatePasutijums(pas: Pasutijums): Observable<{ changedRows: number; }> {
+    return this.http.post<{ changedRows: number; }>(this.httpPathKastes + 'updatepasutijums', pas, new HttpOptions());
   }
 
   getPreferencesHttp(): Observable<Partial<KastesPreferences>> {
-    return this.http.get<KastesPreferences>(this.httpPathKastes + 'preferences', this.httpOptions);
+    return this.http.get<KastesPreferences>(this.httpPathKastes + 'preferences', new HttpOptions());
   }
   /**
    * Iestata jaunas lietotāja preferences kastes modulim
@@ -46,7 +42,7 @@ export class KastesHttpService {
    * @param path Relatīvais ceļš
    */
   setPreferencesHttp(preferences: Partial<KastesPreferences>): Observable<boolean> {
-    return this.http.post<boolean>(this.httpPathKastes + 'preferences', { preferences }, this.httpOptions);
+    return this.http.post<boolean>(this.httpPathKastes + 'preferences', { preferences }, new HttpOptions());
   }
   /**
    * Universālā GET funkcija
@@ -64,12 +60,12 @@ export class KastesHttpService {
     return this.http.get<T[]>(this.httpPathKastes + path);
   }
 
-  setGatavsHttp(body: {field: string, id: string, kaste: number, yesno: boolean; }): Observable<{ changedRows: number; }> {
-    return this.http.post<{ changedRows: number; }>(this.httpPathKastes + 'gatavs', body, this.httpOptions);
+  setGatavsHttp(body: { field: string, id: string, kaste: number, yesno: boolean; }): Observable<{ changedRows: number; }> {
+    return this.http.post<{ changedRows: number; }>(this.httpPathKastes + 'gatavs', body, new HttpOptions());
   }
 
-  uploadTableHttp(veikali: Veikals[]): Observable<{affectedRows: number}> {
-    return this.http.post<{affectedRows: number}>(this.httpPathKastes + 'table', { veikali }, this.httpOptions);
+  uploadTableHttp(veikali: Veikals[]): Observable<{ affectedRows: number; }> {
+    return this.http.post<{ affectedRows: number; }>(this.httpPathKastes + 'table', { veikali }, new HttpOptions());
 
   }
 

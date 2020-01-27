@@ -9,6 +9,7 @@ import { LabelsComponent } from './labels/labels.component';
 import { TabulaComponent } from './tabula/tabula.component';
 import { AppRoutingModule } from './kastes-routing.module';
 import { SelectPasutijumsComponent } from './select-pasutijums/select-pasutijums.component';
+import { PasutijumiComponent } from './pasutijumi/pasutijumi.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { SelectPasutijumsComponent } from './select-pasutijums/select-pasutijums
     SelectorComponent,
     LabelsComponent,
     TabulaComponent,
+    PasutijumiComponent,
   ],
   imports: [
     CommonModule,

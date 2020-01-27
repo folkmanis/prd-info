@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { SelectorComponent } from './selector/selector.component';
 import { LabelsComponent } from './labels/labels.component';
 import { UploadComponent } from './upload/upload.component';
+import { PasutijumiComponent } from './pasutijumi/pasutijumi.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/selector/0', pathMatch: 'full' },
@@ -18,6 +19,10 @@ const routes: Routes = [
   {
     path: 'upload',
     component: UploadComponent
+  },
+  {
+    path: 'pasutijumi',
+    component: PasutijumiComponent,
   },
   { path: '**', redirectTo: 'selector/0' },
 ];

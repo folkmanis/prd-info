@@ -20,6 +20,7 @@ export const USER_MODULES: UserModule[] = [
             { name: 'Pakošanas saraksts', route: 'selector' },
             { name: 'Saraksta pievienošana', route: 'upload' },
             { name: 'Uzlīmju reģistrācija', route: 'labels' },
+            { name: 'Pasūtījumu pārvaldība', route: 'pasutijumi' },
         ]
     },
     { value: 'user-preferences', name: 'Lietotāja iestatījumi', description: 'Lietotāja iestatījumi', route: 'user-preferences', moduleClass: 'UserPreferencesModule' },
