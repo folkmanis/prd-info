@@ -38,7 +38,7 @@ export class TabulaComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.preferencesService.preferences.subscribe((pref) => { this.preferences = pref; console.log(this.preferences); });
+    this.preferencesService.preferences.subscribe((pref) => this.preferences = pref);
     this.loaded$.subscribe(ld => this.loaded = ld);
   }
 

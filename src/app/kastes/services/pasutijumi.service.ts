@@ -26,7 +26,6 @@ export class PasutijumiService {
   }
 
   setPasutijums(id: string): Observable<boolean> {
-    console.log(id);
     return this.kastesPreferencesService.update({ pasutijums: id });
   }
 

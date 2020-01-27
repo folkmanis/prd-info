@@ -101,7 +101,6 @@ export class ArchiveSearchService {
       this.facetFilter[key] = value;
       this._search[key] = value.length ? value : undefined;
     }
-    // console.log(JSON.stringify(this._search));
     this.getSearchResult();
     this.getFacet();
   }

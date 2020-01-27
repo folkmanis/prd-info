@@ -26,7 +26,6 @@ export class XmfUploadComponent implements OnInit {
   }
 
   onFileSelected(ev: any) {
-    console.log(ev.target.files);
     this.file = ev.target.files[0];
     this.fakeInput.setValue(this.file.name);
   }

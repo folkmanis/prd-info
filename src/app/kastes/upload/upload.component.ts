@@ -99,18 +99,11 @@ export class UploadComponent implements OnInit {
       });
   }
 
-/*   onAtmina() {
-    this.uploadService.adresesBox = JSON.parse(this.persistenceService.get('kastes', StorageType.LOCAL));
-    this.uploadService.adresesBox$ = of(this.uploadService.adresesBox);
-    this.fileLoaded = true;
-    this.boxGatavi = true;
-  }
- */
   finalDialog(affectedRows: number): void {
     const dialogRef = this.dialog.open(EndDialogComponent, { width: '400px', disableClose: true, data: { rows: affectedRows } });
 
     dialogRef.afterClosed().subscribe(() => {
-      this.router.navigate(['/selector', 0]);
+      this.router.navigate(['kastes', 'selector', 0]);
     });
   }
 }
