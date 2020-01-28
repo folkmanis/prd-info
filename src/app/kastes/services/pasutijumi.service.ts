@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { Pasutijums } from './pasutijums';
-import { KastesHttpService } from './kastes-http.service';
+import { KastesHttpService, CleanupResponse } from './kastes-http.service';
 import { KastesPreferencesService } from './kastes-preferences.service';
 import { tap, map, switchMap, filter } from 'rxjs/operators';
 
@@ -42,6 +42,12 @@ export class PasutijumiService {
     return this.kastesHttpService.updatePasutijums(pas).pipe(
       map(res => !!res.changedRows),
       tap(upd => upd && this.loadPasutijumi()),
+    );
+  }
+
+  cleanup(): Observable<CleanupResponse> {
+    return this.kastesHttpService.pasutijumiCleanup().pipe(
+      tap(resp => (resp.deleted.pasutijumi || resp.deleted.veikali) && this.loadPasutijumi())
     );
   }
 

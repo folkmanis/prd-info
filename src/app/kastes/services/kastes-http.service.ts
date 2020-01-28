@@ -6,6 +6,7 @@ import { KastesPreferences } from './preferences';
 import { Pasutijums } from './pasutijums';
 import { Veikals } from './veikals';
 
+export interface CleanupResponse { deleted: { pasutijumi: number, veikali: number, }; }
 
 @Injectable({
   providedIn: 'root'
@@ -43,6 +44,12 @@ export class KastesHttpService {
    */
   setPreferencesHttp(preferences: Partial<KastesPreferences>): Observable<boolean> {
     return this.http.post<boolean>(this.httpPathKastes + 'preferences', { preferences }, new HttpOptions());
+  }
+  /**
+   * Izdzēš neaktīvos pasūtījumus no pasūtījumu un pakošanas bāzēm
+   */
+  pasutijumiCleanup(): Observable<CleanupResponse> {
+    return this.http.delete<CleanupResponse>(this.httpPathKastes + 'pasutijums-cleanup', new HttpOptions());
   }
   /**
    * Universālā GET funkcija
