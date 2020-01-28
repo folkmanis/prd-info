@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatTable } from '@angular/material/table';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
 import { TabulaDatasource } from './tabula-datasource';
 import { PasutijumiService } from '../services/pasutijumi.service';
@@ -18,14 +19,18 @@ export class PasutijumiComponent implements OnInit, AfterViewInit {
   constructor(
     private pasutijumiService: PasutijumiService,
   ) {
-    this.dataSource = new TabulaDatasource(this.pasutijumiService);
   }
 
   ngOnInit() {
+    this.dataSource = new TabulaDatasource(this.pasutijumiService);
   }
 
   ngAfterViewInit() {
-    // this.table.dataSource = this.dataSource;
+    this.table.dataSource = this.dataSource;
+  }
+
+  onCheckDeleted(pas: Pasutijums, ev: MatCheckboxChange) {
+    this.dataSource.updatePas({ _id: pas._id, deleted: ev.checked }).subscribe();
   }
 
 }

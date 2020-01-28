@@ -28,8 +28,8 @@ export class KastesHttpService {
   addPasutijumsHttp(name: string): Observable<{ _id: string; }> {
     return this.http.post<{ _id: string; }>(this.httpPathKastes + 'addpasutijums', { pasutijums: name }, new HttpOptions());
   }
-  updatePasutijums(pas: Pasutijums): Observable<{ changedRows: number; }> {
-    return this.http.post<{ changedRows: number; }>(this.httpPathKastes + 'updatepasutijums', pas, new HttpOptions());
+  updatePasutijums(pas: Partial<Pasutijums>): Observable<{ changedRows: number; }> {
+    return this.http.post<{ changedRows: number; }>(this.httpPathKastes + 'updatepasutijums', { pasutijums: pas }, new HttpOptions());
   }
 
   getPreferencesHttp(): Observable<Partial<KastesPreferences>> {

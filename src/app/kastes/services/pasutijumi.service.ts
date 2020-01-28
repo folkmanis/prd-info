@@ -35,7 +35,10 @@ export class PasutijumiService {
     );
   }
 
-  updatePasutijums(pas: Pasutijums): Observable<boolean> {
+  updatePasutijums(pas: Partial<Pasutijums>): Observable<boolean> {
+    if (!pas._id || !pas._id.length) {
+      return of(false);
+    }
     return this.kastesHttpService.updatePasutijums(pas).pipe(
       map(res => !!res.changedRows),
       tap(upd => upd && this.loadPasutijumi()),

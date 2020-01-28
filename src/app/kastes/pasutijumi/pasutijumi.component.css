@@ -1,0 +1,10 @@
+.full-width-table {
+    width: 100%;
+  }
+  
+.tabula-container {
+    /* height: 500px; */
+    overflow: auto;
+    margin-bottom: 63px;
+  }
+  

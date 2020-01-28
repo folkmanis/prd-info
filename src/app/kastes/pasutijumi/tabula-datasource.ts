@@ -13,14 +13,13 @@ export class TabulaDatasource extends DataSource<Pasutijums> {
     }
 
     connect(): Observable<Pasutijums[]> {
-        console.log("connect")
         return this.pasutijumiService.pasutijumi;
     }
 
     disconnect() {
     }
 
-    updatePas(pas: Pasutijums) {
-        this.pasutijumiService.updatePasutijums(pas);
+    updatePas(pas: Partial<Pasutijums>): Observable<boolean> {
+        return this.pasutijumiService.updatePasutijums(pas);
     }
 }
