@@ -1,14 +1,11 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { switchMap, tap, map } from 'rxjs/operators';
 import { Observable, of, merge, BehaviorSubject } from 'rxjs';
-import { Kaste } from '../../services/kastes.service';
 import { AdresesCsv } from './adrese-csv';
 import { AdreseBox, AdresesBox, AdrBoxTotals, Totals } from './adrese-box';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
 import { PasutijumiService } from '../../services/pasutijumi.service';
 import { KastesService } from '../../services/kastes.service';
-
-import { UploadRow } from './upload-row';
 
 @Injectable({
   providedIn: 'root'

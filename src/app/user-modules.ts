@@ -17,9 +17,9 @@ export const USER_MODULES: UserModule[] = [
     { value: 'xmf-upload', name: 'Pievienot XMF arhīvu', description: 'XFM arhīva jaunināšana', route: 'xmf-upload', moduleClass: 'XmfUploadModule' },
     {
         value: 'kastes', name: 'Pakošana kastēs', description: 'Pakošanas saraksti perforācijai', route: 'kastes', moduleClass: 'KastesModule', childMenu: [
+            { name: 'Uzlīmju reģistrācija', route: 'labels' },
             { name: 'Pakošanas saraksts', route: 'selector' },
             { name: 'Saraksta pievienošana', route: 'upload' },
-            { name: 'Uzlīmju reģistrācija', route: 'labels' },
             { name: 'Pasūtījumu pārvaldība', route: 'pasutijumi' },
         ]
     },

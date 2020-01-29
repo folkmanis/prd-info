@@ -145,7 +145,7 @@ export class UploadAdresesComponent implements OnInit, AfterViewInit {
   }
 
   private resetChips() {
-    this.colChipsAvailable = TABLE_COLUMNS;
+    this.colChipsAvailable = [...TABLE_COLUMNS];
     this.colChipsAssigned.clear();
   }
 }

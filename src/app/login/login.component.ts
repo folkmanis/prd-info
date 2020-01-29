@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { LoginService, User, Login } from './login.service';
+import { tap, filter, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -24,7 +25,11 @@ export class LoginComponent implements OnInit {
   });
 
   ngOnInit() {
-    this.loginService.logOut().subscribe((act) => act && this.router.navigate(['/login']));
+    this.loginService.isLogin().pipe(
+      filter(login => login),
+      switchMap(() => this.loginService.logOut()),
+      tap(() => location.reload()),
+    ).subscribe();
   }
 
   onLogin() {
