@@ -1,16 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, Validators, AsyncValidatorFn, AbstractControl, FormGroupDirective } from '@angular/forms';
-import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { UploadService } from './services/upload.service';
 import { KastesPreferencesService } from '../services/kastes-preferences.service';
 import { PasutijumiService } from '../services/pasutijumi.service';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { UploadTabulaComponent } from './upload-tabula/upload-tabula.component';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { EndDialogComponent } from './end-dialog/end-dialog.component';
-import { of } from 'rxjs';
 
 class FormErrorMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | null): boolean {
@@ -35,8 +33,10 @@ export class UploadComponent implements OnInit {
   pasutijumsForm = new FormGroup({
     pasutijumsName: new FormControl('',
       [Validators.required],
-      this.existPasutijumsName()),
-  });
+      this.existPasutijumsName()
+    ),
+  }
+  );
   formErrorMatcher = new FormErrorMatcher();
 
   constructor(
@@ -48,7 +48,6 @@ export class UploadComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // this.onAtmina();
   }
 
   onFileDrop(fileList: FileList) {
@@ -84,10 +83,10 @@ export class UploadComponent implements OnInit {
 
   existPasutijumsName(): AsyncValidatorFn {
     return (control: AbstractControl) => {
-      return this.pasutijumiService.pasutijumi.pipe(
+      return this.pasutijumiService.ofPasutijumi.pipe(
         map((pas) =>
           pas.find((el) => el.name === control.value) ? { existPasutijumsName: { value: control.value } } : null
-        )
+        ),
       );
     };
   }

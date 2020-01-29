@@ -49,7 +49,7 @@ export class UploadAdresesComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.table.dataSource = this.uploadService.adresesCsv$;
+    this.table.dataSource = this.uploadService.adresesCsv;
   }
 
   onDeleteColumns() {
@@ -129,7 +129,7 @@ export class UploadAdresesComponent implements OnInit, AfterViewInit {
    * Izveido masīvus ar parādāmo sleju nosaukumiem - displayedDataColumns un displayedColumns
    */
   private setColNames() {
-    this.displayedDataColumns = this.uploadService.adresesCsv.colNames;
+    this.displayedDataColumns = this.uploadService.colNames;
     this.displayedColumns = ['selected', ...this.displayedDataColumns];
   }
   /**

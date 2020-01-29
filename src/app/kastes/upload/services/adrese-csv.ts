@@ -1,36 +1,54 @@
-export class AdresesCsv extends Array {
+import { Observable, of, merge, BehaviorSubject } from 'rxjs';
+import { switchMap, tap, map } from 'rxjs/operators';
+import { DataSource } from '@angular/cdk/collections';
 
+interface CsvRecord extends Array<any> { }
+
+export class AdresesCsv extends DataSource<CsvRecord> {
+
+    private adreses$: BehaviorSubject<Array<any[]>> = new BehaviorSubject([]);
+
+    connect(): Observable<CsvRecord[]> {
+        return this.adreses$;
+    }
+    disconnect() { }
+    get data(): BehaviorSubject<Array<any[]>> {
+        return this.adreses$;
+    }
+
+    get value(): Array<any[]> {
+        return this.adreses$.value;
+    }
     /**
      * setCsv - Apstrādā un saglabā csv datus
      * @param csv csv fails kā string
      * @param delimiter atdalītāja simbols
      */
-    public setCsv(csv: string, delimiter: string = ',') {
-        this.parse(csv, delimiter);
+    setCsv(csv: string, delimiter: string = ',') {
+        this.adreses$.next(this.parse(csv, delimiter));
     }
 
-    public get colNames(): string[] {
-        return Object.keys(this[0]);
+    get colNames(): string[] {
+        return Object.keys(this.adreses$.value[0]);
     }
 
     /**
      * Izdzēš slejas, kuras norādītas masīvā
      * @param colMap Dzēšamās slejas norādītas ar true
      */
-    deleteColumns(colMap: {}) {
-        this.forEach(
-            (row, idx) => {
-                const nrow: any = [];
-                for (const k in row) {
-                    if (!colMap[k]) { nrow[k] = row[k]; }
-                }
-                this[idx] = nrow;
-            }
+    deleteColumns(colMap: []) {
+        const tmpData = this.adreses$.value.map(row =>
+            row.filter((_, idx) => !colMap[idx])
         );
+        this.adreses$.next(tmpData);
     }
-
-    joinColumns(colMap: {}) {
-        this.forEach((row, idx) => {
+    /**
+     * Apvieno norādītās slejas
+     * @param colMap Apvienojamās slejas norādītas ar true
+     */
+    joinColumns(colMap: []) {
+        const tmpData = [];
+        this.adreses$.value.forEach((row, idx) => {
             const nrow: any = [];
             let first: string;
             for (const k in row) { // k - indekss
@@ -49,12 +67,19 @@ export class AdresesCsv extends Array {
                     }
                 }
             }
-            this[idx] = nrow;
+            tmpData.push(nrow);
         });
+        this.adreses$.next(tmpData);
     }
 
-    private parse(csv: string, delimiter: string) {
+    deleteRows(rowMap: Array<any[]>) {
+        const tmp = this.adreses$.value.filter((val, idx) => !rowMap.includes(val));
+        this.adreses$.next(tmp);
+    }
+
+    private parse(csv: string, delimiter: string): [][] {
         const lines = csv.split('\n');
+        const data = [];
 
         for (const row of lines) { // (let i = 0; i < lines.length; i++) {
             const obj = [];
@@ -66,10 +91,10 @@ export class AdresesCsv extends Array {
             if (row.trim() === '') { continue; }
 
             while (idx < row.length) {
-                /* if we meet a double quote we skip until the next one */
                 let c = row[idx];
                 let isNumber = true;
 
+                /* if we meet a double quote we skip until the next one */
                 if (c === '"') {
                     do { c = row[++idx]; } while (c !== '"' && idx < row.length - 1);
                 }
@@ -85,19 +110,20 @@ export class AdresesCsv extends Array {
                     /* skip last double quote */
                     if (value[value.length - 1] === '"') { value = value.substr(0, value.length - 1); }
 
-                    queryIdx++;
                     if (isNumber && !isNaN(+value)) { // && i
-                        // obj[queryIdx] = +value;
+                        // obj[queryIdx.toString()] = +value;
                         obj.push(+value);
                     } else {
                         // obj[queryIdx] = value;
                         obj.push(value);
                     }
+                    queryIdx++;
                     startValueIdx = idx + 1;
                 }
                 ++idx;
             }
-            this.push(obj);
+            data.push(obj);
         }
+        return data;
     }
 }

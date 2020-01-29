@@ -1,4 +1,5 @@
 <mat-horizontal-stepper [linear]="true" #stepper>
+    <!-- Pirmais solis -->
     <mat-step label="csv faila izvēle" [completed]="fileLoaded">
         <div class="button-bar">
             <button mat-raised-button (click)="clearFile()" color="primary">Atcelt</button>
@@ -11,14 +12,16 @@
             </div>
         </div>
     </mat-step>
+    <!-- Otrais solis -->
     <mat-step label="Adrešu saraksta labošana" [completed]="boxGatavi">
         <div class="button-bar">
-            <button mat-raised-button [disabled]="!boxGatavi" color="primary" (click)="stepper.next()">Tālāk!</button>
+            <button mat-raised-button matStepperNext [disabled]="!boxGatavi" color="primary">Tālāk!</button>
         </div>
         <div>
             <app-upload-adreses *ngIf="fileLoaded" (gatavs)="boxGatavi = $event"></app-upload-adreses>
         </div>
     </mat-step>
+    <!-- Trešais solis -->
     <mat-step label="Pakošanas saraksta pārskats" [completed]="boxGatavi">
         <div class="button-bar">
             <button mat-raised-button matStepperNext color="primary">Tālāk!</button>
@@ -27,11 +30,12 @@
             <app-upload-tabula *ngIf="boxGatavi"></app-upload-tabula>
         </div>
     </mat-step>
+    <!-- Beigu solis -->
     <mat-step label="Datu saglabāšana">
         <form [formGroup]="pasutijumsForm" (submit)="onSubmitAll()">
             <div>
                 <mat-form-field class="input-text">
-                    <input matInput placeholder="Pasūtījuma nosaukums" formControlName="pasutijumsName" id="name"
+                    <input matInput placeholder="Pasūtījuma nosaukums" formControlName="pasutijumsName"
                         [errorStateMatcher]="formErrorMatcher" autocomplete="off">
                     <mat-error *ngIf="pasutijumsForm.get('pasutijumsName').hasError('existPasutijumsName')">
                         Pasūtījums ar tādu nosaukumu ir jau reģistrēts
@@ -48,3 +52,7 @@
         </form>
     </mat-step>
 </mat-horizontal-stepper>
+{{pasutijumsForm.value | json}}
+pasutijumsName valid = {{pasutijumsForm.get('pasutijumsName').valid}}
+fileLoaded = {{fileLoaded}}
+boxGatavi = {{boxGatavi}}

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, of } from 'rxjs';
+import { Observable, BehaviorSubject, of, Subject } from 'rxjs';
 import { Pasutijums } from './pasutijums';
 import { KastesHttpService, CleanupResponse } from './kastes-http.service';
 import { KastesPreferencesService } from './kastes-preferences.service';
@@ -10,18 +10,27 @@ import { tap, map, switchMap, filter } from 'rxjs/operators';
 })
 export class PasutijumiService {
   private pasutijumi$: BehaviorSubject<Pasutijums[]> = new BehaviorSubject([]);
-  private loded = false;
+  private loaded = false;
   private update = false;
   constructor(
     private kastesHttpService: KastesHttpService,
     private kastesPreferencesService: KastesPreferencesService,
   ) { }
 
-  get pasutijumi(): Observable<Pasutijums[]> {
-    if (!this.loded && !this.update) {
+  get pasutijumi(): BehaviorSubject<Pasutijums[]> {
+    if (!this.loaded && !this.update) {
       this.loadPasutijumi();
     }
     return this.pasutijumi$;
+  }
+
+  get ofPasutijumi(): Observable<Pasutijums[]> {
+    if (this.loaded) {
+      return of(this.pasutijumi$.value);
+    } else {
+      this.update = true;
+      return this.pasutijumiUpdate();
+    }
   }
 
   setPasutijums(id: string): Observable<boolean> {
@@ -30,7 +39,7 @@ export class PasutijumiService {
 
   addPasutijums(name: string): Observable<string> {
     return this.kastesHttpService.addPasutijumsHttp(name).pipe(
-      tap(() => this.loadPasutijumi),
+      tap(() => this.loadPasutijumi()),
       map(({ _id }) => _id)
     );
   }
@@ -51,13 +60,19 @@ export class PasutijumiService {
     );
   }
 
+  private pasutijumiUpdate(): Observable<Pasutijums[]> {
+    return this.kastesHttpService.getPasutijumiHttp().pipe(
+      tap(pas => {
+        this.pasutijumi$.next(pas);
+        this.update = false;
+        this.loaded = true;
+      })
+    );
+  }
+
   private loadPasutijumi() {
     this.update = true;
-    this.kastesHttpService.getPasutijumiHttp().subscribe(pas => {
-      this.pasutijumi$.next(pas);
-      this.update = false;
-      this.loded = true;
-    });
+    this.pasutijumiUpdate().subscribe();
   }
 
 }

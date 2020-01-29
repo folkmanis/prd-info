@@ -1,6 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { switchMap, tap, map } from 'rxjs/operators';
-import { Observable, of, merge } from 'rxjs';
+import { Observable, of, merge, BehaviorSubject } from 'rxjs';
 import { Kaste } from '../../services/kastes.service';
 import { AdresesCsv } from './adrese-csv';
 import { AdreseBox, AdresesBox, AdrBoxTotals, Totals } from './adrese-box';
@@ -14,9 +14,7 @@ import { UploadRow } from './upload-row';
   providedIn: 'root'
 })
 export class UploadService {
-  adresesCsv: AdresesCsv;
-  adresesCsv$: Observable<AdresesCsv>;
-  csvUpdate: EventEmitter<AdresesCsv> = new EventEmitter();
+  adresesCsv = new AdresesCsv();
   adresesBox: AdresesBox;
   adresesBox$: Observable<AdreseBox[]>;
 
@@ -26,13 +24,19 @@ export class UploadService {
     private kastesService: KastesService,
   ) { }
 
-  loadCsv(csv: string, delimiter: string = ',') {
-    this.adresesCsv = new AdresesCsv();
-    this.adresesCsv.setCsv(csv, delimiter);
-    this.adresesCsv$ = merge(of(this.adresesCsv), this.csvUpdate);
+  get adresesCsv$(): Observable<Array<any[]>> {
+    return this.adresesCsv.data;
   }
 
-  public get adresesBoxTotals(): AdrBoxTotals {
+  get colNames(): string[] {
+    return this.adresesCsv.colNames;
+  }
+
+  loadCsv(csv: string, delimiter: string = ',') {
+    this.adresesCsv.setCsv(csv, delimiter);
+  }
+
+  get adresesBoxTotals(): AdrBoxTotals {
     return {
       adreses: this.adresesBox.data.length,
       boxes: this.adresesBox.totals.boxCount,
@@ -40,36 +44,28 @@ export class UploadService {
     };
   }
 
-  public get adresesTotals(): Totals {
+   get adresesTotals(): Totals {
     return this.adresesBox.totals;
   }
   /**
    * Izdzēš slejas, kuras norādītas masīvā
    * @param colMap Dzēšamās slejas norādītas ar true
    */
-  deleteAdresesCsvColumns(colMap: {}) {
+  deleteAdresesCsvColumns(colMap: []) {
     this.adresesCsv.deleteColumns(colMap);
-    this.csvUpdate.emit(this.adresesCsv);
   }
 
-  joinAdresesCsvColumns(colMap: {}) {
-    this.adresesCsv.joinColumns(colMap);
-    this.csvUpdate.emit(this.adresesCsv);
+  joinAdresesCsvColumns(colMap: []) {
+    this.adresesCsv.joinColumns(colMap)
   }
 
   deleteCsvRows(selected: any[]) {
-    selected.forEach((selVal) => {
-      const idx = this.adresesCsv.indexOf(selVal);
-      if (idx > -1) {
-        this.adresesCsv.splice(idx, 1);
-      }
-    });
-    this.csvUpdate.emit(this.adresesCsv);
+    this.adresesCsv.deleteRows(selected);
   }
 
   adresesToKastes(colMap: Map<number, string>, toPakas: boolean) {
     this.adresesBox = new AdresesBox();
-    this.adresesBox$ = this.adresesBox.init(this.adresesCsv, colMap, { toPakas });
+    this.adresesBox$ = this.adresesBox.init(this.adresesCsv.value, colMap, { toPakas });
   }
 
   savePasutijums(pasutijumsName: string): Observable<{ affectedRows: number; }> {

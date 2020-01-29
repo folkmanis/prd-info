@@ -1,5 +1,4 @@
 import { UploadRow, Kaste } from './upload-row';
-import { AdresesCsv } from './adrese-csv';
 import { Observable, of } from 'rxjs';
 
 export const MaxPakas = 5;
@@ -37,7 +36,7 @@ class AdreseSkaits {
      * key - esošās slejas nosaukums
      * value - piešķirtais slejas pielietojums.
      */
-    constructor(adrS: [], colMap: Map<number, string>) {
+    constructor(adrS: any[], colMap: Map<number, string>) {
         adrS.forEach((val, idx) => {
             const m = colMap[idx];
             if (m) { this[m] = val; }
@@ -183,7 +182,7 @@ export class AdresesBox {
     constructor() { }
 
     init(
-        adrSaraksts: AdresesCsv,
+        adrSaraksts: Array<any[]>,
         colMap: Map<number, string>,
         { toPakas = false } = {}
     ): Observable<AdreseBox[]> {
