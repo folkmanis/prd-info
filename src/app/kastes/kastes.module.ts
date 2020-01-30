@@ -10,6 +10,7 @@ import { TabulaComponent } from './tabula/tabula.component';
 import { AppRoutingModule } from './kastes-routing.module';
 import { SelectPasutijumsComponent } from './select-pasutijums/select-pasutijums.component';
 import { PasutijumiComponent } from './pasutijumi/pasutijumi.component';
+import { ColorsOutputComponent } from './tabula/colors-output/colors-output.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { PasutijumiComponent } from './pasutijumi/pasutijumi.component';
     LabelsComponent,
     TabulaComponent,
     PasutijumiComponent,
+    ColorsOutputComponent,
   ],
   imports: [
     CommonModule,

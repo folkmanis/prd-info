@@ -8,6 +8,9 @@
     Nav uzlīmes: <span class="mat-body-strong">{{dataSource.labelsRemain}}</span>
   </span>
 </div>
+<div class="kopskaiti mat-small">
+    <app-colors-output [colorsRemain]="dataSource.colorsRemain"></app-colors-output>
+</div>
 <div class="mat-elevation-z8 tabula-container">
   <table mat-table [dataSource]="dataSource" class="full-width-table" aria-label="Kastes">
     <!-- Id Column -->

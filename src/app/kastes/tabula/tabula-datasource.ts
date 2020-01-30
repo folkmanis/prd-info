@@ -5,6 +5,12 @@ import { Observable, of as observableOf, merge, of, BehaviorSubject } from 'rxjs
 
 import { KastesService, Kaste } from '../services/kastes.service';
 
+export interface ColorsPakas {
+  yellow: number,
+  rose: number,
+  white: number,
+}
+
 /**
  * Data source for the Tabula view. This class should
  * encapsulate all logic for fetching and manipulating the displayed data
@@ -15,6 +21,10 @@ export class TabulaDataSource extends DataSource<Kaste> {
   total: number;
   kastesRemain: number;
   labelsRemain: number;
+  colorsRemain: BehaviorSubject<ColorsPakas> =
+    new BehaviorSubject<ColorsPakas>({
+      yellow: 0, rose: 0, white: 0,
+    });
 
   constructor(
     private kastesService: KastesService,
@@ -51,8 +61,21 @@ export class TabulaDataSource extends DataSource<Kaste> {
           this.total = dat.length;
           this.kastesRemain = dat.reduce((total, curr) => total += curr.kastes.gatavs ? 0 : 1, 0);
           this.labelsRemain = dat.reduce((total, curr) => total += curr.kastes.uzlime ? 0 : 1, 0);
+          this.calcColorsRemain();
         })
       );
+  }
+  /**
+   * Aprēķina atlikušo vajadzīgo paciņu daudzumu pa krāsām
+   * publicē colorsRemain objektā
+   */
+  private calcColorsRemain() {
+    this.colorsRemain.next(
+      this.data.reduce((total, curr) => {
+        curr.kastes.gatavs || Object.keys(total).forEach(key => total[key] += curr.kastes[key]);
+        return total;
+      }, { yellow: 0, rose: 0, white: 0 })
+    );
   }
 
   /**
@@ -73,6 +96,7 @@ export class TabulaDataSource extends DataSource<Kaste> {
         this.kastesRemain += (yesno ? -1 : +1);
         this.data[idx].kastes.gatavs = yesno;
         this.rowChanged.emit(idx);
+        this.calcColorsRemain();
       }
     });
   }
