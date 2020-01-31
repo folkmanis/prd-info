@@ -29,55 +29,73 @@ export { User, UserPreferences } from '/home/dev/prd-info-node/src/lib/user-clas
 
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, pipe, Subject, BehaviorSubject, of } from 'rxjs';
-import { map, tap, catchError } from 'rxjs/operators';
-import { merge } from 'rxjs/index';
+import { Observable, BehaviorSubject, of } from 'rxjs';
+import { map, tap, catchError, distinctUntilChanged } from 'rxjs/operators';
+import { USER_MODULES, UserModule } from '../user-modules';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
 
-  private userSubj = new Subject<User | null>();
   private httpPathLogin = '/data/login/';
   private httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
+  private loaded = false;
+  user$: BehaviorSubject<User | null>;
+  modules$: BehaviorSubject<UserModule[]>;
 
   constructor(
     private http: HttpClient,
-  ) { }
-
-  user$: Observable<User | null> = merge(this.userSubj, this.getUserHttp());
+  ) {
+    this.user$ = new BehaviorSubject<User | null>(null);
+    this.modules$ = new BehaviorSubject<UserModule[]>([]);
+    this.user$.pipe(
+      distinctUntilChanged()
+    ).subscribe(usr => this.modules$.next(
+      USER_MODULES.filter(mod => usr && usr.preferences.modules.includes(mod.value))
+    ));
+  }
 
   logIn(login: Login): Observable<boolean> {
     return this.loginHttp(login).pipe(
-      tap((resp) => this.userSubj.next(resp)),
-      map((resp) => !!resp),
+      tap(usr => this.user$.next(usr)),
+      map(usr => !!usr),
+      tap(() => this.loaded = true),
     );
   }
 
   logOut(): Observable<boolean> {
     return this.logoutHttp().pipe(
       map((resp) => resp.logout > 0),
-      tap((resp) => !resp || this.userSubj.next(null)),
+      tap((resp) => !resp || this.user$.next(null)),
     );
   }
 
   isLogin(): Observable<boolean> {
-    return this.getUserHttp().pipe(
-      map((usr) => !!usr),
+    return this.getUser().pipe(
+      map(usr => !!usr),
     );
   }
 
   isAdmin(): Observable<boolean> {
-    return this.getUserHttp().pipe(
+    return this.getUser().pipe(
       map((usr) => !!usr && !!usr.admin)
     );
-  }
+  };
 
   getUser(): Observable<User> {
-    return this.getUserHttp();
+    if (this.loaded) {
+      return of(this.user$.value);
+    } else {
+      return this.getUserHttp().pipe(
+        tap(usr => {
+          this.user$.next(usr);
+          this.loaded = true;
+        }),
+      );
+    }
   }
 
   isModule(mod: string): Observable<boolean> {
