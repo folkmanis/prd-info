@@ -26,8 +26,8 @@ export class MenuDataSource implements DataSource<SideMenuData> {
    * @param collectionViewer 
    */
   connect(collectionViewer: CollectionViewer): Observable<SideMenuData[]> {
-    this.loginService.user$.subscribe(usr => {
-      const data = usr ? this.toSideMenu(USER_MODULES.filter(mod => usr.preferences.modules.includes(mod.value))) : [];
+    this.loginService.modules$.subscribe(mod => {
+      const data = this.toSideMenu(mod);
       this.dataChange.next(data);
     }
     );
