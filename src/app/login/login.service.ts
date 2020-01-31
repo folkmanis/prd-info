@@ -30,8 +30,11 @@ export { User, UserPreferences } from '/home/dev/prd-info-node/src/lib/user-clas
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, pipe, Subject, BehaviorSubject, of } from 'rxjs';
+import { USER_MODULES, UserModule } from '../user-modules';
 import { map, tap, catchError } from 'rxjs/operators';
 import { merge } from 'rxjs/index';
+
+
 
 @Injectable({
   providedIn: 'root'
@@ -49,6 +52,7 @@ export class LoginService {
   ) { }
 
   user$: Observable<User | null> = merge(this.userSubj, this.getUserHttp());
+  modules$: BehaviorSubject<UserModule[]> = new BehaviorSubject<UserModule[]>([]);
 
   logIn(login: Login): Observable<boolean> {
     return this.loginHttp(login).pipe(
@@ -84,6 +88,13 @@ export class LoginService {
     return this.getUser().pipe(
       map(usr => !!usr.preferences.modules.find(m => m === mod)),
     );
+  }
+
+  private updateModules() {
+    this.user$.subscribe(usr => {
+      const data = usr ? USER_MODULES.filter(mod => usr.preferences.modules.includes(mod.value)) : [];
+      this.modules$.next(data);
+    });
   }
 
   private getUserHttp(): Observable<User | null> {
