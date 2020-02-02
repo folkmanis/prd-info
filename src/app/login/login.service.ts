@@ -60,6 +60,12 @@ export class LoginService {
     ));
   }
 
+  connect() {
+    if (!this.loaded) {
+      this.getUser().subscribe();
+    }
+  }
+
   logIn(login: Login): Observable<boolean> {
     return this.loginHttp(login).pipe(
       tap(usr => this.user$.next(usr)),

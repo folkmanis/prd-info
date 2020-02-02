@@ -1,1 +1,3 @@
-<p>main-menu works!</p>
+<div *ngFor="let item of menuItems$ | async">
+<a mat-button [routerLink]="item.route">{{item.name}}</a>
+</div>

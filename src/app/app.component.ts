@@ -35,6 +35,7 @@ export class AppComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.loginService.connect();
     this.loginService.user$.subscribe((usr) => {
       this.loggedIn = !!usr;
       this.user = usr && usr.name;

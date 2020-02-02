@@ -6,7 +6,7 @@ import { UploadComponent } from './upload/upload.component';
 import { PasutijumiComponent } from './pasutijumi/pasutijumi.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/selector/0', pathMatch: 'full' },
+  { path: '', redirectTo: 'selector/0', pathMatch: 'full' },
   {
     path: 'selector/:id',
     component: SelectorComponent,
