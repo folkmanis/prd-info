@@ -45,12 +45,6 @@ export class AppComponent implements OnInit {
     });
   }
 
-  onNavigate(t?: string) {
-    this.sidenavService.setTitle(t || '');
-    // this.router.navigate(path);
-    // this.toolbarTitle = path;
-  }
-
   private initUserMenu(usr?: User) {
     this.userMenuItems = [{ route: ['/login'], text: 'Atslēgties' }];
     if (usr && usr.preferences.modules.includes('user-preferences')) {

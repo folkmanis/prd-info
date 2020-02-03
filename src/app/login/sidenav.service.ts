@@ -60,26 +60,10 @@ export class MenuDataSource implements DataSource<SideMenuData> {
 })
 export class SidenavService {
 
-  title$: Subject<string> = new Subject();
   dataSource: MenuDataSource;
   constructor(
     loginService: LoginService,
   ) {
     this.dataSource = new MenuDataSource(loginService);
   }
-  /**
-   * Uzliek virsrakstu
-   * @param val Virsraksts
-   */
-  setTitle(val: string) {
-    this.title$.next(val);
-  }
-  /**
-   * Uzliek virsrakstu pēc moduļa nosaukuma
-   * @param mod Moduļa nosaukums
-   */
-  setModule(mod: string) {
-    this.setTitle(USER_MODULES.find(m => m.value === mod).description);
-  }
-
 }

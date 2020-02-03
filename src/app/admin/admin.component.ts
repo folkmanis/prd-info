@@ -13,7 +13,6 @@ export class AdminComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.sidenavService.setTitle('Sistēmas iestatījumi');
   }
 
 }

@@ -13,7 +13,6 @@ export class UserPreferencesComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.sidenavService.setModule('user-preferences');
   }
 
 }

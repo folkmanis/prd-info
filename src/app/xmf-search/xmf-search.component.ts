@@ -27,7 +27,6 @@ export class XmfSearchComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.sidenavService.setModule('xmf-search');
     this.searchForm.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged(this.changeDetector),

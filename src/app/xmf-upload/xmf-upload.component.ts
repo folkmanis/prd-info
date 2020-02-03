@@ -21,7 +21,6 @@ export class XmfUploadComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.sidenavService.setModule('xmf-upload');
     this.fakeInput.disable();
   }
 
