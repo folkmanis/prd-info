@@ -5,8 +5,9 @@
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
     </span>
+    <!-- Toolbar -->
     <span style="flex: 0 0 auto"><a mat-button routerLink="">Iekšējā informācija</a></span>
-    <span style="flex: 0 0 auto"><a mat-button>{{toolbarTitle$ | async}}</a></span>
+    <span style="flex: 0 0 auto"><a mat-button [routerLink]="activeRoute">{{activeTitle}}</a></span>
     <span style="flex: 1 1 auto"></span>
     <span style="flex: 0 0 auto">
       <button mat-button [matMenuTriggerFor]='userMenu'>

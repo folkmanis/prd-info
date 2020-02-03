@@ -11,6 +11,7 @@ import { AppRoutingModule } from './kastes-routing.module';
 import { SelectPasutijumsComponent } from './select-pasutijums/select-pasutijums.component';
 import { PasutijumiComponent } from './pasutijumi/pasutijumi.component';
 import { ColorsOutputComponent } from './tabula/colors-output/colors-output.component';
+import { KastesMainMenuComponent } from './kastes-main-menu/kastes-main-menu.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { ColorsOutputComponent } from './tabula/colors-output/colors-output.comp
     TabulaComponent,
     PasutijumiComponent,
     ColorsOutputComponent,
+    KastesMainMenuComponent,
   ],
   imports: [
     CommonModule,

@@ -1,0 +1,23 @@
+.menu-layout {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+.menu-card {
+    display: inline-block;
+    margin: 20px;
+    vertical-align: top;
+    width: 300px;
+}
+
+.card-text {
+    text-decoration: none;
+    min-height: 100px;
+}
+
+a:-webkit-any-link {
+    color: -webkit-link;
+    cursor: pointer;
+    text-decoration: none;
+}

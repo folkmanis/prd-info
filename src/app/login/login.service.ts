@@ -31,7 +31,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { map, tap, catchError, distinctUntilChanged } from 'rxjs/operators';
-import { USER_MODULES, UserModule } from '../user-modules';
+import { USER_MODULES } from '../user-modules';
+import { UserModule } from "../library/user-module-interface";
 
 
 

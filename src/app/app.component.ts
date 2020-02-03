@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LoginService, User } from './login/login.service';
-import { USER_MODULES, UserModule } from './user-modules';
+import { USER_MODULES } from './user-modules';
+import { UserModule } from "./library/user-module-interface";
 import { Observable } from 'rxjs';
 import { map, shareReplay, delay, tap } from 'rxjs/operators';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
@@ -18,9 +19,8 @@ export class AppComponent implements OnInit {
   user = '';
   userModules: UserModule[] = [];
   userMenuItems: { route: string[], text: string; }[] = [];
-  toolbarTitle$: Observable<string> = this.loginService.activeModule$.pipe(
-    map(mod => mod ? mod.description : '')
-  );
+  activeTitle: string = '';
+  activeRoute: string = '';
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -41,6 +41,10 @@ export class AppComponent implements OnInit {
       this.isAdmin = !!usr && !!usr.admin;
       this.initUserMenu(usr);
       this.initModulesMenu(usr);
+    });
+    this.loginService.activeModule$.subscribe(mod => {
+      this.activeTitle = mod ? mod.name : '';
+      this.activeRoute = mod ? mod.route : '';
     });
   }
 

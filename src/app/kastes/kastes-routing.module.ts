@@ -1,12 +1,12 @@
 import { NgModule, Component } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { KastesMainMenuComponent } from './kastes-main-menu/kastes-main-menu.component';
 import { SelectorComponent } from './selector/selector.component';
 import { LabelsComponent } from './labels/labels.component';
 import { UploadComponent } from './upload/upload.component';
 import { PasutijumiComponent } from './pasutijumi/pasutijumi.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'selector/0', pathMatch: 'full' },
   {
     path: 'selector/:id',
     component: SelectorComponent,
@@ -23,6 +23,11 @@ const routes: Routes = [
   {
     path: 'pasutijumi',
     component: PasutijumiComponent,
+  },
+  {
+    path: '',
+    pathMatch: 'full',
+    component: KastesMainMenuComponent,
   },
   { path: '**', redirectTo: 'selector/0' },
 ];

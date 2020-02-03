@@ -1,14 +1,8 @@
-export interface UserModule {
-    value: string;
-    name: string;
-    description: string; // Tiek izmantots toolbar virsrakstā
-    route: string;
-    moduleClass: string;
-    childMenu?: Partial<UserModule>[];
-}
+import { UserModule } from './library/user-module-interface';
 
 interface ChildMenu {
     name: string;
+    description: string;
     route: string;
 }
 
@@ -17,16 +11,16 @@ export const USER_MODULES: UserModule[] = [
     { value: 'xmf-upload', name: 'Pievienot XMF arhīvu', description: 'XFM arhīva jaunināšana', route: 'xmf-upload', moduleClass: 'XmfUploadModule' },
     {
         value: 'kastes', name: 'Pakošana kastēs', description: 'Pakošanas saraksti perforācijai', route: 'kastes', moduleClass: 'KastesModule', childMenu: [
-            { name: 'Uzlīmju reģistrācija', route: 'labels' },
-            { name: 'Pakošanas saraksts', route: 'selector' },
-            { name: 'Saraksta pievienošana', route: 'upload' },
-            { name: 'Pasūtījumu pārvaldība', route: 'pasutijumi' },
+            { name: 'Uzlīmju reģistrācija', route: 'labels', description: 'Saņemto uzlīmju reģistrācija, šķirošana un pārbaude' },
+            { name: 'Pakošanas saraksts', route: 'selector', description: 'Darbs ar iepakojumiem' },
+            { name: 'Saraksta pievienošana', route: 'upload', description: 'Jauna pakošanas saraksta izveide no pakošanas tabulas' },
+            { name: 'Pasūtījumu pārvaldība', route: 'pasutijumi', description: 'Pakošanas sarakstu dzēšana, datubāzes optimizācija' },
         ]
     },
     { value: 'user-preferences', name: 'Lietotāja iestatījumi', description: 'Lietotāja iestatījumi', route: 'user-preferences', moduleClass: 'UserPreferencesModule' },
     {
         value: 'admin', name: 'Administrēšana', description: 'Sistēmas iestatījumi', route: 'admin', moduleClass: 'AdminModule', childMenu: [
-            { name: 'Lietotāji', route: 'users' }
+            { name: 'Lietotāji', route: 'users', description: 'Sistēmas lietotāji: izveide, paroles maiņa, pieejamie moduļi' }
         ]
     },
 ];

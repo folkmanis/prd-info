@@ -2,9 +2,10 @@ import { HttpService, User, UserPreferences, UserList } from './http.service';
 import { Injectable } from '@angular/core';
 import { Observable, Subject, of } from 'rxjs';
 import { map, tap, filter, switchMap } from 'rxjs/operators';
-import { USER_MODULES, UserModule } from '../../user-modules';
+import { USER_MODULES } from '../../user-modules';
+import { UserModule } from "../../library/user-module-interface";
 
-export { UserModule } from '../../user-modules';
+export { UserModule } from '../../library/user-module-interface';
 
 export interface Customer {
   name: string;

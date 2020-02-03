@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 
 import { MatInputModule } from '@angular/material/input';
@@ -16,13 +17,13 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatTreeModule} from '@angular/material/tree';
+import { MatTreeModule } from '@angular/material/tree';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatChipsModule } from '@angular/material/chips';
-import {MatCardModule} from '@angular/material/card';
+import { MatCardModule } from '@angular/material/card';
 
 import { LayoutModule } from '@angular/cdk/layout';
 
@@ -33,6 +34,7 @@ import { FileDropDirective } from './directives/file-drop.directive';
 import { AppMonthPipe } from './pipes/app-month.pipe';
 import { HideZeroPipe } from './pipes/hide-zero.pipe';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
+import { CardMenuComponent } from './card-menu/card-menu.component';
 
 @NgModule({
   declarations: [
@@ -42,11 +44,13 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
     AppMonthPipe,
     HideZeroPipe,
     ConfirmationDialogComponent,
+    CardMenuComponent,
   ],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    RouterModule,
     HttpClientModule,
     MatInputModule,
     MatToolbarModule,
@@ -99,6 +103,7 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
     ScrollToTopModule,
     CopyClipboardDirective,
     TaggedStringComponent,
+    CardMenuComponent,
     FileDropDirective,
     AppMonthPipe,
     HideZeroPipe,
