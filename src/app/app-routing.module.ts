@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import { LoginGuard } from './login/login.guard';
-import { AdminGuard } from './login/admin.guard';
 import { USER_MODULES } from './user-modules';
 
 const routes: Routes = [
@@ -12,13 +11,10 @@ const routes: Routes = [
     component: MainMenuComponent,
     pathMatch: 'full',
     canActivate: [LoginGuard],
-  }, {
+  },
+  {
     path: 'login',
     component: LoginComponent
-  }, {
-    path: 'admin',
-    loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule),
-    canLoad: [AdminGuard],
   },
 ];
 
@@ -26,7 +22,8 @@ for (const mod of USER_MODULES) {
   routes.push({
     path: mod.route,
     canLoad: [LoginGuard],
-    loadChildren: () => import(`./${mod.value}/${mod.value}.module`).then(m => m[mod.moduleClass])
+    loadChildren: () => import(`./${mod.value}/${mod.value}.module`).then(m => m[mod.moduleClass]),
+    canActivate: [LoginGuard],
   });
 }
 
