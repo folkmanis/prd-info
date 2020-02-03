@@ -9,7 +9,6 @@ import { SidenavService } from '../login/sidenav.service';
 export class UserPreferencesComponent implements OnInit {
 
   constructor(
-    private sidenavService: SidenavService,
   ) { }
 
   ngOnInit() {

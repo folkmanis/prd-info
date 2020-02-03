@@ -23,7 +23,6 @@ export class XmfSearchComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private sidenavService: SidenavService,
   ) { }
 
   ngOnInit() {

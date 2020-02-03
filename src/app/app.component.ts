@@ -31,7 +31,6 @@ export class AppComponent implements OnInit {
   constructor(
     private loginService: LoginService,
     private breakpointObserver: BreakpointObserver,
-    private sidenavService: SidenavService,
   ) { }
 
   ngOnInit() {

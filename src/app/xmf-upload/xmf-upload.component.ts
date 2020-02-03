@@ -17,7 +17,6 @@ export class XmfUploadComponent implements OnInit {
 
   constructor(
     private uploadService: UploadService,
-    private sidenavService: SidenavService,
   ) { }
 
   ngOnInit() {
