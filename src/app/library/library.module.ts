@@ -22,6 +22,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatChipsModule } from '@angular/material/chips';
+import {MatCardModule} from '@angular/material/card';
 
 import { LayoutModule } from '@angular/cdk/layout';
 
@@ -66,6 +67,7 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
     MatStepperModule,
     MatFormFieldModule,
     MatChipsModule,
+    MatCardModule,
     ScrollToTopModule,
     LayoutModule,
   ],
@@ -92,6 +94,7 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
     MatStepperModule,
     MatFormFieldModule,
     MatChipsModule,
+    MatCardModule,
     LayoutModule,
     ScrollToTopModule,
     CopyClipboardDirective,

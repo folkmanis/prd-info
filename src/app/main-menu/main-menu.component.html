@@ -1,3 +1,12 @@
-<div *ngFor="let item of menuItems$ | async">
-<a mat-button [routerLink]="item.route">{{item.name}}</a>
+<div class="menu-layout">
+    <div *ngFor="let item of menuItems$ | async" class="menu-card">
+        <a [routerLink]="item.route">
+            <mat-card class="card-text">
+                <mat-card-title>{{item.name}}</mat-card-title>
+                <mat-card-content>
+                    <p>{{item.description}}</p>
+                </mat-card-content>
+            </mat-card>
+        </a>
+    </div>
 </div>
