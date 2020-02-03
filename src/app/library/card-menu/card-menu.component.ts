@@ -15,11 +15,9 @@ export class CardMenuComponent implements OnInit {
   @Input() modules: Observable<UserModule[]>;
 
   constructor(
-    private route: ActivatedRoute,
   ) { }
 
   ngOnInit() {
-    console.log(this.route.snapshot);
   }
 
 }
