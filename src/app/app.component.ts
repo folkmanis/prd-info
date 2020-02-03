@@ -18,8 +18,8 @@ export class AppComponent implements OnInit {
   user = '';
   userModules: UserModule[] = [];
   userMenuItems: { route: string[], text: string; }[] = [];
-  toolbarTitle$ = this.sidenavService.title$.pipe(
-    delay(200),
+  toolbarTitle$: Observable<string> = this.loginService.activeModule$.pipe(
+    map(mod => mod ? mod.description : '')
   );
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)

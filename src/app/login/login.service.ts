@@ -47,12 +47,14 @@ export class LoginService {
   private loaded = false;
   user$: BehaviorSubject<User | null>;
   modules$: BehaviorSubject<UserModule[]>;
+  activeModule$: BehaviorSubject<UserModule | null>;
 
   constructor(
     private http: HttpClient,
   ) {
     this.user$ = new BehaviorSubject<User | null>(null);
     this.modules$ = new BehaviorSubject<UserModule[]>([]);
+    this.activeModule$ = new BehaviorSubject<UserModule | null>(null);
     this.user$.pipe(
       distinctUntilChanged()
     ).subscribe(usr => this.modules$.next(
@@ -112,11 +114,8 @@ export class LoginService {
     );
   }
 
-  private updateModules() {
-    this.user$.subscribe(usr => {
-      const data = usr ? USER_MODULES.filter(mod => usr.preferences.modules.includes(mod.value)) : [];
-      this.modules$.next(data);
-    });
+  setActiveModule(mod: UserModule | null) {
+    this.activeModule$.next(mod);
   }
 
   private getUserHttp(): Observable<User | null> {
