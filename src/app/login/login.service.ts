@@ -119,6 +119,12 @@ export class LoginService {
     this.activeModule$.next(mod);
   }
 
+  childMenu(root: string): Observable<Partial<UserModule>[]> {
+    return this.modules$.pipe(
+      map(mod => mod.find(md => md.value === root).childMenu || []),
+    );
+  }
+
   private getUserHttp(): Observable<User | null> {
     return this.http.get<User>(this.httpPathLogin + 'user', this.httpOptions).pipe(
       map((usr) => usr.username ? usr : null)

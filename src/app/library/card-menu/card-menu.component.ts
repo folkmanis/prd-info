@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { UserModule } from '../user-module-interface';
 import { Observable } from 'rxjs';
 
@@ -14,8 +13,7 @@ export class CardMenuComponent implements OnInit {
    */
   @Input() modules: Observable<UserModule[]>;
 
-  constructor(
-  ) { }
+  constructor() { }
 
   ngOnInit() {
   }

@@ -12,9 +12,8 @@ export class KastesMainMenuComponent implements OnInit {
     private loginService: LoginService,
   ) { }
 
-  modules$ = this.loginService.modules$.pipe(
-    map(mod => mod.find(md => md.value === 'kastes').childMenu || []),
-  );
+  modules$ = this.loginService.childMenu('kastes');
+
   ngOnInit() {
   }
 
