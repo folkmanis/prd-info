@@ -1,8 +1,16 @@
 .pas-select {
-    padding: 8px 8px;
-    width: 100%;
+    flex: 1 1 400px;
+    margin: 8px 8px;
 }
 
 .pas-input {
-    width: 400px;
+    width: 100%;
+}
+
+.pas-container {
+    display: flex;;
+}
+
+.spacer {
+    flex: 5 1 auto;
 }
