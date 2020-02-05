@@ -9,6 +9,7 @@ import { UsersComponent } from './users/users.component';
 import { UserEditorComponent } from './users/user-editor/user-editor.component';
 import { NewUserComponent } from './users/new-user/new-user.component';
 import { PasswordChangeDialogComponent } from './users/user-editor/password-change-dialog/password-change-dialog.component';
+import { AdminMainMenuComponent } from './admin-main-menu/admin-main-menu.component';
 
 
 @NgModule({
@@ -18,6 +19,7 @@ import { PasswordChangeDialogComponent } from './users/user-editor/password-chan
     UserEditorComponent,
     NewUserComponent,
     PasswordChangeDialogComponent,
+    AdminMainMenuComponent,
   ],
   imports: [
     CommonModule,

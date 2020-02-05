@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { AdminComponent } from './admin.component';
+import { AdminMainMenuComponent } from './admin-main-menu/admin-main-menu.component';
 import { UsersComponent } from './users/users.component';
 import { NewUserComponent } from './users/new-user/new-user.component';
 import { UserEditorComponent } from './users/user-editor/user-editor.component';
@@ -28,6 +29,12 @@ const routes: Routes = [
           },
         ]
       },
+      {
+        path: '',
+        component: AdminMainMenuComponent,
+        pathMatch: 'full',
+      },
+      { path: '**', redirectTo: '', },
     ]
   },
 ];
