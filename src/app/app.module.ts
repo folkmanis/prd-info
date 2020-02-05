@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 
 import { LibraryModule } from './library/library.module';
 
@@ -10,6 +10,7 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { SideMenuComponent } from './side-menu/side-menu.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
+import { ErrorsService } from './library/errors/errors.service';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,12 @@ import { MainMenuComponent } from './main-menu/main-menu.component';
     AppRoutingModule,
     LibraryModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: ErrorHandler,
+      useClass: ErrorsService,
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
