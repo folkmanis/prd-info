@@ -12,6 +12,7 @@ import { SelectPasutijumsComponent } from './select-pasutijums/select-pasutijums
 import { PasutijumiComponent } from './pasutijumi/pasutijumi.component';
 import { ColorsOutputComponent } from './tabula/colors-output/colors-output.component';
 import { KastesMainMenuComponent } from './kastes-main-menu/kastes-main-menu.component';
+import { PreferencesComponent } from './preferences/preferences.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { KastesMainMenuComponent } from './kastes-main-menu/kastes-main-menu.com
     PasutijumiComponent,
     ColorsOutputComponent,
     KastesMainMenuComponent,
+    PreferencesComponent,
   ],
   imports: [
     CommonModule,

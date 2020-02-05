@@ -5,6 +5,7 @@ import { SelectorComponent } from './selector/selector.component';
 import { LabelsComponent } from './labels/labels.component';
 import { UploadComponent } from './upload/upload.component';
 import { PasutijumiComponent } from './pasutijumi/pasutijumi.component';
+import { PreferencesComponent } from './preferences/preferences.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,10 @@ const routes: Routes = [
   {
     path: 'pasutijumi',
     component: PasutijumiComponent,
+  },
+  {
+    path: 'preferences',
+    component: PreferencesComponent,
   },
   {
     path: '',

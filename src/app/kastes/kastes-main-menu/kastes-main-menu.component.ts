@@ -1,20 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { LoginService } from '../../login/login.service';
-import { map, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-kastes-main-menu',
   template: `<app-card-menu [modules]="modules$"></app-card-menu>`,
 })
-export class KastesMainMenuComponent implements OnInit {
+export class KastesMainMenuComponent {
 
   constructor(
     private loginService: LoginService,
   ) { }
 
   modules$ = this.loginService.childMenu('kastes');
-
-  ngOnInit() {
-  }
 
 }

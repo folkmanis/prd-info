@@ -44,6 +44,10 @@ export class KastesPreferencesService {
     );
   }
 
+  getPreferencesRaw(): Observable<Partial<KastesPreferences>> {
+    return this.kastesHttpService.getPreferencesHttp()
+  }
+
   private updatePreferences(pr: Partial<KastesPreferences>) {
     const updated = this.preferences$.value;
     Object.keys(pr).forEach(key => updated[key] = pr[key] || defaultPreferences[key]);
