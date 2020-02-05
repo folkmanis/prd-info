@@ -15,7 +15,6 @@ export const USER_MODULES: UserModule[] = [
             { name: 'Pakošanas saraksts', route: 'selector', description: 'Darbs ar iepakojumiem' },
             { name: 'Saraksta pievienošana', route: 'upload', description: 'Jauna pakošanas saraksta izveide no pakošanas tabulas' },
             { name: 'Pasūtījumi', route: 'pasutijumi', description: 'Pakošanas sarakstu dzēšana, datubāzes optimizācija' },
-            { name: 'Iestatījumi', route: 'preferences', description: 'Iestatījumi' },
         ]
     },
     { value: 'user-preferences', name: 'Lietotāja iestatījumi', description: 'Lietotāja iestatījumi', route: 'user-preferences', moduleClass: 'UserPreferencesModule' },
