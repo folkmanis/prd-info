@@ -17,7 +17,6 @@ export const USER_MODULES: UserModule[] = [
             { name: 'Pasūtījumi', route: 'pasutijumi', description: 'Pakošanas sarakstu dzēšana, datubāzes optimizācija' },
         ]
     },
-    { value: 'user-preferences', name: 'Lietotāja iestatījumi', description: 'Lietotāja iestatījumi', route: 'user-preferences', moduleClass: 'UserPreferencesModule' },
     {
         value: 'admin', name: 'Administrēšana', description: 'Sistēmas iestatījumi', route: 'admin', moduleClass: 'AdminModule', childMenu: [
             { name: 'Lietotāji', route: 'users', description: 'Sistēmas lietotāji: izveide, paroles maiņa, pieejamie moduļi' }
