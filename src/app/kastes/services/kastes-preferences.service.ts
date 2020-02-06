@@ -6,7 +6,9 @@ import { map, switchMap, tap } from 'rxjs/operators';
 
 const defaultPreferences: KastesPreferences = {
   pasutijums: '',
-  yellow: 'gold', rose: 'magenta', white: 'gray',
+  colors: {
+    yellow: 'gold', rose: 'magenta', white: 'gray',
+  }
 };
 
 @Injectable({
@@ -43,10 +45,6 @@ export class KastesPreferencesService {
       })
     );
   }
-
-  // getPreferencesRaw(): Observable<Partial<KastesPreferences>> {
-  //   return this.kastesHttpService.getPreferencesHttp()
-  // }
 
   private updatePreferences(pr: Partial<KastesPreferences>) {
     const updated = this.preferences$.value;

@@ -3,6 +3,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { Kaste } from '../services/kastes.service';
 import { TabulaComponent } from '../tabula/tabula.component';
 import { filter, switchMap, map, tap } from 'rxjs/operators';
+import { KastesPreferencesService } from '../services/kastes-preferences.service';
 
 @Component({
   selector: 'app-labels',
@@ -20,9 +21,11 @@ export class LabelsComponent implements OnInit {
   });
 
   constructor(
+    private kastesPreferencesService: KastesPreferencesService,
   ) { }
 
   ngOnInit() {
+    this.kastesPreferencesService.preferences.subscribe(pref => this.preferences = pref.colors);
   }
 
   onSubmit() {

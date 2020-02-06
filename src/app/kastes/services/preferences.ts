@@ -5,7 +5,9 @@ export interface UserPreferences {
 }
 
 export interface SystemPreferences {
-  yellow: string;
-  rose: string;
-  white: string;
+  colors:{
+    yellow: string;
+    rose: string;
+    white: string;
+  }
 }
