@@ -38,7 +38,6 @@ export class KastesHttpService {
   getPreferencesHttp(): Observable<KastesPreferences> {
     return zip(this.getSystemPreferencesHttp(), this.getUserPreferencesHttp()).pipe(
       map(([sys, usr]) => ({ ...sys, ...usr })),
-      tap(pr => console.log(pr))
     );
   }
   getUserPreferencesHttp(): Observable<UserPreferences> {
