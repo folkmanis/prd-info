@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { KastesPreferences } from './preferences';
+import { KastesPreferences, UserPreferences } from './preferences';
 import { KastesHttpService } from './kastes-http.service';
 import { map, switchMap, tap } from 'rxjs/operators';
 
@@ -34,8 +34,8 @@ export class KastesPreferencesService {
     return this.preferences$;
   }
 
-  update(pr: Partial<KastesPreferences>): Observable<boolean> {
-    return this.kastesHttpService.setPreferencesHttp(pr).pipe(
+  update(pr: Partial<UserPreferences>): Observable<boolean> {
+    return this.kastesHttpService.setUserPreferencesHttp(pr).pipe(
       tap(resp => {
         if (resp) {
           this.updatePreferences(pr);
@@ -44,9 +44,9 @@ export class KastesPreferencesService {
     );
   }
 
-  getPreferencesRaw(): Observable<Partial<KastesPreferences>> {
-    return this.kastesHttpService.getPreferencesHttp()
-  }
+  // getPreferencesRaw(): Observable<Partial<KastesPreferences>> {
+  //   return this.kastesHttpService.getPreferencesHttp()
+  // }
 
   private updatePreferences(pr: Partial<KastesPreferences>) {
     const updated = this.preferences$.value;

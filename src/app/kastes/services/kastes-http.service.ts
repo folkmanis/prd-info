@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, zip } from 'rxjs';
 import { HttpOptions } from "../../library/http/http-options";
-import { KastesPreferences } from './preferences';
+import { KastesPreferences, UserPreferences, SystemPreferences } from './preferences';
 import { Pasutijums } from './pasutijums';
 import { Veikals } from './veikals';
+import { tap, switchMap, map } from 'rxjs/operators';
 
 export interface CleanupResponse { deleted: { pasutijumi: number, veikali: number, }; }
 
@@ -13,6 +14,7 @@ export interface CleanupResponse { deleted: { pasutijumi: number, veikali: numbe
 })
 export class KastesHttpService {
   private httpPathKastes = '/data/kastes/';
+  private httpPathPreferences = '/data/preferences';
 
   constructor(
     private http: HttpClient,
@@ -33,8 +35,19 @@ export class KastesHttpService {
     return this.http.post<{ changedRows: number; }>(this.httpPathKastes + 'updatepasutijums', { pasutijums: pas }, new HttpOptions());
   }
 
-  getPreferencesHttp(): Observable<Partial<KastesPreferences>> {
-    return this.http.get<KastesPreferences>(this.httpPathKastes + 'preferences', new HttpOptions());
+  getPreferencesHttp(): Observable<KastesPreferences> {
+    return zip(this.getSystemPreferencesHttp(), this.getUserPreferencesHttp()).pipe(
+      map(([sys, usr]) => ({ ...sys, ...usr })),
+      tap(pr => console.log(pr))
+    );
+  }
+  getUserPreferencesHttp(): Observable<UserPreferences> {
+    return this.http.get<UserPreferences>(this.httpPathKastes + 'preferences', new HttpOptions());
+  }
+  getSystemPreferencesHttp(): Observable<SystemPreferences> {
+    return this.http.get<{ settings: SystemPreferences; }>(this.httpPathPreferences, new HttpOptions({ module: 'kastes' })).pipe(
+      map(sett => sett.settings)
+    );
   }
   /**
    * Iestata jaunas lietotāja preferences kastes modulim
@@ -42,7 +55,7 @@ export class KastesHttpService {
    * @param preferences Preferences objekts ar jaunajām preferencēm
    * @param path Relatīvais ceļš
    */
-  setPreferencesHttp(preferences: Partial<KastesPreferences>): Observable<boolean> {
+  setUserPreferencesHttp(preferences: Partial<UserPreferences>): Observable<boolean> {
     return this.http.post<boolean>(this.httpPathKastes + 'preferences', { preferences }, new HttpOptions());
   }
   /**
