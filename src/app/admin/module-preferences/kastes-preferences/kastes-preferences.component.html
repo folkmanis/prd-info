@@ -1,0 +1,8 @@
+<h2>Pakošanas iestatījumi</h2>
+<form *ngIf="colorsForm" [formGroup]="colorsForm">
+    <p *ngFor="let col of keys">
+        {{col}}:
+        <mat-slider min="0" max="100" step="1" [formControlName]="col"></mat-slider>
+    </p>
+    <button mat-raised-button (click)="onSave()" [disabled]="colorsForm.pristine">Saglabāt</button>
+</form>

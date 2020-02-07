@@ -1,57 +1,25 @@
-/**
- * /data/login
- *
- * POST /data/login/login
- * {
- * username: string;
- * password: string;
- * }
- *
- * User
- *
- *
- * POST /data/login/logout
- * {}
- *
- * GET /data/login/user
- * user: string
- */
-
-export class Login {
-  username: string;
-  password: string;
-}
-interface LogoutResponse {
-  logout: number;
-}
-import { User, UserPreferences } from '/home/dev/prd-info-node/src/lib/user-class';
-export { User, UserPreferences } from '/home/dev/prd-info-node/src/lib/user-class';
-
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, BehaviorSubject, of } from 'rxjs';
-import { map, tap, catchError, distinctUntilChanged } from 'rxjs/operators';
+import { Observable, BehaviorSubject, of, Subject } from 'rxjs';
+import { map, tap, distinctUntilChanged, filter, pluck } from 'rxjs/operators';
 import { USER_MODULES } from '../user-modules';
-import { UserModule } from "../library/user-module-interface";
-
-
+import { UserModule } from "../library/classes/user-module-interface";
+import { SystemPreferences, ModulePreferences } from '../library/classes/system-preferences-class';
+import { LoginHttpService, User, Login } from './login-http.service';
+export { User } from './login-http.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
 
-  private httpPathLogin = '/data/login/';
-  private httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-  };
   private loaded = false;
   user$: BehaviorSubject<User | null>;
   modules$: BehaviorSubject<UserModule[]>;
   activeModule$: BehaviorSubject<UserModule | null>;
+  private sysPref$: BehaviorSubject<SystemPreferences> = new BehaviorSubject([]);
 
   constructor(
-    private http: HttpClient,
+    private http: LoginHttpService,
   ) {
     this.user$ = new BehaviorSubject<User | null>(null);
     this.modules$ = new BehaviorSubject<UserModule[]>([]);
@@ -66,11 +34,13 @@ export class LoginService {
   connect() {
     if (!this.loaded) {
       this.getUser().subscribe();
+      this.reloadPreferences().subscribe();
     }
+    this.sysPref$.subscribe();
   }
 
   logIn(login: Login): Observable<boolean> {
-    return this.loginHttp(login).pipe(
+    return this.http.loginHttp(login).pipe(
       tap(usr => this.user$.next(usr)),
       map(usr => !!usr),
       tap(() => this.loaded = true),
@@ -78,7 +48,7 @@ export class LoginService {
   }
 
   logOut(): Observable<boolean> {
-    return this.logoutHttp().pipe(
+    return this.http.logoutHttp().pipe(
       map((resp) => resp.logout > 0),
       tap((resp) => !resp || this.user$.next(null)),
     );
@@ -100,7 +70,7 @@ export class LoginService {
     if (this.loaded) {
       return of(this.user$.value);
     } else {
-      return this.getUserHttp().pipe(
+      return this.http.getUserHttp().pipe(
         tap(usr => {
           this.user$.next(usr);
           this.loaded = true;
@@ -125,27 +95,14 @@ export class LoginService {
     );
   }
 
-  private getUserHttp(): Observable<User | null> {
-    return this.http.get<User>(this.httpPathLogin + 'user', this.httpOptions).pipe(
-      map((usr) => usr.username ? usr : null)
+  get systemPreferences(): Subject<SystemPreferences> {
+    return this.sysPref$;
+  }
+
+  reloadPreferences(): Observable<boolean> {
+    return this.http.getAllSystemPreferencesHttp().pipe(
+      tap(pref => this.sysPref$.next(pref)),
+      map(pref => !!pref),
     );
-  }
-
-  private loginHttp(login: Login): Observable<User | null> {
-    return this.http.post<User>(this.httpPathLogin + 'login', login, this.httpOptions).pipe(
-      map((usr) => usr.username ? usr : null),
-      catchError(this.handleError('Invalid login: ' + login, null)),
-    );
-  }
-
-  private logoutHttp(): Observable<LogoutResponse> {
-    return this.http.post<LogoutResponse>(this.httpPathLogin + 'logout', {}, this.httpOptions);
-  }
-
-  private handleError<T>(operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-      console.error(operation, error);
-      return of(result as T);
-    };
   }
 }

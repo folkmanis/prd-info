@@ -6,6 +6,7 @@ import { AdminMainMenuComponent } from './admin-main-menu/admin-main-menu.compon
 import { UsersComponent } from './users/users.component';
 import { NewUserComponent } from './users/new-user/new-user.component';
 import { UserEditorComponent } from './users/user-editor/user-editor.component';
+import { ModulePreferencesComponent } from './module-preferences/module-preferences.component';
 import { CanDeactivateGuard } from "../library/guards/can-deactivate.guard";
 
 const routes: Routes = [
@@ -28,6 +29,10 @@ const routes: Routes = [
             canDeactivate: [CanDeactivateGuard],
           },
         ]
+      },
+      {
+        path: 'module-preferences',
+        component: ModulePreferencesComponent,
       },
       {
         path: '',

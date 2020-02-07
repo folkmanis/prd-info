@@ -10,6 +10,8 @@ import { UserEditorComponent } from './users/user-editor/user-editor.component';
 import { NewUserComponent } from './users/new-user/new-user.component';
 import { PasswordChangeDialogComponent } from './users/user-editor/password-change-dialog/password-change-dialog.component';
 import { AdminMainMenuComponent } from './admin-main-menu/admin-main-menu.component';
+import { ModulePreferencesComponent } from './module-preferences/module-preferences.component';
+import { KastesPreferencesComponent } from './module-preferences/kastes-preferences/kastes-preferences.component';
 
 
 @NgModule({
@@ -20,6 +22,8 @@ import { AdminMainMenuComponent } from './admin-main-menu/admin-main-menu.compon
     NewUserComponent,
     PasswordChangeDialogComponent,
     AdminMainMenuComponent,
+    ModulePreferencesComponent,
+    KastesPreferencesComponent,
   ],
   imports: [
     CommonModule,

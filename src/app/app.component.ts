@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LoginService, User } from './login/login.service';
 import { USER_MODULES } from './user-modules';
-import { UserModule } from "./library/user-module-interface";
+import { UserModule } from "./library/classes/user-module-interface";
 import { Observable } from 'rxjs';
 import { map, shareReplay, delay, tap } from 'rxjs/operators';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';

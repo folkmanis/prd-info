@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, Subject, merge } from 'rxjs';
 import { CollectionViewer, SelectionChange, DataSource } from '@angular/cdk/collections';
-import { UserModule } from "../library/user-module-interface";
+import { UserModule } from "../library/classes/user-module-interface";
 import { LoginService } from './login.service';
 import { map } from 'rxjs/operators';
 

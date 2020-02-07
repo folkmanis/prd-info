@@ -24,6 +24,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatCardModule } from '@angular/material/card';
+import { MatSliderModule } from '@angular/material/slider';
 
 import { LayoutModule } from '@angular/cdk/layout';
 
@@ -72,6 +73,7 @@ import { CardMenuComponent } from './card-menu/card-menu.component';
     MatFormFieldModule,
     MatChipsModule,
     MatCardModule,
+    MatSliderModule,
     ScrollToTopModule,
     LayoutModule,
   ],
@@ -99,6 +101,7 @@ import { CardMenuComponent } from './card-menu/card-menu.component';
     MatFormFieldModule,
     MatChipsModule,
     MatCardModule,
+    MatSliderModule,
     LayoutModule,
     ScrollToTopModule,
     CopyClipboardDirective,

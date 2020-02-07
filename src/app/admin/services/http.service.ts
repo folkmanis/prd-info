@@ -2,15 +2,15 @@ export { User, UserPreferences } from '/home/dev/prd-info-node/src/lib/user-clas
 import { User, UserPreferences } from '/home/dev/prd-info-node/src/lib/user-class';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { HttpOptions } from "../../library/http/http-options";
-import { map } from 'rxjs/operators';
+import { ModulePreferences, SystemPreferences } from '../../library/classes/system-preferences-class';
 
 export interface UserList {
   count: number,
   users: User[],
 }
-
 
 interface UpdateResponse {
   success: boolean;
@@ -25,6 +25,8 @@ export class HttpService {
   /**   Klientu kodi ir arhīva datubāzē
    * TODO izveidot klientu datubāzi uz    */
   private httpPathSearch = '/data/xmf-search/';
+  private httpPathPreferences = '/data/preferences/';
+
 
   constructor(
     private http: HttpClient,
@@ -61,6 +63,22 @@ export class HttpService {
   deleteUserHttp(username: string): Observable<boolean> {
     return this.http.delete<UpdateResponse>(this.httpPathUsers + 'user', new HttpOptions({ username: username })).pipe(
       map(resp => resp.success)
+    );
+  }
+
+  getModuleSystemPreferencesHttp(mod: string): Observable<ModulePreferences> {
+    return this.http.get<{ settings: ModulePreferences; }>(this.httpPathPreferences + 'single', new HttpOptions({ module: mod })).pipe(
+      map(sett => sett.settings)
+    );
+  }
+
+  getAllSystemPreferencesHttp(): Observable<SystemPreferences> {
+    return this.http.get<ModulePreferences[]>(this.httpPathPreferences + 'all', new HttpOptions());
+  }
+
+  updateModuleSystemPreferences(preferences: ModulePreferences): Observable<boolean> {
+    return this.http.put<{ ok: number; }>(this.httpPathPreferences + 'update', { preferences }, new HttpOptions()).pipe(
+      map(res => !!res.ok)
     );
   }
 

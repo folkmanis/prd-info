@@ -1,4 +1,4 @@
-import { UserModule } from './library/user-module-interface';
+import { UserModule } from './library/classes/user-module-interface';
 
 interface ChildMenu {
     name: string;
@@ -19,7 +19,8 @@ export const USER_MODULES: UserModule[] = [
     },
     {
         value: 'admin', name: 'Administrēšana', description: 'Sistēmas iestatījumi', route: 'admin', moduleClass: 'AdminModule', childMenu: [
-            { name: 'Lietotāji', route: 'users', description: 'Sistēmas lietotāji: izveide, paroles maiņa, pieejamie moduļi' }
+            { name: 'Lietotāji', route: 'users', description: 'Sistēmas lietotāji: izveide, paroles maiņa, pieejamie moduļi' },
+            { name: 'Sistēmas iestatījumi', route: 'module-preferences', description: 'Moduļu iestatījumi' },
         ]
     },
 ];

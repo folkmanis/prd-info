@@ -14,7 +14,6 @@ export interface CleanupResponse { deleted: { pasutijumi: number, veikali: numbe
 })
 export class KastesHttpService {
   private httpPathKastes = '/data/kastes/';
-  private httpPathPreferences = '/data/preferences';
 
   constructor(
     private http: HttpClient,
@@ -35,18 +34,14 @@ export class KastesHttpService {
     return this.http.post<{ changedRows: number; }>(this.httpPathKastes + 'updatepasutijums', { pasutijums: pas }, new HttpOptions());
   }
 
-  getPreferencesHttp(): Observable<KastesPreferences> {
-    return zip(this.getSystemPreferencesHttp(), this.getUserPreferencesHttp()).pipe(
-      map(([sys, usr]) => ({ ...sys, ...usr })),
-    );
+  getPreferencesHttp(): Observable<UserPreferences> {
+    return this.getUserPreferencesHttp();
+    // return zip(this.getSystemPreferencesHttp(), this.getUserPreferencesHttp()).pipe(
+    //   map(([sys, usr]) => ({ ...sys, ...usr })),
+    // );
   }
   getUserPreferencesHttp(): Observable<UserPreferences> {
     return this.http.get<UserPreferences>(this.httpPathKastes + 'preferences', new HttpOptions());
-  }
-  getSystemPreferencesHttp(): Observable<SystemPreferences> {
-    return this.http.get<{ settings: SystemPreferences; }>(this.httpPathPreferences, new HttpOptions({ module: 'kastes' })).pipe(
-      map(sett => sett.settings)
-    );
   }
   /**
    * Iestata jaunas lietotāja preferences kastes modulim

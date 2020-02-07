@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, zip, merge } from 'rxjs';
 import { KastesPreferences, UserPreferences } from './preferences';
 import { KastesHttpService } from './kastes-http.service';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { LoginService } from '../../login/login.service';
+import { map, switchMap, tap, filter } from 'rxjs/operators';
 
 const defaultPreferences: KastesPreferences = {
   pasutijums: '',
@@ -21,17 +22,25 @@ export class KastesPreferencesService {
   private loading = false;
   constructor(
     private kastesHttpService: KastesHttpService,
+    private loginService: LoginService,
   ) { }
 
   get preferences(): BehaviorSubject<KastesPreferences> {
     if (!this.initialised && !this.loading) {
       this.loading = true;
-      this.kastesHttpService.getPreferencesHttp().pipe(
-        tap(changes => {
-          this.updatePreferences(changes);
-          this.initialised = true;
-        }),
-      ).subscribe(() => this.loading = false);
+
+      const sys$ = this.loginService.systemPreferences.pipe(
+        map(sys => sys.find(set => set.module === 'kastes')),
+        filter(sys => !!sys),
+        map(sys => ({ ...sys.settings })),
+      );
+      const usr$ = this.kastesHttpService.getPreferencesHttp();
+
+      merge(usr$, sys$)
+        .pipe(
+          tap(set => this.preferences$.next({ ...this.preferences$.value, ...set })),
+          tap(() => this.initialised = true),
+        ).subscribe(() => this.loading = false);
     }
     return this.preferences$;
   }
