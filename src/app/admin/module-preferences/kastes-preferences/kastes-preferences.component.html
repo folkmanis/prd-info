@@ -1,8 +1,11 @@
 <h2>Pakošanas iestatījumi</h2>
 <form *ngIf="colorsForm" [formGroup]="colorsForm">
-    <p *ngFor="let col of keys">
-        {{col}}:
-        <mat-slider min="0" max="100" step="1" [formControlName]="col"></mat-slider>
-    </p>
+    <div *ngFor="let col of keys" class="flex-container">
+        <div class="flex-text">{{col}}:</div>
+        <div>
+            <mat-slider min="0" max="100" step="1" thumbLabel [formControlName]="col"></mat-slider>
+        </div>
+        <div [ngStyle]="{'color': preferences.settings.colors[col]}">{{preferences.settings.colors[col]}}</div>
+    </div>
     <button mat-raised-button (click)="onSave()" [disabled]="colorsForm.pristine">Saglabāt</button>
 </form>
