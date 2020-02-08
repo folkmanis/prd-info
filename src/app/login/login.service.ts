@@ -5,7 +5,7 @@ import { USER_MODULES } from '../user-modules';
 import { UserModule } from "../library/classes/user-module-interface";
 import { SystemPreferences, ModulePreferences } from '../library/classes/system-preferences-class';
 import { LoginHttpService, User, Login } from './login-http.service';
-export { User } from './login-http.service';
+export { User, Login } from './login-http.service';
 
 @Injectable({
   providedIn: 'root'
