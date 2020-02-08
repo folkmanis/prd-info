@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, of, Subject } from 'rxjs';
-import { map, tap, distinctUntilChanged, filter, pluck } from 'rxjs/operators';
+import { map, tap, distinctUntilChanged, filter, pluck, switchMap } from 'rxjs/operators';
 import { USER_MODULES } from '../user-modules';
 import { UserModule } from "../library/classes/user-module-interface";
 import { SystemPreferences, ModulePreferences } from '../library/classes/system-preferences-class';
@@ -33,17 +33,21 @@ export class LoginService {
 
   connect() {
     if (!this.loaded) {
-      this.getUser().subscribe();
-      this.reloadPreferences().subscribe();
+      this.isLogin().pipe(
+        filter(login => login),
+        switchMap(() => this.reloadPreferences()),
+      ).subscribe();
+      // this.reloadPreferences().subscribe();
     }
-    this.sysPref$.subscribe();
+    // this.sysPref$.subscribe();
   }
 
   logIn(login: Login): Observable<boolean> {
     return this.http.loginHttp(login).pipe(
       tap(usr => this.user$.next(usr)),
       map(usr => !!usr),
-      tap(() => this.loaded = true),
+      tap(login => this.loaded = login),
+      switchMap(login => login ? this.reloadPreferences() : of(null)),
     );
   }
 

@@ -3,7 +3,7 @@ import { LoginService, User } from './login/login.service';
 import { USER_MODULES } from './user-modules';
 import { UserModule } from "./library/classes/user-module-interface";
 import { Observable } from 'rxjs';
-import { map, shareReplay, delay, tap } from 'rxjs/operators';
+import { map, shareReplay, delay, tap,filter } from 'rxjs/operators';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { SidenavService } from './login/sidenav.service';
 
@@ -15,7 +15,7 @@ import { SidenavService } from './login/sidenav.service';
 export class AppComponent implements OnInit {
 
   loggedIn = false;
-  isAdmin = false;
+  // isAdmin = false;
   user = '';
   userModules: UserModule[] = [];
   userMenuItems: { route: string[], text: string; }[] = [];
@@ -35,10 +35,12 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.loginService.connect();
-    this.loginService.user$.subscribe((usr) => {
-      this.loggedIn = !!usr;
-      this.user = usr && usr.name;
-      this.isAdmin = !!usr && !!usr.admin;
+    this.loginService.user$.pipe(
+      filter(usr=>!!usr),
+    ).subscribe((usr) => {
+      this.loggedIn = true;
+      this.user = usr.name;
+      // this.isAdmin = !!usr && !!usr.admin;
       this.initUserMenu(usr);
       this.initModulesMenu(usr);
     });
