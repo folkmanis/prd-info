@@ -8,8 +8,8 @@ import { User } from '../../services/http.service';
 import { debounceTime, distinctUntilChanged, switchMap, filter, tap, map } from 'rxjs/operators';
 import { Subscription, Observable } from 'rxjs';
 import { PasswordChangeDialogComponent } from "./password-change-dialog/password-change-dialog.component";
-import { ConfirmationDialogComponent } from "../../../library/confirmation-dialog/confirmation-dialog.component";
 import { CanComponentDeactivate } from "../../../library/guards/can-deactivate.guard";
+import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 
 @Component({
   selector: 'app-user-editor',
@@ -39,6 +39,7 @@ export class UserEditorComponent implements OnInit, CanComponentDeactivate {
     private snackBar: MatSnackBar,
     private router: Router,
     private route: ActivatedRoute,
+    private dialogService: ConfirmationDialogService,
   ) {   }
 
   ngOnInit() {
@@ -56,10 +57,7 @@ export class UserEditorComponent implements OnInit, CanComponentDeactivate {
   }
 
   onDelete() {
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      data: { prompt: "Tiešām dzēst lietotāju?" }
-    });
-    dialogRef.afterClosed().pipe(
+    this.dialogService.confirm('Tiešām dzēst lietotāju?').pipe(
       filter(resp => resp),
       switchMap(() => this.usersService.deleteUser(this.user.username)),
     ).subscribe(resp => {
@@ -87,14 +85,12 @@ export class UserEditorComponent implements OnInit, CanComponentDeactivate {
     if(this.userForm.pristine) {
       return true;
     }
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      data: {
-        prompt: 'Visas izmaiņas vēl nav saglabātas. Ja pametīsiet šo sadaļu, tad tās, iespējams, netiks saglabātas.',
+      const data= {
         yes: 'Jā, pamest!',
         no: 'Nē, gaidīt!',
       }
-    })
-    return dialogRef.afterClosed();
+    const prompt= 'Visas izmaiņas vēl nav saglabātas. Ja pametīsiet šo sadaļu, tad tās, iespējams, netiks saglabātas.';
+    return this.dialogService.confirm(prompt,{data})
   }
 
   private setFormValues(usr: Partial<User> | null) {

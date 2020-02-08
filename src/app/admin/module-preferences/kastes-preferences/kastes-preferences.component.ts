@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
-import { filter, switchMap } from 'rxjs/operators';
+import { filter, switchMap, tap, map } from 'rxjs/operators';
 import { ModulePreferencesService, ModulePreferences, KastesPreferences } from '../../services/module-preferences.service';
 import { LoginService } from 'src/app/login/login.service';
+import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 
 interface Color {
   hue: number,
@@ -28,6 +29,7 @@ export class KastesPreferencesComponent implements OnInit {
     private moduleService: ModulePreferencesService,
     private fb: FormBuilder,
     private loginService: LoginService,
+    private dialogService: ConfirmationDialogService,
   ) { }
 
   preferences: KastesPreferences;
@@ -51,8 +53,10 @@ export class KastesPreferencesComponent implements OnInit {
   }
 
   onSave() {
-    this.updateColors();
-    this.moduleService.updateModulePreferences(this.preferences).pipe(
+    this.dialogService.confirm('Tiešām saglabāt izmaiņas?').pipe(
+      filter(resp => resp),
+      tap(() => this.updateColors()),
+      switchMap(() => this.moduleService.updateModulePreferences(this.preferences)),
       filter(resp => resp),
       switchMap(() => this.loginService.reloadPreferences())
     )
