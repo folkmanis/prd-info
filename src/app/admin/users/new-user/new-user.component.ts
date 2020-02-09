@@ -2,14 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router";
 import { FormGroup, FormControl, Validators, ValidationErrors, AsyncValidator, AsyncValidatorFn, AbstractControl } from '@angular/forms';
 import { UsersService, Customer, UserModule } from '../../services/users.service';
-import { User } from '../../services/http.service';
-import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Validator } from '../../services/validator';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { ConfirmationDialogComponent } from "../../../library/confirmation-dialog/confirmation-dialog.component";
 import { CanComponentDeactivate } from "../../../library/guards/can-deactivate.guard";
+import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 
 @Component({
   selector: 'app-new-user',
@@ -39,7 +36,7 @@ export class NewUserComponent implements OnInit, CanComponentDeactivate {
     private usersService: UsersService,
     private router: Router,
     private snackBar: MatSnackBar,
-    private dialog: MatDialog,
+    private dialogService: ConfirmationDialogService,
   ) { }
 
   ngOnInit() {
@@ -63,15 +60,14 @@ export class NewUserComponent implements OnInit, CanComponentDeactivate {
   canDeactivate(): Observable<boolean> | boolean {
     if (this.newUserForm.pristine) {
       return true;
+    } else {
+      return this.dialogService.confirm('Vai tiešām vēlaties pamest nesaglabātu?', {
+        data: {
+          yes: 'Jā, pamest!',
+          no: 'Nē, turpināt!',
+        }
+      });
     }
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      data: {
-        prompt: 'Vai tiešām vēlaties pamest nesaglabātu?',
-        yes: 'Jā, pamest!',
-        no: 'Nē, turpināt!',
-      }
-    });
-    return dialogRef.afterClosed();
   }
 
 }

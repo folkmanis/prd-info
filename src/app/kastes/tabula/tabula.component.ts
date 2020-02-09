@@ -6,6 +6,8 @@ import { KastesService, Kaste } from '../services/kastes.service';
 import { KastesPreferencesService } from '../services/kastes-preferences.service';
 import { KastesPreferences } from '../services/preferences';
 import { Observable, BehaviorSubject } from 'rxjs';
+import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
+import { filter, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-tabula',
@@ -32,6 +34,7 @@ export class TabulaComponent implements OnInit {
 
   constructor(
     private kastesService: KastesService,
+    private dialogService: ConfirmationDialogService,
     public preferencesService: KastesPreferencesService,
   ) {
     this.dataSource = new TabulaDataSource(this.kastesService, this.apjomsChange, this.rowChange, this.apjoms, this.loaded$);
@@ -43,15 +46,14 @@ export class TabulaComponent implements OnInit {
   }
 
   onGatavs(id: string, kaste: number, gatavs: boolean): void {
-    let action = true;
     if (gatavs) {
-      if (!confirm('Tiešām?')) {
-        return;
-      } else {
-        action = false;
-      }
+      this.dialogService.confirm('Tiešām?').pipe(
+        filter(resp => resp),
+        switchMap(() => this.dataSource.setGatavs(id, kaste, false))
+      ).subscribe();
+    } else {
+      this.dataSource.setGatavs(id, kaste, true).subscribe();
     }
-    this.dataSource.setGatavs(id, kaste, action);
   }
 
   setLabel(kods: number): Observable<Kaste | null> {

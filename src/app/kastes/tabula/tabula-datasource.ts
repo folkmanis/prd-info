@@ -1,7 +1,7 @@
 import { EventEmitter } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
-import { map, tap, startWith, switchMap, filter } from 'rxjs/operators';
-import { Observable, of as observableOf, merge, of, BehaviorSubject } from 'rxjs';
+import { map, tap, switchMap, filter } from 'rxjs/operators';
+import { Observable, merge, of, BehaviorSubject } from 'rxjs';
 
 import { KastesService, Kaste } from '../services/kastes.service';
 
@@ -89,16 +89,18 @@ export class TabulaDataSource extends DataSource<Kaste> {
    * @param id ieraksta id numurs
    * @param yesno false - noņem gatavības iezīmi, true - uzliek gatavibas iezīmi
    */
-  setGatavs(id: string, kaste: number, yesno: boolean) {
+  setGatavs(id: string, kaste: number, yesno: boolean): Observable<boolean> {
     const idx = this.data.findIndex((val: Kaste) => val._id === id && val.kaste === kaste);
-    this.kastesService.setGatavs({ field: 'gatavs', id, kaste, yesno }).subscribe(atbilde => {
-      if (atbilde.changedRows === 1) {
+    return this.kastesService.setGatavs({ field: 'gatavs', id, kaste, yesno }).pipe(
+      map(({ changedRows }) => !!changedRows),
+      filter(ok => ok),
+      tap(() => {
         this.kastesRemain += (yesno ? -1 : +1);
         this.data[idx].kastes.gatavs = yesno;
         this.rowChanged.emit(idx);
         this.calcColorsRemain();
-      }
-    });
+      })
+    );
   }
   /**
    * Izmaina 'label' parametru datubāzē un tabulā
