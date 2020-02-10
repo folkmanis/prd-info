@@ -4,6 +4,8 @@ import { filter, switchMap, tap, map } from 'rxjs/operators';
 import { ModulePreferencesService, ModulePreferences, KastesPreferences } from '../../services/module-preferences.service';
 import { LoginService } from 'src/app/login/login.service';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
+import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
+import { Observable } from 'rxjs';
 
 interface Color {
   hue: number,
@@ -22,7 +24,7 @@ interface Colors {
   templateUrl: './kastes-preferences.component.html',
   styleUrls: ['./kastes-preferences.component.css']
 })
-export class KastesPreferencesComponent implements OnInit {
+export class KastesPreferencesComponent implements OnInit, CanComponentDeactivate {
 
   private hslRegex = /hsl\((?<hue>\d+),(?<saturation>\d+)%,(?<lightness>\d+)%\)/;
   constructor(
@@ -35,34 +37,48 @@ export class KastesPreferencesComponent implements OnInit {
   preferences: KastesPreferences;
   colors: Colors;
   keys: string[] = [];
-  colorsForm: FormGroup;// = new FormGroup({});
+  colorsForm: FormGroup;
+  defaults: { [key: string]: number; } = {};
 
   ngOnInit() {
     this.moduleService.getModulePreferences('kastes').subscribe(
       (pref: KastesPreferences) => {
-        const controlGroup: { [key: string]: any; } = {};
         this.colors = this.parseColors(pref);
         this.keys = Object.keys(this.colors);
         this.preferences = pref;
-        for (const key of this.keys) {
-          controlGroup[key] = [this.colors[key].lightness];
-        }
-        this.colorsForm = this.fb.group(controlGroup);
+        this.colorsForm = this.fb.group(this.lightness());
+        this.colorsForm.valueChanges.pipe(
+          tap(val => this.updateColors(val))
+        ).subscribe();
       }
     );
   }
 
+  private lightness(): { [key: string]: number[]; } {
+    const light: { [key: string]: number[]; } = {};
+    for (const key of this.keys) {
+      const l = +this.colors[key].lightness;
+      light[key] = [l];
+      this.defaults[key] = l;
+    }
+    return light;
+  }
+
   onSave() {
-    this.dialogService.confirm('Tiešām saglabāt izmaiņas?').pipe(
+    this.moduleService.updateModulePreferences(this.preferences).pipe(
       filter(resp => resp),
-      tap(() => this.updateColors()),
-      switchMap(() => this.moduleService.updateModulePreferences(this.preferences)),
-      filter(resp => resp),
-      switchMap(() => this.loginService.reloadPreferences())
+      switchMap(() => this.loginService.reloadPreferences()),
+      tap(() => this.colorsForm.markAsPristine()),
     )
-      .subscribe(() => {
-        this.colorsForm.markAsPristine();
-      });
+      .subscribe();
+  }
+
+  onReset() {
+    this.colorsForm.reset(this.defaults);
+  }
+
+  canDeactivate(): boolean | Observable<boolean> {
+    return this.colorsForm.pristine || this.dialogService.discardChanges();
   }
 
   private parseColors(pref: KastesPreferences): Colors {
@@ -71,16 +87,15 @@ export class KastesPreferencesComponent implements OnInit {
     for (const key in colors) {
       if (colors.hasOwnProperty(key)) {
         parsed[key] = colors[key].match(this.hslRegex).groups as Color;
-        // this.colorsForm.get(key).setValue(+parsed[key].lightness);
       }
     }
     return parsed as Colors;
   }
 
-  private updateColors() {
-    for (const key in this.colorsForm.value) {
+  private updateColors(values: { [key: string]: number; }) {
+    for (const key in values) {
       if (this.colorsForm.value.hasOwnProperty(key)) {
-        this.colors[key].lightness = +this.colorsForm.value[key];
+        this.colors[key].lightness = values[key];
         this.preferences.settings.colors[key] = this.makeColor(this.colors[key]);
       }
     }
