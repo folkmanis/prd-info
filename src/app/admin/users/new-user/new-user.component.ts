@@ -61,12 +61,7 @@ export class NewUserComponent implements OnInit, CanComponentDeactivate {
     if (this.newUserForm.pristine) {
       return true;
     } else {
-      return this.dialogService.confirm('Vai tiešām vēlaties pamest nesaglabātu?', {
-        data: {
-          yes: 'Jā, pamest!',
-          no: 'Nē, turpināt!',
-        }
-      });
+      return this.dialogService.discardChanges();
     }
   }
 
