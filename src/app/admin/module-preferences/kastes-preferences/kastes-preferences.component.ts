@@ -65,6 +65,7 @@ export class KastesPreferencesComponent implements OnInit, PreferencesComponent 
   }
 
   onSave() {
+    if (this.colorsForm.pristine) { return; }
     this.moduleService.updateModulePreferences(this.preferences).pipe(
       filter(resp => resp),
       switchMap(() => this.loginService.reloadPreferences()),
