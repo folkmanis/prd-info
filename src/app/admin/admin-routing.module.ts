@@ -33,6 +33,7 @@ const routes: Routes = [
       {
         path: 'module-preferences',
         component: ModulePreferencesComponent,
+        canDeactivate: [CanDeactivateGuard],
       },
       {
         path: '',
