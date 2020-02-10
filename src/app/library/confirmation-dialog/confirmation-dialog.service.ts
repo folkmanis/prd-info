@@ -16,9 +16,18 @@ export class ConfirmationDialogService {
 
   confirm(prompt: string, config: MatDialogConfig = {}): Observable<boolean> {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      ...config, data: {...(config.data || {}), prompt }, 
+      ...config, data: { ...(config.data || {}), prompt },
     });
     return dialogRef.afterClosed();
   }
-  
+
+  discardChanges(): Observable<boolean> {
+    return this.confirm('Vai tiešām vēlaties pamest nesaglabātu?', {
+      data: {
+        yes: 'Jā, pamest!',
+        no: 'Nē, turpināt!',
+      }
+    });
+  }
+
 }
