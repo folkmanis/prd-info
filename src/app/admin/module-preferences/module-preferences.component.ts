@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, zip } from 'rxjs';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
-import { KastesPreferencesComponent } from './kastes-preferences/kastes-preferences.component';
+import { PreferencesComponent } from './preferences-component.class';
+import { map, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-module-preferences',
@@ -9,15 +10,27 @@ import { KastesPreferencesComponent } from './kastes-preferences/kastes-preferen
   styleUrls: ['./module-preferences.component.css']
 })
 export class ModulePreferencesComponent implements OnInit, CanComponentDeactivate {
-  @ViewChild('kastes', { static: false }) private kastes: KastesPreferencesComponent;
+  @ViewChild('kastes', { static: false }) private kastes: PreferencesComponent;
 
-  constructor() { }
+  constructor(
+  ) { }
 
   ngOnInit() {
   }
 
   canDeactivate(): boolean | Observable<boolean> {
-    return this.kastes.canDeactivate();
+    return zip(this.kastes.canDeactivate())
+      .pipe(
+        map(result => result.reduce((acc, curr) => acc && curr, true))
+      );
+  }
+
+  onSaveAll() {
+    this.kastes.onSave();
+  }
+
+  onResetAll() {
+    this.kastes.onReset();
   }
 
 }

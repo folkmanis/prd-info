@@ -4,8 +4,8 @@ import { filter, switchMap, tap, map } from 'rxjs/operators';
 import { ModulePreferencesService, ModulePreferences, KastesPreferences } from '../../services/module-preferences.service';
 import { LoginService } from 'src/app/login/login.service';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
-import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { PreferencesComponent } from '../preferences-component.class';
 
 interface Color {
   hue: number,
@@ -24,7 +24,7 @@ interface Colors {
   templateUrl: './kastes-preferences.component.html',
   styleUrls: ['./kastes-preferences.component.css']
 })
-export class KastesPreferencesComponent implements OnInit, CanComponentDeactivate {
+export class KastesPreferencesComponent implements OnInit, PreferencesComponent {
 
   private hslRegex = /hsl\((?<hue>\d+),(?<saturation>\d+)%,(?<lightness>\d+)%\)/;
   constructor(
@@ -77,8 +77,8 @@ export class KastesPreferencesComponent implements OnInit, CanComponentDeactivat
     this.colorsForm.reset(this.defaults);
   }
 
-  canDeactivate(): boolean | Observable<boolean> {
-    return this.colorsForm.pristine || this.dialogService.discardChanges();
+  canDeactivate(): Observable<boolean> {
+    return this.colorsForm.pristine ? of(true) : this.dialogService.discardChanges();
   }
 
   private parseColors(pref: KastesPreferences): Colors {
