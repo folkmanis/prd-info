@@ -11,7 +11,7 @@ import { KastesPreferencesService } from '../services/kastes-preferences.service
   styleUrls: ['./labels.component.css']
 })
 export class LabelsComponent implements OnInit {
-  @ViewChild(TabulaComponent, { static: false }) tabula: TabulaComponent;
+  @ViewChild(TabulaComponent) tabula: TabulaComponent;
   statuss: Kaste;
   bridinajums = false;
   locked = false;

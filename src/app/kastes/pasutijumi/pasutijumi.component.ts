@@ -16,7 +16,7 @@ import { filter, switchMap } from 'rxjs/operators';
   styleUrls: ['./pasutijumi.component.css']
 })
 export class PasutijumiComponent implements OnInit, AfterViewInit {
-  @ViewChild(MatTable, { static: false }) table: MatTable<Pasutijums>;
+  @ViewChild(MatTable) table: MatTable<Pasutijums>;
   dataSource: TabulaDatasource;
   displayedColumns = ['name', 'deleted', 'created'];
 

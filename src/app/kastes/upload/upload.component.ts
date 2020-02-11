@@ -23,7 +23,7 @@ class FormErrorMatcher implements ErrorStateMatcher {
   styleUrls: ['./upload.component.css']
 })
 export class UploadComponent implements OnInit {
-  @ViewChild(UploadTabulaComponent, { static: false }) private uploadTabulaComponent: UploadTabulaComponent;
+  @ViewChild(UploadTabulaComponent) private uploadTabulaComponent: UploadTabulaComponent;
 
   private defaultText = 'Atlasīt csv failu';
   displayText: string = this.defaultText;

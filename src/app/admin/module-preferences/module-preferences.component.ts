@@ -11,8 +11,8 @@ import { map, tap, switchMap } from 'rxjs/operators';
   styleUrls: ['./module-preferences.component.css']
 })
 export class ModulePreferencesComponent implements OnInit, CanComponentDeactivate {
-  @ViewChild('system', { static: false }) private system: PreferencesComponent;
-  @ViewChild('kastes', { static: false }) private kastes: PreferencesComponent;
+  @ViewChild('system') private system: PreferencesComponent;
+  @ViewChild('kastes') private kastes: PreferencesComponent;
 
   constructor(
     private dialogService: ConfirmationDialogService,

@@ -15,7 +15,7 @@ import { filter, switchMap } from 'rxjs/operators';
   styleUrls: ['./tabula.component.css']
 })
 export class TabulaComponent implements OnInit {
-  @ViewChild(MatTable, { static: false }) table: MatTable<Kaste>;
+  @ViewChild(MatTable) table: MatTable<Kaste>;
   @Input()
   set setApjoms(apj: number) {
     this.apjoms = apj;

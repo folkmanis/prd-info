@@ -27,7 +27,7 @@ class CheckFormGroup extends FormGroup {
 })
 export class UploadAdresesComponent implements OnInit, AfterViewInit {
   @Output() gatavs = new EventEmitter<boolean>();
-  @ViewChild(MatTable, { static: false }) table: MatTable<any>;
+  @ViewChild(MatTable) table: MatTable<any>;
   displayedColumns: string[];
   displayedDataColumns: string[];
   checkCols: CheckFormGroup;

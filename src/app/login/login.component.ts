@@ -12,7 +12,7 @@ import { tap, filter, switchMap } from 'rxjs/operators';
 })
 export class LoginComponent implements OnInit {
 
-  @ViewChild('username', { static: false }) usernameInput: ElementRef;
+  @ViewChild('username') usernameInput: ElementRef;
   constructor(
     private router: Router,
     private snack: MatSnackBar,

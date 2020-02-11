@@ -12,7 +12,7 @@ import { KastesPreferences } from '../../services/preferences';
   styleUrls: ['./upload-tabula.component.css']
 })
 export class UploadTabulaComponent implements OnInit, AfterViewInit {
-  @ViewChild(MatTable, { static: false }) table: MatTable<AdreseBox>;
+  @ViewChild(MatTable) table: MatTable<AdreseBox>;
 
   boxColors = ['yellow', 'rose', 'white'];
   displayedColumns = ['kods', 'adrese', 'editor'];
