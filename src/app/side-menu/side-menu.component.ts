@@ -23,7 +23,7 @@ export class SideMenuComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.sidenavService.dataSource.dataChange.subscribe(data => {
       this.treeControl.dataNodes = data;
-      this.treeControl.expandAll();
+      // this.treeControl.expandAll();
     }
     );
   }
