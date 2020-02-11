@@ -20,6 +20,8 @@ export class PasutijumiComponent implements OnInit, AfterViewInit {
   dataSource: TabulaDatasource;
   displayedColumns = ['name', 'deleted', 'created'];
 
+  new = false;
+
   constructor(
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
@@ -57,6 +59,11 @@ export class PasutijumiComponent implements OnInit, AfterViewInit {
         'OK',
         { duration: 3000 });
     });
+  }
+
+  onNew() {
+    console.log('Jauns pasūtījums');
+    this.new = !this.new;
   }
 
 }

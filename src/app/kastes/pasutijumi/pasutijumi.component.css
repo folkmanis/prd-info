@@ -6,6 +6,10 @@
   margin: 8px;
 }
 
+button {
+  margin: 8px;
+}
+
 .tabula-container {
   /* height: 500px; */
   overflow: auto;
