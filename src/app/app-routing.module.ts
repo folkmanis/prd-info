@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import { LoginGuard } from './login/login.guard';
-import { USER_MODULES } from './user-modules';
 
 const routes: Routes = [
   {
@@ -16,18 +15,35 @@ const routes: Routes = [
     path: 'login',
     component: LoginComponent
   },
-];
-
-for (const mod of USER_MODULES) {
-  routes.push({
-    path: mod.route,
+  {
+    path: 'xmf-search',
     canLoad: [LoginGuard],
-    loadChildren: () => import(`./${mod.value}/${mod.value}.module`).then(m => m[mod.moduleClass]),
+    loadChildren: () => import('./xmf-search/xmf-search.module').then(m => m.XmfSearchModule),
     canActivate: [LoginGuard],
-  });
-}
-
-routes.push({ path: '**', redirectTo: '' });
+  },
+  {
+    path: 'xmf-upload',
+    canLoad: [LoginGuard],
+    loadChildren: () => import('./xmf-upload/xmf-upload.module').then(m => m.XmfUploadModule),
+    canActivate: [LoginGuard],
+  },
+  {
+    path: 'kastes',
+    canLoad: [LoginGuard],
+    loadChildren: () => import('./kastes/kastes.module').then(m => m.KastesModule),
+    canActivate: [LoginGuard],
+  },
+  {
+    path: 'admin',
+    canLoad: [LoginGuard],
+    loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule),
+    canActivate: [LoginGuard],
+  },
+  {
+    path: '**',
+    redirectTo: '',
+  },
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)], // , { enableTracing: true }
