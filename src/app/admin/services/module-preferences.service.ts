@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { ModulePreferences, SystemPreferences } from '../../library/classes/system-preferences-class';
-export { ModulePreferences, SystemPreferences, KastesSettings } from '../../library/classes/system-preferences-class';
+export { ModulePreferences, SystemPreferences, KastesSettings, SystemSettings } from '../../library/classes/system-preferences-class';
 import { HttpService } from './admin-http.service';
 import { map, filter, tap } from 'rxjs/operators';
 
@@ -18,10 +18,10 @@ export class ModulePreferencesService {
     private httpService: HttpService,
   ) { }
 
-  getModulePreferences(mod: string): Observable<ModulePreferences> {
+  getModulePreferences<T>(mod: string): Observable<T> {
     this.loadPreferences();
     return this.preferences$.pipe(
-      map(pref => pref.get(mod)),
+      map(pref => pref.get(mod) as T),
       filter(modPref => !!modPref),
     );
   }

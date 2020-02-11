@@ -12,6 +12,7 @@ import { PasswordChangeDialogComponent } from './users/user-editor/password-chan
 import { AdminMainMenuComponent } from './admin-main-menu/admin-main-menu.component';
 import { ModulePreferencesComponent } from './module-preferences/module-preferences.component';
 import { KastesPreferencesComponent } from './module-preferences/kastes-preferences/kastes-preferences.component';
+import { SystemPreferencesComponent } from './module-preferences/system-preferences/system-preferences.component';
 
 
 @NgModule({
@@ -24,6 +25,7 @@ import { KastesPreferencesComponent } from './module-preferences/kastes-preferen
     AdminMainMenuComponent,
     ModulePreferencesComponent,
     KastesPreferencesComponent,
+    SystemPreferencesComponent,
   ],
   imports: [
     CommonModule,

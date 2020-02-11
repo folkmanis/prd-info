@@ -1,8 +1,12 @@
-<div>
+<div class="mod-div">
+    <app-system-preferences #system></app-system-preferences>
+</div>
+<mat-divider></mat-divider>
+<div class="mod-div">
     <app-kastes-preferences #kastes></app-kastes-preferences>
 </div>
 <mat-divider></mat-divider>
 <div>
     <button mat-raised-button (click)="onSaveAll()">Saglabāt visus iestatījumus</button>
-    <button mat-raised-button (click)="onResetAll()">Atiestatīt visu</button>
+    <button mat-raised-button (click)="onResetAll()">Atcelt visu</button>
 </div>

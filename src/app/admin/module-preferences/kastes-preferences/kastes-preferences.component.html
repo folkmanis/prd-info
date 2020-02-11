@@ -1,4 +1,4 @@
-<h2>Pakošanas iestatījumi</h2>
+<h2>Pakošanas saraksta iestatījumi</h2>
 <form *ngIf="colorsForm" [formGroup]="colorsForm">
     <div *ngFor="let col of keys" class="flex-container">
         <div class="flex-text">{{col}}:</div>
@@ -8,5 +8,5 @@
         <div [ngStyle]="{'color': preferences.colors[col]}">{{colors[col].lightness}}%</div>
     </div>
     <button mat-raised-button (click)="onSave()" [disabled]="colorsForm.pristine">Saglabāt</button>
-    <button mat-raised-button (click)="onReset()" [disabled]="colorsForm.pristine">Atiestatīt</button>
+    <button mat-raised-button (click)="onReset()" [disabled]="colorsForm.pristine">Atcelt</button>
 </form>

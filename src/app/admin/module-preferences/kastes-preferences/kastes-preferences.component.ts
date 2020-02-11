@@ -22,7 +22,7 @@ interface Colors {
 @Component({
   selector: 'app-kastes-preferences',
   templateUrl: './kastes-preferences.component.html',
-  styleUrls: ['./kastes-preferences.component.css']
+  styleUrls: ['./kastes-preferences.component.css', '../module-preferences.component.css']
 })
 export class KastesPreferencesComponent implements OnInit, PreferencesComponent {
 
@@ -79,7 +79,7 @@ export class KastesPreferencesComponent implements OnInit, PreferencesComponent 
   }
 
   canDeactivate(): Observable<boolean> {
-    return this.colorsForm.pristine ? of(true) : this.dialogService.discardChanges();
+    return  of(this.colorsForm.pristine);
   }
 
   private parseColors(pref: KastesSettings): Colors {

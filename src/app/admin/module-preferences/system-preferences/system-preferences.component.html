@@ -1,0 +1,8 @@
+<h2>Vispārīgie iestatījumi</h2>
+<form *ngIf="settingsForm" [formGroup]="settingsForm">
+    <mat-checkbox formControlName="menuExpandedByDefault">Sānu izvēlne izvērsta</mat-checkbox>
+    <div>
+        <button mat-raised-button (click)="onSave()" [disabled]="settingsForm.pristine">Saglabāt</button>
+        <button mat-raised-button (click)="onReset()" [disabled]="settingsForm.pristine">Atcelt</button>
+    </div>
+</form>

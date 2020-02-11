@@ -16,3 +16,7 @@ export interface KastesSettings {
         white: string;
     };
 }
+
+export interface SystemSettings extends ModulePreferences {
+    menuExpandedByDefault: boolean,
+}
