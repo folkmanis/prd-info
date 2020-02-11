@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { filter, switchMap, tap, map } from 'rxjs/operators';
-import { ModulePreferencesService, ModulePreferences, KastesSettings } from '../../services/module-preferences.service';
+import { ModulePreferencesService, KastesSettings } from '../../services/module-preferences.service';
 import { LoginService } from 'src/app/login/login.service';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { Observable, of } from 'rxjs';

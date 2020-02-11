@@ -3,7 +3,7 @@ import { User, UserPreferences } from '/home/dev/prd-info-node/src/lib/user-clas
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { HttpOptions } from "../../library/http/http-options";
 import { DbModulePreferences, ModulePreferences, SystemPreferences } from '../../library/classes/system-preferences-class';
 
