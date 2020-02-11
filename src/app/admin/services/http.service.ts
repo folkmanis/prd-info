@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { HttpOptions } from "../../library/http/http-options";
-import { ModulePreferences, SystemPreferences } from '../../library/classes/system-preferences-class';
+import { DbModulePreferences, ModulePreferences, SystemPreferences } from '../../library/classes/system-preferences-class';
 
 export interface UserList {
   count: number,
@@ -73,11 +73,17 @@ export class HttpService {
   }
 
   getAllSystemPreferencesHttp(): Observable<SystemPreferences> {
-    return this.http.get<ModulePreferences[]>(this.httpPathPreferences + 'all', new HttpOptions());
+    return this.http.get<DbModulePreferences[]>(this.httpPathPreferences + 'all', new HttpOptions()).pipe(
+      map(dbpref => dbpref.reduce((acc, curr) => acc.set(curr.module, curr.settings), new Map<string, ModulePreferences>()))
+    );
   }
 
-  updateModuleSystemPreferences(preferences: ModulePreferences): Observable<boolean> {
-    return this.http.put<{ ok: number; }>(this.httpPathPreferences + 'update', { preferences }, new HttpOptions()).pipe(
+  updateModuleSystemPreferences(modName: string, preferences: ModulePreferences): Observable<boolean> {
+    return this.http.put<{ ok: number; }>(
+      this.httpPathPreferences + 'update',
+      { preferences: { module: modName, settings: preferences } },
+      new HttpOptions()
+    ).pipe(
       map(res => !!res.ok)
     );
   }

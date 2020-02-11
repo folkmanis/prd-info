@@ -30,9 +30,8 @@ export class KastesPreferencesService {
       this.loading = true;
 
       const sys$ = this.loginService.systemPreferences.pipe(
-        map(sys => sys.find(set => set.module === 'kastes')),
+        map(sys => sys.get('kastes')),
         filter(sys => !!sys),
-        map(sys => ({ ...sys.settings })),
       );
       const usr$ = this.kastesHttpService.getPreferencesHttp();
 

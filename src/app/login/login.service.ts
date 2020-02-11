@@ -16,7 +16,7 @@ export class LoginService {
   user$: BehaviorSubject<User | null>;
   modules$: BehaviorSubject<UserModule[]>;
   activeModule$: BehaviorSubject<UserModule | null>;
-  private sysPref$: BehaviorSubject<SystemPreferences> = new BehaviorSubject([]);
+  private sysPref$: BehaviorSubject<SystemPreferences> = new BehaviorSubject(new Map<string, ModulePreferences>());
 
   constructor(
     private http: LoginHttpService,

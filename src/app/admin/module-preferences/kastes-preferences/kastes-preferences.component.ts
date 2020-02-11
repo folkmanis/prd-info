@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { filter, switchMap, tap, map } from 'rxjs/operators';
-import { ModulePreferencesService, ModulePreferences, KastesPreferences } from '../../services/module-preferences.service';
+import { ModulePreferencesService, ModulePreferences, KastesSettings } from '../../services/module-preferences.service';
 import { LoginService } from 'src/app/login/login.service';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { Observable, of } from 'rxjs';
@@ -34,7 +34,7 @@ export class KastesPreferencesComponent implements OnInit, PreferencesComponent 
     private dialogService: ConfirmationDialogService,
   ) { }
 
-  preferences: KastesPreferences;
+  preferences: KastesSettings;
   colors: Colors;
   keys: string[] = [];
   colorsForm: FormGroup;
@@ -42,10 +42,10 @@ export class KastesPreferencesComponent implements OnInit, PreferencesComponent 
 
   ngOnInit() {
     this.moduleService.getModulePreferences('kastes').subscribe(
-      (pref: KastesPreferences) => {
+      (pref: KastesSettings) => {
+        this.preferences = pref;
         this.colors = this.parseColors(pref);
         this.keys = Object.keys(this.colors);
-        this.preferences = pref;
         this.colorsForm = this.fb.group(this.lightness());
         this.colorsForm.valueChanges.pipe(
           tap(val => this.updateColors(val))
@@ -66,7 +66,7 @@ export class KastesPreferencesComponent implements OnInit, PreferencesComponent 
 
   onSave() {
     if (this.colorsForm.pristine) { return; }
-    this.moduleService.updateModulePreferences(this.preferences).pipe(
+    this.moduleService.updateModulePreferences('kastes',this.preferences).pipe(
       filter(resp => resp),
       switchMap(() => this.loginService.reloadPreferences()),
       tap(() => this.colorsForm.markAsPristine()),
@@ -82,8 +82,8 @@ export class KastesPreferencesComponent implements OnInit, PreferencesComponent 
     return this.colorsForm.pristine ? of(true) : this.dialogService.discardChanges();
   }
 
-  private parseColors(pref: KastesPreferences): Colors {
-    const colors = pref.settings.colors;
+  private parseColors(pref: KastesSettings): Colors {
+    const colors = pref.colors;
     const parsed: Partial<Colors> = {};
     for (const key in colors) {
       if (colors.hasOwnProperty(key)) {
@@ -97,7 +97,7 @@ export class KastesPreferencesComponent implements OnInit, PreferencesComponent 
     for (const key in values) {
       if (this.colorsForm.value.hasOwnProperty(key)) {
         this.colors[key].lightness = values[key];
-        this.preferences.settings.colors[key] = this.makeColor(this.colors[key]);
+        this.preferences.colors[key] = this.makeColor(this.colors[key]);
       }
     }
   }

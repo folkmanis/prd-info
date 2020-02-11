@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { ModulePreferences, SystemPreferences } from '../../library/classes/system-preferences-class';
-export { ModulePreferences, SystemPreferences, KastesPreferences } from '../../library/classes/system-preferences-class';
+export { ModulePreferences, SystemPreferences, KastesSettings } from '../../library/classes/system-preferences-class';
 import { HttpService } from './http.service';
 import { map, filter, tap } from 'rxjs/operators';
 
@@ -10,7 +10,7 @@ import { map, filter, tap } from 'rxjs/operators';
 })
 export class ModulePreferencesService {
 
-  private preferences$: BehaviorSubject<SystemPreferences> = new BehaviorSubject<SystemPreferences>([]);
+  private preferences$: BehaviorSubject<SystemPreferences> = new BehaviorSubject<SystemPreferences>(new Map());
   private loaded = false;
   private loading = false;
 
@@ -21,23 +21,17 @@ export class ModulePreferencesService {
   getModulePreferences(mod: string): Observable<ModulePreferences> {
     this.loadPreferences();
     return this.preferences$.pipe(
-      map(pref => pref.find(modPref => modPref.module === mod)),
+      map(pref => pref.get(mod)),
       filter(modPref => !!modPref),
     );
   }
 
-  updateModulePreferences(modPref: ModulePreferences): Observable<boolean> {
-    const prefs = this.preferences$.value;
-    const idx = prefs.findIndex(val => val.module === modPref.module);
-    if (idx === -1) { return of(false); }
-    return this.httpService.updateModuleSystemPreferences(modPref).pipe(
-      tap(ok => {
-        if (ok) {
-          prefs[idx] = modPref;
-          this.preferences$.next(prefs);
-        }
-      })
-    );
+  updateModulePreferences(modName: string, modPref: ModulePreferences): Observable<boolean> {
+    const pref = this.preferences$.value;
+    return pref.has(modName) ?
+      this.httpService.updateModuleSystemPreferences(modName, modPref).pipe(
+        tap(ok => ok && this.preferences$.next(pref.set(modName, modPref)))
+      ) : of(false);
   }
 
   private loadPreferences(forced = false) {
