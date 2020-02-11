@@ -3,7 +3,7 @@ import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { pipe, Observable } from 'rxjs/index';
 import { switchMap } from 'rxjs/operators';
 import { UsersService } from '../services/users.service';
-import { User, UserList } from '../services/http.service';
+import { User, UserList } from '../services/admin-http.service';
 
 @Component({
   selector: 'app-users',

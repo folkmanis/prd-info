@@ -1,4 +1,4 @@
-import { HttpService, User, UserPreferences, UserList } from './http.service';
+import { HttpService, User } from './admin-http.service';
 import { Injectable } from '@angular/core';
 import { Observable, Subject, of } from 'rxjs';
 import { map, tap, filter, switchMap } from 'rxjs/operators';

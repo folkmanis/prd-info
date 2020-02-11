@@ -4,7 +4,7 @@ import { Router, ActivatedRoute, ParamMap } from "@angular/router";
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UsersService, Customer, UserModule } from '../../services/users.service';
-import { User } from '../../services/http.service';
+import { User } from '../../services/admin-http.service';
 import { debounceTime, distinctUntilChanged, switchMap, filter, tap, map } from 'rxjs/operators';
 import { Subscription, Observable } from 'rxjs';
 import { PasswordChangeDialogComponent } from "./password-change-dialog/password-change-dialog.component";
