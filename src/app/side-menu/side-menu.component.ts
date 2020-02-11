@@ -3,6 +3,8 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 
 import { SidenavService, SideMenuData } from '../login/sidenav.service';
 import { of, Observable } from 'rxjs';
+import { tap, switchMap, map } from 'rxjs/operators';
+import { LoginService, SystemSettings } from '../login/login.service';
 
 @Component({
   selector: 'app-side-menu',
@@ -13,6 +15,7 @@ export class SideMenuComponent implements OnInit, AfterViewInit {
 
   constructor(
     private sidenavService: SidenavService,
+    private loginService: LoginService,
   ) { }
   treeControl = new NestedTreeControl<SideMenuData>(node => node.childMenu);
   dataSource = this.sidenavService.dataSource;
@@ -21,11 +24,13 @@ export class SideMenuComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.sidenavService.dataSource.dataChange.subscribe(data => {
-      this.treeControl.dataNodes = data;
-      // this.treeControl.expandAll();
-    }
-    );
+    this.sidenavService.dataSource.dataChange.pipe(
+      tap(data => this.treeControl.dataNodes = data),
+      switchMap(() => this.loginService.systemPreferences),
+      map(pref => <SystemSettings>pref.get('system')),
+      tap(pref => pref && pref.menuExpandedByDefault && this.treeControl.expandAll()),
+    )
+      .subscribe();
   }
 
   hasChild = (_: number, node: SideMenuData) => !!node.childMenu && node.childMenu.length > 0;
