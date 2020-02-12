@@ -29,9 +29,6 @@ import { PlusPipePipe } from './upload-tabula/editor/plus-pipe.pipe';
     CommonModule,
     LibraryModule,
   ],
-  entryComponents: [
-    EndDialogComponent,
-  ],
   providers: [
   ]
 })

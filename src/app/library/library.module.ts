@@ -111,8 +111,5 @@ import { CardMenuComponent } from './card-menu/card-menu.component';
     AppMonthPipe,
     HideZeroPipe,
   ],
-  entryComponents: [
-    ConfirmationDialogComponent,
-  ]
 })
 export class LibraryModule { }

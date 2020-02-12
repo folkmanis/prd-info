@@ -35,8 +35,5 @@ import { SystemPreferencesComponent } from './module-preferences/system-preferen
   providers: [
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher }
   ],
-  entryComponents: [
-    PasswordChangeDialogComponent,
-  ]
 })
 export class AdminModule { }
