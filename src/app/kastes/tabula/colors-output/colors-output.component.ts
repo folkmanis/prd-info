@@ -40,7 +40,7 @@ export class ColorsOutputComponent implements OnInit {
           newData.push({
             name: key,
             val: col[key],
-            style: { color: this.preferences[key] }
+            style: { color: this.preferences.colors[key] }
           });
         }
         this.data = newData;
