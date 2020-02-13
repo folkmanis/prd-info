@@ -5,22 +5,7 @@ import { catchError, map, switchMap, tap, filter, take, distinctUntilChanged, mu
 import { KastesHttpService } from './kastes-http.service';
 import { KastesPreferencesService } from './kastes-preferences.service';
 import { Veikals } from './veikals';
-
-export class Kaste {
-  _id: string;
-  kods: number;
-  adrese: string;
-  pasutijums: string;
-  kastes: {
-    yellow: number;
-    rose: number;
-    white: number;
-    gatavs: boolean;
-    total?: number;
-    uzlime: boolean;
-  };
-  kaste: number;
-}
+import { Kaste } from './kaste.class';
 
 @Injectable({
   providedIn: 'root'
@@ -77,6 +62,16 @@ export class KastesService {
     ).subscribe(k => {
       this.kastes$.next(k);
     });
+  }
+
+  reloadKaste(row: Kaste): void {
+    const idx = this.kastes$.value.indexOf(row);
+    this.kastesHttpService.getKasteHttp({ id: row._id, kaste: row.kaste })
+      .subscribe(kaste => {
+        const k = this.kastes$.value;
+        k[idx] = kaste;
+        this.kastes$.next(k);
+      });
   }
 
   setGatavs(body: { field: string, id: string, kaste: number, yesno: boolean; }): Observable<{ changedRows: number; }> {
