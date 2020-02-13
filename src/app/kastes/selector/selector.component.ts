@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { KastesService } from '../services/kastes.service';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { KastesPreferencesService } from '../services/kastes-preferences.service';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Observable, pipe } from 'rxjs';
-import { map, tap, switchMap } from 'rxjs/operators';
+import { map, tap, switchMap, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-selector',
@@ -11,20 +12,27 @@ import { map, tap, switchMap } from 'rxjs/operators';
 })
 export class SelectorComponent implements OnInit {
   selected: number;
-  loaded = false;
+  apjomsSet = false;
 
   constructor(
     private kastesService: KastesService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router,
+    private preferencesService: KastesPreferencesService,
   ) { }
 
   kastes$ = this.route.paramMap.pipe(
-    tap((params) => this.selected = +params.get('id')),
     switchMap(() => this.kastesService.getTotals()),
     map(tot => [0, ...tot]),
-    tap(() => this.loaded = true)
   );
 
   ngOnInit() {
+    this.route.paramMap.pipe(
+      map(params => +params.get('id')),
+      tap(apjoms => this.selected = apjoms),
+      tap(apjoms => this.kastesService.apjoms = apjoms),
+      tap(() => this.apjomsSet = true)
+    ).subscribe();
   }
+
 }

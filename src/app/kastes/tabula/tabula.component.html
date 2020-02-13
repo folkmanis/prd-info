@@ -1,10 +1,7 @@
-<div class="progress">
-  <mat-progress-bar *ngIf="!loaded" mode="indeterminate"></mat-progress-bar>
-</div>
 <div class="kopskaiti">
-  <span *ngIf="loaded" class="mat-small">
-    Pavisam sūtījumu: <span class="mat-body-strong">{{dataSource.total}} | </span>
-    Nav nosūtīti: <span class="mat-body-strong">{{dataSource.kastesRemain}} | </span>
+  <span *ngIf="dataSource;" class="mat-small">
+    Pavisam sūtījumu: <span class="mat-body-strong">{{dataSource.total}}</span>
+    Nav nosūtīti: <span class="mat-body-strong">{{dataSource.kastesRemain}}</span>
     Nav uzlīmes: <span class="mat-body-strong">{{dataSource.labelsRemain}}</span>
   </span>
 </div>
@@ -12,7 +9,7 @@
     <app-colors-output [colorsRemain]="dataSource.colorsRemain"></app-colors-output>
 </div>
 <div class="tabula-container">
-  <table mat-table [dataSource]="dataSource" class="full-width-table mat-elevation-z8" aria-label="Kastes">
+  <table mat-table class="full-width-table mat-elevation-z8" aria-label="Kastes">
     <!-- Id Column -->
     <ng-container matColumnDef="kods">
       <th mat-header-cell *matHeaderCellDef class="Nr cipari">Nr</th>
@@ -56,20 +53,9 @@
       </td>
     </ng-container>
 
-    <ng-container matColumnDef="kopskaiti">
-      <td mat-footer-cell *matFooterCellDef class="kopskaiti" [colSpan]="displayedColumns.length">
-        <span *ngIf="loaded" class="mat-small">
-          Pavisam sūtījumu: <span class="mat-body-strong">{{dataSource.total}} | </span>
-          Nav nosūtīti: <span class="mat-body-strong">{{dataSource.kastesRemain}} | </span>
-          Nav uzlīmes: <span class="mat-body-strong">{{dataSource.labelsRemain}}</span>
-        </span>
-      </td>
-    </ng-container>
-
     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selectedKaste=row"
       [class.selected]="row === selectedKaste"></tr>
-    <tr mat-footer-row *matFooterRowDef="['kopskaiti']; sticky: true"></tr>
   </table>
 </div>
 <app-scroll-to-top></app-scroll-to-top>

@@ -3,7 +3,7 @@ import { Observable, BehaviorSubject, of, Subject } from 'rxjs';
 import { map, tap, distinctUntilChanged, filter, switchMap } from 'rxjs/operators';
 import { USER_MODULES } from '../user-modules';
 import { UserModule } from "../library/classes/user-module-interface";
-import { SystemPreferences, ModulePreferences } from '../library/classes/system-preferences-class';
+import { SystemPreferences, ModulePreferences, DEFAULT_SYSTEM_PREFERENCES } from '../library/classes/system-preferences-class';
 export { SystemSettings } from '../library/classes/system-preferences-class';
 import { LoginHttpService, User, Login } from './login-http.service';
 export { User, Login } from './login-http.service';
@@ -17,7 +17,7 @@ export class LoginService {
   user$: BehaviorSubject<User | null>;
   modules$: BehaviorSubject<UserModule[]>;
   activeModule$: BehaviorSubject<UserModule | null>;
-  private sysPref$: BehaviorSubject<SystemPreferences> = new BehaviorSubject(new Map<string, ModulePreferences>());
+  private sysPref$: BehaviorSubject<SystemPreferences> = new BehaviorSubject(DEFAULT_SYSTEM_PREFERENCES);
 
   constructor(
     private http: LoginHttpService,

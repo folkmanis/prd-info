@@ -20,3 +20,8 @@ export interface KastesSettings {
 export interface SystemSettings extends ModulePreferences {
     menuExpandedByDefault: boolean,
 }
+
+export const DEFAULT_SYSTEM_PREFERENCES: SystemPreferences = new Map<string, ModulePreferences>()
+    .set('kastes',
+        { colors: { yellow: 'gold', rose: 'magenta', white: 'gray', } })
+    .set('system', { menuExpandedByDefault: true });

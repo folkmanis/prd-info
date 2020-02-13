@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input, EventEmitter, OnChanges } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, EventEmitter, OnChanges, AfterViewInit } from '@angular/core';
 import { MatTable } from '@angular/material/table';
 
 import { TabulaDataSource } from './tabula-datasource';
@@ -14,35 +14,31 @@ import { filter, switchMap } from 'rxjs/operators';
   templateUrl: './tabula.component.html',
   styleUrls: ['./tabula.component.css']
 })
-export class TabulaComponent implements OnInit {
+export class TabulaComponent implements OnInit, AfterViewInit {
   @ViewChild(MatTable) table: MatTable<Kaste>;
-  @Input()
-  set setApjoms(apj: number) {
-    this.apjoms = apj;
-    this.loaded$.next(false);
-    this.apjomsChange.emit(this.apjoms);
-  }
   dataSource: TabulaDataSource;
   selectedKaste: Kaste;
-  apjomsChange = new EventEmitter<number>();
-  rowChange = new EventEmitter<number>();
+  rowChange = new EventEmitter();
   preferences: KastesPreferences;
   private loaded$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   displayedColumns = ['kods', 'adrese', 'yellow', 'rose', 'white', 'gatavs'];
-  private apjoms = 0;
-  loaded = false;
+  // loaded = false;
 
   constructor(
     private kastesService: KastesService,
     private dialogService: ConfirmationDialogService,
     public preferencesService: KastesPreferencesService,
   ) {
-    this.dataSource = new TabulaDataSource(this.kastesService, this.apjomsChange, this.rowChange, this.apjoms, this.loaded$);
+    this.dataSource = new TabulaDataSource(this.kastesService, this.rowChange, this.loaded$);
   }
 
   ngOnInit() {
     this.preferencesService.preferences.subscribe((pref) => this.preferences = pref);
-    this.loaded$.subscribe(ld => this.loaded = ld);
+    // this.loaded$.subscribe(ld => this.loaded = ld);
+  }
+
+  ngAfterViewInit() {
+    this.table.dataSource = this.dataSource;
   }
 
   onGatavs(id: string, kaste: number, gatavs: boolean): void {

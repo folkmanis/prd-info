@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
 import { PasutijumiService } from '../services/pasutijumi.service';
 import { KastesPreferencesService } from '../services/kastes-preferences.service';
-import { switchMap, distinctUntilChanged, map } from 'rxjs/operators';
+import { switchMap, distinctUntilChanged, map, tap, skip } from 'rxjs/operators';
 
 @Component({
   selector: 'app-select-pasutijums',
@@ -15,7 +16,8 @@ export class SelectPasutijumsComponent implements OnInit {
   constructor(
     private pasutijumiService: PasutijumiService,
     private kastesPreferencesService: KastesPreferencesService,
-  ) { }
+    private router: Router,
+    ) { }
   pasControl = new FormControl();
   pasutijumi$ = this.pasutijumiService.pasutijumi.pipe(
     map(pas => pas.filter(p => !p.deleted)) // Dzēstos nerāda
@@ -24,13 +26,11 @@ export class SelectPasutijumsComponent implements OnInit {
   ngOnInit() {
     this.kastesPreferencesService.preferences.subscribe(pref => this.pasControl.setValue(pref.pasutijums));
     this.pasControl.valueChanges.pipe(
+      skip(1),
       distinctUntilChanged(),
-      switchMap(val => this.pasutijumiService.setPasutijums(val as string))
+      switchMap(val => this.pasutijumiService.setPasutijums(val as string)),
+      tap(()=> this.router.navigate(['kastes','selector',0])),
     ).subscribe();
-  }
-
-  setPasutijums(id: string) {
-    this.pasutijumiService.setPasutijums(id);
   }
 
 }

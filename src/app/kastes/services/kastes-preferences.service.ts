@@ -1,15 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, zip, merge } from 'rxjs';
-import { KastesPreferences, UserPreferences } from './preferences';
+import { Observable, BehaviorSubject, zip, merge, of, combineLatest } from 'rxjs';
+import { KastesPreferences, UserPreferences, SystemPreferences } from './preferences';
 import { KastesHttpService } from './kastes-http.service';
 import { LoginService } from '../../login/login.service';
 import { map, switchMap, tap, filter } from 'rxjs/operators';
 
-const defaultPreferences: KastesPreferences = {
+const defaultPreferences: UserPreferences = {
   pasutijums: '',
-  colors: {
-    yellow: 'gold', rose: 'magenta', white: 'gray',
-  }
 };
 
 @Injectable({
@@ -17,46 +14,46 @@ const defaultPreferences: KastesPreferences = {
 })
 export class KastesPreferencesService {
 
-  private preferences$ = new BehaviorSubject(defaultPreferences);
-  private initialised = false;
+  private loaded = false;
   private loading = false;
   constructor(
     private kastesHttpService: KastesHttpService,
     private loginService: LoginService,
   ) { }
 
-  get preferences(): BehaviorSubject<KastesPreferences> {
-    if (!this.initialised && !this.loading) {
-      this.loading = true;
+  private sys$ = this.loginService.systemPreferences.pipe(
+    map(sys => <SystemPreferences>sys.get('kastes')),
+    filter(sys => !!sys),
+  );
+  private usr$ = new BehaviorSubject<UserPreferences>(defaultPreferences);
 
-      const sys$ = this.loginService.systemPreferences.pipe(
-        map(sys => sys.get('kastes')),
-        filter(sys => !!sys),
-      );
-      const usr$ = this.kastesHttpService.getPreferencesHttp();
-
-      merge(usr$, sys$)
-        .pipe(
-          tap(set => this.preferences$.next({ ...this.preferences$.value, ...set })),
-          tap(() => this.initialised = true),
-        ).subscribe(() => this.loading = false);
+  get preferences(): Observable<KastesPreferences> {
+    if (!this.loaded) {
+      this.reloadPreferences();
     }
-    return this.preferences$;
+
+    return combineLatest(this.sys$, this.usr$)
+      .pipe(
+        map(([sys, usr]) => ({ ...sys, ...usr }))
+      );
   }
 
   update(pr: Partial<UserPreferences>): Observable<boolean> {
     return this.kastesHttpService.setUserPreferencesHttp(pr).pipe(
-      tap(resp => {
-        if (resp) {
-          this.updatePreferences(pr);
-        }
-      })
+      tap(resp => resp && this.reloadPreferences())
     );
   }
 
-  private updatePreferences(pr: Partial<KastesPreferences>) {
-    const updated = this.preferences$.value;
-    Object.keys(pr).forEach(key => updated[key] = pr[key] || defaultPreferences[key]);
-    this.preferences$.next(updated);
+  private reloadPreferences() {
+    if (!this.loading) {
+      this.loading = true;
+      this.kastesHttpService.getPreferencesHttp().pipe(
+        tap(usrPref => this.usr$.next(usrPref))
+      ).subscribe(() => {
+        this.loading = false;
+        this.loaded = true;
+      });
+    }
   }
+
 }

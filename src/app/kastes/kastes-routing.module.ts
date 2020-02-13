@@ -5,31 +5,38 @@ import { SelectorComponent } from './selector/selector.component';
 import { LabelsComponent } from './labels/labels.component';
 import { UploadComponent } from './upload/upload.component';
 import { PasutijumiComponent } from './pasutijumi/pasutijumi.component';
+import { KastesComponent } from './kastes.component';
 
 const routes: Routes = [
   {
-    path: 'selector/:id',
-    component: SelectorComponent,
-  },
-  { path: 'selector', redirectTo: 'selector/0', },
-  {
-    path: 'labels',
-    component: LabelsComponent,
-  },
-  {
-    path: 'upload',
-    component: UploadComponent
-  },
-  {
-    path: 'pasutijumi',
-    component: PasutijumiComponent,
-  },
-  {
     path: '',
-    pathMatch: 'full',
-    component: KastesMainMenuComponent,
+    component: KastesComponent,
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        component: KastesMainMenuComponent,
+      },
+      {
+        path: 'selector/:id',
+        component: SelectorComponent,
+      },
+      { path: 'selector', redirectTo: 'selector/0', },
+      {
+        path: 'labels',
+        component: LabelsComponent,
+      },
+      {
+        path: 'upload',
+        component: UploadComponent
+      },
+      {
+        path: 'pasutijumi',
+        component: PasutijumiComponent,
+      },
+    ]
   },
-  { path: '**', redirectTo: 'selector/0' },
+  { path: '**', redirectTo: '' },
 ];
 
 @NgModule({

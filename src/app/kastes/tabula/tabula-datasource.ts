@@ -1,7 +1,7 @@
 import { EventEmitter } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { map, tap, switchMap, filter } from 'rxjs/operators';
-import { Observable, merge, of, BehaviorSubject } from 'rxjs';
+import { Observable, merge, of, BehaviorSubject, Subscriber, Subscription } from 'rxjs';
 
 import { KastesService, Kaste } from '../services/kastes.service';
 
@@ -17,20 +17,20 @@ export interface ColorsPakas {
  * (including sorting, pagination, and filtering).
  */
 export class TabulaDataSource extends DataSource<Kaste> {
-  data: Kaste[];
-  total: number;
-  kastesRemain: number;
-  labelsRemain: number;
+  total: number = 0;
+  kastesRemain: number = 0;
+  labelsRemain: number = 0;
   colorsRemain: BehaviorSubject<ColorsPakas> =
     new BehaviorSubject<ColorsPakas>({
       yellow: 0, rose: 0, white: 0,
     });
 
+  private data$: BehaviorSubject<Kaste[]>;// = new BehaviorSubject<Kaste[]>([]);
+  private eventSubscr: Subscription;
+
   constructor(
     private kastesService: KastesService,
-    private apjomsChanged: EventEmitter<number>,
-    private rowChanged: EventEmitter<number>,
-    private apjoms: number,
+    private rowChanged: EventEmitter<Kaste>,
     private loaded: BehaviorSubject<boolean>,
   ) {
     super();
@@ -42,36 +42,37 @@ export class TabulaDataSource extends DataSource<Kaste> {
    * @returns A stream of the items to be rendered.
    */
   connect(): Observable<Kaste[]> {
-    return merge(
-      this.getServerData(),
-      this.apjomsChanged.pipe(tap((apj) => {
-        { this.apjoms = apj; }
-      }), switchMap(() => this.getServerData())),
-      this.rowChanged
-    ).pipe(
-      map(() => this.data),
-      tap(() => this.loaded.next(true)));
-  }
 
-  private getServerData(): Observable<Kaste[]> {
-    return this.kastesService.getKastes(this.apjoms)
-      .pipe(
-        tap((dat) => {
-          this.data = dat;
-          this.total = dat.length;
-          this.kastesRemain = dat.reduce((total, curr) => total += curr.kastes.gatavs ? 0 : 1, 0);
-          this.labelsRemain = dat.reduce((total, curr) => total += curr.kastes.uzlime ? 0 : 1, 0);
-          this.calcColorsRemain();
-        })
-      );
+    this.kastesService.reloadKastes();
+    this.eventSubscr = merge(this.rowChanged).pipe(
+      tap(() => this.kastesService.reloadKastes()),
+      tap(() => this.loaded.next(true)),
+    ).subscribe();
+    this.data$ = this.kastesService.kastes;
+
+    return this.data$.pipe(
+      tap(dat => {
+        this.total = dat.length;
+        this.kastesRemain = dat.reduce((total, curr) => total += curr.kastes.gatavs ? 0 : 1, 0);
+        this.labelsRemain = dat.reduce((total, curr) => total += curr.kastes.uzlime ? 0 : 1, 0);
+        this.calcColorsRemain(dat);
+      })
+    );
+  }
+  /**
+ *  Called when the table is being destroyed. Use this function, to clean up
+ * any open connections or free any held resources that were set up during connect.
+ */
+  disconnect() {
+    this.eventSubscr.unsubscribe();
   }
   /**
    * Aprēķina atlikušo vajadzīgo paciņu daudzumu pa krāsām
    * publicē colorsRemain objektā
    */
-  private calcColorsRemain() {
+  private calcColorsRemain(dat: Kaste[]) {
     this.colorsRemain.next(
-      this.data.reduce((total, curr) => {
+      dat.reduce((total, curr) => {
         curr.kastes.gatavs || Object.keys(total).forEach(key => total[key] += curr.kastes[key]);
         return total;
       }, { yellow: 0, rose: 0, white: 0 })
@@ -79,26 +80,21 @@ export class TabulaDataSource extends DataSource<Kaste> {
   }
 
   /**
-   *  Called when the table is being destroyed. Use this function, to clean up
-   * any open connections or free any held resources that were set up during connect.
-   */
-  disconnect() { }
-
-  /**
    * Uzliek gatavības iezīmi ierakstam.
    * @param id ieraksta id numurs
    * @param yesno false - noņem gatavības iezīmi, true - uzliek gatavibas iezīmi
    */
   setGatavs(id: string, kaste: number, yesno: boolean): Observable<boolean> {
-    const idx = this.data.findIndex((val: Kaste) => val._id === id && val.kaste === kaste);
+    const rw = this.data$.value.find(val => val._id === id && val.kaste === kaste);
+    if (!rw) { return of(false); }
     return this.kastesService.setGatavs({ field: 'gatavs', id, kaste, yesno }).pipe(
       map(({ changedRows }) => !!changedRows),
       filter(ok => ok),
       tap(() => {
-        this.kastesRemain += (yesno ? -1 : +1);
-        this.data[idx].kastes.gatavs = yesno;
-        this.rowChanged.emit(idx);
-        this.calcColorsRemain();
+        // this.kastesRemain += (yesno ? -1 : +1);
+        // this.data$.value[idx].kastes.gatavs = yesno;
+        this.rowChanged.emit(rw);
+        // this.calcColorsRemain();
       })
     );
   }
@@ -107,16 +103,17 @@ export class TabulaDataSource extends DataSource<Kaste> {
    * @param kods Veikala kods
    */
   setLabel(kods: number): Observable<Kaste | null> {
-    const idx = this.data.findIndex(k => k.kods === kods && !k.kastes.uzlime);
-    if (idx === -1) { return of(null); }
-    return this.kastesService.setGatavs({ field: 'uzlime', id: this.data[idx]._id, kaste: this.data[idx].kaste, yesno: true })
+    const rw = this.data$.value.find(k => k.kods === kods && !k.kastes.uzlime);
+    if (!rw) { return of(null); }
+    // const rw = this.data$.value[idx];
+    return this.kastesService.setGatavs({ field: 'uzlime', id: rw._id, kaste: rw.kaste, yesno: true })
       .pipe(
         filter(resp => !!resp.changedRows),
         map(() => {
-          this.labelsRemain--;
-          this.data[idx].kastes.uzlime = true;
-          this.rowChanged.emit(idx);
-          return this.data[idx];
+          // this.labelsRemain--;
+          rw.kastes.uzlime = true;
+          this.rowChanged.emit(rw);
+          return rw;
         })
       );
   }
