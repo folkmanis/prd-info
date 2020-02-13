@@ -1,8 +1,8 @@
 <div class="kopskaiti">
-  <span *ngIf="dataSource;" class="mat-small">
-    Pavisam sūtījumu: <span class="mat-body-strong">{{dataSource.total}}</span>
-    Nav nosūtīti: <span class="mat-body-strong">{{dataSource.kastesRemain}}</span>
-    Nav uzlīmes: <span class="mat-body-strong">{{dataSource.labelsRemain}}</span>
+  <span *ngIf="totals;" class="mat-small">
+    Pavisam sūtījumu: <span class="mat-body-strong">{{totals.total}}</span>
+    Nav nosūtīti: <span class="mat-body-strong">{{totals.kastesRemain}}</span>
+    Nav uzlīmes: <span class="mat-body-strong">{{totals.labelsRemain}}</span>
   </span>
 </div>
 <div class="kopskaiti mat-small">

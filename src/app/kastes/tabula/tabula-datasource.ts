@@ -1,9 +1,10 @@
 import { EventEmitter } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { map, tap, switchMap, filter } from 'rxjs/operators';
-import { Observable, merge, of, BehaviorSubject, Subscriber, Subscription } from 'rxjs';
+import { Observable, merge, of, BehaviorSubject, Subscriber, Subscription, Subject } from 'rxjs';
 
-import { KastesService, Kaste } from '../services/kastes.service';
+import { KastesService } from '../services/kastes.service';
+import { Kaste } from "../services/kaste.class";
 
 export interface ColorsPakas {
   yellow: number,
@@ -17,9 +18,6 @@ export interface ColorsPakas {
  * (including sorting, pagination, and filtering).
  */
 export class TabulaDataSource extends DataSource<Kaste> {
-  total: number = 0;
-  kastesRemain: number = 0;
-  labelsRemain: number = 0;
   colorsRemain: BehaviorSubject<ColorsPakas> =
     new BehaviorSubject<ColorsPakas>({
       yellow: 0, rose: 0, white: 0,
@@ -31,7 +29,11 @@ export class TabulaDataSource extends DataSource<Kaste> {
   constructor(
     private kastesService: KastesService,
     private rowChanged: EventEmitter<Kaste>,
-    private loaded: BehaviorSubject<boolean>,
+    private totals$: Subject<{
+      total: number,
+      kastesRemain: number,
+      labelsRemain: number,
+    }>
   ) {
     super();
   }
@@ -44,17 +46,20 @@ export class TabulaDataSource extends DataSource<Kaste> {
   connect(): Observable<Kaste[]> {
 
     this.kastesService.reloadKastes();
-    this.eventSubscr = merge(this.rowChanged).pipe(
-      tap(() => this.kastesService.reloadKastes()),
-      tap(() => this.loaded.next(true)),
+    this.eventSubscr = this.rowChanged.pipe(
+      tap(rw => this.kastesService.reloadKaste(rw)),
+      // tap(() => this.loaded.next(true)),
     ).subscribe();
+
     this.data$ = this.kastesService.kastes;
 
     return this.data$.pipe(
       tap(dat => {
-        this.total = dat.length;
-        this.kastesRemain = dat.reduce((total, curr) => total += curr.kastes.gatavs ? 0 : 1, 0);
-        this.labelsRemain = dat.reduce((total, curr) => total += curr.kastes.uzlime ? 0 : 1, 0);
+        this.totals$.next({
+          total: dat.length,
+          kastesRemain: dat.reduce((total, curr) => total += curr.kastes.gatavs ? 0 : 1, 0),
+          labelsRemain: dat.reduce((total, curr) => total += curr.kastes.uzlime ? 0 : 1, 0),
+        });
         this.calcColorsRemain(dat);
       })
     );

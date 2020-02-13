@@ -2,12 +2,19 @@ import { Component, OnInit, ViewChild, Input, EventEmitter, OnChanges, AfterView
 import { MatTable } from '@angular/material/table';
 
 import { TabulaDataSource } from './tabula-datasource';
-import { KastesService, Kaste } from '../services/kastes.service';
+import { KastesService } from '../services/kastes.service';
+import { Kaste } from "../services/kaste.class";
 import { KastesPreferencesService } from '../services/kastes-preferences.service';
 import { KastesPreferences } from '../services/preferences';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
-import { filter, switchMap } from 'rxjs/operators';
+import { filter, switchMap, delay } from 'rxjs/operators';
+
+interface Totals {
+  total: number,
+  kastesRemain: number,
+  labelsRemain: number,
+}
 
 @Component({
   selector: 'app-tabula',
@@ -20,21 +27,21 @@ export class TabulaComponent implements OnInit, AfterViewInit {
   selectedKaste: Kaste;
   rowChange = new EventEmitter();
   preferences: KastesPreferences;
-  private loaded$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   displayedColumns = ['kods', 'adrese', 'yellow', 'rose', 'white', 'gatavs'];
-  // loaded = false;
+  totals$: Subject<Totals> = new Subject();
+  totals: Totals;
 
   constructor(
     private kastesService: KastesService,
     private dialogService: ConfirmationDialogService,
     public preferencesService: KastesPreferencesService,
   ) {
-    this.dataSource = new TabulaDataSource(this.kastesService, this.rowChange, this.loaded$);
+    this.dataSource = new TabulaDataSource(this.kastesService, this.rowChange, this.totals$);
   }
 
   ngOnInit() {
     this.preferencesService.preferences.subscribe((pref) => this.preferences = pref);
-    // this.loaded$.subscribe(ld => this.loaded = ld);
+    this.totals$.pipe(delay(100)).subscribe(tot => this.totals = tot);
   }
 
   ngAfterViewInit() {
