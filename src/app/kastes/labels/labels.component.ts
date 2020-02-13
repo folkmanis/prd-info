@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { Kaste } from '../services/kastes.service';
+import { Kaste } from "../services/kaste.class";
 import { TabulaComponent } from '../tabula/tabula.component';
 import { filter, switchMap, map, tap } from 'rxjs/operators';
 import { KastesPreferencesService } from '../services/kastes-preferences.service';

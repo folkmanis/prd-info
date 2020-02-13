@@ -5,6 +5,7 @@ import { HttpOptions } from "../../library/http/http-options";
 import { KastesPreferences, UserPreferences, SystemPreferences } from './preferences';
 import { Pasutijums } from './pasutijums';
 import { Veikals } from './veikals';
+import { Kaste } from './kaste.class';
 import { tap, switchMap, map } from 'rxjs/operators';
 
 export interface CleanupResponse { deleted: { pasutijumi: number, veikali: number, }; }
@@ -70,8 +71,8 @@ export class KastesHttpService {
    * Atgriež vienas kastes ierakstu
    * @param path Relatīvais ceļš
    */
-  getKasteHttp<T>(path: string): Observable<T[]> {
-    return this.http.get<T[]>(this.httpPathKastes + path);
+  getKasteHttp(params: {id: string, kaste: number}): Observable<Kaste> {
+    return this.http.get<Kaste>(this.httpPathKastes + 'kaste', new HttpOptions(params));
   }
 
   setGatavsHttp(body: { field: string, id: string, kaste: number, yesno: boolean; }): Observable<{ changedRows: number; }> {
