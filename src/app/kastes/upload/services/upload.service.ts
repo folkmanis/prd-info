@@ -5,7 +5,7 @@ import { AdresesCsv } from './adrese-csv';
 import { AdreseBox, AdresesBox, AdrBoxTotals, Totals } from './adrese-box';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
 import { PasutijumiService } from '../../services/pasutijumi.service';
-import { KastesService } from '../../services/kastes.service';
+import { KastesHttpService } from '../../services/kastes-http.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,8 +18,8 @@ export class UploadService {
   constructor(
     private kastesPreferencesService: KastesPreferencesService,
     private pasutijumiService: PasutijumiService,
-    private kastesService: KastesService,
-  ) { }
+    private kastesHttpService: KastesHttpService,
+    ) { }
 
   get adresesCsv$(): Observable<Array<any[]>> {
     return this.adresesCsv.data;
@@ -71,7 +71,7 @@ export class UploadService {
     let pasutijums: string;
     return this.pasutijumiService.addPasutijums(pasutijumsName).pipe(
       tap(pasId => pasutijums = pasId),
-      switchMap(pasId => this.kastesService.uploadTable(this.adresesBox.uploadRow(pasId))),
+      switchMap(pasId => this.kastesHttpService.uploadTableHttp(this.adresesBox.uploadRow(pasId))),
       tap(res => affectedRows = res.affectedRows),
       switchMap(() => this.kastesPreferencesService.update({ pasutijums })),
       map(() => ({ affectedRows }))

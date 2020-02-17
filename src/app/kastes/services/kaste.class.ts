@@ -8,8 +8,17 @@ export interface Kaste {
     rose: number;
     white: number;
     gatavs: boolean;
-    total?: number;
+    total: number;
     uzlime: boolean;
   };
   kaste: number;
+  loading?: boolean;
+}
+
+export interface Totals {
+  total: number,
+  kastesRemain: number,
+  labelsRemain: number,
+  colorMap: Map<string, { total: number, style: { color: string; }; }>;
+
 }

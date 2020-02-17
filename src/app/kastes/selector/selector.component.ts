@@ -22,8 +22,8 @@ export class SelectorComponent implements OnInit {
   ) { }
 
   kastes$ = this.route.paramMap.pipe(
-    switchMap(() => this.kastesService.getTotals()),
-    map(tot => [0, ...tot]),
+    switchMap(() => this.kastesService.volumes$),
+    map(vol => [0, ...vol]),
   );
 
   ngOnInit() {

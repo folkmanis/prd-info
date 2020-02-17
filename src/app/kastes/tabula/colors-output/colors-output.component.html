@@ -1,3 +1,5 @@
-<span *ngFor="let item of data; last as isLast;">
-    {{item.name}}: <span [ngStyle]="item.style" class="cipars">{{item.val}}</span><span *ngIf="!isLast"> // </span>
-</span>
+<!-- <div *ngIf="totalsColors"> -->
+    <span *ngFor="let item of totalsColors; last as isLast;">
+        {{item[0]}}: <span [ngStyle]="item[1].style" class="cipars">{{item[1].total}}</span><span *ngIf="!isLast"> // </span>
+    </span>
+<!-- </div> -->

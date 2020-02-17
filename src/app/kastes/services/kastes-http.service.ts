@@ -10,6 +10,11 @@ import { tap, switchMap, map } from 'rxjs/operators';
 
 export interface CleanupResponse { deleted: { pasutijumi: number, veikali: number, }; }
 
+interface TotalsKastes {
+  totals: { total: number; }[],
+  kastes: Kaste[],
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -68,10 +73,17 @@ export class KastesHttpService {
     return this.http.get<T>(this.httpPathKastes + path, new HttpOptions(opt));
   }
   /**
+   * 
+   * @param pasutijums Pasūtījuma id
+   */
+  getTotalsKastesHttp(pasutijums: string): Observable<TotalsKastes> {
+    return this.http.get<TotalsKastes>(this.httpPathKastes + 'totals-kastes', new HttpOptions({ pasutijums }));
+  }
+  /**
    * Atgriež vienas kastes ierakstu
    * @param path Relatīvais ceļš
    */
-  getKasteHttp(params: {id: string, kaste: number}): Observable<Kaste> {
+  getKasteHttp(params: { id: string, kaste: number; }): Observable<Kaste> {
     return this.http.get<Kaste>(this.httpPathKastes + 'kaste', new HttpOptions(params));
   }
 
