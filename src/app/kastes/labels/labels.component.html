@@ -1,20 +1,26 @@
 <app-select-pasutijums></app-select-pasutijums>
 <div class="adrese-form">
 
-    <form [formGroup]="inputForm" (submit)="onSubmit()">
+    <form [formGroup]="inputForm" (submit)="onSubmit$.emit(inputForm)">
         <mat-form-field>
             <input matInput formControlName="kods" type="number" placeholder="Adreses kods:" autocomplete="off">
         </mat-form-field>
-        <button mat-raised-button type="submit" [disabled]="locked">Apstiprināt</button>
+        <button mat-raised-button type="submit" #submitButton>Apstiprināt</button>
     </form>
-    <div class="result" *ngIf="statuss">
-        <div class="result item" [style.color]="preferences.yellow">{{statuss.kastes.yellow | hideZero}}</div>
-        <div class="result item" [style.color]="preferences.rose">{{statuss.kastes.rose | hideZero}}</div>
-        <div class="result item" [style.color]="preferences.white">{{statuss.kastes.white | hideZero}}</div>
-        <div class="result adrese">{{statuss.adrese}}</div>
-    </div>
-    <div class="result warn" *ngIf="bridinajums">
-        Atbilstošs ieraksts netika atrasts!
+    <div *ngIf="preferences$ | async as preferences;" class="result">
+        <span *ngIf="statuss$">
+            <span *ngIf="statuss$ | async as statuss; else bridinajums">
+                <div class="item" [style.color]="preferences.colors.yellow">{{statuss.kastes.yellow | hideZero}}</div>
+                <div class="item" [style.color]="preferences.colors.rose">{{statuss.kastes.rose | hideZero}}</div>
+                <div class="item" [style.color]="preferences.colors.white">{{statuss.kastes.white | hideZero}}</div>
+                <div class="adrese">{{statuss.adrese}}</div>
+            </span>
+            <ng-template #bridinajums>
+                <span class="warn">
+                    Atbilstošs ieraksts netika atrasts!
+                </span>
+            </ng-template>
+        </span>
     </div>
 </div>
-<app-tabula></app-tabula>
+<app-tabula [forLabels]="true"></app-tabula>

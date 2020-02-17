@@ -11,6 +11,7 @@ import { Observable, BehaviorSubject, Subject, of, EMPTY, combineLatest } from '
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { filter, switchMap, map, delay, mergeMap, tap, take } from 'rxjs/operators';
 
+const COLUMNS = ['kods', 'adrese', 'yellow', 'rose', 'white'];
 
 @Component({
   selector: 'app-tabula',
@@ -22,11 +23,10 @@ import { filter, switchMap, map, delay, mergeMap, tap, take } from 'rxjs/operato
 })
 export class TabulaComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatTable) table: MatTable<Kaste>;
-  // dataSource: TabulaDataSource;
+  @Input() forLabels: boolean = false;
   selectedKaste: Kaste;
-  // rowChange = new EventEmitter();
   preferences$: Observable<KastesPreferences> = this.preferencesService.preferences;
-  displayedColumns = ['kods', 'adrese', 'yellow', 'rose', 'white', 'gatavs'];
+  displayedColumns: string[] = []; // = ['kods', 'adrese', 'yellow', 'rose', 'white', 'gatavs'];
   totals$: Observable<Totals>;
 
   constructor(
@@ -34,11 +34,11 @@ export class TabulaComponent implements OnInit, AfterViewInit, OnDestroy {
     private dialogService: ConfirmationDialogService,
     private preferencesService: KastesPreferencesService,
   ) {
-    // this.dataSource = new TabulaDataSource(this.kastesService);
     this.totals$ = kastesService.totals$;
   }
 
   ngOnInit() {
+    this.displayedColumns = this.forLabels ? [...COLUMNS] : COLUMNS.concat('gatavs');
   }
 
   ngAfterViewInit() {
@@ -60,13 +60,14 @@ export class TabulaComponent implements OnInit, AfterViewInit, OnDestroy {
       this.kastesService.setGatavs(row, 'gatavs', true)
         .subscribe();
     }
+    row.loading = false;
   }
 
   setLabel(kods: number): Observable<Kaste | null> {
     return this.kastesService.kastesAll$.pipe(
       take(1),
-      map(kastes=>kastes.find(kaste=>kaste.kods === kods && !kaste.kastes.uzlime)),
-      mergeMap(rw=> rw ? this.kastesService.setGatavs(rw, 'uzlime', true):of(null)),
-    )
+      map(kastes => kastes.find(kaste => kaste.kods === kods && !kaste.kastes.uzlime)),
+      mergeMap(rw => rw ? this.kastesService.setGatavs(rw, 'uzlime', true) : of(null)),
+    );
   }
 }

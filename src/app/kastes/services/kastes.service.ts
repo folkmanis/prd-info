@@ -119,18 +119,17 @@ export class KastesService {
    * @param field lauks 'gatavs'vai 'uzlime'
    * @param yesno vērtība, uz kuru jānomaina
    */
-  setGatavs(rw: Kaste, field: 'gatavs' | 'uzlime', yesno: boolean): Observable<boolean> {
-    if (!this._kastesAll$) { return of(false); } // katram gadījumam
+  setGatavs(rw: Kaste, field: 'gatavs' | 'uzlime', yesno: boolean): Observable<Kaste | null> {
+    if (!this._kastesAll$) { return of(null); } // katram gadījumam
     return this.kastesHttpService.setGatavsHttp({ id: rw._id, kaste: rw.kaste, field, yesno }).pipe(
-      switchMap(resp => (resp.changedRows > 0) ? this.updateKaste(rw, field, yesno) : of(false))
+      switchMap(resp => (resp.changedRows > 0) ? this.updateKaste(rw, field, yesno) : of(null))
     );
   }
 
-  private updateKaste(rw: Kaste, field: 'gatavs' | 'uzlime', yesno: boolean): Observable<boolean> {
+  private updateKaste(rw: Kaste, field: 'gatavs' | 'uzlime', yesno: boolean): Observable<Kaste> {
     rw.kastes[field] = yesno;
-    rw.loading = false;
     this._kastesAll$.next(this._kastesAll$.value);
-    return of(true);
+    return of(rw);
   }
 
 }

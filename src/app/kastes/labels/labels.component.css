@@ -1,4 +1,4 @@
-div.result {
+.result {
     display: block;
     margin: 8px;
     padding: 2px 8px;
@@ -6,13 +6,13 @@ div.result {
     text-align: left;
     min-height: 24px;
 }
-div.result.adrese {
+.adrese {
     display: block;
     float: left;
     padding: 4px;
     margin: 0;
 }
-div.result.item {
+.item {
     margin: 0 4px;
     float: left;
     padding: 4px;
@@ -26,6 +26,6 @@ div.result.item {
 .adrese-form button {
     margin-left: 8px;
 }
-div.result.warn {
+.warn {
     color: red;
 }
