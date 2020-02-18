@@ -28,6 +28,7 @@ export class TabulaComponent implements OnInit, AfterViewInit, OnDestroy {
   preferences$: Observable<KastesPreferences> = this.preferencesService.preferences;
   displayedColumns: string[] = []; // = ['kods', 'adrese', 'yellow', 'rose', 'white', 'gatavs'];
   totals$: Observable<Totals>;
+  dataSource = this.kastesService.kastes$;
 
   constructor(
     private kastesService: KastesService,
@@ -42,7 +43,6 @@ export class TabulaComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    this.table.dataSource = this.kastesService.kastes$;
   }
 
   ngOnDestroy() {

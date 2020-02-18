@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { ModulePreferences, SystemPreferences } from '../../library/classes/system-preferences-class';
 export { ModulePreferences, SystemPreferences, KastesSettings, SystemSettings } from '../../library/classes/system-preferences-class';
-import { HttpService } from './admin-http.service';
+import { AdminHttpService } from './admin-http.service';
 import { map, filter, tap } from 'rxjs/operators';
 
 @Injectable({
@@ -15,7 +15,7 @@ export class ModulePreferencesService {
   private loading = false;
 
   constructor(
-    private httpService: HttpService,
+    private httpService: AdminHttpService,
   ) { }
 
   getModulePreferences<T>(mod: string): Observable<T> {

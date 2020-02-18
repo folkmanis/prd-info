@@ -19,8 +19,6 @@ export class AppComponent implements OnInit {
   user = '';
   userModules: UserModule[] = [];
   userMenuItems: { route: string[], text: string; }[] = [];
-  activeTitle: string = '';
-  activeRoute: string = '';
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -28,13 +26,14 @@ export class AppComponent implements OnInit {
       shareReplay()
     );
 
+    activeModule$ = this.loginService.activeModule$;
+
   constructor(
     private loginService: LoginService,
     private breakpointObserver: BreakpointObserver,
   ) { }
 
   ngOnInit() {
-    this.loginService.connect();
     this.loginService.user$.pipe(
       filter(usr=>!!usr),
     ).subscribe((usr) => {
@@ -43,10 +42,6 @@ export class AppComponent implements OnInit {
       // this.isAdmin = !!usr && !!usr.admin;
       this.initUserMenu(usr);
       this.initModulesMenu(usr);
-    });
-    this.loginService.activeModule$.subscribe(mod => {
-      this.activeTitle = mod ? mod.name : '';
-      this.activeRoute = mod ? mod.route : '';
     });
   }
 

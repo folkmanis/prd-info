@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PasutijumiService } from '../services/pasutijumi.service';
 import { KastesPreferencesService } from '../services/kastes-preferences.service';
-import { switchMap, distinctUntilChanged, map, tap, skip } from 'rxjs/operators';
+import { switchMap, distinctUntilChanged, map, tap, skip, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-select-pasutijums',
@@ -24,7 +24,9 @@ export class SelectPasutijumsComponent implements OnInit {
   );
 
   ngOnInit() {
-    this.kastesPreferencesService.preferences.subscribe(pref => this.pasControl.setValue(pref.pasutijums));
+    this.kastesPreferencesService.preferences.pipe(
+      take(1),
+    ).subscribe(pref => this.pasControl.setValue(pref.pasutijums));
     this.pasControl.valueChanges.pipe(
       skip(1),
       distinctUntilChanged(),

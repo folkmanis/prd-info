@@ -26,7 +26,7 @@ export class SideMenuComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.sidenavService.dataSource.dataChange.pipe(
       tap(data => this.treeControl.dataNodes = data),
-      switchMap(() => this.loginService.systemPreferences),
+      switchMap(() => this.loginService.sysPreferences$),
       map(pref => <SystemSettings>pref.get('system')),
       tap(pref => pref && pref.menuExpandedByDefault && this.treeControl.expandAll()),
     )

@@ -20,7 +20,7 @@ interface UpdateResponse {
 @Injectable({
   providedIn: 'root'
 })
-export class HttpService {
+export class AdminHttpService {
   private httpPathUsers = '/data/users/';
   /**   Klientu kodi ir arhīva datubāzē
    * TODO izveidot klientu datubāzi uz    */

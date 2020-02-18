@@ -11,7 +11,7 @@ export class ErrorsService implements ErrorHandler {
   handleError(error: HttpErrorResponse) {
     if (error instanceof HttpErrorResponse) {
       if (error.status === 401) {
-        location.pathname = '/login';
+        // location.pathname = '/login';
       }
     }
     console.error('Error ', error);

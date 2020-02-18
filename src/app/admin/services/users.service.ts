@@ -1,4 +1,4 @@
-import { HttpService, User } from './admin-http.service';
+import { AdminHttpService, User } from './admin-http.service';
 import { Injectable } from '@angular/core';
 import { Observable, Subject, of } from 'rxjs';
 import { map, tap, filter, switchMap } from 'rxjs/operators';
@@ -21,7 +21,7 @@ export class UsersService {
   count$ = new Subject<number>();
   users$ = new Subject<User[]>();
   constructor(
-    private httpService: HttpService,
+    private httpService: AdminHttpService,
   ) { }
   /**
    * Saņem lietotāju sarakstu no REST

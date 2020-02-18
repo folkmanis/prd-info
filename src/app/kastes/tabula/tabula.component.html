@@ -15,7 +15,7 @@
 </ng-template>
 <!-- Sākas tabula -->
 <div *ngIf="preferences$ | async as preferences;" class="tabula-container">
-  <table mat-table class="full-width-table mat-elevation-z8" aria-label="Kastes">
+  <table mat-table [dataSource]="dataSource" class="full-width-table mat-elevation-z8" aria-label="Kastes">
     <!-- Id Column -->
     <ng-container matColumnDef="kods">
       <th mat-header-cell *matHeaderCellDef class="Nr cipari">Nr</th>
