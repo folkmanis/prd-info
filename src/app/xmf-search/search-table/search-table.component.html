@@ -3,9 +3,9 @@
         <app-facet></app-facet>
     </div>
     <div style="flex: 1 1;">
-        <h3>{{status}}</h3>
+        <h3>{{statuss$ | async}}</h3>
         <div *ngIf="true">
-            <div *ngFor="let item of archiveSearchResult$ | async; last as lastItem">
+            <div *ngFor="let item of archiveSearchResult$ | async; last as lastItem;">
                 <div class="jobId">
                     <app-tagged-string [text]="item.JDFJobID" [search]="search" [style]="{'font-weight': 'bold'}" [exactMatch]="true"></app-tagged-string>
                 </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { map, filter, switchMap, tap } from 'rxjs/operators';
 import { merge, Observable } from 'rxjs/index';
@@ -12,13 +12,12 @@ import { ArchiveRecord, SearchQuery, FacetFilter } from '../services/archive-sea
   templateUrl: './search-table.component.html',
   styleUrls: ['./search-table.component.css']
 })
-export class SearchTableComponent implements OnInit {
+export class SearchTableComponent implements OnInit{
 
   search = '';  // Tiek izmantots rezultātu izcelšanai
-  archiveSearchResult$: Observable< ArchiveRecord[]> = this.archiveSearchService.archiveSearchResult$;
+  archiveSearchResult$: Observable < ArchiveRecord[] > = this.archiveSearchService.searchResult$;
   query: SearchQuery;
-  status = '';
-  actions: string[] = [,'Archive', 'Restore', 'Skip','Delete'];
+  actions: string[] = [, 'Archive', 'Restore', 'Skip', 'Delete'];
 
   constructor(
     private snack: MatSnackBar,
@@ -26,35 +25,28 @@ export class SearchTableComponent implements OnInit {
     private route: ActivatedRoute,
   ) { }
 
-  initialSearch$ = // sākotnējais meklējums
-    this.route.paramMap.pipe(
+  ngOnInit() {
+    this.archiveSearchService.search$ = this.route.paramMap.pipe(
       filter((param) => param.has('q')),
       filter((param) => param.get('q').trim().length > 3),
-      map((param) => {
-        this.query = { q: param.get('q').trim() };
-        this.search = this.query.q; // q = jautājums
-        return this.query;
-      }),
+      map(param => param.get('q').trim()),
+      tap(q => this.search = q),
     );
-
-  ngOnInit() {
-    this.archiveSearchService.count$.subscribe(c => this.setStatus(c));
-    this.initialSearch$.subscribe(query => this.archiveSearchService.search = query);
   }
 
   onCopied(val: string) {
     this.snack.open('Pārkopēts starpliktuvē: ' + val, 'OK', { duration: 3000 });
   }
 
-  private setStatus(count: number) {
-    if (!count || count < 1) {
-      this.status = 'Nav rezultātu';
-    }
-    const si = (count % 10 === 1 && count !== 11 ? 's' : 'i');
-    this.status = `Atrast${si} ${count} ierakst${si}`;
-    // if (count > this.archiveSearchResult.length) {
-    //   ret += `, rāda ${this.archiveSearchResult.length}`;
-    // }
-  }
+  statuss$: Observable < string > = this.archiveSearchService.count$.pipe(
+    map(count => {
+      if (!count || count < 1) {
+        return 'Nav rezultātu';
+      } else {
+        const si = (count % 10 === 1 && count !== 11 ? 's' : 'i');
+        return `Atrast${si} ${count} ierakst${si}`;
+      }
+    })
+  );
 
 }

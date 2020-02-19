@@ -1,6 +1,7 @@
 export interface ArchiveResp {
     count: number;
-    data?: Array<ArchiveRecord>;
+    data: Array<ArchiveRecord>;
+    facet: ArchiveFacet;
 }
 
 export interface ArchiveRecord {
@@ -14,7 +15,8 @@ export interface ArchiveRecord {
     }[];
 }
 
-interface Count {_id: string, count: number, selected: boolean};
+interface Count { _id: string, count: number, selected: boolean; };
+
 export interface ArchiveFacet {
     customerName: Count[],
     year: Count[],
@@ -28,8 +30,8 @@ export interface FacetFilter {
 }
 
 export interface SearchQuery {
-  q: string;
-  customers?: string[];
-  year?: number[];
-  month?: number[];
+    q: string;
+    customers?: string[];
+    year?: number[];
+    month?: number[];
 }

@@ -27,7 +27,7 @@ export class XmfSearchComponent implements OnInit {
   ngOnInit() {
     this.searchForm.valueChanges.pipe(
       debounceTime(300),
-      distinctUntilChanged(this.changeDetector),
+      distinctUntilChanged(),
     ).subscribe((params) => {
       if (params.q.length > 3) {
         this.router.navigate(['xmf-search', 's', params]);
@@ -48,14 +48,5 @@ export class XmfSearchComponent implements OnInit {
     }
 
   }
-
-  private changeDetector = (x: FormValues, y: FormValues): boolean => {
-    for (const k of Object.keys(x)) {
-      if (x[k] !== y[k]) {
-        return false;
-      }
-    }
-    return true;
-  };
 
 }
