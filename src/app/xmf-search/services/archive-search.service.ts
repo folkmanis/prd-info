@@ -70,27 +70,23 @@ export class ArchiveSearchService {
         const oFGr: Array<any> = this.lastFacet[key];
         for (const k in oFGr) {
           const idxNew = nFGr.findIndex(el => el['_id'] === oFGr[k]['_id']);
-          if (idxNew > -1) {
-            oFGr[k]['count'] = nFGr[idxNew]['count'];
-          } else {
-            oFGr[k]['count'] = 0;
-          }
+          oFGr[k]['count'] = (idxNew > -1) ? nFGr[idxNew]['count'] : oFGr[k]['count'] = 0;
         }
       }
     }
     return this.lastFacet;
   }
 
-  private searchHttp(query: SearchQuery): Observable<ArchiveResp> {
-    return this.http.get<ArchiveResp>(this.httpPathSearch + 'search', new HttpOptions({ query: JSON.stringify(query) }));
-  }
+  private searchHttp(query: SearchQuery): Observable < ArchiveResp > {
+  return this.http.get<ArchiveResp>(this.httpPathSearch + 'search', new HttpOptions({ query: JSON.stringify(query) }));
+}
 
   private replaceSlash(data: ArchiveRecord[]) {
-    for (const rec of data) {
-      for (const arch of rec.Archives || []) {
-        arch.Location = arch.Location.replace(/\//g, '\\');
-      }
+  for (const rec of data) {
+    for (const arch of rec.Archives || []) {
+      arch.Location = arch.Location.replace(/\//g, '\\');
     }
   }
+}
 
 }
