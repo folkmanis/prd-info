@@ -65,6 +65,7 @@ export class LoginService {
   }
   /**
    * Lietotājam pieejamie Moduļi
+   * Multicast Observable
    */
   get modules$(): Observable<UserModule[]> {
     return this.user$.pipe(

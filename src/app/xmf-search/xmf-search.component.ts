@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
 import { map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
-import { SidenavService } from '../login/sidenav.service';
 
 interface FormValues {
   q: string;
