@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, Subject, merge } from 'rxjs';
 import { CollectionViewer, SelectionChange, DataSource } from '@angular/cdk/collections';
 import { UserModule } from "../library/classes/user-module-interface";
