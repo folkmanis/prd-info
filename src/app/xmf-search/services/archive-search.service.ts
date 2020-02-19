@@ -53,7 +53,7 @@ export class ArchiveSearchService {
   searchResult$: Observable<ArchiveRecord[]> = this.searchQuery$.pipe(
     tap(res => this.count$.next(res.count)),
     map(res => res.data),
-    tap(replaceSlash),
+    tap(this.replaceSlash),
   );
 
   facetResult$: Observable<ArchiveFacet> = this.searchQuery$.pipe(
@@ -85,12 +85,12 @@ export class ArchiveSearchService {
     return this.http.get<ArchiveResp>(this.httpPathSearch + 'search', new HttpOptions({ query: JSON.stringify(query) }));
   }
 
-}
-
-const replaceSlash = function (data: ArchiveRecord[]) {
-  for (const rec of data) {
-    for (const arch of rec.Archives || []) {
-      arch.Location = arch.Location.replace(/\//g, '\\');
+  private replaceSlash(data: ArchiveRecord[]) {
+    for (const rec of data) {
+      for (const arch of rec.Archives || []) {
+        arch.Location = arch.Location.replace(/\//g, '\\');
+      }
     }
   }
-};
+
+}
