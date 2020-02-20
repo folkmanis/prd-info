@@ -1,8 +1,8 @@
-import { Observable, BehaviorSubject, Subject, merge } from 'rxjs';
-import { CollectionViewer, SelectionChange, DataSource } from '@angular/cdk/collections';
+import { Observable } from 'rxjs';
+import {  DataSource } from '@angular/cdk/collections';
 import { UserModule } from "../library/classes/user-module-interface";
 import { LoginService } from '../login/login.service';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 export interface SideMenuData {
     name: string;
@@ -14,8 +14,10 @@ export interface SideMenuData {
  */
 export class MenuDataSource implements DataSource<SideMenuData> {
 
-    dataChange$ = this.loginService.modules$.pipe(
-        map(mod => this.toSideMenu(mod))
+    data: SideMenuData[] = [];
+    private dataChange$ = this.loginService.modules$.pipe(
+        map(mod => this.toSideMenu(mod)),
+        tap(menu => this.data = menu),
     );
     constructor(
         private loginService: LoginService,
@@ -25,7 +27,7 @@ export class MenuDataSource implements DataSource<SideMenuData> {
      * Mainoties lietotājam, mainās arī izvēlne
      * @param collectionViewer 
      */
-    connect(collectionViewer: CollectionViewer): Observable<SideMenuData[]> {
+    connect(): Observable<SideMenuData[]> {
         return this.dataChange$;
     }
 
