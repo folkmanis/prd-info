@@ -1,7 +1,7 @@
 /**
  * Saņem multicast plūsmas:
  * search$ - plūsma ar meklējumu
- * facet$ - Facet filtrs
+ * facet$ - Facet filtra izmaiņas
  * 
  * Izsniedz multicast plūsmas:
  * searchResult$ - Meklēšanas rezultātu tabula
@@ -11,10 +11,10 @@
  * 
  */
 
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 
 import { ArchiveResp, ArchiveRecord, SearchQuery, ArchiveFacet, FacetFilter } from './archive-search-class';
-import { Observable, Subject, BehaviorSubject, combineLatest, ReplaySubject } from 'rxjs';
+import { Observable, Subject, BehaviorSubject, combineLatest, ReplaySubject, OperatorFunction } from 'rxjs';
 import { map, tap, switchMap, share, pluck } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { HttpOptions } from '../../library/http/http-options';
@@ -24,30 +24,36 @@ import { HttpOptions } from '../../library/http/http-options';
 })
 export class ArchiveSearchService {
 
-  private searchString$ = new ReplaySubject<string>(1); // ienākošā meklējuma rinda
-  private facetSearch$ = new BehaviorSubject<Partial<FacetFilter>>({}); // ienākošais facet filtrs
-  private searchQuery$: Observable<ArchiveResp> = combineLatest(this.searchString$, this.facetSearch$)
-    .pipe(
-      map(([q, fac]) => ({ q, ...fac })),
-      switchMap(q => this.searchHttp(q)),
-      share(),
-    );
-  private lastFacet: ArchiveFacet | null;
-  private httpPathSearch = '/data/xmf-search/';
-  count$ = new Subject<number>();
-
   constructor(
     private http: HttpClient,
   ) { }
 
+  private searchString$ = new ReplaySubject<string>(1); // ienākošā meklējuma rinda
+  private facetSearch$ = new BehaviorSubject<Partial<FacetFilter>>({}); // ienākošais facet filtrs
+  private searchQuery$: Observable<ArchiveResp> = combineLatest(this.searchString$, this.facetSearch$)
+    .pipe(
+      map(this.combineSearch()),
+      switchMap(q => this.searchHttp(q)),
+      share(),
+    );
+  private httpPathSearch = '/data/xmf-search/';
+  count$ = new Subject<number>();
+
+  private facetFilter: Partial<FacetFilter> = {};
+
+  resetFacet = new EventEmitter<void>();
+
   set search$(s$: Observable<string>) {
     s$.pipe(
-      tap(() => this.lastFacet = null), // Būs vajadzīgs jauns facet
+      tap(() => this.facetFilter = {}),
+      tap(() => this.resetFacet.next()), // Būs vajadzīgs jauns facet
     ).subscribe(this.searchString$);
   }
 
   set facetFilter$(f$: Observable<Partial<FacetFilter>>) {
-    f$.subscribe(this.facetSearch$);
+    f$.pipe(
+      tap(f => this.facetFilter = { ...this.facetFilter, ...f }),
+    ).subscribe(this.facetSearch$);
   }
 
   searchResult$: Observable<ArchiveRecord[]> = this.searchQuery$.pipe(
@@ -58,35 +64,78 @@ export class ArchiveSearchService {
 
   facetResult$: Observable<ArchiveFacet> = this.searchQuery$.pipe(
     pluck('facet'),
-    map(this.updateFacet),
+    // this.trackFacet(this.resetFacet),
+    map(this.updateFacet(this.resetFacet)),
   );
 
-  private updateFacet(newFacet: ArchiveFacet): ArchiveFacet {
-    if (!this.lastFacet) { // ja prasa pirmo reizi
-      this.lastFacet = newFacet; // tad izmanto visu ierakstu
-    } else { // ja elementi jau ir, tad izmantos tikai skaitus
-      for (const key of Object.keys(newFacet)) { // pa grupām
-        const nFGr: Array<any> = newFacet[key];
-        const oFGr: Array<any> = this.lastFacet[key];
-        for (const k in oFGr) {
-          const idxNew = nFGr.findIndex(el => el['_id'] === oFGr[k]['_id']);
-          oFGr[k]['count'] = (idxNew > -1) ? nFGr[idxNew]['count'] : oFGr[k]['count'] = 0;
+  private updateFacet(reset: Observable<void>): (newFacet: ArchiveFacet) => ArchiveFacet {
+    let lastFacet: ArchiveFacet;
+    reset.subscribe(() => lastFacet = undefined);
+    return (newFacet: ArchiveFacet): ArchiveFacet => {
+      if (!lastFacet) { // ja prasa pirmo reizi
+        lastFacet = newFacet; // tad izmanto visu ierakstu
+      } else { // ja elementi jau ir, tad izmantos tikai skaitus
+        for (const key of Object.keys(newFacet)) { // pa grupām
+          const nFGr: Array<any> = newFacet[key];
+          const oFGr: Array<any> = lastFacet[key];
+          for (const k in oFGr) {
+            const idxNew = nFGr.findIndex(el => el['_id'] === oFGr[k]['_id']);
+            oFGr[k]['count'] = (idxNew > -1) ? nFGr[idxNew]['count'] : oFGr[k]['count'] = 0;
+          }
         }
       }
-    }
-    return this.lastFacet;
+      return lastFacet;
+    };
   }
 
-  private searchHttp(query: SearchQuery): Observable < ArchiveResp > {
-  return this.http.get<ArchiveResp>(this.httpPathSearch + 'search', new HttpOptions({ query: JSON.stringify(query) }));
-}
+  private trackFacet(reset: Subject<void>): OperatorFunction<ArchiveFacet, ArchiveFacet> {
+    let currFacet: ArchiveFacet;
+    reset.subscribe(() => { console.log('reset'), currFacet = null; });
+    return (newFacet$: Observable<ArchiveFacet>) => new Observable<ArchiveFacet>(observer => {
+      const subs = newFacet$.subscribe({
+        next(newFacet) {
+          if (!currFacet) {
+            currFacet = newFacet;
+          } else {
+            for (const key of Object.keys(newFacet)) { // pa grupām
+              const nFGr: Array<any> = newFacet[key];
+              const oFGr: Array<any> = currFacet[key];
+              for (const k in oFGr) {
+                const idxNew = nFGr.findIndex(el => el['_id'] === oFGr[k]['_id']);
+                oFGr[k]['count'] = (idxNew > -1) ? nFGr[idxNew]['count'] : oFGr[k]['count'] = 0;
+              }
+            }
+          }
+          observer.next(currFacet);
+        },
+        error(err) { observer.error(err); },
+        complete() { observer.complete(); }
+      });
+      return () => { subs.unsubscribe(); };
+    });
+  }
+
+  private combineSearch(): (params: [string, Partial<FacetFilter>]) => SearchQuery {
+    let lastString = '';
+    return ([q, fac]): SearchQuery => {
+      if (q !== lastString) {
+        lastString = q;
+        this.facetFilter = {};
+      }
+      return { q: lastString, ...this.facetFilter };
+    };
+  }
+
+  private searchHttp(query: SearchQuery): Observable<ArchiveResp> {
+    return this.http.get<ArchiveResp>(this.httpPathSearch + 'search', new HttpOptions({ query: JSON.stringify(query) }));
+  }
 
   private replaceSlash(data: ArchiveRecord[]) {
-  for (const rec of data) {
-    for (const arch of rec.Archives || []) {
-      arch.Location = arch.Location.replace(/\//g, '\\');
+    for (const rec of data) {
+      for (const arch of rec.Archives || []) {
+        arch.Location = arch.Location.replace(/\//g, '\\');
+      }
     }
   }
-}
 
 }
