@@ -37,10 +37,8 @@ export class ArchiveSearchService {
       share(),
     );
   private httpPathSearch = '/data/xmf-search/';
-  count$ = new Subject<number>();
-
   private facetFilter: Partial<FacetFilter> = {};
-
+  count$ = new Subject<number>();
   resetFacet = new EventEmitter<void>();
 
   set search$(s$: Observable<string>) {
@@ -64,55 +62,29 @@ export class ArchiveSearchService {
 
   facetResult$: Observable<ArchiveFacet> = this.searchQuery$.pipe(
     pluck('facet'),
-    // this.trackFacet(this.resetFacet),
-    map(this.updateFacet(this.resetFacet)),
+    this.updateFacet(this.resetFacet),
   );
 
-  private updateFacet(reset: Observable<void>): (newFacet: ArchiveFacet) => ArchiveFacet {
+  private updateFacet(reset: Observable<void>): (nF: Observable<ArchiveFacet>) => Observable<ArchiveFacet> {
     let lastFacet: ArchiveFacet;
     reset.subscribe(() => lastFacet = undefined);
-    return (newFacet: ArchiveFacet): ArchiveFacet => {
-      if (!lastFacet) { // ja prasa pirmo reizi
-        lastFacet = newFacet; // tad izmanto visu ierakstu
-      } else { // ja elementi jau ir, tad izmantos tikai skaitus
-        for (const key of Object.keys(newFacet)) { // pa grupām
-          const nFGr: Array<any> = newFacet[key];
-          const oFGr: Array<any> = lastFacet[key];
-          for (const k in oFGr) {
-            const idxNew = nFGr.findIndex(el => el['_id'] === oFGr[k]['_id']);
-            oFGr[k]['count'] = (idxNew > -1) ? nFGr[idxNew]['count'] : oFGr[k]['count'] = 0;
-          }
-        }
-      }
-      return lastFacet;
-    };
-  }
-
-  private trackFacet(reset: Subject<void>): OperatorFunction<ArchiveFacet, ArchiveFacet> {
-    let currFacet: ArchiveFacet;
-    reset.subscribe(() => { console.log('reset'), currFacet = null; });
-    return (newFacet$: Observable<ArchiveFacet>) => new Observable<ArchiveFacet>(observer => {
-      const subs = newFacet$.subscribe({
-        next(newFacet) {
-          if (!currFacet) {
-            currFacet = newFacet;
-          } else {
-            for (const key of Object.keys(newFacet)) { // pa grupām
-              const nFGr: Array<any> = newFacet[key];
-              const oFGr: Array<any> = currFacet[key];
-              for (const k in oFGr) {
-                const idxNew = nFGr.findIndex(el => el['_id'] === oFGr[k]['_id']);
-                oFGr[k]['count'] = (idxNew > -1) ? nFGr[idxNew]['count'] : oFGr[k]['count'] = 0;
-              }
+    return map(
+      (newFacet: ArchiveFacet): ArchiveFacet => {
+        if (!lastFacet) { // ja prasa pirmo reizi
+          lastFacet = newFacet; // tad izmanto visu ierakstu
+        } else { // ja elementi jau ir, tad izmantos tikai skaitus
+          for (const key of Object.keys(newFacet)) { // pa grupām
+            const nFGr: Array<any> = newFacet[key];
+            const oFGr: Array<any> = lastFacet[key];
+            for (const k in oFGr) {
+              const idxNew = nFGr.findIndex(el => el['_id'] === oFGr[k]['_id']);
+              oFGr[k]['count'] = (idxNew > -1) ? nFGr[idxNew]['count'] : oFGr[k]['count'] = 0;
             }
           }
-          observer.next(currFacet);
-        },
-        error(err) { observer.error(err); },
-        complete() { observer.complete(); }
-      });
-      return () => { subs.unsubscribe(); };
-    });
+        }
+        return lastFacet;
+      }
+    );
   }
 
   private combineSearch(): (params: [string, Partial<FacetFilter>]) => SearchQuery {
