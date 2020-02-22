@@ -17,34 +17,38 @@
     </mat-toolbar>
     <app-side-menu></app-side-menu>
   </mat-sidenav>
-  <mat-sidenav-content class="content">
+  <mat-sidenav-content class="content" #content>
     <!-- Lielais toolbar -->
     <mat-toolbar *ngIf="user$ | async" color="primary">
-      <mat-toolbar-row>
-        <!-- Side menu poga -->
-        <span style="flex: 0 0 auto">
-          <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
-            <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-          </button>
-        </span>
-        <!-- Starpotājs -->
-        <span style="flex: 1 1 auto"></span>
-        <!-- Mazais lietotāja menu -->
-        <span *ngIf="user$ | async as user;" style="flex: 0 0 auto">
-          <button mat-button [matMenuTriggerFor]='userMenu'>
-            <i class="material-icons">account_circle</i>
-            <i class="material-icons">arrow_drop_down</i>
-          </button>
-          <mat-menu #userMenu="matMenu">
-            <span class="mat-caption username">Lietotājs: <strong>{{user.name}}</strong></span>
-            <button *ngFor="let item of userMenu$|async" mat-menu-item [routerLink]="item.route">{{item.text}}</button>
-          </mat-menu>
-        </span>
+      <!-- Side menu poga -->
+      <span style="flex: 0 0 auto">
+        <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
+          <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+        </button>
+      </span>
+      <!-- Starpotājs -->
+      <span style="flex: 1 1 auto"></span>
+      <!-- Mazais lietotāja menu -->
+      <span *ngIf="user$ | async as user;" style="flex: 0 0 auto">
+        <button mat-button [matMenuTriggerFor]='userMenu'>
+          <i class="material-icons">account_circle</i>
+          <i class="material-icons">arrow_drop_down</i>
+        </button>
+        <mat-menu #userMenu="matMenu">
+          <span class="mat-caption username">Lietotājs: <strong>{{user.name}}</strong></span>
+          <button *ngFor="let item of userMenu$|async" mat-menu-item [routerLink]="item.route">{{item.text}}</button>
+        </mat-menu>
+      </span>
 
-      </mat-toolbar-row>
     </mat-toolbar>
 
     <!-- Add Content Here -->
     <router-outlet></router-outlet>
+    <!--Scroll to top-->
+    <div *ngIf="showScroll" class="scroll-to-top" [ngClass]="{'show-scroll': showScroll}">
+      <button mat-fab (click)="scrollToTop()">
+        <mat-icon>arrow_upward</mat-icon>
+      </button>
+    </div>
   </mat-sidenav-content>
 </mat-sidenav-container>

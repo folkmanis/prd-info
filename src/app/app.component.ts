@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, NgZone } from '@angular/core';
+import { MatSidenavContent } from '@angular/material/sidenav';
 import { LoginService, User } from './login/login.service';
-import { Observable, combineLatest } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { Observable, combineLatest, from } from 'rxjs';
+import { map, shareReplay, tap, pluck } from 'rxjs/operators';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 @Component({
@@ -9,8 +10,8 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
-
+export class AppComponent implements OnInit, AfterViewInit {
+  @ViewChild(MatSidenavContent) content: MatSidenavContent;
   //Lietotājs no servisa (lai būtu redzams templatē)
   user$: Observable<User> = this.loginService.user$;
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
@@ -32,9 +33,31 @@ export class AppComponent implements OnInit {
   constructor(
     private loginService: LoginService,
     private breakpointObserver: BreakpointObserver,
+    private zone: NgZone,
   ) { }
 
   ngOnInit() {
+  }
+
+  showScroll = false;
+  showScrollHeight = 300;
+  hideScrollHeight = 10;
+
+  ngAfterViewInit() {
+    this.content.elementScrolled().pipe(
+      map(() => this.content.measureScrollOffset('top')),
+      tap(top => {
+        if (top > this.showScrollHeight) {
+          this.zone.run(() => this.showScroll = true); // Scroll tie pārbaudīts ārpus zonas. Bez run nekādas reakcijas nebūs
+        } else if (this.showScroll && top < this.hideScrollHeight) {
+          this.zone.run(() => this.showScroll = false);
+        }
+      }),
+    ).subscribe();
+  }
+
+  scrollToTop() {
+    this.content.scrollTo({ top: 0 });
   }
 
 }

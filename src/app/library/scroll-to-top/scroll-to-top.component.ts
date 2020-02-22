@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, ElementRef } from '@angular/core';
 
 @Component({
   selector: 'app-scroll-to-top',
@@ -22,7 +22,9 @@ export class ScrollToTopComponent {
       }
   }
 
-  constructor() { }
+  constructor(
+    private el: ElementRef,
+  ) { }
 
   scrollToTop() {
     (function smoothscroll() {
