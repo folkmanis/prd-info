@@ -45,7 +45,7 @@
     <!-- Add Content Here -->
     <router-outlet></router-outlet>
     <!--Scroll to top-->
-    <div *ngIf="showScroll" class="scroll-to-top" [ngClass]="{'show-scroll': showScroll}">
+    <div class="scroll-to-top" [class.show-scroll]="showScroll">
       <button mat-fab (click)="scrollToTop()">
         <mat-icon>arrow_upward</mat-icon>
       </button>
