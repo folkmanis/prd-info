@@ -1,4 +1,4 @@
-export interface ModulePreferences {
+export interface ModuleSettings {
     [key: string]: any;
 }
 
@@ -7,7 +7,7 @@ export interface DbModulePreferences {
     settings: { [key: string]: any; };
 }
 
-export interface SystemPreferences extends Map<string, ModulePreferences> { }
+export interface SystemPreferences extends Map<string, ModuleSettings> { }
 
 export interface KastesSettings {
     colors: {
@@ -17,11 +17,11 @@ export interface KastesSettings {
     };
 }
 
-export interface SystemSettings extends ModulePreferences {
-    menuExpandedByDefault: boolean,
+export class SystemSettings implements ModuleSettings {
+    menuExpandedByDefault: boolean;
 }
 
-export const DEFAULT_SYSTEM_PREFERENCES: SystemPreferences = new Map<string, ModulePreferences>()
+export const DEFAULT_SYSTEM_PREFERENCES: SystemPreferences = new Map<string, ModuleSettings>()
     .set('kastes',
         { colors: { yellow: 'gold', rose: 'magenta', white: 'gray', } })
-    .set('system', { menuExpandedByDefault: true });
+    .set('system', { menuExpandedByDefault: false });

@@ -66,7 +66,7 @@ export class KastesPreferencesComponent implements OnInit, PreferencesComponent 
 
   onSave() {
     if (this.colorsForm.pristine) { return; }
-    this.moduleService.updateModulePreferences('kastes',this.preferences).pipe(
+    this.moduleService.updateModulePreferences('kastes', this.preferences).pipe(
       filter(resp => resp),
       switchMap(() => this.loginService.reloadPreferences()),
       tap(() => this.colorsForm.markAsPristine()),
@@ -79,7 +79,7 @@ export class KastesPreferencesComponent implements OnInit, PreferencesComponent 
   }
 
   canDeactivate(): Observable<boolean> {
-    return  of(this.colorsForm.pristine);
+    return of(this.colorsForm.pristine);
   }
 
   private parseColors(pref: KastesSettings): Colors {

@@ -2,7 +2,7 @@ import { Component, AfterViewInit, OnDestroy } from '@angular/core';
 import { NestedTreeControl } from '@angular/cdk/tree';
 
 import { of, Observable, Subscription } from 'rxjs';
-import { tap, switchMap, map, distinctUntilChanged, filter } from 'rxjs/operators';
+import { tap, switchMap, map, distinctUntilChanged, filter, delay } from 'rxjs/operators';
 import { LoginService, SystemSettings } from '../login/login.service';
 import { MenuDataSource, SideMenuData } from './menu-datasource';
 
@@ -23,11 +23,11 @@ export class SideMenuComponent implements AfterViewInit, OnDestroy {
   private changeSubs: Subscription;
 
   ngAfterViewInit() {
-    this.changeSubs = this.loginService.sysPreferences$.pipe(
+    this.changeSubs = this.dataSource.dataChange$.pipe(
       tap(() => this.treeControl.dataNodes = this.dataSource.data),
+      switchMap(() => this.loginService.sysPreferences$),
       map(pref => <SystemSettings>pref.get('system')),
       map(pref => pref && pref.menuExpandedByDefault),
-      distinctUntilChanged(),
       filter(expand => expand),
       tap(expand => expand && this.treeControl.expandAll()),
     )

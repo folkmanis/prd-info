@@ -18,7 +18,7 @@ import { Observable, BehaviorSubject, of, Subject, merge, ReplaySubject } from '
 import { map, tap, distinctUntilChanged, filter, switchMap, shareReplay, take, exhaustMap } from 'rxjs/operators';
 import { USER_MODULES } from '../user-modules';
 import { UserModule } from "../library/classes/user-module-interface";
-import { SystemPreferences, ModulePreferences, DEFAULT_SYSTEM_PREFERENCES } from '../library/classes/system-preferences-class';
+import { SystemPreferences, ModuleSettings, DEFAULT_SYSTEM_PREFERENCES } from '../library/classes/system-preferences-class';
 export { SystemSettings } from '../library/classes/system-preferences-class';
 import { LoginHttpService, User, Login } from './login-http.service';
 export { User, Login } from './login-http.service';
@@ -29,13 +29,11 @@ export { User, Login } from './login-http.service';
 export class LoginService {
 
   private _user$: ReplaySubject<User | null>;
-  private _sysPref$: ReplaySubject<SystemPreferences>;
+  private _sysPrefReload$: Subject<SystemPreferences> = new Subject();
 
   constructor(
     private http: LoginHttpService,
-  ) {
-    // this.user$ = new BehaviorSubject<User | null>(null);
-  }
+  ) { }
   activeModule$: BehaviorSubject<UserModule | null> = new BehaviorSubject(null);
   /**
    * Multicast Observable ar aktīvā lietotāja informāciju
@@ -54,15 +52,16 @@ export class LoginService {
    * Multicast Observable ar system preferences objektu
    * Mainās, mainoties lietotājam
    */
-  get sysPreferences$(): Observable<SystemPreferences> {
-    if (!this._sysPref$) {
-      this._sysPref$ = new ReplaySubject(1);
-      this.user$.pipe(
-        switchMap(usr => usr ? this.http.getAllSystemPreferencesHttp() : of(DEFAULT_SYSTEM_PREFERENCES)),
-      ).subscribe(pref => this._sysPref$.next(pref));
-    }
-    return this._sysPref$;
-  }
+  sysPreferences$: Observable<SystemPreferences> = merge(
+    of(DEFAULT_SYSTEM_PREFERENCES), // sāk ar default
+    this.user$.pipe( // ielādējoties user, ielādē no servera
+      filter(usr => !!usr),
+      switchMap(() => this.http.getAllSystemPreferencesHttp()),
+    ),
+    this._sysPrefReload$,  // Ielāde pisepiedu kārtā
+  ).pipe(
+    shareReplay(1), // kešo
+  );
   /**
    * Lietotājam pieejamie Moduļi
    * Multicast Observable
@@ -127,12 +126,13 @@ export class LoginService {
     );
   }
   /**
-   * Piespiedu kārtā pārlādē preferences.
+   * Piespiedu kārtā pārlādē preferences no servera
    */
   reloadPreferences(): Observable<boolean> {
     return this.user$.pipe(
+      take(1),
       switchMap(usr => usr ? this.http.getAllSystemPreferencesHttp() : of(DEFAULT_SYSTEM_PREFERENCES)),
-      tap(pref => this._sysPref$.next(pref)),
+      tap(pref => this._sysPrefReload$.next(pref)),
       map(pref => !!pref),
     );
   }

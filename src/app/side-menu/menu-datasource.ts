@@ -1,8 +1,8 @@
 import { Observable } from 'rxjs';
-import {  DataSource } from '@angular/cdk/collections';
+import { DataSource } from '@angular/cdk/collections';
 import { UserModule } from "../library/classes/user-module-interface";
 import { LoginService } from '../login/login.service';
-import { map, tap } from 'rxjs/operators';
+import { map, tap, share } from 'rxjs/operators';
 
 export interface SideMenuData {
     name: string;
@@ -15,9 +15,10 @@ export interface SideMenuData {
 export class MenuDataSource implements DataSource<SideMenuData> {
 
     data: SideMenuData[] = [];
-    private dataChange$ = this.loginService.modules$.pipe(
+    dataChange$ = this.loginService.modules$.pipe(
         map(mod => this.toSideMenu(mod)),
         tap(menu => this.data = menu),
+        share(),
     );
     constructor(
         private loginService: LoginService,

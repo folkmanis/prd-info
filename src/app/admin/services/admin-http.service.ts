@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { HttpOptions } from "../../library/http/http-options";
-import { DbModulePreferences, ModulePreferences, SystemPreferences } from '../../library/classes/system-preferences-class';
+import { DbModulePreferences, ModuleSettings, SystemPreferences } from '../../library/classes/system-preferences-class';
 
 export interface UserList {
   count: number,
@@ -66,19 +66,19 @@ export class AdminHttpService {
     );
   }
 
-  getModuleSystemPreferencesHttp(mod: string): Observable<ModulePreferences> {
-    return this.http.get<{ settings: ModulePreferences; }>(this.httpPathPreferences + 'single', new HttpOptions({ module: mod })).pipe(
+  getModuleSystemPreferencesHttp(mod: string): Observable<ModuleSettings> {
+    return this.http.get<{ settings: ModuleSettings; }>(this.httpPathPreferences + 'single', new HttpOptions({ module: mod })).pipe(
       map(sett => sett.settings)
     );
   }
 
   getAllSystemPreferencesHttp(): Observable<SystemPreferences> {
     return this.http.get<DbModulePreferences[]>(this.httpPathPreferences + 'all', new HttpOptions()).pipe(
-      map(dbpref => dbpref.reduce((acc, curr) => acc.set(curr.module, curr.settings), new Map<string, ModulePreferences>()))
+      map(dbpref => dbpref.reduce((acc, curr) => acc.set(curr.module, curr.settings), new Map<string, ModuleSettings>()))
     );
   }
 
-  updateModuleSystemPreferences(modName: string, preferences: ModulePreferences): Observable<boolean> {
+  updateModuleSystemPreferences(modName: string, preferences: ModuleSettings): Observable<boolean> {
     return this.http.put<{ ok: number; }>(
       this.httpPathPreferences + 'update',
       { preferences: { module: modName, settings: preferences } },

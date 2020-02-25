@@ -34,7 +34,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { HttpOptions } from '../library/http/http-options';
-import { SystemPreferences, DbModulePreferences, ModulePreferences } from '../library/classes/system-preferences-class';
+import { SystemPreferences, DbModulePreferences, ModuleSettings } from '../library/classes/system-preferences-class';
 
 @Injectable({
   providedIn: 'root'
@@ -65,7 +65,7 @@ export class LoginHttpService {
 
   getAllSystemPreferencesHttp(): Observable<SystemPreferences> {
     return this.http.get<DbModulePreferences[]>(this.httpPathPreferences + 'all', new HttpOptions()).pipe(
-      map(dbpref => dbpref.reduce((acc, curr) => acc.set(curr.module, curr.settings), new Map<string, ModulePreferences>()))
+      map(dbpref => dbpref.reduce((acc, curr) => acc.set(curr.module, curr.settings), new Map<string, ModuleSettings>()))
     );
   }
 
