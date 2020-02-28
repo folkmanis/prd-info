@@ -33,6 +33,14 @@ export class XmfUploadComponent implements OnInit {
   }
 
   onUpload() {
+    /**
+     * Notīra formu
+     * Slēdz pogu
+     * Pēc uzlādes atjauno tabulu
+     * Ik pēc 2s atjauno vienu ierakstu
+     * atjauno datus tabulā
+     * kad finished, tad pārtrauc saņemšanu
+     */
     this.uploadService.postFile(this.file).subscribe((resp) => this.response = resp);
   }
 
