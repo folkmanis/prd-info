@@ -1,24 +1,20 @@
-<div class="flex-content">
-    <div class="spacer"></div>
-    <div class="drop-zone mat-elevation-z4" appFileDrop (filesEmitter)="onFileDropped($event)">
-        <div class="spacer-v"></div>
-        <div class="flex-v">
-            <button mat-raised-button (click)="fileInput.click()">Izvēlēties failu</button>
-            <button mat-raised-button (click)="onUpload()" [disabled]="!file">Apstrādāt</button>
-        </div>
-        <div class="flex-v">
-        </div>
-        <div class="flex-v">
-            <mat-form-field>
-                <input matInput [formControl]="fakeInput">
-            </mat-form-field>
-            <input hidden (change)="onFileSelected($event)" #fileInput type="file">
-        </div>
-        <div class="spacer-v"></div>
+<div class="drop-zone mat-elevation-z4" appFileDrop (filesEmitter)="onFileDropped($event)">
+    <div class="spacer-v"></div>
+    <div class="flex-v">
+        <button mat-raised-button (click)="fileInput.click()">Izvēlēties failu</button>
+        <button mat-raised-button (click)="onUpload()" [disabled]="!file">Apstrādāt</button>
     </div>
-    <div class="spacer"></div>
+    <div class="flex-v">
+    </div>
+    <div class="flex-v">
+        <mat-form-field>
+            <input matInput [formControl]="fakeInput">
+        </mat-form-field>
+        <input hidden (change)="onFileSelected($event)" #fileInput type="file">
+    </div>
+    <div class="spacer-v"></div>
 </div>
-{{response | json}}
 <div>
     <app-tabula></app-tabula>
 </div>
+{{response | json}}

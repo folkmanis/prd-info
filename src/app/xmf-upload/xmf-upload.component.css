@@ -6,8 +6,7 @@
 }
 
 .drop-zone {
-    flex: 2 1 640px;
-    margin-top: 64px;
+    margin: 24px;
     border-color: rgba(255, 255, 255, 0.2);
     border-width: 4px;
     border-collapse: collapse;
@@ -20,7 +19,7 @@
 }
 
 .spacer {
-    flex: 1 1 320px;
+    flex: 1 1 auto;
 }
 
 .spacer-v {
