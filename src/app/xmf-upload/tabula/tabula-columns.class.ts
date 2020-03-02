@@ -1,4 +1,6 @@
-interface TabulaColumn {
+import { XmfUploadProgress } from '../services/xmf-upload.class';
+
+type TabulaColumn = {
     name: string,
     displayName: string,
     class: string,

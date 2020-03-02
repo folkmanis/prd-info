@@ -1,18 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { UploadService } from './services/upload.service';
+import { UPLOAD_STATE } from './services/xmf-upload.class';
+import { tap, debounceTime, distinctUntilChanged, throttleTime } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-xmf-upload',
   templateUrl: './xmf-upload.component.html',
   styleUrls: ['./xmf-upload.component.css']
 })
-export class XmfUploadComponent implements OnInit {
+export class XmfUploadComponent implements OnInit, OnDestroy {
 
   fakeInput = new FormControl('');
   file: File = null;
-
-  response: any;
+  uploadState: UPLOAD_STATE = UPLOAD_STATE.NONE;
+  subscr: Set<Subscription> = new Set();
+  uploadStates = UPLOAD_STATE;
+  uploadProgress$ = this.uploadService.uploadProgress$.pipe(
+    distinctUntilChanged(),
+    throttleTime(200),
+  );
 
   constructor(
     private uploadService: UploadService,
@@ -20,28 +28,42 @@ export class XmfUploadComponent implements OnInit {
 
   ngOnInit() {
     this.fakeInput.disable();
+    const sub = this.uploadService.uploadState$.pipe(
+      tap(st => {
+        if (st & (UPLOAD_STATE.FINISHED | UPLOAD_STATE.NONE)) {
+          console.log(st & (UPLOAD_STATE.FINISHED | UPLOAD_STATE.NONE));
+          this.fakeInput.setValue(null);
+          this.uploadService.uploadProgress$.next(0);
+        }
+      }),
+      // tap(console.log),
+    ).subscribe(state => this.uploadState = state);
+    this.subscr.add(sub);
+  }
+  ngOnDestroy() {
+    this.subscr.forEach(sub => sub.unsubscribe());
   }
 
   onFileSelected(ev: any) {
-    this.file = ev.target.files[0];
-    this.fakeInput.setValue(this.file.name);
+    this.setFile(ev.target.files[0]);
   }
 
   onFileDropped(ev: FileList) {
-    this.file = ev.item(0);
-    this.fakeInput.setValue(this.file.name);
+    this.setFile(ev.item(0));
   }
 
   onUpload() {
-    /**
-     * Notīra formu
-     * Slēdz pogu
-     * Pēc uzlādes atjauno tabulu
-     * Ik pēc 2s atjauno vienu ierakstu
-     * atjauno datus tabulā
-     * kad finished, tad pārtrauc saņemšanu
-     */
-    this.uploadService.postFile(this.file).subscribe((resp) => this.response = resp);
+    this.uploadService.uploadState$.next(UPLOAD_STATE.UPLOADING);
+    const formData: FormData = new FormData();
+    formData.append('archive', this.file, this.file.name);
+    this.uploadService.postFile(formData).subscribe();
+  }
+
+  private setFile(fl: File) {
+    this.file = fl;
+    this.fakeInput.setValue(this.file.name);
+    this.uploadService.uploadState$.next(UPLOAD_STATE.FILE_SELECTED);
+    this.uploadService.uploadProgress$.next(0);
   }
 
 }
