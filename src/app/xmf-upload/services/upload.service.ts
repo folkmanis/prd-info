@@ -42,7 +42,6 @@ export class UploadService {
       delay(500),
       this.reportProgress(),
       tap(ch => ch.state === 'finished' && this.uploadState$.next(UPLOAD_STATE.FINISHED)),
-      tap(console.log),
       tap(ch => this.uploadProgressChanges$.next(ch)),
     );
   }

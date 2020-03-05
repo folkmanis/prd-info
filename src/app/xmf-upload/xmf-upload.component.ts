@@ -31,12 +31,10 @@ export class XmfUploadComponent implements OnInit, OnDestroy {
     const sub = this.uploadService.uploadState$.pipe(
       tap(st => {
         if (st & (UPLOAD_STATE.FINISHED | UPLOAD_STATE.NONE)) {
-          console.log(st & (UPLOAD_STATE.FINISHED | UPLOAD_STATE.NONE));
           this.fakeInput.setValue(null);
           this.uploadService.uploadProgress$.next(0);
         }
       }),
-      // tap(console.log),
     ).subscribe(state => this.uploadState = state);
     this.subscr.add(sub);
   }
