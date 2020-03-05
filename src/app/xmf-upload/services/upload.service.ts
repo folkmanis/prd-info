@@ -92,22 +92,6 @@ export class UploadService {
         takeWhile(stat => stat.state !== 'finished', true),
       );
     };
-
-
-    // return (observable) => new Observable(observer => {
-    //   let activeResp: XmfUploadResponse;
-    //   const subscription = observable.subscribe({
-    //     next(resp) {
-    //       activeResp = resp;
-    //     },
-    //     error(err) { observer.error(err); },
-    //     complete() { observer.complete(); },
-    //   });
-    //   return () => {
-    //     subscription.unsubscribe();
-
-    //   };
-    // });
   }
 
 }
