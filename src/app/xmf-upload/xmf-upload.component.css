@@ -6,8 +6,7 @@
 }
 
 .drop-zone {
-    flex: 2 1 640px;
-    margin-top: 64px;
+    margin: 24px;
     border-color: rgba(255, 255, 255, 0.2);
     border-width: 4px;
     border-collapse: collapse;
@@ -20,15 +19,20 @@
 }
 
 .spacer {
-    flex: 1 1 320px;
+    flex: 1 1 auto;
 }
 
 .spacer-v {
-    flex: 1 1 36px;
+    flex: 1 1 18px;
 }
 
 .flex-v {
     flex: 1 1 auto;
+}
+
+.progress {
+    height: 20px;
+    padding: 4px 24px;
 }
 
 button {
