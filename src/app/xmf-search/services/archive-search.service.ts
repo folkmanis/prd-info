@@ -14,7 +14,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 
 import { ArchiveResp, ArchiveRecord, SearchQuery, ArchiveFacet, FacetFilter } from './archive-search-class';
-import { Observable, Subject, BehaviorSubject, combineLatest, ReplaySubject, OperatorFunction } from 'rxjs';
+import { Observable, Subject, BehaviorSubject, combineLatest, ReplaySubject, OperatorFunction, Subscription } from 'rxjs';
 import { map, tap, switchMap, share, pluck } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { HttpOptions } from '../../library/http/http-options';
@@ -38,6 +38,7 @@ export class ArchiveSearchService {
     );
   private httpPathSearch = '/data/xmf-search/';
   private facetFilter: Partial<FacetFilter> = {};
+  private facetSubs: Subscription;
   count$ = new Subject<number>();
   resetFacet = new EventEmitter<void>();
 
@@ -48,10 +49,17 @@ export class ArchiveSearchService {
     ).subscribe(this.searchString$);
   }
 
-  set facetFilter$(f$: Observable<Partial<FacetFilter>>) {
-    f$.pipe(
+  setFacetFilter(f$: Observable<Partial<FacetFilter>>) {
+    this.facetSubs = f$.pipe(
       tap(f => this.facetFilter = { ...this.facetFilter, ...f }),
     ).subscribe(this.facetSearch$);
+  }
+
+  unsetFacetFilter() {
+    if (this.facetSubs) {
+      this.facetSubs.unsubscribe();
+      this.facetFilter = {};
+    }
   }
 
   searchResult$: Observable<ArchiveRecord[]> = this.searchQuery$.pipe(

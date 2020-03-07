@@ -1,9 +1,8 @@
-import { Component, OnInit, OnDestroy, Input, Output, ViewChild, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, EventEmitter } from '@angular/core';
 import { MatSelectionListChange, MatSelectionList } from '@angular/material/list';
 import { ArchiveSearchService } from '../../services/archive-search.service';
-import { SearchQuery, ArchiveFacet, FacetFilter } from '../../services/archive-search-class';
-import { map, filter, switchMap, tap } from 'rxjs/operators';
-import { pipe, Subscription } from 'rxjs';
+import { ArchiveFacet, FacetFilter } from '../../services/archive-search-class';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-facet',
@@ -25,10 +24,12 @@ export class FacetComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.archiveSearchService.facetFilter$ = this.facetChange;
-    this.facetSubs = this.archiveSearchService.facetResult$.subscribe((res) => {
-      this.facet = res;
-    });
+    /** Nodod facet filtru servisam (serviss parakstās uz izmaiņām) */
+    this.archiveSearchService.setFacetFilter(this.facetChange);
+    /** Parakstās uz facet rezultātiem */
+    this.facetSubs = this.archiveSearchService.facetResult$
+      .subscribe(res => this.facet = res);
+    /** Kad jauns meklējums, tad visi filtri tiek noņemti */
     this.resetSubs = this.archiveSearchService.resetFacet.subscribe(() => {
       this.month.deselectAll();
       this.year.deselectAll();
@@ -39,6 +40,8 @@ export class FacetComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.facetSubs.unsubscribe();
     this.resetSubs.unsubscribe();
+    /** Paziņo servisam, ka var atrakstīties */
+    this.archiveSearchService.unsetFacetFilter();
   }
 
   onFacet(event: MatSelectionListChange, key: 'customerName' | 'year' | 'month') {
