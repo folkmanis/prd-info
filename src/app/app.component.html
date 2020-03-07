@@ -2,21 +2,12 @@
   <mat-sidenav #drawer class="sidenav" [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
     [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="opened$ | async"
     [fixedTopGap]="(isHandset$ | async) ? 56 : 64">
-
     <mat-toolbar *ngIf="user$ | async">
-      <ng-container>
-        <!-- Mazais Toolbar -->
-        <span style="flex: 0 0 auto">
-          <a mat-icon-button routerLink="">
-            <mat-icon>home</mat-icon>
-          </a>
-        </span>
-        <span *ngIf="activeModule$ | async as mod;" style="flex: 0 0 auto"><a mat-button
-            [routerLink]="mod.route">{{mod.name}}</a></span>
-      </ng-container>
+      <!-- Mazais Toolbar -->
     </mat-toolbar>
     <app-side-menu></app-side-menu>
   </mat-sidenav>
+
   <mat-sidenav-content class="content" #content>
     <!-- Lielais toolbar -->
     <mat-toolbar *ngIf="user$ | async" color="primary">
@@ -26,6 +17,15 @@
           <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
         </button>
       </span>
+      <ng-container>
+        <span style="flex: 0 0 auto">
+          <a mat-icon-button routerLink="">
+            <mat-icon>home</mat-icon>
+          </a>
+        </span>
+        <span *ngIf="activeModule$ | async as mod;" style="flex: 0 0 auto"><a mat-button
+            [routerLink]="mod.route">{{mod.name}}</a></span>
+      </ng-container>
       <!-- Starpotājs -->
       <span style="flex: 1 1 auto"></span>
       <!-- Mazais lietotāja menu -->
