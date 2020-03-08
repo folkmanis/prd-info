@@ -1,32 +1,23 @@
-<div style="display: flex;">
-    <div style="flex: 0 0 200px;">
-        <app-facet></app-facet>
+<h3>{{statuss$ | async}}</h3>
+<div *ngFor="let item of archiveSearchResult$ | async; last as lastItem;">
+    <div class="jobId">
+        <app-tagged-string [text]="item.JDFJobID" [search]="search" [style]="{'font-weight': 'bold'}"
+            [exactMatch]="true"></app-tagged-string>
     </div>
-    <div style="flex: 1 1;">
-        <h3>{{statuss$ | async}}</h3>
-        <div *ngIf="true">
-            <div *ngFor="let item of archiveSearchResult$ | async; last as lastItem;">
-                <div class="jobId">
-                    <app-tagged-string [text]="item.JDFJobID" [search]="search" [style]="{'font-weight': 'bold'}" [exactMatch]="true"></app-tagged-string>
-                </div>
-                <div>
-                    <app-tagged-string [text]="item.DescriptiveName" [search]="search"></app-tagged-string>
-                </div>
-                <div class="search-table">
-                    <div *ngFor="let row of item.Archives">
-                        <div class="table-element table-location" [appCopyClipboard]="row.Location"
-                            (copied)="onCopied($event)">
-                            {{row.Location}}
-                        </div>
-                        <div style="display: flex;">
-                            <div style="flex: 0 1 8ch;" class="table-element">{{actions[row.Action]}}</div>
-                            <div style="flex: 1 1 170px;" class="table-element">{{row.Date}}</div>
-                            <div style="flex: 5 1 170px;" class="table-element">{{item.CustomerName}}</div>
-                        </div>
-                    </div>
-                </div>
-                <mat-divider *ngIf="!lastItem"></mat-divider>
+    <div>
+        <app-tagged-string [text]="item.DescriptiveName" [search]="search"></app-tagged-string>
+    </div>
+    <div class="search-table">
+        <div *ngFor="let row of item.Archives">
+            <div class="table-element table-location" [appCopyClipboard]="row.Location" (copied)="onCopied($event)">
+                {{row.Location}}
+            </div>
+            <div style="display: flex;">
+                <div style="flex: 0 1 8ch;" class="table-element">{{actions[row.Action]}}</div>
+                <div style="flex: 1 1 170px;" class="table-element">{{row.Date}}</div>
+                <div style="flex: 5 1 170px;" class="table-element">{{item.CustomerName}}</div>
             </div>
         </div>
     </div>
+    <mat-divider *ngIf="!lastItem"></mat-divider>
 </div>

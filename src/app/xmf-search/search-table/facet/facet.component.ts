@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, EventEmitter, AfterContentInit, AfterViewInit } from '@angular/core';
 import { MatSelectionListChange, MatSelectionList } from '@angular/material/list';
 import { ArchiveSearchService } from '../../services/archive-search.service';
 import { ArchiveFacet, FacetFilter } from '../../services/archive-search-class';
@@ -9,7 +9,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './facet.component.html',
   styleUrls: ['./facet.component.css']
 })
-export class FacetComponent implements OnInit, OnDestroy {
+export class FacetComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('month') month: MatSelectionList;
   @ViewChild('year') year: MatSelectionList;
   @ViewChild('customerName') customerName: MatSelectionList;
@@ -29,6 +29,9 @@ export class FacetComponent implements OnInit, OnDestroy {
     /** Parakstās uz facet rezultātiem */
     this.facetSubs = this.archiveSearchService.facetResult$
       .subscribe(res => this.facet = res);
+  }
+
+  ngAfterViewInit () {
     /** Kad jauns meklējums, tad visi filtri tiek noņemti */
     this.resetSubs = this.archiveSearchService.resetFacet.subscribe(() => {
       this.month.deselectAll();
@@ -36,7 +39,7 @@ export class FacetComponent implements OnInit, OnDestroy {
       this.customerName.deselectAll();
     });
   }
-
+  
   ngOnDestroy() {
     this.facetSubs.unsubscribe();
     this.resetSubs.unsubscribe();

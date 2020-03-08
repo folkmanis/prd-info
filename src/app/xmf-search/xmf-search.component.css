@@ -2,10 +2,12 @@
     width: 100%;
     background-color: white;
     z-index: 98;
+    grid-area: top-box;
 }
 
 .search-content {
     padding: 16px 16px;
+    grid-area: xmf-table;
 }
 
 .search-input {
@@ -14,4 +16,16 @@
     max-width: 16em;
     width: 100%;
     font-size: 150%;
+}
+
+.facet-input {
+    grid-area: facet;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: [main] 1fr [side] 250px;
+    grid-template-rows: [upper] 100px [main-row] 1fr;
+    grid-template-areas: "top-box top-box" 
+    "xmf-table facet";
 }
