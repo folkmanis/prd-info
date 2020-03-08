@@ -20,12 +20,13 @@
 }
 
 .mat-toolbar.mat-primary {
-  /* position: sticky; */
+  position: fixed;
   top: 0;
   z-index: 99;
 }
 
 .content {
+ /* top: 64px; */
   height: 100%;
 }
 
