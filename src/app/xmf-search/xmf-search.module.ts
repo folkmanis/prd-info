@@ -6,7 +6,7 @@ import { LibraryModule } from '../library/library.module';
 import { XmfSearchRoutingModule } from './xmf-search-routing.module';
 import { XmfSearchComponent } from './xmf-search.component';
 import { SearchTableComponent } from './search-table/search-table.component';
-import { FacetComponent } from './search-table/facet/facet.component';
+import { FacetComponent } from './facet/facet.component';
 
 
 @NgModule({

@@ -12,33 +12,39 @@ import { ArchiveRecord, SearchQuery, FacetFilter } from '../services/archive-sea
   templateUrl: './search-table.component.html',
   styleUrls: ['./search-table.component.css']
 })
-export class SearchTableComponent implements OnInit{
+export class SearchTableComponent implements OnInit, OnDestroy {
 
   search = '';  // Tiek izmantots rezultātu izcelšanai
-  archiveSearchResult$: Observable < ArchiveRecord[] > = this.archiveSearchService.searchResult$;
+  archiveSearchResult$: Observable<ArchiveRecord[]> = this.service.searchResult$;
   query: SearchQuery;
   actions: string[] = [, 'Archive', 'Restore', 'Skip', 'Delete'];
 
   constructor(
     private snack: MatSnackBar,
-    private archiveSearchService: ArchiveSearchService,
+    private service: ArchiveSearchService,
     private route: ActivatedRoute,
   ) { }
 
   ngOnInit() {
-    this.archiveSearchService.search$ = this.route.paramMap.pipe(
-      filter((param) => param.has('q')),
-      filter((param) => param.get('q').trim().length > 3),
-      map(param => param.get('q').trim()),
-      tap(q => this.search = q),
+    this.service.setSearch(
+      this.route.paramMap.pipe(
+        filter((param) => param.has('q')),
+        filter((param) => param.get('q').trim().length > 3),
+        map(param => param.get('q').trim()),
+        tap(q => this.search = q),
+      )
     );
+  }
+
+  ngOnDestroy(){
+    this.service.unsetSearch();
   }
 
   onCopied(val: string) {
     this.snack.open('Pārkopēts starpliktuvē: ' + val, 'OK', { duration: 3000 });
   }
 
-  statuss$: Observable < string > = this.archiveSearchService.count$.pipe(
+  statuss$: Observable<string> = this.service.count$.pipe(
     map(count => {
       if (!count || count < 1) {
         return 'Nav rezultātu';

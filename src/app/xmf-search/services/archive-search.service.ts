@@ -14,8 +14,8 @@
 import { Injectable, EventEmitter } from '@angular/core';
 
 import { ArchiveResp, ArchiveRecord, SearchQuery, ArchiveFacet, FacetFilter } from './archive-search-class';
-import { Observable, Subject, BehaviorSubject, combineLatest, ReplaySubject, OperatorFunction, Subscription } from 'rxjs';
-import { map, tap, switchMap, share, pluck } from 'rxjs/operators';
+import { Observable, Subject, BehaviorSubject, combineLatest, ReplaySubject, OperatorFunction, Subscription, merge, of } from 'rxjs';
+import { map, tap, switchMap, share, pluck, shareReplay } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { HttpOptions } from '../../library/http/http-options';
 
@@ -23,7 +23,7 @@ import { HttpOptions } from '../../library/http/http-options';
   providedIn: 'root'
 })
 export class ArchiveSearchService {
-
+  private httpPathSearch = '/data/xmf-search/';
   constructor(
     private http: HttpClient,
   ) { }
@@ -36,34 +36,42 @@ export class ArchiveSearchService {
       switchMap(q => this.searchHttp(q)),
       share(),
     );
-  private httpPathSearch = '/data/xmf-search/';
+  private searchSubs: Subscription;
   private facetFilter: Partial<FacetFilter> = {};
   private facetSubs: Subscription;
-  count$ = new Subject<number>();
+  // count$ = new Subject<number>();
   resetFacet = new EventEmitter<void>();
 
-  set search$(s$: Observable<string>) {
-    s$.pipe(
+  setSearch(s$: Observable<string>) {
+    this.unsetSearch();
+    this.searchSubs = s$.pipe(
       tap(() => this.facetFilter = {}),
       tap(() => this.resetFacet.next()), // Būs vajadzīgs jauns facet
     ).subscribe(this.searchString$);
   }
 
+  unsetSearch(): void {
+    this.searchSubs && this.searchSubs.unsubscribe();
+  }
+
   setFacetFilter(f$: Observable<Partial<FacetFilter>>) {
+    this.unsetFacetFilter();
     this.facetSubs = f$.pipe(
       tap(f => this.facetFilter = { ...this.facetFilter, ...f }),
     ).subscribe(this.facetSearch$);
   }
 
-  unsetFacetFilter() {
-    if (this.facetSubs) {
-      this.facetSubs.unsubscribe();
-      this.facetFilter = {};
-    }
+  unsetFacetFilter(): void {
+    this.facetSubs && this.facetSubs.unsubscribe();
   }
+  count$: Observable<number> = merge(
+    of(0),
+    this.searchQuery$.pipe(map(res => res.count),)
+  ).pipe(
+    shareReplay(1),
+  );
 
   searchResult$: Observable<ArchiveRecord[]> = this.searchQuery$.pipe(
-    tap(res => this.count$.next(res.count)),
     map(res => res.data),
     tap(this.replaceSlash),
   );
@@ -71,6 +79,7 @@ export class ArchiveSearchService {
   facetResult$: Observable<ArchiveFacet> = this.searchQuery$.pipe(
     pluck('facet'),
     this.updateFacet(this.resetFacet),
+    shareReplay(1),
   );
 
   private updateFacet(reset: Observable<void>): (nF: Observable<ArchiveFacet>) => Observable<ArchiveFacet> {

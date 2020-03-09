@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
-import { map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
+import { Observable, combineLatest } from 'rxjs';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { map, shareReplay, distinctUntilChanged, debounceTime, tap } from 'rxjs/operators';
 
 interface FormValues {
   q: string;
-  zmg?: boolean;
 }
 
 @Component({
@@ -22,15 +23,25 @@ export class XmfSearchComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
+    private breakpointObserver: BreakpointObserver,
   ) { }
-
+  value$: Observable<string> = this.searchForm.valueChanges.pipe(
+    debounceTime(300),
+    distinctUntilChanged(),
+    map(params => <string>params.q),
+    map(q => q.trim()),
+    shareReplay(1),
+  );
+  isFacet$: Observable<boolean> = combineLatest(
+    this.breakpointObserver.observe(Breakpoints.Handset),
+    this.value$
+  ).pipe(
+    map(([handset, val]) => !handset.matches && val.length > 3)
+  );
   ngOnInit() {
-    this.searchForm.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-    ).subscribe((params) => {
-      if (params.q.length > 3) {
-        this.router.navigate(['xmf-search', 's', params]);
+    this.value$.subscribe((q) => {
+      if (q.length > 3) {
+        this.router.navigate(['xmf-search', 's', { q }]);
       } else {
         this.router.navigate(['xmf-search']);
       }

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, EventEmitter, AfterContentInit, AfterViewInit } from '@angular/core';
 import { MatSelectionListChange, MatSelectionList } from '@angular/material/list';
-import { ArchiveSearchService } from '../../services/archive-search.service';
-import { ArchiveFacet, FacetFilter } from '../../services/archive-search-class';
+import { ArchiveSearchService } from '../services/archive-search.service';
+import { ArchiveFacet, FacetFilter } from '../services/archive-search-class';
 import { Subscription } from 'rxjs';
 
 @Component({

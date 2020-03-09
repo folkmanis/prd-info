@@ -24,7 +24,7 @@
 
 .container {
     display: grid;
-    grid-template-columns: [main] 1fr [side] 250px;
+    grid-template-columns: [main] 1fr [side] 200px;
     grid-template-rows: [upper] 100px [main-row] 1fr;
     grid-template-areas: "top-box top-box" 
     "xmf-table facet";

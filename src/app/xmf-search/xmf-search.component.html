@@ -14,7 +14,7 @@
         <router-outlet></router-outlet>
     </div>
 
-    <div class="facet-input">
+    <div *ngIf="isFacet$ | async" class="facet-input">
         <app-facet></app-facet>
     </div>
 
