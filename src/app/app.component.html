@@ -29,11 +29,10 @@
     </mat-menu>
   </span>
 </mat-toolbar>
-
+<!-- Kreisais (galvenais) menu -->
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav #drawer class="sidenav" [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-    [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="opened$ | async"
-    [fixedInViewport]="true"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="opened$ | async" [fixedInViewport]="true"
     [fixedTopGap]="(isHandset$ | async) ? 56 : 64">
     <app-side-menu></app-side-menu>
   </mat-sidenav>
