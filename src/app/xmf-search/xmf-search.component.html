@@ -1,3 +1,4 @@
+<div class="main-content">
     <div class="search-box mat-elevation-z4">
         <form [formGroup]="searchForm">
             <mat-form-field class="search-input">
@@ -9,10 +10,12 @@
         </form>
     </div>
 
-    <div class="search-content" [style.margin-right]="(isFacet$ | async)? '200px':'0px'">
-        <router-outlet></router-outlet>
+    <div *ngIf="isValue$ | async" class="output">
+        <div class="table-container">
+            <app-search-table></app-search-table>
+        </div>
+        <div class="facet-container" *ngIf="isFacet$ | async" [style.height.px]="facetHeight$ | async">
+            <app-facet></app-facet>
+        </div>
     </div>
-
-    <div *ngIf="isFacet$ | async" class="facet-input">
-        <app-facet></app-facet>
-    </div>
+</div>

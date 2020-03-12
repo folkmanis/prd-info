@@ -8,10 +8,6 @@ const routes: Routes = [
   {
     path: '',
     component: XmfSearchComponent,
-    children: [
-      { path: 's', component: SearchTableComponent },
-      { path: '**', redirectTo: '/xmf-search' },
-    ]
   }
 ];
 

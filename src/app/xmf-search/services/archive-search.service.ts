@@ -28,9 +28,9 @@ export class ArchiveSearchService {
     private http: HttpClient,
   ) { }
 
-  private searchString$ = new ReplaySubject<string>(1); // ienākošā meklējuma rinda
+  private _searchString$ = new ReplaySubject<string>(1); // ienākošā meklējuma rinda
   private facetSearch$ = new BehaviorSubject<Partial<FacetFilter>>({}); // ienākošais facet filtrs
-  private searchQuery$: Observable<ArchiveResp> = combineLatest(this.searchString$, this.facetSearch$)
+  private searchQuery$: Observable<ArchiveResp> = combineLatest(this._searchString$, this.facetSearch$)
     .pipe(
       map(this.combineSearch()),
       switchMap(q => this.searchHttp(q)),
@@ -47,7 +47,11 @@ export class ArchiveSearchService {
     this.searchSubs = s$.pipe(
       tap(() => this.facetFilter = {}),
       tap(() => this.resetFacet.next()), // Būs vajadzīgs jauns facet
-    ).subscribe(this.searchString$);
+    ).subscribe(this._searchString$);
+  }
+
+  get searchString$(): Observable<string> {
+    return this._searchString$;
   }
 
   unsetSearch(): void {

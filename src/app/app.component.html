@@ -1,50 +1,57 @@
-<!-- Lielais toolbar -->
-<mat-toolbar *ngIf="user$ | async" color="primary">
-  <!-- Side menu poga -->
-  <span style="flex: 0 0 auto">
-    <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
-      <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-    </button>
-  </span>
-  <ng-container>
-    <span style="flex: 0 0 auto">
-      <a mat-icon-button routerLink="">
-        <mat-icon>home</mat-icon>
-      </a>
-    </span>
-    <span *ngIf="activeModule$ | async as mod;" style="flex: 0 0 auto"><a mat-button
-        [routerLink]="mod.route">{{mod.name}}</a></span>
-  </ng-container>
-  <!-- Starpotājs -->
-  <span style="flex: 1 1 auto"></span>
-  <!-- Mazais lietotāja menu -->
-  <span *ngIf="user$ | async as user;" style="flex: 0 0 auto">
-    <button mat-button [matMenuTriggerFor]='userMenu'>
-      <i class="material-icons">account_circle</i>
-      <i class="material-icons">arrow_drop_down</i>
-    </button>
-    <mat-menu #userMenu="matMenu">
-      <span class="mat-caption username">Lietotājs: <strong>{{user.name}}</strong></span>
-      <button *ngFor="let item of userMenu$|async" mat-menu-item [routerLink]="item.route">{{item.text}}</button>
-    </mat-menu>
-  </span>
-</mat-toolbar>
-<!-- Kreisais (galvenais) menu -->
-<mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #drawer class="sidenav" [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-    [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="opened$ | async" [fixedInViewport]="true"
-    [fixedTopGap]="(isHandset$ | async) ? 56 : 64">
-    <app-side-menu></app-side-menu>
-  </mat-sidenav>
+<div class="app-container" [class.is-mobile]="isHandset$ | async">
 
-  <mat-sidenav-content class="content" #content [style.top]="(isHandset$ | async) ? '56px' : '64px'">
-    <!-- Add Content Here -->
-    <router-outlet></router-outlet>
-    <!--Scroll to top-->
-    <div class="scroll-to-top" [class.show-scroll]="showScroll">
-      <button mat-fab (click)="scrollToTop()">
-        <mat-icon>arrow_upward</mat-icon>
+  <!-- Lielais toolbar -->
+  <mat-toolbar *ngIf="user$ | async" color="primary" class="app-toolbar">
+    <!-- Side menu poga -->
+    <span style="flex: 0 0 auto">
+      <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
-    </div>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+    </span>
+    <ng-container>
+      <span style="flex: 0 0 auto">
+        <a mat-icon-button routerLink="">
+          <mat-icon>home</mat-icon>
+        </a>
+      </span>
+      <span *ngIf="activeModule$ | async as mod;" style="flex: 0 0 auto"><a mat-button
+          [routerLink]="mod.route">{{mod.name}}</a></span>
+    </ng-container>
+    <!-- Starpotājs -->
+    <span style="flex: 1 1 auto"></span>
+    <!-- Mazais lietotāja menu -->
+    <span *ngIf="user$ | async as user;" style="flex: 0 0 auto">
+      <button mat-button [matMenuTriggerFor]='userMenu'>
+        <i class="material-icons">account_circle</i>
+        <i class="material-icons">arrow_drop_down</i>
+      </button>
+      <mat-menu #userMenu="matMenu">
+        <span class="mat-caption username">Lietotājs: <strong>{{user.name}}</strong></span>
+        <button *ngFor="let item of userMenu$|async" mat-menu-item [routerLink]="item.route">{{item.text}}</button>
+      </mat-menu>
+    </span>
+  </mat-toolbar>
+  <!-- Galvenais konteineris -->
+  <mat-sidenav-container class="app-sidenav-container" [style.marginTop.px]="(isHandset$ | async) ? 56 : 0">
+    <!-- Kreisais (galvenais) menu -->
+    <mat-sidenav #drawer class="app-sidenav mat-elevation-z4"
+      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'" [mode]="(isHandset$ | async) ? 'over' : 'side'"
+      [opened]="opened$ | async" [fixedInViewport]="isHandset$ | async" [fixedTopGap]="56">
+      <app-side-menu></app-side-menu>
+    </mat-sidenav>
+
+    <mat-sidenav-content #content>
+      <!-- Add Content Here -->
+      <router-outlet></router-outlet>
+      <!--Scroll to top-->
+      <div *ngIf="!(isHandset$ | async); else handsetScroll">
+        <button mat-fab (click)="scrollToTop()" class="scroll-to-top" [class.show-scroll]="showScroll">
+          <mat-icon>arrow_upward</mat-icon>
+        </button>
+      </div>
+      <ng-template #handsetScroll>
+        <app-scroll-to-top></app-scroll-to-top>
+      </ng-template>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
