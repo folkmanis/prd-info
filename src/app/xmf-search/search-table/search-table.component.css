@@ -1,7 +1,29 @@
 .table-container {
-    padding: 16px 16px;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100px;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
+.scroll-container {
+    flex: 1;
+    overflow-x: hidden;
+    /* margin: 16px 16px; */
+    /* height: 500px; */
+}
+
+.item {
+    padding: 0px 16px;
+}
+
+.empty-item {
+    width: 100%;
+    height: 137px;
+    background-color: #d0f0f0;
+}
 
 .jobId {
     margin-top: 16pt;
@@ -33,3 +55,17 @@
     min-height: 32px;
     cursor: copy;
 }
+
+.scroll-to-top {
+    z-index: 3;
+    position: absolute;
+    bottom: 15px;
+    right: 25px;
+    opacity: 0;
+    transition: all .2s ease-in-out;
+  }
+  
+  .show-scroll {
+    opacity: 1;
+    transition: all .2s ease-in-out;
+  }

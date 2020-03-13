@@ -27,6 +27,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatSliderModule } from '@angular/material/slider';
 
 import { LayoutModule } from '@angular/cdk/layout';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 import { ScrollToTopModule } from './scroll-to-top/scroll-to-top.module';
 import { CopyClipboardDirective } from './directives/copy-clipboard.directive';
@@ -76,6 +77,7 @@ import { CardMenuComponent } from './card-menu/card-menu.component';
     MatSliderModule,
     ScrollToTopModule,
     LayoutModule,
+    ScrollingModule,
   ],
   exports: [
     FormsModule,
@@ -110,6 +112,7 @@ import { CardMenuComponent } from './card-menu/card-menu.component';
     FileDropDirective,
     AppMonthPipe,
     HideZeroPipe,
+    ScrollingModule,
   ],
 })
 export class LibraryModule { }

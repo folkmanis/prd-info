@@ -42,8 +42,18 @@ export class XmfSearchComponent implements OnInit, OnDestroy, AfterViewInit {
   facetHeight$: Observable<number> = this.viewport.change(200).pipe(
     startWith({}),
     map(() => this.viewport.getViewportSize()),
-    tap(console.log),
     map(size => size.height - 64 - 100),
+  );
+
+  statuss$: Observable<string> = this.service.count$.pipe(
+    map(count => {
+      if (!count || count < 1) {
+        return 'Nav rezultātu';
+      } else {
+        const si = (count % 10 === 1 && count !== 11 ? 's' : 'i');
+        return `Atrast${si} ${count} ierakst${si}`;
+      }
+    })
   );
 
   ngOnInit() {
@@ -60,5 +70,6 @@ export class XmfSearchComponent implements OnInit, OnDestroy, AfterViewInit {
     setTimeout(() =>
       this.searchForm.setValue({ q: '114' }), 200 // DEBUG!!!
     );
+
   }
 }

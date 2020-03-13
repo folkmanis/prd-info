@@ -3,10 +3,12 @@
  * search$ - plūsma ar meklējumu
  * facet$ - Facet filtra izmaiņas
  * 
+ * 
  * Izsniedz multicast plūsmas:
  * searchResult$ - Meklēšanas rezultātu tabula
  * count$ - kopējais skaits
- * facet$ - Facet rezultāts
+ * facetResult$ - Facet rezultāts
+ * 
  * 
  * 
  */
@@ -14,10 +16,15 @@
 import { Injectable, EventEmitter } from '@angular/core';
 
 import { ArchiveResp, ArchiveRecord, SearchQuery, ArchiveFacet, FacetFilter } from './archive-search-class';
-import { Observable, Subject, BehaviorSubject, combineLatest, ReplaySubject, OperatorFunction, Subscription, merge, of } from 'rxjs';
-import { map, tap, switchMap, share, pluck, shareReplay } from 'rxjs/operators';
+import { Observable, Subject, BehaviorSubject, combineLatest, ReplaySubject, OperatorFunction, Subscription, merge, of, forkJoin } from 'rxjs';
+import { map, tap, switchMap, share, pluck, shareReplay, mergeAll, mergeMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { HttpOptions } from '../../library/http/http-options';
+
+interface Range {
+  start: number;
+  end: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -28,30 +35,33 @@ export class ArchiveSearchService {
     private http: HttpClient,
   ) { }
 
-  private _searchString$ = new ReplaySubject<string>(1); // ienākošā meklējuma rinda
-  private facetSearch$ = new BehaviorSubject<Partial<FacetFilter>>({}); // ienākošais facet filtrs
-  private searchQuery$: Observable<ArchiveResp> = combineLatest(this._searchString$, this.facetSearch$)
+  private _stringSearch$ = new ReplaySubject<string>(1); // ienākošā meklējuma rinda
+  private _facetSearch$ = new BehaviorSubject<Partial<FacetFilter>>({}); // ienākošais facet filtrs
+  private _cachedQuery: SearchQuery | undefined;
+  private _cache: PageCache<ArchiveRecord>;
+  private searchQuery$: Observable<ArchiveResp> = combineLatest(this._stringSearch$, this._facetSearch$)
     .pipe(
       map(this.combineSearch()),
       switchMap(q => this.searchHttp(q)),
+      tap(re => this._cache = new PageCache<ArchiveRecord>(re.count, this.fetchRecords(), re.data)),
       share(),
     );
   private searchSubs: Subscription;
   private facetFilter: Partial<FacetFilter> = {};
   private facetSubs: Subscription;
-  // count$ = new Subject<number>();
   resetFacet = new EventEmitter<void>();
+  fetchRange = new EventEmitter<Range>();
 
   setSearch(s$: Observable<string>) {
     this.unsetSearch();
     this.searchSubs = s$.pipe(
       tap(() => this.facetFilter = {}),
       tap(() => this.resetFacet.next()), // Būs vajadzīgs jauns facet
-    ).subscribe(this._searchString$);
+    ).subscribe(this._stringSearch$);
   }
 
   get searchString$(): Observable<string> {
-    return this._searchString$;
+    return this._stringSearch$;
   }
 
   unsetSearch(): void {
@@ -62,7 +72,7 @@ export class ArchiveSearchService {
     this.unsetFacetFilter();
     this.facetSubs = f$.pipe(
       tap(f => this.facetFilter = { ...this.facetFilter, ...f }),
-    ).subscribe(this.facetSearch$);
+    ).subscribe(this._facetSearch$);
   }
 
   unsetFacetFilter(): void {
@@ -70,14 +80,13 @@ export class ArchiveSearchService {
   }
   count$: Observable<number> = merge(
     of(0),
-    this.searchQuery$.pipe(map(res => res.count),)
+    this.searchQuery$.pipe(map(res => res.count))
   ).pipe(
     shareReplay(1),
   );
 
   searchResult$: Observable<ArchiveRecord[]> = this.searchQuery$.pipe(
     map(res => res.data),
-    tap(this.replaceSlash),
   );
 
   facetResult$: Observable<ArchiveFacet> = this.searchQuery$.pipe(
@@ -109,7 +118,7 @@ export class ArchiveSearchService {
   }
 
   private combineSearch(): (params: [string, Partial<FacetFilter>]) => SearchQuery {
-    let lastString = '';
+    let lastString: string | undefined;
     return ([q, fac]): SearchQuery => {
       if (q !== lastString) {
         lastString = q;
@@ -119,8 +128,36 @@ export class ArchiveSearchService {
     };
   }
 
-  private searchHttp(query: SearchQuery): Observable<ArchiveResp> {
-    return this.http.get<ArchiveResp>(this.httpPathSearch + 'search', new HttpOptions({ query: JSON.stringify(query) }));
+  rangedData(range$: Observable<Range>): Observable<Array<ArchiveRecord | undefined>> {
+    return combineLatest([this.searchQuery$, range$]).pipe(
+      mergeMap(([_, range]) => this._cache.fetchRange(range)),
+      // tap(res => console.log(res)),
+    );
+  }
+
+  private fetchRecords(): (start: number, limit: number) => Observable<ArchiveRecord[]> {
+    const serv: ArchiveSearchService = this;
+    return (start: number, limit: number): Observable<ArchiveRecord[]> => {
+      return serv._cachedQuery ? serv.searchHttp(serv._cachedQuery, start, limit) : of([]);
+    };
+  }
+
+  private searchHttp(query: SearchQuery): Observable<ArchiveResp>;
+  private searchHttp(query: SearchQuery, start: number, limit?: number): Observable<ArchiveRecord[]>;
+  private searchHttp(query: SearchQuery, start?: number, limit = 100): Observable<ArchiveResp | ArchiveRecord[]> {
+    this._cachedQuery = query;
+    console.log(this._cachedQuery);
+    if (start) {
+      return this.http.get<Partial<ArchiveResp>>(this.httpPathSearch + 'search', new HttpOptions({ query: JSON.stringify(query), start, limit })).pipe(
+        map(resp => resp.data || []),
+        tap(dat => console.log(dat)),
+        tap(this.replaceSlash),
+      );
+    } else {
+      return this.http.get<ArchiveResp>(this.httpPathSearch + 'search', new HttpOptions({ query: JSON.stringify(query) })).pipe(
+        tap((resp: ArchiveResp) => this.replaceSlash(resp.data))
+      );
+    }
   }
 
   private replaceSlash(data: ArchiveRecord[]) {
@@ -131,4 +168,58 @@ export class ArchiveSearchService {
     }
   }
 
+}
+
+class PageCache<T> {
+  private _cachedData: Array<T | undefined>;
+  private _pageSize = 100;
+  private _cachedPages = new Set<number>();
+
+  constructor(
+    private _length: number,
+    private _fetchFunction: (start: number, limit: number) => Observable<T[]>,
+    firstPage?: T[],
+  ) {
+    console.log(this._fetchFunction);
+    this._cachedData = Array.from({ length: this._length });
+    if (firstPage) {
+      this._cachedData.splice(0, this._pageSize, ...firstPage);
+      this._cachedPages.add(0);
+    }
+  }
+
+  fetchRange(range: Range): Observable<Array<T | undefined>> {
+    const startPage = this.getPageForIndex(range.start);
+    const endPage = this.getPageForIndex(range.end);
+    console.log(startPage, endPage);
+    const fetch$: Observable<Array<T>>[] = [];
+    for (let idx = startPage; idx <= endPage; idx++) {
+      const f = this.fetchPage(idx);
+      if (f) { fetch$.push(f); }
+    }
+    console.log(fetch$);
+    console.log(this._cachedPages);
+    return fetch$.length ? forkJoin(fetch$).pipe(
+      tap(fe => console.log(fe)),
+      map(() => this._cachedData)
+    ) : of(this._cachedData);
+  }
+
+  private fetchPage(page: number): Observable<T[]> | undefined {
+    if (this._cachedPages.has(page)) {
+      return;
+    }
+    console.log('fetch');
+    this._cachedPages.add(page);
+    const start = page * this._pageSize;
+    console.log(start);
+    return this._fetchFunction(start, this._pageSize).pipe(
+      tap(data => console.log(data)),
+      tap(data => this._cachedData.splice(start, data.length, ...data)),
+    );
+  }
+
+  private getPageForIndex(idx: number): number {
+    return Math.floor(idx / this._pageSize);
+  }
 }

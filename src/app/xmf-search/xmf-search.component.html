@@ -8,14 +8,22 @@
                 </button>
             </mat-form-field>
         </form>
+        <div style="flex: 1 1 auto;"></div>
+        <div class="count">
+            <h3>{{statuss$ | async}}</h3>
+        </div>
+
     </div>
 
     <div *ngIf="isValue$ | async" class="output">
-        <div class="table-container">
-            <app-search-table></app-search-table>
+        <div style="flex: 1;">
+            <div class="table-container" [style.right.px]="(isFacet$ | async) ? 200 : 0">
+                <app-search-table></app-search-table>
+            </div>
         </div>
         <div class="facet-container" *ngIf="isFacet$ | async" [style.height.px]="facetHeight$ | async">
             <app-facet></app-facet>
         </div>
     </div>
+
 </div>

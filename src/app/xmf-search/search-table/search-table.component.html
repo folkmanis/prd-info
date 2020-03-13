@@ -1,25 +1,35 @@
 <div class="table-container">
-    <h3>{{statuss$ | async}}</h3>
-    <div *ngFor="let item of archiveSearchResult$ | async; last as lastItem;">
-        <div class="jobId">
-            <app-tagged-string [text]="item.JDFJobID" [search]="search$ | async" [style]="{'font-weight': 'bold'}"
-                [exactMatch]="true"></app-tagged-string>
-        </div>
-        <div>
-            <app-tagged-string [text]="item.DescriptiveName" [search]="search$ | async"></app-tagged-string>
-        </div>
-        <div class="search-table">
-            <div *ngFor="let row of item.Archives">
-                <div class="table-element table-location" [appCopyClipboard]="row.Location" (copied)="onCopied($event)">
-                    {{row.Location}}
+    <cdk-virtual-scroll-viewport itemSize="137" class="scroll-container">
+        <div *cdkVirtualFor="let item of data; let lastItem = last;" class="item">
+            <div *ngIf="item; else waiting;">
+                <div class="jobId">
+                    <app-tagged-string [text]="item.JDFJobID" [search]="search$ | async"
+                        [style]="{'font-weight': 'bold'}" [exactMatch]="true"></app-tagged-string>
                 </div>
-                <div style="display: flex;">
-                    <div style="flex: 0 1 8ch;" class="table-element">{{actions[row.Action]}}</div>
-                    <div style="flex: 1 1 170px;" class="table-element">{{row.Date}}</div>
-                    <div style="flex: 5 1 170px;" class="table-element">{{item.CustomerName}}</div>
+                <div>
+                    <app-tagged-string [text]="item.DescriptiveName" [search]="search$ | async"></app-tagged-string>
+                </div>
+                <div class="search-table">
+                    <div *ngFor="let row of item.Archives">
+                        <div class="table-element table-location" [appCopyClipboard]="row.Location"
+                            (copied)="onCopied($event)">
+                            {{row.Location}}
+                        </div>
+                        <div style="display: flex;">
+                            <div style="flex: 0 1 8ch;" class="table-element">{{actions[row.Action]}}</div>
+                            <div style="flex: 1 1 170px;" class="table-element">{{row.Date}}</div>
+                            <div style="flex: 5 1 170px;" class="table-element">{{item.CustomerName}}</div>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <ng-template #waiting>
+                <div class="empty-item"></div>
+            </ng-template>
+            <mat-divider *ngIf="!lastItem"></mat-divider>
         </div>
-        <mat-divider *ngIf="!lastItem"></mat-divider>
-    </div>
+    </cdk-virtual-scroll-viewport>
 </div>
+<button mat-fab (click)="scrollToTop()" class="scroll-to-top" [class.show-scroll]="showScroll">
+    <mat-icon>arrow_upward</mat-icon>
+</button>
