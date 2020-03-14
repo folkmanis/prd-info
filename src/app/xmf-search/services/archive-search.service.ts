@@ -168,18 +168,26 @@ export class ArchiveSearchService {
 
 }
 
+/**
+ * Cache objekts. Izmantojams arī citiem datu tipiem
+ */
 class PageCache<T> {
   private _cachedData: Array<T | undefined>;
   private _pageSize = 100;
   private _cachedPages = new Set<number>();
-
+  /**
+   * Konstruktors ar sākotnējiem iestatījumiem
+   * @param _length Kopējais objektu skaits. Sākotnēji var būt nepiepildīts
+   * @param _fetchFunction Funkcija, kas iegūs datus.
+   * @param firstPage Pirmā datu porcija, ja tāda ir. Jābūt tieši 100 objektiem (vienai lapai)
+   */
   constructor(
     private _length: number,
     private _fetchFunction: (start: number, limit: number) => Observable<T[]>,
     firstPage?: T[],
   ) {
     this._cachedData = Array.from({ length: this._length });
-    if (firstPage) {
+    if (firstPage && firstPage.length === this._pageSize) {
       this._cachedData.splice(0, this._pageSize, ...firstPage);
       this._cachedPages.add(0);
     }

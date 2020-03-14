@@ -19,7 +19,6 @@ export class SearchTableComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private snack: MatSnackBar,
     private service: ArchiveSearchService,
-    private scroll: ScrollDispatcher,
     private zone: NgZone,
   ) { }
 
@@ -63,7 +62,7 @@ export class SearchTableComponent implements OnInit, OnDestroy, AfterViewInit {
       map(() => this.content.measureScrollOffset('top')),
       tap(top => {
         if (top > this.showScrollHeight) {
-          this.zone.run(() => this.showScroll = true); // Scroll tie pārbaudīts ārpus zonas. Bez run nekādas reakcijas nebūs
+          this.zone.run(() => this.showScroll = true); // Scroll tiek pārbaudīts ārpus zonas. Bez run nekādas reakcijas nebūs
         } else if (this.showScroll && top < this.hideScrollHeight) {
           this.zone.run(() => this.showScroll = false);
         }
@@ -74,7 +73,6 @@ export class SearchTableComponent implements OnInit, OnDestroy, AfterViewInit {
   scrollToTop() {
     this.content.scrollTo({ top: 0 });
   }
-
 
 }
 
@@ -87,9 +85,7 @@ class SearchData extends DataSource<ArchiveRecord | undefined> {
     const range$ = collectionViewer.viewChange.pipe(
       startWith({ start: 0, end: 99 }),
     );
-    return this.service.rangedData(range$).pipe(
-      // tap((res) => console.log(res))
-    );
+    return this.service.rangedData(range$);
   }
 
   disconnect() {
