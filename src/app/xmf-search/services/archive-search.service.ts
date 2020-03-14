@@ -21,6 +21,10 @@ import { map, tap, switchMap, share, pluck, shareReplay, mergeAll, mergeMap } fr
 import { HttpClient } from '@angular/common/http';
 import { HttpOptions } from '../../library/http/http-options';
 
+export enum SERVICE_STATES {
+  EMPTY, UPDATING, LOADED
+}
+
 interface Range {
   start: number;
   end: number;
@@ -87,6 +91,7 @@ export class ArchiveSearchService {
 
   searchResult$: Observable<ArchiveRecord[]> = this.searchQuery$.pipe(
     map(res => res.data),
+    share(),
   );
 
   facetResult$: Observable<ArchiveFacet> = this.searchQuery$.pipe(
@@ -178,7 +183,7 @@ class PageCache<T> {
   /**
    * Konstruktors ar sākotnējiem iestatījumiem
    * @param _length Kopējais objektu skaits. Sākotnēji var būt nepiepildīts
-   * @param _fetchFunction Funkcija, kas iegūs datus.
+   * @param _fetchFunction Funkcija, kas iegūs datus. Atgriež datu Observable, kuram ir jāpabeidzas
    * @param firstPage Pirmā datu porcija, ja tāda ir. Jābūt tieši 100 objektiem (vienai lapai)
    */
   constructor(
@@ -187,7 +192,7 @@ class PageCache<T> {
     firstPage?: T[],
   ) {
     this._cachedData = Array.from({ length: this._length });
-    if (firstPage && firstPage.length === this._pageSize) {
+    if (firstPage && (firstPage.length === this._pageSize || firstPage.length === this._length)) {
       this._cachedData.splice(0, this._pageSize, ...firstPage);
       this._cachedPages.add(0);
     }
