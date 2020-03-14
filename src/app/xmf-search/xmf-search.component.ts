@@ -14,21 +14,18 @@ import { ArchiveSearchService } from './services/archive-search.service';
 })
 export class XmfSearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  searchForm = new FormGroup({
-    q: new FormControl(''),
-  });
+  q: FormControl = new FormControl('');
 
   constructor(
     private breakpointObserver: BreakpointObserver,
     private service: ArchiveSearchService,
     private viewport: ViewportRuler,
   ) { }
-  value$: Observable<string> = this.searchForm.valueChanges.pipe(
-    startWith({q:''}),
+  value$: Observable<string> = this.q.valueChanges.pipe(
+    startWith(''),
     debounceTime(300),
+    map((q: string) => q.trim()),
     distinctUntilChanged(),
-    map(params => <string>params.q),
-    map(q => q.trim()),
     shareReplay(1),
   );
   isFacet$: Observable<boolean> = combineLatest(
