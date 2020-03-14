@@ -131,7 +131,7 @@ export class ArchiveSearchService {
   rangedData(range$: Observable<Range>): Observable<Array<ArchiveRecord | undefined>> {
     return combineLatest([this.searchQuery$, range$]).pipe(
       mergeMap(([_, range]) => this._cache.fetchRange(range)),
-      // tap(res => console.log(res)),
+      share(),
     );
   }
 
@@ -146,11 +146,9 @@ export class ArchiveSearchService {
   private searchHttp(query: SearchQuery, start: number, limit?: number): Observable<ArchiveRecord[]>;
   private searchHttp(query: SearchQuery, start?: number, limit = 100): Observable<ArchiveResp | ArchiveRecord[]> {
     this._cachedQuery = query;
-    console.log(this._cachedQuery);
     if (start) {
       return this.http.get<Partial<ArchiveResp>>(this.httpPathSearch + 'search', new HttpOptions({ query: JSON.stringify(query), start, limit })).pipe(
         map(resp => resp.data || []),
-        tap(dat => console.log(dat)),
         tap(this.replaceSlash),
       );
     } else {
@@ -180,7 +178,6 @@ class PageCache<T> {
     private _fetchFunction: (start: number, limit: number) => Observable<T[]>,
     firstPage?: T[],
   ) {
-    console.log(this._fetchFunction);
     this._cachedData = Array.from({ length: this._length });
     if (firstPage) {
       this._cachedData.splice(0, this._pageSize, ...firstPage);
@@ -191,16 +188,12 @@ class PageCache<T> {
   fetchRange(range: Range): Observable<Array<T | undefined>> {
     const startPage = this.getPageForIndex(range.start);
     const endPage = this.getPageForIndex(range.end);
-    console.log(startPage, endPage);
     const fetch$: Observable<Array<T>>[] = [];
     for (let idx = startPage; idx <= endPage; idx++) {
       const f = this.fetchPage(idx);
       if (f) { fetch$.push(f); }
     }
-    console.log(fetch$);
-    console.log(this._cachedPages);
     return fetch$.length ? forkJoin(fetch$).pipe(
-      tap(fe => console.log(fe)),
       map(() => this._cachedData)
     ) : of(this._cachedData);
   }
@@ -209,12 +202,9 @@ class PageCache<T> {
     if (this._cachedPages.has(page)) {
       return;
     }
-    console.log('fetch');
     this._cachedPages.add(page);
     const start = page * this._pageSize;
-    console.log(start);
     return this._fetchFunction(start, this._pageSize).pipe(
-      tap(data => console.log(data)),
       tap(data => this._cachedData.splice(start, data.length, ...data)),
     );
   }

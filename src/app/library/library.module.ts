@@ -25,6 +25,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatCardModule } from '@angular/material/card';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { LayoutModule } from '@angular/cdk/layout';
 import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -75,6 +76,7 @@ import { CardMenuComponent } from './card-menu/card-menu.component';
     MatChipsModule,
     MatCardModule,
     MatSliderModule,
+    MatProgressSpinnerModule,
     ScrollToTopModule,
     LayoutModule,
     ScrollingModule,
@@ -104,6 +106,7 @@ import { CardMenuComponent } from './card-menu/card-menu.component';
     MatChipsModule,
     MatCardModule,
     MatSliderModule,
+    MatProgressSpinnerModule,
     LayoutModule,
     ScrollToTopModule,
     CopyClipboardDirective,

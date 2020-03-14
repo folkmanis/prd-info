@@ -13,7 +13,7 @@ import { ArchiveRecord, SearchQuery } from '../services/archive-search-class';
   templateUrl: './search-table.component.html',
   styleUrls: ['./search-table.component.css']
 })
-export class SearchTableComponent implements OnInit, AfterViewInit {
+export class SearchTableComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(CdkScrollable) content: CdkScrollable;
 
   constructor(
@@ -26,13 +26,19 @@ export class SearchTableComponent implements OnInit, AfterViewInit {
   archiveSearchResult$: Observable<ArchiveRecord[]> = this.service.searchResult$;
   query: SearchQuery;
   actions: string[] = [, 'Archive', 'Restore', 'Skip', 'Delete'];
-
-  search$ = this.service.searchString$;
+  search: string = '';
+  subs = new Subscription();
   data = new SearchData(this.service);
 
   ngOnInit() {
+    this.subs.add(
+      this.service.searchString$.subscribe(s => this.search = s)
+    )
   }
 
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
 
   onCopied(val: string) {
     this.snack.open('Pārkopēts starpliktuvē: ' + val, 'OK', { duration: 3000 });
@@ -78,10 +84,8 @@ class SearchData extends DataSource<ArchiveRecord | undefined> {
   }
 
   connect(collectionViewer: CollectionViewer): Observable<(ArchiveRecord | undefined)[]> {
-    console.log('connect');
     const range$ = collectionViewer.viewChange.pipe(
       startWith({ start: 0, end: 99 }),
-      tap(res => console.log(res)),
     );
     return this.service.rangedData(range$).pipe(
       // tap((res) => console.log(res))

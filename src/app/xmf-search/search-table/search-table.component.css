@@ -20,9 +20,13 @@
 }
 
 .empty-item {
-    width: 100%;
     height: 137px;
+    width: 100%;
     background-color: #d0f0f0;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    padding: 32px;
 }
 
 .jobId {

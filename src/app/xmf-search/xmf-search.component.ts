@@ -24,20 +24,18 @@ export class XmfSearchComponent implements OnInit, OnDestroy, AfterViewInit {
     private viewport: ViewportRuler,
   ) { }
   value$: Observable<string> = this.searchForm.valueChanges.pipe(
+    startWith({q:''}),
     debounceTime(300),
     distinctUntilChanged(),
     map(params => <string>params.q),
     map(q => q.trim()),
     shareReplay(1),
   );
-  isValue$: Observable<boolean> = this.value$.pipe(
-    map(val => val.length > 0)
-  );
   isFacet$: Observable<boolean> = combineLatest(
     this.breakpointObserver.observe(Breakpoints.Handset),
     this.value$
   ).pipe(
-    map(([handset, val]) => !handset.matches && val.length > 0)
+    map(([handset, val]) => !handset.matches)
   );
   facetHeight$: Observable<number> = this.viewport.change(200).pipe(
     startWith({}),
@@ -67,9 +65,9 @@ export class XmfSearchComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    setTimeout(() =>
-      this.searchForm.setValue({ q: '114' }), 200 // DEBUG!!!
-    );
+    // setTimeout(() =>
+    //   this.searchForm.setValue({ q: '114' }), 200 // DEBUG!!!
+    // );
 
   }
 }

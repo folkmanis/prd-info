@@ -15,7 +15,7 @@
 
     </div>
 
-    <div *ngIf="isValue$ | async" class="output">
+    <div class="output">
         <div style="flex: 1;">
             <div class="table-container" [style.right.px]="(isFacet$ | async) ? 200 : 0">
                 <app-search-table></app-search-table>

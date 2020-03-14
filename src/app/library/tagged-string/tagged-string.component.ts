@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Input } from '@angular/core';
 /**
  * Meklē fragmentu steksta rindā un izceļ ar stiliem
  *
@@ -9,29 +9,48 @@ import { Component, OnInit, Input } from '@angular/core';
  */
 interface Chunk {
   text: string;
-  style?: { [key: string]: string };
+  style?: { [key: string]: string; };
 }
 
 @Component({
   selector: 'app-tagged-string',
   template: `<span *ngFor="let chunk of chunks" [ngStyle]="chunk.style">{{chunk.text}}</span>`,
 })
-export class TaggedStringComponent implements OnInit {
+export class TaggedStringComponent implements OnInit, OnChanges {
   @Input() text: string;
   @Input() search: string;
   @Input() exactMatch: boolean = false;
-  @Input('style') set st(s: { [key: string]: string }) {
+  @Input('style') set st(s: { [key: string]: string; }) {
     this.style = s;
   }
 
-  chunks: Chunk[] = [];
-  style: { [key: string]: string } = {
+  chunks: Chunk[];
+  style: { [key: string]: string; } = {
     'font-weight': 'bold',
     color: 'red',
   };
   constructor() { }
 
+  ngOnChanges(changes: SimpleChanges) {
+    for (const key in changes) {
+      switch (key) {
+        case 'text':
+          this.text = changes[key].currentValue;
+          break;
+        case 'search':
+          this.search = changes[key].currentValue;
+          break;
+      }
+    }
+    this.parseValues();
+  }
+
   ngOnInit() {
+    this.parseValues();
+  }
+
+  parseValues() {
+    this.chunks = [];
 
     if (!this.text) {
       return;  // Ja nav teksta, tad nav nekā
@@ -54,7 +73,6 @@ export class TaggedStringComponent implements OnInit {
         remainder = this.splitStr(remainder);
       }
     }
-
   }
   /**
    * Meklē rindu this.search rindā str.
