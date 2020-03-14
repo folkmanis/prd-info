@@ -22,7 +22,6 @@ export class SearchTableComponent implements OnInit, OnDestroy, AfterViewInit {
     private zone: NgZone,
   ) { }
 
-  archiveSearchResult$: Observable<ArchiveRecord[]> = this.service.searchResult$;
   query: SearchQuery;
   actions: string[] = [, 'Archive', 'Restore', 'Skip', 'Delete'];
   search: string = '';
@@ -32,6 +31,9 @@ export class SearchTableComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit() {
     this.subs.add(
       this.service.searchString$.subscribe(s => this.search = s)
+    );
+    this.subs.add(
+      this.service.searchResult$.subscribe(()=>this.content.scrollTo({ top: 0 }))
     )
   }
 
