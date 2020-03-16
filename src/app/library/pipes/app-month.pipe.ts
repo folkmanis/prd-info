@@ -16,8 +16,10 @@ export class AppMonthPipe implements PipeTransform {
     }
     if (+value === value && value > 0 && value <= this.names.length) {
       return value.toString().padStart(2, '0') + '-' + this.names[value - 1];
+    } else {
+      return value;
     }
-    return null;
+    // return null;
   }
 
 }

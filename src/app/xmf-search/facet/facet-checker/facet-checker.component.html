@@ -1,0 +1,7 @@
+<h4>{{title}}</h4>
+<mat-selection-list #selection (selectionChange)="onSelect($event)" dense>
+    <mat-list-option *ngFor="let item of data" checkboxPosition="before" [value]="item._id" [style.height.px]="24">
+        <div *ngIf="item.count; else zeroCount">{{item._id | appMonth}} ({{item.count}})</div>
+        <ng-template #zeroCount>{{item._id | appMonth}}</ng-template>
+    </mat-list-option>
+</mat-selection-list>

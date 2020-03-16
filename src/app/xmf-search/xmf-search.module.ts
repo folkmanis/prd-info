@@ -7,6 +7,7 @@ import { XmfSearchRoutingModule } from './xmf-search-routing.module';
 import { XmfSearchComponent } from './xmf-search.component';
 import { SearchTableComponent } from './search-table/search-table.component';
 import { FacetComponent } from './facet/facet.component';
+import { FacetCheckerComponent } from './facet/facet-checker/facet-checker.component';
 
 
 @NgModule({
@@ -14,6 +15,7 @@ import { FacetComponent } from './facet/facet.component';
     XmfSearchComponent,
     SearchTableComponent,
     FacetComponent,
+    FacetCheckerComponent,
   ],
   imports: [
     CommonModule,
