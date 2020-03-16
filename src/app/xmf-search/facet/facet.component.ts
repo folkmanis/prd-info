@@ -1,10 +1,8 @@
 import { Component, OnInit, OnDestroy, ViewChild, EventEmitter, AfterContentInit, AfterViewInit, ViewContainerRef, ComponentFactoryResolver, ComponentFactory, ComponentRef } from '@angular/core';
-import { MatSelectionListChange, MatSelectionList } from '@angular/material/list';
 import { ArchiveSearchService } from '../services/archive-search.service';
 import { ArchiveFacet, FacetFilter } from '../services/archive-search-class';
 import { Subscription } from 'rxjs';
 import { FacetCheckerComponent } from './facet-checker/facet-checker.component';
-import { tap } from 'rxjs/operators';
 
 const FACET_NAMES: Map<string, { displayName: string, index: number, }> = new Map<string, { displayName: string, index: number, }>()
   .set('year', { displayName: 'Gads', index: 0 })
@@ -35,25 +33,24 @@ export class FacetComponent implements OnInit, OnDestroy, AfterViewInit {
     /** Nodod facet filtru servisam (serviss parakstās uz izmaiņām) */
     this.archiveSearchService.setFacetFilter(this.facetChange);
     /** Parakstās uz facet rezultātiem */
-    this.facetSubs = this.archiveSearchService.facetResult$.pipe(
-    )
-      .subscribe(res => {
-        const keys = Object.keys(res).sort((a, b) => FACET_NAMES.get(a)?.index - FACET_NAMES.get(b)?.index);
-        for (const key of keys) {
-          const facetName = FACET_NAMES.get(key) || { displayName: '', index: undefined };
-          let comp: ComponentRef<FacetCheckerComponent>;
-          if (this.facetComponents.has(key)) {
-            comp = this.facetComponents.get(key);
-          } else {
-            comp = this.container.createComponent(this.facetFactory);
-            comp.instance.key = key;
-            comp.instance.emiterFn = this.onFacet(key);
-            comp.instance.title = facetName.displayName;
-            this.facetComponents.set(key, comp);
-          }
-          comp.instance.data = res[key];
+    this.facetSubs = this.archiveSearchService.facetResult$.subscribe(res => {
+      const keys = Object.keys(res)
+        .sort((a, b) => FACET_NAMES.get(a)?.index - FACET_NAMES.get(b)?.index);
+      for (const key of keys) {
+        const facetName = FACET_NAMES.get(key) || { displayName: '', index: undefined };
+        let comp: ComponentRef<FacetCheckerComponent>;
+        if (this.facetComponents.has(key)) {
+          comp = this.facetComponents.get(key);
+        } else {
+          comp = this.container.createComponent(this.facetFactory);
+          comp.instance.key = key;
+          comp.instance.emiterFn = this.onFacet(key);
+          comp.instance.title = facetName.displayName;
+          this.facetComponents.set(key, comp);
         }
-      });
+        comp.instance.data = res[key];
+      }
+    });
     /** Kad jauns meklējums, tad visi filtri tiek noņemti */
     this.resetSubs = this.archiveSearchService.resetFacet
       .subscribe(() => this.facetComponents && this.facetComponents.forEach(comp => comp.instance.deselect()));

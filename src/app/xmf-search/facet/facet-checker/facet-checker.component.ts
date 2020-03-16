@@ -14,6 +14,7 @@ export class FacetCheckerComponent implements OnInit {
   key: keyof ArchiveFacet;
   data: Count[];
   filterValue: EventEmitter<Array<number | string>> = new EventEmitter();
+  opened: boolean = true;
   emiterFn: (selected: Array<string | number> | undefined) => void;
 
   constructor() { }

@@ -48,7 +48,7 @@ export class ArchiveSearchService {
       map(this.combineSearch()),
       switchMap(q => this.searchHttp(q)),
       tap(re => this._cache = new PageCache<ArchiveRecord>(re.count, this.fetchRecords(), re.data)),
-      share(),
+      shareReplay(1),
     );
   private searchSubs: Subscription;
   private facetFilter: Partial<FacetFilter> = {};
@@ -86,7 +86,7 @@ export class ArchiveSearchService {
     of(0),
     this.searchQuery$.pipe(map(res => res.count))
   ).pipe(
-    shareReplay(1),
+    share(),
   );
 
   searchResult$: Observable<ArchiveRecord[]> = this.searchQuery$.pipe(
@@ -97,7 +97,7 @@ export class ArchiveSearchService {
   facetResult$: Observable<ArchiveFacet> = this.searchQuery$.pipe(
     pluck('facet'),
     this.updateFacet(this.resetFacet),
-    shareReplay(1),
+    share(),
   );
 
   private updateFacet(reset: Observable<void>): (nF: Observable<ArchiveFacet>) => Observable<ArchiveFacet> {

@@ -4,8 +4,10 @@
 }
 
 .search-box {
-    flex: 0 0 100px;
+    flex: 0 0 auto;
+    height: 100px;
     display: flex;
+    align-items: center;
     background-color: white;
     z-index: 2;
 }
@@ -43,5 +45,5 @@
 
 .count {
     flex: 0 auto;
-    margin: 16px 16px;
+    margin-right: 16px;
 }
