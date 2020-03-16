@@ -6,10 +6,10 @@ import { Subscription } from 'rxjs';
 import { FacetCheckerComponent } from './facet-checker/facet-checker.component';
 import { tap } from 'rxjs/operators';
 
-const facetNames: Map<string, string> = new Map()
-  .set('year', 'Gads')
-  .set('month', 'Mēnesis')
-  .set('customerName', 'Klients');
+const FACET_NAMES: Map<string, { displayName: string, index: number, }> = new Map<string, { displayName: string, index: number, }>()
+  .set('year', { displayName: 'Gads', index: 0 })
+  .set('month', { displayName: 'Mēnesis', index: 1 })
+  .set('customerName', { displayName: 'Klients', index: 2 });
 
 @Component({
   selector: 'app-facet',
@@ -38,29 +38,25 @@ export class FacetComponent implements OnInit, OnDestroy, AfterViewInit {
     this.facetSubs = this.archiveSearchService.facetResult$.pipe(
     )
       .subscribe(res => {
-        for (const key in res) {
-          if (!res.hasOwnProperty(key)) { //  && res[key].length > 0
-            continue;
-          }
+        const keys = Object.keys(res).sort((a, b) => FACET_NAMES.get(a)?.index - FACET_NAMES.get(b)?.index);
+        for (const key of keys) {
+          const facetName = FACET_NAMES.get(key) || { displayName: '', index: undefined };
           let comp: ComponentRef<FacetCheckerComponent>;
           if (this.facetComponents.has(key)) {
-            comp = this.facetComponents.get(key)
+            comp = this.facetComponents.get(key);
           } else {
             comp = this.container.createComponent(this.facetFactory);
+            comp.instance.key = key;
+            comp.instance.emiterFn = this.onFacet(key);
+            comp.instance.title = facetName.displayName;
             this.facetComponents.set(key, comp);
           }
-          comp.instance.key = key;
-          comp.instance.title = facetNames.get(key) || '';
           comp.instance.data = res[key];
-          comp.instance.emiterFn = this.onFacet(key);
         }
       });
     /** Kad jauns meklējums, tad visi filtri tiek noņemti */
-    this.resetSubs = this.archiveSearchService.resetFacet.subscribe(() => {
-      if (this.facetComponents) {
-        this.facetComponents.forEach(comp => comp.instance.deselect());
-      }
-    });
+    this.resetSubs = this.archiveSearchService.resetFacet
+      .subscribe(() => this.facetComponents && this.facetComponents.forEach(comp => comp.instance.deselect()));
 
   }
 
@@ -72,9 +68,10 @@ export class FacetComponent implements OnInit, OnDestroy, AfterViewInit {
     this.resetSubs.unsubscribe();
     /** Paziņo servisam, ka var atrakstīties */
     this.archiveSearchService.unsetFacetFilter();
+    this.container.clear();
   }
 
-  onFacet(key: keyof FacetFilter): (selected: Array<string | number> | undefined) => void {
+  private onFacet(key: keyof FacetFilter): (selected: Array<string | number> | undefined) => void {
     const emiter = this.facetChange;
     return (selected) => {
       const filter: Partial<FacetFilter> = {};
