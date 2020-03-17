@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, AfterContentInit, OnDestroy, AfterViewInit, NgZone } from '@angular/core';
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { ScrollDispatcher, CdkScrollable } from '@angular/cdk/scrolling';
-import { map, filter, switchMap, tap, startWith } from 'rxjs/operators';
+import { map, filter, switchMap, tap, startWith, debounceTime } from 'rxjs/operators';
 import { merge, Observable, Subscription, pipe } from 'rxjs/index';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -86,6 +86,7 @@ class SearchData extends DataSource<ArchiveRecord | undefined> {
   connect(collectionViewer: CollectionViewer): Observable<(ArchiveRecord | undefined)[]> {
     const range$ = collectionViewer.viewChange.pipe(
       startWith({ start: 0, end: 99 }),
+      debounceTime(100),
     );
     return this.service.rangedData(range$);
   }
