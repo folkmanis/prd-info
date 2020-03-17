@@ -1,5 +1,4 @@
 <div class="app-container">
-  <!-- [class.is-mobile]="isHandset$ | async" -->
   <!-- Lielais toolbar -->
   <mat-toolbar *ngIf="user$ | async" color="primary" class="app-toolbar">
     <!-- Side menu poga -->
@@ -27,18 +26,16 @@
       </button>
       <mat-menu #userMenu="matMenu">
         <span class="mat-caption username">Lietotājs: <strong>{{user.name}}</strong></span>
-        <button *ngFor="let item of userMenu$|async" mat-menu-item [routerLink]="item.route">{{item.text}}</button>
+        <button *ngFor="let item of userMenu$ | async" mat-menu-item [routerLink]="item.route">{{item.text}}</button>
       </mat-menu>
     </span>
   </mat-toolbar>
   <!-- Galvenais konteineris -->
   <mat-sidenav-container class="app-sidenav-container">
-    <!-- [style.marginTop.px]="(isHandset$ | async) ? 56 : 0" -->
     <!-- Kreisais (galvenais) menu -->
     <mat-sidenav #drawer class="app-sidenav mat-elevation-z4"
       [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'" [mode]="(isHandset$ | async) ? 'over' : 'side'"
       [opened]="opened$ | async">
-      <!-- [fixedInViewport]="isHandset$ | async" [fixedTopGap]="(isHandset$ | async) ? 56 : 64" -->
       <app-side-menu></app-side-menu>
     </mat-sidenav>
 
@@ -46,9 +43,9 @@
       <!-- Add Content Here -->
       <router-outlet></router-outlet>
       <!--Scroll to top-->
+      <button mat-fab (click)="scrollToTop()" class="scroll-to-top" [class.show-scroll]="showScroll">
+        <mat-icon>arrow_upward</mat-icon>
+      </button>
     </mat-sidenav-content>
-    <button mat-fab (click)="scrollToTop()" class="scroll-to-top" [class.show-scroll]="showScroll">
-      <mat-icon>arrow_upward</mat-icon>
-    </button>
   </mat-sidenav-container>
 </div>

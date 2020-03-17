@@ -14,7 +14,7 @@ import { ArchiveRecord, SearchQuery } from '../services/archive-search-class';
   styleUrls: ['./search-table.component.css']
 })
 export class SearchTableComponent implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild(CdkScrollable) content: CdkScrollable;
+  @ViewChild(CdkScrollable, { static: true }) content: CdkScrollable;
 
   constructor(
     private snack: MatSnackBar,
@@ -33,8 +33,8 @@ export class SearchTableComponent implements OnInit, OnDestroy, AfterViewInit {
       this.service.searchString$.subscribe(s => this.search = s)
     );
     this.subs.add(
-      this.service.searchResult$.subscribe(()=>this.content.scrollTo({ top: 0 }))
-    )
+      this.service.searchResult$.subscribe(() => this.content.scrollTo({ top: 0 }))
+    );
   }
 
   ngOnDestroy() {

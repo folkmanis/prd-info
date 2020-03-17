@@ -42,12 +42,12 @@ export class ArchiveSearchService {
   private _stringSearch$ = new ReplaySubject<string>(1); // ienākošā meklējuma rinda
   private _facetSearch$ = new BehaviorSubject<Partial<FacetFilter>>({}); // ienākošais facet filtrs
   private _cachedQuery: SearchQuery | undefined;
-  private _cache: PageCache<ArchiveRecord>;
+  private _cache: PagedCache<ArchiveRecord>;
   private searchQuery$: Observable<ArchiveResp> = combineLatest(this._stringSearch$, this._facetSearch$)
     .pipe(
       map(this.combineSearch()),
       switchMap(q => this.searchHttp(q)),
-      tap(re => this._cache = new PageCache<ArchiveRecord>(re.count, this.fetchRecords(), re.data)),
+      tap(re => this._cache = new PagedCache<ArchiveRecord>(re.count, this.fetchRecords(), re.data)),
       shareReplay(1),
     );
   private searchSubs: Subscription;
@@ -174,9 +174,9 @@ export class ArchiveSearchService {
 }
 
 /**
- * Cache objekts. Izmantojams arī citiem datu tipiem
+ * Cache objekts.
  */
-class PageCache<T> {
+class PagedCache<T> {
   private _cachedData: Array<T | undefined>;
   private _pageSize = 100;
   private _cachedPages = new Set<number>();

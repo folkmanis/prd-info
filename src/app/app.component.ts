@@ -57,7 +57,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   scrollToTop() {
-    console.log('scroll', this.content)
     this.content.scrollTo({ top: 0 });
   }
 
