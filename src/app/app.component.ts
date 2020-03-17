@@ -11,7 +11,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit, AfterViewInit {
-  @ViewChild(MatSidenavContent) content: MatSidenavContent;
+  @ViewChild(MatSidenavContent, { static: true }) content: MatSidenavContent;
   //Lietotājs no servisa (lai būtu redzams templatē)
   user$: Observable<User> = this.loginService.user$;
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
