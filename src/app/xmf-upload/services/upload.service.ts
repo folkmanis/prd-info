@@ -83,12 +83,13 @@ export class UploadService {
    * ja gatavs, tad nobeidzas
    */
   private reportProgress(_int: number = 2000): (observable: Observable<XmfUploadResponse>) => Observable<XmfUploadProgressTable> {
+    let job: XmfUploadResponse;
+    let serv = this;
     return (observable) => {
-      let job: XmfUploadResponse;
       return observable.pipe(
         tap(resp => job = resp),
         switchMap(() => interval(_int)),
-        switchMap(() => this.getStatussHttp(job.id)),
+        switchMap(() => serv.getStatussHttp(job.id)),
         takeWhile(stat => stat.state !== 'finished', true),
       );
     };
