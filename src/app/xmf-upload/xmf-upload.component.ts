@@ -58,10 +58,16 @@ export class XmfUploadComponent implements OnInit, OnDestroy {
   }
 
   private setFile(fl: File) {
+    if (!this.validateFile(fl)) { return; }
     this.file = fl;
     this.fakeInput.setValue(this.file.name);
     this.uploadService.uploadState$.next(UPLOAD_STATE.FILE_SELECTED);
     this.uploadService.uploadProgress$.next(0);
+  }
+
+  private validateFile(fl: File): boolean {
+    const ext = fl.name.slice((Math.max(0, fl.name.lastIndexOf(".")) || Infinity) + 1);
+    return ext === 'dbd';
   }
 
 }
