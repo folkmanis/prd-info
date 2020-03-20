@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { PreferencesComponent } from '../preferences-component.class';
 import { ModulePreferencesService, SystemSettings } from '../../services/module-preferences.service';
-import { tap } from 'rxjs/operators';
+import { tap, pluck, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-system-preferences',
@@ -19,11 +19,12 @@ export class SystemPreferencesComponent implements OnInit, PreferencesComponent 
 
   sysPref$: Observable<SystemSettings> = this.preferencesService.getModulePreferences<SystemSettings>('system');
   settingsForm: FormGroup;
-  defaults: SystemSettings;
+  defaults: Partial<SystemSettings>;
 
 
   ngOnInit() {
     this.sysPref$.pipe(
+      map(({ menuExpandedByDefault }) => ({ menuExpandedByDefault })),
       tap(pref => {
         this.defaults = pref;
         this.settingsForm = this.fb.group(pref);

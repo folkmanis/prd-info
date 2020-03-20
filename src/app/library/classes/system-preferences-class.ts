@@ -19,6 +19,7 @@ export interface KastesSettings {
 
 export class SystemSettings implements ModuleSettings {
     menuExpandedByDefault: boolean;
+    logLevels: Array<number | string>[];
 }
 
 export const DEFAULT_SYSTEM_PREFERENCES: SystemPreferences = new Map<string, ModuleSettings>()
