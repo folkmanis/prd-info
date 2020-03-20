@@ -30,9 +30,7 @@ interface Range {
   end: number;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ArchiveSearchService {
   private httpPathSearch = '/data/xmf-search/';
   constructor(

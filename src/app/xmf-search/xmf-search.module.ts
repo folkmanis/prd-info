@@ -8,6 +8,7 @@ import { XmfSearchComponent } from './xmf-search.component';
 import { SearchTableComponent } from './search-table/search-table.component';
 import { FacetComponent } from './facet/facet.component';
 import { FacetCheckerComponent } from './facet/facet-checker/facet-checker.component';
+import { ArchiveSearchService } from './services/archive-search.service';
 
 
 @NgModule({
@@ -21,6 +22,7 @@ import { FacetCheckerComponent } from './facet/facet-checker/facet-checker.compo
     CommonModule,
     XmfSearchRoutingModule,
     LibraryModule,
-  ]
+  ],
+  providers: [ArchiveSearchService],
 })
 export class XmfSearchModule { }
