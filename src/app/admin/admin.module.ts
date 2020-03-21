@@ -13,6 +13,8 @@ import { AdminMainMenuComponent } from './admin-main-menu/admin-main-menu.compon
 import { ModulePreferencesComponent } from './module-preferences/module-preferences.component';
 import { KastesPreferencesComponent } from './module-preferences/kastes-preferences/kastes-preferences.component';
 import { SystemPreferencesComponent } from './module-preferences/system-preferences/system-preferences.component';
+import { LogfileComponent } from './logfile/logfile.component';
+import { LogfileTableComponent } from './logfile/logfile-table/logfile-table.component';
 
 
 @NgModule({
@@ -26,6 +28,8 @@ import { SystemPreferencesComponent } from './module-preferences/system-preferen
     ModulePreferencesComponent,
     KastesPreferencesComponent,
     SystemPreferencesComponent,
+    LogfileComponent,
+    LogfileTableComponent,
   ],
   imports: [
     CommonModule,

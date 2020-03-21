@@ -8,6 +8,7 @@ import { NewUserComponent } from './users/new-user/new-user.component';
 import { UserEditorComponent } from './users/user-editor/user-editor.component';
 import { ModulePreferencesComponent } from './module-preferences/module-preferences.component';
 import { CanDeactivateGuard } from "../library/guards/can-deactivate.guard";
+import { LogfileComponent } from './logfile/logfile.component';
 
 const routes: Routes = [
   {
@@ -33,6 +34,11 @@ const routes: Routes = [
       {
         path: 'module-preferences',
         component: ModulePreferencesComponent,
+        canDeactivate: [CanDeactivateGuard],
+      },
+      {
+        path: 'logfile',
+        component: LogfileComponent,
         canDeactivate: [CanDeactivateGuard],
       },
       {

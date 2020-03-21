@@ -1,11 +1,13 @@
 export { User, UserPreferences } from '/home/dev/prd-info-node/src/lib/user-class';
 import { User, UserPreferences } from '/home/dev/prd-info-node/src/lib/user-class';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, combineLatest } from 'rxjs';
+import { map, pluck } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { HttpOptions } from "../../library/http/http-options";
-import { DbModulePreferences, ModuleSettings, SystemPreferences } from '../../library/classes/system-preferences-class';
+import { LoginService } from '../../login/login.service';
+import { DbModulePreferences, ModuleSettings, SystemPreferences, SystemSettings } from '../../library/classes/system-preferences-class';
+import { LogRecord, LogRecordHttp, LogDataHttp, GetLogEntriesParams, LogData } from './logfile-record';
 
 export interface UserList {
   count: number,
@@ -26,10 +28,11 @@ export class AdminHttpService {
    * TODO izveidot klientu datubāzi uz    */
   private httpPathSearch = '/data/xmf-search/';
   private httpPathPreferences = '/data/preferences/';
-
+  private httpPathLogfile = '/data/log/';
 
   constructor(
     private http: HttpClient,
+    private loginService: LoginService,
   ) { }
 
   getUsersHttp(): Observable<UserList> {
@@ -85,6 +88,24 @@ export class AdminHttpService {
       new HttpOptions()
     ).pipe(
       map(res => !!res.ok)
+    );
+  }
+
+  getLogEntries(params: GetLogEntriesParams): Observable<LogData> {
+    return combineLatest([
+      this.http.get<LogDataHttp>(this.httpPathLogfile + 'entries', new HttpOptions(params)),
+      this.loginService.sysPreferences$.pipe(
+        map(pref => (pref.get('system') as SystemSettings)),
+        map(sys => new Map<number, string>(sys.logLevels)),
+      )
+    ]).pipe(
+      map(([records, pref]) => ({
+        ...records,
+        data: records.data.map(rec =>
+          ({ ...rec, levelVerb: pref.get(rec.level) || rec.level.toString() })
+        )
+      })
+      ),
     );
   }
 

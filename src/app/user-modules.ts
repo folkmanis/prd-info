@@ -1,11 +1,5 @@
 import { UserModule } from './library/classes/user-module-interface';
 
-interface ChildMenu {
-    name: string;
-    description: string;
-    route: string;
-}
-
 export const USER_MODULES: UserModule[] = [
     { value: 'xmf-search', name: 'XMF arhīvs', description: 'Meklētājs XMF arhīva datubāzē', route: 'xmf-search', moduleClass: 'XmfSearchModule' },
     { value: 'xmf-upload', name: 'Pievienot XMF arhīvu', description: 'XFM arhīva jaunināšana', route: 'xmf-upload', moduleClass: 'XmfUploadModule' },
@@ -21,6 +15,7 @@ export const USER_MODULES: UserModule[] = [
         value: 'admin', name: 'Administrēšana', description: 'Sistēmas iestatījumi', route: 'admin', moduleClass: 'AdminModule', childMenu: [
             { name: 'Lietotāji', route: 'users', description: 'Sistēmas lietotāji: izveide, paroles maiņa, pieejamie moduļi' },
             { name: 'Sistēmas iestatījumi', route: 'module-preferences', description: 'Moduļu iestatījumi' },
+            { name: 'Žurnāls', route: 'logfile', description: 'Sistēmas žurnāls (logfile)'},
         ]
     },
 ];
