@@ -5,6 +5,7 @@
 
 .table-container {
     flex: 1;
+    width: 100%;
     position: absolute;
     top: 0;
     bottom: 0;

@@ -11,6 +11,9 @@ import { LoginComponent } from './login/login.component';
 import { SideMenuComponent } from './side-menu/side-menu.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import { ErrorsService } from './library/errors/errors.service';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
 
 @NgModule({
   declarations: [
@@ -24,6 +27,9 @@ import { ErrorsService } from './library/errors/errors.service';
     BrowserAnimationsModule,
     AppRoutingModule,
     LibraryModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
   ],
   providers: [
     {

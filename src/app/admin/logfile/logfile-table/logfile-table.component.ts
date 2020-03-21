@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { DataSource } from '@angular/cdk/table';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatTable } from '@angular/material/table';
 import { LogRecord } from '../../services/logfile-record';
-import { LogfileService } from '../../services/logfile.service';
+import { AdminHttpService } from '../../services/admin-http.service';
+import { LogTableDatasource } from './log-table-datasource';
 
 @Component({
   selector: 'app-logfile-table',
@@ -11,19 +12,24 @@ import { LogfileService } from '../../services/logfile.service';
   styleUrls: ['./logfile-table.component.css']
 })
 export class LogfileTableComponent implements OnInit, AfterViewInit {
-@ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatTable) table: MatTable<LogRecord>;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  private datasource: LogTableDatasource;
 
   constructor(
-   public service: LogfileService,
+    private httpService: AdminHttpService,
   ) { }
 
-  displayedColumns=['level', 'timestamp', 'info', 'metadata']
+  displayedColumns = ['level', 'timestamp', 'info', 'metadata'];
 
   ngOnInit(): void {
+    this.datasource = new LogTableDatasource(this.httpService);
   }
 
   ngAfterViewInit(): void {
-    this.service.paginator = this.paginator;
+    this.datasource.paginator = this.paginator;
+    this.table.dataSource = this.datasource;
   }
 
 }

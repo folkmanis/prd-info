@@ -5,3 +5,7 @@
 .cdk-column-info {
     padding: 0 8px;
 }
+
+.full-width {
+    width: 100%;
+}
