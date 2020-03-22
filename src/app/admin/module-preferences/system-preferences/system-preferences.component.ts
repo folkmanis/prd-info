@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { PreferencesComponent } from '../preferences-component.class';
-import { ModulePreferencesService, SystemSettings } from '../../services/module-preferences.service';
+import { ModulePreferencesService } from '../../services/module-preferences.service';
+import { SystemSettings } from 'src/app/library/classes/system-preferences-class';
 import { tap, pluck, map } from 'rxjs/operators';
 
 @Component({

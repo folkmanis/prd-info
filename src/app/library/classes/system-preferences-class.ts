@@ -3,11 +3,13 @@ export interface ModuleSettings {
 }
 
 export interface DbModulePreferences {
-    module: string,
+    module: SystemPreferencesGroups,
     settings: { [key: string]: any; };
 }
 
-export interface SystemPreferences extends Map<string, ModuleSettings> { }
+export type SystemPreferencesGroups = 'kastes' | 'system';
+
+export type SystemPreferences = Map<SystemPreferencesGroups, ModuleSettings>;
 
 export interface KastesSettings {
     colors: {
@@ -22,7 +24,7 @@ export class SystemSettings implements ModuleSettings {
     logLevels: [number, string][];
 }
 
-export const DEFAULT_SYSTEM_PREFERENCES: SystemPreferences = new Map<string, ModuleSettings>()
+export const DEFAULT_SYSTEM_PREFERENCES: SystemPreferences = new Map<SystemPreferencesGroups, ModuleSettings>()
     .set('kastes',
         { colors: { yellow: 'gold', rose: 'magenta', white: 'gray', } })
     .set('system', { menuExpandedByDefault: false });
