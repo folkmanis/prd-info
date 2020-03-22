@@ -11,7 +11,7 @@ export class LogTableDatasource implements DataSource<LogRecord> {
     ) { }
 
     connect(): Observable<LogRecord[]> {
-        return this.service.getLogEntries({}).pipe(
+        return this.service.log$.pipe(
             map(resp => resp.data),
         );
     }

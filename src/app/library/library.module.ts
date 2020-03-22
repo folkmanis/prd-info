@@ -28,6 +28,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 import { LayoutModule } from '@angular/cdk/layout';
 import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -81,6 +82,7 @@ import { CardMenuComponent } from './card-menu/card-menu.component';
     MatProgressSpinnerModule,
     MatExpansionModule,
     MatPaginatorModule,
+    MatDatepickerModule,
     ScrollToTopModule,
     LayoutModule,
     ScrollingModule,
@@ -113,6 +115,7 @@ import { CardMenuComponent } from './card-menu/card-menu.component';
     MatProgressSpinnerModule,
     MatExpansionModule,
     MatPaginatorModule,
+    MatDatepickerModule,
     LayoutModule,
     ScrollToTopModule,
     CopyClipboardDirective,

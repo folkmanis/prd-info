@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule, ErrorHandler } from '@angular/core';
+import { NgModule, ErrorHandler, LOCALE_ID } from '@angular/core';
 
 import { LibraryModule } from './library/library.module';
 
@@ -11,9 +11,13 @@ import { LoginComponent } from './login/login.component';
 import { SideMenuComponent } from './side-menu/side-menu.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import { ErrorsService } from './library/errors/errors.service';
-import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
+
+import { registerLocaleData } from '@angular/common';
+import localeLv from '@angular/common/locales/lv';
+registerLocaleData(localeLv);
+import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+
 
 @NgModule({
   declarations: [
@@ -27,15 +31,12 @@ import { MatSortModule } from '@angular/material/sort';
     BrowserAnimationsModule,
     AppRoutingModule,
     LibraryModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
   ],
   providers: [
-    {
-      provide: ErrorHandler,
-      useClass: ErrorsService,
-    }
+    { provide: LOCALE_ID, useValue: 'lv' },
+    { provide: ErrorHandler, useClass: ErrorsService, },
+    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+    { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
   ],
   bootstrap: [AppComponent]
 })

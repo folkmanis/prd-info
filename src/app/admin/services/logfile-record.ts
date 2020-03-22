@@ -20,6 +20,6 @@ export type GetLogEntriesParams = Partial<{
     limit: number,
     start: number,
     level: number,
-    dateTo: Date,
-    dateFrom: Date,
+    dateTo: string,
+    dateFrom: string,
 }>;
