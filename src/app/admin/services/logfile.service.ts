@@ -1,40 +1,41 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { DataSource } from '@angular/cdk/table';
-import { MatPaginator } from '@angular/material/paginator';
-import { AdminHttpService } from './admin-http.service';
-import { LogRecord, LogData } from './logfile-record';
+import { HttpClient } from '@angular/common/http';
+import { HttpOptions } from "../../library/http/http-options";
+import { Observable, combineLatest } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
+import { LoginService } from '../../login/login.service';
+import { LogRecord, LogRecordHttp, LogDataHttp, GetLogEntriesParams, LogData } from './logfile-record';
+import { DbModulePreferences, ModuleSettings, SystemPreferences, SystemSettings } from '../../library/classes/system-preferences-class';
 
 @Injectable()
-export class LogfileService implements DataSource<LogRecord> {
+export class LogfileService {
+  private httpPathLogfile = '/data/log/';
 
   constructor(
-    private adminHttp: AdminHttpService
+    private http: HttpClient,
+    private loginService: LoginService,
   ) { }
-
-  private _paginator: MatPaginator;
-  private start = 0;
-  private limit = 100;
-  private count = 0;
-
-  get logRecords$(): Observable<LogRecord[]> {
-    return this.adminHttp.getLogEntries({}).pipe(
-      tap(resp=> this._paginator.length = resp.count),
-      tap(resp => console.log(resp.count)),
-      map(resp => resp.data)
+  getLogEntries(params: GetLogEntriesParams): Observable<LogData> {
+    return combineLatest([
+      this.http.get<LogDataHttp>(this.httpPathLogfile + 'entries', new HttpOptions(params)),
+      this.loginService.sysPreferences$.pipe(
+        map(pref => (pref.get('system') as SystemSettings)),
+        map(sys => new Map<number, string>(sys.logLevels)),
+      )
+    ]).pipe(
+      map(([records, pref]) => ({
+        ...records,
+        data: records.data.map(rec =>
+          ({ ...rec, levelVerb: pref.get(rec.level) || rec.level.toString() })
+        )
+      })
+      ),
     );
   }
 
-  connect(): Observable<LogRecord[]> {
-    return this.logRecords$;
-  }
-
-  disconnect() {
-  }
-
-  set paginator(paginator: MatPaginator) {
-    this._paginator = paginator;
+  getInfos(): Observable<string[]> {
+    return this.http.get<{ data: string[]; }>(this.httpPathLogfile + 'entries', new HttpOptions())
+      .pipe(map(dat => dat.data));
   }
 
 }

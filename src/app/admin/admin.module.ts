@@ -15,6 +15,7 @@ import { KastesPreferencesComponent } from './module-preferences/kastes-preferen
 import { SystemPreferencesComponent } from './module-preferences/system-preferences/system-preferences.component';
 import { LogfileComponent } from './logfile/logfile.component';
 import { LogfileTableComponent } from './logfile/logfile-table/logfile-table.component';
+import { LogFilterComponent } from './logfile/log-filter/log-filter.component';
 
 
 @NgModule({
@@ -30,6 +31,7 @@ import { LogfileTableComponent } from './logfile/logfile-table/logfile-table.com
     SystemPreferencesComponent,
     LogfileComponent,
     LogfileTableComponent,
+    LogFilterComponent,
   ],
   imports: [
     CommonModule,

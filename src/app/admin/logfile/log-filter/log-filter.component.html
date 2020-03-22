@@ -1,0 +1,8 @@
+<mat-form-field>
+    <mat-label>Log level</mat-label>
+    <mat-select>
+        <mat-option *ngFor="let level of logLevels$ | async" [value]="level.key">
+            {{level.value}}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
