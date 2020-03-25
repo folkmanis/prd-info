@@ -1,12 +1,12 @@
-import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
-import { FormControl, FormGroup, AbstractControl } from '@angular/forms';
-import { Observable, Subscription, merge, of } from 'rxjs';
-import { map, tap, startWith, shareReplay, distinctUntilChanged, switchMap, filter } from 'rxjs/operators';
-import { SystemSettings, LoginService } from 'src/app/login/login.service';
-import { LogfileService, ValidDates } from '../../services/logfile.service';
-import { GetLogEntriesParams } from '../../services/logfile-record';
-
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import * as moment from 'moment';
+import { Observable, Subscription } from 'rxjs';
+import { distinctUntilChanged, filter, map, startWith, switchMap, tap } from 'rxjs/operators';
+import { LoginService, SystemSettings } from 'src/app/login/login.service';
+import { GetLogEntriesParams } from '../../services/logfile-record';
+import { LogfileService, ValidDates } from '../../services/logfile.service';
+
 
 interface FormValues {
   logLevel: number,
