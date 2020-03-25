@@ -1,29 +1,40 @@
-<div class="mat-elevation-z4 full-width">
+<table mat-table class="mat-elevation-z4 full-width" multiTemplateDataRows>
+  <!-- Log level -->
+  <ng-container matColumnDef="level">
+    <th mat-header-cell *matHeaderCellDef>Nozīmīgums</th>
+    <td mat-cell *matCellDef="let record;">{{record.levelVerb}}</td>
+  </ng-container>
+  <!-- Date -->
+  <ng-container matColumnDef="timestamp">
+    <th mat-header-cell *matHeaderCellDef>Laiks</th>
+    <td mat-cell *matCellDef="let record;">{{record.timestamp | date:'HH:mm:ss.SSS z'}}</td>
+  </ng-container>
+  <!-- Info -->
+  <ng-container matColumnDef="info">
+    <th mat-header-cell *matHeaderCellDef>Apraksts</th>
+    <td mat-cell *matCellDef="let record;">{{record.info}}</td>
+  </ng-container>
+  <!-- Metadata -->
+  <ng-container matColumnDef="metadata">
+    <th mat-header-cell *matHeaderCellDef>Papildus dati</th>
+    <td mat-cell *matCellDef="let record;">{{record.metadata | json | shortenText:70}}</td>
+  </ng-container>
+  <!-- Izvērsts skats -->
+  <ng-container matColumnDef="expandedRecord">
+    <td mat-cell *matCellDef="let record;" [attr.colspan]="displayedColumns.length">
+      <div [@detailExpand]="record == expandedRecord ? 'expanded':'collapsed'" class="record-detail">
+        <!-- Izvērstā skata apraksts -->
+        <div *ngIf="record === expandedRecord" class="json-display">
+          {{record.metadata | json}}
+        </div>
+      </div>
+    </td>
+  </ng-container>
 
-  <table mat-table>
-    <!-- Log level -->
-    <ng-container matColumnDef="level">
-      <th mat-header-cell *matHeaderCellDef>Nozīmīgums</th>
-      <td mat-cell *matCellDef="let record;">{{record.levelVerb}}</td>
-    </ng-container>
-    <!-- Date -->
-    <ng-container matColumnDef="timestamp">
-      <th mat-header-cell *matHeaderCellDef>Laiks</th>
-      <td mat-cell *matCellDef="let record;">{{record.timestamp | date:'HH:mm:ss.SSS z'}}</td>
-    </ng-container>
-    <!-- Info -->
-    <ng-container matColumnDef="info">
-      <th mat-header-cell *matHeaderCellDef>Apraksts</th>
-      <td mat-cell *matCellDef="let record;">{{record.info}}</td>
-    </ng-container>
-    <!-- Metadata -->
-    <ng-container matColumnDef="metadata">
-      <th mat-header-cell *matHeaderCellDef>Papildus dati</th>
-      <td mat-cell *matCellDef="let record;">{{record.metadata | json | shortenText:70}}</td>
-    </ng-container>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: false;"></tr>
+  <tr mat-row *matRowDef="let record; columns: displayedColumns;" class="record-row"
+    (click)="expandedRecord = expandedRecord === record ? null : record"
+    [class.expanded-row]="expandedRecord === record"></tr>
+  <tr mat-row *matRowDef="let row; columns: ['expandedRecord']" class="detail-row"></tr>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: false;"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-  </table>
-</div>
+</table>

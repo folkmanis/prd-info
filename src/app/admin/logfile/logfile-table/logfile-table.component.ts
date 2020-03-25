@@ -1,15 +1,21 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import {animate, state, style, transition, trigger} from '@angular/animations';
 import { MatTable } from '@angular/material/table';
 import { LogRecord } from '../../services/logfile-record';
-import { AdminHttpService } from '../../services/admin-http.service';
 import { LogfileService } from '../../services/logfile.service';
 import { LogTableDatasource } from './log-table-datasource';
 
 @Component({
   selector: 'app-logfile-table',
   templateUrl: './logfile-table.component.html',
-  styleUrls: ['./logfile-table.component.css']
+  styleUrls: ['./logfile-table.component.css'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class LogfileTableComponent implements OnInit, AfterViewInit {
   @ViewChild(MatTable) table: MatTable<LogRecord>;
@@ -21,6 +27,7 @@ export class LogfileTableComponent implements OnInit, AfterViewInit {
   ) { }
 
   displayedColumns = ['level', 'timestamp', 'info', 'metadata'];
+  expandedRecord: LogRecord | null;
 
   ngOnInit(): void {
     this.datasource = new LogTableDatasource(this.service);
