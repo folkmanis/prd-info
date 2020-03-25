@@ -29,7 +29,6 @@ tr.record-row:not(.expanded-row):hover {
 
 .record-detail {
     overflow: hidden;
-    /* display: flex; */
 }
 
 .json-display {
