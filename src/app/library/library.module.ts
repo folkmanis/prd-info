@@ -41,6 +41,7 @@ import { AppMonthPipe } from './pipes/app-month.pipe';
 import { HideZeroPipe } from './pipes/hide-zero.pipe';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { CardMenuComponent } from './card-menu/card-menu.component';
+import { ShortenTextPipe } from './pipes/shorten-text.pipe';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { CardMenuComponent } from './card-menu/card-menu.component';
     HideZeroPipe,
     ConfirmationDialogComponent,
     CardMenuComponent,
+    ShortenTextPipe,
   ],
   imports: [
     CommonModule,
@@ -124,6 +126,7 @@ import { CardMenuComponent } from './card-menu/card-menu.component';
     FileDropDirective,
     AppMonthPipe,
     HideZeroPipe,
+    ShortenTextPipe,
     ScrollingModule,
   ],
 })

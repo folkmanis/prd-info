@@ -14,7 +14,9 @@ export interface LogRecordHttp {
     metadata: { [key: string]: any; },
 }
 
-export type LogRecord = LogRecordHttp & { levelVerb: string; };
+export type LogRecord = LogRecordHttp & { 
+    levelVerb: string; 
+};
 
 export type GetLogEntriesParams = Partial<{
     limit: number,

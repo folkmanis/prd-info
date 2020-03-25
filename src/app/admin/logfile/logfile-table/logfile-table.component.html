@@ -9,7 +9,7 @@
     <!-- Date -->
     <ng-container matColumnDef="timestamp">
       <th mat-header-cell *matHeaderCellDef>Laiks</th>
-      <td mat-cell *matCellDef="let record;">{{record.timestamp | date:'dd. MMM. yyy. HH:mm:ss.SSS z'}}</td>
+      <td mat-cell *matCellDef="let record;">{{record.timestamp | date:'HH:mm:ss.SSS z'}}</td>
     </ng-container>
     <!-- Info -->
     <ng-container matColumnDef="info">
@@ -19,7 +19,7 @@
     <!-- Metadata -->
     <ng-container matColumnDef="metadata">
       <th mat-header-cell *matHeaderCellDef>Papildus dati</th>
-      <td mat-cell *matCellDef="let record;">{{record.metadata | json}}</td>
+      <td mat-cell *matCellDef="let record;">{{record.metadata | json | shortenText:70}}</td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: false;"></tr>

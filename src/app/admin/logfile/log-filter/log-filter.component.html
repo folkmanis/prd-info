@@ -1,4 +1,8 @@
 <form [formGroup]="filterForm" class="form-group">
+    <!-- Reload button -->
+    <button mat-icon-button (click)="onReload()">
+        <mat-icon>refresh</mat-icon>
+    </button>
     <!-- Log level selector -->
     <mat-form-field class="form-element">
         <mat-label>Log level</mat-label>
@@ -11,15 +15,20 @@
     <!-- Datums -->
     <mat-form-field class="form-element">
         <mat-label>Datums</mat-label>
-        <input matInput [matDatepicker]=picker formControlName="date">
+        <input matInput [matDatepicker]=picker formControlName="date" [matDatepickerFilter]="isValiddate"
+            [max]="maxDate">
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <button mat-icon-button matSuffix (click)="onDateShift(-1)">
+        <button mat-icon-button matSuffix (click)="onDateShift(-1)" [disabled]="isMinDate()">
             <mat-icon>navigate_before</mat-icon>
         </button>
-        <button mat-icon-button matSuffix (click)="onDateShift(+1)">
+        <button mat-icon-button matSuffix (click)="onDateShift(+1)" [disabled]="isMaxDate()">
             <mat-icon>navigate_next</mat-icon>
+        </button>
+        <!-- Šodiena -->
+        <button mat-icon-button matSuffix (click)="onToday()">
+            <mat-icon>calendar_today</mat-icon>
         </button>
         <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
-    <!-- Apraksts -->
+
 </form>
