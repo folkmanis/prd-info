@@ -1,7 +1,37 @@
+.full-width {
+    width: 100%;
+}
+
+.cdk-column-level {
+    width: 100px;
+}
+
 .cdk-column-timestamp {
     padding: 0 8px;
+    width: 160px;
 }
 
 .cdk-column-info {
     padding: 0 8px;
+}
+
+tr.detail-row {
+    height: 0px;
+}
+
+.record-row td {
+    border-bottom-width: 0;
+}
+
+tr.record-row:not(.expanded-row):hover {
+    background-color: whitesmoke;
+}
+
+.record-detail {
+    overflow: hidden;
+}
+
+.json-display {
+    padding-bottom: 8px;
+
 }

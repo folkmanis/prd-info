@@ -11,7 +11,9 @@ export class HttpOptions {
      */
     constructor(par: { [key: string]: any; } = {}) {
         Object.keys(par).forEach((key) => {
-            this.params = this.params.set(key, par[key]);
+            if (par[key] !== undefined) {
+                this.params = this.params.set(key, par[key]);
+            }
         });
     }
     /**

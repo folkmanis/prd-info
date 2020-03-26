@@ -28,6 +28,8 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { LayoutModule } from '@angular/cdk/layout';
 import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -40,6 +42,7 @@ import { AppMonthPipe } from './pipes/app-month.pipe';
 import { HideZeroPipe } from './pipes/hide-zero.pipe';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { CardMenuComponent } from './card-menu/card-menu.component';
+import { ShortenTextPipe } from './pipes/shorten-text.pipe';
 
 @NgModule({
   declarations: [
@@ -50,6 +53,7 @@ import { CardMenuComponent } from './card-menu/card-menu.component';
     HideZeroPipe,
     ConfirmationDialogComponent,
     CardMenuComponent,
+    ShortenTextPipe,
   ],
   imports: [
     CommonModule,
@@ -81,6 +85,8 @@ import { CardMenuComponent } from './card-menu/card-menu.component';
     MatProgressSpinnerModule,
     MatExpansionModule,
     MatPaginatorModule,
+    MatDatepickerModule,
+    MatTooltipModule,
     ScrollToTopModule,
     LayoutModule,
     ScrollingModule,
@@ -113,6 +119,8 @@ import { CardMenuComponent } from './card-menu/card-menu.component';
     MatProgressSpinnerModule,
     MatExpansionModule,
     MatPaginatorModule,
+    MatDatepickerModule,
+    MatTooltipModule,
     LayoutModule,
     ScrollToTopModule,
     CopyClipboardDirective,
@@ -121,6 +129,7 @@ import { CardMenuComponent } from './card-menu/card-menu.component';
     FileDropDirective,
     AppMonthPipe,
     HideZeroPipe,
+    ShortenTextPipe,
     ScrollingModule,
   ],
 })
