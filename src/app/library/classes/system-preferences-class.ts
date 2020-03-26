@@ -7,7 +7,7 @@ export interface DbModulePreferences {
     settings: { [key: string]: any; };
 }
 
-export type SystemPreferencesGroups = 'kastes' | 'system';
+export type SystemPreferencesGroups = 'kastes' | 'system' | 'jobs';
 
 export type SystemPreferences = Map<SystemPreferencesGroups, ModuleSettings>;
 
@@ -26,5 +26,6 @@ export class SystemSettings implements ModuleSettings {
 
 export const DEFAULT_SYSTEM_PREFERENCES: SystemPreferences = new Map<SystemPreferencesGroups, ModuleSettings>()
     .set('kastes',
-        { colors: { yellow: 'gold', rose: 'magenta', white: 'gray', } })
-    .set('system', { menuExpandedByDefault: false });
+        { colors: { yellow: 'hsl(45,75%,60%)', rose: '315,75%,50%', white: '0,0%,50%', } })
+    .set('system', { menuExpandedByDefault: false })
+    .set('jobs', {});

@@ -4,6 +4,12 @@ export const USER_MODULES: UserModule[] = [
     { value: 'xmf-search', name: 'XMF arhīvs', description: 'Meklētājs XMF arhīva datubāzē', route: 'xmf-search', moduleClass: 'XmfSearchModule' },
     { value: 'xmf-upload', name: 'Pievienot XMF arhīvu', description: 'XFM arhīva jaunināšana', route: 'xmf-upload', moduleClass: 'XmfUploadModule' },
     {
+        value: 'jobs', name: 'Darbi', description: 'Ražošanas darbi', route: 'jobs', moduleClass: 'JobsModule'
+    },
+    {
+        value: 'jobs-admin', name: 'Darbu iestatījumi', description: 'Ražošanas darbu moduļa iestatījumi', route: 'jobs-admin', moduleClass: 'JobsAdmin'
+    },
+    {
         value: 'kastes', name: 'Pakošana kastēs', description: 'Pakošanas saraksti perforācijai', route: 'kastes', moduleClass: 'KastesModule', childMenu: [
             { name: 'Uzlīmju reģistrācija', route: 'labels', description: 'Saņemto uzlīmju reģistrācija, šķirošana un pārbaude' },
             { name: 'Pakošanas saraksts', route: 'selector', description: 'Darbs ar iepakojumiem' },
@@ -15,7 +21,7 @@ export const USER_MODULES: UserModule[] = [
         value: 'admin', name: 'Administrēšana', description: 'Sistēmas iestatījumi', route: 'admin', moduleClass: 'AdminModule', childMenu: [
             { name: 'Lietotāji', route: 'users', description: 'Sistēmas lietotāji: izveide, paroles maiņa, pieejamie moduļi' },
             { name: 'Sistēmas iestatījumi', route: 'module-preferences', description: 'Moduļu iestatījumi' },
-            { name: 'Žurnāls', route: 'logfile', description: 'Sistēmas žurnāls (logfile)'},
+            { name: 'Žurnāls', route: 'logfile', description: 'Sistēmas žurnāls (logfile)' },
         ]
     },
 ];
