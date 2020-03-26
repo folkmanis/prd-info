@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy, ViewChild, EventEmitter, AfterContentInit, AfterViewInit, ViewContainerRef, ComponentFactoryResolver, ComponentFactory, ComponentRef } from '@angular/core';
-import { ArchiveSearchService } from '../services/archive-search.service';
-import { ArchiveFacet, FacetFilter } from '../services/archive-search-class';
+import { Component, ComponentFactory, ComponentFactoryResolver, ComponentRef, EventEmitter, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { FacetFilter } from '../services/archive-search-class';
+import { ArchiveSearchService } from '../services/archive-search.service';
 import { FacetCheckerComponent } from './facet-checker/facet-checker.component';
 
 const FACET_NAMES: Map<string, { displayName: string, index: number, }> = new Map<string, { displayName: string, index: number, }>()
@@ -14,7 +14,7 @@ const FACET_NAMES: Map<string, { displayName: string, index: number, }> = new Ma
   templateUrl: './facet.component.html',
   styleUrls: ['./facet.component.css']
 })
-export class FacetComponent implements OnInit, OnDestroy, AfterViewInit {
+export class FacetComponent implements OnInit, OnDestroy {
   @ViewChild('itemsCaontainer', { static: true, read: ViewContainerRef }) container: ViewContainerRef;
 
   facetSubs: Subscription;
@@ -55,9 +55,6 @@ export class FacetComponent implements OnInit, OnDestroy, AfterViewInit {
     this.resetSubs = this.archiveSearchService.searchString$
       .subscribe(() => this.facetComponents && this.facetComponents.forEach(comp => comp.instance.deselect()));
 
-  }
-
-  ngAfterViewInit() {
   }
 
   ngOnDestroy() {

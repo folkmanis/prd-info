@@ -13,17 +13,12 @@
  * 
  */
 
-import { Injectable, EventEmitter } from '@angular/core';
-
-import { ArchiveResp, ArchiveRecord, SearchQuery, ArchiveFacet, FacetFilter } from './archive-search-class';
-import { Observable, Subject, BehaviorSubject, combineLatest, ReplaySubject, OperatorFunction, Subscription, merge, of, forkJoin } from 'rxjs';
-import { map, tap, switchMap, share, pluck, shareReplay, mergeAll, mergeMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { EventEmitter, Injectable } from '@angular/core';
+import { BehaviorSubject, combineLatest, forkJoin, merge, Observable, of, ReplaySubject, Subscription } from 'rxjs';
+import { map, mergeMap, pluck, share, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { HttpOptions } from '../../library/http/http-options';
-
-export enum SERVICE_STATES {
-  EMPTY, UPDATING, LOADED
-}
+import { ArchiveFacet, ArchiveRecord, ArchiveResp, FacetFilter, SearchQuery } from './archive-search-class';
 
 interface Range {
   start: number;

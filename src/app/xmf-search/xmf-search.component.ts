@@ -1,10 +1,9 @@
-import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FormGroup, FormControl } from '@angular/forms';
-import { ViewportRuler } from '@angular/cdk/scrolling';
-import { Observable, combineLatest } from 'rxjs';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { map, shareReplay, distinctUntilChanged, debounceTime, tap, startWith } from 'rxjs/operators';
+import { ViewportRuler } from '@angular/cdk/scrolling';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { combineLatest, Observable } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, shareReplay, startWith } from 'rxjs/operators';
 import { ArchiveSearchService } from './services/archive-search.service';
 
 @Component({
