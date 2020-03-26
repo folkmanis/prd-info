@@ -43,6 +43,7 @@ import { HideZeroPipe } from './pipes/hide-zero.pipe';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { CardMenuComponent } from './card-menu/card-menu.component';
 import { ShortenTextPipe } from './pipes/shorten-text.pipe';
+import { SelectorFinderComponent } from './selector-finder/selector-finder.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { ShortenTextPipe } from './pipes/shorten-text.pipe';
     ConfirmationDialogComponent,
     CardMenuComponent,
     ShortenTextPipe,
+    SelectorFinderComponent,
   ],
   imports: [
     CommonModule,
@@ -126,6 +128,7 @@ import { ShortenTextPipe } from './pipes/shorten-text.pipe';
     CopyClipboardDirective,
     TaggedStringComponent,
     CardMenuComponent,
+    SelectorFinderComponent,
     FileDropDirective,
     AppMonthPipe,
     HideZeroPipe,
