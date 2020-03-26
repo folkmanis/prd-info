@@ -10,7 +10,8 @@ import { ArchiveSearchService } from './services/archive-search.service';
 @Component({
   selector: 'app-xmf-search',
   templateUrl: './xmf-search.component.html',
-  styleUrls: ['./xmf-search.component.css']
+  styleUrls: ['./xmf-search.component.css'],
+  providers: [ArchiveSearchService],
 })
 export class XmfSearchComponent implements OnInit, OnDestroy, AfterViewInit {
 

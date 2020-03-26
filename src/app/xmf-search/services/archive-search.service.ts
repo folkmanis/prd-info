@@ -50,15 +50,15 @@ export class ArchiveSearchService {
     );
   private searchSubs: Subscription;
   private facetFilter: Partial<FacetFilter> = {};
+  private facetData: ArchiveFacet | null;
   private facetSubs: Subscription;
-  resetFacet = new EventEmitter<void>();
   fetchRange = new EventEmitter<Range>();
 
   setSearch(s$: Observable<string>) {
     this.unsetSearch();
     this.searchSubs = s$.pipe(
       tap(() => this.facetFilter = {}),
-      tap(() => this.resetFacet.next()), // Būs vajadzīgs jauns facet
+      tap(() => this.facetData = null), // Būs vajadzīgs jauns facet
     ).subscribe(this._stringSearch$);
   }
 
@@ -94,28 +94,26 @@ export class ArchiveSearchService {
 
   facetResult$: Observable<ArchiveFacet> = this.searchQuery$.pipe(
     pluck('facet'),
-    this.updateFacet(this.resetFacet),
+    this.updateFacet(),
     share(),
   );
 
-  private updateFacet(reset: Observable<void>): (nF: Observable<ArchiveFacet>) => Observable<ArchiveFacet> {
-    let lastFacet: ArchiveFacet;
-    reset.subscribe(() => lastFacet = undefined);
+  private updateFacet(): (nF: Observable<ArchiveFacet>) => Observable<ArchiveFacet> {
     return map(
       (newFacet: ArchiveFacet): ArchiveFacet => {
-        if (!lastFacet) { // ja prasa pirmo reizi
-          lastFacet = newFacet; // tad izmanto visu ierakstu
+        if (!this.facetData) { // ja prasa pirmo reizi
+          this.facetData = newFacet; // tad izmanto visu ierakstu
         } else { // ja elementi jau ir, tad izmantos tikai skaitus
           for (const key of Object.keys(newFacet)) { // pa grupām
             const nFGr: Array<any> = newFacet[key];
-            const oFGr: Array<any> = lastFacet[key];
+            const oFGr: Array<any> = this.facetData[key];
             for (const k in oFGr) {
               const idxNew = nFGr.findIndex(el => el['_id'] === oFGr[k]['_id']);
               oFGr[k]['count'] = (idxNew > -1) ? nFGr[idxNew]['count'] : oFGr[k]['count'] = 0;
             }
           }
         }
-        return lastFacet;
+        return this.facetData;
       }
     );
   }

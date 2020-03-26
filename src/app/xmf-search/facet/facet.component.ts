@@ -52,7 +52,7 @@ export class FacetComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
     /** Kad jauns meklējums, tad visi filtri tiek noņemti */
-    this.resetSubs = this.archiveSearchService.resetFacet
+    this.resetSubs = this.archiveSearchService.searchString$
       .subscribe(() => this.facetComponents && this.facetComponents.forEach(comp => comp.instance.deselect()));
 
   }

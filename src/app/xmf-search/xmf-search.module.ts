@@ -23,6 +23,5 @@ import { ArchiveSearchService } from './services/archive-search.service';
     XmfSearchRoutingModule,
     LibraryModule,
   ],
-  providers: [ArchiveSearchService],
 })
 export class XmfSearchModule { }
