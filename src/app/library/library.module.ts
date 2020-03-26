@@ -29,6 +29,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { LayoutModule } from '@angular/cdk/layout';
 import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -85,6 +86,7 @@ import { ShortenTextPipe } from './pipes/shorten-text.pipe';
     MatExpansionModule,
     MatPaginatorModule,
     MatDatepickerModule,
+    MatTooltipModule,
     ScrollToTopModule,
     LayoutModule,
     ScrollingModule,
@@ -118,6 +120,7 @@ import { ShortenTextPipe } from './pipes/shorten-text.pipe';
     MatExpansionModule,
     MatPaginatorModule,
     MatDatepickerModule,
+    MatTooltipModule,
     LayoutModule,
     ScrollToTopModule,
     CopyClipboardDirective,

@@ -51,7 +51,6 @@ export class LogFilterComponent implements OnInit, OnDestroy, AfterViewInit {
     /** Jauna tabula */
     this.subs.add(
       this.filterForm.valueChanges.pipe(
-        startWith(this.filterDefaults),
         map(form => this.formToReq(form)),
       ).subscribe(this.service.logFilter$)
     );
@@ -76,7 +75,6 @@ export class LogFilterComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   isValiddate(date: moment.Moment): boolean {
-    console.log(validDates);
     return !validDates || validDates.dates.has(date.format('Y-MM-DD'));
   }
 
