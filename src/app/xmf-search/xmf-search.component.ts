@@ -1,6 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { ViewportRuler } from '@angular/cdk/scrolling';
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { combineLatest, Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, shareReplay, startWith } from 'rxjs/operators';
@@ -12,7 +12,7 @@ import { ArchiveSearchService } from './services/archive-search.service';
   styleUrls: ['./xmf-search.component.css'],
   providers: [ArchiveSearchService],
 })
-export class XmfSearchComponent implements OnInit, OnDestroy, AfterViewInit {
+export class XmfSearchComponent implements OnInit, OnDestroy {
 
   q: FormControl = new FormControl('');
 
@@ -61,10 +61,4 @@ export class XmfSearchComponent implements OnInit, OnDestroy, AfterViewInit {
     this.service.unsetSearch();
   }
 
-  ngAfterViewInit() {
-    // setTimeout(() =>
-    //   this.searchForm.setValue({ q: '114' }), 200 // DEBUG!!!
-    // );
-
-  }
 }
