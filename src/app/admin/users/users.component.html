@@ -1,7 +1,8 @@
 <div style="display: flex;">
     <div style="flex: 0 1 200px;">
         <mat-divider></mat-divider>
-        <mat-nav-list>
+        <app-selector-finder ></app-selector-finder>
+        <!-- <mat-nav-list>
             <mat-list-item *ngFor="let user of users">
                 <a mat-list-item [routerLink]="['/admin/users/edit',{id: user.username}]">{{user.username}}</a>
                 <mat-divider></mat-divider>
@@ -10,7 +11,7 @@
                 <a mat-list-item [routerLink]="['/admin/users/new']">Jauns lietotājs</a>
             </mat-list-item>
             <mat-divider></mat-divider>
-        </mat-nav-list>
+        </mat-nav-list> -->
     </div>
     <div style="flex: 0 1 600px;">
         <router-outlet></router-outlet>

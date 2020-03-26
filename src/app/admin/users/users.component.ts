@@ -4,6 +4,7 @@ import { pipe, Observable } from 'rxjs/index';
 import { switchMap } from 'rxjs/operators';
 import { UsersService } from '../services/users.service';
 import { User, UserList } from '../services/admin-http.service';
+import { RouteOrAction } from 'src/app/library/selector-finder/selector-finder.component';
 
 @Component({
   selector: 'app-users',
@@ -19,16 +20,14 @@ export class UsersComponent implements OnInit {
   ) {
     this.count$ = usersService.count$;
   }
+  private readonly _path = '/admin/users/edit';
+  routes$: Observable<RouteOrAction[]>;
 
   count$: Observable<number>;
   users: User[];
   userSelected: string;
 
   ngOnInit() {
-    this.route.paramMap.subscribe((params: ParamMap) => {
-      this.userSelected = params.get('id');
-    });
-
     this.usersService.users$.subscribe(usrs => {
       this.users = usrs;
     });
