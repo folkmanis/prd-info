@@ -43,7 +43,7 @@ import { HideZeroPipe } from './pipes/hide-zero.pipe';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { CardMenuComponent } from './card-menu/card-menu.component';
 import { ShortenTextPipe } from './pipes/shorten-text.pipe';
-import { SelectorFinderComponent } from './selector-finder/selector-finder.component';
+import { FindSelectRouteModule } from './find-select-route/find-select-route.module';
 
 @NgModule({
   declarations: [
@@ -55,7 +55,6 @@ import { SelectorFinderComponent } from './selector-finder/selector-finder.compo
     ConfirmationDialogComponent,
     CardMenuComponent,
     ShortenTextPipe,
-    SelectorFinderComponent,
   ],
   imports: [
     CommonModule,
@@ -92,6 +91,7 @@ import { SelectorFinderComponent } from './selector-finder/selector-finder.compo
     ScrollToTopModule,
     LayoutModule,
     ScrollingModule,
+    FindSelectRouteModule,
   ],
   exports: [
     FormsModule,
@@ -128,12 +128,12 @@ import { SelectorFinderComponent } from './selector-finder/selector-finder.compo
     CopyClipboardDirective,
     TaggedStringComponent,
     CardMenuComponent,
-    SelectorFinderComponent,
     FileDropDirective,
     AppMonthPipe,
     HideZeroPipe,
     ShortenTextPipe,
     ScrollingModule,
+    FindSelectRouteModule,
   ],
 })
 export class LibraryModule { }

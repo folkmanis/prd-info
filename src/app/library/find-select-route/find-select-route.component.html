@@ -1,0 +1,17 @@
+<div class="full-width">
+    <mat-form-field class="search-box">
+        <input matInput type="search" [formControl]="filterControl">
+        <button *ngIf="filterControl.value" matSuffix mat-icon-button (click)="filterControl.setValue('')">
+            <mat-icon>close</mat-icon>
+        </button>
+        <button *ngIf="!filterControl.value" matSuffix mat-icon-button>
+            <mat-icon>search</mat-icon>
+        </button>
+    </mat-form-field>
+    <div></div>
+    <mat-nav-list class="full-width">
+        <a mat-list-item *ngFor="let item of data$ | async; last as last;" [routerLink]="item.link" (click)="onSelect(item)">{{item.title}}
+            <mat-divider *ngIf="!last"></mat-divider>
+        </a>
+    </mat-nav-list>
+</div>
