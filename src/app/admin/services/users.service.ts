@@ -1,7 +1,7 @@
 import { AdminHttpService, User } from './admin-http.service';
 import { Injectable } from '@angular/core';
-import { Observable, Subject, of } from 'rxjs';
-import { map, tap, filter, switchMap } from 'rxjs/operators';
+import { Observable, Subject, of, merge } from 'rxjs';
+import { map, tap, filter, switchMap, startWith } from 'rxjs/operators';
 import { USER_MODULES } from '../../user-modules';
 import { UserModule } from "../../library/classes/user-module-interface";
 
@@ -12,27 +12,23 @@ export interface Customer {
   value: string;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class UsersService {
 
-  users: User[]; // Statiskais lietotāju saraksts
-  count$ = new Subject<number>();
-  users$ = new Subject<User[]>();
+  private usersCache: User[];
   constructor(
     private httpService: AdminHttpService,
   ) { }
-  /**
-   * Saņem lietotāju sarakstu no REST
-   */
-  getUsers() {
-    this.httpService.getUsersHttp().subscribe(usrs => {
-      this.users = usrs.users;
-      this.count$.next(usrs.count);
-      this.users$.next(usrs.users);
-    });
-  }
+  reloadUsers$ = new Subject<void>();
+  private _usersHttp$: Observable<User[]> = this.reloadUsers$.pipe(
+    startWith({}),
+    switchMap(() => this.httpService.getUsersHttp()),
+    map(uList => uList.users),
+    tap(users => this.usersCache = users)
+  );
+  private _usersCached$: Subject<User[]> = new Subject();
+  users$ = merge(this._usersHttp$, this._usersCached$);
+
   /**
    * Saņem lietotāja ierakstu no REST
    * @param username Lietotājvārds
@@ -41,13 +37,11 @@ export class UsersService {
     return this.httpService.getUserHttp(username);
   }
   /**
-   * Saņem klientu sarakstu no REST
+   * Klientu saraksts
    */
-  getCustomers(): Observable<Customer[]> {
-    return this.httpService.getCustomersHttp().pipe(
-      map(customer => customer.map(cust => ({ name: cust || 'Nenoteikts', value: cust })))
-    );
-  }
+  customers$: Observable<Customer[]> = this.httpService.getCustomersHttp().pipe(
+    map(customer => customer.map(cust => ({ name: cust || 'Nenoteikts', value: cust })))
+  );
   /**
    * Atjauno lietotāja iestatījumus, izņemot paroli
    * @param username Lietotājvārds
@@ -72,19 +66,19 @@ export class UsersService {
    * atjauno lietotāju sarakstu
    * @param data Pilni lietotāja dati
    */
-  addUser(data: Partial< User>): Observable<boolean> {
+  addUser(data: Partial<User>): Observable<boolean> {
     return this.httpService.addUserHttp(data).pipe(
-      tap(resp => resp && this.getUsers()),
+      tap(resp => resp && this.reloadUsers$.next()),
     );
   }
-/**
- * Izdzēš lietotāju, atjauno lietotāju sarakstu
- * @param username Lietotājvārds
- */
+  /**
+   * Izdzēš lietotāju, atjauno lietotāju sarakstu
+   * @param username Lietotājvārds
+   */
   deleteUser(username: string): Observable<boolean> {
     return this.httpService.deleteUserHttp(username).pipe(
-      tap(resp => resp && this.getUsers()),
-    )
+      tap(resp => resp && this.reloadUsers$.next()),
+    );
   }
   /**
    * Rezultāts: Observable
@@ -94,7 +88,7 @@ export class UsersService {
    */
   validateUsername(username: string): Observable<boolean> {
     return this.getUser(username).pipe(
-      map(res => res ? false : true),
+      map(res => !res),
     );
   }
 
@@ -103,23 +97,23 @@ export class UsersService {
   }
 
   /**
-   * Atsvaidzina statisko lietotāju sarakstu
+   * Atsvaidzina lietotāju statiskajā sarakstā
    * @param username Lietotājvārds
    * @param update Izmaiņas
    */
   private updateUsers(username: string, update: Partial<User>): void {
-    const idx = this.findUserIdx(username);
+    if (!this.usersCache) {
+      this.reloadUsers$.next();
+      return;
+    }
+    const idx = this.usersCache.findIndex(usr => usr.username === username);
     if (idx === -1) { return; } // Ja lietotājs nav sarakstā
-    const updUsr = { ...this.users[idx] };
+    const updUsr: User = { ...this.usersCache[idx] };
     for (const key of Object.keys(update)) {
       updUsr[key] = update[key];
     }
-    this.users[idx] = updUsr;
-    this.users$.next(this.users);
-  }
-
-  private findUserIdx(username: string) {
-    return this.users.findIndex(usr => usr.username === username);
+    this.usersCache[idx] = updUsr;
+    this._usersCached$.next(this.usersCache);
   }
 
 }

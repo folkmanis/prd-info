@@ -30,7 +30,7 @@ export class NewUserComponent implements OnInit, CanComponentDeactivate {
   name = this.newUserForm.get('name');
   hide = true; // Paroles ievades laukam
 
-  customers: Customer[];
+  customers$: Observable< Customer[]> = this.usersService.customers$;
   userModules: UserModule[];
   constructor(
     private usersService: UsersService,
@@ -40,7 +40,7 @@ export class NewUserComponent implements OnInit, CanComponentDeactivate {
   ) { }
 
   ngOnInit() {
-    this.usersService.getCustomers().subscribe((cust) => this.customers = cust);
+    // this.usersService.getCustomers().subscribe((cust) => this.customers = cust);
     this.userModules = this.usersService.getUserModules();
   }
 

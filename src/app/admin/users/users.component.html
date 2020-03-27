@@ -1,17 +1,13 @@
 <div style="display: flex;">
     <div style="flex: 0 1 200px;">
         <mat-divider></mat-divider>
-        <app-selector-finder ></app-selector-finder>
-        <!-- <mat-nav-list>
-            <mat-list-item *ngFor="let user of users">
-                <a mat-list-item [routerLink]="['/admin/users/edit',{id: user.username}]">{{user.username}}</a>
-                <mat-divider></mat-divider>
+        <!-- <app-selector-finder ></app-selector-finder> -->
+        <mat-nav-list>
+            <mat-list-item *ngFor="let user of users$ | async; last as last;">
+                <a mat-list-item [routerLink]="user.link">{{user.username}}</a>
+                <mat-divider *ngIf="!last"></mat-divider>
             </mat-list-item>
-            <mat-list-item>
-                <a mat-list-item [routerLink]="['/admin/users/new']">Jauns lietotājs</a>
-            </mat-list-item>
-            <mat-divider></mat-divider>
-        </mat-nav-list> -->
+        </mat-nav-list>
     </div>
     <div style="flex: 0 1 600px;">
         <router-outlet></router-outlet>

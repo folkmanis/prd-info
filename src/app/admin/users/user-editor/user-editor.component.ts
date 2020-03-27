@@ -27,7 +27,7 @@ export class UserEditorComponent implements OnInit, CanComponentDeactivate {
     }),
   });
 
-  customers: Customer[];
+  // customers: Customer[];
   selectedUsername: string;
   user: User;
   valueChangesSubscription: Subscription;
@@ -42,8 +42,10 @@ export class UserEditorComponent implements OnInit, CanComponentDeactivate {
     private dialogService: ConfirmationDialogService,
   ) {   }
 
+  customers$: Observable<Customer[]> = this.usersService.customers$;
+
   ngOnInit() {
-    this.usersService.getCustomers().subscribe((cust) => this.customers = cust);
+    // this.usersService.getCustomers().subscribe((cust) => this.customers = cust);
     this.route.paramMap.pipe(
       map((params: ParamMap) => params.get('id')),
       tap(usr => this.selectedUsername = usr),
