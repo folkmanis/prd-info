@@ -1,16 +1,18 @@
-import { Directive, AfterContentChecked, ElementRef } from '@angular/core';
+import { Directive, ElementRef, OnInit } from '@angular/core';
 
 @Directive({
   selector: 'input[appFocused]'
 })
-export class FocusedDirective implements AfterContentChecked {
+export class FocusedDirective implements OnInit {
 
   constructor(
     private el: ElementRef<HTMLInputElement>,
   ) { }
 
-  ngAfterContentChecked(): void {
-    this.el.nativeElement.focus();
+  ngOnInit(): void {
+    setTimeout(() => {
+      this.el.nativeElement.focus();
+    }, 0);
   }
 
 }

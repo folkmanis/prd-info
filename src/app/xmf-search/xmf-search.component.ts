@@ -1,8 +1,7 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { ViewportRuler } from '@angular/cdk/scrolling';
-import { Component, OnDestroy, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatInput } from '@angular/material/input';
 import { combineLatest, Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, shareReplay, startWith } from 'rxjs/operators';
 import { ArchiveSearchService } from './services/archive-search.service';
@@ -13,8 +12,7 @@ import { ArchiveSearchService } from './services/archive-search.service';
   styleUrls: ['./xmf-search.component.css'],
   providers: [ArchiveSearchService],
 })
-export class XmfSearchComponent implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild('searchInput', { read: MatInput, static: true }) searchInput: MatInput;
+export class XmfSearchComponent implements OnInit, OnDestroy {
   q: FormControl = new FormControl('');
 
   constructor(
@@ -60,12 +58,6 @@ export class XmfSearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy() {
     this.service.unsetSearch();
-  }
-
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.searchInput.focus();
-    }, 200);
   }
 
 }
