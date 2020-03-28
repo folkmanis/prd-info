@@ -44,6 +44,7 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
 import { CardMenuComponent } from './card-menu/card-menu.component';
 import { ShortenTextPipe } from './pipes/shorten-text.pipe';
 import { FindSelectRouteModule } from './find-select-route/find-select-route.module';
+import { FocusedDirective } from './directives/focused.directive';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { FindSelectRouteModule } from './find-select-route/find-select-route.mod
     ConfirmationDialogComponent,
     CardMenuComponent,
     ShortenTextPipe,
+    FocusedDirective,
   ],
   imports: [
     CommonModule,
@@ -134,6 +136,7 @@ import { FindSelectRouteModule } from './find-select-route/find-select-route.mod
     ShortenTextPipe,
     ScrollingModule,
     FindSelectRouteModule,
+    FocusedDirective,
   ],
 })
 export class LibraryModule { }
