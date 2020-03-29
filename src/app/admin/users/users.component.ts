@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-import { pipe, Observable } from 'rxjs/index';
-import { switchMap } from 'rxjs/operators';
+import { Observable } from 'rxjs/index';
+import { map } from 'rxjs/operators';
+import { RouteSelection } from 'src/app/library/find-select-route/find-select-route.module';
+import { User } from '../services/admin-http.service';
 import { UsersService } from '../services/users.service';
-import { User, UserList } from '../services/admin-http.service';
+
+type UserForSelection = Pick<User, 'username' | 'name'> & { title: string, link: (string | { [key: string]: any; })[]; };
 
 @Component({
   selector: 'app-users',
@@ -11,28 +13,28 @@ import { User, UserList } from '../services/admin-http.service';
   styleUrls: ['./users.component.css']
 })
 export class UsersComponent implements OnInit {
+  private readonly _path = '/admin/users/edit';
+  private readonly _newUserPath = '/admin/users/new';
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
     private usersService: UsersService,
-  ) {
-    this.count$ = usersService.count$;
-  }
+  ) { }
 
-  count$: Observable<number>;
-  users: User[];
-  userSelected: string;
+fltr="us"
+
+  users$: Observable<UserForSelection[]> = this.usersService.users$.pipe(
+    map(usrList =>
+      usrList.map(usr => ({ username: usr.username, name: usr.name, title: usr.username, link: [this._path, { id: usr.username }] }))
+    ),
+    map(usrList => usrList.concat([{
+      username: '<Jauns lietotājs>',
+      name: 'Pievienot jaunu',
+      title: '<Jauns lietotājs>',
+      link: [this._newUserPath]
+    }]))
+  );
 
   ngOnInit() {
-    this.route.paramMap.subscribe((params: ParamMap) => {
-      this.userSelected = params.get('id');
-    });
-
-    this.usersService.users$.subscribe(usrs => {
-      this.users = usrs;
-    });
-    this.usersService.getUsers();
   }
 
 }

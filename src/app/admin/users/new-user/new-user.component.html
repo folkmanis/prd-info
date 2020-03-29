@@ -57,7 +57,7 @@
         <mat-form-field class="input-element">
             <mat-label>Pieeja klientiem</mat-label>
             <mat-select formControlName="customers" multiple>
-                <mat-option *ngFor="let customer of customers" [value]="customer.value">
+                <mat-option *ngFor="let customer of customers$ | async" [value]="customer.value">
                     {{customer.name}}
                 </mat-option>
             </mat-select>

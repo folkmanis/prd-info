@@ -4,9 +4,7 @@ import { SystemPreferences, ModuleSettings, KastesSettings, SystemSettings, Syst
 import { AdminHttpService } from './admin-http.service';
 import { map, filter, tap } from 'rxjs/operators';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ModulePreferencesService {
 
   private preferences$: BehaviorSubject<SystemPreferences> = new BehaviorSubject<SystemPreferences>(new Map());

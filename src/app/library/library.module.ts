@@ -43,6 +43,8 @@ import { HideZeroPipe } from './pipes/hide-zero.pipe';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { CardMenuComponent } from './card-menu/card-menu.component';
 import { ShortenTextPipe } from './pipes/shorten-text.pipe';
+import { FindSelectRouteModule } from './find-select-route/find-select-route.module';
+import { FocusedDirective } from './directives/focused.directive';
 
 @NgModule({
   declarations: [
@@ -54,6 +56,7 @@ import { ShortenTextPipe } from './pipes/shorten-text.pipe';
     ConfirmationDialogComponent,
     CardMenuComponent,
     ShortenTextPipe,
+    FocusedDirective,
   ],
   imports: [
     CommonModule,
@@ -90,6 +93,7 @@ import { ShortenTextPipe } from './pipes/shorten-text.pipe';
     ScrollToTopModule,
     LayoutModule,
     ScrollingModule,
+    FindSelectRouteModule,
   ],
   exports: [
     FormsModule,
@@ -131,6 +135,8 @@ import { ShortenTextPipe } from './pipes/shorten-text.pipe';
     HideZeroPipe,
     ShortenTextPipe,
     ScrollingModule,
+    FindSelectRouteModule,
+    FocusedDirective,
   ],
 })
 export class LibraryModule { }

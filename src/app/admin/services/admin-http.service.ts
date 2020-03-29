@@ -17,9 +17,7 @@ interface UpdateResponse {
   error?: string;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class AdminHttpService {
   private httpPathUsers = '/data/users/';
   /**   Klientu kodi ir arhīva datubāzē

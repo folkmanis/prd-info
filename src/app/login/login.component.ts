@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { LoginService, User, Login } from './login.service';
-import { tap, filter, switchMap, take } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { filter, switchMap, take } from 'rxjs/operators';
+import { LoginService } from './login.service';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +12,6 @@ import { tap, filter, switchMap, take } from 'rxjs/operators';
 })
 export class LoginComponent implements OnInit {
 
-  @ViewChild('username') usernameInput: ElementRef;
   constructor(
     private router: Router,
     private snack: MatSnackBar,
@@ -29,7 +28,6 @@ export class LoginComponent implements OnInit {
       take(1),
       filter(login => login),
       switchMap(() => this.loginService.logOut()),
-      // tap(() => location.reload()),
     ).subscribe();
   }
 
@@ -40,7 +38,6 @@ export class LoginComponent implements OnInit {
       } else {
         this.snack.open('Nepareiza parole vai lietotājs', 'OK', { duration: 5000 });
         this.loginForm.reset();
-        this.usernameInput.nativeElement.focus();
       }
     });
   }

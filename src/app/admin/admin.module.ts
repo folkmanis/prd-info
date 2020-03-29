@@ -16,7 +16,7 @@ import { SystemPreferencesComponent } from './module-preferences/system-preferen
 import { LogfileComponent } from './logfile/logfile.component';
 import { LogfileTableComponent } from './logfile/logfile-table/logfile-table.component';
 import { LogFilterComponent } from './logfile/log-filter/log-filter.component';
-
+import * as services from './services';
 
 @NgModule({
   declarations: [
@@ -39,7 +39,10 @@ import { LogFilterComponent } from './logfile/log-filter/log-filter.component';
     AdminRoutingModule,
   ],
   providers: [
-    { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher }
+    { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
+    services.AdminHttpService,
+    services.ModulePreferencesService,
+    services.UsersService,
   ],
 })
 export class AdminModule { }

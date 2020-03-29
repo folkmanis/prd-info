@@ -1,7 +1,7 @@
 <div class="main-content">
     <div class="search-box mat-elevation-z4">
         <mat-form-field class="search-input">
-            <input matInput [formControl]="q" type="search">
+            <input matInput [formControl]="q" type="search" appFocused>
                 <button *ngIf="q.value.length === 0" mat-button matSuffix mat-icon-button disabled>
                     <mat-icon>search</mat-icon>
                 </button>

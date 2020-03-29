@@ -13,7 +13,6 @@ import { ArchiveSearchService } from './services/archive-search.service';
   providers: [ArchiveSearchService],
 })
 export class XmfSearchComponent implements OnInit, OnDestroy {
-
   q: FormControl = new FormControl('');
 
   constructor(
