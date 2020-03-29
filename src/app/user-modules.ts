@@ -7,7 +7,9 @@ export const USER_MODULES: UserModule[] = [
         value: 'jobs', name: 'Darbi', description: 'Ražošanas darbi', route: 'jobs', moduleClass: 'JobsModule'
     },
     {
-        value: 'jobs-admin', name: 'Darbu iestatījumi', description: 'Ražošanas darbu moduļa iestatījumi', route: 'jobs-admin', moduleClass: 'JobsAdmin'
+        value: 'jobs-admin', name: 'Darbu iestatījumi', description: 'Ražošanas darbu moduļa iestatījumi', route: 'jobs-admin', moduleClass: 'JobsAdmin', childMenu: [
+            {name: 'Klienti', route: 'customers', description: 'Informācija par klientiem'}
+        ]
     },
     {
         value: 'kastes', name: 'Pakošana kastēs', description: 'Pakošanas saraksti perforācijai', route: 'kastes', moduleClass: 'KastesModule', childMenu: [

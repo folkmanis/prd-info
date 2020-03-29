@@ -1,16 +1,23 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { LibraryModule } from 'src/app/library/library.module';
 
 import { JobsAdminRoutingModule } from './jobs-admin-routing.module';
 import { JobsAdminComponent } from './jobs-admin.component';
-import { CustomersComponent } from './customers/customers.component';
+import { MainMenuComponent } from './main-menu/main-menu.component';
 
+// import { CustomersModule } from './customers/customers.module';
 
 @NgModule({
-  declarations: [JobsAdminComponent, CustomersComponent],
+  declarations: [
+    JobsAdminComponent,
+    MainMenuComponent,
+  ],
   imports: [
     CommonModule,
-    JobsAdminRoutingModule
+    LibraryModule,
+    JobsAdminRoutingModule,
+    // CustomersModule,
   ]
 })
 export class JobsAdminModule { }
