@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpOptions } from "src/app/library/http/http-options";
 import { Observable, merge, Subject } from 'rxjs';
-import { map, pluck, filter, tap, switchMap,share, shareReplay } from 'rxjs/operators';
+import { map, pluck, filter, tap, switchMap, share, shareReplay } from 'rxjs/operators';
 import { Customer } from './customer';
 
 type CustomerPartial = Pick<Customer, '_id' | 'CustomerName' | 'code'>;
@@ -48,23 +48,35 @@ export class CustomersService {
     );
   }
 
-  deleteCustomer(id: string): Observable<CustomerPartial[]> {
+  deleteCustomer(id: string): Observable<boolean> {
     return this.http.delete<{ result: Result; }>(this.httpPath + id, new HttpOptions()).pipe(
       pluck('result'),
       map(result => result.ok > 0 && result.n > 0),
       filter(result => result),
-      switchMap(() => this.getCustomerList()),
-      tap(cust => this.updateCustomers$.next(cust)),
+      this.reloadCustomers(() => this.getCustomerList(), this.updateCustomers$),
     );
   }
 
-  saveCustomer(customer: Customer): Observable<string | null> {
+  saveNewCustomer(customer: Customer): Observable<string | null> {
     return this.http.put<NewCustomerResult>(this.httpPath + 'new', customer, new HttpOptions()).pipe(
       map(resp => resp.error || !resp.result.ok ? null : resp.insertedId),
+      this.reloadCustomers(() => this.getCustomerList(), this.updateCustomers$),
     );
   }
 
   validator(value: { code?: string, CustomerName?: string; }): Observable<boolean> {
     return this.http.get<boolean>(this.httpPath + 'validate', new HttpOptions(value));
+  }
+
+  private reloadCustomers<T, K>(updateFunc: () => Observable<K>, emiter: Subject<K>): (src: Observable<T>) => Observable<T> {
+    let value: T;
+    return (src: Observable<T>): Observable<T> => {
+      return src.pipe(
+        tap(val => value = val),
+        switchMap(updateFunc),
+        tap(cust => emiter.next(cust)),
+        map(() => value),
+      );
+    };
   }
 }

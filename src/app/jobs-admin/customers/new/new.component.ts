@@ -44,7 +44,7 @@ export class NewComponent implements OnInit, CanComponentDeactivate {
   }
 
   onSave(): void {
-    this.service.saveCustomer(this.customerForm.value).pipe(
+    this.service.saveNewCustomer(this.customerForm.value).pipe(
       filter(id => !!id),
       tap(id => this.customerForm.markAsPristine()),
       tap(id => id && this.router.navigate(['..', 'edit', { id }], { relativeTo: this.route })),
