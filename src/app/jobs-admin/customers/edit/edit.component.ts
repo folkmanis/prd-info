@@ -3,6 +3,7 @@ import { Observable, Subject, of } from 'rxjs';
 import { map, filter, tap, switchMap, debounceTime, takeUntil } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder, AbstractControl, AsyncValidatorFn } from '@angular/forms';
+import { isEqual } from 'lodash';
 import { Customer } from '../services/customer';
 import { CustomersService } from '../services/customers.service';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
@@ -46,10 +47,10 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
       filter(id => !!id),
       switchMap(id => this.service.getCustomer(id)),
       tap(this.updateForm(this.customerForm)),
-      tap(cust => this.customer = cust),
+      tap(() => this.customer = this.customerForm.value),
     );
-    this.code.valueChanges.pipe(
-      tap(val => this.customer?.code === val && this.code.markAsPristine()),
+    this.customerForm.valueChanges.pipe(
+      tap(val => isEqual(this.customer, val) && this.customerForm.markAsPristine()),
       takeUntil(this.unsubs),
     ).subscribe();
   }
@@ -62,6 +63,7 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
     this.service.updateCustomer(this.customerForm.value).pipe(
       filter(res => res),
       tap(() => this.customerForm.markAsPristine()),
+      tap(() => this.customer = this.customerForm.value)
     ).subscribe();
   }
 
