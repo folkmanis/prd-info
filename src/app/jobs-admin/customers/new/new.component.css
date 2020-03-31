@@ -1,0 +1,15 @@
+section {
+    padding: 16px 16px;
+}
+
+.input-element {
+    width: 100%;
+}
+
+button {
+    margin-right: 8px;
+}
+
+mat-form-field {
+    padding-top: 8px;
+}

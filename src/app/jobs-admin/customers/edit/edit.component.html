@@ -1,0 +1,43 @@
+<div *ngIf="customer$ | async as customer;">
+    <!-- Lietotāja nosaukums (nelabojams) -->
+    <section>
+        <h2>{{customer.CustomerName}}</h2>
+        <small *ngIf="customer.insertedFromXmf">
+            Pievienots no XMF arhīva {{customer.insertedFromXmf}}
+        </small>
+    </section>
+    <!-- Labošanas forma -->
+    <form [formGroup]="customerForm">
+        <section>
+            <!-- Kods -->
+            <mat-form-field class="input-element">
+                <mat-label>Klienta kods</mat-label>
+                <input matInput appFocused formControlName="code" placeholder="Kods" autocomplete="off">
+                <mat-error *ngIf="code.hasError('required')">
+                    Kodu jāievada obligāti!
+                </mat-error>
+                <mat-error *ngIf="code.hasError('occupied')">
+                    Kods jau tiek izmantots
+                </mat-error>
+            </mat-form-field>
+            <!-- apraksts -->
+            <mat-form-field class="input-element">
+                <input matInput formControlName="description" placeholder="Apraksts" autocomplete="off">
+            </mat-form-field>
+            <!-- Neaktīvs -->
+            <mat-checkbox class="input-element" formControlName="disabled">
+                Neaktīvs
+            </mat-checkbox>
+        </section>
+    </form>
+    <!-- Pogas -->
+    <section>
+        <button mat-raised-button color="primary" [disabled]="!customerForm.valid || customerForm.pristine"
+            (click)="onSave()">Saglabāt izmaiņas</button>
+        <button mat-raised-button color="primary" [disabled]="customerForm.pristine"
+            (click)="onRestore(customer._id)">Atcelt izmaiņas</button>
+    </section>
+    <section>
+        <button mat-raised-button color="warn" (click)="onDelete(customer._id)">Dzēst klientu</button>
+    </section>
+</div>

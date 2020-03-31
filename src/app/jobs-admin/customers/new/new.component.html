@@ -1,0 +1,45 @@
+<form [formGroup]="customerForm" (submit)="onSave()">
+    <!-- Lietotāja nosaukums  -->
+    <section>
+        <mat-form-field class="input-element">
+            <mat-label>Klienta nosaukums</mat-label>
+            <input matInput appFocused formControlName="CustomerName" placeholder="Nosaukums" autocomplete="off">
+            <mat-error *ngIf="customerName.hasError('required')">
+                Nosaukums jāievada obligāti!
+            </mat-error>
+            <mat-error *ngIf="customerName.hasError('occupied')">
+                Nosaukums jau tiek izmantots
+            </mat-error>
+        </mat-form-field>
+    </section>
+    <mat-divider></mat-divider>
+    <!-- Labošanas forma -->
+    <section>
+        <!-- Kods -->
+        <mat-form-field class="input-element">
+            <mat-label>Klienta kods</mat-label>
+            <input matInput formControlName="code" placeholder="Kods" autocomplete="off">
+            <mat-error *ngIf="code.hasError('required')">
+                Kodu jāievada obligāti!
+            </mat-error>
+            <mat-error *ngIf="code.hasError('occupied')">
+                Kods jau tiek izmantots
+            </mat-error>
+        </mat-form-field>
+        <!-- apraksts -->
+        <mat-form-field class="input-element">
+            <input matInput formControlName="description" placeholder="Apraksts" autocomplete="off">
+        </mat-form-field>
+        <!-- Neaktīvs -->
+        <mat-checkbox class="input-element" formControlName="disabled">
+            Neaktīvs
+        </mat-checkbox>
+    </section>
+    <mat-divider></mat-divider>
+    <!-- Pogas -->
+    <section>
+        <button mat-raised-button color="primary" type="submit" [disabled]="!customerForm.valid || customerForm.pristine">
+            Saglabāt izmaiņas
+        </button>
+    </section>
+</form>
