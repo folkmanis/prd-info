@@ -45,7 +45,12 @@ const routes: Routes = [
     loadChildren: () => import('./jobs/jobs.module').then(m => m.JobsModule),
     canActivate: [LoginGuard],
   },
-  { path: 'jobs-admin', loadChildren: () => import('./jobs-admin/jobs-admin.module').then(m => m.JobsAdminModule) },
+  { 
+    path: 'jobs-admin', 
+    canLoad: [LoginGuard],
+    loadChildren: () => import('./jobs-admin/jobs-admin.module').then(m => m.JobsAdminModule),
+    canActivate: [LoginGuard],
+  },
   {
     path: '**',
     redirectTo: '',
