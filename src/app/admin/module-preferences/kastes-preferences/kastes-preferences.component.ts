@@ -4,7 +4,6 @@ import { filter, switchMap, tap, map, takeUntil } from 'rxjs/operators';
 import { ModulePreferencesService } from '../../services/module-preferences.service';
 import { KastesSettings } from 'src/app/library/classes/system-preferences-class';
 import { LoginService } from 'src/app/login/login.service';
-import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { Observable, of, Subject } from 'rxjs';
 import { PreferencesComponent } from '../preferences-component.class';
 
@@ -32,7 +31,6 @@ export class KastesPreferencesComponent implements OnInit, OnDestroy, Preference
     private moduleService: ModulePreferencesService,
     private fb: FormBuilder,
     private loginService: LoginService,
-    private dialogService: ConfirmationDialogService,
   ) { }
 
   preferences: KastesSettings;
