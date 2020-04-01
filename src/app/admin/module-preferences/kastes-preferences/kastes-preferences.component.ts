@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { filter, switchMap, tap, map } from 'rxjs/operators';
+import { filter, switchMap, tap, map, takeUntil } from 'rxjs/operators';
 import { ModulePreferencesService } from '../../services/module-preferences.service';
 import { KastesSettings } from 'src/app/library/classes/system-preferences-class';
 import { LoginService } from 'src/app/login/login.service';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { PreferencesComponent } from '../preferences-component.class';
 
 interface Color {
@@ -25,7 +25,7 @@ interface Colors {
   templateUrl: './kastes-preferences.component.html',
   styleUrls: ['./kastes-preferences.component.css', '../module-preferences.component.css']
 })
-export class KastesPreferencesComponent implements OnInit, PreferencesComponent {
+export class KastesPreferencesComponent implements OnInit, OnDestroy, PreferencesComponent {
 
   private hslRegex = /hsl\((?<hue>\d+),(?<saturation>\d+)%,(?<lightness>\d+)%\)/;
   constructor(
@@ -40,19 +40,23 @@ export class KastesPreferencesComponent implements OnInit, PreferencesComponent 
   keys: string[] = [];
   colorsForm: FormGroup;
   defaults: { [key: string]: number; } = {};
+  unsub = new Subject<void>();
 
   ngOnInit() {
-    this.moduleService.getModulePreferences('kastes').subscribe(
-      (pref: KastesSettings) => {
-        this.preferences = pref;
-        this.colors = this.parseColors(pref);
-        this.keys = Object.keys(this.colors);
-        this.colorsForm = this.fb.group(this.lightness());
-        this.colorsForm.valueChanges.pipe(
-          tap(val => this.updateColors(val))
-        ).subscribe();
-      }
-    );
+    this.moduleService.getModulePreferences('kastes').pipe(
+      tap((pref: KastesSettings) => this.preferences = pref),
+      tap((pref: KastesSettings) => this.colors = this.parseColors(pref)),
+      tap(() => this.keys = Object.keys(this.colors)),
+      tap(() => this.colorsForm = this.fb.group(this.lightness())),
+      switchMap(() => this.colorsForm.valueChanges),
+      tap(val => this.updateColors(val)),
+      takeUntil(this.unsub),
+    ).subscribe();
+      
+  }
+
+  ngOnDestroy(): void {
+    this.unsub.next();
   }
 
   private lightness(): { [key: string]: number[]; } {
