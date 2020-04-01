@@ -35,6 +35,7 @@ export const DEFAULT_SYSTEM_PREFERENCES: SystemPreferences = new Map<SystemPrefe
     .set('system', <SystemSettings>{ menuExpandedByDefault: false })
     .set('jobs', <JobsSettings>{
         productCategories: [
-            { category: 'plates', description: 'Iespiedformas' }
+            { category: 'plates', description: 'Iespiedformas' },
+            { category: 'perforated paper', description: 'Perforētais papīrs' }
         ]
     });

@@ -13,6 +13,7 @@ import { map, tap, switchMap } from 'rxjs/operators';
 export class ModulePreferencesComponent implements OnInit, CanComponentDeactivate {
   @ViewChild('system') private system: PreferencesComponent;
   @ViewChild('kastes') private kastes: PreferencesComponent;
+  @ViewChild('jobs') private jobs: PreferencesComponent;
 
   constructor(
     private dialogService: ConfirmationDialogService,
@@ -32,11 +33,13 @@ export class ModulePreferencesComponent implements OnInit, CanComponentDeactivat
   onSaveAll() {
     this.kastes.onSave();
     this.system.onSave();
+    this.jobs.onSave();
   }
 
   onResetAll() {
     this.kastes.onReset();
     this.system.onReset();
+    this.jobs.onReset();
   }
 
 }

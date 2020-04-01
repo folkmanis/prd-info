@@ -1,0 +1,13 @@
+<h2>Darbu uzskaites iestatījumi</h2>
+<section *ngIf="productCategories">
+    <h4>Kategorijas</h4>
+    <mat-list>
+        <mat-list-item *ngFor="let item of productCategories">
+            {{item.description}}
+        </mat-list-item>
+    </mat-list>
+</section>
+<section>
+    <button mat-raised-button (click)="onSave()">Saglabāt</button>
+    <!-- <button mat-raised-button (click)="onReset()" [disabled]="preferencesForm.pristine">Atcelt</button> -->
+</section>

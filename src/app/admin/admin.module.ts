@@ -17,6 +17,7 @@ import { LogfileComponent } from './logfile/logfile.component';
 import { LogfileTableComponent } from './logfile/logfile-table/logfile-table.component';
 import { LogFilterComponent } from './logfile/log-filter/log-filter.component';
 import * as services from './services';
+import { JobsPreferencesComponent } from './module-preferences/jobs-preferences/jobs-preferences.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import * as services from './services';
     LogfileComponent,
     LogfileTableComponent,
     LogFilterComponent,
+    JobsPreferencesComponent,
   ],
   imports: [
     CommonModule,
