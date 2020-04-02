@@ -75,7 +75,7 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
   }
 
   onDelete(id: string) {
-    this.dialog.confirm('Tiešām dzēst lietotāju?').pipe(
+    this.dialog.confirmDelete().pipe(
       filter(resp => resp),
       switchMap(() => this.service.deleteCustomer(id)),
     ).subscribe(() =>

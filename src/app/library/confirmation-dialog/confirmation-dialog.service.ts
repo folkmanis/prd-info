@@ -30,4 +30,13 @@ export class ConfirmationDialogService {
     });
   }
 
+  confirmDelete(): Observable<boolean> {
+    return this.confirm('Tiešām vēlaties izdzēst?', {
+      data: {
+        yes: 'Jā, izdzēst',
+        no: 'Tomēr nē',
+      }
+    })
+  }
+
 }

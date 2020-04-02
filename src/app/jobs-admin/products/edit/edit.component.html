@@ -1,0 +1,36 @@
+<div *ngIf="product">
+    <!-- Produkta nosaukums (nelabojams) -->
+    <section>
+        <h2>{{product.name}}</h2>
+    </section>
+    <form [formGroup]="productForm">
+        <!-- Kategorija -->
+        <section>
+            <mat-form-field>
+                <mat-label>Kategorija</mat-label>
+                <mat-select formControlName="category">
+                    <mat-option *ngFor="let category of categories$ | async" [value]="category.category">
+                        {{category.description}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </section>
+        <!-- Apraksts -->
+        <section>
+            <mat-form-field class="input-element">
+                <mat-label>Apraksts</mat-label>
+                <textarea matInput matAutosize formControlName="description"></textarea>
+            </mat-form-field>
+        </section>
+    </form>
+        <!-- Pogas -->
+        <section>
+            <button mat-raised-button color="primary" [disabled]="!productForm.valid || productForm.pristine"
+                (click)="onSave()">Saglabāt izmaiņas</button>
+            <button mat-raised-button color="primary" [disabled]="productForm.pristine"
+                (click)="onRestore()">Atcelt izmaiņas</button>
+        </section>
+        <section>
+            <button mat-raised-button color="warn" (click)="onDelete(product._id)">Dzēst preci</button>
+        </section>    
+</div>

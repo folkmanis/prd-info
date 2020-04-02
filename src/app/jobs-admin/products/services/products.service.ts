@@ -1,0 +1,83 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { HttpOptions } from "src/app/library/http/http-options";
+import { Observable, merge, Subject, EMPTY, of, observable } from 'rxjs';
+import { map, pluck, filter, tap, switchMap, share, shareReplay } from 'rxjs/operators';
+import { Product, ProductResult, ProductNoPrices } from './product';
+import { LoginService } from 'src/app/login/login.service';
+import { JobsSettings } from 'src/app/library/classes/system-preferences-class';
+
+@Injectable({
+  providedIn: 'any'
+})
+export class ProductsService {
+  private readonly httpPath = '/data/products/';
+  constructor(
+    private http: HttpClient,
+    private loginService: LoginService,
+  ) { }
+
+  readonly categories$ = this.loginService.sysPreferences$.pipe(
+    map(sysPref => <JobsSettings>sysPref.get('jobs')),
+    map(js => js.productCategories),
+    share(),
+  );
+
+
+  private readonly _updateProducts$: Subject<Pick<Product, '_id' | 'name' | 'category'>[]> = new Subject();
+  readonly products$ = merge(this.getAllProducts(), this._updateProducts$).pipe(
+    share()
+  );
+
+  getProduct(id: string): Observable<Product> {
+    return this.http.get<ProductResult>(this.httpPath + id, new HttpOptions()).pipe(
+      map(res => res.product)
+    );
+  }
+
+  updateProduct(id: string, prod: ProductNoPrices): Observable<boolean> {
+    return this.http.post<ProductResult>(this.httpPath + id, prod, new HttpOptions()).pipe(
+      this.updateProducts(() => this.getAllProducts(), this._updateProducts$),
+      map(() => true),
+    );
+  }
+
+  deleteProduct(id: string): Observable<boolean> {
+    return this.http.delete<ProductResult>(this.httpPath + id).pipe(
+      this.updateProducts(() => this.getAllProducts(), this._updateProducts$),
+      map(() => true),
+    );
+  }
+
+  insertProduct(prod: ProductNoPrices): Observable<string> {
+    return this.http.put<ProductResult>(this.httpPath, prod, new HttpOptions()).pipe(
+      this.updateProducts(() => this.getAllProducts(), this._updateProducts$),
+      map(res => res.insertedId),
+    );
+  }
+
+  validate(prod: Partial<Product>): Observable<boolean> {
+    return this.http.get<boolean>(this.httpPath + 'validate', new HttpOptions(prod));
+  }
+
+  private getAllProducts(): Observable<Pick<Product, '_id' | 'name' | 'category'>[]> {
+    return this.http.get<ProductResult>(this.httpPath, new HttpOptions()).pipe(
+      filter(res => !res.error),
+      map(res => res.products),
+    );
+  }
+
+  private updateProducts<K>(updateFunc: () => Observable<K>, emiter: Subject<K>): (obs: Observable<ProductResult>) => Observable<ProductResult> {
+    let value: ProductResult;
+    return (obs: Observable<ProductResult>): Observable<ProductResult> => {
+      return obs.pipe(
+        filter(res => !res.error),
+        tap(val => value = val),
+        switchMap(updateFunc),
+        tap(upd => emiter.next(upd)),
+        map(() => value),
+      );
+    };
+  }
+
+}
