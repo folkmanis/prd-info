@@ -33,7 +33,7 @@ export class NewComponent implements OnInit, CanComponentDeactivate {
     name: [
       '',
       {
-        validators: Validators.required, 
+        validators: Validators.required,
         asyncValidators: this.nameValidator('name'),
       }
     ],
@@ -50,7 +50,7 @@ export class NewComponent implements OnInit, CanComponentDeactivate {
   onSave(): void {
     this.service.insertProduct(this.productForm.value).pipe(
       tap(() => this.productForm.markAsPristine()),
-      switchMap(id => this.router.navigate(['..','edit', { id }], { relativeTo: this.route })),
+      switchMap(id => this.router.navigate(['..', 'edit', { id }], { relativeTo: this.route })),
     ).subscribe();
   }
 
@@ -63,7 +63,7 @@ export class NewComponent implements OnInit, CanComponentDeactivate {
 
   private nameValidator(contr: string): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
-      return this.service.validate({ [contr]: control.value }).pipe(
+      return this.service.validate(contr, control.value).pipe(
         map(valid => valid ? null : { occupied: control.value })
       );
     };
