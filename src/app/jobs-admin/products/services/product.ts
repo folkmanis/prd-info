@@ -1,15 +1,18 @@
-export interface ProductResult {
+interface AppHttpResponseBase {
     [key: string]: any,
-    product?: Product,
-    products?: Product[],
-    insertedId?: string,
-    deletedCount?: number,
-    modifiedCount?: number,
     error: any,
     result?: {
         ok: number,
         n: number,
     };
+}
+
+export interface ProductResult extends AppHttpResponseBase {
+    product?: Product,
+    products?: Product[],
+    insertedId?: string,
+    deletedCount?: number,
+    modifiedCount?: number,
 }
 
 export type ProductCategories = 'plates';
