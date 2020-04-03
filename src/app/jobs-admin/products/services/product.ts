@@ -1,7 +1,10 @@
 export interface ProductResult {
+    [key: string]: any,
     product?: Product,
     products?: Product[],
     insertedId?: string,
+    deletedCount?: number,
+    modifiedCount?: number,
     error: any,
     result?: {
         ok: number,
