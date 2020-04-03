@@ -23,14 +23,14 @@ export class ProductsService {
     share(),
   );
 
-
   private readonly _updateProducts$: Subject<Pick<Product, '_id' | 'name' | 'category'>[]> = new Subject();
+
   readonly products$ = merge(this.getAllProducts(), this._updateProducts$).pipe(
     share()
   );
 
   getProduct(id: string): Observable<Product> {
-    return this.http.get<ProductResult>(this.httpPath + id, new HttpOptions()).pipe(
+    return this.http.get<ProductResult>(this.httpPath + id, new HttpOptions().cacheable()).pipe(
       map(res => res.product)
     );
   }
@@ -56,8 +56,11 @@ export class ProductsService {
     );
   }
 
-  validate(prod: Partial<Product>): Observable<boolean> {
-    return this.http.get<boolean>(this.httpPath + 'validate', new HttpOptions(prod));
+  validate(key: string, value: any): Observable<boolean> {
+    return this.http.get<ProductResult>(this.httpPath + 'validate/'+key, new HttpOptions().cacheable()).pipe(
+      pluck(key),
+      map((values: any[])=> !values.includes(value)),
+    );
   }
 
   private getAllProducts(): Observable<Pick<Product, '_id' | 'name' | 'category'>[]> {
