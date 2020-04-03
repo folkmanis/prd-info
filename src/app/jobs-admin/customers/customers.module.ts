@@ -18,8 +18,8 @@ import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/materi
   ],
   imports: [
     CommonModule,
-    CustomersRoutingModule,
     LibraryModule,
+    CustomersRoutingModule,
   ],
   providers: [
     CustomersService,

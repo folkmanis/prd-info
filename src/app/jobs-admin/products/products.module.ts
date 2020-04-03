@@ -14,8 +14,8 @@ import { NewComponent } from './new/new.component';
   declarations: [ProductsComponent, EditComponent, NewComponent],
   imports: [
     CommonModule,
-    ProductsRoutingModule,
     LibraryModule,
+    ProductsRoutingModule,
   ],
   providers: [
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },

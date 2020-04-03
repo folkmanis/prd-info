@@ -15,13 +15,14 @@ const routes: Routes = [
       }
     ]
   },
-  {
-    path: 'customers',
-    loadChildren: () => import('./customers/customers.module').then(mod => mod.CustomersModule)
-  },
-  { 
-    path: 'products', 
-    loadChildren: () => import('./products/products.module').then(m => m.ProductsModule) },
+  // {
+  //   path: 'customers',
+  //   loadChildren: () => import('./customers/customers.module').then(mod => mod.CustomersModule)
+  // },
+  // { 
+  //   path: 'products', 
+  //   loadChildren: () => import('./products/products.module').then(m => m.ProductsModule) 
+  // },
   {
     path: '**',
     component: JobsAdminComponent,
