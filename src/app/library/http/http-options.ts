@@ -26,4 +26,13 @@ export class HttpOptions {
         return this;
     }
 
+    setHeader(name: string, value: string | string[]): HttpOptions {
+        this.headers = this.headers.set(name, value);
+        return this;
+    }
+
+    cacheable(): HttpOptions {
+        return this.setHeader('Cache', 'Ok');
+    }
+
 }
