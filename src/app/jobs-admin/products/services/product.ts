@@ -13,6 +13,7 @@ export interface ProductResult extends AppHttpResponseBase {
     insertedId?: string,
     deletedCount?: number,
     modifiedCount?: number,
+    prices?: any[],
 }
 
 export type ProductCategories = 'plates';
@@ -23,10 +24,10 @@ export interface Product {
     name: string,
     description?: string,
     prices?: [
-        [
-            string, // customer
-            number, // price
-        ]
+        {
+            customer: string,
+            price: number,
+        }
     ];
 }
 
