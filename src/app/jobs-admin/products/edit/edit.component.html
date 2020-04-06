@@ -1,4 +1,4 @@
-<div *ngIf="product">
+<div *ngIf="product$ | async as product;">
     <!-- Produkta nosaukums (nelabojams) -->
     <section>
         <h2>{{product.name}}</h2>
@@ -22,15 +22,19 @@
                 <textarea matInput matAutosize formControlName="description"></textarea>
             </mat-form-field>
         </section>
-    </form>
-        <!-- Pogas -->
+        <!-- Cenu tabula -->
         <section>
-            <button mat-raised-button color="primary" [disabled]="!productForm.valid || productForm.pristine"
-                (click)="onSave()">Saglabāt izmaiņas</button>
-            <button mat-raised-button color="primary" [disabled]="productForm.pristine"
-                (click)="onRestore()">Atcelt izmaiņas</button>
+            <app-product-prices [prices]="productForm.value.prices" [customers]="customers$ | async" (priceChange)="onPriceChange($event)"></app-product-prices>
         </section>
-        <section>
-            <button mat-raised-button color="warn" (click)="onDelete(product._id)">Dzēst preci</button>
-        </section>    
+    </form>
+    <!-- Pogas -->
+    <section>
+        <button mat-raised-button color="primary" [disabled]="!productForm.valid || productForm.pristine"
+            (click)="onSave()">Saglabāt izmaiņas</button>
+        <button mat-raised-button color="primary" [disabled]="productForm.pristine" (click)="onRestore()">Atcelt
+            izmaiņas</button>
+    </section>
+    <section>
+        <button mat-raised-button color="warn" (click)="onDelete(product._id)">Dzēst preci</button>
+    </section>
 </div>

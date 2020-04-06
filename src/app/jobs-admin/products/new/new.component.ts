@@ -6,7 +6,7 @@ import { map, filter, tap, switchMap, debounceTime, takeUntil } from 'rxjs/opera
 import { isEqual, pick, omit, keys } from 'lodash';
 
 import { ProductsService } from '../services/products.service';
-import { Product } from '../services/product';
+import { Product } from "../../services/jobs-admin.interfaces";
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { LoginService } from 'src/app/login/login.service';

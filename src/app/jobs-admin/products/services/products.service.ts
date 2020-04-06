@@ -3,15 +3,19 @@ import { HttpClient } from '@angular/common/http';
 import { HttpOptions } from "src/app/library/http/http-options";
 import { Observable, merge, Subject, EMPTY, of, observable } from 'rxjs';
 import { map, pluck, filter, tap, switchMap, share, shareReplay } from 'rxjs/operators';
-import { Product, ProductResult, ProductNoPrices } from './product';
+import { ProductResult, ProductNoPrices } from './product';
+import { Product } from "../../services/jobs-admin.interfaces";
 import { LoginService } from 'src/app/login/login.service';
 import { JobsSettings } from 'src/app/library/classes/system-preferences-class';
+import { Customer } from '../../services/jobs-admin.interfaces';
 
 @Injectable({
   providedIn: 'any'
 })
 export class ProductsService {
   private readonly httpPath = '/data/products/';
+  private readonly httpCustomerPath = '/data/customers/';
+
   constructor(
     private http: HttpClient,
     private loginService: LoginService,
@@ -35,7 +39,7 @@ export class ProductsService {
     );
   }
 
-  updateProduct(id: string, prod: ProductNoPrices): Observable<boolean> {
+  updateProduct(id: string, prod: Partial<Product>): Observable<boolean> {
     return this.http.post<ProductResult>(this.httpPath + id, prod, new HttpOptions()).pipe(
       this.updateProducts(() => this.getAllProducts(), this._updateProducts$),
       map(() => true),
@@ -57,9 +61,16 @@ export class ProductsService {
   }
 
   validate(key: string, value: any): Observable<boolean> {
-    return this.http.get<ProductResult>(this.httpPath + 'validate/'+key, new HttpOptions().cacheable()).pipe(
+    return this.http.get<ProductResult>(this.httpPath + 'validate/' + key, new HttpOptions().cacheable()).pipe(
       pluck(key),
-      map((values: any[])=> !values.includes(value)),
+      map((values: any[]) => !values.includes(value)),
+    );
+  }
+
+  getCustomers(): Observable<Customer[]> {
+    return this.http.get<{ customers: Customer[]; }>(this.httpCustomerPath, new HttpOptions().cacheable()).pipe(
+      pluck('customers'),
+      tap(cust => console.log('get customers', cust))
     );
   }
 

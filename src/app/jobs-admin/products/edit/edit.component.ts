@@ -1,12 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
-import { map, filter, tap, switchMap, debounceTime, takeUntil } from 'rxjs/operators';
-import { isEqual, pick, omit, keys } from 'lodash';
+import { FormBuilder, FormGroup, AbstractControl } from '@angular/forms';
+import { Observable, Subscription, Subject, merge, of } from 'rxjs';
+import { map, filter, tap, switchMap, debounceTime, takeUntil, share } from 'rxjs/operators';
+import { isEqual, pick, omit, keys, cloneDeep } from 'lodash';
 
 import { ProductsService } from '../services/products.service';
-import { Product } from '../services/product';
+import { Product, ProductPrice, PriceChange } from "../services/product";
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { LoginService } from 'src/app/login/login.service';
@@ -30,34 +30,57 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
   private readonly productFormControls: { [key: string]: any; } = {
     category: [''],
     description: [''],
+    prices: [],
   };
   productForm: FormGroup = this.fb.group(this.productFormControls);
-
   readonly categories$ = this.service.categories$;
-  product: Product;
-  product$: Observable<Product> = this.route.paramMap.pipe(
+  private _id: string;
+  private changes$: Subject<Partial<Product> | undefined> = new Subject();
+
+  id$: Observable<string> = this.route.paramMap.pipe(
     map(paramMap => <string>paramMap.get('id')),
     filter(id => id && id.length === 24),
-    switchMap(id => this.service.getProduct(id)),
-    tap(prod => this.initForm(prod, this.productForm)),
-    tap(prod => this.product = prod),
+    tap(id => this._id = id),
   );
+
+  customers$ = this.service.getCustomers();
   subs = new Subscription();
 
+  product$: Observable<Product> = merge(this.id$,
+    this.changes$.pipe(
+      switchMap(chgs => chgs ? this.service.updateProduct(this._id, chgs) : of(true)),
+      filter(resp => resp),
+      map(() => this._id),
+    )
+  ).pipe(
+    switchMap(id => this.service.getProduct(id)),
+    tap(prod => {
+      this.productForm.reset(pick(prod, keys(this.productForm.value)), { emitEvent: false });
+      this.productForm.markAsPristine();
+    })
+  );
+
   ngOnInit(): void {
-    this.subs.add(this.product$.subscribe());
+    // this.subs.add(this.product$.subscribe());
   }
+
   ngOnDestroy(): void {
     this.subs.unsubscribe();
   }
 
+  onPriceChange(changes: PriceChange) {
+    if (changes.price === null) {
+      this.productForm.patchValue({
+        prices: (<ProductPrice[]>this.productForm.value.prices).filter(pr => pr.name !== changes.name)
+      });
+    }
+    // TODO
+    this.productForm.markAsDirty();
+    console.log(changes);
+  }
+
   onSave(): void {
-    this.service.updateProduct(this.product._id, this.productForm.value).pipe(
-      filter(resp => resp),
-      tap(()=> this.product = {...this.product, ...this.productForm.value}),
-      tap(() => this.productForm.markAsPristine()),
-    )
-      .subscribe();
+    this.changes$.next(this.productForm.value);
   }
 
   onDelete(id: string): void {
@@ -68,7 +91,7 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
   }
 
   onRestore(): void {
-    this.initForm(this.product, this.productForm);
+    this.changes$.next()
   }
 
   canDeactivate(): Observable<boolean> | boolean {
@@ -76,11 +99,6 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
       return true;
     }
     return this.dialog.discardChanges();
-  }
-
-  private initForm(prod: Product, form: FormGroup): void {
-    form.reset(undefined, { emitEvent: false });
-    form.patchValue(pick(prod, keys(form.value)), { emitEvent: false });
   }
 
 }

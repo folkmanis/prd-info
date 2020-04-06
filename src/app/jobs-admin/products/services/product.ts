@@ -1,19 +1,9 @@
-interface AppHttpResponseBase {
-    [key: string]: any,
-    error: any,
-    result?: {
-        ok: number,
-        n: number,
-    };
-}
+import { AppHttpResponseBase } from '../../services/jobs-admin.interfaces';
 
 export interface ProductResult extends AppHttpResponseBase {
     product?: Product,
     products?: Product[],
-    insertedId?: string,
-    deletedCount?: number,
-    modifiedCount?: number,
-    prices?: any[],
+    prices?: ProductPrice[],
 }
 
 export type ProductCategories = 'plates';
@@ -23,12 +13,14 @@ export interface Product {
     category: ProductCategories,
     name: string,
     description?: string,
-    prices?: [
-        {
-            customer: string,
-            price: number,
-        }
-    ];
+    prices?: ProductPrice[];
 }
 
-export type ProductNoPrices = Omit<Product, 'prices'>
+export interface ProductPrice {
+    name: string;
+    price: number;
+}
+
+export type ProductNoPrices = Omit<Product, 'prices'>;
+
+export interface PriceChange { name: string, price: number | undefined; }
