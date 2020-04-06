@@ -8,10 +8,11 @@ import { ProductsRoutingModule } from './products-routing.module';
 import { ProductsComponent } from './products.component';
 import { EditComponent } from './edit/edit.component';
 import { NewComponent } from './new/new.component';
+import { ProductPricesComponent } from './edit/product-prices/product-prices.component';
 
 
 @NgModule({
-  declarations: [ProductsComponent, EditComponent, NewComponent],
+  declarations: [ProductsComponent, EditComponent, NewComponent, ProductPricesComponent],
   imports: [
     CommonModule,
     LibraryModule,
