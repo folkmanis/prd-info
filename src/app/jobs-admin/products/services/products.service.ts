@@ -70,7 +70,6 @@ export class ProductsService {
   getCustomers(): Observable<Customer[]> {
     return this.http.get<{ customers: Customer[]; }>(this.httpCustomerPath, new HttpOptions().cacheable()).pipe(
       pluck('customers'),
-      tap(cust => console.log('get customers', cust))
     );
   }
 
