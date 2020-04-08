@@ -31,6 +31,9 @@ export class TaggedStringComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     for (const key in changes) {
+      if (!changes.hasOwnProperty(key)) {
+        continue;
+      }
       switch (key) {
         case 'text':
           this.text = changes[key].currentValue;

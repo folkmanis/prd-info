@@ -19,7 +19,7 @@ export class UploadService {
     private kastesPreferencesService: KastesPreferencesService,
     private pasutijumiService: PasutijumiService,
     private kastesHttpService: KastesHttpService,
-    ) { }
+  ) { }
 
   get adresesCsv$(): Observable<Array<any[]>> {
     return this.adresesCsv.data;
@@ -41,7 +41,7 @@ export class UploadService {
     };
   }
 
-   get adresesTotals(): Totals {
+  get adresesTotals(): Totals {
     return this.adresesBox.totals;
   }
   /**
@@ -53,7 +53,7 @@ export class UploadService {
   }
 
   joinAdresesCsvColumns(colMap: []) {
-    this.adresesCsv.joinColumns(colMap)
+    this.adresesCsv.joinColumns(colMap);
   }
 
   deleteCsvRows(selected: any[]) {
@@ -67,7 +67,7 @@ export class UploadService {
 
   savePasutijums(pasutijumsName: string): Observable<{ affectedRows: number; }> {
     /* Pievieno pasūtījuma nosaukumu datubāzei, saņem pasūtījuma id */
-    let affectedRows: number = 0;
+    let affectedRows = 0;
     let pasutijums: string;
     return this.pasutijumiService.addPasutijums(pasutijumsName).pipe(
       tap(pasId => pasutijums = pasId),

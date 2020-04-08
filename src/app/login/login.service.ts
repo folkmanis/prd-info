@@ -5,23 +5,23 @@
  * isLogin$ - vai ir pieslēgums
  * login() - mēģinājums pieslēgties
  * logout() - atslēgšanās
- * 
+ *
  * Klausās:
  * login()
  * logout()
- * 
- * 
+ *
+ *
  */
 
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, of, Subject, merge, ReplaySubject } from 'rxjs';
-import { map, tap, distinctUntilChanged, filter, switchMap, shareReplay, take, exhaustMap } from 'rxjs/operators';
+import { BehaviorSubject, merge, Observable, of, ReplaySubject, Subject } from 'rxjs';
+import { filter, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
+import { User } from 'src/app/login/user';
+import { DEFAULT_SYSTEM_PREFERENCES, SystemPreferences } from '../library/classes/system-preferences-class';
+import { UserModule } from '../library/classes/user-module-interface';
 import { USER_MODULES } from '../user-modules';
-import { UserModule } from "../library/classes/user-module-interface";
-import { SystemPreferences, ModuleSettings, DEFAULT_SYSTEM_PREFERENCES } from '../library/classes/system-preferences-class';
+import { Login, LoginHttpService } from './login-http.service';
 export { SystemSettings } from '../library/classes/system-preferences-class';
-import { LoginHttpService, User, Login } from './login-http.service';
-export { User, Login } from './login-http.service';
 
 @Injectable({
   providedIn: 'root'

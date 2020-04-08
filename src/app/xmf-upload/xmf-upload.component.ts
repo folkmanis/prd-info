@@ -66,7 +66,7 @@ export class XmfUploadComponent implements OnInit, OnDestroy {
   }
 
   private validateFile(fl: File): boolean {
-    const ext = fl.name.slice((Math.max(0, fl.name.lastIndexOf(".")) || Infinity) + 1);
+    const ext = fl.name.slice((Math.max(0, fl.name.lastIndexOf('.')) || Infinity) + 1);
     return ext === 'dbd';
   }
 

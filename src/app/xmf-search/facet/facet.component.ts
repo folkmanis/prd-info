@@ -1,4 +1,7 @@
-import { Component, ComponentFactory, ComponentFactoryResolver, ComponentRef, EventEmitter, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  Component, ComponentFactory, ComponentFactoryResolver, ComponentRef,
+  EventEmitter, OnDestroy, OnInit, ViewChild, ViewContainerRef
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { FacetFilter } from '../services/archive-search-class';
 import { ArchiveSearchService } from '../services/archive-search.service';

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/index';
 import { map } from 'rxjs/operators';
 import { RouteSelection } from 'src/app/library/find-select-route/find-select-route.module';
-import { User } from '../services/admin-http.service';
+import { User } from 'src/app/login/user';
 import { UsersService } from '../services/users.service';
 
 type UserForSelection = Pick<User, 'username' | 'name'> & { title: string, link: (string | { [key: string]: any; })[]; };
@@ -20,7 +20,7 @@ export class UsersComponent implements OnInit {
     private usersService: UsersService,
   ) { }
 
-fltr="us"
+  fltr = 'us';
 
   users$: Observable<UserForSelection[]> = this.usersService.users$.pipe(
     map(usrList =>

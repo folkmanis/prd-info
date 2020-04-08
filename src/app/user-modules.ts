@@ -21,7 +21,8 @@ export const USER_MODULES: UserModule[] = [
         ]
     },
     {
-        value: 'admin', name: 'Administrēšana', description: 'Sistēmas iestatījumi', route: 'admin', moduleClass: 'AdminModule', childMenu: [
+        value: 'admin', name: 'Administrēšana', description: 'Sistēmas iestatījumi',
+        route: 'admin', moduleClass: 'AdminModule', childMenu: [
             { name: 'Lietotāji', route: 'users', description: 'Sistēmas lietotāji: izveide, paroles maiņa, pieejamie moduļi' },
             { name: 'Sistēmas iestatījumi', route: 'module-preferences', description: 'Moduļu iestatījumi' },
             { name: 'Žurnāls', route: 'logfile', description: 'Sistēmas žurnāls (logfile)' },

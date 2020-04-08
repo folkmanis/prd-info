@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
-import { DataSource } from '@angular/cdk/collections';
-import { UserModule } from "../library/classes/user-module-interface";
+import { DataSource, CollectionViewer } from '@angular/cdk/collections';
+import { UserModule } from '../library/classes/user-module-interface';
 import { LoginService } from '../login/login.service';
 import { map, tap, share } from 'rxjs/operators';
 
@@ -26,9 +26,9 @@ export class MenuDataSource implements DataSource<SideMenuData> {
     /**
      * Datu struktūras obligātā funkcija. Parakstās uz lietotāja objektu
      * Mainoties lietotājam, mainās arī izvēlne
-     * @param collectionViewer 
+     * @param collectionViewer Parādāmais apgabals
      */
-    connect(): Observable<SideMenuData[]> {
+    connect(collectionViewer: CollectionViewer): Observable<SideMenuData[]> {
         return this.dataChange$;
     }
 

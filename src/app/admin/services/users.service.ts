@@ -1,9 +1,10 @@
-import { AdminHttpService, User } from './admin-http.service';
+import { AdminHttpService } from './admin-http.service';
+import { User } from 'src/app/login/user';
 import { Injectable } from '@angular/core';
 import { Observable, Subject, of, merge } from 'rxjs';
 import { map, tap, filter, switchMap, startWith } from 'rxjs/operators';
 import { USER_MODULES } from '../../user-modules';
-import { UserModule } from "../../library/classes/user-module-interface";
+import { UserModule } from '../../library/classes/user-module-interface';
 
 export { UserModule } from '../../library/classes/user-module-interface';
 
@@ -28,7 +29,12 @@ export class UsersService {
   );
   private _usersCached$: Subject<User[]> = new Subject();
   users$ = merge(this._usersHttp$, this._usersCached$);
-
+  /**
+   * Klientu saraksts
+   */
+  customers$: Observable<Customer[]> = this.httpService.getCustomersHttp().pipe(
+    map(customer => customer.map(cust => ({ name: cust || 'Nenoteikts', value: cust })))
+  );
   /**
    * Saņem lietotāja ierakstu no REST
    * @param username Lietotājvārds
@@ -36,12 +42,6 @@ export class UsersService {
   getUser(username: string): Observable<User> {
     return this.httpService.getUserHttp(username);
   }
-  /**
-   * Klientu saraksts
-   */
-  customers$: Observable<Customer[]> = this.httpService.getCustomersHttp().pipe(
-    map(customer => customer.map(cust => ({ name: cust || 'Nenoteikts', value: cust })))
-  );
   /**
    * Atjauno lietotāja iestatījumus, izņemot paroli
    * @param username Lietotājvārds

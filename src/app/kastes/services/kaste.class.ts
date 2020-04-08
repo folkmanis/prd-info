@@ -16,9 +16,9 @@ export interface Kaste {
 }
 
 export interface Totals {
-  total: number,
-  kastesRemain: number,
-  labelsRemain: number,
-  colorMap: Map<string, { total: number, style: { color: string; }; }>;
+  total: number;
+  kastesRemain: number;
+  labelsRemain: number;
+  colorMap: Map<string, { total: number; style: { color: string; }; }>;
 
 }

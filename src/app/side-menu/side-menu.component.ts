@@ -18,15 +18,15 @@ export class SideMenuComponent implements AfterViewInit, OnDestroy {
   ) { }
   treeControl = new NestedTreeControl<SideMenuData>(node => node.childMenu);
   dataSource = new MenuDataSource(this.loginService);
-  hasChild = (_: number, node: SideMenuData) => !!node.childMenu && node.childMenu.length > 0;
-
   private changeSubs: Subscription;
+
+  hasChild = (_: number, node: SideMenuData) => !!node.childMenu && node.childMenu.length > 0;
 
   ngAfterViewInit() {
     this.changeSubs = this.dataSource.dataChange$.pipe(
       tap(() => this.treeControl.dataNodes = this.dataSource.data),
       switchMap(() => this.loginService.sysPreferences$),
-      map(pref => <SystemSettings>pref.get('system')),
+      map(pref => pref.get('system') as SystemSettings),
       map(pref => pref && pref.menuExpandedByDefault),
       filter(expand => expand),
       tap(expand => expand && this.treeControl.expandAll()),

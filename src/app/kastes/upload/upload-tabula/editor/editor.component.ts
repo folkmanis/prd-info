@@ -20,9 +20,9 @@ export class EditorComponent implements OnInit {
   rowSums: number[] = [];
   colSums: Box = new Box();
 
-  constructor( 
+  constructor(
     private kastesPreferencesService: KastesPreferencesService,
-   ) { }
+  ) { }
 
   ngOnInit() {
     this.kastesPreferencesService.preferences.subscribe((pr) => this.prefs = pr);
@@ -49,7 +49,7 @@ export class EditorComponent implements OnInit {
     const boxGroup: any = {};
     for (const bKey of Object.keys(adrB)) {
       const box = adrB[bKey];
-      const gr: { [name: string]: FormControl } = {};
+      const gr: { [name: string]: FormControl; } = {};
       for (const cKey of Object.keys(box)) {
         gr[cKey] = new FormControl(box[cKey],
           {

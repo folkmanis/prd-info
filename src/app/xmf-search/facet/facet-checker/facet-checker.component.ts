@@ -14,7 +14,7 @@ export class FacetCheckerComponent implements OnInit {
   key: keyof ArchiveFacet;
   data: Count[];
   filterValue: EventEmitter<Array<number | string>> = new EventEmitter();
-  opened: boolean = true;
+  opened = true;
   emiterFn: (selected: Array<string | number> | undefined) => void;
 
   constructor() { }
@@ -29,7 +29,7 @@ export class FacetCheckerComponent implements OnInit {
   onSelect(event: MatSelectionListChange): void {
     if (!this.emiterFn) { return; }
     const selected = event.source.selectedOptions.selected;
-    const filter = selected.length ? selected.map((e) => <number | string>e.value) : undefined; // Ja nekas nav atzīmēts, tad vispār nav
+    const filter = selected.length ? selected.map((e) => e.value as number | string) : undefined; // Ja nekas nav atzīmēts, tad vispār nav
     this.emiterFn(filter);
   }
 

@@ -23,7 +23,7 @@ const COLUMNS = ['kods', 'adrese', 'yellow', 'rose', 'white'];
 })
 export class TabulaComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatTable) table: MatTable<Kaste>;
-  @Input() forLabels: boolean = false;
+  @Input() forLabels = false;
   selectedKaste: Kaste;
   preferences$: Observable<KastesPreferences> = this.preferencesService.preferences;
   displayedColumns: string[] = []; // = ['kods', 'adrese', 'yellow', 'rose', 'white', 'gatavs'];

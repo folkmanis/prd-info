@@ -1,18 +1,18 @@
 /**
  * Uztur sarakstu ar pakošanas sarakstu
- * 
+ *
  * Piedāvā:
  * kastes$ - multicast observable uz kastēm
  * totals$ - kopējie skaiti
  * volumes$ - apjomi [1,2,3,4,5...]
  * loading$ - ielādes process aktīvs
- * 
+ *
  * Klausās:
  * preferences.pasutijums - pārlādē visu pie pasūtījuma maiņas
  *     reaģē uz krāsu izmaiņām
  * apjoms$ - apjoma filtrs. kastes$ un totals$ reaģē uz apjoma filtru
- *    sākotnējā vērtība - "0" - nav filtre
- * 
+ *    sākotnējā vērtība - '0' - nav filtre
+ *
  * Funkcijas:
  * setGatavs - izmaina statusu gatavības laukam vienam ierakstam
  *    atjauno sarakstu uz servera, apstiprinājuma gadījumā izmaina vietējo sarakstu,
@@ -43,11 +43,17 @@ export class KastesService {
   apjoms$: BehaviorSubject<number> = new BehaviorSubject(0);
   loading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   volumes$: BehaviorSubject<number[]> = new BehaviorSubject([0]);
+
+  readonly totals$ = combineLatest([this.kastes$, this.kastesPreferencesService.preferences]).pipe(
+    takeUntil(this._unSubscr),
+    map(([kastes, pref]) => this.calcTotals(kastes, pref))
+  );
+
   /**
    * Pēc $apjoms filtrēts saraksts
    */
   get kastes$(): Observable<Kaste[]> {
-    return combineLatest(this.kastesAll$, this.apjoms$).pipe(
+    return combineLatest([this.kastesAll$, this.apjoms$]).pipe(
       takeUntil(this._unSubscr),
       map(([kast, apj]) => apj ? kast.filter(val => val.kastes.total === apj) : kast),
       share(),
@@ -90,11 +96,6 @@ export class KastesService {
     return this.apjoms$.value;
   }
 
-  readonly totals$ = combineLatest(this.kastes$, this.kastesPreferencesService.preferences).pipe(
-    takeUntil(this._unSubscr),
-    map(([kastes, pref]) => this.calcTotals(kastes, pref))
-  );
-
   private calcTotals(kastes: Kaste[], pref: KastesPreferences): Totals {
     const tot: Totals = {
       total: kastes.length,
@@ -104,12 +105,12 @@ export class KastesService {
     };
     const colorsPakas =
       kastes.reduce((total, curr) => {
-        curr.kastes.gatavs || Object.keys(total).forEach(key => total[key] += curr.kastes[key]);
+        const _ = curr.kastes.gatavs || Object.keys(total).forEach(key => total[key] += curr.kastes[key]);
         return total;
       }, { yellow: 0, rose: 0, white: 0 });
     for (const key of Object.keys(colorsPakas)) {
       tot.colorMap.set(key, { total: colorsPakas[key], style: { color: pref.colors[key] } });
-    };
+    }
     return tot;
   }
   /**

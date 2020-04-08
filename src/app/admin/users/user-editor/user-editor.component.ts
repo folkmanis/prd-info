@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { Router, ActivatedRoute, ParamMap } from "@angular/router";
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UsersService, Customer, UserModule } from '../../services/users.service';
-import { User } from '../../services/admin-http.service';
+import { User } from 'src/app/login/user';
 import { debounceTime, distinctUntilChanged, switchMap, filter, tap, map } from 'rxjs/operators';
 import { Subscription, Observable } from 'rxjs';
-import { PasswordChangeDialogComponent } from "./password-change-dialog/password-change-dialog.component";
-import { CanComponentDeactivate } from "../../../library/guards/can-deactivate.guard";
+import { PasswordChangeDialogComponent } from './password-change-dialog/password-change-dialog.component';
+import { CanComponentDeactivate } from '../../../library/guards/can-deactivate.guard';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 
 @Component({
@@ -40,7 +40,7 @@ export class UserEditorComponent implements OnInit, CanComponentDeactivate {
     private router: Router,
     private route: ActivatedRoute,
     private dialogService: ConfirmationDialogService,
-  ) {   }
+  ) { }
 
   customers$: Observable<Customer[]> = this.usersService.customers$;
 
@@ -63,7 +63,9 @@ export class UserEditorComponent implements OnInit, CanComponentDeactivate {
       filter(resp => resp),
       switchMap(() => this.usersService.deleteUser(this.user.username)),
     ).subscribe(resp => {
-      resp && this.snackBar.open(`Lietotājs ${this.user.username} likvidēts`, 'OK', { duration: 5000 });
+      if (resp) {
+        this.snackBar.open(`Lietotājs ${this.user.username} likvidēts`, 'OK', { duration: 5000 });
+      }
       this.router.navigate(['admin', 'users']);
     });
   }
@@ -84,15 +86,15 @@ export class UserEditorComponent implements OnInit, CanComponentDeactivate {
   }
 
   canDeactivate(): Observable<boolean> | boolean {
-    if(this.userForm.pristine) {
+    if (this.userForm.pristine) {
       return true;
     }
-      const data= {
-        yes: 'Jā, pamest!',
-        no: 'Nē, gaidīt!',
-      }
-    const prompt= 'Visas izmaiņas vēl nav saglabātas. Ja pametīsiet šo sadaļu, tad tās, iespējams, netiks saglabātas.';
-    return this.dialogService.confirm(prompt,{data})
+    const data = {
+      yes: 'Jā, pamest!',
+      no: 'Nē, gaidīt!',
+    };
+    const prompt = 'Visas izmaiņas vēl nav saglabātas. Ja pametīsiet šo sadaļu, tad tās, iespējams, netiks saglabātas.';
+    return this.dialogService.confirm(prompt, { data });
   }
 
   private setFormValues(usr: Partial<User> | null) {

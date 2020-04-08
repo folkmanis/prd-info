@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, EventEmitter } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { FormGroup, FormControl } from '@angular/forms';
-import { Kaste } from "../services/kaste.class";
+import { Kaste } from '../services/kaste.class';
 import { TabulaComponent } from '../tabula/tabula.component';
 import { filter, switchMap, map, tap, switchAll, mergeMap } from 'rxjs/operators';
 import { KastesPreferencesService } from '../services/kastes-preferences.service';
@@ -37,7 +37,7 @@ export class LabelsComponent implements OnInit {
 
     this.onSubmit$.pipe(
       map(form => +form.get('kods').value),
-      filter(kods => kods !== NaN),
+      filter(kods => !isNaN(kods)),
       tap(() => this.submitButton.disabled = true),
       mergeMap(kods => this.tabula.setLabel(kods)),
     ).subscribe(kaste => {

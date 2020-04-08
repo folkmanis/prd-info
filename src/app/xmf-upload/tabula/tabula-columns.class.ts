@@ -1,9 +1,9 @@
 import { XmfUploadProgress } from '../services/xmf-upload.class';
 
-type TabulaColumn = {
-    name: string,
-    displayName: string,
-    class: string,
+interface TabulaColumn {
+    name: string;
+    displayName: string;
+    class: string;
 }
 
 export const TABULA_COLUMNS: TabulaColumn[] = [

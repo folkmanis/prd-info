@@ -9,8 +9,8 @@ import { LogfileService, ValidDates } from '../../services/logfile.service';
 
 
 interface FormValues {
-  logLevel: number,
-  date: moment.Moment,
+  logLevel: number;
+  date: moment.Moment;
 }
 
 let validDates: ValidDates;
@@ -40,7 +40,7 @@ export class LogFilterComponent implements OnInit, OnDestroy, AfterViewInit {
 
   logLevels$: Observable<{ key: number, value: string; }[]> = this.loginService.sysPreferences$.pipe(
     map(pref => pref.get('system')),
-    map(pref => (<SystemSettings>pref).logLevels),
+    map(pref => (pref as SystemSettings).logLevels),
     map(levels => levels.sort((a, b) => a[0] - b[0])),
     map(levels => levels.map(level => ({ key: level[0], value: level[1] }))),
     tap(level => this.filterDefaults.logLevel = level.reduce((acc, curr) => curr.key > acc ? curr.key : acc, 0)),
@@ -79,7 +79,7 @@ export class LogFilterComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onDateShift(days: number): void {
-    let newDate = moment(this.dateControl.value).add(days, 'days');
+    const newDate = moment(this.dateControl.value).add(days, 'days');
     while (newDate.isBetween(validDates.min, validDates.max, 'date', '[]') && !this.isValiddate(newDate)) {
       newDate.add(days, 'days');
     }
@@ -105,11 +105,11 @@ export class LogFilterComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private formToReq(val: FormValues): GetLogEntriesParams {
-    return (<GetLogEntriesParams>{
+    return ({
       level: val.logLevel,
-      dateFrom: (<moment.Moment>val.date).startOf('day').toISOString(),
-      dateTo: (<moment.Moment>val.date).endOf('day').toISOString(),
-    });
+      dateFrom: (val.date as moment.Moment).startOf('day').toISOString(),
+      dateTo: (val.date as moment.Moment).endOf('day').toISOString(),
+    } as GetLogEntriesParams);
   }
 
 }

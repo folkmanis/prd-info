@@ -33,7 +33,7 @@ export class JobsPreferencesComponent implements OnInit, PreferencesComponent {
   }
 
   categories$ = this.moduleService.getModulePreferences<JobsSettings>('jobs').pipe(
-    map(sett => sett.productCategories ||  (<JobsSettings>DEFAULT_SYSTEM_PREFERENCES.get('jobs')).productCategories),
+    map(sett => sett.productCategories ||  (DEFAULT_SYSTEM_PREFERENCES.get('jobs') as JobsSettings).productCategories),
     tap(cat => this.productCategories = cat),
     tap(console.log),
   );

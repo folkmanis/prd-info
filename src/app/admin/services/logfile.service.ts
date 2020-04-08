@@ -4,7 +4,7 @@ import * as moment from 'moment';
 import { combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
 import { map, pluck, share, switchMap, tap } from 'rxjs/operators';
 import { SystemSettings } from '../../library/classes/system-preferences-class';
-import { HttpOptions } from "../../library/http/http-options";
+import { HttpOptions } from '../../library/http/http-options';
 import { LoginService } from '../../login/login.service';
 import { GetLogEntriesParams, LogData, LogDataHttp } from './logfile-record';
 
@@ -56,7 +56,7 @@ export class LogfileService {
   }
   /**
    * Datumi, kuros ir log ieraksti attiecīgajam min errorlevel
-   * @param params {level: minimālais errorlevel, start, end: sākuma un beigu datumi}
+   * @param params level: minimālais errorlevel, start, end: sākuma un beigu datumi
    */
   getDatesGroupsHttp(params: { level: number, start?: string, end?: string; }): Observable<ValidDates> {
     return this.http.get<{ data: { _id: string; }[]; }>(this.httpPathLogfile + 'dates-groups', new HttpOptions(params)).pipe(

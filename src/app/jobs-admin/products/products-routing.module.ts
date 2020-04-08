@@ -7,9 +7,9 @@ import { CanDeactivateGuard } from 'src/app/library/guards/can-deactivate.guard'
 import { NewComponent } from './new/new.component';
 
 const routes: Routes = [
-  { 
-    path: 'products', 
-    component: ProductsComponent ,
+  {
+    path: 'products',
+    component: ProductsComponent,
     children: [
       {
         path: 'edit',

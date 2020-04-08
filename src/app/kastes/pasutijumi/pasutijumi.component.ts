@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatTable } from '@angular/material/table';
 import { MatCheckboxChange } from '@angular/material/checkbox';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { ConfirmationDialogComponent } from "../../library/confirmation-dialog/confirmation-dialog.component";
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from '../../library/confirmation-dialog/confirmation-dialog.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { TabulaDatasource } from './tabula-datasource';
@@ -45,8 +45,9 @@ export class PasutijumiComponent implements OnInit, AfterViewInit {
     const dialogref = this.dialog.open(ConfirmationDialogComponent,
       {
         data: {
-          prompt: `Vai tiešām dzēst visus neaktīvos pasūtījumus 
-        un tiem atbilstošos pakošanas sarakstus?` }
+          prompt: `Vai tiešām dzēst visus neaktīvos pasūtījumus
+        un tiem atbilstošos pakošanas sarakstus?`
+        }
       });
     dialogref.afterClosed().pipe(
       filter(resp => resp),

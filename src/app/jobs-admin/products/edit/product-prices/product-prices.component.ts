@@ -20,7 +20,7 @@ export class ProductPricesComponent implements OnInit {
    * mainītais vai jaunais ieraksts
    * price === null, ja ieraksts dzēšams
    */
-  @Output() priceChange: EventEmitter<PriceChange> = new EventEmitter;
+  @Output() priceChange: EventEmitter<PriceChange> = new EventEmitter();
   @Input('customers') set _customers(_cust: Customer[]) {
     this._customers$.next(_cust);
   }
@@ -47,7 +47,7 @@ export class ProductPricesComponent implements OnInit {
   edit: ProductPrice | undefined;
   readonly prices$: BehaviorSubject<ProductPrice[]> = new BehaviorSubject([]);
   private readonly _customers$: BehaviorSubject<Customer[]> = new BehaviorSubject([]);
-  readonly customersFiltered$: Observable<Customer[]> = combineLatest(this._customers$, this.prices$).pipe(
+  readonly customersFiltered$: Observable<Customer[]> = combineLatest([this._customers$, this.prices$]).pipe(
     map(([customers, prices]) => customers.filter(cust => !prices.find(pr => pr.name === cust.CustomerName)))
   );
 

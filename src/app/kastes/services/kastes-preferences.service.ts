@@ -16,7 +16,7 @@ export class KastesPreferencesService {
   ) { }
 
   private sys$ = this.loginService.sysPreferences$.pipe(
-    map(sys => <SystemPreferences>sys.get('kastes')),
+    map(sys => sys.get('kastes') as SystemPreferences),
     filter(sys => !!sys),
   );
   private _usr$: Subject<UserPreferences> = new Subject();
@@ -26,7 +26,7 @@ export class KastesPreferencesService {
     );
 
   get preferences(): Observable<KastesPreferences> {
-    return combineLatest(this.sys$, this.usr$)
+    return combineLatest([this.sys$, this.usr$])
       .pipe(
         map(([sys, usr]) => ({ ...sys, ...usr })),
       );

@@ -6,7 +6,7 @@ describe('KastesPreferencesService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: KastesPreferencesService = TestBed.get(KastesPreferencesService);
+    const service: KastesPreferencesService = TestBed.inject(KastesPreferencesService);
     expect(service).toBeTruthy();
   });
 });

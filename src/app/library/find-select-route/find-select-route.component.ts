@@ -9,24 +9,26 @@ export interface RouteSelection {
 }
 
 @Component({
-  selector: 'find-select-route',
+  selector: 'app-find-select-route',
   templateUrl: './find-select-route.component.html',
   styleUrls: ['./find-select-route.component.css']
 })
 export class FindSelectRouteComponent implements OnInit, AfterViewInit, OnDestroy {
+  // tslint:disable-next-line: no-input-rename
   @Input('routes') private _routes$: Observable<RouteSelection[]>;
-  @Output('select') selected: EventEmitter<RouteSelection> = new EventEmitter();
+  // tslint:disable-next-line: no-output-native
+  @Output() select: EventEmitter<RouteSelection> = new EventEmitter();
   @Input('filter') set _setfilter(filter: string) {
     this._filter = filter;
     this.filterControl.setValue(filter);
   }
-  @Output('filterChange') filterChange = new EventEmitter<string>();
+  @Output() filterChange = new EventEmitter<string>();
 
   constructor() { }
 
   filterControl = new FormControl('');
   data$: Observable<RouteSelection[]>;
-  private _filter: string = '';
+  private _filter = '';
   private _filter$: Observable<string> = this.filterControl.valueChanges;
   private _subs: Subscription = new Subscription();
 
@@ -49,7 +51,7 @@ export class FindSelectRouteComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   onSelect(rte: RouteSelection): void {
-    this.selected.next(rte);
+    this.select.next(rte);
   }
 
 }

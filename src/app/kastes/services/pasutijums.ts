@@ -7,27 +7,27 @@ export interface Pasutijums {
     nodot: Date;
     irNodots: boolean;
 
-    komponenti: Komponents[],
+    komponenti: Komponents[];
 
     gatavi: {
-        color: string,
-        apjoms: number,
-    },
+        color: string;
+        apjoms: number;
+    };
 
     iepirkumi: {
-        color: string,
-        apjoms: number,
-        summa: number,
-    },
+        color: string;
+        apjoms: number;
+        summa: number;
+    };
 
     rekins: Rekins;
 }
 
 interface Komponents {
-    color: string,
-    apjoms: number,
+    color: string;
+    apjoms: number;
 }
 
 interface Rekins {
-    summa: number,
+    summa: number;
 }

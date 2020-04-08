@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, zip } from 'rxjs';
-import { HttpOptions } from "../../library/http/http-options";
+import { HttpOptions } from '../../library/http/http-options';
 import { KastesPreferences, UserPreferences, SystemPreferences } from './preferences';
 import { Pasutijums } from './pasutijums';
 import { Veikals } from './veikals';
@@ -11,8 +11,8 @@ import { tap, switchMap, map } from 'rxjs/operators';
 export interface CleanupResponse { deleted: { pasutijumi: number, veikali: number, }; }
 
 interface TotalsKastes {
-  totals: { total: number; }[],
-  kastes: Kaste[],
+  totals: { total: number; }[];
+  kastes: Kaste[];
 }
 
 @Injectable({
@@ -73,7 +73,7 @@ export class KastesHttpService {
     return this.http.get<T>(this.httpPathKastes + path, new HttpOptions(opt));
   }
   /**
-   * 
+   *
    * @param pasutijums Pasūtījuma id
    */
   getTotalsKastesHttp(pasutijums: string): Observable<TotalsKastes> {

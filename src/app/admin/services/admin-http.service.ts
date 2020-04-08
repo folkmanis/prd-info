@@ -1,15 +1,14 @@
-export { User, UserPreferences } from '/home/dev/prd-info-node/src/lib/user-class';
-import { User, UserPreferences } from '/home/dev/prd-info-node/src/lib/user-class';
-import { Injectable } from '@angular/core';
-import { Observable, combineLatest } from 'rxjs';
-import { map, pluck } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { HttpOptions } from "../../library/http/http-options";
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { User } from 'src/app/login/user';
 import { DbModulePreferences, ModuleSettings, SystemPreferences, SystemPreferencesGroups } from '../../library/classes/system-preferences-class';
+import { HttpOptions } from '../../library/http/http-options';
 
 export interface UserList {
-  count: number,
-  users: User[],
+  count: number;
+  users: User[];
 }
 
 interface UpdateResponse {
@@ -20,8 +19,6 @@ interface UpdateResponse {
 @Injectable()
 export class AdminHttpService {
   private httpPathUsers = '/data/users/';
-  /**   Klientu kodi ir arhīva datubāzē
-   * TODO izveidot klientu datubāzi uz    */
   private httpPathSearch = '/data/xmf-search/';
   private httpPathPreferences = '/data/preferences/';
 
@@ -58,7 +55,7 @@ export class AdminHttpService {
   }
 
   deleteUserHttp(username: string): Observable<boolean> {
-    return this.http.delete<UpdateResponse>(this.httpPathUsers + 'user', new HttpOptions({ username: username })).pipe(
+    return this.http.delete<UpdateResponse>(this.httpPathUsers + 'user', new HttpOptions({ username })).pipe(
       map(resp => resp.success)
     );
   }

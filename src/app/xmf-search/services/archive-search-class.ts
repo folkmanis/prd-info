@@ -15,20 +15,20 @@ export interface ArchiveRecord {
     }[];
 }
 
-export interface Count { _id: string, count: number, selected: boolean; };
+export interface Count { _id: string; count: number; selected: boolean; }
 
 export interface ArchiveFacet {
-    [key: string]: Count[],
-    customerName: Count[],
-    year: Count[],
-    month: Count[],
+    [key: string]: Count[];
+    customerName: Count[];
+    year: Count[];
+    month: Count[];
 }
 
 export interface FacetFilter {
-    [key: string]: Array<string | number>
-    customerName: string[],
-    year: number[],
-    month: number[],
+    [key: string]: Array<string | number>;
+    customerName: string[];
+    year: number[];
+    month: number[];
 }
 
 export interface SearchQuery {

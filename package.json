@@ -24,12 +24,13 @@
     "@angular/platform-browser-dynamic": "~9.0.2",
     "@angular/router": "~9.0.2",
     "@types/lodash.isequal": "^4.5.5",
+    "codelyzer": "^5.2.2",
     "lodash.isequal": "^4.5.0",
     "moment": "^2.24.0",
     "ng": "0.0.0",
     "rxjs": "^6.5.4",
     "tslib": "^1.10.0",
-    "tslint": "^6.0.0",
+    "tslint": "^6.1.1",
     "update": "^0.7.4",
     "zone.js": "~0.10.2"
   },
@@ -41,6 +42,7 @@
     "@types/jasminewd2": "~2.0.3",
     "jasmine-spec-reporter": "~4.2.1",
     "protractor": "^5.4.3",
+    "tslint-angular": "^3.0.2",
     "typescript": "~3.7.5"
   }
 }

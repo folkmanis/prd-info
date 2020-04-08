@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild, AfterContentInit, OnDestroy, AfterViewInit, NgZone } from '@angular/core';
-import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { ScrollDispatcher, CdkScrollable } from '@angular/cdk/scrolling';
 import { map, filter, switchMap, tap, startWith, debounceTime } from 'rxjs/operators';
 import { merge, Observable, Subscription, pipe } from 'rxjs/index';
@@ -7,6 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ArchiveSearchService } from '../services/archive-search.service';
 import { ArchiveRecord, SearchQuery } from '../services/archive-search-class';
+import { SearchData } from './search-data';
 
 @Component({
   selector: 'app-search-table',
@@ -24,9 +24,23 @@ export class SearchTableComponent implements OnInit, OnDestroy, AfterViewInit {
 
   query: SearchQuery;
   actions: string[] = [, 'Archive', 'Restore', 'Skip', 'Delete'];
-  search: string = '';
+  search = '';
   subs = new Subscription();
   data = new SearchData(this.service);
+  statuss$: Observable<string> = this.service.count$.pipe(
+    map(count => {
+      if (!count || count < 1) {
+        return 'Nav rezultātu';
+      } else {
+        const si = (count % 10 === 1 && count !== 11 ? 's' : 'i');
+        return `Atrast${si} ${count} ierakst${si}`;
+      }
+    })
+  );
+  // Scroll parametri
+  showScroll = false;
+  showScrollHeight = 300;
+  hideScrollHeight = 10;
 
   ngOnInit() {
     this.subs.add(
@@ -45,20 +59,6 @@ export class SearchTableComponent implements OnInit, OnDestroy, AfterViewInit {
     this.snack.open('Pārkopēts starpliktuvē: ' + val, 'OK', { duration: 3000 });
   }
 
-  statuss$: Observable<string> = this.service.count$.pipe(
-    map(count => {
-      if (!count || count < 1) {
-        return 'Nav rezultātu';
-      } else {
-        const si = (count % 10 === 1 && count !== 11 ? 's' : 'i');
-        return `Atrast${si} ${count} ierakst${si}`;
-      }
-    })
-  );
-
-  showScroll = false;
-  showScrollHeight = 300;
-  hideScrollHeight = 10;
   ngAfterViewInit() {
     this.content.elementScrolled().pipe(
       map(() => this.content.measureScrollOffset('top')),
@@ -76,21 +76,4 @@ export class SearchTableComponent implements OnInit, OnDestroy, AfterViewInit {
     this.content.scrollTo({ top: 0 });
   }
 
-}
-
-class SearchData extends DataSource<ArchiveRecord | undefined> {
-  constructor(private service: ArchiveSearchService) {
-    super();
-  }
-
-  connect(collectionViewer: CollectionViewer): Observable<(ArchiveRecord | undefined)[]> {
-    const range$ = collectionViewer.viewChange.pipe(
-      startWith({ start: 0, end: 99 }),
-      debounceTime(100),
-    );
-    return this.service.rangedData(range$);
-  }
-
-  disconnect() {
-  }
 }

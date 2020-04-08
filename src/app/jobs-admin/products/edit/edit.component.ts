@@ -6,7 +6,7 @@ import { map, filter, tap, switchMap, debounceTime, takeUntil, share } from 'rxj
 import { isEqual, pick, omit, keys, cloneDeep } from 'lodash';
 
 import { ProductsService } from '../services/products.service';
-import { Product, ProductPrice, PriceChange } from "../services/product";
+import { Product, ProductPrice, PriceChange } from '../services/product';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { ProductPricesComponent } from './product-prices/product-prices.component';
@@ -17,7 +17,7 @@ import { ProductPricesComponent } from './product-prices/product-prices.componen
   styleUrls: ['./edit.component.css']
 })
 export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate {
-@ViewChild(ProductPricesComponent) pricesComponent: ProductPricesComponent;
+  @ViewChild(ProductPricesComponent) pricesComponent: ProductPricesComponent;
 
   constructor(
     private router: Router,
@@ -34,13 +34,13 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
   };
   productForm: FormGroup = this.fb.group(this.productFormControls);
   get pricesForm(): AbstractControl { return this.productForm.get('prices'); }
-  
+
   readonly categories$ = this.service.categories$;
   private _id: string;
   private changes$: Subject<Partial<Product> | undefined> = new Subject();
 
   id$: Observable<string> = this.route.paramMap.pipe(
-    map(paramMap => <string>paramMap.get('id')),
+    map(paramMap => paramMap.get('id') as string),
     filter(id => id && id.length === 24),
     tap(id => this._id = id),
   );
@@ -69,7 +69,7 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
 
   onPriceChange(changes: PriceChange) {
     this.productForm.markAsDirty();
-    const prices = (<ProductPrice[]>this.productForm.value.prices) || [];
+    const prices = (this.productForm.value.prices as ProductPrice[]) || [];
     if (changes.price === null) {
       this.productForm.patchValue({
         prices: prices.filter(pr => pr.name !== changes.name)

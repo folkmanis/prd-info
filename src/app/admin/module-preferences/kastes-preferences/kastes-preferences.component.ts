@@ -8,15 +8,15 @@ import { Observable, of, Subject } from 'rxjs';
 import { PreferencesComponent } from '../preferences-component.class';
 
 interface Color {
-  hue: number,
-  saturation: number,
-  lightness: number,
+  hue: number;
+  saturation: number;
+  lightness: number;
 }
 
 interface Colors {
-  yellow: Color,
-  rose: Color,
-  white: Color,
+  yellow: Color;
+  rose: Color;
+  white: Color;
 }
 
 @Component({
@@ -50,7 +50,6 @@ export class KastesPreferencesComponent implements OnInit, OnDestroy, Preference
       tap(val => this.updateColors(val)),
       takeUntil(this.unsub),
     ).subscribe();
-      
   }
 
   ngOnDestroy(): void {

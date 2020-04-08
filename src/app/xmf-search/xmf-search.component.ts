@@ -27,10 +27,10 @@ export class XmfSearchComponent implements OnInit, OnDestroy {
     distinctUntilChanged(),
     shareReplay(1),
   );
-  isFacet$: Observable<boolean> = combineLatest(
+  isFacet$: Observable<boolean> = combineLatest([
     this.breakpointObserver.observe(Breakpoints.Handset),
     this.value$
-  ).pipe(
+  ]).pipe(
     map(([handset, val]) => !handset.matches)
   );
   facetHeight$: Observable<number> = this.viewport.change(200).pipe(

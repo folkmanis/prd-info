@@ -6,7 +6,7 @@ describe('ArchiveSearchService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: ArchiveSearchService = TestBed.get(ArchiveSearchService);
+    const service: ArchiveSearchService = TestBed.inject(ArchiveSearchService);
     expect(service).toBeTruthy();
   });
 });

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { HttpOptions } from "src/app/library/http/http-options";
+import { HttpOptions } from 'src/app/library/http/http-options';
 import { Observable, merge, Subject, EMPTY, of, observable } from 'rxjs';
 import { map, pluck, filter, tap, switchMap, share, shareReplay } from 'rxjs/operators';
 import { ProductResult, ProductNoPrices } from './product';
-import { Product } from "../../services/jobs-admin.interfaces";
+import { Product } from '../../services/jobs-admin.interfaces';
 import { LoginService } from 'src/app/login/login.service';
 import { JobsSettings } from 'src/app/library/classes/system-preferences-class';
 import { Customer } from '../../services/jobs-admin.interfaces';
@@ -22,7 +22,7 @@ export class ProductsService {
   ) { }
 
   readonly categories$ = this.loginService.sysPreferences$.pipe(
-    map(sysPref => <JobsSettings>sysPref.get('jobs')),
+    map(sysPref => sysPref.get('jobs') as JobsSettings),
     map(js => js.productCategories),
     share(),
   );
@@ -80,7 +80,10 @@ export class ProductsService {
     );
   }
 
-  private updateProducts<K>(updateFunc: () => Observable<K>, emiter: Subject<K>): (obs: Observable<ProductResult>) => Observable<ProductResult> {
+  private updateProducts<K>(
+    updateFunc: () => Observable<K>,
+    emiter: Subject<K>
+  ): (obs: Observable<ProductResult>) => Observable<ProductResult> {
     let value: ProductResult;
     return (obs: Observable<ProductResult>): Observable<ProductResult> => {
       return obs.pipe(

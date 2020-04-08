@@ -24,17 +24,15 @@ export class Login {
 interface LogoutResponse {
   logout: number;
 }
-import { User, UserPreferences } from '/home/dev/prd-info-node/src/lib/user-class';
-export { User, UserPreferences } from '/home/dev/prd-info-node/src/lib/user-class';
-
-
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
+import { User } from 'src/app/login/user';
+import { DbModulePreferences, ModuleSettings, SystemPreferences, SystemPreferencesGroups } from '../library/classes/system-preferences-class';
 import { HttpOptions } from '../library/http/http-options';
-import { SystemPreferences, DbModulePreferences, ModuleSettings, SystemPreferencesGroups } from '../library/classes/system-preferences-class';
+
+
 
 @Injectable({
   providedIn: 'root'

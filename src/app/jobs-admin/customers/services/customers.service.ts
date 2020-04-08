@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { HttpOptions } from "src/app/library/http/http-options";
+import { HttpOptions } from 'src/app/library/http/http-options';
 import { Observable, merge, Subject } from 'rxjs';
 import { map, pluck, filter, tap, switchMap, share, shareReplay } from 'rxjs/operators';
 import { Customer } from './customer';
 
 type CustomerPartial = Pick<Customer, '_id' | 'CustomerName' | 'code'>;
-interface Result { n: number, ok: number; };
+interface Result { n: number; ok: number; }
 interface NewCustomerResult {
-  insertedId: string,
+  insertedId: string;
   result: {
-    n: number,
+    n: number;
     ok: number;
-  },
+  };
   error: boolean;
 }
 
@@ -37,7 +37,7 @@ export class CustomersService {
   }
 
   getCustomerList(): Observable<CustomerPartial[]> {
-    return this.http.get<{ customers: CustomerPartial[]; }>(this.httpPath, new HttpOptions).pipe(
+    return this.http.get<{ customers: CustomerPartial[]; }>(this.httpPath, new HttpOptions()).pipe(
       pluck('customers')
     );
   }

@@ -8,14 +8,14 @@ export interface LogData extends LogDataHttp {
 }
 
 export interface LogRecordHttp {
-    level: number,
-    timestamp: Date,
-    info: string,
-    metadata: { [key: string]: any; },
+    level: number;
+    timestamp: Date;
+    info: string;
+    metadata: { [key: string]: any; };
 }
 
-export type LogRecord = LogRecordHttp & { 
-    levelVerb: string; 
+export type LogRecord = LogRecordHttp & {
+    levelVerb: string;
 };
 
 export type GetLogEntriesParams = Partial<{

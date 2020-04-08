@@ -7,12 +7,12 @@ export enum UPLOAD_STATE {
 }
 
 export interface XmfUploadProgress {
-    _id: string,
-    started: Date | string,
-    fileName: string,
-    fileSize: number,
-    username: string,
-    state: 'uploading' | 'parsing' | 'saving' | 'finished',
+    _id: string;
+    started: Date | string;
+    fileName: string;
+    fileSize: number;
+    username: string;
+    state: 'uploading' | 'parsing' | 'saving' | 'finished';
     count: {
         [key: string]: number,
         processed: number,
@@ -20,7 +20,7 @@ export interface XmfUploadProgress {
         upserted: number,
         lines: number,
     };
-    finished: Date | string,
+    finished: Date | string;
 }
 
 export type XmfUploadProgressTable = Partial<XmfUploadProgress>;
@@ -43,7 +43,7 @@ export const EMPTY_PROGRESS: XmfUploadProgressTable = {
 };
 
 export interface XmfUploadResponse {
-    id: string,
-    filename: string,
-    size: number,
+    id: string;
+    filename: string;
+    size: number;
 }
