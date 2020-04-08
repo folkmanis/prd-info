@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, AbstractControl } from '@angular/forms';
 import { Observable, Subscription, Subject, merge, of } from 'rxjs';
@@ -9,6 +9,7 @@ import { ProductsService } from '../services/products.service';
 import { Product, ProductPrice, PriceChange } from "../services/product";
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
+import { ProductPricesComponent } from './product-prices/product-prices.component';
 
 @Component({
   selector: 'app-edit',
@@ -16,6 +17,7 @@ import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/c
   styleUrls: ['./edit.component.css']
 })
 export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate {
+@ViewChild(ProductPricesComponent) pricesComponent: ProductPricesComponent;
 
   constructor(
     private router: Router,
@@ -100,7 +102,7 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
   }
 
   canDeactivate(): Observable<boolean> | boolean {
-    if (this.productForm.pristine) {
+    if (this.productForm.pristine && this.pricesComponent.canDeactivate()) {
       return true;
     } else {
       return this.dialog.discardChanges();

@@ -2,21 +2,14 @@
     width: 100%;
 }
 
-.row {
-    height: 56px;
-    display: flex;
+.cdk-column-action {
+    width: 80px;
 }
 
-.column {
-    flex: 1 1 auto;
+.cdk-column-price {
+    width: 100px;
 }
 
-.heading {
-    font-size: 12px;
-    font-weight: 500;
-    color: rgba(0, 0, 0, 0.50);
-    border-bottom-width: 1px;
-    border-bottom-style: solid;
-    border-bottom-color: rgba(0, 0, 0, .12);
-    text-align: left;
+.price {
+    width: 80px;
 }

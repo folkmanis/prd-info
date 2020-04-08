@@ -69,6 +69,13 @@ export class ProductPricesComponent implements OnInit {
     this.priceChange.next(this.priceForm.value);
   }
 
+  cancelEdit(): void {
+    this.edit = undefined;
+    const _prices = this.prices$.value;
+    // Izdzēš tukšos
+    this.prices$.next(_prices.filter(pr => pr.name));
+  }
+
   onEditRow(rw: ProductPrice): void {
     this.priceForm.setValue(pick(rw, ['name', 'price']));
     this.edit = rw;
@@ -76,6 +83,10 @@ export class ProductPricesComponent implements OnInit {
 
   onDeleteRow(row: ProductPrice): void {
     this.priceChange.next({ name: row.name, price: null });
+  }
+
+  canDeactivate(): boolean | Observable<boolean> {
+    return this.edit === undefined;
   }
 
 }
