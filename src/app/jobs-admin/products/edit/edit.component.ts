@@ -9,8 +9,6 @@ import { ProductsService } from '../services/products.service';
 import { Product, ProductPrice, PriceChange } from "../services/product";
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
-import { LoginService } from 'src/app/login/login.service';
-import { JobsSettings } from 'src/app/library/classes/system-preferences-class';
 
 @Component({
   selector: 'app-edit',
@@ -33,6 +31,8 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
     prices: [],
   };
   productForm: FormGroup = this.fb.group(this.productFormControls);
+  get pricesForm(): AbstractControl { return this.productForm.get('prices'); }
+  
   readonly categories$ = this.service.categories$;
   private _id: string;
   private changes$: Subject<Partial<Product> | undefined> = new Subject();
@@ -44,7 +44,6 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
   );
 
   customers$ = this.service.getCustomers();
-  subs = new Subscription();
 
   product$: Observable<Product> = merge(this.id$,
     this.changes$.pipe(
@@ -61,22 +60,28 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
   );
 
   ngOnInit(): void {
-    // this.subs.add(this.product$.subscribe());
   }
 
   ngOnDestroy(): void {
-    this.subs.unsubscribe();
   }
 
   onPriceChange(changes: PriceChange) {
+    this.productForm.markAsDirty();
+    const prices = (<ProductPrice[]>this.productForm.value.prices) || [];
     if (changes.price === null) {
       this.productForm.patchValue({
-        prices: (<ProductPrice[]>this.productForm.value.prices).filter(pr => pr.name !== changes.name)
+        prices: prices.filter(pr => pr.name !== changes.name)
       });
+      return;
     }
-    // TODO
-    this.productForm.markAsDirty();
-    console.log(changes);
+    const idx = prices.findIndex(pr => pr.name === changes.name);
+    if (idx === -1) {
+      this.pricesForm.setValue(prices.concat(changes));
+    } else {
+      const newPrices = [...prices];
+      newPrices[idx] = changes;
+      this.pricesForm.setValue(newPrices);
+    }
   }
 
   onSave(): void {
@@ -91,14 +96,15 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
   }
 
   onRestore(): void {
-    this.changes$.next()
+    this.changes$.next();
   }
 
   canDeactivate(): Observable<boolean> | boolean {
     if (this.productForm.pristine) {
       return true;
+    } else {
+      return this.dialog.discardChanges();
     }
-    return this.dialog.discardChanges();
   }
 
 }

@@ -24,15 +24,16 @@
         </section>
         <!-- Cenu tabula -->
         <section>
-            <app-product-prices [prices]="productForm.value.prices" [customers]="customers$ | async" (priceChange)="onPriceChange($event)"></app-product-prices>
+            <app-product-prices [prices]="pricesForm.value" [customers]="customers$ | async" (priceChange)="onPriceChange($event)"></app-product-prices>
         </section>
     </form>
     <!-- Pogas -->
     <section>
         <button mat-raised-button color="primary" [disabled]="!productForm.valid || productForm.pristine"
             (click)="onSave()">Saglabāt izmaiņas</button>
-        <button mat-raised-button color="primary" [disabled]="productForm.pristine" (click)="onRestore()">Atcelt
-            izmaiņas</button>
+        <button mat-raised-button color="primary" [disabled]="productForm.pristine" (click)="onRestore()">
+            Atcelt izmaiņas
+        </button>
     </section>
     <section>
         <button mat-raised-button color="warn" (click)="onDelete(product._id)">Dzēst preci</button>
