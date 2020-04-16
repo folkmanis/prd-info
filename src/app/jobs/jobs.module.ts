@@ -7,6 +7,7 @@ import { ProductsService, CustomersService } from './services';
 import { JobsComponent } from './jobs.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import { PlateJobModule } from './plate-job/plate-job.module';
+import { HTTP_INTERCEPTORS, HttpCacheService } from '../library/http';
 
 
 @NgModule({
@@ -20,6 +21,7 @@ import { PlateJobModule } from './plate-job/plate-job.module';
   providers: [
     ProductsService,
     CustomersService,
-  ]
+    { provide: HTTP_INTERCEPTORS, useClass: HttpCacheService },
+  ],
 })
 export class JobsModule { }
