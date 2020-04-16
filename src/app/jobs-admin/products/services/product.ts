@@ -2,9 +2,10 @@ import { AppHttpResponseBase } from 'src/app/library/http/http-response-base';
 
 export interface ProductResult extends AppHttpResponseBase {
     product?: Product;
-    products?: Product[];
+    products?: ProductPartial[];
     prices?: ProductPrice[];
 }
+export type ProductPartial = Pick<Product, '_id' | 'name' | 'category'>;
 
 export type ProductCategories = 'plates';
 

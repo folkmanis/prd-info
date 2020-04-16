@@ -1,3 +1,3 @@
-export { Customer } from '../customers/services/customer';
-export { Product } from '../products/services/product';
+export * from '../customers/services/customer';
+export * from '../products/services/product';
 

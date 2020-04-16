@@ -9,9 +9,7 @@ import { LoginService } from 'src/app/login/login.service';
 import { JobsSettings } from 'src/app/library/classes/system-preferences-class';
 import { Customer } from '../../services/jobs-admin.interfaces';
 
-@Injectable({
-  providedIn: 'any'
-})
+@Injectable()
 export class ProductsService {
   private readonly httpPath = '/data/products/';
   private readonly httpCustomerPath = '/data/customers/';

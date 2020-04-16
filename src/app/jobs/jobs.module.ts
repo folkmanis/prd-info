@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { LibraryModule } from '../library/library.module';
 
 import { JobsRoutingModule } from './jobs-routing.module';
+import { ProductsService, CustomersService } from './services';
 import { JobsComponent } from './jobs.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import { PlateJobModule } from './plate-job/plate-job.module';
@@ -15,6 +16,10 @@ import { PlateJobModule } from './plate-job/plate-job.module';
     LibraryModule,
     PlateJobModule,
     JobsRoutingModule,
+  ],
+  providers: [
+    ProductsService,
+    CustomersService,
   ]
 })
 export class JobsModule { }
