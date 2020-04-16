@@ -8,8 +8,6 @@ import { JobsAdminComponent } from './jobs-admin.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import { ProductsModule } from './products/products.module';
 import { CustomersModule } from './customers/customers.module';
-import { CacheInterceptorService } from './services/cache-interceptor.service';
-import { HttpCacheService } from './services/http-cache.service';
 
 @NgModule({
   declarations: [
@@ -23,9 +21,6 @@ import { HttpCacheService } from './services/http-cache.service';
     CustomersModule,
     JobsAdminRoutingModule,
   ],
-  providers: [
-    HttpCacheService,
-    { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptorService, multi: true, }
-  ]
+  providers: [  ],
 })
 export class JobsAdminModule { }
