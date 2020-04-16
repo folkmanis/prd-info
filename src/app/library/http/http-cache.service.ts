@@ -16,7 +16,9 @@ export interface CacheEntry {
 const MAX_CACHE_AGE = 30000;
 
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class HttpCacheService implements Cache {
 
   constructor() { }

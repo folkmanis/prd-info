@@ -12,7 +12,7 @@ import { LoginComponent } from './login/login.component';
 import { SideMenuComponent } from './side-menu/side-menu.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import { ErrorsService } from './library/errors/errors.service';
-import { HttpCacheService, CacheInterceptorService } from './library/http';
+import { CacheInterceptorService } from './library/http';
 
 import { registerLocaleData } from '@angular/common';
 import localeLv from '@angular/common/locales/lv';
@@ -35,7 +35,6 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
     LibraryModule,
   ],
   providers: [
-    HttpCacheService,
     { provide: LOCALE_ID, useValue: 'lv' },
     { provide: ErrorHandler, useClass: ErrorsService, },
     { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptorService, multi: true, },

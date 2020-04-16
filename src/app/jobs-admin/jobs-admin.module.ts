@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { LibraryModule } from 'src/app/library/library.module';
-
+import { HTTP_INTERCEPTORS, CacheInterceptorService } from 'src/app/library/http';
 import { JobsAdminRoutingModule } from './jobs-admin-routing.module';
 import { JobsAdminComponent } from './jobs-admin.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
@@ -21,6 +20,8 @@ import { CustomersModule } from './customers/customers.module';
     CustomersModule,
     JobsAdminRoutingModule,
   ],
-  providers: [  ],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptorService, multi: true, },
+  ],
 })
 export class JobsAdminModule { }
