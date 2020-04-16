@@ -4,14 +4,17 @@ import { LibraryModule } from '../library/library.module';
 
 import { JobsRoutingModule } from './jobs-routing.module';
 import { JobsComponent } from './jobs.component';
+import { MainMenuComponent } from './main-menu/main-menu.component';
+import { PlateJobModule } from './plate-job/plate-job.module';
 
 
 @NgModule({
-  declarations: [JobsComponent],
+  declarations: [JobsComponent, MainMenuComponent],
   imports: [
     CommonModule,
     LibraryModule,
-    JobsRoutingModule
+    PlateJobModule,
+    JobsRoutingModule,
   ]
 })
 export class JobsModule { }

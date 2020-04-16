@@ -1,4 +1,4 @@
-import { AppHttpResponseBase } from '../../services/jobs-admin.interfaces';
+import { AppHttpResponseBase } from 'src/app/library/http/http-response-base';
 
 export interface ProductResult extends AppHttpResponseBase {
     product?: Product;
