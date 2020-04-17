@@ -1,1 +1,10 @@
-<p>plate-job works!</p>
+<form [formGroup]="jobForm">
+    <mat-form-field>
+        <input type="text" matInput formControlName="customer" [matAutocomplete]="auto">
+    </mat-form-field>
+    <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let customer of customers$ | async" [value]="customer.CustomerName">
+            {{customer.CustomerName}}
+        </mat-option>
+    </mat-autocomplete>
+</form>

@@ -37,7 +37,7 @@ export class CustomersService {
   }
 
   getCustomerList(): Observable<CustomerPartial[]> {
-    return this.http.get<{ customers: CustomerPartial[]; }>(this.httpPath, new HttpOptions()).pipe(
+    return this.http.get<{ customers: CustomerPartial[]; }>(this.httpPath, new HttpOptions({ disabled: true })).pipe(
       pluck('customers')
     );
   }

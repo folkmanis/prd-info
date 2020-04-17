@@ -30,6 +30,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 
 import { LayoutModule } from '@angular/cdk/layout';
 import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -90,6 +91,7 @@ import { FocusedDirective } from './directives/focused.directive';
     MatPaginatorModule,
     MatDatepickerModule,
     MatTooltipModule,
+    MatAutocompleteModule,
     ScrollToTopModule,
     LayoutModule,
     ScrollingModule,
@@ -125,6 +127,7 @@ import { FocusedDirective } from './directives/focused.directive';
     MatPaginatorModule,
     MatDatepickerModule,
     MatTooltipModule,
+    MatAutocompleteModule,
     LayoutModule,
     ScrollToTopModule,
     CopyClipboardDirective,

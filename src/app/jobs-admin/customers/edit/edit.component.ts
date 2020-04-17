@@ -3,11 +3,19 @@ import { Observable, Subject, of } from 'rxjs';
 import { map, filter, tap, switchMap, debounceTime, takeUntil } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder, AbstractControl, AsyncValidatorFn } from '@angular/forms';
-import { isEqual } from 'lodash';
+import { isEqual, defaults, clone } from 'lodash';
 import { Customer } from '../services/customer';
 import { CustomersService } from '../services/customers.service';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
+
+const CUSTOMER_DEFAULTS = {
+  _id: '',
+  CustomerName: '',
+  code: '',
+  disabled: false,
+  description: '',
+};
 
 @Component({
   selector: 'app-edit',
@@ -46,8 +54,8 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
       map(paramMap => paramMap.get('id')),
       filter(id => !!id),
       switchMap(id => this.service.getCustomer(id)),
+      tap(cust => this.customer = clone(cust)),
       tap(this.updateForm(this.customerForm)),
-      tap(() => this.customer = this.customerForm.value),
     );
     this.customerForm.valueChanges.pipe(
       tap(val => isEqual(this.customer, val) && this.customerForm.markAsPristine()),
@@ -93,8 +101,9 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
   private updateForm(form: AbstractControl): (cust: Customer) => void {
     return (cust: Customer): void => {
       if (!cust) { return; }
+
       form.reset(undefined, { emitEvent: false });
-      form.patchValue(cust, { emitEvent: false });
+      form.patchValue(defaults(cust, CUSTOMER_DEFAULTS), { emitEvent: false });
     };
   }
 
