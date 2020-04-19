@@ -77,7 +77,7 @@ export class PlateJobEditorComponent implements OnInit {
   }
 
   private setFormValues(job: Job | undefined): void {
-    this.jobForm.reset({customer: ''});
+    this.jobForm.reset({ customer: '' });
     if (job) {
       console.log(job);
       this.jobForm.patchValue(job, { emitEvent: false });
