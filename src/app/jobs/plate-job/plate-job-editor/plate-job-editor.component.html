@@ -1,0 +1,43 @@
+<form [formGroup]="jobForm" (submit)="onSave()">
+    <!-- Klients -->
+    <section>
+        <mat-form-field>
+            <mat-label>Klients</mat-label>
+            <input type="text" matInput formControlName="customer" [matAutocomplete]="auto" appFocused>
+            <mat-error *ngIf="customerControl.hasError('noCustomer')">
+                {{customerControl.getError('noCustomer')}}
+            </mat-error>
+        </mat-form-field>
+        <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
+            <mat-option *ngFor="let customer of customers$ | async" [value]="customer.CustomerName">
+                {{customer.CustomerName}}
+            </mat-option>
+        </mat-autocomplete>
+    </section>
+    <!-- Darba nosaukums -->
+    <section>
+        <mat-form-field [style.width.px]="400">
+            <mat-label>Darba nosaukums</mat-label>
+            <input type="text" matInput formControlName="name">
+            <mat-error *ngIf="nameControl.hasError('required')">
+                Jānorāda obligāti
+            </mat-error>
+        </mat-form-field>
+    </section>
+    <section>
+        <mat-form-field [style.width.px]="400">
+            <mat-label>Darba apraksts</mat-label>
+            <textarea matInput formControlName="comment"></textarea>
+        </mat-form-field>
+        <!-- Papildus apraksts -->
+        <mat-form-field [style.width.px]="200" [style.marginLeft.px]="16">
+            <mat-label>Klienta darba numurs</mat-label>
+            <input matInput formControlName="customerJobId">
+        </mat-form-field>
+        <!-- Klienta darba numurs -->
+    </section>
+    <!-- Pogas -->
+    <section>
+        <button mat-raised-button color="primary" type="submit" [disabled]="!jobForm.dirty || !jobForm.valid">Saglabāt</button>
+    </section>
+</form>

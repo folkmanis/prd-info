@@ -8,6 +8,7 @@ export interface Job {
     name: string;
     customerJobId?: string;
     receivedDate: Date;
+    comment?: string;
     invoice?: {
         id: string;
         date: Date;
@@ -17,9 +18,10 @@ export interface Job {
         comment: string;
     }[];
 }
+export type JobPartial = Pick<Job, '_id' | 'receivedDate' | 'customerJobId' | 'name' | 'jobId' | 'customer'>;
 
 export interface JobResponse extends AppHttpResponseBase {
-    jobs?: Job[];
+    jobs?: JobPartial[];
     job?: Job;
 }
 

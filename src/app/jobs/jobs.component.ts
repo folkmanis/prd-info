@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 
 @Component({
-  template: `<router-outlet></router-outlet>`,
+  templateUrl: './jobs.component.html',
+  styleUrls: ['./jobs.component.css'],
 })
 export class JobsComponent {
 
