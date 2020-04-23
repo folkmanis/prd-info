@@ -2,10 +2,8 @@
     <!-- jobId -->
     <ng-container matColumnDef="jobId">
         <th mat-header-cell *matHeaderCellDef>ID</th>
-        <td mat-cell *matCellDef="let job;">
-            <a [routerLink]="['plate-job', {jobId: job.jobId}]">
+        <td mat-cell *matCellDef="let job;" [appCopyClipboard]="job.jobId">
                 {{job.jobId}}
-            </a>
         </td>
     </ng-container>
 
@@ -24,7 +22,11 @@
     <!-- 'name' -->
     <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>Nosaukums</th>
-        <td mat-cell *matCellDef="let job;">{{job.name}}</td>
+        <td mat-cell *matCellDef="let job;">
+            <a mat-button [routerLink]="['plate-job', {jobId: job.jobId}]">
+                {{job.name}}
+            </a>
+        </td>
     </ng-container>
 
     <!-- 'customerJobId' -->

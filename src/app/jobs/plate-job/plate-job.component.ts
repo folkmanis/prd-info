@@ -24,7 +24,7 @@ export class PlateJobComponent implements OnInit {
     map(param => param.get('jobId') as string | undefined),
     switchMap(jobId => jobId ? this.jobService.getJob(+jobId) : of(undefined)),
     tap(job => this.activeJob = job),
-    tap(job => console.log(job)),
+    // tap(job => console.log(job)),
     // filter(jobId => jobId !== undefined),
   );
 

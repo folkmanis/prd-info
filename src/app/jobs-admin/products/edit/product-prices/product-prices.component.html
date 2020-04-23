@@ -1,16 +1,16 @@
 <form [formGroup]="priceForm" (submit)="acceptEdit()">
     <table mat-table [dataSource]="prices$" class="full-width">
         <!-- Klients -->
-        <ng-container matColumnDef="name">
+        <ng-container matColumnDef="customerName">
             <th mat-header-cell *matHeaderCellDef>Klients</th>
             <td mat-cell *matCellDef="let customer;">
-                <div *ngIf="customer !== edit || customer.name; else nameEdit">
-                    {{customer.name}}
+                <div *ngIf="customer !== edit || customer.customerName; else nameEdit">
+                    {{customer.customerName}}
                 </div>
                 <ng-template #nameEdit>
                     <!-- Klients ar labošanu -->
                     <mat-form-field>
-                        <mat-select formControlName="name">
+                        <mat-select formControlName="customerName">
                             <mat-option *ngFor="let customer of customersFiltered$ | async"
                                 [value]="customer.CustomerName">
                                 {{customer.CustomerName}}</mat-option>

@@ -30,7 +30,7 @@ export class ProductPricesComponent implements OnInit {
   ) { }
 
   priceForm: FormGroup = this.fb.group({
-    name: [
+    customerName: [
       undefined,
       {
         validators: Validators.required,
@@ -48,17 +48,17 @@ export class ProductPricesComponent implements OnInit {
   readonly prices$: BehaviorSubject<ProductPrice[]> = new BehaviorSubject([]);
   private readonly _customers$: BehaviorSubject<Customer[]> = new BehaviorSubject([]);
   readonly customersFiltered$: Observable<Customer[]> = combineLatest([this._customers$, this.prices$]).pipe(
-    map(([customers, prices]) => customers.filter(cust => !prices.find(pr => pr.name === cust.CustomerName)))
+    map(([customers, prices]) => customers.filter(cust => !prices.find(pr => pr.customerName === cust.CustomerName)))
   );
 
   customers: Customer[];
-  columns = ['name', 'price', 'action'];
+  columns = ['customerName', 'price', 'action'];
 
   ngOnInit(): void {
   }
 
   onAppendPrice(): void {
-    this.edit = { name: null, price: null };
+    this.edit = { customerName: null, price: null };
     this.priceForm.setValue(this.edit);
     const _prices = this.prices$.value.concat(this.edit);
     this.prices$.next(_prices);
@@ -73,16 +73,16 @@ export class ProductPricesComponent implements OnInit {
     this.edit = undefined;
     const _prices = this.prices$.value;
     // Izdzēš tukšos
-    this.prices$.next(_prices.filter(pr => pr.name));
+    this.prices$.next(_prices.filter(pr => pr.customerName));
   }
 
   onEditRow(rw: ProductPrice): void {
-    this.priceForm.setValue(pick(rw, ['name', 'price']));
+    this.priceForm.setValue(pick(rw, ['customerName', 'price']));
     this.edit = rw;
   }
 
   onDeleteRow(row: ProductPrice): void {
-    this.priceChange.next({ name: row.name, price: null });
+    this.priceChange.next({ customerName: row.customerName, price: null });
   }
 
   canDeactivate(): boolean | Observable<boolean> {

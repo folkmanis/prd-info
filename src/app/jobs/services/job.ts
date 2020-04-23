@@ -13,10 +13,7 @@ export interface Job {
         id: string;
         date: Date;
     };
-    products?: Pick<Product, 'name'> & {
-        price: number;
-        comment: string;
-    }[];
+    products?: JobProduct[];
 }
 export type JobPartial = Pick<Job, '_id' | 'receivedDate' | 'customerJobId' | 'name' | 'jobId' | 'customer'>;
 
@@ -24,6 +21,12 @@ export interface JobResponse extends AppHttpResponseBase {
     jobs?: JobPartial[];
     job?: Job;
 }
+
+export type JobProduct = Pick<Product, 'name'> & {
+    price: number;
+    count: number;
+    comment: string;
+};
 
 export interface JobQueryFilter {
     fromDate?: Date;

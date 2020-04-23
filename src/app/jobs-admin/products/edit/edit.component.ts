@@ -72,11 +72,11 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
     const prices = (this.productForm.value.prices as ProductPrice[]) || [];
     if (changes.price === null) {
       this.productForm.patchValue({
-        prices: prices.filter(pr => pr.name !== changes.name)
+        prices: prices.filter(pr => pr.customerName !== changes.customerName)
       });
       return;
     }
-    const idx = prices.findIndex(pr => pr.name === changes.name);
+    const idx = prices.findIndex(pr => pr.customerName === changes.customerName);
     if (idx === -1) {
       this.pricesForm.setValue(prices.concat(changes));
     } else {

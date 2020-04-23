@@ -13,7 +13,7 @@ export class JobListComponent implements OnInit {
   ) { }
 
   dataSource$ = this.jobService.jobs$;
-  displayedColumns: string[] = ['jobId', 'customer', 'receivedDate', 'name', 'customerJobId'];
+  displayedColumns: string[] = ['jobId', 'customer', 'name', 'receivedDate', 'customerJobId'];
 
   ngOnInit(): void {
   }

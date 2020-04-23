@@ -11,6 +11,7 @@ import { HTTP_INTERCEPTORS, CacheInterceptorService } from '../library/http';
 import { JobListComponent } from './job-list/job-list.component';
 import { PlateJobComponent } from './plate-job/plate-job.component';
 import { PlateJobEditorComponent } from './plate-job/plate-job-editor/plate-job-editor.component';
+import { ProductsEditorComponent } from './plate-job/products-editor/products-editor.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { PlateJobEditorComponent } from './plate-job/plate-job-editor/plate-job-
     JobListComponent,
     PlateJobComponent,
     PlateJobEditorComponent,
+    ProductsEditorComponent,
   ],
   imports: [
     CommonModule,
