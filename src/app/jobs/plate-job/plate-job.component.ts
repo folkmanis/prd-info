@@ -17,6 +17,7 @@ export class PlateJobComponent implements OnInit {
   private activeJob: Job | undefined;
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private jobService: JobService,
   ) { }
 
@@ -25,7 +26,6 @@ export class PlateJobComponent implements OnInit {
     switchMap(jobId => jobId ? this.jobService.getJob(+jobId) : of(undefined)),
     tap(job => this.activeJob = job),
     // tap(job => console.log(job)),
-    // filter(jobId => jobId !== undefined),
   );
 
   ngOnInit(): void {
@@ -33,10 +33,18 @@ export class PlateJobComponent implements OnInit {
 
   onjobUpdate(event: Partial<Job>) {
     if (this.activeJob) {
-      this.jobService.updateJob({ ...this.activeJob, ...event }).subscribe(console.log);
+      this.jobService.updateJob({ ...this.activeJob, ...event }).pipe(
+        tap(() => this.navigateJob(this.activeJob.jobId)),
+      ).subscribe();
     } else {
-      this.jobService.newJob(event).subscribe(console.log);
+      this.jobService.newJob(event).pipe(
+        tap(job => this.navigateJob(job.jobId)),
+      ).subscribe();
     }
+  }
+
+  private navigateJob(id: number): void {
+    this.router.navigate(['jobs', 'plate-job', { jobId: id }]);
   }
 
 }

@@ -1,8 +1,9 @@
-import { Component} from '@angular/core';
+import { Component } from '@angular/core';
 import { LoginService } from 'src/app/login/login.service';
 
 @Component({
-  template: `<app-card-menu [modules]='modules$'></app-card-menu>`,
+  templateUrl: './main-menu.component.html',
+  styleUrls: ['./main-menu.component.css'],
 })
 export class MainMenuComponent {
 

@@ -5,6 +5,9 @@
         <td mat-cell *matCellDef="let prod;">
             <mat-form-field>
                 <input matInput type="text" [formControl]="prod.get('name')" [matAutocomplete]="auto">
+                <mat-error *ngIf="prod.get('name').hasError('invalidProduct')">
+                    {{prod.get('name').getError('invalidProduct')}}
+                </mat-error>
             </mat-form-field>
         </td>
         <td mat-footer-cell *matFooterCellDef [colSpan]="5">Kopā</td>
@@ -36,7 +39,7 @@
     <ng-container matColumnDef="total">
         <th mat-header-cell *matHeaderCellDef>Summa</th>
         <td mat-cell *matCellDef="let prod;">
-            {{prod.value.count * prod.value.price}}
+            {{prod.value.count * prod.value.price | currency}}
         </td>
     </ng-container>
     <!-- Dzēšanas poga -->
@@ -59,7 +62,7 @@
     <tr mat-footer-row *matFooterRowDef="['name', 'buttons']"></tr>
 </table>
 
-<mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
+<mat-autocomplete #auto="matAutocomplete">
     <mat-option *ngFor="let product of products$ | async" [value]="product.productName">
         {{product.productName}}
     </mat-option>

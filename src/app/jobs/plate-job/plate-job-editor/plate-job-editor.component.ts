@@ -23,7 +23,6 @@ export class PlateJobEditorComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private customersService: CustomersService,
-    private productsService: ProductsService,
   ) { }
 
   job: Job | undefined;
@@ -66,6 +65,10 @@ export class PlateJobEditorComponent implements OnInit {
     this.jobChanges.next(this.jobForm.value);
   }
 
+  onProducts(productsForm: FormArray) {
+    this.jobForm.setControl('products', productsForm);
+  }
+
   private filterCustomer([customers, value]: [CustomerPartial[], string]): CustomerPartial[] {
     const filterValue: string = value.toLowerCase();
     return customers.filter(state => state.CustomerName.toLowerCase().indexOf(filterValue) === 0);
@@ -84,29 +87,9 @@ export class PlateJobEditorComponent implements OnInit {
 
   private setFormValues(job: Job | undefined): void {
     this.jobForm.reset({ customer: '' });
-    this.jobForm.setControl('products', this.setProductForm(job));
     if (job) {
       this.jobForm.patchValue(job, { emitEvent: false });
-    } else {
-      setTimeout(() => this.customerInput.focus(), 0);
     }
-  }
-
-  private setProductForm(job: Job): FormArray {
-    const productsForm: FormGroup[] = [];
-    if (job && job.products) {
-      for (const product of job.products) {
-        productsForm.push(
-          this.fb.group({
-            name: [product.name],
-            price: [product.price || ''],
-            count: [product.count || 0],
-            comment: [product.comment],
-          })
-        );
-      }
-    }
-    return this.fb.array(productsForm);
   }
 
 }

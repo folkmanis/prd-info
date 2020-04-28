@@ -1,36 +1,37 @@
-import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, OnDestroy, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, Validators, FormGroup, AbstractControl } from '@angular/forms';
-import { MatTable } from '@angular/material/table';
-import { Observable, of, Subject, merge, combineLatest } from 'rxjs';
-import { tap, map, switchMap, takeUntil, filter } from 'rxjs/operators';
+import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, OnDestroy, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
+import { FormArray, FormBuilder, Validators, FormGroup, AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
+import { Observable, of, Subject, ReplaySubject, merge, combineLatest } from 'rxjs';
+import { tap, map, switchMap, takeUntil, filter, shareReplay, share, take } from 'rxjs/operators';
 import { ProductsService } from '../../services';
 import { Product, CustomerProduct } from '../../services/product';
 import { JobProduct } from '../../services/job';
+
+interface ProductFormValues {
+  name: string;
+  price: number | null;
+  count: number;
+  comment: string | null;
+}
 
 @Component({
   selector: 'app-products-editor',
   templateUrl: './products-editor.component.html',
   styleUrls: ['./products-editor.component.css']
 })
-export class ProductsEditorComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild(MatTable) table: MatTable<FormGroup>;
-  @Input('productForm') set _form(_frm: FormArray) {
-    this.productForm = _frm;
-    this.startProducts$.next(_frm);
-  }
-  @Input() set customer(_c: string) {
-    this.customer$.next(_c);
-  }
-  @Output() productsChange: EventEmitter<JobProduct[]> = new EventEmitter();
+export class ProductsEditorComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
+  // tslint:disable-next-line: no-input-rename
+  @Input('productsFormArray') private _productsForm: FormArray;
+  @Input() products: JobProduct[];
+  @Input() customer: string;
 
   constructor(
     private productsService: ProductsService,
     private fb: FormBuilder,
   ) { }
+
   readonly displayedColumns: string[] = ['name', 'count', 'price', 'total', 'comment', 'buttons'];
 
-  customer$: Subject<string> = new Subject();
-
+  customer$: ReplaySubject<string> = new ReplaySubject(1);
   products$: Observable<CustomerProduct[]> = this.customer$.pipe(
     filter(customer => customer && customer.length > 0),
     switchMap(customer => this.productsService.productsCustomer(customer)),
@@ -38,51 +39,126 @@ export class ProductsEditorComponent implements OnInit, AfterViewInit, OnDestroy
 
   addProduct$: Subject<void> = new Subject();
   removeProduct$: Subject<number> = new Subject();
-  startProducts$: Subject<FormArray> = new Subject();
-  productForm = this.fb.array([]);
+  private readonly productsForm$: ReplaySubject<FormArray> = new ReplaySubject(1);
 
   unsub: Subject<void> = new Subject();
 
   productsData$: Observable<FormGroup[]> = merge(
     this.addProduct$.pipe(
-      map(() => this.addProduct()),
+      map(() => this.addNewProduct()),
     ),
     this.removeProduct$.pipe(
       map(idx => this.removeProduct(idx)),
     ),
-    this.startProducts$
+    this.productsForm$
   )
     .pipe(
       map(formArr => (formArr.controls as FormGroup[])),
     );
 
   ngOnInit(): void {
+    this._productsForm?.valueChanges.pipe(
+      switchMap(this.defaultProductPrice(this._productsForm, this.products$)),
+      takeUntil(this.unsub),
+    )
+      .subscribe();
+  }
+  // TODO remove if unused
+  ngAfterViewInit(): void {
   }
 
-  ngAfterViewInit(): void {
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.products) {
+      const products: JobProduct[] = changes.products.currentValue;
+      this.setProductForm(products);
+      this.productsForm$.next(this._productsForm);
+    }
+    if (changes.customer) {
+      const customer: string = changes.customer.currentValue;
+      this.customer$.next(customer);
+    }
   }
 
   ngOnDestroy(): void {
     this.unsub.next();
   }
 
-  private addProduct(): FormArray {
-    this.productForm.push(
-      this.fb.group({
-        name: [],
-        price: [],
-        comment: [],
-        count: [],
-      })
-    );
-    return this.productForm;
+  private addNewProduct(): FormArray {
+    this._productsForm.push(this.addProductToFormGroup());
+    return this._productsForm;
   }
 
   private removeProduct(idx: number): FormArray {
-    this.productForm.removeAt(idx);
-    this.productForm.markAsDirty();
-    return this.productForm;
+    this._productsForm.removeAt(idx);
+    this._productsForm.markAsDirty();
+    return this._productsForm;
   }
 
+  private setProductForm(products: JobProduct[] | null): FormArray {
+    this._productsForm.clear();
+    for (const product of products || []) {
+      this._productsForm.push(this.addProductToFormGroup(product));
+    }
+    return this._productsForm;
+  }
 
+  private addProductToFormGroup(product?: Partial<JobProduct>): FormGroup {
+    return this.fb.group({
+      name: [
+        product?.name,
+        {
+          validators: [Validators.required],
+          asyncValidators: [this.productAsyncValidatorFn(this.products$)],
+        }
+      ],
+      price: [
+        product?.price,
+        {
+          validators: [Validators.min(0)],
+        }
+      ],
+      count: [
+        product?.count || 0,
+        {
+          validators: [Validators.min(0)],
+        }
+      ],
+      comment: [product?.comment],
+    });
+  }
+
+  private productAsyncValidatorFn(prod$: Observable<CustomerProduct[]>): AsyncValidatorFn {
+    return (control: AbstractControl): null | Observable<ValidationErrors | null> =>
+      prod$.pipe(
+        map(products => products.some(product => product.productName === control.value) ? null : { invalidProduct: 'Prece nav atrasta katalogā' }),
+        take(1),
+      );
+  }
+
+  private defaultProductPrice(
+    frm: FormArray,
+    prod$: Observable<CustomerProduct[]>
+  ): (values: ProductFormValues[]) => Observable<ProductFormValues[]> {
+
+    let prevValues: ProductFormValues[] | undefined;
+    return (values: ProductFormValues[]) => {
+      return prod$.pipe(
+        tap(products => {
+          values.forEach((val, idx) => {
+            // Ja nav pareizs preces nosaukums
+            if (!frm.at(idx).get('name')?.valid) {
+              return;
+            }
+            // Cenas nav vispār VAI mainās preces nosaukums
+            if (val.price === null || !(prevValues && prevValues.length === values.length && val.name === prevValues[idx].name)) {
+              frm.at(idx).get('price').setValue(products.find(product => product.productName === val.name)?.price, { emitEvent: false });
+            }
+          });
+
+        }),
+        tap(() => prevValues = values),
+        map(() => values)
+      );
+    };
+  }
 }

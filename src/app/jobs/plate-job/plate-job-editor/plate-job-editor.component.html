@@ -1,7 +1,7 @@
 <h2>
     {{job ? job.jobId : 'Jauns darbs'}}
 </h2>
-<form [formGroup]="jobForm" (submit)="onSave()">
+<form [formGroup]="jobForm">
     <!-- Klients -->
     <section>
         <mat-form-field>
@@ -40,12 +40,12 @@
         </mat-form-field>
     </section>
     <!-- Preces apakšforma -->
-    <section>
-        <app-products-editor [productForm]="productsControl" [customer]="customerControl.value"></app-products-editor>
+    <section *ngIf="customerControl.valid || job?.products.length > 0">
+        <app-products-editor [productsFormArray]="productsControl" [products]="job?.products" [customer]="customerControl.value"></app-products-editor>
     </section>
     <!-- Pogas -->
     <section>
-        <button mat-raised-button color="primary" type="submit"
+        <button mat-raised-button color="primary" (click)="onSave()"
             [disabled]="!jobForm.dirty || !jobForm.valid">Saglabāt</button>
     </section>
 </form>

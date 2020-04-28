@@ -1,3 +1,37 @@
 .full-width {
     width: 100%;
 }
+
+.cdk-column-buttons {
+    width: 48px;
+    color: rgba(0, 0, 0, .8);
+}
+
+.cdk-column-jobId {
+    width: 80px;
+}
+
+td.cdk-column-jobId {
+    font-weight: bold;
+    color: rgba(0, 0, 0, .6);
+}
+
+td.cdk-column-jobId:hover {
+    cursor: copy;
+}
+
+td.cdk-column-name:hover {
+    cursor: copy;
+}
+
+.cdk-column-receivedDate {
+    width: 90px;
+}
+
+tr.mat-row {
+    height: 40px;
+}
+
+.cdk-column-customer {
+    width: 130px;
+}
