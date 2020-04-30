@@ -1,1 +1,1 @@
-<app-plate-job-editor (jobChanges)="onjobUpdate($event)" [job]="loadedJob$ | async"></app-plate-job-editor>
+<app-plate-job-editor *ngIf="loadedJob$ | async as loadedJob;" (jobChanges)="onjobUpdate($event)" [job]="loadedJob"></app-plate-job-editor>

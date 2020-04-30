@@ -14,16 +14,16 @@ import { Job } from '../services/job';
 })
 export class PlateJobComponent implements OnInit {
 
-  private activeJob: Job | undefined;
+  private activeJob: Partial<Job>;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private jobService: JobService,
   ) { }
 
-  loadedJob$: Observable<Job | undefined> = this.route.paramMap.pipe(
+  loadedJob$: Observable<Partial<Job>> = this.route.paramMap.pipe(
     map(param => param.get('jobId') as string | undefined),
-    switchMap(jobId => jobId ? this.jobService.getJob(+jobId) : of(undefined)),
+    switchMap(jobId => jobId ? this.jobService.getJob(+jobId) : of({ jobId: undefined })),
     tap(job => this.activeJob = job),
     // tap(job => console.log(job)),
   );
@@ -32,7 +32,7 @@ export class PlateJobComponent implements OnInit {
   }
 
   onjobUpdate(event: Partial<Job>) {
-    if (this.activeJob) {
+    if (this.activeJob.jobId) {
       this.jobService.updateJob({ ...this.activeJob, ...event }).pipe(
         tap(() => this.navigateJob(this.activeJob.jobId)),
       ).subscribe();

@@ -1,7 +1,7 @@
 <h2>
     {{job ? job.jobId : 'Jauns darbs'}}
 </h2>
-<form [formGroup]="jobForm">
+<form *ngIf="job" [formGroup]="jobForm">
     <!-- Klients -->
     <section>
         <mat-form-field>
@@ -40,7 +40,7 @@
         </mat-form-field>
     </section>
     <!-- Preces apakšforma -->
-    <section *ngIf="customerControl.valid || job?.products.length > 0">
+    <section *ngIf="customerControl.valid || job.products?.length > 0">
         <app-products-editor [productsFormArray]="productsControl" [products]="job?.products" [customer]="customerControl.value"></app-products-editor>
     </section>
     <!-- Pogas -->

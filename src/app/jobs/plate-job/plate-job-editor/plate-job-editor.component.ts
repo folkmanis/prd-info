@@ -14,7 +14,7 @@ import { Job, JobProduct } from '../../services/job';
 })
 export class PlateJobEditorComponent implements OnInit {
   @ViewChild('customerInput', { read: MatInput, static: true }) customerInput: MatInput;
-  @Input('job') set activeJob(_job: Job | undefined) {
+  @Input('job') set activeJob(_job: Partial<Job>) {
     this.job = _job;
     this.setFormValues(_job);
   }
@@ -25,7 +25,7 @@ export class PlateJobEditorComponent implements OnInit {
     private customersService: CustomersService,
   ) { }
 
-  job: Job | undefined;
+  job: Partial<Job>;
   jobForm = this.fb.group({
     customer: [
       '',
@@ -85,11 +85,9 @@ export class PlateJobEditorComponent implements OnInit {
     };
   }
 
-  private setFormValues(job: Job | undefined): void {
+  private setFormValues(job: Partial<Job>): void {
     this.jobForm.reset({ customer: '' });
-    if (job) {
-      this.jobForm.patchValue(job, { emitEvent: false });
-    }
+    this.jobForm.patchValue(job, { emitEvent: false });
   }
 
 }
