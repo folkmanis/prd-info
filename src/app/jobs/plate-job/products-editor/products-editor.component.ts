@@ -3,8 +3,7 @@ import { FormArray, FormBuilder, Validators, FormGroup, AbstractControl, AsyncVa
 import { Observable, of, Subject, ReplaySubject, merge, combineLatest } from 'rxjs';
 import { tap, map, switchMap, takeUntil, filter, shareReplay, share, take } from 'rxjs/operators';
 import { ProductsService } from '../../services';
-import { Product, CustomerProduct } from '../../services/product';
-import { JobProduct } from '../../services/job';
+import { Product, CustomerProduct, JobProduct } from '../../interfaces';
 
 interface ProductFormValues {
   name: string;

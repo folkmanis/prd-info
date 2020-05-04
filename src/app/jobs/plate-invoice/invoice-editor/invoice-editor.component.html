@@ -1,0 +1,23 @@
+<form [formGroup]="invoiceForm">
+    <section>
+        <mat-form-field>
+            <mat-label>Klienta nosaukums</mat-label>
+            <mat-select formControlName="customerId">
+                <mat-option *ngFor="let customer of customers$ | async" [value]="customer.CustomerName">
+                    {{customer.CustomerName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </section>
+    <!-- Aprēķina izveide un saņemšana -->
+    <section>
+        <button mat-raised-button (click)="onCreateInvoice()">
+            Izveidot aprēķinu
+        </button>
+    </section>
+    <!-- Darbu atlase -->
+    <section>
+        <app-job-selection-table [jobs]="jobs$ | async">
+        </app-job-selection-table>
+    </section>
+</form>

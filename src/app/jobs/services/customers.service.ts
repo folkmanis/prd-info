@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpOptions } from 'src/app/library/http/http-options';
-import { Customer, CustomerResponse, CustomerPartial } from './customer';
+import { Customer, CustomerResponse, CustomerPartial } from '../interfaces';
 import { Observable } from 'rxjs';
 import { pluck } from 'rxjs/operators';
 
@@ -13,6 +13,7 @@ export class CustomersService {
     private http: HttpClient,
   ) { }
 
+  /** klientu saraksts */
   get customers$(): Observable<CustomerPartial[]> {
     return this.http.get<CustomerResponse>(this.httpPath, new HttpOptions().cacheable())
       .pipe(

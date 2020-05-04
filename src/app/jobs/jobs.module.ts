@@ -12,6 +12,10 @@ import { JobListComponent } from './job-list/job-list.component';
 import { PlateJobComponent } from './plate-job/plate-job.component';
 import { PlateJobEditorComponent } from './plate-job/plate-job-editor/plate-job-editor.component';
 import { ProductsEditorComponent } from './plate-job/products-editor/products-editor.component';
+import { PlateInvoiceComponent } from './plate-invoice/plate-invoice.component';
+import { InvoiceEditorComponent } from './plate-invoice/invoice-editor/invoice-editor.component';
+import { JobSelectionTableComponent } from './plate-invoice/job-selection-table/job-selection-table.component';
+import { NewInvoiceComponent } from './plate-invoice/new-invoice/new-invoice.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +25,10 @@ import { ProductsEditorComponent } from './plate-job/products-editor/products-ed
     PlateJobComponent,
     PlateJobEditorComponent,
     ProductsEditorComponent,
+    PlateInvoiceComponent,
+    InvoiceEditorComponent,
+    JobSelectionTableComponent,
+    NewInvoiceComponent,
   ],
   imports: [
     CommonModule,

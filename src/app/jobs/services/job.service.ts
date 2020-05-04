@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpOptions } from 'src/app/library/http/http-options';
-import { Job, JobResponse, JobPartial, JobQueryFilter } from './job';
+import { Job, JobResponse, JobPartial, JobQueryFilter, Invoice, InvoiceResponse } from '../interfaces';
 import { Observable, of, Subject, combineLatest, ReplaySubject, BehaviorSubject } from 'rxjs';
-import { map, tap, startWith, switchMap } from 'rxjs/operators';
+import { map, tap, startWith, switchMap, share, pluck } from 'rxjs/operators';
 
 @Injectable()
 export class JobService {
@@ -21,7 +21,8 @@ export class JobService {
     this.filter$,
     this.updateJobs$.pipe(startWith('')),
   ]).pipe(
-    switchMap(([filter]) => this.getJobList(filter))
+    switchMap(([filter]) => this.getJobList(filter)),
+    share(),
   );
 
   newJob(job: Partial<Job>): Observable<Job> {
@@ -46,6 +47,19 @@ export class JobService {
   getJob(jobId: number): Observable<Job | undefined> {
     return this.http.get<JobResponse>(this.httpPath + jobId, new HttpOptions().cacheable()).pipe(
       map(resp => resp.job)
+    );
+  }
+
+  getJobs(params: JobQueryFilter): Observable<JobPartial[]> {
+    return this.http.get<JobResponse>(this.httpPath, new HttpOptions(params)).pipe(
+      pluck('jobs'),
+    );
+  }
+
+  createInvoice(params: { selectedJobs: JobPartial[], customerId: string; }): Observable<string> {
+    return this.http.post<InvoiceResponse>(this.httpPath + 'invoice', params, new HttpOptions()).pipe(
+      tap(resp => console.log(resp)),
+      pluck('insertedId')
     );
   }
 
