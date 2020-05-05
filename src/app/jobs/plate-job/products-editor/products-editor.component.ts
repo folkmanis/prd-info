@@ -34,6 +34,7 @@ export class ProductsEditorComponent implements OnInit, AfterViewInit, OnDestroy
   products$: Observable<CustomerProduct[]> = this.customer$.pipe(
     filter(customer => customer && customer.length > 0),
     switchMap(customer => this.productsService.productsCustomer(customer)),
+    shareReplay(1),
   );
 
   addProduct$: Subject<void> = new Subject();

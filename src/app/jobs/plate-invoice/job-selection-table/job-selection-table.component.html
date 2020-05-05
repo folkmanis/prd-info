@@ -3,12 +3,13 @@
     <ng-container matColumnDef="selected">
         <th mat-header-cell *matHeaderCellDef>
             <mat-checkbox [checked]="selector.hasValue() && isAllSelected()"
-                [indeterminate]="selector.hasValue() && !isAllSelected()" (change)="$event ? toggleAll() : null">
+                [indeterminate]="selector.hasValue() && !isAllSelected()" (change)="$event ? toggleAll() : null"
+                [disabled]="!jobIdSet.size">
             </mat-checkbox>
         </th>
         <td mat-cell *matCellDef="let job;">
-            <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selector.toggle(job) : null"
-                [checked]="selector.isSelected(job)">
+            <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selector.toggle(job.jobId) : null"
+                [checked]="selector.isSelected(job.jobId)">
             </mat-checkbox>
         </td>
     </ng-container>
@@ -30,7 +31,43 @@
             {{job.name}}
         </td>
     </ng-container>
+    <!-- Prece -->
+    <ng-container matColumnDef="productName">
+        <th mat-header-cell *matHeaderCellDef>
+            Izstrādājums
+        </th>
+        <td mat-cell *matCellDef="let job;">
+            {{job.products.name}}
+        </td>
+    </ng-container>
+    <!-- Skaits -->
+    <ng-container matColumnDef="count">
+        <th mat-header-cell *matHeaderCellDef>
+            Skaits
+        </th>
+        <td mat-cell *matCellDef="let job;">
+            {{job.products.count}}
+        </td>
+    </ng-container>
+    <!-- Cena -->
+    <ng-container matColumnDef="price">
+        <th mat-header-cell *matHeaderCellDef>
+            Cena
+        </th>
+        <td mat-cell *matCellDef="let job;">
+            {{job.products.price | currency}}
+        </td>
+    </ng-container>
+    <!-- Summa -->
+    <ng-container matColumnDef="total">
+        <th mat-header-cell *matHeaderCellDef>
+            Kopā
+        </th>
+        <td mat-cell *matCellDef="let job;">
+            {{(job.products.price * job.products.count) | currency}}
+        </td>
+    </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let job; columns: displayedColumns;" (click)="selector.toggle(job)"></tr>
+    <tr mat-row *matRowDef="let job; columns: displayedColumns;" (click)="selector.toggle(job.jobId)"></tr>
 </table>

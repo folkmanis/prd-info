@@ -1,56 +1,70 @@
 import { Component, OnInit, Input, EventEmitter, Output, OnDestroy, AfterViewInit } from '@angular/core';
 import { FormArray, FormControl } from '@angular/forms';
-import { Observable, BehaviorSubject, Subject, combineLatest } from 'rxjs';
+import { Subscription, Observable, BehaviorSubject, Subject, combineLatest } from 'rxjs';
 import { map, tap, takeUntil, shareReplay } from 'rxjs/operators';
 import { SelectionModel } from '@angular/cdk/collections';
 import { JobService, CustomersService } from '../../services';
 import { CustomerPartial, JobPartial, JobProduct } from '../../interfaces';
+
+const TABLE_COLUMNS = ['jobId', 'name', 'productName', 'count', 'price', 'total'];
 
 @Component({
   selector: 'app-job-selection-table',
   templateUrl: './job-selection-table.component.html',
   styleUrls: ['./job-selection-table.component.css']
 })
-export class JobSelectionTableComponent implements OnInit, OnDestroy, AfterViewInit {
+export class JobSelectionTableComponent implements OnInit, OnDestroy {
   @Input('jobs') set _jobs(jobs: JobPartial[]) {
-    this.selector.clear();
-    this.jobs$.next(jobs);
-    if (jobs?.length) {
-      this.selector.select(...jobs);
+    if (jobs !== null) {
+      this.setNewJobList(jobs);
     }
   }
-  @Input() disabled: boolean;
-  @Output() selected = new EventEmitter<JobPartial[]>();
+  @Input('disabled') set _disabled(disabled: boolean) {
+    this.displayedColumns = disabled === false ? this.columnsWithSelection() : TABLE_COLUMNS;
+  }
+  @Output() selected = new EventEmitter<number[]>();
 
-  selector = new SelectionModel<JobPartial>(true, []);
-  private readonly _unsubs = new Subject<void>();
+  selector = new SelectionModel<number>(true, []);
+  private readonly _subscription = new Subscription();
+  jobIdSet: Set<number> = new Set();
 
   constructor() { }
 
-  displayedColumns: string[] = ['selected', 'jobId', 'name'];
+  displayedColumns: string[] = this.columnsWithSelection();
   jobs$: BehaviorSubject<JobPartial[]> = new BehaviorSubject([]);
 
   ngOnInit(): void {
-    this.selector.changed.pipe(
-      map(() => this.selector.selected), // map(job => job.jobId)),
-      tap(sel => console.log('jobs selected', this.selector.selected)),
-      takeUntil(this._unsubs),
+    const subs = this.selector.changed.pipe(
+      map(() => this.selector.selected),
     ).subscribe(this.selected);
-  }
-
-  ngAfterViewInit(): void {
+    this._subscription.add(subs);
   }
 
   ngOnDestroy() {
-    this._unsubs.next();
+    this._subscription.unsubscribe();
   }
 
   isAllSelected(): boolean {
-    return this.selector.selected.length === this.jobs$.value.length;
+    return this.selector.selected.length === this.jobIdSet.size;
   }
 
   toggleAll() {
-    this.isAllSelected() ? this.selector.clear() : this.selector.select(...this.jobs$.value);
+    this.isAllSelected() ? this.selector.clear() : this.selectAll(...this.jobIdSet);
+  }
+
+  selectAll(...jobs: number[]): void {
+    this.selector.select(...jobs);
+  }
+
+  private setNewJobList(jobs: JobPartial[]): void {
+    this.selector.clear();
+    this.jobs$.next(jobs);
+    this.jobIdSet = new Set(jobs.map(job => job.jobId));
+    this.selectAll(...this.jobIdSet);
+  }
+
+  private columnsWithSelection(): string[] {
+    return ['selected'].concat(TABLE_COLUMNS);
   }
 
 }

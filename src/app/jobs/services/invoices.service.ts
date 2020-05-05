@@ -5,12 +5,13 @@ import { Observable, merge, Subject, BehaviorSubject, EMPTY, of, observable } fr
 import { map, pluck, filter, tap, switchMap, share, shareReplay } from 'rxjs/operators';
 
 import { JobService } from './job.service';
-import { Invoice, InvoiceResponse, JobPartial, JobQueryFilter } from '../interfaces';
+import { Invoice, InvoiceResponse, JobPartial, JobQueryFilter, ProductTotals } from '../interfaces';
 
 @Injectable()
 export class InvoicesService {
   private readonly httpPath = '/data/invoices/';
-  readonly filter$ = new Subject<JobQueryFilter>();
+  filter$ = new Subject<JobQueryFilter>();
+  totalsFilter$ = new Subject<number[]>();
 
   constructor(
     private http: HttpClient,
@@ -22,10 +23,21 @@ export class InvoicesService {
     share(),
   );
 
-  createInvoice(params: { selectedJobs: number[], customerId: string; }): Observable<string> {
+  totals$: Observable<ProductTotals[]> = this.totalsFilter$.pipe(
+    switchMap(f => this.getTotalsHttp(f)),
+    share(),
+  );
+
+  createInvoice(params: { selectedJobs: number[], customerId: string; }): Observable<Invoice> {
     return this.http.post<InvoiceResponse>(this.httpPath, params, new HttpOptions()).pipe(
       tap(resp => console.log(resp)),
-      pluck('insertedId')
+      pluck('invoice')
+    );
+  }
+
+  private getTotalsHttp(jobsId: number[]): Observable<ProductTotals[]> {
+    return this.http.get<InvoiceResponse>(this.httpPath + 'totals', new HttpOptions({ jobsId })).pipe(
+      pluck('totals'),
     );
   }
 

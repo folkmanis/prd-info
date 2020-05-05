@@ -22,4 +22,11 @@ export interface InvoiceProduct {
 export interface InvoiceResponse extends AppHttpResponseBase {
     invoices?: Invoice[];
     invoice?: Invoice;
+    totals?: ProductTotals[];
+}
+
+export interface ProductTotals {
+    _id: string;
+    count: number;
+    total: number;
 }

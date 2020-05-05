@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { MatInput } from '@angular/material/input';
 import { FormControl, FormBuilder, AbstractControl, AsyncValidatorFn, ValidationErrors, Validators, FormGroup, FormArray } from '@angular/forms';
-import { Observable, combineLatest } from 'rxjs';
-import { tap, map, startWith } from 'rxjs/operators';
+import { Observable, combineLatest, of } from 'rxjs';
+import { tap, map, startWith, shareReplay, take } from 'rxjs/operators';
 import { ProductsService, CustomersService } from '../../services';
 import { Customer, CustomerPartial, Job, JobProduct } from '../../interfaces';
 
@@ -81,9 +81,11 @@ export class PlateJobEditorComponent implements OnInit {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
       const value = control.value;
       return this.customersService.customers$.pipe(
+        shareReplay(1),
         map(customers =>
           customers.some(customer => customer.CustomerName === value) ? null : { noCustomer: `Klients ${value} nav atrasts` }
         ),
+        take(1),
       );
     };
   }

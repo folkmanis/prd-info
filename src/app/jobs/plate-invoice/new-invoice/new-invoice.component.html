@@ -19,3 +19,8 @@
     <app-job-selection-table [jobs]="jobs$ | async" (selected)="onJobSelected($event)">
     </app-job-selection-table>
 </section>
+<section>
+    <p *ngFor="let total of totals$ | async">
+        {{total._id}} | {{total.count}} | {{total.total | currency}}
+    </p>
+</section>
