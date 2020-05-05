@@ -4,7 +4,7 @@ export interface Invoice {
     invoiceId: string;
     customer: string;
     createdDate: Date;
-    jobs: number[];
+    jobsId: number[];
     products: InvoiceProduct[];
 }
 
