@@ -22,7 +22,7 @@ export class InvoicesService {
     share(),
   );
 
-  createInvoice(params: { selectedJobs: JobPartial[], customerId: string; }): Observable<string> {
+  createInvoice(params: { selectedJobs: number[], customerId: string; }): Observable<string> {
     return this.http.post<InvoiceResponse>(this.httpPath, params, new HttpOptions()).pipe(
       tap(resp => console.log(resp)),
       pluck('insertedId')

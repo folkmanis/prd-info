@@ -41,7 +41,7 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
   }
 
   onCreateInvoice() {
-    this.invoiceService.createInvoice({ selectedJobs: this.selectedJobs, customerId: this.customerId.value })
+    this.invoiceService.createInvoice({ selectedJobs: this.selectedJobs.map(job => job.jobId), customerId: this.customerId.value })
       .subscribe(id => console.log(id));
   }
 
