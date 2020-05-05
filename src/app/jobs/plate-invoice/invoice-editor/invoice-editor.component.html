@@ -9,15 +9,4 @@
             </mat-select>
         </mat-form-field>
     </section>
-    <!-- Aprēķina izveide un saņemšana -->
-    <section>
-        <button mat-raised-button (click)="onCreateInvoice()">
-            Izveidot aprēķinu
-        </button>
-    </section>
-    <!-- Darbu atlase -->
-    <section>
-        <app-job-selection-table [jobs]="jobs$ | async">
-        </app-job-selection-table>
-    </section>
 </form>

@@ -10,7 +10,7 @@ export interface Job {
     receivedDate: Date;
     comment?: string;
     invoiceId?: string;
-    products?: JobProduct[];
+    products?: JobProduct[] | Product;
 }
 export type JobPartial = Pick<Job, 'receivedDate' | 'customerJobId' | 'name' | 'jobId' | 'customer' | 'products' | 'invoiceId'>;
 
@@ -30,6 +30,7 @@ export interface JobQueryFilter {
     customer?: string;
     name?: string;
     invoice?: 0 | 1;
+    unwindProducts?: 0 | 1;
 }
 
 export type JobUpdate = Pick<Job, 'jobId'> & Partial<Job>;

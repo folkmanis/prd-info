@@ -4,7 +4,8 @@ import { FormControl, FormGroup, FormBuilder, Validators, FormArray, ValidatorFn
 import { Observable, combineLatest, merge } from 'rxjs';
 import { map, switchMap, filter, tap } from 'rxjs/operators';
 import { CustomerPartial } from '../../interfaces';
-import { JobService, JobPartial, CustomersService } from '../../services';
+import { JobService, CustomersService } from '../../services';
+import { JobPartial } from '../../interfaces';
 
 @Component({
   selector: 'app-invoice-editor',
@@ -52,11 +53,6 @@ export class InvoiceEditorComponent implements OnInit {
   jobs$ = merge(this.newInvoice$);
 
   ngOnInit(): void {
-  }
-
-  onCreateInvoice() {
-    this.jobService.createInvoice(this.invoiceForm.value)
-      .subscribe(id => console.log(id));
   }
 
   onJobSelected(selectedJobs: JobPartial[]) {

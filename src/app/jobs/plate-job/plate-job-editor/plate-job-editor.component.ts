@@ -68,6 +68,10 @@ export class PlateJobEditorComponent implements OnInit {
     this.jobForm.setControl('products', productsForm);
   }
 
+  isProductsSet(): boolean {
+    return this.customerControl.valid || (this.job.products instanceof Array && this.job.products.length > 0);
+  }
+
   private filterCustomer([customers, value]: [CustomerPartial[], string]): CustomerPartial[] {
     const filterValue: string = value.toLowerCase();
     return customers.filter(state => state.CustomerName.toLowerCase().indexOf(filterValue) === 0);

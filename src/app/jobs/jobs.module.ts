@@ -3,10 +3,8 @@ import { CommonModule } from '@angular/common';
 import { LibraryModule } from '../library/library.module';
 
 import { JobsRoutingModule } from './jobs-routing.module';
-import { ProductsService, CustomersService, JobService } from './services';
 import { JobsComponent } from './jobs.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
-// import { PlateJobModule } from './plate-job/plate-job.module';
 import { HTTP_INTERCEPTORS, CacheInterceptorService } from '../library/http';
 import { JobListComponent } from './job-list/job-list.component';
 import { PlateJobComponent } from './plate-job/plate-job.component';
@@ -16,6 +14,7 @@ import { PlateInvoiceComponent } from './plate-invoice/plate-invoice.component';
 import { InvoiceEditorComponent } from './plate-invoice/invoice-editor/invoice-editor.component';
 import { JobSelectionTableComponent } from './plate-invoice/job-selection-table/job-selection-table.component';
 import { NewInvoiceComponent } from './plate-invoice/new-invoice/new-invoice.component';
+import { ProductsService, CustomersService, JobService, InvoicesService } from './services';
 
 @NgModule({
   declarations: [
@@ -33,13 +32,13 @@ import { NewInvoiceComponent } from './plate-invoice/new-invoice/new-invoice.com
   imports: [
     CommonModule,
     LibraryModule,
-    // PlateJobModule,
     JobsRoutingModule,
   ],
   providers: [
     ProductsService,
     CustomersService,
     JobService,
+    InvoicesService,
     { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptorService, multi: true },
   ],
 })

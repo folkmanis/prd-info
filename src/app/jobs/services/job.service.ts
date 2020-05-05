@@ -56,14 +56,7 @@ export class JobService {
     );
   }
 
-  createInvoice(params: { selectedJobs: JobPartial[], customerId: string; }): Observable<string> {
-    return this.http.post<InvoiceResponse>(this.httpPath + 'invoice', params, new HttpOptions()).pipe(
-      tap(resp => console.log(resp)),
-      pluck('insertedId')
-    );
-  }
-
-  private getJobList(filter?: JobQueryFilter): Observable<JobPartial[]> {
+  getJobList(filter?: JobQueryFilter): Observable<JobPartial[]> {
     return this.http.get<JobResponse>(this.httpPath, new HttpOptions(filter).cacheable()).pipe(
       map(resp => resp.jobs)
     );

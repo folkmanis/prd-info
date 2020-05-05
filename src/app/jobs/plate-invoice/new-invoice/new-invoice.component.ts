@@ -1,19 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder, Validators, FormArray, ValidatorFn, ValidationErrors, AbstractControl } from '@angular/forms';
-import { Observable, combineLatest, merge } from 'rxjs';
-import { map, switchMap, filter, tap } from 'rxjs/operators';
+import { Observable, combineLatest, merge, Subject } from 'rxjs';
+import { map, switchMap, filter, tap, takeUntil } from 'rxjs/operators';
 import { CustomerPartial, Job } from '../../interfaces';
-import { JobService, JobPartial, CustomersService } from '../../services';
+import { CustomersService, InvoicesService } from '../../services';
+import { JobPartial, JobQueryFilter } from '../../interfaces';
 
 @Component({
   selector: 'app-new-invoice',
   templateUrl: './new-invoice.component.html',
   styleUrls: ['./new-invoice.component.css']
 })
-export class NewInvoiceComponent implements OnInit {
+export class NewInvoiceComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
-    private jobService: JobService,
+    private invoiceService: InvoicesService,
     private customersService: CustomersService,
   ) { }
 
@@ -23,16 +24,24 @@ export class NewInvoiceComponent implements OnInit {
 
   customers$: Observable<CustomerPartial[]> = this.customersService.customers$;
 
-  newInvoice$: Observable<JobPartial[]> = this.customerId.valueChanges.pipe(
-    switchMap(customer => this.jobService.getJobs({ customer, invoice: 0 })),
-  );
-  jobs$ = merge(this.newInvoice$);
+  jobs$ = this.invoiceService.jobs$;
+
+  private readonly _unsubs = new Subject<void>();
 
   ngOnInit(): void {
+    this.customerId.valueChanges.pipe(
+      takeUntil(this._unsubs),
+      map((customer: string) => ({ customer, unwindProducts: 1, invoice: 0 } as JobQueryFilter)),
+    )
+      .subscribe(this.invoiceService.filter$);
+  }
+
+  ngOnDestroy(): void {
+    this._unsubs.next();
   }
 
   onCreateInvoice() {
-    this.jobService.createInvoice({ selectedJobs: this.selectedJobs, customerId: this.customerId.value })
+    this.invoiceService.createInvoice({ selectedJobs: this.selectedJobs, customerId: this.customerId.value })
       .subscribe(id => console.log(id));
   }
 
