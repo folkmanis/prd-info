@@ -93,6 +93,7 @@ export class PlateJobEditorComponent implements OnInit {
   private setFormValues(job: Partial<Job>): void {
     this.jobForm.reset({ customer: '' });
     this.jobForm.patchValue(job, { emitEvent: false });
+    !job.invoiceId ? this.jobForm.enable() : this.jobForm.disable();
   }
 
 }

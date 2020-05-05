@@ -12,12 +12,14 @@ interface ProductFormValues {
   comment: string | null;
 }
 
+const COLUMNS = ['name', 'count', 'price', 'total', 'comment'];
+
 @Component({
   selector: 'app-products-editor',
   templateUrl: './products-editor.component.html',
   styleUrls: ['./products-editor.component.css']
 })
-export class ProductsEditorComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
+export class ProductsEditorComponent implements OnInit, OnDestroy, OnChanges {
   // tslint:disable-next-line: no-input-rename
   @Input('productsFormArray') private _productsForm: FormArray;
   @Input() products: JobProduct[];
@@ -28,7 +30,9 @@ export class ProductsEditorComponent implements OnInit, AfterViewInit, OnDestroy
     private fb: FormBuilder,
   ) { }
 
-  readonly displayedColumns: string[] = ['name', 'count', 'price', 'total', 'comment', 'buttons'];
+  displayedColumns: string[] = COLUMNS;
+
+  get isEnabled(): boolean { return !this._productsForm.disabled; }
 
   customer$: ReplaySubject<string> = new ReplaySubject(1);
   products$: Observable<CustomerProduct[]> = this.customer$.pipe(
@@ -57,14 +61,12 @@ export class ProductsEditorComponent implements OnInit, AfterViewInit, OnDestroy
     );
 
   ngOnInit(): void {
+    this.displayedColumns = this.isEnabled ? COLUMNS.concat(['buttons']) : COLUMNS;
     this._productsForm?.valueChanges.pipe(
       switchMap(this.defaultProductPrice(this._productsForm, this.products$)),
       takeUntil(this.unsub),
     )
       .subscribe();
-  }
-  // TODO remove if unused
-  ngAfterViewInit(): void {
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -82,6 +84,7 @@ export class ProductsEditorComponent implements OnInit, AfterViewInit, OnDestroy
   ngOnDestroy(): void {
     this.unsub.next();
   }
+
 
   private addNewProduct(): FormArray {
     this._productsForm.push(this.addProductToFormGroup());
@@ -103,7 +106,7 @@ export class ProductsEditorComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   private addProductToFormGroup(product?: Partial<JobProduct>): FormGroup {
-    return this.fb.group({
+    const _group = this.fb.group({
       name: [
         product?.name,
         {
@@ -125,6 +128,8 @@ export class ProductsEditorComponent implements OnInit, AfterViewInit, OnDestroy
       ],
       comment: [product?.comment],
     });
+    this.isEnabled ? _group.enable() : _group.disable();
+    return _group;
   }
 
   private productAsyncValidatorFn(prod$: Observable<CustomerProduct[]>): AsyncValidatorFn {
