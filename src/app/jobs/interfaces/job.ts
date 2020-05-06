@@ -30,6 +30,7 @@ export interface JobQueryFilter {
     customer?: string;
     name?: string;
     invoice?: 0 | 1;
+    jobsId?: number | number[];
     unwindProducts?: 0 | 1;
 }
 

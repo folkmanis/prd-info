@@ -7,6 +7,7 @@ import { PlateJobComponent } from './plate-job/plate-job.component';
 import { PlateInvoiceComponent } from './plate-invoice/plate-invoice.component';
 import { InvoiceEditorComponent } from './plate-invoice/invoice-editor/invoice-editor.component';
 import { NewInvoiceComponent } from './plate-invoice/new-invoice/new-invoice.component';
+import { InvoicesListComponent } from './plate-invoice/invoices-list/invoices-list.component';
 
 const routes: Routes = [
   {
@@ -28,6 +29,14 @@ const routes: Routes = [
           {
             path: 'new-invoice',
             component: NewInvoiceComponent,
+          },
+          {
+            path: 'invoice',
+            component: InvoiceEditorComponent,
+          },
+          {
+            path: '',
+            component: InvoicesListComponent,
           }
         ]
       }

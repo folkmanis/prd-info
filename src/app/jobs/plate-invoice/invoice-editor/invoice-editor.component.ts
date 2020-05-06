@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup, FormBuilder, Validators, FormArray, ValidatorFn, ValidationErrors, AbstractControl } from '@angular/forms';
 import { Observable, combineLatest, merge } from 'rxjs';
-import { map, switchMap, filter, tap } from 'rxjs/operators';
+import { map, switchMap, filter, tap, share } from 'rxjs/operators';
 import { CustomerPartial } from '../../interfaces';
-import { JobService, CustomersService } from '../../services';
-import { JobPartial } from '../../interfaces';
+import { JobService, CustomersService, InvoicesService } from '../../services';
+import { JobPartial, Invoice, Job } from '../../interfaces';
 
 @Component({
   selector: 'app-invoice-editor',
@@ -19,49 +19,24 @@ export class InvoiceEditorComponent implements OnInit {
     private fb: FormBuilder,
     private jobService: JobService,
     private customersService: CustomersService,
+    private invoicesService: InvoicesService,
   ) { }
 
-  invoiceForm: FormGroup = this.fb.group({
-    customerId: [
-      null,
-      {
-        validators: [Validators.required]
-      }
-    ],
-    selectedJobs: [
-      [],
-      {
-        validators: [
-          Validators.required,
-          this.isJobsSelected,
-        ]
-      }
-    ],
-  });
-
-  get selectedJobs() { return this.invoiceForm.get('selectedJobs') as FormControl; }
-
-  customers$: Observable<CustomerPartial[]> = this.customersService.customers$;
-
-  newInvoice$: Observable<JobPartial[]> = this.route.paramMap.pipe(
-    map(params => params.get('createNew')),
-    filter(createNew => !!createNew),
-    switchMap(() => this.invoiceForm.get('customerId').valueChanges as Observable<string>),
-    switchMap(customer => this.jobService.getJobs({ customer, invoice: 0 })),
+  invoice$: Observable<Invoice> = this.route.paramMap.pipe(
+    map(params => params.get('invoiceId') as string | undefined),
+    filter(invoiceId => !!invoiceId),
+    switchMap(invoiceId => this.invoicesService.getInvoice(invoiceId)),
   );
-
-  jobs$ = merge(this.newInvoice$);
 
   ngOnInit(): void {
   }
 
-  onJobSelected(selectedJobs: JobPartial[]) {
-    this.invoiceForm.patchValue({ selectedJobs });
-  }
+  onPdfDownload(invoiceId: string): void {
+    window.open('/data/invoices/' + invoiceId + '/report', '_blank');
+    // this.invoicesService.getInvoicePdf(invoiceId).pipe(
+    //   tap(resp => console.log('download pdf', invoiceId, resp)),
+    // ).subscribe();
 
-  private isJobsSelected(control: AbstractControl): ValidationErrors | null {
-    const jobs: [] = control.value;
-    return jobs.length ? null : { notSelected: 'Nav atzīmēts neviens darbs' };
   }
 
 }

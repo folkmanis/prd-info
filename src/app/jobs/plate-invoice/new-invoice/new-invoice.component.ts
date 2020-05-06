@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup, FormBuilder, Validators, FormArray, ValidatorFn, ValidationErrors, AbstractControl } from '@angular/forms';
 import { Observable, combineLatest, merge, Subject, Subscription } from 'rxjs';
 import { map, switchMap, filter, tap, takeUntil, share } from 'rxjs/operators';
@@ -16,6 +17,8 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private invoiceService: InvoicesService,
     private customersService: CustomersService,
+    private router: Router,
+    private route: ActivatedRoute,
   ) { }
 
   selectedJobs: number[] | undefined;
@@ -33,7 +36,7 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
     const _subs = this.customerId.valueChanges.pipe(
       map((customer: string) => ({ customer, unwindProducts: 1, invoice: 0 } as JobQueryFilter)),
     )
-      .subscribe(this.invoiceService.filter$);
+      .subscribe(this.invoiceService.jobFilter$);
     this.subscriptions.add(_subs);
   }
 
@@ -43,7 +46,7 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
 
   onCreateInvoice() {
     this.invoiceService.createInvoice({ selectedJobs: this.selectedJobs, customerId: this.customerId.value })
-      .subscribe(id => console.log(id));
+      .subscribe(id => this.router.navigate(['../invoice', { invoiceId: id.invoiceId }], { relativeTo: this.route }));
   }
 
   onJobSelected(selectedJobs: number[]) {

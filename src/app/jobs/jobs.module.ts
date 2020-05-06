@@ -15,6 +15,7 @@ import { InvoiceEditorComponent } from './plate-invoice/invoice-editor/invoice-e
 import { JobSelectionTableComponent } from './plate-invoice/job-selection-table/job-selection-table.component';
 import { NewInvoiceComponent } from './plate-invoice/new-invoice/new-invoice.component';
 import { ProductsService, CustomersService, JobService, InvoicesService } from './services';
+import { InvoicesListComponent } from './plate-invoice/invoices-list/invoices-list.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { ProductsService, CustomersService, JobService, InvoicesService } from '
     InvoiceEditorComponent,
     JobSelectionTableComponent,
     NewInvoiceComponent,
+    InvoicesListComponent,
   ],
   imports: [
     CommonModule,

@@ -1,12 +1,31 @@
-<form [formGroup]="invoiceForm">
+<div *ngIf="invoice$ | async as invoice;">
+    <h3>
+        Aprēķins nr. {{invoice.invoiceId}}
+    </h3>
     <section>
-        <mat-form-field>
-            <mat-label>Klienta nosaukums</mat-label>
-            <mat-select formControlName="customerId">
-                <mat-option *ngFor="let customer of customers$ | async" [value]="customer.CustomerName">
-                    {{customer.CustomerName}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
+        {{invoice.createdDate | date}}
     </section>
-</form>
+    <section>
+        Klients: <b>{{invoice.customer}}</b>
+    </section>
+    <h4>
+        Preces
+    </h4>
+    <section>
+        <div *ngFor="let product of invoice.products;">
+            {{product._id}} | {{product.count}} | {{product.price | currency}} | {{product.total | currency}}
+        </div>
+    </section>
+    <h4>
+        Eksports
+    </h4>
+    <section>
+        <button mat-raised-button (click)="onPdfDownload(invoice.invoiceId)">PDF</button>
+    </section>
+    <h4>
+        Iekļautie darbi
+    </h4>
+    <section>
+        <app-job-selection-table [jobs]="invoice.jobs" disabled></app-job-selection-table>
+    </section>
+</div>
