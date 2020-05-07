@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { LibraryModule } from '../library/library.module';
+import { ParserService } from 'src/app/library';
+
 import { UploadModule } from './upload/upload.module';
 import { KastesComponent } from './kastes.component';
 import { SelectorComponent } from './selector/selector.component';
@@ -32,5 +34,7 @@ import { JaunsPasutijumsComponent } from './pasutijumi/jauns-pasutijums/jauns-pa
     AppRoutingModule,
     UploadModule,
   ],
+  providers: [
+  ]
 })
 export class KastesModule { }
