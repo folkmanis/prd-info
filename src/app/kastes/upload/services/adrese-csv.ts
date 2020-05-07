@@ -1,10 +1,15 @@
 import { Observable, of, merge, BehaviorSubject } from 'rxjs';
 import { switchMap, tap, map } from 'rxjs/operators';
 import { DataSource } from '@angular/cdk/collections';
+import { ParserService } from 'src/app/library';
 
 interface CsvRecord extends Array<any> { }
 
 export class AdresesCsv extends DataSource<CsvRecord> {
+
+    constructor(private parserService: ParserService) {
+        super();
+    }
 
     private adreses$: BehaviorSubject<Array<any[]>> = new BehaviorSubject([]);
 
@@ -25,7 +30,7 @@ export class AdresesCsv extends DataSource<CsvRecord> {
      * @param delimiter atdalītāja simbols
      */
     setCsv(csv: string, delimiter: string = ',') {
-        this.adreses$.next(this.parse(csv, delimiter));
+        this.adreses$.next(this.parserService.parseCsv(csv, delimiter));
     }
 
     get colNames(): string[] {

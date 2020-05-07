@@ -6,12 +6,11 @@ import { AdreseBox, AdresesBox, AdrBoxTotals, Totals } from './adrese-box';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
 import { PasutijumiService } from '../../services/pasutijumi.service';
 import { KastesHttpService } from '../../services/kastes-http.service';
+import { ParserService } from 'src/app/library';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class UploadService {
-  adresesCsv = new AdresesCsv();
+  adresesCsv = new AdresesCsv(this.parserService);
   adresesBox: AdresesBox;
   adresesBox$: Observable<AdreseBox[]>;
 
@@ -19,6 +18,7 @@ export class UploadService {
     private kastesPreferencesService: KastesPreferencesService,
     private pasutijumiService: PasutijumiService,
     private kastesHttpService: KastesHttpService,
+    private parserService: ParserService,
   ) { }
 
   get adresesCsv$(): Observable<Array<any[]>> {
