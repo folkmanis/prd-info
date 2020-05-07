@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { LibraryModule } from 'src/app/library/library.module';
 import { CustomersRoutingModule } from './customers-routing.module';
 import { CustomersComponent } from './customers.component';
-import { CustomersService } from './services/customers.service';
 import { EditComponent } from './edit/edit.component';
 import { NewComponent } from './new/new.component';
 import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
@@ -22,7 +21,6 @@ import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/materi
     CustomersRoutingModule,
   ],
   providers: [
-    CustomersService,
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
   ]
 

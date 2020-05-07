@@ -1,1 +1,6 @@
-<p>job-import works!</p>
+<mat-horizontal-stepper [linear]="true">
+    <mat-step>
+        <ng-template matStepLabel>.csv faila izvēle</ng-template>
+        <div class="drope" appFileDrop (filesEmitter)="onFileDrop($event)"></div>
+    </mat-step>
+</mat-horizontal-stepper>>

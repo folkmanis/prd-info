@@ -1,10 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { LibraryModule } from 'src/app/library/library.module';
+import { LibraryModule, ParserService } from 'src/app/library';
 
 import { JobImportRoutingModule } from './job-import-routing.module';
-import { JobImportService } from './services/job-import.service';
 import { JobImportComponent } from './job-import.component';
 
 
@@ -19,7 +18,6 @@ import { JobImportComponent } from './job-import.component';
     JobImportRoutingModule,
   ],
   providers: [
-    JobImportService
   ]
 })
 export class JobImportModule { }

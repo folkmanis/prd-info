@@ -1,0 +1,8 @@
+.drope {
+    min-height: 400px;
+    min-width: 400px;
+    width: 100%;
+    display: block;
+    border: solid 2px rgba(0, 0, 0, 0.5);
+    /* margin: 10px; */
+}
