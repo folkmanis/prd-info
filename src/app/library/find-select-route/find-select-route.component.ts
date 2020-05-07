@@ -1,7 +1,8 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, OnDestroy, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { combineLatest, Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, Subscription, BehaviorSubject } from 'rxjs';
+import { combineLatest } from 'rxjs/index';
+import { map, tap, startWith } from 'rxjs/operators';
 
 export interface RouteSelection {
   title: string;
@@ -15,11 +16,12 @@ export interface RouteSelection {
 })
 export class FindSelectRouteComponent implements OnInit, AfterViewInit, OnDestroy {
   // tslint:disable-next-line: no-input-rename
-  @Input('routes') private _routes$: Observable<RouteSelection[]>;
+  @Input('routes') set _routes(rts: RouteSelection[]) {
+    this._routes$.next(rts);
+  }
   // tslint:disable-next-line: no-output-native
   @Output() select: EventEmitter<RouteSelection> = new EventEmitter();
   @Input('filter') set _setfilter(filter: string) {
-    this._filter = filter;
     this.filterControl.setValue(filter);
   }
   @Output() filterChange = new EventEmitter<string>();
@@ -27,23 +29,25 @@ export class FindSelectRouteComponent implements OnInit, AfterViewInit, OnDestro
   constructor() { }
 
   filterControl = new FormControl('');
-  data$: Observable<RouteSelection[]>;
-  private _filter = '';
+
   private _filter$: Observable<string> = this.filterControl.valueChanges;
   private _subs: Subscription = new Subscription();
+  private _routes$ = new BehaviorSubject<RouteSelection[]>([]);
+
+
+  data$: Observable<RouteSelection[]> = combineLatest([
+    this._routes$,
+    this._filter$.pipe(startWith(''))
+  ]).pipe(
+    tap(([_, fltr]) => this.filterChange.next(fltr)),
+    map(([data, filter]) =>
+      filter.length ? data.filter(s => s.title.toUpperCase().includes(filter.toUpperCase())) : data)
+  );
 
   ngOnInit(): void {
-    this.data$ = combineLatest([this._routes$, this._filter$]).pipe(
-      map(([data, filter]) =>
-        filter.length ? data.filter(s => s.title.toUpperCase().includes(filter.toUpperCase())) : data)
-    );
-    this._subs.add(
-      this.filterControl.valueChanges.subscribe(this.filterChange)
-    );
   }
 
   ngAfterViewInit(): void {
-    this.filterControl.setValue(this._filter);
   }
 
   ngOnDestroy(): void {
