@@ -7,6 +7,7 @@ import { JobsAdminComponent } from './jobs-admin.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import { ProductsModule } from './products/products.module';
 import { CustomersModule } from './customers/customers.module';
+import { JobImportModule } from './job-import/job-import.module';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { CustomersModule } from './customers/customers.module';
     LibraryModule,
     ProductsModule,
     CustomersModule,
+    JobImportModule,
     JobsAdminRoutingModule,
   ],
   providers: [
