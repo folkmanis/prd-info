@@ -6,6 +6,7 @@ import { map, switchMap, filter, tap, share } from 'rxjs/operators';
 import { CustomerPartial } from '../../interfaces';
 import { JobService, CustomersService, InvoicesService } from '../../services';
 import { JobPartial, Invoice, Job } from '../../interfaces';
+import { InvoiceReport } from './invoice-report';
 
 @Component({
   selector: 'app-invoice-editor',
@@ -31,9 +32,11 @@ export class InvoiceEditorComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onPdfDownload(invoiceId: string): void {
-    window.open('/data/invoices/' + invoiceId + '/report', '_blank');
-    // this.invoicesService.getInvoicePdf(invoiceId).pipe(
+  onPdfDownload(invoice: Invoice): void {
+    const report = new InvoiceReport(invoice);
+    report.open();
+    // window.open('/data/invoices/' + invoiceId + '/report', '_blank');
+    // this.invoicesService.getInvoice(invoiceId).pipe(
     //   tap(resp => console.log('download pdf', invoiceId, resp)),
     // ).subscribe();
 

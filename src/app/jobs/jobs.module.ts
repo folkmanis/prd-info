@@ -16,6 +16,10 @@ import { JobSelectionTableComponent } from './plate-invoice/job-selection-table/
 import { NewInvoiceComponent } from './plate-invoice/new-invoice/new-invoice.component';
 import { ProductsService, CustomersService, JobService, InvoicesService } from './services';
 import { InvoicesListComponent } from './plate-invoice/invoices-list/invoices-list.component';
+import { PdfMakeWrapper } from 'pdfmake-wrapper';
+
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+PdfMakeWrapper.setFonts(pdfFonts);
 
 @NgModule({
   declarations: [

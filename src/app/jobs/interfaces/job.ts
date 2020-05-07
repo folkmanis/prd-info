@@ -10,7 +10,7 @@ export interface Job {
     receivedDate: Date;
     comment?: string;
     invoiceId?: string;
-    products?: JobProduct[] | Product;
+    products?: JobProduct[] | JobProduct;
 }
 export type JobPartial = Pick<Job, 'receivedDate' | 'customerJobId' | 'name' | 'jobId' | 'customer' | 'products' | 'invoiceId'>;
 
