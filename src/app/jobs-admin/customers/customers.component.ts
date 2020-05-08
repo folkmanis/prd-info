@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { RouteSelection } from 'src/app/library/find-select-route/find-select-route.module';
-import { Customer } from './services/customer';
+import { Customer } from 'src/app/interfaces';
 import { CustomersService } from './services/customers.service';
 import { map } from 'rxjs/operators';
 
@@ -12,21 +12,21 @@ import { map } from 'rxjs/operators';
 })
 export class CustomersComponent implements OnInit {
 
-  customers$: Observable<RouteSelection[]>;
 
   constructor(
     private service: CustomersService,
   ) { }
 
+  customers$: Observable<RouteSelection[]> = this.service.customers$.pipe(
+    map(customers => customers.map(cust => ({
+      title: !cust.CustomerName.length ? 'Bez nosaukuma' : cust.CustomerName,
+      link: ['edit', { id: cust._id }],
+    }))
+    ),
+    map(this.addNewEntry),
+  );
+
   ngOnInit(): void {
-    this.customers$ = this.service.customers$.pipe(
-      map(customers => customers.map(cust => ({
-        title: !cust.CustomerName.length ? 'Bez nosaukuma' : cust.CustomerName,
-        link: ['edit', { id: cust._id }],
-      }))
-      ),
-      map(this.addNewEntry),
-    );
   }
 
   private addNewEntry(rts: RouteSelection[]): RouteSelection[] {

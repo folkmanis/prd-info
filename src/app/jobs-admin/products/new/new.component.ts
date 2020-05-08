@@ -6,7 +6,7 @@ import { map, filter, tap, switchMap, debounceTime, takeUntil } from 'rxjs/opera
 import { isEqual, pick, omit, keys } from 'lodash';
 
 import { ProductsService } from '../services/products.service';
-import { Product } from '../../services/jobs-admin.interfaces';
+import { Product } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { LoginService } from 'src/app/login/login.service';
@@ -61,9 +61,9 @@ export class NewComponent implements OnInit, CanComponentDeactivate {
     return this.dialog.discardChanges();
   }
 
-  private nameValidator(contr: string): AsyncValidatorFn {
+  private nameValidator(key: keyof Product): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
-      return this.service.validate(contr, control.value).pipe(
+      return this.service.validate(key, control.value).pipe(
         map(valid => valid ? null : { occupied: control.value })
       );
     };

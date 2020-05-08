@@ -1,4 +1,4 @@
-import { AppHttpResponseBase } from 'src/app/library/http/http-response-base';
+import { AppHttpResponseBase } from 'src/app/library';
 
 export interface Customer {
     _id: string;
@@ -9,9 +9,11 @@ export interface Customer {
     description: string;
 }
 
+export interface CustomerResponse extends AppHttpResponseBase<Customer> {
+    insertedId: string;
+    customers: CustomerPartial[];
+    customer: Customer | null;
+}
+
 export type CustomerPartial = Pick<Customer, '_id' | 'CustomerName' | 'code'>;
 
-export interface CustomerResponse extends AppHttpResponseBase {
-    customer?: Customer;
-    customers?: CustomerPartial[];
-}

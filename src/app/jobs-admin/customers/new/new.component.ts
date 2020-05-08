@@ -6,6 +6,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { CustomersService } from '../services/customers.service';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { map, tap, filter } from 'rxjs/operators';
+import { Customer } from 'src/app/interfaces';
 
 @Component({
   selector: 'app-new',
@@ -58,9 +59,9 @@ export class NewComponent implements OnInit, CanComponentDeactivate {
     return this.dialog.discardChanges();
   }
 
-  private validateCode(field: 'code' | 'CustomerName'): AsyncValidatorFn {
+  private validateCode(field: keyof Customer): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
-      return this.service.validator({ [field]: control.value }).pipe(
+      return this.service.validator( field, control.value).pipe(
         map(val => val ? null : { occupied: control.value })
       );
     };

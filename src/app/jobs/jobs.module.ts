@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { LibraryModule } from '../library/library.module';
 
 import { JobsRoutingModule } from './jobs-routing.module';
 import { JobsComponent } from './jobs.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
-import { HTTP_INTERCEPTORS, CacheInterceptorService } from '../library/http';
+import { CacheInterceptorService } from '../library/http';
 import { JobListComponent } from './job-list/job-list.component';
 import { PlateJobComponent } from './plate-job/plate-job.component';
 import { PlateJobEditorComponent } from './plate-job/plate-job-editor/plate-job-editor.component';

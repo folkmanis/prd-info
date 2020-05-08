@@ -3,20 +3,17 @@ import { HttpClient } from '@angular/common/http';
 import { HttpOptions } from 'src/app/library/http/http-options';
 import { Observable, merge, Subject, EMPTY, of, observable } from 'rxjs';
 import { map, pluck, filter, tap, switchMap, share, shareReplay } from 'rxjs/operators';
-import { ProductResult, ProductNoPrices } from './product';
-import { Product } from '../../services/jobs-admin.interfaces';
+import { Customer, Product, ProductResult, ProductNoPrices } from 'src/app/interfaces';
+import { PrdApiService } from 'src/app/services';
 import { LoginService } from 'src/app/login/login.service';
 import { JobsSettings } from 'src/app/library/classes/system-preferences-class';
-import { Customer } from '../../services/jobs-admin.interfaces';
 
 @Injectable()
 export class ProductsService {
-  private readonly httpPath = '/data/products/';
-  private readonly httpCustomerPath = '/data/customers/';
 
   constructor(
-    private http: HttpClient,
     private loginService: LoginService,
+    private prdApi: PrdApiService,
   ) { }
 
   readonly categories$ = this.loginService.sysPreferences$.pipe(
@@ -32,60 +29,50 @@ export class ProductsService {
   );
 
   getProduct(id: string): Observable<Product> {
-    return this.http.get<ProductResult>(this.httpPath + id, new HttpOptions().cacheable()).pipe(
-      map(res => res.product)
-    );
+    return this.prdApi.products.get(id);
   }
 
   updateProduct(id: string, prod: Partial<Product>): Observable<boolean> {
-    return this.http.post<ProductResult>(this.httpPath + id, prod, new HttpOptions()).pipe(
+    return this.prdApi.products.updateOne(id, prod).pipe(
       this.updateProducts(() => this.getAllProducts(), this._updateProducts$),
-      map(() => true),
     );
   }
 
   deleteProduct(id: string): Observable<boolean> {
-    return this.http.delete<ProductResult>(this.httpPath + id).pipe(
+    return this.prdApi.products.delete(id).pipe(
       this.updateProducts(() => this.getAllProducts(), this._updateProducts$),
-      map(() => true),
+      map(count => !!count),
     );
   }
 
   insertProduct(prod: ProductNoPrices): Observable<string> {
-    return this.http.put<ProductResult>(this.httpPath, prod, new HttpOptions()).pipe(
+    return this.prdApi.products.insertOne(prod).pipe(
       this.updateProducts(() => this.getAllProducts(), this._updateProducts$),
-      map(res => res.insertedId),
+      map(id => id.toString()),
     );
   }
 
-  validate(key: string, value: any): Observable<boolean> {
-    return this.http.get<ProductResult>(this.httpPath + 'validate/' + key, new HttpOptions().cacheable()).pipe(
-      pluck(key),
-      map((values: any[]) => !values.includes(value)),
+  validate<K extends keyof Product>(key: K, value: Product[K]): Observable<boolean> {
+    return this.prdApi.products.validatorData(key).pipe(
+      map(values => !values.includes(value)),
     );
   }
 
-  getCustomers(): Observable<Customer[]> {
-    return this.http.get<{ customers: Customer[]; }>(this.httpCustomerPath, new HttpOptions().cacheable()).pipe(
-      pluck('customers'),
-    );
+  getCustomers(): Observable<Partial<Customer[]>> {
+    return this.prdApi.customers.get();
   }
 
   private getAllProducts(): Observable<Pick<Product, '_id' | 'name' | 'category'>[]> {
-    return this.http.get<ProductResult>(this.httpPath, new HttpOptions()).pipe(
-      filter(res => !res.error),
-      map(res => res.products),
-    );
+    return this.prdApi.products.get();
   }
 
-  private updateProducts<K>(
+  private updateProducts<K, U>(
     updateFunc: () => Observable<K>,
     emiter: Subject<K>
-  ): (obs: Observable<ProductResult>) => Observable<ProductResult> {
-    let value: ProductResult;
-    return (obs: Observable<ProductResult>): Observable<ProductResult> => {
+  ): (obs: Observable<U>) => Observable<U> {
+    let value: U;
+    return (obs: Observable<U>): Observable<U> => {
       return obs.pipe(
-        filter(res => !res.error),
         tap(val => value = val),
         switchMap(updateFunc),
         tap(upd => emiter.next(upd)),
