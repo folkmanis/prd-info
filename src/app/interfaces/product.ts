@@ -1,6 +1,17 @@
 import { AppHttpResponseBase } from 'src/app/library';
 
-export type ProductResult = AppHttpResponseBase<Product>;
+export interface ProductResult extends AppHttpResponseBase<Product> {
+    customerProducts?: CustomerProduct[];
+    prices?: any[];
+}
+
+export interface CustomerProduct {
+    category: string;
+    description: string;
+    productName: string;
+    customerName: string;
+    price: number;
+}
 
 export interface Product {
     _id: string;

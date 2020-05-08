@@ -4,7 +4,7 @@ import { FormControl, FormBuilder, AbstractControl, AsyncValidatorFn, Validation
 import { Observable, combineLatest, of } from 'rxjs';
 import { tap, map, startWith, shareReplay, take } from 'rxjs/operators';
 import { ProductsService, CustomersService } from '../../services';
-import { Customer, CustomerPartial, Job, JobProduct } from '../../interfaces';
+import { Customer, CustomerPartial, Job, JobProduct } from 'src/app/interfaces';
 
 @Component({
   selector: 'app-plate-job-editor',

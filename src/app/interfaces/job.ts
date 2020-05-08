@@ -1,5 +1,5 @@
-import { Product } from 'src/app/jobs-admin/products/services/product';
-import { AppHttpResponseBase } from 'src/app/library/http/http-response-base';
+import { Product } from './product';
+import { AppHttpResponseBase } from 'src/app/library/http';
 
 export interface Job {
     _id?: string;
@@ -14,7 +14,7 @@ export interface Job {
 }
 export type JobPartial = Pick<Job, 'receivedDate' | 'customerJobId' | 'name' | 'jobId' | 'customer' | 'products' | 'invoiceId'>;
 
-export interface JobResponse extends AppHttpResponseBase {
+export interface JobResponse extends AppHttpResponseBase<Job> {
     jobs?: JobPartial[];
     job?: Job;
 }

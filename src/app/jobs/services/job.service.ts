@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpOptions } from 'src/app/library/http/http-options';
-import { Job, JobResponse, JobPartial, JobQueryFilter, Invoice, InvoiceResponse } from '../interfaces';
+import { Job, JobResponse, JobPartial, JobQueryFilter, Invoice, InvoiceResponse } from 'src/app/interfaces';
 import { Observable, of, Subject, combineLatest, ReplaySubject, BehaviorSubject } from 'rxjs';
 import { map, tap, startWith, switchMap, share, pluck } from 'rxjs/operators';
 

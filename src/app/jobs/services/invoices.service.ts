@@ -5,7 +5,11 @@ import { Observable, merge, Subject, BehaviorSubject, EMPTY, of, observable } fr
 import { map, pluck, filter, tap, switchMap, share, shareReplay } from 'rxjs/operators';
 
 import { JobService } from './job.service';
-import { Invoice, InvoiceResponse, JobPartial, JobQueryFilter, ProductTotals, InvoicesFilter } from '../interfaces';
+import {
+  JobPartial, JobQueryFilter,
+  Invoice, InvoiceResponse, InvoicesFilter,
+  ProductTotals
+} from 'src/app/interfaces';
 
 @Injectable()
 export class InvoicesService {

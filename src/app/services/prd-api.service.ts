@@ -5,7 +5,7 @@ import { map, pluck, filter, tap, switchMap, share, shareReplay } from 'rxjs/ope
 
 import { HttpOptions, AppHttpResponseBase } from 'src/app/library';
 
-import { Customer, Product } from '../interfaces';
+import { Customer, Product, CustomerProduct, ProductResult } from '../interfaces';
 
 const HTTP_PATH = '/data/';
 
@@ -89,6 +89,16 @@ class CustomersApi extends ApiBase<Customer> {
 class ProductsApi extends ApiBase<Product> {
   protected get path(): string {
     return HTTP_PATH + 'products/';
+  }
+
+  productsCustomer(customer: string): Observable<CustomerProduct[]> {
+    return this.http.get<ProductResult>(
+      this.path + 'prices/customer/' + customer,
+      new HttpOptions().cacheable(),
+    ).pipe(
+      map(resp => resp.customerProducts)
+    );
+
   }
 
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Invoice } from '../../interfaces';
+import { Invoice } from 'src/app/interfaces';
 import { InvoicesListDatasource } from './invoices-list-datasource';
 import { InvoicesService } from '../../services';
 

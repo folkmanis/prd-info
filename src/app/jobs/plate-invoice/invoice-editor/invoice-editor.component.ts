@@ -3,9 +3,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup, FormBuilder, Validators, FormArray, ValidatorFn, ValidationErrors, AbstractControl } from '@angular/forms';
 import { Observable, combineLatest, merge } from 'rxjs';
 import { map, switchMap, filter, tap, share } from 'rxjs/operators';
-import { CustomerPartial } from '../../interfaces';
 import { JobService, CustomersService, InvoicesService } from '../../services';
-import { JobPartial, Invoice, Job } from '../../interfaces';
+import {CustomerPartial, JobPartial, Invoice, Job } from 'src/app/interfaces';
 import { InvoiceReport } from './invoice-report';
 
 @Component({

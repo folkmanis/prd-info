@@ -1,5 +1,5 @@
 import { DataSource } from '@angular/cdk/table';
-import { Invoice, InvoicesFilter } from '../../interfaces';
+import { Invoice, InvoicesFilter } from 'src/app/interfaces';
 import { InvoicesService } from '../../services';
 import { Observable } from 'rxjs';
 import { switchMap, share, map } from 'rxjs/operators';
