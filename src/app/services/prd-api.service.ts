@@ -30,12 +30,16 @@ abstract class ApiBase<T> {
     protected http: HttpClient,
   ) { }
 
-  get(params?: { [key: string]: any; }): Observable<Partial<T>[]>;
-  get(id: string | number, params?: { [key: string]: any; }): Observable<T>;
-  get(idOrParams?: string | number | { [key: string]: any; }, params?: { [key: string]: any; }): Observable<Partial<T>[]> | Observable<T> {
+  get<P = Partial<T>>(params?: { [key: string]: any; }): Observable<P[]>;
+  get<P = Partial<T>>(id: string | number, params?: { [key: string]: any; }): Observable<T>;
+  get<P = Partial<T>>(
+    idOrParams?: string | number | { [key: string]: any; },
+    params?: { [key: string]: any; }
+  ): Observable<P[]> | Observable<T> {
+
     if (idOrParams && idOrParams instanceof Object) {
       return this.http.get<AppHttpResponseBase<T>>(this.path, new HttpOptions(idOrParams).cacheable()).pipe(
-        map(resp => resp.data as Partial<T>[])
+        map(resp => resp.data as P[])
       );
     }
     if (idOrParams) {
@@ -44,7 +48,7 @@ abstract class ApiBase<T> {
       );
     }
     return this.http.get<AppHttpResponseBase<T>>(this.path, new HttpOptions().cacheable()).pipe(
-      map(resp => resp.data as Partial<T>[])
+      map(resp => resp.data as P[])
     );
   }
 
@@ -56,7 +60,7 @@ abstract class ApiBase<T> {
 
   updateOne(id: string | number, data: Partial<T>): Observable<boolean> {
     return this.http.post<AppHttpResponseBase<T>>(this.path + id, data, new HttpOptions()).pipe(
-      map(resp => !resp.modifiedCount)
+      map(resp => !!resp.modifiedCount)
     );
   }
 
@@ -67,10 +71,10 @@ abstract class ApiBase<T> {
   }
 
   validatorData<K extends keyof T>(key: K): Observable<T[keyof T][]> {
-  return this.http.get<AppHttpResponseBase<T>>(this.path + 'validate/' + key, new HttpOptions().cacheable()).pipe(
-      map((values) => values.validatorData as T[K][]),
-  );
-}
+    return this.http.get<AppHttpResponseBase<T>>(this.path + 'validate/' + key, new HttpOptions().cacheable()).pipe(
+      map((values) => values.validatorData),
+    );
+  }
 
 }
 

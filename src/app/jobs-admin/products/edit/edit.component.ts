@@ -10,6 +10,7 @@ import { Product, ProductPrice, PriceChange } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { ProductPricesComponent } from './product-prices/product-prices.component';
+import { Customer } from 'src/app/admin/services';
 
 @Component({
   selector: 'app-edit',
@@ -72,11 +73,11 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
     const prices = (this.productForm.value.prices as ProductPrice[]) || [];
     if (changes.price === null) {
       this.productForm.patchValue({
-        prices: prices.filter(pr => pr.name !== changes.name)
+        prices: prices.filter(pr => pr.customerName !== changes.customerName)
       });
       return;
     }
-    const idx = prices.findIndex(pr => pr.name === changes.name);
+    const idx = prices.findIndex(pr => pr.customerName === changes.customerName);
     if (idx === -1) {
       this.pricesForm.setValue(prices.concat(changes));
     } else {

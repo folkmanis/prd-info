@@ -61,9 +61,9 @@ export class NewComponent implements OnInit, CanComponentDeactivate {
     return this.dialog.discardChanges();
   }
 
-  private nameValidator(contr: string): AsyncValidatorFn {
+  private nameValidator(key: keyof Product): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
-      return this.service.validate(contr, control.value).pipe(
+      return this.service.validate(key, control.value).pipe(
         map(valid => valid ? null : { occupied: control.value })
       );
     };
