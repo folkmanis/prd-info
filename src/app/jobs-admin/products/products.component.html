@@ -1,6 +1,6 @@
 <div style="display: flex;">
     <div style="flex: 0 240px;">
-        <app-find-select-route [routes]="products$"></app-find-select-route>
+        <app-find-select-route [routes]="products$ | async"></app-find-select-route>
     </div>
     <div style="flex: 0 1 600px;">
         <router-outlet></router-outlet>

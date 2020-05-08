@@ -3,47 +3,24 @@ import { HttpClient } from '@angular/common/http';
 import { HttpOptions } from 'src/app/library/http/http-options';
 import { Observable, merge, Subject, EMPTY, of, observable } from 'rxjs';
 import { map, pluck, filter, tap, switchMap, share, shareReplay } from 'rxjs/operators';
-import { ProductResult, Product, ProductPartial, CustomerProduct } from '../interfaces';
+import { ProductResult, Product, CustomerProduct } from 'src/app/interfaces';
 import { LoginService } from 'src/app/login/login.service';
 import { JobsSettings } from 'src/app/library/classes/system-preferences-class';
+import { PrdApiService } from 'src/app/services';
 
 @Injectable()
 export class ProductsService {
   private readonly httpPath = '/data/products/';
 
   constructor(
-    private http: HttpClient,
+    private prdApi: PrdApiService,
   ) { }
 
-
-  public get products$(): Observable<ProductPartial[]> {
-    return this.http.get<ProductResult>(this.httpPath, new HttpOptions().cacheable())
-      .pipe(
-        pluck('products'),
-      );
-  }
-
-
-  productsCategory(category: string): Observable<ProductPartial[]> {
-    return this.http.get<ProductResult>(this.httpPath + 'category/' + category, new HttpOptions().cacheable())
-      .pipe(
-        pluck('products'),
-      );
-  }
-
   product(id: string): Observable<Product> {
-    return this.http.get<ProductResult>(this.httpPath + id, new HttpOptions().cacheable())
-      .pipe(
-        pluck('product'),
-      );
+    return this.prdApi.products.get(id);
   }
 
   productsCustomer(customer: string): Observable<CustomerProduct[]> {
-    return this.http.get<ProductResult>(
-      this.httpPath + 'prices/customer/' + customer,
-      new HttpOptions().cacheable(),
-    ).pipe(
-      pluck('customerProducts')
-    );
+    return this.prdApi.products.productsCustomer(customer);
   }
 }

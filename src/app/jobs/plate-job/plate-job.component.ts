@@ -4,7 +4,7 @@ import { FormControl, FormBuilder, AbstractControl, AsyncValidatorFn, Validation
 import { Observable, combineLatest, of } from 'rxjs';
 import { tap, map, startWith, filter, switchMap } from 'rxjs/operators';
 import { ProductsService, CustomersService, JobService } from '../services';
-import { Job } from '../interfaces';
+import { Job } from 'src/app/interfaces';
 
 @Component({
   selector: 'app-plate-job',
@@ -37,7 +37,7 @@ export class PlateJobComponent implements OnInit {
       ).subscribe();
     } else {
       this.jobService.newJob(event).pipe(
-        tap(job => this.navigateJob(job.jobId)),
+        tap(id => this.navigateJob(id)),
       ).subscribe();
     }
   }

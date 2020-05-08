@@ -1,30 +1,22 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { HttpOptions } from 'src/app/library/http/http-options';
-import { Customer, CustomerResponse, CustomerPartial } from '../interfaces';
+import { Customer, CustomerPartial } from 'src/app/interfaces';
 import { Observable } from 'rxjs';
 import { pluck } from 'rxjs/operators';
+import { PrdApiService } from 'src/app/services';
 
 @Injectable()
 export class CustomersService {
-  private readonly httpPath = '/data/customers/';
 
   constructor(
-    private http: HttpClient,
+    private prdApi: PrdApiService,
   ) { }
 
   /** klientu saraksts */
   get customers$(): Observable<CustomerPartial[]> {
-    return this.http.get<CustomerResponse>(this.httpPath, new HttpOptions().cacheable())
-      .pipe(
-        pluck('customers')
-      );
+    return this.prdApi.customers.get();
   }
 
   getCustomer(id: string): Observable<Customer | null> {
-    return this.http.get<CustomerResponse>(this.httpPath + id, new HttpOptions().cacheable())
-      .pipe(
-        pluck('customer'),
-      );
+    return this.prdApi.customers.get(id);
   }
 }

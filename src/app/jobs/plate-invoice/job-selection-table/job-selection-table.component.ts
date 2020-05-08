@@ -4,7 +4,7 @@ import { Subscription, Observable, BehaviorSubject, Subject, combineLatest } fro
 import { map, tap, takeUntil, shareReplay } from 'rxjs/operators';
 import { SelectionModel } from '@angular/cdk/collections';
 import { JobService, CustomersService } from '../../services';
-import { CustomerPartial, JobPartial, JobProduct } from '../../interfaces';
+import { CustomerPartial, JobPartial, JobProduct } from 'src/app/interfaces';
 
 const TABLE_COLUMNS = ['jobId', 'name', 'productName', 'count', 'price', 'total'];
 

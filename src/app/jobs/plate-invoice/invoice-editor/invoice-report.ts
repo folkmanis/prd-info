@@ -1,5 +1,5 @@
 import { PdfMakeWrapper, Table, Columns, Txt } from 'pdfmake-wrapper';
-import { Invoice, InvoiceProduct, Job, JobProduct, Product } from '../../interfaces';
+import { Invoice, InvoiceProduct, Job, JobProduct, Product } from 'src/app/interfaces';
 import * as moment from 'moment';
 
 export class InvoiceReport {

@@ -1,20 +1,22 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { HttpOptions } from 'src/app/library/http/http-options';
 import { Observable, merge, Subject, BehaviorSubject, EMPTY, of, observable } from 'rxjs';
 import { map, pluck, filter, tap, switchMap, share, shareReplay } from 'rxjs/operators';
+import { PrdApiService } from 'src/app/services';
 
 import { JobService } from './job.service';
-import { Invoice, InvoiceResponse, JobPartial, JobQueryFilter, ProductTotals, InvoicesFilter } from '../interfaces';
+import {
+  JobPartial, JobQueryFilter,
+  Invoice, InvoicesFilter,
+  ProductTotals
+} from 'src/app/interfaces';
 
 @Injectable()
 export class InvoicesService {
-  private readonly httpPath = '/data/invoices/';
   jobFilter$ = new Subject<JobQueryFilter>();
   totalsFilter$ = new Subject<number[]>();
 
   constructor(
-    private http: HttpClient,
+    private prdApi: PrdApiService,
     private jobService: JobService,
   ) { }
 
@@ -29,32 +31,19 @@ export class InvoicesService {
   );
 
   createInvoice(params: { selectedJobs: number[], customerId: string; }): Observable<Invoice> {
-    return this.http.post<InvoiceResponse>(this.httpPath, params, new HttpOptions()).pipe(
-      tap(resp => console.log(resp)),
-      pluck('invoice')
-    );
+    return this.prdApi.invoices.createInvoice(params);
   }
 
   getInvoice(invoiceId: string): Observable<Invoice> {
-    return this.http.get<InvoiceResponse>(this.httpPath + invoiceId, new HttpOptions().cacheable()).pipe(
-      pluck('invoice'),
-    );
+    return this.prdApi.invoices.get(invoiceId);
   }
 
   private getTotalsHttp(jobsId: number[]): Observable<ProductTotals[]> {
-    return this.http.get<InvoiceResponse>(this.httpPath + 'totals', new HttpOptions({ jobsId })).pipe(
-      pluck('totals'),
-    );
+    return this.prdApi.invoices.getTotals(jobsId);
   }
 
   getInvoicesHttp(params: InvoicesFilter): Observable<Invoice[]> {
-    return this.http.get<InvoiceResponse>(this.httpPath, new HttpOptions(params).cacheable()).pipe(
-      pluck('invoices')
-    );
-  }
-
-  getInvoicePdf(invoiceId: string): Observable<Blob> {
-    return this.http.get(this.httpPath + invoiceId + '/report', { responseType: 'blob' });
+    return this.prdApi.invoices.get(params);
   }
 
 }

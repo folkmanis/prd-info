@@ -1,20 +1,17 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { HttpOptions } from 'src/app/library/http/http-options';
-import { Job, JobResponse, JobPartial, JobQueryFilter, Invoice, InvoiceResponse } from '../interfaces';
+import { Job, JobPartial, JobQueryFilter, Invoice, InvoiceResponse } from 'src/app/interfaces';
 import { Observable, of, Subject, combineLatest, ReplaySubject, BehaviorSubject } from 'rxjs';
 import { map, tap, startWith, switchMap, share, pluck } from 'rxjs/operators';
+import { PrdApiService } from 'src/app/services';
 
 @Injectable()
 export class JobService {
-
-  private readonly httpPath = '/data/jobs/';
 
   private readonly updateJobs$: Subject<void> = new Subject();
   readonly filter$: Subject<JobQueryFilter> = new BehaviorSubject({});
 
   constructor(
-    private http: HttpClient,
+    private prdApi: PrdApiService,
   ) { }
 
   jobs$: Observable<JobPartial[]> = combineLatest([
@@ -25,11 +22,10 @@ export class JobService {
     share(),
   );
 
-  newJob(job: Partial<Job>): Observable<Job> {
-    console.log(job);
-    return this.http.post<JobResponse>(this.httpPath, job, new HttpOptions()).pipe(
-      tap(resp => resp.insertedId && this.updateJobs$.next()),
-      map(resp => resp.job),
+  newJob(job: Partial<Job>): Observable<number> {
+    return this.prdApi.jobs.insertOne(job).pipe(
+      map(id => +id),
+      tap(() => this.updateJobs$.next()),
     );
   }
 
@@ -38,28 +34,17 @@ export class JobService {
     const jobId = job.jobId;
     delete job.jobId;
     delete job._id;
-    return this.http.post<JobResponse>(this.httpPath + jobId, job).pipe(
-      tap(resp => resp.modifiedCount > 0 && this.updateJobs$.next()),
-      map(resp => !!resp.modifiedCount),
+    return this.prdApi.jobs.updateOne(jobId, job).pipe(
+      tap(resp => resp && this.updateJobs$.next()),
     );
   }
 
   getJob(jobId: number): Observable<Job | undefined> {
-    return this.http.get<JobResponse>(this.httpPath + jobId, new HttpOptions().cacheable()).pipe(
-      map(resp => resp.job)
-    );
-  }
-
-  getJobs(params: JobQueryFilter): Observable<JobPartial[]> {
-    return this.http.get<JobResponse>(this.httpPath, new HttpOptions(params)).pipe(
-      pluck('jobs'),
-    );
+    return this.prdApi.jobs.get(jobId);
   }
 
   getJobList(filter?: JobQueryFilter): Observable<JobPartial[]> {
-    return this.http.get<JobResponse>(this.httpPath, new HttpOptions(filter).cacheable()).pipe(
-      map(resp => resp.jobs)
-    );
+    return this.prdApi.jobs.get(filter);
   }
 
 }

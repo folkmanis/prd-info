@@ -1,4 +1,4 @@
-import { AppHttpResponseBase } from 'src/app/library/http/http-response-base';
+import { AppHttpResponseBase } from 'src/app/library/http';
 import { Job } from './job';
 
 export interface Invoice {
@@ -22,9 +22,7 @@ export interface InvoiceProduct {
     price?: number;
 }
 
-export interface InvoiceResponse extends AppHttpResponseBase {
-    invoices?: Invoice[];
-    invoice?: Invoice;
+export interface InvoiceResponse extends AppHttpResponseBase<Invoice> {
     totals?: ProductTotals[];
 }
 
