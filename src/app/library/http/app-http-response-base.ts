@@ -9,5 +9,5 @@ export interface AppHttpResponseBase<T = any> {
         n: number;
     };
     data?: Partial<T>[] | T;
-    validatorData?: (keyof T)[];
+    validatorData?: T[keyof T][];
 }

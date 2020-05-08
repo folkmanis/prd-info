@@ -47,7 +47,7 @@ export class CustomersService {
     );
   }
 
-  validator<K extends keyof Customer>(key: K, value: K): Observable<boolean> {
+  validator<K extends keyof Customer>(key: K, value: Customer[K]): Observable<boolean> {
     return this.prdApi.customers.validatorData(key).pipe(
       map(values => !values.includes(value))
     );
