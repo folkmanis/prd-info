@@ -15,8 +15,8 @@ export interface Job {
 export type JobPartial = Pick<Job, 'receivedDate' | 'customerJobId' | 'name' | 'jobId' | 'customer' | 'products' | 'invoiceId'>;
 
 export interface JobResponse extends AppHttpResponseBase<Job> {
-    jobs?: JobPartial[];
-    job?: Job;
+    // jobs?: JobPartial[];
+    // job?: Job;
 }
 
 export type JobProduct = Pick<Product, 'name'> & {

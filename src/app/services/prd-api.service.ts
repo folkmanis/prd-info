@@ -2,10 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, merge, Subject } from 'rxjs';
 import { map, pluck, filter, tap, switchMap, share, shareReplay } from 'rxjs/operators';
-
 import { HttpOptions, AppHttpResponseBase } from 'src/app/library';
-
-import { Customer, Product, CustomerProduct, ProductResult } from '../interfaces';
+import {
+  Customer,
+  Product, ProductResult, CustomerProduct, ProductTotals,
+  Job,
+  Invoice, InvoiceResponse
+} from '../interfaces';
 
 const HTTP_PATH = '/data/';
 
@@ -19,8 +22,9 @@ export class PrdApiService {
   ) { }
 
   customers = new CustomersApi(this.http);
-
   products = new ProductsApi(this.http);
+  jobs = new JobsApi(this.http);
+  invoices = new InvoicesApi(this.http);
 
 }
 
@@ -100,5 +104,32 @@ class ProductsApi extends ApiBase<Product> {
     );
 
   }
+
+}
+
+class JobsApi extends ApiBase<Job> {
+  protected get path(): string {
+    return HTTP_PATH + 'jobs/';
+  }
+}
+
+class InvoicesApi extends ApiBase<Invoice> {
+  protected get path(): string {
+    return HTTP_PATH + 'invoices/';
+  }
+
+  createInvoice(params: { selectedJobs: number[], customerId: string; }): Observable<Invoice> {
+    return this.http.post<InvoiceResponse>(this.path, params, new HttpOptions()).pipe(
+      map(resp => resp.data as Invoice)
+    );
+  }
+
+  getTotals(jobsId: number[]): Observable<ProductTotals[]> {
+    return this.http.get<InvoiceResponse>(this.path + 'totals', new HttpOptions({ jobsId })).pipe(
+      map(resp => resp.totals),
+    );
+
+  }
+
 
 }

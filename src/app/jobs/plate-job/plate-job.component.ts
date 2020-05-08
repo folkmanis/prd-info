@@ -37,7 +37,7 @@ export class PlateJobComponent implements OnInit {
       ).subscribe();
     } else {
       this.jobService.newJob(event).pipe(
-        tap(job => this.navigateJob(job.jobId)),
+        tap(id => this.navigateJob(id)),
       ).subscribe();
     }
   }
