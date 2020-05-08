@@ -5,7 +5,7 @@ import * as moment from 'moment';
 
 import { ParserService } from 'src/app/library';
 
-import { Job } from 'src/app/jobs/interfaces';
+import { Job } from 'src/app/interfaces';
 // import { CustomersService, ProductsService } from '../../services';
 
 
