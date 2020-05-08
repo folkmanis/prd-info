@@ -3,11 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { HttpOptions } from 'src/app/library/http/http-options';
 import { Observable, merge, Subject, EMPTY, of, observable } from 'rxjs';
 import { map, pluck, filter, tap, switchMap, share, shareReplay } from 'rxjs/operators';
-import { ProductResult, ProductNoPrices } from './product';
-import { Product } from '../../services/jobs-admin.interfaces';
+import { Customer, Product, ProductResult, ProductNoPrices } from 'src/app/interfaces';
 import { LoginService } from 'src/app/login/login.service';
 import { JobsSettings } from 'src/app/library/classes/system-preferences-class';
-import { Customer } from '../../services/jobs-admin.interfaces';
 
 @Injectable({
   providedIn: 'any'
@@ -56,7 +54,7 @@ export class ProductsService {
   insertProduct(prod: ProductNoPrices): Observable<string> {
     return this.http.put<ProductResult>(this.httpPath, prod, new HttpOptions()).pipe(
       this.updateProducts(() => this.getAllProducts(), this._updateProducts$),
-      map(res => res.insertedId),
+      map(res => res.insertedId.toString()),
     );
   }
 

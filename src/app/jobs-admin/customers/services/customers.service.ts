@@ -1,71 +1,56 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { HttpOptions } from 'src/app/library/http/http-options';
 import { Observable, merge, Subject } from 'rxjs';
 import { map, pluck, filter, tap, switchMap, share, shareReplay } from 'rxjs/operators';
-import { Customer } from './customer';
+import { Customer, CustomerPartial, CustomerResponse } from 'src/app/interfaces';
 
-type CustomerPartial = Pick<Customer, '_id' | 'CustomerName' | 'code'>;
-interface Result { n: number; ok: number; }
-interface NewCustomerResult {
-  insertedId: string;
-  result: {
-    n: number;
-    ok: number;
-  };
-  error: boolean;
-}
+import { PrdApiService } from 'src/app/services';
+
 
 @Injectable()
 export class CustomersService {
-  private httpPath = '/data/customers/';
   private updateCustomers$: Subject<CustomerPartial[]> = new Subject();
+
   constructor(
-    private http: HttpClient,
+    private prdApi: PrdApiService,
   ) { }
 
-  customers$: Observable<CustomerPartial[]> = merge(
+  customers$: Observable<Partial<Customer>[]> = merge(
     this.updateCustomers$, this.getCustomerList()
   ).pipe(
     share(),
   );
 
   updateCustomer(customer: Partial<Customer>): Observable<boolean> {
-    return this.http.post<{ result: Result; }>(this.httpPath + 'update', customer, new HttpOptions()).pipe(
-      map(resp => !!resp.result.ok)
-    );
+    const _id = customer._id;
+    delete customer._id;
+    return this.prdApi.customers.updateOne(_id, customer);
   }
 
-  getCustomerList(): Observable<CustomerPartial[]> {
-    return this.http.get<{ customers: CustomerPartial[]; }>(this.httpPath, new HttpOptions()).pipe(
-      pluck('customers')
-    );
+  getCustomerList(): Observable<Partial<Customer>[]> {
+    return this.prdApi.customers.get({ disabled: false });
   }
 
   getCustomer(id: string): Observable<Customer | null> {
-    return this.http.get<{ customer: Customer | null; }>(this.httpPath + id, new HttpOptions()).pipe(
-      pluck('customer'),
-    );
+    return this.prdApi.customers.get(id);
   }
 
   deleteCustomer(id: string): Observable<boolean> {
-    return this.http.delete<{ result: Result; }>(this.httpPath + id, new HttpOptions()).pipe(
-      pluck('result'),
-      map(result => result.ok > 0 && result.n > 0),
-      filter(result => result),
+    return this.prdApi.customers.delete(id).pipe(
+      map(result => result > 0),
       this.reloadCustomers(() => this.getCustomerList(), this.updateCustomers$),
     );
   }
 
   saveNewCustomer(customer: Customer): Observable<string | null> {
-    return this.http.put<NewCustomerResult>(this.httpPath + 'new', customer, new HttpOptions()).pipe(
-      map(resp => resp.error || !resp.result.ok ? null : resp.insertedId),
-      this.reloadCustomers(() => this.getCustomerList(), this.updateCustomers$),
+    return this.prdApi.customers.insertOne(customer).pipe(
+      map(resp => resp ? resp.toString() : null)
     );
   }
 
-  validator(value: { code?: string, CustomerName?: string; }): Observable<boolean> {
-    return this.http.get<boolean>(this.httpPath + 'validate', new HttpOptions(value));
+  validator<K extends keyof Customer>(key: K, value: K): Observable<boolean> {
+    return this.prdApi.customers.validatorData(key).pipe(
+      map(values => !values.includes(value))
+    );
   }
 
   private reloadCustomers<T, K>(updateFunc: () => Observable<K>, emiter: Subject<K>): (src: Observable<T>) => Observable<T> {

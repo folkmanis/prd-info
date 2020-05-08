@@ -4,7 +4,7 @@ import { map, filter, tap, switchMap, debounceTime, takeUntil } from 'rxjs/opera
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder, AbstractControl, AsyncValidatorFn } from '@angular/forms';
 import { isEqual } from 'lodash';
-import { Customer } from '../services/customer';
+import { Customer } from 'src/app/interfaces';
 import { CustomersService } from '../services/customers.service';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
@@ -61,7 +61,6 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
 
   onSave() {
     this.service.updateCustomer(this.customerForm.value).pipe(
-      filter(res => res),
       tap(() => this.customerForm.markAsPristine()),
       tap(() => this.customer = this.customerForm.value)
     ).subscribe();
@@ -98,9 +97,9 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
     };
   }
 
-  private validateCode(field: 'code' | 'CustomerName'): AsyncValidatorFn {
+  private validateCode(field: keyof Customer): AsyncValidatorFn {
     return (control: AbstractControl): Observable<{ [key: string]: any; } | null> => {
-      return this.customer?.code === control.value ? of(null) : this.service.validator({ [field]: control.value }).pipe(
+      return this.customer?.code === control.value ? of(null) : this.service.validator(field, control.value).pipe(
         map(val => val ? null : { occupied: control.value })
       );
     };

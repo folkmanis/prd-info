@@ -6,7 +6,7 @@ import { map, filter, tap, switchMap, debounceTime, takeUntil, share } from 'rxj
 import { isEqual, pick, omit, keys, cloneDeep } from 'lodash';
 
 import { ProductsService } from '../services/products.service';
-import { Product, ProductPrice, PriceChange } from '../services/product';
+import { Product, ProductPrice, PriceChange } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { ProductPricesComponent } from './product-prices/product-prices.component';

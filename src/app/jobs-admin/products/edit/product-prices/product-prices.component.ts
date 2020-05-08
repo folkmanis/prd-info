@@ -2,8 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject, BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
-import { ProductPrice, PriceChange } from '../../services/product';
-import { Customer } from '../../../services/jobs-admin.interfaces';
+import { Customer, ProductPrice, PriceChange } from 'src/app/interfaces';
 import { cloneDeep, pick } from 'lodash';
 
 

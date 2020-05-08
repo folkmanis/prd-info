@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { LibraryModule } from '../library/library.module';
 
 import { JobsRoutingModule } from './jobs-routing.module';
 import { JobsComponent } from './jobs.component';
-import { HTTP_INTERCEPTORS, HttpCacheService } from '../library/http';
+import { HttpCacheService } from '../library/http';
 
 
 @NgModule({
@@ -15,7 +16,7 @@ import { HTTP_INTERCEPTORS, HttpCacheService } from '../library/http';
     JobsRoutingModule
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: HttpCacheService },
+    { provide: HTTP_INTERCEPTORS, useClass: HttpCacheService, multi: true },
   ]
 })
 export class JobsModule { }

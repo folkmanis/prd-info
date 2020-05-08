@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule, ErrorHandler, LOCALE_ID, DEFAULT_CURRENCY_CODE } from '@angular/core';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { LibraryModule } from './library/library.module';
 
@@ -11,7 +12,7 @@ import { LoginComponent } from './login/login.component';
 import { SideMenuComponent } from './side-menu/side-menu.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import { ErrorsService } from './library/errors/errors.service';
-import { CacheInterceptorService, HTTP_INTERCEPTORS } from './library/http';
+import { CacheInterceptorService } from './library/http';
 
 import { registerLocaleData } from '@angular/common';
 import localeLv from '@angular/common/locales/lv';
