@@ -6,3 +6,15 @@
     border: solid 2px rgba(0, 0, 0, 0.5);
     /* margin: 10px; */
 }
+
+.pogas {
+    margin: 16px 0;
+}
+
+button {
+    margin-right: 16px;
+}
+
+.products {
+    margin: 8px 8px;
+}

@@ -28,7 +28,6 @@ import { CustomersService, ProductsService, JobImportService } from './services'
   providers: [
     CustomersService,
     ProductsService,
-    JobImportService,
     ParserService,
     { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptorService, multi: true, },
   ],

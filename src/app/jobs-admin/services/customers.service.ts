@@ -26,7 +26,7 @@ export class CustomersService {
     return this.prdApi.customers.updateOne(_id, customer);
   }
 
-  getCustomerList(): Observable<Partial<Customer>[]> {
+  getCustomerList(): Observable<CustomerPartial[]> {
     return this.prdApi.customers.get({ disabled: false });
   }
 

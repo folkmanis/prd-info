@@ -1,6 +1,6 @@
 export class Parser {
 
-    parseCsv(csv: string, delimiter: string): string[][] {
+    parseCsv(csv: string, delimiter: string): (string | number)[][] {
         const lines = csv.split('\n');
         const data = [];
 

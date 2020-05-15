@@ -25,6 +25,7 @@
     "@angular/router": "~9.0.2",
     "@types/lodash.isequal": "^4.5.5",
     "@types/pdfmake": "^0.1.13",
+    "angular-persistence": "^1.0.1",
     "codelyzer": "^5.2.2",
     "lodash.isequal": "^4.5.0",
     "moment": "^2.24.0",

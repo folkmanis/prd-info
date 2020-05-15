@@ -5,7 +5,7 @@ import { Observable, Subscription } from 'rxjs';
 import { map, filter, tap, switchMap, debounceTime, takeUntil } from 'rxjs/operators';
 import { isEqual, pick, omit, keys } from 'lodash';
 
-import { ProductsService } from '../services/products.service';
+import { ProductsService } from '../../services/products.service';
 import { Product } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';

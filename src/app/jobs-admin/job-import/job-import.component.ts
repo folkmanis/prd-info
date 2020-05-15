@@ -1,26 +1,144 @@
-import { Component, OnInit } from '@angular/core';
-
-import { JobImportService } from './services/job-import.service';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { tap, map, switchMap, filter } from 'rxjs/operators';
+import { Customer, Job } from 'src/app/interfaces';
+import { JobImportService, ParsedObject } from '../services/job-import.service';
+import { LoginService } from 'src/app/login/login.service';
+import { JobsSettings } from 'src/app/library/classes/system-preferences-class';
+import { ProductPriceImport } from '../services';
+import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 
 @Component({
   selector: 'app-job-import',
   templateUrl: './job-import.component.html',
-  styleUrls: ['./job-import.component.css']
+  styleUrls: ['./job-import.component.css'],
+  providers: [JobImportService],
 })
-export class JobImportComponent implements OnInit {
+export class JobImportComponent implements OnInit, OnDestroy {
 
   constructor(
-    private service: JobImportService
+    private router: Router,
+    private service: JobImportService,
+    private fb: FormBuilder,
+    private dialog: ConfirmationDialogService,
+    private loginService: LoginService,
   ) { }
 
+  cetegories$ = this.loginService.sysPreferences$.pipe(
+    map(sysConf => sysConf.get('jobs') as JobsSettings),
+    map(jobSett => jobSett.productCategories),
+  );
+
+  parsedJobs: ParsedObject[];
+  missingCustomers: string[] = [];
+  missingProducts: string[] = [];
+  prices: ProductPriceImport[] = [];
+  missingPrices: ProductPriceImport[] = [];
+  jobs: Partial<Job>[] = [];
+  jobsToUpload: Partial<Job>[] = [];
+
+  customersForm = new FormArray([]);
+  productsForm = new FormArray([]);
+  pricesForm = new FormArray([]);
+
+  private readonly _subs = new Subscription();
+
   ngOnInit(): void {
+    // this.customersForm.setErrors({ required: 'Required' });
+  }
+
+  ngOnDestroy(): void {
+    this._subs.unsubscribe();
   }
 
   onFileDrop(fileList: FileList): void {
     const file = fileList.item(0);
     if (file.name.endsWith('.csv') && fileList.length === 1) {
-      this.service.parseCsvFile(file).subscribe();
+      this.service.parseCsvFile(file).pipe(
+        tap(parsed => this.parsedJobs = parsed)
+      ).subscribe();
     }
+  }
+
+  onCsvUploaded(): void {
+    this.service.findMissingCustomers(this.parsedJobs).pipe(
+      tap(missing => this.missingCustomers = missing),
+    ).subscribe();
+  }
+
+  onCustomersComplete(): void {
+    this.service.findMissingProducts(this.parsedJobs).pipe(
+      tap(missing => this.createProductsForm(missing)),
+    ).subscribe(missing => this.missingProducts = missing);
+  }
+
+  onProductsComplete(): void {
+    this.service.convertToJobs(this.parsedJobs, this.customersForm.value).pipe(
+      tap(jobs => this.jobs = jobs),
+      switchMap(jobs => this.service.getCustomerProducts(jobs)),
+      tap(products => this.prices = products),
+      tap(products => this.missingPrices = products.filter(pr => !pr.price)),
+    )
+      .subscribe();
+  }
+
+  onPricesComplete(): void {
+    // Papildina cenu masīvu (trūkstošās cenas aizstāj ar vērtībām no formas)
+    this.prices = this.service.mergePrices(this.prices, this.pricesForm.value);
+    this.jobsToUpload = this.service.updateJobsPrices(this.jobs, this.prices);
+  }
+
+  onUploadJobs(): void {
+    this.dialog.confirm('Vai augšuplādēt jaunos ierakstus?').pipe(
+      filter(resp => resp),
+      switchMap(() =>
+        this.service.uploadJobs({
+          customers: this.customersForm.value,
+          products: this.productsForm.value,
+          prices: this.prices,
+          jobs: this.jobsToUpload,
+        })
+      ),
+      tap(resp => console.log(resp)),
+      tap(() => this.router.navigate(['/jobs'])),
+    ).subscribe();
+  }
+
+  private createProductsForm(productsStr: string[]) {
+    this.productsForm.clear();
+    productsStr.forEach(prod => this.productsForm.push(
+      this.fb.group({
+        name: [prod],
+        category: [undefined, Validators.required],
+        description: [undefined],
+      })
+    ));
+  }
+
+
+
+  /** Testam */
+  savePersistence(): void {
+    localStorage.setItem('parsedJobs', JSON.stringify(this.parsedJobs));
+    localStorage.setItem('missingCustomers', JSON.stringify(this.missingCustomers));
+    localStorage.setItem('customersForm', JSON.stringify(this.customersForm.value));
+    localStorage.setItem('productsForm', JSON.stringify(this.productsForm.value));
+    localStorage.setItem('pricesForm', JSON.stringify(this.pricesForm.value));
+  }
+
+  restoreParsedJobs(): void {
+    this.parsedJobs = JSON.parse(localStorage.getItem('parsedJobs'));
+  }
+  restoreCustomers(): void {
+    this.customersForm.setValue(JSON.parse(localStorage.getItem('customersForm')));
+  }
+  restoreProducts(): void {
+    this.productsForm.setValue(JSON.parse(localStorage.getItem('productsForm')));
+  }
+  restorePrices(): void {
+    this.pricesForm.setValue(JSON.parse(localStorage.getItem('pricesForm')));
   }
 
 }

@@ -21,6 +21,8 @@ export interface Product {
     prices?: ProductPrice[];
 }
 
+export type ProductPartial = Pick<Product, '_id' | 'name' | 'category'>;
+
 export interface ProductPrice {
     customerName: string;
     price: number;

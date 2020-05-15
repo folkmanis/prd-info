@@ -8,7 +8,7 @@ export class ParserService {
 
   private readonly _parser = new Parser();
 
-  parseCsv(csvString: string, delimiter: string): string[][] {
+  parseCsv(csvString: string, delimiter: string): (string | number)[][] {
     return this._parser.parseCsv(csvString, delimiter);
   }
 

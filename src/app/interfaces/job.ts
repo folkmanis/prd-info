@@ -22,7 +22,7 @@ export interface JobResponse extends AppHttpResponseBase<Job> {
 export type JobProduct = Pick<Product, 'name'> & {
     price: number;
     count: number;
-    comment: string;
+    comment?: string;
 };
 
 export interface JobQueryFilter {

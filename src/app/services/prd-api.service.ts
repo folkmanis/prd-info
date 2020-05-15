@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, merge, Subject } from 'rxjs';
+import { Observable, merge, Subject, of } from 'rxjs';
 import { map, pluck, filter, tap, switchMap, share, shareReplay } from 'rxjs/operators';
 import { HttpOptions, AppHttpResponseBase } from 'src/app/library';
 import {
@@ -9,6 +9,13 @@ import {
   Job,
   Invoice, InvoiceResponse
 } from '../interfaces';
+
+
+interface CustomerProductPrice {
+  customerName: string;
+  product: string;
+  price?: number | null;
+}
 
 const HTTP_PATH = '/data/';
 
@@ -104,6 +111,15 @@ class ProductsApi extends ApiBase<Product> {
     );
 
   }
+  /** Preču cenas vairākiem klientu un preču */
+  customersProducts(customerProducts: CustomerProductPrice[]): Observable<CustomerProductPrice[]> {
+    return this.http.get<{ data: CustomerProductPrice[]; }>(
+      this.path + 'prices/customers',
+      new HttpOptions({ filter: JSON.stringify(customerProducts) })
+    ).pipe(
+      map(resp => resp.data)
+    );
+  }
 
 }
 
@@ -111,6 +127,13 @@ class JobsApi extends ApiBase<Job> {
   protected get path(): string {
     return HTTP_PATH + 'jobs/';
   }
+
+  importJobs(data: any): Observable<number> {
+    return this.http.post<ProductResult>(this.path + 'jobimport', data, new HttpOptions()).pipe(
+      map(resp => resp.modifiedCount)
+    );
+  }
+
 }
 
 class InvoicesApi extends ApiBase<Invoice> {

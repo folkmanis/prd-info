@@ -62,7 +62,7 @@ export class ProductsService {
     return this.prdApi.customers.get();
   }
 
-  private getAllProducts(): Observable<Pick<Product, '_id' | 'name' | 'category'>[]> {
+  getAllProducts(): Observable<Pick<Product, '_id' | 'name' | 'category'>[]> {
     return this.prdApi.products.get();
   }
 
