@@ -34,11 +34,6 @@ export class InvoiceEditorComponent implements OnInit {
   onPdfDownload(invoice: Invoice): void {
     const report = new InvoiceReport(invoice);
     report.open();
-    // window.open('/data/invoices/' + invoiceId + '/report', '_blank');
-    // this.invoicesService.getInvoice(invoiceId).pipe(
-    //   tap(resp => console.log('download pdf', invoiceId, resp)),
-    // ).subscribe();
-
   }
 
 }

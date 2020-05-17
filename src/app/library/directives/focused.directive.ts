@@ -20,7 +20,6 @@ export class FocusedDirective implements OnInit {
 
   private setFocus(foc: boolean): () => void {
     return () => {
-      console.log(foc);
       if (foc) {
         this.el.nativeElement.focus();
       } else {

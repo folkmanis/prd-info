@@ -21,7 +21,6 @@ export class ImportNewJobsComponent implements OnInit {
   jobs$ = new Subject<Partial<Job>[]>();
   dataSource$ = this.jobs$.pipe(
     map(jobs => this.service.flattenJobs(jobs)),
-    tap(jobs => console.log(jobs)),
     map(jobs => jobs.map(job => this.formatJob(job))),
   );
   dataColumns = [

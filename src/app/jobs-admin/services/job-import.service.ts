@@ -58,7 +58,6 @@ export class JobImportService {
         .map(this.normalizeArray)
         .filter(this.filterEmpty)
       ),
-      tap(arr => console.log(arr[3])),
     );
   }
 
@@ -151,7 +150,6 @@ export class JobImportService {
         }));
       }
     }
-    console.log(flatJobs);
     return flatJobs;
   }
 

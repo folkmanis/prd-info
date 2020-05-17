@@ -101,7 +101,6 @@ export class JobImportComponent implements OnInit, OnDestroy {
           jobs: this.jobsToUpload,
         })
       ),
-      tap(resp => console.log(resp)),
       tap(() => this.router.navigate(['/jobs'])),
     ).subscribe();
   }
