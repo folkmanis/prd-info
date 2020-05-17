@@ -1,60 +1,65 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, AbstractControl } from '@angular/forms';
+import { Observable, of, Subject, Subscription } from 'rxjs';
+import { tap, map, takeUntil, filter } from 'rxjs/operators';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ModulePreferencesService } from '../../services/module-preferences.service';
-import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
-import { JobsSettings, DEFAULT_SYSTEM_PREFERENCES } from 'src/app/library/classes/system-preferences-class';
-import { Observable, of, Subject } from 'rxjs';
 import { PreferencesComponent } from '../preferences-component.class';
-import { LoginService } from 'src/app/login/login.service';
-import { tap, map, takeUntil } from 'rxjs/operators';
+import { cloneDeep } from 'lodash';
+import { JobsSettings, DEFAULT_SYSTEM_PREFERENCES } from 'src/app/library/classes/system-preferences-class';
+import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
 
 @Component({
   selector: 'app-jobs-preferences',
   templateUrl: './jobs-preferences.component.html',
   styleUrls: ['./jobs-preferences.component.css']
 })
-export class JobsPreferencesComponent implements OnInit, PreferencesComponent {
+export class JobsPreferencesComponent implements OnInit, PreferencesComponent, OnDestroy {
 
   constructor(
     private moduleService: ModulePreferencesService,
-    private fb: FormBuilder,
-    private loginService: LoginService
+    private dialog: MatDialog,
   ) { }
 
-  private unsub = new Subject<void>();
-  preferencesForm = this.fb.group({
-    productCategories: [''],
-  });
-  settings: JobsSettings;
-  productCategories: Array<{ category: string, description: string; }>;
-
-  get catContr(): AbstractControl {
-    return this.preferencesForm.get('productCategories');
-  }
-
-  categories$ = this.moduleService.getModulePreferences<JobsSettings>('jobs').pipe(
-    map(sett => sett.productCategories ||  (DEFAULT_SYSTEM_PREFERENCES.get('jobs') as JobsSettings).productCategories),
-    tap(cat => this.productCategories = cat),
-    tap(console.log),
-  );
+  pristine = true;
+  private _subs = new Subscription();
+  private oldSettings: JobsSettings;
+  newSettings: JobsSettings;
 
   ngOnInit(): void {
-    this.categories$.pipe(takeUntil(this.unsub)).subscribe();
+    const subs = this.moduleService.getModulePreferences<JobsSettings>('jobs')
+      .subscribe(sett => {
+        this.oldSettings = sett || DEFAULT_SYSTEM_PREFERENCES.get('jobs') as JobsSettings;
+        this.newSettings = cloneDeep(sett);
+      });
+    this._subs.add(subs);
+  }
+
+  ngOnDestroy(): void {
+    this._subs.unsubscribe();
   }
 
   canDeactivate(): Observable<boolean> {
-    return of(true);
+    return of(this.pristine);
+  }
+
+  newCategory(): void {
+    const dialogRef = this.dialog.open(CategoryDialogComponent);
+    dialogRef.afterClosed().pipe(
+      filter(cat => cat),
+      tap(() => this.pristine = false),
+    ).subscribe(cat => this.newSettings.productCategories.push(cat));
   }
 
   onSave(): void {
-    const sett: JobsSettings = { productCategories: this.productCategories };
-    console.log(sett);
-    this.moduleService.updateModulePreferences('jobs', sett).subscribe();
-    return;
+    this.moduleService.updateModulePreferences('jobs', this.newSettings).pipe(
+      tap(() => this.pristine = true),
+    ).subscribe();
   }
 
   onReset(): void {
-    return;
+    this.newSettings = cloneDeep(this.oldSettings);
+    this.pristine = true;
   }
 
 }
