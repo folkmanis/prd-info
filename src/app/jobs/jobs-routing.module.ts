@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { JobsComponent } from './jobs.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
+import { JobListComponent } from './job-list/job-list.component';
 import { PlateJobComponent } from './plate-job/plate-job.component';
 import { PlateInvoiceComponent } from './plate-invoice/plate-invoice.component';
 import { InvoiceEditorComponent } from './plate-invoice/invoice-editor/invoice-editor.component';
@@ -17,6 +18,12 @@ const routes: Routes = [
       {
         path: '',
         component: MainMenuComponent,
+        children: [
+          {
+            path: '',
+            component: JobListComponent,
+          }
+        ]
       },
       {
         path: 'plate-job',

@@ -20,6 +20,7 @@ import { InvoicesListComponent } from './plate-invoice/invoices-list/invoices-li
 import { PdfMakeWrapper } from 'pdfmake-wrapper';
 
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+import { JobFilterComponent } from './job-list/job-filter/job-filter.component';
 PdfMakeWrapper.setFonts(pdfFonts);
 
 @NgModule({
@@ -35,6 +36,7 @@ PdfMakeWrapper.setFonts(pdfFonts);
     JobSelectionTableComponent,
     NewInvoiceComponent,
     InvoicesListComponent,
+    JobFilterComponent,
   ],
   imports: [
     CommonModule,

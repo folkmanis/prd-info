@@ -1,0 +1,17 @@
+.filter-row {
+    height: 64px;
+    width: 100%;
+    display: flex;
+}
+
+.filter-row mat-form-field {
+    padding-left: 16px;
+}
+
+.filter-row .search {
+    flex: 0 1 200px;
+}
+
+.filter-row .options {
+    flex: 1;
+}

@@ -2,9 +2,37 @@
     width: 100%;
 }
 
-.cdk-column-buttons {
-    width: 48px;
-    color: rgba(0, 0, 0, .8);
+table {
+    border-spacing: 0;
+    border-collapse: separate;
+}
+
+tr {
+    height: 32px;
+}
+
+tr:hover {
+    background-color: rgba(0, 0, 0, .08);
+}
+
+td, th {
+    display: table-cell;
+    padding: 0 4px;
+    font-size: 14px;
+    color: rgba(0, 0, 0, .87);
+    border-bottom-color: rgba(0, 0, 0, .12);
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    cursor: pointer;
+    text-align: left;
+}
+
+.job-completed td {
+    color: rgba(0, 0, 0, .50);
+}
+
+.column-1 {
+    padding-left: 16px;
 }
 
 .cdk-column-jobId {
@@ -26,10 +54,6 @@ td.cdk-column-name:hover {
 
 .cdk-column-receivedDate {
     width: 90px;
-}
-
-tr.mat-row {
-    height: 40px;
 }
 
 .cdk-column-customer {
