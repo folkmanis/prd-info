@@ -1,4 +1,4 @@
-<h2>
+<h2 [appCopyClipboard]="job.jobId" (copied)="onCopy($event)">
     {{job ? job.jobId : 'Jauns darbs'}}
 </h2>
 <form *ngIf="job" [formGroup]="jobForm">
@@ -25,6 +25,9 @@
             <mat-error *ngIf="nameControl.hasError('required')">
                 Jānorāda obligāti
             </mat-error>
+            <button mat-icon-button [appCopyClipboard]="nameControl.value" (copied)="onCopy($event)" matSuffix>
+                <mat-icon>filter_none</mat-icon>
+            </button>
         </mat-form-field>
     </section>
     <section>

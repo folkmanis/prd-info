@@ -24,7 +24,6 @@ export class PlateJobComponent implements OnInit {
     map(param => param.get('jobId') as string | undefined),
     switchMap(jobId => jobId ? this.jobService.getJob(+jobId) : of({ jobId: undefined })),
     tap(job => this.activeJob = job),
-    // tap(job => console.log(job)),
   );
 
   ngOnInit(): void {

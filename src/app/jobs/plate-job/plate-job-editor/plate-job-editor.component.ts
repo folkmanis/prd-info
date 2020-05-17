@@ -1,4 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatInput } from '@angular/material/input';
 import { FormControl, FormBuilder, AbstractControl, AsyncValidatorFn, ValidationErrors, Validators, FormGroup, FormArray } from '@angular/forms';
 import { Observable, combineLatest, of } from 'rxjs';
@@ -20,8 +22,10 @@ export class PlateJobEditorComponent implements OnInit {
   @Output() private jobChanges: EventEmitter<Partial<Job>> = new EventEmitter();
 
   constructor(
+    private router: Router,
     private fb: FormBuilder,
     private customersService: CustomersService,
+    private snack: MatSnackBar,
   ) { }
 
   job: Partial<Job>;
@@ -70,6 +74,10 @@ export class PlateJobEditorComponent implements OnInit {
 
   isProductsSet(): boolean {
     return this.customerControl.valid || (this.job.products instanceof Array && this.job.products.length > 0);
+  }
+
+  onCopy(value: string) {
+    this.snack.open(`${value} izkopēts!`, 'OK', { duration: 2000 });
   }
 
   private filterCustomer([customers, value]: [CustomerPartial[], string]): CustomerPartial[] {
