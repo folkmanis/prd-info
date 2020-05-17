@@ -11,7 +11,7 @@
     <tr *ngFor="let job of dataSource$ | async;" [routerLink]="['plate-job', {jobId: job.jobId}]"
         [class.job-completed]="job.invoiceId">
         <!-- jobId -->
-        <td [appCopyClipboard]="job.jobId" class="column-1">
+        <td class="column-1">
             {{job.jobId}}
         </td>
 
@@ -22,7 +22,7 @@
         <td>{{job.receivedDate | date:'dd.MM.yyyy'}}</td>
 
         <!-- 'name' -->
-        <td [appCopyClipboard]="job.name" [matTooltip]="job.name" [matTooltipShowDelay]="500"
+        <td [matTooltip]="job.name" [matTooltipShowDelay]="500"
             [matTooltipDisabled]="job.name.length < 50">
             {{job.name | shortenText:50}}
 
