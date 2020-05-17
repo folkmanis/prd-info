@@ -1,6 +1,10 @@
 <form [formGroup]="filterForm" class="filter-row">
+    <button type="reset" mat-icon-button>
+        <mat-icon>clear</mat-icon>
+    </button>
     <!-- Teksta meklēšana -->
     <mat-form-field class="search">
+        <mat-label>Nosaukums</mat-label>
         <input matInput type="text" formControlName="name">
         <button mat-icon-button matSuffix (click)="name.reset()">
             <mat-icon>clear</mat-icon>
@@ -8,14 +12,15 @@
     </mat-form-field>
     <!-- Klients -->
     <mat-form-field>
-        <input type="text" matInput placeholder="Klients" [matAutocomplete]="auto" formControlName="customer">
-        <mat-autocomplete #auto="matAutocomplete">
+        <mat-label>Klients</mat-label>
+        <mat-select formControlName="customer">
             <mat-option *ngFor="let customer of customers$ | async" [value]="customer.CustomerName">
                 {{customer.CustomerName}}
             </mat-option>
-        </mat-autocomplete>
+        </mat-select>
         <button mat-icon-button matSuffix (click)="customer.reset()">
             <mat-icon>clear</mat-icon>
         </button>
     </mat-form-field>
+    <!-- Atiestatīt formu -->
 </form>

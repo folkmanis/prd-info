@@ -7,6 +7,8 @@ import { pickBy, identity } from 'lodash';
 import { CustomersService } from '../../services';
 import { JobQueryFilter, JobProduct } from 'src/app/interfaces';
 
+const NULL_CUSTOMER = { CustomerName: undefined, _id: undefined, code: undefined };
+
 @Component({
   selector: 'app-job-filter',
   templateUrl: './job-filter.component.html',
@@ -16,7 +18,9 @@ export class JobFilterComponent implements OnInit, OnDestroy {
   filterForm: FormGroup;
 
   private readonly _subs = new Subscription();
-  customers$ = this.customersService.customers$;
+  customers$ = this.customersService.customers$.pipe(
+    map(customers => [NULL_CUSTOMER, ...customers])
+  );
 
 
   constructor(
@@ -46,7 +50,6 @@ export class JobFilterComponent implements OnInit, OnDestroy {
       ).subscribe(filter => this.router.navigate([filter]))
     );
     this.filterForm.patchValue(this.route.snapshot.params, { emitEvent: false });
-    console.log(this.route.snapshot);
   }
 
   ngOnDestroy(): void {

@@ -8,7 +8,7 @@ import { PrdApiService } from 'src/app/services';
 export class JobService {
 
   private readonly updateJobs$: Subject<void> = new Subject();
-  readonly filter$: Subject<JobQueryFilter> = new Subject();
+  readonly filter$: Subject<JobQueryFilter> = new ReplaySubject(1);
 
   constructor(
     private prdApi: PrdApiService,
