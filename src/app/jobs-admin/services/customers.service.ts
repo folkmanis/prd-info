@@ -35,7 +35,7 @@ export class CustomersService {
   }
 
   deleteCustomer(id: string): Observable<boolean> {
-    return this.prdApi.customers.delete(id).pipe(
+    return this.prdApi.customers.deleteOne(id).pipe(
       map(result => result > 0),
       this.reloadCustomers(() => this.getCustomerList(), this.updateCustomers$),
     );

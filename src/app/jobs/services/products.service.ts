@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { HttpOptions } from 'src/app/library/http/http-options';
 import { Observable, merge, Subject, EMPTY, of, observable } from 'rxjs';
 import { map, pluck, filter, tap, switchMap, share, shareReplay } from 'rxjs/operators';
-import { ProductResult, Product, CustomerProduct } from 'src/app/interfaces';
+import { Product, CustomerProduct } from 'src/app/interfaces';
 import { LoginService } from 'src/app/login/login.service';
 import { JobsSettings } from 'src/app/library/classes/system-preferences-class';
 import { PrdApiService } from 'src/app/services';

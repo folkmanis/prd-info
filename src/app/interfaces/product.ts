@@ -1,6 +1,6 @@
 import { AppHttpResponseBase } from 'src/app/library';
 
-export interface ProductResult extends AppHttpResponseBase<Product> {
+export interface ProductResponse extends AppHttpResponseBase<Product> {
     customerProducts?: CustomerProduct[];
     prices?: any[];
 }

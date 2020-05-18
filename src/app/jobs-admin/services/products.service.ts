@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { HttpOptions } from 'src/app/library/http/http-options';
-import { Observable, merge, Subject, EMPTY, of, observable } from 'rxjs';
-import { map, pluck, filter, tap, switchMap, share, shareReplay } from 'rxjs/operators';
-import { Customer, Product, ProductResult, ProductNoPrices } from 'src/app/interfaces';
-import { PrdApiService } from 'src/app/services';
-import { LoginService } from 'src/app/login/login.service';
+import { merge, Observable, Subject } from 'rxjs';
+import { map, share, switchMap, tap } from 'rxjs/operators';
+import { Customer, Product, ProductNoPrices } from 'src/app/interfaces';
 import { JobsSettings } from 'src/app/library/classes/system-preferences-class';
+import { LoginService } from 'src/app/login/login.service';
+import { PrdApiService } from 'src/app/services';
 
 @Injectable()
 export class ProductsService {
@@ -39,7 +37,7 @@ export class ProductsService {
   }
 
   deleteProduct(id: string): Observable<boolean> {
-    return this.prdApi.products.delete(id).pipe(
+    return this.prdApi.products.deleteOne(id).pipe(
       this.updateProducts(() => this.getAllProducts(), this._updateProducts$),
       map(count => !!count),
     );
@@ -58,7 +56,7 @@ export class ProductsService {
     );
   }
 
-  getCustomers(): Observable<Partial<Customer[]>> {
+  getAllCustomers(): Observable<Partial<Customer[]>> {
     return this.prdApi.customers.get();
   }
 

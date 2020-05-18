@@ -1,1 +1,1 @@
-export * from './prd-api.service';
+export * from './prd-api/prd-api.service';

@@ -46,7 +46,7 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
     tap(id => this._id = id),
   );
 
-  customers$ = this.service.getCustomers();
+  customers$ = this.service.getAllCustomers();
 
   product$: Observable<Product> = merge(this.id$,
     this.changes$.pipe(
