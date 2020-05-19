@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { CustomersApi } from './customers-api';
 import { InvoicesApi } from './invoices-api';
 import { JobsApi } from './jobs-api';
 import { ProductsApi } from './products-api';
-
-const HTTP_PATH = '/data/';
+import { AppParams } from 'src/app/interfaces';
+import { APP_PARAMS } from 'src/app/app-params';
 
 @Injectable({
   providedIn: 'root'
@@ -13,12 +13,15 @@ const HTTP_PATH = '/data/';
 export class PrdApiService {
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    @Inject(APP_PARAMS) private params: AppParams,
   ) { }
 
-  customers = new CustomersApi(this.http, HTTP_PATH);
-  products = new ProductsApi(this.http, HTTP_PATH);
-  jobs = new JobsApi(this.http, HTTP_PATH);
-  invoices = new InvoicesApi(this.http, HTTP_PATH);
+  private readonly apiPath = this.params.apiPath;
+
+  customers = new CustomersApi(this.http, this.apiPath);
+  products = new ProductsApi(this.http, this.apiPath);
+  jobs = new JobsApi(this.http, this.apiPath);
+  invoices = new InvoicesApi(this.http, this.apiPath);
 
 }

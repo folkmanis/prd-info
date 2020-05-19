@@ -19,6 +19,8 @@ import localeLv from '@angular/common/locales/lv';
 registerLocaleData(localeLv);
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { AppParams } from './interfaces';
+import { APP_PARAMS, PRD_DEFAULTS } from './app-params';
 
 
 @NgModule({
@@ -41,6 +43,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
     { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptorService, multi: true, },
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
+    { provide: APP_PARAMS, useValue: PRD_DEFAULTS },
   ],
   bootstrap: [AppComponent]
 })
