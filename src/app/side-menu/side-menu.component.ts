@@ -3,7 +3,8 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 
 import { of, Observable, Subscription } from 'rxjs';
 import { tap, switchMap, map, distinctUntilChanged, filter, delay } from 'rxjs/operators';
-import { LoginService, SystemSettings } from '../login/login.service';
+import { LoginService } from '../login/login.service';
+import { SystemSettings } from 'src/app/interfaces';
 import { MenuDataSource, SideMenuData } from './menu-datasource';
 
 @Component({

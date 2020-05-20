@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { PreferencesComponent } from '../preferences-component.class';
 import { ModulePreferencesService } from '../../services/module-preferences.service';
-import { SystemSettings } from 'src/app/library/classes/system-preferences-class';
+import { SystemSettings } from 'src/app/interfaces';
 import { tap, pluck, map } from 'rxjs/operators';
 
 @Component({

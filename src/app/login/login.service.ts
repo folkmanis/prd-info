@@ -13,15 +13,15 @@
  *
  */
 
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { BehaviorSubject, merge, Observable, of, ReplaySubject, Subject } from 'rxjs';
 import { filter, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
-import { User } from 'src/app/login/user';
-import { DEFAULT_SYSTEM_PREFERENCES, SystemPreferences } from '../library/classes/system-preferences-class';
-import { UserModule } from '../library/classes/user-module-interface';
+import { User } from 'src/app/interfaces';
+import { SystemPreferences, UserModule, AppParams } from 'src/app/interfaces';
 import { USER_MODULES } from '../user-modules';
 import { Login, LoginHttpService } from './login-http.service';
-export { SystemSettings } from '../library/classes/system-preferences-class';
+import { APP_PARAMS } from 'src/app/app-params';
+
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +32,7 @@ export class LoginService {
   private _sysPrefReload$: Subject<SystemPreferences> = new Subject();
 
   constructor(
+    @Inject(APP_PARAMS) private params: AppParams,
     private http: LoginHttpService,
   ) { }
   activeModule$: BehaviorSubject<UserModule | null> = new BehaviorSubject(null);
@@ -53,7 +54,7 @@ export class LoginService {
    * Mainās, mainoties lietotājam
    */
   sysPreferences$: Observable<SystemPreferences> = merge(
-    of(DEFAULT_SYSTEM_PREFERENCES), // sāk ar default
+    of(this.params.defaultSystemPreferences), // sāk ar default
     this.user$.pipe( // ielādējoties user, ielādē no servera
       filter(usr => !!usr),
       switchMap(() => this.http.getAllSystemPreferencesHttp()),
@@ -131,7 +132,7 @@ export class LoginService {
   reloadPreferences(): Observable<boolean> {
     return this.user$.pipe(
       take(1),
-      switchMap(usr => usr ? this.http.getAllSystemPreferencesHttp() : of(DEFAULT_SYSTEM_PREFERENCES)),
+      switchMap(usr => usr ? this.http.getAllSystemPreferencesHttp() : of(this.params.defaultSystemPreferences)),
       tap(pref => this._sysPrefReload$.next(pref)),
       map(pref => !!pref),
     );

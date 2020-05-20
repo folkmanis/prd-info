@@ -3,10 +3,9 @@ import { FormArray, FormControl, Validators, FormBuilder } from '@angular/forms'
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { tap, map, switchMap, filter } from 'rxjs/operators';
-import { Customer, Job } from 'src/app/interfaces';
+import { Customer, Job, JobsSettings } from 'src/app/interfaces';
 import { JobImportService, ParsedObject } from '../services/job-import.service';
 import { LoginService } from 'src/app/login/login.service';
-import { JobsSettings } from 'src/app/library/classes/system-preferences-class';
 import { ProductPriceImport } from '../services';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 

@@ -3,7 +3,8 @@ import { FormControl, FormGroup } from '@angular/forms';
 import * as moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith, switchMap, tap } from 'rxjs/operators';
-import { LoginService, SystemSettings } from 'src/app/login/login.service';
+import { LoginService } from 'src/app/login/login.service';
+import { SystemSettings } from 'src/app/interfaces';
 import { GetLogEntriesParams } from '../../services/logfile-record';
 import { LogfileService, ValidDates } from '../../services/logfile.service';
 

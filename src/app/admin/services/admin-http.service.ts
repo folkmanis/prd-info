@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { User } from 'src/app/login/user';
-import { DbModulePreferences, ModuleSettings, SystemPreferences, SystemPreferencesGroups } from '../../library/classes/system-preferences-class';
+import { User } from 'src/app/interfaces';
+import { DbModulePreferences, ModuleSettings, SystemPreferences, SystemPreferencesGroups } from 'src/app/interfaces';
 import { HttpOptions } from '../../library/http/http-options';
 
 export interface UserList {

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import { combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
 import { map, pluck, share, switchMap, tap } from 'rxjs/operators';
-import { SystemSettings } from '../../library/classes/system-preferences-class';
+import { SystemSettings } from 'src/app/interfaces';
 import { HttpOptions } from '../../library/http/http-options';
 import { LoginService } from '../../login/login.service';
 import { GetLogEntriesParams, LogData, LogDataHttp } from './logfile-record';

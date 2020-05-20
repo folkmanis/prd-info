@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { UserModule } from '../classes/user-module-interface';
+import { UserModule } from 'src/app/interfaces';
 import { Observable } from 'rxjs';
 
 @Component({

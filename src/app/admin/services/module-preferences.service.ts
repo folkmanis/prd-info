@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { SystemPreferences, ModuleSettings, KastesSettings, SystemSettings, SystemPreferencesGroups } from '../../library/classes/system-preferences-class';
+import { SystemPreferences, ModuleSettings, KastesSettings, SystemSettings, SystemPreferencesGroups } from 'src/app/interfaces';
 import { AdminHttpService } from './admin-http.service';
 import { map, filter, tap } from 'rxjs/operators';
 

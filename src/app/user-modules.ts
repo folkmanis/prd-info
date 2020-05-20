@@ -1,4 +1,4 @@
-import { UserModule } from './library/classes/user-module-interface';
+import { UserModule } from 'src/app/interfaces';
 
 export const USER_MODULES: UserModule[] = [
     { value: 'xmf-search', name: 'XMF arhīvs', description: 'Meklētājs XMF arhīva datubāzē', route: 'xmf-search', moduleClass: 'XmfSearchModule' },

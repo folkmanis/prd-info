@@ -10,7 +10,6 @@ import { Product } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { LoginService } from 'src/app/login/login.service';
-import { JobsSettings } from 'src/app/library/classes/system-preferences-class';
 
 @Component({
   selector: 'app-new',
@@ -24,7 +23,6 @@ export class NewComponent implements OnInit, CanComponentDeactivate {
     private route: ActivatedRoute,
     private fb: FormBuilder,
     private service: ProductsService,
-    private loginService: LoginService,
     private dialog: ConfirmationDialogService,
   ) { }
 

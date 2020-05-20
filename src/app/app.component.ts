@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild, NgZone } from '@angular/core';
 import { MatSidenavContent } from '@angular/material/sidenav';
 import { LoginService } from './login/login.service';
-import { User } from './login/user';
+import { User } from 'src/app/interfaces';
 import { Observable, combineLatest, from } from 'rxjs';
 import { map, shareReplay, tap, pluck } from 'rxjs/operators';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';

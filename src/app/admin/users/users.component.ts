@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/index';
 import { map } from 'rxjs/operators';
 import { RouteSelection } from 'src/app/library/find-select-route/find-select-route.module';
-import { User } from 'src/app/login/user';
+import { User } from 'src/app/interfaces';
 import { UsersService } from '../services/users.service';
 
 type UserForSelection = Pick<User, 'username' | 'name'> & { title: string, link: (string | { [key: string]: any; })[]; };

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { filter, switchMap, tap, map, takeUntil } from 'rxjs/operators';
 import { ModulePreferencesService } from '../../services/module-preferences.service';
-import { KastesSettings } from 'src/app/library/classes/system-preferences-class';
+import { KastesSettings } from 'src/app/interfaces';
 import { LoginService } from 'src/app/login/login.service';
 import { Observable, of, Subject } from 'rxjs';
 import { PreferencesComponent } from '../preferences-component.class';

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators, ValidationErrors, AsyncValidator, AsyncValidatorFn, AbstractControl } from '@angular/forms';
-import { UsersService, Customer, UserModule } from '../../services/users.service';
+import { UsersService, Customer } from '../../services/users.service';
+import { UserModule } from 'src/app/interfaces';
 import { Observable } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Validator } from '../../services/validator';
@@ -30,7 +31,7 @@ export class NewUserComponent implements OnInit, CanComponentDeactivate {
   name = this.newUserForm.get('name');
   hide = true; // Paroles ievades laukam
 
-  customers$: Observable< Customer[]> = this.usersService.customers$;
+  customers$: Observable<Customer[]> = this.usersService.customers$;
   userModules: UserModule[];
   constructor(
     private usersService: UsersService,

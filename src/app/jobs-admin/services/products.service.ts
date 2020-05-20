@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { merge, Observable, Subject } from 'rxjs';
 import { map, share, switchMap, tap } from 'rxjs/operators';
 import { Customer, Product, ProductNoPrices } from 'src/app/interfaces';
-import { JobsSettings } from 'src/app/library/classes/system-preferences-class';
+import { JobsSettings } from 'src/app/interfaces';
 import { LoginService } from 'src/app/login/login.service';
 import { PrdApiService } from 'src/app/services';
 

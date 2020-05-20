@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, AbstractControl } from '@angular/forms';
 import { Observable, of, Subject, Subscription } from 'rxjs';
 import { tap, map, takeUntil, filter } from 'rxjs/operators';
@@ -6,7 +6,8 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { ModulePreferencesService } from '../../services/module-preferences.service';
 import { PreferencesComponent } from '../preferences-component.class';
 import { cloneDeep } from 'lodash';
-import { JobsSettings, DEFAULT_SYSTEM_PREFERENCES } from 'src/app/library/classes/system-preferences-class';
+import { JobsSettings, AppParams } from 'src/app/interfaces';
+import { APP_PARAMS } from 'src/app/app-params';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
 
 @Component({
@@ -17,6 +18,7 @@ import { CategoryDialogComponent } from './category-dialog/category-dialog.compo
 export class JobsPreferencesComponent implements OnInit, PreferencesComponent, OnDestroy {
 
   constructor(
+    @Inject(APP_PARAMS) private params: AppParams,
     private moduleService: ModulePreferencesService,
     private dialog: MatDialog,
   ) { }
@@ -29,7 +31,7 @@ export class JobsPreferencesComponent implements OnInit, PreferencesComponent, O
   ngOnInit(): void {
     const subs = this.moduleService.getModulePreferences<JobsSettings>('jobs')
       .subscribe(sett => {
-        this.oldSettings = sett || DEFAULT_SYSTEM_PREFERENCES.get('jobs') as JobsSettings;
+        this.oldSettings = sett || this.params.defaultSystemPreferences.get('jobs') as JobsSettings;
         this.newSettings = cloneDeep(sett);
       });
     this._subs.add(subs);
