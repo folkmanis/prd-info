@@ -18,37 +18,37 @@ const routes: Routes = [
   {
     path: 'xmf-search',
     canLoad: [LoginGuard],
-    loadChildren: () => import('./xmf-search/xmf-search.module').then(m => m.XmfSearchModule),
+    loadChildren: () => import('./features/xmf-search/xmf-search.module').then(m => m.XmfSearchModule),
     canActivate: [LoginGuard],
   },
   {
     path: 'xmf-upload',
     canLoad: [LoginGuard],
-    loadChildren: () => import('./xmf-upload/xmf-upload.module').then(m => m.XmfUploadModule),
+    loadChildren: () => import('./features/xmf-upload/xmf-upload.module').then(m => m.XmfUploadModule),
     canActivate: [LoginGuard],
   },
   {
     path: 'kastes',
     canLoad: [LoginGuard],
-    loadChildren: () => import('./kastes/kastes.module').then(m => m.KastesModule),
+    loadChildren: () => import('./features/kastes/kastes.module').then(m => m.KastesModule),
     canActivate: [LoginGuard],
   },
   {
     path: 'admin',
     canLoad: [LoginGuard],
-    loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule),
+    loadChildren: () => import('./features/admin/admin.module').then(m => m.AdminModule),
     canActivate: [LoginGuard],
   },
   {
     path: 'jobs',
     canLoad: [LoginGuard],
-    loadChildren: () => import('./jobs/jobs.module').then(m => m.JobsModule),
+    loadChildren: () => import('./features/jobs/jobs.module').then(m => m.JobsModule),
     canActivate: [LoginGuard],
   },
   {
     path: 'jobs-admin',
     canLoad: [LoginGuard],
-    loadChildren: () => import('./jobs-admin/jobs-admin.module').then(m => m.JobsAdminModule),
+    loadChildren: () => import('./features/jobs-admin/jobs-admin.module').then(m => m.JobsAdminModule),
     canActivate: [LoginGuard],
   },
   {
