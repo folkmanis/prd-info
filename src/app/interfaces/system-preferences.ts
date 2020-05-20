@@ -1,3 +1,5 @@
+import { AppHttpResponseBase } from 'src/app/library/http';
+
 export interface ModuleSettings {
     [key: string]: any;
 }
@@ -26,4 +28,7 @@ export class SystemSettings implements ModuleSettings {
 
 export class JobsSettings implements ModuleSettings {
     productCategories: Array<{ category: string, description: string; }>;
+}
+
+export interface SystemPreferencesResponse extends AppHttpResponseBase<DbModulePreferences> {
 }

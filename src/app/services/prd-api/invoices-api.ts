@@ -6,12 +6,6 @@ import { ApiBase, HttpOptions } from 'src/app/library';
 
 export class InvoicesApi extends ApiBase<Invoice> {
 
-    constructor(
-        http: HttpClient, path: string
-    ) {
-        super(http, path + 'invoices/');
-    }
-
     createInvoice(params: { selectedJobs: number[], customerId: string; }): Observable<Invoice> {
         return this.http.post<InvoiceResponse>(this.path, params, new HttpOptions()).pipe(
             map(resp => resp.data as Invoice)

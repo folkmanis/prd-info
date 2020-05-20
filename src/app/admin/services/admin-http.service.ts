@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { User } from 'src/app/interfaces';
 import { DbModulePreferences, ModuleSettings, SystemPreferences, SystemPreferencesGroups } from 'src/app/interfaces';
 import { HttpOptions } from '../../library/http/http-options';
+import { PrdApiService } from 'src/app/services';
 
 export interface UserList {
   count: number;
@@ -20,10 +21,10 @@ interface UpdateResponse {
 export class AdminHttpService {
   private httpPathUsers = '/data/users/';
   private httpPathSearch = '/data/xmf-search/';
-  private httpPathPreferences = '/data/preferences/';
 
   constructor(
     private http: HttpClient,
+    private prdApi: PrdApiService,
   ) { }
 
   getUsersHttp(): Observable<UserList> {
@@ -61,24 +62,21 @@ export class AdminHttpService {
   }
 
   getModuleSystemPreferencesHttp(mod: SystemPreferencesGroups): Observable<ModuleSettings> {
-    return this.http.get<{ settings: ModuleSettings; }>(this.httpPathPreferences + 'single', new HttpOptions({ module: mod })).pipe(
+    return this.prdApi.systemPreferences.get(mod).pipe(
       map(sett => sett.settings)
     );
   }
 
   getAllSystemPreferencesHttp(): Observable<SystemPreferences> {
-    return this.http.get<DbModulePreferences[]>(this.httpPathPreferences + 'all', new HttpOptions()).pipe(
+    return this.prdApi.systemPreferences.get().pipe(
       map(dbpref => dbpref.reduce((acc, curr) => acc.set(curr.module, curr.settings), new Map<SystemPreferencesGroups, ModuleSettings>()))
     );
   }
 
   updateModuleSystemPreferences(modName: SystemPreferencesGroups, preferences: ModuleSettings): Observable<boolean> {
-    return this.http.put<{ ok: number; }>(
-      this.httpPathPreferences + 'update',
-      { preferences: { module: modName, settings: preferences } },
-      new HttpOptions()
-    ).pipe(
-      map(res => !!res.ok)
+    return this.prdApi.systemPreferences.updateOne(
+      modName,
+      { settings: preferences }
     );
   }
 

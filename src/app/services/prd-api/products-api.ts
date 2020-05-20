@@ -12,12 +12,6 @@ interface CustomerProductPrice {
 
 export class ProductsApi extends ApiBase<Product> {
 
-    constructor(
-        http: HttpClient, path: string
-    ) {
-        super(http, path + 'products/');
-    }
-
     productsCustomer(customer: string): Observable<CustomerProduct[]> {
         return this.http.get<ProductResponse>(
             this.path + 'prices/customer/' + customer,

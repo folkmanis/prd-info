@@ -17,10 +17,17 @@ import { Injectable, Inject } from '@angular/core';
 import { BehaviorSubject, merge, Observable, of, ReplaySubject, Subject } from 'rxjs';
 import { filter, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { User } from 'src/app/interfaces';
-import { SystemPreferences, UserModule, AppParams } from 'src/app/interfaces';
+import {
+  Login,
+  SystemPreferences,
+  UserModule,
+  AppParams,
+  SystemPreferencesGroups,
+  ModuleSettings
+} from 'src/app/interfaces';
 import { USER_MODULES } from '../user-modules';
-import { Login, LoginHttpService } from './login-http.service';
 import { APP_PARAMS } from 'src/app/app-params';
+import { PrdApiService } from 'src/app/services';
 
 
 @Injectable({
@@ -33,7 +40,7 @@ export class LoginService {
 
   constructor(
     @Inject(APP_PARAMS) private params: AppParams,
-    private http: LoginHttpService,
+    private prdApi: PrdApiService,
   ) { }
   activeModule$: BehaviorSubject<UserModule | null> = new BehaviorSubject(null);
   /**
@@ -43,7 +50,7 @@ export class LoginService {
   get user$(): Observable<User | null> {
     if (!this._user$) {
       this._user$ = new ReplaySubject(1);
-      this.http.getUserHttp().pipe(
+      this.prdApi.login.get('').pipe(
         tap(usr => this._user$.next(usr)),
       ).subscribe();
     }
@@ -57,7 +64,7 @@ export class LoginService {
     of(this.params.defaultSystemPreferences), // sāk ar default
     this.user$.pipe( // ielādējoties user, ielādē no servera
       filter(usr => !!usr),
-      switchMap(() => this.http.getAllSystemPreferencesHttp()),
+      switchMap(() => this.systemPreferencesMap()),
     ),
     this._sysPrefReload$,  // Ielāde pisepiedu kārtā
   ).pipe(
@@ -87,7 +94,7 @@ export class LoginService {
    * @param login Lietotājvārda objekts
    */
   logIn(login: Login): Observable<boolean> {
-    return this.http.loginHttp(login).pipe(
+    return this.prdApi.login.login(login).pipe(
       tap(usr => this._user$.next(usr)),
       map(usr => !!usr),
     );
@@ -107,8 +114,7 @@ export class LoginService {
    * Iztukšo lietotāja objektu, līdz ar to mainās visas preferences
    */
   logOut(): Observable<boolean> {
-    return this.http.logoutHttp().pipe(
-      map(resp => resp.logout > 0),
+    return this.prdApi.login.logout().pipe(
       tap(resp => !resp || this._user$.next(null)),
     );
   }
@@ -132,9 +138,21 @@ export class LoginService {
   reloadPreferences(): Observable<boolean> {
     return this.user$.pipe(
       take(1),
-      switchMap(usr => usr ? this.http.getAllSystemPreferencesHttp() : of(this.params.defaultSystemPreferences)),
+      switchMap(usr => usr ? this.systemPreferencesMap() : of(this.params.defaultSystemPreferences)),
       tap(pref => this._sysPrefReload$.next(pref)),
       map(pref => !!pref),
     );
   }
+
+  private systemPreferencesMap(): Observable<SystemPreferences> {
+    return this.prdApi.systemPreferences.get().pipe(
+      map(
+        dbpref => dbpref.reduce(
+          (acc, curr) => acc.set(curr.module, curr.settings),
+          new Map<SystemPreferencesGroups, ModuleSettings>()
+        )
+      )
+    );
+  }
+
 }

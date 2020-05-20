@@ -56,4 +56,16 @@ export abstract class ApiBase<T> {
         );
     }
 
+    protected post<U>(body: any): Observable<U>;
+    protected post<U>(path: string, body: any): Observable<U>;
+    protected post<U>(pathOrBody: string | any, body?: any): Observable<U> {
+        let path = this.path;
+        if (typeof pathOrBody === 'string') {
+            path = path + pathOrBody;
+        } else {
+            body = pathOrBody;
+        }
+        return this.http.post<U>(path, body, new HttpOptions());
+    }
+
 }
