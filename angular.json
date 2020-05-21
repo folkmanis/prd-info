@@ -122,5 +122,8 @@
       }
     }
   },
-  "defaultProject": "prd-info"
+  "defaultProject": "prd-info",
+  "cli": {
+    "defaultCollection": "@ngrx/schematics"
+  }
 }

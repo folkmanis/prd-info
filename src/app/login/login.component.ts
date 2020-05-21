@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
-import { filter, switchMap, take } from 'rxjs/operators';
-import { LoginService } from './login.service';
+import { Store, select } from '@ngrx/store';
+import * as loginActions from 'src/app/actions/login.actions';
+import { StoreState, Login } from 'src/app/interfaces';
 
 @Component({
   selector: 'app-login',
@@ -13,9 +12,7 @@ import { LoginService } from './login.service';
 export class LoginComponent implements OnInit {
 
   constructor(
-    private router: Router,
-    private snack: MatSnackBar,
-    private loginService: LoginService,
+    private store: Store<StoreState>,
   ) { }
 
   loginForm: FormGroup = new FormGroup({
@@ -24,22 +21,13 @@ export class LoginComponent implements OnInit {
   });
 
   ngOnInit() {
-    this.loginService.isLogin$.pipe(
-      take(1),
-      filter(login => login),
-      switchMap(() => this.loginService.logOut()),
-    ).subscribe();
+    this.store.dispatch(loginActions.logout());
   }
 
   onLogin() {
-    this.loginService.logIn(this.loginForm.value).subscribe((success) => {
-      if (success) {
-        this.router.navigate(['/']);
-      } else {
-        this.snack.open('Nepareiza parole vai lietotājs', 'OK', { duration: 5000 });
-        this.loginForm.reset();
-      }
-    });
+    const credentials: Login = this.loginForm.value;
+    this.loginForm.reset();
+    this.store.dispatch(loginActions.login(credentials));
   }
 
 }

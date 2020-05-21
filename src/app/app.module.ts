@@ -21,6 +21,10 @@ import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-mo
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { AppParams } from './interfaces';
 import { APP_PARAMS, PRD_DEFAULTS } from './app-params';
+import { StoreModule } from '@ngrx/store';
+import { reducers, metaReducers } from './reducers';
+import { EffectsModule } from '@ngrx/effects';
+import { effects } from './effects';
 
 
 @NgModule({
@@ -35,6 +39,10 @@ import { APP_PARAMS, PRD_DEFAULTS } from './app-params';
     BrowserAnimationsModule,
     AppRoutingModule,
     LibraryModule,
+    StoreModule.forRoot(reducers, {
+      metaReducers
+    }),
+    EffectsModule.forRoot(effects),
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'lv' },

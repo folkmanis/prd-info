@@ -14,6 +14,8 @@
  */
 
 import { Injectable, Inject } from '@angular/core';
+import { Store } from '@ngrx/store';
+import * as loginSelectors from '../selectors/login-selectors';
 import { BehaviorSubject, merge, Observable, of, ReplaySubject, Subject } from 'rxjs';
 import { filter, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { User } from 'src/app/interfaces';
@@ -35,27 +37,19 @@ import { PrdApiService } from 'src/app/services';
 })
 export class LoginService {
 
-  private _user$: ReplaySubject<User | null>;
   private _sysPrefReload$: Subject<SystemPreferences> = new Subject();
 
   constructor(
     @Inject(APP_PARAMS) private params: AppParams,
     private prdApi: PrdApiService,
+    private store: Store,
   ) { }
   activeModule$: BehaviorSubject<UserModule | null> = new BehaviorSubject(null);
   /**
    * Multicast Observable ar aktīvā lietotāja informāciju
    * Dod rezultātu, mainoties lietotājam (login/logout)
    */
-  get user$(): Observable<User | null> {
-    if (!this._user$) {
-      this._user$ = new ReplaySubject(1);
-      this.prdApi.login.get('').pipe(
-        tap(usr => this._user$.next(usr)),
-      ).subscribe();
-    }
-    return this._user$;
-  }
+  user$: Observable<User | null> = this.store.select(loginSelectors.user);
   /**
    * Multicast Observable ar system preferences objektu
    * Mainās, mainoties lietotājam
@@ -82,23 +76,11 @@ export class LoginService {
   /**
    * Vai ir aktīvs login
    */
-  get isLogin$(): Observable<boolean> {
-    return this.user$.pipe(
-      map(usr => !!usr),
-      take(1)
-    );
-  }
-  /**
-   * Login. true - veiksmīgi, false - neveiksmīgi
-   * Bez sīkākas informācijas no servera
-   * @param login Lietotājvārda objekts
-   */
-  logIn(login: Login): Observable<boolean> {
-    return this.prdApi.login.login(login).pipe(
-      tap(usr => this._user$.next(usr)),
-      map(usr => !!usr),
-    );
-  }
+  isLogin$: Observable<boolean> = this.store.select(loginSelectors.selectLogin).pipe(
+    filter(login => login.initialised),
+    map(login => !!login.user),
+    take(1),
+  );
   /**
    * Vai lietotājam ir pieejams modulis mod
    * @param mod moduļa nosaukums
@@ -107,15 +89,6 @@ export class LoginService {
     return this.user$.pipe(
       take(1),
       map(usr => !!usr.preferences.modules.find(m => m === mod)),
-    );
-  }
-  /**
-   * Atslēgties.
-   * Iztukšo lietotāja objektu, līdz ar to mainās visas preferences
-   */
-  logOut(): Observable<boolean> {
-    return this.prdApi.login.logout().pipe(
-      tap(resp => !resp || this._user$.next(null)),
     );
   }
   /**
