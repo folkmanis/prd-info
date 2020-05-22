@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { UserModule } from 'src/app/interfaces';
 import { Observable } from 'rxjs';
 
@@ -7,15 +7,12 @@ import { Observable } from 'rxjs';
   templateUrl: './card-menu.component.html',
   styleUrls: ['./card-menu.component.css']
 })
-export class CardMenuComponent implements OnInit {
+export class CardMenuComponent {
   /**
    * saraksts ar moduļiem
    */
-  @Input() modules: Observable<UserModule[]>;
+  @Input() modules: UserModule[];
 
   constructor() { }
-
-  ngOnInit() {
-  }
 
 }

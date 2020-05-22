@@ -1,10 +1,11 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
-import { distinctUntilChanged, filter, map, startWith, switchMap, tap } from 'rxjs/operators';
-import { LoginService } from 'src/app/login/login.service';
-import { SystemSettings } from 'src/app/interfaces';
+import { distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
+import { StoreState, SystemSettings } from 'src/app/interfaces';
+import { getModulePreferences } from 'src/app/selectors';
 import { GetLogEntriesParams } from '../../services/logfile-record';
 import { LogfileService, ValidDates } from '../../services/logfile.service';
 
@@ -25,8 +26,8 @@ export class LogFilterComponent implements OnInit, OnDestroy, AfterViewInit {
   private subs: Subscription = new Subscription();
 
   constructor(
-    private loginService: LoginService,
     private service: LogfileService,
+    private store: Store<StoreState>,
   ) { }
   maxDate = moment();
   filterForm = new FormGroup({
@@ -39,14 +40,15 @@ export class LogFilterComponent implements OnInit, OnDestroy, AfterViewInit {
     date: moment(),
   };
 
-  logLevels$: Observable<{ key: number, value: string; }[]> = this.loginService.sysPreferences$.pipe(
-    map(pref => pref.get('system')),
-    map(pref => (pref as SystemSettings).logLevels),
-    map(levels => levels.sort((a, b) => a[0] - b[0])),
-    map(levels => levels.map(level => ({ key: level[0], value: level[1] }))),
-    tap(level => this.filterDefaults.logLevel = level.reduce((acc, curr) => curr.key > acc ? curr.key : acc, 0)),
-    tap(() => this.filterForm.patchValue({ logLevel: this.filterDefaults.logLevel })),
-  );
+  logLevels$: Observable<{ key: number, value: string; }[]> =
+    this.store.select(getModulePreferences, { module: 'system' })
+      .pipe(
+        map((pref: SystemSettings) => [...pref.logLevels]),
+        map(levels => levels.sort((a, b) => a[0] - b[0])),
+        map(levels => levels.map(level => ({ key: level[0], value: level[1] }))),
+        tap(level => this.filterDefaults.logLevel = level.reduce((acc, curr) => curr.key > acc ? curr.key : acc, 0)),
+        tap(() => this.filterForm.patchValue({ logLevel: this.filterDefaults.logLevel })),
+      );
 
   ngOnInit(): void {
     /** Jauna tabula */

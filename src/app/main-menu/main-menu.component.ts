@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { LoginService } from '../login/login.service';
+import { Store } from '@ngrx/store';
+import { StoreState } from 'src/app/interfaces';
+import { getMenuModules } from 'src/app/selectors';
 
 @Component({
   selector: 'app-main-menu',
@@ -9,10 +11,10 @@ import { LoginService } from '../login/login.service';
 export class MainMenuComponent implements OnInit {
 
   constructor(
-    private loginService: LoginService,
+    private store: Store<StoreState>,
   ) { }
 
-  menuItems$ = this.loginService.modules$;
+  menuItems$ = this.store.select(getMenuModules);
 
   ngOnInit() {
   }

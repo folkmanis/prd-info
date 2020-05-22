@@ -1,13 +1,14 @@
 import { Action, createAction, props } from '@ngrx/store';
 import { Login, User } from 'src/app/interfaces';
 
-export enum LoginActionTypes {
+enum LoginActionTypes {
     Login = '[Login Component] Login',  // tiek uzsākts login
     Logout = '[Login Component] Logout', // tiek uzsākts logout
     ApiLoggedIn = '[User Api] User Logged In',
     ApiNotLoggedIn = '[User Api] User Not Logged In',
     ApiLoggedOut = '[User Api] Logged Out',
     ApiUserReceived = '[User Api] User Received',
+    RouteChanged = '[Router] Route Changed',
 }
 
 export const login = createAction(
@@ -36,4 +37,9 @@ export const apiLoggedOut = createAction(
 export const apiUserReceived = createAction(
     LoginActionTypes.ApiUserReceived,
     props<{ user: User | undefined; }>(),
+);
+
+export const routeChanged = createAction(
+    LoginActionTypes.RouteChanged,
+    props<{ route: string; }>(),
 );

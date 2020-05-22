@@ -1,5 +1,5 @@
 <div class="menu-layout">
-    <div *ngFor="let item of modules | async" class="menu-card">
+    <div *ngFor="let item of modules" class="menu-card">
         <a [routerLink]="item.route">
             <mat-card class="card-text">
                 <mat-card-title>{{item.name}}</mat-card-title>

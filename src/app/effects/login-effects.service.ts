@@ -24,7 +24,7 @@ export class LoginEffectsService {
     () => this.actions$.pipe(
       ofType(LoginActions.login),
       switchMap(action => this.prdApi.login.login(action)),
-      map(user => user ? LoginActions.apiLoggedIn({ user }) : LoginActions.apiNotLoggedIn({ error: 'Not logged in' })),
+      map(user => user ? LoginActions.apiLoggedIn({ user }) : LoginActions.apiNotLoggedIn({ error: 'Invalid credentials' })),
     )
   );
 
@@ -48,9 +48,11 @@ export class LoginEffectsService {
   apiLoginFail$ = createEffect(
     () => this.actions$.pipe(
       ofType(LoginActions.apiNotLoggedIn),
-      tap(() =>
-        this.snack.open('Nepareiza parole vai lietotājs', 'OK', { duration: 5000 })
-      )
+      tap(action => {
+        if (action.error === 'Invalid credentials') {
+          this.snack.open('Nepareiza parole vai lietotājs', 'OK', { duration: 5000 });
+        }
+      })
     ),
     { dispatch: false }
   );
@@ -59,14 +61,14 @@ export class LoginEffectsService {
     () => this.actions$.pipe(
       ofType(ROOT_EFFECTS_INIT),
       switchMap(() => this.prdApi.login.get('')),
-      map(user => LoginActions.apiUserReceived({ user }))
+      map(user => user ? LoginActions.apiUserReceived({ user }) : LoginActions.apiNotLoggedIn({ error: 'Not Logged In' }))
     )
   );
 
   apiUserReceived$ = createEffect(
     () => this.actions$.pipe(
       ofType(LoginActions.apiUserReceived),
-      map(() => SystemPreferencesActions.systemRequestedPreferencesFromApi())
+      map(user => SystemPreferencesActions.systemRequestedPreferencesFromApi())
     )
   );
 

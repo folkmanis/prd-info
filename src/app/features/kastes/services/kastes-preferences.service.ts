@@ -4,6 +4,9 @@ import { KastesPreferences, UserPreferences, SystemPreferences } from './prefere
 import { KastesHttpService } from './kastes-http.service';
 import { LoginService } from '../../../login/login.service';
 import { map, switchMap, tap, filter, shareReplay, take } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { StoreState } from 'src/app/interfaces';
+import { getModulePreferences } from 'src/app/selectors';
 
 @Injectable({
   providedIn: 'root'
@@ -12,12 +15,11 @@ export class KastesPreferencesService {
 
   constructor(
     private kastesHttpService: KastesHttpService,
-    private loginService: LoginService,
+    private store: Store<StoreState>,
   ) { }
 
-  private sys$ = this.loginService.sysPreferences$.pipe(
-    map(sys => sys.get('kastes') as SystemPreferences),
-    filter(sys => !!sys),
+  private sys$ = this.store.select(getModulePreferences, { module: 'kastes' }).pipe(
+    filter((sys: KastesPreferences) => !!sys),
   );
   private _usr$: Subject<UserPreferences> = new Subject();
   private usr$ = merge(this._usr$, this.kastesHttpService.getPreferencesHttp())

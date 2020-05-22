@@ -1,6 +1,6 @@
 <div class="jobs">
     <div class="editor">
-        <app-card-menu [modules]='modules$'></app-card-menu>
+        <app-card-menu [modules]="modules$ | async"></app-card-menu>
     </div>
     <div class="mat-elevation-z4">
         <app-job-filter></app-job-filter>

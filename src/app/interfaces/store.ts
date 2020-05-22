@@ -1,20 +1,17 @@
-import { User } from './user';
+import { User, UserModule } from './user';
 import { SystemPreferencesObject } from './system-preferences';
 
-export interface LoginState {
-    initialised: boolean;
+export interface SystemState {
     user: User | undefined;
-    loginProcess: boolean;
-    error: string | null;
-}
-
-export interface SystemPreferencesState {
     systemPreferences: SystemPreferencesObject;
+    userMenu: UserModule[];
+    activeModule: UserModule | undefined;
+
     loading: boolean;
+    initialised: boolean;
     error: string | null;
 }
 
 export interface StoreState {
-    login: LoginState;
-    systemPreferences: SystemPreferencesState;
+    system: SystemState;
 }

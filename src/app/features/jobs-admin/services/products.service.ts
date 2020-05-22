@@ -1,22 +1,21 @@
 import { Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { merge, Observable, Subject } from 'rxjs';
 import { map, share, switchMap, tap } from 'rxjs/operators';
-import { Customer, Product, ProductNoPrices } from 'src/app/interfaces';
-import { JobsSettings } from 'src/app/interfaces';
-import { LoginService } from 'src/app/login/login.service';
+import { Customer, JobsSettings, Product, ProductNoPrices, StoreState } from 'src/app/interfaces';
+import { getModulePreferences } from 'src/app/selectors';
 import { PrdApiService } from 'src/app/services';
 
 @Injectable()
 export class ProductsService {
 
   constructor(
-    private loginService: LoginService,
     private prdApi: PrdApiService,
+    private store: Store<StoreState>,
   ) { }
 
-  readonly categories$ = this.loginService.sysPreferences$.pipe(
-    map(sysPref => sysPref.get('jobs') as JobsSettings),
-    map(js => js.productCategories),
+  readonly categories$ = this.store.select(getModulePreferences, { module: 'jobs' }).pipe(
+    map((jobSett: JobsSettings) => jobSett.productCategories),
     share(),
   );
 

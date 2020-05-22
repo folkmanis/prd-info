@@ -14,15 +14,16 @@ export interface SideMenuData {
  */
 export class MenuDataSource implements DataSource<SideMenuData> {
 
+    constructor(
+        private userMenu$: Observable<UserModule[]>,
+    ) { }
+
     data: SideMenuData[] = [];
-    dataChange$ = this.loginService.modules$.pipe(
+    dataChange$ = this.userMenu$.pipe(
         map(mod => this.toSideMenu(mod)),
         tap(menu => this.data = menu),
         share(),
     );
-    constructor(
-        private loginService: LoginService,
-    ) { }
     /**
      * Datu struktūras obligātā funkcija. Parakstās uz lietotāja objektu
      * Mainoties lietotājam, mainās arī izvēlne
