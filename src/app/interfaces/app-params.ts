@@ -1,10 +1,10 @@
-import { SystemPreferences, SystemPreferencesObject } from './system-preferences';
+import { SystemPreferencesObject } from './system-preferences';
 import { UserModule } from './user';
 
 export interface AppParams {
     apiPath: string;
     userModules: UserModule[];
     // Depreceated
-    defaultSystemPreferences: SystemPreferences;
+    // defaultSystemPreferences: SystemPreferences;
     defaultSystemPreferencesObj: SystemPreferencesObject;
 }

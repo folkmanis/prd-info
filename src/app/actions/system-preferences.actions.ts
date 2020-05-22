@@ -20,7 +20,7 @@ export const apiRetrievedAllPreferences = createAction(
 export const componentStoredModule = createAction(
     SystemPreferencesActionTypes.ComponentStoredModule,
     props<{
-        modName: systemPreferencesInterfaces.SystemPreferencesGroups,
+        module: systemPreferencesInterfaces.SystemPreferencesGroups,
         settings: systemPreferencesInterfaces.ModuleSettings,
     }>()
 );
@@ -28,7 +28,7 @@ export const componentStoredModule = createAction(
 export const apiUpdatedModule = createAction(
     SystemPreferencesActionTypes.ApiUpdatedModule,
     props<{
-        modName: systemPreferencesInterfaces.SystemPreferencesGroups,
+        module: systemPreferencesInterfaces.SystemPreferencesGroups,
         settings: systemPreferencesInterfaces.ModuleSettings,
     }>()
 );

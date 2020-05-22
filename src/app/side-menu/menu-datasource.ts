@@ -1,7 +1,6 @@
 import { Observable } from 'rxjs';
 import { DataSource, CollectionViewer } from '@angular/cdk/collections';
 import { UserModule } from 'src/app/interfaces';
-import { LoginService } from '../login/login.service';
 import { map, tap, share } from 'rxjs/operators';
 
 export interface SideMenuData {

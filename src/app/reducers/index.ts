@@ -9,6 +9,7 @@ import {
   MetaReducer
 } from '@ngrx/store';
 import { environment } from '../../environments/environment';
+import { cloneDeep } from 'lodash';
 
 import { StoreState, SystemState } from '../interfaces/store';
 import * as LoginActions from '../actions/login.actions';
@@ -62,7 +63,7 @@ const systemReducer = createReducer<SystemState>(
   }),
   on(SystemPreferencesActions.componentStoredModule),
   on(SystemPreferencesActions.apiUpdatedModule, (state, action) => {
-    const systemPreferences = { ...state.systemPreferences, [action.modName]: action.settings };
+    const systemPreferences = { ...state.systemPreferences, [action.module]: action.settings };
     return { ...state, systemPreferences };
   }),
 

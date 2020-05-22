@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { filter, switchMap, tap, map, takeUntil } from 'rxjs/operators';
+import { filter, switchMap, tap, map, takeUntil, take } from 'rxjs/operators';
 import { ModulePreferencesService } from '../../services/module-preferences.service';
 import { KastesSettings } from 'src/app/interfaces';
-import { LoginService } from 'src/app/login/login.service';
-import { Observable, of, Subject } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { PreferencesComponent } from '../preferences-component.class';
+import { cloneDeep } from 'lodash';
 
 interface Color {
   hue: number;
@@ -30,7 +30,6 @@ export class KastesPreferencesComponent implements OnInit, OnDestroy, Preference
   constructor(
     private moduleService: ModulePreferencesService,
     private fb: FormBuilder,
-    private loginService: LoginService,
   ) { }
 
   preferences: KastesSettings;
@@ -38,22 +37,25 @@ export class KastesPreferencesComponent implements OnInit, OnDestroy, Preference
   keys: string[] = [];
   colorsForm: FormGroup;
   defaults: { [key: string]: number; } = {};
-  unsub = new Subject<void>();
+  private subs = new Subscription();
 
   ngOnInit() {
     this.moduleService.getModulePreferences('kastes').pipe(
-      tap((pref: KastesSettings) => this.preferences = pref),
-      tap((pref: KastesSettings) => this.colors = this.parseColors(pref)),
+      tap((pref: KastesSettings) => this.preferences = cloneDeep(pref)),
+      tap((pref: KastesSettings) => this.colors = this.parseColors(cloneDeep(pref))),
       tap(() => this.keys = Object.keys(this.colors)),
       tap(() => this.colorsForm = this.fb.group(this.lightness())),
-      switchMap(() => this.colorsForm.valueChanges),
-      tap(val => this.updateColors(val)),
-      takeUntil(this.unsub),
+      take(1),
     ).subscribe();
+
+    const _subs = this.colorsForm.valueChanges.pipe(
+      tap(val => this.updateColors(val)),
+    ).subscribe();
+    this.subs.add(_subs);
   }
 
   ngOnDestroy(): void {
-    this.unsub.next();
+    this.subs.unsubscribe();
   }
 
   private lightness(): { [key: string]: number[]; } {
@@ -68,12 +70,8 @@ export class KastesPreferencesComponent implements OnInit, OnDestroy, Preference
 
   onSave() {
     if (this.colorsForm.pristine) { return; }
-    this.moduleService.updateModulePreferences('kastes', this.preferences).pipe(
-      filter(resp => resp),
-      switchMap(() => this.loginService.reloadPreferences()),
-      tap(() => this.colorsForm.markAsPristine()),
-    )
-      .subscribe();
+    this.moduleService.updateModulePreferences('kastes', cloneDeep( this.preferences));
+    this.colorsForm.markAsPristine();
   }
 
   onReset() {

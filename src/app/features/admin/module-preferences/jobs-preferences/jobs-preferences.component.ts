@@ -31,7 +31,7 @@ export class JobsPreferencesComponent implements OnInit, PreferencesComponent, O
   ngOnInit(): void {
     const subs = this.moduleService.getModulePreferences<JobsSettings>('jobs')
       .subscribe(sett => {
-        this.oldSettings = sett || this.params.defaultSystemPreferences.get('jobs') as JobsSettings;
+        this.oldSettings = cloneDeep(sett);
         this.newSettings = cloneDeep(sett);
       });
     this._subs.add(subs);
@@ -54,9 +54,8 @@ export class JobsPreferencesComponent implements OnInit, PreferencesComponent, O
   }
 
   onSave(): void {
-    this.moduleService.updateModulePreferences('jobs', this.newSettings).pipe(
-      tap(() => this.pristine = true),
-    ).subscribe();
+    this.moduleService.updateModulePreferences('jobs', this.newSettings);
+    this.pristine = true;
   }
 
   onReset(): void {

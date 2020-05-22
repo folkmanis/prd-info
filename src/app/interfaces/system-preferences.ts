@@ -6,7 +6,7 @@ export interface ModuleSettings {
 
 export type SystemPreferencesGroups = 'kastes' | 'system' | 'jobs';
 
-export type SystemPreferences = Map<SystemPreferencesGroups, ModuleSettings>;
+// export type SystemPreferences = Map<SystemPreferencesGroups, ModuleSettings>;
 
 export type SystemPreferencesObject = {
     [key in SystemPreferencesGroups]: ModuleSettings;

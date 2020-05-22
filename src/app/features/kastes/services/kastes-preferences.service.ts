@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject, BehaviorSubject, zip, merge, of, combineLatest, Subscription } from 'rxjs';
 import { KastesPreferences, UserPreferences, SystemPreferences } from './preferences';
 import { KastesHttpService } from './kastes-http.service';
-import { LoginService } from '../../../login/login.service';
 import { map, switchMap, tap, filter, shareReplay, take } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { StoreState } from 'src/app/interfaces';

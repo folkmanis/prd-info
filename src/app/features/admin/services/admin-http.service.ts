@@ -3,9 +3,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { User } from 'src/app/interfaces';
-import { DbModulePreferences, ModuleSettings, SystemPreferences, SystemPreferencesGroups } from 'src/app/interfaces';
-import { HttpOptions } from '../../../library/http/http-options';
 import { PrdApiService } from 'src/app/services';
+import { HttpOptions } from '../../../library/http/http-options';
 
 export interface UserList {
   count: number;
@@ -58,25 +57,6 @@ export class AdminHttpService {
   deleteUserHttp(username: string): Observable<boolean> {
     return this.http.delete<UpdateResponse>(this.httpPathUsers + 'user', new HttpOptions({ username })).pipe(
       map(resp => resp.success)
-    );
-  }
-
-  getModuleSystemPreferencesHttp(mod: SystemPreferencesGroups): Observable<ModuleSettings> {
-    return this.prdApi.systemPreferences.get(mod).pipe(
-      map(sett => sett.settings)
-    );
-  }
-
-  getAllSystemPreferencesHttp(): Observable<SystemPreferences> {
-    return this.prdApi.systemPreferences.get().pipe(
-      map(dbpref => dbpref.reduce((acc, curr) => acc.set(curr.module, curr.settings), new Map<SystemPreferencesGroups, ModuleSettings>()))
-    );
-  }
-
-  updateModuleSystemPreferences(modName: SystemPreferencesGroups, preferences: ModuleSettings): Observable<boolean> {
-    return this.prdApi.systemPreferences.updateOne(
-      modName,
-      { settings: preferences }
     );
   }
 

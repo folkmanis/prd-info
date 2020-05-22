@@ -9,7 +9,6 @@ import { ProductsService } from '../../services/products.service';
 import { Product } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
-import { LoginService } from 'src/app/login/login.service';
 
 @Component({
   selector: 'app-new',

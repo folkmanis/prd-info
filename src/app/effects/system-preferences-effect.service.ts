@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Store, select } from '@ngrx/store';
-import { Actions, createEffect, ofType, ROOT_EFFECTS_INIT } from '@ngrx/effects';
-import { map, tap, mergeMap, switchMap, concatMap, withLatestFrom } from 'rxjs/operators';
-import { PrdApiService } from '../services/index';
-import * as actions from '../actions/system-preferences.actions';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
+import { filter, map, switchMap } from 'rxjs/operators';
 import { StoreState } from 'src/app/interfaces';
-import { DbModulePreferences, SystemPreferencesGroups, ModuleSettings, SystemPreferences, SystemPreferencesObject } from 'src/app/interfaces/system-preferences';
-import { of } from 'rxjs';
+import { DbModulePreferences, SystemPreferencesObject } from 'src/app/interfaces/system-preferences';
+import * as actions from '../actions/system-preferences.actions';
+import { PrdApiService } from '../services/index';
 
 @Injectable({
   providedIn: 'root'
@@ -43,10 +42,13 @@ export class SystemPreferencesEffectService {
       ofType(actions.componentStoredModule),
       // TODO pārbaude, vai modulis eksistē
       switchMap(
-        ({ modName, settings }) => this.prdApi.systemPreferences.updateOne(modName, { settings })
+        ({ module, settings }) => this.prdApi.systemPreferences.updateOne(module, { settings }).pipe(
+          filter(result => !!result),
+          switchMap(() => this.prdApi.systemPreferences.get(module)),
+          map(updSett => actions.apiUpdatedModule(updSett))
+        )
       )
     ),
-    { dispatch: false }
   );
 
 
