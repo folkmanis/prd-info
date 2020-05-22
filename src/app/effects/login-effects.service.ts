@@ -5,6 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { map, tap, mergeMap, switchMap } from 'rxjs/operators';
 import { PrdApiService } from '../services/index';
 import * as LoginActions from '../actions/login.actions';
+import * as SystemPreferencesActions from '../actions/system-preferences.actions';
 import { User } from '../interfaces';
 
 @Injectable({
@@ -59,6 +60,13 @@ export class LoginEffectsService {
       ofType(ROOT_EFFECTS_INIT),
       switchMap(() => this.prdApi.login.get('')),
       map(user => LoginActions.apiUserReceived({ user }))
+    )
+  );
+
+  apiUserReceived$ = createEffect(
+    () => this.actions$.pipe(
+      ofType(LoginActions.apiUserReceived),
+      map(() => SystemPreferencesActions.systemRequestedPreferencesFromApi())
     )
   );
 

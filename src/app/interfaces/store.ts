@@ -1,5 +1,5 @@
 import { User } from './user';
-import { SystemPreferences } from './system-preferences';
+import { SystemPreferencesObject } from './system-preferences';
 
 export interface LoginState {
     initialised: boolean;
@@ -8,12 +8,13 @@ export interface LoginState {
     error: string | null;
 }
 
-export interface PreferencesState {
-    systemPreferences: SystemPreferences;
+export interface SystemPreferencesState {
+    systemPreferences: SystemPreferencesObject;
+    loading: boolean;
     error: string | null;
 }
 
 export interface StoreState {
     login: LoginState;
-    // preferences: StoreInterfaces.PreferencesState;
+    systemPreferences: SystemPreferencesState;
 }

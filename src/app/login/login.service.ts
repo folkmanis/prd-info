@@ -3,13 +3,6 @@
  * user$ - lietotāja info pakete
  * modules$ - pieejamie moduļi
  * isLogin$ - vai ir pieslēgums
- * login() - mēģinājums pieslēgties
- * logout() - atslēgšanās
- *
- * Klausās:
- * login()
- * logout()
- *
  *
  */
 

@@ -26,6 +26,7 @@
     "@ngrx/effects": "^9.1.2",
     "@ngrx/schematics": "^9.1.2",
     "@ngrx/store": "^9.0.0",
+    "@ngrx/store-devtools": "^9.1.2",
     "@types/lodash.isequal": "^4.5.5",
     "@types/pdfmake": "^0.1.13",
     "angular-persistence": "^1.0.1",

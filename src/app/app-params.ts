@@ -23,4 +23,17 @@ export const PRD_DEFAULTS: AppParams = {
                 { category: 'perforated paper', description: 'Perforētais papīrs' }
             ]
         } as JobsSettings),
+    defaultSystemPreferencesObj: {
+        kastes: {
+            colors: { yellow: 'hsl(45,75%,60%)', rose: '315,75%,50%', white: '0,0%,50%', },
+        },
+        system: { menuExpandedByDefault: false },
+        jobs: {
+            productCategories: [
+                { category: 'plates', description: 'Iespiedformas' },
+                { category: 'perforated paper', description: 'Perforētais papīrs' }
+            ]
+        }
+    }
 };
+
