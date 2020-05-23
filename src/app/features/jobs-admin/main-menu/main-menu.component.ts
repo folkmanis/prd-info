@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { StoreState } from 'src/app/interfaces';
-import { childMenu } from 'src/app/selectors';
+import { childMenu } from 'src/app/store/selectors';
 
 @Component({
   template: `<app-card-menu [modules]='modules$ | async'></app-card-menu>`,

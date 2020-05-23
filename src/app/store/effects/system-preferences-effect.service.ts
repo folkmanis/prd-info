@@ -5,7 +5,7 @@ import { filter, map, switchMap } from 'rxjs/operators';
 import { StoreState } from 'src/app/interfaces';
 import { DbModulePreferences, SystemPreferencesObject } from 'src/app/interfaces/system-preferences';
 import * as actions from '../actions/system-preferences.actions';
-import { PrdApiService } from '../services/index';
+import { PrdApiService } from '../../services/index';
 
 @Injectable({
   providedIn: 'root'

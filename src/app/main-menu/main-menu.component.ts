@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { StoreState } from 'src/app/interfaces';
-import { getMenuModules } from 'src/app/selectors';
+import { getMenuModules } from 'src/app/store/selectors';
 
 @Component({
   selector: 'app-main-menu',

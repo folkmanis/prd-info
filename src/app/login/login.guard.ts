@@ -3,9 +3,9 @@ import { ActivatedRouteSnapshot, CanActivate, CanLoad, Route, Router, RouterStat
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { filter, map, take, tap } from 'rxjs/operators';
-import { LoginActions } from 'src/app/actions';
+import { LoginActions } from 'src/app/store/actions';
 import { StoreState } from 'src/app/interfaces';
-import { selectSystem } from 'src/app/selectors';
+import { selectSystem } from 'src/app/store/selectors';
 
 @Injectable({
   providedIn: 'root'

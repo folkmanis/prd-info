@@ -5,7 +5,7 @@ import * as moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
 import { StoreState, SystemSettings } from 'src/app/interfaces';
-import { getModulePreferences } from 'src/app/selectors';
+import { getModulePreferences } from 'src/app/store/selectors';
 import { GetLogEntriesParams } from '../../services/logfile-record';
 import { LogfileService, ValidDates } from '../../services/logfile.service';
 

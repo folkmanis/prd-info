@@ -3,10 +3,10 @@ import { Router } from '@angular/router';
 import { Actions, createEffect, ofType, ROOT_EFFECTS_INIT } from '@ngrx/effects';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { map, tap, mergeMap, switchMap } from 'rxjs/operators';
-import { PrdApiService } from '../services/index';
+import { PrdApiService } from '../../services/index';
 import * as LoginActions from '../actions/login.actions';
 import * as SystemPreferencesActions from '../actions/system-preferences.actions';
-import { User } from '../interfaces';
+import { User } from '../../interfaces';
 
 @Injectable({
   providedIn: 'root'

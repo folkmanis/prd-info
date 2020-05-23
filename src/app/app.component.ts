@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { combineLatest, Observable } from 'rxjs';
 import { map, shareReplay, tap } from 'rxjs/operators';
 import { StoreState, User, UserModule } from 'src/app/interfaces';
-import * as selectors from './selectors';
+import * as selectors from './store/selectors';
 
 
 @Component({

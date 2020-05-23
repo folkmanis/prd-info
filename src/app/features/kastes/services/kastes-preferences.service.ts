@@ -5,7 +5,7 @@ import { KastesHttpService } from './kastes-http.service';
 import { map, switchMap, tap, filter, shareReplay, take } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { StoreState } from 'src/app/interfaces';
-import { getModulePreferences } from 'src/app/selectors';
+import { getModulePreferences } from 'src/app/store/selectors';
 
 @Injectable({
   providedIn: 'root'

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
-import * as loginActions from 'src/app/actions/login.actions';
+import * as loginActions from 'src/app/store/actions/login.actions';
 import { StoreState, Login } from 'src/app/interfaces';
 
 @Component({

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { StoreState } from 'src/app/interfaces';
-import { childMenu } from 'src/app/selectors';
+import { childMenu } from 'src/app/store/selectors';
 
 @Component({
   selector: 'app-kastes-main-menu',

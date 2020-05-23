@@ -22,9 +22,9 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { AppParams } from './interfaces';
 import { APP_PARAMS, PRD_DEFAULTS } from './app-params';
 import { StoreModule } from '@ngrx/store';
-import { reducers, metaReducers } from './reducers';
+import { reducers, metaReducers } from './store/reducers';
 import { EffectsModule } from '@ngrx/effects';
-import { effects } from './effects';
+import { effects } from './store/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 

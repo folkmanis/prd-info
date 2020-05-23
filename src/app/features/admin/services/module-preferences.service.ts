@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { SystemPreferencesActions } from 'src/app/actions';
+import { SystemPreferencesActions } from 'src/app/store/actions';
 import { ModuleSettings, StoreState, SystemPreferencesGroups } from 'src/app/interfaces';
-import { getModulePreferences } from 'src/app/selectors';
+import { getModulePreferences } from 'src/app/store/selectors';
 
 @Injectable()
 export class ModulePreferencesService {

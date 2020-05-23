@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { merge, Observable, Subject } from 'rxjs';
 import { map, share, switchMap, tap } from 'rxjs/operators';
 import { Customer, JobsSettings, Product, ProductNoPrices, StoreState } from 'src/app/interfaces';
-import { getModulePreferences } from 'src/app/selectors';
+import { getModulePreferences } from 'src/app/store/selectors';
 import { PrdApiService } from 'src/app/services';
 
 @Injectable()

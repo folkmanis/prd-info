@@ -8,10 +8,10 @@ import {
   createReducer,
   MetaReducer
 } from '@ngrx/store';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { cloneDeep } from 'lodash';
 
-import { StoreState, SystemState } from '../interfaces/store';
+import { StoreState, SystemState } from '../../interfaces/store';
 import * as LoginActions from '../actions/login.actions';
 import * as SystemPreferencesActions from '../actions/system-preferences.actions';
 import { PRD_DEFAULTS } from 'src/app/app-params';
