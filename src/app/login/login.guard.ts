@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, CanLoad, Route, Router, RouterStateSnapshot, UrlSegment } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { filter, map, take, tap } from 'rxjs/operators';
-import { LoginActions } from 'src/app/store/actions';
+import { tap } from 'rxjs/operators';
 import { StoreState } from 'src/app/interfaces';
-import { selectSystem } from 'src/app/store/selectors';
+import { LoginActions } from 'src/app/store/actions';
+import { isLoggedIn, isModule } from 'src/app/store/selectors';
 
 @Injectable({
   providedIn: 'root'
@@ -17,25 +17,18 @@ export class LoginGuard implements CanLoad, CanActivate {
     private router: Router,
   ) { }
 
-  private isLogin$: Observable<boolean> = this.store.select(selectSystem).pipe(
-    filter(state => state.initialised),
-    map(state => !!state.user),
-    take(1),
-  );
-
   canLoad(
     route: Route,
     segments: UrlSegment[],
   ): Observable<boolean> | Promise<boolean> | boolean {
-    return this.store.select(selectSystem).pipe(
-      filter(state => state.initialised),
-      map(state => !!state.user.preferences.modules.find(m => m === route.path)),
-      take(1),
+    return this.store.pipe(
+      isModule(route.path),
     );
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    return this.isLogin$.pipe(
+    return this.store.pipe(
+      isLoggedIn(),
       tap(logged => logged || this.router.navigate(['login'])),
       tap(() => this.store.dispatch(LoginActions.routeChanged({ route: route.routeConfig.path })))
     );

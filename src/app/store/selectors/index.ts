@@ -1,12 +1,25 @@
-import { createSelector, createFeatureSelector } from '@ngrx/store';
+import { createSelector, createFeatureSelector, select } from '@ngrx/store';
+import { Observable, pipe } from 'rxjs';
+import { filter, take, map } from 'rxjs/operators';
 import { StoreState, SystemState } from 'src/app/interfaces/store';
 import { SystemPreferencesGroups, SystemPreferencesObject, UserModule } from 'src/app/interfaces';
 
 export const selectSystem = createFeatureSelector<StoreState, SystemState>('system');
 
-export const isLoggedIn = createSelector(
-    selectSystem,
-    (state: SystemState) => !!state.user
+export const isLoggedIn = () => {
+    return pipe(
+        select(selectSystem),
+        filter(state => state.initialised),
+        map(state => !!state.user),
+        take(1),
+    );
+};
+
+export const isModule = (module: string) => pipe(
+    select(selectSystem),
+    filter(state => state.initialised),
+    map(state => !!state.user.preferences.modules.find(m => m === module)),
+    take(1),
 );
 
 export const isLoaded = createSelector(
