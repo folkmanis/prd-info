@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { SystemPreferencesActions } from 'src/app/store/actions';
 import { ModuleSettings, StoreState, SystemPreferencesGroups } from 'src/app/interfaces';
-import { getModulePreferences } from 'src/app/store/selectors';
+import { getModulePreferences } from 'src/app/store/selectors/system.selectors';
 
 @Injectable()
 export class ModulePreferencesService {

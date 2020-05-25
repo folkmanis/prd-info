@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Observable, Subject, of } from 'rxjs';
 import { map, filter, tap, switchMap, debounceTime, takeUntil } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -8,6 +9,8 @@ import { Customer } from 'src/app/interfaces';
 import { CustomersService } from '../../services/customers.service';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
+import * as customersSelectors from 'src/app/store/selectors/customers.selectors';
+import * as customersActions from 'src/app/store/actions/customers.actions';
 
 const CUSTOMER_DEFAULTS = {
   _id: '',
@@ -28,6 +31,7 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
     private route: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
+    private store: Store,
     private service: CustomersService,
     private dialog: ConfirmationDialogService,
   ) { }
@@ -53,7 +57,7 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
     this.customer$ = this.route.paramMap.pipe(
       map(paramMap => paramMap.get('id')),
       filter(id => !!id),
-      switchMap(id => this.service.getCustomer(id)),
+      switchMap(id => this.store.select(customersSelectors.customer, { id })),
       tap(cust => this.customer = clone(cust)),
       tap(this.updateForm(this.customerForm)),
     );

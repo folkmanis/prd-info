@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { StoreState, SystemSettings } from 'src/app/interfaces';
-import { getMenuModules, getModulePreferences } from 'src/app/store/selectors';
+import { getMenuModules, getModulePreferences } from 'src/app/store/selectors/system.selectors';
 import { MenuDataSource, SideMenuData } from './menu-datasource';
 
 

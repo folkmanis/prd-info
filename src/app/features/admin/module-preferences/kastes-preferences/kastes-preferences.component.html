@@ -5,7 +5,7 @@
         <div>
             <mat-slider min="0" max="100" step="1" thumbLabel [formControlName]="col"></mat-slider>
         </div>
-        <div [ngStyle]="{'color': preferences.colors[col]}">{{colors[col].lightness}}%</div>
+        <div [style.color]="preferences.colors[col]">{{colors[col].lightness}}%</div>
     </div>
     <button mat-raised-button (click)="onSave()" [disabled]="colorsForm.pristine">Saglabāt</button>
     <button mat-raised-button (click)="onReset()" [disabled]="colorsForm.pristine">Atcelt</button>

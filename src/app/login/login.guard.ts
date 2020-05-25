@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { StoreState } from 'src/app/interfaces';
 import { LoginActions } from 'src/app/store/actions';
-import { isLoggedIn, isModule } from 'src/app/store/selectors';
+import { isLoggedIn, isModule } from 'src/app/store/selectors/system.selectors';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +30,6 @@ export class LoginGuard implements CanLoad, CanActivate {
     return this.store.pipe(
       isLoggedIn(),
       tap(logged => logged || this.router.navigate(['login'])),
-      tap(() => this.store.dispatch(LoginActions.routeChanged({ route: route.routeConfig.path })))
     );
   }
 

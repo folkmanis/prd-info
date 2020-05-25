@@ -2,23 +2,24 @@ import { createAction, props } from '@ngrx/store';
 import * as systemPreferencesInterfaces from 'src/app/interfaces/system-preferences';
 
 enum SystemPreferencesActionTypes {
-    SystemRequestedPreferencesFromApi = '[System] Requested Preferences From Api',
-    ApiRetrievedAllPreferences = '[Api] Retrieved All Preferences',
-    ComponentStoredModule = '[Component] Stored Module',
-    ApiUpdatedModule = '[Api] Updated Module',
+    systemRequestedPreferencesFromApi = '[System] Requested Preferences From Api',
+    apiRetrievedAllPreferences = '[Api] Retrieved All Preferences',
+    componentStoredModule = '[Component] Stored Module',
+    apiUpdatedModule = '[Api] Updated Module',
+    routerNavigated = '[Router] Navigated'
 }
 
 export const systemRequestedPreferencesFromApi = createAction(
-    SystemPreferencesActionTypes.SystemRequestedPreferencesFromApi
+    SystemPreferencesActionTypes.systemRequestedPreferencesFromApi
 );
 
 export const apiRetrievedAllPreferences = createAction(
-    SystemPreferencesActionTypes.ApiRetrievedAllPreferences,
+    SystemPreferencesActionTypes.apiRetrievedAllPreferences,
     props<{ systemPreferences: Partial<systemPreferencesInterfaces.SystemPreferencesObject>; }>()
 );
 
 export const componentStoredModule = createAction(
-    SystemPreferencesActionTypes.ComponentStoredModule,
+    SystemPreferencesActionTypes.componentStoredModule,
     props<{
         module: systemPreferencesInterfaces.SystemPreferencesGroups,
         settings: systemPreferencesInterfaces.ModuleSettings,
@@ -26,9 +27,14 @@ export const componentStoredModule = createAction(
 );
 
 export const apiUpdatedModule = createAction(
-    SystemPreferencesActionTypes.ApiUpdatedModule,
+    SystemPreferencesActionTypes.apiUpdatedModule,
     props<{
         module: systemPreferencesInterfaces.SystemPreferencesGroups,
         settings: systemPreferencesInterfaces.ModuleSettings,
     }>()
+);
+
+export const routerNavigated = createAction(
+    SystemPreferencesActionTypes.routerNavigated,
+    props<{ url: string; }>()
 );

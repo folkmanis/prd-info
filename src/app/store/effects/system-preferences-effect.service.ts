@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { filter, map, switchMap } from 'rxjs/operators';
+import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { StoreState } from 'src/app/interfaces';
 import { DbModulePreferences, SystemPreferencesObject } from 'src/app/interfaces/system-preferences';
 import * as actions from '../actions/system-preferences.actions';
@@ -14,16 +15,10 @@ export class SystemPreferencesEffectService {
 
   constructor(
     private prdApi: PrdApiService,
+    private router: Router,
     private actions$: Actions,
     private store: Store<StoreState>,
   ) { }
-
-  /*
-    SystemRequestedPreferencesFromApi = '[System] Requested Preferences From Api',
-    ApiRetrievedAllPreferences = '[Api] Retrieved All Preferences',
-    ComponentStoredModule = '[Component] Stored Module',
-    ApiUpdatedModule = '[Api] Updated Module',
-   */
 
   systemRequestedPreferencesFromApi$ = createEffect(
     () => this.actions$.pipe(
@@ -40,7 +35,6 @@ export class SystemPreferencesEffectService {
   componentStoredModule$ = createEffect(
     () => this.actions$.pipe(
       ofType(actions.componentStoredModule),
-      // TODO pārbaude, vai modulis eksistē
       switchMap(
         ({ module, settings }) => this.prdApi.systemPreferences.updateOne(module, { settings }).pipe(
           filter(result => !!result),
@@ -51,6 +45,12 @@ export class SystemPreferencesEffectService {
     ),
   );
 
+  routeChanges$ = createEffect(
+    () => this.router.events.pipe(
+      filter(ev => ev instanceof NavigationEnd),
+      map((ev: NavigationEnd) => actions.routerNavigated({ url: ev.url }))
+    ),
+  );
 
   // tslint:disable: semicolon
   private arrayToPrefObj = (dbpref: DbModulePreferences[]): Partial<SystemPreferencesObject> =>

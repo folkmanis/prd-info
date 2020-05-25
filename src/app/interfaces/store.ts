@@ -1,4 +1,5 @@
 import { User, UserModule } from './user';
+import { CustomerPartial, Customer } from './customer';
 import { SystemPreferencesObject } from './system-preferences';
 
 export interface SystemState {
@@ -12,6 +13,16 @@ export interface SystemState {
     error: string | null;
 }
 
+export interface CustomersState {
+    customers: CustomerPartial[] | undefined;
+    customerMap: Array<[string, Customer]>;
+    lastInsertId: string | undefined;
+
+    loading: boolean;
+    error: string | null;
+}
+
 export interface StoreState {
     system: SystemState;
+    customers: CustomersState;
 }

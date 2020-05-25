@@ -5,7 +5,7 @@ import * as moment from 'moment';
 import { combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
 import { map, pluck, share, switchMap } from 'rxjs/operators';
 import { StoreState, SystemSettings } from 'src/app/interfaces';
-import { getModulePreferences } from 'src/app/store/selectors';
+import { getModulePreferences } from 'src/app/store/selectors/system.selectors';
 import { HttpOptions } from '../../../library/http/http-options';
 import { GetLogEntriesParams, LogData, LogDataHttp } from './logfile-record';
 

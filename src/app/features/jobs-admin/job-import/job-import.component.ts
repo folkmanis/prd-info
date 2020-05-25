@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { Job, JobsSettings, StoreState } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
-import { getModulePreferences } from 'src/app/store/selectors';
+import { getModulePreferences } from 'src/app/store/selectors/system.selectors';
 import { ProductPriceImport } from '../services';
 import { JobImportService, ParsedObject } from '../services/job-import.service';
 

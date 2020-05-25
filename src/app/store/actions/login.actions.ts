@@ -8,7 +8,6 @@ enum LoginActionTypes {
     ApiNotLoggedIn = '[User Api] User Not Logged In',
     ApiLoggedOut = '[User Api] Logged Out',
     ApiUserReceived = '[User Api] User Received',
-    RouteChanged = '[Router] Route Changed',
 }
 
 export const login = createAction(
@@ -37,9 +36,4 @@ export const apiLoggedOut = createAction(
 export const apiUserReceived = createAction(
     LoginActionTypes.ApiUserReceived,
     props<{ user: User | undefined; }>(),
-);
-
-export const routeChanged = createAction(
-    LoginActionTypes.RouteChanged,
-    props<{ route: string; }>(),
 );
