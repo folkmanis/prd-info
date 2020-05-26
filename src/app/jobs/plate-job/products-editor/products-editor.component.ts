@@ -2,8 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, OnDestro
 import { FormArray, FormBuilder, Validators, FormGroup, AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
 import { Observable, of, Subject, ReplaySubject, merge, combineLatest } from 'rxjs';
 import { tap, map, switchMap, takeUntil, filter, shareReplay, share, take } from 'rxjs/operators';
-import { ProductsService } from '../../services';
 import { Product, CustomerProduct, JobProduct } from 'src/app/interfaces';
+import { ProductsService } from 'src/app/services';
 
 interface ProductFormValues {
   name: string;

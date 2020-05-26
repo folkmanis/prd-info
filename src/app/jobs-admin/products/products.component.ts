@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ProductsService } from '../services/products.service';
+import { ProductsService } from 'src/app/services';
 import { RouteSelection } from 'src/app/library/find-select-route/find-select-route.module';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';

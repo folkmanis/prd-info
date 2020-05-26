@@ -1,10 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormControl, FormBuilder, AbstractControl, AsyncValidatorFn, ValidationErrors, Validators } from '@angular/forms';
-import { Observable, combineLatest, of } from 'rxjs';
-import { tap, map, startWith, filter, switchMap } from 'rxjs/operators';
-import { ProductsService, CustomersService, JobService } from '../services';
+import { Observable, of } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { Job } from 'src/app/interfaces';
+import { JobService } from '../services';
 
 @Component({
   selector: 'app-plate-job',

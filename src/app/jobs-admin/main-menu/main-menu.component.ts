@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { LoginService } from 'src/app/login/login.service';
+import { Component } from '@angular/core';
+import { SystemPreferencesService } from 'src/app/services';
 
 @Component({
   template: `<app-card-menu [modules]='modules$'></app-card-menu>`,
@@ -7,8 +7,8 @@ import { LoginService } from 'src/app/login/login.service';
 export class MainMenuComponent {
 
   constructor(
-    private loginService: LoginService,
-  ) { }
-  modules$ = this.loginService.childMenu('jobs-admin');
+    private systemPreferencesService: SystemPreferencesService,
+    ) { }
+  modules$ = this.systemPreferencesService.childMenu('jobs-admin');
 
 }

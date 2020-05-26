@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LoginService } from '../login/login.service';
+import { SystemPreferencesService } from '../services';
 
 @Component({
   selector: 'app-main-menu',
@@ -9,10 +9,10 @@ import { LoginService } from '../login/login.service';
 export class MainMenuComponent implements OnInit {
 
   constructor(
-    private loginService: LoginService,
+    private systemPreferencesService: SystemPreferencesService,
   ) { }
 
-  menuItems$ = this.loginService.modules$;
+  menuItems$ = this.systemPreferencesService.modules$;
 
   ngOnInit() {
   }

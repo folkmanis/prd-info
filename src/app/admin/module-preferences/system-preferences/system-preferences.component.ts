@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { PreferencesComponent } from '../preferences-component.class';
-import { ModulePreferencesService } from '../../services/module-preferences.service';
 import { SystemSettings } from 'src/app/interfaces';
-import { tap, pluck, map } from 'rxjs/operators';
+import { tap, pluck, map, take } from 'rxjs/operators';
+import { SystemPreferencesService } from 'src/app/services';
 
 @Component({
   selector: 'app-system-preferences',
@@ -15,21 +15,20 @@ export class SystemPreferencesComponent implements OnInit, PreferencesComponent 
 
   constructor(
     private fb: FormBuilder,
-    private preferencesService: ModulePreferencesService,
+    private systemPreferencesService: SystemPreferencesService,
   ) { }
 
-  sysPref$: Observable<SystemSettings> = this.preferencesService.getModulePreferences<SystemSettings>('system');
-  settingsForm: FormGroup;
+  sysPref$: Observable<SystemSettings> = this.systemPreferencesService.getModulePreferences<SystemSettings>('system');
+  settingsForm: FormGroup = this.fb.group({
+    menuExpandedByDefault: [true],
+  });
   defaults: Partial<SystemSettings>;
 
 
   ngOnInit() {
     this.sysPref$.pipe(
-      map(({ menuExpandedByDefault }) => ({ menuExpandedByDefault })),
-      tap(pref => {
-        this.defaults = pref;
-        this.settingsForm = this.fb.group(pref);
-      })
+      take(1),
+      tap(this.setForm)
     )
       .subscribe();
   }
@@ -38,18 +37,13 @@ export class SystemPreferencesComponent implements OnInit, PreferencesComponent 
     return of(this.settingsForm.pristine);
   }
 
-  onSave() {
-    this.preferencesService.updateModulePreferences('system', this.settingsForm.value)
-      .subscribe(result => {
-        if (result) {
-          this.defaults = this.settingsForm.value;
-          this.settingsForm.markAsPristine();
-        }
-      });
+  onSave = () => {
+    this.systemPreferencesService.updateModulePreferences('system', this.settingsForm.value)
+      .subscribe(() => this.settingsForm.markAsPristine());
   }
 
-  onReset() {
-    this.settingsForm.reset(this.defaults);
-  }
+  onReset = () => this.sysPref$.pipe(take(1), tap(this.setForm)).subscribe();
+
+  private setForm = (sett: SystemSettings) => this.settingsForm.reset(sett, { emitEvent: false });
 
 }

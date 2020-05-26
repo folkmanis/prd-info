@@ -2,9 +2,9 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import * as moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
-import { distinctUntilChanged, filter, map, startWith, switchMap, tap } from 'rxjs/operators';
-import { LoginService } from 'src/app/login/login.service';
+import { distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
 import { SystemSettings } from 'src/app/interfaces';
+import { SystemPreferencesService } from 'src/app/services';
 import { GetLogEntriesParams } from '../../services/logfile-record';
 import { LogfileService, ValidDates } from '../../services/logfile.service';
 
@@ -25,7 +25,7 @@ export class LogFilterComponent implements OnInit, OnDestroy, AfterViewInit {
   private subs: Subscription = new Subscription();
 
   constructor(
-    private loginService: LoginService,
+    private systemPreferencesService: SystemPreferencesService,
     private service: LogfileService,
   ) { }
   maxDate = moment();
@@ -39,7 +39,7 @@ export class LogFilterComponent implements OnInit, OnDestroy, AfterViewInit {
     date: moment(),
   };
 
-  logLevels$: Observable<{ key: number, value: string; }[]> = this.loginService.sysPreferences$.pipe(
+  logLevels$: Observable<{ key: number, value: string; }[]> = this.systemPreferencesService.sysPreferences$.pipe(
     map(pref => pref.get('system')),
     map(pref => (pref as SystemSettings).logLevels),
     map(levels => levels.sort((a, b) => a[0] - b[0])),

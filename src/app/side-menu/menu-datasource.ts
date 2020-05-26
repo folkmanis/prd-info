@@ -1,7 +1,6 @@
 import { Observable } from 'rxjs';
 import { DataSource, CollectionViewer } from '@angular/cdk/collections';
 import { UserModule } from 'src/app/interfaces';
-import { LoginService } from '../login/login.service';
 import { map, tap, share } from 'rxjs/operators';
 
 export interface SideMenuData {
@@ -15,13 +14,13 @@ export interface SideMenuData {
 export class MenuDataSource implements DataSource<SideMenuData> {
 
     data: SideMenuData[] = [];
-    dataChange$ = this.loginService.modules$.pipe(
+    dataChange$ = this.modules$.pipe(
         map(mod => this.toSideMenu(mod)),
         tap(menu => this.data = menu),
         share(),
     );
     constructor(
-        private loginService: LoginService,
+        private modules$: Observable<UserModule[]>,
     ) { }
     /**
      * Datu struktūras obligātā funkcija. Parakstās uz lietotāja objektu

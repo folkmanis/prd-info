@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject, BehaviorSubject, zip, merge, of, combineLatest, Subscription } from 'rxjs';
 import { KastesPreferences, UserPreferences, SystemPreferences } from './preferences';
 import { KastesHttpService } from './kastes-http.service';
-import { LoginService } from '../../login/login.service';
 import { map, switchMap, tap, filter, shareReplay, take } from 'rxjs/operators';
+import { SystemPreferencesService } from 'src/app/services';
 
 @Injectable({
   providedIn: 'root'
@@ -12,10 +12,10 @@ export class KastesPreferencesService {
 
   constructor(
     private kastesHttpService: KastesHttpService,
-    private loginService: LoginService,
+    private systemPreferencesService: SystemPreferencesService,
   ) { }
 
-  private sys$ = this.loginService.sysPreferences$.pipe(
+  private sys$ = this.systemPreferencesService.sysPreferences$.pipe(
     map(sys => sys.get('kastes') as SystemPreferences),
     filter(sys => !!sys),
   );

@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FormControl, FormGroup, FormBuilder, Validators, FormArray, ValidatorFn, ValidationErrors, AbstractControl } from '@angular/forms';
-import { Observable, combineLatest, merge } from 'rxjs';
-import { map, switchMap, filter, tap, share } from 'rxjs/operators';
-import { JobService, CustomersService, InvoicesService } from '../../services';
-import {CustomerPartial, JobPartial, Invoice, Job } from 'src/app/interfaces';
+import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
+import { filter, map, switchMap } from 'rxjs/operators';
+import { Invoice } from 'src/app/interfaces';
+import { InvoicesService } from '../../services';
 import { InvoiceReport } from './invoice-report';
 
 @Component({
@@ -16,9 +15,6 @@ export class InvoiceEditorComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private fb: FormBuilder,
-    private jobService: JobService,
-    private customersService: CustomersService,
     private invoicesService: InvoicesService,
   ) { }
 
@@ -34,11 +30,6 @@ export class InvoiceEditorComponent implements OnInit {
   onPdfDownload(invoice: Invoice): void {
     const report = new InvoiceReport(invoice);
     report.open();
-    // window.open('/data/invoices/' + invoiceId + '/report', '_blank');
-    // this.invoicesService.getInvoice(invoiceId).pipe(
-    //   tap(resp => console.log('download pdf', invoiceId, resp)),
-    // ).subscribe();
-
   }
 
 }

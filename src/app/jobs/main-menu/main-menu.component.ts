@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { LoginService } from 'src/app/login/login.service';
+import { SystemPreferencesService } from 'src/app/services';
 
 @Component({
   templateUrl: './main-menu.component.html',
@@ -8,8 +8,8 @@ import { LoginService } from 'src/app/login/login.service';
 export class MainMenuComponent {
 
   constructor(
-    private loginService: LoginService,
-  ) { }
-  modules$ = this.loginService.childMenu('jobs');
+    private systemPreferencesService: SystemPreferencesService,
+    ) { }
+  modules$ = this.systemPreferencesService.childMenu('jobs');
 
 }

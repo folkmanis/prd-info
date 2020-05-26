@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { tap, map, debounceTime } from 'rxjs/operators';
 import { pickBy, identity } from 'lodash';
-import { CustomersService } from '../../services';
+import { CustomersService } from 'src/app/services';
 import { JobQueryFilter, JobProduct } from 'src/app/interfaces';
 
 const NULL_CUSTOMER = { CustomerName: undefined, _id: undefined, code: undefined };

@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormArray, FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { Customer } from '../../../interfaces';
-import { CustomersService } from '../../services';
+import { Customer } from 'src/app/interfaces';
+import { CustomersService } from 'src/app/services';
 
 @Component({
   selector: 'app-import-new-customers',

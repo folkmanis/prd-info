@@ -3,12 +3,12 @@ import { FormGroup, FormBuilder, AbstractControl } from '@angular/forms';
 import { Observable, of, Subject, Subscription } from 'rxjs';
 import { tap, map, takeUntil, filter } from 'rxjs/operators';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ModulePreferencesService } from '../../services/module-preferences.service';
 import { PreferencesComponent } from '../preferences-component.class';
 import { cloneDeep } from 'lodash';
 import { JobsSettings, AppParams } from 'src/app/interfaces';
 import { APP_PARAMS } from 'src/app/app-params';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
+import { SystemPreferencesService } from 'src/app/services';
 
 @Component({
   selector: 'app-jobs-preferences',
@@ -19,8 +19,8 @@ export class JobsPreferencesComponent implements OnInit, PreferencesComponent, O
 
   constructor(
     @Inject(APP_PARAMS) private params: AppParams,
-    private moduleService: ModulePreferencesService,
     private dialog: MatDialog,
+    private systemPreferencesService: SystemPreferencesService,
   ) { }
 
   pristine = true;
@@ -29,7 +29,7 @@ export class JobsPreferencesComponent implements OnInit, PreferencesComponent, O
   newSettings: JobsSettings;
 
   ngOnInit(): void {
-    const subs = this.moduleService.getModulePreferences<JobsSettings>('jobs')
+    const subs = this.systemPreferencesService.getModulePreferences<JobsSettings>('jobs')
       .subscribe(sett => {
         this.oldSettings = sett || this.params.defaultSystemPreferences.get('jobs') as JobsSettings;
         this.newSettings = cloneDeep(sett);
@@ -54,7 +54,7 @@ export class JobsPreferencesComponent implements OnInit, PreferencesComponent, O
   }
 
   onSave(): void {
-    this.moduleService.updateModulePreferences('jobs', this.newSettings).pipe(
+    this.systemPreferencesService.updateModulePreferences('jobs', this.newSettings).pipe(
       tap(() => this.pristine = true),
     ).subscribe();
   }

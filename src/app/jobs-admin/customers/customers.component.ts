@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { RouteSelection } from 'src/app/library/find-select-route/find-select-route.module';
-import { Customer } from 'src/app/interfaces';
-import { CustomersService } from '../services/customers.service';
+import { CustomersService } from 'src/app/services';
 import { map } from 'rxjs/operators';
 
 @Component({

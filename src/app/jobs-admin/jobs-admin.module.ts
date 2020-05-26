@@ -10,7 +10,7 @@ import { ProductsModule } from './products/products.module';
 import { CustomersModule } from './customers/customers.module';
 import { JobImportModule } from './job-import/job-import.module';
 
-import { CustomersService, ProductsService, JobImportService } from './services';
+import { JobImportService } from './services';
 
 @NgModule({
   declarations: [
@@ -26,8 +26,6 @@ import { CustomersService, ProductsService, JobImportService } from './services'
     JobsAdminRoutingModule,
   ],
   providers: [
-    CustomersService,
-    ProductsService,
     ParserService,
     { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptorService, multi: true, },
   ],

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { LoginService } from '../../login/login.service';
+import { SystemPreferencesService } from 'src/app/services';
 
 @Component({
   selector: 'app-kastes-main-menu',
@@ -8,9 +8,9 @@ import { LoginService } from '../../login/login.service';
 export class KastesMainMenuComponent {
 
   constructor(
-    private loginService: LoginService,
+    private systemPreferencesService: SystemPreferencesService,
   ) { }
 
-  modules$ = this.loginService.childMenu('kastes');
+  modules$ = this.systemPreferencesService.childMenu('kastes');
 
 }

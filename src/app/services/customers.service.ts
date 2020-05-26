@@ -3,22 +3,31 @@ import { Observable, merge, Subject } from 'rxjs';
 import { map, pluck, filter, tap, switchMap, share, shareReplay } from 'rxjs/operators';
 import { Customer, CustomerPartial, CustomerResponse } from 'src/app/interfaces';
 
-import { PrdApiService } from 'src/app/services';
+import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class CustomersService {
   private updateCustomers$: Subject<CustomerPartial[]> = new Subject();
+  private _customers$: Observable<CustomerPartial[]>;
 
   constructor(
     private prdApi: PrdApiService,
   ) { }
 
-  customers$: Observable<Partial<Customer>[]> = merge(
-    this.updateCustomers$, this.getCustomerList()
-  ).pipe(
-    share(),
-  );
+  get customers$(): Observable<CustomerPartial[]> {
+    if (!this._customers$) {
+      this._customers$ = merge(
+        this.updateCustomers$,
+        this.getCustomerList(),
+      ).pipe(
+        shareReplay(1),
+      );
+    }
+    return this._customers$;
+  }
 
   updateCustomer(customer: Partial<Customer>): Observable<boolean> {
     const _id = customer._id;

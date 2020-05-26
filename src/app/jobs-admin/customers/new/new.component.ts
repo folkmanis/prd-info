@@ -3,7 +3,7 @@ import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.gu
 import { Observable, of } from 'rxjs';
 import { FormGroup, FormBuilder, Validators, AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { CustomersService } from '../../services/customers.service';
+import { CustomersService } from 'src/app/services';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { map, tap, filter } from 'rxjs/operators';
 import { Customer } from 'src/app/interfaces';

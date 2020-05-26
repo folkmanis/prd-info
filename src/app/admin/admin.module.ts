@@ -45,7 +45,6 @@ import { CategoryDialogComponent } from './module-preferences/jobs-preferences/c
   providers: [
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
     services.AdminHttpService,
-    services.ModulePreferencesService,
     services.UsersService,
   ],
 })

@@ -8,8 +8,7 @@ import { ParserService } from 'src/app/library';
 
 import { Customer, CustomerPartial, ProductPartial, ProductPrice, Job, JobProduct, Product } from 'src/app/interfaces';
 import { PrdApiService } from 'src/app/services';
-import { CustomersService } from './customers.service';
-import { ProductsService } from './products.service';
+import {ProductsService, CustomersService } from 'src/app/services';
 
 export interface ParsedObject {
   datums: Date;

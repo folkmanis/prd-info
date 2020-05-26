@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { CanLoad, Route, UrlSegment, Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, CanLoad, Route, Router, RouterStateSnapshot, UrlSegment } from '@angular/router';
 import { Observable } from 'rxjs';
-import { LoginService } from './login.service';
+import { map, take, tap } from 'rxjs/operators';
+import { LoginService } from '../services';
+import { SystemPreferencesService } from '../services/system-preferences.service';
 import { USER_MODULES } from '../user-modules';
-import { tap, switchMap, map, take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,7 @@ export class LoginGuard implements CanLoad, CanActivate {
 
   constructor(
     private loginService: LoginService,
+    private systemPreferencesService: SystemPreferencesService,
     private router: Router,
   ) { }
 
@@ -29,7 +31,7 @@ export class LoginGuard implements CanLoad, CanActivate {
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
     return this.loginService.isLogin$.pipe(
       tap(logged => logged || this.router.navigate(['login'])),
-      tap(() => this.loginService.setActiveModule(USER_MODULES.find(mod => mod.route === route.routeConfig.path) || null))
+      tap(() => this.systemPreferencesService.setActiveModule(USER_MODULES.find(mod => mod.route === route.routeConfig.path) || null))
     );
   }
 

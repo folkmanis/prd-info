@@ -1,10 +1,10 @@
 import { Component, OnInit, AfterViewInit, ViewChild, NgZone } from '@angular/core';
 import { MatSidenavContent } from '@angular/material/sidenav';
-import { LoginService } from './login/login.service';
 import { User } from 'src/app/interfaces';
 import { Observable, combineLatest, from } from 'rxjs';
 import { map, shareReplay, tap, pluck } from 'rxjs/operators';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { SystemPreferencesService, LoginService } from 'src/app/services';
 
 @Component({
   selector: 'app-root',
@@ -25,7 +25,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     map(([user, handset]) => !!user && !handset),
   );
   // Aktīvā moduļa nosaukums, ko rādīt toolbārā
-  activeModule$ = this.loginService.activeModule$;
+  activeModule$ = this.systemPreferencesService.activeModule$;
   // Lietotāja menu
   userMenu$: Observable<{ route: string[], text: string; }[]> = this.loginService.user$.pipe(
     map(usr => usr ? [{ route: ['/login'], text: 'Atslēgties' }] : [])
@@ -37,6 +37,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   constructor(
     private loginService: LoginService,
+    private systemPreferencesService: SystemPreferencesService,
     private breakpointObserver: BreakpointObserver,
     private zone: NgZone,
   ) { }

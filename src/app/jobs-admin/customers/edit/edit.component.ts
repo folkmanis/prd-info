@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder, AbstractControl, AsyncValidatorFn } from '@angular/forms';
 import { isEqual, defaults, clone } from 'lodash';
 import { Customer } from 'src/app/interfaces';
-import { CustomersService } from '../../services/customers.service';
+import { CustomersService } from 'src/app/services';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 

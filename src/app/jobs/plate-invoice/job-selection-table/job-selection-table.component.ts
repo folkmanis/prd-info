@@ -1,10 +1,8 @@
-import { Component, OnInit, Input, EventEmitter, Output, OnDestroy, AfterViewInit } from '@angular/core';
-import { FormArray, FormControl } from '@angular/forms';
-import { Subscription, Observable, BehaviorSubject, Subject, combineLatest } from 'rxjs';
-import { map, tap, takeUntil, shareReplay } from 'rxjs/operators';
 import { SelectionModel } from '@angular/cdk/collections';
-import { JobService, CustomersService } from '../../services';
-import { CustomerPartial, JobPartial, JobProduct } from 'src/app/interfaces';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { JobPartial } from 'src/app/interfaces';
 
 const TABLE_COLUMNS = ['jobId', 'name', 'productName', 'count', 'price', 'total'];
 

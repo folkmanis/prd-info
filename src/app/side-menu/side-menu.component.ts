@@ -3,7 +3,7 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 
 import { of, Observable, Subscription } from 'rxjs';
 import { tap, switchMap, map, distinctUntilChanged, filter, delay } from 'rxjs/operators';
-import { LoginService } from '../login/login.service';
+import { SystemPreferencesService } from 'src/app/services';
 import { SystemSettings } from 'src/app/interfaces';
 import { MenuDataSource, SideMenuData } from './menu-datasource';
 
@@ -15,10 +15,10 @@ import { MenuDataSource, SideMenuData } from './menu-datasource';
 export class SideMenuComponent implements AfterViewInit, OnDestroy {
 
   constructor(
-    private loginService: LoginService,
+    private systemPreferencesService: SystemPreferencesService,
   ) { }
   treeControl = new NestedTreeControl<SideMenuData>(node => node.childMenu);
-  dataSource = new MenuDataSource(this.loginService);
+  dataSource = new MenuDataSource(this.systemPreferencesService.modules$);
   private changeSubs: Subscription;
 
   hasChild = (_: number, node: SideMenuData) => !!node.childMenu && node.childMenu.length > 0;
@@ -26,7 +26,7 @@ export class SideMenuComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     this.changeSubs = this.dataSource.dataChange$.pipe(
       tap(() => this.treeControl.dataNodes = this.dataSource.data),
-      switchMap(() => this.loginService.sysPreferences$),
+      switchMap(() => this.systemPreferencesService.sysPreferences$),
       map(pref => pref.get('system') as SystemSettings),
       map(pref => pref && pref.menuExpandedByDefault),
       filter(expand => expand),

@@ -5,12 +5,11 @@ import { Observable, Subscription, Subject, merge, of } from 'rxjs';
 import { map, filter, tap, switchMap, debounceTime, takeUntil, share } from 'rxjs/operators';
 import { isEqual, pick, omit, keys, cloneDeep } from 'lodash';
 
-import { ProductsService } from '../../services/products.service';
+import { ProductsService, CustomersService } from 'src/app/services';
 import { Product, ProductPrice, PriceChange } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { ProductPricesComponent } from './product-prices/product-prices.component';
-import { Customer } from 'src/app/admin/services';
 
 @Component({
   selector: 'app-edit',
@@ -26,6 +25,7 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
     private fb: FormBuilder,
     private service: ProductsService,
     private dialog: ConfirmationDialogService,
+    private customersService: CustomersService,
   ) { }
 
   private readonly productFormControls: { [key: string]: any; } = {
@@ -46,7 +46,7 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
     tap(id => this._id = id),
   );
 
-  customers$ = this.service.getAllCustomers();
+  customers$ = this.customersService.customers$;
 
   product$: Observable<Product> = merge(this.id$,
     this.changes$.pipe(

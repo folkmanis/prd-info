@@ -15,7 +15,7 @@ import { PlateInvoiceComponent } from './plate-invoice/plate-invoice.component';
 import { InvoiceEditorComponent } from './plate-invoice/invoice-editor/invoice-editor.component';
 import { JobSelectionTableComponent } from './plate-invoice/job-selection-table/job-selection-table.component';
 import { NewInvoiceComponent } from './plate-invoice/new-invoice/new-invoice.component';
-import { ProductsService, CustomersService, JobService, InvoicesService } from './services';
+import { JobService, InvoicesService } from './services';
 import { InvoicesListComponent } from './plate-invoice/invoices-list/invoices-list.component';
 import { PdfMakeWrapper } from 'pdfmake-wrapper';
 
@@ -44,8 +44,6 @@ PdfMakeWrapper.setFonts(pdfFonts);
     JobsRoutingModule,
   ],
   providers: [
-    ProductsService,
-    CustomersService,
     JobService,
     InvoicesService,
     { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptorService, multi: true },

@@ -1,12 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AbstractControl, AsyncValidatorFn, FormArray, FormBuilder, FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { MatInput } from '@angular/material/input';
-import { FormControl, FormBuilder, AbstractControl, AsyncValidatorFn, ValidationErrors, Validators, FormGroup, FormArray } from '@angular/forms';
-import { Observable, combineLatest, of } from 'rxjs';
-import { tap, map, startWith, shareReplay, take } from 'rxjs/operators';
-import { ProductsService, CustomersService } from '../../services';
-import { Customer, CustomerPartial, Job, JobProduct } from 'src/app/interfaces';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { combineLatest, Observable } from 'rxjs';
+import { map, shareReplay, startWith, take } from 'rxjs/operators';
+import { CustomerPartial, Job } from 'src/app/interfaces';
+import { CustomersService } from 'src/app/services';
 
 @Component({
   selector: 'app-plate-job-editor',
@@ -22,7 +21,6 @@ export class PlateJobEditorComponent implements OnInit {
   @Output() private jobChanges: EventEmitter<Partial<Job>> = new EventEmitter();
 
   constructor(
-    private router: Router,
     private fb: FormBuilder,
     private customersService: CustomersService,
     private snack: MatSnackBar,

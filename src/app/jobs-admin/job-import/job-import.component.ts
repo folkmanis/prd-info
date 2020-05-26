@@ -1,13 +1,13 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { tap, map, switchMap, filter } from 'rxjs/operators';
-import { Customer, Job, JobsSettings } from 'src/app/interfaces';
-import { JobImportService, ParsedObject } from '../services/job-import.service';
-import { LoginService } from 'src/app/login/login.service';
-import { ProductPriceImport } from '../services';
+import { filter, map, switchMap, tap } from 'rxjs/operators';
+import { Job, JobsSettings } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
+import { SystemPreferencesService } from 'src/app/services';
+import { ProductPriceImport } from '../services';
+import { JobImportService, ParsedObject } from '../services/job-import.service';
 
 @Component({
   selector: 'app-job-import',
@@ -22,10 +22,10 @@ export class JobImportComponent implements OnInit, OnDestroy {
     private service: JobImportService,
     private fb: FormBuilder,
     private dialog: ConfirmationDialogService,
-    private loginService: LoginService,
+    private systemPreferencesService: SystemPreferencesService,
   ) { }
 
-  cetegories$ = this.loginService.sysPreferences$.pipe(
+  cetegories$ = this.systemPreferencesService.sysPreferences$.pipe(
     map(sysConf => sysConf.get('jobs') as JobsSettings),
     map(jobSett => jobSett.productCategories),
   );

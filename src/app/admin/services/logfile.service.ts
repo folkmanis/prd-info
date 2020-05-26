@@ -2,10 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import { combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
-import { map, pluck, share, switchMap, tap } from 'rxjs/operators';
+import { map, pluck, share, switchMap } from 'rxjs/operators';
 import { SystemSettings } from 'src/app/interfaces';
+import { SystemPreferencesService } from 'src/app/services';
 import { HttpOptions } from '../../library/http/http-options';
-import { LoginService } from '../../login/login.service';
 import { GetLogEntriesParams, LogData, LogDataHttp } from './logfile-record';
 
 export interface ValidDates {
@@ -20,7 +20,7 @@ export class LogfileService {
 
   constructor(
     private http: HttpClient,
-    private loginService: LoginService,
+    private systemPreferencesService: SystemPreferencesService,
   ) { }
 
   logFilter$: Subject<GetLogEntriesParams> = new ReplaySubject(1);
@@ -32,7 +32,7 @@ export class LogfileService {
   getLogEntriesHttp(params: GetLogEntriesParams): Observable<LogData> {
     return combineLatest([
       this.http.get<LogDataHttp>(this.httpPathLogfile + 'entries', new HttpOptions(params)),
-      this.loginService.sysPreferences$.pipe(
+      this.systemPreferencesService.sysPreferences$.pipe(
         map(pref => (pref.get('system') as SystemSettings)),
         map(sys => new Map<number, string>(sys.logLevels)),
       )
