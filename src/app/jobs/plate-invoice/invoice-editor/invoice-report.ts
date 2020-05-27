@@ -14,20 +14,19 @@ export class InvoiceReport {
 
     open(): void {
         this._pdf.add([
-            new Txt(this._invoice.invoiceId).fontSize(14).bold().end,
-            new Txt(this._invoice.customer).fontSize(14).bold().end,
+            new Txt(this._invoice.customer + '/' + this._invoice.invoiceId).fontSize(14).bold().end,
         ]);
         this._pdf.add(
             new Table(this.createProductsTable(this._invoice.products))
                 .layout('lightHorizontalLines')
-                .fontSize(12)
+                .fontSize(10)
                 .headerRows(1)
                 .end
         );
         this._pdf.add(
             new Table(this.createJobsTable(this._invoice.jobs))
                 .layout('lightHorizontalLines')
-                .fontSize(10)
+                .fontSize(8)
                 .headerRows(1)
                 .end
         );
@@ -51,19 +50,21 @@ export class InvoiceReport {
     private createJobsTable(jobs: Job[]): any[][] {
         const tbl: any[][] = [];
         tbl.push([
-            'nr.',
+            // 'nr.',
             'datums',
             'nosaukums',
             'izstrādājums',
             'skaits',
+            'EUR',
         ]);
         for (const job of jobs) {
             tbl.push([
-                job.jobId,
+                // job.jobId,
                 moment(job.receivedDate).format('L'),
                 job.name,
-                (job.products as JobProduct).name,
+                new Txt((job.products as JobProduct).name).noWrap().end,
                 (job.products as JobProduct).count,
+                (job.products as JobProduct).price * (job.products as JobProduct).count,
             ]);
         }
         return tbl;
