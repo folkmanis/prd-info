@@ -21,17 +21,14 @@ export class LoginGuard implements CanLoad, CanActivate {
     route: Route,
     segments: UrlSegment[],
   ): Observable<boolean> | Promise<boolean> | boolean {
-    return this.loginService.user$.pipe(
-      take(1),
-      tap(usr => usr || this.router.navigate(['login'])),
-      map(usr => !!usr.preferences.modules.find(m => m === route.path)),
+    return this.loginService.isModule(route.path).pipe(
+      tap(access => access || this.router.navigate(['login']))
     );
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
     return this.loginService.isLogin$.pipe(
       tap(logged => logged || this.router.navigate(['login'])),
-      tap(() => this.systemPreferencesService.setActiveModule(USER_MODULES.find(mod => mod.route === route.routeConfig.path) || null))
     );
   }
 

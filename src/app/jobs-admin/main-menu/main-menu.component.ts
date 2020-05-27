@@ -9,6 +9,6 @@ export class MainMenuComponent {
   constructor(
     private systemPreferencesService: SystemPreferencesService,
     ) { }
-  modules$ = this.systemPreferencesService.childMenu('jobs-admin');
+  modules$ = this.systemPreferencesService.childMenu$;
 
 }

@@ -1,5 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
-import { merge, Observable, Subject, of, BehaviorSubject } from 'rxjs';
+import { Router, NavigationEnd } from '@angular/router';
+import { merge, Observable, Subject, of } from 'rxjs';
+import { combineLatest } from 'rxjs/index';
 import { map, shareReplay, take, tap, switchMap, filter, mapTo } from 'rxjs/operators';
 import { AppParams, SystemPreferences, UserModule, SystemPreferencesGroups, ModuleSettings } from '../interfaces';
 import { APP_PARAMS } from '../app-params';
@@ -14,11 +16,11 @@ export class SystemPreferencesService {
 
   constructor(
     @Inject(APP_PARAMS) private params: AppParams,
+    private router: Router,
     private prdApi: PrdApiService,
     private loginService: LoginService,
   ) { }
-
-  activeModule$: BehaviorSubject<UserModule | null> = new BehaviorSubject(null);
+  /** Piespiedu ielāde no servera */
   reloadFromServer$: Subject<void> = new Subject();
   private newPreferences$: Subject<SystemPreferences> = new Subject();
 
@@ -35,16 +37,25 @@ export class SystemPreferencesService {
   ).pipe(
     shareReplay(1), // kešo
   );
-
   /**
    * Lietotājam pieejamie Moduļi
    * Multicast Observable
    */
-  get modules$(): Observable<UserModule[]> {
-    return this.loginService.user$.pipe(
-      map(usr => USER_MODULES.filter(mod => usr && usr.preferences.modules.includes(mod.value)))
-    );
-  }
+  modules$ = this.loginService.user$.pipe(
+    map(usr => USER_MODULES.filter(mod => usr && usr.preferences.modules.includes(mod.value)))
+  );
+  /** Aktīvais modules */
+  activeModule$: Observable<UserModule | undefined> = combineLatest([
+    this.router.events.pipe(filter(ev => ev instanceof NavigationEnd)),
+    this.modules$
+  ]).pipe(
+    map(([ev, modules]: [NavigationEnd, UserModule[]]) => modules.find(mod => mod.route === ev.url.split('/')[1])),
+    shareReplay(1),
+  );
+  /** Aktīvā moduļa child menu */
+  childMenu$: Observable<Partial<UserModule>[]> = this.activeModule$.pipe(
+    map(active => active.childMenu || [])
+  );
 
   updateModulePreferences(modName: SystemPreferencesGroups, modPref: ModuleSettings): Observable<boolean> {
     return this.sysPreferences$.pipe(
@@ -69,42 +80,6 @@ export class SystemPreferencesService {
       filter(modPref => !!modPref),
     );
   }
-
-  /**
-   * Vai lietotājam ir pieejams modulis mod
-   * @param mod moduļa nosaukums
-   */
-  isModule(mod: string): Observable<boolean> {
-    return this.loginService.user$.pipe(
-      take(1),
-      map(usr => !!usr.preferences.modules.find(m => m === mod)),
-    );
-  }
-  /**
-   * activeModule$ ziņo par aktīvo moduli
-   * setActiveModule izsūta paziņojumu par moduļa maiņu
-   * @param mod moduļa objekts
-   */
-  setActiveModule(mod: UserModule | null): void {
-    this.activeModule$.next(mod);
-  }
-
-  childMenu(root: string): Observable<Partial<UserModule>[]> {
-    return this.modules$.pipe(
-      map(mod => mod.find(md => md.value === root).childMenu || []),
-    );
-  }
-  /**
-   * Piespiedu kārtā pārlādē preferences no servera
-   */
-  // reloadPreferences(): Observable<boolean> {
-  //   return this.loginService.user$.pipe(
-  //     take(1),
-  //     switchMap(usr => usr ? this.systemPreferencesMap() : of(this.params.defaultSystemPreferences)),
-  //     tap(pref => this.newPreferences$.next(pref)),
-  //     map(pref => !!pref),
-  //   );
-  // }
 
   private systemPreferencesMap(): Observable<SystemPreferences> {
     return this.prdApi.systemPreferences.get().pipe(

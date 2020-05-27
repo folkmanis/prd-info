@@ -10,6 +10,6 @@ export class AdminMainMenuComponent {
   constructor(
     private systemPreferencesService: SystemPreferencesService,
   ) { }
-  modules$ = this.systemPreferencesService.childMenu('admin');
+  modules$ = this.systemPreferencesService.childMenu$;
 
 }

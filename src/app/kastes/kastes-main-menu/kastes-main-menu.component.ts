@@ -11,6 +11,6 @@ export class KastesMainMenuComponent {
     private systemPreferencesService: SystemPreferencesService,
   ) { }
 
-  modules$ = this.systemPreferencesService.childMenu('kastes');
+  modules$ = this.systemPreferencesService.childMenu$;
 
 }
