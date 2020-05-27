@@ -13,7 +13,6 @@ import { cloneDeep, pick } from 'lodash';
 })
 export class ProductPricesComponent implements OnInit {
   @Input('prices') set _pr(_pr: ProductPrice[]) {
-    console.log(_pr);
     this.prices$.next(cloneDeep(_pr) || []);
   }
   /**

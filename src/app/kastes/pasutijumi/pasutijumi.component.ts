@@ -63,7 +63,6 @@ export class PasutijumiComponent implements OnInit, AfterViewInit {
   }
 
   onNew() {
-    console.log('Jauns pasūtījums');
     this.new = !this.new;
   }
 
