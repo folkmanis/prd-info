@@ -17,18 +17,6 @@
   width: 250px;
 }
 
-.icon {
-  padding: 0 14px;
-}
-
-.spacer {
-  flex: 1 1 auto;
-}
-
-.username {
-  padding: 0 8px;
-}
-
 .scroll-to-top {
   z-index: 99;
   position: fixed;
