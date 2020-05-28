@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SystemPreferencesService } from '../services';
+import { SystemPreferencesService } from 'src/app/services';
 
 @Component({
   selector: 'app-main-menu',

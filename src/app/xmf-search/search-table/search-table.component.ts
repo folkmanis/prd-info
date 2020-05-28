@@ -73,6 +73,7 @@ export class SearchTableComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   scrollToTop() {
+    console.log('scroll to top');
     this.content.scrollTo({ top: 0 });
   }
 
