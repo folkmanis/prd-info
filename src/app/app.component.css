@@ -8,6 +8,14 @@
   right: 0;
 }
 
+.toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 8;
+}
+
 .app-sidenav-container {
   flex: 1;
   margin-top: 0;

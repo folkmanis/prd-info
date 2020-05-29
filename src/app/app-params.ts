@@ -12,6 +12,10 @@ export const APP_PARAMS = new InjectionToken<AppParams>('prd.defaults');
 
 export const PRD_DEFAULTS: AppParams = {
     apiPath: '/data/',
+    toolbarHeight: {
+        desktop: 64,
+        mobile: 56,
+    },
     defaultSystemPreferences: new Map<SystemPreferencesGroups, ModuleSettings>()
         .set('kastes', {
             colors: { yellow: 'hsl(45,75%,60%)', rose: '315,75%,50%', white: '0,0%,50%', },

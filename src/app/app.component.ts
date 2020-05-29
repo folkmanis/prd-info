@@ -3,9 +3,9 @@ import { MatSidenavContent } from '@angular/material/sidenav';
 import { User } from 'src/app/interfaces';
 import { Observable, combineLatest, from } from 'rxjs';
 import { map, shareReplay, tap, pluck } from 'rxjs/operators';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { SystemPreferencesService, LoginService } from 'src/app/services';
 import { ViewportRuler } from '@angular/cdk/scrolling';
+import { LayoutService } from 'src/app/services';
 
 @Component({
   selector: 'app-root',
@@ -14,11 +14,8 @@ import { ViewportRuler } from '@angular/cdk/scrolling';
 })
 export class AppComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSidenavContent, { static: true }) private content: MatSidenavContent;
-  isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
-    .pipe(
-      map(result => result.matches),
-      shareReplay()
-    );
+  isHandset$: Observable<boolean> = this.layoutService.isHandset$;
+  toolbarHeight$ = this.layoutService.toolbarHeight$;
   // Vai atvērt sānu menu pie ielādes
   opened$: Observable<boolean> = combineLatest([this.loginService.user$, this.isHandset$]).pipe(
     map(([user, handset]) => !!user && !handset),
@@ -30,9 +27,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   constructor(
     private loginService: LoginService,
     private systemPreferencesService: SystemPreferencesService,
-    private breakpointObserver: BreakpointObserver,
     private zone: NgZone,
     private viewport: ViewportRuler,
+    private layoutService: LayoutService,
   ) { }
 
   ngOnInit() {
