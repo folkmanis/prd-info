@@ -1,23 +1,37 @@
-<!-- <div class="app-container"> -->
-  <!-- Lielais toolbar -->
-  <app-toolbar (sideMenuToggle)="drawer.toggle()" class="toolbar"></app-toolbar>
-  <!-- Galvenais konteineris -->
-  <mat-sidenav-container class="app-sidenav-container">
-    <!-- Kreisais (galvenais) menu -->
-    <mat-sidenav #drawer class="app-sidenav mat-elevation-z4"
-      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'" [mode]="(isHandset$ | async) ? 'over' : 'side'"
-      fixedInViewport [fixedTopGap]="toolbarHeight$ | async"
-      [opened]="opened$ | async">
-      <app-side-menu></app-side-menu>
-    </mat-sidenav>
+<!-- Lielais toolbar -->
+<app-toolbar (sideMenuToggle)="drawer.toggle()" class="toolbar"></app-toolbar>
+<!-- Galvenais konteineris -->
+<mat-sidenav-container class="absolute" [style.top.px]="toolbarHeight$ | async" [class.desktop]="!(isHandset$ | async)">
+  <!-- Kreisais (galvenais) menu -->
+  <mat-sidenav #drawer class="mat-elevation-z4" [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="opened$ | async">
+    <app-side-menu></app-side-menu>
+  </mat-sidenav>
 
-    <mat-sidenav-content #content [style.marginTop.px]="toolbarHeight$ | async">
-      <!-- Add Content Here -->
+  <!-- Galvenais saturs -->
+  <mat-sidenav-content #content class="content">
+
+    <!-- Add Content Here -->
+
+    <div class="top-panel">
+      <ng-template appPanel="top"></ng-template>
+    </div>
+
+    <div class="left-panel">
+      <ng-template appPanel="left"></ng-template>
+    </div>
+
+    <div class="main-panel" appPanel="main">
       <router-outlet></router-outlet>
-      <!--Scroll to top-->
-      <button mat-fab (click)="scrollToTop()" class="scroll-to-top" [class.show-scroll]="showScroll">
+    </div>
+
+    <div class="right-panel">
+      <ng-template appPanel="right"></ng-template>
+    </div>
+    <!--Scroll to top-->
+    <!-- <button mat-fab (click)="scrollToTop()" class="scroll-to-top" [class.show-scroll]="showScroll">
         <mat-icon>arrow_upward</mat-icon>
-      </button>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
-<!-- </div> -->
+      </button> -->
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

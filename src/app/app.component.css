@@ -1,14 +1,4 @@
-.app-container {
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
-
-.toolbar {
+app-toolbar {
   position: fixed;
   top: 0;
   left: 0;
@@ -16,13 +6,56 @@
   z-index: 8;
 }
 
-.app-sidenav-container {
-  flex: 1;
-  margin-top: 0;
+mat-sidenav {
+  width: 250px;
 }
 
-.app-sidenav {
-  width: 250px;
+.absolute {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: repeat(16, [col-start] 1fr);
+  grid-template-rows: auto auto 1fr auto;
+}
+
+.desktop .content {
+  grid-template-rows: auto 1fr;
+}
+
+.content>* {
+  grid-column: 1 / -1;
+}
+
+.main-panel {
+  position: relative;
+}
+
+.desktop .top-panel {
+  position: relative;
+}
+
+.desktop .left-panel {
+  position: relative;
+  grid-column: 1 / span 3;
+  grid-row: 2;
+}
+
+.desktop .main-panel {
+  position: relative;
+  overflow-x: hidden;
+  grid-column: 4 / -4;
+  grid-row: 2 / 3;
+}
+
+.desktop .right-panel {
+  grid-column: -4 / -1;
+  grid-row: 2;
 }
 
 .scroll-to-top {

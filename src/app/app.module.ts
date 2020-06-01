@@ -22,6 +22,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { AppParams } from './interfaces';
 import { APP_PARAMS, PRD_DEFAULTS } from './app-params';
 import { ToolbarComponent } from './layout/toolbar/toolbar.component';
+import { PanelDirective } from './layout/panel.directive';
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import { ToolbarComponent } from './layout/toolbar/toolbar.component';
     SideMenuComponent,
     MainMenuComponent,
     ToolbarComponent,
+    PanelDirective,
   ],
   imports: [
     BrowserModule,

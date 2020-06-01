@@ -11,7 +11,7 @@ export class CardMenuComponent implements OnInit {
   /**
    * saraksts ar moduļiem
    */
-  @Input() modules: Observable<UserModule[]>;
+  @Input() modules: UserModule[];
 
   constructor() { }
 

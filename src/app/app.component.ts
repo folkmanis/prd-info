@@ -5,7 +5,7 @@ import { Observable, combineLatest, from } from 'rxjs';
 import { map, shareReplay, tap, pluck } from 'rxjs/operators';
 import { SystemPreferencesService, LoginService } from 'src/app/services';
 import { ViewportRuler } from '@angular/cdk/scrolling';
-import { LayoutService } from 'src/app/services';
+import { LayoutService } from './layout/layout.service';
 
 @Component({
   selector: 'app-root',

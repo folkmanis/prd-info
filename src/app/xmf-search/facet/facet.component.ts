@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { FacetFilter } from '../services/archive-search-class';
 import { ArchiveSearchService } from '../services/archive-search.service';
 import { FacetCheckerComponent } from './facet-checker/facet-checker.component';
+import { PanelComponent } from 'src/app/interfaces';
 
 const FACET_NAMES: Map<string, { displayName: string, index: number, }> = new Map<string, { displayName: string, index: number, }>()
   .set('year', { displayName: 'Gads', index: 0 })
@@ -17,9 +18,8 @@ const FACET_NAMES: Map<string, { displayName: string, index: number, }> = new Ma
   templateUrl: './facet.component.html',
   styleUrls: ['./facet.component.css']
 })
-export class FacetComponent implements OnInit, OnDestroy {
+export class FacetComponent implements OnInit, OnDestroy, PanelComponent {
   @ViewChild('itemsCaontainer', { static: true, read: ViewContainerRef }) container: ViewContainerRef;
-
   facetSubs: Subscription;
   resetSubs: Subscription;
   facetChange: EventEmitter<Partial<FacetFilter>> = new EventEmitter();

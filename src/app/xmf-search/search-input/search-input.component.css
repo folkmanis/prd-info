@@ -1,0 +1,18 @@
+.search-box {
+    width: 100%;
+    display: flex;
+}
+
+.search-input {
+    flex: 1;
+    margin: 0 16px;
+    min-width: 8em;
+    max-width: 16em;
+    /* width: 100%; */
+    font-size: 150%;
+}
+
+.count {
+    flex: 0 auto;
+    margin-right: 16px;
+}

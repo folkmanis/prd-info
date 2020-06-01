@@ -6,3 +6,4 @@ export * from './app-params';
 export * from './user';
 export * from './system-preferences';
 export * from './login';
+export * from './panel-component';
