@@ -1,7 +1,7 @@
 .facet {
-    position: absolute;
+    /* position: absolute;
     top: 0;
     left: 0;
-    bottom: 0;
-    overflow-y: auto;
+    bottom: 0; */
+    height: 100%;
 }

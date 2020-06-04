@@ -1,14 +1,16 @@
 <div class="search-box mat-elevation-z4">
-    <mat-form-field class="search-input">
-        <input matInput [formControl]="q" type="search" appFocused>
-        <button *ngIf="q.value.length === 0" mat-button matSuffix mat-icon-button disabled>
-            <mat-icon>search</mat-icon>
-        </button>
-        <button *ngIf="q.value.length !== 0" mat-button matSuffix mat-icon-button (click)="q.setValue('')">
-            <mat-icon>close</mat-icon>
-        </button>
-    </mat-form-field>
-    <span style="flex: 1 1 auto;"></span>
+    <span>
+        <mat-form-field class="search-input">
+            <input matInput [formControl]="q" type="search" appFocused>
+            <button *ngIf="q.value.length === 0" mat-button matSuffix mat-icon-button disabled>
+                <mat-icon>search</mat-icon>
+            </button>
+            <button *ngIf="q.value.length !== 0" mat-button matSuffix mat-icon-button (click)="q.setValue('')">
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-form-field>
+    </span>
+    <span></span>
     <span class="count">
         <app-status [count]="count$ | async"></app-status>
     </span>

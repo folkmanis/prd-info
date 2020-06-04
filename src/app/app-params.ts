@@ -16,6 +16,10 @@ export const PRD_DEFAULTS: AppParams = {
         desktop: 64,
         mobile: 56,
     },
+    mediaBreakpoints: {
+        small: '700px',
+        medium: '1000px',
+    },
     defaultSystemPreferences: new Map<SystemPreferencesGroups, ModuleSettings>()
         .set('kastes', {
             colors: { yellow: 'hsl(45,75%,60%)', rose: '315,75%,50%', white: '0,0%,50%', },

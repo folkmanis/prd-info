@@ -16,10 +16,15 @@ export class AppComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSidenavContent, { static: true }) private content: MatSidenavContent;
   isHandset$: Observable<boolean> = this.layoutService.isHandset$;
   toolbarHeight$ = this.layoutService.toolbarHeight$;
+  isSmall$ = this.layoutService.isSmall$;
+  isMedium$ = this.layoutService.isMedium$;
+  isLarge$ = this.layoutService.isLarge$;
+
   // Vai atvērt sānu menu pie ielādes
-  opened$: Observable<boolean> = combineLatest([this.loginService.user$, this.isHandset$]).pipe(
-    map(([user, handset]) => !!user && !handset),
+  opened$: Observable<boolean> = combineLatest([this.loginService.user$, this.isLarge$]).pipe(
+    map(([user, large]) => !!user && large),
   );
+
   showScroll = false;
   showScrollHeight = 300;
   hideScrollHeight = 10;

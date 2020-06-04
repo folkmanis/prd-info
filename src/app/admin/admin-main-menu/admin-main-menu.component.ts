@@ -3,7 +3,7 @@ import { SystemPreferencesService } from 'src/app/services';
 
 @Component({
   selector: 'app-admin-main-menu',
-  template: `<app-card-menu [modules]="modules$"></app-card-menu>`,
+  template: `<app-card-menu [modules]="modules$ | async"></app-card-menu>`,
 })
 export class AdminMainMenuComponent {
 

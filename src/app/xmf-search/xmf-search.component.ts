@@ -47,7 +47,7 @@ export class XmfSearchComponent implements OnInit, OnDestroy {
 
   private setFacetInput(): ComponentRef<FacetComponent> {
     const factory = this.resolver.resolveComponentFactory(FacetComponent);
-    const facet = this.layoutService.getPanel('left').addComponent(factory) as ComponentRef<FacetComponent>;
+    const facet = this.layoutService.getPanel('side').addComponent(factory) as ComponentRef<FacetComponent>;
 
     return facet;
   }

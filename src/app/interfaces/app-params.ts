@@ -7,4 +7,8 @@ export interface AppParams {
         desktop: number;
         mobile: number;
     };
+    mediaBreakpoints: {
+        small: string;
+        medium: string;
+    };
 }
