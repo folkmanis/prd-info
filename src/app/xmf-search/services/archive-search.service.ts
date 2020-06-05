@@ -60,12 +60,10 @@ export class ArchiveSearchService {
     share(),
   );
 
-  setSearch(s$: Observable<string>) {
-    this.unsetSearch();
-    this.searchSubs = s$.pipe(
-      tap(() => this.facetFilter = {}),
-      tap(() => this.facetData = null), // Būs vajadzīgs jauns facet
-    ).subscribe(this._stringSearch$);
+  setSearch(search: string) {
+    this.facetFilter = {};
+    this.facetData = null;
+    this._stringSearch$.next(search);
   }
 
   get searchString$(): Observable<string> {

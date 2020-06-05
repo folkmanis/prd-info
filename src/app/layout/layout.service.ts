@@ -1,6 +1,7 @@
 import { Injectable, Inject, ViewContainerRef } from '@angular/core';
 import { AppParams } from '../interfaces';
 import { APP_PARAMS } from '../app-params';
+import { MatSidenavContent } from '@angular/material/sidenav';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
@@ -16,6 +17,8 @@ export class LayoutService {
     @Inject(APP_PARAMS) private params: AppParams,
     private breakpointObserver: BreakpointObserver,
   ) { }
+
+  mainContainer: MatSidenavContent;
 
   private _panelMap: Map<string, Panel> = new Map();
 

@@ -1,6 +1,6 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { startWith, debounceTime, map, distinctUntilChanged, shareReplay } from 'rxjs/operators';
 import { PanelComponent } from 'src/app/interfaces';
 
@@ -8,13 +8,19 @@ import { PanelComponent } from 'src/app/interfaces';
   selector: 'app-search-input',
   templateUrl: './search-input.component.html',
   styleUrls: ['./search-input.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SearchInputComponent implements OnInit, PanelComponent {
-  count$: Observable<number>;
-  q: FormControl = new FormControl('');
+export class SearchInputComponent implements OnInit, OnDestroy {
+  private _count = 0;
+  @Input() set count(param: number) {
+    this._count = param;
+  }
+  get count(): number { return this._count; }
 
-  constructor() { }
+  @Output() searchString = new EventEmitter<string>();
+
+  q: FormControl = new FormControl('');
+  _subs = new Subscription();
+
   value$: Observable<string> = this.q.valueChanges.pipe(
     startWith(''),
     debounceTime(300),
@@ -23,7 +29,16 @@ export class SearchInputComponent implements OnInit, PanelComponent {
     shareReplay(1),
   );
 
+  constructor() { }
+
   ngOnInit(): void {
+    this._subs.add(
+      this.value$.subscribe(this.searchString)
+    );
+  }
+
+  ngOnDestroy(): void {
+    this._subs.unsubscribe();
   }
 
 }

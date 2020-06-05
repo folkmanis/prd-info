@@ -42,34 +42,10 @@ export class AppComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit() {
-    this.initPanels();
-    this.sideIsSet$ = this.layoutService.getPanel('side').length$
-      .pipe(
-        map(len => !!len)
-      );
+    this.layoutService.mainContainer = this.content;
   }
 
   ngAfterViewInit() {
-    this.content.elementScrolled().pipe(
-      map(() => this.content.measureScrollOffset('top')),
-      tap(top => {
-        if (top > this.showScrollHeight) {
-          this.zone.run(() => this.showScroll = true); // Scroll tie pārbaudīts ārpus zonas. Bez run nekādas reakcijas nebūs
-        } else if (this.showScroll && top < this.hideScrollHeight) {
-          this.zone.run(() => this.showScroll = false);
-        }
-      }),
-    ).subscribe();
   }
 
-  scrollToTop() {
-    this.content.scrollTo({ top: 0 });
-  }
-
-
-  initPanels(): void {
-    for (const panel of panels) {
-      this.layoutService.addPanel(panel);
-    }
-  }
 }

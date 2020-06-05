@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { LayoutService } from 'src/app/layout/layout.service';
 
 @Component({
   selector: 'app-kastes',
@@ -7,7 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class KastesComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private layoutService: LayoutService,
+  ) { }
+
+  scrollable = this.layoutService.mainContainer;
 
   ngOnInit() {
   }

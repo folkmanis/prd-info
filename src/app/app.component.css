@@ -14,33 +14,3 @@
 .sidenav-container {
   flex: 1;
 }
-
-mat-sidenav-content .content {
-  display: flex;
-  flex-direction: column;
-}
-
-.main-panel {
-  flex: 1;
-}
-
-.right-panel {
-  width: 280px;
-  padding-bottom: 56px;
-}
-
-/* Scroll button */
-
-.scroll-to-top {
-  z-index: 99;
-  position: fixed;
-  bottom: 15px;
-  left: 25px;
-  opacity: 0;
-  transition: all .2s ease-in-out;
-}
-
-.show-scroll {
-  opacity: 1;
-  transition: all .2s ease-in-out;
-}

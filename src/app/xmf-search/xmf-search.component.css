@@ -1,8 +1,18 @@
-.table-container {
-    /* position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0; */
+mat-drawer-container {
+    height: 100%;
+}
+
+mat-drawer {
+    width: 280px;
+    padding-bottom: 56px;
+}
+
+mat-drawer-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.main {
+    flex: 1;
     height: 100%;
 }

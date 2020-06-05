@@ -1,16 +1,17 @@
-<!-- <div class="main-content"> -->
+<mat-drawer-container>
+    <mat-drawer #facet [opened]="!(isSmall$ | async)" position="end" [mode]="(isSmall$ | async) ? 'over' : 'side'">
+        <app-facet></app-facet>
+    </mat-drawer>
 
+    <mat-drawer-content>
+        <div>
+            <app-search-input [count]="count$ | async" (searchString)="onSearch($event)"></app-search-input>
+        </div>
 
-    <!-- <div class="output"> -->
-        <!-- <div style="flex: 1;"> -->
-            <!-- [style.right.px]="(isFacet$ | async) ? 250 : 0" -->
-            <!-- <div class="table-container"> -->
-                <app-search-table></app-search-table>
-            <!-- </div> -->
-        <!-- </div> -->
-        <!-- <div class="facet-container" *ngIf="isFacet$ | async" [style.height.px]="facetHeight$ | async"> -->
-            <!-- <app-facet></app-facet> -->
-        <!-- </div> -->
-    <!-- </div> -->
+        <div class="main">
+            <app-search-table></app-search-table>
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>
 
-<!-- </div> -->
+<app-side-button (clicks)="facet.toggle()" [opened]="facet.opened"></app-side-button>

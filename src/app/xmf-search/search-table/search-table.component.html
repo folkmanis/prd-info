@@ -1,4 +1,4 @@
-<cdk-virtual-scroll-viewport itemSize="137" class="scroll-container" templateCacheSize="0">
+<cdk-virtual-scroll-viewport itemSize="137" class="scroll-container" templateCacheSize="0" #scrollable>
     <div *cdkVirtualFor="let dataItem of data; let lastItem = last; let idx=index;" class="item">
         <div *ngIf="dataItem; else waiting;">
             <div [style.fontWeight]="dataItem.JDFJobID === search ? 'bold' : undefined " class="jobId">
@@ -33,6 +33,4 @@
     </div>
 </cdk-virtual-scroll-viewport>
 
-<button mat-fab (click)="scrollToTop()" class="scroll-to-top" [class.show-scroll]="showScroll">
-    <mat-icon>arrow_upward</mat-icon>
-</button>
+<app-scroll-to-top [scrollable]="scrollable" position="absolute"></app-scroll-to-top>

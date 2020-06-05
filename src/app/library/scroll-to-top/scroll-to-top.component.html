@@ -1,5 +1,5 @@
 <!--Scroll to top-->
-<div class="scroll-to-top" [ngClass]="{'show-scroll': showScroll}">
+<div class="scroll-to-top" [style.position]="position" [class.showscroll]="showScroll">
     <button mat-fab (click)="scrollToTop()">
         <mat-icon>arrow_upward</mat-icon>
     </button>

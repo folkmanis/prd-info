@@ -16,38 +16,20 @@ export class XmfSearchComponent implements OnInit, OnDestroy {
   constructor(
     private service: ArchiveSearchService,
     private layoutService: LayoutService,
-    private resolver: ComponentFactoryResolver,
   ) { }
 
-  searchInput: ComponentRef<SearchInputComponent>;
-  facetInput: ComponentRef<FacetComponent>;
+  isSmall$: Observable<boolean> = this.layoutService.isSmall$;
+
+  count$ = this.service.count$;
 
   ngOnInit() {
-    this.searchInput = this.setSearchInput();
-    this.facetInput = this.setFacetInput();
   }
 
   ngOnDestroy(): void {
-    this.service.unsetSearch();
-    this.layoutService.clearAllPanels();
   }
 
-  private setSearchInput(): ComponentRef<SearchInputComponent> {
-    const factory = this.resolver.resolveComponentFactory(SearchInputComponent);
-    const input = this.layoutService.getPanel('top').addComponent(factory) as ComponentRef<SearchInputComponent>;
-
-    input.instance.count$ = this.service.count$;
-
-    this.service.setSearch(input.instance.value$);
-
-    return input;
-  }
-
-  private setFacetInput(): ComponentRef<FacetComponent> {
-    const factory = this.resolver.resolveComponentFactory(FacetComponent);
-    const facet = this.layoutService.getPanel('side').addComponent(factory) as ComponentRef<FacetComponent>;
-
-    return facet;
+  onSearch(search: string) {
+    this.service.setSearch(search);
   }
 
 }

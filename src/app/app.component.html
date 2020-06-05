@@ -10,34 +10,13 @@
       <app-side-menu></app-side-menu>
     </mat-sidenav>
 
-    <mat-sidenav #rightPanel position="end" [opened]="!(isSmall$ | async) && (sideIsSet$ | async)" [mode]="(isSmall$ | async) ? 'over' : 'side'"
-      class="right-panel">
-        <ng-template appPanel="side"></ng-template>
-    </mat-sidenav>
-
     <!-- Galvenais saturs -->
-    <mat-sidenav-content #content>
+    <mat-sidenav-content #content class="absolute">
 
-      <div class="content absolute">
+      <router-outlet></router-outlet>
 
-        <div class="top-panel">
-          <ng-template appPanel="top"></ng-template>
-        </div>
-
-        <div class="main-panel">
-          <router-outlet></router-outlet>
-        </div>
-
-      </div>
-
-      <!--Scroll to top-->
-      <!-- <button mat-fab (click)="scrollToTop()" class="scroll-to-top" [class.show-scroll]="showScroll">
-        <mat-icon>arrow_upward</mat-icon>
-      </button> -->
     </mat-sidenav-content>
 
   </mat-sidenav-container>
 
 </div>
-
-<app-side-button *ngIf="sideIsSet$ | async" (clicks)="rightPanel.toggle()" [opened]="rightPanel.opened"></app-side-button>

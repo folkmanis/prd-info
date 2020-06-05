@@ -1,39 +1,48 @@
-import { Component, HostListener, ElementRef } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+
+const showScrollHeight = 300;
+const hideScrollHeight = 10;
 
 @Component({
   selector: 'app-scroll-to-top',
   templateUrl: './scroll-to-top.component.html',
   styleUrls: ['./scroll-to-top.component.css']
 })
-export class ScrollToTopComponent {
+export class ScrollToTopComponent implements OnInit, OnDestroy {
+  @Input() scrollable: CdkScrollable;
+  @Input() position: 'fixed' | 'absolute' = 'fixed';
 
-  showScroll: boolean;
-  showScrollHeight = 300;
-  hideScrollHeight = 10;
-
-  @HostListener('window:scroll', [])
-  onWindowScroll() {
-    if ((window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop) > this.showScrollHeight) {
-      this.showScroll = true;
-    } else
-      if (this.showScroll
-        && (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop) < this.hideScrollHeight) {
-        this.showScroll = false;
-      }
-  }
+  private readonly _subs = new Subscription();
+  showScroll = false;
 
   constructor(
-    private el: ElementRef,
+    private zone: NgZone,
   ) { }
 
+  ngOnInit(): void {
+    const sub = this.scrollable.elementScrolled().pipe(
+      map(() => this.scrollable.measureScrollOffset('top')),
+      tap(top => {
+        if (top > showScrollHeight) {
+          this.zone.run(() => this.showScroll = true); // Scroll tiek pārbaudīts ārpus zonas. Bez run nekādas reakcijas nebūs
+        } else if (this.showScroll && top < hideScrollHeight) {
+          this.zone.run(() => this.showScroll = false);
+        }
+      }),
+    ).subscribe();
+
+    this._subs.add(sub);
+  }
+
+  ngOnDestroy(): void {
+    this._subs.unsubscribe();
+  }
+
   scrollToTop() {
-    (function smoothscroll() {
-      const currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
-      if (currentScroll > 0) {
-        window.requestAnimationFrame(smoothscroll);
-        window.scrollTo(0, currentScroll - (currentScroll / 5));
-      }
-    })();
+    this.scrollable.scrollTo({ top: 0 });
   }
 
 }
