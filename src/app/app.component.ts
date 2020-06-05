@@ -1,16 +1,18 @@
-import { Component, OnInit, AfterViewInit, ViewChild, NgZone, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, NgZone, ElementRef, ChangeDetectionStrategy } from '@angular/core';
 import { MatSidenavContent } from '@angular/material/sidenav';
 import { User } from 'src/app/interfaces';
-import { Observable, combineLatest, from } from 'rxjs';
+import { Observable, combineLatest, from, Subject } from 'rxjs';
 import { map, shareReplay, tap, pluck } from 'rxjs/operators';
 import { SystemPreferencesService, LoginService } from 'src/app/services';
 import { ViewportRuler } from '@angular/cdk/scrolling';
 import { LayoutService } from './layout/layout.service';
 
+const panels = ['top', 'side'];
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSidenavContent, { static: true }) private content: MatSidenavContent;
@@ -25,6 +27,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     map(([user, large]) => !!user && large),
   );
 
+  sideIsSet$: Observable<boolean>;
+
   showScroll = false;
   showScrollHeight = 300;
   hideScrollHeight = 10;
@@ -38,6 +42,11 @@ export class AppComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit() {
+    this.initPanels();
+    this.sideIsSet$ = this.layoutService.getPanel('side').length$
+      .pipe(
+        map(len => !!len)
+      );
   }
 
   ngAfterViewInit() {
@@ -57,4 +66,10 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.content.scrollTo({ top: 0 });
   }
 
+
+  initPanels(): void {
+    for (const panel of panels) {
+      this.layoutService.addPanel(panel);
+    }
+  }
 }

@@ -1,36 +1,52 @@
-<!-- Lielais toolbar -->
-<app-toolbar (sideMenuToggle)="drawer.toggle()" class="toolbar"></app-toolbar>
-<!-- Galvenais konteineris -->
-<mat-sidenav-container [style.top.px]="toolbarHeight$ | async" class="absolute">
-  <!-- Kreisais (galvenais) menu -->
-  <mat-sidenav #drawer class="mat-elevation-z4" [attr.role]="(isLarge$ | async) ? 'dialog' : 'navigation'"
-    [mode]="(isLarge$ | async) ? 'side' : 'over'" [opened]="opened$ | async">
-    <app-side-menu></app-side-menu>
-  </mat-sidenav>
+<div class="main-container absolute">
 
-  <mat-sidenav position="end" [opened]="!(isSmall$ | async)" [mode]="(isSmall$ | async) ? 'over' : 'side'">
-    <ng-template appPanel="side"></ng-template>
-  </mat-sidenav>
+  <!-- Lielais toolbar -->
+  <app-toolbar (sideMenuToggle)="drawer.toggle()" class="toolbar"></app-toolbar>
+  <!-- Galvenais konteineris -->
+  <mat-sidenav-container class="sidenav-container">
+    <!-- Kreisais (galvenais) menu -->
+    <mat-sidenav #drawer class="mat-elevation-z4" [attr.role]="(isLarge$ | async) ? 'dialog' : 'navigation'"
+      [mode]="(isLarge$ | async) ? 'side' : 'over'" [opened]="opened$ | async">
+      <app-side-menu></app-side-menu>
+    </mat-sidenav>
 
-  <!-- Galvenais saturs -->
-  <mat-sidenav-content #content>
+    <mat-sidenav #rightPanel position="end" [opened]="!(isSmall$ | async) && (sideIsSet$ | async)" [mode]="(isSmall$ | async) ? 'over' : 'side'"
+      class="right-panel">
+        <ng-template appPanel="side"></ng-template>
+    </mat-sidenav>
 
-    <div class="content absolute">
+    <!-- Galvenais saturs -->
+    <mat-sidenav-content #content>
 
-      <div class="top-panel">
-        <ng-template appPanel="top"></ng-template>
+      <div class="content absolute">
+
+        <div class="top-panel">
+          <ng-template appPanel="top"></ng-template>
+        </div>
+
+        <div class="main-panel">
+          <router-outlet></router-outlet>
+        </div>
+
       </div>
 
-      <div class="main-panel">
-        <router-outlet></router-outlet>
-      </div>
-
-    </div>
-
-    <!--Scroll to top-->
-    <!-- <button mat-fab (click)="scrollToTop()" class="scroll-to-top" [class.show-scroll]="showScroll">
+      <!--Scroll to top-->
+      <!-- <button mat-fab (click)="scrollToTop()" class="scroll-to-top" [class.show-scroll]="showScroll">
         <mat-icon>arrow_upward</mat-icon>
       </button> -->
-  </mat-sidenav-content>
+    </mat-sidenav-content>
 
-</mat-sidenav-container>
+  </mat-sidenav-container>
+
+</div>
+
+<div *ngIf="sideIsSet$ | async" class="right-button" [class.opened]="rightPanel.opened">
+  <button mat-mini-fab color="primary" (click)="rightPanel.toggle()">
+    <mat-icon *ngIf="rightPanel.opened; else elseClosed">chevron_right</mat-icon>
+    <ng-template #elseClosed>
+      <mat-icon>
+        chevron_left
+      </mat-icon>
+    </ng-template>
+  </button>
+</div>

@@ -14,7 +14,7 @@ export class PanelDirective implements OnInit {
 
   ngOnInit(): void {
     if (this.panelName) {
-      this.service.addPanel(this.panelName, this.view);
+      this.service.getPanel(this.panelName).setView(this.view);
     }
   }
 

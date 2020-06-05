@@ -34,7 +34,7 @@ export class LayoutService {
     map(mobile => mobile ? this.params.toolbarHeight.mobile : this.params.toolbarHeight.desktop)
   );
 
-  addPanel = (name: string, view: ViewContainerRef) => this._panelMap.set(name, new Panel(name, view));
+  addPanel = (name: string) => this._panelMap.set(name, new Panel(name));
 
   removePanel = (name: string) => this._panelMap.delete(name);
 

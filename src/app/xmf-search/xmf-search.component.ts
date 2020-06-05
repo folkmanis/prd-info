@@ -25,8 +25,6 @@ export class XmfSearchComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.searchInput = this.setSearchInput();
     this.facetInput = this.setFacetInput();
-    this.searchInput.changeDetectorRef.detectChanges();
-    this.facetInput.changeDetectorRef.detectChanges();
   }
 
   ngOnDestroy(): void {
