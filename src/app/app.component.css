@@ -29,30 +29,6 @@ mat-sidenav-content .content {
   padding-bottom: 56px;
 }
 
-.right-button {
-  position: fixed;
-  bottom: 5px;
-  right: -15px;
-  z-index: 3;
-  height: 40px;
-  padding: 3px;
-  width: 40px;
-  background-color: rgba(0, 0, 0, 0.2);
-  border-top-left-radius: 23px;
-  border-bottom-left-radius: 23px;
-  transition: all .2s ease-in-out;
-}
-
-.right-button:hover {
-  right: 0;
-  transition: all .2s ease-in-out;
-}
-
-.right-button.opened {
-  right: 0;
-  transition: all .2s ease-in-out;
-}
-
 /* Scroll button */
 
 .scroll-to-top {

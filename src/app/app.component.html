@@ -40,13 +40,4 @@
 
 </div>
 
-<div *ngIf="sideIsSet$ | async" class="right-button" [class.opened]="rightPanel.opened">
-  <button mat-mini-fab color="primary" (click)="rightPanel.toggle()">
-    <mat-icon *ngIf="rightPanel.opened; else elseClosed">chevron_right</mat-icon>
-    <ng-template #elseClosed>
-      <mat-icon>
-        chevron_left
-      </mat-icon>
-    </ng-template>
-  </button>
-</div>
+<app-side-button *ngIf="sideIsSet$ | async" (clicks)="rightPanel.toggle()" [opened]="rightPanel.opened"></app-side-button>

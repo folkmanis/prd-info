@@ -46,6 +46,7 @@ import { CardMenuComponent } from './card-menu/card-menu.component';
 import { ShortenTextPipe } from './pipes/shorten-text.pipe';
 import { FindSelectRouteModule } from './find-select-route/find-select-route.module';
 import { FocusedDirective } from './directives/focused.directive';
+import { SideButtonModule } from './side-button/side-button.module';
 
 @NgModule({
   declarations: [
@@ -96,6 +97,7 @@ import { FocusedDirective } from './directives/focused.directive';
     LayoutModule,
     ScrollingModule,
     FindSelectRouteModule,
+    SideButtonModule,
   ],
   exports: [
     FormsModule,
@@ -140,6 +142,7 @@ import { FocusedDirective } from './directives/focused.directive';
     ScrollingModule,
     FindSelectRouteModule,
     FocusedDirective,
+    SideButtonModule,
   ],
 })
 export class LibraryModule { }
