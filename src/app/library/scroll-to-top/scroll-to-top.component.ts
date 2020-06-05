@@ -1,7 +1,7 @@
-import { Component, Input, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, NgZone, ElementRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { CdkScrollable } from '@angular/cdk/scrolling';
+import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/scrolling';
 
 const showScrollHeight = 300;
 const hideScrollHeight = 10;
@@ -17,14 +17,22 @@ export class ScrollToTopComponent implements OnInit, OnDestroy {
 
   private readonly _subs = new Subscription();
   showScroll = false;
+  private scrollContainers: CdkScrollable[];
 
   constructor(
     private zone: NgZone,
+    private dispatcher: ScrollDispatcher,
+    private element: ElementRef,
   ) { }
 
   ngOnInit(): void {
-    const sub = this.scrollable.elementScrolled().pipe(
-      map(() => this.scrollable.measureScrollOffset('top')),
+    if (this.scrollable instanceof CdkScrollable) {
+      this.scrollContainers = [this.scrollable];
+    } else {
+      this.scrollContainers = this.dispatcher.getAncestorScrollContainers(this.element);
+    }
+    const sub = this.dispatcher.scrolled().pipe(
+      map(() => this.scrollContainers.reduce((acc, scr) => acc += scr.measureScrollOffset('top'), 0)),
       tap(top => {
         if (top > showScrollHeight) {
           this.zone.run(() => this.showScroll = true); // Scroll tiek pārbaudīts ārpus zonas. Bez run nekādas reakcijas nebūs
@@ -42,7 +50,7 @@ export class ScrollToTopComponent implements OnInit, OnDestroy {
   }
 
   scrollToTop() {
-    this.scrollable.scrollTo({ top: 0 });
+    this.scrollContainers.forEach(scr => scr.scrollTo({ top: 0 }));
   }
 
 }
