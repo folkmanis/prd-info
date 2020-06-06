@@ -1,10 +1,15 @@
-<div class="jobs">
-    <div class="editor">
-        <app-card-menu [modules]='modules$ | async'></app-card-menu>
-    </div>
-    <div class="mat-elevation-z4">
-        <app-job-filter></app-job-filter>
-        <router-outlet></router-outlet>
-    </div>
-    <app-scroll-to-top position="fixed"></app-scroll-to-top>
-</div>
+<mat-drawer-container>
+    <mat-drawer></mat-drawer>
+
+    <mat-drawer-content>
+        <div>
+            <app-card-menu [modules]='modules$ | async'></app-card-menu>
+        </div>
+        <div>
+            <app-job-filter></app-job-filter>
+        </div>
+        <div class="main">
+            <router-outlet></router-outlet>
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>

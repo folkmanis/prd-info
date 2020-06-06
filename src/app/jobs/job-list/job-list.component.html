@@ -1,42 +1,45 @@
-<table class="full-width">
-    <tr>
-        <th class=" column-1">ID</th>
-        <th>Klients</th>
-        <th>Datums</th>
-        <th>Nosaukums</th>
-        <th>Izstrādājums</th>
-        <th>Skaits</th>
-    </tr>
+<cdk-virtual-scroll-viewport itemSize="32px" class="container" #scrollable>
 
-    <tr *ngFor="let job of dataSource$ | async;" [routerLink]="['plate-job', {jobId: job.jobId}]"
-        [class.job-completed]="job.invoiceId">
-        <!-- jobId -->
-        <td class="column-1">
-            {{job.jobId}}
-        </td>
+    <table>
+        <tr>
+            <th class=" column-1">ID</th>
+            <th>Klients</th>
+            <th>Datums</th>
+            <th>Nosaukums</th>
+            <th>Izstrādājums</th>
+            <th>Skaits</th>
+        </tr>
 
-        <!-- customer -->
-        <td>{{job.customer}}</td>
+        <tr *cdkVirtualFor="let job of dataSource$ | async;" [routerLink]="['plate-job', {jobId: job.jobId}]"
+            [class.job-completed]="job.invoiceId">
+            <!-- jobId -->
+            <td class="column-1">
+                {{job.jobId}}
+            </td>
 
-        <!-- 'receivedDate' -->
-        <td>{{job.receivedDate | date:'dd.MM.yyyy'}}</td>
+            <!-- customer -->
+            <td>{{job.customer}}</td>
 
-        <!-- 'name' -->
-        <td [matTooltip]="job.name" [matTooltipShowDelay]="500"
-            [matTooltipDisabled]="job.name.length < 50">
-            {{job.name | shortenText:50}}
+            <!-- 'receivedDate' -->
+            <td>{{job.receivedDate | date:'dd.MM.yyyy'}}</td>
 
-        </td>
+            <!-- 'name' -->
+            <td [matTooltip]="job.name" [matTooltipShowDelay]="500" [matTooltipDisabled]="job.name.length < 50">
+                {{job.name | shortenText:50}}
 
-        <!-- Izstrādājums -->
-        <td>
-            {{job.productsObj.name}}
-        </td>
-        <!-- Skaits -->
-        <td>
-            {{job.productsObj.count}}
-        </td>
+            </td>
 
-    </tr>
+            <!-- Izstrādājums -->
+            <td>
+                {{job.productsObj.name}}
+            </td>
+            <!-- Skaits -->
+            <td>
+                {{job.productsObj.count}}
+            </td>
 
-</table>
+        </tr>
+
+    </table>
+    <app-scroll-to-top position="fixed" [scrollable]="scrollable"></app-scroll-to-top>
+</cdk-virtual-scroll-viewport>
