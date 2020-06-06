@@ -5,6 +5,8 @@
 
 table {
     width: 100%;
+    table-layout: fixed;
+    overflow: hidden;
     border-spacing: 0;
     border-collapse: separate;
 }
@@ -13,7 +15,7 @@ tr {
     height: 32px;
 }
 
-tr:hover {
+tbody tr:hover {
     background-color: rgba(0, 0, 0, .08);
 }
 
@@ -33,31 +35,26 @@ td, th {
     color: rgba(0, 0, 0, .50);
 }
 
-.column-1 {
+th:first-of-type, td:first-of-type {
     padding-left: 16px;
 }
 
-.cdk-column-jobId {
-    width: 80px;
+th.column-jobId {
+    width: 3.5em;
 }
 
-td.cdk-column-jobId {
-    font-weight: bold;
-    color: rgba(0, 0, 0, .6);
+th.column-customer {
+    width: 9em;
 }
 
-td.cdk-column-jobId:hover {
-    cursor: copy;
+th.column-receivedDate {
+    width: 5.5em;
 }
 
-td.cdk-column-name:hover {
-    cursor: copy;
+th.column-productsObj-name {
+    width: 11em;
 }
 
-.cdk-column-receivedDate {
-    width: 90px;
-}
-
-.cdk-column-customer {
-    width: 130px;
+th.column-productsObj-count {
+    width: 4em;
 }
