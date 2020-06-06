@@ -4,7 +4,7 @@ mat-drawer-container {
 
 mat-drawer {
     width: 280px;
-    padding-bottom: 56px;
+    /* margin-bottom: 56px; */
 }
 
 mat-drawer-content {

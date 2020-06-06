@@ -1,6 +1,6 @@
-import { Component, Input, Output, OnInit, ViewChild, EventEmitter } from '@angular/core';
-import { ArchiveFacet, FacetFilter, Count } from '../../services/archive-search-class';
-import { MatSelectionListChange, MatSelectionList } from '@angular/material/list';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { MatSelectionList, MatSelectionListChange } from '@angular/material/list';
+import { Count } from '../../services/archive-search-class';
 
 @Component({
   selector: 'app-facet-checker',
@@ -10,12 +10,12 @@ import { MatSelectionListChange, MatSelectionList } from '@angular/material/list
 export class FacetCheckerComponent implements OnInit {
   @ViewChild(MatSelectionList) selection: MatSelectionList;
 
-  title: string;
-  key: keyof ArchiveFacet;
-  data: Count[];
-  filterValue: EventEmitter<Array<number | string>> = new EventEmitter();
+  @Input() displayName: string;
+  @Input() data: Count[];
+
+  @Output() filterValue: EventEmitter<Array<number | string>> = new EventEmitter();
+
   opened = true;
-  emiterFn: (selected: Array<string | number> | undefined) => void;
 
   constructor() { }
 
@@ -26,11 +26,10 @@ export class FacetCheckerComponent implements OnInit {
     this.selection.deselectAll();
   }
 
-  onSelect(event: MatSelectionListChange): void {
-    if (!this.emiterFn) { return; }
-    const selected = event.source.selectedOptions.selected;
+  onSelect(): void {
+    const selected = this.selection.selectedOptions.selected; // event.source.selectedOptions.selected;
     const filter = selected.length ? selected.map((e) => e.value as number | string) : undefined; // Ja nekas nav atzīmēts, tad vispār nav
-    this.emiterFn(filter);
+    this.filterValue.emit(filter);
   }
 
 }

@@ -1,3 +1,30 @@
+.container {
+    margin: 8px;
+}
+
+.head {
+    display: flex;
+    align-items: center;
+}
+
+.head:hover {
+    background-color: rgba(0, 0, 0, 0.08);
+}
+
+.head .spacer {
+    flex: 1;
+}
+
+h4 {
+    margin: 0px;
+    padding-left: 16px;
+}
+
+.head button {
+    margin-right: 32px;
+    flex: 0;
+}
+
 .option-small {
     line-height: 14px;
 }

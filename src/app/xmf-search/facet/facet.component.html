@@ -1,5 +1,8 @@
-<div class="facet mat-elevation-z4">
-    <mat-accordion displayMode="flat" [multi]="true">
-        <ng-container #itemsCaontainer></ng-container>
-    </mat-accordion>
+<div *ngIf="facet" class="facet mat-elevation-z4">
+    <div *ngFor="let block of facetNames; last as last;">
+        <app-facet-checker [displayName]="block.displayName" [data]="facet[block.key]"
+            (filterValue)="onSelect($event, block.key)">
+        </app-facet-checker>
+        <mat-divider *ngIf="!last"></mat-divider>
+    </div>
 </div>

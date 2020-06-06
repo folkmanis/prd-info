@@ -1,13 +1,17 @@
-<mat-expansion-panel [expanded]="opened">
-    <mat-expansion-panel-header>
-        <mat-panel-title>
-            {{title}}
-        </mat-panel-title>
-    </mat-expansion-panel-header>
-    <mat-selection-list #selection (selectionChange)="onSelect($event)" dense>
+<div class="container">
+    <div class="head">
+        <h4>
+            {{displayName}}
+        </h4>
+        <span class="spacer"></span>
+        <button mat-icon-button (click)="deselect(); onSelect();">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <mat-selection-list #selection (selectionChange)="onSelect()" dense>
         <mat-list-option *ngFor="let item of data" checkboxPosition="before" [value]="item._id" [style.height.px]="24">
             <div class="option-small" *ngIf="item.count; else zeroCount">{{item._id | appMonth}} ({{item.count}})</div>
             <ng-template #zeroCount>{{item._id | appMonth}}</ng-template>
         </mat-list-option>
     </mat-selection-list>
-</mat-expansion-panel>
+</div>
