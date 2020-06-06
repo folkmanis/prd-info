@@ -49,7 +49,7 @@ export class SystemPreferencesService {
     this.router.events.pipe(filter(ev => ev instanceof NavigationEnd)),
     this.modules$
   ]).pipe(
-    map(([ev, modules]: [NavigationEnd, UserModule[]]) => modules.find(mod => mod.route === ev.url.split('/')[1])),
+    map(([ev, modules]: [NavigationEnd, UserModule[]]) => modules.find(mod => mod.route === ev.url.split(/[/;]/)[1])),
     shareReplay(1),
   );
   /** Aktīvā moduļa child menu */
