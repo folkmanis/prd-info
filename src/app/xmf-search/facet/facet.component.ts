@@ -1,10 +1,9 @@
 import {
   Component, ComponentFactory, ComponentFactoryResolver, ComponentRef,
-  EventEmitter, OnDestroy, OnInit, ViewChild, ViewContainerRef
+  EventEmitter, OnDestroy, OnInit, ViewChild, ViewContainerRef,
+  Input, Output
 } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { FacetFilter } from '../services/archive-search-class';
-import { ArchiveSearchService } from '../services/archive-search.service';
+import { FacetFilter, ArchiveFacet } from '../services/archive-search-class';
 import { FacetCheckerComponent } from './facet-checker/facet-checker.component';
 import { PanelComponent } from 'src/app/interfaces';
 
@@ -20,61 +19,60 @@ const FACET_NAMES: Map<string, { displayName: string, index: number, }> = new Ma
 })
 export class FacetComponent implements OnInit, OnDestroy, PanelComponent {
   @ViewChild('itemsCaontainer', { static: true, read: ViewContainerRef }) container: ViewContainerRef;
-  facetSubs: Subscription;
-  resetSubs: Subscription;
-  facetChange: EventEmitter<Partial<FacetFilter>> = new EventEmitter();
+  @Input() set facet(_f: ArchiveFacet) {
+    this._facet = _f;
+    this.updateFacet();
+  }
+  get facet(): ArchiveFacet { return this._facet; }
+  @Output() filter = new EventEmitter<Partial<FacetFilter>>();
+
+  private _facet: ArchiveFacet;
+
   facetFactory: ComponentFactory<FacetCheckerComponent>;
   facetComponents: Map<string, ComponentRef<FacetCheckerComponent>> = new Map();
 
   constructor(
-    private archiveSearchService: ArchiveSearchService,
     private resolver: ComponentFactoryResolver,
   ) { }
 
+  deselect() {
+    if (this.facetComponents) {
+      this.facetComponents.forEach(comp => comp.instance.deselect());
+    }
+  }
+
   ngOnInit() {
     this.facetFactory = this.resolver.resolveComponentFactory(FacetCheckerComponent);
-    /** Nodod facet filtru servisam (serviss parakstās uz izmaiņām) */
-    this.archiveSearchService.setFacetFilter(this.facetChange);
-    /** Parakstās uz facet rezultātiem */
-    this.facetSubs = this.archiveSearchService.facetResult$.subscribe(res => {
-      const keys = Object.keys(res)
-        .sort((a, b) => FACET_NAMES.get(a)?.index - FACET_NAMES.get(b)?.index);
-      for (const key of keys) {
-        const facetName = FACET_NAMES.get(key) || { displayName: '', index: undefined };
-        let comp: ComponentRef<FacetCheckerComponent>;
-        if (this.facetComponents.has(key)) {
-          comp = this.facetComponents.get(key);
-        } else {
-          comp = this.container.createComponent(this.facetFactory);
-          comp.instance.key = key;
-          comp.instance.emiterFn = this.onFacet(key);
-          comp.instance.title = facetName.displayName;
-          this.facetComponents.set(key, comp);
-        }
-        comp.instance.data = res[key];
-      }
-    });
-    /** Kad jauns meklējums, tad visi filtri tiek noņemti */
-    this.resetSubs = this.archiveSearchService.searchString$
-      .subscribe(() => this.facetComponents && this.facetComponents.forEach(comp => comp.instance.deselect()));
-
   }
 
   ngOnDestroy() {
-    this.facetSubs.unsubscribe();
-    this.resetSubs.unsubscribe();
-    /** Paziņo servisam, ka var atrakstīties */
-    this.archiveSearchService.unsetFacetFilter();
     this.container.clear();
   }
 
   private onFacet(key: keyof FacetFilter): (selected: Array<string | number> | undefined) => void {
-    const emiter = this.facetChange;
     return (selected) => {
-      const filter: Partial<FacetFilter> = {};
-      filter[key] = selected;
-      emiter.next(filter);
+      const f: Partial<FacetFilter> = { [key]: selected };
+      this.filter.next(f);
     };
   }
 
+  private updateFacet() {
+    if (!this.facet) { return; }
+    const keys = Object.keys(this.facet)
+      .sort((a, b) => FACET_NAMES.get(a)?.index - FACET_NAMES.get(b)?.index);
+    for (const key of keys) {
+      const facetName = FACET_NAMES.get(key) || { displayName: '', index: undefined };
+      let comp: ComponentRef<FacetCheckerComponent>;
+      if (this.facetComponents.has(key)) {
+        comp = this.facetComponents.get(key);
+      } else {
+        comp = this.container.createComponent(this.facetFactory);
+        comp.instance.key = key;
+        comp.instance.emiterFn = this.onFacet(key);
+        comp.instance.title = facetName.displayName;
+        this.facetComponents.set(key, comp);
+      }
+      comp.instance.data = this.facet[key];
+    }
+  }
 }

@@ -12,8 +12,9 @@
 
 import { HttpClient } from '@angular/common/http';
 import { EventEmitter, Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, merge, Observable, of, ReplaySubject, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, merge, Observable, of, ReplaySubject } from 'rxjs';
 import { map, mergeMap, pluck, share, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { cloneDeep, mergeWith } from 'lodash';
 import { HttpOptions } from '../../library/http/http-options';
 import { ArchiveFacet, ArchiveRecord, ArchiveResp, FacetFilter, SearchQuery } from './archive-search-class';
 import { PagedCache, Range } from './paged-cache';
@@ -31,16 +32,18 @@ export class ArchiveSearchService {
   private _cache: PagedCache<ArchiveRecord>;
   private searchQuery$: Observable<ArchiveResp> = combineLatest([this._stringSearch$, this._facetSearch$])
     .pipe(
+      tap(() => this.busy$.next(true)),
       map(this.combineSearch()),
       switchMap(q => this.searchHttp(q)),
       tap(re => this._cache = new PagedCache<ArchiveRecord>(re.count, this.fetchRecords(), re.data)),
+      tap(() => this.busy$.next(false)),
       shareReplay(1),
     );
-  private searchSubs: Subscription;
   private facetFilter: Partial<FacetFilter> = {};
   private facetData: ArchiveFacet | null;
-  private facetSubs: Subscription;
   fetchRange = new EventEmitter<Range>();
+
+  busy$ = new BehaviorSubject<boolean>(true);
 
   count$: Observable<number> = merge(
     of(0),
@@ -50,7 +53,7 @@ export class ArchiveSearchService {
   );
 
   searchResult$: Observable<ArchiveRecord[]> = this.searchQuery$.pipe(
-    map(res => res.data),
+    pluck('data'),
     share(),
   );
 
@@ -66,42 +69,28 @@ export class ArchiveSearchService {
     this._stringSearch$.next(search);
   }
 
+  setFacetFilter(f: Partial<FacetFilter>) {
+    this.facetFilter = { ...this.facetFilter, ...f };
+    this._facetSearch$.next(this.facetFilter);
+  }
+
   get searchString$(): Observable<string> {
     return this._stringSearch$;
   }
 
-  unsetSearch(): void {
-    this.searchSubs?.unsubscribe();
-  }
-
-  setFacetFilter(f$: Observable<Partial<FacetFilter>>) {
-    this.unsetFacetFilter();
-    this.facetSubs = f$.pipe(
-      tap(f => this.facetFilter = { ...this.facetFilter, ...f }),
-    ).subscribe(this._facetSearch$);
-  }
-
-  unsetFacetFilter(): void {
-    this.facetSubs?.unsubscribe();
-  }
   private updateFacet(): (nF: Observable<ArchiveFacet>) => Observable<ArchiveFacet> {
     return map(
       (newFacet: ArchiveFacet): ArchiveFacet => {
         if (!this.facetData) { // ja prasa pirmo reizi
           this.facetData = newFacet; // tad izmanto visu ierakstu
-        } else { // ja elementi jau ir, tad izmantos tikai skaitus
-          for (const key of Object.keys(newFacet)) { // pa grupām
-            const nFGr: Array<any> = newFacet[key];
-            const oFGr: Array<any> = this.facetData[key];
-            for (const k in oFGr) {
-              if (oFGr.hasOwnProperty(k)) {
-                const idxNew = nFGr.findIndex(el => el._id === oFGr[k].id);
-                oFGr[k].count = (idxNew > -1) ? nFGr[idxNew].count : oFGr[k].count = 0;
-              }
-            }
-          }
+          return cloneDeep(this.facetData);
         }
-        return this.facetData;
+        // ja elementi jau ir, tad izmantos tikai skaitus
+        const facetFiltered: ArchiveFacet = cloneDeep(this.facetData);
+        for (const key of Object.keys(facetFiltered)) { // pa grupām
+          facetFiltered[key] = facetFiltered[key].map(val => newFacet[key].find(nVal => nVal._id === val._id) || { ...val, count: 0 });
+        }
+        return facetFiltered;
       }
     );
   }

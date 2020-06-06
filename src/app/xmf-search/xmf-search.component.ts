@@ -1,17 +1,17 @@
-import { Component, ComponentFactoryResolver, OnInit, ChangeDetectionStrategy, ComponentRef, OnDestroy } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
-import { map, startWith, tap, skip } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map, startWith, tap, skip, filter } from 'rxjs/operators';
 import { LayoutService } from 'src/app/layout/layout.service';
 import { ArchiveSearchService } from './services/archive-search.service';
-import { SearchInputComponent } from './search-input/search-input.component';
-import { FacetComponent } from './facet/facet.component';
+import { FacetFilter } from './services/archive-search-class';
 
 @Component({
   selector: 'app-xmf-search',
   templateUrl: './xmf-search.component.html',
   styleUrls: ['./xmf-search.component.css'],
+  providers: [ArchiveSearchService],
 })
-export class XmfSearchComponent implements OnInit, OnDestroy {
+export class XmfSearchComponent implements OnInit {
 
   constructor(
     private service: ArchiveSearchService,
@@ -22,14 +22,17 @@ export class XmfSearchComponent implements OnInit, OnDestroy {
 
   count$ = this.service.count$;
 
-  ngOnInit() {
-  }
+  facet$ = this.service.facetResult$;
 
-  ngOnDestroy(): void {
+  ngOnInit() {
   }
 
   onSearch(search: string) {
     this.service.setSearch(search);
+  }
+
+  onFacet(f: Partial<FacetFilter>) {
+    this.service.setFacetFilter(f);
   }
 
 }

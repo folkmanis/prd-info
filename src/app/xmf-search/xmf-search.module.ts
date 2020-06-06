@@ -27,6 +27,5 @@ import { StatusComponent } from './search-input/status.component';
     XmfSearchRoutingModule,
     LibraryModule,
   ],
-  providers: [ArchiveSearchService],
 })
 export class XmfSearchModule { }

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angu
 import { FormControl } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { startWith, debounceTime, map, distinctUntilChanged, shareReplay } from 'rxjs/operators';
-import { PanelComponent } from 'src/app/interfaces';
+import { ArchiveSearchService } from '../services/archive-search.service';
 
 @Component({
   selector: 'app-search-input',
@@ -28,8 +28,11 @@ export class SearchInputComponent implements OnInit, OnDestroy {
     distinctUntilChanged(),
     shareReplay(1),
   );
+  busy$ = this.service.busy$;
 
-  constructor() { }
+  constructor(
+    private service: ArchiveSearchService,
+  ) { }
 
   ngOnInit(): void {
     this._subs.add(

@@ -19,3 +19,8 @@ span {
     flex: 0 auto;
     margin-right: 16px;
 }
+
+.spinner {
+    flex: 0;
+    margin: 16px;
+}
