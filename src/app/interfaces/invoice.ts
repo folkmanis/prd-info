@@ -8,6 +8,7 @@ export interface Invoice {
     jobsId: number[];
     jobs?: Job[];
     products: InvoiceProduct[];
+    total?: number;
 }
 
 export interface InvoicesFilter {

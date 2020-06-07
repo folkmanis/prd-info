@@ -15,6 +15,9 @@
         <div *ngFor="let product of invoice.products;">
             {{product._id}} | {{product.count}} | {{product.price | currency}} | {{product.total | currency}}
         </div>
+        <div>
+            <strong>Kopā: {{invoice.total | currency}}</strong>
+        </div>
     </section>
     <h4>
         Eksports

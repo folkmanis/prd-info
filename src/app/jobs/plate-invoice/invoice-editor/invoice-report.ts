@@ -1,4 +1,4 @@
-import { PdfMakeWrapper, Table, Columns, Txt } from 'pdfmake-wrapper';
+import { PdfMakeWrapper, Table, Columns, Txt, Cell } from 'pdfmake-wrapper';
 import { Invoice, InvoiceProduct, Job, JobProduct, Product } from 'src/app/interfaces';
 import * as moment from 'moment';
 
@@ -17,7 +17,15 @@ export class InvoiceReport {
             new Txt(this._invoice.customer + '/' + this._invoice.invoiceId).fontSize(14).bold().end,
         ]);
         this._pdf.add(
-            new Table(this.createProductsTable(this._invoice.products))
+            new Table([
+                ...this.createProductsTable(this._invoice.products),
+                [
+                    '',
+                    '',
+                    new Cell(new Txt('Kopā').bold().alignment('right').end).end,
+                    new Cell(new Txt(`${this._invoice.total.toString()} EUR`).bold().end).end,
+                ]
+            ])
                 .layout('lightHorizontalLines')
                 .fontSize(10)
                 .headerRows(1)

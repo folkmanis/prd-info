@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { filter, map, switchMap } from 'rxjs/operators';
+import { filter, map, switchMap, shareReplay } from 'rxjs/operators';
 import { Invoice } from 'src/app/interfaces';
 import { InvoicesService } from '../../services';
 import { InvoiceReport } from './invoice-report';
@@ -22,6 +22,10 @@ export class InvoiceEditorComponent implements OnInit {
     map(params => params.get('invoiceId') as string | undefined),
     filter(invoiceId => !!invoiceId),
     switchMap(invoiceId => this.invoicesService.getInvoice(invoiceId)),
+    map(invoice => ({
+      ...invoice,
+      total: invoice.products.reduce((acc, curr) => acc + curr.total, 0)
+    })),
   );
 
   ngOnInit(): void {
