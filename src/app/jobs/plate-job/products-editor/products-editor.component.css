@@ -5,3 +5,24 @@
 tr.mat-footer-row {
     font-weight: bold;
 }
+
+.cdk-column-total {
+    width: 72px;
+}
+
+.mat-column-name {
+    min-width: 240px;
+}
+
+th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+td.mat-cell mat-form-field {
+    width: 100%;
+}
+
+.mat-column-count {
+    width: 72px;
+}
