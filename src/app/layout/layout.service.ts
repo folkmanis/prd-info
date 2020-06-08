@@ -6,7 +6,6 @@ import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/l
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 
-import { Panel } from './panel';
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +18,6 @@ export class LayoutService {
   ) { }
 
   mainContainer: MatSidenavContent;
-
-  private _panelMap: Map<string, Panel> = new Map();
 
   isHandset$: Observable<boolean> = this.matches(Breakpoints.Handset);
 
@@ -36,15 +33,6 @@ export class LayoutService {
   toolbarHeight$: Observable<number> = this.isHandset$.pipe(
     map(mobile => mobile ? this.params.toolbarHeight.mobile : this.params.toolbarHeight.desktop)
   );
-
-  addPanel = (name: string) => this._panelMap.set(name, new Panel(name));
-
-  removePanel = (name: string) => this._panelMap.delete(name);
-
-  getPanel = (name: string): Panel => this._panelMap.get(name);
-
-  clearAllPanels = () => this._panelMap.forEach(panel => panel.clear());
-
 
   private matches(matcher: string | string[]): Observable<boolean> {
     return this.breakpointObserver.observe(matcher).pipe(
