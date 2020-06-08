@@ -23,4 +23,9 @@
     <p *ngFor="let total of totals$ | async">
         {{total._id}} | {{total.count}} | {{total.total | currency}}
     </p>
+    <p *ngIf="grandTotal$ | async as grandTotal;">
+        <strong>
+            Kopā | {{grandTotal | currency}}
+        </strong>
+    </p>
 </section>

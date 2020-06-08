@@ -28,6 +28,7 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
 
   jobs$ = this.invoiceService.jobs$;
   totals$ = this.invoiceService.totals$;
+  grandTotal$ = this.invoiceService.grandTotal$;
 
   private readonly subscriptions = new Subscription();
 

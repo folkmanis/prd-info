@@ -30,6 +30,10 @@ export class InvoicesService {
     share(),
   );
 
+  grandTotal$: Observable<number> = this.totals$.pipe(
+    map(totals => totals.reduce((acc, curr) => acc + curr.total, 0))
+  );
+
   createInvoice(params: { selectedJobs: number[], customerId: string; }): Observable<Invoice> {
     return this.prdApi.invoices.createInvoice(params);
   }

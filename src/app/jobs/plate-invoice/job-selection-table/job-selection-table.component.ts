@@ -40,6 +40,7 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this._subscription.unsubscribe();
+    this.selected.complete();
   }
 
   isAllSelected(): boolean {
