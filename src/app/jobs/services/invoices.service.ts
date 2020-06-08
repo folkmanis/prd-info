@@ -3,27 +3,18 @@ import { Observable, merge, Subject, BehaviorSubject, EMPTY, of, observable } fr
 import { map, pluck, filter, tap, switchMap, share, shareReplay } from 'rxjs/operators';
 import { PrdApiService } from 'src/app/services';
 
-import { JobService } from './job.service';
 import {
-  JobPartial, JobQueryFilter,
   Invoice, InvoicesFilter,
   ProductTotals
 } from 'src/app/interfaces';
 
 @Injectable()
 export class InvoicesService {
-  jobFilter$ = new Subject<JobQueryFilter>();
   totalsFilter$ = new Subject<number[]>();
 
   constructor(
     private prdApi: PrdApiService,
-    private jobService: JobService,
   ) { }
-
-  jobs$: Observable<JobPartial[]> = this.jobFilter$.pipe(
-    switchMap(f => this.jobService.getJobList(f)),
-    share(),
-  );
 
   totals$: Observable<ProductTotals[]> = this.totalsFilter$.pipe(
     switchMap(f => this.getTotalsHttp(f)),

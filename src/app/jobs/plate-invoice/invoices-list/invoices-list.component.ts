@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Invoice } from 'src/app/interfaces';
 import { InvoicesListDatasource } from './invoices-list-datasource';
-import { InvoicesService } from '../../services';
+import { InvoicesService } from '../../services/invoices.service';
 
 const COLUMNS = ['invoiceId', 'customer', 'createdDateString', 'totalAll'];
 

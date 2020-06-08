@@ -48,11 +48,16 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
   }
 
   toggleAll() {
-    this.isAllSelected() ? this.selector.clear() : this.selectAll(...this.jobIdSet);
+    this.isAllSelected() ? this.deselectAll() : this.selectAll(...this.jobIdSet);
   }
 
   selectAll(...jobs: number[]): void {
     this.selector.select(...jobs);
+    this.selected.next(this.selector.selected);
+  }
+
+  deselectAll(): void {
+    this.selector.clear();
     this.selected.next(this.selector.selected);
   }
 

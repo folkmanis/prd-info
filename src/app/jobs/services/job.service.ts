@@ -43,7 +43,7 @@ export class JobService {
     return this.prdApi.jobs.get(jobId);
   }
 
-  getJobList(filter?: JobQueryFilter): Observable<JobPartial[]> {
+  private getJobList(filter?: JobQueryFilter): Observable<JobPartial[]> {
     return this.prdApi.jobs.get(filter);
   }
 

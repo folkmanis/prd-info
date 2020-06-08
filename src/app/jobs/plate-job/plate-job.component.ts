@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { Job } from 'src/app/interfaces';
-import { JobService } from '../services';
+import { JobService } from '../services/job.service';
 
 @Component({
   selector: 'app-plate-job',

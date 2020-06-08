@@ -1,6 +1,6 @@
 import { DataSource } from '@angular/cdk/table';
 import { Invoice, InvoicesFilter } from 'src/app/interfaces';
-import { InvoicesService } from '../../services';
+import { InvoicesService } from '../../services/invoices.service';
 import { Observable } from 'rxjs';
 import { switchMap, share, map } from 'rxjs/operators';
 import * as moment from 'moment';

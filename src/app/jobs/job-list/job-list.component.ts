@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { tap, map, debounceTime, startWith } from 'rxjs/operators';
-import { JobService } from '../services';
+import { JobService } from '../services/job.service';
 import { JobQueryFilter, JobProduct } from 'src/app/interfaces';
 
 @Component({

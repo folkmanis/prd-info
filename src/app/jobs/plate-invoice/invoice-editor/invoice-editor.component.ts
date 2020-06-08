@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { filter, map, switchMap, shareReplay } from 'rxjs/operators';
 import { Invoice } from 'src/app/interfaces';
-import { InvoicesService } from '../../services';
+import { InvoicesService } from '../../services/invoices.service';
 import { InvoiceReport } from './invoice-report';
 
 @Component({

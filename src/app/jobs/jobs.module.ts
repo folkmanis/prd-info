@@ -15,7 +15,8 @@ import { PlateInvoiceComponent } from './plate-invoice/plate-invoice.component';
 import { InvoiceEditorComponent } from './plate-invoice/invoice-editor/invoice-editor.component';
 import { JobSelectionTableComponent } from './plate-invoice/job-selection-table/job-selection-table.component';
 import { NewInvoiceComponent } from './plate-invoice/new-invoice/new-invoice.component';
-import { JobService, InvoicesService } from './services';
+import { JobService } from './services/job.service';
+import { InvoicesService } from './services/invoices.service';
 import { InvoicesListComponent } from './plate-invoice/invoices-list/invoices-list.component';
 import { PdfMakeWrapper } from 'pdfmake-wrapper';
 
