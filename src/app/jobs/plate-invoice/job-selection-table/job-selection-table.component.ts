@@ -1,7 +1,7 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, filter } from 'rxjs/operators';
 import { JobPartial } from 'src/app/interfaces';
 
 const TABLE_COLUMNS = ['jobId', 'name', 'productName', 'count', 'price', 'total'];
@@ -24,7 +24,7 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
 
   selector = new SelectionModel<number>(true, []);
   private readonly _subscription = new Subscription();
-  jobIdSet: Set<number> = new Set();
+  jobIdSet: Set<number> | undefined;
 
   constructor() { }
 
@@ -33,6 +33,7 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const subs = this.selector.changed.pipe(
+      filter(()=> !!this.jobIdSet),
       map(() => this.selector.selected),
     ).subscribe(this.selected);
     this._subscription.add(subs);
@@ -41,10 +42,11 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this._subscription.unsubscribe();
     this.selected.complete();
+    this.jobs$.complete();
   }
 
   isAllSelected(): boolean {
-    return this.selector.selected.length === this.jobIdSet.size;
+    return this.jobIdSet && this.selector.selected.length === this.jobIdSet.size;
   }
 
   toggleAll() {
@@ -56,6 +58,7 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
   }
 
   private setNewJobList(jobs: JobPartial[]): void {
+    this.jobIdSet = undefined;
     this.selector.clear();
     this.jobs$.next(jobs);
     this.jobIdSet = new Set(jobs.map(job => job.jobId));

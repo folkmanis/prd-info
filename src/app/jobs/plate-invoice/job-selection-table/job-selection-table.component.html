@@ -4,7 +4,7 @@
         <th mat-header-cell *matHeaderCellDef>
             <mat-checkbox [checked]="selector.hasValue() && isAllSelected()"
                 [indeterminate]="selector.hasValue() && !isAllSelected()" (change)="$event ? toggleAll() : null"
-                [disabled]="!jobIdSet.size">
+                [disabled]="!jobIdSet?.size">
             </mat-checkbox>
         </th>
         <td mat-cell *matCellDef="let job;">
