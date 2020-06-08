@@ -22,8 +22,7 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
   }
   @Output() selected = new EventEmitter<number[]>();
 
-  selector = new SelectionModel<number>(true, []);
-  private readonly _subscription = new Subscription();
+  selector = new SelectionModel<number>(true, [], false);
   jobIdSet: Set<number> | undefined;
 
   constructor() { }
@@ -32,15 +31,9 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
   jobs$: BehaviorSubject<JobPartial[]> = new BehaviorSubject([]);
 
   ngOnInit(): void {
-    const subs = this.selector.changed.pipe(
-      filter(()=> !!this.jobIdSet),
-      map(() => this.selector.selected),
-    ).subscribe(this.selected);
-    this._subscription.add(subs);
   }
 
   ngOnDestroy() {
-    this._subscription.unsubscribe();
     this.selected.complete();
     this.jobs$.complete();
   }
@@ -49,16 +42,21 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
     return this.jobIdSet && this.selector.selected.length === this.jobIdSet.size;
   }
 
+  toggle(jobId: number) {
+    this.selector.toggle(jobId);
+    this.selected.next(this.selector.selected);
+  }
+
   toggleAll() {
     this.isAllSelected() ? this.selector.clear() : this.selectAll(...this.jobIdSet);
   }
 
   selectAll(...jobs: number[]): void {
     this.selector.select(...jobs);
+    this.selected.next(this.selector.selected);
   }
 
   private setNewJobList(jobs: JobPartial[]): void {
-    this.jobIdSet = undefined;
     this.selector.clear();
     this.jobs$.next(jobs);
     this.jobIdSet = new Set(jobs.map(job => job.jobId));

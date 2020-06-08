@@ -8,7 +8,7 @@
             </mat-checkbox>
         </th>
         <td mat-cell *matCellDef="let job;">
-            <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selector.toggle(job.jobId) : null"
+            <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? toggle(job.jobId) : undefined"
                 [checked]="selector.isSelected(job.jobId)">
             </mat-checkbox>
         </td>
