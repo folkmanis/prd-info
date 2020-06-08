@@ -26,6 +26,7 @@
     "@types/lodash": "^4.14.155",
     "@types/pdfmake": "^0.1.13",
     "angular-persistence": "^1.0.1",
+    "codelyzer": "^5.2.2",
     "lodash": "^4.17.15",
     "moment": "^2.26.0",
     "ng": "0.0.0",
