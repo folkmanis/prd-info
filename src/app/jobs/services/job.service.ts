@@ -22,7 +22,7 @@ export class JobService {
     share(),
   );
 
-  newJob(job: Partial<Job>): Observable<number> {
+  newJob(job: Partial<Job>): Observable<number | null> {
     return this.prdApi.jobs.insertOne(job).pipe(
       map(id => +id),
       tap(() => this.updateJobs$.next()),

@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { tap, map, debounceTime, startWith } from 'rxjs/operators';
+import { tap, map, debounceTime, startWith, filter, switchMap } from 'rxjs/operators';
 import { JobService } from '../services/job.service';
 import { JobQueryFilter, JobProduct } from 'src/app/interfaces';
+import { JobEditDialogService } from '../services/job-edit-dialog.service';
 
 @Component({
   selector: 'app-job-list',
@@ -15,6 +16,7 @@ export class JobListComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private jobService: JobService,
+    private jobEditDialog: JobEditDialogService,
   ) { }
   private readonly _subs = new Subscription();
 
@@ -23,10 +25,16 @@ export class JobListComponent implements OnInit, AfterViewInit, OnDestroy {
   );
 
   ngOnInit(): void {
-    const subs = this.route.paramMap.pipe(
+    let subs = this.route.paramMap.pipe(
       map(params => params.keys.reduce((acc, key) => ({ ...acc, [key]: params.get(key) }), {} as JobQueryFilter)),
-      map(filter => ({ ...filter, unwindProducts: 1 } as JobQueryFilter)),
+      map(jobFilter => ({ ...jobFilter, unwindProducts: 1 } as JobQueryFilter)),
     ).subscribe(this.jobService.filter$);
+    this._subs.add(subs);
+
+    subs = this.route.data.pipe(
+      filter(data => data.newJob),
+      switchMap(() => this.jobEditDialog.newJob()),
+    ).subscribe();
     this._subs.add(subs);
   }
 
@@ -35,6 +43,10 @@ export class JobListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this._subs.unsubscribe();
+  }
+
+  onJobEdit(jobId: number) {
+    this.jobEditDialog.editJob(jobId);
   }
 
 }

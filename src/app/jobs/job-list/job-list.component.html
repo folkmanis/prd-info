@@ -12,7 +12,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr *cdkVirtualFor="let job of dataSource$ | async;" [routerLink]="['plate-job', {jobId: job.jobId}]"
+            <tr *cdkVirtualFor="let job of dataSource$ | async;" (click)="onJobEdit(job.jobId)"
                 [class.job-completed]="job.invoiceId">
                 <!-- jobId -->
                 <td class="column-jobId">

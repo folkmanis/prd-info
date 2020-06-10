@@ -27,7 +27,8 @@ const routes: Routes = [
       },
       {
         path: 'plate-job',
-        component: PlateJobComponent,
+        data: { newJob: true },
+        component: JobListComponent,
       },
       {
         path: 'plate-invoice',

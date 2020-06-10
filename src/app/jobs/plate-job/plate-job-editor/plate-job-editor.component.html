@@ -1,7 +1,5 @@
-<h2 [appCopyClipboard]="job.jobId" (copied)="onCopy($event)">
-    {{job ? job.jobId : 'Jauns darbs'}}
-</h2>
-<form *ngIf="job" [formGroup]="jobForm">
+<!-- *ngIf="job"  -->
+<form [formGroup]="jobForm">
     <!-- Klients -->
     <section>
         <mat-form-field>
@@ -44,11 +42,6 @@
     </section>
     <!-- Preces apakšforma -->
     <section *ngIf="isProductsSet()">
-        <app-products-editor [productsFormArray]="productsControl" [products]="job?.products" [customer]="customerControl.value"></app-products-editor>
-    </section>
-    <!-- Pogas -->
-    <section>
-        <button mat-raised-button color="primary" (click)="onSave()"
-            [disabled]="!jobForm.dirty || !jobForm.valid">Saglabāt</button>
+        <app-products-editor [productsFormArray]="productsControl" [products]="activeJob?.products" [customer]="customerControl.value"></app-products-editor>
     </section>
 </form>

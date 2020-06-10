@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { LibraryModule } from '../library/library.module';
+import { PdfMakeWrapper } from 'pdfmake-wrapper';
 
 import { JobsRoutingModule } from './jobs-routing.module';
 import { JobsComponent } from './jobs.component';
@@ -15,10 +16,11 @@ import { PlateInvoiceComponent } from './plate-invoice/plate-invoice.component';
 import { InvoiceEditorComponent } from './plate-invoice/invoice-editor/invoice-editor.component';
 import { JobSelectionTableComponent } from './plate-invoice/job-selection-table/job-selection-table.component';
 import { NewInvoiceComponent } from './plate-invoice/new-invoice/new-invoice.component';
+import { InvoicesListComponent } from './plate-invoice/invoices-list/invoices-list.component';
+import { JobDialogComponent } from './job-edit/job-dialog/job-dialog.component';
 import { JobService } from './services/job.service';
 import { InvoicesService } from './services/invoices.service';
-import { InvoicesListComponent } from './plate-invoice/invoices-list/invoices-list.component';
-import { PdfMakeWrapper } from 'pdfmake-wrapper';
+import { JobEditDialogService } from './services/job-edit-dialog.service';
 
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { JobFilterComponent } from './job-list/job-filter/job-filter.component';
@@ -38,6 +40,7 @@ PdfMakeWrapper.setFonts(pdfFonts);
     NewInvoiceComponent,
     InvoicesListComponent,
     JobFilterComponent,
+    JobDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -47,6 +50,7 @@ PdfMakeWrapper.setFonts(pdfFonts);
   providers: [
     JobService,
     InvoicesService,
+    JobEditDialogService,
     { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptorService, multi: true },
   ],
 })

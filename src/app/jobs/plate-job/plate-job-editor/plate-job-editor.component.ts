@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, FormArray, FormBuilder, FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { MatInput } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { combineLatest, Observable } from 'rxjs';
+import { combineLatest, Observable, Subscription } from 'rxjs';
 import { map, shareReplay, startWith, take } from 'rxjs/operators';
 import { CustomerPartial, Job } from 'src/app/interfaces';
 import { CustomersService } from 'src/app/services';
@@ -12,13 +12,14 @@ import { CustomersService } from 'src/app/services';
   templateUrl: './plate-job-editor.component.html',
   styleUrls: ['./plate-job-editor.component.css']
 })
-export class PlateJobEditorComponent implements OnInit {
+export class PlateJobEditorComponent implements OnInit, OnDestroy {
   @ViewChild('customerInput', { read: MatInput, static: true }) customerInput: MatInput;
-  @Input('job') set activeJob(_job: Partial<Job>) {
-    this.job = _job;
-    this.setFormValues(_job);
+  @Input('job') set activeJob(_j: Partial<Job>) {
+    this._job = _j || {};
+    this.setFormValues();
   }
-  @Output() private jobChanges: EventEmitter<Partial<Job>> = new EventEmitter();
+  get activeJob(): Partial<Job> { return this._job; }
+  @Output() private jobChanges: EventEmitter<Partial<Job> | undefined> = new EventEmitter();
 
   constructor(
     private fb: FormBuilder,
@@ -26,7 +27,7 @@ export class PlateJobEditorComponent implements OnInit {
     private snack: MatSnackBar,
   ) { }
 
-  job: Partial<Job>;
+  _job: Partial<Job>;
   jobForm = this.fb.group({
     customer: [
       '',
@@ -58,12 +59,16 @@ export class PlateJobEditorComponent implements OnInit {
     map(this.filterCustomer)
   );
 
+  private _subs: Subscription;
+
   ngOnInit(): void {
+    this._subs = this.jobForm.valueChanges.pipe(
+      map(job => this.jobForm.valid && this.jobForm.dirty ? job : undefined),
+    ).subscribe(this.jobChanges);
   }
 
-  onSave() {
-    this.jobForm.markAsPristine();
-    this.jobChanges.next(this.jobForm.value);
+  ngOnDestroy(): void {
+    this._subs.unsubscribe();
   }
 
   onProducts(productsForm: FormArray) {
@@ -71,7 +76,7 @@ export class PlateJobEditorComponent implements OnInit {
   }
 
   isProductsSet(): boolean {
-    return this.customerControl.valid || (this.job.products instanceof Array && this.job.products.length > 0);
+    return this.customerControl.valid || (this.activeJob.products instanceof Array && this.activeJob.products.length > 0);
   }
 
   onCopy(value: string) {
@@ -87,7 +92,6 @@ export class PlateJobEditorComponent implements OnInit {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
       const value = control.value;
       return this.customersService.customers$.pipe(
-        shareReplay(1),
         map(customers =>
           customers.some(customer => customer.CustomerName === value) ? null : { noCustomer: `Klients ${value} nav atrasts` }
         ),
@@ -96,10 +100,14 @@ export class PlateJobEditorComponent implements OnInit {
     };
   }
 
-  private setFormValues(job: Partial<Job>): void {
+  private setFormValues(): void {
     this.jobForm.reset({ customer: '' });
-    this.jobForm.patchValue(job, { emitEvent: false });
-    !job.invoiceId ? this.jobForm.enable() : this.jobForm.disable();
+    this.jobForm.patchValue(this.activeJob, { emitEvent: false });
+    if (!this.activeJob.invoiceId) {
+      this.jobForm.enable();
+    } else {
+      this.jobForm.disable();
+    }
   }
 
 }
