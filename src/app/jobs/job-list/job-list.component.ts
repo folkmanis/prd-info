@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { tap, map, debounceTime, startWith, filter, switchMap } from 'rxjs/operators';
 import { JobService } from '../services/job.service';
@@ -15,6 +15,7 @@ export class JobListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private jobService: JobService,
     private jobEditDialog: JobEditDialogService,
   ) { }
@@ -34,6 +35,7 @@ export class JobListComponent implements OnInit, AfterViewInit, OnDestroy {
     subs = this.route.data.pipe(
       filter(data => data.newJob),
       switchMap(() => this.jobEditDialog.newJob()),
+      tap(() => this.router.navigate(['jobs'])),
     ).subscribe();
     this._subs.add(subs);
   }

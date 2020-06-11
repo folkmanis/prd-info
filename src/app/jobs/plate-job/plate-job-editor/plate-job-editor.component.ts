@@ -71,10 +71,6 @@ export class PlateJobEditorComponent implements OnInit, OnDestroy {
     this._subs.unsubscribe();
   }
 
-  onProducts(productsForm: FormArray) {
-    this.jobForm.setControl('products', productsForm);
-  }
-
   isProductsSet(): boolean {
     return this.customerControl.valid || (this.activeJob.products instanceof Array && this.activeJob.products.length > 0);
   }

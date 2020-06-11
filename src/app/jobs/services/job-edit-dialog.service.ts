@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { mergeMap, concatMap, switchMap, map, filter } from 'rxjs/operators';
 import { MatDialog, MatDialogRef, MatDialogConfig } from '@angular/material/dialog';
 import { Job } from 'src/app/interfaces';
@@ -9,6 +9,7 @@ import { JobEditDialogData } from '../job-edit/job-edit-dialog-data';
 
 const JOB_DIALOG_CONFIG: MatDialogConfig = {
   height: '90%',
+  width: '90%',
   autoFocus: false,
   data: {},
 };
@@ -44,8 +45,7 @@ export class JobEditDialogService {
       ...JOB_DIALOG_CONFIG,
       data
     }).afterClosed().pipe(
-      filter((job: Partial<Job>) => !!job && !!job.jobId),
-      switchMap(job => this.jobService.updateJob(job).pipe(
+      switchMap(job => !job?.jobId ? of(null) : this.jobService.updateJob(job).pipe(
         map(() => job.jobId)
       )),
     );

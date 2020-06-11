@@ -39,9 +39,8 @@ export class JobDialogComponent implements OnInit {
       );
       this.newJobId$.subscribe(newJobId => this.newJob.jobId = newJobId);
     }
+    console.log(newJob);
     this.newJob = { ...this.newJob, ...newJob };
-    console.log(this.newJob);
-    // this.dialogRef.close({ job });
   }
 
   onCopy(value: string) {
