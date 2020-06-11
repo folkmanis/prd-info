@@ -2,6 +2,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
+import { JobEditDialogService } from '../../services/job-edit-dialog.service';
 import { JobPartial } from 'src/app/interfaces';
 
 const TABLE_COLUMNS = ['jobId', 'name', 'productName', 'count', 'price', 'total'];
@@ -25,7 +26,9 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
   selector = new SelectionModel<number>(true, [], false);
   jobIdSet: Set<number> | undefined;
 
-  constructor() { }
+  constructor(
+    private jobEditDialog: JobEditDialogService,
+  ) { }
 
   displayedColumns: string[] = this.columnsWithSelection();
   jobs$: BehaviorSubject<JobPartial[]> = new BehaviorSubject([]);
@@ -59,6 +62,10 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
   deselectAll(): void {
     this.selector.clear();
     this.selected.next(this.selector.selected);
+  }
+
+  onEditJob(jobId: number) {
+    this.jobEditDialog.editJob(jobId);
   }
 
   private setNewJobList(jobs: JobPartial[]): void {

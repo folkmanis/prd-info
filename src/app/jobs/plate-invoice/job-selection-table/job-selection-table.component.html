@@ -28,7 +28,9 @@
             Darba nosaukums
         </th>
         <td mat-cell *matCellDef="let job;">
-            {{job.name}}
+            <button mat-flat-button (click)="onEditJob(job.jobId)">
+                {{job.name}}
+            </button>
         </td>
     </ng-container>
     <!-- Prece -->
@@ -69,5 +71,5 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let job; columns: displayedColumns;" (click)="selector.toggle(job.jobId)"></tr>
+    <tr mat-row *matRowDef="let job; columns: displayedColumns;"></tr>
 </table>
