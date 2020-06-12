@@ -1,5 +1,5 @@
 <!-- *ngIf="job"  -->
-<form [formGroup]="jobForm">
+<form [formGroup]="jobFormGroup">
     <!-- Klients -->
     <section>
         <mat-form-field>
@@ -42,6 +42,6 @@
     </section>
     <!-- Preces apakšforma -->
     <section *ngIf="isProductsSet()">
-        <app-products-editor [productsFormArray]="productsControl" [products]="activeJob?.products" [customer]="customerControl.value"></app-products-editor>
+        <app-products-editor [prodFormArray]="jobFormGroup.get('products')" [customerProducts$]="customerProducts$"></app-products-editor>
     </section>
 </form>

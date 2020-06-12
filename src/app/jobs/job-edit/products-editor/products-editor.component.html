@@ -1,0 +1,76 @@
+<table class="full-width mat-elevation-z4">
+
+    <thead>
+        <tr>
+            <th *ngIf="isEnabled">Dzēst</th>
+            <th>Prece</th>
+            <th>Skaits</th>
+            <th>Cena</th>
+            <th>Summa</th>
+            <th>Piezīmes</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        <tr *appProductFor="let prod of prodFormArray; customerProducts: customerProducts$ | async; index as idx;">
+            <!-- Dzēšanas poga -->
+            <td *ngIf="isEnabled">
+                <button mat-icon-button (click)="removeProduct(idx)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </td>
+            <!-- Preces nosaukums -->
+            <td>
+                <mat-form-field>
+                    <input matInput type="text" [formControl]="prod.get('name')" [matAutocomplete]="auto">
+                    <mat-error *ngIf="prod.get('name').hasError('invalidProduct')">
+                        {{prod.get('name').getError('invalidProduct')}}
+                    </mat-error>
+                </mat-form-field>
+            </td>
+            <!-- Skaits -->
+            <td>
+                <mat-form-field>
+                    <input matInput type="number" [formControl]="prod.get('count')">
+                </mat-form-field>
+            </td>
+            <!-- Cena -->
+            <td>
+                <mat-form-field>
+                    <input matInput type="number" [formControl]="prod.get('price')">
+                </mat-form-field>
+            </td>
+            <!-- Summa -->
+            <td>
+                {{prod.value.count * prod.value.price | currency}}
+            </td>
+            <!-- Piezīmes -->
+            <td>
+                <mat-form-field>
+                    <input matInput type="text" [formControl]="prod.get('comment')">
+                </mat-form-field>
+            </td>
+
+        </tr>
+
+    </tbody>
+
+    <tfoot>
+        <tr>
+            <td *ngIf="isEnabled">
+                <button mat-icon-button (click)="addNewProduct()">
+                    <mat-icon>add</mat-icon>
+                </button>
+            </td>
+            <td [colSpan]="5"></td>
+        </tr>
+    </tfoot>
+
+</table>
+
+<mat-autocomplete #auto="matAutocomplete">
+    <mat-option *ngFor="let product of customerProducts$ | async" [value]="product.productName">
+        {{product.productName}}
+    </mat-option>
+</mat-autocomplete>

@@ -1,0 +1,21 @@
+<div mat-dialog-title>
+    <h2 *ngIf="jobForm.get('jobId').value as jobId; else noId" [appCopyClipboard]="jobId"
+        (copied)="onCopy($event)">
+        {{jobId}}
+    </h2>
+    <ng-template #noId>
+        Jauns darbs
+    </ng-template>
+
+</div>
+
+<div mat-dialog-content>
+    <app-plate-job-editor [jobFormGroup]="jobForm" [customerProducts$]="customerProducts$">
+    </app-plate-job-editor>
+</div>
+
+<div mat-dialog-actions>
+    <!-- Pogas -->
+    <button mat-raised-button [mat-dialog-close]="false">Atcelt</button>
+    <button mat-raised-button color="primary" [mat-dialog-close]="jobForm.value" [disabled]="jobForm.invalid || jobForm.pristine">Saglabāt</button>
+</div>

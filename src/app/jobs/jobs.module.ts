@@ -9,21 +9,21 @@ import { JobsComponent } from './jobs.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import { CacheInterceptorService } from '../library/http';
 import { JobListComponent } from './job-list/job-list.component';
-import { PlateJobComponent } from './plate-job/plate-job.component';
-import { PlateJobEditorComponent } from './plate-job/plate-job-editor/plate-job-editor.component';
-import { ProductsEditorComponent } from './plate-job/products-editor/products-editor.component';
+import { PlateJobEditorComponent } from './job-edit/plate-job-editor/plate-job-editor.component';
+import { ProductsEditorComponent } from './job-edit/products-editor/products-editor.component';
 import { PlateInvoiceComponent } from './plate-invoice/plate-invoice.component';
 import { InvoiceEditorComponent } from './plate-invoice/invoice-editor/invoice-editor.component';
 import { JobSelectionTableComponent } from './plate-invoice/job-selection-table/job-selection-table.component';
 import { NewInvoiceComponent } from './plate-invoice/new-invoice/new-invoice.component';
 import { InvoicesListComponent } from './plate-invoice/invoices-list/invoices-list.component';
-import { JobDialogComponent } from './job-edit/job-dialog/job-dialog.component';
+import { JobDialogComponent } from './job-edit/job-dialog.component';
 import { JobService } from './services/job.service';
 import { InvoicesService } from './services/invoices.service';
 import { JobEditDialogService } from './services/job-edit-dialog.service';
 
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { JobFilterComponent } from './job-list/job-filter/job-filter.component';
+import { ProductForOfDirective } from './job-edit/product-for.directive';
 PdfMakeWrapper.setFonts(pdfFonts);
 
 @NgModule({
@@ -31,7 +31,6 @@ PdfMakeWrapper.setFonts(pdfFonts);
     JobsComponent,
     MainMenuComponent,
     JobListComponent,
-    PlateJobComponent,
     PlateJobEditorComponent,
     ProductsEditorComponent,
     PlateInvoiceComponent,
@@ -41,6 +40,7 @@ PdfMakeWrapper.setFonts(pdfFonts);
     InvoicesListComponent,
     JobFilterComponent,
     JobDialogComponent,
+    ProductForOfDirective,
   ],
   imports: [
     CommonModule,
