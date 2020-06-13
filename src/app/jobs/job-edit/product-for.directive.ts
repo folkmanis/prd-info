@@ -1,5 +1,6 @@
 import { Directive, Input, ViewContainerRef, TemplateRef, DoCheck } from '@angular/core';
 import { FormGroup, FormArray, Validators, ValidatorFn, ValidationErrors, FormControl } from '@angular/forms';
+import { isEqual } from 'lodash';
 import { CustomerProduct } from 'src/app/interfaces';
 
 interface ProductFormValues {
@@ -29,16 +30,15 @@ export class ProductForOfDirective implements DoCheck {
 
   @Input() set appProductForCustomerProducts(_prod: CustomerProduct[]) {
     if (_prod) {
-      console.log(_prod);
       this._customerProducts = _prod;
-      this._setValidators();
+      this._custDirty = true;
     }
   }
 
   private _formArray: FormArray;
   private _customerProducts: CustomerProduct[];
   private count = 0;
-  private customer: string;
+  private _custDirty = false;
 
   constructor(
     private _viewContainer: ViewContainerRef,
@@ -46,17 +46,19 @@ export class ProductForOfDirective implements DoCheck {
   ) { }
 
   ngDoCheck(): void {
-    if (this._formArray.controls.length !== this.count) {
-      console.log('do check');
+    // console.log('do check', this._formArray, this._customerProducts);
+    if (this._customerProducts && (this._formArray.controls.length !== this.count || this._custDirty)) {
+      this._custDirty = false;
       this.count = this._formArray.controls.length;
-      this._applyChanges();
-      this._setValidators();
+      this._setControls();
     }
   }
 
-  private _applyChanges() {
+  private _setControls() {
     const form = this._formArray.controls as FormGroup[];
     this._viewContainer.clear();
+    this._setValidators();
+    this._formArray.updateValueAndValidity();
     for (let i = 0; i < form.length; i++) {
       const view = this._viewContainer.createEmbeddedView(
         this._template,
@@ -73,7 +75,6 @@ export class ProductForOfDirective implements DoCheck {
       nameCtr.setValidators([Validators.required, this.productValidatorFn(this._customerProducts)]);
       gr.setValidators([this.defaultPriceValidatorFn(this._customerProducts)]);
     }
-    this._formArray.updateValueAndValidity();
   }
 
   private defaultPriceValidatorFn(prod: CustomerProduct[]): ValidatorFn {
@@ -82,7 +83,7 @@ export class ProductForOfDirective implements DoCheck {
       if (!control.get('name').valid) {
         return null;
       }
-      console.log(control);
+      // console.log(control);
       const val = control.value as ProductFormValues;
       if (prevVal === undefined || prevVal.name !== val.name) {
         const prodPrice = prod?.find(product => product.productName === val.name)?.price;

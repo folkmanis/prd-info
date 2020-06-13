@@ -39,7 +39,7 @@ export class JobEditDialogService {
       }).afterClosed()),
       filter(job => !!job),
       map((job: Partial<Job>) => ({ ...job, jobId })),
-      switchMap(job => this.jobService.updateJob(job)),
+      concatMap(job => this.jobService.updateJob(job)),
     )
       .subscribe(result => console.log(result));
   }
@@ -53,7 +53,7 @@ export class JobEditDialogService {
       ...JOB_DIALOG_CONFIG,
       data
     }).afterClosed().pipe(
-      switchMap(job => !job?.jobId ? of(null) : this.jobService.updateJob(job).pipe(
+      concatMap(job => !job?.jobId ? of(null) : this.jobService.updateJob(job).pipe(
         map(() => job.jobId)
       )),
     );
