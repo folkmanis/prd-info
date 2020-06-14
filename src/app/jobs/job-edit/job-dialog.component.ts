@@ -39,7 +39,7 @@ export class JobDialogComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this._customer$ = new BehaviorSubject(this.customerContr.value as string);
     this.customerProducts$ = this._customer$.pipe(
-      filter((customer: string) => this.customerContr.valid && customer && customer.length > 0),
+      filter((customer: string) => !this.customerContr.invalid && customer && customer.length > 0),
       distinctUntilChanged(),
       switchMap((customer: string) => this.productsService.productsCustomer(customer)),
       shareReplay(1),
