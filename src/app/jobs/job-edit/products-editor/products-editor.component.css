@@ -1,28 +1,21 @@
-.full-width {
+table {
     width: 100%;
+    /* table-layout: fixed; */
 }
 
-tr.mat-footer-row {
-    font-weight: bold;
+.column-price, .column-count {
+    width: 180px;
 }
 
-.cdk-column-total {
-    width: 72px;
-}
-
-.mat-column-name {
+.column-name {
     min-width: 240px;
 }
 
-th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
+th, td {
     padding-left: 8px;
     padding-right: 8px;
 }
 
-td.mat-cell mat-form-field {
+td mat-form-field {
     width: 100%;
-}
-
-.mat-column-count {
-    width: 72px;
 }
