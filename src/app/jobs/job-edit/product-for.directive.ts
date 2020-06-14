@@ -83,12 +83,11 @@ export class ProductForOfDirective implements DoCheck {
       if (!control.get('name').valid) {
         return null;
       }
-      // console.log(control);
       const val = control.value as ProductFormValues;
-      if (prevVal === undefined || prevVal.name !== val.name) {
+      if (val.price === null && (prevVal === undefined || prevVal.name !== val.name)) {
         const prodPrice = prod?.find(product => product.productName === val.name)?.price;
         prevVal = { ...val, price: prodPrice };
-        control.get('price').setValue(prodPrice, { emitEvent: false });
+        control.get('price').setValue(prodPrice);
       }
       return null;
     };
