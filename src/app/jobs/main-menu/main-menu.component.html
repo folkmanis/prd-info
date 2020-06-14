@@ -1,5 +1,5 @@
 <mat-drawer-container>
-    <mat-drawer></mat-drawer>
+    <mat-drawer #sidePanel [opened]="!(isSmall$ | async)" position="end" [mode]="(isSmall$ | async) ? 'over' : 'side'"></mat-drawer>
 
     <mat-drawer-content>
         <div>
@@ -13,3 +13,5 @@
         </div>
     </mat-drawer-content>
 </mat-drawer-container>
+
+<app-side-button (clicks)="sidePanel.toggle()" [opened]="sidePanel.opened"></app-side-button>

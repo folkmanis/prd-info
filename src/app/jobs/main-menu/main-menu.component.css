@@ -7,6 +7,10 @@ mat-drawer-content {
     flex-direction: column;
 }
 
+mat-drawer {
+    width: 280px;
+}
+
 .main {
     flex: 1;
     height: 100%;
