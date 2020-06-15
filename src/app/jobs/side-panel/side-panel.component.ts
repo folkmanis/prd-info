@@ -36,7 +36,6 @@ export class SidePanelComponent implements OnInit {
       } else {
         this.customersService.customers$.pipe(
           switchMap(cust => this.dialog.open(CustomerInputDialogComponent, { data: { customers: cust } }).afterClosed()),
-          tap(cust => console.log(cust)),
           map((cust: string) => cust ? names.map(name => ({ customer: cust, name })) : EMPTY),
           map(jobs => from(jobs)
             .pipe(
@@ -44,7 +43,7 @@ export class SidePanelComponent implements OnInit {
             ),
           ),
           concatAll(),
-        ).subscribe(jobs => console.log(jobs));
+        ).subscribe();
       }
 
     }

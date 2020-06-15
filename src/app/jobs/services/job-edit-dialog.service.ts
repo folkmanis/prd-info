@@ -51,6 +51,7 @@ export class JobEditDialogService {
     };
     return this.dialog.open(JobDialogComponent, {
       ...JOB_DIALOG_CONFIG,
+      autoFocus: true,
       data
     }).afterClosed().pipe(
       concatMap(job => !job?.jobId ? of(null) : this.jobService.updateJob(job).pipe(
