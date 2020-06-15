@@ -52,7 +52,7 @@ export class JobDialogComponent implements OnInit, OnDestroy {
           filter(() => this.customerContr.valid),
           map(cust => ({
             customer: cust,
-            name: 'Jauns darbs',
+            name: this.jobForm.get('name').value || 'Jauns darbs',
           })),
           concatMap(this.data.jobCreateFn),
           tap(jobId => jobId ? this.jobForm.patchValue({ jobId }) : this.dialogRef.close()),

@@ -24,6 +24,8 @@ import { JobEditDialogService } from './services/job-edit-dialog.service';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { JobFilterComponent } from './job-list/job-filter/job-filter.component';
 import { ProductForOfDirective } from './job-edit/product-for.directive';
+import { SidePanelComponent } from './side-panel/side-panel.component';
+import { CustomerInputDialogComponent } from './side-panel/customer-input-dialog/customer-input-dialog.component';
 PdfMakeWrapper.setFonts(pdfFonts);
 
 @NgModule({
@@ -41,6 +43,8 @@ PdfMakeWrapper.setFonts(pdfFonts);
     JobFilterComponent,
     JobDialogComponent,
     ProductForOfDirective,
+    SidePanelComponent,
+    CustomerInputDialogComponent,
   ],
   imports: [
     CommonModule,

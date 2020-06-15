@@ -44,9 +44,9 @@ export class JobEditDialogService {
       .subscribe(result => console.log(result));
   }
 
-  newJob(): Observable<number | undefined> {
+  newJob(jobInit?: Partial<Job>): Observable<number | undefined> {
     const data: JobEditDialogData = {
-      jobForm: this.jobFormBuilder(),
+      jobForm: this.jobFormBuilder(jobInit),
       jobCreateFn: this.jobCreatorFn(),
     };
     return this.dialog.open(JobDialogComponent, {
