@@ -5,7 +5,7 @@ import { map, filter } from 'rxjs/operators';
 import { JobEditDialogService } from '../../services/job-edit-dialog.service';
 import { JobPartial } from 'src/app/interfaces';
 
-const TABLE_COLUMNS = ['jobId', 'name', 'productName', 'count', 'price', 'total'];
+const TABLE_COLUMNS = ['jobId', 'receivedDate', 'name', 'productName', 'count', 'price', 'total'];
 
 @Component({
   selector: 'app-job-selection-table',
