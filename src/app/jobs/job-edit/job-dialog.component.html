@@ -1,7 +1,13 @@
 <div mat-dialog-title>
-    <h2 *ngIf="jobForm.get('jobId').value as jobId; else noId" [appCopyClipboard]="jobId"
-        (copied)="onCopy($event)">
-        {{jobId}}
+    <h2 *ngIf="jobForm.get('jobId').value as jobId; else noId">
+        <span [appCopyClipboard]="jobId" (copied)="onCopy($event)">
+            {{jobId}}
+        </span>
+        <button mat-icon-button>
+            <mat-icon [appCopyClipboard]="jobId + '-' + jobForm.get('name').value" (copied)="onCopy($event)" matSuffix>
+                filter_none
+            </mat-icon>
+        </button>
     </h2>
     <ng-template #noId>
         <h2>
@@ -19,5 +25,6 @@
 <div mat-dialog-actions>
     <!-- Pogas -->
     <button mat-raised-button [mat-dialog-close]="false">Atcelt</button>
-    <button mat-raised-button color="primary" [mat-dialog-close]="jobForm.value" [disabled]="jobForm.invalid || jobForm.pristine">Saglabāt</button>
+    <button mat-raised-button color="primary" [mat-dialog-close]="jobForm.value"
+        [disabled]="jobForm.invalid || jobForm.pristine">Saglabāt</button>
 </div>
