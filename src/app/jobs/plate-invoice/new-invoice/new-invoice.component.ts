@@ -1,12 +1,18 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
-import { map, startWith, tap } from 'rxjs/operators';
-import { CustomerPartial, JobQueryFilter } from 'src/app/interfaces';
+import { Observable, Subscription, combineLatest } from 'rxjs';
+import { map, startWith, tap, take, shareReplay } from 'rxjs/operators';
+import { CustomerPartial, JobQueryFilter, JobPartial, ProductTotals, InvoiceLike } from 'src/app/interfaces';
 import { CustomersService } from 'src/app/services';
 import { InvoicesService } from '../../services/invoices.service';
 import { JobService } from '../../services/job.service';
+import { InvoiceReport } from '../invoice-editor/invoice-report';
+
+export interface InvoicesTotals {
+  totals: ProductTotals[];
+  grandTotal: number;
+}
 
 @Component({
   selector: 'app-new-invoice',
@@ -29,8 +35,12 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
   customers$: Observable<CustomerPartial[]> = this.customersService.customers$;
 
   jobs$ = this.jobService.jobs$;
-  totals$ = this.invoiceService.totals$;
-  grandTotal$ = this.invoiceService.grandTotal$;
+  totals$: Observable<InvoicesTotals> = combineLatest([
+    this.invoiceService.totals$,
+    this.invoiceService.grandTotal$.pipe(tap(console.log)),
+  ]).pipe(
+    map(([totals, grandTotal]) => ({ totals, grandTotal })),
+  );
 
   private readonly subscriptions = new Subscription();
 
@@ -50,6 +60,19 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
   onCreateInvoice() {
     this.invoiceService.createInvoice({ selectedJobs: this.selectedJobs, customerId: this.customerId.value })
       .subscribe(id => this.router.navigate(['../invoice', { invoiceId: id.invoiceId }], { relativeTo: this.route }));
+  }
+
+  onPrintList(jobs: JobPartial[], customer: string, { totals, grandTotal }: InvoicesTotals) {
+    const invoice: InvoiceLike = {
+      customer,
+      createdDate: new Date(Date.now()),
+      jobs: jobs.filter(job => this.selectedJobs.some(id => id === job.jobId)),
+      products: totals.map(tot => ({ ...tot, price: tot.total / tot.count, jobsCount: 0 })),
+      total: grandTotal,
+    };
+    console.log(invoice);
+    const report = new InvoiceReport(invoice);
+    report.open();
   }
 
   onJobSelected(selectedJobs: number[]) {

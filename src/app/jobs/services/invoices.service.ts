@@ -22,7 +22,8 @@ export class InvoicesService {
   );
 
   grandTotal$: Observable<number> = this.totals$.pipe(
-    map(totals => totals.reduce((acc, curr) => acc + curr.total, 0))
+    map(totals => totals.reduce((acc, curr) => acc + curr.total, 0)),
+    share(),
   );
 
   createInvoice(params: { selectedJobs: number[], customerId: string; }): Observable<Invoice> {

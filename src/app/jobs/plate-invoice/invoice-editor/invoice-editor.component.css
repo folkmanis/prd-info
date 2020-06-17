@@ -1,4 +1,7 @@
 section {
-    margin-top: 8px;
-    margin-bottom: 8px;
+    padding: 0px 16px;
+}
+
+ul {
+    list-style: none;
 }

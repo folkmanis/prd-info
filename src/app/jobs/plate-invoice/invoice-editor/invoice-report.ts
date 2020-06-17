@@ -1,11 +1,11 @@
 import { PdfMakeWrapper, Table, Columns, Txt, Cell } from 'pdfmake-wrapper';
-import { Invoice, InvoiceProduct, Job, JobProduct, Product } from 'src/app/interfaces';
+import { InvoiceLike, InvoiceProduct, Job, JobProduct, Product } from 'src/app/interfaces';
 import * as moment from 'moment';
 
 export class InvoiceReport {
     private _pdf: PdfMakeWrapper = new PdfMakeWrapper();
     constructor(
-        private _invoice: Invoice,
+        private _invoice: InvoiceLike,
     ) {
         this._pdf.pageSize('A4');
         this._pdf.pageMargins([30, 30, 30, 30]);
@@ -13,9 +13,10 @@ export class InvoiceReport {
     }
 
     open(): void {
-        this._pdf.add([
-            new Txt(this._invoice.customer + '/' + this._invoice.invoiceId).fontSize(14).bold().end,
-        ]);
+        const title = this._invoice.customer + (this._invoice.invoiceId ? ` / ${this._invoice.invoiceId}` : '');
+        this._pdf.add(
+            new Txt(title).fontSize(14).bold().end,
+        );
         this._pdf.add(
             new Table([
                 ...this.createProductsTable(this._invoice.products),
@@ -23,7 +24,7 @@ export class InvoiceReport {
                     '',
                     '',
                     new Cell(new Txt('Kopā').bold().alignment('right').end).end,
-                    new Cell(new Txt(`${this._invoice.total.toString()} EUR`).bold().end).end,
+                    new Cell(new Txt(`${this._invoice.total.toFixed(2)} EUR`).bold().end).alignment('right').end,
                 ]
             ])
                 .layout('lightHorizontalLines')
@@ -43,13 +44,18 @@ export class InvoiceReport {
 
     private createProductsTable(product: InvoiceProduct[]): any[][] {
         const tbl: any[][] = [];
-        tbl.push(['Izstrādājums', 'skaits', 'cena', 'kopā']);
+        tbl.push([
+            'Izstrādājums',
+            'skaits',
+            new Txt('cena').alignment('right').end,
+            new Txt('kopā').alignment('right').end,
+        ]);
         for (const prod of product) {
             tbl.push([
                 prod._id,
                 `${prod.count} gab.`,
-                `${prod.price} EUR`,
-                `${prod.total} EUR`
+                new Txt(`${prod.price.toFixed(2)} EUR`).alignment('right').end,
+                new Txt(`${prod.total.toFixed(2)} EUR`).alignment('right').end,
             ]);
         }
         return tbl;
@@ -62,17 +68,18 @@ export class InvoiceReport {
             'datums',
             'nosaukums',
             'izstrādājums',
-            'skaits',
-            'EUR',
+            new Txt('skaits').alignment('right').end,
+            new Txt('EUR').alignment('right').end,
         ]);
         for (const job of jobs) {
+            const prod: JobProduct | undefined = job.products as JobProduct;
             tbl.push([
                 // job.jobId,
                 moment(job.receivedDate).format('L'),
                 job.name,
-                new Txt((job.products as JobProduct).name).noWrap().end,
-                (job.products as JobProduct).count,
-                (job.products as JobProduct).price * (job.products as JobProduct).count,
+                prod ? new Txt(prod.name).noWrap().end : '',
+                prod ? new Txt(prod.count.toString()).alignment('right').end : '',
+                prod ? new Txt((prod.price * prod.count).toFixed(2)).alignment('right').end : '',
             ]);
         }
         return tbl;

@@ -1,3 +1,18 @@
+section {
+    margin: 16px;
+}
+
+.top-panel {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.top-panel a,
+.top-panel button {
+    margin: 8px;
+}
+
+
 table {
     width: 100%;
 }

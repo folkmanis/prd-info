@@ -1,34 +1,38 @@
 <div *ngIf="invoice$ | async as invoice;">
-    <h3>
-        Aprēķins nr. {{invoice.invoiceId}}
-    </h3>
     <section>
-        {{invoice.createdDate | date}}
+        <h3>
+            Aprēķins nr. {{invoice.invoiceId}}
+        </h3>
+        <p>
+            {{invoice.createdDate | date}}
+        </p>
+        <P>
+            Klients: <b>{{invoice.customer}}</b>
+        </P>
     </section>
     <section>
-        Klients: <b>{{invoice.customer}}</b>
+        <h4>
+            Preces
+        </h4>
+        <ul>
+            <li *ngFor="let product of invoice.products;">
+                {{product._id}} | {{product.count}} | {{product.price | currency}} | {{product.total | currency}}
+            </li>
+            <li>
+                <strong>Kopā: {{invoice.total | currency}}</strong>
+            </li>
+        </ul>
     </section>
-    <h4>
-        Preces
-    </h4>
     <section>
-        <div *ngFor="let product of invoice.products;">
-            {{product._id}} | {{product.count}} | {{product.price | currency}} | {{product.total | currency}}
-        </div>
-        <div>
-            <strong>Kopā: {{invoice.total | currency}}</strong>
-        </div>
-    </section>
-    <h4>
-        Eksports
-    </h4>
-    <section>
+        <h4>
+            Eksports
+        </h4>
         <button mat-raised-button (click)="onPdfDownload(invoice)">PDF</button>
     </section>
-    <h4>
-        Iekļautie darbi
-    </h4>
     <section>
+        <h4>
+            Iekļautie darbi
+        </h4>
         <app-job-selection-table [jobs]="invoice.jobs" disabled></app-job-selection-table>
     </section>
 </div>
