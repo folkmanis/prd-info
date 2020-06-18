@@ -9,7 +9,7 @@ import { CustomersService } from 'src/app/services';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 
-const CUSTOMER_DEFAULTS = {
+const CUSTOMER_DEFAULTS: Customer = {
   _id: '',
   CustomerName: '',
   code: '',
@@ -43,6 +43,9 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
     ],
     disabled: [false],
     description: [''],
+    financial: this.fb.group({
+      clientName: [undefined],
+    })
   });
 
   customer$: Observable<Customer>;

@@ -8,9 +8,9 @@
     </section>
     <!-- Labošanas forma -->
     <form [formGroup]="customerForm">
-        <section>
+        <section class="input-element">
             <!-- Kods -->
-            <mat-form-field class="input-element">
+            <mat-form-field>
                 <mat-label>Klienta kods</mat-label>
                 <input matInput appFocused formControlName="code" placeholder="Kods" autocomplete="off">
                 <mat-error *ngIf="code.hasError('required')">
@@ -21,7 +21,7 @@
                 </mat-error>
             </mat-form-field>
             <!-- apraksts -->
-            <mat-form-field class="input-element">
+            <mat-form-field>
                 <input matInput formControlName="description" placeholder="Apraksts" autocomplete="off">
             </mat-form-field>
             <!-- Neaktīvs -->
@@ -29,6 +29,16 @@
                 Neaktīvs
             </mat-checkbox>
         </section>
+        <mat-divider></mat-divider>
+        <section formGroupName="financial" class="input-element">
+            <mat-form-field>
+                <mat-label>
+                    Klienta nosaukums grāmatvedības sistēmā
+                </mat-label>
+                <input matInput formControlName="clientName">
+            </mat-form-field>
+        </section>
+        <mat-divider></mat-divider>
     </form>
     <!-- Pogas -->
     <section>

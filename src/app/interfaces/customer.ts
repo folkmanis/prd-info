@@ -7,6 +7,9 @@ export interface Customer {
     disabled?: boolean;
     insertedFromXmf?: Date;
     description: string;
+    financial?: {
+        clientName: string;
+    };
 }
 
 export interface CustomerResponse extends AppHttpResponseBase<Customer> {

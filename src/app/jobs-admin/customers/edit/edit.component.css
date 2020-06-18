@@ -2,7 +2,7 @@ section {
     padding: 8px 16px;
 }
 
-.input-element {
+section.input-element mat-form-field {
     width: 100%;
 }
 
