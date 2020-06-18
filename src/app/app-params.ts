@@ -29,6 +29,9 @@ export const PRD_DEFAULTS: AppParams = {
             productCategories: [
                 { category: 'plates', description: 'Iespiedformas' },
                 { category: 'perforated paper', description: 'Perforētais papīrs' }
+            ],
+            jobStates: [
+                {state: 10, description: 'Sagatavošana'},
             ]
         } as JobsSettings),
 };
