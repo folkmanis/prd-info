@@ -26,13 +26,7 @@ export class JobListComponent implements OnInit, AfterViewInit, OnDestroy {
   );
 
   ngOnInit(): void {
-    let subs = this.route.paramMap.pipe(
-      map(params => params.keys.reduce((acc, key) => ({ ...acc, [key]: params.get(key) }), {} as JobQueryFilter)),
-      map(jobFilter => ({ ...jobFilter, unwindProducts: 1 } as JobQueryFilter)),
-    ).subscribe(this.jobService.filter$);
-    this._subs.add(subs);
-
-    subs = this.route.data.pipe(
+    const subs = this.route.data.pipe(
       filter(data => data.newJob),
       switchMap(() => this.jobEditDialog.newJob()),
       tap(() => this.router.navigate(['jobs'])),

@@ -1,5 +1,6 @@
 <form [formGroup]="filterForm" class="filter-row">
-    <button type="reset" mat-icon-button>
+    <!-- Atiestatīt formu -->
+    <button mat-icon-button (click)="onReset()">
         <mat-icon>clear</mat-icon>
     </button>
     <!-- Teksta meklēšana -->
@@ -22,5 +23,13 @@
             <mat-icon>clear</mat-icon>
         </button>
     </mat-form-field>
-    <!-- Atiestatīt formu -->
+    <!-- Darbu statusi -->
+    <mat-form-field>
+        <mat-label>Darba stadijas</mat-label>
+        <mat-select formControlName="jobStatus" multiple>
+            <mat-option *ngFor="let status of jobStates$ | async" [value]="status.state">
+                {{status.description}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
 </form>

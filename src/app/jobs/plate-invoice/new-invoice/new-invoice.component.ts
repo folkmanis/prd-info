@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 import { map, startWith, tap, take, shareReplay } from 'rxjs/operators';
-import { CustomerPartial, JobQueryFilter, JobPartial, ProductTotals, InvoiceLike } from 'src/app/interfaces';
+import { CustomerPartial, JobQueryFilter, Job, JobPartial, ProductTotals, InvoiceLike } from 'src/app/interfaces';
 import { CustomersService } from 'src/app/services';
 import { InvoicesService } from '../../services/invoices.service';
 import { JobService } from '../../services/job.service';
@@ -62,7 +62,7 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
       .subscribe(id => this.router.navigate(['../invoice', { invoiceId: id.invoiceId }], { relativeTo: this.route }));
   }
 
-  onPrintList(jobs: JobPartial[], customer: string, { totals, grandTotal }: InvoicesTotals) {
+  onPrintList(jobs: Job[], customer: string, { totals, grandTotal }: InvoicesTotals) {
     const invoice: InvoiceLike = {
       customer,
       createdDate: new Date(Date.now()),

@@ -11,6 +11,10 @@ export interface Job {
     comment?: string;
     invoiceId?: string;
     products?: JobProduct[] | JobProduct;
+    productsIdx?: number;
+    jobStatus: {
+        generalStatus: number;
+    };
 }
 export type JobPartial = Pick<Job, 'receivedDate' | 'customerJobId' | 'name' | 'jobId' | 'customer' | 'products' | 'invoiceId'>;
 
@@ -31,6 +35,7 @@ export interface JobQueryFilter {
     name?: string;
     invoice?: 0 | 1;
     jobsId?: number | number[];
+    jobStatus?: number | number[];
     unwindProducts?: 0 | 1;
 }
 
