@@ -12,7 +12,7 @@ table {
 }
 
 tr {
-    height: 40px;
+    height: 41px;
 }
 
 tbody tr:hover {
@@ -67,13 +67,9 @@ td.column-jobId button[mat-button].mat-button {
     padding: 0;
 }
 
-td.column-name {
+td.column-name div {
     display: flex;
     align-items: center;
-}
-
-td.column-name span {
-    flex: 1;
 }
 
 td.column-name span:first-of-type {
@@ -83,6 +79,11 @@ td.column-name span:first-of-type {
     text-overflow: ellipsis;
 }
 
-td.column-name span.job-buttons {
+td.column-name span:last-of-type {
+    display: none;
     flex: 0 0 40px;
+}
+
+tr:hover td.column-name span:last-of-type {
+    display: inherit;
 }
