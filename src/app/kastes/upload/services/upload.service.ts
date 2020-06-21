@@ -33,6 +33,10 @@ export class UploadService {
     this.adresesCsv.setCsv(csv, delimiter);
   }
 
+  loadXls(xls: [][]) {
+    this.adresesCsv.setJson(xls);
+  }
+
   get adresesBoxTotals(): AdrBoxTotals {
     return {
       adreses: this.adresesBox.data.length,

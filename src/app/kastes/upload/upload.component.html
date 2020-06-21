@@ -8,7 +8,6 @@
         <div class="drope" appFileDrop (filesEmitter)="onFileDrop($event)">
             <div class="text-block">
                 {{displayText}}
-                <span *ngIf="file">{{file.name}} / {{file.size}} bytes / {{file.type}}</span>
             </div>
         </div>
     </mat-step>
