@@ -18,17 +18,9 @@ export class UploadTabulaComponent implements OnInit, AfterViewInit {
   displayedColumns = ['kods', 'adrese', 'editor'];
   headColumns = ['kods', 'adrese', ...this.boxColors, 'total'];
 
-  widths = {
-    kods: '50px',
-    adrese: '500px',
-    yellow: '50px',
-    rose: '50px',
-    white: '50px',
-    total: '50px',
-  };
   dataSource: UploadTabulaDataSource;
   totals: AdrBoxTotals;
-  prefs: KastesPreferences;
+  prefs$ = this.kastesPreferencesService.preferences;
   edit: boolean[] = [];
   editActive = false;
 
@@ -38,13 +30,11 @@ export class UploadTabulaComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit() {
-    this.kastesPreferencesService.preferences.subscribe((pr) => this.prefs = pr);
     this.dataSource = new UploadTabulaDataSource(this.uploadService);
     this.totals = this.uploadService.adresesBoxTotals;
   }
 
   ngAfterViewInit() {
-    this.table.dataSource = this.dataSource;
   }
 
   onClickEdit(adrB: AdreseBox) {

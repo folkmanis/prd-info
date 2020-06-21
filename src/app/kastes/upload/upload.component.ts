@@ -9,6 +9,7 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { UploadTabulaComponent } from './upload-tabula/upload-tabula.component';
 import { MatDialog } from '@angular/material/dialog';
 import { EndDialogComponent } from './end-dialog/end-dialog.component';
+import * as XLSX from 'xlsx';
 
 class FormErrorMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | null): boolean {
@@ -25,11 +26,10 @@ class FormErrorMatcher implements ErrorStateMatcher {
 export class UploadComponent implements OnInit {
   @ViewChild(UploadTabulaComponent) private uploadTabulaComponent: UploadTabulaComponent;
 
-  private defaultText = 'Atlasīt csv failu';
+  private defaultText = 'Atlasīt csv vai xls failu';
   displayText: string = this.defaultText;
   fileLoaded = false; // Ielādēts fails
   boxGatavi = false; // Sagatavots sadalījums pa kastēm
-  file: File;
   pasutijumsForm = new FormGroup({
     pasutijumsName: new FormControl('',
       [Validators.required],
@@ -51,32 +51,28 @@ export class UploadComponent implements OnInit {
   }
 
   onFileDrop(fileList: FileList) {
-    this.clearFile();
-    if (fileList.length > 1) {
-      this.displayText = 'Tikai vienu failu!';
+      this.clearFile();
+    if (fileList.length !== 1) {
+      this.displayText = 'Tieši vienu failu!';
       return;
     }
-    if (fileList[0].size > 20 * 1024) {
-      this.displayText = 'Maksimālais faila izmērs 20kb';
+    if (fileList[0].size > 200 * 1024) {
+      this.displayText = 'Maksimālais faila izmērs 200kb';
       this.clearFile();
       return;
     }
-    if (fileList.length === 1 && fileList[0].name.endsWith('.csv')) { // max faila izmērs 20k
-      this.file = fileList[0];
-      const fileReader = new FileReader();
-      fileReader.onload = (e) => {
-        this.uploadService.loadCsv(fileReader.result.toString(), ';');
-        this.pasutijumsForm.patchValue({ pasutijumsName: this.file.name.slice(0, -4).trim() });
-        this.fileLoaded = true;
-        this.displayText = 'Augšupielādei sagatavots fails:';
-      };
-      fileReader.readAsText(this.file);
+    if (fileList[0].name.endsWith('.csv')) {
+      this.readCsv(fileList[0]);
+      return;
+    }
+    if (fileList[0].name.endsWith('.xls') || fileList[0].name.endsWith('xlsx')) {
+      this.readXls(fileList[0]);
+      return;
     }
   }
 
   clearFile() {
     this.displayText = this.defaultText;
-    this.file = null;
     this.fileLoaded = false;
     this.boxGatavi = false;
   }
@@ -104,5 +100,39 @@ export class UploadComponent implements OnInit {
     dialogRef.afterClosed().subscribe(() => {
       this.router.navigate(['kastes', 'selector', 0]);
     });
+  }
+
+  private readCsv(file: File) {
+    const fileReader = new FileReader();
+    fileReader.onload = (e) => {
+      this.uploadService.loadCsv(fileReader.result.toString(), ';');
+      this.onFileLoaded(file);
+    };
+    fileReader.readAsText(file);
+  }
+
+  private readXls(file: File) {
+    const fileReader = new FileReader();
+    fileReader.onload = (e: any) => {
+      /* read workbook */
+      const bstr: string = e.target.result;
+      const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
+
+      /* grab first sheet */
+      const wsname: string = wb.SheetNames[0];
+      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+
+      /* save data */
+      const data = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true }) as [][];
+      this.uploadService.loadXls(data);
+      this.onFileLoaded(file);
+    };
+    fileReader.readAsBinaryString(file);
+  }
+
+  private onFileLoaded(file: File) {
+    this.pasutijumsForm.patchValue({ pasutijumsName: file.name.slice(0, -4).trim() });
+    this.fileLoaded = true;
+    this.displayText = `Augšupielādei sagatavots fails: ${file.name} / ${file.size} bytes / ${file.type}`;
   }
 }

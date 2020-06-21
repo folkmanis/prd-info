@@ -13,7 +13,7 @@
                 {{col}}</mat-chip>
         </mat-chip-list>
     </div>
-    <div *ngIf="gatavs | async">Kopējie skaiti: {{totals.boxCount}} / {{totals.yellow}} / {{totals.rose}} / {{totals.white}} </div>
+    <div *ngIf="gatavs | async">Kopējie skaiti: {{totals.boxCount}} / Dzelteni: {{totals.yellow}} / Rozā: {{totals.rose}} / Balti: {{totals.white}} </div>
 
     <div [formGroup]="checkCols">
         <table mat-table class="full-width-table">
