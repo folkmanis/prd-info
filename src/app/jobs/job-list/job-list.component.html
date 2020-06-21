@@ -1,7 +1,7 @@
 <cdk-virtual-scroll-viewport itemSize="32" class="container" #scrollable>
 
     <table>
-        <thead>
+        <!-- <thead>
             <tr>
                 <th class="column-jobId">ID</th>
                 <th class="column-customer">Klients</th>
@@ -10,33 +10,39 @@
                 <th class="column-productsObj-name">Izstrādājums</th>
                 <th class="column-productsObj-count">Skaits</th>
             </tr>
-        </thead>
+        </thead> -->
         <tbody>
-            <tr *cdkVirtualFor="let job of dataSource$ | async;" (click)="onJobEdit(job.jobId)"
-                [class.job-completed]="job.invoiceId">
+            <tr *cdkVirtualFor="let job of dataSource$;" [class.job-completed]="job.invoiceId">
                 <!-- jobId -->
-                <td class="column-jobId">
-                    {{job.jobId}}
+                <td class="column-jobId" (click)="onJobEdit(job.jobId)">
+                        {{job.jobId}}
                 </td>
 
                 <!-- customer -->
-                <td>{{job.customer}}</td>
+                <td class="column-customer">{{job.custCode}}</td>
 
                 <!-- 'receivedDate' -->
-                <td>{{job.receivedDate | date:'dd.MM.yyyy'}}</td>
+                <td class="column-receivedDate">{{job.receivedDate | date:'dd.MM.yyyy'}}</td>
 
                 <!-- 'name' -->
-                <td [matTooltip]="job.name" [matTooltipShowDelay]="500" [matTooltipDisabled]="job.name.length < 50">
-                    {{job.name | shortenText:50}}
-
+                <td class="column-name" [matTooltip]="job.name" [matTooltipShowDelay]="500"
+                    [matTooltipDisabled]="job.name.length < 50">
+                    <span>
+                        {{job.name}}
+                    </span>
+                    <span class="job-buttons">
+                        <button mat-icon-button>
+                            <mat-icon>done</mat-icon>
+                        </button>
+                    </span>
                 </td>
 
                 <!-- Izstrādājums -->
-                <td>
+                <td class="column-productsObj-name">
                     {{job.productsObj?.name}}
                 </td>
                 <!-- Skaits -->
-                <td>
+                <td class="column-productsObj-count">
                     {{job.productsObj?.count}}
                 </td>
 

@@ -30,7 +30,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatRadioModule } from '@angular/material/radio';
 
 import { LayoutModule } from '@angular/cdk/layout';
 import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -93,6 +94,7 @@ import { SideButtonModule } from './side-button/side-button.module';
     MatDatepickerModule,
     MatTooltipModule,
     MatAutocompleteModule,
+    MatRadioModule,
     ScrollToTopModule,
     LayoutModule,
     ScrollingModule,
@@ -130,6 +132,7 @@ import { SideButtonModule } from './side-button/side-button.module';
     MatDatepickerModule,
     MatTooltipModule,
     MatAutocompleteModule,
+    MatRadioModule,
     LayoutModule,
     ScrollToTopModule,
     CopyClipboardDirective,

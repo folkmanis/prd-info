@@ -42,7 +42,7 @@ export class JobListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onJobEdit(jobId: number) {
-    this.jobEditDialog.editJob(jobId);
+    this.jobEditDialog.editJob(jobId).subscribe();
   }
 
 }

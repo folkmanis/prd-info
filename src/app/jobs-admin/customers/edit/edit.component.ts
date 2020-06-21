@@ -37,7 +37,7 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
     CustomerName: [''],
     code: [
       '', {
-        validators: Validators.required,
+        validators: [Validators.required, Validators.minLength(2), Validators.maxLength(3)],
         asyncValidators: this.validateCode('code')
       }
     ],
@@ -71,6 +71,8 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
   }
 
   onSave() {
+    const code = (this.code.value as string).toUpperCase();
+    this.code.setValue(code, { emitevent: false });
     this.service.updateCustomer(this.customerForm.value).pipe(
       tap(() => this.customerForm.markAsPristine()),
       tap(() => this.customer = this.customerForm.value)

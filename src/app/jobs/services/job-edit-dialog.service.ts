@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, EMPTY } from 'rxjs';
 import { mergeMap, concatMap, switchMap, map, filter, take } from 'rxjs/operators';
 import { MatDialog, MatDialogRef, MatDialogConfig } from '@angular/material/dialog';
 import { Job, JobProduct } from 'src/app/interfaces';
@@ -29,19 +29,16 @@ export class JobEditDialogService {
 
   products$ = this.productsService.products$;
 
-  editJob(jobId: number) {
-    this.jobService.getJob(jobId).pipe(
+  editJob(jobId: number): Observable<boolean> {
+    return this.jobService.getJob(jobId).pipe(
       concatMap(job => this.dialog.open(JobDialogComponent, {
         ...JOB_DIALOG_CONFIG,
         data: {
           jobForm: this.jobFormBuilder(job),
         }
       }).afterClosed()),
-      filter(job => !!job),
-      map((job: Partial<Job>) => ({ ...job, jobId })),
-      concatMap(job => this.jobService.updateJob(job)),
-    )
-      .subscribe(result => console.log(result));
+      concatMap(job => job ? this.jobService.updateJob({ ...job, jobId }) : of(false)),
+    );
   }
 
   newJob(jobInit?: Partial<Job>): Observable<number | undefined> {
@@ -81,6 +78,9 @@ export class JobEditDialogService {
       ],
       comment: [],
       customerJobId: [],
+      jobStatus: this.fb.group({
+        generalStatus: 10,
+      }),
       products: this.fb.array(products),
     });
     this.setFormValues(jobForm, job);
@@ -90,7 +90,6 @@ export class JobEditDialogService {
   private setFormValues(jobForm: FormGroup, job?: Partial<Job>): void {
     const enabled = !job || !job.invoiceId;
     if (!job) { return; }
-    jobForm.reset({ customer: '' });
     jobForm.patchValue(job, { emitEvent: false });
     if (enabled) { jobForm.enable(); } else { jobForm.disable(); }
   }

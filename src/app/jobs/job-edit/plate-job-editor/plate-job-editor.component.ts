@@ -4,8 +4,8 @@ import { MatInput } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { map, tap, shareReplay, startWith, take } from 'rxjs/operators';
-import { CustomerPartial, Job, CustomerProduct } from 'src/app/interfaces';
-import { CustomersService } from 'src/app/services';
+import { CustomerPartial, Job, CustomerProduct, JobsSettings } from 'src/app/interfaces';
+import { CustomersService, SystemPreferencesService } from 'src/app/services';
 
 @Component({
   selector: 'app-plate-job-editor',
@@ -20,6 +20,7 @@ export class PlateJobEditorComponent implements OnInit, OnDestroy {
   constructor(
     private customersService: CustomersService,
     private snack: MatSnackBar,
+    private sysPref: SystemPreferencesService,
   ) { }
 
   get customerControl(): FormControl { return this.jobFormGroup.get('customer') as FormControl; }
@@ -27,6 +28,9 @@ export class PlateJobEditorComponent implements OnInit, OnDestroy {
   get productsControl(): FormArray { return this.jobFormGroup.get('products') as FormArray; }
 
   customers$: Observable<CustomerPartial[]>;
+  jobStates$ = (this.sysPref.getModulePreferences('jobs') as Observable<JobsSettings>).pipe(
+    map(pref => pref.jobStates.filter(st => st.state < 50))
+  );
 
   ngOnInit(): void {
     this.customers$ = combineLatest([

@@ -28,6 +28,14 @@
             </button>
         </mat-form-field>
     </section>
+    <!-- Statuss -->
+    <section formGroupName="jobStatus">
+        <mat-radio-group formControlName="generalStatus">
+            <mat-radio-button *ngFor="let state of jobStates$ | async" [value]="state.state">
+                {{state.description}}
+            </mat-radio-button>
+        </mat-radio-group>
+    </section>
     <section>
         <!-- Papildus apraksts -->
         <mat-form-field [style.width.px]="400">
@@ -42,6 +50,7 @@
     </section>
     <!-- Preces apakšforma -->
     <section *ngIf="isProductsSet()">
-        <app-products-editor [prodFormArray]="jobFormGroup.get('products')" [customerProducts$]="customerProducts$"></app-products-editor>
+        <app-products-editor [prodFormArray]="jobFormGroup.get('products')" [customerProducts$]="customerProducts$">
+        </app-products-editor>
     </section>
 </form>

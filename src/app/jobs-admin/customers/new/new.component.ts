@@ -31,7 +31,7 @@ export class NewComponent implements OnInit, CanComponentDeactivate {
     ],
     code: [
       '', {
-        validators: Validators.required,
+        validators: [Validators.required, Validators.minLength(2), Validators.maxLength(3)],
         asyncValidators: this.validateCode('code')
       }
     ],
@@ -45,6 +45,8 @@ export class NewComponent implements OnInit, CanComponentDeactivate {
   }
 
   onSave(): void {
+    const code = (this.code.value as string).toUpperCase();
+    this.code.setValue(code, { emitevent: false });
     this.service.saveNewCustomer(this.customerForm.value).pipe(
       filter(id => !!id),
       tap(id => this.customerForm.markAsPristine()),
@@ -61,7 +63,7 @@ export class NewComponent implements OnInit, CanComponentDeactivate {
 
   private validateCode(field: keyof Customer): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
-      return this.service.validator( field, control.value).pipe(
+      return this.service.validator(field, control.value).pipe(
         map(val => val ? null : { occupied: control.value })
       );
     };

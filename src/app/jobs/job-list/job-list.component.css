@@ -12,7 +12,7 @@ table {
 }
 
 tr {
-    height: 32px;
+    height: 40px;
 }
 
 tbody tr:hover {
@@ -27,7 +27,6 @@ td, th {
     border-bottom-color: rgba(0, 0, 0, .12);
     border-bottom-width: 1px;
     border-bottom-style: solid;
-    cursor: pointer;
     text-align: left;
 }
 
@@ -36,25 +35,54 @@ td, th {
 }
 
 th:first-of-type, td:first-of-type {
-    padding-left: 16px;
+    padding-left: 8px;
 }
 
-th.column-jobId {
-    width: 3.5em;
+td.column-jobId {
+    width: 4.6em;
 }
 
-th.column-customer {
-    width: 9em;
+td.column-jobId:hover {
+    cursor: pointer;
+    font-weight: bold;
 }
 
-th.column-receivedDate {
+td.column-customer {
+    width: 2.5em;
+}
+
+td.column-receivedDate {
     width: 5.5em;
 }
 
-th.column-productsObj-name {
+td.column-productsObj-name {
     width: 11em;
 }
 
-th.column-productsObj-count {
+td.column-productsObj-count {
     width: 4em;
+}
+
+td.column-jobId button[mat-button].mat-button {
+    padding: 0;
+}
+
+td.column-name {
+    display: flex;
+    align-items: center;
+}
+
+td.column-name span {
+    flex: 1;
+}
+
+td.column-name span:first-of-type {
+    flex: 1 1 700px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+td.column-name span.job-buttons {
+    flex: 0 0 40px;
 }

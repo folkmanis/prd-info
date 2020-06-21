@@ -65,7 +65,7 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
   }
 
   onEditJob(jobId: number) {
-    this.jobEditDialog.editJob(jobId);
+    this.jobEditDialog.editJob(jobId).subscribe();
   }
 
   private setNewJobList(jobs: JobPartial[]): void {

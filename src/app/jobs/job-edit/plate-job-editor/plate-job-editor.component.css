@@ -6,3 +6,7 @@ h2 {
     margin-left: 16px;
     cursor: copy;
 }
+
+.mat-radio-button ~ .mat-radio-button {
+    margin-left: 16px;
+}
