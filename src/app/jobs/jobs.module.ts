@@ -29,6 +29,7 @@ import { ProductForOfDirective } from './job-edit/product-for.directive';
 import { SidePanelComponent } from './side-panel/side-panel.component';
 import { CustomerInputDialogComponent } from './side-panel/customer-input-dialog/customer-input-dialog.component';
 import { JobsState } from './store/jobs.state';
+import { InvoicesState } from './store/invoices.state';
 PdfMakeWrapper.setFonts(pdfFonts);
 
 @NgModule({
@@ -53,7 +54,7 @@ PdfMakeWrapper.setFonts(pdfFonts);
     CommonModule,
     LibraryModule,
     JobsRoutingModule,
-    NgxsModule.forFeature([JobsState]),
+    NgxsModule.forFeature([JobsState, InvoicesState]),
   ],
   providers: [
     JobService,

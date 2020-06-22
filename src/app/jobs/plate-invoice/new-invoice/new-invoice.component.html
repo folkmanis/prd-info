@@ -26,7 +26,7 @@
                     Kopā | {{totals.grandTotal | currency}}
                 </strong>
             </p>
-            <p *ngFor="let total of totals.totals">
+            <p *ngFor="let total of totals.productTotals">
                 {{total._id}} | {{total.count}} | {{total.total | currency}}
             </p>
         </section>
