@@ -17,6 +17,11 @@ export interface Job {
     };
     custCode: string;
 }
+
+export type JobOneProduct = JobPartial & {
+    products: JobProduct;
+};
+
 export type JobPartial =
     Pick<Job, 'receivedDate' | 'customerJobId' | 'name' | 'jobId' | 'customer' | 'products' | 'invoiceId' | 'custCode'>;
 

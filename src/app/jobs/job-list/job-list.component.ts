@@ -1,10 +1,12 @@
 import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { tap, map, debounceTime, startWith, filter, switchMap } from 'rxjs/operators';
+import { Select } from '@ngxs/store';
 import { JobService } from '../services/job.service';
-import { JobQueryFilter, JobProduct } from 'src/app/interfaces';
+import { JobQueryFilter, JobProduct, Job, JobPartial, JobOneProduct } from 'src/app/interfaces';
 import { JobEditDialogService } from '../services/job-edit-dialog.service';
+import { JobsState } from '../store/jobs.state';
 
 @Component({
   selector: 'app-job-list',
@@ -16,14 +18,11 @@ export class JobListComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private jobService: JobService,
     private jobEditDialog: JobEditDialogService,
   ) { }
   private readonly _subs = new Subscription();
 
-  dataSource$ = this.jobService.jobs$.pipe(
-    map(jobs => jobs.map(job => ({ ...job, productsObj: job.products as JobProduct })))
-  );
+  @Select(JobsState.jobs) jobs$: Observable<JobOneProduct[]>;
 
   ngOnInit(): void {
     const subs = this.route.data.pipe(

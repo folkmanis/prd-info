@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, EMPTY } from 'rxjs';
 import { mergeMap, concatMap, switchMap, map, filter, take } from 'rxjs/operators';
+import { Store, Select } from '@ngxs/store';
 import { MatDialog, MatDialogRef, MatDialogConfig } from '@angular/material/dialog';
 import { Job, JobProduct } from 'src/app/interfaces';
 import { JobDialogComponent } from '../job-edit/job-dialog.component';
@@ -8,6 +9,8 @@ import { JobService } from '../services/job.service';
 import { JobEditDialogData } from '../job-edit/job-edit-dialog-data';
 import { FormBuilder, FormGroup, Validators, AsyncValidatorFn, ValidationErrors, AbstractControl } from '@angular/forms';
 import { CustomersService, ProductsService } from 'src/app/services';
+import { JobsState } from '../store/jobs.state';
+import { GetJob, UpdateJob, NewJob } from '../store/jobs.actions';
 
 const JOB_DIALOG_CONFIG: MatDialogConfig = {
   height: '90%',
@@ -22,22 +25,25 @@ export class JobEditDialogService {
   constructor(
     private fb: FormBuilder,
     private dialog: MatDialog,
-    private jobService: JobService,
     private customersService: CustomersService,
     private productsService: ProductsService,
+    private store: Store,
   ) { }
 
   products$ = this.productsService.products$;
 
   editJob(jobId: number): Observable<boolean> {
-    return this.jobService.getJob(jobId).pipe(
+
+    return this.store.dispatch(new GetJob(jobId)).pipe(
+      mergeMap(() => this.store.selectOnce(JobsState.job(jobId))),
+    ).pipe(
       concatMap(job => this.dialog.open(JobDialogComponent, {
         ...JOB_DIALOG_CONFIG,
         data: {
           jobForm: this.jobFormBuilder(job),
         }
       }).afterClosed()),
-      concatMap(job => job ? this.jobService.updateJob({ ...job, jobId }) : of(false)),
+      concatMap(job => job ? this.store.dispatch(new UpdateJob(jobId, job)) : of(false)),
     );
   }
 
@@ -51,7 +57,7 @@ export class JobEditDialogService {
       autoFocus: true,
       data
     }).afterClosed().pipe(
-      concatMap(job => !job?.jobId ? of(null) : this.jobService.updateJob(job).pipe(
+      concatMap(job => !job?.jobId ? of(null) : this.store.dispatch(new UpdateJob(job.jobId, job)).pipe(
         map(() => job.jobId)
       )),
     );
@@ -123,7 +129,9 @@ export class JobEditDialogService {
 
 
   private jobCreatorFn(): ((job: Partial<Job>) => Observable<number | null>) {
-    return (job) => this.jobService.newJob(job);
+    return (job) => this.store.dispatch(new NewJob(job)).pipe(
+      map(() => this.store.selectSnapshot(JobsState.lastInsertId))
+    );
   }
 
   private validateCustomerFn(): AsyncValidatorFn {

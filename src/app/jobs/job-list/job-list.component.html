@@ -12,7 +12,7 @@
             </tr>
         </thead> -->
         <tbody>
-            <tr *cdkVirtualFor="let job of dataSource$; let idx=index;" [class.job-completed]="job.invoiceId">
+            <tr *cdkVirtualFor="let job of jobs$; let idx=index;" [class.job-completed]="job.invoiceId">
                 <!-- jobId -->
                 <td class="column-jobId" (click)="onJobEdit(job.jobId)">
                         {{job.jobId}}
@@ -41,11 +41,11 @@
 
                 <!-- Izstrādājums -->
                 <td class="column-productsObj-name">
-                    {{job.productsObj?.name}}
+                    {{job.products?.name}}
                 </td>
                 <!-- Skaits -->
                 <td class="column-productsObj-count">
-                    {{job.productsObj?.count}}
+                    {{job.products?.count}}
                 </td>
 
             </tr>

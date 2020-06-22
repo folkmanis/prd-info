@@ -1,12 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Store } from '@ngxs/store';
 import { Subscription } from 'rxjs';
-import { tap, map, debounceTime } from 'rxjs/operators';
+import { tap, map, debounceTime, switchMap } from 'rxjs/operators';
 import { pickBy, identity } from 'lodash';
 import { CustomersService, SystemPreferencesService } from 'src/app/services';
 import { JobsSettings, JobQueryFilter, JobProduct } from 'src/app/interfaces';
 import { JobService } from '../../services/job.service';
+import { JobsState } from '../../store/jobs.state';
+import { SetFilter } from '../../store/jobs.actions';
 
 const NULL_CUSTOMER = { CustomerName: undefined, _id: undefined, code: undefined };
 const DEFAULT_FILTER: JobQueryFilter = {
@@ -34,6 +37,7 @@ export class JobFilterComponent implements OnInit, OnDestroy {
     private sysPrefService: SystemPreferencesService,
     private customersService: CustomersService,
     private jobService: JobService,
+    private store: Store,
   ) { }
 
   filterForm = this.fb.group({
@@ -50,7 +54,8 @@ export class JobFilterComponent implements OnInit, OnDestroy {
       this.filterForm.valueChanges.pipe(
         debounceTime(500),
         map(normalizeFilter),
-      ).subscribe(this.jobService.filter$)
+        switchMap(filter => this.store.dispatch(new SetFilter(filter))),
+      ).subscribe()
     );
     this.onReset();
   }

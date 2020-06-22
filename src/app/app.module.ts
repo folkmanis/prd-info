@@ -7,6 +7,7 @@ import { LibraryModule } from './library/library.module';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { NgxsModule } from '@ngxs/store';
 
 import { LoginComponent } from './login/login.component';
 import { SideMenuComponent } from './layout/side-menu/side-menu.component';
@@ -22,6 +23,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { AppParams } from './interfaces';
 import { APP_PARAMS, PRD_DEFAULTS } from './app-params';
 import { ToolbarComponent } from './layout/toolbar/toolbar.component';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
   declarations: [
@@ -36,6 +38,9 @@ import { ToolbarComponent } from './layout/toolbar/toolbar.component';
     BrowserAnimationsModule,
     AppRoutingModule,
     LibraryModule,
+    NgxsModule.forRoot([], {
+      developmentMode: !environment.production
+    }),
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'lv' },
