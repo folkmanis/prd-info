@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { Store, Select } from '@ngxs/store';
 import { Invoice } from 'src/app/interfaces';
 import { InvoicesListDatasource } from './invoices-list-datasource';
 import { InvoicesService } from '../../services/invoices.service';
+import { InvoicesState, InvoiceTable } from '../../store/invoices.state';
+import * as InvoicesActions from '../../store/invoices.actions';
+import { Observable } from 'rxjs';
 
 const COLUMNS = ['invoiceId', 'customer', 'createdDateString', 'totalAll'];
 
@@ -13,12 +17,13 @@ const COLUMNS = ['invoiceId', 'customer', 'createdDateString', 'totalAll'];
 export class InvoicesListComponent implements OnInit {
 
   constructor(
-    private service: InvoicesService,
+    private store: Store,
   ) { }
   displayedColumns: string[] = COLUMNS;
-  datasource = new InvoicesListDatasource(this.service);
+  @Select(InvoicesState.invoices) datasource$: Observable<InvoiceTable[]>;
 
   ngOnInit(): void {
+    this.store.dispatch(new InvoicesActions.SetInvoicesFilter({}));
   }
 
 }

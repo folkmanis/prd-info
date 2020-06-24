@@ -39,7 +39,11 @@ import { environment } from 'src/environments/environment';
     AppRoutingModule,
     LibraryModule,
     NgxsModule.forRoot([], {
-      developmentMode: !environment.production
+      developmentMode: !environment.production,
+      selectorOptions: {
+        suppressErrors: false,
+        injectContainerState: false,
+      }
     }),
   ],
   providers: [

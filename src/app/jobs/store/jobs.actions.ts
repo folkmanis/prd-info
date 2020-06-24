@@ -9,6 +9,10 @@ export class SetFilter {
     constructor(public filter: JobQueryFilter) { }
 }
 
+export class RetrieveInvoices {
+    static readonly type = '[Component] Retrieve Invoices';
+}
+
 export class GetJob {
     static readonly type = '[Job Editor] Retrieve Single Job';
     constructor(public jobId: number) { }

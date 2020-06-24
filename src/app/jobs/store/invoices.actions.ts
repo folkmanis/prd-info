@@ -24,3 +24,17 @@ export class SetJobSelection {
 export class UpdateTotals {
     static readonly type = '[Store] Update Totals From API';
 }
+
+export class CreateInvoice {
+    static readonly type = '[Component] Create New Invoice';
+    constructor(
+        public customerId: string
+    ) { }
+}
+
+export class SelectInvoice {
+    static readonly type = '[Component] Select Invoice By Id';
+    constructor(
+        public invoiceId: string,
+    ) { }
+}
