@@ -8,6 +8,7 @@ import { LibraryModule } from './library/library.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgxsModule } from '@ngxs/store';
+import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 
 import { LoginComponent } from './login/login.component';
 import { SideMenuComponent } from './layout/side-menu/side-menu.component';
@@ -45,6 +46,9 @@ import { environment } from 'src/environments/environment';
         injectContainerState: false,
       }
     }),
+    NgxsReduxDevtoolsPluginModule.forRoot({
+      disabled: environment.production,
+    })
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'lv' },
