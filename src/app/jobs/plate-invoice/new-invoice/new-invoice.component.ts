@@ -6,7 +6,6 @@ import { Observable, Subscription, combineLatest } from 'rxjs';
 import { map, startWith, tap, take, shareReplay, switchMap, withLatestFrom } from 'rxjs/operators';
 import { CustomerPartial, JobQueryFilter, Job, JobPartial, JobOneProduct, ProductTotals, InvoiceLike, Invoice } from 'src/app/interfaces';
 import { CustomersService } from 'src/app/services';
-import { InvoicesService } from '../../services/invoices.service';
 import { InvoiceReport } from '../invoice-editor/invoice-report';
 import { JobsState } from '../../store/jobs.state';
 import { InvoicesState } from '../../store/invoices.state';
@@ -26,7 +25,6 @@ export interface InvoicesTotals {
 })
 export class NewInvoiceComponent implements OnInit, OnDestroy {
   constructor(
-    private invoiceService: InvoicesService,
     private customersService: CustomersService,
     private router: Router,
     private route: ActivatedRoute,

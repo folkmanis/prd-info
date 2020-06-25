@@ -30,5 +30,12 @@ export class NewJob {
     static readonly type = '[Job Editor] Create New Job';
     constructor(
         public job: Partial<Job>,
-    ) {}
+    ) { }
+}
+
+export class NewJobsMany {
+    static readonly type = '[Job Drop] Create New Jobs';
+    constructor(
+        public jobs: Partial<Job>[],
+    ) { }
 }

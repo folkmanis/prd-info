@@ -5,7 +5,6 @@ import { Store, Select } from '@ngxs/store';
 import { MatDialog, MatDialogRef, MatDialogConfig } from '@angular/material/dialog';
 import { Job, JobProduct } from 'src/app/interfaces';
 import { JobDialogComponent } from '../job-edit/job-dialog.component';
-import { JobService } from '../services/job.service';
 import { JobEditDialogData } from '../job-edit/job-edit-dialog-data';
 import { FormBuilder, FormGroup, Validators, AsyncValidatorFn, ValidationErrors, AbstractControl } from '@angular/forms';
 import { CustomersService, ProductsService } from 'src/app/services';

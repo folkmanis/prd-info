@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, Observable } from 'rxjs';
 import { tap, map, debounceTime, startWith, filter, switchMap } from 'rxjs/operators';
 import { Select } from '@ngxs/store';
-import { JobService } from '../services/job.service';
 import { JobQueryFilter, JobProduct, Job, JobPartial, JobOneProduct } from 'src/app/interfaces';
 import { JobEditDialogService } from '../services/job-edit-dialog.service';
 import { JobsState } from '../store/jobs.state';

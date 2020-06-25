@@ -108,4 +108,12 @@ export class JobsState {
             switchMap(newId => ctx.dispatch(new JobActions.RetrieveJobs()))
         );
     }
+
+    @Action(JobActions.NewJobsMany)
+    newJobsMany(ctx: StateContext<JobsStateModel>, { jobs }: JobActions.NewJobsMany): Observable<any> {
+        return this.prdApi.jobs.insertMany(jobs).pipe(
+            tap(newIds => ctx.patchState({ lastInsertId: undefined })),
+            switchMap(() => ctx.dispatch(new JobActions.RetrieveJobs())),
+        );
+    }
 }

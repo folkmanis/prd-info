@@ -5,6 +5,7 @@ import { HttpOptions } from 'src/app/library/http/http-options';
 import { AppHttpResponseBase } from 'src/app/library/http/app-http-response-base';
 
 export abstract class ApiBase<T> {
+
     constructor(
         protected http: HttpClient,
         protected path: string,

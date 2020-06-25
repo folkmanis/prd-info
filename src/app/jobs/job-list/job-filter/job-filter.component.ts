@@ -7,7 +7,6 @@ import { tap, map, debounceTime, switchMap } from 'rxjs/operators';
 import { pickBy, identity } from 'lodash';
 import { CustomersService, SystemPreferencesService } from 'src/app/services';
 import { JobsSettings, JobQueryFilter, JobProduct } from 'src/app/interfaces';
-import { JobService } from '../../services/job.service';
 import { JobsState } from '../../store/jobs.state';
 import { SetFilter } from '../../store/jobs.actions';
 
@@ -36,7 +35,6 @@ export class JobFilterComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private sysPrefService: SystemPreferencesService,
     private customersService: CustomersService,
-    private jobService: JobService,
     private store: Store,
   ) { }
 

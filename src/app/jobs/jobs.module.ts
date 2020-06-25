@@ -19,8 +19,6 @@ import { JobSelectionTableComponent } from './plate-invoice/job-selection-table/
 import { NewInvoiceComponent } from './plate-invoice/new-invoice/new-invoice.component';
 import { InvoicesListComponent } from './plate-invoice/invoices-list/invoices-list.component';
 import { JobDialogComponent } from './job-edit/job-dialog.component';
-import { JobService } from './services/job.service';
-import { InvoicesService } from './services/invoices.service';
 import { JobEditDialogService } from './services/job-edit-dialog.service';
 
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
@@ -57,8 +55,6 @@ PdfMakeWrapper.setFonts(pdfFonts);
     NgxsModule.forFeature([JobsState, InvoicesState]),
   ],
   providers: [
-    JobService,
-    InvoicesService,
     JobEditDialogService,
     { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptorService, multi: true },
   ],
