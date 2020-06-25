@@ -9,6 +9,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgxsModule } from '@ngxs/store';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
+import { LoginState } from './store/login.state';
 
 import { LoginComponent } from './login/login.component';
 import { SideMenuComponent } from './layout/side-menu/side-menu.component';
@@ -39,7 +40,9 @@ import { environment } from 'src/environments/environment';
     BrowserAnimationsModule,
     AppRoutingModule,
     LibraryModule,
-    NgxsModule.forRoot([], {
+    NgxsModule.forRoot([
+      LoginState,
+    ], {
       developmentMode: !environment.production,
       selectorOptions: {
         suppressErrors: false,
