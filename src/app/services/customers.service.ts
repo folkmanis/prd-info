@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, merge, Subject } from 'rxjs';
-import { map, pluck, filter, tap, switchMap, share, shareReplay } from 'rxjs/operators';
+import { map, pluck, filter, tap, switchMap, share, shareReplay, startWith } from 'rxjs/operators';
 import { Customer, CustomerPartial, CustomerResponse } from 'src/app/interfaces';
 
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
@@ -10,7 +10,7 @@ import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
   providedIn: 'root'
 })
 export class CustomersService {
-  private updateCustomers$: Subject<CustomerPartial[]> = new Subject();
+  private updateCustomers$: Subject<void> = new Subject();
   private _customers$: Observable<CustomerPartial[]>;
 
   constructor(
@@ -19,10 +19,9 @@ export class CustomersService {
 
   get customers$(): Observable<CustomerPartial[]> {
     if (!this._customers$) {
-      this._customers$ = merge(
-        this.updateCustomers$,
-        this.getCustomerList(),
-      ).pipe(
+      this._customers$ = this.updateCustomers$.pipe(
+        startWith({}),
+        switchMap(() => this.getCustomerList()),
         shareReplay(1),
       );
     }
@@ -32,7 +31,9 @@ export class CustomersService {
   updateCustomer(customer: Partial<Customer>): Observable<boolean> {
     const _id = customer._id;
     delete customer._id;
-    return this.prdApi.customers.updateOne(_id, customer);
+    return this.prdApi.customers.updateOne(_id, customer).pipe(
+      tap(() => this.updateCustomers$.next()),
+    );
   }
 
   getCustomerList(): Observable<CustomerPartial[]> {
@@ -45,14 +46,15 @@ export class CustomersService {
 
   deleteCustomer(id: string): Observable<boolean> {
     return this.prdApi.customers.deleteOne(id).pipe(
-      map(result => result > 0),
-      this.reloadCustomers(() => this.getCustomerList(), this.updateCustomers$),
+      tap(() => this.updateCustomers$.next()),
+      map(resp => !!resp),
     );
   }
 
   saveNewCustomer(customer: Customer): Observable<string | null> {
     return this.prdApi.customers.insertOne(customer).pipe(
-      map(resp => resp ? resp.toString() : null)
+      map(resp => resp ? resp.toString() : null),
+      tap(() => this.updateCustomers$.next()),
     );
   }
 
@@ -62,15 +64,4 @@ export class CustomersService {
     );
   }
 
-  private reloadCustomers<T, K>(updateFunc: () => Observable<K>, emiter: Subject<K>): (src: Observable<T>) => Observable<T> {
-    let value: T;
-    return (src: Observable<T>): Observable<T> => {
-      return src.pipe(
-        tap(val => value = val),
-        switchMap(updateFunc),
-        tap(cust => emiter.next(cust)),
-        map(() => value),
-      );
-    };
-  }
 }

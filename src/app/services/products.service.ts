@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { merge, Observable, Subject } from 'rxjs';
-import { map, share, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { map, share, shareReplay, switchMap, tap, startWith } from 'rxjs/operators';
 import { Product, ProductNoPrices, CustomerProduct, SystemPreferencesGroups } from 'src/app/interfaces';
 import { JobsSettings } from 'src/app/interfaces';
 import { SystemPreferencesService } from 'src/app/services/system-preferences.service';
@@ -23,14 +23,13 @@ export class ProductsService {
     share(),
   );
 
-  private readonly _updateProducts$: Subject<Pick<Product, '_id' | 'name' | 'category'>[]> = new Subject();
+  private readonly _updateProducts$: Subject<void> = new Subject();
 
   get products$(): Observable<ProductNoPrices[]> {
     if (!this._products$) {
-      this._products$ = merge(
-        this.getAllProducts(),
-        this._updateProducts$
-      ).pipe(
+      this._products$ = this._updateProducts$.pipe(
+        startWith({}),
+        switchMap(() => this.getAllProducts()),
         shareReplay(1)
       );
     }
@@ -43,20 +42,20 @@ export class ProductsService {
 
   updateProduct(id: string, prod: Partial<Product>): Observable<boolean> {
     return this.prdApi.products.updateOne(id, prod).pipe(
-      this.updateProducts(() => this.getAllProducts(), this._updateProducts$),
+      tap(() => this._updateProducts$.next()),
     );
   }
 
   deleteProduct(id: string): Observable<boolean> {
     return this.prdApi.products.deleteOne(id).pipe(
-      this.updateProducts(() => this.getAllProducts(), this._updateProducts$),
+      tap(() => this._updateProducts$.next()),
       map(count => !!count),
     );
   }
 
   insertProduct(prod: ProductNoPrices): Observable<string> {
     return this.prdApi.products.insertOne(prod).pipe(
-      this.updateProducts(() => this.getAllProducts(), this._updateProducts$),
+      tap(() => this._updateProducts$.next()),
       map(id => id.toString()),
     );
   }
@@ -73,21 +72,6 @@ export class ProductsService {
 
   productsCustomer(customer: string): Observable<CustomerProduct[]> {
     return this.prdApi.products.productsCustomer(customer);
-  }
-
-  private updateProducts<K, U>(
-    updateFunc: () => Observable<K>,
-    emiter: Subject<K>
-  ): (obs: Observable<U>) => Observable<U> {
-    let value: U;
-    return (obs: Observable<U>): Observable<U> => {
-      return obs.pipe(
-        tap(val => value = val),
-        switchMap(updateFunc),
-        tap(upd => emiter.next(upd)),
-        map(() => value),
-      );
-    };
   }
 
 }
