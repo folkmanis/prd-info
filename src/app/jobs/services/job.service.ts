@@ -29,6 +29,12 @@ export class JobService {
     );
   }
 
+  newJobs(jobs: Partial<Job>[]): Observable<number | null> {
+    return this.prdApi.jobs.insertMany(jobs).pipe(
+      tap(() => this.updateJobs$.next()),
+    );
+  }
+
   updateJob(job: Partial<Job>): Observable<boolean> {
     if (!job.jobId) { return of(false); }
     const jobId = job.jobId;

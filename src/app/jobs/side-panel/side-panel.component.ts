@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, from, EMPTY } from 'rxjs';
-import { switchMap, tap, map, concatAll, concatMap } from 'rxjs/operators';
+import { switchMap, tap, map, concatAll, concatMap, mergeMap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { JobEditDialogService } from '../services/job-edit-dialog.service';
 import { CustomersService } from 'src/app/services';
@@ -36,16 +36,11 @@ export class SidePanelComponent implements OnInit {
       } else {
         this.customersService.customers$.pipe(
           switchMap(cust => this.dialog.open(CustomerInputDialogComponent, { data: { customers: cust } }).afterClosed()),
-          map((cust: string) => cust ? names.map(name => ({ customer: cust, name })) : EMPTY),
-          map(jobs => from(jobs)
-            .pipe(
-              concatMap(job => this.jobService.newJob(job))
-            ),
+          mergeMap(
+            (cust: string | undefined) => cust ? this.jobService.newJobs(names.map(name => ({ customer: cust, name }))) : EMPTY
           ),
-          concatAll(),
         ).subscribe();
       }
-
     }
   }
 

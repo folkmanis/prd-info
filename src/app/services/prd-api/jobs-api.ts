@@ -12,4 +12,10 @@ export class JobsApi extends ApiBase<Job> {
         );
     }
 
+    insertMany(jobs: Partial<Job>[]): Observable<number> {
+        return this.http.put<JobResponse>(this.path, jobs, new HttpOptions()).pipe(
+            map(resp => resp.insertedCount)
+        );
+    }
+
 }
