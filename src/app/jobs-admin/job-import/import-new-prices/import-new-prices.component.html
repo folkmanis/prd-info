@@ -18,7 +18,7 @@
         <th mat-header-cell *matHeaderCellDef>Cena</th>
         <td mat-cell *matCellDef="let prod; index as idx;">
             <mat-form-field>
-                <input matInput type="number" [formControl]="pricesForm.controls[idx]">
+                <input matInput type="number" [formControl]="controls[idx]">
             </mat-form-field>
         </td>
     </ng-container>

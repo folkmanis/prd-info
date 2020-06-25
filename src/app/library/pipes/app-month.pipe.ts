@@ -10,7 +10,7 @@ export class AppMonthPipe implements PipeTransform {
     'Jūlijs', 'Augusts', 'Septembris', 'Oktobris', 'Novembris', 'Decembris',
   ];
 
-  transform(value: number, ...args: any[]): any {
+  transform(value?: number | string, ...args: any[]): any {
     if (!value) {
       return '--';
     }

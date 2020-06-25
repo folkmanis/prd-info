@@ -24,6 +24,8 @@ export class ImportNewPricesComponent {
   dataSource$ = new Subject<ProductPriceImport[]>();
   displayedColumns = ['product', 'customerName', 'price'];
 
+  get controls(): FormControl[] { return this.pricesForm.controls as FormControl[]; }
+
   constructor(
   ) { }
 
@@ -32,10 +34,12 @@ export class ImportNewPricesComponent {
     this.pricesForm.clear();
     for (const prod of this.products) {
       this.pricesForm.push(
-        new FormControl(undefined, { validators: [
-          Validators.required,
-          Validators.min(0),
-        ] })
+        new FormControl(undefined, {
+          validators: [
+            Validators.required,
+            Validators.min(0),
+          ]
+        })
       );
     }
   }
