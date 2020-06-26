@@ -38,11 +38,19 @@ th:first-of-type, td:first-of-type {
     padding-left: 8px;
 }
 
+td.column-state {
+    width: 48px;
+}
+
+/* td.column-state button {
+    color: yellow;
+} */
+
 td.column-jobId {
     width: 4.6em;
 }
 
-td.column-jobId:hover {
+td.column-name span:first-of-type:hover {
     cursor: pointer;
     font-weight: bold;
 }

@@ -13,9 +13,17 @@
         </thead> -->
         <tbody>
             <tr *cdkVirtualFor="let job of dataSource$; let idx=index;" [class.job-completed]="job.invoiceId">
+                <!-- statusa indikators -->
+                <td class="column-state">
+                    <button mat-icon-button>
+                        <mat-icon color="primary">
+                            label
+                        </mat-icon>
+                    </button>
+                </td>
                 <!-- jobId -->
-                <td class="column-jobId" (click)="onJobEdit(job.jobId)">
-                        {{job.jobId}}
+                <td class="column-jobId">
+                    {{job.jobId}}
                 </td>
 
                 <!-- customer -->
@@ -28,7 +36,7 @@
                 <td class="column-name" [matTooltip]="job.name" [matTooltipShowDelay]="500"
                     [matTooltipDisabled]="job.name.length < 50">
                     <div>
-                        <span>
+                        <span (click)="onJobEdit(job.jobId)">
                             {{job.name}}
                         </span>
                         <span>
