@@ -1,7 +1,7 @@
-import { Directive, Input, Output, EventEmitter, HostListener, ElementRef } from '@angular/core';
+import { Directive, Input, Output, EventEmitter, HostListener, ElementRef, HostBinding } from '@angular/core';
 
 @Directive({
-  selector: '[appCopyClipboard]'
+  selector: '[appCopyClipboard]',
 })
 export class CopyClipboardDirective {
 
@@ -10,6 +10,9 @@ export class CopyClipboardDirective {
 
   @Output()
   copied: EventEmitter<string> = new EventEmitter<string>();
+
+  @HostBinding('class.app-copy-clipboard')
+  appCopyClipboardClass = true;
 
   @HostListener('click', ['$event'])
   onClick(event: MouseEvent): void {
