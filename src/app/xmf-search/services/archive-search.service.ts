@@ -14,7 +14,7 @@ import { HttpClient } from '@angular/common/http';
 import { EventEmitter, Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, merge, Observable, of, ReplaySubject } from 'rxjs';
 import { map, mergeMap, pluck, share, shareReplay, switchMap, tap } from 'rxjs/operators';
-import { cloneDeep, mergeWith } from 'lodash';
+import { cloneDeep } from 'lodash';
 import { HttpOptions } from '../../library/http/http-options';
 import { ArchiveFacet, ArchiveRecord, ArchiveResp, FacetFilter, SearchQuery } from './archive-search-class';
 import { PagedCache, Range } from './paged-cache';

@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, OnDestroy, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable, Subscription, BehaviorSubject } from 'rxjs';
-import { combineLatest } from 'rxjs/index';
+import { Observable, Subscription, BehaviorSubject, combineLatest } from 'rxjs';
 import { map, tap, startWith } from 'rxjs/operators';
 
 export interface RouteSelection {

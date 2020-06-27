@@ -1,7 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { merge, Observable, Subject, of } from 'rxjs';
-import { combineLatest } from 'rxjs/index';
+import { merge, Observable, Subject, of, combineLatest } from 'rxjs';
 import { map, shareReplay, take, tap, switchMap, filter, mapTo } from 'rxjs/operators';
 import { AppParams, SystemPreferences, UserModule, SystemPreferencesGroups, ModuleSettings } from '../interfaces';
 import { APP_PARAMS } from '../app-params';

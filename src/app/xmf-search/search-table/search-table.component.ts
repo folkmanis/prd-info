@@ -1,12 +1,11 @@
-import { Component, OnInit, ViewChild, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CdkScrollable } from '@angular/cdk/scrolling';
-import { map, filter, switchMap, tap, startWith, debounceTime } from 'rxjs/operators';
-import { merge, Observable, Subscription, pipe } from 'rxjs/index';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
+import { Subscription } from 'rxjs';
+import { SearchQuery } from '../services/archive-search-class';
 import { ArchiveSearchService } from '../services/archive-search.service';
-import { ArchiveRecord, SearchQuery } from '../services/archive-search-class';
 import { SearchData } from './search-data';
+
 
 @Component({
   selector: 'app-search-table',

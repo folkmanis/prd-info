@@ -1,11 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormControl } from '@angular/forms';
+import { identity, pickBy } from 'lodash';
 import { Subscription } from 'rxjs';
-import { tap, map, debounceTime } from 'rxjs/operators';
-import { pickBy, identity } from 'lodash';
+import { debounceTime, map } from 'rxjs/operators';
+import { JobQueryFilter, JobsSettings } from 'src/app/interfaces';
 import { CustomersService, SystemPreferencesService } from 'src/app/services';
-import { JobsSettings, JobQueryFilter, JobProduct } from 'src/app/interfaces';
 import { JobService } from '../../services/job.service';
 
 const NULL_CUSTOMER = { CustomerName: undefined, _id: undefined, code: undefined };

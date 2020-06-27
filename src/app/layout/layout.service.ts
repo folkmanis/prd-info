@@ -17,8 +17,6 @@ export class LayoutService {
     private breakpointObserver: BreakpointObserver,
   ) { }
 
-  mainContainer: MatSidenavContent;
-
   isHandset$: Observable<boolean> = this.matches(Breakpoints.Handset);
 
   isSmall$: Observable<boolean> = this.matches(`(max-width: ${this.params.mediaBreakpoints.small})`);

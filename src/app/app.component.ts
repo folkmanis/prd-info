@@ -1,10 +1,7 @@
-import { Component, OnInit, AfterViewInit, ViewChild, NgZone, ElementRef, ChangeDetectionStrategy } from '@angular/core';
-import { MatSidenavContent } from '@angular/material/sidenav';
-import { User } from 'src/app/interfaces';
-import { Observable, combineLatest, from, Subject } from 'rxjs';
-import { map, shareReplay, tap, pluck } from 'rxjs/operators';
-import { SystemPreferencesService, LoginService } from 'src/app/services';
-import { ViewportRuler } from '@angular/cdk/scrolling';
+import { Component, OnInit } from '@angular/core';
+import { combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { LoginService } from 'src/app/services';
 import { LayoutService } from './layout/layout.service';
 
 const panels = ['top', 'side'];
@@ -14,12 +11,8 @@ const panels = ['top', 'side'];
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements OnInit, AfterViewInit {
-  @ViewChild(MatSidenavContent, { static: true }) private content: MatSidenavContent;
-  isHandset$: Observable<boolean> = this.layoutService.isHandset$;
-  toolbarHeight$ = this.layoutService.toolbarHeight$;
-  isSmall$ = this.layoutService.isSmall$;
-  isMedium$ = this.layoutService.isMedium$;
+export class AppComponent implements OnInit {
+
   isLarge$ = this.layoutService.isLarge$;
 
   // Vai atvērt sānu menu pie ielādes
@@ -27,25 +20,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     map(([user, large]) => !!user && large),
   );
 
-  sideIsSet$: Observable<boolean>;
-
-  showScroll = false;
-  showScrollHeight = 300;
-  hideScrollHeight = 10;
-
   constructor(
     private loginService: LoginService,
-    private systemPreferencesService: SystemPreferencesService,
-    private zone: NgZone,
-    private viewport: ViewportRuler,
     private layoutService: LayoutService,
   ) { }
 
   ngOnInit() {
-    this.layoutService.mainContainer = this.content;
-  }
-
-  ngAfterViewInit() {
   }
 
 }

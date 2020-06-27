@@ -1,14 +1,13 @@
-import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder, AbstractControl } from '@angular/forms';
-import { Observable, of, Subject, Subscription } from 'rxjs';
-import { tap, map, takeUntil, filter } from 'rxjs/operators';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { PreferencesComponent } from '../preferences-component.class';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { cloneDeep } from 'lodash';
-import { JobsSettings, AppParams } from 'src/app/interfaces';
+import { Observable, of, Subscription } from 'rxjs';
+import { filter, tap } from 'rxjs/operators';
 import { APP_PARAMS } from 'src/app/app-params';
-import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
+import { AppParams, JobsSettings } from 'src/app/interfaces';
 import { SystemPreferencesService } from 'src/app/services';
+import { PreferencesComponent } from '../preferences-component.class';
+import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
 
 @Component({
   selector: 'app-jobs-preferences',
