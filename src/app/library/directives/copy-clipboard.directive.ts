@@ -1,4 +1,5 @@
 import { Directive, Input, Output, EventEmitter, HostListener, ElementRef, HostBinding } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Directive({
   selector: '[appCopyClipboard]',
@@ -27,6 +28,8 @@ export class CopyClipboardDirective {
       e.preventDefault();
 
       this.copied.emit(this.payload);
+      this.snack.open(`"${this.payload}" izkopēts!`, 'OK', { duration: 2000 });
+
     };
 
     document.addEventListener('copy', listener, false);
@@ -34,6 +37,8 @@ export class CopyClipboardDirective {
     document.removeEventListener('copy', listener, false);
   }
 
-  constructor() { }
+  constructor(
+    private snack: MatSnackBar,
+  ) { }
 
 }
