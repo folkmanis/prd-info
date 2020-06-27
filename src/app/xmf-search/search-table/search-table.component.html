@@ -12,8 +12,7 @@
             </ng-template>
             <div class="search-table">
                 <div *ngFor="let row of dataItem.Archives">
-                    <div class="table-element table-location" [appCopyClipboard]="row.Location"
-                        (copied)="onCopied($event)">
+                    <div class="table-element table-location" [appCopyClipboard]="row.Location">
                         {{row.Location}}
                     </div>
                     <div style="display: flex;">

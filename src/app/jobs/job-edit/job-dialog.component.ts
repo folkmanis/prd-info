@@ -22,7 +22,6 @@ export class JobDialogComponent implements OnInit, OnDestroy {
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: JobEditDialogData,
     private dialogRef: MatDialogRef<JobDialogComponent>,
-    private snack: MatSnackBar,
     private productsService: ProductsService,
     private chRef: ChangeDetectorRef,
   ) {
@@ -70,10 +69,5 @@ export class JobDialogComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._subs.unsubscribe();
   }
-
-  onCopy(value: string) {
-    this.snack.open(`${value} izkopēts!`, 'OK', { duration: 2000 });
-  }
-
 
 }

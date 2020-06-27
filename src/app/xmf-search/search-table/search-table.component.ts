@@ -17,7 +17,6 @@ export class SearchTableComponent implements OnInit, OnDestroy {
   @ViewChild(CdkScrollable, { static: true }) content: CdkScrollable;
 
   constructor(
-    private snack: MatSnackBar,
     private service: ArchiveSearchService,
   ) { }
 
@@ -38,10 +37,6 @@ export class SearchTableComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subs.unsubscribe();
-  }
-
-  onCopied(val: string) {
-    this.snack.open('Pārkopēts starpliktuvē: ' + val, 'OK', { duration: 3000 });
   }
 
 }
