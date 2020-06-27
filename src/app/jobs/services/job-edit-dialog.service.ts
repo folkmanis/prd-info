@@ -76,6 +76,12 @@ export class JobEditDialogService {
           validators: Validators.required,
         },
       ],
+      receivedDate: [
+        new Date(),
+        {
+          validators: Validators.required,
+        }
+      ],
       comment: [],
       customerJobId: [],
       jobStatus: this.fb.group({
@@ -88,10 +94,14 @@ export class JobEditDialogService {
   }
 
   private setFormValues(jobForm: FormGroup, job?: Partial<Job>): void {
-    const enabled = !job || !job.invoiceId;
     if (!job) { return; }
     jobForm.patchValue(job, { emitEvent: false });
-    if (enabled) { jobForm.enable(); } else { jobForm.disable(); }
+    if (job.invoiceId) {
+      jobForm.disable();
+    }
+    if (job.receivedDate) {
+      jobForm.get('receivedDate').disable({ emitEvent: false });
+    }
   }
 
 

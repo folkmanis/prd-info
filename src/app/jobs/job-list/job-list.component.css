@@ -47,7 +47,7 @@ td.column-state {
 } */
 
 td.column-jobId {
-    width: 4.6em;
+    width: 2.7em;
 }
 
 td.column-name span:first-of-type:hover {
@@ -56,7 +56,7 @@ td.column-name span:first-of-type:hover {
 }
 
 td.column-customer {
-    width: 2.5em;
+    width: 1.8em;
 }
 
 td.column-receivedDate {
@@ -90,6 +90,10 @@ td.column-name span:first-of-type {
 td.column-name span:last-of-type {
     display: none;
     flex: 0 0 40px;
+}
+
+td.column-name .mat-icon {
+    font-size: 18px;
 }
 
 tr:hover td.column-name span:last-of-type {

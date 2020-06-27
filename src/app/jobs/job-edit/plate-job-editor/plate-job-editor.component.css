@@ -1,12 +1,20 @@
-section {
-    padding: 8px 16px;
+.top-block {
+    display: flex;
+    flex-wrap: wrap;
 }
 
-h2 {
-    margin-left: 16px;
-    cursor: copy;
+.top-block section {
+    flex: 1;
+}
+
+section {
+    padding: 8px 0px;
 }
 
 .mat-radio-button ~ .mat-radio-button {
     margin-left: 16px;
+}
+
+.mat-form-field {
+    padding: 8px 0;
 }

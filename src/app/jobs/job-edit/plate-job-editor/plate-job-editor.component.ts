@@ -6,6 +6,7 @@ import { combineLatest, Observable, Subscription } from 'rxjs';
 import { map, tap, shareReplay, startWith, take } from 'rxjs/operators';
 import { CustomerPartial, Job, CustomerProduct, JobsSettings } from 'src/app/interfaces';
 import { CustomersService, SystemPreferencesService } from 'src/app/services';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-plate-job-editor',
@@ -19,7 +20,6 @@ export class PlateJobEditorComponent implements OnInit, OnDestroy {
 
   constructor(
     private customersService: CustomersService,
-    private snack: MatSnackBar,
     private sysPref: SystemPreferencesService,
   ) { }
 
@@ -31,6 +31,11 @@ export class PlateJobEditorComponent implements OnInit, OnDestroy {
   jobStates$ = (this.sysPref.getModulePreferences('jobs') as Observable<JobsSettings>).pipe(
     map(pref => pref.jobStates.filter(st => st.state < 50))
   );
+
+  receivedDate = {
+    min: moment().startOf('week'),
+    max: moment().endOf('week'),
+  };
 
   ngOnInit(): void {
     this.customers$ = combineLatest([
@@ -50,8 +55,8 @@ export class PlateJobEditorComponent implements OnInit, OnDestroy {
     return this.customerControl.valid || (this.productsControl.value instanceof Array && this.productsControl.value.length > 0);
   }
 
-  onCopy(value: string) {
-    this.snack.open(`${value} izkopēts!`, 'OK', { duration: 2000 });
+  jobIdAndName(): string {
+    return `${this.jobFormGroup.get('jobId').value}-${this.jobFormGroup.get('name').value}`;
   }
 
   private filterCustomer([customers, value]: [CustomerPartial[], string]): CustomerPartial[] {

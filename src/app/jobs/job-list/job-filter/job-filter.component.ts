@@ -11,7 +11,7 @@ const NULL_CUSTOMER = { CustomerName: undefined, _id: undefined, code: undefined
 const DEFAULT_FILTER: JobQueryFilter = {
   name: '',
   customer: '',
-  jobStatus: [10, 20, 30]
+  jobStatus: [10, 20]
 };
 
 @Component({

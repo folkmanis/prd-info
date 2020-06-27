@@ -1,35 +1,38 @@
 <form [formGroup]="filterForm" class="filter-row">
-    <!-- Atiestatīt formu -->
-    <button mat-icon-button (click)="onReset()">
-        <mat-icon>clear</mat-icon>
-    </button>
     <!-- Teksta meklēšana -->
-    <mat-form-field class="search">
-        <mat-label>Nosaukums</mat-label>
-        <input matInput type="text" formControlName="name">
-        <button mat-icon-button matSuffix (click)="name.reset()">
-            <mat-icon>clear</mat-icon>
-        </button>
-    </mat-form-field>
+    <section>
+        <mat-form-field class="search">
+            <mat-label>Nosaukums</mat-label>
+            <input matInput type="text" formControlName="name">
+            <button mat-icon-button matSuffix (click)="name.reset()">
+                <mat-icon>clear</mat-icon>
+            </button>
+        </mat-form-field>
+    </section>
     <!-- Klients -->
-    <mat-form-field>
-        <mat-label>Klients</mat-label>
-        <mat-select formControlName="customer">
-            <mat-option *ngFor="let customer of customers$ | async" [value]="customer.CustomerName">
-                {{customer.CustomerName}}
-            </mat-option>
-        </mat-select>
-        <button mat-icon-button matSuffix (click)="customer.reset()">
-            <mat-icon>clear</mat-icon>
-        </button>
-    </mat-form-field>
+    <section>
+        <mat-form-field>
+            <mat-label>Klients</mat-label>
+            <mat-select formControlName="customer">
+                <mat-option *ngFor="let customer of customers$ | async" [value]="customer.CustomerName">
+                    {{customer.CustomerName}}
+                </mat-option>
+            </mat-select>
+            <button mat-icon-button matSuffix (click)="customer.reset()">
+                <mat-icon>clear</mat-icon>
+            </button>
+        </mat-form-field>
+    </section>
     <!-- Darbu statusi -->
-    <mat-form-field>
-        <mat-label>Darba stadijas</mat-label>
-        <mat-select formControlName="jobStatus" multiple>
-            <mat-option *ngFor="let status of jobStates$ | async" [value]="status.state">
+    <section>
+        <mat-selection-list formControlName="jobStatus" dense>
+            <mat-list-option *ngFor="let status of jobStates$ | async" [value]="status.state" checkboxPosition="before">
                 {{status.description}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
+            </mat-list-option>
+        </mat-selection-list>
+    </section>
+    <!-- Atiestatīt formu -->
+    <button mat-raised-button color="primary" (click)="onReset()">
+        ATIESTATĪT ATLASI
+    </button>
 </form>

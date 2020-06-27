@@ -1,18 +1,21 @@
 .filter-row {
-    height: 64px;
+    /* height: 64px; */
     width: 100%;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    /* align-items: center; */
 }
 
-.filter-row mat-form-field {
-    padding-left: 16px;
+.filter-row section {
+    padding: 0 8px;
+    /* flex: 1; */
 }
 
-.filter-row .search {
-    flex: 0 1 200px;
+.mat-form-field {
+    width: 100%;
 }
 
-.filter-row .options {
-    flex: 1;
+.filter-row button {
+    margin: 8px;
+    align-self: center;
 }

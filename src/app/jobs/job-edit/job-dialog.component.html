@@ -1,20 +1,14 @@
 <div mat-dialog-title>
     <h2 *ngIf="jobForm.get('jobId').value as jobId; else noId">
-        <span [appCopyClipboard]="jobId" (copied)="onCopy($event)">
+        <span [appCopyClipboard]="jobId">
             {{jobId}}
         </span>
-        <button mat-icon-button>
-            <mat-icon [appCopyClipboard]="jobId + '-' + jobForm.get('name').value" (copied)="onCopy($event)" matSuffix>
-                filter_none
-            </mat-icon>
-        </button>
     </h2>
     <ng-template #noId>
         <h2>
             Jauns darbs
         </h2>
     </ng-template>
-
 </div>
 
 <div mat-dialog-content>

@@ -33,16 +33,19 @@
                 <td class="column-receivedDate">{{job.receivedDate | date:'dd.MM.yyyy'}}</td>
 
                 <!-- 'name' -->
-                <td class="column-name" [matTooltip]="job.name" [matTooltipShowDelay]="500"
-                    [matTooltipDisabled]="job.name.length < 50">
+                <td class="column-name">
                     <div>
-                        <span (click)="onJobEdit(job.jobId)">
+                        <span (click)="onJobEdit(job.jobId)" [matTooltip]="job.name" [matTooltipShowDelay]="500"
+                        [matTooltipDisabled]="job.name.length < 50">
                             {{job.name}}
                         </span>
                         <span>
-                            <button mat-icon-button>
-                                <mat-icon>done</mat-icon>
+                            <button mat-icon-button (click)="onJobEdit(job.jobId)" matTooltip="Atvērt darbu">
+                                <mat-icon>open_in_new</mat-icon>
                             </button>
+                            <button mat-icon-button [appCopyClipboard]="jobIdAndName(job.jobId, job.name)" matTooltip="Kopēt nosaukumu">
+                                <mat-icon>filter_none</mat-icon>
+                            </button>            
                         </span>
                     </div>
                 </td>
