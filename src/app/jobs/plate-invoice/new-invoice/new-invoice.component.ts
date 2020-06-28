@@ -37,7 +37,7 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
   jobs$ = this.jobService.jobs$;
   totals$: Observable<InvoicesTotals> = combineLatest([
     this.invoiceService.totals$,
-    this.invoiceService.grandTotal$.pipe(tap(console.log)),
+    this.invoiceService.grandTotal$,
   ]).pipe(
     map(([totals, grandTotal]) => ({ totals, grandTotal })),
   );
@@ -70,7 +70,6 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
       products: totals.map(tot => ({ ...tot, price: tot.total / tot.count, jobsCount: 0 })),
       total: grandTotal,
     };
-    console.log(invoice);
     const report = new InvoiceReport(invoice);
     report.open();
   }

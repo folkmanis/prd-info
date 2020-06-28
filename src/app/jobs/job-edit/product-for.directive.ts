@@ -46,7 +46,6 @@ export class ProductForOfDirective implements DoCheck {
   ) { }
 
   ngDoCheck(): void {
-    // console.log('do check', this._formArray, this._customerProducts);
     if (this._customerProducts && (this._formArray.controls.length !== this.count || this._custDirty)) {
       this._custDirty = false;
       this.count = this._formArray.controls.length;
