@@ -49,11 +49,11 @@
                                 matTooltip="Kopēt nosaukumu">
                                 <mat-icon>filter_none</mat-icon>
                             </button>
-                            <button *ngIf="job.jobStatus.generalStatus === 20" mat-icon-button color="accent"
+                            <button *ngIf="job.jobStatus.generalStatus === 20" mat-icon-button color="primary"
                                 matToolTip="Pabeigts!" (click)="onSetJobStatus(job.jobId, 30)">
                                 <mat-icon>check</mat-icon>
                             </button>
-                            <button *ngIf="job.jobStatus.generalStatus === 10" mat-icon-button color="accent"
+                            <button *ngIf="job.jobStatus.generalStatus === 10" mat-icon-button color="primary"
                                 matToolTip="Darbs aktīvs" (click)="onSetJobStatus(job.jobId, 20)">
                                 <mat-icon>label_important</mat-icon>
                             </button>
