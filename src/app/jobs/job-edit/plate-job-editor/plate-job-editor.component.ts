@@ -3,7 +3,7 @@ import { AbstractControl, AsyncValidatorFn, FormArray, FormBuilder, FormControl,
 import { MatInput } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { combineLatest, Observable, Subscription } from 'rxjs';
-import { map, tap, shareReplay, startWith, take } from 'rxjs/operators';
+import { map, tap, shareReplay, startWith, take, filter } from 'rxjs/operators';
 import { CustomerPartial, Job, CustomerProduct, JobsSettings } from 'src/app/interfaces';
 import { CustomersService, SystemPreferencesService } from 'src/app/services';
 import * as moment from 'moment';
@@ -39,7 +39,9 @@ export class PlateJobEditorComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.customers$ = combineLatest([
-      this.customersService.customers$,
+      this.customersService.customers$.pipe(
+        map(customers => customers.filter(cust => !cust.disabled)),
+      ),
       this.customerControl.valueChanges.pipe(
         startWith(''),
       ),
