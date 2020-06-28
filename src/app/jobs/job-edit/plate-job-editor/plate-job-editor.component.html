@@ -1,7 +1,7 @@
 <form [formGroup]="jobFormGroup">
-    <div class="top-block">
-        <div class="top-left">
-            <!-- Klients -->
+    <div class="wrapper">
+        <!-- Klients -->
+        <div>
             <mat-form-field>
                 <mat-label>Klients</mat-label>
                 <input type="text" matInput formControlName="customer" [matAutocomplete]="auto" #customerInput required>
@@ -14,52 +14,48 @@
                     {{customer.CustomerName}}
                 </mat-option>
             </mat-autocomplete>
-            <!-- Darba nosaukums -->
-            <mat-form-field>
-                <mat-label>Darba nosaukums</mat-label>
-                <input type="text" matInput formControlName="name" required>
-                <mat-error *ngIf="nameControl.hasError('required')">
-                    Jānorāda obligāti
-                </mat-error>
-                <button mat-icon-button [appCopyClipboard]="jobIdAndName()" matSuffix>
-                    <mat-icon>filter_none</mat-icon>
-                </button>
-            </mat-form-field>
         </div>
-        <div>
-            <!-- Datums -->
-            <mat-form-field>
-                <mat-label>Izveidošanas datums</mat-label>
-                <input matInput formControlName="receivedDate" [matDatepicker]="datePicker" required
-                    [min]="receivedDate.min" [max]="receivedDate.max">
-                <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
-                <mat-datepicker #datePicker></mat-datepicker>
-            </mat-form-field>
-            <!-- Statuss -->
-            <div formGroupName="jobStatus">
-                <mat-radio-group formControlName="generalStatus">
-                    <mat-radio-button *ngFor="let state of jobStates$ | async" [value]="state.state">
-                        {{state.description}}
-                    </mat-radio-button>
-                </mat-radio-group>
-            </div>
+        <!-- Darba nosaukums -->
+        <mat-form-field>
+            <mat-label>Darba nosaukums</mat-label>
+            <input type="text" matInput formControlName="name" required>
+            <mat-error *ngIf="nameControl.hasError('required')">
+                Jānorāda obligāti
+            </mat-error>
+            <button mat-icon-button [appCopyClipboard]="jobIdAndName()" matSuffix tabindex="-1">
+                <mat-icon>filter_none</mat-icon>
+            </button>
+        </mat-form-field>
+        <!-- Datums -->
+        <mat-form-field>
+            <mat-label>Izveidošanas datums</mat-label>
+            <input matInput formControlName="receivedDate" [matDatepicker]="datePicker" required
+                [min]="receivedDate.min" [max]="receivedDate.max">
+            <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+            <mat-datepicker #datePicker></mat-datepicker>
+        </mat-form-field>
+        <!-- Statuss -->
+        <div formGroupName="jobStatus">
+            <mat-radio-group formControlName="generalStatus">
+                <mat-radio-button *ngFor="let state of jobStates$ | async" [value]="state.state">
+                    {{state.description}}
+                </mat-radio-button>
+            </mat-radio-group>
         </div>
-    </div>
-    <section>
         <!-- Papildus apraksts -->
-        <mat-form-field [style.width.px]="400">
+        <mat-form-field>
             <mat-label>Darba apraksts</mat-label>
             <textarea matInput formControlName="comment"></textarea>
         </mat-form-field>
         <!-- Klienta darba numurs -->
-        <mat-form-field [style.width.px]="200" [style.marginLeft.px]="16">
+        <mat-form-field>
             <mat-label>Klienta darba numurs</mat-label>
             <input matInput formControlName="customerJobId">
         </mat-form-field>
-    </section>
-    <!-- Preces apakšforma -->
-    <section *ngIf="isProductsSet()">
-        <app-products-editor [prodFormArray]="productsControl" [customerProducts$]="customerProducts$">
-        </app-products-editor>
-    </section>
+        <!-- Preces apakšforma -->
+        <div *ngIf="isProductsSet()" class="products">
+            <app-products-editor [prodFormArray]="productsControl" [customerProducts$]="customerProducts$">
+            </app-products-editor>
+        </div>
+    </div>
 </form>

@@ -1,25 +1,17 @@
-.top-block {
-    display: flex;
-    flex-wrap: wrap;
+.wrapper {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 16px;
+    row-gap: 1em;
+    align-items: baseline;
+    padding: 16px 0;
 }
 
-.top-block > div {
-    flex: 1;
-}
-
-.top-block .top-left {
-    display: flex;
-    flex-direction: column;
-}
-
-section {
-    padding: 8px 0px;
-}
-
-.mat-radio-button ~ .mat-radio-button {
+.mat-radio-button~.mat-radio-button {
     margin-left: 16px;
 }
 
-.mat-form-field {
-    padding: 8px 0;
+.products {
+    grid-column-start: 1;
+    grid-column-end: -1;
 }
