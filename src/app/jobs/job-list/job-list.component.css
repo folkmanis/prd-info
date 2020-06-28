@@ -72,14 +72,14 @@ td.column-name div {
     align-items: center;
 }
 
-td.column-name span:nth-of-type(2) {
+td.column-name span.name {
     flex: 1 1 700px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-td.column-name span:first-of-type {
+td.column-name span.buttons {
     display: none;
     flex: 0 0 40px;
 }
@@ -88,6 +88,6 @@ td.column-name .mat-icon {
     font-size: 18px;
 }
 
-tr:hover td.column-name span:first-of-type {
+tr:hover td.column-name span.buttons {
     display: inherit;
 }
