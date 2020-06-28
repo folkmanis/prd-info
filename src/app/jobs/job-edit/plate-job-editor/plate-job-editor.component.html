@@ -1,6 +1,6 @@
 <form [formGroup]="jobFormGroup">
     <div class="top-block">
-        <section>
+        <div class="top-left">
             <!-- Klients -->
             <mat-form-field>
                 <mat-label>Klients</mat-label>
@@ -15,7 +15,7 @@
                 </mat-option>
             </mat-autocomplete>
             <!-- Darba nosaukums -->
-            <mat-form-field [style.width.px]="400">
+            <mat-form-field>
                 <mat-label>Darba nosaukums</mat-label>
                 <input type="text" matInput formControlName="name" required>
                 <mat-error *ngIf="nameControl.hasError('required')">
@@ -25,8 +25,8 @@
                     <mat-icon>filter_none</mat-icon>
                 </button>
             </mat-form-field>
-        </section>
-        <section>
+        </div>
+        <div>
             <!-- Datums -->
             <mat-form-field>
                 <mat-label>Izveidošanas datums</mat-label>
@@ -43,7 +43,7 @@
                     </mat-radio-button>
                 </mat-radio-group>
             </div>
-        </section>
+        </div>
     </div>
     <section>
         <!-- Papildus apraksts -->

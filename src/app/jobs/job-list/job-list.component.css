@@ -17,6 +17,7 @@ tr {
 
 tbody tr:hover {
     background-color: rgba(0, 0, 0, .08);
+    cursor: pointer;
 }
 
 td, th {
@@ -39,20 +40,11 @@ th:first-of-type, td:first-of-type {
 }
 
 td.column-state {
-    width: 48px;
+    width: 24px;
 }
-
-/* td.column-state button {
-    color: yellow;
-} */
 
 td.column-jobId {
     width: 2.7em;
-}
-
-td.column-name span:first-of-type:hover {
-    cursor: pointer;
-    font-weight: bold;
 }
 
 td.column-customer {
@@ -80,14 +72,14 @@ td.column-name div {
     align-items: center;
 }
 
-td.column-name span:first-of-type {
+td.column-name span:nth-of-type(2) {
     flex: 1 1 700px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-td.column-name span:last-of-type {
+td.column-name span:first-of-type {
     display: none;
     flex: 0 0 40px;
 }
@@ -96,6 +88,6 @@ td.column-name .mat-icon {
     font-size: 18px;
 }
 
-tr:hover td.column-name span:last-of-type {
+tr:hover td.column-name span:first-of-type {
     display: inherit;
 }

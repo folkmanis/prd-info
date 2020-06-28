@@ -49,4 +49,13 @@ export class JobListComponent implements OnInit, AfterViewInit, OnDestroy {
     return `${jobId}-${name}`;
   }
 
+  onSetJobStatus(jobId: number, status: number) {
+    this.jobService.updateJob({
+      jobId,
+      jobStatus: {
+        generalStatus: status,
+      }
+    }).subscribe();
+  }
+
 }

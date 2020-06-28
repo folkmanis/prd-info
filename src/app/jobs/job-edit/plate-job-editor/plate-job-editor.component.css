@@ -3,8 +3,13 @@
     flex-wrap: wrap;
 }
 
-.top-block section {
+.top-block > div {
     flex: 1;
+}
+
+.top-block .top-left {
+    display: flex;
+    flex-direction: column;
 }
 
 section {

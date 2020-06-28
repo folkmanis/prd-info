@@ -18,5 +18,5 @@ export interface CustomerResponse extends AppHttpResponseBase<Customer> {
     customer: Customer | null;
 }
 
-export type CustomerPartial = Pick<Customer, '_id' | 'CustomerName' | 'code'>;
+export type CustomerPartial = Pick<Customer, '_id' | 'CustomerName' | 'code' | 'disabled'>;
 

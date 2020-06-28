@@ -15,37 +15,48 @@
             <tr *cdkVirtualFor="let job of dataSource$; let idx=index;" [class.job-completed]="job.invoiceId">
                 <!-- statusa indikators -->
                 <td class="column-state">
-                    <button mat-icon-button>
-                        <mat-icon color="primary">
-                            label
-                        </mat-icon>
-                    </button>
+                    <mat-icon *ngIf="job.jobStatus.generalStatus === 20" color="primary">
+                        label_important
+                    </mat-icon>
                 </td>
                 <!-- jobId -->
-                <td class="column-jobId">
+                <td class="column-jobId" (click)="onJobEdit(job.jobId)">
                     {{job.jobId}}
                 </td>
 
                 <!-- customer -->
-                <td class="column-customer">{{job.custCode}}</td>
+                <td class="column-customer" (click)="onJobEdit(job.jobId)">
+                    {{job.custCode}}
+                </td>
 
                 <!-- 'receivedDate' -->
-                <td class="column-receivedDate">{{job.receivedDate | date:'dd.MM.yyyy'}}</td>
+                <td class="column-receivedDate" (click)="onJobEdit(job.jobId)">
+                    {{job.receivedDate | date:'dd.MM.yyyy'}}
+                </td>
 
                 <!-- 'name' -->
                 <td class="column-name">
                     <div>
-                        <span (click)="onJobEdit(job.jobId)" [matTooltip]="job.name" [matTooltipShowDelay]="500"
-                        [matTooltipDisabled]="job.name.length < 50">
-                            {{job.name}}
-                        </span>
                         <span>
                             <button mat-icon-button (click)="onJobEdit(job.jobId)" matTooltip="Atvērt darbu">
                                 <mat-icon>open_in_new</mat-icon>
                             </button>
-                            <button mat-icon-button [appCopyClipboard]="jobIdAndName(job.jobId, job.name)" matTooltip="Kopēt nosaukumu">
+                            <button mat-icon-button [appCopyClipboard]="jobIdAndName(job.jobId, job.name)"
+                                matTooltip="Kopēt nosaukumu">
                                 <mat-icon>filter_none</mat-icon>
-                            </button>            
+                            </button>
+                            <button *ngIf="job.jobStatus.generalStatus === 20" mat-icon-button color="accent"
+                                matToolTip="Pabeigts!" (click)="onSetJobStatus(job.jobId, 30)">
+                                <mat-icon>check</mat-icon>
+                            </button>
+                            <button *ngIf="job.jobStatus.generalStatus === 10" mat-icon-button color="accent"
+                                matToolTip="Darbs aktīvs" (click)="onSetJobStatus(job.jobId, 20)">
+                                <mat-icon>label_important</mat-icon>
+                            </button>
+                        </span>
+                        <span (click)="onJobEdit(job.jobId)" [matTooltip]="job.name" [matTooltipShowDelay]="500"
+                            [matTooltipDisabled]="job.name.length < 50">
+                            {{job.name}}
                         </span>
                     </div>
                 </td>

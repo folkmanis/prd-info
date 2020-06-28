@@ -1,14 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { identity, pickBy } from 'lodash';
 import { Subscription } from 'rxjs';
-import { debounceTime, map } from 'rxjs/operators';
+import { debounceTime, map, filter } from 'rxjs/operators';
 import { JobQueryFilter, JobsSettings } from 'src/app/interfaces';
 import { CustomersService, SystemPreferencesService } from 'src/app/services';
 import { JobService } from '../../services/job.service';
 
 const NULL_CUSTOMER = { CustomerName: undefined, _id: undefined, code: undefined };
 const DEFAULT_FILTER: JobQueryFilter = {
+  jobsId: null,
   name: '',
   customer: '',
   jobStatus: [10, 20]
@@ -37,9 +38,14 @@ export class JobFilterComponent implements OnInit, OnDestroy {
 
   filterForm = this.fb.group({
     name: undefined,
+    jobsId: [
+      undefined,
+      { validators: [Validators.pattern(/^[0-9]+$/)] }
+    ],
     customer: undefined,
     jobStatus: undefined,
   });
+  get jobsId(): FormControl { return this.filterForm.get('jobsId') as FormControl; }
   get name(): FormControl { return this.filterForm.get('name') as FormControl; }
   get customer(): FormControl { return this.filterForm.get('customer') as FormControl; }
   private readonly _subs = new Subscription();
@@ -47,6 +53,7 @@ export class JobFilterComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this._subs.add(
       this.filterForm.valueChanges.pipe(
+        filter(val => this.filterForm.valid),
         debounceTime(500),
         map(normalizeFilter),
       ).subscribe(this.jobService.filter$)
@@ -64,12 +71,13 @@ export class JobFilterComponent implements OnInit, OnDestroy {
 
 }
 
-function normalizeFilter(filter: { [key: string]: string | number[]; }): JobQueryFilter {
+function normalizeFilter(jobFilter: { [key: string]: string | number[]; }): JobQueryFilter {
   return pickBy(
     {
-      name: filter.name ? filter.name as string : undefined,
-      customer: filter.customer ? filter.customer as string : undefined,
-      jobStatus: filter.jobStatus.length ? filter.jobStatus : undefined,
+      jobsId: jobFilter.jobsId ? +jobFilter.jobsId : undefined,
+      name: jobFilter.name ? jobFilter.name as string : undefined,
+      customer: jobFilter.customer ? jobFilter.customer as string : undefined,
+      jobStatus: jobFilter.jobStatus.length ? jobFilter.jobStatus : undefined,
       unwindProducts: 1,
     } as JobQueryFilter,
     identity
