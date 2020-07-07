@@ -9,6 +9,7 @@ import { EndDialogComponent } from './end-dialog/end-dialog.component';
 import { TotalValidatorDirective } from './upload-tabula/editor/total-validator.directive';
 import { PlusPipePipe } from './upload-tabula/editor/plus-pipe.pipe';
 import { UploadService, FileDropDirective, DragDropDirective, DragableDirective } from './services';
+import { KastesApiService } from '../services/kastes-api.service';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { UploadService, FileDropDirective, DragDropDirective, DragableDirective 
   providers: [
     UploadService,
     ParserService,
+    { provide: KastesApiService, useExisting: KastesApiService },
   ]
 })
 export class UploadModule { }

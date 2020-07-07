@@ -1,28 +1,30 @@
-<form [formGroup]="editorForm" (submit)="onAccept()" #forma>
-    <div class="cipari">
-        <div *ngFor="let col of boxColors" class="color-number" [style.color]="prefs[col]">
-            <span *ngIf="editorForm.errors && editorForm.errors[col]" class="inv-tot">
-                {{editorForm.errors[col] | plusPipe}}
-            </span>
-            <span *ngIf="!(editorForm.errors && editorForm.errors[col])">
-                {{adrBox.totals[col]}}
-            </span>
+<div *ngIf="preferences$ | async as prefs">
+    <form [formGroup]="editorForm" (submit)="onAccept()" #forma>
+        <div class="cipari">
+            <div *ngFor="let col of boxColors" class="color-number" [style.color]="prefs[col]">
+                <span *ngIf="editorForm.errors && editorForm.errors[col]" class="inv-tot">
+                    {{editorForm.errors[col] | plusPipe}}
+                </span>
+                <span *ngIf="!(editorForm.errors && editorForm.errors[col])">
+                    {{adrBox.totals[col]}}
+                </span>
+            </div>
+            <div class="color-number total">{{adrBox.total}}</div>
         </div>
-        <div class="color-number total">{{adrBox.total}}</div>
-    </div>
-    <div *ngFor="let box of adrBox.box; index as i" class="cipari" [formGroupName]="i">
-        <mat-form-field *ngFor="let col of boxColors" class="color-number">
-            <input matInput type="number" [formControlName]="col" [style.color]="prefs[col]" autocomplete="off">
-        </mat-form-field>
-        <div class="color-number total">
-            <span *ngIf="editorForm.errors && editorForm.errors[i]" class="inv-tot">
-                {{editorForm.errors[i] | plusPipe}}
-            </span>
-            <span *ngIf="!(editorForm.errors && editorForm.errors[i])">
-                {{rowSums[i]}}
-            </span>
+        <div *ngFor="let box of adrBox.box; index as i" class="cipari" [formGroupName]="i">
+            <mat-form-field *ngFor="let col of boxColors" class="color-number">
+                <input matInput type="number" [formControlName]="col" [style.color]="prefs[col]" autocomplete="off">
+            </mat-form-field>
+            <div class="color-number total">
+                <span *ngIf="editorForm.errors && editorForm.errors[i]" class="inv-tot">
+                    {{editorForm.errors[i] | plusPipe}}
+                </span>
+                <span *ngIf="!(editorForm.errors && editorForm.errors[i])">
+                    {{rowSums[i]}}
+                </span>
+            </div>
         </div>
-    </div>
-    <button mat-button color="primary" type="submit" [disabled]="!editorForm.valid">OK</button>
-    <button mat-button color="primary" (click)="onCancel()"> Atcelt</button>
-</form>
+        <button mat-button color="primary" type="submit" [disabled]="!editorForm.valid">OK</button>
+        <button mat-button color="primary" (click)="onCancel()"> Atcelt</button>
+    </form>
+</div>

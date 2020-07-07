@@ -1,0 +1,12 @@
+<nav mat-tab-nav-bar>
+    <a mat-tab-link *ngFor="let kaste of apjomi$ | async" [routerLink]="['../../selector', kaste]"
+        [active]="kaste === selected">
+        {{kaste}}
+    </a>
+</nav>
+
+<app-kopskaiti></app-kopskaiti>
+
+<div class="main-content">
+    <app-tabula></app-tabula>
+</div>

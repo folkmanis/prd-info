@@ -1,0 +1,28 @@
+<div class="adrese-form">
+    <form [formGroup]="inputForm" (ngSubmit)="onLabelSubmit()">
+        <mat-form-field>
+            <input matInput formControlName="kods" type="text" placeholder="Adreses kods:" autocomplete="off" #kodsInput
+                autofocus>
+        </mat-form-field>
+        <button mat-raised-button type="submit" #submitButton>Apstiprināt</button>
+    </form>
+    <div *ngIf="colors$ | async as colors;" class="result">
+        <span *ngIf="statuss$ | async as statuss; else bridinajums">
+            <div class="item" [style.color]="colors.yellow">{{statuss.kastes?.yellow | hideZero}}</div>
+            <div class="item" [style.color]="colors.rose">{{statuss.kastes?.rose | hideZero}}</div>
+            <div class="item" [style.color]="colors.white">{{statuss.kastes?.white | hideZero}}</div>
+            <div class="adrese">{{statuss.adrese}}</div>
+        </span>
+        <ng-template #bridinajums>
+            <span class="warn">
+                Atbilstošs ieraksts netika atrasts!
+            </span>
+        </ng-template>
+    </div>
+</div>
+
+<app-kopskaiti></app-kopskaiti>
+
+<div class="main-content">
+    <app-tabula [forLabels]="true"></app-tabula>
+</div>

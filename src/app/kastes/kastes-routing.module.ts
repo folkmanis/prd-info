@@ -1,8 +1,9 @@
 import { NgModule, Component } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { KastesMainMenuComponent } from './kastes-main-menu/kastes-main-menu.component';
-import { SelectorComponent } from './selector/selector.component';
-import { LabelsComponent } from './labels/labels.component';
+import { SelectorComponent } from './select-tabula/selector/selector.component';
+import { LabelsComponent } from './select-tabula/labels/labels.component';
+import { SelectTabulaComponent } from './select-tabula/select-tabula.component';
 import { UploadComponent } from './upload/upload.component';
 import { PasutijumiComponent } from './pasutijumi/pasutijumi.component';
 import { KastesComponent } from './kastes.component';
@@ -18,13 +19,33 @@ const routes: Routes = [
         component: KastesMainMenuComponent,
       },
       {
-        path: 'selector/:id',
-        component: SelectorComponent,
+        path: 'selector',
+        redirectTo: 'tabula/selector/0',
       },
-      { path: 'selector', redirectTo: 'selector/0', },
       {
         path: 'labels',
-        component: LabelsComponent,
+        redirectTo: 'tabula/labels',
+      },
+      {
+        path: 'tabula',
+        component: SelectTabulaComponent,
+        children: [
+          {
+            path: 'selector/:apjoms',
+            component: SelectorComponent,
+          },
+          {
+            path: 'selector',
+            redirectTo: 'selector/0',
+          },
+          {
+            path: 'labels',
+            component: LabelsComponent,
+            data: {
+              forLabels: false,
+            }
+          },
+        ],
       },
       {
         path: 'upload',
@@ -38,6 +59,7 @@ const routes: Routes = [
   },
   { path: '**', redirectTo: '' },
 ];
+
 
 @NgModule({
   imports: [RouterModule.forChild(routes)], // { enableTracing: true }

@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, of, Subject } from 'rxjs';
-import { Pasutijums } from './pasutijums';
+import { Pasutijums } from '../interfaces';
 import { KastesHttpService, CleanupResponse } from './kastes-http.service';
 import { KastesPreferencesService } from './kastes-preferences.service';
 import { tap, map, switchMap, filter } from 'rxjs/operators';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class PasutijumiService {
   private pasutijumi$: BehaviorSubject<Pasutijums[]> = new BehaviorSubject([]);
   private loaded = false;
@@ -34,7 +32,7 @@ export class PasutijumiService {
   }
 
   setPasutijums(id: string): Observable<boolean> {
-    return this.kastesPreferencesService.update({ pasutijums: id });
+    return this.kastesPreferencesService.updateUserPreferences({ pasutijums: id });
   }
 
   addPasutijums(name: string): Observable<string> {

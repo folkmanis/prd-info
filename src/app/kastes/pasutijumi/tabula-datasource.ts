@@ -1,7 +1,7 @@
 import { DataSource } from '@angular/cdk/collections';
 import { Observable } from 'rxjs';
 
-import { Pasutijums } from '../services/pasutijums';
+import { Pasutijums } from '../interfaces';
 import { PasutijumiService } from '../services/pasutijumi.service';
 
 export class TabulaDatasource extends DataSource<Pasutijums> {

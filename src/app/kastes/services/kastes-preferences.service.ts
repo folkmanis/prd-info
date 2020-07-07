@@ -1,51 +1,47 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject, BehaviorSubject, zip, merge, of, combineLatest, Subscription } from 'rxjs';
-import { KastesPreferences, UserPreferences, SystemPreferences } from './preferences';
-import { KastesHttpService } from './kastes-http.service';
-import { map, switchMap, tap, filter, shareReplay, take } from 'rxjs/operators';
+import { Observable, Subject, combineLatest } from 'rxjs';
+import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
+import { KastesSettings } from 'src/app/interfaces';
 import { SystemPreferencesService } from 'src/app/services';
+import { KastesApiService } from './kastes-api.service';
+import { KastesUserPreferences } from '../interfaces';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class KastesPreferencesService {
 
   constructor(
-    private kastesHttpService: KastesHttpService,
     private systemPreferencesService: SystemPreferencesService,
+    private kastesApi: KastesApiService,
   ) { }
 
-  private sys$ = this.systemPreferencesService.sysPreferences$.pipe(
-    map(sys => sys.get('kastes') as SystemPreferences),
-    filter(sys => !!sys),
+  kastesSystemPreferences$ = this.systemPreferencesService.sysPreferences$.pipe(
+    map(sys => sys.get('kastes') as KastesSettings),
   );
-  private _usr$: Subject<UserPreferences> = new Subject();
-  private usr$ = merge(this._usr$, this.kastesHttpService.getPreferencesHttp())
-    .pipe(
-      shareReplay(1),
-    );
 
-  get preferences(): Observable<KastesPreferences> {
-    return combineLatest([this.sys$, this.usr$])
-      .pipe(
-        map(([sys, usr]) => ({ ...sys, ...usr })),
+  private _userPreferences$: Observable<KastesUserPreferences>;
+  private _reload$ = new Subject<void>();
+
+  get kastesUserPreferences$(): Observable<KastesUserPreferences> {
+    if (!this._userPreferences$) {
+      this._userPreferences$ = this._reload$.pipe(
+        startWith({}),
+        switchMap(() => this.kastesApi.kastes.getUserPreferences()),
+        shareReplay(1),
       );
+    }
+    return this._userPreferences$;
   }
 
-  update(pr: Partial<UserPreferences>): Observable<boolean> {
-    return this.kastesHttpService.setUserPreferencesHttp(pr).pipe(
-      switchMap(resp => resp ? this.updatePreferences(pr) : of(false)),
-    );
-  }
+  preferences$ = combineLatest([
+    this.kastesSystemPreferences$,
+    this.kastesUserPreferences$,
+  ]).pipe(
+    map(([sys, usr]) => ({ ...sys, ...usr })),
+  );
 
-  private updatePreferences(changes: Partial<UserPreferences>): Observable<boolean> {
-    return this.usr$.pipe(
-      take(1),
-      map(usr => {
-        Object.keys(changes).forEach(key => usr[key] = changes[key]);
-        this._usr$.next(usr);
-        return true;
-      })
+  updateUserPreferences(prefs: Partial<KastesUserPreferences>): Observable<boolean> {
+    return this.kastesApi.kastes.setUserPreferences(prefs).pipe(
+      tap(() => this._reload$.next()),
     );
   }
 

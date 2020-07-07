@@ -77,7 +77,7 @@ export class UploadService {
       tap(pasId => pasutijums = pasId),
       switchMap(pasId => this.kastesHttpService.uploadTableHttp(this.adresesBox.uploadRow(pasId))),
       tap(res => affectedRows = res.affectedRows),
-      switchMap(() => this.kastesPreferencesService.update({ pasutijums })),
+      switchMap(() => this.kastesPreferencesService.updateUserPreferences({ pasutijums })),
       map(() => ({ affectedRows }))
     );
   }

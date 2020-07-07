@@ -1,3 +1,16 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.main-content {
+  flex: 1;
+  height: 100%;
+  overflow: auto;
+}
+
 div.selector {
   display: block;
   margin: 0;
@@ -5,8 +18,8 @@ div.selector {
   overflow: hidden;
   background-color: #3f525c;
 }
-a.item
-{
+
+a.item {
   display: block;
   float: left;
   color: #eee;
@@ -15,11 +28,13 @@ a.item
   text-decoration: none;
   width: auto;
 }
+
 a.item:hover {
   background-color: #eee;
   color: #3f525c;
   cursor: pointer;
 }
+
 a.item.selected {
   background-color: #eee;
   color: #3f525c;

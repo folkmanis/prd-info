@@ -1,9 +1,0 @@
-<div>
-    <app-select-pasutijums></app-select-pasutijums>
-</div>
-<nav mat-tab-nav-bar >
-    <a mat-tab-link *ngFor="let kaste of kastes$ | async" [routerLink]="['../../selector', kaste]" [active]="kaste === selected">
-        {{kaste}}
-    </a>
-</nav>
-<app-tabula></app-tabula>

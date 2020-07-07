@@ -1,5 +1,4 @@
-import { Veikals } from '../../services/veikals';
-export { Veikals, Kaste } from '../../services/veikals';
+import { Veikals } from '../../interfaces';
 
 export type UploadRow = Veikals;
 

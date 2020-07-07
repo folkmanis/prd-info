@@ -1,0 +1,16 @@
+<div *ngIf="totals$ | async as totals; else loading;" class="kopskaiti mat-small">
+    <div>
+      Pavisam sūtījumu: <span class="mat-body-strong">{{totals.total}}</span>
+      Nav nosūtīti: <span class="mat-body-strong">{{totals.kastesRemain}}</span>
+      Nav uzlīmes: <span class="mat-body-strong">{{totals.labelsRemain}}</span>
+    </div>
+    <div class="kopskaiti mat-small">
+      <app-colors-output [colorsRemain]="totals"></app-colors-output>
+    </div>
+  </div>
+  <ng-template #loading>
+    <div>
+      ...Loading
+    </div>
+  </ng-template>
+  

@@ -2,10 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, zip } from 'rxjs';
 import { HttpOptions } from '../../library/http/http-options';
-import { KastesPreferences, UserPreferences, SystemPreferences } from './preferences';
-import { Pasutijums } from './pasutijums';
-import { Veikals } from './veikals';
-import { Kaste } from './kaste.class';
+import { Pasutijums } from '../interfaces';
+import { Kaste, Veikals, KastesUserPreferences } from '../interfaces';
 import { tap, switchMap, map } from 'rxjs/operators';
 
 export interface CleanupResponse { deleted: { pasutijumi: number, veikali: number, }; }
@@ -40,14 +38,14 @@ export class KastesHttpService {
     return this.http.post<{ changedRows: number; }>(this.httpPathKastes + 'updatepasutijums', { pasutijums: pas }, new HttpOptions());
   }
 
-  getPreferencesHttp(): Observable<UserPreferences> {
+  getPreferencesHttp(): Observable<KastesUserPreferences> {
     return this.getUserPreferencesHttp();
     // return zip(this.getSystemPreferencesHttp(), this.getUserPreferencesHttp()).pipe(
     //   map(([sys, usr]) => ({ ...sys, ...usr })),
     // );
   }
-  getUserPreferencesHttp(): Observable<UserPreferences> {
-    return this.http.get<UserPreferences>(this.httpPathKastes + 'preferences', new HttpOptions());
+  getUserPreferencesHttp(): Observable<KastesUserPreferences> {
+    return this.http.get<KastesUserPreferences>(this.httpPathKastes + 'preferences', new HttpOptions());
   }
   /**
    * Iestata jaunas lietotāja preferences kastes modulim
@@ -55,7 +53,7 @@ export class KastesHttpService {
    * @param preferences Preferences objekts ar jaunajām preferencēm
    * @param path Relatīvais ceļš
    */
-  setUserPreferencesHttp(preferences: Partial<UserPreferences>): Observable<boolean> {
+  setUserPreferencesHttp(preferences: Partial<KastesUserPreferences>): Observable<boolean> {
     return this.http.post<boolean>(this.httpPathKastes + 'preferences', { preferences }, new HttpOptions());
   }
   /**
@@ -63,32 +61,6 @@ export class KastesHttpService {
    */
   pasutijumiCleanup(): Observable<CleanupResponse> {
     return this.http.delete<CleanupResponse>(this.httpPathKastes + 'pasutijums-cleanup', new HttpOptions());
-  }
-  /**
-   * Universālā GET funkcija
-   * @param path pieprasījuma ceļš
-   * @param opt parametri
-   */
-  getKastesHttp<T>(path: string, opt: { [key: string]: any; }): Observable<T> {
-    return this.http.get<T>(this.httpPathKastes + path, new HttpOptions(opt));
-  }
-  /**
-   *
-   * @param pasutijums Pasūtījuma id
-   */
-  getTotalsKastesHttp(pasutijums: string): Observable<TotalsKastes> {
-    return this.http.get<TotalsKastes>(this.httpPathKastes + 'totals-kastes', new HttpOptions({ pasutijums }));
-  }
-  /**
-   * Atgriež vienas kastes ierakstu
-   * @param path Relatīvais ceļš
-   */
-  getKasteHttp(params: { id: string, kaste: number; }): Observable<Kaste> {
-    return this.http.get<Kaste>(this.httpPathKastes + 'kaste', new HttpOptions(params));
-  }
-
-  setGatavsHttp(body: { field: string, id: string, kaste: number, yesno: boolean; }): Observable<{ changedRows: number; }> {
-    return this.http.post<{ changedRows: number; }>(this.httpPathKastes + 'gatavs', body, new HttpOptions());
   }
 
   uploadTableHttp(veikali: Veikals[]): Observable<{ affectedRows: number; }> {

@@ -1,0 +1,40 @@
+.tabula-container {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.full-width-table {
+  width: 100%;
+}
+
+.mat-column-kods {
+  width: 32px
+}
+
+.mat-column-gatavs {
+  width: 72px;
+}
+
+.mat-column-gatavs div {
+  display: flex;
+  justify-content: center;
+}
+
+.selected {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.label {
+  color: green;
+}
+
+.cipari {
+  /* text-align: center; */
+  font-size: 125%;
+  padding: 0 8px;
+}
+
+div.blank {
+  height: 64px;
+}

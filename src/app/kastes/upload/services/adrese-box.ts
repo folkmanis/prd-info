@@ -1,4 +1,5 @@
-import { UploadRow, Kaste } from './upload-row';
+import { UploadRow } from './upload-row';
+import { Kaste } from '../../interfaces';
 import { Observable, of } from 'rxjs';
 
 export const MaxPakas = 5;
@@ -166,7 +167,7 @@ export class AdreseBox {
             adrese: this.adrese,
             pasutijums,
             kastes: this.box.map(bx => (
-                { ...bx, total: bx.sum(), gatavs: false, uzlime: false } as Kaste)
+                { ...bx, total: bx.sum(), gatavs: false, uzlime: false })
             )
         };
         return data;

@@ -3,7 +3,6 @@ import { FormControl, FormGroup, ValidatorFn, AbstractControl, ValidationErrors 
 import { AdreseBox, Box } from '../../services/adrese-box';
 import { TotalValidatorDirective } from './total-validator.directive';
 import { KastesPreferencesService } from '../../../services/kastes-preferences.service';
-import { KastesPreferences } from '../../../services/preferences';
 
 
 @Component({
@@ -15,7 +14,7 @@ export class EditorComponent implements OnInit {
   @Input() adrBox: AdreseBox;
   @Output() finish: EventEmitter<boolean> = new EventEmitter(); // false - ja atcēla, true - ja izmainīja
   boxColors = ['yellow', 'rose', 'white'];
-  prefs: KastesPreferences;
+  preferences$ = this.kastesPreferencesService.preferences$;
   editorForm: FormGroup;
   rowSums: number[] = [];
   colSums: Box = new Box();
@@ -25,7 +24,6 @@ export class EditorComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.kastesPreferencesService.preferences.subscribe((pr) => this.prefs = pr);
     this.createFormCtr(this.adrBox.box);
     ({ row: this.rowSums, col: this.colSums } = TotalValidatorDirective.calcTotals(this.editorForm.value));
     this.editorForm.valueChanges.subscribe((val) => {

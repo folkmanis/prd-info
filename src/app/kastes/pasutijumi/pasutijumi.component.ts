@@ -7,7 +7,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { TabulaDatasource } from './tabula-datasource';
 import { PasutijumiService } from '../services/pasutijumi.service';
-import { Pasutijums } from '../services/pasutijums';
+import { Pasutijums } from '../interfaces';
 import { filter, switchMap } from 'rxjs/operators';
 
 @Component({

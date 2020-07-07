@@ -4,7 +4,6 @@ import { UploadService } from '../services/upload.service';
 import { MatTable } from '@angular/material/table';
 import { AdreseBox, AdrBoxTotals } from '../services/adrese-box';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
-import { KastesPreferences } from '../../services/preferences';
 
 @Component({
   selector: 'app-upload-tabula',
@@ -20,7 +19,7 @@ export class UploadTabulaComponent implements OnInit, AfterViewInit {
 
   dataSource: UploadTabulaDataSource;
   totals: AdrBoxTotals;
-  prefs$ = this.kastesPreferencesService.preferences;
+  prefs$ = this.kastesPreferencesService.preferences$;
   edit: boolean[] = [];
   editActive = false;
 
