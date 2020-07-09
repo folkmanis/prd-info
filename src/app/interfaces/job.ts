@@ -21,7 +21,6 @@ export type JobPartial =
     Pick<Job, 'receivedDate' | 'customerJobId' | 'name' | 'jobId' | 'customer' | 'products' | 'invoiceId' | 'custCode'>;
 
 export interface JobResponse extends AppHttpResponseBase<Job> {
-    insertedCount?: number;
     // jobs?: JobPartial[];
     // job?: Job;
 }
