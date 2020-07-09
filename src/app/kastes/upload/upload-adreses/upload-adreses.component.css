@@ -1,24 +1,37 @@
 .full-width-table {
   width: 100%;
 }
-td {
-  min-width: 30px;
+
+th.mat-header-cell {
+  height: 64px;
 }
-tr {
-  height: 36px;
+
+th.mat-header-cell>div {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.column-check {
+  height: 24px;
+}
+
+.drop-target {
+  height: 40px;
+}
+
+th .drop-target div.mat-chip-list-wrapper {
+  margin: inherit;
+}
+
+.mat-cell {
+  padding: 0 8px;
 }
 
 .button-bar {
-  width: 100%;
-  height: 40px;
-  padding: 8px;
-  margin: 8px 0;
+  padding: 16px;
 }
+
 .button-bar button {
-  margin-right: 8px;
-}
-.drop-target {
-  width: 100%;
-  height: 40px;
-  min-width: 60px;
+  margin-right: 16px;
 }
