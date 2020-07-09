@@ -55,7 +55,7 @@ export class PasutijumiComponent implements OnInit, AfterViewInit {
     ).subscribe(resp => {
       this.snackBar.open(
         resp
-          ? `Likvidēti ${resp.deleted.pasutijumi} pasūtījumi un ${resp.deleted.veikali} pakošanas ieraksti`
+          ? `Likvidēti ${resp.orders} pasūtījumi un ${resp.veikali} pakošanas ieraksti`
           : 'Kaut kas nogāja greizi',
         'OK',
         { duration: 3000 });

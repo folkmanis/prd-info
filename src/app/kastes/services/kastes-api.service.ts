@@ -5,7 +5,7 @@ import { AppParams } from 'src/app/interfaces';
 import { APP_PARAMS } from 'src/app/app-params';
 import { ApiBase, HttpOptions } from 'src/app/library';
 
-import { Kaste, KasteResponse, KastesUserPreferences } from '../interfaces';
+import { Kaste, KasteResponse, KastesUserPreferences, Pasutijums, OrdersResponse, CleanupResponse, Veikals } from '../interfaces';
 import { map, mapTo } from 'rxjs/operators';
 
 @Injectable()
@@ -19,6 +19,7 @@ export class KastesApiService {
   private readonly apiPath = this.params.apiPath;
 
   kastes = new KastesApi(this.http, this.apiPath + 'kastes/');
+  orders = new OrdersApi(this.http, this.apiPath + 'kastes-orders/');
 
 }
 
@@ -62,4 +63,20 @@ export class KastesApi extends ApiBase<Kaste> {
         map(resp => resp.data as Kaste | undefined)
       );
   }
+
+  putTable(veikali: Veikals[]): Observable<number> {
+    return this.http.put<KasteResponse>(this.path, veikali, new HttpOptions()).pipe(
+      map(resp => resp.insertedCount)
+    );
+  }
+}
+
+export class OrdersApi extends ApiBase<Pasutijums> {
+
+  deleteInactive(): Observable<CleanupResponse> {
+    return this.http.delete<OrdersResponse>(this.path).pipe(
+      map(resp => resp.deleted)
+    );
+  }
+
 }

@@ -1,34 +1,29 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, of, Subject } from 'rxjs';
-import { Pasutijums } from '../interfaces';
-import { KastesHttpService, CleanupResponse } from './kastes-http.service';
+import { Observable, Subject, EMPTY } from 'rxjs';
+import { tap, map, switchMap, filter, shareReplay, startWith } from 'rxjs/operators';
+import { Pasutijums, CleanupResponse } from '../interfaces';
 import { KastesPreferencesService } from './kastes-preferences.service';
-import { tap, map, switchMap, filter } from 'rxjs/operators';
+import { KastesApiService, KastesApi } from './kastes-api.service';
 
 @Injectable()
 export class PasutijumiService {
-  private pasutijumi$: BehaviorSubject<Pasutijums[]> = new BehaviorSubject([]);
-  private loaded = false;
-  private update = false;
+  private _pasutijumi$: Observable<Pasutijums[]>;
+  reload$: Subject<void> = new Subject();
+
   constructor(
-    private kastesHttpService: KastesHttpService,
     private kastesPreferencesService: KastesPreferencesService,
+    private kastesApi: KastesApiService,
   ) { }
 
-  get pasutijumi(): BehaviorSubject<Pasutijums[]> {
-    if (!this.loaded && !this.update) {
-      this.loadPasutijumi();
+  get pasutijumi$(): Observable<Pasutijums[]> {
+    if (!this._pasutijumi$) {
+      this._pasutijumi$ = this.reload$.pipe(
+        startWith({}),
+        switchMap(() => this.kastesApi.orders.get<Pasutijums>()),
+        shareReplay(1),
+      );
     }
-    return this.pasutijumi$;
-  }
-
-  get ofPasutijumi(): Observable<Pasutijums[]> {
-    if (this.loaded) {
-      return of(this.pasutijumi$.value);
-    } else {
-      this.update = true;
-      return this.pasutijumiUpdate();
-    }
+    return this._pasutijumi$;
   }
 
   setPasutijums(id: string): Observable<boolean> {
@@ -36,41 +31,25 @@ export class PasutijumiService {
   }
 
   addPasutijums(name: string): Observable<string> {
-    return this.kastesHttpService.addPasutijumsHttp(name).pipe(
-      tap(() => this.loadPasutijumi()),
-      map(({ _id }) => _id)
+    return this.kastesApi.orders.insertOne({ name }).pipe(
+      map((id: string) => id),
+      tap(() => this.reload$.next()),
     );
   }
 
   updatePasutijums(pas: Partial<Pasutijums>): Observable<boolean> {
     if (!pas._id || !pas._id.length) {
-      return of(false);
+      return EMPTY;
     }
-    return this.kastesHttpService.updatePasutijums(pas).pipe(
-      map(res => !!res.changedRows),
-      tap(upd => upd && this.loadPasutijumi()),
+    return this.kastesApi.orders.updateOne(pas._id, pas).pipe(
+      tap(upd => upd && this.reload$.next()),
     );
   }
 
   cleanup(): Observable<CleanupResponse> {
-    return this.kastesHttpService.pasutijumiCleanup().pipe(
-      tap(resp => (resp.deleted.pasutijumi || resp.deleted.veikali) && this.loadPasutijumi())
+    return this.kastesApi.orders.deleteInactive().pipe(
+      tap(resp => (resp.orders || resp.veikali) && this.reload$.next())
     );
-  }
-
-  private pasutijumiUpdate(): Observable<Pasutijums[]> {
-    return this.kastesHttpService.getPasutijumiHttp().pipe(
-      tap(pas => {
-        this.pasutijumi$.next(pas);
-        this.update = false;
-        this.loaded = true;
-      })
-    );
-  }
-
-  private loadPasutijumi() {
-    this.update = true;
-    this.pasutijumiUpdate().subscribe();
   }
 
 }

@@ -56,7 +56,6 @@ export class KastesTabulaService {
         tap(k => this.updateKaste$.next(k)),
       )),
       map(resp => !!resp),
-      // tap(resp => resp && this.reloadKastes$.next()),
     );
   }
 
@@ -73,25 +72,23 @@ export class KastesTabulaService {
 
 }
 
-function kastesCache(update: Observable<Kaste>): MonoTypeOperatorFunction<Kaste[]> {
-  return (kastes: Observable<Kaste[]>): Observable<Kaste[]> => {
+function kastesCache(update$: Observable<Kaste>): MonoTypeOperatorFunction<Kaste[]> {
+  return (kastes$: Observable<Kaste[]>): Observable<Kaste[]> => {
     let cache: Kaste[];
     return merge(
-      kastes.pipe(
+      kastes$.pipe(
         tap(k => cache = k),
       ),
-      update.pipe(
+      update$.pipe(
         filter(() => !!cache),
         map(kaste => {
-          if (cache) {
-            const idx = cache.findIndex(ca => ca._id === kaste._id && ca.kaste === kaste.kaste);
-            if (idx > -1) {
-              const newCache = [...cache];
-              newCache[idx] = kaste;
-              cache = newCache;
-            }
-            return cache;
+          const idx = cache.findIndex(ca => ca._id === kaste._id && ca.kaste === kaste.kaste);
+          if (idx > -1) {
+            const newCache = [...cache];
+            newCache[idx] = kaste;
+            cache = newCache;
           }
+          return cache;
         }),
       ),
     );

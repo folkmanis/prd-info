@@ -13,7 +13,7 @@ export class TabulaDatasource extends DataSource<Pasutijums> {
     }
 
     connect(): Observable<Pasutijums[]> {
-        return this.pasutijumiService.pasutijumi;
+        return this.pasutijumiService.pasutijumi$;
     }
 
     disconnect() {

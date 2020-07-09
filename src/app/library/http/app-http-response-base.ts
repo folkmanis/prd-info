@@ -4,6 +4,7 @@ export interface AppHttpResponseBase<T = any> {
     insertedId?: string | number;
     deletedCount?: number;
     modifiedCount?: number;
+    insertedCount?: number;
     result?: {
         ok: number;
         n: number;

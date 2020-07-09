@@ -1,12 +1,12 @@
-import { Injectable, EventEmitter } from '@angular/core';
-import { switchMap, tap, map } from 'rxjs/operators';
-import { Observable, of, merge, BehaviorSubject } from 'rxjs';
-import { AdresesCsv } from './adrese-csv';
-import { AdreseBox, AdresesBox, AdrBoxTotals, Totals } from './adrese-box';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { ParserService } from 'src/app/library';
+import { KastesApiService } from '../../services/kastes-api.service';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
 import { PasutijumiService } from '../../services/pasutijumi.service';
-import { KastesHttpService } from '../../services/kastes-http.service';
-import { ParserService } from 'src/app/library';
+import { AdrBoxTotals, AdreseBox, AdresesBox, Totals } from './adrese-box';
+import { AdresesCsv } from './adrese-csv';
 
 @Injectable()
 export class UploadService {
@@ -17,7 +17,7 @@ export class UploadService {
   constructor(
     private kastesPreferencesService: KastesPreferencesService,
     private pasutijumiService: PasutijumiService,
-    private kastesHttpService: KastesHttpService,
+    private kastesApi: KastesApiService,
     private parserService: ParserService,
   ) { }
 
@@ -64,21 +64,22 @@ export class UploadService {
     this.adresesCsv.deleteRows(selected);
   }
 
-  adresesToKastes(colMap: Map<number, string>, toPakas: boolean) {
+  adresesToKastes(colMap: Map<string, string>, toPakas: boolean) {
     this.adresesBox = new AdresesBox();
     this.adresesBox$ = this.adresesBox.init(this.adresesCsv.value, colMap, { toPakas });
   }
 
-  savePasutijums(pasutijumsName: string): Observable<{ affectedRows: number; }> {
+  savePasutijums(pasutijumsName: string): Observable<number> {
     /* Pievieno pasūtījuma nosaukumu datubāzei, saņem pasūtījuma id */
     let affectedRows = 0;
     let pasutijums: string;
     return this.pasutijumiService.addPasutijums(pasutijumsName).pipe(
       tap(pasId => pasutijums = pasId),
-      switchMap(pasId => this.kastesHttpService.uploadTableHttp(this.adresesBox.uploadRow(pasId))),
-      tap(res => affectedRows = res.affectedRows),
+      // switchMap(pasId => this.kastesHttpService.uploadTableHttp(this.adresesBox.uploadRow(pasId))),
+      mergeMap(pasId => this.kastesApi.kastes.putTable(this.adresesBox.uploadRow(pasId))),
+      tap(resp => affectedRows = resp),
       switchMap(() => this.kastesPreferencesService.updateUserPreferences({ pasutijums })),
-      map(() => ({ affectedRows }))
+      map(() => affectedRows)
     );
   }
 

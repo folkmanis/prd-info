@@ -27,13 +27,13 @@ class CheckFormGroup extends FormGroup {
 })
 export class UploadAdresesComponent implements OnInit, AfterViewInit {
   @Output() gatavs = new EventEmitter<boolean>();
-  @ViewChild(MatTable) table: MatTable<any>;
+  @ViewChild(MatTable) private table: MatTable<any>;
   displayedColumns: string[];
   displayedDataColumns: string[];
   checkCols: CheckFormGroup;
   checkSkaitiPakas = new FormControl(true);
   colChipsAvailable: string[]; // Vajadzīgo sleju nosaukumi
-  colChipsAssigned: Map<number, string> = new Map();
+  colChipsAssigned: Map<string, string> = new Map();
   rowSelection: SelectionModel<any> = new SelectionModel<any>(true);
   tableComplete = false;
   totals: Totals;
@@ -53,7 +53,7 @@ export class UploadAdresesComponent implements OnInit, AfterViewInit {
   }
 
   onDeleteColumns() {
-    this.removeColChips(this.checkCols.value);
+    this.resetChips();
     this.uploadService.deleteAdresesCsvColumns(this.checkCols.value);
     this.setColNames();
     this.rowSelection.clear();
@@ -62,7 +62,7 @@ export class UploadAdresesComponent implements OnInit, AfterViewInit {
   }
 
   onJoinColumns() {
-    this.removeColChips(this.checkCols.value);
+    this.resetChips();
     this.uploadService.joinAdresesCsvColumns(this.checkCols.value);
     this.setColNames();
     this.rowSelection.clear();
@@ -89,16 +89,16 @@ export class UploadAdresesComponent implements OnInit, AfterViewInit {
     if (data.source !== 'primary') { // Ja kustība nav no sākuma rindas
       this.removeChip(data); // tad noņem no esošās vietas un uzliek sākuma rindā
     }
-    if (this.colChipsAssigned[col]) { // Ja sleja aizņemta
-      this.removeChip({ text: this.colChipsAssigned[col], source: col });
+    if (this.colChipsAssigned.has(col)) { // Ja sleja aizņemta
+      this.removeChip({ text: this.colChipsAssigned.get(col), source: col });
     }
     this.colChipsAvailable.splice(this.colChipsAvailable.indexOf(data.text), 1); // Izņem no sākuma rindas
-    this.colChipsAssigned[col] = data.text;
+    this.colChipsAssigned.set(col, data.text);
     this.tableComplete = !this.colChipsAvailable.length;
   }
 
   onChipRemove(col: string) {
-    this.removeChip({ text: this.colChipsAssigned[col], source: col });
+    this.removeChip({ text: this.colChipsAssigned.get(col), source: col });
   }
   /**
    * Noņem čipu no stabiņiem
@@ -110,7 +110,7 @@ export class UploadAdresesComponent implements OnInit, AfterViewInit {
       return;
     }
     this.colChipsAvailable.push(data.text);
-    this.colChipsAssigned[data.source] = null;
+    this.colChipsAssigned.delete(data.source);
     this.tableComplete = false;
   }
   /**
@@ -118,12 +118,9 @@ export class UploadAdresesComponent implements OnInit, AfterViewInit {
    * @param colMap slejas nosaukums : boolean - true: sleja izmetama
    */
   removeColChips(colMap: {}) {
-    for (const key in this.colChipsAssigned) {
-      if (colMap[key]) {
-        const chip: DragData = { text: this.colChipsAssigned[key], source: key };
-        this.removeChip(chip);
-      }
-    }
+    this.colChipsAssigned.forEach(
+      (val, key) => this.removeChip({ text: val, source: key })
+    );
   }
   /**
    * Izveido masīvus ar parādāmo sleju nosaukumiem - displayedDataColumns un displayedColumns
