@@ -37,7 +37,6 @@ export class LabelsComponent implements OnInit {
   onLabelSubmit(): void {
     this.inputForm.disable();
     const kods: number | string = this.inputForm.get('kods').value;
-    console.log(kods);
     this.tabulaService.setLabel(kods).pipe(
       tap(() => {
         this.inputForm.reset();
