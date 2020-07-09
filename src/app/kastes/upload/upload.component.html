@@ -1,20 +1,22 @@
 <mat-horizontal-stepper [linear]="true" #stepper>
     <!-- Pirmais solis -->
-    <mat-step label="csv faila izvēle" [completed]="fileLoaded">
+    <mat-step label="faila izvēle" [completed]="fileLoaded">
         <div class="button-bar">
-            <button mat-raised-button (click)="clearFile()" color="primary">Atcelt</button>
-            <button mat-raised-button matStepperNext [disabled]="!fileLoaded" color="primary">Tālāk!</button>
+            <button mat-raised-button (click)="clearFile()" color="primary">ATCELT</button>
+            <button mat-raised-button matStepperNext [disabled]="!fileLoaded" color="primary">TĀLĀK!</button>
         </div>
-        <div class="drope" appFileDrop (filesEmitter)="onFileDrop($event)">
-            <div class="text-block">
-                {{displayText}}
+        <div class="drope">
+            <div appFileDrop (filesEmitter)="onFileDrop($event)">
+                <div class="text-block">
+                    {{displayText}}
+                </div>
             </div>
         </div>
     </mat-step>
     <!-- Otrais solis -->
     <mat-step label="Adrešu saraksta labošana" [completed]="boxGatavi">
         <div class="button-bar">
-            <button mat-raised-button matStepperNext [disabled]="!boxGatavi" color="primary">Tālāk!</button>
+            <button mat-raised-button matStepperNext [disabled]="!boxGatavi" color="primary">TĀLĀK!</button>
         </div>
         <div>
             <app-upload-adreses *ngIf="fileLoaded" (gatavs)="boxGatavi = $event"></app-upload-adreses>
@@ -23,7 +25,7 @@
     <!-- Trešais solis -->
     <mat-step label="Pakošanas saraksta pārskats" [completed]="boxGatavi">
         <div class="button-bar">
-            <button mat-raised-button matStepperNext color="primary">Tālāk!</button>
+            <button mat-raised-button matStepperNext color="primary">TĀLĀK!</button>
         </div>
         <div>
             <app-upload-tabula *ngIf="boxGatavi"></app-upload-tabula>

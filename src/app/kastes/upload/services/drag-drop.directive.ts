@@ -18,7 +18,7 @@ export class DragDropDirective {
 
   @HostListener('dragenter', ['$event']) onDragEnter(event: any) {
     event.stopPropagation();
-    this.el.nativeElement.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+    this.el.nativeElement.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
   }
 
   @HostListener('dragleave', ['$event']) onDragLeave(event: any) {

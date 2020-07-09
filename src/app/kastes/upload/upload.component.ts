@@ -2,11 +2,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, Validators, AsyncValidatorFn, AbstractControl, FormGroupDirective } from '@angular/forms';
 import { UploadService } from './services/upload.service';
-import { KastesPreferencesService } from '../services/kastes-preferences.service';
 import { PasutijumiService } from '../services/pasutijumi.service';
-import { map, tap } from 'rxjs/operators';
+import { map, tap, take } from 'rxjs/operators';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { UploadTabulaComponent } from './upload-tabula/upload-tabula.component';
 import { MatDialog } from '@angular/material/dialog';
 import { EndDialogComponent } from './end-dialog/end-dialog.component';
 import * as XLSX from 'xlsx';
@@ -24,16 +22,16 @@ class FormErrorMatcher implements ErrorStateMatcher {
   styleUrls: ['./upload.component.css']
 })
 export class UploadComponent implements OnInit {
-  @ViewChild(UploadTabulaComponent) private uploadTabulaComponent: UploadTabulaComponent;
 
   private defaultText = 'Atlasīt csv vai xls failu';
   displayText: string = this.defaultText;
   fileLoaded = false; // Ielādēts fails
   boxGatavi = false; // Sagatavots sadalījums pa kastēm
   pasutijumsForm = new FormGroup({
-    pasutijumsName: new FormControl('',
+    pasutijumsName: new FormControl(
+      '',
       [Validators.required],
-      this.existPasutijumsName()
+      [this.existPasutijumsName()]
     ),
   }
   );
@@ -41,7 +39,6 @@ export class UploadComponent implements OnInit {
 
   constructor(
     private uploadService: UploadService,
-    private kastesPreferencesService: KastesPreferencesService,
     private pasutijumiService: PasutijumiService,
     public dialog: MatDialog,
     private router: Router,
@@ -51,7 +48,7 @@ export class UploadComponent implements OnInit {
   }
 
   onFileDrop(fileList: FileList) {
-      this.clearFile();
+    this.clearFile();
     if (fileList.length !== 1) {
       this.displayText = 'Tieši vienu failu!';
       return;
@@ -77,9 +74,10 @@ export class UploadComponent implements OnInit {
     this.boxGatavi = false;
   }
 
-  existPasutijumsName(): AsyncValidatorFn {
+  private existPasutijumsName(): AsyncValidatorFn {
     return (control: AbstractControl) => {
-      return this.pasutijumiService.ofPasutijumi.pipe(
+      return this.pasutijumiService.pasutijumi$.pipe(
+        take(1),
         map((pas) =>
           pas.find((el) => el.name === control.value) ? { existPasutijumsName: { value: control.value } } : null
         ),
@@ -89,16 +87,15 @@ export class UploadComponent implements OnInit {
 
   onSubmitAll() {
     this.uploadService.savePasutijums(this.pasutijumsForm.get('pasutijumsName').value)
-      .subscribe((resp) => {
-        this.finalDialog(resp.affectedRows);
-      });
+      .subscribe(rows => this.finalDialog(rows)
+      );
   }
 
   finalDialog(affectedRows: number): void {
     const dialogRef = this.dialog.open(EndDialogComponent, { width: '400px', disableClose: true, data: { rows: affectedRows } });
 
     dialogRef.afterClosed().subscribe(() => {
-      this.router.navigate(['kastes', 'selector', 0]);
+      this.router.navigate(['kastes', 'tabula', 'selector', 0]);
     });
   }
 
@@ -131,7 +128,7 @@ export class UploadComponent implements OnInit {
   }
 
   private onFileLoaded(file: File) {
-    this.pasutijumsForm.patchValue({ pasutijumsName: file.name.slice(0, -4).trim() });
+    this.pasutijumsForm.patchValue({ pasutijumsName: file.name.replace(/\.[^/.]+$/, '') });
     this.fileLoaded = true;
     this.displayText = `Augšupielādei sagatavots fails: ${file.name} / ${file.size} bytes / ${file.type}`;
   }

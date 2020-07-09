@@ -37,9 +37,9 @@ class AdreseSkaits {
      * key - esošās slejas nosaukums
      * value - piešķirtais slejas pielietojums.
      */
-    constructor(adrS: any[], colMap: Map<number, string>) {
+    constructor(adrS: any[], colMap: Map<string, string>) {
         adrS.forEach((val, idx) => {
-            const m = colMap[idx];
+            const m = colMap.get(idx.toString());
             if (m) { this[m] = val; }
         });
     }
@@ -184,7 +184,7 @@ export class AdresesBox {
 
     init(
         adrSaraksts: Array<any[]>,
-        colMap: Map<number, string>,
+        colMap: Map<string, string>,
         { toPakas = false } = {}
     ): Observable<AdreseBox[]> {
         for (const adrS of adrSaraksts) {
