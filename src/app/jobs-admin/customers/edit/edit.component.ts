@@ -86,15 +86,6 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
     ).subscribe();
   }
 
-  onDelete(id: string) {
-    this.dialog.confirmDelete().pipe(
-      filter(resp => resp),
-      switchMap(() => this.service.deleteCustomer(id)),
-    ).subscribe(() =>
-      this.router.navigate(['..'], { relativeTo: this.route })
-    );
-  }
-
   canDeactivate(): Observable<boolean> | boolean {
     if (this.customerForm.pristine) {
       return true;

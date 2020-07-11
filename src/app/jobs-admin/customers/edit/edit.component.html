@@ -43,11 +43,8 @@
     <!-- Pogas -->
     <section>
         <button mat-raised-button color="primary" [disabled]="!customerForm.valid || customerForm.pristine"
-            (click)="onSave()">Saglabāt izmaiņas</button>
-        <button mat-raised-button color="primary" [disabled]="customerForm.pristine"
-            (click)="onRestore(customer._id)">Atcelt izmaiņas</button>
-    </section>
-    <section>
-        <button mat-raised-button color="warn" (click)="onDelete(customer._id)">Dzēst klientu</button>
+            (click)="onSave()">SAGLABĀT</button>
+        <button mat-raised-button [disabled]="customerForm.pristine"
+            (click)="onRestore(customer._id)">ATCELT</button>
     </section>
 </div>
