@@ -22,17 +22,16 @@ export class CustomersComponent implements OnInit {
       link: ['edit', { id: cust._id }],
     }))
     ),
-    map(this.addNewEntry),
+    map(rts => [
+      {
+        title: '> Jauns klients <',
+        link: ['new'],
+      },
+      ...rts,
+    ]),
   );
 
   ngOnInit(): void {
-  }
-
-  private addNewEntry(rts: RouteSelection[]): RouteSelection[] {
-    return rts.concat([{
-      title: '>Jauns klients<',
-      link: ['new'],
-    }]);
   }
 
 }
