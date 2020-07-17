@@ -1,0 +1,17 @@
+.container {
+    display: flex;
+    height: 100%;
+    overflow: hidden;
+}
+
+.selector {
+    flex: 0 0 240px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.content {
+    flex: 1;
+    overflow-y: auto;
+    margin: 48px;
+}

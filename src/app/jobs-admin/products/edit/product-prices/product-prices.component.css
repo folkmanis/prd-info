@@ -1,15 +1,42 @@
-.full-width {
+table {
     width: 100%;
+    table-layout: fixed;
+    border-spacing: 0;
+    border-collapse: separate;
 }
 
-.cdk-column-action {
-    width: 80px;
+tr {
+    height: 41px;
 }
 
-.cdk-column-price {
+td, th {
+    display: table-cell;
+    padding: 0 4px;
+    font-size: 14px;
+    color: rgba(0, 0, 0, .87);
+    border-bottom-color: rgba(0, 0, 0, .12);
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    text-align: left;
+}
+
+th:first-of-type, td:first-of-type {
+    padding-left: 8px;
+}
+
+td.buttons {
     width: 100px;
 }
 
-.price {
-    width: 80px;
+td.price {
+    width: 100px;
+}
+
+td .mat-form-field {
+    width: 100%;
+}
+
+.error {
+    color: #f44336;
+    font-size: 75%;
 }

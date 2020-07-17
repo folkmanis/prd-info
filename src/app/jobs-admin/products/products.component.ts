@@ -28,10 +28,13 @@ export class ProductsComponent implements OnInit {
   }
 
   private addNewEntry(rts: RouteSelection[]): RouteSelection[] {
-    return rts.concat([{
-      title: '> Jauna prece <',
-      link: ['new'],
-    }]);
+    return [
+      {
+        title: '> Jauna prece <',
+        link: ['new'],
+      },
+      ...rts
+    ];
   }
 
 }

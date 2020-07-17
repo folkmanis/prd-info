@@ -4,6 +4,7 @@ import { Subject, Observable, MonoTypeOperatorFunction, ReplaySubject, BehaviorS
 import { Kaste, Totals, RowUpdate, Colors } from '../interfaces';
 import { switchMap, share, pluck, shareReplay, withLatestFrom, map, tap, startWith, throttleTime, mergeMap, filter } from 'rxjs/operators';
 import { KastesPreferencesService } from './kastes-preferences.service';
+import { cacheWithUpdate } from 'src/app/library/rx';
 
 @Injectable()
 export class KastesTabulaService {
@@ -35,7 +36,7 @@ export class KastesTabulaService {
     // throttleTime(3000),
     switchMap(() => this.pasutijumsId$),
     switchMap(pasutijumsId => this.kastesApi.kastes.get<Kaste>({ pasutijumsId })),
-    kastesCache(this.updateKaste$),
+    cacheWithUpdate(this.updateKaste$, (o1, o2) => o1._id === o2._id && o1.kaste === o2.kaste),
   );
 
   kastesApjoms$: Observable<Kaste[]> = combineLatest([
@@ -70,29 +71,6 @@ export class KastesTabulaService {
     );
   }
 
-}
-
-function kastesCache(update$: Observable<Kaste>): MonoTypeOperatorFunction<Kaste[]> {
-  return (kastes$: Observable<Kaste[]>): Observable<Kaste[]> => {
-    let cache: Kaste[];
-    return merge(
-      kastes$.pipe(
-        tap(k => cache = k),
-      ),
-      update$.pipe(
-        filter(() => !!cache),
-        map(kaste => {
-          const idx = cache.findIndex(ca => ca._id === kaste._id && ca.kaste === kaste.kaste);
-          if (idx > -1) {
-            const newCache = [...cache];
-            newCache[idx] = kaste;
-            cache = newCache;
-          }
-          return cache;
-        }),
-      ),
-    );
-  };
 }
 
 function calcTotals(kastes: Kaste[]): Totals {

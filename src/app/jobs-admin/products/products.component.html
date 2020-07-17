@@ -1,8 +1,8 @@
-<div style="display: flex;">
-    <div style="flex: 0 240px;">
+<div class="container">
+    <div class="selector">
         <app-find-select-route [routes]="products$ | async"></app-find-select-route>
     </div>
-    <div style="flex: 0 1 600px;">
+    <div class="content mat-elevation-z4">
         <router-outlet></router-outlet>
     </div>
 </div>

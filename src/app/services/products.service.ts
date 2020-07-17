@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { merge, Observable, Subject } from 'rxjs';
-import { map, share, shareReplay, switchMap, tap, startWith } from 'rxjs/operators';
-import { Product, ProductNoPrices, CustomerProduct, SystemPreferencesGroups } from 'src/app/interfaces';
+import { merge, Observable, Subject, MonoTypeOperatorFunction } from 'rxjs';
+import { map, share, shareReplay, switchMap, tap, startWith, concatMap, filter } from 'rxjs/operators';
+import { Product, ProductNoPrices, ProductPartial, CustomerProduct } from 'src/app/interfaces';
+import { cacheWithUpdate } from 'src/app/library/rx';
 import { JobsSettings } from 'src/app/interfaces';
 import { SystemPreferencesService } from 'src/app/services/system-preferences.service';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
@@ -16,7 +17,7 @@ export class ProductsService {
     private systemPreferencesService: SystemPreferencesService,
   ) { }
 
-  private _products$: Observable<ProductNoPrices[]>;
+  private _products$: Observable<ProductPartial[]>;
   readonly categories$ = this.systemPreferencesService.sysPreferences$.pipe(
     map(sysPref => sysPref.get('jobs') as JobsSettings),
     map(js => js.productCategories),
@@ -24,16 +25,27 @@ export class ProductsService {
   );
 
   private readonly _updateProducts$: Subject<void> = new Subject();
+  private readonly _updateOneProduct$: Subject<ProductPartial> = new Subject();
 
-  get products$(): Observable<ProductNoPrices[]> {
+  get products$(): Observable<ProductPartial[]> {
     if (!this._products$) {
       this._products$ = this._updateProducts$.pipe(
         startWith({}),
-        switchMap(() => this.getAllProducts()),
-        shareReplay(1)
+        switchMap(() => this.prdApi.products.get<ProductPartial>()),
+        cacheWithUpdate(
+          this._updateOneProduct$,
+          (o1, o2) => o1._id === o2._id
+        ),
+        shareReplay(1),
       );
     }
     return this._products$;
+  }
+
+  get activeProducts$(): Observable<ProductPartial[]> {
+    return this.products$.pipe(
+      map(prod => prod.filter(pr => !pr.inactive))
+    );
   }
 
   getProduct(id: string): Observable<Product> {
@@ -42,7 +54,10 @@ export class ProductsService {
 
   updateProduct(id: string, prod: Partial<Product>): Observable<boolean> {
     return this.prdApi.products.updateOne(id, prod).pipe(
-      tap(() => this._updateProducts$.next()),
+      concatMap(result => this.prdApi.products.get(id).pipe(
+        tap(resp => this._updateOneProduct$.next(resp)),
+        map(_ => result),
+      )),
     );
   }
 
@@ -64,10 +79,6 @@ export class ProductsService {
     return this.prdApi.products.validatorData(key).pipe(
       map(values => !values.includes(value)),
     );
-  }
-
-  getAllProducts(): Observable<Pick<Product, '_id' | 'name' | 'category'>[]> {
-    return this.prdApi.products.get();
   }
 
   productsCustomer(customer: string): Observable<CustomerProduct[]> {

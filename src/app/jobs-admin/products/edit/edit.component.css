@@ -9,3 +9,8 @@ section {
 button {
     margin-right: 8px;
 }
+
+.error {
+    height: 1em;
+    font-size: 75%;
+}

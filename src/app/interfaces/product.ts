@@ -15,13 +15,14 @@ export interface CustomerProduct {
 
 export interface Product {
     _id: string;
+    inactive: boolean;
     category: string;
     name: string;
     description?: string;
     prices?: ProductPrice[];
 }
 
-export type ProductPartial = Pick<Product, '_id' | 'name' | 'category'>;
+export type ProductPartial = Pick<Product, '_id' | 'name' | 'category' | 'inactive'>;
 
 export interface ProductPrice {
     customerName: string;

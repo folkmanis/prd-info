@@ -9,10 +9,11 @@ import { ProductsComponent } from './products.component';
 import { EditComponent } from './edit/edit.component';
 import { NewComponent } from './new/new.component';
 import { ProductPricesComponent } from './edit/product-prices/product-prices.component';
+import { FormArrayForOfDirective } from './form-array-for-of.directive';
 
 
 @NgModule({
-  declarations: [ProductsComponent, EditComponent, NewComponent, ProductPricesComponent],
+  declarations: [ProductsComponent, EditComponent, NewComponent, ProductPricesComponent, FormArrayForOfDirective],
   imports: [
     CommonModule,
     LibraryModule,

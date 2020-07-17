@@ -27,7 +27,7 @@ export class JobEditDialogService {
     private productsService: ProductsService,
   ) { }
 
-  products$ = this.productsService.products$;
+  products$ = this.productsService.activeProducts$;
 
   editJob(jobId: number): Observable<boolean> {
     return this.jobService.getJob(jobId).pipe(

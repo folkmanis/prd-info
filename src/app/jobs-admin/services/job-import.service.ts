@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subscriber, zip, of } from 'rxjs';
-import { map, tap, switchMap } from 'rxjs/operators';
+import { map, tap, switchMap, take } from 'rxjs/operators';
 import { isEqual, flatten, isMatch, unionWith } from 'lodash';
 import * as moment from 'moment';
 
@@ -73,7 +73,8 @@ export class JobImportService {
   }
 
   findMissingProducts(parsedObjects: ParsedObject[]): Observable<string[]> {
-    return this.productService.getAllProducts().pipe(
+    return this.productService.products$.pipe(
+      take(1),
       map(products =>
         parsedObjects.reduce((acc, pars) => this.getMissingProduct(pars.preces, products, acc), new Set<string>())
       ),

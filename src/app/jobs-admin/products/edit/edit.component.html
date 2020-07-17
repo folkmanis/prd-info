@@ -1,41 +1,38 @@
-<div *ngIf="product$ | async as product;">
-    <!-- Produkta nosaukums (nelabojams) -->
+<!-- Produkta nosaukums (nelabojams) -->
+<section>
+    <h2>{{ productForm.get('name').value}}</h2>
+    <div class="error" [style.color]="productForm.statusText.color">
+        {{productForm.statusText.status}}
+    </div>
+</section>
+<form [formGroup]="productForm">
+    <!-- Kategorija -->
     <section>
-        <h2>{{product.name}}</h2>
+        <mat-form-field>
+            <mat-label>Kategorija</mat-label>
+            <mat-select formControlName="category">
+                <mat-option *ngFor="let category of categories$ | async" [value]="category.category">
+                    {{category.description}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
     </section>
-    <form [formGroup]="productForm">
-        <!-- Kategorija -->
-        <section>
-            <mat-form-field>
-                <mat-label>Kategorija</mat-label>
-                <mat-select formControlName="category">
-                    <mat-option *ngFor="let category of categories$ | async" [value]="category.category">
-                        {{category.description}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </section>
-        <!-- Apraksts -->
-        <section>
-            <mat-form-field class="input-element">
-                <mat-label>Apraksts</mat-label>
-                <textarea matInput matAutosize formControlName="description"></textarea>
-            </mat-form-field>
-        </section>
-        <!-- Cenu tabula -->
-        <section>
-            <app-product-prices [prices]="pricesForm.value" [customers]="customers$ | async" (priceChange)="onPriceChange($event)"></app-product-prices>
-        </section>
-    </form>
-    <!-- Pogas -->
+    <!-- Neaktīvs -->
     <section>
-        <button mat-raised-button color="primary" [disabled]="!productForm.valid || productForm.pristine"
-            (click)="onSave()">Saglabāt izmaiņas</button>
-        <button mat-raised-button color="primary" [disabled]="productForm.pristine" (click)="onRestore()">
-            Atcelt izmaiņas
-        </button>
+        <mat-checkbox formControlName="inactive">
+            Neaktīvs
+        </mat-checkbox>
     </section>
+    <!-- Apraksts -->
     <section>
-        <button mat-raised-button color="warn" (click)="onDelete(product._id)">Dzēst preci</button>
+        <mat-form-field class="input-element">
+            <mat-label>Apraksts</mat-label>
+            <textarea matInput matAutosize formControlName="description"></textarea>
+        </mat-form-field>
     </section>
-</div>
+    <!-- Cenu tabula -->
+    <section>
+        <app-product-prices [pricesForm]="productForm.get('prices')" [priceAddFn]="priceAddFn">
+        </app-product-prices>
+    </section>
+</form>

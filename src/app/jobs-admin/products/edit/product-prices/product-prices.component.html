@@ -1,72 +1,47 @@
-<form [formGroup]="priceForm" (submit)="acceptEdit()">
-    <table mat-table [dataSource]="prices$" class="full-width">
-        <!-- Klients -->
-        <ng-container matColumnDef="customerName">
-            <th mat-header-cell *matHeaderCellDef>Klients</th>
-            <td mat-cell *matCellDef="let customer;">
-                <div *ngIf="customer !== edit || customer.customerName; else nameEdit">
-                    {{customer.customerName}}
-                </div>
-                <ng-template #nameEdit>
-                    <!-- Klients ar labošanu -->
-                    <mat-form-field>
-                        <mat-select formControlName="customerName">
-                            <mat-option *ngFor="let customer of customersFiltered$ | async"
-                                [value]="customer.CustomerName">
-                                {{customer.CustomerName}}</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </ng-template>
+<table>
+    <thead>
+        <th> Klients </th>
+        <th> Cena </th>
+        <th> </th>
+    </thead>
+
+    <tbody [formGroup]="pricesForm">
+        <tr *appFormArrayFor="let control of pricesForm; index as idx; data as data;" [formArrayName]="idx">
+            <!-- Klients ar labošanu -->
+            <td class="customer-name">
+                <mat-form-field>
+                    <mat-select formControlName="customerName">
+                        <mat-option *ngFor="let customer of customers$ | async" [value]="customer.CustomerName" [disabled]="customer.disabled">
+                            {{customer.CustomerName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
             </td>
-        </ng-container>
-        <!-- Cena -->
-        <ng-container matColumnDef="price">
-            <th mat-header-cell *matHeaderCellDef>Cena</th>
-            <td mat-cell *matCellDef="let customer;">
-                <div *ngIf="customer !== edit; else priceEdit" (click)="onEditRow(customer)">
-                    {{customer.price | currency}}
-                </div>
-                <!-- Cena labojama -->
-                <ng-template #priceEdit>
-                    <mat-form-field class="price">
-                        <input matInput formControlName="price" type="number">
-                    </mat-form-field>
-                </ng-template>
+            <!-- Cena labojama -->
+            <td class="price">
+                <mat-form-field>
+                    <input matInput formControlName="price" type="number">
+                </mat-form-field>
             </td>
-        </ng-container>
-        <!-- Pogas -->
-        <ng-container matColumnDef="action">
-            <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell *matCellDef="let customer;">
-                <div *ngIf="customer !== edit; else actionEdit">
-                    <button mat-icon-button color="warn" (click)="onDeleteRow(customer)" [disabled]="edit">
-                        <mat-icon>remove_circle</mat-icon>
-                    </button>
-                </div>
-                <!-- pogas labošanas režīmā -->
-                <ng-template #actionEdit>
-                    <!-- Apstiprināt -->
-                    <button mat-icon-button type="submit" [disabled]="!priceForm.valid">
-                        <mat-icon>check_circle</mat-icon>
-                    </button>
-                    <!-- Atcelt -->
-                    <button mat-icon-button (click)="cancelEdit()">
-                        <mat-icon>cancel</mat-icon>
-                    </button>
-                </ng-template>
-            </td>
-        </ng-container>
-        <!-- Beigu rinda ar pogām -->
-        <ng-container matColumnDef="addRow">
-            <td mat-footer-cell *matFooterCellDef colspan="columns.length">
-                <button mat-icon-button (click)="onAppendPrice()" [disabled]="edit">
-                    <mat-icon>add_circle</mat-icon>
+            <!-- Pogas -->
+            <td class="buttons">
+                <button mat-icon-button (click)="onDeleteRow(idx)" matTooltip="Dzēst">
+                    <mat-icon>delete_outline</mat-icon>
                 </button>
             </td>
-        </ng-container>
+        </tr>
+    </tbody>
 
-        <tr mat-header-row *matHeaderRowDef="columns"></tr>
-        <tr mat-row *matRowDef="let row; columns: columns"></tr>
-        <tr mat-footer-row *matFooterRowDef="['addRow']"></tr>
-    </table>
-</form>
+    <tfoot>
+        <td colspan="2">
+            <span *ngIf="pricesForm.hasError('duplicates')" class="error">
+                Atkārtoti norādīts klients {{pricesForm.getError('duplicates')}}
+            </span>
+        </td>
+        <td>
+            <button *ngIf="isAddFn()" mat-icon-button (click)="onAppendPrice()" matTooltip="Pievienot cenu" [disabled]="!pricesForm.valid">
+                <mat-icon>add</mat-icon>
+            </button>
+        </td>
+    </tfoot>
+</table>
