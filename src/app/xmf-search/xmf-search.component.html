@@ -1,5 +1,5 @@
 <mat-drawer-container>
-    <mat-drawer #facet [opened]="!(isSmall$ | async)" position="end" [mode]="(isSmall$ | async) ? 'over' : 'side'">
+    <mat-drawer #facet [opened]="(isSmall$ | async) === false" position="end" [mode]="(isSmall$ | async) ? 'over' : 'side'">
         <app-facet #facetComponent [facet]="facet$ | async" (filter)="onFacet($event)"></app-facet>
     </mat-drawer>
 
