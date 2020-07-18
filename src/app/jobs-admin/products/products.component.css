@@ -13,5 +13,8 @@
 .content {
     flex: 1;
     overflow-y: auto;
+}
+
+.large {
     margin: 48px;
 }

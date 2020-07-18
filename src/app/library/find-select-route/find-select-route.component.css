@@ -1,3 +1,27 @@
+.container {
+    height: 100%;
+    /* overflow: hidden; */
+}
+
+.container.large {
+    display: flex;
+}
+
+.selector {
+    flex: 0 0 240px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.content {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.large .content {
+    margin: 48px;
+}
+
 .full-width {
     width: 100%;
 }
@@ -5,3 +29,12 @@
 .search-box {
     margin: 0 16px;
 }
+
+.small {
+    padding: 0 16px;
+}
+
+.small .mat-form-field {
+    width: 100%;
+}
+

@@ -1,4 +1,6 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, OnDestroy, Output } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { LayoutService } from 'src/app/layout/layout.service';
 import { FormControl } from '@angular/forms';
 import { Observable, Subscription, BehaviorSubject, combineLatest } from 'rxjs';
 import { map, tap, startWith } from 'rxjs/operators';
@@ -25,14 +27,20 @@ export class FindSelectRouteComponent implements OnInit, AfterViewInit, OnDestro
   }
   @Output() filterChange = new EventEmitter<string>();
 
-  constructor() { }
+  constructor(
+    private layout: LayoutService,
+    private router: Router,
+    private route: ActivatedRoute,
+  ) { }
 
   filterControl = new FormControl('');
+  large$ = this.layout.isLarge$;
+
+  selectionControl = new FormControl();
 
   private _filter$: Observable<string> = this.filterControl.valueChanges;
   private _subs: Subscription = new Subscription();
   private _routes$ = new BehaviorSubject<RouteSelection[]>([]);
-
 
   data$: Observable<RouteSelection[]> = combineLatest([
     this._routes$,
@@ -44,6 +52,9 @@ export class FindSelectRouteComponent implements OnInit, AfterViewInit, OnDestro
   );
 
   ngOnInit(): void {
+    this._subs.add(
+      this.selectionControl.valueChanges.subscribe(rt => this.router.navigate(rt, { relativeTo: this.route }))
+    );
   }
 
   ngAfterViewInit(): void {
