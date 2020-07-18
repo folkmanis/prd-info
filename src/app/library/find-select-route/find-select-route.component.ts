@@ -1,9 +1,9 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, OnDestroy, Output } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { LayoutService } from 'src/app/layout/layout.service';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable, Subscription, BehaviorSubject, combineLatest } from 'rxjs';
-import { map, tap, startWith } from 'rxjs/operators';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
+import { map, startWith, tap } from 'rxjs/operators';
+import { LayoutService } from 'src/app/layout/layout.service';
 
 export interface RouteSelection {
   title: string;
@@ -15,17 +15,24 @@ export interface RouteSelection {
   templateUrl: './find-select-route.component.html',
   styleUrls: ['./find-select-route.component.css']
 })
-export class FindSelectRouteComponent implements OnInit, AfterViewInit, OnDestroy {
+export class FindSelectRouteComponent implements OnInit, OnDestroy {
   // tslint:disable-next-line: no-input-rename
   @Input('routes') set _routes(rts: RouteSelection[]) {
     this._routes$.next(rts);
   }
   // tslint:disable-next-line: no-output-native
   @Output() select: EventEmitter<RouteSelection> = new EventEmitter();
-  @Input('filter') set _setfilter(filter: string) {
-    this.filterControl.setValue(filter);
+  @Input('filter') set _setfilter(fltr: string) {
+    this.filterControl.setValue(fltr);
   }
   @Output() filterChange = new EventEmitter<string>();
+
+  @Input() set selected(_sel: RouteSelection) {
+    this.selectionControl.setValue(_sel.link, { emitEvent: false });
+  }
+  get selected(): RouteSelection {
+    return this._routes$.value.find(rte => rte.link === this.selectionControl.value);
+  }
 
   constructor(
     private layout: LayoutService,
@@ -47,17 +54,14 @@ export class FindSelectRouteComponent implements OnInit, AfterViewInit, OnDestro
     this._filter$.pipe(startWith(''))
   ]).pipe(
     tap(([_, fltr]) => this.filterChange.next(fltr)),
-    map(([data, filter]) =>
-      filter.length ? data.filter(s => s.title.toUpperCase().includes(filter.toUpperCase())) : data)
+    map(([data, fltr]) =>
+      fltr.length ? data.filter(s => s.title.toUpperCase().includes(fltr.toUpperCase())) : data)
   );
 
   ngOnInit(): void {
     this._subs.add(
       this.selectionControl.valueChanges.subscribe(rt => this.router.navigate(rt, { relativeTo: this.route }))
     );
-  }
-
-  ngAfterViewInit(): void {
   }
 
   ngOnDestroy(): void {
