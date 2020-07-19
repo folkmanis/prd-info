@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, merge, Subject } from 'rxjs';
+import { Observable, merge, Subject, EMPTY } from 'rxjs';
 import { map, pluck, filter, tap, switchMap, share, shareReplay, startWith } from 'rxjs/operators';
 import { Customer, CustomerPartial, CustomerResponse } from 'src/app/interfaces';
 
@@ -40,8 +40,12 @@ export class CustomersService {
     return this.prdApi.customers.get({ disabled: false });
   }
 
-  getCustomer(id: string): Observable<Customer | null> {
-    return this.prdApi.customers.get(id);
+  getCustomer(id: string): Observable<Customer | never> {
+    return (/^[a-f\d]{24}$/i).test(id) ? this.prdApi.customers.get(id) : EMPTY;
+  }
+
+  getCustomerByName(name: string): Observable<Customer> {
+    return this.prdApi.customers.get(name);
   }
 
   deleteCustomer(id: string): Observable<boolean> {

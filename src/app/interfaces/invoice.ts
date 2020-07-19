@@ -11,7 +11,11 @@ export interface Invoice {
     total?: number;
 }
 
-export type InvoiceLike = Partial<Invoice>;
+export type InvoiceLike = Partial<Invoice> & {
+    financial?: {
+        clientName: string;
+    };
+};
 
 export interface InvoicesFilter {
     customer?: string;

@@ -13,7 +13,7 @@ export class InvoiceReport {
     }
 
     open(): void {
-        const title = this._invoice.customer + (this._invoice.invoiceId ? ` / ${this._invoice.invoiceId}` : '');
+        const title = (this._invoice.financial?.clientName || this._invoice.customer) + (this._invoice.invoiceId ? ` / ${this._invoice.invoiceId}` : '');
         this._pdf.add(
             new Txt(title).fontSize(14).bold().end,
         );

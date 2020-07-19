@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription, combineLatest } from 'rxjs';
@@ -17,7 +17,8 @@ export interface InvoicesTotals {
 @Component({
   selector: 'app-new-invoice',
   templateUrl: './new-invoice.component.html',
-  styleUrls: ['./new-invoice.component.css']
+  styleUrls: ['./new-invoice.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NewInvoiceComponent implements OnInit, OnDestroy {
   constructor(
@@ -77,9 +78,9 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
   onJobSelected(selectedJobs: number[]) {
     this.selectedJobs = selectedJobs;
     this.invoiceService.totalsFilter$.next(selectedJobs);
-    setTimeout(() => {
-      this.canSubmit = !!selectedJobs.length;
-    }, 0);
+    this.canSubmit = !!selectedJobs.length;
+    // setTimeout(() => {
+    // }, 0);
   }
 
 }

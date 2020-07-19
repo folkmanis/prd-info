@@ -7,7 +7,10 @@
             {{invoice.createdDate | date}}
         </p>
         <P>
-            Klients: <b>{{invoice.customer}}</b>
+            Klients: <b>{{invoice.customer}} </b>
+            <span *ngIf="invoice.financial">
+                ({{invoice.financial.clientName}})
+            </span>
         </P>
     </section>
     <section>
