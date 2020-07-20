@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { tap, map, debounceTime, startWith, filter, switchMap } from 'rxjs/operators';
@@ -9,9 +9,10 @@ import { JobEditDialogService } from '../services/job-edit-dialog.service';
 @Component({
   selector: 'app-job-list',
   templateUrl: './job-list.component.html',
-  styleUrls: ['./job-list.component.css']
+  styleUrls: ['./job-list.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class JobListComponent implements OnInit, AfterViewInit, OnDestroy {
+export class JobListComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
@@ -19,6 +20,7 @@ export class JobListComponent implements OnInit, AfterViewInit, OnDestroy {
     private jobService: JobService,
     private jobEditDialog: JobEditDialogService,
   ) { }
+
   private readonly _subs = new Subscription();
 
   dataSource$ = this.jobService.jobs$.pipe(
@@ -26,15 +28,20 @@ export class JobListComponent implements OnInit, AfterViewInit, OnDestroy {
   );
 
   ngOnInit(): void {
-    const subs = this.route.data.pipe(
-      filter(data => data.newJob),
-      switchMap(() => this.jobEditDialog.newJob()),
-      tap(() => this.router.navigate(['jobs'])),
-    ).subscribe();
-    this._subs.add(subs);
-  }
-
-  ngAfterViewInit(): void {
+    this._subs.add(
+      this.route.paramMap.pipe(
+        map(params => params.get('id') as string | undefined),
+        filter(id => id === 'new' || /^\d+$/.test(id)),
+        switchMap(id => {
+          if (id === 'new') {
+            return this.jobEditDialog.newJob();
+          } else {
+            return this.jobEditDialog.editJob(+id);
+          }
+        }),
+        tap(_ => this.router.navigate(['/jobs'])),
+      ).subscribe()
+    );
   }
 
   ngOnDestroy(): void {
@@ -42,7 +49,7 @@ export class JobListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onJobEdit(jobId: number) {
-    this.jobEditDialog.editJob(jobId).subscribe();
+    this.router.navigate([{ id: jobId }], { relativeTo: this.route });
   }
 
   jobIdAndName(jobId: number, name: string): string {

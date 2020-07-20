@@ -17,23 +17,17 @@ const routes: Routes = [
       {
         path: '',
         component: MainMenuComponent,
+        pathMatch: 'full',
         children: [
           {
             path: '',
             component: JobListComponent,
-          }
+          },
         ]
       },
       {
-        path: 'new-job',
-        data: { newJob: true },
-        component: MainMenuComponent,
-        children: [
-          {
-            path: '',
-            component: JobListComponent,
-          }
-        ]
+        path: 'new',
+        redirectTo: '/jobs;id=new',
       },
       {
         path: 'plate-invoice',
