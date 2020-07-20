@@ -1,11 +1,12 @@
 import { Directive, Input, Output, EventEmitter, HostListener, ElementRef, HostBinding } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { ClipboardService } from '../services/clipboard.service';
 
 @Directive({
   selector: '[appCopyClipboard]',
 })
 export class CopyClipboardDirective {
 
+  /** If input value not provided, uses HTMLElement.innerText */
   @Input('appCopyClipboard')
   payload: string;
 
@@ -18,27 +19,13 @@ export class CopyClipboardDirective {
   @HostListener('click', ['$event'])
   onClick(event: MouseEvent): void {
     event.preventDefault();
-    if (!this.payload) {
-      return;
-    }
-
-    const listener = (e: ClipboardEvent) => {
-      const clipboard = e.clipboardData;
-      clipboard.setData('text', this.payload.toString());
-      e.preventDefault();
-
-      this.copied.emit(this.payload);
-      this.snack.open(`"${this.payload}" izkopēts!`, 'OK', { duration: 2000 });
-
-    };
-
-    document.addEventListener('copy', listener, false);
-    document.execCommand('copy');
-    document.removeEventListener('copy', listener, false);
+    const txt: string = this.payload || (this.el.nativeElement as HTMLElement).innerText.trim();
+    this.clipboardService.copy(txt, this.copied);
   }
 
   constructor(
-    private snack: MatSnackBar,
+    private clipboardService: ClipboardService,
+    private el: ElementRef,
   ) { }
 
 }

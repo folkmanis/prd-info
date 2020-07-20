@@ -37,15 +37,15 @@
                 <!-- 'name' -->
                 <td class="column-name">
                     <div>
-                        <span class="name" (click)="onJobEdit(job.jobId)" [matTooltip]="job.name" [matTooltipShowDelay]="500"
-                            [matTooltipDisabled]="job.name.length < 50">
+                        <span class="name" (click)="onJobEdit(job.jobId)" [matTooltip]="job.name"
+                            [matTooltipShowDelay]="500" [matTooltipDisabled]="job.name.length < 50">
                             {{job.name}}
                         </span>
                         <span class="buttons">
                             <button mat-icon-button (click)="onJobEdit(job.jobId)" matTooltip="Atvērt darbu">
                                 <mat-icon>open_in_new</mat-icon>
                             </button>
-                            <button mat-icon-button [appCopyClipboard]="jobIdAndName(job.jobId, job.name)"
+                            <button mat-icon-button (click)="copyJobIdAndName(job.jobId, job.name)"
                                 matTooltip="Kopēt nosaukumu">
                                 <mat-icon>filter_none</mat-icon>
                             </button>

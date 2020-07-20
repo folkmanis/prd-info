@@ -1,15 +1,12 @@
-import { Component, OnInit, OnDestroy, Inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { cloneDeep, some } from 'lodash';
-
-import { PlateJobEditorComponent } from './plate-job-editor/plate-job-editor.component';
-import { Job, CustomerProduct } from 'src/app/interfaces';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { concatMap, distinctUntilChanged, filter, map, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { CustomerProduct } from 'src/app/interfaces';
+import { ProductsService } from 'src/app/services';
 import { JobEditDialogData } from './job-edit-dialog-data';
-import { Observable, merge, of, BehaviorSubject, Subscription } from 'rxjs';
-import { tap, map, filter, take, switchMap, shareReplay, concatMap, distinctUntilChanged } from 'rxjs/operators';
-import { FormBuilder, Validators, AsyncValidatorFn, AbstractControl, ValidationErrors, FormGroup, FormControl } from '@angular/forms';
-import { CustomersService, ProductsService } from 'src/app/services';
+
 
 @Component({
   selector: 'app-job-dialog',
@@ -18,6 +15,8 @@ import { CustomersService, ProductsService } from 'src/app/services';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JobDialogComponent implements OnInit, OnDestroy {
+  @ViewChild('accept', { read: ElementRef }) private acceptButton: ElementRef;
+
   jobForm: FormGroup;
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: JobEditDialogData,
@@ -34,6 +33,13 @@ export class JobDialogComponent implements OnInit, OnDestroy {
   private readonly _subs = new Subscription();
 
   newJobId$: Observable<number> | undefined;
+
+  /** Ctrl-Enter clicks the accept button */
+  @HostListener('window:keydown', ['$event']) keyEvent(event: KeyboardEvent) {
+    if (event.key === 'Enter' && event.ctrlKey) {
+      this.acceptButton.nativeElement.click();
+    }
+  }
 
   ngOnInit(): void {
     this._customer$ = new BehaviorSubject(this.customerContr.value as string);

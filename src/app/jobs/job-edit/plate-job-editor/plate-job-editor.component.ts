@@ -1,11 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild, HostListener } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, FormArray, FormBuilder, FormControl, ValidationErrors, Validators, FormGroup } from '@angular/forms';
 import { MatInput } from '@angular/material/input';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { map, tap, shareReplay, startWith, take, filter } from 'rxjs/operators';
 import { CustomerPartial, Job, CustomerProduct, JobsSettings } from 'src/app/interfaces';
 import { CustomersService, SystemPreferencesService } from 'src/app/services';
+import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import * as moment from 'moment';
 
 @Component({
@@ -14,13 +14,13 @@ import * as moment from 'moment';
   styleUrls: ['./plate-job-editor.component.css']
 })
 export class PlateJobEditorComponent implements OnInit, OnDestroy {
-  @ViewChild('customerInput', { read: MatInput, static: true }) customerInput: MatInput;
   @Input() jobFormGroup: FormGroup;
   @Input() customerProducts$: Observable<CustomerProduct[]>;
 
   constructor(
     private customersService: CustomersService,
     private sysPref: SystemPreferencesService,
+    private clipboard: ClipboardService,
   ) { }
 
   get customerControl(): FormControl { return this.jobFormGroup.get('customer') as FormControl; }
@@ -36,6 +36,14 @@ export class PlateJobEditorComponent implements OnInit, OnDestroy {
     min: moment().startOf('week'),
     max: moment().endOf('week'),
   };
+
+
+  @HostListener('window:keydown', ['$event']) keyEvent(event: KeyboardEvent) {
+    if (event.code === 'KeyC' && event.ctrlKey && !event.altKey) {
+      this.copyJobIdAndName();
+      event.preventDefault();
+    }
+  }
 
   ngOnInit(): void {
     this.customers$ = combineLatest([
@@ -57,8 +65,8 @@ export class PlateJobEditorComponent implements OnInit, OnDestroy {
     return this.customerControl.valid || (this.productsControl.value instanceof Array && this.productsControl.value.length > 0);
   }
 
-  jobIdAndName(): string {
-    return `${this.jobFormGroup.get('jobId').value}-${this.jobFormGroup.get('name').value}`;
+  copyJobIdAndName() {
+    this.clipboard.copy(`${this.jobFormGroup.get('jobId').value}-${this.jobFormGroup.get('name').value}`);
   }
 
   private filterCustomer([customers, value]: [CustomerPartial[], string]): CustomerPartial[] {

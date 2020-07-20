@@ -23,7 +23,7 @@
             <!-- Preces nosaukums -->
             <td>
                 <mat-form-field>
-                    <input matInput type="text" formControlName="name" [matAutocomplete]="auto">
+                    <input matInput type="text" formControlName="name" [matAutocomplete]="auto" #name>
                     <mat-error *ngIf="prod.get('name').hasError('invalidProduct')">
                         {{prod.get('name').getError('invalidProduct')}}
                     </mat-error>
@@ -59,7 +59,7 @@
     <tfoot>
         <tr>
             <td *ngIf="isEnabled">
-                <button mat-icon-button (click)="addNewProduct()">
+                <button mat-icon-button (click)="addNewProduct()" [disabled]="isValid === false" matTooltip="Ctrl-+">
                     <mat-icon>add</mat-icon>
                 </button>
             </td>

@@ -1,6 +1,6 @@
 <div mat-dialog-title>
     <h2 *ngIf="jobForm.get('jobId').value as jobId; else noId">
-        <span [appCopyClipboard]="jobId">
+        <span appCopyClipboard>
             {{jobId}}
         </span>
     </h2>
@@ -20,5 +20,5 @@
     <!-- Pogas -->
     <button mat-raised-button [mat-dialog-close]="false">Atcelt</button>
     <button mat-raised-button color="primary" [mat-dialog-close]="jobForm.value"
-        [disabled]="jobForm.invalid || jobForm.pristine">Saglabāt</button>
+        [disabled]="jobForm.invalid || jobForm.pristine" #accept matTooltip="Ctrl-Enter">Saglabāt</button>
 </div>

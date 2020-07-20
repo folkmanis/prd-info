@@ -5,6 +5,7 @@ import { tap, map, debounceTime, startWith, filter, switchMap } from 'rxjs/opera
 import { JobService } from '../services/job.service';
 import { JobQueryFilter, JobProduct } from 'src/app/interfaces';
 import { JobEditDialogService } from '../services/job-edit-dialog.service';
+import { ClipboardService } from 'src/app/library/services/clipboard.service';
 
 @Component({
   selector: 'app-job-list',
@@ -19,6 +20,7 @@ export class JobListComponent implements OnInit, OnDestroy {
     private router: Router,
     private jobService: JobService,
     private jobEditDialog: JobEditDialogService,
+    private clipboard: ClipboardService,
   ) { }
 
   private readonly _subs = new Subscription();
@@ -52,8 +54,8 @@ export class JobListComponent implements OnInit, OnDestroy {
     this.router.navigate([{ id: jobId }], { relativeTo: this.route });
   }
 
-  jobIdAndName(jobId: number, name: string): string {
-    return `${jobId}-${name}`;
+  copyJobIdAndName(jobId: number, name: string) {
+    this.clipboard.copy(`${jobId}-${name}`);
   }
 
   onSetJobStatus(jobId: number, status: number) {

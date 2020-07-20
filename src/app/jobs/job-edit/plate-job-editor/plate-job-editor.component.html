@@ -4,7 +4,7 @@
         <div>
             <mat-form-field>
                 <mat-label>Klients</mat-label>
-                <input type="text" matInput formControlName="customer" [matAutocomplete]="auto" #customerInput required>
+                <input type="text" matInput formControlName="customer" [matAutocomplete]="auto" required>
                 <mat-error *ngIf="customerControl.hasError('noCustomer')">
                     {{customerControl.getError('noCustomer')}}
                 </mat-error>
@@ -22,7 +22,7 @@
             <mat-error *ngIf="nameControl.hasError('required')">
                 Jānorāda obligāti
             </mat-error>
-            <button mat-icon-button [appCopyClipboard]="jobIdAndName()" matSuffix tabindex="-1">
+            <button mat-icon-button (click)="copyJobIdAndName()" matSuffix tabindex="-1">
                 <mat-icon>filter_none</mat-icon>
             </button>
         </mat-form-field>
