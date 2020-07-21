@@ -9,6 +9,7 @@ export interface Invoice {
     jobs?: Job[];
     products: InvoiceProduct[];
     total?: number;
+    comment?: string;
 }
 
 export type InvoiceLike = Partial<Invoice> & {
@@ -27,6 +28,7 @@ export interface InvoiceProduct {
     jobsCount: number;
     count: number;
     price?: number;
+    comment?: string;
 }
 
 export interface InvoiceResponse extends AppHttpResponseBase<Invoice> {
