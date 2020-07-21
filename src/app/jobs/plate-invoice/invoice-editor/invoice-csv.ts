@@ -26,10 +26,10 @@ export class InvoiceCsv {
     ) { }
 
     toCsvInvoice(): string {
-        if (!this.invoice.jobs) { return DOCUMENT_FIELDS.join(this.separator); }
+        if (!this.invoice.products) { return DOCUMENT_FIELDS.join(this.separator); }
 
         const head: string[] = [...DOCUMENT_FIELDS];
-        this.invoice.jobs.forEach((_, idx) => ITEM_FIELDS.forEach(itm => head.push(itm + (idx + 1))), []);
+        this.invoice.products.forEach((_, idx) => ITEM_FIELDS.forEach(itm => head.push(itm + (idx + 1))), []);
 
         const data: string[] = [
             moment(this.invoice.createdDate).format('L'),
