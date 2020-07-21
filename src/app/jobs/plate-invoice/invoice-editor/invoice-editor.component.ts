@@ -6,6 +6,8 @@ import { Invoice, InvoiceLike } from 'src/app/interfaces';
 import { InvoicesService } from '../../services/invoices.service';
 import { CustomersService } from 'src/app/services/customers.service';
 import { InvoiceReport } from './invoice-report';
+import { InvoiceCsv } from './invoice-csv';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-invoice-editor',
@@ -36,9 +38,23 @@ export class InvoiceEditorComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onPdfDownload(invoice: Invoice): void {
+  onPdfDownload(invoice: InvoiceLike): void {
     const report = new InvoiceReport(invoice);
     report.open();
+  }
+
+  onCsvInvoice(invoice: InvoiceLike): void {
+    const csv = new InvoiceCsv(invoice, ',');
+    const file = new File([csv.toCsvInvoice()], `Invoice ${invoice.invoiceId}.csv`, { type: 'text/csv' });
+    saveAs(file);
+  }
+
+  onCsvReport(invoice: InvoiceLike): void {
+    const csv = new InvoiceCsv(invoice, ',');
+    saveAs(
+      new File([csv.toCsvReport()], `${invoice.customer}-${invoice.invoiceId}.csv`, { type: 'text/csv' })
+    );
+
   }
 
 }

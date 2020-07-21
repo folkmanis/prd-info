@@ -31,7 +31,8 @@
             "allowedCommonJsDependencies": [
               "lodash",
               "xlsx",
-              "@angular/common/locales/lv"
+              "@angular/common/locales/lv",
+              "file-saver"
            ]      
           },
           "configurations": {

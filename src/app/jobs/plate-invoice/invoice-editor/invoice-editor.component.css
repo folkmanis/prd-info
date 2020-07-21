@@ -5,3 +5,7 @@ section {
 ul {
     list-style: none;
 }
+
+button~button {
+    margin-left: 16px;
+}
