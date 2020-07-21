@@ -31,6 +31,15 @@
             {{job.receivedDate | date:'dd.MM.yyyy'}}
         </td>
     </ng-container>
+    <!-- Klients -->
+    <ng-container matColumnDef="customer">
+        <th mat-header-cell *matHeaderCellDef>
+            Klients
+        </th>
+        <td mat-cell *matCellDef="let job;">
+            {{job.customer}}
+        </td>
+    </ng-container>
     <!-- Darba nosaukums -->
     <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>
