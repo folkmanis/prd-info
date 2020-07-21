@@ -1,14 +1,12 @@
 import {
-  Component, OnInit, Input, Output, EventEmitter, AfterViewInit, OnDestroy, OnChanges, SimpleChanges,
-  ChangeDetectorRef, HostListener, ViewChild, ViewChildren, ElementRef, QueryList
+  ChangeDetectorRef, Component,
+  ElementRef, HostListener, Input, OnDestroy, OnInit,
+  QueryList, ViewChildren
 } from '@angular/core';
-import { FormArray, FormBuilder, Validators, FormGroup, AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
-import { Observable, of, Subject, ReplaySubject, merge, Subscription } from 'rxjs';
-import { tap, map, switchMap, takeUntil, filter, shareReplay, share, take } from 'rxjs/operators';
-import { Product, CustomerProduct, JobProduct } from 'src/app/interfaces';
-import { ProductsService } from 'src/app/services';
-import { JobEditDialogService } from '../../services/job-edit-dialog.service';
-import { ProductForOfDirective } from '../product-for.directive';
+import { FormArray } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { CustomerProduct } from 'src/app/interfaces';
+import { JobEditFormService } from '../../services/job-edit-form.service';
 
 const COLUMNS = ['name', 'count', 'price', 'total', 'comment'];
 
@@ -31,7 +29,7 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private service: JobEditDialogService,
+    private service: JobEditFormService,
     private ch: ChangeDetectorRef,
   ) { }
 
@@ -43,7 +41,6 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // this.nameInputs.changes.subscribe(inp => console.log(inp));
   }
 
   ngOnDestroy(): void {

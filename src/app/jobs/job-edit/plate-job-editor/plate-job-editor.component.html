@@ -9,11 +9,6 @@
                     {{customerControl.getError('noCustomer')}}
                 </mat-error>
             </mat-form-field>
-            <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
-                <mat-option *ngFor="let customer of customers$ | async" [value]="customer.CustomerName">
-                    {{customer.CustomerName}}
-                </mat-option>
-            </mat-autocomplete>
         </div>
         <!-- Darba nosaukums -->
         <mat-form-field>
@@ -59,3 +54,8 @@
         </div>
     </div>
 </form>
+<mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
+    <mat-option *ngFor="let customer of customers$ | async" [value]="customer.CustomerName">
+        {{customer.CustomerName}}
+    </mat-option>
+</mat-autocomplete>
