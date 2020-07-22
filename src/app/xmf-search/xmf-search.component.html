@@ -1,11 +1,12 @@
 <mat-drawer-container>
-    <mat-drawer #facet [opened]="(isSmall$ | async) === false" position="end" [mode]="(isSmall$ | async) ? 'over' : 'side'">
+    <mat-drawer button [small]="isSmall$ | async">
         <app-facet #facetComponent [facet]="facet$ | async" (filter)="onFacet($event)"></app-facet>
     </mat-drawer>
 
     <mat-drawer-content>
         <div>
-            <app-search-input [count]="count$ | async" (searchString)="facetComponent.deselect(); onSearch($event);"></app-search-input>
+            <app-search-input [count]="count$ | async" (searchString)="facetComponent.deselect(); onSearch($event);">
+            </app-search-input>
         </div>
 
         <div class="main">
@@ -13,5 +14,3 @@
         </div>
     </mat-drawer-content>
 </mat-drawer-container>
-
-<app-side-button (clicks)="facet.toggle()" [opened]="facet.opened"></app-side-button>
