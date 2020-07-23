@@ -1,6 +1,6 @@
-<div class="right-button" [class.opened]="_opened">
+<div class="right-button" [class.opened]="opened">
     <button mat-mini-fab color="primary" (click)="clicks.next()">
-        <mat-icon *ngIf="_opened; else elseClosed">
+        <mat-icon *ngIf="opened; else elseClosed">
             chevron_right
         </mat-icon>
         <ng-template #elseClosed>
