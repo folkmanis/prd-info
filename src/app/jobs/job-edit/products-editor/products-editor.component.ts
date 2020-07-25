@@ -7,6 +7,7 @@ import { FormArray } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { CustomerProduct } from 'src/app/interfaces';
 import { JobEditFormService } from '../../services/job-edit-form.service';
+import { map } from 'rxjs/operators';
 
 const COLUMNS = ['name', 'count', 'price', 'total', 'comment'];
 
@@ -20,6 +21,8 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
   @Input() prodFormArray: FormArray;
   @Input() customerProducts$: Observable<CustomerProduct[]>;
 
+  firstProducts$: Observable<CustomerProduct[]>;
+  restProducts$: Observable<CustomerProduct[]>;
   /** Ctrl-+ event */
   @HostListener('window:keydown', ['$event']) keyEvent(event: KeyboardEvent) {
     if (event.key === '+' && event.ctrlKey) {
@@ -41,6 +44,12 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.firstProducts$ = this.customerProducts$.pipe(
+      map(prod => prod.filter(pr => pr.price !== undefined))
+    );
+    this.restProducts$ = this.customerProducts$.pipe(
+      map(prod => prod.filter(pr => pr.price === undefined))
+    );
   }
 
   ngOnDestroy(): void {

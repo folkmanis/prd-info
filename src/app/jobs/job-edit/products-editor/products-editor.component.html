@@ -70,7 +70,14 @@
 </table>
 
 <mat-autocomplete #auto="matAutocomplete">
-    <mat-option *ngFor="let product of customerProducts$ | async" [value]="product.productName">
-        {{product.productName}}
-    </mat-option>
+    <mat-optgroup label="KLIENTA">
+        <mat-option *ngFor="let product of (firstProducts$ | async)" [value]="product.productName">
+            {{product.productName}}
+        </mat-option>
+    </mat-optgroup>
+    <mat-optgroup label="VISI">
+        <mat-option *ngFor="let product of (restProducts$ | async)" [value]="product.productName">
+            {{product.productName}}
+        </mat-option>
+    </mat-optgroup>
 </mat-autocomplete>
