@@ -18,7 +18,7 @@
 
 <div mat-dialog-actions>
     <!-- Pogas -->
-    <button mat-raised-button [mat-dialog-close]="false">Atcelt</button>
+    <button mat-raised-button [mat-dialog-close]="false">ATCELT</button>
     <button mat-raised-button color="primary" [mat-dialog-close]="jobForm.value"
-        [disabled]="jobForm.invalid || jobForm.pristine" #accept matTooltip="Ctrl-Enter">Saglabāt</button>
+        [disabled]="jobForm.valid === false || jobForm.pristine" #accept matTooltip="Ctrl-Enter">SAGLABĀT</button>
 </div>
