@@ -1,14 +1,24 @@
 table {
     width: 100%;
-    /* table-layout: fixed; */
+    table-layout: fixed;
 }
 
-.column-price, .column-count {
-    width: 180px;
+.column-action {
+    width: 40px;
+}
+
+.column-price, 
+.column-count,
+.column-total {
+    width: 64px;
 }
 
 .column-name {
     min-width: 240px;
+}
+
+td input[type="number"] {
+    text-align: right;
 }
 
 th, td {
@@ -16,6 +26,6 @@ th, td {
     padding-right: 8px;
 }
 
-td mat-form-field {
+td .mat-form-field {
     width: 100%;
 }
