@@ -66,6 +66,8 @@ export class FindSelectRouteComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this._subs.unsubscribe();
+    this.filterChange.complete();
+    this.select.complete();
   }
 
   onSelect(rte: RouteSelection): void {
