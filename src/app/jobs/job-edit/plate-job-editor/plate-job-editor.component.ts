@@ -54,7 +54,7 @@ export class PlateJobEditorComponent implements OnInit, OnDestroy {
         startWith(''),
       ),
     ]).pipe(
-      map(this.filterCustomer)
+      map(filterCustomer)
     );
   }
 
@@ -69,10 +69,10 @@ export class PlateJobEditorComponent implements OnInit, OnDestroy {
     this.clipboard.copy(`${this.jobFormGroup.get('jobId').value}-${this.jobFormGroup.get('name').value}`);
   }
 
-  private filterCustomer([customers, value]: [CustomerPartial[], string]): CustomerPartial[] {
-    const filterValue: string = value.toLowerCase();
-    return customers.filter(state => state.CustomerName.toLowerCase().indexOf(filterValue) === 0);
-  }
 
+}
 
+function filterCustomer([customers, value]: [CustomerPartial[], string]): CustomerPartial[] {
+  const filterValue = new RegExp(value, 'i');
+  return customers.filter(state => filterValue.test(state.CustomerName));
 }
