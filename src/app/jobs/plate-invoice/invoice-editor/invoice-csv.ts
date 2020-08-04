@@ -57,7 +57,7 @@ export class InvoiceCsv {
         this.invoice.jobs.forEach(job => {
             const pr = job.products instanceof Array ? undefined : job.products;
             data.push([
-                moment(this.invoice.createdDate).format('L'),
+                moment(job.receivedDate).format('L'),
                 this.invoice.customer,
                 job.jobId.toString(),
                 job.name,
