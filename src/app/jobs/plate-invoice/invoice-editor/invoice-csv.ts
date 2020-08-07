@@ -33,7 +33,7 @@ export class InvoiceCsv {
 
         const data: string[] = [
             moment(this.invoice.createdDate).format('L'),
-            this.invoice.financial.clientName,
+            this.invoice.financial?.clientName || this.invoice.customer,
             '1',
             this.invoice.comment || '',
         ];
