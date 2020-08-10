@@ -3,7 +3,7 @@ import { Invoice } from 'src/app/interfaces';
 import { InvoicesListDatasource } from './invoices-list-datasource';
 import { InvoicesService } from '../../services/invoices.service';
 
-const COLUMNS = ['invoiceId', 'customer', 'createdDateString', 'totalAll'];
+const COLUMNS = ['invoiceId', 'customer', 'createdDate', 'totalSum'];
 
 @Component({
   selector: 'app-invoices-list',

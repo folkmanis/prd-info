@@ -18,6 +18,13 @@ export type InvoiceLike = Partial<Invoice> & {
     };
 };
 
+export type InvoiceTable = Pick<Invoice, 'invoiceId' | 'customer' | 'createdDate'> & {
+    totals: {
+        count: number,
+        sum: number,
+    };
+};
+
 export interface InvoicesFilter {
     customer?: string;
 }

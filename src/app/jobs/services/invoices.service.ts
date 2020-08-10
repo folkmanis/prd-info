@@ -4,7 +4,7 @@ import { map, pluck, filter, tap, switchMap, share, shareReplay } from 'rxjs/ope
 import { PrdApiService } from 'src/app/services';
 
 import {
-  Invoice, InvoicesFilter,
+  Invoice, InvoiceTable, InvoicesFilter,
   ProductTotals
 } from 'src/app/interfaces';
 
@@ -38,8 +38,8 @@ export class InvoicesService {
     return this.prdApi.invoices.getTotals(jobsId);
   }
 
-  getInvoicesHttp(params: InvoicesFilter): Observable<Invoice[]> {
-    return this.prdApi.invoices.get(params);
+  getInvoicesHttp(params: InvoicesFilter): Observable<InvoiceTable[]> {
+    return this.prdApi.invoices.get<InvoiceTable>(params);
   }
 
 }
