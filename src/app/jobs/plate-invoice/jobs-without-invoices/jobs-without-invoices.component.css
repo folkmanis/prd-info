@@ -1,0 +1,8 @@
+h4 {
+    margin: 8px 0 0;
+    padding: 0 16px;
+}
+
+.mat-list-base[dense] .mat-list-item, .mat-list-base[dense] .mat-list-option {
+    height: 16px;
+}

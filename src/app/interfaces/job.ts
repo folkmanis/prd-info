@@ -20,7 +20,14 @@ export interface Job {
 export type JobPartial =
     Pick<Job, 'receivedDate' | 'customerJobId' | 'name' | 'jobId' | 'customer' | 'products' | 'invoiceId' | 'custCode'>;
 
+export interface JobsWithoutInvoicesTotals {
+    _id: string;
+    jobs: number;
+    totals: number;
+}
+
 export interface JobResponse extends AppHttpResponseBase<Job> {
+    jobsWithoutInvoicesTotals?: JobsWithoutInvoicesTotals[];
     // jobs?: JobPartial[];
     // job?: Job;
 }

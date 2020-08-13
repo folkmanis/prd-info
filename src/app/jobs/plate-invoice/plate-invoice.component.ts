@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { LayoutService } from 'src/app/layout/layout.service';
 
 @Component({
   selector: 'app-plate-invoice',
@@ -9,9 +9,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 export class PlateInvoiceComponent implements OnInit {
 
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
+    private layoutService: LayoutService,
   ) { }
+  isSmall$ = this.layoutService.isSmall$;
 
   ngOnInit(): void {
   }

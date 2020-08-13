@@ -2,17 +2,13 @@ import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription, combineLatest } from 'rxjs';
-import { map, startWith, tap, take, shareReplay } from 'rxjs/operators';
+import { map, startWith, tap, take, shareReplay, share } from 'rxjs/operators';
 import { CustomerPartial, JobQueryFilter, Job, JobPartial, ProductTotals, InvoiceLike } from 'src/app/interfaces';
-import { CustomersService } from 'src/app/services';
+import { CustomersService, PrdApiService } from 'src/app/services';
 import { InvoicesService } from '../../services/invoices.service';
 import { JobService } from '../../services/job.service';
 import { InvoiceReport } from '../invoice-editor/invoice-report';
-
-export interface InvoicesTotals {
-  totals: ProductTotals[];
-  grandTotal: number;
-}
+import { InvoicesTotals } from '../interfaces';
 
 @Component({
   selector: 'app-new-invoice',
@@ -23,7 +19,6 @@ export interface InvoicesTotals {
 export class NewInvoiceComponent implements OnInit, OnDestroy {
   constructor(
     private invoiceService: InvoicesService,
-    private customersService: CustomersService,
     private jobService: JobService,
     private router: Router,
     private route: ActivatedRoute,
@@ -33,7 +28,9 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
   canSubmit = false;
   customerId = new FormControl('');
 
-  customers$: Observable<CustomerPartial[]> = this.customersService.customers$;
+  customers$: Observable<string[]> = this.invoiceService.jobsWithoutInvoicesTotals$.pipe(
+    map(custs => custs.map(cust => cust._id))
+  );
 
   jobs$ = this.jobService.jobs$;
   totals$: Observable<InvoicesTotals> = combineLatest([
@@ -41,6 +38,7 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
     this.invoiceService.grandTotal$,
   ]).pipe(
     map(([totals, grandTotal]) => ({ totals, grandTotal })),
+    share(),
   );
 
   private readonly subscriptions = new Subscription();
@@ -79,8 +77,6 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
     this.selectedJobs = selectedJobs;
     this.invoiceService.totalsFilter$.next(selectedJobs);
     this.canSubmit = !!selectedJobs.length;
-    // setTimeout(() => {
-    // }, 0);
   }
 
 }

@@ -29,24 +29,6 @@ const routes: Routes = [
         path: 'new',
         redirectTo: '/jobs;id=new',
       },
-      {
-        path: 'plate-invoice',
-        component: PlateInvoiceComponent,
-        children: [
-          {
-            path: 'new-invoice',
-            component: NewInvoiceComponent,
-          },
-          {
-            path: 'invoice',
-            component: InvoiceEditorComponent,
-          },
-          {
-            path: '',
-            component: InvoicesListComponent,
-          }
-        ]
-      }
     ]
   }
 ];

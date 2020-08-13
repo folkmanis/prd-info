@@ -11,11 +11,6 @@ import { CacheInterceptorService } from '../library/http';
 import { JobListComponent } from './job-list/job-list.component';
 import { PlateJobEditorComponent } from './job-edit/plate-job-editor/plate-job-editor.component';
 import { ProductsEditorComponent } from './job-edit/products-editor/products-editor.component';
-import { PlateInvoiceComponent } from './plate-invoice/plate-invoice.component';
-import { InvoiceEditorComponent } from './plate-invoice/invoice-editor/invoice-editor.component';
-import { JobSelectionTableComponent } from './plate-invoice/job-selection-table/job-selection-table.component';
-import { NewInvoiceComponent } from './plate-invoice/new-invoice/new-invoice.component';
-import { InvoicesListComponent } from './plate-invoice/invoices-list/invoices-list.component';
 import { JobDialogComponent } from './job-edit/job-dialog.component';
 import { JobService } from './services/job.service';
 import { InvoicesService } from './services/invoices.service';
@@ -28,6 +23,8 @@ import { SidePanelComponent } from './side-panel/side-panel.component';
 import { CustomerInputDialogComponent } from './side-panel/customer-input-dialog/customer-input-dialog.component';
 PdfMakeWrapper.setFonts(pdfFonts);
 
+import { PlateInvoiceModule } from './plate-invoice/plate-invoice.module';
+
 @NgModule({
   declarations: [
     JobsComponent,
@@ -35,11 +32,6 @@ PdfMakeWrapper.setFonts(pdfFonts);
     JobListComponent,
     PlateJobEditorComponent,
     ProductsEditorComponent,
-    PlateInvoiceComponent,
-    InvoiceEditorComponent,
-    JobSelectionTableComponent,
-    NewInvoiceComponent,
-    InvoicesListComponent,
     JobFilterComponent,
     JobDialogComponent,
     ProductForOfDirective,
@@ -50,6 +42,7 @@ PdfMakeWrapper.setFonts(pdfFonts);
     CommonModule,
     LibraryModule,
     JobsRoutingModule,
+    PlateInvoiceModule,
   ],
   providers: [
     JobService,

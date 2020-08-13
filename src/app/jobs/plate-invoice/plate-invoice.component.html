@@ -1,1 +1,9 @@
-<router-outlet></router-outlet>
+<mat-drawer-container>
+    <mat-drawer button [small]="isSmall$ | async">
+        <app-jobs-without-invoices></app-jobs-without-invoices>
+    </mat-drawer>
+
+    <mat-drawer-content>
+        <router-outlet></router-outlet>
+    </mat-drawer-content>
+</mat-drawer-container>

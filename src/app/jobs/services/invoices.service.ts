@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Observable, merge, Subject, BehaviorSubject, EMPTY, of, observable } from 'rxjs';
-import { map, pluck, filter, tap, switchMap, share, shareReplay } from 'rxjs/operators';
+import { map, pluck, filter, tap, switchMap, share, shareReplay, startWith } from 'rxjs/operators';
 import { PrdApiService } from 'src/app/services';
 
 import {
   Invoice, InvoiceTable, InvoicesFilter,
-  ProductTotals
+  ProductTotals, JobsWithoutInvoicesTotals,
 } from 'src/app/interfaces';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class InvoicesService {
   ) { }
 
   totals$: Observable<ProductTotals[]> = this.totalsFilter$.pipe(
-    switchMap(f => this.getTotalsHttp(f)),
+    switchMap(f => this.prdApi.invoices.getTotals(f)),
     share(),
   );
 
@@ -26,16 +26,21 @@ export class InvoicesService {
     share(),
   );
 
+  reloadJobsWithoutInvoicesTotals$ = new Subject();
+  jobsWithoutInvoicesTotals$: Observable<JobsWithoutInvoicesTotals[]> = this.reloadJobsWithoutInvoicesTotals$.pipe(
+    startWith({}),
+    switchMap(() => this.prdApi.jobs.jobsWithoutInvoicesTotals()),
+    shareReplay(1),
+  );
+
   createInvoice(params: { selectedJobs: number[], customerId: string; }): Observable<Invoice> {
-    return this.prdApi.invoices.createInvoice(params);
+    return this.prdApi.invoices.createInvoice(params).pipe(
+      tap(() => this.reloadJobsWithoutInvoicesTotals$.next()),
+    );
   }
 
   getInvoice(invoiceId: string): Observable<Invoice> {
     return this.prdApi.invoices.get(invoiceId);
-  }
-
-  private getTotalsHttp(jobsId: number[]): Observable<ProductTotals[]> {
-    return this.prdApi.invoices.getTotals(jobsId);
   }
 
   getInvoicesHttp(params: InvoicesFilter): Observable<InvoiceTable[]> {

@@ -1,0 +1,8 @@
+<h4>
+    Nav izrakstīts
+</h4>
+<mat-list *ngFor="let cust of noInvoices$ | async" dense>
+    <mat-list-item>
+        {{cust._id}} - {{cust.totals | currency}}
+    </mat-list-item>
+</mat-list>

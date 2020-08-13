@@ -2,7 +2,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
-import { JobEditDialogService } from '../../services/job-edit-dialog.service';
+import { JobEditDialogService } from '../../../services/job-edit-dialog.service';
 import { JobPartial } from 'src/app/interfaces';
 
 const TABLE_COLUMNS = ['jobId', 'receivedDate', 'customer', 'name', 'productName', 'count', 'price', 'total'];

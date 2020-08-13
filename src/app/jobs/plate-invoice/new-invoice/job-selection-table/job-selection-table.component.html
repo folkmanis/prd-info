@@ -66,7 +66,7 @@
         <th mat-header-cell *matHeaderCellDef>
             Skaits
         </th>
-        <td mat-cell *matCellDef="let job;">
+        <td mat-cell *matCellDef="let job;" class="right-align">
             {{job.products?.count}}
         </td>
     </ng-container>
@@ -75,7 +75,7 @@
         <th mat-header-cell *matHeaderCellDef>
             Cena
         </th>
-        <td mat-cell *matCellDef="let job;">
+        <td mat-cell *matCellDef="let job;" class="right-align">
             {{job.products?.price | currency}}
         </td>
     </ng-container>
@@ -84,7 +84,7 @@
         <th mat-header-cell *matHeaderCellDef>
             Kopā
         </th>
-        <td mat-cell *matCellDef="let job;">
+        <td mat-cell *matCellDef="let job;" class="right-align">
             {{(job.products?.price * job.products?.count) | currency}}
         </td>
     </ng-container>
