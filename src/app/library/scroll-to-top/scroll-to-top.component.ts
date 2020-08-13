@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy, NgZone, ElementRef } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, NgZone, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/scrolling';
@@ -23,6 +23,7 @@ export class ScrollToTopComponent implements OnInit, OnDestroy {
     private zone: NgZone,
     private dispatcher: ScrollDispatcher,
     private element: ElementRef,
+    private chgRef: ChangeDetectorRef,
   ) { }
 
   ngOnInit(): void {
@@ -35,9 +36,9 @@ export class ScrollToTopComponent implements OnInit, OnDestroy {
       map(() => this.scrollContainers.reduce((acc, scr) => acc += scr.measureScrollOffset('top'), 0)),
       tap(top => {
         if (top > showScrollHeight) {
-          this.zone.run(() => this.showScroll = true); // Scroll tiek pārbaudīts ārpus zonas. Bez run nekādas reakcijas nebūs
+          this.zone.run(() => this.setVisibility(true)); // Scroll tiek pārbaudīts ārpus zonas. Bez run nekādas reakcijas nebūs
         } else if (this.showScroll && top < hideScrollHeight) {
-          this.zone.run(() => this.showScroll = false);
+          this.zone.run(() => this.setVisibility(false));
         }
       }),
     ).subscribe();
@@ -51,6 +52,11 @@ export class ScrollToTopComponent implements OnInit, OnDestroy {
 
   scrollToTop() {
     this.scrollContainers.forEach(scr => scr.scrollTo({ top: 0 }));
+  }
+
+  setVisibility(status: boolean): void {
+    this.showScroll = status;
+    this.chgRef.markForCheck();
   }
 
 }
