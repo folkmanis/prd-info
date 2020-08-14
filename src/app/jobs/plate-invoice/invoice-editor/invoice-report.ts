@@ -6,7 +6,9 @@ export class InvoiceReport {
     private _pdf: PdfMakeWrapper = new PdfMakeWrapper();
     constructor(
         private _invoice: InvoiceLike,
+        private _locale = 'lv',
     ) {
+        moment.locale(this._locale);
         this._pdf.pageSize('A4');
         this._pdf.pageMargins([30, 30, 30, 30]);
         this._pdf.info({ title: `Report ${_invoice.invoiceId}` });

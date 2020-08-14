@@ -7,7 +7,6 @@ import { CustomerProduct } from 'src/app/interfaces';
 import { ProductsService } from 'src/app/services';
 import { JobEditDialogData } from './job-edit-dialog-data';
 
-
 @Component({
   selector: 'app-job-dialog',
   templateUrl: './job-dialog.component.html',
@@ -42,6 +41,7 @@ export class JobDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+
     this._customer$ = new BehaviorSubject(this.customerContr.value as string);
     this.customerProducts$ = this._customer$.pipe(
       filter((customer: string) => !this.customerContr.invalid && customer && customer.length > 0),

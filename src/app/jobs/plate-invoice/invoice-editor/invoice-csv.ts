@@ -22,11 +22,13 @@ const REPORT_FIELDS: string[] = [
 export class InvoiceCsv {
     constructor(
         private invoice: InvoiceLike,
-        private separator = ',',
-    ) { }
+        private params: { separator: string; locale: string; } = { separator: ',', locale: 'lv' },
+    ) {
+        moment.locale(params.locale);
+    }
 
     toCsvInvoice(): string {
-        if (!this.invoice.jobs) { return DOCUMENT_FIELDS.join(this.separator); }
+        if (!this.invoice.jobs) { return DOCUMENT_FIELDS.join(this.params.separator); }
 
         const head: string[] = [...DOCUMENT_FIELDS];
         this.invoice.jobs.forEach((_, idx) => ITEM_FIELDS.forEach(itm => head.push(itm + (idx + 1))), []);
@@ -49,7 +51,7 @@ export class InvoiceCsv {
                     curr.price.toFixed(6),
                 ], data)
             ],
-            this.separator);
+            this.params.separator);
     }
 
     toCsvReport(): string {
@@ -67,7 +69,7 @@ export class InvoiceCsv {
                 (pr.count * pr.price).toFixed(2).replace('.', ','),
             ]);
         });
-        return stringify(data, this.separator);
+        return stringify(data, this.params.separator);
     }
 }
 

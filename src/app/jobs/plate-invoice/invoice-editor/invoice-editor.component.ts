@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, LOCALE_ID, Inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { filter, map, switchMap, shareReplay } from 'rxjs/operators';
@@ -20,6 +20,7 @@ export class InvoiceEditorComponent implements OnInit {
     private route: ActivatedRoute,
     private invoicesService: InvoicesService,
     private customersService: CustomersService,
+    @Inject(LOCALE_ID) private locale: string,
   ) { }
 
   invoice$: Observable<InvoiceLike> = this.route.paramMap.pipe(
@@ -39,18 +40,18 @@ export class InvoiceEditorComponent implements OnInit {
   }
 
   onPdfDownload(invoice: InvoiceLike): void {
-    const report = new InvoiceReport(invoice);
+    const report = new InvoiceReport(invoice, this.locale);
     report.open();
   }
 
   onCsvInvoice(invoice: InvoiceLike): void {
-    const csv = new InvoiceCsv(invoice, ',');
+    const csv = new InvoiceCsv(invoice, { separator: ',', locale: this.locale });
     const file = new File([csv.toCsvInvoice()], `Invoice ${invoice.invoiceId}.csv`, { type: 'text/csv' });
     saveAs(file);
   }
 
   onCsvReport(invoice: InvoiceLike): void {
-    const csv = new InvoiceCsv(invoice, ',');
+    const csv = new InvoiceCsv(invoice, { separator: ',', locale: this.locale });
     saveAs(
       new File([csv.toCsvReport()], `${invoice.customer}-${invoice.invoiceId}.csv`, { type: 'text/csv' })
     );
