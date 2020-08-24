@@ -1,8 +1,9 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { LoginService, SystemPreferencesService } from 'src/app/services';
-import { User } from 'src/app/interfaces';
+import { User, AppParams } from 'src/app/interfaces';
+import { APP_PARAMS } from 'src/app/app-params';
 
 @Component({
   selector: 'app-toolbar',
@@ -15,7 +16,8 @@ export class ToolbarComponent implements OnInit {
   constructor(
     private loginService: LoginService,
     private systemPreferencesService: SystemPreferencesService,
-  ) { }
+    @Inject(APP_PARAMS) private params: AppParams,
+    ) { }
 
   // Aktīvā moduļa nosaukums, ko rādīt toolbārā
   activeModule$ = this.systemPreferencesService.activeModule$;
@@ -25,6 +27,7 @@ export class ToolbarComponent implements OnInit {
   userMenu$: Observable<{ route: string[], text: string; }[]> = this.loginService.user$.pipe(
     map(usr => usr ? [{ route: ['/login'], text: 'Atslēgties' }] : [])
   );
+  version = this.params.version.appBuild;
 
   ngOnInit(): void {
   }

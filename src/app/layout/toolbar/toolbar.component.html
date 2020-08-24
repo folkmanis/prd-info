@@ -23,7 +23,8 @@
         <i class="material-icons">arrow_drop_down</i>
       </button>
       <mat-menu #userMenu="matMenu">
-        <span class="mat-caption username">Lietotājs: <strong>{{user.name}}</strong></span>
+        <span mat-menu-item>Versija {{version}}</span>
+        <span mat-menu-item class="mat-caption username">Lietotājs: <strong>{{user.name}}</strong></span>
         <button *ngFor="let item of userMenu$ | async" mat-menu-item [routerLink]="item.route">{{item.text}}</button>
       </mat-menu>
     </span>

@@ -7,9 +7,9 @@ import {
     SystemSettings,
     JobsSettings,
 } from './interfaces';
+import { version } from 'src/version.json';
 
 export const APP_PARAMS = new InjectionToken<AppParams>('prd.defaults');
-
 export const PRD_DEFAULTS: AppParams = {
     apiPath: '/data/',
     toolbarHeight: {
@@ -20,6 +20,8 @@ export const PRD_DEFAULTS: AppParams = {
         small: '700px',
         medium: '1000px',
     },
+    version,
+    versionCheckInterval: 10 * 1000,
     defaultSystemPreferences: new Map<SystemPreferencesGroups, ModuleSettings>()
         .set('kastes', {
             colors: { yellow: 'hsl(45,75%,60%)', rose: '315,75%,50%', white: '0,0%,50%', },
@@ -31,7 +33,7 @@ export const PRD_DEFAULTS: AppParams = {
                 { category: 'perforated paper', description: 'Perforētais papīrs' }
             ],
             jobStates: [
-                {state: 10, description: 'Sagatavošana'},
+                { state: 10, description: 'Sagatavošana' },
             ]
         } as JobsSettings),
 };

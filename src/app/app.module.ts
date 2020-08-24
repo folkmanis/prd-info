@@ -13,6 +13,7 @@ import { SideMenuComponent } from './layout/side-menu/side-menu.component';
 import { MainMenuComponent } from './layout/main-menu/main-menu.component';
 import { ErrorsService } from './library/errors/errors.service';
 import { CacheInterceptorService } from './library/http';
+import { VersionInterceptorService } from './library/http/version-interceptor.service';
 
 import { registerLocaleData } from '@angular/common';
 import localeLv from '@angular/common/locales/lv';
@@ -42,6 +43,7 @@ import { ToolbarComponent } from './layout/toolbar/toolbar.component';
     { provide: DEFAULT_CURRENCY_CODE, useValue: 'EUR' },
     { provide: ErrorHandler, useClass: ErrorsService, },
     { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptorService, multi: true, },
+    { provide: HTTP_INTERCEPTORS, useClass: VersionInterceptorService, multi: true, },
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
     { provide: APP_PARAMS, useValue: PRD_DEFAULTS },
