@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, Input, EventEmitter, OnChanges, AfterViewInit } from '@angular/core';
 import { MatTable } from '@angular/material/table';
 import { MAT_CHECKBOX_DEFAULT_OPTIONS } from '@angular/material/checkbox';
-import { Kaste, Totals } from '../../interfaces';
+import { Kaste } from 'src/app/interfaces';
 
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
 import { Observable, BehaviorSubject, Subject, of, EMPTY, combineLatest, ReplaySubject } from 'rxjs';

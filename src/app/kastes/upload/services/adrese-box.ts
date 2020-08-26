@@ -1,5 +1,5 @@
 import { UploadRow } from './upload-row';
-import { Kaste } from '../../interfaces';
+import { Kaste } from 'src/app/interfaces';
 import { Observable, of } from 'rxjs';
 
 export const MaxPakas = 5;

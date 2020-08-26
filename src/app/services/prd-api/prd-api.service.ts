@@ -6,6 +6,7 @@ import { InvoicesApi } from './invoices-api';
 import { JobsApi } from './jobs-api';
 import { ProductsApi } from './products-api';
 import { SystemPreferencesApi } from './system-preferences-api';
+import { KastesOrdersApi } from './kastes-orders-api';
 import { AppParams } from 'src/app/interfaces';
 import { APP_PARAMS } from 'src/app/app-params';
 
@@ -27,5 +28,6 @@ export class PrdApiService {
   jobs = new JobsApi(this.http, this.apiPath + 'jobs/');
   invoices = new InvoicesApi(this.http, this.apiPath + 'invoices/');
   systemPreferences = new SystemPreferencesApi(this.http, this.apiPath + 'preferences/');
+  kastesOrders = new KastesOrdersApi(this.http, this.apiPath + 'kastes-orders/');
 
 }

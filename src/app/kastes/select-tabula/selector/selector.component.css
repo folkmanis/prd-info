@@ -19,23 +19,8 @@ div.selector {
   background-color: #3f525c;
 }
 
-a.item {
-  display: block;
-  float: left;
-  color: #eee;
-  text-align: center;
-  padding: 4px 16px;
-  text-decoration: none;
-  width: auto;
-}
-
-a.item:hover {
-  background-color: #eee;
-  color: #3f525c;
-  cursor: pointer;
-}
-
-a.item.selected {
-  background-color: #eee;
-  color: #3f525c;
+.kopskaiti {
+  display: flex;
+  margin: 8px;
+  height: 42px;
 }

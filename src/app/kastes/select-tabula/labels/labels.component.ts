@@ -1,8 +1,6 @@
 import { Component, OnInit, ViewChild, EventEmitter, ElementRef } from '@angular/core';
-import { MatButton } from '@angular/material/button';
 import { FormGroup, FormControl } from '@angular/forms';
-import { Kaste } from '../../interfaces';
-import { TabulaComponent } from '../tabula/tabula.component';
+import { Kaste } from 'src/app/interfaces';
 import { filter, switchMap, map, tap, switchAll, mergeMap, pluck, share } from 'rxjs/operators';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
 import { Observable, of, BehaviorSubject } from 'rxjs';

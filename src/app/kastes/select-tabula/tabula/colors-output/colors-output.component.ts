@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Totals, Colors } from '../../../interfaces';
+import { Totals, Colors } from 'src/app/interfaces';
 import { KastesPreferencesService } from '../../../services/kastes-preferences.service';
 import { pluck } from 'rxjs/operators';
 

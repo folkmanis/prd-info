@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LibraryModule, ParserService } from 'src/app/library';
+import { UploadRoutingModule } from './upload-routing.module';
 import { UploadComponent } from './upload.component';
 import { UploadTabulaComponent } from './upload-tabula/upload-tabula.component';
 import { UploadAdresesComponent } from './upload-adreses/upload-adreses.component';
@@ -27,6 +28,7 @@ import { KastesApiService } from '../services/kastes-api.service';
   imports: [
     CommonModule,
     LibraryModule,
+    UploadRoutingModule,
   ],
   providers: [
     UploadService,

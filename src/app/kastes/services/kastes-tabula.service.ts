@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { KastesApiService } from './kastes-api.service';
 import { Subject, Observable, MonoTypeOperatorFunction, ReplaySubject, BehaviorSubject, combineLatest, pipe, merge, EMPTY, of } from 'rxjs';
-import { Kaste, Totals, RowUpdate, Colors } from '../interfaces';
+import { Kaste, Totals, RowUpdate, Colors } from 'src/app/interfaces';
 import { switchMap, share, pluck, shareReplay, withLatestFrom, map, tap, startWith, throttleTime, mergeMap, filter } from 'rxjs/operators';
 import { KastesPreferencesService } from './kastes-preferences.service';
 import { cacheWithUpdate } from 'src/app/library/rx';

@@ -7,3 +7,5 @@ export * from './user';
 export * from './system-preferences';
 export * from './login';
 export * from './panel-component';
+export * from './kaste';
+export * from './kastes-order';

@@ -1,7 +1,12 @@
 import { AppHttpResponseBase } from 'src/app/library/http';
-import { KastesUserPreferences } from './kastes-user-preferences';
+import { KastesUserPreferences } from '../kastes/interfaces/kastes-user-preferences';
 
 export type Colors = 'yellow' | 'rose' | 'white';
+
+export interface ColorTotals {
+    color: Colors;
+    total: number;
+}
 
 export interface Kaste {
     _id: string;
@@ -25,12 +30,7 @@ export interface Totals {
     total: number;
     kastesRemain: number;
     labelsRemain: number;
-    colorTotals: {
-        color: Colors;
-        total: number;
-    }[];
-    //  Map<string, { total: number; style: { color: string; }; }>;
-
+    colorTotals: ColorTotals[];
 }
 
 export interface KasteResponse extends AppHttpResponseBase<Kaste> {

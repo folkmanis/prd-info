@@ -5,7 +5,6 @@ import { SelectorComponent } from './select-tabula/selector/selector.component';
 import { LabelsComponent } from './select-tabula/labels/labels.component';
 import { SelectTabulaComponent } from './select-tabula/select-tabula.component';
 import { UploadComponent } from './upload/upload.component';
-import { PasutijumiComponent } from './pasutijumi/pasutijumi.component';
 import { KastesComponent } from './kastes.component';
 
 const routes: Routes = [
@@ -47,14 +46,6 @@ const routes: Routes = [
           },
         ],
       },
-      {
-        path: 'upload',
-        component: UploadComponent
-      },
-      {
-        path: 'pasutijumi',
-        component: PasutijumiComponent,
-      },
     ]
   },
   { path: '**', redirectTo: '' },
@@ -65,4 +56,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)], // { enableTracing: true }
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class KastesRoutingModule { }

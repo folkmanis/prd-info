@@ -35,7 +35,6 @@
 
 .adrese-form {
     display: flex;
-    height: 56px;
     padding: 0 8px;
     width: 100%;
 }
@@ -46,4 +45,10 @@
 
 .warn {
     color: red;
+}
+
+.kopskaiti {
+    display: flex;
+    margin: 8px;
+    height: 42px;
 }

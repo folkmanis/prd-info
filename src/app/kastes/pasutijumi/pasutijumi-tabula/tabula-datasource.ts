@@ -1,10 +1,10 @@
 import { DataSource } from '@angular/cdk/collections';
 import { Observable } from 'rxjs';
 
-import { Pasutijums } from '../interfaces';
-import { PasutijumiService } from '../services/pasutijumi.service';
+import { KastesOrder, KastesOrderPartial } from 'src/app/interfaces';
+import { PasutijumiService } from '../../services/pasutijumi.service';
 
-export class TabulaDatasource extends DataSource<Pasutijums> {
+export class TabulaDatasource extends DataSource<KastesOrderPartial> {
 
     constructor(
         private pasutijumiService: PasutijumiService,
@@ -12,14 +12,14 @@ export class TabulaDatasource extends DataSource<Pasutijums> {
         super();
     }
 
-    connect(): Observable<Pasutijums[]> {
+    connect(): Observable<KastesOrderPartial[]> {
         return this.pasutijumiService.pasutijumi$;
     }
 
     disconnect() {
     }
 
-    updatePas(pas: Partial<Pasutijums>): Observable<boolean> {
+    updatePas(pas: Partial<KastesOrder>): Observable<boolean> {
         return this.pasutijumiService.updatePasutijums(pas);
     }
 }

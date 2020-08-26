@@ -1,0 +1,31 @@
+<div class="navigator">
+    <button mat-fab color="primary" [routerLink]="['../']">
+        <mat-icon>
+            arrow_back
+        </mat-icon>
+    </button>
+</div>
+<div *ngIf="order$ | async as order" class="container">
+    <h2>
+        {{order.name}}
+    </h2>
+    <mat-list>
+        <mat-list-item>
+            Id: {{order._id}}
+        </mat-list-item>
+        <mat-list-item>
+            {{order.deleted ? 'Neaktīvs' : 'Aktīvs'}}
+        </mat-list-item>
+        <mat-list-item>
+            Izveidošanas datums: {{order.created | date}}
+        </mat-list-item>
+    </mat-list>
+    <h4>Pavisam adreses</h4>
+    <p>
+        {{order.totals.veikali}}
+    </p>
+    <h4>Kopējie skaiti pa krāsām</h4>
+    <app-color-totals [totals]="order.totals.colorTotals"></app-color-totals>
+    <h4>Kopējie skaiti pa kastu apjomiem</h4>
+    <app-apjomi-totals [totals]="order.totals.apjomiTotals"></app-apjomi-totals>
+</div>

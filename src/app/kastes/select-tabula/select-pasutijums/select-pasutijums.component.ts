@@ -31,7 +31,6 @@ export class SelectPasutijumsComponent implements OnInit, OnDestroy {
 
     this._subs.add(
       this.pasControl.valueChanges.pipe(
-        tap(resp => console.log(resp)),
         switchMap(pas => this.prefService.updateUserPreferences({ pasutijums: pas })),
       ).subscribe()
     );

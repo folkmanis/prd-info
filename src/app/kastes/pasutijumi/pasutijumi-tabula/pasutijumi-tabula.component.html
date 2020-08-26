@@ -1,19 +1,18 @@
 <div class="button-container">
-    <button mat-raised-button color="primary" (click)="onNew()">
-        {{new ? 'Saglabāt':'Jauns pasūtījums'}}
-    </button>
-    <button mat-raised-button color="warn" (click)="onCleanup()">Dzēst neaktīvos</button>
+    <app-tabula-buttons></app-tabula-buttons>
 </div>
-<div *ngIf="new;">
-    <app-jauns-pasutijums></app-jauns-pasutijums>
-</div>
+
 <div class="mat-elevation-z8 tabula-container">
-    <table mat-table class="full-width-table">
+    <table mat-table [dataSource]="dataSource" class="full-width-table">
 
         <!-- Nosaukums -->
         <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef>Pasūtījuma nosaukums</th>
-            <td mat-cell *matCellDef="let row;">{{row.name}}</td>
+            <td mat-cell *matCellDef="let row;">
+                <a [routerLink]="row._id">
+                    {{row.name}}
+                </a>
+            </td>
         </ng-container>
         <!-- Dzēsts checkbox -->
         <ng-container matColumnDef="deleted">
@@ -32,5 +31,4 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
     </table>
-
 </div>

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PasutijumiComponent } from './pasutijumi.component';
+import { ColorTotalsComponent } from './color-totals.component';
 
-describe('PasutijumiComponent', () => {
-  let component: PasutijumiComponent;
-  let fixture: ComponentFixture<PasutijumiComponent>;
+describe('ColorTotalsComponent', () => {
+  let component: ColorTotalsComponent;
+  let fixture: ComponentFixture<ColorTotalsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PasutijumiComponent ]
+      declarations: [ ColorTotalsComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PasutijumiComponent);
+    fixture = TestBed.createComponent(ColorTotalsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
