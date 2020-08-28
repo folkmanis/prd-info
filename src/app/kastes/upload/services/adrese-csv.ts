@@ -81,6 +81,10 @@ export class AdresesCsv extends DataSource<CsvRecord> {
         this.adreses$.next(tmpData);
     }
 
+    addColumn(): void {
+        this.adreses$.next(this.value.map(row => [...row, 0]));
+    }
+
     deleteRows(rowMap: Array<any[]>) {
         const tmp = this.adreses$.value.filter((val, idx) => !rowMap.includes(val));
         this.adreses$.next(tmp);

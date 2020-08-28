@@ -64,6 +64,10 @@ export class UploadService {
     this.adresesCsv.deleteRows(selected);
   }
 
+  addEmptyColumn() {
+    this.adresesCsv.addColumn();
+  }
+
   adresesToKastes(colMap: Map<string, string>, toPakas: boolean) {
     this.adresesBox = new AdresesBox();
     this.adresesBox$ = this.adresesBox.init(this.adresesCsv.value, colMap, { toPakas });

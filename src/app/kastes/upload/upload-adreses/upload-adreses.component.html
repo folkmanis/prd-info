@@ -3,6 +3,7 @@
         <button mat-raised-button (click)="onDeleteColumns()" [disabled]="!checkCols.checked">Dzēst slejas</button>
         <button mat-raised-button (click)="onJoinColumns()" [disabled]="checkCols.checked < 2">Apvienot slejas</button>
         <button mat-raised-button (click)="onDeleteRows()" [disabled]="rowSelection.isEmpty()">Dzēst rindas</button>
+        <button mat-raised-button (click)="onAddEmptyColumn()">Pievienot tukšu sleju</button>
         <button mat-raised-button (click)="onCalculate()" [disabled]="!tableComplete">Aprēķināt</button>
         <mat-checkbox [formControl]="checkSkaitiPakas">Jādala ar 500</mat-checkbox>
     </div>

@@ -76,6 +76,12 @@ export class UploadAdresesComponent implements OnInit, AfterViewInit {
     this.gatavs.emit(false);
   }
 
+  onAddEmptyColumn() {
+    this.uploadService.addEmptyColumn();
+    this.setColNames();
+    this.toCheckGroup();
+  }
+
   onCalculate() { // Veidot pakošanas sarakstu un iet tālāk
     this.uploadService.adresesToKastes(
       this.colChipsAssigned,
