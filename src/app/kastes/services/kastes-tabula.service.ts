@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
-import { KastesApiService } from './kastes-api.service';
 import { Subject, Observable, MonoTypeOperatorFunction, ReplaySubject, BehaviorSubject, combineLatest, pipe, merge, EMPTY, of } from 'rxjs';
 import { Kaste, Totals, RowUpdate, Colors } from 'src/app/interfaces';
 import { switchMap, share, pluck, shareReplay, withLatestFrom, map, tap, startWith, throttleTime, mergeMap, filter } from 'rxjs/operators';
 import { KastesPreferencesService } from './kastes-preferences.service';
 import { cacheWithUpdate } from 'src/app/library/rx';
+import { PrdApiService } from 'src/app/services';
 
 @Injectable()
 export class KastesTabulaService {
 
   constructor(
-    private kastesApi: KastesApiService,
+    private prdApi: PrdApiService,
     private prefService: KastesPreferencesService,
   ) { }
 
@@ -27,7 +27,7 @@ export class KastesTabulaService {
   kastesLabelUpdateResult$ = new Subject<Partial<Kaste> | undefined>();
 
   apjomi$: Observable<number[]> = this.pasutijumsId$.pipe(
-    switchMap(pasutijumsId => this.kastesApi.kastes.getApjomi({ pasutijumsId }).pipe()
+    switchMap(pasutijumsId => this.prdApi.kastes.getApjomi({ pasutijumsId }).pipe()
     ),
   );
 
@@ -35,7 +35,7 @@ export class KastesTabulaService {
     startWith({}),
     // throttleTime(3000),
     switchMap(() => this.pasutijumsId$),
-    switchMap(pasutijumsId => this.kastesApi.kastes.get<Kaste>({ pasutijumsId })),
+    switchMap(pasutijumsId => this.prdApi.kastes.get<Kaste>({ pasutijumsId })),
     cacheWithUpdate(this.updateKaste$, (o1, o2) => o1._id === o2._id && o1.kaste === o2.kaste),
   );
 
@@ -52,8 +52,8 @@ export class KastesTabulaService {
   );
 
   setGatavs(kaste: Kaste, yesno: boolean): Observable<boolean> {
-    return this.kastesApi.kastes.setGatavs(kaste, yesno).pipe(
-      mergeMap(() => this.kastesApi.kastes.get(kaste._id, { kaste: kaste.kaste }).pipe(
+    return this.prdApi.kastes.setGatavs(kaste, yesno).pipe(
+      mergeMap(() => this.prdApi.kastes.get(kaste._id, { kaste: kaste.kaste }).pipe(
         tap(k => this.updateKaste$.next(k)),
       )),
       map(resp => !!resp),
@@ -62,9 +62,9 @@ export class KastesTabulaService {
 
   setLabel(kods: number | string): Observable<Kaste | undefined> {
     return this.pasutijumsId$.pipe(
-      mergeMap(pasutijumsId => this.kastesApi.kastes.setLabel(pasutijumsId, kods)),
+      mergeMap(pasutijumsId => this.prdApi.kastes.setLabel(pasutijumsId, kods)),
       mergeMap(
-        resp => resp ? this.kastesApi.kastes.get(resp._id, { kaste: resp.kaste }).pipe(
+        resp => resp ? this.prdApi.kastes.get(resp._id, { kaste: resp.kaste }).pipe(
           tap(k => this.updateKaste$.next(k)),
         ) : of(undefined)
       ),

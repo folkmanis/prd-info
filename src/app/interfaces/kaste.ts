@@ -1,5 +1,4 @@
 import { AppHttpResponseBase } from 'src/app/library/http';
-import { KastesUserPreferences } from '../kastes/interfaces/kastes-user-preferences';
 
 export type Colors = 'yellow' | 'rose' | 'white';
 
@@ -42,4 +41,24 @@ export interface RowUpdate {
     rw: Kaste;
     field: 'gatavs' | 'uzlime';
     yesno: boolean;
+}
+
+export interface KastesUserPreferences {
+    pasutijums: string;
+}
+
+export interface VeikalsBox {
+    total: number;
+    yellow: number;
+    rose: number;
+    white: number;
+    gatavs: boolean;
+    uzlime: boolean;
+}
+
+export interface Veikals {
+    kods: number;
+    adrese: string;
+    pasutijums: string;
+    kastes: VeikalsBox[];
 }

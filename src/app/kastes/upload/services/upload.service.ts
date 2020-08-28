@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { ParserService } from 'src/app/library';
-import { KastesApiService } from '../../services/kastes-api.service';
+import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
 import { PasutijumiService } from '../../services/pasutijumi.service';
 import { AdrBoxTotals, AdreseBox, AdresesBox, Totals } from './adrese-box';
@@ -17,7 +17,7 @@ export class UploadService {
   constructor(
     private kastesPreferencesService: KastesPreferencesService,
     private pasutijumiService: PasutijumiService,
-    private kastesApi: KastesApiService,
+    private prdApi: PrdApiService,
     private parserService: ParserService,
   ) { }
 
@@ -80,7 +80,7 @@ export class UploadService {
     return this.pasutijumiService.addPasutijums(pasutijumsName).pipe(
       tap(pasId => pasutijums = pasId),
       // switchMap(pasId => this.kastesHttpService.uploadTableHttp(this.adresesBox.uploadRow(pasId))),
-      mergeMap(pasId => this.kastesApi.kastes.putTable(this.adresesBox.uploadRow(pasId))),
+      mergeMap(pasId => this.prdApi.kastes.putTable(this.adresesBox.uploadRow(pasId))),
       tap(resp => affectedRows = resp),
       switchMap(() => this.kastesPreferencesService.updateUserPreferences({ pasutijums })),
       map(() => affectedRows)

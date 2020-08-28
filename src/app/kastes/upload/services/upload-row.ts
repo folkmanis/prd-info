@@ -1,4 +1,4 @@
-import { Veikals } from '../../interfaces';
+import { Veikals } from 'src/app/interfaces';
 
 export type UploadRow = Veikals;
 
