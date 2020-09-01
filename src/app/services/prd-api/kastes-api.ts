@@ -49,7 +49,7 @@ export class KastesApi extends ApiBase<Kaste> {
             );
     }
 
-    putTable(veikali: Veikals[]): Observable<number> {
+    putTable(veikali: { orderId: string, data: Veikals[]; }): Observable<number> {
         return this.http.put<KasteResponse>(this.path, veikali, new HttpOptions()).pipe(
             map(resp => resp.insertedCount)
         );

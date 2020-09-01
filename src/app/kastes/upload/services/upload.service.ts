@@ -4,7 +4,6 @@ import { map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { ParserService } from 'src/app/library';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
-import { PasutijumiService } from '../../services/pasutijumi.service';
 import { AdrBoxTotals, AdreseBox, AdresesBox, Totals } from './adrese-box';
 import { AdresesCsv } from './adrese-csv';
 
@@ -16,7 +15,6 @@ export class UploadService {
 
   constructor(
     private kastesPreferencesService: KastesPreferencesService,
-    private pasutijumiService: PasutijumiService,
     private prdApi: PrdApiService,
     private parserService: ParserService,
   ) { }
@@ -73,17 +71,15 @@ export class UploadService {
     this.adresesBox$ = this.adresesBox.init(this.adresesCsv.value, colMap, { toPakas });
   }
 
-  savePasutijums(pasutijumsName: string): Observable<number> {
-    /* Pievieno pasūtījuma nosaukumu datubāzei, saņem pasūtījuma id */
-    let affectedRows = 0;
-    let pasutijums: string;
-    return this.pasutijumiService.addPasutijums(pasutijumsName).pipe(
-      tap(pasId => pasutijums = pasId),
-      // switchMap(pasId => this.kastesHttpService.uploadTableHttp(this.adresesBox.uploadRow(pasId))),
-      mergeMap(pasId => this.prdApi.kastes.putTable(this.adresesBox.uploadRow(pasId))),
-      tap(resp => affectedRows = resp),
-      switchMap(() => this.kastesPreferencesService.updateUserPreferences({ pasutijums })),
-      map(() => affectedRows)
+  savePasutijums(orderId: string): Observable<number> {
+    return this.prdApi.kastes.putTable({
+      orderId,
+      data: this.adresesBox.uploadRow(orderId)
+    }).pipe(
+      switchMap(affectedRows => this.kastesPreferencesService.updateUserPreferences({ pasutijums: orderId })
+        .pipe(
+          map(() => affectedRows)
+        )),
     );
   }
 

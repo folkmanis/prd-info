@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { LibraryModule } from '../library/library.module';
+import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 import { KastesPreferencesService } from './services/kastes-preferences.service';
 import { PasutijumiService } from './services/pasutijumi.service';
 
-// import { UploadModule } from './upload/upload.module';
 import { PasutijumiModule } from './pasutijumi/pasutijumi.module';
 
 import { KastesComponent } from './kastes.component';
@@ -36,13 +36,13 @@ import { RefreshTableComponent } from './select-tabula/refresh-table/refresh-tab
   imports: [
     CommonModule,
     LibraryModule,
-    // UploadModule,
     PasutijumiModule,
     KastesRoutingModule,
   ],
   providers: [
     KastesPreferencesService,
     PasutijumiService,
+    { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
   ]
 })
 export class KastesModule { }

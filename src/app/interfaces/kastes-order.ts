@@ -11,14 +11,17 @@ export interface KastesOrder {
     name: string;
     deleted: boolean;
     created: Date;
-    totals: {
+    dueDate: Date; // Izpildes termiņš
+    isLocked: boolean; // ir izveidots pakošanas saraksts
+    totals?: { // darba statistika no pakošanas saraksta
         colorTotals: ColorTotals[];
         apjomiTotals: ApjomiTotals[];
         veikali: number;
     };
+    apjomsPlanned: ColorTotals[];
 }
 
-export type KastesOrderPartial = Pick<KastesOrder, '_id' | 'name' | 'created' | 'deleted'>;
+export type KastesOrderPartial = Pick<KastesOrder, '_id' | 'name' | 'created' | 'deleted' | 'isLocked' | 'dueDate'>;
 
 export interface OrdersResponse extends AppHttpResponseBase<KastesOrder> {
     deleted?: CleanupResponse;

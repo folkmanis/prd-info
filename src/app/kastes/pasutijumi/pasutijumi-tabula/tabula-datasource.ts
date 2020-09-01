@@ -20,6 +20,6 @@ export class TabulaDatasource extends DataSource<KastesOrderPartial> {
     }
 
     updatePas(pas: Partial<KastesOrder>): Observable<boolean> {
-        return this.pasutijumiService.updatePasutijums(pas);
+        return this.pasutijumiService.updateOrder(pas);
     }
 }

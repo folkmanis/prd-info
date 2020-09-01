@@ -1,11 +1,13 @@
-import { Component, OnInit, ViewChild, AfterViewInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, Output, EventEmitter, Input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatTable } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
 import { UploadService } from '../services/upload.service';
 import { TABLE_COLUMNS } from '../services/upload-row';
 import { DragData } from '../services/drag-drop.directive';
 import { Totals } from '../services/adrese-box';
+import { ColorTotals } from 'src/app/interfaces';
+import { Subject, ReplaySubject, combineLatest, Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 
 /**
  * Forma ķekšišu elementiem
@@ -25,9 +27,12 @@ class CheckFormGroup extends FormGroup {
   templateUrl: './upload-adreses.component.html',
   styleUrls: ['./upload-adreses.component.css']
 })
-export class UploadAdresesComponent implements OnInit, AfterViewInit {
-  @Output() gatavs = new EventEmitter<boolean>();
-  @ViewChild(MatTable) private table: MatTable<any>;
+export class UploadAdresesComponent implements OnInit {
+  @Output() gatavs: Subject<Totals | undefined> = new Subject();
+  @Input() set plannedTotals(_val: ColorTotals[]) {
+    if (_val) { this.plannedTotals$.next(_val); }
+  }
+
   displayedColumns: string[];
   displayedDataColumns: string[];
   checkCols: CheckFormGroup;
@@ -36,20 +41,19 @@ export class UploadAdresesComponent implements OnInit, AfterViewInit {
   colChipsAssigned: Map<string, string> = new Map();
   rowSelection: SelectionModel<any> = new SelectionModel<any>(true);
   tableComplete = false;
-  totals: Totals;
+
+  plannedTotals$ = new ReplaySubject<ColorTotals[]>(1);
+  totals$ = this.combineTotals(this.gatavs, this.plannedTotals$);
 
   constructor(
     private uploadService: UploadService,
   ) { }
 
+  datasource$ = this.uploadService.adresesCsv$;
   ngOnInit() {
     this.setColNames();
     this.resetChips();
     this.toCheckGroup();
-  }
-
-  ngAfterViewInit() {
-    this.table.dataSource = this.uploadService.adresesCsv;
   }
 
   onDeleteColumns() {
@@ -58,7 +62,7 @@ export class UploadAdresesComponent implements OnInit, AfterViewInit {
     this.setColNames();
     this.rowSelection.clear();
     this.checkCols.reset();
-    this.gatavs.emit(false);
+    this.gatavs.next(undefined);
   }
 
   onJoinColumns() {
@@ -67,13 +71,13 @@ export class UploadAdresesComponent implements OnInit, AfterViewInit {
     this.setColNames();
     this.rowSelection.clear();
     this.checkCols.reset();
-    this.gatavs.emit(false);
+    this.gatavs.next(undefined);
   }
 
   onDeleteRows() {
     this.uploadService.deleteCsvRows(this.rowSelection.selected);
     this.rowSelection.clear();
-    this.gatavs.emit(false);
+    this.gatavs.next(undefined);
   }
 
   onAddEmptyColumn() {
@@ -87,8 +91,7 @@ export class UploadAdresesComponent implements OnInit, AfterViewInit {
       this.colChipsAssigned,
       this.checkSkaitiPakas.value
     );
-    this.totals = this.uploadService.adresesTotals;
-    this.gatavs.emit(true);
+    this.gatavs.next(this.uploadService.adresesTotals);
   }
 
   onDrop(data: DragData, col: string) {
@@ -150,5 +153,25 @@ export class UploadAdresesComponent implements OnInit, AfterViewInit {
   private resetChips() {
     this.colChipsAvailable = [...TABLE_COLUMNS];
     this.colChipsAssigned.clear();
+  }
+
+  private combineTotals(
+    totals$: Observable<Totals | undefined>,
+    planned$: Observable<ColorTotals[]>):
+    Observable<Totals & {
+      planned:
+      { yellow: number; rose: number; white: number; };
+    }> {
+    return combineLatest([totals$, planned$]).pipe(
+      map(([totals, planned]) => totals ? {
+        ...totals,
+        planned: {
+          yellow: planned.find(col => col.color === 'yellow')?.total || 0,
+          rose: planned.find(col => col.color === 'rose')?.total || 0,
+          white: planned.find(col => col.color === 'white')?.total || 0,
+        }
+      } : undefined
+      ),
+    );
   }
 }

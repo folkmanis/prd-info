@@ -5,27 +5,62 @@
         </mat-icon>
     </button>
 </div>
-<div *ngIf="order$ | async as order" class="container">
+<form class="container" [formGroup]="orderForm">
     <h2>
-        {{order.name}}
+        <mat-form-field>
+            <input matInput formControlName="name" required appFocused>
+            <mat-error *ngIf="name.hasError('existPasutijumsName')">
+                Pasūtījums ar tādu nosaukumu jau reģistrēts
+            </mat-error>
+            <mat-error *ngIf="name.hasError('minLength')">
+                Jābūt vismaz 4 zīmēm
+            </mat-error>
+        </mat-form-field>
     </h2>
     <mat-list>
         <mat-list-item>
-            Id: {{order._id}}
+            Id: {{orderId$ |async}}
         </mat-list-item>
         <mat-list-item>
-            {{order.deleted ? 'Neaktīvs' : 'Aktīvs'}}
+            <mat-checkbox formControlName="deleted">
+                Pasūtījums dzēšams
+            </mat-checkbox>
         </mat-list-item>
         <mat-list-item>
-            Izveidošanas datums: {{order.created | date}}
+            <mat-form-field>
+                <mat-label>Izveidošanas datums</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="created">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+        </mat-list-item>
+        <mat-list-item>
+            <mat-form-field>
+                <mat-label>Nodošanas datums</mat-label>
+                <input matInput [matDatepicker]="duePicker" formControlName="dueDate">
+                <mat-datepicker-toggle matSuffix [for]="duePicker"></mat-datepicker-toggle>
+                <mat-datepicker #duePicker></mat-datepicker>
+            </mat-form-field>
         </mat-list-item>
     </mat-list>
+    <div>
+        <app-kastes-input formArrayName="apjomsPlanned"></app-kastes-input>
+    </div>
+    <div>
+        <button mat-raised-button color="primary" [disabled]="!orderForm.dirty || !orderForm.valid" (click)="onSave()">
+            SAGLABĀT
+        </button>
+        <button mat-raised-button [routerLink]="['..']">ATCELT</button>
+    </div>
+</form>
+<mat-divider></mat-divider>
+<div class="container" *ngIf="totals$ | async as totals">
     <h4>Pavisam adreses</h4>
     <p>
-        {{order.totals.veikali}}
+        {{totals.veikali}}
     </p>
     <h4>Kopējie skaiti pa krāsām</h4>
-    <app-color-totals [totals]="order.totals.colorTotals"></app-color-totals>
+    <app-color-totals [totals]="totals.colorTotals"></app-color-totals>
     <h4>Kopējie skaiti pa kastu apjomiem</h4>
-    <app-apjomi-totals [totals]="order.totals.apjomiTotals"></app-apjomi-totals>
+    <app-apjomi-totals [totals]="totals.apjomiTotals"></app-apjomi-totals>
 </div>

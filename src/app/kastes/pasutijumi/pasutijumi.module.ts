@@ -8,6 +8,7 @@ import { TabulaButtonsComponent } from './tabula-buttons/tabula-buttons.componen
 import { PasutijumsIdComponent } from './pasutijums-id/pasutijums-id.component';
 import { ColorTotalsComponent } from './pasutijums-id/color-totals/color-totals.component';
 import { ApjomiTotalsComponent } from './pasutijums-id/apjomi-totals/apjomi-totals.component';
+import { KastesInputComponent } from './pasutijums-id/kastes-input/kastes-input.component';
 
 
 @NgModule({
@@ -17,6 +18,7 @@ import { ApjomiTotalsComponent } from './pasutijums-id/apjomi-totals/apjomi-tota
     PasutijumsIdComponent,
     ColorTotalsComponent,
     ApjomiTotalsComponent,
+    KastesInputComponent,
   ],
   imports: [
     CommonModule,

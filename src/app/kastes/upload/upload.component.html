@@ -3,7 +3,22 @@
     <mat-step label="faila izvēle" [completed]="fileLoaded">
         <div class="button-bar">
             <button mat-raised-button (click)="clearFile()" color="primary">ATCELT</button>
-            <button mat-raised-button matStepperNext [disabled]="!fileLoaded" color="primary">TĀLĀK!</button>
+            <button mat-raised-button matStepperNext [disabled]="!fileLoaded || !orderIdControl.valid" color="primary">TĀLĀK!</button>
+            <!-- Pasūtījuma nosaukums -->
+            <mat-form-field>
+                <mat-label>Pasūtījums</mat-label>
+                <mat-select [formControl]="orderIdControl">
+                    <mat-option *ngFor="let ordr of orders$ | async" [value]="ordr._id">
+                        {{ordr.name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div>
+            Plānotie apjomi:
+            <span *ngFor="let total of plannedTotals$ | async">
+                {{total.color}}: {{total.total}} |
+            </span>
         </div>
         <div class="drope">
             <div appFileDrop (filesEmitter)="onFileDrop($event)">
@@ -19,7 +34,7 @@
             <button mat-raised-button matStepperNext [disabled]="!boxGatavi" color="primary">TĀLĀK!</button>
         </div>
         <div>
-            <app-upload-adreses *ngIf="fileLoaded" (gatavs)="boxGatavi = $event"></app-upload-adreses>
+            <app-upload-adreses *ngIf="fileLoaded" (gatavs)="boxGatavi = $event" [plannedTotals]="plannedTotals$ | async"></app-upload-adreses>
         </div>
     </mat-step>
     <!-- Trešais solis -->
@@ -33,23 +48,9 @@
     </mat-step>
     <!-- Beigu solis -->
     <mat-step label="Datu saglabāšana">
-        <form [formGroup]="pasutijumsForm" (submit)="onSubmitAll()">
-            <div>
-                <mat-form-field class="input-text">
-                    <input matInput placeholder="Pasūtījuma nosaukums" formControlName="pasutijumsName"
-                        [errorStateMatcher]="formErrorMatcher" autocomplete="off">
-                    <mat-error *ngIf="pasutijumsForm.get('pasutijumsName').hasError('existPasutijumsName')">
-                        Pasūtījums ar tādu nosaukumu ir jau reģistrēts
-                    </mat-error>
-                    <mat-error *ngIf="pasutijumsForm.get('pasutijumsName').hasError('required')">
-                        Nosaukums ir jāievada obligāti
-                    </mat-error>
-                </mat-form-field>
-            </div>
             <div class="button-bar">
-                <button type="submit" mat-raised-button matStepperNext color="primary"
-                    [disabled]="!pasutijumsForm.valid">Saglabāt!</button>
+                <button mat-raised-button matStepperNext color="primary"
+                    [disabled]="!orderIdControl.valid" (click)="onSubmitAll()">Saglabāt!</button>
             </div>
-        </form>
     </mat-step>
 </mat-horizontal-stepper>

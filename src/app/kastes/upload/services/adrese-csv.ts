@@ -1,22 +1,14 @@
 import { Observable, of, merge, BehaviorSubject } from 'rxjs';
-import { switchMap, tap, map } from 'rxjs/operators';
-import { DataSource } from '@angular/cdk/collections';
 import { ParserService } from 'src/app/library';
 
-interface CsvRecord extends Array<any> { }
 
-export class AdresesCsv extends DataSource<CsvRecord> {
+export class AdresesCsv {
 
     constructor(private parserService: ParserService) {
-        super();
     }
 
     private adreses$: BehaviorSubject<Array<any[]>> = new BehaviorSubject([]);
 
-    connect(): Observable<CsvRecord[]> {
-        return this.adreses$;
-    }
-    disconnect() { }
     get data(): BehaviorSubject<Array<any[]>> {
         return this.adreses$;
     }

@@ -3,18 +3,12 @@ import { Router } from '@angular/router';
 import { FormControl, FormGroup, Validators, AsyncValidatorFn, AbstractControl, FormGroupDirective } from '@angular/forms';
 import { UploadService } from './services/upload.service';
 import { PasutijumiService } from '../services/pasutijumi.service';
-import { map, tap, take } from 'rxjs/operators';
-import { ErrorStateMatcher } from '@angular/material/core';
+import { map, tap, take, filter, switchMap, shareReplay } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { EndDialogComponent } from './end-dialog/end-dialog.component';
 import * as XLSX from 'xlsx';
-
-class FormErrorMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | null): boolean {
-    // const isSubmited = form && form.submitted;
-    return !!(control && control.invalid); // && (control.dirty || control.touched || isSubmited));
-  }
-}
+import { Observable } from 'rxjs';
+import { KastesOrderPartial, ColorTotals } from 'src/app/interfaces';
 
 @Component({
   selector: 'app-upload',
@@ -27,15 +21,14 @@ export class UploadComponent implements OnInit {
   displayText: string = this.defaultText;
   fileLoaded = false; // Ielādēts fails
   boxGatavi = false; // Sagatavots sadalījums pa kastēm
-  pasutijumsForm = new FormGroup({
-    pasutijumsName: new FormControl(
-      '',
-      [Validators.required],
-      [this.existPasutijumsName()]
-    ),
-  }
+
+  orderIdControl = new FormControl(null, [Validators.required]);
+
+  plannedTotals$: Observable<ColorTotals[]> = this.orderIdControl.valueChanges.pipe(
+    switchMap((id: string) => this.pasutijumiService.getOrder(id)),
+    map(order => order.apjomsPlanned || []),
+    shareReplay(1),
   );
-  formErrorMatcher = new FormErrorMatcher();
 
   constructor(
     private uploadService: UploadService,
@@ -43,6 +36,10 @@ export class UploadComponent implements OnInit {
     public dialog: MatDialog,
     private router: Router,
   ) { }
+
+  orders$: Observable<KastesOrderPartial[]> = this.pasutijumiService.pasutijumi$.pipe(
+    map(orders => orders.filter(ordr => !ordr.deleted && !ordr.isLocked))
+  );
 
   ngOnInit() {
   }
@@ -74,19 +71,8 @@ export class UploadComponent implements OnInit {
     this.boxGatavi = false;
   }
 
-  private existPasutijumsName(): AsyncValidatorFn {
-    return (control: AbstractControl) => {
-      return this.pasutijumiService.pasutijumi$.pipe(
-        take(1),
-        map((pas) =>
-          pas.find((el) => el.name === control.value) ? { existPasutijumsName: { value: control.value } } : null
-        ),
-      );
-    };
-  }
-
   onSubmitAll() {
-    this.uploadService.savePasutijums(this.pasutijumsForm.get('pasutijumsName').value)
+    this.uploadService.savePasutijums(this.orderIdControl.value)
       .subscribe(rows => this.finalDialog(rows)
       );
   }
@@ -128,7 +114,7 @@ export class UploadComponent implements OnInit {
   }
 
   private onFileLoaded(file: File) {
-    this.pasutijumsForm.patchValue({ pasutijumsName: file.name.replace(/\.[^/.]+$/, '') });
+    // this.pasutijumsForm.patchValue({ pasutijumsName: file.name.replace(/\.[^/.]+$/, '') });
     this.fileLoaded = true;
     this.displayText = `Augšupielādei sagatavots fails: ${file.name} / ${file.size} bytes / ${file.type}`;
   }

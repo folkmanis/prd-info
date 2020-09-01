@@ -2,7 +2,7 @@
     padding: 16px;
 }
 
-.drope > div {
+.drope>div {
     border: solid 2px rgba(0, 0, 0, 0.5);
     display: flex;
     height: 400px;
@@ -25,6 +25,6 @@
     padding: 16px;
 }
 
-.button-bar button~button {
+.button-bar>*:not(:first-child) {
     margin-left: 16px;
 }

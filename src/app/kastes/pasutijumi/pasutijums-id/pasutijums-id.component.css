@@ -5,3 +5,20 @@
 .container {
     padding: 16px;
 }
+
+h2 .mat-form-field {
+    width: 100%;
+}
+
+button~button {
+    margin-left: 16px;
+}
+
+button[mat-raised-button] {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.mat-divider {
+    margin: 16px 0;
+}
