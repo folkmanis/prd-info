@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Job, JobProduct } from 'src/app/interfaces';
-import { FormGroup, FormBuilder, Validators, AsyncValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, AsyncValidatorFn, AbstractControl, ValidationErrors, AbstractControlOptions } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { take, map } from 'rxjs/operators';
 import { CustomersService } from 'src/app/services/customers.service';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'any'
@@ -17,7 +18,7 @@ export class JobEditFormService {
 
   jobFormBuilder(job?: Partial<Job>): FormGroup {
     const products = job?.products instanceof Array ? job.products.map(prod => this.productFormGroup(prod)) : [];
-    const jobForm = this.fb.group({
+    const jobControls: { [P in keyof Job]?: [any?, AbstractControlOptions?] | AbstractControl } = {
       jobId: [
         undefined,
       ],
@@ -40,13 +41,21 @@ export class JobEditFormService {
           validators: Validators.required,
         }
       ],
+      dueDate: [
+        moment().add(1, 'd'),
+        {
+          validators: Validators.required,
+        }
+      ],
       comment: [],
       customerJobId: [],
       jobStatus: this.fb.group({
         generalStatus: 10,
       }),
       products: this.fb.array(products),
-    });
+    };
+    const jobForm = this.fb.group(jobControls);
+
     this.setFormValues(jobForm, job);
     return jobForm;
   }

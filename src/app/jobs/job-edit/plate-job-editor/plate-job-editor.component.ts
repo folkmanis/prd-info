@@ -6,6 +6,7 @@ import { map, tap, shareReplay, startWith, take, filter } from 'rxjs/operators';
 import { CustomerPartial, Job, CustomerProduct, JobsSettings } from 'src/app/interfaces';
 import { CustomersService, SystemPreferencesService } from 'src/app/services';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
+import { LayoutService } from 'src/app/layout/layout.service';
 import * as moment from 'moment';
 
 @Component({
@@ -21,6 +22,7 @@ export class PlateJobEditorComponent implements OnInit, OnDestroy {
     private customersService: CustomersService,
     private sysPref: SystemPreferencesService,
     private clipboard: ClipboardService,
+    private layoutService: LayoutService,
   ) { }
 
   get customerControl(): FormControl { return this.jobFormGroup.get('customer') as FormControl; }
@@ -31,6 +33,8 @@ export class PlateJobEditorComponent implements OnInit, OnDestroy {
   jobStates$ = (this.sysPref.getModulePreferences('jobs') as Observable<JobsSettings>).pipe(
     map(pref => pref.jobStates.filter(st => st.state < 50))
   );
+
+  large$: Observable<boolean> = this.layoutService.isLarge$;
 
   receivedDate = {
     min: moment().startOf('week'),

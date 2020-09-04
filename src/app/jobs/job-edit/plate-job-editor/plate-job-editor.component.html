@@ -1,17 +1,15 @@
 <form [formGroup]="jobFormGroup">
-    <div class="wrapper">
+    <div class="wrapper" [class.large]="large$ | async">
         <!-- Klients -->
-        <div>
-            <mat-form-field>
-                <mat-label>Klients</mat-label>
-                <input type="text" matInput formControlName="customer" [matAutocomplete]="auto" required>
-                <mat-error *ngIf="customerControl.hasError('noCustomer')">
-                    {{customerControl.getError('noCustomer')}}
-                </mat-error>
-            </mat-form-field>
-        </div>
-        <!-- Darba nosaukums -->
         <mat-form-field>
+            <mat-label>Klients</mat-label>
+            <input type="text" matInput formControlName="customer" [matAutocomplete]="auto" required>
+            <mat-error *ngIf="customerControl.hasError('noCustomer')">
+                {{customerControl.getError('noCustomer')}}
+            </mat-error>
+        </mat-form-field>
+        <!-- Darba nosaukums -->
+        <mat-form-field class="right">
             <mat-label>Darba nosaukums</mat-label>
             <input type="text" matInput formControlName="name" required>
             <mat-error *ngIf="nameControl.hasError('required')">
@@ -21,13 +19,12 @@
                 <mat-icon>filter_none</mat-icon>
             </button>
         </mat-form-field>
-        <!-- Datums -->
+        <!-- Nodošanas termiņš -->
         <mat-form-field>
-            <mat-label>Izveidošanas datums</mat-label>
-            <input matInput formControlName="receivedDate" [matDatepicker]="datePicker" required
-                [min]="receivedDate.min" [max]="receivedDate.max">
-            <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
-            <mat-datepicker #datePicker></mat-datepicker>
+            <mat-label>Nodošanas datums</mat-label>
+            <input matInput required [matDatepicker]="dueDatePicker" formControlName="dueDate">
+            <mat-datepicker-toggle matSuffix [for]="dueDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #dueDatePicker></mat-datepicker>
         </mat-form-field>
         <!-- Statuss -->
         <div formGroupName="jobStatus">
@@ -37,21 +34,29 @@
                 </mat-radio-button>
             </mat-radio-group>
         </div>
-        <!-- Papildus apraksts -->
+        <!-- Datums -->
         <mat-form-field>
-            <mat-label>Darba apraksts</mat-label>
-            <textarea matInput formControlName="comment"></textarea>
+            <mat-label>Izveidošanas datums</mat-label>
+            <input matInput formControlName="receivedDate" [matDatepicker]="datePicker" required
+                [min]="receivedDate.min" [max]="receivedDate.max">
+            <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+            <mat-datepicker #datePicker></mat-datepicker>
         </mat-form-field>
         <!-- Klienta darba numurs -->
         <mat-form-field>
             <mat-label>Klienta darba numurs</mat-label>
             <input matInput formControlName="customerJobId">
         </mat-form-field>
-        <!-- Preces apakšforma -->
-        <div *ngIf="isProductsSet()" class="products">
-            <app-products-editor [prodFormArray]="productsControl" [customerProducts$]="customerProducts$">
-            </app-products-editor>
-        </div>
+        <!-- Papildus apraksts -->
+        <mat-form-field class="width-span">
+            <mat-label>Papildus apraksts</mat-label>
+            <textarea matInput formControlName="comment"></textarea>
+        </mat-form-field>
+    </div>
+    <!-- Preces apakšforma -->
+    <div *ngIf="isProductsSet()" class="width-span">
+        <app-products-editor [prodFormArray]="productsControl" [customerProducts$]="customerProducts$">
+        </app-products-editor>
     </div>
 </form>
 <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>

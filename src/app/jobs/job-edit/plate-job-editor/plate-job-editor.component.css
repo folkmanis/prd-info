@@ -1,17 +1,26 @@
 .wrapper {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
+    padding-bottom: 16px;
+}
+
+.wrapper.large {
+    grid-template-columns: 1fr 2fr;
     column-gap: 16px;
-    row-gap: 1em;
+    row-gap: 8px;
     align-items: baseline;
-    padding: 16px 0;
+    padding: 8px 0;
+}
+
+div>.mat-form-field {
+    width: 100%;
 }
 
 .mat-radio-button~.mat-radio-button {
     margin-left: 16px;
 }
 
-.products {
+.large>.width-span {
     grid-column-start: 1;
     grid-column-end: -1;
 }
