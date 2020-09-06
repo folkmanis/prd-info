@@ -52,11 +52,11 @@
             <mat-label>Papildus apraksts</mat-label>
             <textarea matInput formControlName="comment"></textarea>
         </mat-form-field>
-    </div>
-    <!-- Preces apakšforma -->
-    <div *ngIf="isProductsSet()" class="width-span">
-        <app-products-editor [prodFormArray]="productsControl" [customerProducts$]="customerProducts$">
-        </app-products-editor>
+        <!-- Preces apakšforma -->
+        <div *ngIf="isProductsSet()" class="width-span">
+            <app-products-editor [prodFormArray]="productsControl" [customerProducts$]="customerProducts$">
+            </app-products-editor>
+        </div>
     </div>
 </form>
 <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>

@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { CustomerProduct } from 'src/app/interfaces';
 import { JobEditFormService } from '../../services/job-edit-form.service';
 import { map } from 'rxjs/operators';
+import { ProductAutocompleteComponent } from './product-autocomplete/product-autocomplete.component';
 
 const COLUMNS = ['name', 'count', 'price', 'total', 'comment'];
 
@@ -17,12 +18,10 @@ const COLUMNS = ['name', 'count', 'price', 'total', 'comment'];
   styleUrls: ['./products-editor.component.css']
 })
 export class ProductsEditorComponent implements OnInit, OnDestroy {
-  @ViewChildren('name') private nameInputs: QueryList<ElementRef>;
+  @ViewChildren(ProductAutocompleteComponent) private nameInputs: QueryList<ProductAutocompleteComponent>;
   @Input() prodFormArray: FormArray;
   @Input() customerProducts$: Observable<CustomerProduct[]>;
 
-  firstProducts$: Observable<CustomerProduct[]>;
-  restProducts$: Observable<CustomerProduct[]>;
   /** Ctrl-+ event */
   @HostListener('window:keydown', ['$event']) keyEvent(event: KeyboardEvent) {
     if (event.key === '+' && event.ctrlKey) {
@@ -44,12 +43,6 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.firstProducts$ = this.customerProducts$.pipe(
-      map(prod => prod.filter(pr => pr.price !== undefined))
-    );
-    this.restProducts$ = this.customerProducts$.pipe(
-      map(prod => prod.filter(pr => pr.price === undefined))
-    );
   }
 
   ngOnDestroy(): void {
@@ -60,7 +53,7 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
     this.prodFormArray.push(this.service.productFormGroup());
     this.ch.markForCheck();
     setTimeout(() => {
-      (this.nameInputs.last.nativeElement as HTMLInputElement).focus();
+      this.nameInputs.last.focus();
     }, 0);
   }
 

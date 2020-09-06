@@ -13,7 +13,8 @@
 
     <tbody>
 
-        <tr *appProductFor="let prod of prodFormArray; customerProducts: customerProducts$ | async; index as idx;" [formArrayName]="idx">
+        <tr *appProductFor="let prod of prodFormArray; customerProducts: customerProducts$ | async; index as idx;"
+            [formArrayName]="idx">
             <!-- Dzēšanas poga -->
             <td *ngIf="isEnabled">
                 <button mat-icon-button (click)="removeProduct(idx)">
@@ -22,12 +23,8 @@
             </td>
             <!-- Preces nosaukums -->
             <td>
-                <mat-form-field>
-                    <input matInput type="text" formControlName="name" [matAutocomplete]="auto" #name>
-                    <mat-error *ngIf="prod.get('name').hasError('invalidProduct')">
-                        {{prod.get('name').getError('invalidProduct')}}
-                    </mat-error>
-                </mat-form-field>
+                <app-product-autocomplete formControlName="name" [customerProducts$]="customerProducts$">
+                </app-product-autocomplete>
             </td>
             <!-- Skaits -->
             <td class="column-count">
@@ -68,16 +65,3 @@
     </tfoot>
 
 </table>
-
-<mat-autocomplete #auto="matAutocomplete">
-    <mat-optgroup label="KLIENTA">
-        <mat-option *ngFor="let product of (firstProducts$ | async)" [value]="product.productName">
-            {{product.productName}}
-        </mat-option>
-    </mat-optgroup>
-    <mat-optgroup label="VISI">
-        <mat-option *ngFor="let product of (restProducts$ | async)" [value]="product.productName">
-            {{product.productName}}
-        </mat-option>
-    </mat-optgroup>
-</mat-autocomplete>

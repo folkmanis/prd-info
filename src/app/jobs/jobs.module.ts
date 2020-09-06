@@ -24,6 +24,7 @@ import { CustomerInputDialogComponent } from './side-panel/customer-input-dialog
 PdfMakeWrapper.setFonts(pdfFonts);
 
 import { PlateInvoiceModule } from './plate-invoice/plate-invoice.module';
+import { ProductAutocompleteComponent } from './job-edit/products-editor/product-autocomplete/product-autocomplete.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { PlateInvoiceModule } from './plate-invoice/plate-invoice.module';
     ProductForOfDirective,
     SidePanelComponent,
     CustomerInputDialogComponent,
+    ProductAutocompleteComponent,
   ],
   imports: [
     CommonModule,
