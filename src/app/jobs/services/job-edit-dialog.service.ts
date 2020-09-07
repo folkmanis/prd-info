@@ -9,6 +9,7 @@ import { JobDialogComponent } from '../job-edit/job-dialog.component';
 import { JobEditDialogData } from '../job-edit/job-edit-dialog-data';
 import { JobService } from '../services/job.service';
 import { JobEditFormService } from './job-edit-form.service';
+import * as moment from 'moment';
 
 const JOB_DIALOG_CONFIG: MatDialogConfig = {
   height: '90%',
@@ -37,6 +38,7 @@ export class JobEditDialogService {
           jobForm: this.jobEditForm.jobFormBuilder(job),
         }
       }).afterClosed()),
+      map(this.afterJobEdit),
       concatMap(job => job ? this.jobService.updateJob({ ...job, jobId }) : of(false)),
     );
   }
@@ -51,6 +53,7 @@ export class JobEditDialogService {
       autoFocus: true,
       data
     }).afterClosed().pipe(
+      map(this.afterJobEdit),
       concatMap(job => !job?.jobId ? of(null) : this.jobService.updateJob(job).pipe(
         map(() => job.jobId)
       )),
@@ -59,6 +62,13 @@ export class JobEditDialogService {
 
   private jobCreatorFn(): ((job: Partial<Job>) => Observable<number | null>) {
     return (job) => this.jobService.newJob(job);
+  }
+
+  private afterJobEdit(job: Partial<Job>): Partial<Job> {
+    return {
+      ...job,
+      dueDate: moment(job.dueDate).endOf('day').toDate(),
+    };
   }
 
 }
