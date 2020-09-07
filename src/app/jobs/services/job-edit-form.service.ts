@@ -42,7 +42,7 @@ export class JobEditFormService {
         }
       ],
       dueDate: [
-        moment().add(1, 'd'),
+        new Date(),
         {
           validators: Validators.required,
         }
