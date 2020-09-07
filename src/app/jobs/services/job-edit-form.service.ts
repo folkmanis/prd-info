@@ -4,7 +4,6 @@ import { FormGroup, FormBuilder, Validators, AsyncValidatorFn, AbstractControl, 
 import { Observable } from 'rxjs';
 import { take, map } from 'rxjs/operators';
 import { CustomersService } from 'src/app/services/customers.service';
-import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'any'
