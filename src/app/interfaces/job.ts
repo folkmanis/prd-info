@@ -19,7 +19,7 @@ export interface Job {
     custCode: string;
 }
 export type JobPartial =
-    Pick<Job, 'receivedDate' | 'customerJobId' | 'name' | 'jobId' | 'customer' | 'products' | 'invoiceId' | 'custCode'>;
+    Pick<Job, 'receivedDate' | 'customerJobId' | 'name' | 'jobId' | 'customer' | 'products' | 'invoiceId' | 'custCode' | 'dueDate'>;
 
 export interface JobsWithoutInvoicesTotals {
     _id: string;
