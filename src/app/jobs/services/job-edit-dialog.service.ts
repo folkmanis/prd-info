@@ -38,8 +38,7 @@ export class JobEditDialogService {
           jobForm: this.jobEditForm.jobFormBuilder(job),
         }
       }).afterClosed()),
-      map(this.afterJobEdit),
-      concatMap(job => job ? this.jobService.updateJob({ ...job, jobId }) : of(false)),
+      concatMap(job => job ? this.jobService.updateJob(this.afterJobEdit({ ...job, jobId })) : of(false)),
     );
   }
 
@@ -53,8 +52,7 @@ export class JobEditDialogService {
       autoFocus: true,
       data
     }).afterClosed().pipe(
-      map(this.afterJobEdit),
-      concatMap(job => !job?.jobId ? of(null) : this.jobService.updateJob(job).pipe(
+      concatMap(job => !job?.jobId ? of(null) : this.jobService.updateJob(this.afterJobEdit(job)).pipe(
         map(() => job.jobId)
       )),
     );

@@ -1,7 +1,7 @@
 <form [formGroup]="jobFormGroup">
     <div class="wrapper" [class.large]="large$ | async">
         <!-- Klients -->
-        <mat-form-field>
+        <mat-form-field class="left-column">
             <mat-label>Klients</mat-label>
             <input type="text" matInput formControlName="customer" [matAutocomplete]="auto" required>
             <mat-error *ngIf="customerControl.hasError('noCustomer')">
@@ -9,7 +9,7 @@
             </mat-error>
         </mat-form-field>
         <!-- Darba nosaukums -->
-        <mat-form-field class="right">
+        <mat-form-field class="right-column">
             <mat-label>Darba nosaukums</mat-label>
             <input type="text" matInput formControlName="name" required>
             <mat-error *ngIf="nameControl.hasError('required')">
@@ -20,22 +20,32 @@
             </button>
         </mat-form-field>
         <!-- Nodošanas termiņš -->
-        <mat-form-field>
+        <mat-form-field class="left-column">
             <mat-label>Nodošanas datums</mat-label>
             <input matInput required [matDatepicker]="dueDatePicker" formControlName="dueDate">
             <mat-datepicker-toggle matSuffix [for]="dueDatePicker"></mat-datepicker-toggle>
             <mat-datepicker #dueDatePicker></mat-datepicker>
         </mat-form-field>
-        <!-- Statuss -->
-        <div formGroupName="jobStatus">
-            <mat-radio-group formControlName="generalStatus">
-                <mat-radio-button *ngFor="let state of jobStates$ | async" [value]="state.state">
-                    {{state.description}}
-                </mat-radio-button>
-            </mat-radio-group>
-        </div>
-        <!-- Datums -->
+        <!-- Darba kategorija -->
         <mat-form-field>
+            <mat-label>Kategorija</mat-label>
+            <mat-select formControlName="category">
+                <mat-option *ngFor="let cat of categories$ | async" [value]="cat.category">
+                    {{cat.description}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <!-- Statuss -->
+        <mat-form-field formGroupName="jobStatus">
+            <mat-label>Stadija</mat-label>
+            <mat-select formControlName="generalStatus">
+                <mat-option *ngFor="let state of jobStates$ | async" [value]="state.state">
+                    {{state.description}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <!-- Datums -->
+        <mat-form-field class="left-column">
             <mat-label>Izveidošanas datums</mat-label>
             <input matInput formControlName="receivedDate" [matDatepicker]="datePicker" required
                 [min]="receivedDate.min" [max]="receivedDate.max">

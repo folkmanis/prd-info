@@ -5,11 +5,10 @@
 }
 
 .wrapper.large {
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: repeat(3, 1fr);
     column-gap: 16px;
     row-gap: 8px;
     align-items: baseline;
-    padding: 8px 0;
 }
 
 div>.mat-form-field {
@@ -18,6 +17,14 @@ div>.mat-form-field {
 
 .mat-radio-button~.mat-radio-button {
     margin-left: 16px;
+}
+
+.large>.left-column {
+    grid-column: 1;
+}
+
+.large>.right-column {
+    grid-column: 2 / -1;
 }
 
 .large>.width-span {

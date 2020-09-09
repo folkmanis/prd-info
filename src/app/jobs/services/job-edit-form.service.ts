@@ -46,6 +46,7 @@ export class JobEditFormService {
           validators: Validators.required,
         }
       ],
+      category: [],
       comment: [],
       customerJobId: [],
       jobStatus: this.fb.group({

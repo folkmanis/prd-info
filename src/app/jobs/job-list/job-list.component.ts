@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { tap, map, debounceTime, startWith, filter, switchMap } from 'rxjs/operators';
+import { tap, map, debounceTime, startWith, filter, switchMap, finalize } from 'rxjs/operators';
 import { JobService } from '../services/job.service';
 import { JobQueryFilter, JobProduct } from 'src/app/interfaces';
 import { JobEditDialogService } from '../services/job-edit-dialog.service';
@@ -36,12 +36,12 @@ export class JobListComponent implements OnInit, OnDestroy {
         filter(id => id === 'new' || /^\d+$/.test(id)),
         switchMap(id => {
           if (id === 'new') {
-            return this.jobEditDialog.newJob();
+            return this.jobEditDialog.newJob({ category: 'repro' });
           } else {
             return this.jobEditDialog.editJob(+id);
           }
         }),
-        tap(_ => this.router.navigate(['/jobs'])),
+        tap(() => this.router.navigate(['/jobs'])),
       ).subscribe()
     );
   }
