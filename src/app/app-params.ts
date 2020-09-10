@@ -30,7 +30,8 @@ export const PRD_DEFAULTS: AppParams = {
         .set('jobs', {
             productCategories: [
                 { category: 'plates', description: 'Iespiedformas' },
-                { category: 'perforated paper', description: 'Perforētais papīrs' }
+                { category: 'perforated paper', description: 'Perforētais papīrs' },
+                { category: 'repro', description: 'Repro' },
             ],
             jobStates: [
                 { state: 10, description: 'Sagatavošana' },

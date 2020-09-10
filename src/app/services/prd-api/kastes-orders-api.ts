@@ -1,12 +1,12 @@
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ApiBase, HttpOptions } from 'src/app/library';
-import { KastesOrder, CleanupResponse, OrdersResponse } from '../../interfaces/kastes-order';
+import { KastesJob, OrdersResponse } from '../../interfaces/kastes-order';
 
-export class KastesOrdersApi  extends ApiBase<KastesOrder> {
-    deleteInactive(): Observable<CleanupResponse> {
+export class KastesOrdersApi  extends ApiBase<KastesJob> {
+    deleteInactive(): Observable<number> {
       return this.http.delete<OrdersResponse>(this.path).pipe(
-        map(resp => resp.deleted)
+        map(resp => resp.deletedCount || 0)
       );
     }
 }

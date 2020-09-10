@@ -8,7 +8,7 @@
             <mat-form-field>
                 <mat-label>Pasūtījums</mat-label>
                 <mat-select [formControl]="orderIdControl">
-                    <mat-option *ngFor="let ordr of orders$ | async" [value]="ordr._id">
+                    <mat-option *ngFor="let ordr of orders$ | async" [value]="ordr.jobId">
                         {{ordr.name}}
                     </mat-option>
                 </mat-select>

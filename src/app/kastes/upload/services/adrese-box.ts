@@ -37,25 +37,25 @@ class AdreseSkaits {
      * key - esošās slejas nosaukums
      * value - piešķirtais slejas pielietojums.
      */
-    constructor(adrS: any[], colMap: Map<string, string>) {
+    constructor(adrS: any[], colMap: Map<string, string>, convertToPakas: boolean) {
         adrS.forEach((val, idx) => {
             const m = colMap.get(idx.toString());
             if (m) { this[m] = val; }
         });
+        Box.Keys.forEach(key => this[key] = (+this[key] || 0));
+        if (convertToPakas) {
+            Box.Keys.forEach(key => this[key] /= this[key] >= 500 ? 500 : 1);
+        }
     }
 
-    skaitiToPakas(exec = true): AdreseSkaits {
-        if (!exec) { return this; }  // parametrs, kas nosaka izpildi
-        if (this.yellow >= 500) { this.yellow /= 500; }
-        if (this.rose >= 500) { this.rose /= 500; }
-        if (this.white >= 500) { this.white /= 500; }
-        return this;
+    totalPakas(): number {
+        return Box.Keys.reduce((acc, key) => acc += this[key], 0);
     }
 
 }
 
 export class Box {
-    static Keys: string[] = ['yellow', 'rose', 'white'];
+    static readonly Keys: string[] = ['yellow', 'rose', 'white'];
     yellow = 0; rose = 0; white = 0;
 
     constructor({ yellow = 0, rose = 0, white = 0 } = {}) {
@@ -161,7 +161,7 @@ export class AdreseBox {
     /**
      * No pakojuma uz tabulas ierakstu
      */
-    reduce(pasutijums: string): UploadRow {
+    reduce(pasutijums: number): UploadRow {
         const data: UploadRow = {
             kods: this.kods,
             adrese: this.adrese,
@@ -188,8 +188,8 @@ export class AdresesBox {
         { toPakas = false } = {}
     ): Observable<AdreseBox[]> {
         for (const adrS of adrSaraksts) {
-            const adrM = (new AdreseSkaits(adrS, colMap)).skaitiToPakas(toPakas);
-            if (Box.Keys.reduce<number>((total, key) => total += adrM[key], 0) < 1) {
+            const adrM = new AdreseSkaits(adrS, colMap, toPakas);
+            if (adrM.totalPakas() < 1) {
                 continue; // Tukšs ieraksts
             }
             this.data.push(new AdreseBox(adrM));
@@ -201,7 +201,7 @@ export class AdresesBox {
         return this.data;
     }
 
-    uploadRow(pasutijums: string): UploadRow[] {
+    uploadRow(pasutijums: number): UploadRow[] {
         const ur: UploadRow[] = [];
         for (const veikals of this.data) {
             ur.push(veikals.reduce(pasutijums));

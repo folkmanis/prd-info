@@ -4,8 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { filter, switchMap } from 'rxjs/operators';
 import { PasutijumiService } from '../../services/pasutijumi.service';
 
-const PROMPT = `Vai tiešām dzēst visus neaktīvos pasūtījumus
-un tiem atbilstošos pakošanas sarakstus?`;
+const PROMPT = `Vai tiešām dzēst visus neaktīvos pakošanas ierakstas?`;
 
 @Component({
   selector: 'app-tabula-buttons',
@@ -31,8 +30,8 @@ export class TabulaButtonsComponent implements OnInit {
     ).subscribe(resp => {
       this.snackBar.open(
         resp
-          ? `Likvidēti ${resp.orders} pasūtījumi un ${resp.veikali} pakošanas ieraksti`
-          : 'Kaut kas nogāja greizi',
+          ? `Likvidēti ${resp} pakošanas ieraksti`
+          : 'Nekādas darbības netika veiktas',
         'OK',
         { duration: 3000 });
     });

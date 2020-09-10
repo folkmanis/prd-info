@@ -44,7 +44,7 @@ export interface RowUpdate {
 }
 
 export interface KastesUserPreferences {
-    pasutijums: string;
+    pasutijums: number;
 }
 
 export interface VeikalsBox {
@@ -59,6 +59,6 @@ export interface VeikalsBox {
 export interface Veikals {
     kods: number;
     adrese: string;
-    pasutijums: string;
+    pasutijums: number;
     kastes: VeikalsBox[];
 }

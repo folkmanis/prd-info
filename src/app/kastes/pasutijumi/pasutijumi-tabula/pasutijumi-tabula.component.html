@@ -9,16 +9,9 @@
         <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef>Pasūtījuma nosaukums</th>
             <td mat-cell *matCellDef="let row;">
-                <a [routerLink]="row._id">
+                <a [routerLink]="row.jobId">
                     {{row.name}}
                 </a>
-            </td>
-        </ng-container>
-        <!-- Dzēsts checkbox -->
-        <ng-container matColumnDef="deleted">
-            <th mat-header-cell *matHeaderCellDef> Dzēsts </th>
-            <td mat-cell *matCellDef="let row;">
-                <mat-checkbox [checked]="row.deleted" (change)="onCheckDeleted(row, $event)"></mat-checkbox>
             </td>
         </ng-container>
         <!-- Izveidošanas datums -->

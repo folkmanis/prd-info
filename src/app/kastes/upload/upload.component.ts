@@ -8,7 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { EndDialogComponent } from './end-dialog/end-dialog.component';
 import * as XLSX from 'xlsx';
 import { Observable } from 'rxjs';
-import { KastesOrderPartial, ColorTotals } from 'src/app/interfaces';
+import { KastesJobPartial, ColorTotals } from 'src/app/interfaces';
 
 @Component({
   selector: 'app-upload',
@@ -25,7 +25,7 @@ export class UploadComponent implements OnInit {
   orderIdControl = new FormControl(null, [Validators.required]);
 
   plannedTotals$: Observable<ColorTotals[]> = this.orderIdControl.valueChanges.pipe(
-    switchMap((id: string) => this.pasutijumiService.getOrder(id)),
+    switchMap((id: string) => this.pasutijumiService.getOrder(+id)),
     map(order => order.apjomsPlanned || []),
     shareReplay(1),
   );
@@ -37,8 +37,8 @@ export class UploadComponent implements OnInit {
     private router: Router,
   ) { }
 
-  orders$: Observable<KastesOrderPartial[]> = this.pasutijumiService.pasutijumi$.pipe(
-    map(orders => orders.filter(ordr => !ordr.deleted && !ordr.isLocked))
+  orders$: Observable<KastesJobPartial[]> = this.pasutijumiService.pasutijumi$.pipe(
+    map(orders => orders.filter(ordr => !ordr.isLocked))
   );
 
   ngOnInit() {

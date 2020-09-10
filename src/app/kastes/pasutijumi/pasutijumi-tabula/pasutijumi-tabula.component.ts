@@ -3,7 +3,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 
 import { TabulaDatasource } from './tabula-datasource';
 import { PasutijumiService } from '../../services/pasutijumi.service';
-import { KastesOrderPartial } from 'src/app/interfaces';
+import { KastesJobPartial } from 'src/app/interfaces';
 
 
 @Component({
@@ -14,7 +14,7 @@ import { KastesOrderPartial } from 'src/app/interfaces';
 export class PasutijumiTabulaComponent implements OnInit {
 
   dataSource: TabulaDatasource = new TabulaDatasource(this.pasutijumiService);
-  displayedColumns = ['name', 'deleted', 'created'];
+  displayedColumns = ['name', 'created'];
 
 
   constructor(
@@ -22,10 +22,6 @@ export class PasutijumiTabulaComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-  }
-
-  onCheckDeleted(pas: KastesOrderPartial, ev: MatCheckboxChange) {
-    this.dataSource.updatePas({ _id: pas._id, deleted: ev.checked }).subscribe();
   }
 
 }

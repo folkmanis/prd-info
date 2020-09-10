@@ -9,6 +9,7 @@ export interface Job {
     customerJobId?: string;
     receivedDate: Date;
     dueDate: Date;
+    category: string;
     comment?: string;
     invoiceId?: string;
     products?: JobProduct[] | JobProduct;

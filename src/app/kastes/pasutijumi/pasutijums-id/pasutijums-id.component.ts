@@ -3,16 +3,15 @@ import { FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@ang
 import { Router, ActivatedRoute } from '@angular/router';
 import { share, tap, map, switchMap, filter, pluck } from 'rxjs/operators';
 import { PasutijumiService } from '../../services/pasutijumi.service';
-import { KastesOrder, Colors, ColorTotals } from 'src/app/interfaces';
+import { Colors, ColorTotals, KastesJob } from 'src/app/interfaces';
 import { Observable, MonoTypeOperatorFunction, merge, of } from 'rxjs';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 
-const NEW_ORDER: KastesOrder = {
-  _id: undefined,
+const NEW_ORDER: Partial<KastesJob> = {
+  jobId: undefined,
   name: '',
-  deleted: false,
-  created: new Date(),
+  receivedDate: new Date(),
   dueDate: new Date(),
   isLocked: false,
   apjomsPlanned: [],
@@ -37,7 +36,7 @@ export class PasutijumsIdComponent implements CanComponentDeactivate {
   ) { }
 
   orderForm: FormGroup = this.fb.group({
-    _id: [{ disabled: true }],
+    jobId: [{ disabled: true }],
     name: [
       '',
       [Validators.required, Validators.minLength(4)],
@@ -60,19 +59,19 @@ export class PasutijumsIdComponent implements CanComponentDeactivate {
     map(params => params.get('id')),
     filter(id => !!id),
   );
-  private existingOrder$: Observable<KastesOrder> = this.id$.pipe(
-    filter(id => id.length === 24),
-    switchMap(id => this.pasService.getOrder(id)),
+  private existingOrder$: Observable<KastesJob> = this.id$.pipe(
+    filter(id => !isNaN(+id)),
+    switchMap(id => this.pasService.getOrder(+id)),
     this.fillForm(this.orderForm),
   );
 
-  private newOrder$: Observable<KastesOrder> = this.id$.pipe(
+  private newOrder$: Observable<KastesJob> = this.id$.pipe(
     filter(id => id === 'new'),
     map(() => NEW_ORDER),
     this.fillForm(this.orderForm),
     tap(() => this.orderForm.get('created').enable()),
   );
-  order$: Observable<KastesOrder> = merge(this.existingOrder$, this.newOrder$).pipe(share());
+  order$: Observable<KastesJob> = merge(this.existingOrder$, this.newOrder$).pipe(share());
   totals$ = this.order$.pipe(pluck('totals'));
   orderId$ = this.order$.pipe(pluck('_id'));
 
@@ -94,8 +93,8 @@ export class PasutijumsIdComponent implements CanComponentDeactivate {
     return this.confirmation.discardChanges();
   }
 
-  private fillForm(frm: FormGroup): MonoTypeOperatorFunction<KastesOrder> {
-    return (obs: Observable<KastesOrder>): Observable<KastesOrder> => {
+  private fillForm(frm: FormGroup): MonoTypeOperatorFunction<KastesJob> {
+    return (obs: Observable<KastesJob>): Observable<KastesJob> => {
       return obs.pipe(
         tap(ord => frm.patchValue(ord, { emitEvent: false }))
       );

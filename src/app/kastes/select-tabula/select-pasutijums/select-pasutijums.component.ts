@@ -20,9 +20,7 @@ export class SelectPasutijumsComponent implements OnInit, OnDestroy {
   pasControl = new FormControl();
   private readonly _subs = new Subscription();
 
-  pasutijumi$ = this.pasutijumiService.pasutijumi$.pipe(
-    map(pas => pas.filter(p => !p.deleted)),
-  );
+  pasutijumi$ = this.pasutijumiService.pasutijumi$;
 
   ngOnInit(): void {
     this.prefService.preferences$.pipe(

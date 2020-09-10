@@ -71,7 +71,7 @@ export class UploadService {
     this.adresesBox$ = this.adresesBox.init(this.adresesCsv.value, colMap, { toPakas });
   }
 
-  savePasutijums(orderId: string): Observable<number> {
+  savePasutijums(orderId: number): Observable<number> {
     return this.prdApi.kastes.putTable({
       orderId,
       data: this.adresesBox.uploadRow(orderId)

@@ -10,7 +10,7 @@ import { map, mapTo } from 'rxjs/operators';
 
 export class KastesApi extends ApiBase<Kaste> {
 
-    getApjomi(options: { pasutijumsId: string; }): Observable<number[]> {
+    getApjomi(options: { pasutijumsId: number; }): Observable<number[]> {
         return this.http.get<KasteResponse>(this.path + 'apjomi', new HttpOptions(options)).pipe(
             map(resp => resp.apjomi),
         );
@@ -38,7 +38,7 @@ export class KastesApi extends ApiBase<Kaste> {
             );
     }
 
-    setLabel(pasutijumsId: string, kods: number | string): Observable<Kaste | undefined> {
+    setLabel(pasutijumsId: number, kods: number | string): Observable<Kaste | undefined> {
         return this.http.post<KasteResponse>(
             this.path + 'label',
             { kods },
@@ -49,7 +49,7 @@ export class KastesApi extends ApiBase<Kaste> {
             );
     }
 
-    putTable(veikali: { orderId: string, data: Veikals[]; }): Observable<number> {
+    putTable(veikali: { orderId: number, data: Veikals[]; }): Observable<number> {
         return this.http.put<KasteResponse>(this.path, veikali, new HttpOptions()).pipe(
             map(resp => resp.insertedCount)
         );
