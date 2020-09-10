@@ -14,7 +14,7 @@ import { KastesJobPartial } from 'src/app/interfaces';
 export class PasutijumiTabulaComponent implements OnInit {
 
   dataSource: TabulaDatasource = new TabulaDatasource(this.pasutijumiService);
-  displayedColumns = ['name', 'created'];
+  displayedColumns = ['name', 'receivedDate', 'dueDate'];
 
 
   constructor(
