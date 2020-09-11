@@ -6,7 +6,7 @@ import { map, startWith, tap, take, shareReplay, share } from 'rxjs/operators';
 import { CustomerPartial, JobQueryFilter, Job, JobPartial, ProductTotals, InvoiceLike } from 'src/app/interfaces';
 import { CustomersService, PrdApiService } from 'src/app/services';
 import { InvoicesService } from '../../services/invoices.service';
-import { JobService } from '../../services/job.service';
+import { JobService } from 'src/app/services/job.service';
 import { InvoiceReport } from '../invoice-editor/invoice-report';
 import { InvoicesTotals } from '../interfaces';
 

@@ -4,7 +4,9 @@ import { Observable, of, Subject, combineLatest, ReplaySubject, BehaviorSubject 
 import { map, tap, startWith, switchMap, share, pluck } from 'rxjs/operators';
 import { PrdApiService } from 'src/app/services';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class JobService {
 
   private readonly updateJobs$: Subject<void> = new Subject();

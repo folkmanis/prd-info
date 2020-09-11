@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { debounceTime, map, filter } from 'rxjs/operators';
 import { JobQueryFilter, JobsSettings } from 'src/app/interfaces';
 import { CustomersService, SystemPreferencesService } from 'src/app/services';
-import { JobService } from '../../services/job.service';
+import { JobService } from 'src/app/services/job.service';
 
 const NULL_CUSTOMER = { CustomerName: undefined, _id: undefined, code: undefined };
 const DEFAULT_FILTER: JobQueryFilter = {

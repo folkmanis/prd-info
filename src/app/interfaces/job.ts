@@ -1,24 +1,9 @@
-import { Product } from './product';
+import { KastesJob } from './kastes-job';
+import { ReproJob } from './repro-job';
 import { AppHttpResponseBase } from 'src/app/library/http';
 
-export interface Job {
-    _id?: string;
-    jobId: number;
-    customer: string;
-    name: string;
-    customerJobId?: string;
-    receivedDate: Date;
-    dueDate: Date;
-    category: string;
-    comment?: string;
-    invoiceId?: string;
-    products?: JobProduct[] | JobProduct;
-    productsIdx?: number;
-    jobStatus: {
-        generalStatus: number;
-    };
-    custCode: string;
-}
+export type Job = ReproJob | KastesJob;
+
 export type JobPartial =
     Pick<Job, 'receivedDate' | 'customerJobId' | 'name' | 'jobId' | 'customer' | 'products' | 'invoiceId' | 'custCode' | 'dueDate'>;
 
@@ -34,16 +19,11 @@ export interface JobResponse extends AppHttpResponseBase<Job> {
     // job?: Job;
 }
 
-export type JobProduct = Pick<Product, 'name'> & {
-    price: number;
-    count: number;
-    comment?: string;
-};
-
 export interface JobQueryFilter {
     fromDate?: Date;
     customer?: string;
     name?: string;
+    category?: 'perforated paper' | 'repro';
     invoice?: 0 | 1;
     jobsId?: number | number[];
     jobStatus?: number | number[];

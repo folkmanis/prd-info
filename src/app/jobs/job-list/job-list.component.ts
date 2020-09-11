@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { tap, map, debounceTime, startWith, filter, switchMap, finalize } from 'rxjs/operators';
-import { JobService } from '../services/job.service';
+import { JobService } from 'src/app/services/job.service';
 import { JobQueryFilter, JobProduct } from 'src/app/interfaces';
 import { JobEditDialogService } from '../services/job-edit-dialog.service';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';

@@ -1,8 +1,8 @@
-import { AppHttpResponseBase } from 'src/app/library/http';
+import { JobBase } from './job-base';
 import { Colors, ColorTotals } from './kaste';
-import { Job } from './job';
+import { AppHttpResponseBase } from 'src/app/library/http';
 
-export type KastesJob = Job & {
+export interface KastesJob extends JobBase {
     category: 'perforated paper';
     isLocked: boolean;
     apjomsPlanned: ColorTotals[];
@@ -11,7 +11,7 @@ export type KastesJob = Job & {
         apjomiTotals: ApjomiTotals[];
         veikali: number;
     };
-};
+}
 
 export interface ApjomiTotals {
     apjoms: number;

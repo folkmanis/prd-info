@@ -12,7 +12,6 @@ import { JobListComponent } from './job-list/job-list.component';
 import { PlateJobEditorComponent } from './job-edit/plate-job-editor/plate-job-editor.component';
 import { ProductsEditorComponent } from './job-edit/products-editor/products-editor.component';
 import { JobDialogComponent } from './job-edit/job-dialog.component';
-import { JobService } from './services/job.service';
 import { InvoicesService } from './services/invoices.service';
 import { JobEditDialogService } from './services/job-edit-dialog.service';
 
@@ -47,7 +46,6 @@ import { ProductAutocompleteComponent } from './job-edit/products-editor/product
     PlateInvoiceModule,
   ],
   providers: [
-    JobService,
     InvoicesService,
     JobEditDialogService,
     { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptorService, multi: true },

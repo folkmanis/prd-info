@@ -7,7 +7,7 @@ import { Job, JobProduct } from 'src/app/interfaces';
 import { CustomersService, ProductsService } from 'src/app/services';
 import { JobDialogComponent } from '../job-edit/job-dialog.component';
 import { JobEditDialogData } from '../job-edit/job-edit-dialog-data';
-import { JobService } from '../services/job.service';
+import { JobService } from 'src/app/services/job.service';
 import { JobEditFormService } from './job-edit-form.service';
 import * as moment from 'moment';
 
