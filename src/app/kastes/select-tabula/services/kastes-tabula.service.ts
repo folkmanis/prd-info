@@ -33,7 +33,6 @@ export class KastesTabulaService {
   kastesAll$: Observable<Kaste[]> = this.reloadKastes$.pipe(
     startWith({}),
     switchMap(() => this.pasutijumsId$),
-    tap(apj => console.log(apj)),
     switchMap(pasutijumsId => this.prdApi.kastes.get<Kaste>({ pasutijumsId })),
     cacheWithUpdate(this.updateKaste$, (o1, o2) => o1._id === o2._id && o1.kaste === o2.kaste),
   );

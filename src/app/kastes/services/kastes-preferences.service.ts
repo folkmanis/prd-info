@@ -35,7 +35,6 @@ export class KastesPreferencesService {
   preferences$ = combineLatest([
     this.kastesSystemPreferences$,
     this.kastesUserPreferences$.pipe(
-      // tap(apj => console.log(apj)),
     ),
   ]).pipe(
     map(([sys, usr]) => ({ ...sys, ...usr })),
@@ -43,7 +42,6 @@ export class KastesPreferencesService {
 
   updateUserPreferences(prefs: Partial<KastesUserPreferences>): Observable<boolean> {
     return this.prdApi.kastes.setUserPreferences(prefs).pipe(
-    // tap(apj => console.log(apj)),
     tap(() => this._reload$.next()),
     );
   }
