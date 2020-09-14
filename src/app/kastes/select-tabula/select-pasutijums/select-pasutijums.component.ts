@@ -20,7 +20,7 @@ export class SelectPasutijumsComponent implements OnInit, OnDestroy {
   pasControl = new FormControl();
   private readonly _subs = new Subscription();
 
-  pasutijumi$ = this.pasutijumiService.pasutijumi$;
+  pasutijumi$ = this.pasutijumiService.getKastesJobs(true);
 
   ngOnInit(): void {
     this.prefService.preferences$.pipe(
@@ -29,6 +29,7 @@ export class SelectPasutijumsComponent implements OnInit, OnDestroy {
 
     this._subs.add(
       this.pasControl.valueChanges.pipe(
+        tap(apj => console.log(apj)),
         switchMap(pas => this.prefService.updateUserPreferences({ pasutijums: pas })),
       ).subscribe()
     );

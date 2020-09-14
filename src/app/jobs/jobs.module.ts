@@ -48,7 +48,6 @@ import { ProductAutocompleteComponent } from './job-edit/products-editor/product
   providers: [
     InvoicesService,
     JobEditDialogService,
-    { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptorService, multi: true },
   ],
 })
 export class JobsModule { }

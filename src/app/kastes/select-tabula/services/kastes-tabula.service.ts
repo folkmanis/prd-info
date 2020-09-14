@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Subject, Observable, MonoTypeOperatorFunction, ReplaySubject, BehaviorSubject, combineLatest, pipe, merge, EMPTY, of } from 'rxjs';
 import { Kaste, Totals, RowUpdate, Colors } from 'src/app/interfaces';
 import { switchMap, share, pluck, shareReplay, withLatestFrom, map, tap, startWith, throttleTime, mergeMap, filter } from 'rxjs/operators';
-import { KastesPreferencesService } from './kastes-preferences.service';
+import { KastesPreferencesService } from '../../services/kastes-preferences.service';
 import { cacheWithUpdate } from 'src/app/library/rx';
 import { PrdApiService } from 'src/app/services';
 
@@ -27,14 +27,13 @@ export class KastesTabulaService {
   kastesLabelUpdateResult$ = new Subject<Partial<Kaste> | undefined>();
 
   apjomi$: Observable<number[]> = this.pasutijumsId$.pipe(
-    switchMap(pasutijumsId => this.prdApi.kastes.getApjomi({ pasutijumsId }).pipe()
-    ),
+    switchMap(pasutijumsId => this.prdApi.kastes.getApjomi({ pasutijumsId })),
   );
 
   kastesAll$: Observable<Kaste[]> = this.reloadKastes$.pipe(
     startWith({}),
-    // throttleTime(3000),
     switchMap(() => this.pasutijumsId$),
+    tap(apj => console.log(apj)),
     switchMap(pasutijumsId => this.prdApi.kastes.get<Kaste>({ pasutijumsId })),
     cacheWithUpdate(this.updateKaste$, (o1, o2) => o1._id === o2._id && o1.kaste === o2.kaste),
   );

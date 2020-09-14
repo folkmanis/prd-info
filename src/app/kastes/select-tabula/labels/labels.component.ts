@@ -4,7 +4,7 @@ import { Kaste } from 'src/app/interfaces';
 import { filter, switchMap, map, tap, switchAll, mergeMap, pluck, share } from 'rxjs/operators';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
 import { Observable, of, BehaviorSubject } from 'rxjs';
-import { KastesTabulaService } from '../../services/kastes-tabula.service';
+import { KastesTabulaService } from '../services/kastes-tabula.service';
 
 @Component({
   selector: 'app-labels',

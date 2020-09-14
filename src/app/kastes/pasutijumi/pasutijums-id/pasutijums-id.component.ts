@@ -13,7 +13,6 @@ const NEW_ORDER: Partial<KastesJob> = {
   name: '',
   receivedDate: new Date(),
   dueDate: new Date(),
-  isLocked: false,
   apjomsPlanned: [],
 };
 
@@ -40,7 +39,6 @@ export class PasutijumsIdComponent implements CanComponentDeactivate {
     name: [
       '',
       [Validators.required, Validators.minLength(4)],
-      [this.pasService.existPasutijumsValidatorFn()]
     ],
     deleted: [false],
     created: [{ value: '', disabled: true }],

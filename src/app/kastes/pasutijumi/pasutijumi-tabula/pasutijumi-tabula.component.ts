@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 
-import { TabulaDatasource } from './tabula-datasource';
 import { PasutijumiService } from '../../services/pasutijumi.service';
 import { KastesJobPartial } from 'src/app/interfaces';
+import { JobService } from 'src/app/services/job.service';
+import { map } from 'rxjs/operators';
 
 
 @Component({
@@ -13,15 +14,18 @@ import { KastesJobPartial } from 'src/app/interfaces';
 })
 export class PasutijumiTabulaComponent implements OnInit {
 
-  dataSource: TabulaDatasource = new TabulaDatasource(this.pasutijumiService);
   displayedColumns = ['name', 'receivedDate', 'dueDate'];
 
+  datasource$ = this.jobService.jobs$.pipe(
+    map(jobs => jobs.filter(job => job.category === 'perforated paper') as KastesJobPartial[]),
+  );
 
   constructor(
-    private pasutijumiService: PasutijumiService,
+    private jobService: JobService,
   ) { }
 
   ngOnInit(): void {
+    this.jobService.filter$.next({ category: 'perforated paper' });
   }
 
 }

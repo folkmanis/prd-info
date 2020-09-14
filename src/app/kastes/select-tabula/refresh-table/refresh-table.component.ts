@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { KastesTabulaService } from '../../services/kastes-tabula.service';
+import { KastesTabulaService } from '../services/kastes-tabula.service';
 
 @Component({
   selector: 'app-refresh-table',

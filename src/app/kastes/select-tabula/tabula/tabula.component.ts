@@ -8,7 +8,7 @@ import { Observable, BehaviorSubject, Subject, of, EMPTY, combineLatest, ReplayS
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { filter, switchMap, map, delay, mergeMap, tap, take } from 'rxjs/operators';
 
-import { KastesTabulaService } from '../../services/kastes-tabula.service';
+import { KastesTabulaService } from '../services/kastes-tabula.service';
 
 const COLUMNS = ['kods', 'adrese', 'yellow', 'rose', 'white'];
 

@@ -3,7 +3,7 @@ import { KastesPreferencesService } from '../../services/kastes-preferences.serv
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Observable, pipe, Subscription } from 'rxjs';
 import { map, tap, filter, switchMap, distinctUntilChanged } from 'rxjs/operators';
-import { KastesTabulaService } from '../../services/kastes-tabula.service';
+import { KastesTabulaService } from '../services/kastes-tabula.service';
 
 @Component({
   selector: 'app-selector',

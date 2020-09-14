@@ -5,7 +5,7 @@ import { AppHttpResponseBase } from 'src/app/library/http';
 export type Job = ReproJob | KastesJob;
 
 export type JobPartial =
-    Pick<Job, 'receivedDate' | 'customerJobId' | 'name' | 'jobId' | 'customer' | 'products' | 'invoiceId' | 'custCode' | 'dueDate'>;
+    Pick<Job, 'category' | 'receivedDate' | 'customerJobId' | 'name' | 'jobId' | 'customer' | 'products' | 'invoiceId' | 'custCode' | 'dueDate'>;
 
 export interface JobsWithoutInvoicesTotals {
     _id: string;
@@ -15,8 +15,6 @@ export interface JobsWithoutInvoicesTotals {
 
 export interface JobResponse extends AppHttpResponseBase<Job> {
     jobsWithoutInvoicesTotals?: JobsWithoutInvoicesTotals[];
-    // jobs?: JobPartial[];
-    // job?: Job;
 }
 
 export interface JobQueryFilter {

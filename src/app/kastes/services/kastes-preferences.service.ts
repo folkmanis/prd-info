@@ -34,14 +34,17 @@ export class KastesPreferencesService {
 
   preferences$ = combineLatest([
     this.kastesSystemPreferences$,
-    this.kastesUserPreferences$,
+    this.kastesUserPreferences$.pipe(
+      // tap(apj => console.log(apj)),
+    ),
   ]).pipe(
     map(([sys, usr]) => ({ ...sys, ...usr })),
   );
 
   updateUserPreferences(prefs: Partial<KastesUserPreferences>): Observable<boolean> {
     return this.prdApi.kastes.setUserPreferences(prefs).pipe(
-      tap(() => this._reload$.next()),
+    // tap(apj => console.log(apj)),
+    tap(() => this._reload$.next()),
     );
   }
 

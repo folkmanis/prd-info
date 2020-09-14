@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { KastesTabulaService } from '../../services/kastes-tabula.service';
+import { KastesTabulaService } from '../services/kastes-tabula.service';
 import { Observable } from 'rxjs';
 import { Totals } from 'src/app/interfaces';
 

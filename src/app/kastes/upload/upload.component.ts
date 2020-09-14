@@ -37,9 +37,7 @@ export class UploadComponent implements OnInit {
     private router: Router,
   ) { }
 
-  orders$: Observable<KastesJobPartial[]> = this.pasutijumiService.pasutijumi$.pipe(
-    map(orders => orders.filter(ordr => !ordr.isLocked))
-  );
+  orders$: Observable<KastesJobPartial[]> = this.pasutijumiService.getKastesJobs(false);
 
   ngOnInit() {
   }

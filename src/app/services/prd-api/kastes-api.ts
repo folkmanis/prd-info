@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import { ApiBase, HttpOptions } from 'src/app/library';
 
 import {
-    Kaste, KasteResponse,
+    Kaste, KasteResponse, KastesJobPartial,
     KastesUserPreferences, Veikals
 } from 'src/app/interfaces';
 import { map, mapTo } from 'rxjs/operators';

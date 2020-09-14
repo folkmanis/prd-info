@@ -8,7 +8,6 @@ import { AsyncValidatorFn, AbstractControl, ValidationErrors } from '@angular/fo
 
 @Injectable()
 export class PasutijumiService {
-  private _pasutijumi$: Observable<KastesJobPartial[]>;
   reload$: Subject<void> = new Subject();
 
   constructor(
@@ -16,23 +15,12 @@ export class PasutijumiService {
     private prdApi: PrdApiService,
   ) { }
 
-  get pasutijumi$(): Observable<KastesJobPartial[]> {
-    if (!this._pasutijumi$) {
-      this._pasutijumi$ = this.reload$.pipe(
-        startWith({}),
-        switchMap(() => this.prdApi.kastesOrders.get<KastesJob>()),
-        shareReplay(1),
-      );
-    }
-    return this._pasutijumi$;
+  getKastesJobs(veikali: boolean): Observable<KastesJobPartial[]> {
+    return this.prdApi.kastesOrders.get({ veikali: veikali ? 1 : 0 });
   }
 
   getOrder(id: number): Observable<KastesJob> {
     return this.prdApi.kastesOrders.get(id);
-  }
-
-  setActiveOrder(id: number): Observable<boolean> {
-    return this.kastesPreferencesService.updateUserPreferences({ pasutijums: id });
   }
 
   addOrder(nameOrOrder: string | Partial<KastesJob>): Observable<string> {
@@ -57,20 +45,5 @@ export class PasutijumiService {
       tap(resp => resp && this.reload$.next())
     );
   }
-
-  existPasutijumsValidatorFn(): AsyncValidatorFn {
-    let initial: any;
-    return (control: AbstractControl): Observable<ValidationErrors | null> => {
-      if (initial === undefined) { initial = control.value; }
-      if (control.value === initial) { return of(null); }
-      return this.pasutijumi$.pipe(
-        take(1),
-        map((pas) =>
-          pas.find((el) => el.name === control.value) ? { existPasutijumsName: { value: control.value } } : null
-        ),
-      );
-    };
-  }
-
 
 }
