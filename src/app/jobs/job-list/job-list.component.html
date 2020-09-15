@@ -61,14 +61,16 @@
                     </div>
                 </td>
 
-                <!-- Izstrādājums -->
-                <td class="column-productsObj-name">
-                    {{job.productsObj?.name}}
-                </td>
-                <!-- Skaits -->
-                <td class="column-productsObj-count">
-                    {{job.productsObj?.count}}
-                </td>
+                <ng-container *ngIf="isLarge$ | async">
+                    <!-- Izstrādājums -->
+                    <td class="column-productsObj-name">
+                        {{job.productsObj?.name}}
+                    </td>
+                    <!-- Skaits -->
+                    <td class="column-productsObj-count">
+                        {{job.productsObj?.count}}
+                    </td>
+                </ng-container>
 
             </tr>
         </tbody>

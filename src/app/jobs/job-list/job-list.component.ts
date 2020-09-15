@@ -6,6 +6,7 @@ import { JobService } from 'src/app/services/job.service';
 import { JobQueryFilter, JobProduct } from 'src/app/interfaces';
 import { JobEditDialogService } from '../services/job-edit-dialog.service';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
+import { LayoutService } from 'src/app/layout/layout.service';
 
 @Component({
   selector: 'app-job-list',
@@ -21,9 +22,12 @@ export class JobListComponent implements OnInit, OnDestroy {
     private jobService: JobService,
     private jobEditDialog: JobEditDialogService,
     private clipboard: ClipboardService,
+    private layout: LayoutService,
   ) { }
 
   private readonly _subs = new Subscription();
+
+  isLarge$ = this.layout.isLarge$;
 
   dataSource$ = this.jobService.jobs$.pipe(
     map(jobs => jobs.map(job => ({ ...job, productsObj: job.products as JobProduct })))
