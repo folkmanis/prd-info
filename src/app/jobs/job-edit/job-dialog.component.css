@@ -1,3 +1,11 @@
 .app-copy-clipboard {
     cursor: copy;
 }
+
+div.mat-dialog-title {
+    display: flex;
+}
+
+.mat-dialog-title>span {
+    flex: 1;
+}
