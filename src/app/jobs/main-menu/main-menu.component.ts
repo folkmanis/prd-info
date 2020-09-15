@@ -13,6 +13,7 @@ export class MainMenuComponent {
     private layoutService: LayoutService,
   ) { }
   isSmall$ = this.layoutService.isSmall$;
+  isLarge$ = this.layoutService.isLarge$;
   modules$ = this.systemPreferencesService.childMenu$;
 
 }
