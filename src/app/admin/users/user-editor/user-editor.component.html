@@ -1,4 +1,4 @@
-<div *ngIf="user">
+<div *ngIf="user$ | async as user">
     <section class="user-form">
         <h2>Lietotājs {{user.username}}</h2>
         <small *ngIf="user.last_login">Pēdējoreiz redzēts {{user.last_login | date}}</small>
@@ -37,7 +37,7 @@
     </form>
     <!-- Pogas -->
     <section>
-        <button mat-raised-button color="warn" (click)="onDelete()">Dzēst lietotāju!</button>
-        <button mat-raised-button color="primary" (click)="onPasswordChange()">Mainīt paroli</button>
+        <button mat-raised-button color="warn" (click)="onDelete(user.username)">Dzēst lietotāju!</button>
+        <button mat-raised-button color="primary" (click)="onPasswordChange(user.username)">Mainīt paroli</button>
     </section>
 </div>

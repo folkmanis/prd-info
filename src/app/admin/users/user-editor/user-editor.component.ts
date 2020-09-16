@@ -1,25 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { UserModule } from 'src/app/interfaces';
+import { UserModule, AppParams } from 'src/app/interfaces';
 import { UsersService, Customer } from '../../services/users.service';
 import { User } from 'src/app/interfaces';
-import { debounceTime, distinctUntilChanged, switchMap, filter, tap, map } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap, filter, tap, map, takeUntil } from 'rxjs/operators';
 import { Subscription, Observable } from 'rxjs';
 import { PasswordChangeDialogComponent } from './password-change-dialog/password-change-dialog.component';
 import { CanComponentDeactivate } from '../../../library/guards/can-deactivate.guard';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
+import { DestroyService } from 'src/app/library/rx/destroy.service';
+import { APP_PARAMS } from 'src/app/app-params';
 
 @Component({
   selector: 'app-user-editor',
   templateUrl: './user-editor.component.html',
-  styleUrls: ['./user-editor.component.css']
+  styleUrls: ['./user-editor.component.css'],
+  providers: [DestroyService],
 })
 export class UserEditorComponent implements OnInit, CanComponentDeactivate {
 
   userForm = new FormGroup({
+    username: new FormControl(),
     name: new FormControl(),
     admin: new FormControl(),
     preferences: new FormGroup({
@@ -28,12 +32,6 @@ export class UserEditorComponent implements OnInit, CanComponentDeactivate {
     }),
   });
 
-  // customers: Customer[];
-  selectedUsername: string;
-  user: User;
-  valueChangesSubscription: Subscription;
-  userModules: UserModule[] = [];
-
   constructor(
     private usersService: UsersService,
     private dialog: MatDialog,
@@ -41,44 +39,49 @@ export class UserEditorComponent implements OnInit, CanComponentDeactivate {
     private router: Router,
     private route: ActivatedRoute,
     private dialogService: ConfirmationDialogService,
+    private destroy$: DestroyService,
+    @Inject(APP_PARAMS) private params: AppParams,
   ) { }
 
-  customers$: Observable<Customer[]> = this.usersService.customers$;
+  userModules = this.params.userModules;
+
+  customers$: Observable<Customer[]> = this.usersService.xmfCustomers$;
+
+  user$ = this.route.paramMap.pipe(
+    map((params: ParamMap) => params.get('id')),
+    switchMap(username => this.usersService.getUser(username)),
+    tap(user => this.setFormValues(user)),
+  );
 
   ngOnInit() {
-    // this.usersService.getCustomers().subscribe((cust) => this.customers = cust);
-    this.route.paramMap.pipe(
-      map((params: ParamMap) => params.get('id')),
-      tap(usr => this.selectedUsername = usr),
-      switchMap(username => this.usersService.getUser(username))
-    ).subscribe(usr => {
-      this.user = usr;
-      this.setFormValues(this.user);
-    });
-    this.userModules = this.usersService.getUserModules();
+    this.userForm.valueChanges.pipe(
+      debounceTime(500),
+      switchMap((form: Partial<User>) => this.usersService.updateUser(form)),
+      tap(result => result && this.userForm.markAsPristine()),
+      takeUntil(this.destroy$),
+    ).subscribe();
 
   }
 
-  onDelete() {
-    this.dialogService.confirm('Tiešām dzēst lietotāju?').pipe(
+  onDelete(username: string) {
+    this.dialogService.confirm(`Tiešām dzēst lietotāju ${username}?`).pipe(
       filter(resp => resp),
-      switchMap(() => this.usersService.deleteUser(this.user.username)),
+      switchMap(() => this.usersService.deleteUser(username)),
     ).subscribe(resp => {
       if (resp) {
-        this.snackBar.open(`Lietotājs ${this.user.username} likvidēts`, 'OK', { duration: 5000 });
+        this.snackBar.open(`Lietotājs ${username} likvidēts`, 'OK', { duration: 5000 });
       }
       this.router.navigate(['admin', 'users']);
     });
   }
 
-  onPasswordChange() {
-    const dialogRef = this.dialog.open(PasswordChangeDialogComponent, {
+  onPasswordChange(username: string) {
+    this.dialog.open(PasswordChangeDialogComponent, {
       width: '300px',
-      data: { username: this.user.username },
-    });
-    dialogRef.afterClosed().pipe(
+      data: { username },
+    }).afterClosed().pipe(
       filter(result => result),
-      switchMap(result => this.usersService.updatePassword(this.user.username, result)),
+      switchMap(result => this.usersService.updatePassword(username, result)),
     ).subscribe(resp => {
       if (resp) {
         this.snackBar.open(`Parole nomainita!`, 'OK', { duration: 3000 });
@@ -87,39 +90,20 @@ export class UserEditorComponent implements OnInit, CanComponentDeactivate {
   }
 
   canDeactivate(): Observable<boolean> | boolean {
-    if (this.userForm.pristine) {
-      return true;
-    }
-    const data = {
-      yes: 'Jā, pamest!',
-      no: 'Nē, gaidīt!',
-    };
-    const prompt = 'Visas izmaiņas vēl nav saglabātas. Ja pametīsiet šo sadaļu, tad tās, iespējams, netiks saglabātas.';
-    return this.dialogService.confirm(prompt, { data });
+    return this.userForm.pristine ? true : this.dialogService.discardChanges();
   }
 
   private setFormValues(usr: Partial<User> | null) {
-    // Lai pie formas ielādes neveiktu saglabāšanas darbību
-    // vajag atrakstīties no izmaiņu notikuma
-    if (this.valueChangesSubscription) { this.valueChangesSubscription.unsubscribe(); }
     if (!usr) { return; }
     this.userForm.setValue({
+      username: usr.username,
       name: usr.name,
       admin: usr.admin,
       preferences: {
         customers: usr.preferences.customers,
         modules: usr.preferences.modules || [],
       }
-    });
-    // Pēc tam jāpierakstās atpakaļ
-    this.valueChangesSubscription = this.userForm.valueChanges.pipe(
-      debounceTime(500),
-      switchMap((form) => this.usersService.updateUser(this.user.username, form)),
-    ).subscribe(result => {
-      if (result) {
-        this.userForm.markAsPristine();
-      }
-    });
+    }, { emitEvent: false });
   }
 
 }

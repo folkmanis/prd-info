@@ -1,7 +1,7 @@
 import { CdkScrollable } from '@angular/cdk/scrolling';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription } from 'rxjs';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { takeUntil } from 'rxjs/operators';
+import { DestroyService } from 'src/app/library/rx/destroy.service';
 import { SearchQuery } from '../services/archive-search-class';
 import { ArchiveSearchService } from '../services/archive-search.service';
 import { SearchData } from './search-data';
@@ -12,31 +12,26 @@ import { SearchData } from './search-data';
   templateUrl: './search-table.component.html',
   styleUrls: ['./search-table.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [DestroyService],
 })
-export class SearchTableComponent implements OnInit, OnDestroy {
+export class SearchTableComponent implements OnInit {
   @ViewChild(CdkScrollable, { static: true }) content: CdkScrollable;
 
   constructor(
     private service: ArchiveSearchService,
+    private destroy$: DestroyService,
   ) { }
 
   query: SearchQuery;
   actions: string[] = [, 'Archive', 'Restore', 'Skip', 'Delete'];
   search = '';
-  subs = new Subscription();
   data = new SearchData(this.service);
 
   ngOnInit() {
-    this.subs.add(
-      this.service.searchString$.subscribe(s => this.search = s)
-    );
-    this.subs.add(
-      this.service.searchResult$.subscribe(() => this.content.scrollTo({ top: 0 }))
-    );
-  }
-
-  ngOnDestroy() {
-    this.subs.unsubscribe();
+    this.service.searchString$.pipe(takeUntil(this.destroy$))
+      .subscribe(s => this.search = s);
+    this.service.searchResult$.pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.content.scrollTo({ top: 0 }));
   }
 
 }

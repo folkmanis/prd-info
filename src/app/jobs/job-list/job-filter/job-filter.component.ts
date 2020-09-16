@@ -1,9 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { identity, pickBy } from 'lodash';
-import { Subscription } from 'rxjs';
-import { debounceTime, map, filter } from 'rxjs/operators';
+import { debounceTime, filter, map, takeUntil } from 'rxjs/operators';
 import { JobQueryFilter, JobsSettings } from 'src/app/interfaces';
+import { DestroyService } from 'src/app/library/rx/destroy.service';
 import { CustomersService, SystemPreferencesService } from 'src/app/services';
 import { JobService } from 'src/app/services/job.service';
 
@@ -18,9 +18,10 @@ const DEFAULT_FILTER: JobQueryFilter = {
 @Component({
   selector: 'app-job-filter',
   templateUrl: './job-filter.component.html',
-  styleUrls: ['./job-filter.component.css']
+  styleUrls: ['./job-filter.component.css'],
+  providers: [DestroyService],
 })
-export class JobFilterComponent implements OnInit, OnDestroy {
+export class JobFilterComponent implements OnInit {
 
   customers$ = this.customersService.customers$.pipe(
     map(customers => [NULL_CUSTOMER, ...customers])
@@ -34,6 +35,7 @@ export class JobFilterComponent implements OnInit, OnDestroy {
     private sysPrefService: SystemPreferencesService,
     private customersService: CustomersService,
     private jobService: JobService,
+    private destroy$: DestroyService,
   ) { }
 
   filterForm = this.fb.group({
@@ -48,21 +50,15 @@ export class JobFilterComponent implements OnInit, OnDestroy {
   get jobsId(): FormControl { return this.filterForm.get('jobsId') as FormControl; }
   get name(): FormControl { return this.filterForm.get('name') as FormControl; }
   get customer(): FormControl { return this.filterForm.get('customer') as FormControl; }
-  private readonly _subs = new Subscription();
 
   ngOnInit(): void {
-    this._subs.add(
-      this.filterForm.valueChanges.pipe(
-        filter(val => this.filterForm.valid),
-        debounceTime(500),
-        map(normalizeFilter),
-      ).subscribe(this.jobService.filter$)
-    );
+    this.filterForm.valueChanges.pipe(
+      filter(val => this.filterForm.valid),
+      debounceTime(500),
+      map(normalizeFilter),
+      takeUntil(this.destroy$),
+    ).subscribe(this.jobService.filter$);
     this.onReset();
-  }
-
-  ngOnDestroy(): void {
-    this._subs.unsubscribe();
   }
 
   onReset() {

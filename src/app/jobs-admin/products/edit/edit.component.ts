@@ -1,70 +1,61 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, AbstractControl, Validators, FormArray, FormControl } from '@angular/forms';
-import { Observable, Subscription, Subject, merge, of } from 'rxjs';
-import { map, filter, tap, switchMap, debounceTime, takeUntil, share, concatMap } from 'rxjs/operators';
-import { isEqual, pick, omit, keys, cloneDeep } from 'lodash';
-
-import { ProductsService, CustomersService } from 'src/app/services';
-import { Product, ProductPrice, PriceChange } from 'src/app/interfaces';
-import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
+import { concatMap, debounceTime, filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { Product, ProductPrice } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
-import { ProductPricesComponent } from './product-prices/product-prices.component';
+import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
+import { DestroyService } from 'src/app/library/rx/destroy.service';
+import { ProductsService } from 'src/app/services';
 import { ProductFormGroup } from '../product-form';
+
 
 @Component({
   selector: 'app-edit',
   templateUrl: './edit.component.html',
-  styleUrls: ['./edit.component.css']
+  styleUrls: ['./edit.component.css'],
+  providers: [DestroyService],
 })
-export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate {
-  @ViewChild(ProductPricesComponent) private pricesComponent: ProductPricesComponent;
+export class EditComponent implements OnInit, CanComponentDeactivate {
 
   constructor(
-    private router: Router,
     private route: ActivatedRoute,
-    private fb: FormBuilder,
     private service: ProductsService,
     private dialog: ConfirmationDialogService,
+    private destroy$: DestroyService,
   ) { }
 
   readonly categories$ = this.service.categories$;
 
   productForm = new ProductFormGroup(this.priceAddFn);
 
-  private readonly _subs = new Subscription();
   private _emit = false;
   private _saves = 0;
 
   ngOnInit(): void {
-    this._subs.add(
-      this.route.paramMap.pipe(
-        tap(_ => this._emit = false),
-        map(paramMap => paramMap.get('id') as string),
-        filter(id => id && id.length === 24),
-        switchMap(id => this.service.getProduct(id)),
-        tap(prod => {
-          this.productForm.reset(prod, { emitEvent: false });
-          this.productForm.markAsPristine();
-          this._emit = true;
-          this._saves = 0;
-        }),
-      ).subscribe()
+    this.route.paramMap.pipe(
+      tap(_ => this._emit = false),
+      map(paramMap => paramMap.get('id') as string),
+      filter(id => id && id.length === 24),
+      switchMap(id => this.service.getProduct(id)),
+      tap(prod => {
+        this.productForm.reset(prod, { emitEvent: false });
+        this.productForm.markAsPristine();
+        this._emit = true;
+        this._saves = 0;
+      }),
+      takeUntil(this.destroy$),
     );
 
-    this._subs.add(
-      this.productForm.valueChanges.pipe(
-        filter(_ => this._emit && this.productForm.valid),
-        debounceTime(500),
-        tap(_ => this._saves++),
-        concatMap((prod: Product) => this.service.updateProduct(prod._id, prod)),
-        tap(_ => --this._saves || this.productForm.markAsPristine()),
-      ).subscribe()
-    );
-  }
-
-  ngOnDestroy(): void {
-    this._subs.unsubscribe();
+    this.productForm.valueChanges.pipe(
+      filter(_ => this._emit && this.productForm.valid),
+      debounceTime(500),
+      tap(_ => this._saves++),
+      concatMap((prod: Product) => this.service.updateProduct(prod._id, prod)),
+      tap(_ => --this._saves || this.productForm.markAsPristine()),
+      takeUntil(this.destroy$),
+    ).subscribe();
   }
 
   canDeactivate(): Observable<boolean> | boolean {

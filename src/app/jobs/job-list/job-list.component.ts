@@ -1,20 +1,21 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { tap, map, debounceTime, startWith, filter, switchMap, finalize } from 'rxjs/operators';
-import { JobService } from 'src/app/services/job.service';
-import { JobQueryFilter, JobProduct } from 'src/app/interfaces';
-import { JobEditDialogService } from '../services/job-edit-dialog.service';
-import { ClipboardService } from 'src/app/library/services/clipboard.service';
+import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { JobProduct } from 'src/app/interfaces';
 import { LayoutService } from 'src/app/layout/layout.service';
+import { DestroyService } from 'src/app/library/rx/destroy.service';
+import { ClipboardService } from 'src/app/library/services/clipboard.service';
+import { JobService } from 'src/app/services/job.service';
+import { JobEditDialogService } from '../services/job-edit-dialog.service';
 
 @Component({
   selector: 'app-job-list',
   templateUrl: './job-list.component.html',
   styleUrls: ['./job-list.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [DestroyService],
 })
-export class JobListComponent implements OnInit, OnDestroy {
+export class JobListComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
@@ -23,9 +24,9 @@ export class JobListComponent implements OnInit, OnDestroy {
     private jobEditDialog: JobEditDialogService,
     private clipboard: ClipboardService,
     private layout: LayoutService,
+    private destroy$: DestroyService,
   ) { }
 
-  private readonly _subs = new Subscription();
 
   isLarge$ = this.layout.isLarge$;
 
@@ -34,24 +35,19 @@ export class JobListComponent implements OnInit, OnDestroy {
   );
 
   ngOnInit(): void {
-    this._subs.add(
-      this.route.paramMap.pipe(
-        map(params => params.get('id') as string | undefined),
-        filter(id => id === 'new' || /^\d+$/.test(id)),
-        switchMap(id => {
-          if (id === 'new') {
-            return this.jobEditDialog.newJob({ category: 'repro' });
-          } else {
-            return this.jobEditDialog.editJob(+id);
-          }
-        }),
-        tap(() => this.router.navigate(['/jobs'])),
-      ).subscribe()
-    );
-  }
-
-  ngOnDestroy(): void {
-    this._subs.unsubscribe();
+    this.route.paramMap.pipe(
+      map(params => params.get('id') as string | undefined),
+      filter(id => id === 'new' || /^\d+$/.test(id)),
+      switchMap(id => {
+        if (id === 'new') {
+          return this.jobEditDialog.newJob({ category: 'repro' });
+        } else {
+          return this.jobEditDialog.editJob(+id);
+        }
+      }),
+      tap(() => this.router.navigate(['/jobs'])),
+      takeUntil(this.destroy$),
+    ).subscribe();
   }
 
   onJobEdit(jobId: number) {
