@@ -6,7 +6,6 @@ import { AppParams, SystemPreferences, UserModule, SystemPreferencesGroups, Modu
 import { APP_PARAMS } from '../app-params';
 import { PrdApiService } from './prd-api/prd-api.service';
 import { LoginService } from './login.service';
-import { USER_MODULES } from '../user-modules';
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +40,7 @@ export class SystemPreferencesService {
    * Multicast Observable
    */
   modules$ = this.loginService.user$.pipe(
-    map(usr => USER_MODULES.filter(mod => usr && usr.preferences.modules.includes(mod.value)))
+    map(usr => this.params.userModules.filter(mod => usr && usr.preferences.modules.includes(mod.value)))
   );
   /** Aktīvais modules */
   activeModule$: Observable<UserModule | undefined> = combineLatest([

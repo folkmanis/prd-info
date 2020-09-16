@@ -1,4 +1,5 @@
 import { SystemPreferences } from './system-preferences';
+import { UserModule } from './user-module';
 
 export interface AppParams {
     apiPath: string;
@@ -11,6 +12,7 @@ export interface AppParams {
         desktop: number;
         mobile: number;
     };
+    userModules: UserModule[];
     mediaBreakpoints: {
         small: string;
         medium: string;

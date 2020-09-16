@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { map, take, tap } from 'rxjs/operators';
 import { LoginService } from '../services';
 import { SystemPreferencesService } from '../services/system-preferences.service';
-import { USER_MODULES } from '../user-modules';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +12,6 @@ export class LoginGuard implements CanLoad, CanActivate {
 
   constructor(
     private loginService: LoginService,
-    private systemPreferencesService: SystemPreferencesService,
     private router: Router,
   ) { }
 

@@ -6,8 +6,10 @@ import {
     KastesSettings,
     SystemSettings,
     JobsSettings,
+    UserModule,
 } from './interfaces';
 import { version } from 'src/version.json';
+import { USER_MODULES } from 'src/app/user-modules';
 
 export const APP_PARAMS = new InjectionToken<AppParams>('prd.defaults');
 export const PRD_DEFAULTS: AppParams = {
@@ -22,6 +24,7 @@ export const PRD_DEFAULTS: AppParams = {
     },
     version,
     versionCheckInterval: 10 * 1000,
+    userModules: USER_MODULES,
     defaultSystemPreferences: new Map<SystemPreferencesGroups, ModuleSettings>()
         .set('kastes', {
             colors: { yellow: 'hsl(45,75%,60%)', rose: '315,75%,50%', white: '0,0%,50%', },

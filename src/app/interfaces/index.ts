@@ -11,3 +11,4 @@ export * from './kaste';
 export * from './kastes-job';
 export * from './job-product';
 export * from './repro-job';
+export * from './user-module';
