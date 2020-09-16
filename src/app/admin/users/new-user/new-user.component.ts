@@ -7,7 +7,8 @@ import { APP_PARAMS } from 'src/app/app-params';
 import { AppParams } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
-import { Customer, UsersService } from '../../services/users.service';
+import { XmfCustomer } from 'src/app/interfaces/xmf-search';
+import { UsersService } from '../../services/users.service';
 import { Validator } from '../../services/validator';
 
 @Component({
@@ -32,7 +33,7 @@ export class NewUserComponent implements OnInit, CanComponentDeactivate {
   name = this.newUserForm.get('name');
   hide = true; // Paroles ievades laukam
 
-  customers$: Observable<Customer[]> = this.usersService.xmfCustomers$;
+  customers$: Observable<XmfCustomer[]> = this.usersService.xmfCustomers$;
   constructor(
     private usersService: UsersService,
     private router: Router,

@@ -4,7 +4,8 @@ import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserModule, AppParams } from 'src/app/interfaces';
-import { UsersService, Customer } from '../../services/users.service';
+import { XmfCustomer } from 'src/app/interfaces/xmf-search';
+import { UsersService } from '../../services/users.service';
 import { User } from 'src/app/interfaces';
 import { debounceTime, distinctUntilChanged, switchMap, filter, tap, map, takeUntil } from 'rxjs/operators';
 import { Subscription, Observable } from 'rxjs';
@@ -45,7 +46,7 @@ export class UserEditorComponent implements OnInit, CanComponentDeactivate {
 
   userModules = this.params.userModules;
 
-  customers$: Observable<Customer[]> = this.usersService.xmfCustomers$;
+  customers$: Observable<XmfCustomer[]> = this.usersService.xmfCustomers$;
 
   user$ = this.route.paramMap.pipe(
     map((params: ParamMap) => params.get('id')),

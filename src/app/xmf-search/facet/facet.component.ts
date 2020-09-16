@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
-import { ArchiveFacet, FacetFilter } from '../services/archive-search-class';
+import { ArchiveFacet, FacetFilter } from 'src/app/interfaces/xmf-search';
 import { FacetCheckerComponent } from './facet-checker/facet-checker.component';
 
 interface FacetBlock {

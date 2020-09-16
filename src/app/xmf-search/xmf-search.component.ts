@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { map, startWith, tap, skip, filter } from 'rxjs/operators';
 import { LayoutService } from 'src/app/layout/layout.service';
 import { ArchiveSearchService } from './services/archive-search.service';
-import { FacetFilter } from './services/archive-search-class';
+import { FacetFilter } from 'src/app/interfaces/xmf-search';
 
 @Component({
   selector: 'app-xmf-search',

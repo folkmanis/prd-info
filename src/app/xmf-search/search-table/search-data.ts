@@ -1,7 +1,7 @@
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { Observable } from 'rxjs/index';
 import { debounceTime, startWith } from 'rxjs/operators';
-import { ArchiveRecord } from '../services/archive-search-class';
+import { ArchiveRecord } from 'src/app/interfaces/xmf-search';
 import { ArchiveSearchService } from '../services/archive-search.service';
 
 

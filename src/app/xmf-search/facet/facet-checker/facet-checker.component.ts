@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MatSelectionList, MatSelectionListChange } from '@angular/material/list';
-import { Count } from '../../services/archive-search-class';
+import { Count } from 'src/app/interfaces/xmf-search';
 
 @Component({
   selector: 'app-facet-checker',

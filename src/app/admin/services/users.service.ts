@@ -2,20 +2,14 @@ import { Injectable } from '@angular/core';
 import { EMPTY, merge, Observable, Subject } from 'rxjs';
 import { map, startWith, switchMap, tap } from 'rxjs/operators';
 import { User } from 'src/app/interfaces';
-import { AdminHttpService } from './admin-http.service';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
-
-export interface Customer {
-  name: string;
-  value: string;
-}
+import { XmfCustomer } from 'src/app/interfaces/xmf-search';
 
 @Injectable()
 export class UsersService {
 
   private usersCache: Partial<User>[];
   constructor(
-    private httpService: AdminHttpService,
     private prdApi: PrdApiService,
   ) { }
   reloadUsers$ = new Subject<void>();
@@ -29,7 +23,7 @@ export class UsersService {
   /**
    * Klientu saraksts
    */
-  xmfCustomers$: Observable<Customer[]> = this.httpService.getCustomersHttp().pipe(
+  xmfCustomers$: Observable<XmfCustomer[]> = this.prdApi.xmfArchive.getXmfCustomer().pipe(
     map(customer => customer.map(cust => ({ name: cust || 'Nenoteikts', value: cust })))
   );
   /**

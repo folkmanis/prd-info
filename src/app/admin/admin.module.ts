@@ -16,7 +16,7 @@ import { SystemPreferencesComponent } from './module-preferences/system-preferen
 import { LogfileComponent } from './logfile/logfile.component';
 import { LogfileTableComponent } from './logfile/logfile-table/logfile-table.component';
 import { LogFilterComponent } from './logfile/log-filter/log-filter.component';
-import * as services from './services';
+import { UsersService } from './services/users.service';
 import { JobsPreferencesComponent } from './module-preferences/jobs-preferences/jobs-preferences.component';
 import { CategoryDialogComponent } from './module-preferences/jobs-preferences/category-dialog/category-dialog.component';
 
@@ -44,8 +44,7 @@ import { CategoryDialogComponent } from './module-preferences/jobs-preferences/c
   ],
   providers: [
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
-    services.AdminHttpService,
-    services.UsersService,
+    UsersService,
   ],
 })
 export class AdminModule { }

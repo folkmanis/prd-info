@@ -10,20 +10,19 @@
  * facetResult$ - Facet rezultāts
  */
 
-import { HttpClient } from '@angular/common/http';
 import { EventEmitter, Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, merge, Observable, of, ReplaySubject } from 'rxjs';
 import { map, mergeMap, pluck, share, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { cloneDeep } from 'lodash';
 import { HttpOptions } from '../../library/http/http-options';
-import { ArchiveFacet, ArchiveRecord, ArchiveResp, FacetFilter, SearchQuery } from './archive-search-class';
+import { ArchiveFacet, ArchiveRecord, ArchiveResp, FacetFilter, SearchQuery } from 'src/app/interfaces/xmf-search';
 import { PagedCache, Range } from './paged-cache';
+import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 
 @Injectable()
 export class ArchiveSearchService {
-  private httpPathSearch = '/data/xmf-search/';
   constructor(
-    private http: HttpClient,
+    private prdApi: PrdApiService,
   ) { }
 
   private _stringSearch$ = new ReplaySubject<string>(1); // ienākošā meklējuma rinda
@@ -114,38 +113,40 @@ export class ArchiveSearchService {
   }
 
   private fetchRecords(): (start: number, limit: number) => Observable<ArchiveRecord[]> {
-    const serv: ArchiveSearchService = this;
     return (start: number, limit: number): Observable<ArchiveRecord[]> => {
-      return serv._cachedQuery ? serv.searchHttp(serv._cachedQuery, start, limit) : of([]);
+      return this._cachedQuery ? this.searchHttp(this._cachedQuery, start, limit) : of([]);
     };
   }
 
   private searchHttp(query: SearchQuery): Observable<ArchiveResp>;
-  private searchHttp(query: SearchQuery, start: number, limit?: number): Observable<ArchiveRecord[]>;
+  private searchHttp(query: SearchQuery, start: number, limit?: number): Observable<Partial<ArchiveRecord[]>>;
   private searchHttp(query: SearchQuery, start?: number, limit = 100): Observable<ArchiveResp | ArchiveRecord[]> {
     this._cachedQuery = query;
     if (start) {
-      return this.http.get<Partial<ArchiveResp>>(
-        this.httpPathSearch + 'search',
-        new HttpOptions({ query: JSON.stringify(query), start, limit })
-      )
+      return this.prdApi.xmfArchive.getSearch(new HttpOptions({ query: JSON.stringify(query), start, limit }))
         .pipe(
           map(resp => resp.data || []),
-          tap(this.replaceSlash),
+          map(replaceSlash),
         );
     } else {
-      return this.http.get<ArchiveResp>(this.httpPathSearch + 'search', new HttpOptions({ query: JSON.stringify(query) })).pipe(
-        tap((resp: ArchiveResp) => this.replaceSlash(resp.data))
+      return this.prdApi.xmfArchive.getSearch(new HttpOptions({ query: JSON.stringify(query) })).pipe(
+        map(resp => ({
+          ...resp,
+          data: replaceSlash(resp.data),
+        }))
       );
     }
   }
 
-  private replaceSlash(data: ArchiveRecord[]) {
-    for (const rec of data) {
-      for (const arch of rec.Archives || []) {
-        arch.Location = arch.Location.replace(/\//g, '\\');
-      }
-    }
-  }
+}
 
+function replaceSlash(data: Partial<ArchiveRecord[]>): Partial<ArchiveRecord[]> {
+  return data.map(rec => ({
+    ...rec,
+    Archives: (rec.Archives || []).map(arch => ({
+      ...arch,
+      Location: arch.Location.replace(/\//g, '\\')
+    })
+    )
+  }));
 }
