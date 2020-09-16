@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { FormGroup, FormControl, Validators, ValidationErrors, AsyncValidator, AsyncValidatorFn, AbstractControl } from '@angular/forms';
-import { UsersService, Customer } from '../../services/users.service';
-import { UserModule } from 'src/app/interfaces';
-import { Observable } from 'rxjs';
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Validator } from '../../services/validator';
-import { CanComponentDeactivate } from '../../../library/guards/can-deactivate.guard';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { APP_PARAMS } from 'src/app/app-params';
+import { AppParams } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
+import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
+import { Customer, UsersService } from '../../services/users.service';
+import { Validator } from '../../services/validator';
 
 @Component({
   selector: 'app-new-user',
@@ -31,22 +32,22 @@ export class NewUserComponent implements OnInit, CanComponentDeactivate {
   name = this.newUserForm.get('name');
   hide = true; // Paroles ievades laukam
 
-  customers$: Observable<Customer[]> = this.usersService.customers$;
-  userModules: UserModule[];
+  customers$: Observable<Customer[]> = this.usersService.xmfCustomers$;
   constructor(
     private usersService: UsersService,
     private router: Router,
     private snackBar: MatSnackBar,
     private dialogService: ConfirmationDialogService,
+    @Inject(APP_PARAMS) private params: AppParams,
   ) { }
 
+  userModules = this.params.userModules;
+
   ngOnInit() {
-    // this.usersService.getCustomers().subscribe((cust) => this.customers = cust);
-    this.userModules = this.usersService.getUserModules();
   }
 
   onSave() {
-    const username = this.username.value;
+    const username: string = this.username.value;
     this.usersService.addUser(this.newUserForm.value).subscribe(resp => {
       if (resp) {
         this.newUserForm.markAsPristine();
@@ -59,11 +60,7 @@ export class NewUserComponent implements OnInit, CanComponentDeactivate {
   }
 
   canDeactivate(): Observable<boolean> | boolean {
-    if (this.newUserForm.pristine) {
-      return true;
-    } else {
-      return this.dialogService.discardChanges();
-    }
+    return this.newUserForm.pristine ? true : this.dialogService.discardChanges();
   }
 
 }

@@ -1,3 +1,5 @@
+import { AppHttpResponseBase } from 'src/app/library/http/app-http-response-base';
+
 export interface User {
     username: string;
     name: string;
@@ -12,11 +14,4 @@ export interface UserPreferences {
     modules: string[];
 }
 
-export interface UserModule {
-    value: string;
-    name: string;
-    description: string; // Garais apraksts
-    route: string;
-    moduleClass: string;
-    childMenu?: Partial<UserModule>[];
-}
+export interface UsersResponse extends AppHttpResponseBase<User> { }

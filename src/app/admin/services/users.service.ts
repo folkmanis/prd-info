@@ -1,10 +1,9 @@
-import { AdminHttpService } from './admin-http.service';
-import { User } from 'src/app/interfaces';
 import { Injectable } from '@angular/core';
-import { Observable, Subject, of, merge } from 'rxjs';
-import { map, tap, filter, switchMap, startWith } from 'rxjs/operators';
-import { USER_MODULES } from '../../user-modules';
-import { UserModule } from 'src/app/interfaces';
+import { EMPTY, merge, Observable, Subject } from 'rxjs';
+import { map, startWith, switchMap, tap } from 'rxjs/operators';
+import { User } from 'src/app/interfaces';
+import { AdminHttpService } from './admin-http.service';
+import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 
 export interface Customer {
   name: string;
@@ -14,23 +13,23 @@ export interface Customer {
 @Injectable()
 export class UsersService {
 
-  private usersCache: User[];
+  private usersCache: Partial<User>[];
   constructor(
     private httpService: AdminHttpService,
+    private prdApi: PrdApiService,
   ) { }
   reloadUsers$ = new Subject<void>();
-  private _usersHttp$: Observable<User[]> = this.reloadUsers$.pipe(
+  private _usersHttp$: Observable<Partial<User>[]> = this.reloadUsers$.pipe(
     startWith({}),
-    switchMap(() => this.httpService.getUsersHttp()),
-    map(uList => uList.users),
+    switchMap(() => this.prdApi.users.get()),
     tap(users => this.usersCache = users)
   );
-  private _usersCached$: Subject<User[]> = new Subject();
+  private _usersCached$: Subject<Partial<User>[]> = new Subject();
   users$ = merge(this._usersHttp$, this._usersCached$);
   /**
    * Klientu saraksts
    */
-  customers$: Observable<Customer[]> = this.httpService.getCustomersHttp().pipe(
+  xmfCustomers$: Observable<Customer[]> = this.httpService.getCustomersHttp().pipe(
     map(customer => customer.map(cust => ({ name: cust || 'Nenoteikts', value: cust })))
   );
   /**
@@ -38,17 +37,17 @@ export class UsersService {
    * @param username Lietotājvārds
    */
   getUser(username: string): Observable<User> {
-    return this.httpService.getUserHttp(username);
+    return this.prdApi.users.get(username);
   }
   /**
    * Atjauno lietotāja iestatījumus, izņemot paroli
    * @param username Lietotājvārds
-   * @param data Atjaunojamie dati, bet ne parole!
+   * @param user Atjaunojamie dati, bet ne parole!
    */
-  updateUser(username: string, data: Partial<User>): Observable<boolean> {
-    return this.httpService.updateUserHttp({ username, ...data }).pipe(
-      map(resp => resp.success),
-      tap(resp => resp && this.updateUsers(username, data)),
+  updateUser(user: Partial<User>): Observable<boolean> {
+    if (!user.username) { return EMPTY; }
+    return this.prdApi.users.updateOne(user.username, user).pipe(
+      tap(resp => resp && this.updateUsers(user)),
     );
   }
   /**
@@ -57,7 +56,7 @@ export class UsersService {
    * @param password parole
    */
   updatePassword(username: string, password: string): Observable<boolean> {
-    return this.httpService.updatePasswordHttp(username, password);
+    return this.prdApi.users.passwordUpdate(username, password);
   }
   /**
    * Pievieno lietotāju,
@@ -65,7 +64,8 @@ export class UsersService {
    * @param data Pilni lietotāja dati
    */
   addUser(data: Partial<User>): Observable<boolean> {
-    return this.httpService.addUserHttp(data).pipe(
+    return this.prdApi.users.insertOne(data).pipe(
+      map(userName => !!userName),
       tap(resp => resp && this.reloadUsers$.next()),
     );
   }
@@ -74,7 +74,8 @@ export class UsersService {
    * @param username Lietotājvārds
    */
   deleteUser(username: string): Observable<boolean> {
-    return this.httpService.deleteUserHttp(username).pipe(
+    return this.prdApi.users.deleteOne(username).pipe(
+      map(resp => !!resp),
       tap(resp => resp && this.reloadUsers$.next()),
     );
   }
@@ -89,24 +90,19 @@ export class UsersService {
       map(res => !res),
     );
   }
-
-  getUserModules(): UserModule[] {
-    return USER_MODULES;
-  }
-
   /**
    * Atsvaidzina lietotāju statiskajā sarakstā
    * @param username Lietotājvārds
    * @param update Izmaiņas
    */
-  private updateUsers(username: string, update: Partial<User>): void {
+  private updateUsers(update: Partial<User>): void {
     if (!this.usersCache) {
       this.reloadUsers$.next();
       return;
     }
-    const idx = this.usersCache.findIndex(usr => usr.username === username);
+    const idx = this.usersCache.findIndex(usr => usr.username === update.username);
     if (idx === -1) { return; } // Ja lietotājs nav sarakstā
-    const updUsr: User = { ...this.usersCache[idx] };
+    const updUsr = { ...this.usersCache[idx] };
     for (const key of Object.keys(update)) {
       updUsr[key] = update[key];
     }

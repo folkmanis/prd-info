@@ -8,6 +8,7 @@ import { ProductsApi } from './products-api';
 import { SystemPreferencesApi } from './system-preferences-api';
 import { KastesApi } from './kastes-api';
 import { KastesOrdersApi } from './kastes-orders-api';
+import { UsersApi } from './users-api';
 import { AppParams } from 'src/app/interfaces';
 import { APP_PARAMS } from 'src/app/app-params';
 
@@ -31,5 +32,6 @@ export class PrdApiService {
   systemPreferences = new SystemPreferencesApi(this.http, this.apiPath + 'preferences/');
   kastes = new KastesApi(this.http, this.apiPath + 'kastes/');
   kastesOrders = new KastesOrdersApi(this.http, this.apiPath + 'kastes-orders/');
+  users = new UsersApi(this.http, this.apiPath + 'users/');
 
 }

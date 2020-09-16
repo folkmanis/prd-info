@@ -1,7 +1,6 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
-import { startWith, debounceTime, map, distinctUntilChanged, shareReplay } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, shareReplay, startWith } from 'rxjs/operators';
 import { ArchiveSearchService } from '../services/archive-search.service';
 
 @Component({
@@ -9,39 +8,27 @@ import { ArchiveSearchService } from '../services/archive-search.service';
   templateUrl: './search-input.component.html',
   styleUrls: ['./search-input.component.css'],
 })
-export class SearchInputComponent implements OnInit, OnDestroy {
+export class SearchInputComponent  {
   private _count = 0;
   @Input() set count(param: number) {
     this._count = param;
   }
   get count(): number { return this._count; }
 
-  @Output() searchString = new EventEmitter<string>();
-
   q: FormControl = new FormControl('');
-  _subs = new Subscription();
 
-  value$: Observable<string> = this.q.valueChanges.pipe(
+  @Output() searchString = this.q.valueChanges.pipe(
     startWith(''),
     debounceTime(300),
     map((q: string) => q.trim()),
     distinctUntilChanged(),
     shareReplay(1),
   );
+
   busy$ = this.service.busy$;
 
   constructor(
     private service: ArchiveSearchService,
   ) { }
-
-  ngOnInit(): void {
-    this._subs.add(
-      this.value$.subscribe(this.searchString)
-    );
-  }
-
-  ngOnDestroy(): void {
-    this._subs.unsubscribe();
-  }
 
 }
