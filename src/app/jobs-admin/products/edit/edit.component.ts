@@ -46,7 +46,7 @@ export class EditComponent implements OnInit, CanComponentDeactivate {
         this._saves = 0;
       }),
       takeUntil(this.destroy$),
-    );
+    ).subscribe();
 
     this.productForm.valueChanges.pipe(
       filter(_ => this._emit && this.productForm.valid),
