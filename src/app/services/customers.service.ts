@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable, merge, Subject, EMPTY } from 'rxjs';
 import { map, pluck, filter, tap, switchMap, share, shareReplay, startWith } from 'rxjs/operators';
-import { Customer, CustomerPartial, CustomerResponse } from 'src/app/interfaces';
+import { Customer, CustomerPartial, NewCustomer } from 'src/app/interfaces';
 
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
-
 
 @Injectable({
   providedIn: 'root'
@@ -55,7 +54,7 @@ export class CustomersService {
     );
   }
 
-  saveNewCustomer(customer: Customer): Observable<string | null> {
+  saveNewCustomer(customer: NewCustomer): Observable<string | null> {
     return this.prdApi.customers.insertOne(customer).pipe(
       map(resp => resp ? resp.toString() : null),
       tap(() => this.updateCustomers$.next()),

@@ -2,9 +2,9 @@ import { AppHttpResponseBase } from 'src/app/library';
 
 export interface Customer {
     _id: string;
-    code?: string;
+    code: string;
     CustomerName: string;
-    disabled?: boolean;
+    disabled: boolean;
     insertedFromXmf?: Date;
     description: string;
     financial?: {
@@ -20,3 +20,4 @@ export interface CustomerResponse extends AppHttpResponseBase<Customer> {
 
 export type CustomerPartial = Pick<Customer, '_id' | 'CustomerName' | 'code' | 'disabled'>;
 
+export type NewCustomer = Pick<Customer, 'CustomerName' | 'disabled' | 'code' | 'description'>;

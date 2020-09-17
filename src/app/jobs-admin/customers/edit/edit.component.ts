@@ -8,6 +8,8 @@ import { Customer } from 'src/app/interfaces';
 import { CustomersService } from 'src/app/services';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
+import { IFormGroup, IFormBuilder } from '@rxweb/types';
+import { DestroyService } from 'src/app/library/rx/destroy.service';
 
 const CUSTOMER_DEFAULTS: Customer = {
   _id: '',
@@ -21,38 +23,44 @@ const CUSTOMER_DEFAULTS: Customer = {
   selector: 'app-edit',
   templateUrl: './edit.component.html',
   styleUrls: ['./edit.component.css'],
+  providers: [DestroyService],
 })
-export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate {
+export class EditComponent implements OnInit, CanComponentDeactivate {
+
+  private fb: IFormBuilder;
+  customerForm: IFormGroup<Customer>;
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
-    private fb: FormBuilder,
+    fb: FormBuilder,
     private service: CustomersService,
     private dialog: ConfirmationDialogService,
-  ) { }
-  private unsubs: Subject<void> = new Subject();
-  customerForm: FormGroup = this.fb.group({
-    _id: [''],
-    CustomerName: [''],
-    code: [
-      '', {
-        validators: [Validators.required, Validators.minLength(2), Validators.maxLength(3)],
-        asyncValidators: this.validateCode('code')
-      }
-    ],
-    disabled: [false],
-    description: [''],
-    financial: this.fb.group({
-      clientName: [undefined],
-    })
-  });
+    private destroy$: DestroyService,
+  ) {
+    this.fb = fb;
+  }
 
   customer$: Observable<Customer>;
   private customer: Customer;
   get code(): AbstractControl { return this.customerForm.get('code'); }
 
   ngOnInit(): void {
+    this.customerForm = this.fb.group<Customer>({
+      _id: [''],
+      CustomerName: [''],
+      code: [
+        '', {
+          validators: [Validators.required, Validators.minLength(2), Validators.maxLength(3)],
+          asyncValidators: this.validateCode('code')
+        }
+      ],
+      disabled: [false],
+      description: [''],
+      financial: this.fb.group({
+        clientName: [undefined],
+      })
+    });
+
     this.customer$ = this.route.paramMap.pipe(
       map(paramMap => paramMap.get('id')),
       filter(id => !!id),
@@ -62,12 +70,8 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
     );
     this.customerForm.valueChanges.pipe(
       tap(val => isEqual(this.customer, val) && this.customerForm.markAsPristine()),
-      takeUntil(this.unsubs),
+      takeUntil(this.destroy$),
     ).subscribe();
-  }
-
-  ngOnDestroy() {
-    this.unsubs.next();
   }
 
   onSave() {
@@ -93,7 +97,7 @@ export class EditComponent implements OnInit, OnDestroy, CanComponentDeactivate 
     return this.dialog.discardChanges();
   }
 
-  private updateForm(form: AbstractControl): (cust: Customer) => void {
+  private updateForm(form: IFormGroup<Customer>): (cust: Customer) => void {
     return (cust: Customer): void => {
       if (!cust) { return; }
 
