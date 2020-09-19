@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import * as moment from 'moment';
 import { Observable, of } from 'rxjs';
-import { concatMap, map, take } from 'rxjs/operators';
-import { Job, JobProduct } from 'src/app/interfaces';
-import { CustomersService, ProductsService } from 'src/app/services';
+import { concatMap, map } from 'rxjs/operators';
+import { JobBase } from 'src/app/interfaces';
+import { ProductsService } from 'src/app/services';
+import { JobService } from 'src/app/services/job.service';
 import { JobDialogComponent } from '../job-edit/job-dialog.component';
 import { JobEditDialogData } from '../job-edit/job-edit-dialog-data';
-import { JobService } from 'src/app/services/job.service';
 import { JobEditFormService } from './job-edit-form.service';
-import * as moment from 'moment';
 
 const JOB_DIALOG_CONFIG: MatDialogConfig = {
   height: '90%',
@@ -42,7 +41,7 @@ export class JobEditDialogService {
     );
   }
 
-  newJob(jobInit?: Partial<Job>): Observable<number | undefined> {
+  newJob(jobInit?: Partial<JobBase>): Observable<number | undefined> {
     const data: JobEditDialogData = {
       jobForm: this.jobEditForm.jobFormBuilder(jobInit),
       jobCreateFn: this.jobCreatorFn(),
@@ -58,11 +57,11 @@ export class JobEditDialogService {
     );
   }
 
-  private jobCreatorFn(): ((job: Partial<Job>) => Observable<number | null>) {
+  private jobCreatorFn(): ((job: Partial<JobBase>) => Observable<number | null>) {
     return (job) => this.jobService.newJob(job);
   }
 
-  private afterJobEdit(job: Partial<Job>): Partial<Job> {
+  private afterJobEdit(job: Partial<JobBase>): Partial<JobBase> {
     return {
       ...job,
       dueDate: moment(job.dueDate).endOf('day').toDate(),

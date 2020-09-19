@@ -1,15 +1,16 @@
 import { Component, OnInit, Input, Self, ViewChild, ElementRef } from '@angular/core';
 import { NgControl, ControlValueAccessor } from '@angular/forms';
-import { CustomerProduct } from 'src/app/interfaces';
+import { CustomerProduct, JobProduct } from 'src/app/interfaces';
 import { Observable, combineLatest } from 'rxjs';
 import { startWith, map, share, shareReplay, tap } from 'rxjs/operators';
+import { IControlValueAccessor } from '@rxweb/types';
 
 @Component({
   selector: 'app-product-autocomplete',
   templateUrl: './product-autocomplete.component.html',
   styleUrls: ['./product-autocomplete.component.css']
 })
-export class ProductAutocompleteComponent implements OnInit, ControlValueAccessor {
+export class ProductAutocompleteComponent implements OnInit, IControlValueAccessor<JobProduct> {
   @ViewChild('name') private inputElement: ElementRef;
   @Input() customerProducts$: Observable<CustomerProduct[]>;
 
@@ -39,7 +40,7 @@ export class ProductAutocompleteComponent implements OnInit, ControlValueAccesso
 
   }
 
-  writeValue(obj: any) { }
+  writeValue(obj: JobProduct) { }
 
   registerOnChange(fn: any) { }
 

@@ -8,7 +8,7 @@ export interface JobBase {
     customerJobId?: string;
     receivedDate: Date;
     dueDate: Date;
-    category: string;
+    category: 'repro' | 'perforated paper';
     comment?: string;
     invoiceId?: string;
     products?: JobProduct[] | JobProduct;

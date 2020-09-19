@@ -13,8 +13,7 @@
 
     <tbody>
 
-        <tr *appProductFor="let prod of prodFormArray; customerProducts: customerProducts$ | async; index as idx;"
-            [formArrayName]="idx">
+        <tr *ngFor="let prod of prodFormArray.controls; index as idx;" [formArrayName]="idx">
             <!-- Dzēšanas poga -->
             <td *ngIf="isEnabled">
                 <button mat-icon-button (click)="removeProduct(idx)">
@@ -56,7 +55,8 @@
     <tfoot>
         <tr>
             <td *ngIf="isEnabled">
-                <button mat-icon-button (click)="addNewProduct()" [disabled]="isValid === false" matTooltip="Ctrl-+">
+                <button mat-icon-button (click)="addNewProduct$.next()" [disabled]="isValid === false"
+                    matTooltip="Ctrl-+">
                     <mat-icon>add</mat-icon>
                 </button>
             </td>

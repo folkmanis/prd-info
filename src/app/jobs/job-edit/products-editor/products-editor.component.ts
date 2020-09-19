@@ -1,38 +1,44 @@
 import {
   ChangeDetectorRef, Component,
-  ElementRef, HostListener, Input, OnDestroy, OnInit,
+  HostListener, Input, OnDestroy, OnInit,
   QueryList, ViewChildren
 } from '@angular/core';
-import { FormArray } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { CustomerProduct } from 'src/app/interfaces';
+import { IFormArray, IFormGroup, IFormControl } from '@rxweb/types';
+import { Observable, Subject, combineLatest } from 'rxjs';
+import { CustomerProduct, JobProduct } from 'src/app/interfaces';
 import { JobEditFormService } from '../../services/job-edit-form.service';
-import { map } from 'rxjs/operators';
 import { ProductAutocompleteComponent } from './product-autocomplete/product-autocomplete.component';
+import { ValidatorFn, Validators, ValidationErrors } from '@angular/forms';
+import { DestroyService } from 'src/app/library/rx/destroy.service';
+import { takeUntil } from 'rxjs/operators';
 
 const COLUMNS = ['name', 'count', 'price', 'total', 'comment'];
 
 @Component({
   selector: 'app-products-editor',
   templateUrl: './products-editor.component.html',
-  styleUrls: ['./products-editor.component.css']
+  styleUrls: ['./products-editor.component.css'],
+  providers: [DestroyService],
 })
 export class ProductsEditorComponent implements OnInit, OnDestroy {
   @ViewChildren(ProductAutocompleteComponent) private nameInputs: QueryList<ProductAutocompleteComponent>;
-  @Input() prodFormArray: FormArray;
+  @Input() prodFormArray: IFormArray<JobProduct>;
   @Input() customerProducts$: Observable<CustomerProduct[]>;
+
+  addNewProduct$ = new Subject<void>();
 
   /** Ctrl-+ event */
   @HostListener('window:keydown', ['$event']) keyEvent(event: KeyboardEvent) {
     if (event.key === '+' && event.ctrlKey) {
       event.preventDefault();
-      this.addNewProduct();
+      this.addNewProduct$.next();
     }
   }
 
   constructor(
     private service: JobEditFormService,
     private ch: ChangeDetectorRef,
+    private destroy$: DestroyService,
   ) { }
 
   get isEnabled(): boolean {
@@ -43,14 +49,23 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.customerProducts$.pipe(
+      takeUntil(this.destroy$),
+    ).subscribe(prod => this.setArrayValidators(this.prodFormArray, prod));
+
+    combineLatest([this.customerProducts$, this.addNewProduct$]).pipe(
+      takeUntil(this.destroy$),
+    ).subscribe(([products, _]) => this.addNewProduct(products));
   }
 
   ngOnDestroy(): void {
   }
 
-  addNewProduct() {
+  addNewProduct(products: CustomerProduct[]) {
     if (!this.isValid) { return; }
-    this.prodFormArray.push(this.service.productFormGroup());
+    const prodForm = this.service.productFormGroup();
+    this.setGroupValidators(prodForm, products);
+    this.prodFormArray.push(prodForm);
     this.ch.markForCheck();
     setTimeout(() => {
       this.nameInputs.last.focus();
@@ -62,5 +77,40 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
     this.prodFormArray.markAsDirty();
     this.ch.markForCheck();
   }
+
+  private setArrayValidators(frm: IFormArray<JobProduct>, customerProducts: CustomerProduct[]) {
+    frm.controls.forEach((contr: IFormGroup<JobProduct>) => this.setGroupValidators(contr, customerProducts));
+  }
+
+  private setGroupValidators(gr: IFormGroup<JobProduct>, prod: CustomerProduct[]) {
+    gr.controls.name.setValidators([Validators.required, this.productValidatorFn(prod)]);
+    gr.setValidators([this.defaultPriceValidatorFn(prod)]);
+  }
+
+  private defaultPriceValidatorFn(prod: CustomerProduct[]): ValidatorFn {
+    let prevVal: JobProduct | undefined;
+    return (control: IFormGroup<JobProduct>): null | ValidationErrors => {
+      if (!control.controls.name.valid) {
+        return null;
+      }
+      /* ja pirmoreiz, vai mainās produkta nosaukums */
+      if ((prevVal === undefined || prevVal.name !== control.value.name)) {
+        const prodPrice = prod?.find(product => product.productName === control.value.name)?.price;
+        /* un ja ir atrasta cena */
+        if (prodPrice) {
+          prevVal = { ...control.value, price: prodPrice }; // saglabā uzstādīto produktu
+          control.controls.price.setValue(prodPrice); // un nomaina cenu ievades laukā
+        }
+      }
+      return null;
+    };
+
+  }
+
+  private productValidatorFn(prod: CustomerProduct[]): ValidatorFn {
+    return (control: IFormControl<string>): null | ValidationErrors =>
+      prod.some(product => product.productName === control.value) ? null : { invalidProduct: 'Prece nav atrasta katalogā' };
+  }
+
 
 }

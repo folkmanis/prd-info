@@ -1,66 +1,70 @@
 import { Injectable } from '@angular/core';
-import { Job, JobProduct } from 'src/app/interfaces';
+import { Job, JobProduct, JobBase } from 'src/app/interfaces';
 import { FormGroup, FormBuilder, Validators, AsyncValidatorFn, AbstractControl, ValidationErrors, AbstractControlOptions } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { take, map } from 'rxjs/operators';
 import { CustomersService } from 'src/app/services/customers.service';
+import { IFormBuilder, IFormGroup } from '@rxweb/types';
 
 @Injectable({
   providedIn: 'any'
 })
 export class JobEditFormService {
-
+  fb: IFormBuilder;
   constructor(
-    private fb: FormBuilder,
+    fb: FormBuilder,
     private customersService: CustomersService,
-  ) { }
+  ) { this.fb = fb; }
 
-  jobFormBuilder(job?: Partial<Job>): FormGroup {
+  jobFormBuilder(job?: Partial<Job>): IFormGroup<JobBase> {
     const products = job?.products instanceof Array ? job.products.map(prod => this.productFormGroup(prod)) : [];
-    const jobControls: { [P in keyof Job]?: [any?, AbstractControlOptions?] | AbstractControl } = {
-      jobId: [
-        undefined,
-      ],
-      customer: [
-        '',
-        {
-          validators: Validators.required,
-          asyncValidators: this.validateCustomerFn(),
-        },
-      ],
-      name: [
-        undefined,
-        {
-          validators: Validators.required,
-        },
-      ],
-      receivedDate: [
-        new Date(),
-        {
-          validators: Validators.required,
-        }
-      ],
-      dueDate: [
-        new Date(),
-        {
-          validators: Validators.required,
-        }
-      ],
-      category: [],
-      comment: [],
-      customerJobId: [],
-      jobStatus: this.fb.group({
-        generalStatus: 10,
-      }),
-      products: this.fb.array(products),
-    };
-    const jobForm = this.fb.group(jobControls);
+    const jobForm: IFormGroup<JobBase> = this.fb.group<JobBase>(
+
+      {
+        jobId: [
+          undefined,
+        ],
+        customer: [
+          '',
+          {
+            validators: Validators.required,
+            asyncValidators: this.validateCustomerFn(),
+          },
+        ],
+        name: [
+          undefined,
+          {
+            validators: Validators.required,
+          },
+        ],
+        receivedDate: [
+          new Date(),
+          {
+            validators: Validators.required,
+          }
+        ],
+        dueDate: [
+          new Date(),
+          {
+            validators: Validators.required,
+          }
+        ],
+        category: [undefined],
+        comment: [undefined],
+        customerJobId: [undefined],
+        custCode: [undefined],
+        jobStatus: this.fb.group({
+          generalStatus: 10,
+        }),
+        products: this.fb.array<JobProduct>(products),
+      }
+    );
 
     this.setFormValues(jobForm, job);
     return jobForm;
   }
 
-  private setFormValues(jobForm: FormGroup, job?: Partial<Job>): void {
+  private setFormValues(jobForm: IFormGroup<JobBase>, job?: Partial<JobBase>): void {
     if (!job) { return; }
     jobForm.patchValue(job, { emitEvent: false });
     if (job.invoiceId) {
@@ -72,8 +76,8 @@ export class JobEditFormService {
   }
 
 
-  productFormGroup(product?: Partial<JobProduct>, enabled = true): FormGroup {
-    const _group = this.fb.group({
+  productFormGroup(product?: Partial<JobProduct>, enabled = true): IFormGroup<JobProduct> {
+    const _group = this.fb.group<JobProduct>({
       name: [
         product?.name,
         {

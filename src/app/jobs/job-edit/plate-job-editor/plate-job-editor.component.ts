@@ -1,12 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild, HostListener } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, FormArray, FormBuilder, FormControl, ValidationErrors, Validators, FormGroup } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormArray, FormBuilder, FormControl, ValidationErrors, Validators, FormGroup, ValidatorFn } from '@angular/forms';
 import { MatInput } from '@angular/material/input';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { map, tap, shareReplay, startWith, take, filter } from 'rxjs/operators';
-import { CustomerPartial, Job, CustomerProduct, JobsSettings } from 'src/app/interfaces';
+import { CustomerPartial, Job, CustomerProduct, JobsSettings, JobBase, JobProduct } from 'src/app/interfaces';
 import { CustomersService, SystemPreferencesService } from 'src/app/services';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { LayoutService } from 'src/app/layout/layout.service';
+import { IFormGroup, IFormArray } from '@rxweb/types';
 import * as moment from 'moment';
 
 @Component({
@@ -15,7 +16,7 @@ import * as moment from 'moment';
   styleUrls: ['./plate-job-editor.component.css']
 })
 export class PlateJobEditorComponent implements OnInit, OnDestroy {
-  @Input() jobFormGroup: FormGroup;
+  @Input() jobFormGroup: IFormGroup<JobBase>;
   @Input() customerProducts$: Observable<CustomerProduct[]>;
 
   constructor(
@@ -25,9 +26,9 @@ export class PlateJobEditorComponent implements OnInit, OnDestroy {
     private layoutService: LayoutService,
   ) { }
 
-  get customerControl(): FormControl { return this.jobFormGroup.get('customer') as FormControl; }
-  get nameControl(): FormControl { return this.jobFormGroup.get('name') as FormControl; }
-  get productsControl(): FormArray { return this.jobFormGroup.get('products') as FormArray; }
+  get customerControl() { return this.jobFormGroup.controls.customer; }
+  get nameControl() { return this.jobFormGroup.controls.name; }
+  get productsControl() { return this.jobFormGroup.controls.products; }
 
   customers$: Observable<CustomerPartial[]>;
   jobStates$ = (this.sysPref.getModulePreferences('jobs') as Observable<JobsSettings>).pipe(
@@ -75,6 +76,8 @@ export class PlateJobEditorComponent implements OnInit, OnDestroy {
   copyJobIdAndName() {
     this.clipboard.copy(`${this.jobFormGroup.get('jobId').value}-${this.jobFormGroup.get('name').value}`);
   }
+
+
 
 
 }
