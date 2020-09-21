@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Job, JobProduct, JobBase } from 'src/app/interfaces';
-import { FormGroup, FormBuilder, Validators, AsyncValidatorFn, AbstractControl, ValidationErrors, AbstractControlOptions } from '@angular/forms';
+import { Job, JobProduct, JobBase, CustomerProduct } from 'src/app/interfaces';
+import { FormGroup, FormBuilder, Validators, AsyncValidatorFn, AbstractControl, ValidationErrors, AbstractControlOptions, ValidatorFn } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { take, map } from 'rxjs/operators';
 import { CustomersService } from 'src/app/services/customers.service';
-import { IFormBuilder, IFormGroup } from '@rxweb/types';
+import { IFormBuilder, IFormGroup, IFormControl } from '@rxweb/types';
 
 @Injectable({
   providedIn: 'any'
@@ -101,6 +101,38 @@ export class JobEditFormService {
     enabled ? _group.enable() : _group.disable();
     return _group;
   }
+
+  setProductGroupValidators(gr: IFormGroup<JobProduct>, prod: CustomerProduct[]) {
+    gr.controls.name.setValidators([Validators.required, this.productValidatorFn(prod)]);
+    gr.setValidators([this.defaultPriceValidatorFn(prod)]);
+  }
+
+  private defaultPriceValidatorFn(prod: CustomerProduct[]): ValidatorFn {
+    let prevVal: JobProduct | undefined;
+    return (control: IFormGroup<JobProduct>): null | ValidationErrors => {
+      if (!control.controls.name.valid) {
+        return null;
+      }
+      /* ja pirmoreiz, vai mainās produkta nosaukums */
+      if ((prevVal === undefined || prevVal.name !== control.value.name)) {
+        const prodPrice = prod?.find(product => product.productName === control.value.name)?.price;
+        /* un ja ir atrasta cena */
+        if (prodPrice) {
+          prevVal = { ...control.value, price: prodPrice }; // saglabā uzstādīto produktu
+          control.controls.price.setValue(prodPrice); // un nomaina cenu ievades laukā
+        }
+      }
+      return null;
+    };
+
+  }
+
+  private productValidatorFn(prod: CustomerProduct[]): ValidatorFn {
+    return (control: IFormControl<string>): null | ValidationErrors =>
+      prod.some(product => product.productName === control.value) ? null : { invalidProduct: 'Prece nav atrasta katalogā' };
+  }
+
+
 
   private validateCustomerFn(): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {

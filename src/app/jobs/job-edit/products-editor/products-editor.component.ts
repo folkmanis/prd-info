@@ -64,7 +64,7 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
   addNewProduct(products: CustomerProduct[]) {
     if (!this.isValid) { return; }
     const prodForm = this.service.productFormGroup();
-    this.setGroupValidators(prodForm, products);
+    this.service.setProductGroupValidators(prodForm, products);
     this.prodFormArray.push(prodForm);
     this.ch.markForCheck();
     setTimeout(() => {
@@ -79,37 +79,7 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
   }
 
   private setArrayValidators(frm: IFormArray<JobProduct>, customerProducts: CustomerProduct[]) {
-    frm.controls.forEach((contr: IFormGroup<JobProduct>) => this.setGroupValidators(contr, customerProducts));
-  }
-
-  private setGroupValidators(gr: IFormGroup<JobProduct>, prod: CustomerProduct[]) {
-    gr.controls.name.setValidators([Validators.required, this.productValidatorFn(prod)]);
-    gr.setValidators([this.defaultPriceValidatorFn(prod)]);
-  }
-
-  private defaultPriceValidatorFn(prod: CustomerProduct[]): ValidatorFn {
-    let prevVal: JobProduct | undefined;
-    return (control: IFormGroup<JobProduct>): null | ValidationErrors => {
-      if (!control.controls.name.valid) {
-        return null;
-      }
-      /* ja pirmoreiz, vai mainās produkta nosaukums */
-      if ((prevVal === undefined || prevVal.name !== control.value.name)) {
-        const prodPrice = prod?.find(product => product.productName === control.value.name)?.price;
-        /* un ja ir atrasta cena */
-        if (prodPrice) {
-          prevVal = { ...control.value, price: prodPrice }; // saglabā uzstādīto produktu
-          control.controls.price.setValue(prodPrice); // un nomaina cenu ievades laukā
-        }
-      }
-      return null;
-    };
-
-  }
-
-  private productValidatorFn(prod: CustomerProduct[]): ValidatorFn {
-    return (control: IFormControl<string>): null | ValidationErrors =>
-      prod.some(product => product.productName === control.value) ? null : { invalidProduct: 'Prece nav atrasta katalogā' };
+    frm.controls.forEach((contr: IFormGroup<JobProduct>) => this.service.setProductGroupValidators(contr, customerProducts));
   }
 
 
