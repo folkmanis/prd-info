@@ -1,14 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild, HostListener } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, FormArray, FormBuilder, FormControl, ValidationErrors, Validators, FormGroup, ValidatorFn } from '@angular/forms';
-import { MatInput } from '@angular/material/input';
-import { combineLatest, Observable, Subscription } from 'rxjs';
-import { map, tap, shareReplay, startWith, take, filter } from 'rxjs/operators';
-import { CustomerPartial, Job, CustomerProduct, JobsSettings, JobBase, JobProduct } from 'src/app/interfaces';
-import { CustomersService, SystemPreferencesService } from 'src/app/services';
-import { ClipboardService } from 'src/app/library/services/clipboard.service';
-import { LayoutService } from 'src/app/layout/layout.service';
-import { IFormGroup, IFormArray } from '@rxweb/types';
+import { Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
+import { IFormGroup } from '@rxweb/types';
 import * as moment from 'moment';
+import { combineLatest, Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
+import { CustomerPartial, CustomerProduct, JobBase, JobsSettings } from 'src/app/interfaces';
+import { LayoutService } from 'src/app/layout/layout.service';
+import { ClipboardService } from 'src/app/library/services/clipboard.service';
+import { CustomersService, SystemPreferencesService } from 'src/app/services';
 
 @Component({
   selector: 'app-plate-job-editor',
@@ -76,9 +74,6 @@ export class PlateJobEditorComponent implements OnInit, OnDestroy {
   copyJobIdAndName() {
     this.clipboard.copy(`${this.jobFormGroup.get('jobId').value}-${this.jobFormGroup.get('name').value}`);
   }
-
-
-
 
 }
 
