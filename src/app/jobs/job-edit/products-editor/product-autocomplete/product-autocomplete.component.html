@@ -1,5 +1,10 @@
 <mat-form-field>
     <input matInput type="text" [formControl]="ngControl.control" [matAutocomplete]="auto" #name>
+    <button mat-icon-button matSuffix (click)="ngControl.control.setValue(undefined)">
+        <mat-icon>
+            clear
+        </mat-icon>
+    </button>
     <mat-error *ngIf="ngControl.hasError('invalidProduct')">
         {{ngControl.getError('invalidProduct')}}
     </mat-error>
