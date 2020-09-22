@@ -57,6 +57,8 @@
             <mat-label>Klienta darba numurs</mat-label>
             <input matInput formControlName="customerJobId">
         </mat-form-field>
+                <!-- Folderis -->
+                <app-folder-path [date]="jobFormGroup.getRawValue().receivedDate"></app-folder-path>
         <!-- Papildus apraksts -->
         <mat-form-field class="width-span">
             <mat-label>Papildus apraksts</mat-label>
