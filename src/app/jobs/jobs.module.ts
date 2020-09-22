@@ -15,8 +15,10 @@ import { MainMenuComponent } from './main-menu/main-menu.component';
 import { PlateInvoiceModule } from './plate-invoice/plate-invoice.module';
 import { InvoicesService } from './services/invoices.service';
 import { JobEditDialogService } from './services/job-edit-dialog.service';
+
 import { CustomerInputDialogComponent } from './side-panel/customer-input-dialog/customer-input-dialog.component';
 import { SidePanelComponent } from './side-panel/side-panel.component';
+import { FolderPathComponent } from './job-edit/folder-path/folder-path.component';
 
 
 PdfMakeWrapper.setFonts(pdfFonts);
@@ -34,6 +36,7 @@ PdfMakeWrapper.setFonts(pdfFonts);
     SidePanelComponent,
     CustomerInputDialogComponent,
     ProductAutocompleteComponent,
+    FolderPathComponent,
   ],
   imports: [
     CommonModule,
