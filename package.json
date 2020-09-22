@@ -27,6 +27,7 @@
     "@types/lodash": "^4.14.157",
     "@types/pdfmake": "^0.1.14",
     "codelyzer": "^5.2.2",
+    "date-fns": "^2.16.1",
     "file-saver": "^2.0.2",
     "lodash": "^4.17.19",
     "moment": "^2.27.0",
