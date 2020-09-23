@@ -19,7 +19,6 @@ export class JobEditFormService {
   jobFormBuilder(job?: Partial<Job>): IFormGroup<JobBase> {
     const products = job?.products instanceof Array ? job.products.map(prod => this.productFormGroup(prod)) : [];
     const jobForm: IFormGroup<JobBase> = this.fb.group<JobBase>(
-
       {
         jobId: [
           undefined,
@@ -57,6 +56,9 @@ export class JobEditFormService {
           generalStatus: 10,
         }),
         products: this.fb.array<JobProduct>(products),
+        files: this.fb.group({
+          path: this.fb.array(job?.files?.path || []),
+        })
       }
     );
 
