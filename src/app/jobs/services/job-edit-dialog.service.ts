@@ -35,6 +35,7 @@ export class JobEditDialogService {
         ...JOB_DIALOG_CONFIG,
         data: {
           jobForm: this.jobEditForm.jobFormBuilder(job),
+          job,
         }
       }).afterClosed()),
       concatMap(job => job ? this.jobService.updateJob(this.afterJobEdit({ ...job, jobId })) : of(false)),
@@ -45,6 +46,7 @@ export class JobEditDialogService {
     const data: JobEditDialogData = {
       jobForm: this.jobEditForm.jobFormBuilder(jobInit),
       jobCreateFn: this.jobCreatorFn(),
+      job: jobInit,
     };
     return this.dialog.open(JobDialogComponent, {
       ...JOB_DIALOG_CONFIG,
