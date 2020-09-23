@@ -38,7 +38,6 @@ export class FolderPathComponent implements OnInit {
   }
 
   private pathArray(date: Date): string[] {
-    console.log(date);
     return [
       getYear(date).toString(),
       toMonthNumberName(date),
