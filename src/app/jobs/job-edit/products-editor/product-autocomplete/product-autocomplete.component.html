@@ -1,6 +1,6 @@
 <mat-form-field>
     <input matInput type="text" [formControl]="ngControl.control" [matAutocomplete]="auto" #name>
-    <button mat-icon-button matSuffix (click)="ngControl.control.setValue(undefined)">
+    <button mat-icon-button matSuffix (click)="ngControl.control.setValue('')">
         <mat-icon>
             clear
         </mat-icon>
