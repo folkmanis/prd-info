@@ -12,11 +12,11 @@ import { IControlValueAccessor } from '@rxweb/types';
 })
 export class FolderPathComponent implements OnInit, IControlValueAccessor<string[]> {
   @Input() set defaultPath(val: string[]) {
-    this._defaultPath = val;
-    console.log('input', val, this.path, this.initialPath, this.checked);
+    this._defaultPath = val || [];
     if (!this.path || !this.initialPath || !this.checked) {
       this.path = this.defaultPath;
-      if (this.checked) {
+      this.updateCheckboxDisabledState();
+      if (this.checked && pathToString(this.ngControl.control.value) !== this.pathname) {
         this.setValueFn(this.path);
       }
     }
@@ -29,7 +29,7 @@ export class FolderPathComponent implements OnInit, IControlValueAccessor<string
   private _checked = false;
 
   isDisabled = false;
-  path: string[] | undefined;
+  path: string[] = [];
   initialPath: string[] | undefined;
 
   setValueFn: (val: string[]) => void;
@@ -41,10 +41,10 @@ export class FolderPathComponent implements OnInit, IControlValueAccessor<string
   }
 
   writeValue(obj: string[]) {
-    console.log('writeValue');
     if (!this.initialPath) { this.initialPath = obj; }
     this.path = obj || this.defaultPath;
     this.checked = obj && obj.length > 0;
+    this.updateCheckboxDisabledState();
   }
 
   registerOnChange(fn: (val: string[]) => void) {
@@ -55,7 +55,6 @@ export class FolderPathComponent implements OnInit, IControlValueAccessor<string
   }
 
   setDisabledState(isDisabled: boolean) {
-    console.log('setDisabledState');
     this.isDisabled = isDisabled;
   }
 
@@ -65,12 +64,19 @@ export class FolderPathComponent implements OnInit, IControlValueAccessor<string
   }
 
   ngOnInit(): void {
-    console.log('ngOnInit');
   }
 
   get pathname(): string {
-    return this.path?.join('/') || '';
+    return pathToString(this.path);
   }
 
+  updateCheckboxDisabledState(): void {
+    this.isDisabled = !this.path.length;
+    this.checked = this.checked && !this.isDisabled;
+  }
 
+}
+
+function pathToString(path: string[] | undefined): string {
+  return path?.join('/') || '';
 }
