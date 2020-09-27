@@ -4,11 +4,9 @@ import * as moment from 'moment';
 import { Observable, of } from 'rxjs';
 import { concatMap, map } from 'rxjs/operators';
 import { JobBase } from 'src/app/interfaces';
-import { ProductsService } from 'src/app/services';
 import { JobService } from 'src/app/services/job.service';
-import { JobDialogComponent } from '../job-edit/job-dialog.component';
-import { JobEditDialogData } from '../job-edit/job-edit-dialog-data';
-import { JobEditFormService } from './job-edit-form.service';
+import { JobDialogComponent } from '../job-dialog.component';
+import { JobEditDialogData } from '../job-edit-dialog-data';
 
 const JOB_DIALOG_CONFIG: MatDialogConfig = {
   height: '90%',
@@ -23,18 +21,13 @@ export class JobEditDialogService {
   constructor(
     private dialog: MatDialog,
     private jobService: JobService,
-    private productsService: ProductsService,
-    private jobEditForm: JobEditFormService,
   ) { }
-
-  products$ = this.productsService.activeProducts$;
 
   editJob(jobId: number): Observable<boolean> {
     return this.jobService.getJob(jobId).pipe(
       concatMap(job => this.dialog.open(JobDialogComponent, {
         ...JOB_DIALOG_CONFIG,
         data: {
-          jobForm: this.jobEditForm.jobFormBuilder(job),
           job,
         }
       }).afterClosed()),
@@ -44,7 +37,6 @@ export class JobEditDialogService {
 
   newJob(jobInit?: Partial<JobBase>): Observable<number | undefined> {
     const data: JobEditDialogData = {
-      jobForm: this.jobEditForm.jobFormBuilder(jobInit),
       jobCreateFn: this.jobCreatorFn(),
       job: jobInit,
     };

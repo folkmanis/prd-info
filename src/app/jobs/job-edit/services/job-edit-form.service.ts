@@ -1,20 +1,51 @@
 import { Injectable } from '@angular/core';
 import { Job, JobProduct, JobBase, CustomerProduct } from 'src/app/interfaces';
 import { FormGroup, FormBuilder, Validators, AsyncValidatorFn, AbstractControl, ValidationErrors, AbstractControlOptions, ValidatorFn } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { take, map } from 'rxjs/operators';
+import { Observable, EMPTY, of, combineLatest, merge } from 'rxjs';
+import { take, map, startWith, filter, distinctUntilChanged, switchMap, shareReplay, tap, debounceTime, withLatestFrom } from 'rxjs/operators';
 import { CustomersService } from 'src/app/services/customers.service';
 import { IFormBuilder, IFormGroup, IFormControl } from '@rxweb/types';
+import { ProductsService } from 'src/app/services';
 
-@Injectable({
-  providedIn: 'any'
-})
+@Injectable()
 export class JobEditFormService {
   fb: IFormBuilder;
   constructor(
     fb: FormBuilder,
     private customersService: CustomersService,
+    private productsService: ProductsService,
   ) { this.fb = fb; }
+
+  /* Servisā pieejama arī forma un darba sākotnējie iestatījumi */
+  jobForm: IFormGroup<JobBase>;
+  private _job: Partial<JobBase>;
+  private _customerProducts$: Observable<CustomerProduct[]> | undefined;
+
+  get job$(): Observable<JobBase> {
+    if (!this.jobForm || !this._job) { return EMPTY; }
+    return merge(
+      this.jobForm.valueChanges,
+      of(this.jobForm.value)
+    ).pipe(
+      map(jobFrm => ({ ...this._job, ...jobFrm })),
+      debounceTime(200),
+      withLatestFrom(this.customersService.customers$),
+      map(([job, customers]) => ({ ...job, custCode: customers.find(cust => cust.CustomerName === job.customer)?.code })),
+    );
+  }
+
+  get customerProducts$(): Observable<CustomerProduct[]> {
+    if (!this._customerProducts$) {
+      this._customerProducts$ = this.job$.pipe(
+        map(job => job?.customer),
+        distinctUntilChanged(),
+        switchMap(customer => this.productsService.productsCustomer(customer || 'NULL')),
+        shareReplay(1),
+      );
+    }
+    return this._customerProducts$;
+  }
+
 
   jobFormBuilder(job?: Partial<Job>): IFormGroup<JobBase> {
     const products = job?.products instanceof Array ? job.products.map(prod => this.productFormGroup(prod)) : [];
@@ -22,6 +53,9 @@ export class JobEditFormService {
       {
         jobId: [
           undefined,
+          {
+            validators: Validators.required,
+          }
         ],
         customer: [
           '',
@@ -51,18 +85,20 @@ export class JobEditFormService {
         category: [undefined],
         comment: [undefined],
         customerJobId: [undefined],
-        custCode: [undefined],
+        custCode: [{ value: undefined, disabled: true }],
         jobStatus: this.fb.group({
           generalStatus: 10,
         }),
         products: this.fb.array<JobProduct>(products),
         files: this.fb.group({
-          path: this.fb.array(job?.files?.path || []),
+          path: this.fb.control(job?.files?.path),
         })
       }
     );
 
     this.setFormValues(jobForm, job);
+    this.jobForm = jobForm;
+    this._job = job;
     return jobForm;
   }
 
