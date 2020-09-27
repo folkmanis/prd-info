@@ -57,8 +57,10 @@
             <mat-label>Klienta darba numurs</mat-label>
             <input matInput formControlName="customerJobId">
         </mat-form-field>
-                <!-- Folderis -->
-                <app-folder-path [date]="jobFormGroup.getRawValue().receivedDate"></app-folder-path>
+        <!-- Folderis -->
+        <ng-container formGroupName="files">
+            <app-folder-path formControlName="path" [defaultPath]="path$ | async"></app-folder-path>
+        </ng-container>
         <!-- Papildus apraksts -->
         <mat-form-field class="width-span">
             <mat-label>Papildus apraksts</mat-label>
@@ -66,7 +68,7 @@
         </mat-form-field>
         <!-- Preces apakšforma -->
         <div *ngIf="isProductsSet()" class="width-span">
-            <app-products-editor [prodFormArray]="productsControl" [customerProducts$]="customerProducts$">
+            <app-products-editor formArrayName="products">
             </app-products-editor>
         </div>
     </div>

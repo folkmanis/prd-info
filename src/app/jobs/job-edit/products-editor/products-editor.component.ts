@@ -6,11 +6,11 @@ import {
 import { IFormArray, IFormGroup, IFormControl } from '@rxweb/types';
 import { Observable, Subject, combineLatest } from 'rxjs';
 import { CustomerProduct, JobProduct } from 'src/app/interfaces';
-import { JobEditFormService } from '../../services/job-edit-form.service';
+import { JobEditFormService } from '../services/job-edit-form.service';
 import { ProductAutocompleteComponent } from './product-autocomplete/product-autocomplete.component';
-import { ValidatorFn, Validators, ValidationErrors } from '@angular/forms';
+import { ValidatorFn, Validators, ValidationErrors, ControlContainer } from '@angular/forms';
 import { DestroyService } from 'src/app/library/rx/destroy.service';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, map, distinctUntilChanged, switchMap, shareReplay } from 'rxjs/operators';
 
 const COLUMNS = ['name', 'count', 'price', 'total', 'comment'];
 
@@ -22,9 +22,8 @@ const COLUMNS = ['name', 'count', 'price', 'total', 'comment'];
 })
 export class ProductsEditorComponent implements OnInit, OnDestroy {
   @ViewChildren(ProductAutocompleteComponent) private nameInputs: QueryList<ProductAutocompleteComponent>;
-  @Input() prodFormArray: IFormArray<JobProduct>;
-  @Input() customerProducts$: Observable<CustomerProduct[]>;
-
+  prodFormArray: IFormArray<JobProduct>;
+  customerProducts$: Observable<CustomerProduct[]>;
   addNewProduct$ = new Subject<void>();
 
   /** Ctrl-+ event */
@@ -36,9 +35,10 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private service: JobEditFormService,
     private ch: ChangeDetectorRef,
     private destroy$: DestroyService,
+    private jobFormService: JobEditFormService,
+    private controlContainer: ControlContainer,
   ) { }
 
   get isEnabled(): boolean {
@@ -49,6 +49,9 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.prodFormArray = this.controlContainer.control as IFormArray<JobProduct>;
+
+    this.customerProducts$ = this.jobFormService.customerProducts$;
     this.customerProducts$.pipe(
       takeUntil(this.destroy$),
     ).subscribe(prod => this.setArrayValidators(this.prodFormArray, prod));
@@ -63,8 +66,8 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
 
   addNewProduct(products: CustomerProduct[]) {
     if (!this.isValid) { return; }
-    const prodForm = this.service.productFormGroup();
-    this.service.setProductGroupValidators(prodForm, products);
+    const prodForm = this.jobFormService.productFormGroup();
+    this.jobFormService.setProductGroupValidators(prodForm, products);
     this.prodFormArray.push(prodForm);
     this.ch.markForCheck();
     setTimeout(() => {
@@ -79,7 +82,7 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
   }
 
   private setArrayValidators(frm: IFormArray<JobProduct>, customerProducts: CustomerProduct[]) {
-    frm.controls.forEach((contr: IFormGroup<JobProduct>) => this.service.setProductGroupValidators(contr, customerProducts));
+    frm.controls.forEach((contr: IFormGroup<JobProduct>) => this.jobFormService.setProductGroupValidators(contr, customerProducts));
   }
 
 
