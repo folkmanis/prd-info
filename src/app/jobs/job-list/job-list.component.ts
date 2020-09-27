@@ -6,7 +6,7 @@ import { LayoutService } from 'src/app/layout/layout.service';
 import { DestroyService } from 'src/app/library/rx/destroy.service';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { JobService } from 'src/app/services/job.service';
-import { JobEditDialogService } from '../services/job-edit-dialog.service';
+import { JobEditDialogService } from '../job-edit';
 
 @Component({
   selector: 'app-job-list',

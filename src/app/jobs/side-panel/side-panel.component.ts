@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable, from, EMPTY } from 'rxjs';
 import { switchMap, tap, map, concatAll, concatMap, mergeMap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
-import { JobEditDialogService } from '../services/job-edit-dialog.service';
+import { JobEditDialogService } from '../job-edit';
 import { CustomersService } from 'src/app/services';
 import { CustomerInputDialogComponent } from './customer-input-dialog/customer-input-dialog.component';
 import { JobService } from 'src/app/services/job.service';
