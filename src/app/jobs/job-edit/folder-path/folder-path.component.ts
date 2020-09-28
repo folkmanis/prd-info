@@ -12,17 +12,15 @@ import { IControlValueAccessor } from '@rxweb/types';
 })
 export class FolderPathComponent implements OnInit, IControlValueAccessor<string[]> {
   @Input() set defaultPath(val: string[]) {
-    this._defaultPath = val || [];
-    if (!this.path || !this.initialPath || !this.checked) {
-      this.path = this.defaultPath;
+    if (!this.initialPath && val?.length && this.ngControl.control.pristine) { this.checked = true; }
+    if (!this.initialPath || !this.checked) {
+      this.path = val || [];
       this.updateCheckboxDisabledState();
       if (this.checked && pathToString(this.ngControl.control.value) !== this.pathname) {
         this.setValueFn(this.path);
       }
     }
   }
-  get defaultPath(): string[] { return this._defaultPath; }
-  private _defaultPath: string[] = [];
 
   set checked(val: boolean) { this._checked = val; }
   get checked(): boolean { return this._checked; }
@@ -31,6 +29,7 @@ export class FolderPathComponent implements OnInit, IControlValueAccessor<string
   isDisabled = false;
   path: string[] = [];
   initialPath: string[] | undefined;
+  touched = false;
 
   setValueFn: (val: string[]) => void;
 
@@ -41,8 +40,8 @@ export class FolderPathComponent implements OnInit, IControlValueAccessor<string
   }
 
   writeValue(obj: string[]) {
-    if (!this.initialPath) { this.initialPath = obj; }
-    this.path = obj || this.defaultPath;
+    this.initialPath = obj;
+    this.path = obj || [];
     this.checked = obj && obj.length > 0;
     this.updateCheckboxDisabledState();
   }
