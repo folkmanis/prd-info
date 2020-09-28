@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnDestroy, OnInit, ViewChild, ViewChildren, ElementRef, QueryList } from '@angular/core';
 import { IFormGroup } from '@rxweb/types';
 import * as moment from 'moment';
 import { combineLatest, Observable } from 'rxjs';
@@ -9,6 +9,7 @@ import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { CustomersService, SystemPreferencesService } from 'src/app/services';
 import { FolderPath } from '../services/folder-path';
 import { JobEditFormService } from '../services/job-edit-form.service';
+import { MatInput } from '@angular/material/input';
 
 @Component({
   selector: 'app-plate-job-editor',
@@ -17,6 +18,7 @@ import { JobEditFormService } from '../services/job-edit-form.service';
 })
 export class PlateJobEditorComponent implements OnInit, OnDestroy {
   @Input() jobFormGroup: IFormGroup<JobBase>;
+  @ViewChildren(MatInput) private inputElements: QueryList<HTMLInputElement>;
 
   constructor(
     private customersService: CustomersService,
@@ -31,7 +33,7 @@ export class PlateJobEditorComponent implements OnInit, OnDestroy {
   get productsControl() { return this.jobFormGroup.controls.products; }
 
   customers$: Observable<CustomerPartial[]>;
-  path$: Observable<string[]>;
+  defaultPath$: Observable<string[]>;
   jobStates$ = (this.sysPref.getModulePreferences('jobs') as Observable<JobsSettings>).pipe(
     map(pref => pref.jobStates.filter(st => st.state < 50))
   );
@@ -66,7 +68,7 @@ export class PlateJobEditorComponent implements OnInit, OnDestroy {
       map(filterCustomer)
     );
 
-    this.path$ = this.jobFormService.job$.pipe(
+    this.defaultPath$ = this.jobFormService.job$.pipe(
       map(job => FolderPath.toArray(job)),
     );
 
@@ -81,6 +83,10 @@ export class PlateJobEditorComponent implements OnInit, OnDestroy {
 
   copyJobIdAndName() {
     this.clipboard.copy(`${this.jobFormGroup.value.jobId}-${this.jobFormGroup.value.name}`);
+  }
+
+  focusFirst(): void {
+    this.inputElements.first?.focus();
   }
 
 }

@@ -3,7 +3,7 @@
         <!-- Klients -->
         <mat-form-field class="left-column">
             <mat-label>Klients</mat-label>
-            <input type="text" matInput formControlName="customer" [matAutocomplete]="auto" required>
+            <input #customer type="text" matInput formControlName="customer" [matAutocomplete]="auto" required>
             <mat-error *ngIf="customerControl.hasError('noCustomer')">
                 {{customerControl.getError('noCustomer')}}
             </mat-error>
@@ -59,7 +59,7 @@
         </mat-form-field>
         <!-- Folderis -->
         <ng-container formGroupName="files">
-            <app-folder-path formControlName="path" [defaultPath]="path$ | async"></app-folder-path>
+            <app-folder-path formControlName="path" [defaultPath]="defaultPath$ | async"></app-folder-path>
         </ng-container>
         <!-- Papildus apraksts -->
         <mat-form-field class="width-span">

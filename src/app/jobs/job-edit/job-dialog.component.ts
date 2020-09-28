@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy, ChangeDetectorRef,
+  Component, ElementRef, HostListener, Inject,
+  OnDestroy, OnInit, AfterViewInit,
+  ViewChild
+} from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { IFormGroup } from '@rxweb/types';
 import { Observable } from 'rxjs';
@@ -7,6 +12,7 @@ import { CustomerProduct, JobBase } from 'src/app/interfaces';
 import { DestroyService } from 'src/app/library/rx/destroy.service';
 import { JobEditDialogData } from './job-edit-dialog-data';
 import { JobEditFormService } from './services/job-edit-form.service';
+import { PlateJobEditorComponent } from './plate-job-editor/plate-job-editor.component';
 
 @Component({
   selector: 'app-job-dialog',
@@ -15,8 +21,9 @@ import { JobEditFormService } from './services/job-edit-form.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DestroyService, JobEditFormService]
 })
-export class JobDialogComponent implements OnInit, OnDestroy {
+export class JobDialogComponent implements OnInit {
   @ViewChild('accept', { read: ElementRef }) private acceptButton: ElementRef;
+  @ViewChild(PlateJobEditorComponent) private plateJobEditor: PlateJobEditorComponent;
 
   jobForm: IFormGroup<JobBase>;
   constructor(
@@ -62,7 +69,8 @@ export class JobDialogComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
+  initialFocus(): void {
+    this.plateJobEditor.focusFirst();
   }
 
 }
