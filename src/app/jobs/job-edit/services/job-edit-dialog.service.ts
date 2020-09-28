@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import * as moment from 'moment';
-import { Observable, of, concat } from 'rxjs';
-import { concatMap, map, tap, last, take } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { concatMap, map } from 'rxjs/operators';
 import { JobBase } from 'src/app/interfaces';
 import { JobService } from 'src/app/services/job.service';
 import { JobDialogComponent } from '../job-dialog.component';
@@ -45,19 +45,10 @@ export class JobEditDialogService {
       autoFocus: true,
       data
     });
-    // jaunam darbam uzreiz padara aktīvu noteiktu lauciņu
-    return concat(
-      dialogRef.afterOpened().pipe(
-        // take(1),
-        tap(() => dialogRef.componentInstance.initialFocus()),
-      ),
-      dialogRef.afterClosed().pipe(
-        concatMap(job => !job?.jobId ? of(null) : this.jobService.updateJob(this.afterJobEdit(job)).pipe(
-          map(() => job.jobId)
-        )),
-      )
-    ).pipe(
-      last()
+    return dialogRef.afterClosed().pipe(
+      concatMap(job => !job?.jobId ? of(null) : this.jobService.updateJob(this.afterJobEdit(job)).pipe(
+        map(() => job.jobId)
+      )),
     );
 
   }

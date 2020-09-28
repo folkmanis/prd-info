@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnDestroy, OnInit, ViewChild, ViewChildren, ElementRef, QueryList } from '@angular/core';
+import { Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
 import { IFormGroup } from '@rxweb/types';
 import * as moment from 'moment';
 import { combineLatest, Observable } from 'rxjs';
@@ -9,7 +9,6 @@ import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { CustomersService, SystemPreferencesService } from 'src/app/services';
 import { FolderPath } from '../services/folder-path';
 import { JobEditFormService } from '../services/job-edit-form.service';
-import { MatInput } from '@angular/material/input';
 
 @Component({
   selector: 'app-plate-job-editor',
@@ -18,7 +17,6 @@ import { MatInput } from '@angular/material/input';
 })
 export class PlateJobEditorComponent implements OnInit, OnDestroy {
   @Input() jobFormGroup: IFormGroup<JobBase>;
-  @ViewChildren(MatInput) private inputElements: QueryList<HTMLInputElement>;
 
   constructor(
     private customersService: CustomersService,
@@ -85,9 +83,6 @@ export class PlateJobEditorComponent implements OnInit, OnDestroy {
     this.clipboard.copy(`${this.jobFormGroup.value.jobId}-${this.jobFormGroup.value.name}`);
   }
 
-  focusFirst(): void {
-    this.inputElements.first?.focus();
-  }
 
 }
 

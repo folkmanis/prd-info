@@ -1,18 +1,17 @@
 import {
   ChangeDetectionStrategy, ChangeDetectorRef,
   Component, ElementRef, HostListener, Inject,
-  OnDestroy, OnInit, AfterViewInit,
+  OnInit,
   ViewChild
 } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { IFormGroup } from '@rxweb/types';
 import { Observable } from 'rxjs';
 import { concatMap, filter, map, take, takeUntil, tap } from 'rxjs/operators';
-import { CustomerProduct, JobBase } from 'src/app/interfaces';
+import { JobBase } from 'src/app/interfaces';
 import { DestroyService } from 'src/app/library/rx/destroy.service';
 import { JobEditDialogData } from './job-edit-dialog-data';
 import { JobEditFormService } from './services/job-edit-form.service';
-import { PlateJobEditorComponent } from './plate-job-editor/plate-job-editor.component';
 
 @Component({
   selector: 'app-job-dialog',
@@ -23,7 +22,6 @@ import { PlateJobEditorComponent } from './plate-job-editor/plate-job-editor.com
 })
 export class JobDialogComponent implements OnInit {
   @ViewChild('accept', { read: ElementRef }) private acceptButton: ElementRef;
-  @ViewChild(PlateJobEditorComponent) private plateJobEditor: PlateJobEditorComponent;
 
   jobForm: IFormGroup<JobBase>;
   constructor(
@@ -67,10 +65,6 @@ export class JobDialogComponent implements OnInit {
         takeUntil(this.destroy$),
       ).subscribe();
     }
-  }
-
-  initialFocus(): void {
-    this.plateJobEditor.focusFirst();
   }
 
 }
