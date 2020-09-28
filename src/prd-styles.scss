@@ -9,8 +9,8 @@
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$prd-app-primary: mat-palette($mat-indigo);
-$prd-app-accent:  mat-palette($mat-pink, A200, A100, A400);
+$prd-app-primary: mat-palette($mat-teal, 800, 600, 900);
+$prd-app-accent:  mat-palette($mat-amber);
 
 // The warn palette is optional (defaults to red).
 $prd-app-warn:    mat-palette($mat-red);
