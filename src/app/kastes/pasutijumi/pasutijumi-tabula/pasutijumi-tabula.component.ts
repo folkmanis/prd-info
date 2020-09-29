@@ -25,7 +25,7 @@ export class PasutijumiTabulaComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.jobService.filter$.next({ category: 'perforated paper' });
+    this.jobService.setFilter({ category: 'perforated paper' });
   }
 
 }

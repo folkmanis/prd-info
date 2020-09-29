@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Job, JobPartial, JobQueryFilter, Invoice, InvoiceResponse } from 'src/app/interfaces';
-import { Observable, of, Subject, combineLatest, ReplaySubject, BehaviorSubject } from 'rxjs';
-import { map, tap, startWith, switchMap, share, pluck } from 'rxjs/operators';
+import { combineLatest, Observable, of, ReplaySubject, Subject } from 'rxjs';
+import { map, share, startWith, switchMap, tap } from 'rxjs/operators';
+import { Job, JobPartial, JobQueryFilter } from 'src/app/interfaces';
 import { PrdApiService } from 'src/app/services';
 
 @Injectable({
@@ -9,31 +9,35 @@ import { PrdApiService } from 'src/app/services';
 })
 export class JobService {
 
-  private readonly updateJobs$: Subject<void> = new Subject();
-  readonly filter$: Subject<JobQueryFilter> = new ReplaySubject(1);
+  private readonly _updateJobs$: Subject<void> = new Subject();
+  private readonly _filter$: Subject<JobQueryFilter> = new ReplaySubject(1);
 
   constructor(
     private prdApi: PrdApiService,
   ) { }
 
   jobs$: Observable<JobPartial[]> = combineLatest([
-    this.filter$,
-    this.updateJobs$.pipe(startWith('')),
+    this._filter$,
+    this._updateJobs$.pipe(startWith('')),
   ]).pipe(
     switchMap(([filter]) => this.getJobList(filter)),
     share(),
   );
 
+  setFilter(fltr: JobQueryFilter): void {
+    this._filter$.next(fltr);
+  }
+
   newJob(job: Partial<Job>): Observable<number | null> {
     return this.prdApi.jobs.insertOne(job).pipe(
       map(id => +id),
-      tap(() => this.updateJobs$.next()),
+      tap(() => this._updateJobs$.next()),
     );
   }
 
   newJobs(jobs: Partial<Job>[]): Observable<number | null> {
     return this.prdApi.jobs.insertMany(jobs).pipe(
-      tap(() => this.updateJobs$.next()),
+      tap(() => this._updateJobs$.next()),
     );
   }
 
@@ -43,7 +47,7 @@ export class JobService {
     delete job.jobId;
     delete job._id;
     return this.prdApi.jobs.updateOne(jobId, job).pipe(
-      tap(resp => resp && this.updateJobs$.next()),
+      tap(resp => resp && this._updateJobs$.next()),
     );
   }
 

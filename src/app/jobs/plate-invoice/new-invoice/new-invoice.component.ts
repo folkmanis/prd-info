@@ -2,26 +2,29 @@ import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription, combineLatest } from 'rxjs';
-import { map, startWith, tap, take, shareReplay, share } from 'rxjs/operators';
+import { map, startWith, tap, take, shareReplay, share, takeUntil } from 'rxjs/operators';
 import { CustomerPartial, JobQueryFilter, Job, JobPartial, ProductTotals, InvoiceLike } from 'src/app/interfaces';
 import { CustomersService, PrdApiService } from 'src/app/services';
 import { InvoicesService } from '../../services/invoices.service';
 import { JobService } from 'src/app/services/job.service';
 import { InvoiceReport } from '../invoice-editor/invoice-report';
 import { InvoicesTotals } from '../interfaces';
+import { DestroyService } from 'src/app/library/rx/destroy.service';
 
 @Component({
   selector: 'app-new-invoice',
   templateUrl: './new-invoice.component.html',
   styleUrls: ['./new-invoice.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [DestroyService],
 })
-export class NewInvoiceComponent implements OnInit, OnDestroy {
+export class NewInvoiceComponent implements OnInit {
   constructor(
     private invoiceService: InvoicesService,
     private jobService: JobService,
     private router: Router,
     private route: ActivatedRoute,
+    private destroy$: DestroyService,
   ) { }
 
   selectedJobs: number[] | undefined;
@@ -41,19 +44,13 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
     share(),
   );
 
-  private readonly subscriptions = new Subscription();
 
   ngOnInit(): void {
-    const _subs = this.customerId.valueChanges.pipe(
+    this.customerId.valueChanges.pipe(
       startWith(''),
-      map((customer: string) => ({ customer, unwindProducts: 1, invoice: 0 } as JobQueryFilter)),
+      takeUntil(this.destroy$),
     )
-      .subscribe(this.jobService.filter$);
-    this.subscriptions.add(_subs);
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
+      .subscribe(customer => this.jobService.setFilter({ customer, unwindProducts: 1, invoice: 0 }));
   }
 
   onCreateInvoice() {

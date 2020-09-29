@@ -57,7 +57,7 @@ export class JobFilterComponent implements OnInit {
       debounceTime(500),
       map(normalizeFilter),
       takeUntil(this.destroy$),
-    ).subscribe(this.jobService.filter$);
+    ).subscribe(fltr => this.jobService.setFilter(fltr));
     this.onReset();
   }
 
