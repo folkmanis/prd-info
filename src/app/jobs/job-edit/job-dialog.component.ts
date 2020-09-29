@@ -47,6 +47,7 @@ export class JobDialogComponent implements OnInit {
     this.jobForm = this.jobFormService.jobFormBuilder(this.data.job);
 
     if (!this.jobForm.get('jobId').value && typeof this.data.jobCreateFn === 'function') {
+      console.log(this.data.fileList);
       this.customerContr.valueChanges.pipe(
         filter(() => this.customerContr.valid),
         map(cust => ({

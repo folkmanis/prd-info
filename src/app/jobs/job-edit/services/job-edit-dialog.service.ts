@@ -35,10 +35,11 @@ export class JobEditDialogService {
     );
   }
 
-  newJob(jobInit?: Partial<JobBase>): Observable<number | undefined> {
+  newJob(jobInit?: Partial<JobBase>, fileList?: FileList): Observable<number | undefined> {
     const data: JobEditDialogData = {
       jobCreateFn: this.jobCreatorFn(),
       job: jobInit,
+      fileList,
     };
     const dialogRef = this.dialog.open(JobDialogComponent, {
       ...JOB_DIALOG_CONFIG,
