@@ -46,9 +46,7 @@ export class JobDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.jobForm = this.jobFormService.jobFormBuilder(this.data.job);
-    this.files = this.data.files && this.data.files.filter(file => file.size);
-    // const formData = new FormData();
-    // formData.append(`file${i}`, event[i], event[i].name);
+    this.files = this.data.files && [...this.data.files];
 
     this.newJob(this.jobForm, this.data.jobCreateFn)
       .subscribe(jobId => this.jobForm.patchValue({ jobId, jobStatus: { generalStatus: 20 } }));
