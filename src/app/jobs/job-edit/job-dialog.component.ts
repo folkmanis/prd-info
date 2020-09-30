@@ -45,6 +45,7 @@ export class JobDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.jobForm = this.jobFormService.jobFormBuilder(this.data.job);
+    console.log(this.jobForm);
 
     if (!this.jobForm.get('jobId').value && typeof this.data.jobCreateFn === 'function') {
       console.log(this.data.fileList);

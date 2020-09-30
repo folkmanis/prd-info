@@ -17,7 +17,8 @@ export interface JobBase {
         generalStatus: number;
     };
     custCode: string;
-    files: {
+    files?: {
         path: string[];
+        fileNames: string[];
     };
 }

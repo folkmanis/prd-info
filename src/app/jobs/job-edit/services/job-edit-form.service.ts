@@ -92,6 +92,7 @@ export class JobEditFormService {
         products: this.fb.array<JobProduct>(products),
         files: this.fb.group({
           path: this.fb.control(job?.files?.path),
+          fileNames: this.fb.array(job?.files?.fileNames || []),
         })
       }
     );
