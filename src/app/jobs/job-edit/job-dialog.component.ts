@@ -5,8 +5,8 @@ import {
   ViewChild
 } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { IFormGroup } from '@rxweb/types';
-import { Observable } from 'rxjs';
+import { IFormGroup, IFormControl } from '@rxweb/types';
+import { Observable, EMPTY } from 'rxjs';
 import { concatMap, filter, map, take, takeUntil, tap } from 'rxjs/operators';
 import { JobBase } from 'src/app/interfaces';
 import { DestroyService } from 'src/app/library/rx/destroy.service';
@@ -45,28 +45,40 @@ export class JobDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.jobForm = this.jobFormService.jobFormBuilder(this.data.job);
-    console.log(this.jobForm);
 
-    if (!this.jobForm.get('jobId').value && typeof this.data.jobCreateFn === 'function') {
-      console.log(this.data.fileList);
-      this.customerContr.valueChanges.pipe(
-        filter(() => this.customerContr.valid),
-        map(cust => ({
-          customer: cust,
-          name: this.jobForm.value.name || 'Jauns darbs',
-          jobStatus: {
-            generalStatus: this.jobForm.value.jobStatus.generalStatus
-          }
-        })),
-        take(1),
-        concatMap(this.data.jobCreateFn),
-        tap(jobId =>
-          jobId ? this.jobForm.patchValue({ jobId, jobStatus: { generalStatus: 20 } }) : this.dialogRef.close()
-        ),
-        tap(() => this.chRef.markForCheck()),
-        takeUntil(this.destroy$),
-      ).subscribe();
+    console.log(this.jobForm);
+    console.log(this.data.fileList);
+    this.newJob(this.jobForm, this.data.jobCreateFn)
+      .subscribe(jobId => this.jobForm.patchValue({ jobId, jobStatus: { generalStatus: 20 } }));
+  }
+
+  /**
+   * Jauna darba izveides funkcija
+   * Atgriež jaunā darba jobId
+   * Ja formā jau ir jobId (darbs nav jauns), tad atgriež EMPTY
+   * @param form forma ar darbu
+   * @param jobCreateFn darba izveides funkcija
+   */
+  private newJob(
+    form: IFormGroup<JobBase>,
+    jobCreateFn: (job: Partial<JobBase>) => Observable<number>
+  ): Observable<number> {
+    if (form.value.jobId || typeof this.data.jobCreateFn !== 'function') {
+      return EMPTY;
     }
+    const customerContr = form.controls.customer;
+    return customerContr.valueChanges.pipe(
+      filter(() => customerContr.valid),
+      map(cust => ({
+        customer: cust,
+        name: form.value.name || 'Jauns darbs',
+        jobStatus: {
+          generalStatus: form.value.jobStatus.generalStatus
+        }
+      })),
+      take(1),
+      concatMap(job => jobCreateFn(job)),
+    );
   }
 
 }
