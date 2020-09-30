@@ -24,6 +24,7 @@ export class JobDialogComponent implements OnInit {
   @ViewChild('accept', { read: ElementRef }) private acceptButton: ElementRef;
 
   jobForm: IFormGroup<JobBase>;
+  files: File[] | undefined;
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: JobEditDialogData,
     private dialogRef: MatDialogRef<JobDialogComponent>,
@@ -45,9 +46,10 @@ export class JobDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.jobForm = this.jobFormService.jobFormBuilder(this.data.job);
+    this.files = this.data.files;
+    // const formData = new FormData();
+    // formData.append(`file${i}`, event[i], event[i].name);
 
-    console.log(this.jobForm);
-    console.log(this.data.fileList);
     this.newJob(this.jobForm, this.data.jobCreateFn)
       .subscribe(jobId => this.jobForm.patchValue({ jobId, jobStatus: { generalStatus: 20 } }));
   }

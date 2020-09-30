@@ -10,6 +10,7 @@ import { FolderPathComponent } from './folder-path/folder-path.component';
 
 
 import { JobEditDialogService } from './services/job-edit-dialog.service';
+import { UploadFilesComponent } from './upload-files/upload-files.component';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import { JobEditDialogService } from './services/job-edit-dialog.service';
     JobDialogComponent,
     ProductAutocompleteComponent,
     FolderPathComponent,
+    UploadFilesComponent,
   ],
   imports: [
     CommonModule,

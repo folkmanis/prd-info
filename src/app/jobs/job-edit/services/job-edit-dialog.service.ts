@@ -35,17 +35,18 @@ export class JobEditDialogService {
     );
   }
 
-  newJob(jobInit?: Partial<JobBase>, fileList?: FileList): Observable<number | undefined> {
+  newJob(jobInit?: Partial<JobBase>, files?: File[]): Observable<number | undefined> {
     const data: JobEditDialogData = {
       jobCreateFn: this.jobCreatorFn(),
       job: jobInit,
-      fileList,
+      files,
     };
     const dialogRef = this.dialog.open(JobDialogComponent, {
       ...JOB_DIALOG_CONFIG,
       autoFocus: true,
       data
     });
+
     return dialogRef.afterClosed().pipe(
       concatMap(job => !job?.jobId ? of(null) : this.jobService.updateJob(this.afterJobEdit(job)).pipe(
         map(() => job.jobId)
