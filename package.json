@@ -29,6 +29,7 @@
     "codelyzer": "^5.2.2",
     "date-fns": "^2.16.1",
     "file-saver": "^2.0.2",
+    "filesize": "^6.1.0",
     "lodash": "^4.17.20",
     "moment": "^2.29.0",
     "ng": "0.0.0",
