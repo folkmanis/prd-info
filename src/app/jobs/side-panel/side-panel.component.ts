@@ -24,7 +24,7 @@ export class SidePanelComponent implements OnInit {
       .reduce((acc, curr) => [...acc, curr.name.replace(/\.[^/.]+$/, '')], [])
       .reduce((acc, curr, _, names) => [...acc, curr.slice(0, MAX_JOB_NAME_LENGTH / names.length)], [])
       .join('_');
-    this.jobDialog.newJob({ name }, fileListArray).subscribe();
+    this.jobDialog.newJob({ name, category: 'repro' }, fileListArray).subscribe();
   }
 
 }
