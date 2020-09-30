@@ -12,6 +12,7 @@ import { JobBase } from 'src/app/interfaces';
 import { DestroyService } from 'src/app/library/rx/destroy.service';
 import { JobEditDialogData } from './job-edit-dialog-data';
 import { JobEditFormService } from './services/job-edit-form.service';
+import { JobEditDialogResult } from './job-edit-dialog-result';
 
 @Component({
   selector: 'app-job-dialog',
@@ -27,7 +28,7 @@ export class JobDialogComponent implements OnInit {
   files: File[] | undefined;
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: JobEditDialogData,
-    private dialogRef: MatDialogRef<JobDialogComponent>,
+    private dialogRef: MatDialogRef<JobDialogComponent, JobEditDialogResult>,
     private chRef: ChangeDetectorRef,
     private destroy$: DestroyService,
     private jobFormService: JobEditFormService,
@@ -82,8 +83,11 @@ export class JobDialogComponent implements OnInit {
   }
 
   onSave() {
-    console.log(this.files);
-    this.dialogRef.close(this.jobForm.value);
+    const result: JobEditDialogResult = {
+      job: this.jobForm.value,
+      files: this.files?.length ? this.files : undefined,
+    };
+    this.dialogRef.close(result);
   }
 
 }

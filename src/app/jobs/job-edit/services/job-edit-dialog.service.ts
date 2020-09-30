@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import * as moment from 'moment';
 import { Observable, of } from 'rxjs';
-import { concatMap, map } from 'rxjs/operators';
+import { concatMap, map, tap } from 'rxjs/operators';
 import { JobBase } from 'src/app/interfaces';
 import { JobService } from 'src/app/services/job.service';
 import { JobDialogComponent } from '../job-dialog.component';
 import { JobEditDialogData } from '../job-edit-dialog-data';
+import { JobEditDialogResult } from '../job-edit-dialog-result';
 
 const JOB_DIALOG_CONFIG: MatDialogConfig = {
   height: '90%',
@@ -25,13 +26,13 @@ export class JobEditDialogService {
 
   editJob(jobId: number): Observable<boolean> {
     return this.jobService.getJob(jobId).pipe(
-      concatMap(job => this.dialog.open(JobDialogComponent, {
+      concatMap(job => this.dialog.open<JobDialogComponent, JobEditDialogData, JobEditDialogResult>(JobDialogComponent, {
         ...JOB_DIALOG_CONFIG,
         data: {
           job,
         }
       }).afterClosed()),
-      concatMap(job => job ? this.jobService.updateJob(this.afterJobEdit({ ...job, jobId })) : of(false)),
+      concatMap(({ job }) => job ? this.jobService.updateJob(this.afterJobEdit({ ...job, jobId })) : of(false)),
     );
   }
 
@@ -41,14 +42,15 @@ export class JobEditDialogService {
       job: jobInit,
       files,
     };
-    const dialogRef = this.dialog.open(JobDialogComponent, {
+    const dialogRef = this.dialog.open<JobDialogComponent, JobEditDialogData, JobEditDialogResult>(JobDialogComponent, {
       ...JOB_DIALOG_CONFIG,
       autoFocus: true,
       data
     });
 
     return dialogRef.afterClosed().pipe(
-      concatMap(job => !job?.jobId ? of(null) : this.jobService.updateJob(this.afterJobEdit(job)).pipe(
+      tap(console.log),
+      concatMap(({ job }) => !job?.jobId ? of(null) : this.jobService.updateJob(this.afterJobEdit(job)).pipe(
         map(() => job.jobId)
       )),
     );
