@@ -48,6 +48,7 @@ import { ShortenTextPipe } from './pipes/shorten-text.pipe';
 import { FindSelectRouteModule } from './find-select-route/find-select-route.module';
 import { FocusedDirective } from './directives/focused.directive';
 import { SideButtonModule } from './side-button/side-button.module';
+import { FilesizePipe } from './pipes/filesize.pipe';
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import { SideButtonModule } from './side-button/side-button.module';
     CardMenuComponent,
     ShortenTextPipe,
     FocusedDirective,
+    FilesizePipe,
   ],
   imports: [
     CommonModule,
@@ -146,6 +148,7 @@ import { SideButtonModule } from './side-button/side-button.module';
     FindSelectRouteModule,
     FocusedDirective,
     SideButtonModule,
+    FilesizePipe,
   ],
 })
 export class LibraryModule { }
