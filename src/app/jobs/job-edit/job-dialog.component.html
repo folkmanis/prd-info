@@ -20,12 +20,12 @@
 <div mat-dialog-content>
     <app-plate-job-editor [jobFormGroup]="jobForm">
     </app-plate-job-editor>
-    <app-upload-files *ngIf="files" [files]="files"></app-upload-files>
+    <app-upload-files *ngIf="files?.length" [(files)]="files"></app-upload-files>
 </div>
 
 <div mat-dialog-actions>
     <!-- Pogas -->
     <button mat-raised-button [mat-dialog-close]="false">ATCELT</button>
-    <button mat-raised-button color="primary" [mat-dialog-close]="jobForm.value"
-        [disabled]="jobForm.valid === false || jobForm.pristine" #accept matTooltip="Ctrl-Enter">SAGLABĀT</button>
+    <button mat-raised-button #accept color="primary" (click)="onSave()"
+        [disabled]="jobForm.valid === false || jobForm.pristine" matTooltip="Ctrl-Enter">SAGLABĀT</button>
 </div>

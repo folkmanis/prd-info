@@ -46,7 +46,7 @@ export class JobDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.jobForm = this.jobFormService.jobFormBuilder(this.data.job);
-    this.files = this.data.files;
+    this.files = this.data.files && this.data.files.filter(file => file.size);
     // const formData = new FormData();
     // formData.append(`file${i}`, event[i], event[i].name);
 
@@ -81,6 +81,11 @@ export class JobDialogComponent implements OnInit {
       take(1),
       concatMap(job => jobCreateFn(job)),
     );
+  }
+
+  onSave() {
+    console.log(this.files);
+    this.dialogRef.close(this.jobForm.value);
   }
 
 }
