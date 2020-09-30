@@ -19,13 +19,11 @@ export class SidePanelComponent implements OnInit {
 
   onFileDrop(fileList: FileList | any) {
     if (!(fileList instanceof FileList) || !fileList.length) { return; }
-    console.log(fileList);
     const fileListArray = Array.from(fileList);
     const name: string = fileListArray
       .reduce((acc, curr) => [...acc, curr.name.replace(/\.[^/.]+$/, '')], [])
       .reduce((acc, curr, _, names) => [...acc, curr.slice(0, MAX_JOB_NAME_LENGTH / names.length)], [])
       .join('_');
-    const files: File[] = fileListArray.filter(item => item.size);
     this.jobDialog.newJob({ name }, fileListArray).subscribe();
   }
 
