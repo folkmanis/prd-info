@@ -24,4 +24,10 @@ export class JobsApi extends ApiBase<Job> {
         );
     }
 
+    fileUpload(jobId: number, form: FormData): Observable<void> {
+        return this.http.post<JobResponse>(this.path + jobId + '/file', form, new HttpOptions()).pipe(
+            map(resp => undefined),
+        );
+    }
+
 }
