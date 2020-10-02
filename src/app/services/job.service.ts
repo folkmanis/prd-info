@@ -43,10 +43,14 @@ export class JobService {
 
   updateJob(job: Partial<Job>): Observable<boolean> {
     if (!job.jobId) { return of(false); }
-    const jobId = job.jobId;
-    delete job.jobId;
-    delete job._id;
-    return this.prdApi.jobs.updateOne(jobId, job).pipe(
+    return this.prdApi.jobs.updateOne(
+      job.jobId,
+      {
+        ...job,
+        jobId: undefined,
+        _id: undefined,
+      }
+    ).pipe(
       tap(resp => resp && this._updateJobs$.next()),
     );
   }
