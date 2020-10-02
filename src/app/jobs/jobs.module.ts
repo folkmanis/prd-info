@@ -16,6 +16,7 @@ import { CustomerInputDialogComponent } from './side-panel/customer-input-dialog
 import { SidePanelComponent } from './side-panel/side-panel.component';
 
 import { InvoicesService } from './services/invoices.service';
+import { FileUploadService } from './services/file-upload.service';
 
 PdfMakeWrapper.setFonts(pdfFonts);
 
@@ -38,6 +39,7 @@ PdfMakeWrapper.setFonts(pdfFonts);
   ],
   providers: [
     InvoicesService,
+    FileUploadService,
   ],
 })
 export class JobsModule { }

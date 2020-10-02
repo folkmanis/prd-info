@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import * as moment from 'moment';
-import { Observable, of } from 'rxjs';
+import { EMPTY, Observable, of } from 'rxjs';
 import { concatMap, map, tap } from 'rxjs/operators';
 import { JobBase } from 'src/app/interfaces';
 import { JobService } from 'src/app/services/job.service';
 import { JobDialogComponent } from '../job-dialog.component';
 import { JobEditDialogData } from '../job-edit-dialog-data';
 import { JobEditDialogResult } from '../job-edit-dialog-result';
+import { FileUploadService } from '../../services/file-upload.service';
 
 const JOB_DIALOG_CONFIG: MatDialogConfig = {
   height: '90%',
@@ -22,6 +23,7 @@ export class JobEditDialogService {
   constructor(
     private dialog: MatDialog,
     private jobService: JobService,
+    private fileUploadService: FileUploadService,
   ) { }
 
   editJob(jobId: number): Observable<boolean> {
@@ -32,7 +34,8 @@ export class JobEditDialogService {
           job,
         }
       }).afterClosed()),
-      concatMap(({ job }) => job ? this.jobService.updateJob(this.afterJobEdit({ ...job, jobId })) : of(false)),
+      map(this.afterJobEdit),
+      concatMap(resp => !resp ? of(false) : this.jobService.updateJob(resp.job)),
     );
   }
 
@@ -49,9 +52,11 @@ export class JobEditDialogService {
     });
 
     return dialogRef.afterClosed().pipe(
+      map(this.afterJobEdit),
       tap(console.log),
-      concatMap(({ job }) => !job?.jobId ? of(null) : this.jobService.updateJob(this.afterJobEdit(job)).pipe(
-        map(() => job.jobId)
+      concatMap(resp => !resp ? of(undefined) : this.jobService.updateJob(resp.job).pipe(
+        concatMap(_ => this.fileUploadService.uploadFiles(resp.job.jobId, resp.files)),
+        map(_ => resp.job.jobId)
       )),
     );
 
@@ -61,11 +66,14 @@ export class JobEditDialogService {
     return (job) => this.jobService.newJob(job);
   }
 
-  private afterJobEdit(job: Partial<JobBase>): Partial<JobBase> {
-    return {
-      ...job,
-      dueDate: moment(job.dueDate).endOf('day').toDate(),
-    };
+  private afterJobEdit<T extends JobEditDialogResult | undefined>(resp: T): T {
+    return resp?.job?.jobId ? {
+      ...resp,
+      job: {
+        ...resp.job,
+        dueDate: moment(resp.job.dueDate).endOf('day').toDate(),
+      }
+    } : undefined;
   }
 
 }
