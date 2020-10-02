@@ -12,6 +12,12 @@ import { map, share } from 'rxjs/operators';
 export class UploadFilesComponent implements OnInit, OnDestroy {
   @Input() files: File[];
 
+  @Input() set disabled(val: boolean) {
+    this._disabled = Boolean(val);
+  }
+  get disabled(): boolean { return this._disabled; }
+  private _disabled = false;
+
   selection = new SelectionModel<File>(true);
   @Output() filesChange: Observable<File[]> = this.selection.changed.pipe(
     map(sel => sel.source.selected),

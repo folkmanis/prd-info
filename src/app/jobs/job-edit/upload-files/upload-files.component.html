@@ -2,12 +2,13 @@
 
     <ng-container matColumnDef="selector">
         <th mat-header-cell *matHeaderCellDef>
-            <mat-checkbox [checked]="isAllSelected()" (change)="masterToggle()"
+            <mat-checkbox [disabled]="disabled" [checked]="isAllSelected()" (change)="masterToggle()"
                 [indeterminate]="selection.hasValue() && !isAllSelected()">
             </mat-checkbox>
         </th>
         <td mat-cell *matCellDef="let file">
-            <mat-checkbox [checked]="selection.isSelected(file)" (change)="selection.toggle(file)"></mat-checkbox>
+            <mat-checkbox [disabled]="disabled" [checked]="selection.isSelected(file)"
+                (change)="selection.toggle(file)"></mat-checkbox>
         </td>
         <td mat-footer-cell *matFooterCellDef></td>
     </ng-container>
