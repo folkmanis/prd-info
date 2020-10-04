@@ -1,3 +1,4 @@
+import { HttpEvent, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Job, JobResponse, JobsWithoutInvoicesTotals } from 'src/app/interfaces';
@@ -24,10 +25,14 @@ export class JobsApi extends ApiBase<Job> {
         );
     }
 
-    fileUpload(jobId: number, form: FormData): Observable<void> {
-        return this.http.post<JobResponse>(this.path + jobId + '/file', form, new HttpOptions()).pipe(
-            map(resp => undefined),
+    fileUpload(jobId: number, form: FormData): Observable<HttpEvent<JobResponse>> {
+        const request = new HttpRequest(
+            'POST',
+            this.path + jobId + '/file',
+            form,
+            { reportProgress: true, }
         );
+        return this.http.request<JobResponse>(request);
     }
 
 }

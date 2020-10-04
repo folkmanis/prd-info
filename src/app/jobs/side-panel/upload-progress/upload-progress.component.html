@@ -1,0 +1,12 @@
+<ul>
+    <li *ngFor="let progr of progress; trackBy: trackByFn">
+        {{progr.name}}
+        <div *ngIf="isProgress(progr)">
+            {{progressPercent(progr)}}%
+            <mat-progress-bar mode="determinate" [value]="progressPercent(progr)"></mat-progress-bar>
+        </div>
+        <div *ngIf="isComplete(progr)">
+            Augšupielāde pabeigta!
+        </div>
+    </li>
+</ul>

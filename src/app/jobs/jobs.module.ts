@@ -17,6 +17,7 @@ import { SidePanelComponent } from './side-panel/side-panel.component';
 
 import { InvoicesService } from './services/invoices.service';
 import { FileUploadService } from './services/file-upload.service';
+import { UploadProgressComponent } from './side-panel/upload-progress/upload-progress.component';
 
 PdfMakeWrapper.setFonts(pdfFonts);
 
@@ -29,6 +30,7 @@ PdfMakeWrapper.setFonts(pdfFonts);
     JobFilterComponent,
     SidePanelComponent,
     CustomerInputDialogComponent,
+    UploadProgressComponent,
   ],
   imports: [
     CommonModule,
