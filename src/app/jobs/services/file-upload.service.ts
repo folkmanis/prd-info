@@ -1,19 +1,28 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject, of } from 'rxjs';
+import { Observable, Subject, of, merge } from 'rxjs';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
-import { map, mergeMap, tap } from 'rxjs/operators';
+import { map, mergeMap, share, tap, delay } from 'rxjs/operators';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { FileUploadEventType, FileUploadMessage, UploadMessageBase } from '../interfaces/file-upload-message';
+import { filterTime } from 'src/app/library/rx';
 
 /** Laiks, pēc kura tiek nosūtīts papildus slēdzošaias ziņojums */
-const CLOSE_EVENT_DELAY = 10 * 1000;
+const CLOSE_EVENT_DELAY = 1000 * 5;
 
 
 @Injectable()
 export class FileUploadService {
 
-  private _uploadProgress$ = new Subject<FileUploadMessage[]>();
-  uploadProgress$ = this._uploadProgress$.asObservable();
+  private _uploadProgress$ = new Subject<Map<string, FileUploadMessage>>();
+  private _uploadProgressPercent$ = new Subject<Map<string, FileUploadMessage>>();
+
+  uploadProgress$ = merge(
+    this._uploadProgressPercent$.pipe(filterTime(500)),
+    this._uploadProgress$,
+  ).pipe(
+    map(eventMapToSortedArray),
+    share(),
+  );
 
   /* augšupielāde identificējas ar darba numuru un faila nosaukumu */
   private _activeUploads = new Map<string, FileUploadMessage>();
@@ -22,13 +31,14 @@ export class FileUploadService {
     private prdApi: PrdApiService,
   ) { }
 
-  uploadFiles(id: number, files?: File[]): Observable<void> {
-    console.log(id, ...files.map(file => file.name));
-    if (!id || files?.length < 1) { return of(); }
-    const jobFiles = files.map(file => ({ file, jobId: id }));
+  uploadFiles(jobId: number, files?: File[]): Observable<void> {
+    if (!jobId || files?.length < 1) { return of(); }
+    const jobFiles = files
+      .sort((a, b) => a.size - b.size); // mazākie vispirms
 
+    this.startProgressWaiting(jobId, files);
     of(...jobFiles).pipe(
-      mergeMap(({ jobId, file }) => this.uploadFile(jobId, file), 2)
+      mergeMap(file => this.uploadFile(jobId, file), 2),
     ).subscribe();
     return of();
   }
@@ -37,9 +47,21 @@ export class FileUploadService {
     const formData = new FormData();
     formData.append('fileUpload', file, file.name);
     return this.prdApi.jobs.fileUpload(jobId, formData).pipe(
-      // tap(ev => console.log(ev)),
       map(ev => this.reportProgress(ev, file, jobId)),
     );
+  }
+
+  private startProgressWaiting(jobId: number, files: File[]): void {
+    files.forEach(file => this._activeUploads.set(
+      uploadId(jobId, file.name),
+      {
+        type: FileUploadEventType.UploadWaiting,
+        id: uploadId(jobId, file.name),
+        jobId,
+        name: file.name,
+        size: file.size,
+      }
+    ));
   }
 
   private reportProgress(event: HttpEvent<any>, file: File, jobId: number) {
@@ -50,12 +72,14 @@ export class FileUploadService {
       name: file.name,
       size: file.size,
     };
+
     /* New upload started */
     if (event.type === HttpEventType.Sent) {
       this._activeUploads.set(id, {
         ...messageBase,
         type: FileUploadEventType.UploadStart,
       });
+      this._uploadProgress$.next(this._activeUploads);
     }
 
     if (event.type === HttpEventType.UploadProgress) {
@@ -65,6 +89,7 @@ export class FileUploadService {
         done: event.loaded,
         precentDone: Math.round(100 * event.loaded / event.total),
       });
+      this._uploadProgressPercent$.next(this._activeUploads);
     }
 
     if (event.type === HttpEventType.Response) {
@@ -74,19 +99,18 @@ export class FileUploadService {
       });
       setTimeout(() => {
         this._activeUploads.delete(id);
-        this._uploadProgress$.next([...this._activeUploads.values()]);
+        this._uploadProgress$.next(this._activeUploads);
       }, CLOSE_EVENT_DELAY);
+      this._uploadProgress$.next(this._activeUploads);
     }
-    this._uploadProgress$.next(eventMapToSortedArray(this._activeUploads));
   }
 
 }
 
 /* kombinē augšupielādes Id no darba nr. un faila nosaukuma */
 const uploadId = (jobId: number, fileName: string): string =>
-  jobId.toString + fileName;
+  jobId.toString() + fileName;
 
 const eventMapToSortedArray = (ev: Map<string, FileUploadMessage>): FileUploadMessage[] =>
-  Array.from(ev.values())
-    .sort((a, b) => a.type - b.type);
+  Array.from(ev.values());
 
