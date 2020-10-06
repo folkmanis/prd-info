@@ -1,10 +1,24 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FileUploadMessage, FileUploadEventType } from '../../interfaces/file-upload-message';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 
 @Component({
   selector: 'app-upload-progress',
   templateUrl: './upload-progress.component.html',
-  styleUrls: ['./upload-progress.component.css']
+  styleUrls: ['./upload-progress.component.css'],
+  animations: [
+    trigger('collapseAnimation', [
+
+      transition(':enter', [
+        style({ height: 0 }),
+        animate('500ms', style({ height: '*' }))
+      ]),
+
+      transition(':leave', [
+        animate('500ms', style({ height: 0 }))
+      ]),
+    ])
+  ]
 })
 export class UploadProgressComponent implements OnInit {
   @Input() progress: FileUploadMessage[] | undefined;
@@ -15,7 +29,7 @@ export class UploadProgressComponent implements OnInit {
   }
 
   trackByFn(_: number, progr: FileUploadMessage): string {
-    return progr.id + progr.type;
+    return progr.id;
   }
 
   isProgress(message: FileUploadMessage): boolean {
