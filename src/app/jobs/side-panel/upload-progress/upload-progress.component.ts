@@ -7,15 +7,7 @@ import { FileUploadMessage, FileUploadEventType } from '../../interfaces/file-up
   styleUrls: ['./upload-progress.component.css']
 })
 export class UploadProgressComponent implements OnInit {
-  @Input() set progress(val: FileUploadMessage[] | undefined) {
-    if (val) {
-      this._progress = [...val];
-    }
-  }
-  get progress(): FileUploadMessage[] { return this._progress; }
-  private _progress: FileUploadMessage[] = [];
-
-  types = FileUploadEventType;
+  @Input() progress: FileUploadMessage[] | undefined;
 
   constructor() { }
 
@@ -31,11 +23,22 @@ export class UploadProgressComponent implements OnInit {
   }
 
   progressPercent(message: FileUploadMessage): number {
-    return message.type === FileUploadEventType.UploadProgress ? message.precentDone : 0;
+    switch (message.type) {
+      case FileUploadEventType.UploadProgress:
+        return message.precentDone;
+      case FileUploadEventType.UploadFinish:
+        return 100;
+      default:
+        return 0;
+    }
   }
 
   isComplete(message: FileUploadMessage): boolean {
     return message.type === FileUploadEventType.UploadFinish;
+  }
+
+  isWaiting(message: FileUploadMessage): boolean {
+    return message.type === FileUploadEventType.UploadWaiting;
   }
 
 }
