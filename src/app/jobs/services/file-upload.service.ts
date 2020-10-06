@@ -9,15 +9,22 @@ import { FileUploadEventType, FileUploadMessage, UploadMessageBase } from '../in
 /** Laiks, pēc kura tiek nosūtīts papildus slēdzošaias ziņojums */
 const CLOSE_EVENT_DELAY = 1000 * 5;
 
+/** Paralēlo augšupielāžu skaits vienam darbam */
+const SIMULTANEOUS_UPLOADS = 2;
+
+/** Minimālais laiks starp progresa ziņojumiem */
+const PERCENT_REPORT_INTERVAL = 500;
 
 @Injectable()
 export class FileUploadService {
 
+  /** Svarīgie ziņojumi */
   private _uploadProgress$ = new Subject<Map<string, FileUploadMessage>>();
+  /** Nesvarīgie ziņojumu (var tikt izlaisti) */
   private _uploadProgressPercent$ = new Subject<Map<string, FileUploadMessage>>();
 
   uploadProgress$ = merge(
-    this._uploadProgressPercent$.pipe(filterTime(500)),
+    this._uploadProgressPercent$.pipe(filterTime(PERCENT_REPORT_INTERVAL)),
     this._uploadProgress$,
   ).pipe(
     map(eventMapToArray),
@@ -38,7 +45,7 @@ export class FileUploadService {
 
     this.startProgressWaiting(jobId, files);
     of(...jobFiles).pipe(
-      mergeMap(file => this.uploadFile(jobId, file), 2),
+      mergeMap(file => this.uploadFile(jobId, file), SIMULTANEOUS_UPLOADS),
     ).subscribe();
     return of();
   }
