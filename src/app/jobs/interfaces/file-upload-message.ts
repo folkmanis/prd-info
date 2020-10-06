@@ -1,8 +1,8 @@
 export enum FileUploadEventType {
     UploadStart,
     UploadProgress,
+    UploadWaiting,
     UploadFinish,
-    UploadClose,
 }
 
 export interface UploadMessageBase {
@@ -26,8 +26,12 @@ interface UploadFinishMessage extends UploadMessageBase {
     type: FileUploadEventType.UploadFinish;
 }
 
-interface UploadCloseMessage extends UploadMessageBase {
-    type: FileUploadEventType.UploadClose;
+interface UploadWaitingMessage extends UploadMessageBase {
+    type: FileUploadEventType.UploadWaiting;
 }
 
-export type FileUploadMessage = UploadStartMessage | UploadProgressMessage | UploadFinishMessage | UploadCloseMessage;
+export type FileUploadMessage =
+    UploadStartMessage |
+    UploadProgressMessage |
+    UploadFinishMessage |
+    UploadWaitingMessage;
