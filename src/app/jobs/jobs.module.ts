@@ -12,7 +12,6 @@ import { JobsRoutingModule } from './jobs-routing.module';
 import { PlateInvoiceModule } from './plate-invoice/plate-invoice.module';
 import { JobEditModule } from './job-edit/job-edit.module';
 
-import { CustomerInputDialogComponent } from './side-panel/customer-input-dialog/customer-input-dialog.component';
 import { SidePanelComponent } from './side-panel/side-panel.component';
 
 import { InvoicesService } from './services/invoices.service';
@@ -29,7 +28,6 @@ PdfMakeWrapper.setFonts(pdfFonts);
     JobListComponent,
     JobFilterComponent,
     SidePanelComponent,
-    CustomerInputDialogComponent,
     UploadProgressComponent,
   ],
   imports: [
