@@ -1,5 +1,5 @@
 import { MonoTypeOperatorFunction, pipe } from 'rxjs';
-import { filter, tap } from 'rxjs/operators';
+import { filter, tap, finalize } from 'rxjs/operators';
 
 /**
  * emits first element, then skips for set milliseconds
@@ -8,11 +8,13 @@ import { filter, tap } from 'rxjs/operators';
  */
 export function filterTime<T>(delay: number): MonoTypeOperatorFunction<T> {
     let skip = false;
+    let timeout: number | undefined;
     return pipe(
         filter(_ => !skip),
         tap(_ => {
             skip = true;
-            setTimeout(() => skip = false, delay);
-        })
+            timeout = window.setTimeout(() => skip = false, delay);
+        }),
+        finalize(() => window.clearTimeout(timeout)),
     );
 }
