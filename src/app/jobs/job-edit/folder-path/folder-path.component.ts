@@ -7,7 +7,7 @@ import { IControlValueAccessor } from '@rxweb/types';
 @Component({
   selector: 'app-folder-path',
   templateUrl: './folder-path.component.html',
-  styleUrls: ['./folder-path.component.css'],
+  styleUrls: ['./folder-path.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FolderPathComponent implements OnInit, IControlValueAccessor<string[]> {
