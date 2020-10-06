@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { Observable, Subject, of, merge } from 'rxjs';
-import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
-import { map, mergeMap, share, tap, delay } from 'rxjs/operators';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
-import { FileUploadEventType, FileUploadMessage, UploadMessageBase } from '../interfaces/file-upload-message';
+import { Injectable } from '@angular/core';
+import { merge, Observable, of, Subject } from 'rxjs';
+import { map, mergeMap, share } from 'rxjs/operators';
 import { filterTime } from 'src/app/library/rx';
+import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
+import { FileUploadEventType, FileUploadMessage, UploadMessageBase } from '../interfaces/file-upload-message';
 
 /** Laiks, pēc kura tiek nosūtīts papildus slēdzošaias ziņojums */
 const CLOSE_EVENT_DELAY = 1000 * 5;
@@ -20,7 +20,7 @@ export class FileUploadService {
     this._uploadProgressPercent$.pipe(filterTime(500)),
     this._uploadProgress$,
   ).pipe(
-    map(eventMapToSortedArray),
+    map(eventMapToArray),
     share(),
   );
 
@@ -111,6 +111,6 @@ export class FileUploadService {
 const uploadId = (jobId: number, fileName: string): string =>
   jobId.toString() + fileName;
 
-const eventMapToSortedArray = (ev: Map<string, FileUploadMessage>): FileUploadMessage[] =>
+const eventMapToArray = (ev: Map<string, FileUploadMessage>): FileUploadMessage[] =>
   Array.from(ev.values());
 

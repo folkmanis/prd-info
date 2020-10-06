@@ -1,7 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { takeUntil, tap, map } from 'rxjs/operators';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { JobEditDialogService } from '../job-edit';
-import { DestroyService } from 'src/app/library/rx/destroy.service';
 import { FileUploadService } from '../services/file-upload.service';
 
 const MAX_JOB_NAME_LENGTH = 100;
@@ -10,21 +8,16 @@ const MAX_JOB_NAME_LENGTH = 100;
   selector: 'app-side-panel',
   templateUrl: './side-panel.component.html',
   styleUrls: ['./side-panel.component.css'],
-  providers: [DestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SidePanelComponent implements OnInit {
+export class SidePanelComponent  {
 
   constructor(
     private jobDialog: JobEditDialogService,
-    private destroy$: DestroyService,
     private fileUploadService: FileUploadService,
   ) { }
 
   progress$ = this.fileUploadService.uploadProgress$;
-
-  ngOnInit(): void {
-  }
 
   onFileDrop(fileList: FileList | any) {
     if (!(fileList instanceof FileList) || !fileList.length) { return; }

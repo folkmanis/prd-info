@@ -69,7 +69,7 @@ td.column-jobId button[mat-button].mat-button {
 
 td.column-name div {
     display: flex;
-    align-items: center;
+    align-items: baseline;
 }
 
 td.column-name span.name {
