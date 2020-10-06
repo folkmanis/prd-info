@@ -53,7 +53,6 @@ export class JobEditDialogService {
 
     return dialogRef.afterClosed().pipe(
       map(this.afterJobEdit),
-      tap(console.log),
       concatMap(resp => !resp ? of(undefined) : this.jobService.updateJob(resp.job).pipe(
         concatMap(_ => this.fileUploadService.uploadFiles(resp.job.jobId, resp.files)),
         map(_ => resp.job.jobId)
