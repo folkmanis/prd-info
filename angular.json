@@ -28,7 +28,7 @@
 							"src/assets"
 						],
 						"styles": [
-							"src/prd-styles.scss",
+							"src/themes.scss",
 							"src/styles.scss"
 						],
 						"scripts": [],

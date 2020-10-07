@@ -9,23 +9,10 @@
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$prd-app-primary: mat-palette($mat-teal,900);
-$prd-app-accent:  mat-palette($mat-amber);
 
-// The warn palette is optional (defaults to red).
-$prd-app-warn:    mat-palette($mat-red);
-
-// Create the theme object. A theme consists of configurations for individual
-// theming systems such as `color` or `typography`.
-$prd-app-theme: mat-light-theme((
-  color: (
-    primary: $prd-app-primary,
-    accent: $prd-app-accent,
-    warn: $prd-app-warn,  
-  )
-));
+@import './zmg-styles.scss';
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include angular-material-theme($prd-app-theme);
+@include angular-material-theme($zmg-app-theme);
