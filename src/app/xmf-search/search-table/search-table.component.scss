@@ -1,3 +1,5 @@
+@import 'src/zmg-styles.scss';
+
 .scroll-container {
     height: 100%;
     overflow: auto;
@@ -31,7 +33,7 @@
     width: 100%;
     font-size: 12pt;
     border-collapse: collapse;
-    border: 1px solid #504040;
+    border: 1px solid mat-color($primary, darker);
     text-align: left;
     margin-top: 5px;
     margin-bottom: 20px;
@@ -39,12 +41,12 @@
 
 .table-element {
     padding: 1px;
-    border: 1px solid #504040;
+    border: 1px solid mat-color($primary, darker);
 }
 
 .table-location {
     overflow-wrap: anywhere;
-    background-color: #d0f0f0;
+    background-color: mat-color($primary, lighter);
     min-height: 32px;
     cursor: copy;
 }
