@@ -4,7 +4,7 @@ import { LayoutService } from 'src/app/layout/layout.service';
 @Component({
   selector: 'app-plate-invoice',
   templateUrl: './plate-invoice.component.html',
-  styleUrls: ['./plate-invoice.component.css']
+  styleUrls: ['./plate-invoice.component.scss']
 })
 export class PlateInvoiceComponent implements OnInit {
 

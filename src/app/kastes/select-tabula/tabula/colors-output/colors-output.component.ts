@@ -6,7 +6,7 @@ import { pluck } from 'rxjs/operators';
 @Component({
   selector: 'app-colors-output',
   templateUrl: './colors-output.component.html',
-  styleUrls: ['./colors-output.component.css']
+  styleUrls: ['./colors-output.component.scss']
 })
 export class ColorsOutputComponent implements OnInit {
   @Input('colorsRemain') set totals(_tot: Totals) {

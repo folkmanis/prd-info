@@ -12,7 +12,7 @@ import { CategoryDialogComponent } from './category-dialog/category-dialog.compo
 @Component({
   selector: 'app-jobs-preferences',
   templateUrl: './jobs-preferences.component.html',
-  styleUrls: ['./jobs-preferences.component.css']
+  styleUrls: ['./jobs-preferences.component.scss']
 })
 export class JobsPreferencesComponent implements OnInit, PreferencesComponent, OnDestroy {
 

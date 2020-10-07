@@ -17,7 +17,7 @@ import { JobEditDialogResult } from './job-edit-dialog-result';
 @Component({
   selector: 'app-job-dialog',
   templateUrl: './job-dialog.component.html',
-  styleUrls: ['./job-dialog.component.css'],
+  styleUrls: ['./job-dialog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DestroyService, JobEditFormService]
 })

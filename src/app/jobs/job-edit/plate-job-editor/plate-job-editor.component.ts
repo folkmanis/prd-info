@@ -13,7 +13,7 @@ import { JobEditFormService } from '../services/job-edit-form.service';
 @Component({
   selector: 'app-plate-job-editor',
   templateUrl: './plate-job-editor.component.html',
-  styleUrls: ['./plate-job-editor.component.css']
+  styleUrls: ['./plate-job-editor.component.scss']
 })
 export class PlateJobEditorComponent implements OnInit, OnDestroy {
   @Input() jobFormGroup: IFormGroup<JobBase>;

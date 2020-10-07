@@ -14,7 +14,7 @@ import { DestroyService } from 'src/app/library/rx/destroy.service';
 @Component({
   selector: 'app-new-invoice',
   templateUrl: './new-invoice.component.html',
-  styleUrls: ['./new-invoice.component.css'],
+  styleUrls: ['./new-invoice.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DestroyService],
 })

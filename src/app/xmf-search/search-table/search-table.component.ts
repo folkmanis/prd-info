@@ -10,7 +10,7 @@ import { SearchData } from './search-data';
 @Component({
   selector: 'app-search-table',
   templateUrl: './search-table.component.html',
-  styleUrls: ['./search-table.component.css'],
+  styleUrls: ['./search-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DestroyService],
 })

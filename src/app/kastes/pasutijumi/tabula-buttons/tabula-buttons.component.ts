@@ -9,7 +9,7 @@ const PROMPT = `Vai tiešām dzēst visus neaktīvos pakošanas ierakstas?`;
 @Component({
   selector: 'app-tabula-buttons',
   templateUrl: './tabula-buttons.component.html',
-  styleUrls: ['./tabula-buttons.component.css']
+  styleUrls: ['./tabula-buttons.component.scss']
 })
 
 export class TabulaButtonsComponent implements OnInit {

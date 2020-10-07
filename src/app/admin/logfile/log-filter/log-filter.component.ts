@@ -19,7 +19,7 @@ let validDates: ValidDates;
 @Component({
   selector: 'app-log-filter',
   templateUrl: './log-filter.component.html',
-  styleUrls: ['./log-filter.component.css']
+  styleUrls: ['./log-filter.component.scss']
 })
 export class LogFilterComponent implements OnInit, OnDestroy, AfterViewInit {
   private subs: Subscription = new Subscription();

@@ -6,7 +6,7 @@ import { ApjomiTotals } from 'src/app/interfaces';
 @Component({
   selector: 'app-apjomi-totals',
   templateUrl: './apjomi-totals.component.html',
-  styleUrls: ['./apjomi-totals.component.css']
+  styleUrls: ['./apjomi-totals.component.scss']
 })
 export class ApjomiTotalsComponent {
   @Input() set totals(_val: ApjomiTotals[]) {

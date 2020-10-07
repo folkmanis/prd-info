@@ -6,7 +6,7 @@ import { Validator } from '../../../services/validator';
 @Component({
   selector: 'app-password-change-dialog',
   templateUrl: './password-change-dialog.component.html',
-  styleUrls: ['./password-change-dialog.component.css']
+  styleUrls: ['./password-change-dialog.component.scss']
 })
 export class PasswordChangeDialogComponent implements OnInit {
 

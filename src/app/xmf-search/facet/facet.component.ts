@@ -10,7 +10,7 @@ interface FacetBlock {
 @Component({
   selector: 'app-facet',
   templateUrl: './facet.component.html',
-  styleUrls: ['./facet.component.css']
+  styleUrls: ['./facet.component.scss']
 })
 export class FacetComponent implements OnInit, OnDestroy {
   @ViewChildren(FacetCheckerComponent) blocks: QueryList<FacetCheckerComponent>;

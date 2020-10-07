@@ -10,7 +10,7 @@ type UserForSelection = Pick<User, 'username' | 'name'> & { title: string, link:
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
-  styleUrls: ['./users.component.css']
+  styleUrls: ['./users.component.scss']
 })
 export class UsersComponent implements OnInit {
   private readonly _path = '/admin/users/edit';

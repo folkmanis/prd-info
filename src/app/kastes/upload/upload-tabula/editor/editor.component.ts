@@ -8,7 +8,7 @@ import { KastesPreferencesService } from '../../../services/kastes-preferences.s
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
-  styleUrls: ['./editor.component.css', '../upload-tabula.component.css']
+  styleUrls: ['./editor.component.scss']
 })
 export class EditorComponent implements OnInit {
   @Input() adrBox: AdreseBox;

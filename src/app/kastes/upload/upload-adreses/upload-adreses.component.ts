@@ -25,7 +25,7 @@ class CheckFormGroup extends FormGroup {
 @Component({
   selector: 'app-upload-adreses',
   templateUrl: './upload-adreses.component.html',
-  styleUrls: ['./upload-adreses.component.css']
+  styleUrls: ['./upload-adreses.component.scss']
 })
 export class UploadAdresesComponent implements OnInit {
   @Output() gatavs: Subject<Totals | undefined> = new Subject();

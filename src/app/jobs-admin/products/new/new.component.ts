@@ -14,7 +14,7 @@ import { LoginService } from 'src/app/services';
 @Component({
   selector: 'app-new',
   templateUrl: './new.component.html',
-  styleUrls: ['./new.component.css']
+  styleUrls: ['./new.component.scss']
 })
 export class NewComponent implements OnInit, CanComponentDeactivate {
 

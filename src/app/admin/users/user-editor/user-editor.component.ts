@@ -18,7 +18,7 @@ import { APP_PARAMS } from 'src/app/app-params';
 @Component({
   selector: 'app-user-editor',
   templateUrl: './user-editor.component.html',
-  styleUrls: ['./user-editor.component.css'],
+  styleUrls: ['./user-editor.component.scss'],
   providers: [DestroyService],
 })
 export class UserEditorComponent implements OnInit, CanComponentDeactivate {

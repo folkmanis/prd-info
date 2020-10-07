@@ -8,7 +8,7 @@ import { JobImportService } from '../../services/job-import.service';
 @Component({
   selector: 'app-import-new-jobs',
   templateUrl: './import-new-jobs.component.html',
-  styleUrls: ['./import-new-jobs.component.css']
+  styleUrls: ['./import-new-jobs.component.scss']
 })
 export class ImportNewJobsComponent implements OnInit {
   @Input('jobs')

@@ -22,7 +22,7 @@ const CUSTOMER_DEFAULTS: Customer = {
 @Component({
   selector: 'app-edit',
   templateUrl: './edit.component.html',
-  styleUrls: ['./edit.component.css'],
+  styleUrls: ['./edit.component.scss'],
   providers: [DestroyService],
 })
 export class EditComponent implements OnInit, CanComponentDeactivate {

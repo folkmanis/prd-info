@@ -8,7 +8,7 @@ import { LogTableDatasource } from './log-table-datasource';
 @Component({
   selector: 'app-logfile-table',
   templateUrl: './logfile-table.component.html',
-  styleUrls: ['./logfile-table.component.css'],
+  styleUrls: ['./logfile-table.component.scss'],
   animations: [
     trigger('detailExpand', [
       state('collapsed', style({height: '0px', minHeight: '0'})),

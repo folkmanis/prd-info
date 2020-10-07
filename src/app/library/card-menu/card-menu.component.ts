@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'app-card-menu',
   templateUrl: './card-menu.component.html',
-  styleUrls: ['./card-menu.component.css']
+  styleUrls: ['./card-menu.component.scss']
 })
 export class CardMenuComponent implements OnInit {
   /**

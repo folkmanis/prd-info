@@ -12,7 +12,7 @@ import { JobImportService, ParsedObject } from '../services/job-import.service';
 @Component({
   selector: 'app-job-import',
   templateUrl: './job-import.component.html',
-  styleUrls: ['./job-import.component.css'],
+  styleUrls: ['./job-import.component.scss'],
   providers: [JobImportService],
 })
 export class JobImportComponent implements OnInit, OnDestroy {

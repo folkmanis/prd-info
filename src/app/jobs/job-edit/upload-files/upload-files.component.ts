@@ -6,7 +6,7 @@ import { map, share } from 'rxjs/operators';
 @Component({
   selector: 'app-upload-files',
   templateUrl: './upload-files.component.html',
-  styleUrls: ['./upload-files.component.css'],
+  styleUrls: ['./upload-files.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UploadFilesComponent implements OnInit, OnDestroy {

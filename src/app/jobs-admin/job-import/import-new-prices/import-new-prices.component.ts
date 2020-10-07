@@ -7,7 +7,7 @@ import { ProductPriceImport } from '../../services';
 @Component({
   selector: 'app-import-new-prices',
   templateUrl: './import-new-prices.component.html',
-  styleUrls: ['./import-new-prices.component.css']
+  styleUrls: ['./import-new-prices.component.scss']
 })
 export class ImportNewPricesComponent {
   @Input() pricesForm: FormArray;

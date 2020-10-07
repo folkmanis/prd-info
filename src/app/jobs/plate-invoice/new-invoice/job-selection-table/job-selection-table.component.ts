@@ -10,7 +10,7 @@ const TABLE_COLUMNS = ['jobId', 'receivedDate', 'customer', 'name', 'productName
 @Component({
   selector: 'app-job-selection-table',
   templateUrl: './job-selection-table.component.html',
-  styleUrls: ['./job-selection-table.component.css']
+  styleUrls: ['./job-selection-table.component.scss']
 })
 export class JobSelectionTableComponent implements OnInit, OnDestroy {
   @Input('jobs') set _jobs(jobs: JobPartial[]) {

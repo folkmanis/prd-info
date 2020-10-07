@@ -21,7 +21,7 @@ interface Colors {
 @Component({
   selector: 'app-kastes-preferences',
   templateUrl: './kastes-preferences.component.html',
-  styleUrls: ['./kastes-preferences.component.css', '../module-preferences.component.css']
+  styleUrls: ['./kastes-preferences.component.scss']
 })
 export class KastesPreferencesComponent implements OnInit, OnDestroy, PreferencesComponent {
 

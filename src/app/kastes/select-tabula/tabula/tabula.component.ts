@@ -15,7 +15,7 @@ const COLUMNS = ['kods', 'adrese', 'yellow', 'rose', 'white'];
 @Component({
   selector: 'app-tabula',
   templateUrl: './tabula.component.html',
-  styleUrls: ['./tabula.component.css'],
+  styleUrls: ['./tabula.component.scss'],
   providers: [
     { provide: MAT_CHECKBOX_DEFAULT_OPTIONS, useValue: { clickAction: 'noop' } }
   ]

@@ -9,7 +9,7 @@ import { DestroyService } from 'src/app/library/rx/destroy.service';
 @Component({
   selector: 'app-selector',
   templateUrl: './selector.component.html',
-  styleUrls: ['./selector.component.css'],
+  styleUrls: ['./selector.component.scss'],
   providers: [DestroyService],
 })
 export class SelectorComponent implements OnInit {

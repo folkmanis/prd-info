@@ -7,7 +7,7 @@ import { ColorTotals } from 'src/app/interfaces';
 @Component({
   selector: 'app-color-totals',
   templateUrl: './color-totals.component.html',
-  styleUrls: ['./color-totals.component.css']
+  styleUrls: ['./color-totals.component.scss']
 })
 export class ColorTotalsComponent {
   @Input() set totals(_val: ColorTotals[]) {

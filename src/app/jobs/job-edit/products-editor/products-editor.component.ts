@@ -17,7 +17,7 @@ const COLUMNS = ['name', 'count', 'price', 'total', 'comment'];
 @Component({
   selector: 'app-products-editor',
   templateUrl: './products-editor.component.html',
-  styleUrls: ['./products-editor.component.css'],
+  styleUrls: ['./products-editor.component.scss'],
   providers: [DestroyService],
 })
 export class ProductsEditorComponent implements OnInit, OnDestroy {

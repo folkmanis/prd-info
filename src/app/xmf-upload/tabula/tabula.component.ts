@@ -6,7 +6,7 @@ import { XmfUploadTabulaDataSource } from './xmf-upload-tabula-data-source';
 @Component({
   selector: 'app-tabula',
   templateUrl: './tabula.component.html',
-  styleUrls: ['./tabula.component.css']
+  styleUrls: ['./tabula.component.scss']
 })
 export class TabulaComponent implements OnInit {
 

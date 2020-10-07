@@ -8,7 +8,7 @@ import { map, tap, switchMap } from 'rxjs/operators';
 @Component({
   selector: 'app-module-preferences',
   templateUrl: './module-preferences.component.html',
-  styleUrls: ['./module-preferences.component.css']
+  styleUrls: ['./module-preferences.component.scss']
 })
 export class ModulePreferencesComponent implements OnInit, CanComponentDeactivate {
   @ViewChild('system') private system: PreferencesComponent;

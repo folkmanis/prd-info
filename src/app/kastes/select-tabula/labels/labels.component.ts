@@ -9,7 +9,7 @@ import { KastesTabulaService } from '../services/kastes-tabula.service';
 @Component({
   selector: 'app-labels',
   templateUrl: './labels.component.html',
-  styleUrls: ['./labels.component.css']
+  styleUrls: ['./labels.component.scss']
 })
 export class LabelsComponent implements OnInit {
   @ViewChild('kodsInput') kodsInput: ElementRef;

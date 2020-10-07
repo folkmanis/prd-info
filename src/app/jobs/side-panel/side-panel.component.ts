@@ -7,7 +7,7 @@ const MAX_JOB_NAME_LENGTH = 100;
 @Component({
   selector: 'app-side-panel',
   templateUrl: './side-panel.component.html',
-  styleUrls: ['./side-panel.component.css'],
+  styleUrls: ['./side-panel.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidePanelComponent  {

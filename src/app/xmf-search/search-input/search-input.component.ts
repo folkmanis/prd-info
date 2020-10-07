@@ -6,7 +6,7 @@ import { ArchiveSearchService } from '../services/archive-search.service';
 @Component({
   selector: 'app-search-input',
   templateUrl: './search-input.component.html',
-  styleUrls: ['./search-input.component.css'],
+  styleUrls: ['./search-input.component.scss'],
 })
 export class SearchInputComponent  {
   private _count = 0;

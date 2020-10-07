@@ -6,7 +6,7 @@ import { LogfileService } from '../services/logfile.service';
 @Component({
   selector: 'app-logfile',
   templateUrl: './logfile.component.html',
-  styleUrls: ['./logfile.component.css'],
+  styleUrls: ['./logfile.component.scss'],
   providers: [LogfileService],
 })
 export class LogfileComponent implements OnInit, CanComponentDeactivate {

@@ -9,7 +9,7 @@ import { SystemPreferencesService } from 'src/app/services';
 @Component({
   selector: 'app-system-preferences',
   templateUrl: './system-preferences.component.html',
-  styleUrls: ['./system-preferences.component.css', '../module-preferences.component.css']
+  styleUrls: ['./system-preferences.component.scss']
 })
 export class SystemPreferencesComponent implements OnInit, PreferencesComponent {
 

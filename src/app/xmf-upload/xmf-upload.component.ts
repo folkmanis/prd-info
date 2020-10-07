@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-xmf-upload',
   templateUrl: './xmf-upload.component.html',
-  styleUrls: ['./xmf-upload.component.css']
+  styleUrls: ['./xmf-upload.component.scss']
 })
 export class XmfUploadComponent implements OnInit, OnDestroy {
 

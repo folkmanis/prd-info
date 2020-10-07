@@ -7,7 +7,7 @@ import { FacetFilter } from 'src/app/interfaces/xmf-search';
 @Component({
   selector: 'app-xmf-search',
   templateUrl: './xmf-search.component.html',
-  styleUrls: ['./xmf-search.component.css'],
+  styleUrls: ['./xmf-search.component.scss'],
   providers: [ArchiveSearchService],
 })
 export class XmfSearchComponent implements OnInit {

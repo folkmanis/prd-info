@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-select-pasutijums',
   templateUrl: './select-pasutijums.component.html',
-  styleUrls: ['./select-pasutijums.component.css']
+  styleUrls: ['./select-pasutijums.component.scss']
 })
 export class SelectPasutijumsComponent implements OnInit, OnDestroy {
 

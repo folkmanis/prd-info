@@ -10,7 +10,7 @@ import { map } from 'rxjs/operators';
 @Component({
   selector: 'app-pasutijumi-tabula',
   templateUrl: './pasutijumi-tabula.component.html',
-  styleUrls: ['./pasutijumi-tabula.component.css']
+  styleUrls: ['./pasutijumi-tabula.component.scss']
 })
 export class PasutijumiTabulaComponent implements OnInit {
 

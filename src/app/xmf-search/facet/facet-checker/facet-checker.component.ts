@@ -5,7 +5,7 @@ import { Count } from 'src/app/interfaces/xmf-search';
 @Component({
   selector: 'app-facet-checker',
   templateUrl: './facet-checker.component.html',
-  styleUrls: ['./facet-checker.component.css']
+  styleUrls: ['./facet-checker.component.scss']
 })
 export class FacetCheckerComponent implements OnInit {
   @ViewChild(MatSelectionList) selection: MatSelectionList;

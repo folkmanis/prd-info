@@ -12,7 +12,7 @@ import { saveAs } from 'file-saver';
 @Component({
   selector: 'app-invoice-editor',
   templateUrl: './invoice-editor.component.html',
-  styleUrls: ['./invoice-editor.component.css']
+  styleUrls: ['./invoice-editor.component.scss']
 })
 export class InvoiceEditorComponent implements OnInit {
 

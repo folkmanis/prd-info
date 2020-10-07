@@ -4,7 +4,7 @@ import { InvoicesTotals } from '../../interfaces';
 @Component({
   selector: 'app-selection-totals',
   templateUrl: './selection-totals.component.html',
-  styleUrls: ['./selection-totals.component.css'],
+  styleUrls: ['./selection-totals.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectionTotalsComponent implements OnInit {

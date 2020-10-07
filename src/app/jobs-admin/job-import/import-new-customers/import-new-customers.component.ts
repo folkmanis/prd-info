@@ -7,7 +7,7 @@ import { CustomersService } from 'src/app/services';
 @Component({
   selector: 'app-import-new-customers',
   templateUrl: './import-new-customers.component.html',
-  styleUrls: ['./import-new-customers.component.css'],
+  styleUrls: ['./import-new-customers.component.scss'],
 })
 export class ImportNewCustomersComponent implements OnInit {
   @Input('missingCodes')

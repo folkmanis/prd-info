@@ -8,7 +8,7 @@ import { KastesPreferencesService } from '../../services/kastes-preferences.serv
 @Component({
   selector: 'app-upload-tabula',
   templateUrl: './upload-tabula.component.html',
-  styleUrls: ['./upload-tabula.component.css']
+  styleUrls: ['./upload-tabula.component.scss']
 })
 export class UploadTabulaComponent implements OnInit, AfterViewInit {
   @ViewChild(MatTable) table: MatTable<AdreseBox>;

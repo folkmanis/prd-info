@@ -19,7 +19,7 @@ const NEW_ORDER: Partial<KastesJob> = {
 @Component({
   selector: 'app-pasutijums-id',
   templateUrl: './pasutijums-id.component.html',
-  styleUrls: ['./pasutijums-id.component.css'],
+  styleUrls: ['./pasutijums-id.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PasutijumsIdComponent implements CanComponentDeactivate {

@@ -6,7 +6,7 @@ import { Totals } from 'src/app/interfaces';
 @Component({
   selector: 'app-kopskaiti',
   templateUrl: './kopskaiti.component.html',
-  styleUrls: ['./kopskaiti.component.css']
+  styleUrls: ['./kopskaiti.component.scss']
 })
 export class KopskaitiComponent implements OnInit {
 

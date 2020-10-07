@@ -18,7 +18,7 @@ const DEFAULT_FILTER: JobQueryFilter = {
 @Component({
   selector: 'app-job-filter',
   templateUrl: './job-filter.component.html',
-  styleUrls: ['./job-filter.component.css'],
+  styleUrls: ['./job-filter.component.scss'],
   providers: [DestroyService],
 })
 export class JobFilterComponent implements OnInit {

@@ -11,7 +11,7 @@ import { JobEditDialogService } from '../job-edit';
 @Component({
   selector: 'app-job-list',
   templateUrl: './job-list.component.html',
-  styleUrls: ['./job-list.component.css'],
+  styleUrls: ['./job-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DestroyService],
 })

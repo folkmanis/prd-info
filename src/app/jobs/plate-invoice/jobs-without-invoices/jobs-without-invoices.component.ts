@@ -4,7 +4,7 @@ import { InvoicesService } from '../../services/invoices.service';
 @Component({
   selector: 'app-jobs-without-invoices',
   templateUrl: './jobs-without-invoices.component.html',
-  styleUrls: ['./jobs-without-invoices.component.css']
+  styleUrls: ['./jobs-without-invoices.component.scss']
 })
 export class JobsWithoutInvoicesComponent implements OnInit {
 

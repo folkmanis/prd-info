@@ -5,7 +5,7 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
 @Component({
   selector: 'app-upload-progress',
   templateUrl: './upload-progress.component.html',
-  styleUrls: ['./upload-progress.component.css'],
+  styleUrls: ['./upload-progress.component.scss'],
   animations: [
     trigger('collapseAnimation', [
 

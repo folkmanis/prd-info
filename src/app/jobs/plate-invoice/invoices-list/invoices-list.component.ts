@@ -8,7 +8,7 @@ const COLUMNS = ['invoiceId', 'customer', 'createdDate', 'totalSum'];
 @Component({
   selector: 'app-invoices-list',
   templateUrl: './invoices-list.component.html',
-  styleUrls: ['./invoices-list.component.css']
+  styleUrls: ['./invoices-list.component.scss']
 })
 export class InvoicesListComponent implements OnInit {
 

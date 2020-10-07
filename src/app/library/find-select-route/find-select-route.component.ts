@@ -13,7 +13,7 @@ export interface RouteSelection {
 @Component({
   selector: 'app-find-select-route',
   templateUrl: './find-select-route.component.html',
-  styleUrls: ['./find-select-route.component.css']
+  styleUrls: ['./find-select-route.component.scss']
 })
 export class FindSelectRouteComponent implements OnInit, OnDestroy {
   // tslint:disable-next-line: no-input-rename

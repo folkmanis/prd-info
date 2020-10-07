@@ -4,7 +4,7 @@ import { LayoutService } from 'src/app/layout/layout.service';
 
 @Component({
   templateUrl: './main-menu.component.html',
-  styleUrls: ['./main-menu.component.css'],
+  styleUrls: ['./main-menu.component.scss'],
 })
 export class MainMenuComponent {
 

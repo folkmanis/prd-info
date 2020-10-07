@@ -4,7 +4,7 @@ import { KastesTabulaService } from '../services/kastes-tabula.service';
 @Component({
   selector: 'app-refresh-table',
   templateUrl: './refresh-table.component.html',
-  styleUrls: ['./refresh-table.component.css']
+  styleUrls: ['./refresh-table.component.scss']
 })
 export class RefreshTableComponent implements OnInit {
 
