@@ -6,6 +6,8 @@ import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/scrolling';
 const showScrollHeight = 300;
 const hideScrollHeight = 10;
 
+const SCROLL_AUDIT_TIME = 500;
+
 @Component({
   selector: 'app-scroll-to-top',
   templateUrl: './scroll-to-top.component.html',
@@ -32,7 +34,7 @@ export class ScrollToTopComponent implements OnInit, OnDestroy {
     } else {
       this.scrollContainers = this.dispatcher.getAncestorScrollContainers(this.element);
     }
-    const sub = this.dispatcher.scrolled().pipe(
+    const sub = this.dispatcher.scrolled(SCROLL_AUDIT_TIME).pipe(
       map(() => this.scrollContainers.reduce((acc, scr) => acc += scr.measureScrollOffset('top'), 0)),
       tap(top => {
         if (top > showScrollHeight) {
@@ -51,7 +53,7 @@ export class ScrollToTopComponent implements OnInit, OnDestroy {
   }
 
   scrollToTop() {
-    this.scrollContainers.forEach(scr => scr.scrollTo({ top: 0 }));
+    this.scrollContainers.forEach(scr => scr.scrollTo({ top: 0, behavior: 'smooth' }));
   }
 
   setVisibility(status: boolean): void {
