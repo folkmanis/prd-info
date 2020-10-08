@@ -28,3 +28,8 @@
 .button-bar>*:not(:first-child) {
     margin-left: 16px;
 }
+
+.mat-stepper-horizontal {
+ height: 100%;
+ overflow: auto;
+}
