@@ -16,7 +16,6 @@ import { ScrollTopDirective } from './scroll-top.directive';
     MatButtonModule,
   ],
   exports: [
-    ScrollToTopComponent,
     ScrollTopDirective,
   ]
 })

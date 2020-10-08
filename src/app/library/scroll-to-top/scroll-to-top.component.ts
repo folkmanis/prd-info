@@ -6,7 +6,7 @@ import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/scrolling';
 const showScrollHeight = 300;
 const hideScrollHeight = 10;
 
-const SCROLL_AUDIT_TIME = 500;
+const SCROLL_AUDIT_TIME = 200;
 
 @Component({
   templateUrl: './scroll-to-top.component.html',
@@ -29,17 +29,23 @@ export class ScrollToTopComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    console.log(this.fixed);
     const sub = this.dispatcher.scrolled(SCROLL_AUDIT_TIME).pipe(
       map(() => this.scrollable.measureScrollOffset('top')),
-      tap(top => {
-        if (top > showScrollHeight) {
-          this.zone.run(() => this.setVisibility(true)); // Scroll tiek pārbaudīts ārpus zonas. Bez run nekādas reakcijas nebūs
-        } else if (this.showScroll && top < hideScrollHeight) {
-          this.zone.run(() => this.setVisibility(false));
-        }
-      }),
-    ).subscribe();
+    ).subscribe(top => {
+      if (!this.showScroll && top > showScrollHeight) {
+        /** Scroll tiek pārbaudīts ārpus zonas. Bez run nekādas reakcijas nebūs */
+        this.zone.run(() => {
+          this.showScroll = true;
+          this.chgRef.markForCheck();
+        });
+      } else if (this.showScroll && top < hideScrollHeight) {
+        /** Scroll tiek pārbaudīts ārpus zonas. Bez run nekādas reakcijas nebūs */
+        this.zone.run(() => {
+          this.showScroll = false;
+          this.chgRef.markForCheck();
+        });
+      }
+    });
 
     this._subs.add(sub);
   }
@@ -50,11 +56,6 @@ export class ScrollToTopComponent implements OnInit, OnDestroy {
 
   scrollToTop() {
     this.scrollable.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  setVisibility(status: boolean): void {
-    this.showScroll = status;
-    this.chgRef.markForCheck();
   }
 
 }
