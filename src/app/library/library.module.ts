@@ -136,7 +136,6 @@ import { FilesizePipe } from './pipes/filesize.pipe';
     MatAutocompleteModule,
     MatRadioModule,
     LayoutModule,
-    ScrollToTopModule,
     CopyClipboardDirective,
     TaggedStringComponent,
     CardMenuComponent,
@@ -148,6 +147,7 @@ import { FilesizePipe } from './pipes/filesize.pipe';
     FindSelectRouteModule,
     FocusedDirective,
     SideButtonModule,
+    ScrollToTopModule,
     FilesizePipe,
   ],
 })
