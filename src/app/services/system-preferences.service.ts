@@ -40,15 +40,19 @@ export class SystemPreferencesService {
    * Multicast Observable
    */
   modules$ = this.loginService.user$.pipe(
-    map(usr => this.params.userModules.filter(mod => usr && usr.preferences.modules.includes(mod.value)))
+    map(usr => this.params.userModules.filter(mod => usr && usr.preferences.modules.includes(mod.route)))
   );
-  /** Aktīvais modules */
-  activeModule$: Observable<UserModule | undefined> = combineLatest([
+  /* Aktīvie moduļi */
+  activeModules$: Observable<UserModule[]> = combineLatest([
     this.router.events.pipe(filter(ev => ev instanceof NavigationEnd)),
     this.modules$
   ]).pipe(
-    map(([ev, modules]: [NavigationEnd, UserModule[]]) => modules.find(mod => mod.route === ev.url.split(/[/;]/)[1])),
+    map(findModule),
     shareReplay(1),
+  );
+  /** Aktīvais modulis */
+  activeModule$: Observable<UserModule | undefined> = this.activeModules$.pipe(
+    map(modules => [...modules].pop()),
   );
   /** Aktīvā moduļa child menu */
   childMenu$: Observable<Partial<UserModule>[]> = this.activeModule$.pipe(
@@ -90,4 +94,22 @@ export class SystemPreferencesService {
     );
   }
 
+}
+
+function findModule([ev, modules]: [NavigationEnd, UserModule[]]) {
+  const [, ...path] = ev.url.split(/[/;]/);
+
+  let userModules: UserModule[] | undefined = [...modules];
+  const activeModules: UserModule[] = [];
+
+  for (const segm of path) {
+    const module = userModules?.find(mod => mod.route === segm);
+
+    if (!module) { break; }
+
+    userModules = module.childMenu;
+    activeModules.push(module);
+  }
+
+  return activeModules;
 }

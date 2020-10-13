@@ -1,4 +1,6 @@
-mat-nav-list {
+@use "src/zmg-styles.scss" as zmg;
+
+.mat-nav-list {
   width: 250px;
 }
 
@@ -6,12 +8,23 @@ mat-nav-list {
   display: none;
 }
 
-.tree-indent {
-  padding-left: 20px;
+.tree-indent a {
+  padding-left: 16px;
 }
 
-.tree ul, .tree li {
-  margin-top: 0;
-  margin-bottom: 0;
-  list-style-type: none;
+.mat-list-item,
+.mat-tree-node {
+  &.active {
+    background-color: zmg.mat-color(zmg.$primary, lighter);
+    color: zmg.mat-color(zmg.$primary, "primary-contrast");
+
+    &:hover {
+      background-color: zmg.mat-color(zmg.$primary);
+      color: zmg.mat-color(zmg.$primary, "darker-contrast");
+    }
+  }
+}
+
+.active>a:hover {
+  color: zmg.mat-color(zmg.$primary, "darker-contrast");
 }

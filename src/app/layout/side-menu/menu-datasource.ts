@@ -6,6 +6,7 @@ import { map, tap, share } from 'rxjs/operators';
 export interface SideMenuData {
     name: string;
     route: string[];
+    routeStr: string;
     childMenu?: SideMenuData[];
 }
 /**
@@ -40,12 +41,14 @@ export class MenuDataSource implements DataSource<SideMenuData> {
      */
     private toSideMenu(item: Partial<UserModule>[], rte: string[] = []): SideMenuData[] {
         return item.reduce((acc, val) => {
-            const mItem: SideMenuData = { name: val.name, route: [...rte, val.route] };
-            if (val.childMenu && val.childMenu.length > 0) {
-                mItem.childMenu = this.toSideMenu(val.childMenu, mItem.route);
-            }
-            acc.push(mItem);
-            return acc;
+            const route = [...rte, val.route];
+            const mItem: SideMenuData = {
+                name: val.name,
+                route,
+                routeStr: route.join('/'),
+                childMenu: val.childMenu?.length && this.toSideMenu(val.childMenu, route),
+            };
+            return [...acc, mItem];
         }, []);
     }
 }
