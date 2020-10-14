@@ -1,28 +1,30 @@
 .container {
     height: 100%;
-}
 
-.container.large {
-    display: flex;
+    &.large {
+        display: flex;
+    }
 }
 
 .selector {
     flex: 0 0 240px;
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
 }
 
 .content {
-    flex: 1;
     overflow-y: auto;
 }
 
 .large .content {
     margin: 48px;
+    flex: 1;
 }
 
-.full-width {
-    width: 100%;
+.mat-nav-list {
+    overflow-y: auto;
 }
 
 .search-box {
@@ -37,3 +39,8 @@
     width: 100%;
 }
 
+button.mat-fab {
+    position: absolute;
+    bottom: 15px;
+    right: 20px;
+}

@@ -39,14 +39,13 @@ export class EditComponent implements OnInit, CanComponentDeactivate {
       map(paramMap => paramMap.get('id') as string),
       filter(id => id && id.length === 24),
       switchMap(id => this.service.getProduct(id)),
-      tap(prod => {
-        this.productForm.reset(prod, { emitEvent: false });
-        this.productForm.markAsPristine();
-        this._emit = true;
-        this._saves = 0;
-      }),
       takeUntil(this.destroy$),
-    ).subscribe();
+    ).subscribe(prod => {
+      this.productForm.reset(prod, { emitEvent: false });
+      this.productForm.markAsPristine();
+      this._emit = true;
+      this._saves = 0;
+    });
 
     this.productForm.valueChanges.pipe(
       filter(_ => this._emit && this.productForm.valid),

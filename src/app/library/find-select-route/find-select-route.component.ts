@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
@@ -16,9 +17,8 @@ export interface RouteSelection {
   styleUrls: ['./find-select-route.component.scss']
 })
 export class FindSelectRouteComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line: no-input-rename
   @Input('routes') set _routes(rts: RouteSelection[]) {
-    this._routes$.next(rts);
+    if (rts) { this._routes$.next(rts); }
   }
   // tslint:disable-next-line: no-output-native
   @Output() select: EventEmitter<RouteSelection> = new EventEmitter();
@@ -33,6 +33,13 @@ export class FindSelectRouteComponent implements OnInit, OnDestroy {
   get selected(): RouteSelection {
     return this._routes$.value.find(rte => rte.link === this.selectionControl.value);
   }
+
+  @Input()
+  get addButton(): boolean { return this._addButton; }
+  set addButton(button: boolean) {
+    this._addButton = coerceBooleanProperty(button);
+  }
+  private _addButton = false;
 
   constructor(
     private layout: LayoutService,

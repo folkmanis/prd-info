@@ -22,13 +22,6 @@ export class CustomersComponent implements OnInit {
       link: ['edit', { id: cust._id }],
     }))
     ),
-    map(rts => [
-      {
-        title: '> Jauns klients <',
-        link: ['new'],
-      },
-      ...rts,
-    ]),
   );
 
   ngOnInit(): void {

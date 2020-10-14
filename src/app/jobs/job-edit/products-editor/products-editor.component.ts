@@ -1,16 +1,16 @@
 import {
-  ChangeDetectorRef, Component,
-  HostListener, Input, OnDestroy, OnInit,
+  ChangeDetectionStrategy, ChangeDetectorRef, Component,
+  HostListener, OnDestroy, OnInit,
   QueryList, ViewChildren
 } from '@angular/core';
-import { IFormArray, IFormGroup, IFormControl } from '@rxweb/types';
-import { Observable, Subject, combineLatest } from 'rxjs';
+import { ControlContainer } from '@angular/forms';
+import { IFormArray, IFormGroup } from '@rxweb/types';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { CustomerProduct, JobProduct } from 'src/app/interfaces';
+import { DestroyService } from 'src/app/library/rx/destroy.service';
 import { JobEditFormService } from '../services/job-edit-form.service';
 import { ProductAutocompleteComponent } from './product-autocomplete/product-autocomplete.component';
-import { ValidatorFn, Validators, ValidationErrors, ControlContainer } from '@angular/forms';
-import { DestroyService } from 'src/app/library/rx/destroy.service';
-import { takeUntil, map, distinctUntilChanged, switchMap, shareReplay } from 'rxjs/operators';
 
 const COLUMNS = ['name', 'count', 'price', 'total', 'comment'];
 
@@ -19,6 +19,7 @@ const COLUMNS = ['name', 'count', 'price', 'total', 'comment'];
   templateUrl: './products-editor.component.html',
   styleUrls: ['./products-editor.component.scss'],
   providers: [DestroyService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductsEditorComponent implements OnInit, OnDestroy {
   @ViewChildren(ProductAutocompleteComponent) private nameInputs: QueryList<ProductAutocompleteComponent>;
