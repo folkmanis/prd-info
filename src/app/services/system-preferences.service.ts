@@ -52,7 +52,7 @@ export class SystemPreferencesService {
   );
   /** Aktīvais modulis */
   activeModule$: Observable<UserModule | undefined> = this.activeModules$.pipe(
-    map(modules => [...modules].pop()),
+    map(modules => modules[0]),
   );
   /** Aktīvā moduļa child menu */
   childMenu$: Observable<Partial<UserModule>[]> = this.activeModule$.pipe(
