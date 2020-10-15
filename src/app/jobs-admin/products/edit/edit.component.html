@@ -1,5 +1,7 @@
 <div *ngIf="product$ | async as product;">
     <!-- Produkta nosaukums (nelabojams) -->
-    <h2>{{product.name}}</h2>
+    <h2 *ngIf="product.name">
+        {{product.name}}
+    </h2>
     <app-product-form [product]="product" (submitValue)="onSave($event)"></app-product-form>
 </div>

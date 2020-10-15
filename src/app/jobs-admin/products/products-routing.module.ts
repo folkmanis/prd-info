@@ -4,7 +4,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { ProductsComponent } from './products.component';
 import { EditComponent } from './edit/edit.component';
 import { CanDeactivateGuard } from 'src/app/library/guards/can-deactivate.guard';
-import { NewComponent } from './new/new.component';
 import { ProductsResolverService } from './services/products-resolver.service';
 
 const routes: Routes = [
@@ -13,18 +12,21 @@ const routes: Routes = [
     component: ProductsComponent,
     children: [
       {
-        path: 'edit',
+        path: 'new',
+        component: EditComponent,
+        canDeactivate: [CanDeactivateGuard],
+        data: {
+          product: {},
+        },
+      },
+      {
+        path: ':id',
         component: EditComponent,
         canDeactivate: [CanDeactivateGuard],
         resolve: {
           product: ProductsResolverService
         }
       },
-      {
-        path: 'new',
-        component: NewComponent,
-        canDeactivate: [CanDeactivateGuard],
-      }
     ]
   }
 ];

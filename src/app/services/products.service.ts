@@ -7,6 +7,7 @@ import { JobsSettings } from 'src/app/interfaces';
 import { SystemPreferencesService } from 'src/app/services/system-preferences.service';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 
+
 @Injectable({
   providedIn: 'root'
 })

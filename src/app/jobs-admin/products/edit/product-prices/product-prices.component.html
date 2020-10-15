@@ -1,17 +1,24 @@
 <table>
     <thead>
-        <th> Klients </th>
-        <th> Cena </th>
-        <th> </th>
+        <th class="buttons"> </th>
+        <th class="customer-name"> Klients </th>
+        <th class="price"> Cena </th>
     </thead>
 
     <tbody [formGroup]="pricesForm">
         <tr *ngFor="let control of pricesForm.controls; index as idx;" [formArrayName]="idx">
+            <!-- Pogas -->
+            <td class="buttons">
+                <button mat-icon-button (click)="removePrice.emit(idx)" matTooltip="Dzēst">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </td>
             <!-- Klients ar labošanu -->
             <td class="customer-name">
                 <mat-form-field>
                     <mat-select formControlName="customerName">
-                        <mat-option *ngFor="let customer of customers" [value]="customer.CustomerName" [disabled]="customer.disabled">
+                        <mat-option *ngFor="let customer of customers" [value]="customer.CustomerName"
+                            [disabled]="customer.disabled">
                             {{customer.CustomerName}}
                         </mat-option>
                     </mat-select>
@@ -23,25 +30,20 @@
                     <input matInput formControlName="price" type="number">
                 </mat-form-field>
             </td>
-            <!-- Pogas -->
-            <td class="buttons">
-                <button mat-icon-button (click)="onDeleteRow(idx)" matTooltip="Dzēst">
-                    <mat-icon>delete_outline</mat-icon>
-                </button>
-            </td>
         </tr>
     </tbody>
 
     <tfoot>
+        <td>
+            <button mat-icon-button (click)="addPrice.emit()" matTooltip="Pievienot cenu"
+                [disabled]="!pricesForm.valid">
+                <mat-icon>add</mat-icon>
+            </button>
+        </td>
         <td colspan="2">
             <span *ngIf="pricesForm.hasError('duplicates')" class="error">
                 Atkārtoti norādīts klients {{pricesForm.getError('duplicates')}}
             </span>
-        </td>
-        <td>
-            <button mat-icon-button (click)="onAppendPrice()" matTooltip="Pievienot cenu" [disabled]="!pricesForm.valid">
-                <mat-icon>add</mat-icon>
-            </button>
         </td>
     </tfoot>
 </table>

@@ -9,28 +9,28 @@ tr {
     height: 41px;
 }
 
-td, th {
+td,
+th {
     display: table-cell;
-    padding: 0 4px;
+    padding: 0 8px;
     font-size: 14px;
-    color: rgba(0, 0, 0, .87);
-    border-bottom-color: rgba(0, 0, 0, .12);
+    color: rgba(0, 0, 0, 0.87);
+    border-bottom-color: rgba(0, 0, 0, 0.12);
     border-bottom-width: 1px;
     border-bottom-style: solid;
     text-align: left;
+
+    &:first-of-type {
+        padding-left: 8px;
+    }
+    &.buttons {
+        width: 48px;
+    }
+    &.price {
+        width: 100px;
+    }
 }
 
-th:first-of-type, td:first-of-type {
-    padding-left: 8px;
-}
-
-td.buttons {
-    width: 100px;
-}
-
-td.price {
-    width: 100px;
-}
 
 td .mat-form-field {
     width: 100%;

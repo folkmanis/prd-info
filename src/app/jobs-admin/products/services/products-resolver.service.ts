@@ -16,7 +16,6 @@ export class ProductsResolverService implements Resolve<Product> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Product> | Observable<never> | undefined {
     const id: string = route.paramMap.get('id');
-    console.log(route);
     if (!id || id.length !== 24) {
           this.router.navigate(['jobs-admin', 'products']);
       return;

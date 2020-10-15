@@ -1,4 +1,4 @@
-import { Component, Input, Output, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, Output, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter } from '@angular/core';
 import { IFormBuilder, IFormGroup, IFormArray } from '@rxweb/types';
 import { Product, ProductPrice } from 'src/app/interfaces';
 import { ProductFormService } from '../services/product-form.service';
@@ -11,6 +11,7 @@ import { CustomersService } from 'src/app/services/customers.service';
   selector: 'app-product-form',
   templateUrl: './product-form.component.html',
   styleUrls: ['./product-form.component.scss'],
+  providers: [ProductFormService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductFormComponent implements OnInit, OnDestroy {
@@ -18,19 +19,19 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   productForm = this.formService.createForm();
 
   @Input()
-  set product(product: Product) {
+  set product(product: Partial<Product>) {
     if (!product) { return; }
     this.formService.setValue(this.productForm, product, { emitEvent: false });
     this._product = product;
   }
-  get product(): Product { return this._product; }
-  private _product: Product;
+  get product(): Partial<Product> { return this._product; }
+  private _product: Partial<Product>;
 
   @Output() productChanges = this.productForm.valueChanges.pipe(
     filter(_ => this.productForm.valid),
   );
 
-  @Output() submitValue = new Subject<Product>();
+  @Output() submitValue = new EventEmitter<Product>();
 
   get pristine(): boolean {
     return this.productForm.pristine;
@@ -55,16 +56,28 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.submitValue.complete();
   }
 
   onReset() {
-    this.formService.setValue(this.productForm, this.product, { emitEvent: false });
+    if (this.product._id) {
+      this.formService.setValue(this.productForm, this.product, { emitEvent: false });
+    } else {
+      this.productForm.reset();
+    }
   }
 
   onSave() {
     if (!this.productForm.valid) { return; }
     this.submitValue.next(this.productForm.value);
   }
+
+  onAddPrice(): void {
+    this.formService.addPrice(this.productForm.controls.prices as IFormArray<ProductPrice>);
+  }
+
+  onDeletePrice(idx: number): void {
+    this.formService.removePrice(this.productForm.controls.prices as IFormArray<ProductPrice>, idx);
+  }
+
 
 }

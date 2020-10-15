@@ -1,9 +1,7 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormGroup, ValidatorFn, ValidationErrors, ControlContainer } from '@angular/forms';
-import { IFormBuilder, IFormGroup, IFormArray } from '@rxweb/types';
-import { ProductPrice } from 'src/app/interfaces';
-import { Customer, CustomerPartial, NewCustomer } from 'src/app/interfaces';
-import { ProductFormService } from '../../services/product-form.service';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ControlContainer } from '@angular/forms';
+import { IFormArray } from '@rxweb/types';
+import { CustomerPartial, ProductPrice } from 'src/app/interfaces';
 
 
 @Component({
@@ -19,9 +17,11 @@ export class ProductPricesComponent implements OnInit {
   }
   private _customers: CustomerPartial[] = [];
 
+  @Output() addPrice = new EventEmitter<void>();
+  @Output() removePrice = new EventEmitter<number>();
+
   constructor(
     private controlContainer: ControlContainer,
-    private productFormService: ProductFormService,
   ) { }
 
   pricesForm: IFormArray<ProductPrice>;
@@ -30,14 +30,5 @@ export class ProductPricesComponent implements OnInit {
     this.pricesForm = this.controlContainer.control as IFormArray<ProductPrice>;
   }
 
-  onAppendPrice(): void {
-    this.productFormService.addPrice(this.pricesForm);
-    // this.pricesForm.markAsDirty();
-  }
-
-  onDeleteRow(idx: number): void {
-    this.productFormService.removePrice(this.pricesForm, idx);
-    // this.pricesForm.markAsDirty();
-  }
 
 }
