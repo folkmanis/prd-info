@@ -1,0 +1,36 @@
+<form [formGroup]="productForm" (submit)="onSave()">
+    <!-- Kategorija -->
+    <section>
+        <mat-form-field>
+            <mat-label>Kategorija</mat-label>
+            <mat-select formControlName="category">
+                <mat-option *ngFor="let category of categories$ | async" [value]="category.category">
+                    {{category.description}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </section>
+    <!-- Neaktīvs -->
+    <section>
+        <mat-checkbox formControlName="inactive">
+            Neaktīvs
+        </mat-checkbox>
+    </section>
+    <!-- Apraksts -->
+    <section>
+        <mat-form-field class="input-element">
+            <mat-label>Apraksts</mat-label>
+            <textarea matInput matAutosize formControlName="description"></textarea>
+        </mat-form-field>
+    </section>
+    <!-- Cenu tabula -->
+    <section>
+        <app-product-prices formGroupName="prices" [customers]="customers$ | async">
+        </app-product-prices>
+    </section>
+    <section>
+        <button mat-raised-button type="submit" color="primary"
+            [disabled]="!productForm.valid || productForm.pristine">SAGLABĀT</button>
+        <button mat-raised-button (click)="onReset()" [disabled]="productForm.pristine">ATCELT</button>
+    </section>
+</form>

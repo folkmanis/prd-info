@@ -9,11 +9,19 @@ import { ProductsComponent } from './products.component';
 import { EditComponent } from './edit/edit.component';
 import { NewComponent } from './new/new.component';
 import { ProductPricesComponent } from './edit/product-prices/product-prices.component';
-import { FormArrayForOfDirective } from './form-array-for-of.directive';
+import { ProductFormService } from './services/product-form.service';
+import { ProductFormComponent } from './product-form/product-form.component';
+import { ProductsResolverService } from './services/products-resolver.service';
 
 
 @NgModule({
-  declarations: [ProductsComponent, EditComponent, NewComponent, ProductPricesComponent, FormArrayForOfDirective],
+  declarations: [
+    ProductsComponent,
+    EditComponent,
+    NewComponent,
+    ProductPricesComponent,
+    ProductFormComponent
+  ],
   imports: [
     CommonModule,
     LibraryModule,
@@ -21,6 +29,8 @@ import { FormArrayForOfDirective } from './form-array-for-of.directive';
   ],
   providers: [
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
+    ProductFormService,
+    ProductsResolverService,
   ]
 })
 export class ProductsModule { }

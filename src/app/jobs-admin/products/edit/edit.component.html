@@ -1,38 +1,5 @@
-<!-- Produkta nosaukums (nelabojams) -->
-<section>
-    <h2>{{ productForm.get('name').value}}</h2>
-    <div class="error" [style.color]="productForm.statusText.color">
-        {{productForm.statusText.status}}
-    </div>
-</section>
-<form [formGroup]="productForm">
-    <!-- Kategorija -->
-    <section>
-        <mat-form-field>
-            <mat-label>Kategorija</mat-label>
-            <mat-select formControlName="category">
-                <mat-option *ngFor="let category of categories$ | async" [value]="category.category">
-                    {{category.description}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-    </section>
-    <!-- Neaktīvs -->
-    <section>
-        <mat-checkbox formControlName="inactive">
-            Neaktīvs
-        </mat-checkbox>
-    </section>
-    <!-- Apraksts -->
-    <section>
-        <mat-form-field class="input-element">
-            <mat-label>Apraksts</mat-label>
-            <textarea matInput matAutosize formControlName="description"></textarea>
-        </mat-form-field>
-    </section>
-    <!-- Cenu tabula -->
-    <section>
-        <app-product-prices [pricesForm]="productForm.get('prices')" [priceAddFn]="priceAddFn">
-        </app-product-prices>
-    </section>
-</form>
+<div *ngIf="product$ | async as product;">
+    <!-- Produkta nosaukums (nelabojams) -->
+    <h2>{{product.name}}</h2>
+    <app-product-form [product]="product" (submitValue)="onSave($event)"></app-product-form>
+</div>

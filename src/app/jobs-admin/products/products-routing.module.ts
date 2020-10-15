@@ -5,6 +5,7 @@ import { ProductsComponent } from './products.component';
 import { EditComponent } from './edit/edit.component';
 import { CanDeactivateGuard } from 'src/app/library/guards/can-deactivate.guard';
 import { NewComponent } from './new/new.component';
+import { ProductsResolverService } from './services/products-resolver.service';
 
 const routes: Routes = [
   {
@@ -15,6 +16,9 @@ const routes: Routes = [
         path: 'edit',
         component: EditComponent,
         canDeactivate: [CanDeactivateGuard],
+        resolve: {
+          product: ProductsResolverService
+        }
       },
       {
         path: 'new',

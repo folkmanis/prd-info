@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -8,70 +8,38 @@ import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/c
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { DestroyService } from 'src/app/library/rx/destroy.service';
 import { ProductsService } from 'src/app/services';
-import { ProductFormGroup } from '../product-form';
+import { ProductFormService } from '../services/product-form.service';
+import { ProductFormComponent } from '../product-form/product-form.component';
 
 
 @Component({
   selector: 'app-edit',
   templateUrl: './edit.component.html',
   styleUrls: ['./edit.component.scss'],
-  providers: [DestroyService],
 })
 export class EditComponent implements OnInit, CanComponentDeactivate {
-
+  @ViewChild(ProductFormComponent) private _form: ProductFormComponent;
   constructor(
     private route: ActivatedRoute,
-    private service: ProductsService,
     private dialog: ConfirmationDialogService,
-    private destroy$: DestroyService,
+    private productService: ProductsService,
   ) { }
 
-  readonly categories$ = this.service.categories$;
 
-  productForm = new ProductFormGroup(this.priceAddFn);
-
-  private _emit = false;
-  private _saves = 0;
+  product$: Observable<Product> = this.route.data.pipe(
+    map(data => data.product as Product),
+  );
 
   ngOnInit(): void {
-    this.route.paramMap.pipe(
-      tap(_ => this._emit = false),
-      map(paramMap => paramMap.get('id') as string),
-      filter(id => id && id.length === 24),
-      switchMap(id => this.service.getProduct(id)),
-      takeUntil(this.destroy$),
-    ).subscribe(prod => {
-      this.productForm.reset(prod, { emitEvent: false });
-      this.productForm.markAsPristine();
-      this._emit = true;
-      this._saves = 0;
-    });
+  }
 
-    this.productForm.valueChanges.pipe(
-      filter(_ => this._emit && this.productForm.valid),
-      debounceTime(500),
-      tap(_ => this._saves++),
-      concatMap((prod: Product) => this.service.updateProduct(prod._id, prod)),
-      tap(_ => --this._saves || this.productForm.markAsPristine()),
-      takeUntil(this.destroy$),
-    ).subscribe();
+  onSave(prod: Product) {
+    this.productService.updateProduct(prod._id, prod)
+      .subscribe(res => this._form.pristine = res);
   }
 
   canDeactivate(): Observable<boolean> | boolean {
-    return this.productForm.pristine ? true : this.dialog.discardChanges();
-  }
-
-  priceAddFn(price?: ProductPrice): FormGroup {
-    return new FormGroup({
-      customerName: new FormControl(
-        price?.customerName,
-        Validators.required,
-      ),
-      price: new FormControl(
-        price?.price,
-        [Validators.required, Validators.pattern(/[0-9]{1,}(((,|\.)[0-9]{0,2})?)/)]
-      ),
-    });
+    return this._form.pristine ? true : this.dialog.discardChanges();
   }
 
 }

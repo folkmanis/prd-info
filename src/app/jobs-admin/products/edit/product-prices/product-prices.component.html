@@ -6,12 +6,12 @@
     </thead>
 
     <tbody [formGroup]="pricesForm">
-        <tr *appFormArrayFor="let control of pricesForm; index as idx; data as data;" [formArrayName]="idx">
+        <tr *ngFor="let control of pricesForm.controls; index as idx;" [formArrayName]="idx">
             <!-- Klients ar labošanu -->
             <td class="customer-name">
                 <mat-form-field>
                     <mat-select formControlName="customerName">
-                        <mat-option *ngFor="let customer of customers$ | async" [value]="customer.CustomerName" [disabled]="customer.disabled">
+                        <mat-option *ngFor="let customer of customers" [value]="customer.CustomerName" [disabled]="customer.disabled">
                             {{customer.CustomerName}}
                         </mat-option>
                     </mat-select>
@@ -39,7 +39,7 @@
             </span>
         </td>
         <td>
-            <button *ngIf="isAddFn()" mat-icon-button (click)="onAppendPrice()" matTooltip="Pievienot cenu" [disabled]="!pricesForm.valid">
+            <button mat-icon-button (click)="onAppendPrice()" matTooltip="Pievienot cenu" [disabled]="!pricesForm.valid">
                 <mat-icon>add</mat-icon>
             </button>
         </td>

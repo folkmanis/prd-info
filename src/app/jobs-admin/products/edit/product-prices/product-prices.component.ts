@@ -1,8 +1,9 @@
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormGroup, ValidatorFn, ValidationErrors } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
+import { FormArray, FormGroup, ValidatorFn, ValidationErrors, ControlContainer } from '@angular/forms';
+import { IFormBuilder, IFormGroup, IFormArray } from '@rxweb/types';
 import { ProductPrice } from 'src/app/interfaces';
-import { CustomersService } from 'src/app/services';
+import { Customer, CustomerPartial, NewCustomer } from 'src/app/interfaces';
+import { ProductFormService } from '../../services/product-form.service';
 
 
 @Component({
@@ -10,42 +11,33 @@ import { CustomersService } from 'src/app/services';
   templateUrl: './product-prices.component.html',
   styleUrls: ['./product-prices.component.scss']
 })
-export class ProductPricesComponent implements OnInit, AfterViewInit {
-
-  @Input() set pricesForm(arr: FormArray) {
-    this._formArray = arr;
+export class ProductPricesComponent implements OnInit {
+  @Input()
+  get customers(): CustomerPartial[] { return this._customers; }
+  set customers(customers: CustomerPartial[]) {
+    if (customers) { this._customers = customers; }
   }
-  get pricesForm(): FormArray {
-    return this._formArray;
-  }
-  private _formArray: FormArray;
-
-  @Input() priceAddFn: () => FormGroup;
+  private _customers: CustomerPartial[] = [];
 
   constructor(
-    private customersService: CustomersService,
+    private controlContainer: ControlContainer,
+    private productFormService: ProductFormService,
   ) { }
 
-  customers$ = this.customersService.customers$;
+  pricesForm: IFormArray<ProductPrice>;
 
   ngOnInit(): void {
-  }
-
-  ngAfterViewInit() {
-  }
-
-  isAddFn(): boolean {
-    return typeof this.priceAddFn === 'function';
+    this.pricesForm = this.controlContainer.control as IFormArray<ProductPrice>;
   }
 
   onAppendPrice(): void {
-    this.pricesForm.push(this.priceAddFn());
-    this.pricesForm.markAsDirty();
+    this.productFormService.addPrice(this.pricesForm);
+    // this.pricesForm.markAsDirty();
   }
 
   onDeleteRow(idx: number): void {
-    this.pricesForm.removeAt(idx);
-    this.pricesForm.markAsDirty();
+    this.productFormService.removePrice(this.pricesForm, idx);
+    // this.pricesForm.markAsDirty();
   }
 
 }
