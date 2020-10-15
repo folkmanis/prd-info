@@ -10,13 +10,25 @@ import { map } from 'rxjs/operators';
 export class ProductFormService {
 
   private fb: IFormBuilder;
+  private _form: IFormGroup<Product>;
 
   constructor(
     fb: FormBuilder,
     private productsService: ProductsService,
   ) { this.fb = fb; }
 
-  createForm(): IFormGroup<Product> {
+  get form(): IFormGroup<Product> {
+    if (!this._form) {
+      this._form = this.createForm();
+    }
+    return this._form;
+  }
+
+  private get formPrices(): IFormArray<ProductPrice> {
+    return this.form.controls.prices as IFormArray<ProductPrice>;
+  }
+
+  private createForm(): IFormGroup<Product> {
     const productForm: IFormGroup<Product> = this.fb.group<Product>({
       _id: [undefined],
       inactive: [false],
@@ -33,39 +45,39 @@ export class ProductFormService {
       description: [undefined],
       prices: this.fb.array(
         [],
-        { validators: [duplicateCustomersValidator] }
+        { validators: [this.duplicateCustomersValidator] }
       ),
     });
 
     return productForm;
   }
 
-  setValue(form: IFormGroup<Product>, product: Partial<Product>, params = { emitEvent: true }) {
+  setValue(product: Partial<Product>, params = { emitEvent: true }) {
     const { prices, ...rest } = product;
-    if (!rest._id) { this.setNameValidators(form); }
-    this.setPrices(form.controls.prices as IFormArray<ProductPrice>, prices);
-    form.patchValue(rest, params);
-    form.markAsPristine();
+    if (!rest._id) { this.setNameValidators(); }
+    this.setPrices(prices);
+    this.form.patchValue(rest, params);
+    this.form.markAsPristine();
   }
 
-  addPrice(pricesControl: IFormArray<ProductPrice>, price?: ProductPrice) {
-    pricesControl.push(this.productPriceGroup(price));
-    pricesControl.markAsDirty();
+  addPrice(price?: ProductPrice) {
+    this.formPrices.push(this.productPriceGroup(price));
+    this.formPrices.markAsDirty();
   }
 
-  setNameValidators(form: IFormGroup<Product>) {
-    form.controls.name.setAsyncValidators(this.nameAsyncValidator('name'));
+  setNameValidators() {
+    this.form.controls.name.setAsyncValidators(this.nameAsyncValidator('name'));
   }
 
-  removePrice(pricesControl: IFormArray<ProductPrice>, idx: number) {
-    pricesControl.removeAt(idx);
-    pricesControl.markAsDirty();
+  removePrice(idx: number) {
+    this.formPrices.removeAt(idx);
+    this.formPrices.markAsDirty();
   }
 
-  setPrices(pricesArray: IFormArray<ProductPrice>, prodPrices: ProductPrice[] | undefined) {
-    pricesArray.clear();
+  setPrices(prodPrices: ProductPrice[] | undefined) {
+    this.formPrices.clear();
     for (const prodPrice of prodPrices || []) {
-      pricesArray.push(
+      this.formPrices.push(
         this.productPriceGroup(prodPrice)
       );
     }
@@ -95,11 +107,10 @@ export class ProductFormService {
     };
   }
 
+  private duplicateCustomersValidator(ctrl: IFormArray<ProductPrice>): ValidationErrors | null {
+    const customers: string[] = (ctrl.value as ProductPrice[]).map(pr => pr.customerName);
+    const duplicates: string[] = customers.filter((val, idx, self) => self.indexOf(val) !== idx);
+    return duplicates.length === 0 ? null : { duplicates: duplicates.join() };
+  }
 
-}
-
-function duplicateCustomersValidator(ctrl: IFormArray<ProductPrice>): ValidationErrors | null {
-  const customers: string[] = (ctrl.value as ProductPrice[]).map(pr => pr.customerName);
-  const duplicates: string[] = customers.filter((val, idx, self) => self.indexOf(val) !== idx);
-  return duplicates.length === 0 ? null : { duplicates: duplicates.join() };
 }

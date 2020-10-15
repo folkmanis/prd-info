@@ -1,4 +1,10 @@
-import { Component, Input, Output, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input, Output,
+  OnInit, OnDestroy,
+  ChangeDetectionStrategy, ChangeDetectorRef,
+  EventEmitter
+} from '@angular/core';
 import { IFormBuilder, IFormGroup, IFormArray } from '@rxweb/types';
 import { Product, ProductPrice } from 'src/app/interfaces';
 import { ProductFormService } from '../services/product-form.service';
@@ -14,14 +20,14 @@ import { CustomersService } from 'src/app/services/customers.service';
   providers: [ProductFormService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProductFormComponent implements OnInit, OnDestroy {
+export class ProductFormComponent {
 
-  productForm = this.formService.createForm();
+  productForm = this.formService.form;
 
   @Input()
   set product(product: Partial<Product>) {
     if (!product) { return; }
-    this.formService.setValue(this.productForm, product, { emitEvent: false });
+    this.formService.setValue(product, { emitEvent: false });
     this._product = product;
   }
   get product(): Partial<Product> { return this._product; }
@@ -52,15 +58,9 @@ export class ProductFormComponent implements OnInit, OnDestroy {
 
   readonly customers$ = this.customersService.customers$;
 
-  ngOnInit(): void {
-  }
-
-  ngOnDestroy(): void {
-  }
-
   onReset() {
     if (this.product._id) {
-      this.formService.setValue(this.productForm, this.product, { emitEvent: false });
+      this.formService.setValue(this.product, { emitEvent: false });
     } else {
       this.productForm.reset();
     }
@@ -72,11 +72,11 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   }
 
   onAddPrice(): void {
-    this.formService.addPrice(this.productForm.controls.prices as IFormArray<ProductPrice>);
+    this.formService.addPrice();
   }
 
   onDeletePrice(idx: number): void {
-    this.formService.removePrice(this.productForm.controls.prices as IFormArray<ProductPrice>, idx);
+    this.formService.removePrice(idx);
   }
 
 
