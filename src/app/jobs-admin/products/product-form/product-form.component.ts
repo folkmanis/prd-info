@@ -68,7 +68,7 @@ export class ProductFormComponent {
 
   onSave() {
     if (!this.productForm.valid) { return; }
-    this.submitValue.next(this.productForm.value);
+    this.submitValue.next(this.formService.value);
   }
 
   onAddPrice(): void {

@@ -60,6 +60,13 @@ export class ProductFormService {
     this.form.markAsPristine();
   }
 
+  get value(): Product {
+    return {
+      ...this.form.value,
+      name: this.form.value.name.trim(),
+    };
+  }
+
   addPrice(price?: ProductPrice) {
     this.formPrices.push(this.productPriceGroup(price));
     this.formPrices.markAsDirty();
@@ -101,7 +108,7 @@ export class ProductFormService {
 
   private nameAsyncValidator(key: keyof Product): AsyncValidatorFn {
     return (control: IFormControl<string>): Observable<ValidationErrors | null> => {
-      return this.productsService.validate(key, control.value).pipe(
+      return this.productsService.validate(key, control.value.trim()).pipe(
         map(valid => valid ? null : { occupied: control.value })
       );
     };
