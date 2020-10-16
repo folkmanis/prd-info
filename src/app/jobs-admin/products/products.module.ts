@@ -8,7 +8,6 @@ import { ProductsRoutingModule } from './products-routing.module';
 import { ProductsComponent } from './products.component';
 import { EditComponent } from './edit/edit.component';
 import { ProductPricesComponent } from './edit/product-prices/product-prices.component';
-import { ProductFormService } from './services/product-form.service';
 import { ProductFormComponent } from './product-form/product-form.component';
 import { ProductsResolverService } from './services/products-resolver.service';
 
