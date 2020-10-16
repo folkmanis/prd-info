@@ -39,7 +39,7 @@ export class FileUploadService {
   ) { }
 
   uploadFiles(jobId: number, files?: File[]): Observable<void> {
-    if (!jobId || files?.length < 1) { return of(); }
+    if (!jobId || !files?.length) { return of(); }
     const jobFiles = files
       .sort((a, b) => a.size - b.size); // mazākie vispirms
 
