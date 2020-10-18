@@ -1,17 +1,12 @@
 import {
-  Component,
-  Input, Output,
-  OnInit, OnDestroy,
-  ChangeDetectionStrategy, ChangeDetectorRef,
-  EventEmitter
+  ChangeDetectionStrategy, ChangeDetectorRef, Component,
+  EventEmitter, Input, Output
 } from '@angular/core';
-import { IFormBuilder, IFormGroup, IFormArray } from '@rxweb/types';
-import { Product, ProductPrice } from 'src/app/interfaces';
-import { ProductFormService } from '../services/product-form.service';
-import { filter, map } from 'rxjs/operators';
-import { Subject, Observable } from 'rxjs';
-import { ProductsService } from 'src/app/services/products.service';
+import { filter } from 'rxjs/operators';
+import { Product } from 'src/app/interfaces';
 import { CustomersService } from 'src/app/services/customers.service';
+import { ProductsService } from 'src/app/services/products.service';
+import { ProductFormService } from '../services/product-form.service';
 
 @Component({
   selector: 'app-product-form',

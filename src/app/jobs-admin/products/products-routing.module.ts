@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { ProductsComponent } from './products.component';
 import { EditComponent } from './edit/edit.component';
+import { ProductsListComponent } from './products-list/products-list.component';
 import { CanDeactivateGuard } from 'src/app/library/guards/can-deactivate.guard';
 import { ProductsResolverService } from './services/products-resolver.service';
 
@@ -11,6 +12,10 @@ const routes: Routes = [
     path: 'products',
     component: ProductsComponent,
     children: [
+      {
+        path: '',
+        component: ProductsListComponent,
+      },
       {
         path: 'new',
         component: EditComponent,

@@ -1,0 +1,31 @@
+table {
+    width: 100%;
+}
+
+div.container {
+    overflow: auto;
+    height: 100%;
+}
+
+.mat-toolbar {
+    position: sticky;
+    top: 0px;
+    z-index: 100;
+}
+
+.mat-row {
+    cursor: pointer;
+    &:hover {
+        background-color: rgba($color: #000000, $alpha: 0.1);
+    }
+}
+
+button.mat-fab {
+    position: absolute;
+    bottom: 15px;
+    right: 20px;
+}
+
+.mat-column-inactive {
+    width: 64px;
+}

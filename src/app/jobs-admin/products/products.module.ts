@@ -7,9 +7,10 @@ import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/materi
 import { ProductsRoutingModule } from './products-routing.module';
 import { ProductsComponent } from './products.component';
 import { EditComponent } from './edit/edit.component';
-import { ProductPricesComponent } from './edit/product-prices/product-prices.component';
+import { ProductPricesComponent } from './product-prices/product-prices.component';
 import { ProductFormComponent } from './product-form/product-form.component';
 import { ProductsResolverService } from './services/products-resolver.service';
+import { ProductsListComponent } from './products-list/products-list.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { ProductsResolverService } from './services/products-resolver.service';
     ProductsComponent,
     EditComponent,
     ProductPricesComponent,
-    ProductFormComponent
+    ProductFormComponent,
+    ProductsListComponent
   ],
   imports: [
     CommonModule,
