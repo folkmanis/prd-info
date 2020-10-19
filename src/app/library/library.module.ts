@@ -49,6 +49,7 @@ import { FindSelectRouteModule } from './find-select-route/find-select-route.mod
 import { FocusedDirective } from './directives/focused.directive';
 import { SideButtonModule } from './side-button/side-button.module';
 import { FilesizePipe } from './pipes/filesize.pipe';
+import { BackButtonDirective } from './directives/back-button.directive';
 
 @NgModule({
   declarations: [
@@ -62,6 +63,7 @@ import { FilesizePipe } from './pipes/filesize.pipe';
     ShortenTextPipe,
     FocusedDirective,
     FilesizePipe,
+    BackButtonDirective,
   ],
   imports: [
     CommonModule,
@@ -149,6 +151,7 @@ import { FilesizePipe } from './pipes/filesize.pipe';
     SideButtonModule,
     ScrollToTopModule,
     FilesizePipe,
+    BackButtonDirective,
   ],
 })
 export class LibraryModule { }
