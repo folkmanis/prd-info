@@ -1,21 +1,67 @@
-@import '~@angular/material/theming';
+@import "~@angular/material/theming";
 
-$zmg-app-primary: mat-palette($mat-teal,900);
-$zmg-app-accent:  mat-palette($mat-amber);
+$zmg-app-primary: mat-palette($mat-teal, 900);
+$zmg-app-accent: mat-palette($mat-amber);
 
 // The warn palette is optional (defaults to red).
-$zmg-app-warn:    mat-palette($mat-red);
+$zmg-app-warn: mat-palette($mat-red);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as `color` or `typography`.
-$zmg-app-theme: mat-light-theme((
-  color: (
-    primary: $zmg-app-primary,
-    accent: $zmg-app-accent,
-    warn: $zmg-app-warn,  
+$zmg-app-theme: mat-light-theme(
+  (
+    color: (
+      primary: $zmg-app-primary,
+      accent: $zmg-app-accent,
+      warn: $zmg-app-warn,
+    ),
   )
-));
+);
 
 $primary: map-get($zmg-app-theme, primary);
 $accent: map-get($zmg-app-theme, accent);
 $warn: map-get($zmg-app-theme, warn);
+
+@mixin zmg-table-color($config-or-theme) {
+  // Extract the color configuration in case a theme has been passed.
+  // This allows consumers to either pass a theme object or a color configuration.
+  $config: mat-get-color-config($config-or-theme);
+  // Extract the palettes you need from the theme definition.
+  $primary: map-get($config, primary);
+  $accent: map-get($config, accent);
+
+  // Define any styles affected by the theme.
+  .app-table tbody tr {
+    &:hover {
+      background-color: mat-color($primary, "lighter");
+      border-bottom-color: mat-color($primary, "darker");
+    }
+  }
+}
+
+@mixin zmg-table-typography($config-or-theme) {
+  // Extract the typography configuration in case a theme has been passed.
+  $config: mat-get-typography-config($config-or-theme);
+
+  .app-table tbody tr {
+    &:hover {
+      font-weight: 800;
+      // font-weight: mat-font-weight($config, body+3);
+    }
+  }
+}
+
+@mixin zmg-table-theme($theme) {
+  // Extracts the color and typography configurations from the theme.
+  $color: mat-get-color-config($theme);
+  $typography: mat-get-typography-config($theme);
+
+  // Do not generate styles if configurations for individual theming
+  // systems have been explicitly set to `null`.
+  @if $color != null {
+    @include zmg-table-color($color);
+  }
+  @if $typography != null {
+    @include zmg-table-typography($typography);
+  }
+}
