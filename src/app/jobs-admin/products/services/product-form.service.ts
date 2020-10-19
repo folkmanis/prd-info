@@ -1,34 +1,28 @@
 import { Injectable } from '@angular/core';
 import { FormBuilder, ValidatorFn, ValidationErrors, Validators, AsyncValidatorFn, AbstractControl } from '@angular/forms';
-import { IFormBuilder, IFormGroup, IFormArray, IFormControl } from '@rxweb/types';
+import { IFormGroup, IFormArray, IFormControl } from '@rxweb/types';
 import { Product, ProductPrice } from 'src/app/interfaces';
 import { Observable } from 'rxjs';
 import { ProductsService } from 'src/app/services/products.service';
 import { map } from 'rxjs/operators';
+import { FormService } from '../../services/form-service';
 
 @Injectable()
-export class ProductFormService {
+export class ProductFormService extends FormService<Product> {
 
-  private fb: IFormBuilder;
-  private _form: IFormGroup<Product>;
 
   constructor(
     fb: FormBuilder,
     private productsService: ProductsService,
-  ) { this.fb = fb; }
-
-  get form(): IFormGroup<Product> {
-    if (!this._form) {
-      this._form = this.createForm();
-    }
-    return this._form;
+  ) {
+    super(fb);
   }
 
   private get formPrices(): IFormArray<ProductPrice> {
     return this.form.controls.prices as IFormArray<ProductPrice>;
   }
 
-  private createForm(): IFormGroup<Product> {
+  protected createForm(): IFormGroup<Product> {
     const productForm: IFormGroup<Product> = this.fb.group<Product>({
       _id: [undefined],
       inactive: [false],
@@ -53,8 +47,14 @@ export class ProductFormService {
   }
 
   setValue(product: Partial<Product>, params = { emitEvent: true }) {
+    this.form.reset();
+
     const { prices, ...rest } = product;
-    if (!rest._id) { this.setNameValidators(); }
+    if (!rest._id) {
+      this.setNameValidators();
+    } else {
+      this.removeNameValidators();
+    }
     this.setPrices(prices);
     this.form.patchValue(rest, params);
     this.form.markAsPristine();
@@ -62,8 +62,8 @@ export class ProductFormService {
 
   get value(): Product {
     return {
-      ...this.form.value,
-      name: this.form.value.name.trim(),
+      ...super.value,
+      name: super.value.name.trim(),
     };
   }
 
@@ -74,6 +74,9 @@ export class ProductFormService {
 
   setNameValidators() {
     this.form.controls.name.setAsyncValidators(this.nameAsyncValidator('name'));
+  }
+  removeNameValidators() {
+    this.form.controls.name.clearAsyncValidators();
   }
 
   removePrice(idx: number) {

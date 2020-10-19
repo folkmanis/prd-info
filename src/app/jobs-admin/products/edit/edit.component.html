@@ -1,15 +1,9 @@
 <mat-toolbar>
-    <button mat-mini-fab routerLink="../" color="primary">
+    <button mat-mini-fab appBackButton color="primary">
         <mat-icon>
             arrow_back
         </mat-icon>
     </button>
 </mat-toolbar>
 
-<div *ngIf="product$ | async as product;">
-    <!-- Produkta nosaukums (nelabojams) -->
-    <h2 *ngIf="product.name">
-        {{product.name}}
-    </h2>
-    <app-product-form [product]="product" (submitValue)="onSave($event)"></app-product-form>
-</div>
+<app-product-form [value]="product$ | async" (submitValue)="onSave($event)"></app-product-form>
