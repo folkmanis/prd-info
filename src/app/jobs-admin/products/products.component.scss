@@ -1,0 +1,13 @@
+.container {
+    display: flex;
+    height: 100%;
+}
+
+.list {
+    flex: 1;
+    position: relative;
+}
+
+.editor {
+    flex: 0 0 50%;
+}

@@ -8,7 +8,8 @@
     <table mat-table [dataSource]="products$" class="app-table">
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns;"></tr>
-        <tr mat-row *matRowDef="let prod; columns: displayedColumns" [routerLink]="prod._id"></tr>
+        <tr mat-row *matRowDef="let prod; columns: displayedColumns" 
+        [routerLink]="[{outlets: {editor: prod._id}}]"></tr>
 
         <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef> Nosaukums </th>

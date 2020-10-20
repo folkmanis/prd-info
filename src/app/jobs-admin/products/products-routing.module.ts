@@ -28,6 +28,7 @@ const routes: Routes = [
         path: ':id',
         component: EditComponent,
         canDeactivate: [CanDeactivateGuard],
+        outlet: 'editor',
         resolve: {
           product: ProductsResolverService
         }

@@ -1,9 +1,11 @@
-<mat-toolbar>
-    <button mat-mini-fab appBackButton color="primary">
-        <mat-icon>
-            arrow_back
-        </mat-icon>
-    </button>
-</mat-toolbar>
-
-<app-product-form [value]="product$ | async" (submitValue)="onSave($event)"></app-product-form>
+<div class="container">
+    <mat-toolbar>
+        <button mat-mini-fab appBackButton color="primary">
+            <mat-icon>
+                arrow_back
+            </mat-icon>
+        </button>
+    </mat-toolbar>
+    
+    <app-product-form [value]="product$ | async" (submitValue)="onSave($event)"></app-product-form>
+</div>
