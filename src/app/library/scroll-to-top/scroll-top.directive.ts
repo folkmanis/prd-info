@@ -26,4 +26,10 @@ export class ScrollTopDirective implements OnInit {
     this._componentRef.instance.fixed = (coerceBooleanProperty(this.buttonPositionFixed) && 'fixed') || null;
   }
 
+  scrollToTop() {
+    if (this._componentRef) {
+      this._componentRef.instance.scrollToTop();
+    }
+  }
+
 }
