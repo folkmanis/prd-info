@@ -6,22 +6,22 @@ import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/materi
 import { KastesPreferencesService } from './services/kastes-preferences.service';
 import { PasutijumiService } from './services/pasutijumi.service';
 
+import { SelectorModule } from './selector/selector.module';
 import { PasutijumiModule } from './pasutijumi/pasutijumi.module';
-import { SelectTabulaModule } from './select-tabula/select-tabula.module';
 
-import { KastesComponent } from './kastes.component';
 import { KastesRoutingModule } from './kastes-routing.module';
 import { KastesMainMenuComponent } from './kastes-main-menu/kastes-main-menu.component';
 
+
+
 @NgModule({
   declarations: [
-    KastesComponent,
     KastesMainMenuComponent,
   ],
   imports: [
     CommonModule,
     LibraryModule,
-    SelectTabulaModule,
+    SelectorModule,
     PasutijumiModule,
     KastesRoutingModule,
   ],

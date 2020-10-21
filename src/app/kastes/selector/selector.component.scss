@@ -1,0 +1,27 @@
+.mat-drawer {
+  width: 300px;
+}
+
+.mat-drawer-container {
+  height: 100%;
+}
+
+.main-content {
+  flex: 1;
+  overflow: auto;
+}
+
+.kopskaiti {
+  display: flex;
+  margin: 8px;
+  height: 42px;
+}
+
+.mat-drawer-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.mat-drawer {
+  padding: 8px;
+}

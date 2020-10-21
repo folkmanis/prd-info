@@ -1,7 +1,0 @@
-<div *ngIf="colors$ | async as colors;">
-    <span *ngFor="let item of totalsColors; last as isLast;">
-        {{item.color}}:
-        <span [style.color]="colors[item.color]" class="cipars">{{item.total}}</span>
-        <span *ngIf="!isLast"> // </span>
-    </span>
-</div>

@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject, EMPTY, of } from 'rxjs';
-import { tap, map, switchMap, filter, shareReplay, startWith, take } from 'rxjs/operators';
-import { KastesJobPartial, KastesJob } from 'src/app/interfaces';
-import { KastesPreferencesService } from './kastes-preferences.service';
+import { EMPTY, Observable, Subject } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { KastesJob, KastesJobPartial } from 'src/app/interfaces';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
-import { AsyncValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
+import { KastesPreferencesService } from './kastes-preferences.service';
 
 @Injectable()
 export class PasutijumiService {

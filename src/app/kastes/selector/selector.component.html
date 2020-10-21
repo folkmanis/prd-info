@@ -1,0 +1,33 @@
+<mat-drawer-container>
+
+    <mat-drawer-content>
+
+        <nav mat-tab-nav-bar>
+            <a mat-tab-link *ngFor="let kaste of apjomi$ | async" [routerLink]="['../../selector', kaste]"
+                [active]="kaste === selected">
+                {{kaste}}
+            </a>
+        </nav>
+
+        <div class="kopskaiti">
+            <app-refresh-table (reload)="onReload()"></app-refresh-table>
+            <app-kopskaiti [colorCodes]="colors$ | async" [totals]="totals$ | async"></app-kopskaiti>
+        </div>
+
+        <div class="main-content">
+            <app-tabula></app-tabula>
+        </div>
+
+    </mat-drawer-content>
+
+    <mat-drawer button [small]="isSmall$ | async">
+        <div>
+            <app-select-pasutijums [pasutijums]="(preferences$ | async)?.pasutijums" [pasutijumi]="pasutijumi$ | async"
+                (pasuitjumsChanges)="onPasutijumsChanges($event)"></app-select-pasutijums>
+        </div>
+        <div>
+            <app-labels [status]="labelStatuss$ | async" (code)="onSetLabel($event)"></app-labels>
+        </div>
+    </mat-drawer>
+
+</mat-drawer-container>
