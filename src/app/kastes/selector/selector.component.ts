@@ -35,14 +35,8 @@ export class SelectorComponent implements OnInit {
 
   isSmall$ = this.layoutService.isSmall$;
 
-  // usrPref$ = this.kastesPreferencesService.kastesUserPreferences$;
-
-  preferences$ = this.kastesPreferencesService.preferences$;
+  pasutijumsId$ = this.kastesPreferencesService.pasutijumsId$;
   pasutijumi$: Observable<KastesJobPartial[]>;
-  colors$ = this.kastesPreferencesService.preferences$.pipe(
-    pluck('colors'),
-  );
-  totals$: Observable<Totals> = this.tabulaService.totals$;
 
 
   apjomi$: Observable<number[]> = this.tabulaService.apjomi$.pipe(
@@ -64,7 +58,7 @@ export class SelectorComponent implements OnInit {
         this._tabula?.scrollToTop();
       });
 
-    this.tabulaService.pasutijumsId$.pipe(
+    this.pasutijumsId$.pipe(
       takeUntil(this.destroy$),
     ).subscribe(
       () => {
@@ -77,10 +71,6 @@ export class SelectorComponent implements OnInit {
 
   onPasutijumsChanges(pas: number) {
     this.kastesPreferencesService.updateUserPreferences({ pasutijums: pas }).subscribe();
-  }
-
-  onReload() {
-    this.tabulaService.reload();
   }
 
   onSetLabel(kods: number | string) {

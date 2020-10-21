@@ -14,21 +14,19 @@ export class KastesTabulaService {
     private prefService: KastesPreferencesService,
   ) { }
 
-  pasutijumsId$ = this.prefService.preferences$.pipe(
-    pluck('pasutijums'),
-  );
+  private _pasutijumsId$ = this.prefService.pasutijumsId$;
 
   private readonly _apjoms$ = new BehaviorSubject(0);
   private readonly _reloadKastes$ = new Subject<void>();
   private readonly _updateKaste$ = new Subject<Kaste>();
 
-  apjomi$: Observable<number[]> = this.pasutijumsId$.pipe(
+  apjomi$: Observable<number[]> = this._pasutijumsId$.pipe(
     switchMap(pasutijumsId => this.prdApi.kastes.getApjomi({ pasutijumsId })),
   );
 
   kastesAll$: Observable<Kaste[]> = this._reloadKastes$.pipe(
     startWith({}),
-    switchMap(() => this.pasutijumsId$),
+    switchMap(() => this._pasutijumsId$),
     switchMap(pasutijumsId => this.prdApi.kastes.get<Kaste>({ pasutijumsId })),
     cacheWithUpdate(this._updateKaste$, (o1, o2) => o1._id === o2._id && o1.kaste === o2.kaste),
   );
@@ -63,7 +61,7 @@ export class KastesTabulaService {
   }
 
   setLabel(kods: number | string): Observable<Kaste | null> {
-    return this.pasutijumsId$.pipe(
+    return this._pasutijumsId$.pipe(
       take(1),
       mergeMap(pasutijumsId => this.prdApi.kastes.setLabel(pasutijumsId, kods)),
       mergeMap(

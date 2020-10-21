@@ -9,11 +9,6 @@
             </a>
         </nav>
 
-        <div class="kopskaiti">
-            <app-refresh-table (reload)="onReload()"></app-refresh-table>
-            <app-kopskaiti [colorCodes]="colors$ | async" [totals]="totals$ | async"></app-kopskaiti>
-        </div>
-
         <div class="main-content">
             <app-tabula></app-tabula>
         </div>
@@ -22,7 +17,7 @@
 
     <mat-drawer button [small]="isSmall$ | async">
         <div>
-            <app-select-pasutijums [pasutijums]="(preferences$ | async)?.pasutijums" [pasutijumi]="pasutijumi$ | async"
+            <app-select-pasutijums [pasutijums]="pasutijumsId$ | async" [pasutijumi]="pasutijumi$ | async"
                 (pasuitjumsChanges)="onPasutijumsChanges($event)"></app-select-pasutijums>
         </div>
         <div>

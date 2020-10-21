@@ -1,5 +1,12 @@
 <div class="tabula-container" cdk-scrollable #container>
   <div *ngIf="preferences$ | async as preferences;">
+
+    <!-- Kopējie skaiti un refresh poga -->
+    <div class="kopskaiti">
+      <app-refresh-table (reload)="onReload()"></app-refresh-table>
+      <app-kopskaiti [colorCodes]="preferences.colors" [totals]="totals$ | async"></app-kopskaiti>
+    </div>
+
     <!-- Sākas tabula -->
     <table mat-table [dataSource]="dataSource$" [trackBy]="trackByFn" class="full-width-table mat-elevation-z8"
       aria-label="Kastes">

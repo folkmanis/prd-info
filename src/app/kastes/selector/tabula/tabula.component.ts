@@ -20,7 +20,7 @@ const COLUMNS = ['kods', 'adrese', 'yellow', 'rose', 'white', 'gatavs'];
   ]
 })
 export class TabulaComponent implements OnInit, OnDestroy {
-@ViewChild('container', {read: ScrollTopDirective}) private _scrollable: ScrollTopDirective;
+  @ViewChild('container', { read: ScrollTopDirective }) private _scrollable: ScrollTopDirective;
 
   constructor(
     private dialogService: ConfirmationDialogService,
@@ -33,6 +33,7 @@ export class TabulaComponent implements OnInit, OnDestroy {
   preferences$ = this.preferencesService.preferences$;
   displayedColumns: string[] = COLUMNS;
   dataSource$: Observable<Kaste[]> = this.tabulaService.kastesApjoms$;
+  totals$ = this.tabulaService.totals$;
 
   ngOnInit() {
   }
@@ -59,6 +60,10 @@ export class TabulaComponent implements OnInit, OnDestroy {
 
   scrollToTop() {
     this._scrollable.scrollToTop();
+  }
+
+  onReload() {
+    this.tabulaService.reload();
   }
 
 }
