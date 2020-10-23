@@ -1,0 +1,20 @@
+section {
+    margin: 16px 0;
+}
+
+h4,
+ul {
+    display: inline;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    li {
+        display: inline;
+        font-weight: bold;
+        &::before {
+            content: "\00b7";
+        }
+    }
+}

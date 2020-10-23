@@ -21,8 +21,6 @@ import { TabulaComponent } from './tabula/tabula.component';
 export class SelectorComponent implements OnInit {
   @ViewChild(TabulaComponent) private _tabula: TabulaComponent;
 
-  selected: number;
-
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -35,22 +33,31 @@ export class SelectorComponent implements OnInit {
 
   isSmall$ = this.layoutService.isSmall$;
 
-  pasutijumsId$ = this.kastesPreferencesService.pasutijumsId$;
   pasutijumi$: Observable<KastesJobPartial[]>;
-
+  pasutijumsId$ = this.kastesPreferencesService.pasutijumsId$;
+  colors$ = this.kastesPreferencesService.preferences$.pipe(
+    pluck('colors'),
+  );
 
   apjomi$: Observable<number[]> = this.tabulaService.apjomi$.pipe(
     map(apj => [0, ...apj]),
   );
+  // aktīvais apjoms
+  apjoms$ = this.tabulaService.apjoms$;
 
   labelStatuss$ = new Subject<LabelStatuss>();
+
+  kastesJob$ = this.pasutijumsId$.pipe(
+    filter(id => !isNaN(+id)),
+    switchMap(id => this.pasutijumiService.getOrder(+id)),
+  );
+
 
   ngOnInit() {
     this.pasutijumi$ = this.pasutijumiService.getKastesJobs(true);
 
     this.route.paramMap.pipe(
       map(params => +params.get('apjoms')),
-      tap(apjoms => this.selected = apjoms),
       takeUntil(this.destroy$),
     )
       .subscribe(apjoms => {
@@ -75,10 +82,15 @@ export class SelectorComponent implements OnInit {
 
   onSetLabel(kods: number | string) {
     this.tabulaService.setLabel(kods)
-      .subscribe(kaste => this.labelStatuss$.next({
-        type: kaste ? 'kaste' : 'empty',
-        kaste
-      }));
+      .subscribe(kaste => {
+        this.labelStatuss$.next({
+          type: kaste ? 'kaste' : 'empty',
+          kaste
+        });
+        if (kaste) {
+          this._tabula.scrollToId(kaste);
+        }
+      });
   }
 
 

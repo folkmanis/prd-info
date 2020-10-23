@@ -10,14 +10,18 @@
     </p>
 </form>
 
-<p *ngIf="colors$ | async as colors;" [ngSwitch]="status.type">
+<p [ngSwitch]="status.type">
     <span *ngSwitchCase="'kaste'">
-        <div class="item" [style.color]="colors.yellow">{{status.kaste.kastes?.yellow | hideZero}}</div>
-        <div class="item" [style.color]="colors.rose">{{status.kaste.kastes?.rose | hideZero}}</div>
-        <div class="item" [style.color]="colors.white">{{status.kaste.kastes?.white | hideZero}}</div>
-        <div class="adrese">{{status.kaste.adrese}}</div>
+        <div class="item" [style.color]="colors?.yellow">{{status.kaste.kastes?.yellow | hideZero}}</div>
+        <div class="item" [style.color]="colors?.rose">{{status.kaste.kastes?.rose | hideZero}}</div>
+        <div class="item" [style.color]="colors?.white">{{status.kaste.kastes?.white | hideZero}}</div>
+        <div class="adrese">
+            {{status.kaste.kods}}-{{status.kaste.adrese}}
+        </div>
     </span>
     <span *ngSwitchCase="'empty'" class="warn">
         Nav atrasts!
+    </span>
+    <span *ngSwitchDefault>        
     </span>
 </p>

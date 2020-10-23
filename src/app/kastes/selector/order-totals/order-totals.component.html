@@ -1,0 +1,20 @@
+<section>
+    <h4>
+        Kopējie skaiti
+    </h4>
+    <ul>
+        <li *ngFor="let color of job.totals.colorTotals;" [style.color]="colors[color.color]">
+            {{color.total}}
+        </li>
+    </ul>
+</section>
+<section>
+    <h4>
+        Apjomi
+    </h4>
+    <ul>
+        <li *ngFor="let apjoms of job.totals.apjomiTotals;">
+            {{apjoms.apjoms}}-{{apjoms.total}}
+        </li>
+    </ul>
+</section>

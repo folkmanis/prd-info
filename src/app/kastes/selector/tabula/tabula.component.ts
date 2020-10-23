@@ -1,15 +1,16 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild, ViewChildren, QueryList, ElementRef } from '@angular/core';
 import { MAT_CHECKBOX_DEFAULT_OPTIONS } from '@angular/material/checkbox';
-import { EMPTY, Observable } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { EMPTY, Observable, of } from 'rxjs';
+import { switchMap, tap, concatMap } from 'rxjs/operators';
 import { Kaste } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
 import { KastesTabulaService } from '../services/kastes-tabula.service';
 import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
+import { RowIdDirective } from './row-id.directive';
 
 
-const COLUMNS = ['kods', 'adrese', 'yellow', 'rose', 'white', 'gatavs'];
+const COLUMNS = ['label', 'kods', 'adrese', 'yellow', 'rose', 'white', 'gatavs'];
 
 @Component({
   selector: 'app-tabula',
@@ -21,6 +22,7 @@ const COLUMNS = ['kods', 'adrese', 'yellow', 'rose', 'white', 'gatavs'];
 })
 export class TabulaComponent implements OnInit, OnDestroy {
   @ViewChild('container', { read: ScrollTopDirective }) private _scrollable: ScrollTopDirective;
+  @ViewChildren(RowIdDirective) private _tableRows: QueryList<RowIdDirective>;
 
   constructor(
     private dialogService: ConfirmationDialogService,
@@ -62,8 +64,15 @@ export class TabulaComponent implements OnInit, OnDestroy {
     this._scrollable.scrollToTop();
   }
 
+  scrollToId(kaste: Kaste) {
+    const element = this._tableRows.find(el => el.kaste._id === kaste._id && el.kaste.kaste === kaste.kaste);
+    if (!element) { return; }
+    element.scrollIn();
+  }
+
   onReload() {
     this.tabulaService.reload();
+    this.scrollToTop();
   }
 
 }

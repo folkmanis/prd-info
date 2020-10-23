@@ -2,8 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { pluck } from 'rxjs/operators';
-import { Kaste } from 'src/app/interfaces';
-import { KastesPreferencesService } from '../../services/kastes-preferences.service';
+import { Kaste, Colors } from 'src/app/interfaces';
 
 export interface Status {
   type: 'empty' | 'kaste' | 'none';
@@ -11,9 +10,7 @@ export interface Status {
 }
 
 export class NoopErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(): boolean {
-    return false;
-  }
+  isErrorState = () => false;
 }
 
 @Component({
@@ -25,22 +22,22 @@ export class NoopErrorStateMatcher implements ErrorStateMatcher {
   ]
 })
 export class LabelsComponent implements OnInit {
-  @ViewChild('kodsInput') kodsInput: ElementRef;
+  @ViewChild('kodsInput') kodsInput: ElementRef<HTMLInputElement>;
 
   @Input() set status(status: Status) {
-    this.inputForm.reset();
+    if (!status) { return; }
+    this._status = status;
     this.inputForm.enable();
     this.kodsInput?.nativeElement.focus();
-    if (!status) {
-      this._status = { type: 'none' };
-      return;
-    }
-    this._status = status;
+    this.kodsInput?.nativeElement.select();
+    if (status.type === 'none') { this.inputForm.reset(undefined, { emitEvent: false }); }
   }
   get status(): Status {
     return this._status;
   }
   private _status: Status = { type: 'none' };
+
+  @Input() colors: { [key in Colors]: string } | undefined;
 
   @Output() code = new EventEmitter<string | number>();
 
@@ -53,13 +50,7 @@ export class LabelsComponent implements OnInit {
     ),
   });
 
-  constructor(
-    private kastesPreferencesService: KastesPreferencesService,
-  ) { }
-
-  colors$ = this.kastesPreferencesService.preferences$.pipe(
-    pluck('colors'),
-  );
+  constructor() { }
 
   ngOnInit() {
   }

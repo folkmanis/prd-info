@@ -7,9 +7,11 @@ import { SelectPasutijumsComponent } from './select-pasutijums/select-pasutijums
 import { SelectorComponent } from './selector.component';
 import { LabelsComponent } from './labels/labels.component';
 import { TabulaComponent } from './tabula/tabula.component';
-import { ColorsOutputComponent } from './kopskaiti/colors-output/colors-output.component';
-import { KopskaitiComponent } from './kopskaiti/kopskaiti.component';
-import { RefreshTableComponent } from './refresh-table/refresh-table.component';
+import { ColorsOutputComponent } from './tabula/kopskaiti/colors-output/colors-output.component';
+import { KopskaitiComponent } from './tabula/kopskaiti/kopskaiti.component';
+import { RefreshTableComponent } from './tabula/refresh-table/refresh-table.component';
+import { RowIdDirective } from './tabula/row-id.directive';
+import { OrderTotalsComponent } from './order-totals/order-totals.component';
 
 
 @NgModule({
@@ -21,6 +23,8 @@ import { RefreshTableComponent } from './refresh-table/refresh-table.component';
     ColorsOutputComponent,
     KopskaitiComponent,
     RefreshTableComponent,
+    RowIdDirective,
+    OrderTotalsComponent,
   ],
   imports: [
     CommonModule,

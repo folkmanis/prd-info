@@ -20,6 +20,7 @@ export class KastesTabulaService {
   private readonly _reloadKastes$ = new Subject<void>();
   private readonly _updateKaste$ = new Subject<Kaste>();
 
+  apjoms$ = this._apjoms$.asObservable();
   apjomi$: Observable<number[]> = this._pasutijumsId$.pipe(
     switchMap(pasutijumsId => this.prdApi.kastes.getApjomi({ pasutijumsId })),
   );
