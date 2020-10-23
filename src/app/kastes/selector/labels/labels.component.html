@@ -1,0 +1,27 @@
+<form [formGroup]="inputForm" (ngSubmit)="onLabelSubmit(inputForm.value)">
+    <p>
+        <mat-form-field>
+            <input matInput formControlName="kods" type="text" placeholder="Adreses kods" autocomplete="off" #kodsInput
+                autofocus>
+        </mat-form-field>
+    </p>
+    <p>
+        <button mat-raised-button type="submit" #submitButton [disabled]="!inputForm.valid">Apstiprināt</button>
+    </p>
+</form>
+
+<p [ngSwitch]="status.type">
+    <span *ngSwitchCase="'kaste'">
+        <div class="item" [style.color]="colors?.yellow">{{status.kaste.kastes?.yellow | hideZero}}</div>
+        <div class="item" [style.color]="colors?.rose">{{status.kaste.kastes?.rose | hideZero}}</div>
+        <div class="item" [style.color]="colors?.white">{{status.kaste.kastes?.white | hideZero}}</div>
+        <div class="adrese">
+            {{status.kaste.kods}}-{{status.kaste.adrese}}
+        </div>
+    </span>
+    <span *ngSwitchCase="'empty'" class="warn">
+        Nav atrasts!
+    </span>
+    <span *ngSwitchDefault>        
+    </span>
+</p>

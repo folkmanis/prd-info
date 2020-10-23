@@ -40,9 +40,13 @@ export class KastesPreferencesService {
     map(([sys, usr]) => ({ ...sys, ...usr })),
   );
 
+  pasutijumsId$ = this.kastesUserPreferences$.pipe(
+    map(pref => pref.pasutijums),
+  );
+
   updateUserPreferences(prefs: Partial<KastesUserPreferences>): Observable<boolean> {
     return this.prdApi.kastes.setUserPreferences(prefs).pipe(
-    tap(() => this._reload$.next()),
+      tap(() => this._reload$.next()),
     );
   }
 

@@ -1,0 +1,74 @@
+div.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  & > div:nth-child(2) {
+    overflow: auto;
+  }
+}
+
+table {
+  width: 100%;
+}
+
+.mat-row {
+  cursor: default;
+}
+
+.mat-column-gatavs {
+  width: 40px;
+  text-align: center;
+}
+
+.selected {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.mat-column-label:first-of-type {
+  width: 4px;
+  padding-left: 0;
+  &.label {
+    background-color: green;
+    transition: background-color 1s 500ms;
+  }
+}
+
+@keyframes blink {
+  //TODO global styling
+  0% {
+    background-color: none;
+  }
+  50% {
+    background-color: rgba($color: green, $alpha: 0.2);
+  }
+  100% {
+    background-color: none;
+  }
+}
+tr.activated {
+  animation: blink 500ms 3;
+}
+
+.mat-column-yellow,
+.mat-column-rose,
+.mat-column-white,
+.mat-column-kods {
+  width: 16px;
+  padding: 0 8px;
+  text-align: left;
+  font: {
+    weight: bold;
+    size: 125%;
+  }
+}
+
+div.blank {
+  height: 64px;
+}
+
+.kopskaiti {
+  display: flex;
+  margin: 8px;
+  height: 42px;
+}

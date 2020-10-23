@@ -1,0 +1,34 @@
+<mat-drawer-container>
+
+    <mat-drawer-content>
+
+        <nav mat-tab-nav-bar>
+            <a mat-tab-link *ngFor="let kaste of apjomi$ | async" [routerLink]="['../../selector', kaste]"
+                [active]="kaste === (apjoms$ | async)">
+                {{kaste}}
+            </a>
+        </nav>
+
+        <div class="main-content">
+            <app-tabula></app-tabula>
+        </div>
+
+    </mat-drawer-content>
+
+    <mat-drawer button [small]="isSmall$ | async">
+        <div>
+            <app-select-pasutijums [pasutijums]="pasutijumsId$ | async" [pasutijumi]="pasutijumi$ | async"
+                (pasuitjumsChanges)="onPasutijumsChanges($event)"></app-select-pasutijums>
+        </div>
+        <div *ngIf="(apjoms$ | async) === 0">
+            <mat-divider></mat-divider>
+            <app-labels [status]="labelStatuss$ | async" (code)="onSetLabel($event)" [colors]="colors$ | async">
+            </app-labels>
+        </div>
+        <div *ngIf="kastesJob$ | async as job;">
+            <mat-divider></mat-divider>
+            <app-order-totals [job]="job" [colors]="colors$ | async"></app-order-totals>
+        </div>
+    </mat-drawer>
+
+</mat-drawer-container>
