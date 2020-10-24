@@ -1,6 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { LayoutService } from 'src/app/layout/layout.service';
 
 @Component({
   selector: 'app-products',
@@ -11,7 +10,10 @@ import { Observable } from 'rxjs';
 export class ProductsComponent implements OnInit {
 
   constructor(
+    private layout: LayoutService,
   ) { }
+
+  large$ = this.layout.isLarge$;
 
   ngOnInit(): void {
   }

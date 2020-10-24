@@ -6,20 +6,18 @@ import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/materi
 
 import { ProductsRoutingModule } from './products-routing.module';
 import { ProductsComponent } from './products.component';
-import { EditComponent } from './edit/edit.component';
-import { ProductPricesComponent } from './product-prices/product-prices.component';
-import { ProductFormComponent } from './product-form/product-form.component';
+import { ProductPricesComponent } from './products-editor/product-prices/product-prices.component';
 import { ProductsResolverService } from './services/products-resolver.service';
 import { ProductsListComponent } from './products-list/products-list.component';
+import { ProductsEditorComponent } from './products-editor/products-editor.component';
 
 
 @NgModule({
   declarations: [
     ProductsComponent,
-    EditComponent,
     ProductPricesComponent,
-    ProductFormComponent,
-    ProductsListComponent
+    ProductsListComponent,
+    ProductsEditorComponent
   ],
   imports: [
     CommonModule,

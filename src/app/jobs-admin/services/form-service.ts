@@ -23,9 +23,7 @@ export abstract class FormService<T> {
     this.fb = fb;
   }
 
-
   protected abstract createForm(): IFormGroup<T>;
 
-
-  abstract setValue(product: Partial<T>, params: { emitEvent: boolean; }): void;
+  abstract patchValue(product: Partial<T>, params?: { emitEvent: boolean; }): void;
 }

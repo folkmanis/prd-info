@@ -1,6 +1,6 @@
 <div class="container" cdkScrollable scroll-to-top>
     <mat-toolbar>
-        <button mat-raised-button color="primary" routerLink="new">
+        <button mat-raised-button color="primary" [routerLink]="[{outlets: {editor: 'new'}}]">
             PIEVIENOT JAUNU
         </button>
     </mat-toolbar>

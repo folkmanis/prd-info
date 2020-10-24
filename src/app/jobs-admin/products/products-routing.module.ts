@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { ProductsComponent } from './products.component';
-import { EditComponent } from './edit/edit.component';
+import { ProductsEditorComponent } from './products-editor/products-editor.component';
 import { ProductsListComponent } from './products-list/products-list.component';
 import { CanDeactivateGuard } from 'src/app/library/guards/can-deactivate.guard';
 import { ProductsResolverService } from './services/products-resolver.service';
@@ -18,15 +18,16 @@ const routes: Routes = [
       },
       {
         path: 'new',
-        component: EditComponent,
+        component: ProductsEditorComponent,
         canDeactivate: [CanDeactivateGuard],
+        outlet: 'editor',
         data: {
           product: {},
         },
       },
       {
         path: ':id',
-        component: EditComponent,
+        component: ProductsEditorComponent,
         canDeactivate: [CanDeactivateGuard],
         outlet: 'editor',
         resolve: {

@@ -6,8 +6,18 @@
 .list {
     flex: 1;
     position: relative;
+    .active:not(.large) & {
+        display: none;
+    }
 }
 
 .editor {
-    flex: 0 0 50%;
+    flex: 1;
+    display: none;
+    .large & {
+        flex: 0 0 50%;
+    }
+    .active & {
+        display: inherit;
+    }
 }

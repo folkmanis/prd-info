@@ -10,7 +10,6 @@ import { FormService } from '../../services/form-service';
 @Injectable()
 export class ProductFormService extends FormService<Product> {
 
-
   constructor(
     fb: FormBuilder,
     private productsService: ProductsService,
@@ -46,7 +45,7 @@ export class ProductFormService extends FormService<Product> {
     return productForm;
   }
 
-  setValue(product: Partial<Product>, params = { emitEvent: true }) {
+  patchValue(product: Partial<Product>, params = { emitEvent: true }) {
     this.form.reset();
 
     const { prices, ...rest } = product;
@@ -72,19 +71,19 @@ export class ProductFormService extends FormService<Product> {
     this.formPrices.markAsDirty();
   }
 
-  setNameValidators() {
-    this.form.controls.name.setAsyncValidators(this.nameAsyncValidator('name'));
-  }
-  removeNameValidators() {
-    this.form.controls.name.clearAsyncValidators();
-  }
-
   removePrice(idx: number) {
     this.formPrices.removeAt(idx);
     this.formPrices.markAsDirty();
   }
 
-  setPrices(prodPrices: ProductPrice[] | undefined) {
+  private setNameValidators() {
+    this.form.controls.name.setAsyncValidators(this.nameAsyncValidator('name'));
+  }
+  private removeNameValidators() {
+    this.form.controls.name.clearAsyncValidators();
+  }
+
+  private setPrices(prodPrices: ProductPrice[] | undefined) {
     this.formPrices.clear();
     for (const prodPrice of prodPrices || []) {
       this.formPrices.push(
