@@ -36,6 +36,9 @@ $warn: map-get($zmg-app-theme, warn);
       background-color: mat-color($primary, "lighter");
       border-bottom-color: mat-color($primary, "darker");
     }
+    &.selected {
+      background-color: mat-color($primary, 50);
+    }
   }
 }
 

@@ -1,10 +1,10 @@
 <div class="container" [class.large]="large$ | async" [class.active]="editor.isActivated">
     <div class="list">
-        <router-outlet></router-outlet>
+        <app-products-list></app-products-list>
     </div>
 
     <div class="editor">
-        <router-outlet name="editor" #editor="outlet"></router-outlet>
+        <router-outlet #editor="outlet"></router-outlet>
     </div>
 
 </div>

@@ -70,7 +70,7 @@ export class ProductsEditorComponent extends SimpleFormDirective<Product> implem
       )
         .subscribe(res => {
           this.form.markAsPristine();
-          this.router.navigate(['jobs-admin', 'products', { outlets: { editor: res } }]);
+          this.router.navigate(['jobs-admin', 'products', res]);
         });
     }
   }

@@ -1,15 +1,28 @@
 <div class="container" cdkScrollable scroll-to-top>
     <mat-toolbar>
-        <button mat-raised-button color="primary" [routerLink]="[{outlets: {editor: 'new'}}]">
-            PIEVIENOT JAUNU
-        </button>
+        <div>
+            <button mat-mini-fab color="primary" routerLink="new">
+                <mat-icon>add</mat-icon>
+            </button>
+        </div>
+        <div class="search">
+            <mat-form-field>
+                <input matInput type="search" [formControl]='searchControl'>
+                <button mat-icon-button matSuffix disabled *ngIf="!searchControl.value.length">
+                    <mat-icon>search</mat-icon>
+                </button>
+                <button mat-icon-button matSuffix *ngIf="searchControl.value.length" (click)="searchControl.reset('')">
+                    <mat-icon>clear</mat-icon>
+                </button>
+            </mat-form-field>
+        </div>
     </mat-toolbar>
 
     <table mat-table [dataSource]="products$" class="app-table">
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns;"></tr>
-        <tr mat-row *matRowDef="let prod; columns: displayedColumns" 
-        [routerLink]="[{outlets: {editor: prod._id}}]"></tr>
+        <tr mat-row *matRowDef="let prod; columns: displayedColumns" [routerLink]="[prod._id]"
+            routerLinkActive="selected"></tr>
 
         <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef> Nosaukums </th>
