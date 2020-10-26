@@ -10,6 +10,7 @@ import { ProductPricesComponent } from './products-editor/product-prices/product
 import { ProductsResolverService } from './services/products-resolver.service';
 import { ProductsListComponent } from './products-list/products-list.component';
 import { ProductsEditorComponent } from './products-editor/products-editor.component';
+import { ProductFormService } from './services/product-form.service';
 
 
 @NgModule({
@@ -27,6 +28,7 @@ import { ProductsEditorComponent } from './products-editor/products-editor.compo
   providers: [
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
     ProductsResolverService,
+    ProductFormService,
   ]
 })
 export class ProductsModule { }

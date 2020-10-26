@@ -15,7 +15,7 @@ import { ProductFormService } from '../services/product-form.service';
   selector: 'app-products-editor',
   templateUrl: './products-editor.component.html',
   styleUrls: ['./products-editor.component.scss'],
-  providers: [ProductFormService, DestroyService],
+  providers: [ DestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductsEditorComponent extends SimpleFormDirective<Product> implements OnInit, OnDestroy, CanComponentDeactivate {
