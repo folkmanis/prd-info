@@ -61,7 +61,7 @@ export class TabulaComponent implements OnInit, OnDestroy {
   }
 
   scrollToTop() {
-    this._scrollable.scrollToTop();
+    this._scrollable?.scrollToTop();
   }
 
   scrollToId(kaste: Kaste) {
