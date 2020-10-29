@@ -1,77 +1,51 @@
-<div class="container">
-
-    <mat-toolbar>
-        <span>
-            <button mat-raised-button (click)="onSave(form.value)" color="primary"
-                [disabled]="!form.valid || form.pristine">
-                SAGLABĀT
-            </button>
-            <button mat-raised-button (click)="onReset()" [disabled]="form.pristine">
-                ATIESTATĪT
-            </button>
-        </span>
-        <span class="spacer"></span>
-        <span>
-            <button mat-mini-fab color="primary" routerLink="../">
-                <mat-icon>
-                    close
-                </mat-icon>
-            </button>
-        </span>
-    </mat-toolbar>
-
-    <div class="wrapper">
-        <form [formGroup]="form">
-            <!-- Nosaukums nelabojams -->
-            <h2 *ngIf="name; else newProduct">
-                {{name}}
-            </h2>
-            <!-- Nosaukums labojams -->
-            <ng-template #newProduct>
-                <h2 *ngIf="!name">
-                    <mat-form-field>
-                        <mat-label>Nosaukums</mat-label>
-                        <input matInput formControlName="name">
-                        <mat-error *ngIf="form.controls.name.hasError('required')">
-                            Jānorāda obligāti
-                        </mat-error>
-                        <mat-error *ngIf="form.controls.name.hasError('occupied')">
-                            Nosaukums {{form.controls.name.getError('occupied')}} jau aizņemts!
-                        </mat-error>
-                    </mat-form-field>
-                </h2>
-            </ng-template>
-            <!-- Kategorija -->
-            <section>
-                <mat-form-field>
-                    <mat-label>Kategorija</mat-label>
-                    <mat-select formControlName="category">
-                        <mat-option *ngFor="let category of categories$ | async" [value]="category.category">
-                            {{category.description}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </section>
-            <!-- Neaktīvs -->
-            <section>
-                <mat-checkbox formControlName="inactive">
-                    Neaktīvs
-                </mat-checkbox>
-            </section>
-            <!-- Apraksts -->
-            <section>
-                <mat-form-field>
-                    <mat-label>Apraksts</mat-label>
-                    <textarea matInput matAutosize formControlName="description"></textarea>
-                </mat-form-field>
-            </section>
-            <!-- Cenu tabula -->
-            <section>
-                <app-product-prices formGroupName="prices" [customers]="customers$ | async" (addPrice)="onAddPrice()"
-                    (removePrice)="onDeletePrice($event)">
-                </app-product-prices>
-            </section>
-        </form>
-    </div>
-
-</div>
+<form [formGroup]="form">
+    <!-- Nosaukums labojams -->
+    <h2 *ngIf="!initialValue._id; else existingProduct">
+        <mat-form-field>
+            <mat-label>Nosaukums</mat-label>
+            <input matInput formControlName="name">
+            <mat-error *ngIf="form.controls.name.hasError('required')">
+                Jānorāda obligāti
+            </mat-error>
+            <mat-error *ngIf="form.controls.name.hasError('occupied')">
+                Nosaukums {{form.controls.name.getError('occupied')}} jau aizņemts!
+            </mat-error>
+        </mat-form-field>
+    </h2>
+    <!-- Nosaukums nelabojams -->
+    <ng-template #existingProduct>
+        <h2>
+            {{form.controls.name.value}}
+        </h2>
+    </ng-template>
+    <!-- Kategorija -->
+    <section>
+        <mat-form-field>
+            <mat-label>Kategorija</mat-label>
+            <mat-select formControlName="category">
+                <mat-option *ngFor="let category of categories$ | async" [value]="category.category">
+                    {{category.description}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </section>
+    <!-- Neaktīvs -->
+    <section>
+        <mat-checkbox formControlName="inactive">
+            Neaktīvs
+        </mat-checkbox>
+    </section>
+    <!-- Apraksts -->
+    <section>
+        <mat-form-field>
+            <mat-label>Apraksts</mat-label>
+            <textarea matInput matAutosize formControlName="description"></textarea>
+        </mat-form-field>
+    </section>
+    <!-- Cenu tabula -->
+    <section>
+        <app-product-prices formGroupName="prices" [customers]="customers$ | async" (addPrice)="onAddPrice()"
+            (removePrice)="onDeletePrice($event)">
+        </app-product-prices>
+    </section>
+</form>

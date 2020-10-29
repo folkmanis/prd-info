@@ -1,29 +1,9 @@
-.mat-toolbar>span {
-    flex: 0 0 auto;
-    &.spacer {
-        flex: 1;
-    }
-}
-
-.container {
-    height: 100%;
-    overflow-y: auto;
-}
-
-div.wrapper {
-    padding: 0 16px;
-}
-
 section {
     padding-top: 8px;
 }
 
 .mat-form-field {
     width: 100%;
-}
-
-button~button {
-    margin-left: 16px;
 }
 
 .error {

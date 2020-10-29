@@ -11,6 +11,7 @@ import { ProductsResolverService } from './services/products-resolver.service';
 import { ProductsListComponent } from './products-list/products-list.component';
 import { ProductsEditorComponent } from './products-editor/products-editor.component';
 import { ProductFormService } from './services/product-form.service';
+import { SimpleFormContainerComponent } from './simple-form-container/simple-form-container.component';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { ProductFormService } from './services/product-form.service';
     ProductsComponent,
     ProductPricesComponent,
     ProductsListComponent,
-    ProductsEditorComponent
+    ProductsEditorComponent,
+    SimpleFormContainerComponent
   ],
   imports: [
     CommonModule,

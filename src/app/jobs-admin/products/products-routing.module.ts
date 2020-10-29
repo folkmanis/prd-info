@@ -5,6 +5,7 @@ import { ProductsComponent } from './products.component';
 import { ProductsEditorComponent } from './products-editor/products-editor.component';
 import { CanDeactivateGuard } from 'src/app/library/guards/can-deactivate.guard';
 import { ProductsResolverService } from './services/products-resolver.service';
+import { SimpleFormContainerComponent } from './simple-form-container/simple-form-container.component';
 
 const routes: Routes = [
   {
@@ -13,18 +14,18 @@ const routes: Routes = [
     children: [
       {
         path: 'new',
-        component: ProductsEditorComponent,
+        component: SimpleFormContainerComponent,
         canDeactivate: [CanDeactivateGuard],
         data: {
-          product: {},
+          value: {},
         },
       },
       {
         path: ':id',
-        component: ProductsEditorComponent,
+        component: SimpleFormContainerComponent,
         canDeactivate: [CanDeactivateGuard],
         resolve: {
-          product: ProductsResolverService
+          value: ProductsResolverService
         }
       },
     ]

@@ -25,5 +25,9 @@ export abstract class FormService<T> {
 
   protected abstract createForm(): IFormGroup<T>;
 
-  abstract patchValue(product: Partial<T>, params?: { emitEvent: boolean; }): void;
+  initValue(product: Partial<T>, params?: { emitEvent: boolean; }): void {
+    this.form.reset(undefined, params);
+    this.form.patchValue(product, params);
+    this.form.markAsPristine();
+  }
 }

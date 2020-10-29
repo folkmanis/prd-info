@@ -45,18 +45,17 @@ export class ProductFormService extends FormService<Product> {
     return productForm;
   }
 
-  patchValue(product: Partial<Product>, params = { emitEvent: true }) {
-    this.form.reset();
-
+  initValue(product: Partial<Product>, params = { emitEvent: true }) {
     const { prices, ...rest } = product;
+
     if (!rest._id) {
       this.setNameValidators();
     } else {
       this.removeNameValidators();
     }
     this.setPrices(prices);
-    this.form.patchValue(rest, params);
-    this.form.markAsPristine();
+
+    super.initValue(product, params);
   }
 
   get value(): Product {
