@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { merge, Observable, Subject } from 'rxjs';
-import { map, switchMap, takeUntil, finalize } from 'rxjs/operators';
+import { merge, Observable, Subject, pipe } from 'rxjs';
+import { map, switchMap, takeUntil, finalize, tap } from 'rxjs/operators';
 import { Product } from 'src/app/interfaces';
 import { CustomersService, ProductsService } from 'src/app/services';
 import { SimpleFormDirective } from '../../services/simple-form.directive';
@@ -16,9 +16,7 @@ import { ProductFormService } from '../services/product-form.service';
   styleUrls: ['./products-editor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProductsEditorComponent
-  extends SimpleFormDirective<Product>
-  implements OnInit, OnDestroy {
+export class ProductsEditorComponent extends SimpleFormDirective<Product> implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
@@ -36,21 +34,25 @@ export class ProductsEditorComponent
   onSave() {
     const prod = this.form.value;
     if (prod._id) {
-      this.productService.updateProduct(prod._id, prod).pipe(
-        switchMap(_ => this.productService.getProduct(prod._id)),
-      )
-        .subscribe(res => {
-          this.initialValue = res;
-        }
-        );
+      this.updateFn(prod).subscribe(res => {
+        this.initialValue = res;
+      });
     } else {
-      this.productService.insertProduct(prod).pipe(
-      )
-        .subscribe(res => {
-          this.form.markAsPristine();
-          this.router.navigate(['..', res], { relativeTo: this.route });
-        });
+      this.insertFn(prod).subscribe(res => {
+        this.form.markAsPristine();
+        this.router.navigate(['..', res], { relativeTo: this.route });
+      });
     }
+  }
+
+  protected updateFn(prod: Product): Observable<Product> {
+    return this.productService.updateProduct(prod).pipe(
+      switchMap(_ => this.productService.getProduct(prod._id)),
+    );
+  }
+
+  protected insertFn({ _id, ...prod }: Product): Observable<string> {
+    return this.productService.insertProduct(prod);
   }
 
   onAddPrice(): void {

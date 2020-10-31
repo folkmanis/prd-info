@@ -1,11 +1,12 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Type } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { ProductsComponent } from './products.component';
 import { ProductsEditorComponent } from './products-editor/products-editor.component';
 import { CanDeactivateGuard } from 'src/app/library/guards/can-deactivate.guard';
 import { ProductsResolverService } from './services/products-resolver.service';
-import { SimpleFormContainerComponent } from './simple-form-container/simple-form-container.component';
+
+const COMPONENT: Type<any> = ProductsEditorComponent;
 
 const routes: Routes = [
   {
@@ -14,7 +15,7 @@ const routes: Routes = [
     children: [
       {
         path: 'new',
-        component: SimpleFormContainerComponent,
+        component: COMPONENT,
         canDeactivate: [CanDeactivateGuard],
         data: {
           value: {},
@@ -22,7 +23,7 @@ const routes: Routes = [
       },
       {
         path: ':id',
-        component: SimpleFormContainerComponent,
+        component: COMPONENT,
         canDeactivate: [CanDeactivateGuard],
         resolve: {
           value: ProductsResolverService

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { merge, Observable, Subject, MonoTypeOperatorFunction } from 'rxjs';
 import { map, share, shareReplay, switchMap, tap, startWith, concatMap, filter } from 'rxjs/operators';
-import { Product, ProductNoPrices, ProductPartial, CustomerProduct } from 'src/app/interfaces';
+import { Product, ProductNew, ProductPartial, CustomerProduct } from 'src/app/interfaces';
 import { cacheWithUpdate } from 'src/app/library/rx';
 import { JobsSettings } from 'src/app/interfaces';
 import { SystemPreferencesService } from 'src/app/services/system-preferences.service';
@@ -53,9 +53,9 @@ export class ProductsService {
     return this.prdApi.products.get(id);
   }
 
-  updateProduct(id: string, prod: Partial<Product>): Observable<boolean> {
-    return this.prdApi.products.updateOne(id, prod).pipe(
-      concatMap(result => this.prdApi.products.get(id).pipe(
+  updateProduct({ _id, ...rest }: Product): Observable<boolean> {
+    return this.prdApi.products.updateOne(_id, rest).pipe(
+      concatMap(result => this.prdApi.products.get(_id).pipe(
         tap(resp => this._updateOneProduct$.next(resp)),
         map(_ => result),
       )),
@@ -69,7 +69,7 @@ export class ProductsService {
     );
   }
 
-  insertProduct(prod: ProductNoPrices): Observable<string> {
+  insertProduct(prod: ProductNew): Observable<string> {
     return this.prdApi.products.insertOne(prod).pipe(
       tap(() => this._updateProducts$.next()),
       map(id => id.toString()),

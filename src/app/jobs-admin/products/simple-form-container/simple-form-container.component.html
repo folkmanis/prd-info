@@ -2,11 +2,11 @@
 
     <mat-toolbar>
         <span>
-            <button *ngIf="form" mat-raised-button (click)="onSave()" color="primary"
+            <button *ngIf="form" mat-raised-button (click)="saveForm.emit()" color="primary"
                 [disabled]="!form.valid || form.pristine">
                 SAGLABĀT
             </button>
-            <button *ngIf="form" mat-raised-button (click)="onReset()" [disabled]="form.pristine">
+            <button *ngIf="form" mat-raised-button (click)="resetForm.emit()" [disabled]="form.pristine">
                 ATIESTATĪT
             </button>
         </span>
@@ -21,7 +21,8 @@
     </mat-toolbar>
 
     <div class="wrapper">
-        <ng-container #formContent></ng-container>
+        <ng-content></ng-content>
+        <!-- <ng-container #formContent></ng-container> -->
     </div>
 
 </div>

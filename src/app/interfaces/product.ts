@@ -29,6 +29,6 @@ export interface ProductPrice {
     price: number;
 }
 
-export type ProductNoPrices = Omit<Product, 'prices'>;
+export type ProductNew = Omit<Product, '_id'>;
 
 export interface PriceChange { customerName: string; price: number | undefined; }
