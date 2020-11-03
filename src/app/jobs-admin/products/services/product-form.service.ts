@@ -4,21 +4,25 @@ import { IFormGroup, IFormArray, IFormControl } from '@rxweb/types';
 import { Product, ProductPrice } from 'src/app/interfaces';
 import { Observable } from 'rxjs';
 import { ProductsService } from 'src/app/services/products.service';
-import { map } from 'rxjs/operators';
-import { FormService } from '../../services/form-service';
+import { map, switchMap } from 'rxjs/operators';
+import { SimpleFormService } from './simple-form-service';
 
 @Injectable()
-export class ProductFormService extends FormService<Product> {
+export class ProductFormService extends SimpleFormService<Product> {
 
   constructor(
     fb: FormBuilder,
-    private productsService: ProductsService,
+    private productService: ProductsService,
   ) {
     super(fb);
   }
 
   private get formPrices(): IFormArray<ProductPrice> {
     return this.form.controls.prices as IFormArray<ProductPrice>;
+  }
+
+  isNew(): boolean {
+    return !this.form.controls._id.value;
   }
 
   protected createForm(): IFormGroup<Product> {
@@ -65,14 +69,25 @@ export class ProductFormService extends FormService<Product> {
     };
   }
 
-  addPrice(price?: ProductPrice) {
-    this.formPrices.push(this.productPriceGroup(price));
-    this.formPrices.markAsDirty();
+  updateFn(prod: Product): Observable<Product> {
+    return this.productService.updateProduct(prod).pipe(
+      switchMap(_ => this.productService.getProduct(prod._id)),
+    );
   }
 
-  removePrice(idx: number) {
-    this.formPrices.removeAt(idx);
-    this.formPrices.markAsDirty();
+  insertFn({ _id, ...prod }: Product): Observable<string> {
+    return this.productService.insertProduct(prod);
+  }
+
+
+  addPrice(frm: IFormArray<ProductPrice>, price?: ProductPrice) {
+    frm.push(this.productPriceGroup(price));
+    frm.markAsDirty();
+  }
+
+  removePrice(frm: IFormArray<ProductPrice>, idx: number) {
+    frm.removeAt(idx);
+    frm.markAsDirty();
   }
 
   private setNameValidators() {
@@ -109,7 +124,7 @@ export class ProductFormService extends FormService<Product> {
 
   private nameAsyncValidator(key: keyof Product): AsyncValidatorFn {
     return (control: IFormControl<string>): Observable<ValidationErrors | null> => {
-      return this.productsService.validate(key, control.value.trim()).pipe(
+      return this.productService.validate(key, control.value.trim()).pipe(
         map(valid => valid ? null : { occupied: control.value })
       );
     };

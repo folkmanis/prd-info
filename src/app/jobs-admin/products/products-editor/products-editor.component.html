@@ -1,6 +1,6 @@
-<app-simple-form-container [form]="form" (data)="initialValue = $event" (saveForm)="onSave()" (resetForm)="onReset()">
+<app-simple-form-container>
 
-    <form [formGroup]="form">
+    <form appSimpleForm [formGroup]="form">
         <!-- Nosaukums labojams -->
         <h2 *ngIf="!form.controls._id.value; else existingProduct">
             <mat-form-field>
@@ -46,8 +46,8 @@
         </section>
         <!-- Cenu tabula -->
         <section>
-            <app-product-prices formGroupName="prices" [customers]="customers$ | async" (addPrice)="onAddPrice()"
-                (removePrice)="onDeletePrice($event)">
+            <app-product-prices formGroupName="prices" [customers]="customers$ | async" (addPrice)="onAddPrice(form.controls.prices)"
+                (removePrice)="onDeletePrice(form.controls.prices, $event)">
             </app-product-prices>
         </section>
     </form>
