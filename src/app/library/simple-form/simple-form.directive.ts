@@ -1,10 +1,9 @@
-import { ChangeDetectorRef, Directive, Input, Output, OnInit, OnDestroy, TemplateRef, ViewContainerRef, Inject, Self } from '@angular/core';
+import { Directive, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription, Subject, merge, BehaviorSubject, Observable } from 'rxjs';
-import { filter, map, shareReplay } from 'rxjs/operators';
-import { SimpleFormService } from './services/simple-form-service';
-import { IFormGroup } from '@rxweb/types';
+import { Subscription } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { SimpleFormContainerComponent } from './simple-form-container/simple-form-container.component';
+import { SimpleFormService } from './simple-form-service';
 
 @Directive({
   selector: '[appSimpleForm]'

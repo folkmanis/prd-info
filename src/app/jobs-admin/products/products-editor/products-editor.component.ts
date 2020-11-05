@@ -1,16 +1,11 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { merge, Observable, Subject, pipe } from 'rxjs';
-import { map, switchMap, takeUntil, finalize, tap } from 'rxjs/operators';
-import { Product, ProductPrice } from 'src/app/interfaces';
-import { CustomersService, ProductsService } from 'src/app/services';
-import { SimpleFormDirective } from '../simple-form.directive';
-import { DestroyService } from 'src/app/library/rx/destroy.service';
-
-import { ProductFormService } from '../services/product-form.service';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { IFormArray } from '@rxweb/types';
 import { IAbstractControl } from '@rxweb/types/reactive-form/i-abstract-control';
+import { Observable } from 'rxjs';
+import { Product, ProductPrice } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
+import { CustomersService, ProductsService } from 'src/app/services';
+import { ProductFormService } from '../services/product-form.service';
 
 
 @Component({

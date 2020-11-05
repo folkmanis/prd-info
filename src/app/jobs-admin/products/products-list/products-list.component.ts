@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { combineLatest } from 'rxjs';
+import { combineLatest, BehaviorSubject } from 'rxjs';
 import { map, startWith, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 import { IFormControl } from '@rxweb/types';
 import { ProductsService } from 'src/app/services';
+import { LayoutService } from 'src/app/layout/layout.service';
 
 @Component({
   selector: 'app-products-list',
@@ -12,19 +13,21 @@ import { ProductsService } from 'src/app/services';
 })
 export class ProductsListComponent implements OnInit {
 
-  searchControl: IFormControl<string> = new FormControl('');
 
   constructor(
     private productsService: ProductsService,
+    private layout: LayoutService,
   ) { }
+  large$ = this.layout.isLarge$;
 
   displayedColumns = ['name', 'category', 'inactive'];
 
+  private filter = new BehaviorSubject('');
+
   products$ = combineLatest([
-    this.searchControl.valueChanges.pipe(
+    this.filter.pipe(
       debounceTime(200),
-      distinctUntilChanged(),
-      startWith(''),
+      // distinctUntilChanged(),
       map(str => str.toUpperCase()),
     ),
     this.productsService.products$
@@ -33,6 +36,10 @@ export class ProductsListComponent implements OnInit {
   );
 
   ngOnInit(): void {
+  }
+
+  onFilter(value: string) {
+    this.filter.next(value);
   }
 
 }

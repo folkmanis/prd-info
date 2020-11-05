@@ -1,8 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AbstractControl } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { map } from 'rxjs/operators';
-import { SimpleFormService } from '../services/simple-form-service';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { SimpleFormService } from '../simple-form-service';
 
 
 

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder, ValidatorFn, ValidationErrors, Validators, AsyncValidatorFn, AbstractControl } from '@angular/forms';
-import { IFormGroup, IFormArray, IFormControl } from '@rxweb/types';
-import { Product, ProductPrice } from 'src/app/interfaces';
+import { AsyncValidatorFn, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
+import { IFormArray, IFormControl, IFormGroup } from '@rxweb/types';
 import { Observable } from 'rxjs';
-import { ProductsService } from 'src/app/services/products.service';
 import { map, switchMap } from 'rxjs/operators';
-import { SimpleFormService } from './simple-form-service';
+import { Product, ProductPrice } from 'src/app/interfaces';
+import { SimpleFormService } from 'src/app/library/simple-form';
+import { ProductsService } from 'src/app/services/products.service';
 
 @Injectable()
 export class ProductFormService extends SimpleFormService<Product> {

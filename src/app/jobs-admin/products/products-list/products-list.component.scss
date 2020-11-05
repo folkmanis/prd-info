@@ -2,22 +2,6 @@ table {
     width: 100%;
 }
 
-div.container {
-    overflow: auto;
-    height: 100%;
-}
-
-.mat-toolbar {
-    position: sticky;
-    top: 0px;
-    z-index: 100;
-    & div.search {
-        width: 100%;
-        display: flex;
-        justify-content: flex-end;
-    }
-}
-
 .mat-row {
     cursor: pointer;
 }
