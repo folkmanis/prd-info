@@ -27,7 +27,6 @@ export class ProductsListComponent implements OnInit {
   products$ = combineLatest([
     this.filter.pipe(
       debounceTime(200),
-      // distinctUntilChanged(),
       map(str => str.toUpperCase()),
     ),
     this.productsService.products$
