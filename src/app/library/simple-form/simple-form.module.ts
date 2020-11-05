@@ -1,5 +1,6 @@
-import { NgModule, Type, ModuleWithProviders } from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 import { LibraryModule } from 'src/app/library';
 
 import { SimpleFormContainerComponent } from './simple-form-container/simple-form-container.component';
@@ -39,6 +40,8 @@ export class SimpleFormModule {
         conf.resolver,
         { provide: SimpleFormService, useExisting: conf.formService },
         provideRoutes(this.provideRoute(conf)),
+        { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
+
       ]
     };
   }
