@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 import { LibraryModule } from 'src/app/library/library.module';
 import { SimpleFormModule } from 'src/app/library/simple-form';
 import { ProductPricesComponent } from './products-editor/product-prices/product-prices.component';
@@ -27,8 +26,5 @@ import { ProductsResolverService } from './services/products-resolver.service';
       resolver: ProductsResolverService,
     }),
   ],
-  providers: [
-    { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
-  ]
 })
 export class ProductsModule { }
