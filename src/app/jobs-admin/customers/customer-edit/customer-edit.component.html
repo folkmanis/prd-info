@@ -1,0 +1,61 @@
+<app-simple-form-container>
+
+    <form appSimpleForm [formGroup]="form">
+
+        <h2 *ngIf="isNew; else existing">
+            <mat-form-field>
+                <mat-label>Klienta nosaukums</mat-label>
+                <input matInput appFocused formControlName="CustomerName" placeholder="Nosaukums" autocomplete="off"
+                    required>
+                <mat-error *ngIf="form.controls.CustomerName.hasError('required')">
+                    Nosaukums jāievada obligāti!
+                </mat-error>
+                <mat-error *ngIf="form.controls.CustomerName.hasError('occupied')">
+                    Nosaukums jau tiek izmantots
+                </mat-error>
+            </mat-form-field>
+        </h2>
+
+        <ng-template #existing>
+            <h2>
+                {{form.controls.CustomerName.value}}
+            </h2>
+        </ng-template>
+
+        <!-- Kods -->
+        <section>
+            <mat-form-field>
+                <mat-label>Klienta kods</mat-label>
+                <input matInput appFocused formControlName="code" placeholder="Kods" autocomplete="off">
+                <mat-error *ngIf="form.controls.code.hasError('required')">
+                    Kodu jāievada obligāti!
+                </mat-error>
+                <mat-error *ngIf="form.controls.code.hasError('occupied')">
+                    Kods jau tiek izmantots
+                </mat-error>
+            </mat-form-field>
+        </section>
+        <!-- apraksts -->
+        <section>
+            <mat-form-field>
+                <input matInput formControlName="description" placeholder="Apraksts" autocomplete="off">
+            </mat-form-field>
+        </section>
+        <!-- Neaktīvs -->
+        <section>
+            <mat-checkbox class="input-element" formControlName="disabled">
+                Neaktīvs
+            </mat-checkbox>
+        </section>
+
+        <section formGroupName="financial" class="input-element">
+            <mat-form-field>
+                <mat-label>
+                    Klienta nosaukums grāmatvedības sistēmā
+                </mat-label>
+                <input matInput formControlName="clientName">
+            </mat-form-field>
+        </section>
+
+    </form>
+</app-simple-form-container>

@@ -1,6 +1,6 @@
 <app-simple-list-container [large]="large$ | async" (filter)="onFilter($event)">
 
-    <table mat-table [dataSource]="products$" class="app-table">
+    <table mat-table [dataSource]="products$" class="simple-form-table">
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns;"></tr>
         <tr mat-row *matRowDef="let prod; columns: displayedColumns" [routerLink]="[prod._id]"

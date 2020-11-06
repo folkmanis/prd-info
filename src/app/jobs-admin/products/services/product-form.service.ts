@@ -21,7 +21,7 @@ export class ProductFormService extends SimpleFormService<Product> {
     return this.form.controls.prices as IFormArray<ProductPrice>;
   }
 
-  isNew(): boolean {
+  get isNew(): boolean {
     return !this.form.controls._id.value;
   }
 
@@ -51,6 +51,7 @@ export class ProductFormService extends SimpleFormService<Product> {
 
   initValue(product: Partial<Product>, params = { emitEvent: true }) {
     const { prices, ...rest } = product;
+    console.log(product);
 
     if (!rest._id) {
       this.setNameValidators();
@@ -59,7 +60,7 @@ export class ProductFormService extends SimpleFormService<Product> {
     }
     this.setPrices(prices);
 
-    super.initValue(product, params);
+    super.initValue(rest, params);
   }
 
   get value(): Product {

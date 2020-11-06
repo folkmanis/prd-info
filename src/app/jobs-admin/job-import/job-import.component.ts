@@ -6,7 +6,7 @@ import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { Job, JobsSettings } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { SystemPreferencesService } from 'src/app/services';
-import { ProductPriceImport } from '../services';
+import { ProductPriceImport } from '../services/job-import.service';
 import { JobImportService, ParsedObject } from '../services/job-import.service';
 
 @Component({

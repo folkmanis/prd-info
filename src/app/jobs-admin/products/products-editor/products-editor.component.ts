@@ -20,14 +20,16 @@ export class ProductsEditorComponent implements CanComponentDeactivate {
     private customersService: CustomersService,
     private productService: ProductsService,
     private productFormService: ProductFormService,
-  ) {  }
+  ) { }
 
   form = this.productFormService.form;
 
   readonly categories$ = this.productService.categories$;
   readonly customers$ = this.customersService.customers$;
 
-  onAddPrice(frm:  IAbstractControl<ProductPrice[], Product>): void {
+  get isNew(): boolean { return this.productFormService.isNew; }
+
+  onAddPrice(frm: IAbstractControl<ProductPrice[], Product>): void {
     this.productFormService.addPrice(frm as IFormArray<ProductPrice>);
   }
 
@@ -36,7 +38,7 @@ export class ProductsEditorComponent implements CanComponentDeactivate {
   }
 
   canDeactivate(): Observable<boolean> | boolean {
-    return this.form.pristine || this.productFormService.isNew();
+    return this.form.pristine; // || this.productFormService.isNew();
   }
 
 }

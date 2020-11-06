@@ -18,3 +18,7 @@
 @include angular-material-theme($zmg-app-theme);
 
 @include zmg-table-theme($zmg-app-theme);
+
+@import "./app/library/simple-form/simple-form.styles.scss";
+
+@include simple-form-theme($zmg-app-theme);

@@ -52,7 +52,7 @@ export class SimpleFormDirective<T> implements OnInit, OnDestroy {
 
   private onSave() {
     const value = this.form.value;
-    if (!this.formService.isNew()) {
+    if (!this.formService.isNew) {
       this.formService.updateFn(value).subscribe(res => {
         this.initialValue = res;
       });

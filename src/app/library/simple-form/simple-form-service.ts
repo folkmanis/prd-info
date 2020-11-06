@@ -24,14 +24,14 @@ export abstract class SimpleFormService<T> {
     this.fb = fb;
   }
 
+  abstract readonly isNew: boolean;
   protected abstract createForm(): IFormGroup<T>;
   abstract updateFn(value: T): Observable<T>;
   abstract insertFn(value: T): Observable<string | number>;
-  abstract isNew(): boolean;
 
-  initValue(product: Partial<T>, params?: { emitEvent: boolean; }): void {
+  initValue(value: Partial<T>, params?: { emitEvent: boolean; }): void {
     this.form.reset(undefined, params);
-    this.form.patchValue(product, params);
+    this.form.patchValue(value, params);
     this.form.markAsPristine();
   }
 

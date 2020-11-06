@@ -2,7 +2,7 @@
 
     <form appSimpleForm [formGroup]="form">
         <!-- Nosaukums labojams -->
-        <h2 *ngIf="!form.controls._id.value; else existingProduct">
+        <h2 *ngIf="isNew; else existingProduct">
             <mat-form-field>
                 <mat-label>Nosaukums</mat-label>
                 <input matInput formControlName="name">

@@ -14,6 +14,7 @@ div.list {
         height: 100%;
         overflow: auto;
     }
+
 }
 
 .editor {
@@ -26,7 +27,7 @@ div.list {
         flex: 0 0 50%;
     }
     .active & {
-        display: inherit;
+        display: initial;
     }
 }
 

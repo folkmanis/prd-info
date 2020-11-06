@@ -1,0 +1,57 @@
+@import "~@angular/material/theming";
+
+@mixin simple-form-color($config-or-theme) {
+    // Extract the color configuration in case a theme has been passed.
+    // This allows consumers to either pass a theme object or a color configuration.
+    $config: mat-get-color-config($config-or-theme);
+    // Extract the palettes you need from the theme definition.
+    $primary: map-get($config, primary);
+    $accent: map-get($config, accent);
+
+    // Define any styles affected by the theme.
+    .simple-form-table tbody tr {
+        &:hover {
+            background-color: mat-color($primary, "lighter");
+            border-bottom-color: mat-color($primary, "darker");
+        }
+        &.selected {
+            background-color: mat-color($primary, 50);
+        }
+    }
+}
+
+@mixin simple-form-typography($config-or-theme) {
+    // Extract the typography configuration in case a theme has been passed.
+    $config: mat-get-typography-config($config-or-theme);
+
+    .app-table tbody tr {
+        &:hover {
+            font-weight: 800;
+            // font-weight: mat-font-weight($config, body+3);
+        }
+    }
+}
+
+@mixin simple-form-table() {
+    table.simple-form-table {
+        width: 100%;
+        cursor: pointer;
+    }
+}
+
+@mixin simple-form-theme($theme) {
+    // Extracts the color and typography configurations from the theme.
+    $color: mat-get-color-config($theme);
+    $typography: mat-get-typography-config($theme);
+
+    // Do not generate styles if configurations for individual theming
+    // systems have been explicitly set to `null`.
+    @if $color != null {
+        @include simple-form-color($color);
+    }
+    @if $typography != null {
+        @include simple-form-typography($typography);
+    }
+
+    @include simple-form-table();
+}
