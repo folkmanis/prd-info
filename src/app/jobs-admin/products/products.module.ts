@@ -5,7 +5,6 @@ import { SimpleFormModule } from 'src/app/library/simple-form';
 import { ProductPricesComponent } from './products-editor/product-prices/product-prices.component';
 import { ProductsEditorComponent } from './products-editor/products-editor.component';
 import { ProductsListComponent } from './products-list/products-list.component';
-import { ProductFormService } from './services/product-form.service';
 import { ProductsResolverService } from './services/products-resolver.service';
 
 
@@ -20,7 +19,6 @@ import { ProductsResolverService } from './services/products-resolver.service';
     LibraryModule,
     SimpleFormModule.forChildren({
       path: 'products',
-      formService: ProductFormService,
       listComponent: ProductsListComponent,
       editorComponent: ProductsEditorComponent,
       resolver: ProductsResolverService,

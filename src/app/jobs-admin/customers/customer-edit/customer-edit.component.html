@@ -1,6 +1,6 @@
 <app-simple-form-container>
 
-    <form appSimpleForm [formGroup]="form">
+    <form [appSimpleForm]="formSource" [formGroup]="form">
 
         <h2 *ngIf="isNew; else existing">
             <mat-form-field>

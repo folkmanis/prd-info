@@ -5,6 +5,5 @@ export interface SimpleFormModuleConfiguration {
     path: string;
     editorComponent: Type<any>;
     listComponent: Type<any>;
-    formService: Type<any>;
     resolver: Type<Resolve<any>>;
 }

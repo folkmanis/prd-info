@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { CustomersFormService } from '../services/customers-form.service';
+import { FormBuilder } from '@angular/forms';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
+import { CustomersFormSource } from '../services/customers-form-source';
+import { CustomersService } from 'src/app/services/customers.service';
+import { IFormGroup } from '@rxweb/types';
+import { Customer } from 'src/app/interfaces';
 
 @Component({
   selector: 'app-customer-edit',
@@ -10,11 +14,14 @@ import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.gu
 export class CustomerEditComponent implements OnInit, CanComponentDeactivate {
 
   constructor(
-    private formService: CustomersFormService,
+    private fb: FormBuilder,
+    private customersService: CustomersService,
   ) { }
 
-  form = this.formService.form;
-  get isNew(): boolean { return this.formService.isNew; }
+  formSource = new CustomersFormSource(this.fb, this.customersService);
+
+  get form(): IFormGroup<Customer> { return this.formSource.form; }
+  get isNew(): boolean { return this.formSource.isNew; }
 
   ngOnInit(): void {
   }

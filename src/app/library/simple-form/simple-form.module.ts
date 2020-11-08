@@ -4,7 +4,6 @@ import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/materi
 import { LibraryModule } from 'src/app/library';
 
 import { SimpleFormContainerComponent } from './simple-form-container/simple-form-container.component';
-import { SimpleFormService } from './simple-form-service';
 import { SimpleFormDirective } from './simple-form.directive';
 import { CanDeactivateGuard } from 'src/app/library/guards/can-deactivate.guard';
 import { SimpleListContainerComponent } from './simple-list-container/simple-list-container.component';
@@ -36,9 +35,7 @@ export class SimpleFormModule {
     return {
       ngModule: SimpleFormModule,
       providers: [
-        conf.formService,
         conf.resolver,
-        { provide: SimpleFormService, useExisting: conf.formService },
         provideRoutes(this.provideRoute(conf)),
         { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
 

@@ -5,9 +5,7 @@ import { CustomersService } from 'src/app/services';
 import { Observable, of, EMPTY } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CustomersResolverService implements Resolve<Customer> {
 
   constructor(
@@ -17,8 +15,9 @@ export class CustomersResolverService implements Resolve<Customer> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Customer> | Observable<never> | undefined {
     const id: string = route.paramMap.get('id');
+
     if (!id || id.length !== 24) {
-      this.cancelNavigation();
+      this.cancelNavigation(state);
       return;
     }
     return this.customersService.getCustomer(id).pipe(
@@ -26,15 +25,15 @@ export class CustomersResolverService implements Resolve<Customer> {
         if (cust) {
           return of(cust);
         } else {
-          this.cancelNavigation();
+          this.cancelNavigation(state);
           return EMPTY;
         }
       })
     );
   }
 
-  private cancelNavigation() {
-    this.router.navigate(['jobs-admin', 'customers']);
+  private cancelNavigation(state: RouterStateSnapshot) {
+    this.router.navigate(state.url.split('/').slice(0, -1));
   }
 
 }
