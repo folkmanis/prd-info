@@ -6,6 +6,13 @@ import { ProductPricesComponent } from './products-editor/product-prices/product
 import { ProductsEditorComponent } from './products-editor/products-editor.component';
 import { ProductsListComponent } from './products-list/products-list.component';
 import { ProductsResolverService } from './services/products-resolver.service';
+import { SimpleFormResolverService } from 'src/app/library/simple-form';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
+import { ProductsService } from 'src/app/services';
+import { Product } from 'src/app/interfaces';
+import { Route } from '@angular/compiler/src/core';
+import { EMPTY, Observable, of } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 
 
 @NgModule({

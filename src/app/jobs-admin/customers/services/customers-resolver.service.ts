@@ -1,39 +1,32 @@
 import { Injectable } from '@angular/core';
-import { Router, Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { Customer, NewCustomer } from 'src/app/interfaces';
+import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { Customer } from 'src/app/interfaces';
+import { RetrieveFn, SimpleFormResolverService } from 'src/app/library/simple-form';
 import { CustomersService } from 'src/app/services';
-import { Observable, of, EMPTY } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+
 
 @Injectable()
 export class CustomersResolverService implements Resolve<Customer> {
 
   constructor(
-    private router: Router,
     private customersService: CustomersService,
+    private simpleResolver: SimpleFormResolverService,
   ) { }
+
+  retrieveFnFactory(id: string): RetrieveFn<Customer> {
+    return () => {
+      if (!id || id.length !== 24) { return of(null); }
+      return this.customersService.getCustomer(id);
+    };
+  }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Customer> | Observable<never> | undefined {
     const id: string = route.paramMap.get('id');
-
-    if (!id || id.length !== 24) {
-      this.cancelNavigation(state);
-      return;
-    }
-    return this.customersService.getCustomer(id).pipe(
-      mergeMap(cust => {
-        if (cust) {
-          return of(cust);
-        } else {
-          this.cancelNavigation(state);
-          return EMPTY;
-        }
-      })
+    return this.simpleResolver.retrieve(
+      state,
+      this.retrieveFnFactory(id)
     );
-  }
-
-  private cancelNavigation(state: RouterStateSnapshot) {
-    this.router.navigate(state.url.split('/').slice(0, -1));
   }
 
 }

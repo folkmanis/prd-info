@@ -38,7 +38,6 @@ export class SimpleFormModule {
         conf.resolver,
         provideRoutes(this.provideRoute(conf)),
         { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
-
       ]
     };
   }
