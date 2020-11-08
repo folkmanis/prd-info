@@ -75,8 +75,8 @@ export class InvoiceReport {
         ]);
         for (const job of jobs) {
             const prod: JobProduct | undefined = job.products as JobProduct;
+            if (!prod || prod.price * prod.count === 0) { continue; }
             tbl.push([
-                // job.jobId,
                 moment(job.receivedDate).format('L'),
                 job.name,
                 prod ? new Txt(prod.name).noWrap().end : '',
