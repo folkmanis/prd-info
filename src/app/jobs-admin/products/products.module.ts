@@ -1,36 +1,35 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { NgModule } from '@angular/core';
 import { LibraryModule } from 'src/app/library/library.module';
-import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
-
-import { ProductsRoutingModule } from './products-routing.module';
-import { ProductsComponent } from './products.component';
+import { SimpleFormModule } from 'src/app/library/simple-form';
 import { ProductPricesComponent } from './products-editor/product-prices/product-prices.component';
-import { ProductsResolverService } from './services/products-resolver.service';
-import { ProductsListComponent } from './products-list/products-list.component';
 import { ProductsEditorComponent } from './products-editor/products-editor.component';
-import { ProductFormService } from './services/product-form.service';
-import { SimpleFormContainerComponent } from './simple-form-container/simple-form-container.component';
+import { ProductsListComponent } from './products-list/products-list.component';
+import { ProductsResolverService } from './services/products-resolver.service';
+import { SimpleFormResolverService } from 'src/app/library/simple-form';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
+import { ProductsService } from 'src/app/services';
+import { Product } from 'src/app/interfaces';
+import { Route } from '@angular/compiler/src/core';
+import { EMPTY, Observable, of } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 
 
 @NgModule({
   declarations: [
-    ProductsComponent,
     ProductPricesComponent,
     ProductsListComponent,
     ProductsEditorComponent,
-    SimpleFormContainerComponent
   ],
   imports: [
     CommonModule,
     LibraryModule,
-    ProductsRoutingModule,
+    SimpleFormModule.forChildren({
+      path: 'products',
+      listComponent: ProductsListComponent,
+      editorComponent: ProductsEditorComponent,
+      resolver: ProductsResolverService,
+    }),
   ],
-  providers: [
-    { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
-    ProductsResolverService,
-    ProductFormService,
-  ]
 })
 export class ProductsModule { }

@@ -1,0 +1,43 @@
+.container {
+    display: flex;
+    height: 100%;
+}
+
+div.list {
+    flex: 1;
+    position: relative;
+    .active:not(.large) & {
+        display: none;
+    }
+
+    & > div {
+        height: 100%;
+        overflow: auto;
+    }
+
+}
+
+.editor {
+    flex: 1;
+    display: none;
+    position: relative;
+    overflow: auto;
+    height: 100%;
+    .large & {
+        flex: 0 0 50%;
+    }
+    .active & {
+        display: initial;
+    }
+}
+
+.mat-toolbar {
+    position: sticky;
+    top: 0px;
+    z-index: 100;
+    & div.search {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+    }
+}

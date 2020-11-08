@@ -1,14 +1,12 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { merge, Observable, Subject, pipe } from 'rxjs';
-import { map, switchMap, takeUntil, finalize, tap } from 'rxjs/operators';
-import { Product } from 'src/app/interfaces';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
+import { IFormArray, IFormGroup } from '@rxweb/types';
+import { IAbstractControl } from '@rxweb/types/reactive-form/i-abstract-control';
+import { Observable } from 'rxjs';
+import { Product, ProductPrice } from 'src/app/interfaces';
+import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { CustomersService, ProductsService } from 'src/app/services';
-import { SimpleFormDirective } from '../../services/simple-form.directive';
-import { DestroyService } from 'src/app/library/rx/destroy.service';
-
-import { ProductFormService } from '../services/product-form.service';
-
+import { ProductsFormSource } from '../services/products-form-source';
 
 @Component({
   selector: 'app-products-editor',
@@ -16,52 +14,35 @@ import { ProductFormService } from '../services/product-form.service';
   styleUrls: ['./products-editor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProductsEditorComponent extends SimpleFormDirective<Product> implements OnInit, OnDestroy {
+export class ProductsEditorComponent implements OnInit, CanComponentDeactivate {
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
     private customersService: CustomersService,
     private productService: ProductsService,
-    private productFormService: ProductFormService,
-  ) {
-    super(productFormService);
-  }
+    private fb: FormBuilder,
+  ) { }
+
+  formSource = new ProductsFormSource(this.fb, this.productService);
+  get form(): IFormGroup<Product> { return this.formSource.form; }
 
   readonly categories$ = this.productService.categories$;
   readonly customers$ = this.customersService.customers$;
 
-  onSave() {
-    const prod = this.form.value;
-    if (prod._id) {
-      this.updateFn(prod).subscribe(res => {
-        this.initialValue = res;
-      });
-    } else {
-      this.insertFn(prod).subscribe(res => {
-        this.form.markAsPristine();
-        this.router.navigate(['..', res], { relativeTo: this.route });
-      });
-    }
+  get isNew(): boolean { return this.formSource.isNew; }
+
+  ngOnInit(): void {
   }
 
-  protected updateFn(prod: Product): Observable<Product> {
-    return this.productService.updateProduct(prod).pipe(
-      switchMap(_ => this.productService.getProduct(prod._id)),
-    );
+  onAddPrice(frm: IAbstractControl<ProductPrice[], Product>): void {
+    this.formSource.addPrice(frm as IFormArray<ProductPrice>);
   }
 
-  protected insertFn({ _id, ...prod }: Product): Observable<string> {
-    return this.productService.insertProduct(prod);
+  onDeletePrice(frm: IAbstractControl<ProductPrice[], Product>, idx: number): void {
+    this.formSource.removePrice(frm as IFormArray<ProductPrice>, idx);
   }
 
-  onAddPrice(): void {
-    this.productFormService.addPrice();
+  canDeactivate(): Observable<boolean> | boolean {
+    return this.form.pristine; // || this.productFormService.isNew();
   }
-
-  onDeletePrice(idx: number): void {
-    this.productFormService.removePrice(idx);
-  }
-
 
 }

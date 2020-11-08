@@ -27,10 +27,8 @@ export class CustomersService {
     return this._customers$;
   }
 
-  updateCustomer(customer: Partial<Customer>): Observable<boolean> {
-    const _id = customer._id;
-    delete customer._id;
-    return this.prdApi.customers.updateOne(_id, customer).pipe(
+  updateCustomer({_id, ...rest}: Partial<Customer>): Observable<boolean> {
+    return this.prdApi.customers.updateOne(_id, rest).pipe(
       tap(() => this.updateCustomers$.next()),
     );
   }

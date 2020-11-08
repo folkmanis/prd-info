@@ -10,8 +10,6 @@ import { ProductsModule } from './products/products.module';
 import { CustomersModule } from './customers/customers.module';
 import { JobImportModule } from './job-import/job-import.module';
 
-import { JobImportService } from './services';
-
 @NgModule({
   declarations: [
     JobsAdminComponent,

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormArray, Validators, ValidatorFn, FormControl } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { ProductPriceImport } from '../../services';
+import { ProductPriceImport } from '../../services/job-import.service';
 
 
 @Component({
