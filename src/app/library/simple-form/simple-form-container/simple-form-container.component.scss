@@ -1,7 +1,11 @@
-.mat-toolbar > span {
-    flex: 0 0 auto;
-    &.spacer {
-        flex: 1;
+.mat-toolbar {
+    position: sticky;
+    top: 0px;
+    & > span {
+        flex: 0 0 auto;
+        &.spacer {
+            flex: 1;
+        }
     }
 }
 
