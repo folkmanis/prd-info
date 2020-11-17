@@ -45,7 +45,6 @@ import { HideZeroPipe } from './pipes/hide-zero.pipe';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { CardMenuComponent } from './card-menu/card-menu.component';
 import { ShortenTextPipe } from './pipes/shorten-text.pipe';
-import { FindSelectRouteModule } from './find-select-route/find-select-route.module';
 import { FocusedDirective } from './directives/focused.directive';
 import { SideButtonModule } from './side-button/side-button.module';
 import { FilesizePipe } from './pipes/filesize.pipe';
@@ -102,7 +101,6 @@ import { BackButtonDirective } from './directives/back-button.directive';
     ScrollToTopModule,
     LayoutModule,
     ScrollingModule,
-    FindSelectRouteModule,
     SideButtonModule,
   ],
   exports: [
@@ -146,7 +144,6 @@ import { BackButtonDirective } from './directives/back-button.directive';
     HideZeroPipe,
     ShortenTextPipe,
     ScrollingModule,
-    FindSelectRouteModule,
     FocusedDirective,
     SideButtonModule,
     ScrollToTopModule,

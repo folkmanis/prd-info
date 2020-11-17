@@ -1,0 +1,75 @@
+<app-simple-form-container>
+    <form [appSimpleForm]="userFormSource" [formGroup]="userFormSource.form">
+        <!-- Lietotājvārds -->
+        <h2 *ngIf="userFormSource.isNew; else existing">
+            <mat-form-field>
+                <input formControlName="username" matInput placeholder="Lietotājvārds" autocomplete="off" required>
+                <mat-error *ngIf="username.hasError('minlength') && !username.hasError('symbol')">
+                    Jābūt vismaz {{username.errors.minlength.requiredLength}} simboliem
+                </mat-error>
+                <mat-error *ngIf="username.hasError('symbol')">
+                    {{username.errors.symbol}}
+                </mat-error>
+                <mat-error *ngIf="username.hasError('existing')">
+                    {{username.errors.existing}}
+                </mat-error>
+            </mat-form-field>
+        </h2>
+
+        <ng-template #existing>
+            <h2>
+                {{username.value}}
+            </h2>
+        </ng-template>
+
+        <mat-form-field>
+            <input formControlName="name" matInput placeholder="Pilns vārds" autocomplete="off">
+        </mat-form-field>
+        <!-- Parole jaunam lietotājam -->
+        <section *ngIf="userFormSource.isNew; else changePassword;">
+            <h4>
+                Parole
+            </h4>
+            <app-password-input formControlName="password"></app-password-input>
+        </section>
+        <!-- Paroles maiņa -->
+        <ng-template #changePassword>
+            <section>
+                <button mat-raised-button (click)="onPasswordChange(userFormSource.value.username)" color="primary">
+                    MAINĪT PAROLI
+                </button>
+            </section>
+        </ng-template>
+
+        <h4>
+            Lietotāja iestatījumi
+        </h4>
+        <div formGroupName="preferences">
+            <!-- Pieejamie moduļi -->
+            <section>
+                <mat-form-field>
+                    <mat-label>Pieejamie moduļi</mat-label>
+                    <mat-select formControlName="modules" multiple>
+                        <mat-option *ngFor="let mod of userModules" [value]="mod.route">
+                            {{mod.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </section>
+
+            <!-- Piiejamie klienti -->
+            <section>
+                <mat-form-field>
+                    <mat-label>Pieejamie XMF klienti</mat-label>
+                    <mat-select formControlName="customers" multiple>
+                        <mat-option *ngFor="let customer of (customers$ | async)" [value]="customer.value">
+                            {{customer.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </section>
+        </div>
+
+    </form>
+
+</app-simple-form-container>

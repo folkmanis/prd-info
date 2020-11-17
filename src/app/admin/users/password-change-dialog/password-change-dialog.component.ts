@@ -1,7 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Validator } from '../../../services/validator';
+import { APP_PARAMS } from 'src/app/app-params';
+import { AppParams } from 'src/app/interfaces';
 
 @Component({
   selector: 'app-password-change-dialog',
@@ -10,13 +11,13 @@ import { Validator } from '../../../services/validator';
 })
 export class PasswordChangeDialogComponent implements OnInit {
 
-  passwordForm = new FormGroup({
-    password: new FormControl('', Validator.password()),
-    password2: new FormControl(''),
-  }, { validators: Validator.passwordEqual('password', 'password2') });
-  password = this.passwordForm.get('password');
-  hide = true;
+  passwordForm = new FormControl(
+    '',
+    [Validators.required, Validators.minLength(this.params.passwordMinimumLenght)]
+  );
+
   constructor(
+    @Inject(APP_PARAMS) private params: AppParams,
     @Inject(MAT_DIALOG_DATA) public data: { username: string; },
     private dialogRef: MatDialogRef<PasswordChangeDialogComponent>,
   ) { }

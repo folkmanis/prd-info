@@ -24,6 +24,7 @@ export const PRD_DEFAULTS: AppParams = {
     },
     version,
     versionCheckInterval: 10 * 1000,
+    passwordMinimumLenght: 3,
     userModules: USER_MODULES,
     defaultSystemPreferences: new Map<SystemPreferencesGroups, ModuleSettings>()
         .set('kastes', {
