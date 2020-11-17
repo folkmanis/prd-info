@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { XmfUploadComponent } from './xmf-upload.component';
 
@@ -6,7 +6,7 @@ describe('XmfUploadComponent', () => {
   let component: XmfUploadComponent;
   let fixture: ComponentFixture<XmfUploadComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ XmfUploadComponent ]
     })

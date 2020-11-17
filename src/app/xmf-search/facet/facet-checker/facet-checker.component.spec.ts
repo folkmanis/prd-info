@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { FacetCheckerComponent } from './facet-checker.component';
 
@@ -6,7 +6,7 @@ describe('FacetCheckerComponent', () => {
   let component: FacetCheckerComponent;
   let fixture: ComponentFixture<FacetCheckerComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ FacetCheckerComponent ]
     })

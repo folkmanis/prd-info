@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { KastesPreferencesComponent } from './kastes-preferences.component';
 
@@ -6,7 +6,7 @@ describe('KastesPreferencesComponent', () => {
   let component: KastesPreferencesComponent;
   let fixture: ComponentFixture<KastesPreferencesComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ KastesPreferencesComponent ]
     })
