@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormArray, Validators, ValidatorFn, FormControl } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { ProductPriceImport } from '../../services/job-import.service';
+import { IFormGroup, IFormArray } from '@rxweb/types';
 
 
 @Component({
@@ -10,7 +11,7 @@ import { ProductPriceImport } from '../../services/job-import.service';
   styleUrls: ['./import-new-prices.component.scss']
 })
 export class ImportNewPricesComponent {
-  @Input() pricesForm: FormArray;
+  @Input() pricesForm: IFormArray<number>;
   @Input()
   get products() { return this._prod; }
   set products(pr: ProductPriceImport[]) {

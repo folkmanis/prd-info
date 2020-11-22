@@ -45,7 +45,7 @@ export class PagedCache<T> {
 
     private fetchPage(page: number): Observable<T[]> | undefined {
         if (this._cachedPages.has(page)) {
-            return;
+            return undefined;
         }
         this._cachedPages.add(page);
         const start = page * this._pageSize;

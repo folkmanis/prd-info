@@ -6,12 +6,13 @@
     "sourceMap": true,
     "declaration": false,
     "downlevelIteration": true,
+    "noImplicitReturns": true,
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "module": "es2020",
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2018",
+    "target": "es2015",
     "typeRoots": [
       "node_modules/@types"
     ],
@@ -22,6 +23,8 @@
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
-    "strictInjectionParameters": true
+    "strictInjectionParameters": true,
+    // "strictInputAccessModifiers": true,
+    // "strictTemplates": true,
   }
 }
