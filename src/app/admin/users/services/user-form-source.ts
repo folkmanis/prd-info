@@ -37,6 +37,7 @@ export class UserFormSource extends SimpleFormSource<User> {
                 [Validators.required]
             ],
             last_login: [undefined],
+            userDisabled: [false],
             preferences: this.fb.group<UserPreferences>({
                 customers: [''],
                 modules: [''],
