@@ -13,7 +13,6 @@ export const USER_MODULES: UserModule[] = [
         name: 'Darbu iestatījumi', description: 'Ražošanas darbu moduļa iestatījumi', route: 'jobs-admin', childMenu: [
             { name: 'Klienti', route: 'customers', description: 'Informācija par klientiem' },
             { name: 'Preces', route: 'products', description: 'Produkcija' },
-            { name: 'Darbu imports', route: 'job-import', description: 'Veco darbu importēšana no csv failiem' }
         ]
     },
     {
