@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { identity, pickBy } from 'lodash';
-import { debounceTime, filter, map, takeUntil } from 'rxjs/operators';
-import { JobQueryFilter, JobsSettings } from 'src/app/interfaces';
+import { FormBuilder, Validators } from '@angular/forms';
+import { IFormBuilder, IFormGroup } from '@rxweb/types';
+import { Observable } from 'rxjs';
+import { debounceTime, filter, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { CustomerPartial, JobQueryFilter, JobQueryFilterOptions, JobsSettings } from 'src/app/interfaces';
 import { DestroyService } from 'src/app/library/rx/destroy.service';
 import { CustomersService, SystemPreferencesService } from 'src/app/services';
 import { JobService } from 'src/app/services/job.service';
 
-const NULL_CUSTOMER = { CustomerName: undefined, _id: undefined, code: undefined };
-const DEFAULT_FILTER: JobQueryFilter = {
+type JobFilter = Pick<JobQueryFilterOptions, 'customer' | 'jobsId' | 'name' | 'jobStatus'>;
+
+const DEFAULT_FILTER = {
   jobsId: null,
   name: '',
   customer: '',
@@ -23,59 +25,72 @@ const DEFAULT_FILTER: JobQueryFilter = {
 })
 export class JobFilterComponent implements OnInit {
 
-  customers$ = this.customersService.customers$.pipe(
-    map(customers => [NULL_CUSTOMER, ...customers])
-  );
   jobStates$ = this.sysPrefService.getModulePreferences('jobs').pipe(
     map((pref: JobsSettings) => pref.jobStates)
   );
+  customersFiltered$: Observable<CustomerPartial[]>;
+
+  private fb: IFormBuilder;
+  filterForm: IFormGroup<JobFilter>;
 
   constructor(
-    private fb: FormBuilder,
+    fb: FormBuilder,
     private sysPrefService: SystemPreferencesService,
     private customersService: CustomersService,
     private jobService: JobService,
     private destroy$: DestroyService,
-  ) { }
+  ) {
+    this.fb = fb;
+    this.filterForm = this.fb.group<JobFilter>({
+      name: undefined,
+      jobsId: [
+        undefined,
+        { validators: [Validators.pattern(/^[0-9]+$/)] }
+      ],
+      customer: undefined,
+      jobStatus: undefined,
+    });
+  }
 
-  filterForm = this.fb.group({
-    name: undefined,
-    jobsId: [
-      undefined,
-      { validators: [Validators.pattern(/^[0-9]+$/)] }
-    ],
-    customer: undefined,
-    jobStatus: undefined,
-  });
-  get jobsId(): FormControl { return this.filterForm.get('jobsId') as FormControl; }
-  get name(): FormControl { return this.filterForm.get('name') as FormControl; }
-  get customer(): FormControl { return this.filterForm.get('customer') as FormControl; }
 
   ngOnInit(): void {
+
+    this.customersFiltered$ = this.filterForm.controls.customer.valueChanges.pipe(
+      debounceTime(200),
+      startWith(''),
+      map(val => val.toUpperCase()),
+      switchMap(val => this.customersService.customers$.pipe(
+        map(cust => cust.filter(c => c.CustomerName.toUpperCase().includes(val)))
+      )),
+    );
+
     this.filterForm.valueChanges.pipe(
-      filter(val => this.filterForm.valid),
+      filter(_ => this.filterForm.valid),
       debounceTime(500),
       map(normalizeFilter),
       takeUntil(this.destroy$),
     ).subscribe(fltr => this.jobService.setFilter(fltr));
+
     this.onReset();
+
   }
 
-  onReset() {
-    this.filterForm.setValue(DEFAULT_FILTER);
+  onReset(key?: keyof JobFilter) {
+    if (key) {
+      this.filterForm.controls[key].setValue(DEFAULT_FILTER[key]);
+    } else {
+      this.filterForm.setValue(DEFAULT_FILTER);
+    }
   }
 
 }
 
-function normalizeFilter(jobFilter: { [key: string]: string | number[]; }): JobQueryFilter {
-  return pickBy(
-    {
-      jobsId: jobFilter.jobsId ? +jobFilter.jobsId : undefined,
-      name: jobFilter.name ? jobFilter.name as string : undefined,
-      customer: jobFilter.customer ? jobFilter.customer as string : undefined,
-      jobStatus: jobFilter.jobStatus.length ? jobFilter.jobStatus : undefined,
-      unwindProducts: 1,
-    } as JobQueryFilter,
-    identity
-  );
+function normalizeFilter(jobFilter: JobQueryFilter): JobQueryFilter {
+  return {
+    jobsId: jobFilter.jobsId ? +jobFilter.jobsId : undefined,
+    name: jobFilter.name ? jobFilter.name : undefined,
+    customer: jobFilter.customer ? jobFilter.customer : undefined,
+    jobStatus: jobFilter.jobStatus?.length ? jobFilter.jobStatus : undefined,
+    unwindProducts: 1,
+  };
 }

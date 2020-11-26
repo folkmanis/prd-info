@@ -4,7 +4,7 @@
         <mat-form-field>
             <mat-label>Darba numurs</mat-label>
             <input matInput type="text" formControlName="jobsId">
-            <button mat-icon-button matSuffix (click)="jobsId.reset()">
+            <button mat-icon-button matSuffix (click)="onReset('jobsId')">
                 <mat-icon>clear</mat-icon>
             </button>
         </mat-form-field>
@@ -14,7 +14,7 @@
         <mat-form-field class="search">
             <mat-label>Nosaukums</mat-label>
             <input matInput type="text" formControlName="name">
-            <button mat-icon-button matSuffix (click)="name.reset()">
+            <button mat-icon-button matSuffix (click)="onReset('name')">
                 <mat-icon>clear</mat-icon>
             </button>
         </mat-form-field>
@@ -23,12 +23,8 @@
     <section>
         <mat-form-field>
             <mat-label>Klients</mat-label>
-            <mat-select formControlName="customer">
-                <mat-option *ngFor="let customer of customers$ | async" [value]="customer.CustomerName">
-                    {{customer.CustomerName}}
-                </mat-option>
-            </mat-select>
-            <button mat-icon-button matSuffix (click)="customer.reset()">
+            <input matInput type="text" formControlName="customer" [matAutocomplete]="auto">
+            <button mat-icon-button matSuffix (click)="onReset('customer')">
                 <mat-icon>clear</mat-icon>
             </button>
         </mat-form-field>
@@ -46,3 +42,9 @@
         ATIESTATĪT ATLASI
     </button>
 </form>
+
+<mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
+    <mat-option *ngFor="let customer of customersFiltered$ | async" [value]="customer.CustomerName">
+        {{customer.CustomerName}}
+    </mat-option>
+</mat-autocomplete>
