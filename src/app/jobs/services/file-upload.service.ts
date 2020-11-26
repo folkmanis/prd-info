@@ -38,8 +38,8 @@ export class FileUploadService {
     private prdApi: PrdApiService,
   ) { }
 
-  uploadFiles(jobId: number, files?: File[]): Observable<void> {
-    if (!jobId || !files?.length) { return of(); }
+  uploadFiles(jobId: number, files?: File[]): Observable<undefined> {
+    if (!jobId || !files?.length) { return of(undefined); }
     const jobFiles = files
       .sort((a, b) => a.size - b.size); // mazākie vispirms
 
@@ -47,7 +47,7 @@ export class FileUploadService {
     of(...jobFiles).pipe(
       mergeMap(file => this.uploadFile(jobId, file), SIMULTANEOUS_UPLOADS),
     ).subscribe();
-    return of();
+    return of(undefined);
   }
 
   private uploadFile(jobId: number, file: File): Observable<any> {
