@@ -45,9 +45,8 @@ export class JobListComponent implements OnInit {
           return this.jobEditDialog.editJob(+id);
         }
       }),
-      tap(() => this.router.navigate(['/jobs'])),
       takeUntil(this.destroy$),
-    ).subscribe();
+    ).subscribe(() => this.router.navigate(['/jobs']));
   }
 
   onJobEdit(jobId: number) {
