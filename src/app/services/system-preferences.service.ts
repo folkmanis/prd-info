@@ -55,7 +55,7 @@ export class SystemPreferencesService {
     map(modules => modules[0]),
   );
   /** Aktīvā moduļa child menu */
-  childMenu$: Observable<Partial<UserModule>[]> = this.activeModule$.pipe(
+  childMenu$: Observable<UserModule[]> = this.activeModule$.pipe(
     map(active => active.childMenu || [])
   );
 

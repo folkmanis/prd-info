@@ -34,7 +34,7 @@
             <button mat-raised-button matStepperNext [disabled]="!boxGatavi" color="primary">TĀLĀK!</button>
         </div>
         <div>
-            <app-upload-adreses *ngIf="fileLoaded" (gatavs)="boxGatavi = $event" [plannedTotals]="plannedTotals$ | async"></app-upload-adreses>
+            <app-upload-adreses *ngIf="fileLoaded" (gatavs)="boxGatavi = !!$event" [plannedTotals]="plannedTotals$ | async"></app-upload-adreses>
         </div>
     </mat-step>
     <!-- Trešais solis -->

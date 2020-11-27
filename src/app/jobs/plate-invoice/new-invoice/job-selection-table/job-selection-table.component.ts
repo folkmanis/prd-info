@@ -4,6 +4,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 import { JobEditDialogService } from '../../../job-edit';
 import { JobPartial } from 'src/app/interfaces';
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
 
 const TABLE_COLUMNS = ['jobId', 'receivedDate', 'customer', 'name', 'productName', 'count', 'price', 'total'];
 
@@ -18,8 +19,8 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
       this.setNewJobList(jobs);
     }
   }
-  @Input('disabled') set _disabled(disabled: boolean) {
-    this.displayedColumns = disabled === false ? this.columnsWithSelection() : TABLE_COLUMNS;
+  @Input('disabled') set _disabled(disabled: any) {
+    this.displayedColumns = !coerceBooleanProperty(disabled) ? this.columnsWithSelection() : TABLE_COLUMNS;
   }
   @Output() selected = new EventEmitter<number[]>();
 

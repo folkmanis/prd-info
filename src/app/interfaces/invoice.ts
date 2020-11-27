@@ -1,12 +1,13 @@
 import { AppHttpResponseBase } from 'src/app/library/http';
 import { Job } from './job';
+import { JobBase } from './job-base';
 
 export interface Invoice {
     invoiceId: string;
     customer: string;
     createdDate: Date;
     jobsId: number[];
-    jobs?: Job[];
+    jobs?: JobBase[];
     products: InvoiceProduct[];
     total?: number;
     comment?: string;

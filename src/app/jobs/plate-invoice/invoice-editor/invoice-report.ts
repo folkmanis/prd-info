@@ -1,5 +1,5 @@
 import { PdfMakeWrapper, Table, Columns, Txt, Cell } from 'pdfmake-wrapper';
-import { InvoiceLike, InvoiceProduct, Job, JobProduct, Product } from 'src/app/interfaces';
+import { InvoiceLike, InvoiceProduct, Job, JobBase, JobProduct, Product } from 'src/app/interfaces';
 import * as moment from 'moment';
 
 export class InvoiceReport {
@@ -63,7 +63,7 @@ export class InvoiceReport {
         return tbl;
     }
 
-    private createJobsTable(jobs: Job[]): any[][] {
+    private createJobsTable(jobs: JobBase[]): any[][] {
         const tbl: any[][] = [];
         tbl.push([
             // 'nr.',

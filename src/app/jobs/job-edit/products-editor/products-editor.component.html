@@ -22,7 +22,7 @@
             </td>
             <!-- Preces nosaukums -->
             <td>
-                <app-product-autocomplete formControlName="name" [customerProducts$]="customerProducts$">
+                <app-product-autocomplete formControlName="name" [customerProducts]="customerProducts$ | async">
                 </app-product-autocomplete>
             </td>
             <!-- Skaits -->

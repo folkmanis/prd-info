@@ -46,10 +46,10 @@ export class UploadFilesComponent implements OnInit, OnDestroy {
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
-  isAllSelected() {
+  isAllSelected(): boolean {
     const numSelected = this.selection.selected.length;
     const numRows = this.files.length;
-    return numSelected === numRows && numRows;
+    return numSelected === numRows && !!numRows;
   }
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */

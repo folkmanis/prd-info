@@ -14,10 +14,7 @@ interface FacetBlock {
 })
 export class FacetComponent implements OnInit, OnDestroy {
   @ViewChildren(FacetCheckerComponent) blocks: QueryList<FacetCheckerComponent>;
-  @Input() set facet(_f: ArchiveFacet) {
-    this._facet = _f;
-  }
-  get facet(): ArchiveFacet { return this._facet; }
+  @Input() facet: ArchiveFacet;
   @Output() filter = new EventEmitter<Partial<FacetFilter>>();
 
   readonly facetNames: FacetBlock[] = [
@@ -25,8 +22,6 @@ export class FacetComponent implements OnInit, OnDestroy {
     { key: 'month', displayName: 'Mēnesis' },
     { key: 'customerName', displayName: 'Klients' }
   ];
-
-  private _facet: ArchiveFacet;
 
   constructor() { }
 
@@ -40,7 +35,7 @@ export class FacetComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
   }
 
-  onSelect(selected: Array<number | string>, key: string) {
+  onSelect(selected: Array<number | string>, key: keyof ArchiveFacet) {
     this.filter.next({ [key]: selected });
   }
 
