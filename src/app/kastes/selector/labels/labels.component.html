@@ -1,8 +1,7 @@
 <form [formGroup]="inputForm" (ngSubmit)="onLabelSubmit(inputForm.value)">
     <p>
         <mat-form-field>
-            <input matInput formControlName="kods" type="text" placeholder="Adreses kods" autocomplete="off" #kodsInput
-                autofocus>
+            <input matInput formControlName="kods" type="text" placeholder="Adreses kods" autocomplete="off" #kodsInput>
         </mat-form-field>
     </p>
     <p>
@@ -22,6 +21,6 @@
     <span *ngSwitchCase="'empty'" class="warn">
         Nav atrasts!
     </span>
-    <span *ngSwitchDefault>        
+    <span *ngSwitchDefault>
     </span>
 </p>
