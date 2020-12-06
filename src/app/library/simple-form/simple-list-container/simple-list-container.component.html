@@ -28,7 +28,7 @@
         </div>
     </div>
 
-    <div class="editor">
+    <div class="editor" [style.flex]="large ? '0 0 ' + editorWidth : null">
         <router-outlet #editor="outlet"></router-outlet>
     </div>
 

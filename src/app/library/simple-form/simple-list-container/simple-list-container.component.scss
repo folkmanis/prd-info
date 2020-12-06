@@ -23,9 +23,6 @@ div.list {
     position: relative;
     overflow: auto;
     height: 100%;
-    .large & {
-        flex: 0 0 50%;
-    }
     .active & {
         display: initial;
     }

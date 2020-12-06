@@ -13,6 +13,8 @@ export class SimpleListContainerComponent implements OnInit {
 
   @Input() large = true;
 
+  @Input() editorWidth = '50%';
+
   @Output() filter = this.searchControl.valueChanges;
 
   constructor() { }
