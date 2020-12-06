@@ -9,7 +9,7 @@
                         <mat-icon>add</mat-icon>
                     </button>
                 </div>
-                <div class="search">
+                <div *ngIf="filterInput" class="search">
                     <mat-form-field>
                         <input matInput type="search" [formControl]='searchControl'>
                         <button mat-icon-button matSuffix disabled *ngIf="!searchControl.value.length">

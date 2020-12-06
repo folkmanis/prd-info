@@ -23,6 +23,13 @@ export class SimpleListContainerComponent implements OnInit {
   get plusButton() { return this._plusButton; }
   private _plusButton = false;
 
+  @Input()
+  set filterInput(val: any) {
+    this._filterInput = coerceBooleanProperty(val);
+  }
+  get filterInput() { return this._filterInput; }
+  private _filterInput = false;
+
   @Output() filter = this.searchControl.valueChanges;
 
   constructor() { }
