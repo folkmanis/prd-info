@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output } from '@angular/core';
+import { Component, OnInit, Input, Output, TemplateRef } from '@angular/core';
 import { IFormControl } from '@rxweb/types';
 import { FormControl } from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
@@ -11,6 +11,8 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
 export class SimpleListContainerComponent implements OnInit {
 
   searchControl: IFormControl<string> = new FormControl('');
+
+  filterTemplate: TemplateRef<any> | null = null;
 
   @Input() large = true;
 
@@ -26,6 +28,7 @@ export class SimpleListContainerComponent implements OnInit {
   @Input()
   set filterInput(val: any) {
     this._filterInput = coerceBooleanProperty(val);
+    this.filterTemplate = val instanceof TemplateRef ? val : null;
   }
   get filterInput() { return this._filterInput; }
   private _filterInput = false;
