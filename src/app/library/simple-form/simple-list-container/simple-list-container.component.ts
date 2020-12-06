@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
 import { IFormControl } from '@rxweb/types';
 import { FormControl } from '@angular/forms';
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
 
 @Component({
   selector: 'app-simple-list-container',
@@ -14,6 +15,13 @@ export class SimpleListContainerComponent implements OnInit {
   @Input() large = true;
 
   @Input() editorWidth = '50%';
+
+  @Input()
+  set plusButton(val: any) {
+    this._plusButton = coerceBooleanProperty(val);
+  }
+  get plusButton() { return this._plusButton; }
+  private _plusButton = false;
 
   @Output() filter = this.searchControl.valueChanges;
 

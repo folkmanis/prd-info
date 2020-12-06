@@ -4,7 +4,7 @@
 
         <div cdkScrollable scroll-to-top>
             <mat-toolbar>
-                <div>
+                <div *ngIf="plusButton">
                     <button mat-mini-fab color="primary" routerLink="new">
                         <mat-icon>add</mat-icon>
                     </button>

@@ -1,4 +1,4 @@
-<app-simple-list-container [large]="large$ | async" (filter)="onFilter($event)" editorWidth="70%">
+<app-simple-list-container [large]="large$ | async" (filter)="onFilter($event)" plusButton>
 
     <table mat-table [dataSource]="products$" class="simple-form-table">
 
