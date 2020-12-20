@@ -37,7 +37,7 @@ export class UploadComponent implements OnInit {
     private router: Router,
   ) { }
 
-  orders$: Observable<KastesJobPartial[]> = this.pasutijumiService.getKastesJobs(false);
+  orders$: Observable<KastesJobPartial[]> = this.pasutijumiService.getKastesJobs({ veikali: false });
 
   ngOnInit() {
   }

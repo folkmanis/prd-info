@@ -14,8 +14,11 @@ export class PasutijumiService {
     private prdApi: PrdApiService,
   ) { }
 
-  getKastesJobs(veikali: boolean): Observable<KastesJobPartial[]> {
-    return this.prdApi.kastesOrders.get({ veikali: veikali ? 1 : 0 });
+  getKastesJobs(options: { veikali: boolean; }): Observable<KastesJobPartial[]> {
+    return this.prdApi.kastesOrders.get({
+      ...options,
+      veikali: options.veikali ? 1 : 0,
+    });
   }
 
   getOrder(id: number): Observable<KastesJob> {
@@ -39,10 +42,8 @@ export class PasutijumiService {
     );
   }
 
-  cleanup(): Observable<number> {
-    return this.prdApi.kastesOrders.deleteInactive().pipe(
-      tap(resp => resp && this.reload$.next())
-    );
+  deleteKastes(pasutijumsId: number): Observable<number> {
+    return this.prdApi.kastes.deleteVeikali({ pasutijumsId });
   }
 
 }

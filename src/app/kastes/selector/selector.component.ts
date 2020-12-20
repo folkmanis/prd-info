@@ -33,7 +33,6 @@ export class SelectorComponent implements OnInit {
 
   isSmall$ = this.layoutService.isSmall$;
 
-  pasutijumi$: Observable<KastesJobPartial[]>;
   pasutijumsId$ = this.kastesPreferencesService.pasutijumsId$;
   colors$ = this.kastesPreferencesService.preferences$.pipe(
     pluck('colors'),
@@ -54,7 +53,6 @@ export class SelectorComponent implements OnInit {
 
 
   ngOnInit() {
-    this.pasutijumi$ = this.pasutijumiService.getKastesJobs(true);
 
     this.route.paramMap.pipe(
       map(params => +params.get('apjoms')),
@@ -74,10 +72,6 @@ export class SelectorComponent implements OnInit {
         this._tabula?.scrollToTop();
       }
     );
-  }
-
-  onPasutijumsChanges(pas: number) {
-    this.kastesPreferencesService.updateUserPreferences({ pasutijums: pas }).subscribe();
   }
 
   onSetLabel(kods: number | string) {

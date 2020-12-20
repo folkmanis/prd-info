@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { LibraryModule } from 'src/app/library/library.module';
 
 import { SelectorRoutingModule } from './selector-routing.module';
-import { SelectPasutijumsComponent } from './select-pasutijums/select-pasutijums.component';
 import { SelectorComponent } from './selector.component';
 import { LabelsComponent } from './labels/labels.component';
 import { TabulaComponent } from './tabula/tabula.component';
@@ -16,7 +15,6 @@ import { OrderTotalsComponent } from './order-totals/order-totals.component';
 
 @NgModule({
   declarations: [
-    SelectPasutijumsComponent,
     SelectorComponent,
     LabelsComponent,
     TabulaComponent,

@@ -16,18 +16,19 @@
     </mat-drawer-content>
 
     <mat-drawer button [small]="isSmall$ | async">
-        <div>
-            <app-select-pasutijums [pasutijums]="pasutijumsId$ | async" [pasutijumi]="pasutijumi$ | async"
-                (pasuitjumsChanges)="onPasutijumsChanges($event)"></app-select-pasutijums>
-        </div>
-        <div *ngIf="(apjoms$ | async) === 0">
-            <mat-divider></mat-divider>
-            <app-labels [status]="labelStatuss$ | async" (code)="onSetLabel($event)" [colors]="colors$ | async">
-            </app-labels>
-        </div>
-        <div *ngIf="kastesJob$ | async as job;">
-            <mat-divider></mat-divider>
-            <app-order-totals [job]="job" [colors]="colors$ | async"></app-order-totals>
+        <div *ngIf="kastesJob$ | async as kastesJob">
+            <h4>
+                {{kastesJob.name}}
+            </h4>
+            <div *ngIf="(apjoms$ | async) === 0">
+                <mat-divider></mat-divider>
+                <app-labels [status]="labelStatuss$ | async" (code)="onSetLabel($event)" [colors]="colors$ | async">
+                </app-labels>
+            </div>
+            <div>
+                <mat-divider></mat-divider>
+                <app-order-totals [job]="kastesJob" [colors]="colors$ | async"></app-order-totals>
+            </div>
         </div>
     </mat-drawer>
 

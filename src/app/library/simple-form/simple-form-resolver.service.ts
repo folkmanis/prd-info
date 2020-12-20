@@ -3,7 +3,7 @@ import { Router, RouterStateSnapshot } from '@angular/router';
 import { EMPTY, Observable, of } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 
-export type RetrieveFn<U> = () => Observable<U | undefined>;
+export type RetrieveFn<U> = () => Observable<U | null>;
 
 @Injectable({ providedIn: 'any' })
 export class SimpleFormResolverService {
@@ -14,7 +14,7 @@ export class SimpleFormResolverService {
 
   retrieve<T>(
     state: RouterStateSnapshot,
-    retrieveFn: () => Observable<T | undefined>,
+    retrieveFn: RetrieveFn<T>,
   ): Observable<T> | Observable<never> | undefined {
     return retrieveFn().pipe(
       mergeMap(cust => {

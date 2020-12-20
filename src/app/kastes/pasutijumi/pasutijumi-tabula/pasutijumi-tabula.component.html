@@ -1,18 +1,29 @@
-<div class="button-container">
-    <app-tabula-buttons></app-tabula-buttons>
-</div>
+<app-simple-list-container [large]="large$ | async">
+    <table mat-table [dataSource]="datasource$" class="simple-form-table">
 
-<div class="mat-elevation-z8 tabula-container">
-    <table mat-table [dataSource]="datasource$" class="full-width-table">
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" [routerLink]="row.jobId"
+            routerLinkActive="selected"></tr>
 
+        <!-- Aktīvais pasūtījums -->
+        <ng-container matColumnDef="active">
+            <th mat-header-cell *matHeaderCellDef> Aktīvs </th>
+            <td mat-cell *matCellDef="let row;">
+                <mat-icon *ngIf="row.active">
+                    check_box
+                </mat-icon>
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="jobId">
+            <th mat-header-cell *matHeaderCellDef> Nr. </th>
+            <td mat-cell *matCellDef="let row;">
+                {{row.jobId}}
+            </td>
+        </ng-container>
         <!-- Nosaukums -->
         <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef>Pasūtījuma nosaukums</th>
-            <td mat-cell *matCellDef="let row;">
-                <a [routerLink]="row.jobId">
-                    {{row.name}}
-                </a>
-            </td>
+            <td mat-cell *matCellDef="let row;"> {{row.name}} </td>
         </ng-container>
         <!-- Izveidošanas datums -->
         <ng-container matColumnDef="receivedDate">
@@ -25,8 +36,5 @@
             <td mat-cell *matCellDef="let row;">{{row.dueDate || '' | date}}</td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
     </table>
-</div>
+</app-simple-list-container>

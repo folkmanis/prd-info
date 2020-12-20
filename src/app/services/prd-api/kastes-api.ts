@@ -54,4 +54,13 @@ export class KastesApi extends ApiBase<Kaste> {
             map(resp => resp.insertedCount)
         );
     }
+
+    deleteVeikali(options: { pasutijumsId: number; }): Observable<number> {
+        return this.http.delete<KasteResponse>(
+            this.path,
+            new HttpOptions(options)
+        ).pipe(
+            map(resp => resp.deletedCount || 0)
+        );
+    }
 }
