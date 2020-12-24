@@ -1,0 +1,4 @@
+<ng-content></ng-content>
+<span *ngFor="let colorTotal of colorTotals" [style.color]="colors[colorTotal.color]">
+    {{colorTotal.color}} {{colorTotal.total}} |
+</span>

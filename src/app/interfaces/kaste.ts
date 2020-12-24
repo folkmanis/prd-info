@@ -27,8 +27,8 @@ export interface Kaste {
 
 export interface Totals {
     total: number;
-    kastesRemain: number;
-    labelsRemain: number;
+    kastes: number;
+    labels: number;
     colorTotals: ColorTotals[];
 }
 

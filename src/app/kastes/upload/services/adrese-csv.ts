@@ -1,55 +1,38 @@
-import { Observable, of, merge, BehaviorSubject } from 'rxjs';
-import { ParserService } from 'src/app/library';
 
+type Adrese = Array<string | number>;
 
 export class AdresesCsv {
 
-    constructor(private parserService: ParserService) {
+    constructor(adr: Adrese[]) {
+        this._adreses = adr;
     }
 
-    private adreses$: BehaviorSubject<Array<any[]>> = new BehaviorSubject([]);
+    private _adreses: Adrese[];
 
-    get data(): BehaviorSubject<Array<any[]>> {
-        return this.adreses$;
-    }
-
-    get value(): Array<any[]> {
-        return this.adreses$.value;
-    }
-    /**
-     * setCsv - Apstrādā un saglabā csv datus
-     * @param csv csv fails kā string
-     * @param delimiter atdalītāja simbols
-     */
-    setCsv(csv: string, delimiter: string = ',') {
-        this.adreses$.next(this.parserService.parseCsv(csv, delimiter));
-    }
-
-    setJson(data: any[][]) {
-        this.adreses$.next(this.normalizeTable(data));
+    get value(): Adrese[] {
+        return this._adreses;
     }
 
     get colNames(): string[] {
-        return Object.keys(this.adreses$.value[0]);
+        return Object.keys(this.value[0] || []);
     }
 
     /**
      * Izdzēš slejas, kuras norādītas masīvā
      * @param colMap Dzēšamās slejas norādītas ar true
      */
-    deleteColumns(colMap: []) {
-        const tmpData = this.adreses$.value.map(row =>
+    deleteColumns(colMap: boolean[]) {
+        this._adreses = this.value.map(row =>
             row.filter((_, idx) => !colMap[idx])
         );
-        this.adreses$.next(tmpData);
     }
     /**
      * Apvieno norādītās slejas
      * @param colMap Apvienojamās slejas norādītas ar true
      */
-    joinColumns(colMap: []) {
-        const tmpData = [];
-        this.adreses$.value.forEach((row, idx) => {
+    joinColumns(colMap: boolean[]) {
+        const tmpAdr = [];
+        this._adreses.forEach((row, idx) => {
             const nrow: any = [];
             let first: string;
             for (const k in row) { // k - indekss
@@ -68,30 +51,13 @@ export class AdresesCsv {
                     }
                 }
             }
-            tmpData.push(nrow);
+            tmpAdr.push(nrow);
         });
-        this.adreses$.next(tmpData);
+        this._adreses = tmpAdr;
     }
 
-    addColumn(): void {
-        this.adreses$.next(this.value.map(row => [...row, 0]));
-    }
-
-    deleteRows(rowMap: Array<any[]>) {
-        const tmp = this.adreses$.value.filter((val, idx) => !rowMap.includes(val));
-        this.adreses$.next(tmp);
-    }
-
-    private normalizeTable(data: any[][]): any[][] {
-        const width = data.reduce((acc, row) => row.length > acc ? row.length : acc, 0);
-        const ndata = data.map(row => {
-            const nrow = new Array(width);
-            for (let idx = 0; idx < width; idx++) {
-                nrow[idx] = row[idx] || '';
-            }
-            return nrow;
-        });
-        return ndata;
+    addColumn() {
+        this._adreses = this.value.map(row => [...row, 0]);
     }
 
 }

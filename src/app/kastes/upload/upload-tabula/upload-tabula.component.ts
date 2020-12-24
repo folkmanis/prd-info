@@ -30,7 +30,7 @@ export class UploadTabulaComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.dataSource = new UploadTabulaDataSource(this.uploadService);
-    this.totals = this.uploadService.adresesBoxTotals;
+    // this.totals = this.uploadService.adresesBoxTotals;
   }
 
   ngAfterViewInit() {
@@ -47,7 +47,7 @@ export class UploadTabulaComponent implements OnInit, AfterViewInit {
     this.edit[adrB.kods] = false;
     this.editActive = false;
     if (ev) {
-      this.totals = this.uploadService.adresesBoxTotals;
+      // this.totals = this.uploadService.adresesBoxTotals;
     }
   }
 

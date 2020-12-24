@@ -1,98 +1,67 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
-import { FormControl, FormGroup, Validators, AsyncValidatorFn, AbstractControl, FormGroupDirective } from '@angular/forms';
-import { UploadService } from './services/upload.service';
-import { PasutijumiService } from '../services/pasutijumi.service';
-import { map, tap, take, filter, switchMap, shareReplay } from 'rxjs/operators';
-import { MatDialog } from '@angular/material/dialog';
-import { EndDialogComponent } from './end-dialog/end-dialog.component';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
+import { EMPTY, Observable, Subject } from 'rxjs';
+import { map, shareReplay, switchMap } from 'rxjs/operators';
+import { ColorTotals, KastesJobPartial } from 'src/app/interfaces';
+import { ParserService } from 'src/app/library';
 import * as XLSX from 'xlsx';
-import { Observable } from 'rxjs';
-import { KastesJobPartial, ColorTotals } from 'src/app/interfaces';
+import { PasutijumiService } from '../services/pasutijumi.service';
+import { AdresesBox } from './services/adrese-box';
+import { KastesPreferencesService } from '../services/kastes-preferences.service';
+import { EndDialogComponent } from './end-dialog/end-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+
 
 @Component({
   selector: 'app-upload',
   templateUrl: './upload.component.html',
-  styleUrls: ['./upload.component.scss']
+  styleUrls: ['./upload.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UploadComponent implements OnInit {
-
-  private defaultText = 'Atlasīt csv vai xls failu';
-  displayText: string = this.defaultText;
-  fileLoaded = false; // Ielādēts fails
-  boxGatavi = false; // Sagatavots sadalījums pa kastēm
+export class UploadComponent implements OnInit, OnDestroy {
 
   orderIdControl = new FormControl(null, [Validators.required]);
 
   plannedTotals$: Observable<ColorTotals[]> = this.orderIdControl.valueChanges.pipe(
     switchMap((id: string) => this.pasutijumiService.getOrder(+id)),
     map(order => order.apjomsPlanned || []),
+    map(plan => plan.map(pl => ({ ...pl, total: pl.total * 2 }))),
     shareReplay(1),
   );
 
+  inputData$ = new Subject<Array<string | number>[]>();
+
   constructor(
-    private uploadService: UploadService,
     private pasutijumiService: PasutijumiService,
-    public dialog: MatDialog,
-    private router: Router,
+    private parserService: ParserService,
+    private preferences: KastesPreferencesService,
+    private matDialog: MatDialog,
   ) { }
 
   orders$: Observable<KastesJobPartial[]> = this.pasutijumiService.getKastesJobs({ veikali: false });
 
+  colors$ = this.preferences.kastesSystemPreferences$.pipe(
+    map(pref => pref.colors),
+  );
+
+  adresesBox$ = new Subject<AdresesBox | null>();
+
   ngOnInit() {
   }
 
-  onFileDrop(fileList: FileList) {
-    this.clearFile();
-    if (fileList.length !== 1) {
-      this.displayText = 'Tieši vienu failu!';
-      return;
-    }
-    if (fileList[0].size > 200 * 1024) {
-      this.displayText = 'Maksimālais faila izmērs 200kb';
-      this.clearFile();
-      return;
-    }
-    if (fileList[0].name.endsWith('.csv')) {
-      this.readCsv(fileList[0]);
-      return;
-    }
-    if (fileList[0].name.endsWith('.xls') || fileList[0].name.endsWith('xlsx')) {
-      this.readXls(fileList[0]);
-      return;
-    }
+  ngOnDestroy() {
+    this.inputData$.complete();
   }
 
-  clearFile() {
-    this.displayText = this.defaultText;
-    this.fileLoaded = false;
-    this.boxGatavi = false;
-  }
-
-  onSubmitAll() {
-    this.uploadService.savePasutijums(this.orderIdControl.value)
-      .subscribe(rows => this.finalDialog(rows)
-      );
-  }
-
-  finalDialog(affectedRows: number): void {
-    const dialogRef = this.dialog.open(EndDialogComponent, { width: '400px', disableClose: true, data: { rows: affectedRows } });
-
-    dialogRef.afterClosed().subscribe(() => {
-      this.router.navigate(['kastes', 'tabula', 'selector', 0]);
-    });
-  }
-
-  private readCsv(file: File) {
+  onCsvDrop(file: File) {
     const fileReader = new FileReader();
     fileReader.onload = (e) => {
-      this.uploadService.loadCsv(fileReader.result.toString(), ';');
-      this.onFileLoaded(file);
+      this.parserService.parseCsv(fileReader.result.toString(), ';');
     };
     fileReader.readAsText(file);
   }
 
-  private readXls(file: File) {
+  onXlsDrop(file: File) {
     const fileReader = new FileReader();
     fileReader.onload = (e: any) => {
       /* read workbook */
@@ -105,15 +74,48 @@ export class UploadComponent implements OnInit {
 
       /* save data */
       const data = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true }) as [][];
-      this.uploadService.loadXls(data);
-      this.onFileLoaded(file);
+      this.inputData$.next(
+        normalizeTable(data)
+      );
     };
     fileReader.readAsBinaryString(file);
   }
 
-  private onFileLoaded(file: File) {
-    // this.pasutijumsForm.patchValue({ pasutijumsName: file.name.replace(/\.[^/.]+$/, '') });
-    this.fileLoaded = true;
-    this.displayText = `Augšupielādei sagatavots fails: ${file.name} / ${file.size} bytes / ${file.type}`;
+  onSave(adrBox: AdresesBox) {
+    this.savePasutijums(this.orderIdControl.value, adrBox)
+      .subscribe();
   }
+
+  private savePasutijums(orderId: number, adrBox: AdresesBox): Observable<number> {
+    return this.pasutijumiService.addKastes(
+      orderId,
+      adrBox.uploadRow(orderId),
+    ).pipe(
+      switchMap(affectedRows => (this.preferences.updateUserPreferences({ pasutijums: orderId }) || EMPTY)
+        .pipe(
+          switchMap(_ => this.matDialog.open(EndDialogComponent, { data: affectedRows }).afterClosed()),
+          map(_ => affectedRows)
+        )
+      ),
+    );
+  }
+
+  onAdresesBox(adr: AdresesBox) {
+    console.log(adr);
+    this.adresesBox$.next(adr);
+  }
+
 }
+
+function normalizeTable(data: any[][]): Array<string | number>[] {
+  const width = data.reduce((acc, row) => row.length > acc ? row.length : acc, 0);
+  const ndata = data.map(row => {
+    const nrow = new Array(width);
+    for (let idx = 0; idx < width; idx++) {
+      nrow[idx] = row[idx] || '';
+    }
+    return nrow;
+  });
+  return ndata;
+}
+

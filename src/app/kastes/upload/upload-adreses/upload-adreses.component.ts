@@ -1,177 +1,118 @@
-import { Component, OnInit, ViewChild, AfterViewInit, Output, EventEmitter, Input } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { SelectionModel } from '@angular/cdk/collections';
-import { UploadService } from '../services/upload.service';
-import { TABLE_COLUMNS } from '../services/upload-row';
+import { ChangeDetectionStrategy, Component, Input, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormControl } from '@angular/forms';
+import { IFormBuilder, IFormGroup } from '@rxweb/types';
+import { combineLatest, Observable } from 'rxjs';
+import { distinctUntilChanged, map, shareReplay, startWith, tap } from 'rxjs/operators';
+import { AdresesBox } from '../services/adrese-box';
+import { ChipsService } from '../services/chips.service';
 import { DragData } from '../services/drag-drop.directive';
-import { Totals } from '../services/adrese-box';
-import { ColorTotals } from 'src/app/interfaces';
-import { Subject, ReplaySubject, combineLatest, Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { UploadService } from '../services/upload.service';
 
-/**
- * Forma ķekšišu elementiem
- */
-class CheckFormGroup extends FormGroup {
-  // Ievilkto ķesīšu skaits
-  get checked(): number {
-    return Object.keys(this.value).reduce((count, val) => {
-      if (this.value[val]) { count++; }
-      return count;
-    }, 0);
-  }
+interface ColumnSelection {
+  columns: boolean[];
 }
 
 @Component({
   selector: 'app-upload-adreses',
   templateUrl: './upload-adreses.component.html',
-  styleUrls: ['./upload-adreses.component.scss']
+  styleUrls: ['./upload-adreses.component.scss'],
+  providers: [ChipsService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UploadAdresesComponent implements OnInit {
-  @Output() gatavs: Subject<Totals | undefined> = new Subject();
-  @Input() set plannedTotals(_val: ColorTotals[]) {
-    if (_val) { this.plannedTotals$.next(_val); }
+
+  @Input('data') set data(data: Array<string | number>[]) {
+    this.uploadService.loadData(data);
+    this.chipsService.resetChips();
   }
 
-  displayedColumns: string[];
-  displayedDataColumns: string[];
-  checkCols: CheckFormGroup;
+  columns$ = this.uploadService.columns$.pipe(
+    tap(cols => this.toCheckGroup(cols)),
+    shareReplay(1),
+  );
+
+  fb: IFormBuilder;
+  checkCols: IFormGroup<ColumnSelection>;
+  chkColCount$: Observable<number>;
   checkSkaitiPakas = new FormControl(true);
-  colChipsAvailable: string[]; // Vajadzīgo sleju nosaukumi
-  colChipsAssigned: Map<string, string> = new Map();
-  rowSelection: SelectionModel<any> = new SelectionModel<any>(true);
+  rowSelection = this.uploadService.rowSelection;
   tableComplete = false;
 
-  plannedTotals$ = new ReplaySubject<ColorTotals[]>(1);
-  totals$ = this.combineTotals(this.gatavs, this.plannedTotals$);
+  @Output() adresesBox: Observable<AdresesBox | null> = combineLatest([
+    this.chipsService.chips$,
+    this.uploadService.adresesCsv$,
+    this.rowSelection.changed.pipe(
+      map(model => model.source),
+      startWith(this.rowSelection)
+    ),
+    this.checkSkaitiPakas.valueChanges.pipe(startWith(this.checkSkaitiPakas.value)),
+  ]).pipe(
+    map(([chips, adreses, selection, toPakas]) =>
+      chips.available.length || !selection.selected.length ?
+        null : new AdresesBox(adreses.filter((_, idx) => selection.isSelected(idx)), new Map(chips.assignement), toPakas)
+    ),
+    distinctUntilChanged(),
+  );
 
   constructor(
     private uploadService: UploadService,
-  ) { }
+    private chipsService: ChipsService,
+    fb: FormBuilder,
+  ) { this.fb = fb; }
 
   datasource$ = this.uploadService.adresesCsv$;
+
+  chipsAvailable$: Observable<string[]> = this.chipsService.chips$.pipe(
+    map(chips => chips.available),
+  );
+
+  chipsAssignement$: Observable<[string, string][]> = this.chipsService.chips$.pipe(
+    map(chips => chips.assignement),
+  );
+
+  isChipAssigned(chips: [string, string][], col: string): string | undefined {
+    return chips.find(([column]) => column === col)?.[1];
+  }
+
   ngOnInit() {
-    this.setColNames();
-    this.resetChips();
-    this.toCheckGroup();
+    this.checkCols = this.fb.group<ColumnSelection>({
+      columns: this.fb.array<boolean>([]),
+    });
+    this.chkColCount$ = this.checkCols.valueChanges.pipe(
+      map(frmVal => frmVal.columns),
+      map(cols => cols.reduce((acc, curr) => acc + (+curr), 0)),
+    );
   }
 
-  onDeleteColumns() {
-    this.resetChips();
-    this.uploadService.deleteAdresesCsvColumns(this.checkCols.value);
-    this.setColNames();
-    this.rowSelection.clear();
-    this.checkCols.reset();
-    this.gatavs.next(undefined);
+  onDeleteColumns(cols: boolean[]) {
+    this.chipsService.resetChips();
+    this.uploadService.deleteAdresesCsvColumns(cols);
+    this.checkCols.controls.columns.reset();
   }
 
-  onJoinColumns() {
-    this.resetChips();
-    this.uploadService.joinAdresesCsvColumns(this.checkCols.value);
-    this.setColNames();
-    this.rowSelection.clear();
-    this.checkCols.reset();
-    this.gatavs.next(undefined);
-  }
-
-  onDeleteRows() {
-    this.uploadService.deleteCsvRows(this.rowSelection.selected);
-    this.rowSelection.clear();
-    this.gatavs.next(undefined);
+  onJoinColumns(cols: boolean[]) {
+    this.chipsService.resetChips();
+    this.uploadService.joinAdresesCsvColumns(cols);
+    this.checkCols.controls.columns.reset();
   }
 
   onAddEmptyColumn() {
     this.uploadService.addEmptyColumn();
-    this.setColNames();
-    this.toCheckGroup();
-  }
-
-  onCalculate() { // Veidot pakošanas sarakstu un iet tālāk
-    this.uploadService.adresesToKastes(
-      this.colChipsAssigned,
-      this.checkSkaitiPakas.value
-    );
-    this.gatavs.next(this.uploadService.adresesTotals);
   }
 
   onDrop(data: DragData, col: string) {
-    if (data.source !== 'primary') { // Ja kustība nav no sākuma rindas
-      this.removeChip(data); // tad noņem no esošās vietas un uzliek sākuma rindā
-    }
-    if (this.colChipsAssigned.has(col)) { // Ja sleja aizņemta
-      this.removeChip({ text: this.colChipsAssigned.get(col), source: col });
-    }
-    this.colChipsAvailable.splice(this.colChipsAvailable.indexOf(data.text), 1); // Izņem no sākuma rindas
-    this.colChipsAssigned.set(col, data.text);
-    this.tableComplete = !this.colChipsAvailable.length;
+    this.chipsService.moveChip(data.text, col);
   }
 
   onChipRemove(col: string) {
-    this.removeChip({ text: this.colChipsAssigned.get(col), source: col });
-  }
-  /**
-   * Noņem čipu no stabiņiem
-   * @param name čipa nosaukums
-   * @param col slejas indekss, kurai piesaistīts čips.
-   */
-  removeChip(data: DragData) {
-    if (data.source === 'primary') {
-      return;
-    }
-    this.colChipsAvailable.push(data.text);
-    this.colChipsAssigned.delete(data.source);
-    this.tableComplete = false;
-  }
-  /**
-   * Noņem čipus no slejām, kuras likvidējamas
-   * @param colMap slejas nosaukums : boolean - true: sleja izmetama
-   */
-  removeColChips(colMap: {}) {
-    this.colChipsAssigned.forEach(
-      (val, key) => this.removeChip({ text: val, source: key })
-    );
-  }
-  /**
-   * Izveido masīvus ar parādāmo sleju nosaukumiem - displayedDataColumns un displayedColumns
-   */
-  private setColNames() {
-    this.displayedDataColumns = this.uploadService.colNames;
-    this.displayedColumns = ['selected', ...this.displayedDataColumns];
-  }
-  /**
-   * Izveido FormControl grupu ar sleju iezīmēšanas lauciņiem
-   * Priekš displayedDataColumns laukiem
-   */
-  private toCheckGroup() {
-    const control = {};
-    for (const col of this.displayedDataColumns) {
-      control[col] = new FormControl(false);
-    }
-    this.checkCols = new CheckFormGroup(control);
+    this.chipsService.removeChip(col);
   }
 
-  private resetChips() {
-    this.colChipsAvailable = [...TABLE_COLUMNS];
-    this.colChipsAssigned.clear();
+  columnsWithSelected = (cols: string[]) => (['selected', ...cols]);
+
+  private toCheckGroup(cols: string[]) {
+    const checksArr = this.fb.array<boolean>(cols.map(_ => false));
+    this.checkCols.setControl('columns', checksArr);
   }
 
-  private combineTotals(
-    totals$: Observable<Totals | undefined>,
-    planned$: Observable<ColorTotals[]>):
-    Observable<Totals & {
-      planned:
-      { yellow: number; rose: number; white: number; };
-    }> {
-    return combineLatest([totals$, planned$]).pipe(
-      map(([totals, planned]) => totals ? {
-        ...totals,
-        planned: {
-          yellow: planned.find(col => col.color === 'yellow')?.total || 0,
-          rose: planned.find(col => col.color === 'rose')?.total || 0,
-          white: planned.find(col => col.color === 'white')?.total || 0,
-        }
-      } : undefined
-      ),
-    );
-  }
 }

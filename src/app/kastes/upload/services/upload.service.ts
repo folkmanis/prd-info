@@ -1,86 +1,59 @@
+import { SelectionModel } from '@angular/cdk/collections';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map, mergeMap, switchMap, tap } from 'rxjs/operators';
-import { ParserService } from 'src/app/library';
-import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
+import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
-import { AdrBoxTotals, AdreseBox, AdresesBox, Totals } from './adrese-box';
+import { AdresesBox } from './adrese-box';
 import { AdresesCsv } from './adrese-csv';
 
 @Injectable()
 export class UploadService {
-  adresesCsv = new AdresesCsv(this.parserService);
-  adresesBox: AdresesBox;
-  adresesBox$: Observable<AdreseBox[]>;
+  private adresesCsv: AdresesCsv;
+
+  private readonly _adresesCsv$ = new ReplaySubject<Array<string | number>[]>(1);
+  adresesCsv$ = this._adresesCsv$.asObservable();
+
+  private readonly _columns$ = new ReplaySubject<string[]>(1);
+  columns$ = this._columns$.asObservable();
+
+  rowSelection = new SelectionModel<number>(true);
 
   constructor(
-    private kastesPreferencesService: KastesPreferencesService,
-    private prdApi: PrdApiService,
-    private parserService: ParserService,
   ) { }
-
-  get adresesCsv$(): Observable<Array<any[]>> {
-    return this.adresesCsv.data;
-  }
 
   get colNames(): string[] {
     return this.adresesCsv.colNames;
   }
 
-  loadCsv(csv: string, delimiter: string = ',') {
-    this.adresesCsv.setCsv(csv, delimiter);
+  loadData(data: Array<string | number>[]) {
+    this.rowSelection.clear();
+    this.adresesCsv = new AdresesCsv(data);
+    this.rowSelection.select(...this.adresesCsv.value.map((_, idx) => idx));
+    this.emitAdresesCsv();
   }
 
-  loadXls(xls: [][]) {
-    this.adresesCsv.setJson(xls);
-  }
-
-  get adresesBoxTotals(): AdrBoxTotals {
-    return {
-      adreses: this.adresesBox.data.length,
-      boxes: this.adresesBox.totals.boxCount,
-      apjomi: this.adresesBox.apjomi,
-    };
-  }
-
-  get adresesTotals(): Totals {
-    return this.adresesBox.totals;
-  }
-  /**
-   * Izdzēš slejas, kuras norādītas masīvā
-   * @param colMap Dzēšamās slejas norādītas ar true
-   */
-  deleteAdresesCsvColumns(colMap: []) {
+  deleteAdresesCsvColumns(colMap: boolean[]) {
     this.adresesCsv.deleteColumns(colMap);
+    this.emitAdresesCsv();
   }
 
-  joinAdresesCsvColumns(colMap: []) {
+  joinAdresesCsvColumns(colMap: boolean[]) {
     this.adresesCsv.joinColumns(colMap);
-  }
-
-  deleteCsvRows(selected: any[]) {
-    this.adresesCsv.deleteRows(selected);
+    this.emitAdresesCsv();
   }
 
   addEmptyColumn() {
     this.adresesCsv.addColumn();
+    this.emitAdresesCsv();
   }
 
-  adresesToKastes(colMap: Map<string, string>, toPakas: boolean) {
-    this.adresesBox = new AdresesBox();
-    this.adresesBox$ = this.adresesBox.init(this.adresesCsv.value, colMap, { toPakas });
+  adresesToKastes(colMap: Map<string, string>, toPakas: boolean): AdresesBox {
+    return new AdresesBox(this.adresesCsv.value, colMap, toPakas);
   }
 
-  savePasutijums(orderId: number): Observable<number> {
-    return this.prdApi.kastes.putTable({
-      orderId,
-      data: this.adresesBox.uploadRow(orderId)
-    }).pipe(
-      switchMap(affectedRows => this.kastesPreferencesService.updateUserPreferences({ pasutijums: orderId })
-        .pipe(
-          map(() => affectedRows)
-        )),
-    );
+  private emitAdresesCsv(): void {
+    this._columns$.next(this.adresesCsv.colNames);
+    this._adresesCsv$.next(this.adresesCsv.value);
   }
 
 }

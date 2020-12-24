@@ -1,35 +1,23 @@
-.drope {
+section {
     padding: 16px;
 }
 
-.drope>div {
-    border: solid 2px rgba(0, 0, 0, 0.5);
+.file-selection {
     display: flex;
-    height: 400px;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.text-block {
-    text-align: center;
-}
-
-.input-text {
-    width: 100%;
-    max-width: 600px;
-    min-width: 300px;
-    padding: 8px;
+    align-items: baseline;
+    & .mat-form-field {
+        flex: 1 0 160px;
+        margin-right: 16px;
+    }
+    & > div {
+        flex: 3 1 auto;
+    }
 }
 
 .button-bar {
     padding: 16px;
 }
 
-.button-bar>*:not(:first-child) {
+.button-bar > *:not(:first-child) {
     margin-left: 16px;
-}
-
-.mat-stepper-horizontal {
- height: 100%;
- overflow: auto;
 }

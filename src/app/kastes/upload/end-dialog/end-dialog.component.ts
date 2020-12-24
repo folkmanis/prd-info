@@ -8,7 +8,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 export class EndDialogComponent {
   constructor(
     public dialogRef: MatDialogRef<EndDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { rows: number; }
+    @Inject(MAT_DIALOG_DATA) public data: number,
   ) { }
 
 }

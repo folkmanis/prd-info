@@ -1,6 +1,6 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
-import { Observable, of as observableOf, merge, of } from 'rxjs';
+import { Observable, of, merge } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { UploadService } from '../services/upload.service';
 import { UploadRow } from '../services/upload-row';
@@ -21,14 +21,15 @@ export class UploadTabulaDataSource extends DataSource<AdreseBox> {
      * @returns A stream of the items to be rendered.
      */
     connect(): Observable<AdreseBox[]> {
-        return this.uploadService.adresesBox$.pipe(
-            map((adrB) => {
-                return adrB.map(ab => {
-                    ab.total = ab.totals.yellow + ab.totals.rose + ab.totals.white;
-                    return ab;
-                });
-            }),
-            tap((adrB) => this.data = adrB));
+        return of([]);
+        // this.uploadService.adresesBox$.pipe(
+        //     map((adrB) => {
+        //         return adrB.map(ab => {
+        //             ab.total = ab.totals.yellow + ab.totals.rose + ab.totals.white;
+        //             return ab;
+        //         });
+        //     }),
+        //     tap((adrB) => this.data = adrB));
     }
 
     indexOf(adrB: AdreseBox) {

@@ -1,56 +1,39 @@
-<mat-horizontal-stepper [linear]="true" #stepper cdk-scrollable>
-    <!-- Pirmais solis -->
-    <mat-step label="faila izvēle" [completed]="fileLoaded">
-        <div class="button-bar">
-            <button mat-raised-button (click)="clearFile()" color="primary">ATCELT</button>
-            <button mat-raised-button matStepperNext [disabled]="!fileLoaded || !orderIdControl.valid" color="primary">TĀLĀK!</button>
-            <!-- Pasūtījuma nosaukums -->
-            <mat-form-field>
-                <mat-label>Pasūtījums</mat-label>
-                <mat-select [formControl]="orderIdControl">
-                    <mat-option *ngFor="let ordr of orders$ | async" [value]="ordr.jobId">
-                        {{ordr.name}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-        <div>
-            Plānotie apjomi:
-            <span *ngFor="let total of plannedTotals$ | async">
-                {{total.color}}: {{total.total}} |
-            </span>
-        </div>
-        <div class="drope">
-            <div appFileDrop (filesEmitter)="onFileDrop($event)">
-                <div class="text-block">
-                    {{displayText}}
-                </div>
-            </div>
-        </div>
-    </mat-step>
-    <!-- Otrais solis -->
-    <mat-step label="Adrešu saraksta labošana" [completed]="boxGatavi">
-        <div class="button-bar">
-            <button mat-raised-button matStepperNext [disabled]="!boxGatavi" color="primary">TĀLĀK!</button>
-        </div>
-        <div>
-            <app-upload-adreses *ngIf="fileLoaded" (gatavs)="boxGatavi = !!$event" [plannedTotals]="plannedTotals$ | async"></app-upload-adreses>
-        </div>
-    </mat-step>
-    <!-- Trešais solis -->
-    <mat-step label="Pakošanas saraksta pārskats" [completed]="boxGatavi">
-        <div class="button-bar">
-            <button mat-raised-button matStepperNext color="primary">TĀLĀK!</button>
-        </div>
-        <div>
-            <app-upload-tabula *ngIf="boxGatavi"></app-upload-tabula>
-        </div>
-    </mat-step>
-    <!-- Beigu solis -->
-    <mat-step label="Datu saglabāšana">
-            <div class="button-bar">
-                <button mat-raised-button matStepperNext color="primary"
-                    [disabled]="!orderIdControl.valid" (click)="onSubmitAll()">Saglabāt!</button>
-            </div>
-    </mat-step>
-</mat-horizontal-stepper>
+<section class="file-selection">
+    <mat-form-field>
+        <mat-label>Pasūtījums</mat-label>
+        <mat-select [formControl]="orderIdControl">
+            <mat-option *ngFor="let ordr of orders$ | async" [value]="ordr.jobId">
+                {{ordr.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <div>
+        <app-select-file (csvFile)="onCsvDrop($event)" (xlsFile)="onXlsDrop($event)"></app-select-file>
+    </div>
+</section>
+<section *ngIf="colors$ | async as colors;">
+    <p>
+        <app-totals [colorTotals]="plannedTotals$ | async" [colors]="colors">
+            Plānotie apjomi (paciņas):
+        </app-totals>
+    </p>
+    <ng-container *ngIf="adresesBox$ | async as adresesBox">
+        <p>
+            <app-totals [colorTotals]="adresesBox.totals.colorTotals" [colors]="colors">
+                Apjomi sarakstā (paciņas):
+            </app-totals>
+        </p>
+        <p>
+            Adreses: {{adresesBox.totals.adrCount}} |
+            Kastes: {{adresesBox.totals.boxCount}}
+        </p>
+        <p>
+            <button mat-raised-button color="primary" (click)="onSave(adresesBox)">
+                SAGLABĀT
+            </button>
+        </p>
+    </ng-container>
+</section>
+
+<app-upload-adreses *ngIf="inputData$ | async as inputData;" [data]="inputData" (adresesBox)="onAdresesBox($event)">
+</app-upload-adreses>

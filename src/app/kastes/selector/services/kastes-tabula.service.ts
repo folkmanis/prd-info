@@ -83,8 +83,8 @@ function calcTotals(kastes: Kaste[]): Totals {
     }, { yellow: 0, rose: 0, white: 0 });
   return {
     total: kastes.length,
-    kastesRemain: kastes.reduce((total, curr) => total += curr.kastes.gatavs ? 0 : 1, 0),
-    labelsRemain: kastes.reduce((total, curr) => total += curr.kastes.uzlime ? 0 : 1, 0),
+    kastes: kastes.reduce((total, curr) => total += curr.kastes.gatavs ? 0 : 1, 0),
+    labels: kastes.reduce((total, curr) => total += curr.kastes.uzlime ? 0 : 1, 0),
     colorTotals: Object.keys(colorsPakas).map((k: Colors) => ({
       color: k,
       total: colorsPakas[k],

@@ -1,4 +1,5 @@
 import { AppHttpResponseBase } from 'src/app/library/http';
+import { Colors } from './kaste';
 
 export interface ModuleSettings {
     [key: string]: any;
@@ -15,9 +16,7 @@ export type SystemPreferences = Map<SystemPreferencesGroups, ModuleSettings>;
 
 export class KastesSettings implements ModuleSettings {
     colors: {
-        yellow: string;
-        rose: string;
-        white: string;
+        [key in Colors]: string;
     };
 }
 

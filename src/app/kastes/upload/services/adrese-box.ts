@@ -1,8 +1,8 @@
 import { UploadRow } from './upload-row';
-import { Kaste } from 'src/app/interfaces';
+import { Kaste, Colors, ColorTotals } from 'src/app/interfaces';
 import { Observable, of } from 'rxjs';
 
-export const MaxPakas = 5;
+export const MAX_PAKAS = 5;
 
 export interface AdrBoxTotals {
     adreses: number;
@@ -13,10 +13,12 @@ export interface AdrBoxTotals {
 export interface Totals {
     adrCount: number;
     boxCount: number;
-    yellow: number;
-    rose: number;
-    white: number;
+    colorTotals: ColorTotals[];
 }
+
+type BoxInterface = {
+    [key in Colors]: number;
+};
 
 /**
  * Adrese ar sūtījumu skaitu, bez pakojuma pa kastēm
@@ -54,24 +56,23 @@ class AdreseSkaits {
 
 }
 
-export class Box {
-    static readonly Keys: string[] = ['yellow', 'rose', 'white'];
+export class Box implements BoxInterface {
+    static readonly Keys: Colors[] = ['rose', 'yellow', 'white'];
     yellow = 0; rose = 0; white = 0;
 
     constructor({ yellow = 0, rose = 0, white = 0 } = {}) {
         this.yellow = yellow; this.rose = rose; this.white = white;
     }
 
-    store(j: string) {
+    store(j: Colors) {
         this[j]++;
     }
     sum(): number {
         return Box.Keys.reduce((total, val) => total += this[val], 0);
     }
     full(): boolean {
-        return (this.sum() >= MaxPakas);
+        return (this.sum() >= MAX_PAKAS);
     }
-    // tslint:disable-next-line: space-before-function-paren
     [Symbol.iterator] = function* () {
         yield this.yellow;
         yield this.rose;
@@ -146,17 +147,16 @@ export class AdreseBox {
     }
 
     get totals(): Totals {
-        const init: Totals = {
+        const colorTotals: ColorTotals[] = Box.Keys.map(color => ({
+            color,
+            total: this.box.reduce((acc, curr) => acc + curr[color], 0)
+        }));
+
+        return {
             adrCount: 1,
             boxCount: this.box.length,
-            yellow: 0,
-            rose: 0,
-            white: 0
+            colorTotals,
         };
-        return this.box.reduce((acc, curr) => {
-            acc.yellow += curr.yellow; acc.rose += curr.rose; acc.white += curr.white;
-            return acc;
-        }, init);
     }
     /**
      * No pakojuma uz tabulas ierakstu
@@ -178,57 +178,53 @@ export class AdreseBox {
  * Satur sarakstu ar visām adresēm, ar sadalījumu pa pakojuma kastēm
  */
 export class AdresesBox {
-    data: AdreseBox[] = [];
+    private _data: AdreseBox[];
+    get data(): AdreseBox[] {
+        return this._data;
+    }
 
-    constructor() { }
+    private _totals: Totals | undefined;
+    get totals(): Totals {
+        return this._totals;
+    }
 
-    init(
-        adrSaraksts: Array<any[]>,
+    constructor(
+        adresesCsv: Array<string | number>[],
         colMap: Map<string, string>,
-        { toPakas = false } = {}
-    ): Observable<AdreseBox[]> {
-        for (const adrS of adrSaraksts) {
+        toPakas = false,
+    ) {
+        this._data = [];
+        for (const adrS of adresesCsv) {
             const adrM = new AdreseSkaits(adrS, colMap, toPakas);
             if (adrM.totalPakas() < 1) {
                 continue; // Tukšs ieraksts
             }
-            this.data.push(new AdreseBox(adrM));
+            this._data.push(new AdreseBox(adrM));
         }
-        return of(this.data);
+        this._totals = this.calculateTotals();
     }
 
-    get values(): AdreseBox[] {
-        return this.data;
+    private calculateTotals(): Totals {
+        const colorTotals: ColorTotals[] = Box.Keys.map(color => ({
+            color,
+            total: this.data.reduce((acc, { totals }) => acc + totals.colorTotals.find(({ color: c }) => c === color).total, 0)
+        }));
+        const boxCount = this.data.reduce((acc, adrBox) => acc + adrBox.totals.boxCount, 0);
+        console.log(colorTotals);
+        return {
+            adrCount: this._data.length,
+            boxCount,
+            colorTotals,
+        };
     }
 
     uploadRow(pasutijums: number): UploadRow[] {
-        const ur: UploadRow[] = [];
-        for (const veikals of this.data) {
-            ur.push(veikals.reduce(pasutijums));
-        }
-        return ur;
-    }
-
-    get totals(): Totals {
-        const init: Totals = {
-            adrCount: this.data.length,
-            boxCount: 0,
-            yellow: 0,
-            rose: 0,
-            white: 0
-        };
-        return this.data.reduce((acc, curr) => {
-            acc.boxCount += curr.totals.boxCount;
-            acc.yellow += curr.totals.yellow;
-            acc.rose += curr.totals.rose;
-            acc.white += curr.totals.white;
-            return acc;
-        }, init);
+        return this.data.map(veikals => veikals.reduce(pasutijums));
     }
 
     get apjomi(): number[] {
         const apj: number[] = [];
-        for (const adrB of this.data) {
+        for (const adrB of this._data) {
             for (const box of adrB.box) {
                 if (!apj[box.sum()]) { apj[box.sum()] = 0; }
                 apj[box.sum()]++;

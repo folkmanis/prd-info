@@ -10,6 +10,8 @@ import { EndDialogComponent } from './end-dialog/end-dialog.component';
 import { TotalValidatorDirective } from './upload-tabula/editor/total-validator.directive';
 import { PlusPipePipe } from './upload-tabula/editor/plus-pipe.pipe';
 import { UploadService, FileDropDirective, DragDropDirective, DragableDirective } from './services';
+import { SelectFileComponent } from './select-file/select-file.component';
+import { TotalsComponent } from './totals/totals.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +25,8 @@ import { UploadService, FileDropDirective, DragDropDirective, DragableDirective 
     EditorComponent,
     PlusPipePipe,
     TotalValidatorDirective,
+    SelectFileComponent,
+    TotalsComponent,
   ],
   imports: [
     CommonModule,

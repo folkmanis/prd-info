@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { EMPTY, Observable, Subject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { KastesJob, KastesJobPartial } from 'src/app/interfaces';
+import { KastesJob, KastesJobPartial, Veikals } from 'src/app/interfaces';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 import { KastesPreferencesService } from './kastes-preferences.service';
 
@@ -40,6 +40,13 @@ export class PasutijumiService {
     return this.prdApi.kastesOrders.updateOne(pas._id, pas).pipe(
       tap(upd => upd && this.reload$.next()),
     );
+  }
+
+  addKastes(orderId: number, data: Veikals[]): Observable<number> {
+    return this.prdApi.kastes.putTable({
+      orderId,
+      data,
+    });
   }
 
   deleteKastes(pasutijumsId: number): Observable<number> {
