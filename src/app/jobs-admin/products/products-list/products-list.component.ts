@@ -1,15 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { combineLatest, BehaviorSubject } from 'rxjs';
-import { map, startWith, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { FormControl } from '@angular/forms';
-import { IFormControl } from '@rxweb/types';
-import { ProductsService } from 'src/app/services';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { BehaviorSubject, combineLatest } from 'rxjs';
+import { debounceTime, map } from 'rxjs/operators';
 import { LayoutService } from 'src/app/layout/layout.service';
+import { ProductsService } from 'src/app/services';
 
 @Component({
   selector: 'app-products-list',
   templateUrl: './products-list.component.html',
-  styleUrls: ['./products-list.component.scss']
+  styleUrls: ['./products-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductsListComponent implements OnInit {
 
