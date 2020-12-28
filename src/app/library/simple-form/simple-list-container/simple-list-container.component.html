@@ -1,5 +1,4 @@
 <div class="container" [class.large]="large" [class.active]="editor.isActivated">
-
     <div class="list">
 
         <div cdkScrollable scroll-to-top>
@@ -20,7 +19,7 @@
     </div>
 
     <div class="editor" [style.flex]="large ? '0 0 ' + editorWidth : null">
-        <router-outlet #editor="outlet"></router-outlet>
+        <router-outlet #editor="outlet" (activate)="onActivate()" (deactivate)="onActivate()"></router-outlet>
     </div>
 
 </div>

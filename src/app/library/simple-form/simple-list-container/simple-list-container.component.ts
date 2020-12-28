@@ -1,14 +1,17 @@
-import { Component, OnInit, Input, Output, TemplateRef } from '@angular/core';
+import { Component, OnInit, Input, Output, TemplateRef, ViewChild, AfterViewInit } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 import { IFormControl } from '@rxweb/types';
 import { FormControl } from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-simple-list-container',
   templateUrl: './simple-list-container.component.html',
-  styleUrls: ['./simple-list-container.component.scss']
+  styleUrls: ['./simple-list-container.component.scss'],
 })
 export class SimpleListContainerComponent implements OnInit {
+  @ViewChild('editor') private routerOutlet: RouterOutlet;
 
   searchControl: IFormControl<string> = new FormControl('');
 
@@ -35,10 +38,19 @@ export class SimpleListContainerComponent implements OnInit {
 
   @Output() filter = this.searchControl.valueChanges;
 
+  @Output() activeStatusChanges = new Subject<boolean>();
+
+  get isActivated(): boolean {
+    return this.routerOutlet?.isActivated || false;
+  }
+
   constructor() { }
 
-
   ngOnInit(): void {
+  }
+
+  onActivate(): void {
+    this.activeStatusChanges.next(this.isActivated);
   }
 
 }
