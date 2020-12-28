@@ -1,6 +1,6 @@
-<app-simple-form-container>
+<app-simple-form-container [formSource]="formSource">
 
-    <form [appSimpleForm]="formSource" [formGroup]="form">
+    <form [formGroup]="form">
         <!-- Nosaukums labojams -->
         <h2 *ngIf="isNew; else existingProduct">
             <mat-form-field>

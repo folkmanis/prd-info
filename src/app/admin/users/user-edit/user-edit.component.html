@@ -1,5 +1,5 @@
-<app-simple-form-container>
-    <form [appSimpleForm]="userFormSource" [formGroup]="userFormSource.form">
+<app-simple-form-container [formSource]="userFormSource">
+    <form [formGroup]="userFormSource.form">
         <!-- Lietotājvārds -->
         <h2 *ngIf="userFormSource.isNew; else existing">
             <mat-form-field>
