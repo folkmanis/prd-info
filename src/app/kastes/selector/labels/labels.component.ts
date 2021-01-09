@@ -29,7 +29,6 @@ export class LabelsComponent implements OnInit {
     this._status = status;
     this.inputForm.enable();
     this.kodsInput?.nativeElement.focus();
-    console.log('focus');
     this.kodsInput?.nativeElement.select();
     if (status.type === 'none') { this.inputForm.reset(undefined, { emitEvent: false }); }
   }

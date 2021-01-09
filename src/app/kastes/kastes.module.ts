@@ -13,7 +13,6 @@ import { KastesRoutingModule } from './kastes-routing.module';
 import { KastesMainMenuComponent } from './kastes-main-menu/kastes-main-menu.component';
 
 
-
 @NgModule({
   declarations: [
     KastesMainMenuComponent,

@@ -1,5 +1,5 @@
 import { JobBase } from './job-base';
-import { Colors, ColorTotals } from './kaste';
+import { Colors, ColorTotals, Veikals } from './kaste';
 import { AppHttpResponseBase } from 'src/app/library/http';
 
 export interface KastesJobExtras {
@@ -9,6 +9,7 @@ export interface KastesJobExtras {
         apjomiTotals: ApjomiTotals[];
         veikali: number;
     };
+    veikali: Veikals[];
 }
 
 export interface KastesJob extends JobBase, KastesJobExtras {

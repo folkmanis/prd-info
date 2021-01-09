@@ -1,0 +1,15 @@
+<div *ngIf="job">
+    <h2>
+       {{job.jobId}} / {{job.name}}
+    </h2>
+
+    Saņemts {{job.receivedDate | date:'mediumDate'}}
+    Jānodod {{job.dueDate | date:'mediumDate'}}
+
+    <div>
+        <app-color-totals [colorTotals]="job.totals.colorTotals">
+            Paredzētie skaiti
+        </app-color-totals>
+    </div>
+
+</div>

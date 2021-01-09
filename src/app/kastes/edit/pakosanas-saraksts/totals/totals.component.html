@@ -1,0 +1,8 @@
+<div *ngIf="colors$ | async as colors;" class="container">
+    <div *ngFor="let total of totals; index as idx;" [style.color]="colors[total.color]">
+        {{total.total}}
+    </div>
+    <div>
+        {{veikalsTotal}}
+    </div>
+</div>

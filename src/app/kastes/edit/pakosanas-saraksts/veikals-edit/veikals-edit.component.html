@@ -1,0 +1,13 @@
+<div [formGroup]="veikalsFormArray">
+    <ng-container *ngIf="colors$ | async as colors;">
+        <div *ngFor="let control of veikalsFormArray.controls; index as idx;" [formArrayName]="idx" class="container">
+            <div *ngFor="let colorName of colorNames">
+                <input type="number" matInput [formControlName]="colorName"
+                    [style.color]="control.get(colorName).valid ? colors[colorName] : undefined" [class.invalid]="control.get(colorName).invalid">
+            </div>
+            <div [class.invalid]="control.invalid">
+                {{boxTotals(veikalsFormArray.controls[idx].value)}}
+            </div>
+        </div>
+    </ng-container>
+</div>

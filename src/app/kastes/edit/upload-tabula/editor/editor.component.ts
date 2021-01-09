@@ -1,6 +1,6 @@
 import { Component, Input, Output, OnInit, EventEmitter } from '@angular/core';
 import { FormControl, FormGroup, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
-import { AdreseBox, Box } from '../../services/adrese-box';
+import { AdreseBox, Box } from '../../../upload/services/adrese-box';
 import { TotalValidatorDirective } from './total-validator.directive';
 import { KastesPreferencesService } from '../../../services/kastes-preferences.service';
 

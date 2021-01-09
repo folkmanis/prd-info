@@ -1,6 +1,6 @@
-<app-simple-form-container>
+<app-simple-form-container [formSource]="formSource">
 
-    <form [formGroup]="form" [appSimpleForm]="formSource">
+    <form [formGroup]="form">
         <h2>
             {{form.controls.name.value}}
         </h2>
@@ -34,7 +34,7 @@
             {{totals.veikali}}
         </p>
         <h4>Kopējie skaiti pa krāsām</h4>
-        <app-color-totals [totals]="totals.colorTotals"></app-color-totals>
+        <app-color-totals [colorTotals]="totals.colorTotals"></app-color-totals>
         <h4>Kopējie skaiti pa kastu apjomiem</h4>
         <app-apjomi-totals [totals]="totals.apjomiTotals"></app-apjomi-totals>
     </div>

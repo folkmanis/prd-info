@@ -1,0 +1,6 @@
+<ng-content></ng-content>
+<ng-container *ngIf="colors$ | async as colors;">
+    <span *ngFor="let colorTotal of colorTotals" [style.color]="colors[colorTotal.color]">
+        {{colorTotal.color}} {{colorTotal.total}} |
+    </span>
+</ng-container>

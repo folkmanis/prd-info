@@ -1,6 +1,10 @@
 import { AppHttpResponseBase } from 'src/app/library/http';
 
-export type Colors = 'yellow' | 'rose' | 'white';
+export const COLORS = ['yellow', 'rose', 'white'] as const;
+
+export const MAX_ITEMS_BOX = 5;
+
+export type Colors = typeof COLORS[number];
 
 export interface ColorTotals {
     color: Colors;
@@ -12,10 +16,7 @@ export interface Kaste {
     kods: number | string;
     adrese: string;
     pasutijums: string;
-    kastes: {
-        yellow: number;
-        rose: number;
-        white: number;
+    kastes: { [key in Colors]: number; } & {
         gatavs: boolean;
         total: number;
         uzlime: boolean;
@@ -47,14 +48,11 @@ export interface KastesUserPreferences {
     pasutijums: number;
 }
 
-export interface VeikalsBox {
+export type VeikalsBox = { [key in Colors]: number; } & {
     total: number;
-    yellow: number;
-    rose: number;
-    white: number;
     gatavs: boolean;
     uzlime: boolean;
-}
+};
 
 export interface Veikals {
     kods: number;

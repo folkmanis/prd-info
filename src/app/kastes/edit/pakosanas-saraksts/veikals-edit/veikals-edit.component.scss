@@ -1,0 +1,16 @@
+div.container {
+    display: flex;
+    &>div{
+        flex: 1;
+        height: 24px;
+    }
+}
+
+input[type=number] {
+    width: 3em;
+    margin-right: 3px;
+}
+
+.invalid {
+    color: red;
+}

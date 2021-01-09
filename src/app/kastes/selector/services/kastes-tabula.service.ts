@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, mergeMap, pluck, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators';
-import { Colors, Kaste, Totals } from 'src/app/interfaces';
+import { Colors, Kaste, Totals, COLORS } from 'src/app/interfaces';
 import { cacheWithUpdate } from 'src/app/library/rx';
 import { PrdApiService } from 'src/app/services';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
@@ -85,7 +85,7 @@ function calcTotals(kastes: Kaste[]): Totals {
     total: kastes.length,
     kastes: kastes.reduce((total, curr) => total += curr.kastes.gatavs ? 0 : 1, 0),
     labels: kastes.reduce((total, curr) => total += curr.kastes.uzlime ? 0 : 1, 0),
-    colorTotals: Object.keys(colorsPakas).map((k: Colors) => ({
+    colorTotals: COLORS.map((k: Colors) => ({
       color: k,
       total: colorsPakas[k],
     }))

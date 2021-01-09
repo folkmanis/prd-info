@@ -8,7 +8,7 @@ import { JobService } from 'src/app/services/job.service';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { PasutijumiResolverService } from './pasutijumi-resolver.service';
 
-export class JobFormSource extends SimpleFormSource<KastesJob> {
+export class JobFormSource extends SimpleFormSource<Omit<KastesJob, 'veikali'>> {
 
     constructor(
         fb: FormBuilder,
@@ -21,8 +21,8 @@ export class JobFormSource extends SimpleFormSource<KastesJob> {
     private _job$ = new ReplaySubject<KastesJob>(1);
     job$ = this._job$.asObservable();
 
-    createForm(): IFormGroup<KastesJob> {
-        return this.fb.group<KastesJob>({
+    createForm(): IFormGroup<Omit<KastesJob, 'veikali'>> {
+        return this.fb.group<Omit<KastesJob, 'veikali'>>({
             category: ['perforated paper'],
             jobId: [undefined],
             customer: [''],

@@ -13,15 +13,15 @@
 </section>
 <section *ngIf="colors$ | async as colors;">
     <p>
-        <app-totals [colorTotals]="plannedTotals$ | async" [colors]="colors">
+        <app-color-totals [colorTotals]="plannedTotals$ | async">
             Plānotie apjomi (paciņas):
-        </app-totals>
+        </app-color-totals>
     </p>
     <ng-container *ngIf="adresesBox$ | async as adresesBox">
         <p>
-            <app-totals [colorTotals]="adresesBox.totals.colorTotals" [colors]="colors">
+            <app-color-totals [colorTotals]="adresesBox.totals.colorTotals">
                 Apjomi sarakstā (paciņas):
-            </app-totals>
+            </app-color-totals>
         </p>
         <p>
             Adreses: {{adresesBox.totals.adrCount}} |

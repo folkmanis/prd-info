@@ -2,9 +2,9 @@ import { Component, OnInit, EventEmitter } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { Observable, of, merge } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { UploadService } from '../services/upload.service';
-import { UploadRow } from '../services/upload-row';
-import { AdreseBox } from '../services/adrese-box';
+import { UploadService } from '../../upload/services/upload.service';
+import { UploadRow } from '../../upload/services/upload-row';
+import { AdreseBox } from '../../upload/services/adrese-box';
 
 export class UploadTabulaDataSource extends DataSource<AdreseBox> {
     data: AdreseBox[] = [];

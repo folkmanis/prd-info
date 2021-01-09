@@ -1,6 +1,5 @@
 import { UploadRow } from './upload-row';
-import { Kaste, Colors, ColorTotals } from 'src/app/interfaces';
-import { Observable, of } from 'rxjs';
+import { Kaste, Colors, ColorTotals, COLORS } from 'src/app/interfaces';
 
 export const MAX_PAKAS = 5;
 
@@ -15,10 +14,6 @@ export interface Totals {
     boxCount: number;
     colorTotals: ColorTotals[];
 }
-
-type BoxInterface = {
-    [key in Colors]: number;
-};
 
 /**
  * Adrese ar sūtījumu skaitu, bez pakojuma pa kastēm
@@ -44,20 +39,19 @@ class AdreseSkaits {
             const m = colMap.get(idx.toString());
             if (m) { this[m] = val; }
         });
-        Box.Keys.forEach(key => this[key] = (+this[key] || 0));
+        COLORS.forEach(key => this[key] = (+this[key] || 0));
         if (convertToPakas) {
-            Box.Keys.forEach(key => this[key] /= this[key] >= 500 ? 500 : 1);
+            COLORS.forEach(key => this[key] /= this[key] >= 500 ? 500 : 1);
         }
     }
 
     totalPakas(): number {
-        return Box.Keys.reduce((acc, key) => acc += this[key], 0);
+        return COLORS.reduce((acc, key) => acc += this[key], 0);
     }
 
 }
 
-export class Box implements BoxInterface {
-    static readonly Keys: Colors[] = ['rose', 'yellow', 'white'];
+export class Box implements Record<Colors, number> {
     yellow = 0; rose = 0; white = 0;
 
     constructor({ yellow = 0, rose = 0, white = 0 } = {}) {
@@ -68,7 +62,7 @@ export class Box implements BoxInterface {
         this[j]++;
     }
     sum(): number {
-        return Box.Keys.reduce((total, val) => total += this[val], 0);
+        return COLORS.reduce((total, val) => total += this[val], 0);
     }
     full(): boolean {
         return (this.sum() >= MAX_PAKAS);
@@ -94,7 +88,7 @@ export class AdreseBox {
     constructor(adr: AdreseSkaits) {
         ({ kods: this.kods, adrese: this.adrese } = adr);
         let box = new Box();
-        for (const key of Box.Keys) {
+        for (const key of COLORS) {
             for (let m = 0; m < adr[key]; m++) {
                 if (box.full()) {
                     this.box.push(box);
@@ -103,7 +97,6 @@ export class AdreseBox {
                 box.store(key);
             }
         }
-        // this.total = this.sum();
         this.box.push(box);
         this.optimize();
     }
@@ -147,7 +140,7 @@ export class AdreseBox {
     }
 
     get totals(): Totals {
-        const colorTotals: ColorTotals[] = Box.Keys.map(color => ({
+        const colorTotals: ColorTotals[] = COLORS.map(color => ({
             color,
             total: this.box.reduce((acc, curr) => acc + curr[color], 0)
         }));
@@ -205,7 +198,7 @@ export class AdresesBox {
     }
 
     private calculateTotals(): Totals {
-        const colorTotals: ColorTotals[] = Box.Keys.map(color => ({
+        const colorTotals: ColorTotals[] = COLORS.map(color => ({
             color,
             total: this.data.reduce((acc, { totals }) => acc + totals.colorTotals.find(({ color: c }) => c === color).total, 0)
         }));

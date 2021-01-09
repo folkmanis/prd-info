@@ -1,0 +1,7 @@
+<div>
+    <ng-content></ng-content>
+    <span *ngFor="let tot of totals; last as last">
+        {{tot[0]}} - {{tot[1]}}
+        <b *ngIf="!last"> | </b>
+    </span>
+</div>

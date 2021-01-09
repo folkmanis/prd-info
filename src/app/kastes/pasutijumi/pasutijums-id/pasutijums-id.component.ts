@@ -38,7 +38,7 @@ export class PasutijumsIdComponent implements CanComponentDeactivate {
   ) { }
 
   formSource = new JobFormSource(this.fb, this.jobService, this.resolver);
-  get form(): IFormGroup<KastesJob> { return this.formSource.form; }
+  get form(): IFormGroup<Omit<KastesJob, 'veikali'>> { return this.formSource.form; }
 
   reload$ = new Subject<void>();
 

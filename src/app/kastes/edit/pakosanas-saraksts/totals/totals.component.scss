@@ -1,0 +1,7 @@
+div.container {
+    display: flex;
+    font-weight: bold;
+    &>div{
+        flex: 1;
+    }
+}

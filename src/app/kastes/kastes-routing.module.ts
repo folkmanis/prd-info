@@ -12,12 +12,16 @@ const routes: Routes = [
     path: 'upload',
     loadChildren: () => import('./upload/upload.module').then(m => m.UploadModule),
   },
+  {
+    path: 'edit',
+    loadChildren: () => import('./edit/edit.module').then(m => m.EditModule)
+  },
   { path: '**', redirectTo: '' },
 ];
 
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)], // { enableTracing: true }
+  imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
 export class KastesRoutingModule { }

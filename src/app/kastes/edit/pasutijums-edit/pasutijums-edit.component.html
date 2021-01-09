@@ -1,0 +1,13 @@
+<app-simple-form-container (dataChange)="onData($event)">
+
+    <mat-tab-group [selectedIndex]="2">
+        <mat-tab label="Informācija">
+            <app-job-info [job]="kastesJob"></app-job-info>
+        </mat-tab>
+
+        <mat-tab label="Pakošanas saraksts">
+            <app-pakosanas-saraksts [job]="kastesJob"></app-pakosanas-saraksts>
+        </mat-tab>
+    </mat-tab-group>
+
+</app-simple-form-container>
