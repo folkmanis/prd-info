@@ -1,33 +1,37 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, Inject, OnDestroy } from '@angular/core';
 import { FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { VeikalsWithTotals } from '../../services/veikals-totals';
 import { IFormBuilder, IFormGroup, IFormArray } from '@rxweb/types';
-import { VeikalsBox, Colors, COLORS, MAX_ITEMS_BOX } from 'src/app/interfaces';
+import { VeikalsBox, Colors, COLORS, MAX_ITEMS_BOX, Veikals } from 'src/app/interfaces';
 import { KastesPreferencesService } from '../../../services/kastes-preferences.service';
-import { filter, map, tap } from 'rxjs/operators';
+import { filter, map, takeUntil, tap } from 'rxjs/operators';
 import { ControlConfig } from '@rxweb/types/reactive-form/control-config';
-import { Observable } from 'rxjs';
-
+import { Observable, ReplaySubject, combineLatest } from 'rxjs';
+import { ActiveVeikalsDirective } from '../active-veikals.directive';
+import { VeikalsValidationErrors } from '../../services/veikals-validation-errors';
+import { DestroyService } from 'src/app/library/rx/destroy.service';
 
 @Component({
   selector: 'app-veikals-edit',
   templateUrl: './veikals-edit.component.html',
-  styleUrls: ['./veikals-edit.component.scss']
+  styleUrls: ['./veikals-edit.component.scss'],
+  providers: [DestroyService],
 })
-export class VeikalsEditComponent implements OnInit {
-  @Input() get veikals(): VeikalsWithTotals {
+export class VeikalsEditComponent implements OnInit, OnDestroy {
+  @Input() get veikals(): Veikals {
     return this._veikals;
   }
-  set veikals(veikals: VeikalsWithTotals) {
+  set veikals(veikals: Veikals) {
     this._veikals = veikals;
     if (veikals?.kastes) {
       this.initForm(veikals.kastes);
     }
+    this._veikals$.next(veikals);
   }
-  private _veikals: VeikalsWithTotals;
+  private _veikals: Veikals;
 
-  @Output() valueChanges: Observable<VeikalsBox[]>;
-  @Output() errors: Observable<null | ValidationErrors>;
+  @Output() valueChanges: Observable<Veikals>;
+  @Output() errors: Observable<null | VeikalsValidationErrors>;
 
   get valid(): boolean {
     return this.veikalsFormArray.valid;
@@ -36,18 +40,28 @@ export class VeikalsEditComponent implements OnInit {
   fb: IFormBuilder;
   veikalsFormArray: IFormArray<VeikalsBox>;
 
+  private _veikals$ = new ReplaySubject<Veikals>(1);
+  private _veikalsKastesChanges$: Observable<VeikalsBox[]>;
+
   constructor(
     fb: FormBuilder,
     private prefService: KastesPreferencesService,
+    @Inject(ActiveVeikalsDirective) private activeVeikals: ActiveVeikalsDirective,
+    private destroy$: DestroyService,
   ) {
     this.fb = fb;
     this.veikalsFormArray = this.fb.array<VeikalsBox>([], { validators: this.totalsValidator() });
-    this.valueChanges = this.veikalsFormArray.valueChanges.pipe(
+    this._veikalsKastesChanges$ = this.veikalsFormArray.valueChanges.pipe(
       filter(_ => this.veikalsFormArray.valid),
       map(_ => this.recalculateTotals(this.veikalsFormArray.getRawValue())),
     );
     this.errors = this.veikalsFormArray.valueChanges.pipe(
       map(_ => this.veikalsFormArray.valid ? null : this.veikalsFormArray.errors || {}),
+    );
+    this.valueChanges = combineLatest([
+      this._veikalsKastesChanges$, this._veikals$,
+    ]).pipe(
+      map(([kastes, veikals]) => ({ ...veikals, kastes })),
     );
   }
 
@@ -57,8 +71,16 @@ export class VeikalsEditComponent implements OnInit {
   readonly colorNames = COLORS;
 
   ngOnInit(): void {
-    this.valueChanges.subscribe(val => console.log(val));
-    this.errors.subscribe(err => console.log(err));
+    this.valueChanges.pipe(
+      takeUntil(this.destroy$),
+    ).subscribe(val => this.activeVeikals.veikalsUpdate = val);
+    this.errors.pipe(
+      takeUntil(this.destroy$),
+    ).subscribe(err => this.activeVeikals.validationErrors = err);
+  }
+
+  ngOnDestroy(): void {
+    this._veikals$.complete();
   }
 
   boxTotals(val: VeikalsBox): number {
@@ -72,7 +94,7 @@ export class VeikalsEditComponent implements OnInit {
     }));
   }
 
-  private colorTotals(veikals: VeikalsBox[]): { [key in Colors]: number } {
+  private colorTotals(veikals: VeikalsBox[]): { [key in Colors]: number; } {
     const tot: { [key in Colors]: number } = Object.assign({}, ...COLORS.map(col => ({ [col]: 0 })));
     for (const box of veikals) {
       for (const color of COLORS) {

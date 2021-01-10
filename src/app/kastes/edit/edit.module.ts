@@ -10,6 +10,8 @@ import { KastesCommonModule } from '../common/kastes-common.module';
 import { PakosanasSarakstsComponent } from './pakosanas-saraksts/pakosanas-saraksts.component';
 import { TotalsComponent } from './pakosanas-saraksts/totals/totals.component';
 import { VeikalsEditComponent } from './pakosanas-saraksts/veikals-edit/veikals-edit.component';
+import { ActiveVeikalsDirective } from './pakosanas-saraksts/active-veikals.directive';
+import { PlusSignPipe } from './services/plus-sign.pipe';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,9 @@ import { VeikalsEditComponent } from './pakosanas-saraksts/veikals-edit/veikals-
     JobInfoComponent,
     PakosanasSarakstsComponent,
     TotalsComponent,
-    VeikalsEditComponent
+    VeikalsEditComponent,
+    ActiveVeikalsDirective,
+    PlusSignPipe
   ],
   imports: [
     CommonModule,

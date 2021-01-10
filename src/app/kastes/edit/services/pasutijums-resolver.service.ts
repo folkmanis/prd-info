@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { Observable, of } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { RetrieveFn, SimpleFormResolverService } from 'src/app/library/simple-form';
 import { KastesJob } from 'src/app/interfaces';
 import { PasutijumiService } from '../../services/pasutijumi.service';
@@ -23,7 +24,6 @@ export class PasutijumsResolverService implements Resolve<KastesJob> {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<KastesJob> | Observable<never> | undefined {
     const id: number = +route.paramMap.get('id');
     return this.simpleResolver.retrieve(state, this.retrieveFnFactory(id));
-
   }
 
 }
