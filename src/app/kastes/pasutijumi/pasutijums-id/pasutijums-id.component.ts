@@ -13,7 +13,7 @@ import { JobFormSource } from '../services/job-form-source';
 import { IFormGroup } from '@rxweb/types';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DeletedSnackbarComponent } from './deleted-snackbar/deleted-snackbar.component';
-import { PasutijumiResolverService } from '../services/pasutijumi-resolver.service';
+import { SimpleFormResolverService } from 'src/app/library/simple-form';
 
 @Component({
   selector: 'app-pasutijums-id',
@@ -32,7 +32,7 @@ export class PasutijumsIdComponent implements CanComponentDeactivate {
     private pasutijumiService: PasutijumiService,
     private confirmationDialog: ConfirmationDialogService,
     private snack: MatSnackBar,
-    private resolver: PasutijumiResolverService,
+    private resolver: SimpleFormResolverService<KastesJob>,
     private route: ActivatedRoute,
     private router: Router,
   ) { }

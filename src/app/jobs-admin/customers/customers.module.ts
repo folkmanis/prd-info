@@ -2,12 +2,21 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LibraryModule } from 'src/app/library/library.module';
 
-import { SimpleFormModule } from 'src/app/library/simple-form';
+import { RetrieveFn, SimpleFormModule } from 'src/app/library/simple-form';
 
 import { CustomersListComponent } from './customers-list/customers-list.component';
 import { CustomerEditComponent } from './customer-edit/customer-edit.component';
-import { CustomersResolverService } from './services/customers-resolver.service';
+import { CustomersService } from 'src/app/services';
+import { Customer } from 'src/app/interfaces';
+import { EMPTY } from 'rxjs';
 
+function customerRetrieveFnFactory(srv: CustomersService): RetrieveFn<Customer> {
+  return (route) => {
+    const id: string = route.paramMap.get('id');
+    if (!id || id.length !== 24) { return EMPTY; }
+    return srv.getCustomer(id);
+  };
+}
 
 
 @NgModule({
@@ -22,7 +31,8 @@ import { CustomersResolverService } from './services/customers-resolver.service'
       path: 'customers',
       editorComponent: CustomerEditComponent,
       listComponent: CustomersListComponent,
-      resolver: CustomersResolverService,
+      resolverDeps: CustomersService,
+      retrieveFnFactory: customerRetrieveFnFactory,
     })
   ],
 

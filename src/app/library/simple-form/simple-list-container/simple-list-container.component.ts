@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, Output, TemplateRef, ViewChild, AfterViewInit } from '@angular/core';
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { Component, Input, OnDestroy, Output, TemplateRef, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
 import { IFormControl } from '@rxweb/types';
-import { FormControl } from '@angular/forms';
-import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Subject } from 'rxjs';
 
 @Component({
@@ -10,7 +10,7 @@ import { Subject } from 'rxjs';
   templateUrl: './simple-list-container.component.html',
   styleUrls: ['./simple-list-container.component.scss'],
 })
-export class SimpleListContainerComponent implements OnInit {
+export class SimpleListContainerComponent implements OnDestroy {
   @ViewChild('editor') private routerOutlet: RouterOutlet;
 
   searchControl: IFormControl<string> = new FormControl('');
@@ -46,7 +46,8 @@ export class SimpleListContainerComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
+  ngOnDestroy(): void {
+    this.activeStatusChanges.complete();
   }
 
   onActivate(): void {

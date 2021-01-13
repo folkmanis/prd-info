@@ -3,17 +3,17 @@ import { IFormArray, IFormBuilder, IFormGroup } from '@rxweb/types';
 import { FormBuilder, Validators, AsyncValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Observable, of, EMPTY, ReplaySubject } from 'rxjs';
 import { map, mergeMap, switchMap } from 'rxjs/operators';
-import { SimpleFormSource } from 'src/app/library/simple-form';
+import { SimpleFormResolverService, SimpleFormSource } from 'src/app/library/simple-form';
 import { JobService } from 'src/app/services/job.service';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
-import { PasutijumiResolverService } from './pasutijumi-resolver.service';
+
 
 export class JobFormSource extends SimpleFormSource<Omit<KastesJob, 'veikali'>> {
 
     constructor(
         fb: FormBuilder,
         private jobService: JobService,
-        private resolver: PasutijumiResolverService,
+        private resolver: SimpleFormResolverService<KastesJob>,
     ) {
         super(fb);
     }
@@ -56,7 +56,7 @@ export class JobFormSource extends SimpleFormSource<Omit<KastesJob, 'veikali'>> 
 
     updateFn(job: KastesJob): Observable<KastesJob> {
         return this.jobService.updateJob(job).pipe(
-            mergeMap(_ => this.resolver.retrieveFnFactory(job.jobId)()),
+            mergeMap(_ => this.resolver.reload()),
         );
     }
 

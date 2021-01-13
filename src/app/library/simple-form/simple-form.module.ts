@@ -1,4 +1,4 @@
-import { NgModule, ModuleWithProviders } from '@angular/core';
+import { NgModule, FactoryProvider, ModuleWithProviders, Type } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 import { LibraryModule } from 'src/app/library';
@@ -6,9 +6,10 @@ import { LibraryModule } from 'src/app/library';
 import { SimpleFormContainerComponent } from './simple-form-container/simple-form-container.component';
 import { CanDeactivateGuard } from 'src/app/library/guards/can-deactivate.guard';
 import { SimpleListContainerComponent } from './simple-list-container/simple-list-container.component';
-import { RouterModule, Routes, provideRoutes } from '@angular/router';
+import { RouterModule, Routes, provideRoutes, Router } from '@angular/router';
 import { SimpleFormModuleConfiguration } from './simple-form-module-configuration';
 import { SimpleFormLabelDirective } from './simple-form-container/simple-form-label.directive';
+import { SimpleFormResolverService, RetrieveFn } from './simple-form-resolver.service';
 
 
 @NgModule({
@@ -30,19 +31,23 @@ import { SimpleFormLabelDirective } from './simple-form-container/simple-form-la
   ]
 })
 export class SimpleFormModule {
-  static forChildren(conf: SimpleFormModuleConfiguration): ModuleWithProviders<SimpleFormModule> {
+  static forChildren<T, U>(conf: SimpleFormModuleConfiguration<T, U>): ModuleWithProviders<SimpleFormModule> {
 
     return {
       ngModule: SimpleFormModule,
       providers: [
-        conf.resolver,
+        {
+          provide: SimpleFormResolverService,
+          useFactory: (router: Router, srv: U) => new SimpleFormResolverService(router, conf.retrieveFnFactory(srv)),
+          deps: [Router, conf.resolverDeps],
+        },
         provideRoutes(this.provideRoute(conf)),
         { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
       ]
     };
   }
 
-  private static provideRoute(conf: SimpleFormModuleConfiguration): Routes {
+  private static provideRoute<T, U>(conf: SimpleFormModuleConfiguration<T, U>): Routes {
     return [
       {
         path: conf.path,
@@ -61,7 +66,7 @@ export class SimpleFormModule {
             component: conf.editorComponent,
             canDeactivate: [CanDeactivateGuard],
             resolve: {
-              value: conf.resolver,
+              value: SimpleFormResolverService,
             }
           },
         ]

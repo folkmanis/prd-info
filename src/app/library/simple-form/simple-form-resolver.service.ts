@@ -1,22 +1,31 @@
-import { Injectable } from '@angular/core';
-import { Router, RouterStateSnapshot } from '@angular/router';
+import { Inject, Injectable, InjectionToken } from '@angular/core';
+import { Router, RouterStateSnapshot, Resolve, ActivatedRouteSnapshot } from '@angular/router';
 import { EMPTY, Observable, of } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 
-export type RetrieveFn<U> = () => Observable<U | null>;
+export type RetrieveFn<U> = (route: ActivatedRouteSnapshot) => Observable<U | null>;
 
-@Injectable({ providedIn: 'any' })
-export class SimpleFormResolverService {
+interface SavedState {
+  route: ActivatedRouteSnapshot;
+  state: RouterStateSnapshot;
+}
+
+@Injectable()
+export class SimpleFormResolverService<T> implements Resolve<T> {
 
   constructor(
     private router: Router,
+    @Inject(new InjectionToken<RetrieveFn<T>>('')) private retrieveFn: RetrieveFn<T>,
   ) { }
 
-  retrieve<T>(
-    state: RouterStateSnapshot,
-    retrieveFn: RetrieveFn<T>,
-  ): Observable<T> | Observable<never> | undefined {
-    return retrieveFn().pipe(
+  private savedState: SavedState | undefined;
+
+  resolve(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<T> | Observable<never> {
+    this.savedState = { route, state };
+    return this.retrieveFn(route).pipe(
       mergeMap(cust => {
         if (cust) {
           return of(cust);
@@ -26,6 +35,12 @@ export class SimpleFormResolverService {
         }
       })
     );
+  }
+
+  reload(): Observable<T> | Observable<never> | undefined {
+    if (!this.savedState) { return EMPTY; }
+    const { route, state } = this.savedState;
+    return this.resolve(route, state);
   }
 
   private cancelNavigation(state: RouterStateSnapshot) {

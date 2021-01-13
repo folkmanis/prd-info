@@ -1,6 +1,4 @@
-import { TemplatePortal } from '@angular/cdk/portal';
-import { Template } from '@angular/compiler/src/render3/r3_ast';
-import { Component, EventEmitter, OnInit, OnDestroy, Output, Input, ContentChild, TemplateRef, QueryList, ViewContainerRef } from '@angular/core';
+import { Component, ContentChild, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
