@@ -5,12 +5,13 @@ import { KastesJob, KastesJobPartial, Veikals } from 'src/app/interfaces';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 import { KastesPreferencesService } from './kastes-preferences.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'any',
+})
 export class PasutijumiService {
   reload$: Subject<void> = new Subject();
 
   constructor(
-    private kastesPreferencesService: KastesPreferencesService,
     private prdApi: PrdApiService,
   ) { }
 

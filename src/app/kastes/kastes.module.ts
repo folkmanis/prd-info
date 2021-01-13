@@ -26,7 +26,6 @@ import { KastesMainMenuComponent } from './kastes-main-menu/kastes-main-menu.com
   ],
   providers: [
     KastesPreferencesService,
-    PasutijumiService,
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
   ]
 })

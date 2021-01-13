@@ -1,12 +1,13 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EMPTY, Observable, of, ReplaySubject, Subject } from 'rxjs';
-import { map, mapTo, mergeMap, shareReplay, take, tap } from 'rxjs/operators';
+import { map, mapTo, mergeMap, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { KastesJob, Veikals } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library';
 import { cacheWithUpdate, DestroyService } from 'src/app/library/rx';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
 import { PasutijumiService } from '../../services/pasutijumi.service';
+import { KastesJobResolverService } from '../services/kastes-job-resolver.service';
 
 const VEIKALI_DELETED_MESSAGE = 'Pakošanas saraksts izdzēsts';
 
@@ -23,6 +24,7 @@ export class PasutijumsEditComponent implements OnInit, OnDestroy {
     private prefService: KastesPreferencesService,
     private confirmationDialog: ConfirmationDialogService,
     private snack: MatSnackBar,
+    private resolver: KastesJobResolverService,
   ) { }
 
   private _veikalsUpdate$ = new Subject<Veikals>();
@@ -63,7 +65,9 @@ export class PasutijumsEditComponent implements OnInit, OnDestroy {
   onDeleteVeikali(pasutijums: number) {
     this.confirmationDialog.confirmDelete().pipe(
       mergeMap(resp => resp ? this.pasService.deleteKastes(pasutijums) : EMPTY),
-    );
+      tap(_ => this.snack.open(VEIKALI_DELETED_MESSAGE, 'OK', { duration: 3000 })),
+      switchMap(_ => this.resolver.reload()),
+    ).subscribe(job => this.onData(job));
   }
 
   private compareFn(o1: Veikals, o2: Veikals): boolean {

@@ -10,15 +10,15 @@ interface SavedState {
   state: RouterStateSnapshot;
 }
 
-@Injectable()
-export class SimpleFormResolverService<T> implements Resolve<T> {
+export abstract class SimpleFormResolverService<T> implements Resolve<T> {
 
   constructor(
     private router: Router,
-    @Inject(new InjectionToken<RetrieveFn<T>>('')) private retrieveFn: RetrieveFn<T>,
   ) { }
 
   private savedState: SavedState | undefined;
+
+  protected abstract retrieveFn: RetrieveFn<T>;
 
   resolve(
     route: ActivatedRouteSnapshot,
