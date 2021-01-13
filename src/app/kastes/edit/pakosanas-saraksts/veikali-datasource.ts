@@ -40,7 +40,7 @@ export class VeikaliDatasource implements DataSource<Veikals> {
     updateVeikals(veikals: Veikals): Observable<true | never> {
         return this._initialJob$.pipe(
             take(1),
-            mergeMap(job => this.pasService.updateOrderVeikali({ jobId: job.jobId }, [veikals])),
+            mergeMap(job => this.pasService.updateOrderVeikali([veikals])),
             mergeMap(count => count === 1 ? of(veikals) : EMPTY),
             tap(veik => this._veikalsUpdate$.next(veik)),
             mapTo(true),

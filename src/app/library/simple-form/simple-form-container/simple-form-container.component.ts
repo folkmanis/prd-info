@@ -1,8 +1,11 @@
-import { Component, EventEmitter, OnInit, OnDestroy, Output, Input } from '@angular/core';
+import { TemplatePortal } from '@angular/cdk/portal';
+import { Template } from '@angular/compiler/src/render3/r3_ast';
+import { Component, EventEmitter, OnInit, OnDestroy, Output, Input, ContentChild, TemplateRef, QueryList, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { SimpleFormSource } from '../simple-form-source';
+import { SimpleFormLabelDirective } from './simple-form-label.directive';
 
 
 @Component({
@@ -17,6 +20,13 @@ export class SimpleFormContainerComponent<T> implements OnInit, OnDestroy {
     map(data => data.value as T | undefined),
     filter(value => !!value),
   );
+
+  @ContentChild(SimpleFormLabelDirective)
+  get label(): SimpleFormLabelDirective { return this._label; }
+  set label(label: SimpleFormLabelDirective) {
+    if (label) { this._label = label; }
+  }
+  private _label: SimpleFormLabelDirective;
 
   get form() { return this.formSource.form; }
 
@@ -38,6 +48,7 @@ export class SimpleFormContainerComponent<T> implements OnInit, OnDestroy {
     this._subs.add(
       this.dataChange.subscribe(data => this.initialValue = data)
     );
+
   }
 
   onResetForm(): void {

@@ -2,7 +2,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { COLORS, Colors, ColorTotals, Veikals } from 'src/app/interfaces';
 import { KastesPreferencesService } from 'src/app/kastes/services/kastes-preferences.service';
-import { VeikalsWithTotals } from '../../services/veikals-totals';
 import { VeikalsValidationErrors } from '../../services/veikals-validation-errors';
 
 @Component({

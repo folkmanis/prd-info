@@ -42,8 +42,8 @@ export class PasutijumiService {
     );
   }
 
-  updateOrderVeikali(pas: Pick<KastesJob, 'jobId'>, veikali: Veikals[]): Observable<number> {
-    return this.prdApi.kastesOrders.updateVeikali(pas.jobId, veikali);
+  updateOrderVeikali(veikali: Veikals[]): Observable<number> {
+    return this.prdApi.kastes.updateVeikali(veikali);
   }
 
   addKastes(orderId: number, data: Veikals[]): Observable<number> {

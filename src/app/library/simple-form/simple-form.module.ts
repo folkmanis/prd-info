@@ -8,6 +8,7 @@ import { CanDeactivateGuard } from 'src/app/library/guards/can-deactivate.guard'
 import { SimpleListContainerComponent } from './simple-list-container/simple-list-container.component';
 import { RouterModule, Routes, provideRoutes } from '@angular/router';
 import { SimpleFormModuleConfiguration } from './simple-form-module-configuration';
+import { SimpleFormLabelDirective } from './simple-form-container/simple-form-label.directive';
 
 
 @NgModule({
@@ -19,11 +20,13 @@ import { SimpleFormModuleConfiguration } from './simple-form-module-configuratio
   declarations: [
     SimpleListContainerComponent,
     SimpleFormContainerComponent,
+    SimpleFormLabelDirective,
   ],
   exports: [
     RouterModule,
     SimpleListContainerComponent,
     SimpleFormContainerComponent,
+    SimpleFormLabelDirective,
   ]
 })
 export class SimpleFormModule {

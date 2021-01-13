@@ -32,6 +32,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatRadioModule } from '@angular/material/radio';
+import { PortalModule } from '@angular/cdk/portal';
 
 import { LayoutModule } from '@angular/cdk/layout';
 import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -102,6 +103,7 @@ import { BackButtonDirective } from './directives/back-button.directive';
     LayoutModule,
     ScrollingModule,
     SideButtonModule,
+    PortalModule,
   ],
   exports: [
     FormsModule,
@@ -149,6 +151,7 @@ import { BackButtonDirective } from './directives/back-button.directive';
     ScrollToTopModule,
     FilesizePipe,
     BackButtonDirective,
+    PortalModule,
   ],
 })
 export class LibraryModule { }

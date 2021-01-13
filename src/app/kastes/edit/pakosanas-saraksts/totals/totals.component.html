@@ -1,7 +1,7 @@
 <div *ngIf="colors$ | async as colors;" class="container">
     <div *ngFor="let total of totals; index as idx;" [style.color]="colors[total.color]">
         {{total.total}}
-        <span *ngIf="errors?.diff && errors.diff[total.color]">
+        <span *ngIf="errors?.diff && errors.diff[total.color]" style="color:red">
             ({{ errors.diff[total.color] | plusSign }})
         </span>
     </div>

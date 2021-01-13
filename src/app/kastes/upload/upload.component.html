@@ -1,39 +1,46 @@
-<section class="file-selection">
-    <mat-form-field>
-        <mat-label>Pasūtījums</mat-label>
-        <mat-select [formControl]="orderIdControl">
-            <mat-option *ngFor="let ordr of orders$ | async" [value]="ordr.jobId">
-                {{ordr.name}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-    <div>
-        <app-select-file (csvFile)="onCsvDrop($event)" (xlsFile)="onXlsDrop($event)"></app-select-file>
-    </div>
-</section>
-<section *ngIf="colors$ | async as colors;">
-    <p>
-        <app-color-totals [colorTotals]="plannedTotals$ | async">
-            Plānotie apjomi (paciņas):
-        </app-color-totals>
-    </p>
-    <ng-container *ngIf="adresesBox$ | async as adresesBox">
+<div class="container">
+    <!-- Faila nomešana -->
+    <section class="file-selection">
+        <mat-form-field>
+            <mat-label>Pasūtījums</mat-label>
+            <mat-select [formControl]="orderIdControl">
+                <mat-option *ngFor="let ordr of orders$ | async" [value]="ordr.jobId">
+                    {{ordr.name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <div>
+            <app-select-file (csvFile)="onCsvDrop($event)" (xlsFile)="onXlsDrop($event)"></app-select-file>
+        </div>
+    </section>
+    <!-- Kopējie daudzumi -->
+    <section *ngIf="colors$ | async as colors;" class="totals">
         <p>
-            <app-color-totals [colorTotals]="adresesBox.totals.colorTotals">
-                Apjomi sarakstā (paciņas):
+            <app-color-totals [colorTotals]="plannedTotals$ | async">
+                Plānotie apjomi (paciņas):
             </app-color-totals>
         </p>
-        <p>
-            Adreses: {{adresesBox.totals.adrCount}} |
-            Kastes: {{adresesBox.totals.boxCount}}
-        </p>
-        <p>
-            <button mat-raised-button color="primary" (click)="onSave(adresesBox)">
+        <ng-container *ngIf="adresesBox$ | async as adresesBox">
+            <p>
+                <app-color-totals [colorTotals]="adresesBox.totals.colorTotals">
+                    Apjomi sarakstā (paciņas):
+                </app-color-totals>
+            </p>
+            <p>
+                Adreses: {{adresesBox.totals.adrCount}} |
+                Kastes: {{adresesBox.totals.boxCount}}
+            </p>
+        </ng-container>
+        <div *ngIf="adresesBox$ | async as adresesBox">
+            <button mat-raised-button color="primary" (click)="onSave(adresesBox)" [disabled]="!orderIdControl.valid">
                 SAGLABĀT
             </button>
-        </p>
-    </ng-container>
-</section>
-
-<app-upload-adreses *ngIf="inputData$ | async as inputData;" [data]="inputData" (adresesBox)="onAdresesBox($event)">
-</app-upload-adreses>
+        </div>
+    </section>
+    <!-- Tabula -->
+    <section class="adreses" cdk-scrollable>
+        <app-upload-adreses *ngIf="inputData$ | async as inputData;" [data]="inputData"
+            (adresesBox)="onAdresesBox($event)">
+        </app-upload-adreses>
+    </section>
+</div>

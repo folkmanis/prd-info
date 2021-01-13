@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, Inject, OnDestroy } from '@angular/core';
 import { FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { VeikalsWithTotals } from '../../services/veikals-totals';
 import { IFormBuilder, IFormGroup, IFormArray } from '@rxweb/types';
 import { VeikalsBox, Colors, COLORS, MAX_ITEMS_BOX, Veikals } from 'src/app/interfaces';
 import { KastesPreferencesService } from '../../../services/kastes-preferences.service';

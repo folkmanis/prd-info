@@ -1,3 +1,18 @@
+.container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    &>div {
+        margin: 8px;
+    }
+
+    &>div:last-child {
+        overflow: auto;
+        margin: 0;
+    }
+}
+
 table {
     width: 100%;
 }

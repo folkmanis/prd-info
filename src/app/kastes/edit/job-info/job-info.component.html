@@ -1,15 +1,22 @@
 <div *ngIf="job">
-    <h2>
-       {{job.jobId}} / {{job.name}}
-    </h2>
-
-    Saņemts {{job.receivedDate | date:'mediumDate'}}
-    Jānodod {{job.dueDate | date:'mediumDate'}}
-
-    <div>
-        <app-color-totals [colorTotals]="job.totals.colorTotals">
+    <p>
+        Saņemts {{job.receivedDate | date:'mediumDate'}}
+    </p>
+    <p>
+        Jānodod {{job.dueDate | date:'mediumDate'}}
+    </p>
+    <p>
+        <app-color-totals [colorTotals]="job.apjomsPlanned">
             Paredzētie skaiti
         </app-color-totals>
-    </div>
+    </p>
+    <p>
+        <button mat-raised-button (click)="activeJob.next(job.jobId)">
+            NOTEIKT KĀ AKTĪVO
+        </button>
+        <button mat-raised-button (click)="deleteKastes.next(job.jobId)" [disabled]="job.jobStatus.generalStatus >= 30">
+            IZDZĒST PAKOŠANAS SARAKSTU
+        </button>
 
+    </p>
 </div>

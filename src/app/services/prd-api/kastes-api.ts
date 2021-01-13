@@ -55,6 +55,13 @@ export class KastesApi extends ApiBase<Kaste> {
         );
     }
 
+    updateVeikali(veikali: Veikals[]): Observable<number> {
+        return this.http.post<KasteResponse>(this.path + '/veikali', { veikali }, new HttpOptions())
+            .pipe(
+                map(resp => resp.modifiedCount || 0),
+            );
+    }
+
     deleteVeikali(options: { pasutijumsId: number; }): Observable<number> {
         return this.http.delete<KasteResponse>(
             this.path,
