@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { EMPTY, Observable, of, ReplaySubject, Subject } from 'rxjs';
-import { map, mapTo, mergeMap, shareReplay, switchMap, take, tap } from 'rxjs/operators';
+import { combineLatest, EMPTY, Observable, of, ReplaySubject, Subject } from 'rxjs';
+import { map, mapTo, mergeMap, pluck, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { KastesJob, Veikals } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library';
 import { cacheWithUpdate, DestroyService } from 'src/app/library/rx';
@@ -28,27 +28,28 @@ export class PasutijumsEditComponent implements OnInit, OnDestroy {
   ) { }
 
   private _veikalsUpdate$ = new Subject<Veikals>();
-  private _veikaliInitial$ = new ReplaySubject<Veikals[]>(1);
 
-  veikali$: Observable<Veikals[]> = this._veikaliInitial$.pipe(
-    cacheWithUpdate(this._veikalsUpdate$, this.compareFn),
+  jobInit$ = new ReplaySubject<KastesJob>(1);
+  job$: Observable<KastesJob> = this.jobInit$.pipe(
+    mergeMap(job => combineLatest([
+      of(job),
+      of(job.veikali).pipe(
+        cacheWithUpdate(this._veikalsUpdate$, this.compareFn),
+      )
+    ])),
+    map(([job, veikali]) => ({ ...job, veikali })),
     shareReplay(1),
   );
+  veikali$: Observable<Veikals[]> = this.job$.pipe(pluck('veikali'));
 
-  kastesJobOmitVeikali$ = new ReplaySubject<Omit<KastesJob, 'veikali'>>(1);
-
-  onData(data: KastesJob): void {
-    this.kastesJobOmitVeikali$.next(data);
-    this._veikaliInitial$.next(data.veikali || []);
-    console.log(data.totals);
-  }
+  dataUpdate$ = new Subject<KastesJob>();
 
   ngOnInit(): void {
   }
 
   ngOnDestroy(): void {
-    this._veikaliInitial$.complete();
     this._veikalsUpdate$.complete();
+    this.dataUpdate$.complete();
   }
 
   onUpdateVeikals(veikals: Veikals) {
@@ -62,12 +63,16 @@ export class PasutijumsEditComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
-  onDeleteVeikali(pasutijums: number) {
-    this.confirmationDialog.confirmDelete().pipe(
-      mergeMap(resp => resp ? this.pasService.deleteKastes(pasutijums) : EMPTY),
-      tap(_ => this.snack.open(VEIKALI_DELETED_MESSAGE, 'OK', { duration: 3000 })),
-      switchMap(_ => this.resolver.reload()),
-    ).subscribe(job => this.onData(job));
+  onDeleteVeikali() {
+    this.job$.pipe(
+      take(1),
+      pluck('jobId'),
+      switchMap(jobid => this.confirmationDialog.confirmDelete().pipe(
+        mergeMap(resp => resp ? this.pasService.deleteKastes(jobid) : EMPTY),
+        tap(_ => this.snack.open(VEIKALI_DELETED_MESSAGE, 'OK', { duration: 3000 })),
+        switchMap(_ => this.resolver.reload()),
+      )),
+    ).subscribe(job => this.dataUpdate$.next(job));
   }
 
   private compareFn(o1: Veikals, o2: Veikals): boolean {
