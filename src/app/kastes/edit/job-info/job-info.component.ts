@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { KastesJob } from 'src/app/interfaces';
+import { ColorTotals, KastesJob, Veikals } from 'src/app/interfaces';
+import { colorTotalsFromVeikali, colorTotalsFromVeikalsBoxs } from '../../common';
 
 type KastesJobInfo = Pick<KastesJob, 'jobId' | 'receivedDate' | 'dueDate' | 'apjomsPlanned' | 'jobStatus'>;
 
@@ -10,11 +11,20 @@ type KastesJobInfo = Pick<KastesJob, 'jobId' | 'receivedDate' | 'dueDate' | 'apj
 })
 export class JobInfoComponent implements OnInit {
 
-  @Input() job: KastesJobInfo | undefined;
+  @Input() get job(): KastesJob | undefined { return this._job; }
+  set job(job: KastesJob | undefined) {
+    this._job = job;
+    this.colorTotals = colorTotalsFromVeikali(job?.veikali || []);
+    this.plannedTotals = job?.apjomsPlanned.sort((a, b) => a.color.localeCompare(b.color)) || [];
+  }
+  private _job: KastesJob | undefined;
+
+  colorTotals: ColorTotals[] = [];
+  plannedTotals: ColorTotals[] = [];
 
   @Output() activeJob = new EventEmitter<number>();
 
-  @Output() deleteKastes = new EventEmitter<number>();
+  @Output() deleteVeikali = new EventEmitter<number>();
 
   constructor() { }
 
