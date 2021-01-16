@@ -3,6 +3,7 @@ import { map } from 'rxjs/operators';
 import { COLORS, Colors, ColorTotals, Veikals } from 'src/app/interfaces';
 import { KastesPreferencesService } from 'src/app/kastes/services/kastes-preferences.service';
 import { VeikalsValidationErrors } from '../../services/veikals-validation-errors';
+import { colorTotalsFromVeikalsBoxs } from '../../../common';
 
 @Component({
   selector: 'app-totals',
@@ -16,7 +17,7 @@ export class TotalsComponent {
   }
   set veikals(veikals: Veikals) {
     this._veikals = veikals;
-    this.totals = this.veikalsTotals(this.veikals);
+    this.totals = colorTotalsFromVeikalsBoxs(veikals.kastes);
     this.veikalsTotal = this.totals.reduce((acc, curr) => acc + curr.total, 0);
   }
   private _veikals: Veikals;
@@ -40,14 +41,5 @@ export class TotalsComponent {
   colors$ = this.prefsServices.preferences$.pipe(
     map(pref => pref.colors),
   );
-
-  private veikalsTotals(veik: Veikals): ColorTotals[] {
-    const tot = new Map<Colors, number>(COLORS.map(col => [col, 0]));
-    for (const k of veik.kastes) {
-      COLORS.forEach(c => tot.set(c, tot.get(c) + k[c]));
-    }
-    return [...tot.entries()].map(([color, total]) => ({ color, total }));
-  }
-
 
 }

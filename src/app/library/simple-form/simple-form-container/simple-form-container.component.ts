@@ -1,7 +1,7 @@
 import { Component, ContentChild, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { merge, Observable, Subject, Subscription } from 'rxjs';
+import { filter, last, map, shareReplay, take } from 'rxjs/operators';
 import { SimpleFormSource } from '../simple-form-source';
 import { SimpleFormLabelDirective } from './simple-form-label.directive';
 
@@ -14,9 +14,18 @@ import { SimpleFormLabelDirective } from './simple-form-label.directive';
 export class SimpleFormContainerComponent<T> implements OnInit, OnDestroy {
   @Input() formSource: SimpleFormSource<T> | undefined;
 
-  @Output() dataChange: Observable<T> = this.route.data.pipe(
+  @Input() set data(data: T) {
+    if (data) { this._data$.next(data); }
+  }
+  private _data$ = new Subject<T>();
+
+  private _routerData$ = this.route.data.pipe(
     map(data => data.value as T | undefined),
     filter(value => !!value),
+  );
+
+  @Output() dataChange: Observable<T> = merge(this._data$, this._routerData$).pipe(
+    shareReplay(1),
   );
 
   @ContentChild(SimpleFormLabelDirective)
@@ -28,13 +37,6 @@ export class SimpleFormContainerComponent<T> implements OnInit, OnDestroy {
 
   get form() { return this.formSource.form; }
 
-  set initialValue(value: Partial<T>) {
-    this._initialValue = value;
-    this.formSource?.initValue(value, { emitEvent: false });
-  }
-  get initialValue(): Partial<T> { return this._initialValue; }
-  private _initialValue: Partial<T>;
-
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -44,17 +46,20 @@ export class SimpleFormContainerComponent<T> implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this._subs.add(
-      this.dataChange.subscribe(data => this.initialValue = data)
+      this.dataChange.subscribe(data => this.formSource?.initValue(data, { emitEvent: false }))
     );
 
   }
 
   onResetForm(): void {
-    this.formSource?.initValue(this.initialValue, { emitEvent: false });
+    this.dataChange.pipe(
+      take(1),
+    ).subscribe(data => this.formSource?.initValue(data, { emitEvent: false }));
   }
 
   ngOnDestroy(): void {
     this._subs.unsubscribe();
+    this._data$.complete();
   }
 
   onSave() {
@@ -62,11 +67,13 @@ export class SimpleFormContainerComponent<T> implements OnInit, OnDestroy {
 
     const value = this.form.value;
     if (!this.formSource.isNew) {
-      this.formSource.updateFn(value).subscribe(res => {
-        this.initialValue = res;
-      });
+      this.formSource.updateFn(value).pipe(
+        last(),
+      ).subscribe(res => this._data$.next(res));
     } else {
-      this.formSource.insertFn(value).subscribe(res => {
+      this.formSource.insertFn(value).pipe(
+        last(),
+      ).subscribe(res => {
         this.form.markAsPristine();
         this.router.navigate(['..', res], { relativeTo: this.route });
       });

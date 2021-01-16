@@ -6,15 +6,20 @@
         Jānodod {{job.dueDate | date:'mediumDate'}}
     </p>
     <p>
-        <app-color-totals [colorTotals]="job.apjomsPlanned">
+        <app-color-totals [colorTotals]="plannedTotals">
             Paredzētie skaiti
+        </app-color-totals>
+    </p>
+    <p>
+        <app-color-totals [colorTotals]="colorTotals">
+            Skaiti pēc saraksta
         </app-color-totals>
     </p>
     <p>
         <button mat-raised-button (click)="activeJob.next(job.jobId)">
             NOTEIKT KĀ AKTĪVO
         </button>
-        <button mat-raised-button (click)="deleteKastes.next(job.jobId)" [disabled]="job.jobStatus.generalStatus >= 30">
+        <button mat-raised-button (click)="deleteVeikali.next(job.jobId)" [disabled]="job.jobStatus.generalStatus >= 30">
             IZDZĒST PAKOŠANAS SARAKSTU
         </button>
 
