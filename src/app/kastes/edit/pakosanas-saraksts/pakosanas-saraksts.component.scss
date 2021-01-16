@@ -34,9 +34,12 @@ table {
 }
 
 .mat-column-buttons {
-    width: 108px;
+    // vertical-align: top;
     & > div {
+        height: 100%;
         display: flex;
+        justify-content: flex-end;
+        padding-right: 16px;
     }
 }
 

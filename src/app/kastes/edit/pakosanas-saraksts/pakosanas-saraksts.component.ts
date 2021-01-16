@@ -1,10 +1,9 @@
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Subject, ReplaySubject, Observable, BehaviorSubject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { KastesJob, Veikals, COLORS, Colors, ColorTotals } from 'src/app/interfaces';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
-import { PasutijumiService } from '../../services/pasutijumi.service';
-import { VeikaliDatasource } from './veikali-datasource';
 
 @Component({
   selector: 'app-pakosanas-saraksts',
@@ -17,6 +16,12 @@ export class PakosanasSarakstsComponent implements OnInit {
     if (!veikali) { return; }
     this.dataSource$.next(veikali);
   }
+
+  @Input() set disabled(disabled: any) {
+    this._disabled = coerceBooleanProperty(disabled);
+  }
+  get disabled(): any { return this._disabled; }
+  private _disabled = false;
 
   @Output() veikalsChange = new EventEmitter<Veikals>();
 
@@ -34,7 +39,8 @@ export class PakosanasSarakstsComponent implements OnInit {
     map(veikali => this.kastesTotals(veikali)),
   );
 
-  displayedColumns = ['kods', 'adrese', 'buttons', 'pakas'];
+  displayedColumnsTop = ['kods', 'adrese', 'pakas'];
+  displayedColumnsBottom = ['spacer', 'buttons', 'editor'];
 
   edited: Veikals | undefined;
 
@@ -50,7 +56,7 @@ export class PakosanasSarakstsComponent implements OnInit {
     for (const v of veik) {
       v.kastes.forEach(k => totM.set(k.total, (totM.get(k.total) || 0) + 1));
     }
-    return [...totM.entries()];
+    return [...totM.entries()].sort((a, b) => a[0] - b[0]);
   }
 
 }
