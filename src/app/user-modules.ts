@@ -20,7 +20,6 @@ export const USER_MODULES: UserModule[] = [
             { name: 'Pakošanas saraksts', route: 'selector', description: 'Darbs ar iepakojumiem' },
             { name: 'Saraksta pievienošana', route: 'upload', description: 'Jauna pakošanas saraksta izveide no pakošanas tabulas' },
             { name: 'Saraksta labošana', route: 'edit', description: 'Pakošanas saraksta un sadalījuma pa kastēm labošana' },
-            { name: 'Pasūtījumi', route: 'pasutijumi', description: 'Pakošanas sarakstu dzēšana, datubāzes optimizācija' },
         ]
     },
     {
