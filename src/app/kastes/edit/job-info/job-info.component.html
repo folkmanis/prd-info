@@ -16,10 +16,16 @@
         </app-color-totals>
     </p>
     <p>
+        <app-kastes-totals [totals]="kastesTotals">
+            Sadalījums pa kastēm
+        </app-kastes-totals>
+    </p>
+    <p>
         <button mat-raised-button (click)="activeJob.next(job.jobId)">
             NOTEIKT KĀ AKTĪVO
         </button>
-        <button mat-raised-button (click)="deleteVeikali.next(job.jobId)" [disabled]="job.jobStatus.generalStatus >= 30">
+        <button mat-raised-button (click)="deleteVeikali.next(job.jobId)"
+            [disabled]="job.jobStatus.generalStatus >= 30 || !job.veikali?.length">
             IZDZĒST PAKOŠANAS SARAKSTU
         </button>
 

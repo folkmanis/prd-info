@@ -1,6 +1,6 @@
 import { AppHttpResponseBase } from 'src/app/library/http';
 
-export const COLORS = ['rose', 'yellow', 'white'] as const;
+export const COLORS = ['rose', 'white', 'yellow'] as const;
 
 export const MAX_ITEMS_BOX = 5;
 

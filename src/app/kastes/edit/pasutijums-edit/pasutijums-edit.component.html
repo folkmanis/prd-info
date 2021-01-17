@@ -1,6 +1,6 @@
 <app-simple-form-container (dataChange)="jobInit$.next($event)" [data]="dataUpdate$ | async">
 
-    <mat-tab-group *ngIf="job$ | async as job" [selectedIndex]="1">
+    <mat-tab-group *ngIf="job$ | async as job" [selectedIndex]="0">
         <mat-tab label="Informācija">
             <app-job-info [job]="job" (activeJob)="onSetAsActive($event)"
                 (deleteVeikali)="onDeleteVeikali()"></app-job-info>

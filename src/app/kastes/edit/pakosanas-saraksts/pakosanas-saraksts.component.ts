@@ -4,6 +4,7 @@ import { Subject, ReplaySubject, Observable, BehaviorSubject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { KastesJob, Veikals, COLORS, Colors, ColorTotals } from 'src/app/interfaces';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
+import { kastesTotalsFromVeikali } from '../../common';
 
 @Component({
   selector: 'app-pakosanas-saraksts',
@@ -36,7 +37,7 @@ export class PakosanasSarakstsComponent implements OnInit {
   dataSource$ = new BehaviorSubject<Veikals[]>([]);
 
   kastesTotals$: Observable<[number, number][]> = this.dataSource$.pipe(
-    map(veikali => this.kastesTotals(veikali)),
+    map(veikali => kastesTotalsFromVeikali(veikali)),
   );
 
   displayedColumnsTop = ['kods', 'adrese', 'pakas'];
@@ -49,14 +50,6 @@ export class PakosanasSarakstsComponent implements OnInit {
 
   onSaveVeikals(veikals: Veikals) {
     this.veikalsChange.next(veikals);
-  }
-
-  private kastesTotals(veik: Veikals[]): [number, number][] {
-    const totM = new Map<number, number>();
-    for (const v of veik) {
-      v.kastes.forEach(k => totM.set(k.total, (totM.get(k.total) || 0) + 1));
-    }
-    return [...totM.entries()].sort((a, b) => a[0] - b[0]);
   }
 
 }
