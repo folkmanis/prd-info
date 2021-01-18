@@ -4,10 +4,13 @@
     flex-direction: column;
 }
 
+section {
+    padding: 16px;
+}
+
 section.file-selection {
     flex: 0 0;
     display: flex;
-    align-items: baseline;
     & .mat-form-field {
         flex: 1 0 160px;
         margin-right: 16px;
@@ -17,16 +20,8 @@ section.file-selection {
     }
 }
 
-.button-bar {
-    padding: 16px;
-}
-
-.button-bar > *:not(:first-child) {
+section.button-bar > button:not(:first) {
     margin-left: 16px;
-}
-
-section {
-    padding: 16px;
 }
 
 section.totals {

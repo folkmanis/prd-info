@@ -1,12 +1,10 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
-import { KastesPreferencesService } from '../../services/kastes-preferences.service';
+import { ReplaySubject } from 'rxjs';
 import { AdresesBox } from './adrese-box';
 import { AdresesCsv } from './adrese-csv';
 
-@Injectable()
+@Injectable({ providedIn: 'any' })
 export class UploadService {
   private adresesCsv: AdresesCsv;
 

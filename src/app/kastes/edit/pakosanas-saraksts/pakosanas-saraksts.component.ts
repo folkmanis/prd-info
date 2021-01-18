@@ -26,7 +26,7 @@ export class PakosanasSarakstsComponent implements OnInit {
 
   @Output() veikalsChange = new EventEmitter<Veikals>();
 
-  colors = COLORS;
+  readonly colors = COLORS;
 
   constructor(
     private prefsServices: KastesPreferencesService,

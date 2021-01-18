@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { combineLatest, Observable } from 'rxjs';
@@ -7,6 +7,7 @@ import { AdresesBox } from '../services/adrese-box';
 import { ChipsService } from '../services/chips.service';
 import { DragData } from '../services/drag-drop.directive';
 import { UploadService } from '../services/upload.service';
+import { CdkPortal } from '@angular/cdk/portal';
 
 interface ColumnSelection {
   columns: boolean[];
@@ -21,8 +22,10 @@ interface ColumnSelection {
 })
 export class UploadAdresesComponent implements OnInit {
 
+  @ViewChildren(CdkPortal) buttons: QueryList<CdkPortal>;
+
   @Input('data') set data(data: Array<string | number>[]) {
-    this.uploadService.loadData(data);
+    this.uploadService.loadData(data || []);
     this.chipsService.resetChips();
   }
 
@@ -36,7 +39,6 @@ export class UploadAdresesComponent implements OnInit {
   chkColCount$: Observable<number>;
   checkSkaitiPakas = new FormControl(true);
   rowSelection = this.uploadService.rowSelection;
-  tableComplete = false;
 
   @Output() adresesBox: Observable<AdresesBox | null> = combineLatest([
     this.chipsService.chips$,

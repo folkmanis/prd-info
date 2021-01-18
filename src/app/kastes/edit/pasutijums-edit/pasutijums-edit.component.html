@@ -2,13 +2,14 @@
 
     <mat-tab-group *ngIf="job$ | async as job" [selectedIndex]="0">
         <mat-tab label="Informācija">
-            <app-job-info [job]="job" (activeJob)="onSetAsActive($event)"
-                (deleteVeikali)="onDeleteVeikali()"></app-job-info>
+            <app-job-info [job]="job" (activeJob)="onSetAsActive($event)" (deleteVeikali)="onDeleteVeikali()">
+            </app-job-info>
         </mat-tab>
 
-        <mat-tab label="Pakošanas saraksts">
+        <mat-tab label="Pakošanas saraksts" [disabled]="!job.veikali?.length">
             <ng-template matTabContent>
-                <app-pakosanas-saraksts [veikali]="veikali$ | async" [disabled]="job.jobStatus?.generalStatus >= 30" (veikalsChange)="onUpdateVeikals($event)">
+                <app-pakosanas-saraksts [veikali]="veikali$ | async" [disabled]="job.jobStatus?.generalStatus >= 30"
+                    (veikalsChange)="onUpdateVeikals($event)">
                 </app-pakosanas-saraksts>
             </ng-template>
         </mat-tab>
@@ -16,7 +17,7 @@
 
     <ng-template *ngIf="job$ | async as job;" appSimpleFormLabel>
         <h2>
-            {{job.jobId}} / {{job.name}}
+            {{job.jobId}} / {{job.name}} // {{job.jobStatus?.generalStatus}}
         </h2>
     </ng-template>
 

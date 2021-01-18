@@ -1,26 +1,28 @@
 <div [formGroup]="checkCols">
-    <div class="button-bar">
-        <button mat-raised-button (click)="onAddEmptyColumn()">Pievienot tukšu sleju</button>
-        <ng-container *ngIf="chkColCount$ | async as chkd;">
-            <button mat-raised-button (click)="onDeleteColumns(checkCols.controls.columns.value)" [disabled]="!chkd">Dzēst slejas</button>
-            <button mat-raised-button (click)="onJoinColumns(checkCols.controls.columns.value)" [disabled]="chkd < 2">Apvienot slejas</button>
-        </ng-container>
-        <mat-checkbox [formControl]="checkSkaitiPakas">Jādala ar 500</mat-checkbox>
-    </div>
 
-    <div class="button-bar">
+    <button *cdkPortal class="button-row" mat-raised-button (click)="onAddEmptyColumn()">Pievienot tukšu sleju</button>
+    <button *cdkPortal class="button-row" mat-raised-button (click)="onDeleteColumns(checkCols.controls.columns.value)"
+        [disabled]="!(chkColCount$ | async)">Dzēst slejas</button>
+    <button *cdkPortal class="button-row" mat-raised-button (click)="onJoinColumns(checkCols.controls.columns.value)"
+        [disabled]="(chkColCount$ | async) < 2">Apvienot slejas</button>
+    <mat-checkbox *cdkPortal class="button-row" [formControl]="checkSkaitiPakas">Jādala ar 500</mat-checkbox>
+
+    <div class="chips-bar">
         <mat-chip-list>
-            <mat-chip *ngFor="let col of chipsAvailable$ | async" color="primary" [appDragable]="col" dragSource="primary">
+            <mat-chip *ngFor="let col of chipsAvailable$ | async" color="primary" [appDragable]="col"
+                dragSource="primary">
                 {{col}}
             </mat-chip>
         </mat-chip-list>
     </div>
 
-    <table mat-table class="app-table" *ngIf="columns$ | async as columns;" [dataSource]="datasource$" formArrayName="columns">
+    <table mat-table class="app-table" *ngIf="columns$ | async as columns;" [dataSource]="datasource$"
+        formArrayName="columns">
         <ng-container matColumnDef="selected">
             <th mat-header-cell *matHeaderCellDef></th>
             <td mat-cell *matCellDef="let row; index as idx;">
-                <mat-checkbox (click)="$event.stopPropagation()" (change)="rowSelection.toggle(idx)" [checked]="rowSelection.isSelected(idx)">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="rowSelection.toggle(idx)"
+                    [checked]="rowSelection.isSelected(idx)">
                 </mat-checkbox>
             </td>
         </ng-container>
@@ -30,8 +32,7 @@
                     <div class="drop-target" appDragDrop (dropEmitter)="onDrop($event, col)">
                         <mat-chip-list>
                             <mat-chip *ngIf="isChipAssigned(assignement, col) as chipName;" color="primary"
-                                [appDragable]="chipName" removable [dragSource]="col"
-                                (removed)="onChipRemove(col)">
+                                [appDragable]="chipName" removable [dragSource]="col" (removed)="onChipRemove(col)">
                                 {{chipName}}
                                 <mat-icon matChipRemove>cancel</mat-icon>
                             </mat-chip>

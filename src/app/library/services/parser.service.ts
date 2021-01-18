@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Parser } from '../classes/parser';
 
-@Injectable()
+@Injectable({ providedIn: 'any' })
 export class ParserService {
 
   constructor() { }

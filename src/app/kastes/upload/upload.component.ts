@@ -1,16 +1,17 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { EMPTY, Observable, Subject } from 'rxjs';
 import { map, shareReplay, switchMap } from 'rxjs/operators';
 import { ColorTotals, KastesJobPartial } from 'src/app/interfaces';
 import { ParserService } from 'src/app/library';
 import * as XLSX from 'xlsx';
-import { PasutijumiService } from '../services/pasutijumi.service';
-import { AdresesBox } from './services/adrese-box';
 import { KastesPreferencesService } from '../services/kastes-preferences.service';
+import { PasutijumiService } from '../services/pasutijumi.service';
 import { EndDialogComponent } from './end-dialog/end-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
-
+import { AdresesBox } from './services/adrese-box';
+import { sortColorTotals } from '../common';
 
 @Component({
   selector: 'app-upload',
@@ -26,6 +27,7 @@ export class UploadComponent implements OnInit, OnDestroy {
     switchMap((id: string) => this.pasutijumiService.getOrder(+id)),
     map(order => order.apjomsPlanned || []),
     map(plan => plan.map(pl => ({ ...pl, total: pl.total * 2 }))),
+    map(totals => sortColorTotals(totals)),
     shareReplay(1),
   );
 
@@ -36,6 +38,7 @@ export class UploadComponent implements OnInit, OnDestroy {
     private parserService: ParserService,
     private preferences: KastesPreferencesService,
     private matDialog: MatDialog,
+    private router: Router,
   ) { }
 
   orders$: Observable<KastesJobPartial[]> = this.pasutijumiService.getKastesJobs({ veikali: false });
@@ -44,7 +47,7 @@ export class UploadComponent implements OnInit, OnDestroy {
     map(pref => pref.colors),
   );
 
-  adresesBox$ = new Subject<AdresesBox | null>();
+  adresesBox: AdresesBox | undefined;
 
   ngOnInit() {
   }
@@ -82,27 +85,16 @@ export class UploadComponent implements OnInit, OnDestroy {
   }
 
   onSave(adrBox: AdresesBox) {
-    this.savePasutijums(this.orderIdControl.value, adrBox)
-      .subscribe();
-  }
-
-  private savePasutijums(orderId: number, adrBox: AdresesBox): Observable<number> {
-    return this.pasutijumiService.addKastes(
+    const orderId = this.orderIdControl.value;
+    if (!orderId) { return; }
+    this.pasutijumiService.addKastes(
       orderId,
-      adrBox.uploadRow(orderId),
+      adrBox.uploadRows(orderId),
     ).pipe(
-      switchMap(affectedRows => (this.preferences.updateUserPreferences({ pasutijums: orderId }) || EMPTY)
-        .pipe(
-          switchMap(_ => this.matDialog.open(EndDialogComponent, { data: affectedRows }).afterClosed()),
-          map(_ => affectedRows)
-        )
-      ),
-    );
-  }
-
-  onAdresesBox(adr: AdresesBox) {
-    console.log(adr);
-    this.adresesBox$.next(adr);
+      switchMap(affectedRows => this.matDialog.open(EndDialogComponent, { data: affectedRows }).afterClosed()),
+      switchMap(_ => this.preferences.updateUserPreferences({ pasutijums: orderId }) || EMPTY),
+    )
+      .subscribe(_ => this.router.navigate(['kastes', 'edit', orderId]));
   }
 
 }

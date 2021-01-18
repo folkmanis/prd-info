@@ -20,27 +20,27 @@
                 Plānotie apjomi (paciņas):
             </app-color-totals>
         </p>
-        <ng-container *ngIf="adresesBox$ | async as adresesBox">
-            <p>
-                <app-color-totals [colorTotals]="adresesBox.totals.colorTotals">
-                    Apjomi sarakstā (paciņas):
-                </app-color-totals>
-            </p>
-            <p>
-                Adreses: {{adresesBox.totals.adrCount}} |
-                Kastes: {{adresesBox.totals.boxCount}}
-            </p>
-        </ng-container>
-        <div *ngIf="adresesBox$ | async as adresesBox">
-            <button mat-raised-button color="primary" (click)="onSave(adresesBox)" [disabled]="!orderIdControl.valid">
-                SAGLABĀT
-            </button>
-        </div>
+        <p>
+            <app-color-totals [colorTotals]="adresesBox?.totals.colorTotals">
+                Apjomi sarakstā (paciņas):
+            </app-color-totals>
+        </p>
+        <p>
+            Adreses: {{adresesBox?.totals.adrCount}} |
+            Kastes: {{adresesBox?.totals.boxCount}}
+        </p>
+    </section>
+    <!-- Pogas -->
+    <section class="button-bar">
+        <button mat-raised-button color="primary" (click)="onSave(adresesBox)"
+            [disabled]="!orderIdControl.valid || !adresesBox">
+            SAGLABĀT
+        </button>
+        <ng-template *ngFor="let bt of tabula.buttons" [cdkPortalOutlet]="bt"></ng-template>
     </section>
     <!-- Tabula -->
     <section class="adreses" cdk-scrollable>
-        <app-upload-adreses *ngIf="inputData$ | async as inputData;" [data]="inputData"
-            (adresesBox)="onAdresesBox($event)">
+        <app-upload-adreses #tabula [data]="inputData$ | async" (adresesBox)="adresesBox = $event">
         </app-upload-adreses>
     </section>
 </div>

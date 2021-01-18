@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { LibraryModule, ParserService } from 'src/app/library';
+import { LibraryModule } from 'src/app/library';
 import { CacheInterceptorService } from 'src/app/library/http';
 import { JobsAdminRoutingModule } from './jobs-admin-routing.module';
 import { JobsAdminComponent } from './jobs-admin.component';
@@ -22,7 +22,6 @@ import { CustomersModule } from './customers/customers.module';
     JobsAdminRoutingModule,
   ],
   providers: [
-    ParserService,
     { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptorService, multi: true, },
   ],
 })

@@ -203,7 +203,6 @@ export class AdresesBox {
             total: this.data.reduce((acc, { totals }) => acc + totals.colorTotals.find(({ color: c }) => c === color).total, 0)
         }));
         const boxCount = this.data.reduce((acc, adrBox) => acc + adrBox.totals.boxCount, 0);
-        console.log(colorTotals);
         return {
             adrCount: this._data.length,
             boxCount,
@@ -211,7 +210,7 @@ export class AdresesBox {
         };
     }
 
-    uploadRow(pasutijums: number): UploadRow[] {
+    uploadRows(pasutijums: number): UploadRow[] {
         return this.data.map(veikals => veikals.reduce(pasutijums));
     }
 
