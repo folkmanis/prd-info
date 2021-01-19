@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import * as moment from 'moment';
-import { combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
+import { combineLatest, Observable, pipe, ReplaySubject, Subject } from 'rxjs';
 import { map, pluck, share, switchMap } from 'rxjs/operators';
 import { SystemSettings } from 'src/app/interfaces';
 import { SystemPreferencesService } from 'src/app/services';
@@ -10,12 +10,12 @@ import { GetLogEntriesParams, LogData, LogDataHttp } from './logfile-record';
 
 export interface ValidDates {
   dates: Set<string>;
-  min: moment.Moment | undefined;
-  max: moment.Moment | undefined;
+  min?: moment.Moment;
+  max?: moment.Moment;
 }
 
 @Injectable()
-export class LogfileService {
+export class LogfileService implements OnDestroy {
   private httpPathLogfile = '/data/log/';
 
   constructor(
@@ -23,30 +23,41 @@ export class LogfileService {
     private systemPreferencesService: SystemPreferencesService,
   ) { }
 
-  logFilter$: Subject<GetLogEntriesParams> = new ReplaySubject(1);
-  log$: Observable<LogData> = this.logFilter$.pipe(
-    switchMap(filter => this.getLogEntriesHttp(filter)),
-    share(),
+  private _logLevelMap$: Observable<Map<number, string>> = this.systemPreferencesService.sysPreferences$
+    .pipe(
+      map(pref => (pref.get('system') as SystemSettings)),
+      map(sys => new Map<number, string>(sys.logLevels)),
+    );
+
+  private _logFilter$: Subject<GetLogEntriesParams> = new ReplaySubject(1);
+  log$: Observable<LogData> = combineLatest([
+    this._logFilter$,
+    this._logLevelMap$,
+  ]).pipe(
+    switchMap(([filter, levelMap]) => this.getLogEntriesHttp(filter, levelMap)),
+    share()
   );
 
-  getLogEntriesHttp(params: GetLogEntriesParams): Observable<LogData> {
-    return combineLatest([
-      this.http.get<LogDataHttp>(this.httpPathLogfile + 'entries', new HttpOptions(params)),
-      this.systemPreferencesService.sysPreferences$.pipe(
-        map(pref => (pref.get('system') as SystemSettings)),
-        map(sys => new Map<number, string>(sys.logLevels)),
-      )
-    ]).pipe(
-      map(([records, pref]) => ({
+  ngOnDestroy(): void {
+    this._logFilter$.complete();
+  }
+
+  setFilter(filter: GetLogEntriesParams) {
+    this._logFilter$.next(filter);
+  }
+
+  private getLogEntriesHttp(params: GetLogEntriesParams, levelMap: Map<number, string>): Observable<LogData> {
+    return this.http.get<LogDataHttp>(this.httpPathLogfile + 'entries', new HttpOptions(params)).pipe(
+      map(records => ({
         ...records,
         data: records.data.map(rec =>
           ({
             ...rec,
-            levelVerb: pref.get(rec.level) || rec.level.toString(),
+            levelVerb: levelMap.get(rec.level) || rec.level.toString(),
           })
         )
       })
-      ),
+      )
     );
   }
 
