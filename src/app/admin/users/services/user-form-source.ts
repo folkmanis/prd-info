@@ -62,7 +62,6 @@ export class UserFormSource extends SimpleFormSource<User> {
 
     insertFn(user: User): Observable<string> {
         const userName = user.username;
-        console.log(user);
         return this.usersService.addUser(user).pipe(
             map(_ => userName)
         );
