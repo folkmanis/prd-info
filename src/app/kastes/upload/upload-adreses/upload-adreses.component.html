@@ -1,6 +1,6 @@
 <div [formGroup]="checkCols">
 
-    <button *cdkPortal class="button-row" mat-raised-button (click)="onAddEmptyColumn()">Pievienot tukšu sleju</button>
+    <button *cdkPortal class="button-row" mat-raised-button (click)="onAddEmptyColumn()" [disabled]="!(datasource$ | async)?.length">Pievienot tukšu sleju</button>
     <button *cdkPortal class="button-row" mat-raised-button (click)="onDeleteColumns(checkCols.controls.columns.value)"
         [disabled]="!(chkColCount$ | async)">Dzēst slejas</button>
     <button *cdkPortal class="button-row" mat-raised-button (click)="onJoinColumns(checkCols.controls.columns.value)"
