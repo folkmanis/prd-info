@@ -5,13 +5,17 @@ import { User } from 'src/app/interfaces';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 import { XmfCustomer } from 'src/app/interfaces/xmf-search';
 
-@Injectable()
+@Injectable({
+  providedIn: 'any'
+})
 export class UsersService {
 
   private usersCache: Partial<User>[];
+
   constructor(
     private prdApi: PrdApiService,
   ) { }
+
   reloadUsers$ = new Subject<void>();
   private _usersHttp$: Observable<Partial<User>[]> = this.reloadUsers$.pipe(
     startWith({}),

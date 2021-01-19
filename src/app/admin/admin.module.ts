@@ -12,7 +12,6 @@ import { SystemPreferencesComponent } from './module-preferences/system-preferen
 import { LogfileComponent } from './logfile/logfile.component';
 import { LogfileTableComponent } from './logfile/logfile-table/logfile-table.component';
 import { LogFilterComponent } from './logfile/log-filter/log-filter.component';
-import { UsersService } from './services/users.service';
 import { JobsPreferencesComponent } from './module-preferences/jobs-preferences/jobs-preferences.component';
 import { CategoryDialogComponent } from './module-preferences/jobs-preferences/category-dialog/category-dialog.component';
 import { UsersModule } from './users/users.module';
@@ -38,7 +37,6 @@ import { UsersModule } from './users/users.module';
   ],
   providers: [
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
-    UsersService,
   ],
 })
 export class AdminModule { }
