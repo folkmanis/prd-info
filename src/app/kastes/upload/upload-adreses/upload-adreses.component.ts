@@ -17,7 +17,6 @@ interface ColumnSelection {
   selector: 'app-upload-adreses',
   templateUrl: './upload-adreses.component.html',
   styleUrls: ['./upload-adreses.component.scss'],
-  providers: [ChipsService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UploadAdresesComponent implements OnInit {

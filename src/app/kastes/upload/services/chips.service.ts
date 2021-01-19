@@ -18,8 +18,8 @@ const InitialChips: Chips = {
   assignement: [],
 };
 
-@Injectable()
-export class ChipsService implements OnDestroy {
+@Injectable({providedIn: 'any'})
+export class ChipsService {
 
   private _available: Set<string>;
   private _assignement: Map<string, string>;
@@ -34,10 +34,6 @@ export class ChipsService implements OnDestroy {
   );
 
   constructor() {
-  }
-
-  ngOnDestroy(): void {
-    this._chips$.complete();
   }
 
   resetChips() {
