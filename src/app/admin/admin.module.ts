@@ -4,7 +4,6 @@ import { LibraryModule } from '../library/library.module';
 import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 
 import { AdminRoutingModule } from './admin-routing.module';
-import { AdminComponent } from './admin.component';
 import { AdminMainMenuComponent } from './admin-main-menu/admin-main-menu.component';
 import { ModulePreferencesComponent } from './module-preferences/module-preferences.component';
 import { KastesPreferencesComponent } from './module-preferences/kastes-preferences/kastes-preferences.component';
@@ -18,7 +17,6 @@ import { UsersModule } from './users/users.module';
 
 @NgModule({
   declarations: [
-    AdminComponent,
     AdminMainMenuComponent,
     ModulePreferencesComponent,
     KastesPreferencesComponent,
