@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { Observable, zip, of } from 'rxjs';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
-import { PreferencesComponent } from './preferences-component.class';
+import { PreferencesDirective } from './preferences-component.class';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { map, tap, switchMap } from 'rxjs/operators';
 
@@ -11,9 +11,11 @@ import { map, tap, switchMap } from 'rxjs/operators';
   styleUrls: ['./module-preferences.component.scss']
 })
 export class ModulePreferencesComponent implements OnInit, CanComponentDeactivate {
-  @ViewChild('system') private system: PreferencesComponent;
-  @ViewChild('kastes') private kastes: PreferencesComponent;
-  @ViewChild('jobs') private jobs: PreferencesComponent;
+  @ViewChild('system') private system: PreferencesDirective;
+  @ViewChild('kastes') private kastes: PreferencesDirective;
+  @ViewChild('jobs') private jobs: PreferencesDirective;
+
+  @ViewChildren(PreferencesDirective) components: QueryList<PreferencesDirective>;
 
   constructor(
     private dialogService: ConfirmationDialogService,
@@ -31,15 +33,18 @@ export class ModulePreferencesComponent implements OnInit, CanComponentDeactivat
   }
 
   onSaveAll() {
-    this.kastes.onSave();
-    this.system.onSave();
-    this.jobs.onSave();
+    this.components.forEach(comp => comp.onSave());
+    // this.kastes.onSave();
+    // this.system.onSave();
+    // this.jobs.onSave();
   }
 
   onResetAll() {
-    this.kastes.onReset();
-    this.system.onReset();
-    this.jobs.onReset();
+    console.log(this.components);
+    this.components.forEach(comp => comp.onReset);
+    // this.kastes.onReset();
+    // this.system.onReset();
+    // this.jobs.onReset();
   }
 
 }

@@ -1,6 +1,7 @@
-.mod-div {
+div {
     padding: 16px;
 }
-button {
-    margin: 8px;
+
+button:not(:first-of-type) {
+    margin-left: 16px;
 }
