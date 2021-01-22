@@ -1,49 +1,56 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
-import { Observable, of } from 'rxjs';
-import { PreferencesComponent } from '../preferences-component.class';
+import { Component, OnInit, Self } from '@angular/core';
+import { FormBuilder, NgControl } from '@angular/forms';
+import { IControlValueAccessor, IFormBuilder, IFormGroup } from '@rxweb/types';
 import { SystemSettings } from 'src/app/interfaces';
-import { tap, pluck, map, take } from 'rxjs/operators';
-import { SystemPreferencesService } from 'src/app/services';
+
+type SystemSettingsPartial = Partial<SystemSettings>;
 
 @Component({
   selector: 'app-system-preferences',
   templateUrl: './system-preferences.component.html',
   styleUrls: ['./system-preferences.component.scss']
 })
-export class SystemPreferencesComponent implements OnInit, PreferencesComponent {
+export class SystemPreferencesComponent implements OnInit, IControlValueAccessor<SystemSettingsPartial> {
+
+  fb: IFormBuilder;
+  settingsForm: IFormGroup<SystemSettingsPartial>;
 
   constructor(
-    private fb: FormBuilder,
-    private systemPreferencesService: SystemPreferencesService,
-  ) { }
+    fb: FormBuilder,
+    @Self() private ngControl: NgControl
+  ) {
+    this.fb = fb;
+    this.settingsForm = this.fb.group<SystemSettingsPartial>({
+      menuExpandedByDefault: [true],
+    });
+    this.ngControl.valueAccessor = this;
+  }
 
-  sysPref$: Observable<SystemSettings> = this.systemPreferencesService.getModulePreferences<SystemSettings>('system');
-  settingsForm: FormGroup = this.fb.group({
-    menuExpandedByDefault: [true],
-  });
-  defaults: Partial<SystemSettings>;
+  onChangeFn: (val: SystemSettingsPartial) => void;
+  onTouchedFn: () => void;
 
+  writeValue(obj: SystemSettings) {
+    this.settingsForm.patchValue(obj);
+  }
+
+  registerOnChange(fn: any) {
+    this.onChangeFn = fn;
+  }
+
+  registerOnTouched(fn: any) {
+    this.onTouchedFn = fn;
+  }
+
+  setDisabledState(isDisabled: boolean) {
+    if (isDisabled) {
+      this.settingsForm.disable();
+    } else {
+      this.settingsForm.enable();
+    }
+  }
 
   ngOnInit() {
-    this.sysPref$.pipe(
-      take(1),
-      tap(this.setForm)
-    )
-      .subscribe();
+    this.settingsForm.valueChanges.subscribe(this.onChangeFn);
   }
-
-  canDeactivate(): Observable<boolean> {
-    return of(this.settingsForm.pristine);
-  }
-
-  onSave = () => {
-    this.systemPreferencesService.updateModulePreferences('system', this.settingsForm.value)
-      .subscribe(() => this.settingsForm.markAsPristine());
-  }
-
-  onReset = () => this.sysPref$.pipe(take(1), tap(this.setForm)).subscribe();
-
-  private setForm = (sett: SystemSettings) => this.settingsForm.reset(sett, { emitEvent: false });
 
 }

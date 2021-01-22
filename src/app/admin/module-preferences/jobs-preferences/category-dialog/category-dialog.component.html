@@ -1,22 +1,27 @@
 <h2 mat-dialog-title>
     Preču kategorija
 </h2>
-<mat-dialog-content [formGroup]="productForm">
+<mat-dialog-content>
+    <form [formGroup]="productForm">
+
         <mat-form-field>
             <mat-label>
                 Kategorijas nosaukums
             </mat-label>
             <input type="text" matInput formControlName="category">
         </mat-form-field>
+
         <mat-form-field>
             <mat-label>
                 Apraksts
             </mat-label>
             <input type="text" matInput formControlName="description">
         </mat-form-field>
+
+    </form>
 </mat-dialog-content>
 <mat-dialog-actions>
     <button mat-raised-button [mat-dialog-close]="undefined">Atcelt</button>
-    <button mat-raised-button [mat-dialog-close]="productForm.value" color="accent"
-        [disabled]="productForm.invalid">OK</button>
+    <button #submitButton mat-raised-button [mat-dialog-close]="productForm.value" color="accent"
+        [disabled]="!productForm.valid">OK</button>
 </mat-dialog-actions>

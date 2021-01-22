@@ -1,8 +1,8 @@
 import { Injectable, Inject } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { merge, Observable, Subject, of, combineLatest } from 'rxjs';
-import { map, shareReplay, take, tap, switchMap, filter, mapTo } from 'rxjs/operators';
-import { AppParams, SystemPreferences, UserModule, SystemPreferencesGroups, ModuleSettings } from '../interfaces';
+import { merge, Observable, Subject, of, combineLatest, EMPTY } from 'rxjs';
+import { map, shareReplay, take, tap, switchMap, filter, mapTo, concatMap } from 'rxjs/operators';
+import { AppParams, SystemPreferences, UserModule, SystemPreferencesGroups, ModuleSettings, DbModulePreferences } from '../interfaces';
 import { APP_PARAMS } from '../app-params';
 import { PrdApiService } from './prd-api/prd-api.service';
 import { LoginService } from './login.service';
@@ -19,7 +19,7 @@ export class SystemPreferencesService {
     private loginService: LoginService,
   ) { }
   /** Piespiedu ielāde no servera */
-  reloadFromServer$: Subject<void> = new Subject();
+  private _reloadFromServer$: Subject<void> = new Subject();
   private newPreferences$: Subject<SystemPreferences> = new Subject();
 
   sysPreferences$: Observable<SystemPreferences> = merge(
@@ -29,7 +29,7 @@ export class SystemPreferencesService {
       switchMap(() => this.systemPreferencesMap()),
     ),
     this.newPreferences$,  // Jaunas preferences
-    this.reloadFromServer$.pipe(
+    this._reloadFromServer$.pipe(
       switchMap(() => this.systemPreferencesMap()),
     )
   ).pipe(
@@ -59,6 +59,13 @@ export class SystemPreferencesService {
     map(active => active.childMenu || [])
   );
 
+  updatePreferences(pref: DbModulePreferences[]): Observable<boolean | null> {
+    return this.prdApi.systemPreferences.update(pref).pipe(
+      concatMap(resp => resp > 0 ? of(true) : EMPTY),
+      tap(_ => this._reloadFromServer$.next()),
+    );
+  }
+
   updateModulePreferences(modName: SystemPreferencesGroups, modPref: ModuleSettings): Observable<boolean> {
     return this.sysPreferences$.pipe(
       take(1),
@@ -75,7 +82,10 @@ export class SystemPreferencesService {
       )
     );
   }
-
+  /**
+   * Multicast Observable ar moduļa iestatījumiem
+   * @param mod Moduļa nosaukums
+   */
   getModulePreferences<T extends ModuleSettings>(mod: SystemPreferencesGroups): Observable<T> {
     return this.sysPreferences$.pipe(
       map(pref => pref.get(mod) as T),

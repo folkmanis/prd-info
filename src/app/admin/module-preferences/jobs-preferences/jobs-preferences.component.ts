@@ -1,66 +1,61 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { FocusMonitor } from '@angular/cdk/a11y';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef } from '@angular/core';
+import { FormBuilder, NgControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { cloneDeep } from 'lodash';
-import { Observable, of, Subscription } from 'rxjs';
-import { filter, tap } from 'rxjs/operators';
-import { APP_PARAMS } from 'src/app/app-params';
-import { AppParams, JobsSettings } from 'src/app/interfaces';
-import { SystemPreferencesService } from 'src/app/services';
-import { PreferencesComponent } from '../preferences-component.class';
+import { IFormArray } from '@rxweb/types';
+import { EMPTY, of } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
+import { JobsSettings, ProductCategory } from 'src/app/interfaces';
+import { AbstractPreferencesDirective } from '../abstract-preferences.directive';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
+
+type JobsSettingsControls = Pick<JobsSettings, 'productCategories'>;
 
 @Component({
   selector: 'app-jobs-preferences',
   templateUrl: './jobs-preferences.component.html',
-  styleUrls: ['./jobs-preferences.component.scss']
+  styleUrls: ['./jobs-preferences.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class JobsPreferencesComponent implements OnInit, PreferencesComponent, OnDestroy {
+export class JobsPreferencesComponent extends AbstractPreferencesDirective<JobsSettings> {
 
   constructor(
-    @Inject(APP_PARAMS) private params: AppParams,
+    protected cd: ChangeDetectorRef,
     private dialog: MatDialog,
-    private systemPreferencesService: SystemPreferencesService,
-  ) { }
-
-  pristine = true;
-  private _subs = new Subscription();
-  private oldSettings: JobsSettings;
-  newSettings: JobsSettings;
-
-  ngOnInit(): void {
-    const subs = this.systemPreferencesService.getModulePreferences<JobsSettings>('jobs')
-      .subscribe(sett => {
-        this.oldSettings = sett || this.params.defaultSystemPreferences.get('jobs') as JobsSettings;
-        this.newSettings = cloneDeep(sett);
-      });
-    this._subs.add(subs);
+    ngControl: NgControl,
+    fb: FormBuilder,
+    fm: FocusMonitor,
+    elRef: ElementRef<HTMLElement>,
+  ) {
+    super(ngControl, fb, cd, fm, elRef);
+    this.controls = this.fb.group<JobsSettingsControls>(
+      {
+        productCategories: this.fb.array<ProductCategory>([]),
+      }
+    );
   }
 
-  ngOnDestroy(): void {
-    this._subs.unsubscribe();
+  get productCategories() { return this.controls.controls.productCategories as IFormArray<ProductCategory>; }
+
+  protected writeControl(obj: JobsSettings) {
+    this.controls.setControl('productCategories',
+      this.fb.array<ProductCategory>(obj.productCategories)
+    );
   }
 
-  canDeactivate(): Observable<boolean> {
-    return of(this.pristine);
-  }
-
-  newCategory(): void {
-    const dialogRef = this.dialog.open(CategoryDialogComponent);
+  onNewCategory(): void {
+    const dialogRef = this.dialog.open<CategoryDialogComponent, any, ProductCategory | undefined>(CategoryDialogComponent);
     dialogRef.afterClosed().pipe(
-      filter(cat => cat),
-      tap(() => this.pristine = false),
-    ).subscribe(cat => this.newSettings.productCategories.push(cat));
+      mergeMap(resp => resp ? of(resp) : EMPTY),
+    ).subscribe(cat => {
+      this.productCategories.push(this.fb.group(cat));
+      this.cd.markForCheck();
+    });
   }
 
-  onSave(): void {
-    this.systemPreferencesService.updateModulePreferences('jobs', this.newSettings).pipe(
-      tap(() => this.pristine = true),
-    ).subscribe();
-  }
-
-  onReset(): void {
-    this.newSettings = cloneDeep(this.oldSettings);
-    this.pristine = true;
+  onRemoveCategory(idx: number) {
+    this.productCategories.removeAt(idx);
+    this.cd.markForCheck();
   }
 
 }

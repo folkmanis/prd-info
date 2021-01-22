@@ -1,0 +1,11 @@
+<div class="container">
+
+    <span class="label" [style.color]="hslColor.toString()">{{label}}:</span>
+
+    <mat-slider min="0" max="100" step="1" thumbLabel (change)="onSlideChanges($event)" [value]="hslColor.lightness"
+        [disabled]="disabled">
+    </mat-slider>
+
+    <span [style.color]="hslColor.toString()">{{hslColor.lightness}}%</span>
+
+</div>

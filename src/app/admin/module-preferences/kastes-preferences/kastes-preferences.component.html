@@ -1,12 +1,8 @@
 <h2>Pakošanas saraksta iestatījumi</h2>
-<form *ngIf="colorsForm" [formGroup]="colorsForm">
-    <div *ngFor="let col of keys" class="flex-container">
-        <div class="flex-text">{{col}}:</div>
-        <div>
-            <mat-slider min="0" max="100" step="1" thumbLabel [formControlName]="col"></mat-slider>
+<div [formGroup]="controls">
+    <div formGroupName="colors">
+        <div *ngFor="let col of colors">
+            <app-color-slider [formControlName]="col" [label]="col | titlecase"></app-color-slider>
         </div>
-        <div [ngStyle]="{'color': preferences.colors[col]}">{{colors[col].lightness}}%</div>
     </div>
-    <button mat-raised-button (click)="onSave()" [disabled]="colorsForm.pristine">Saglabāt</button>
-    <button mat-raised-button (click)="onReset()" [disabled]="colorsForm.pristine">Atcelt</button>
-</form>
+</div>

@@ -1,0 +1,10 @@
+<mat-toolbar>
+    <button mat-raised-button (click)="saving.next(controlForm.value)" [disabled]="!controlForm.valid || controlForm.pristine">
+        SAGLABĀT
+    </button>
+    <button mat-raised-button (click)="reseting.next()" [disabled]="controlForm.pristine">
+        ATCELT
+    </button>
+</mat-toolbar>
+
+<ng-content></ng-content>

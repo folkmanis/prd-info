@@ -38,6 +38,12 @@ export abstract class ApiBase<T> {
         );
     }
 
+    update(data: Partial<T[]>): Observable<number> {
+        return this.http.post<AppHttpResponseBase<T>>(this.path, data, new HttpOptions()).pipe(
+            map(resp => resp.modifiedCount),
+        );
+    }
+
     updateOne(id: string | number, data: Partial<T>): Observable<boolean> {
         return this.http.post<AppHttpResponseBase<T>>(this.path + id, data, new HttpOptions()).pipe(
             map(resp => !!resp.modifiedCount)

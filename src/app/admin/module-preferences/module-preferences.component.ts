@@ -1,50 +1,82 @@
-import { Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { Observable, zip, of } from 'rxjs';
-import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
-import { PreferencesDirective } from './preferences-component.class';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
+import { IFormBuilder, IFormGroup } from '@rxweb/types';
+import { Observable } from 'rxjs';
+import { map, take } from 'rxjs/operators';
+import { DbModulePreferences, MODULES, ModuleSettings, SystemPreferencesGroups } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
-import { map, tap, switchMap } from 'rxjs/operators';
+import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
+import { SystemPreferencesService } from 'src/app/services';
+
+type PreferencesFormValue = {
+  [key in SystemPreferencesGroups]: ModuleSettings;
+};
 
 @Component({
   selector: 'app-module-preferences',
   templateUrl: './module-preferences.component.html',
-  styleUrls: ['./module-preferences.component.scss']
+  styleUrls: ['./module-preferences.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ModulePreferencesComponent implements OnInit, CanComponentDeactivate {
-  @ViewChild('system') private system: PreferencesDirective;
-  @ViewChild('kastes') private kastes: PreferencesDirective;
-  @ViewChild('jobs') private jobs: PreferencesDirective;
 
-  @ViewChildren(PreferencesDirective) components: QueryList<PreferencesDirective>;
+  fb: IFormBuilder;
+
+  prefForm: IFormGroup<PreferencesFormValue>;
 
   constructor(
+    private systemPreferencesService: SystemPreferencesService,
     private dialogService: ConfirmationDialogService,
-  ) { }
+    private cd: ChangeDetectorRef,
+    fb: FormBuilder,
+  ) {
+    this.fb = fb;
+    this.prefForm = this.fb.group<PreferencesFormValue>(
+      Object.assign(
+        {},
+        ...MODULES.map(mod => ({ [mod]: [{}] }))
+      )
+    );
+  }
 
   ngOnInit() {
+    this.onResetAll();
   }
 
   canDeactivate(): boolean | Observable<boolean> {
-    return zip(this.kastes.canDeactivate(), this.system.canDeactivate())
-      .pipe(
-        map(result => result.reduce((acc, curr) => acc && curr, true)),
-        switchMap(result => result ? of(true) : this.dialogService.discardChanges()),
-      );
+    return this.prefForm.pristine || this.dialogService.discardChanges();
   }
 
   onSaveAll() {
-    this.components.forEach(comp => comp.onSave());
-    // this.kastes.onSave();
-    // this.system.onSave();
-    // this.jobs.onSave();
+    this.systemPreferencesService.updatePreferences(
+      this.formToDb()
+    ).subscribe(_ => {
+      this.prefForm.markAsPristine();
+      this.cd.markForCheck();
+    });
   }
 
   onResetAll() {
-    console.log(this.components);
-    this.components.forEach(comp => comp.onReset);
-    // this.kastes.onReset();
-    // this.system.onReset();
-    // this.jobs.onReset();
+    this.formStateFromApi().pipe(
+      take(1),
+    ).subscribe(prefs => {
+      this.prefForm.reset(prefs);
+      this.prefForm.markAsPristine();
+      this.cd.markForCheck();
+    });
+  }
+
+  private formStateFromApi(): Observable<PreferencesFormValue> {
+    return this.systemPreferencesService.sysPreferences$.pipe(
+      map(prefs => Object.assign({}, ...MODULES.map(mod => ({ [mod]: prefs.get(mod) })))),
+    );
+  }
+
+  private formToDb(): DbModulePreferences[] {
+    return MODULES.map(module => ({
+      module,
+      settings: this.prefForm.value[module],
+    }));
   }
 
 }

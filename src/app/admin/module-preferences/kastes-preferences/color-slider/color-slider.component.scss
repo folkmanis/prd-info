@@ -1,0 +1,13 @@
+.container {
+    display: flex;
+    align-items: center;
+}
+
+.label {
+    flex: 0 0 80px;
+    text-align: right;
+}
+
+.mat-slider {
+    flex: 0 1 200px;
+}

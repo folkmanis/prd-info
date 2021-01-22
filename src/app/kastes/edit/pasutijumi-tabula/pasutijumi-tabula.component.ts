@@ -5,7 +5,6 @@ import { KastesJobPartial } from 'src/app/interfaces';
 import { LayoutService } from 'src/app/layout/layout.service';
 import { JobService } from 'src/app/services/job.service';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
-import { PasutijumiService } from '../../services/pasutijumi.service';
 
 export interface KastesJobTable extends KastesJobPartial {
   active: boolean;
@@ -45,7 +44,6 @@ export class PasutijumiTabulaComponent implements OnInit {
 
   constructor(
     private jobService: JobService,
-    private pasutijumiService: PasutijumiService,
     private preferencesService: KastesPreferencesService,
     private layOutService: LayoutService,
   ) { }
@@ -56,7 +54,7 @@ export class PasutijumiTabulaComponent implements OnInit {
     this.jobService.setFilter({ category: 'perforated paper' });
   }
 
-  onFilter(fltr): void {
+  onFilter(fltr: string): void {
     this.filter$.next(fltr);
   }
 

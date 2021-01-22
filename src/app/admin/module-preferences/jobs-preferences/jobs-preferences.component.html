@@ -1,16 +1,15 @@
 <h2>Darbu uzskaites iestatījumi</h2>
-<section *ngIf="newSettings?.productCategories">
+<div [formGroup]="controls">
     <h4>Kategorijas</h4>
-    <mat-list>
-        <mat-list-item *ngFor="let item of newSettings.productCategories">
-          {{item.category}} ({{item.description}})
+    <mat-list formGroupName="productCategories">
+        <mat-list-item *ngFor="let control of productCategories.controls; index as idx">
+            <button mat-icon-button (click)="onRemoveCategory(idx)">
+                <mat-icon>clear</mat-icon>
+            </button>
+          {{control.value.category}} ({{control.value.description}})
         </mat-list-item>
     </mat-list>
-    <button mat-icon-button (click)="newCategory()">
+    <button mat-icon-button (click)="onNewCategory()">
         <mat-icon>add</mat-icon>
     </button>
-</section>
-<section>
-    <button mat-raised-button (click)="onSave()" [disabled]="pristine">Saglabāt</button>
-    <button mat-raised-button (click)="onReset()" [disabled]="pristine">Atcelt</button>
-</section>
+</div>

@@ -14,6 +14,9 @@ import { LogFilterComponent } from './logfile/log-filter/log-filter.component';
 import { JobsPreferencesComponent } from './module-preferences/jobs-preferences/jobs-preferences.component';
 import { CategoryDialogComponent } from './module-preferences/jobs-preferences/category-dialog/category-dialog.component';
 import { UsersModule } from './users/users.module';
+import { ModuleGroupComponent } from './module-group/module-group.component';
+import { ColorSliderComponent } from './module-preferences/kastes-preferences/color-slider/color-slider.component';
+import { ModuleContainerComponent } from './module-preferences/module-container/module-container.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +29,9 @@ import { UsersModule } from './users/users.module';
     LogFilterComponent,
     JobsPreferencesComponent,
     CategoryDialogComponent,
+    ModuleGroupComponent,
+    ColorSliderComponent,
+    ModuleContainerComponent,
   ],
   imports: [
     CommonModule,
