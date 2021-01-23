@@ -4,7 +4,6 @@ import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { DbModulePreferences, MODULES, ModuleSettings, SystemPreferencesGroups } from 'src/app/interfaces';
-import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { SystemPreferencesService } from 'src/app/services';
 
@@ -26,7 +25,6 @@ export class ModulePreferencesComponent implements OnInit, CanComponentDeactivat
 
   constructor(
     private systemPreferencesService: SystemPreferencesService,
-    private dialogService: ConfirmationDialogService,
     private cd: ChangeDetectorRef,
     fb: FormBuilder,
   ) {
@@ -44,7 +42,7 @@ export class ModulePreferencesComponent implements OnInit, CanComponentDeactivat
   }
 
   canDeactivate(): boolean | Observable<boolean> {
-    return this.prefForm.pristine || this.dialogService.discardChanges();
+    return this.prefForm.pristine;
   }
 
   onSaveAll() {

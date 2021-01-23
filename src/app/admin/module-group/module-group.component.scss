@@ -1,3 +1,8 @@
 button:not(:first-of-type) {
     margin-left: 16px;
 }
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+}

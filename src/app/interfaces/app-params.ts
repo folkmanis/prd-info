@@ -1,4 +1,4 @@
-import { SystemPreferences } from './system-preferences';
+import { SystemPreferencesMap } from './system-preferences';
 import { UserModule } from './user-module';
 
 export interface AppParams {
@@ -7,7 +7,7 @@ export interface AppParams {
         appBuild: number;
     };
     versionCheckInterval: number;
-    defaultSystemPreferences: SystemPreferences;
+    defaultSystemPreferences: SystemPreferencesMap;
     toolbarHeight: {
         desktop: number;
         mobile: number;

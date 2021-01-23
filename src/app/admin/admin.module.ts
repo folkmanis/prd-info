@@ -16,7 +16,7 @@ import { CategoryDialogComponent } from './module-preferences/jobs-preferences/c
 import { UsersModule } from './users/users.module';
 import { ModuleGroupComponent } from './module-group/module-group.component';
 import { ColorSliderComponent } from './module-preferences/kastes-preferences/color-slider/color-slider.component';
-import { ModuleContainerComponent } from './module-preferences/module-container/module-container.component';
+import { ModulePreferencesModule } from './module-preferences/module-preferences.module';
 
 @NgModule({
   declarations: [
@@ -31,13 +31,13 @@ import { ModuleContainerComponent } from './module-preferences/module-container/
     CategoryDialogComponent,
     ModuleGroupComponent,
     ColorSliderComponent,
-    ModuleContainerComponent,
   ],
   imports: [
     CommonModule,
     LibraryModule,
     UsersModule,
     AdminRoutingModule,
+    ModulePreferencesModule,
   ],
   providers: [
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },

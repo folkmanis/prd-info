@@ -12,7 +12,7 @@ export interface DbModulePreferences {
 
 export type SystemPreferencesGroups = typeof MODULES[number];
 
-export type SystemPreferences = Map<SystemPreferencesGroups, ModuleSettings>;
+export type SystemPreferencesMap = Map<SystemPreferencesGroups, ModuleSettings>;
 
 export interface KastesSettings {
     colors: {

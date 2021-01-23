@@ -20,7 +20,7 @@ type JobsSettingsControls = Pick<JobsSettings, 'productCategories'>;
 export class JobsPreferencesComponent extends AbstractPreferencesDirective<JobsSettings> {
 
   constructor(
-    protected cd: ChangeDetectorRef,
+    cd: ChangeDetectorRef,
     private dialog: MatDialog,
     ngControl: NgControl,
     fb: FormBuilder,

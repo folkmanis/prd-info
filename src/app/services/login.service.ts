@@ -17,7 +17,7 @@ import { Inject, Injectable } from '@angular/core';
 import { merge, Observable, Subject } from 'rxjs';
 import { map, shareReplay, take, tap } from 'rxjs/operators';
 import { APP_PARAMS } from 'src/app/app-params';
-import { AppParams, Login, SystemPreferences, User } from 'src/app/interfaces';
+import { AppParams, Login, SystemPreferencesMap, User } from 'src/app/interfaces';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 
 

@@ -1,10 +1,8 @@
-import { Component, OnInit, OnDestroy, Self, ElementRef, ChangeDetectorRef } from '@angular/core';
+import { FocusMonitor } from '@angular/cdk/a11y';
+import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, Self } from '@angular/core';
 import { FormBuilder, NgControl } from '@angular/forms';
-import { IControlValueAccessor, IFormBuilder, IFormGroup } from '@rxweb/types';
-import { takeUntil } from 'rxjs/operators';
 import { Colors, COLORS, KastesSettings } from 'src/app/interfaces';
 import { DestroyService } from 'src/app/library/rx';
-import { FocusMonitor } from '@angular/cdk/a11y';
 import { AbstractPreferencesDirective } from '../abstract-preferences.directive';
 
 type KastesSettingsPartial = Partial<KastesSettings>;

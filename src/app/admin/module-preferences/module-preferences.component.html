@@ -1,14 +1,9 @@
 <app-module-group [formGroup]="prefForm" (reseting)="onResetAll()" (saving)="onSaveAll()">
 
-    <div>
-        <app-system-preferences formControlName="system"></app-system-preferences>
-    </div>
-    <mat-divider></mat-divider>
-    <div>
-        <app-kastes-preferences formControlName="kastes"></app-kastes-preferences>
-    </div>
-    <mat-divider></mat-divider>
-    <div>
-        <app-jobs-preferences formControlName="jobs"></app-jobs-preferences>
-    </div>
+    <app-system-preferences formControlName="system"></app-system-preferences>
+
+    <app-kastes-preferences formControlName="kastes"></app-kastes-preferences>
+
+    <app-jobs-preferences formControlName="jobs"></app-jobs-preferences>
+
 </app-module-group>

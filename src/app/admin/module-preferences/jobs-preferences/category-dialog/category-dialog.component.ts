@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-category-dialog',
@@ -11,7 +11,7 @@ export class CategoryDialogComponent implements OnInit {
 
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any
+    private dialogRef: MatDialogRef<CategoryDialogComponent>,
   ) { }
 
   productForm = new FormGroup({
@@ -20,6 +20,10 @@ export class CategoryDialogComponent implements OnInit {
   });
 
   ngOnInit(): void {
+  }
+
+  onSubmit() {
+    this.dialogRef.close(this.productForm.value);
   }
 
 }

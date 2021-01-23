@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { merge, Observable, Subject, of, combineLatest, EMPTY } from 'rxjs';
 import { map, shareReplay, take, tap, switchMap, filter, mapTo, concatMap } from 'rxjs/operators';
-import { AppParams, SystemPreferences, UserModule, SystemPreferencesGroups, ModuleSettings, DbModulePreferences } from '../interfaces';
+import { AppParams, SystemPreferencesMap, UserModule, SystemPreferencesGroups, ModuleSettings, DbModulePreferences } from '../interfaces';
 import { APP_PARAMS } from '../app-params';
 import { PrdApiService } from './prd-api/prd-api.service';
 import { LoginService } from './login.service';
@@ -20,9 +20,9 @@ export class SystemPreferencesService {
   ) { }
   /** Piespiedu ielāde no servera */
   private _reloadFromServer$: Subject<void> = new Subject();
-  private newPreferences$: Subject<SystemPreferences> = new Subject();
+  private newPreferences$: Subject<SystemPreferencesMap> = new Subject();
 
-  sysPreferences$: Observable<SystemPreferences> = merge(
+  sysPreferences$: Observable<SystemPreferencesMap> = merge(
     of(this.params.defaultSystemPreferences), // sāk ar default
     this.loginService.user$.pipe( // ielādējoties user, ielādē no servera
       filter(usr => !!usr),
@@ -66,22 +66,6 @@ export class SystemPreferencesService {
     );
   }
 
-  updateModulePreferences(modName: SystemPreferencesGroups, modPref: ModuleSettings): Observable<boolean> {
-    return this.sysPreferences$.pipe(
-      take(1),
-      switchMap(sysPref =>
-        this.prdApi.systemPreferences.updateOne(
-          modName,
-          { settings: modPref }
-        ).pipe(
-          filter(update => !!update),
-          map(() => new Map(sysPref).set(modName, modPref)),
-          tap(newPref => this.newPreferences$.next(newPref)),
-          mapTo(true),
-        )
-      )
-    );
-  }
   /**
    * Multicast Observable ar moduļa iestatījumiem
    * @param mod Moduļa nosaukums
@@ -93,7 +77,7 @@ export class SystemPreferencesService {
     );
   }
 
-  private systemPreferencesMap(): Observable<SystemPreferences> {
+  private systemPreferencesMap(): Observable<SystemPreferencesMap> {
     return this.prdApi.systemPreferences.get().pipe(
       map(
         dbpref => dbpref.reduce(
