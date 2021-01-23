@@ -1,9 +1,24 @@
 <app-module-group [formGroup]="prefForm" (reseting)="onResetAll()" (saving)="onSaveAll()">
 
-    <app-system-preferences formControlName="system"></app-system-preferences>
+    <app-preferences-card formControlName="system">
+        <ng-container appCardTitle>
+            Vispārīgie iestatījumi
+        </ng-container>
+        <app-system-preferences></app-system-preferences>
+    </app-preferences-card>
 
-    <app-kastes-preferences formControlName="kastes"></app-kastes-preferences>
+    <app-preferences-card formControlName="kastes">
+        <ng-container appCardTitle>
+            Pakošanas saraksta iestatījumi
+        </ng-container>
+        <app-kastes-preferences></app-kastes-preferences>
+    </app-preferences-card>
 
-    <app-jobs-preferences formControlName="jobs"></app-jobs-preferences>
+    <app-preferences-card formControlName="jobs">
+        <ng-container appCardTitle>
+            Darbu uzskaites iestatījumi
+        </ng-container>
+        <app-jobs-preferences></app-jobs-preferences>
+    </app-preferences-card>
 
 </app-module-group>

@@ -1,0 +1,7 @@
+<ng-container [formGroup]="controls">
+    <div formGroupName="colors">
+        <div *ngFor="let col of colors">
+            <app-color-slider [formControlName]="col" [label]="col | titlecase"></app-color-slider>
+        </div>
+    </div>
+</ng-container>

@@ -1,12 +1,11 @@
-import { FocusMonitor } from '@angular/cdk/a11y';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef } from '@angular/core';
-import { FormBuilder, NgControl } from '@angular/forms';
+import { ChangeDetectionStrategy, OnInit, Component, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { IFormArray } from '@rxweb/types';
-import { EMPTY, of } from 'rxjs';
+import { IFormArray, IFormBuilder, IFormGroup } from '@rxweb/types';
+import { EMPTY, of, Subject } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { JobsSettings, ProductCategory } from 'src/app/interfaces';
-import { AbstractPreferencesDirective } from '../abstract-preferences.directive';
+import { PreferencesCardControl } from '../../preferences-card-control';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
 
 type JobsSettingsControls = Pick<JobsSettings, 'productCategories'>;
@@ -16,18 +15,32 @@ type JobsSettingsControls = Pick<JobsSettings, 'productCategories'>;
   templateUrl: './jobs-preferences.component.html',
   styleUrls: ['./jobs-preferences.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [{ provide: PreferencesCardControl, useExisting: JobsPreferencesComponent }]
 })
-export class JobsPreferencesComponent extends AbstractPreferencesDirective<JobsSettings> {
+export class JobsPreferencesComponent implements PreferencesCardControl<JobsSettings>, OnInit, OnDestroy {
+
+  get value(): JobsSettingsControls {
+    return this.controls.value;
+  }
+  set value(obj: JobsSettingsControls) {
+    this.controls.setControl('productCategories',
+      this.fb.array<ProductCategory>(obj.productCategories)
+    );
+    this.stateChanges.next();
+  }
+
+  private fb: IFormBuilder;
+
+  controls: IFormGroup<JobsSettingsControls>;
+
+  stateChanges = new Subject<void>();
 
   constructor(
-    cd: ChangeDetectorRef,
     private dialog: MatDialog,
-    ngControl: NgControl,
     fb: FormBuilder,
-    fm: FocusMonitor,
-    elRef: ElementRef<HTMLElement>,
+    private changeDetector: ChangeDetectorRef,
   ) {
-    super(ngControl, fb, cd, fm, elRef);
+    this.fb = fb;
     this.controls = this.fb.group<JobsSettingsControls>(
       {
         productCategories: this.fb.array<ProductCategory>([]),
@@ -37,25 +50,27 @@ export class JobsPreferencesComponent extends AbstractPreferencesDirective<JobsS
 
   get productCategories() { return this.controls.controls.productCategories as IFormArray<ProductCategory>; }
 
-  protected writeControl(obj: JobsSettings) {
-    this.controls.setControl('productCategories',
-      this.fb.array<ProductCategory>(obj.productCategories)
-    );
-  }
-
   onNewCategory(): void {
     const dialogRef = this.dialog.open<CategoryDialogComponent, any, ProductCategory | undefined>(CategoryDialogComponent);
     dialogRef.afterClosed().pipe(
       mergeMap(resp => resp ? of(resp) : EMPTY),
     ).subscribe(cat => {
       this.productCategories.push(this.fb.group(cat));
-      this.cd.markForCheck();
+      this.stateChanges.next();
     });
   }
 
   onRemoveCategory(idx: number) {
     this.productCategories.removeAt(idx);
-    this.cd.markForCheck();
+    this.stateChanges.next();
+  }
+
+  ngOnInit() {
+    this.stateChanges.subscribe(_ => this.changeDetector.markForCheck());
+  }
+
+  ngOnDestroy() {
+    this.stateChanges.complete();
   }
 
 }
