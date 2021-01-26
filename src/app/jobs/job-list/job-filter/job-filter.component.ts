@@ -25,8 +25,8 @@ const DEFAULT_FILTER = {
 })
 export class JobFilterComponent implements OnInit {
 
-  jobStates$ = this.sysPrefService.getModulePreferences('jobs').pipe(
-    map((pref: JobsSettings) => pref.jobStates)
+  jobStates$ = this.sysPrefService.preferences$.pipe(
+    map(pref => pref.jobs.jobStates)
   );
   customersFiltered$: Observable<CustomerPartial[]>;
 

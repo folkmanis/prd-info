@@ -31,13 +31,12 @@ export class SideMenuComponent implements OnInit {
   ngOnInit(): void {
     this.dataSource.dataChange$.pipe(
       tap(() => this.treeControl.dataNodes = this.dataSource.data),
-      switchMap(() => this.systemPreferencesService.sysPreferences$),
-      map(pref => pref.get('system') as SystemSettings),
-      filter(pref => pref?.menuExpandedByDefault),
+      switchMap(() => this.systemPreferencesService.preferences$),
+      map(pref => pref.system.menuExpandedByDefault),
       distinctUntilChanged(),
       takeUntil(this.destroy$),
     )
-      .subscribe(_ => this.expandMenu());
+      .subscribe(expand => this.expandMenu(expand));
 
     this.systemPreferencesService.activeModules$.pipe(
       takeUntil(this.destroy$),
@@ -45,8 +44,12 @@ export class SideMenuComponent implements OnInit {
       .subscribe(mod => this.setActiveRoute(mod));
   }
 
-  private expandMenu() {
-    this.treeControl.expandAll();
+  private expandMenu(expand: boolean) {
+    if (expand) {
+      this.treeControl.expandAll();
+    } else {
+      this.treeControl.collapseAll();
+    }
     this.changeDetector.markForCheck();
   }
 

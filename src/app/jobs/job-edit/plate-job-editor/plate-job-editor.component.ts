@@ -32,11 +32,11 @@ export class PlateJobEditorComponent implements OnInit, OnDestroy {
 
   customers$: Observable<CustomerPartial[]>;
   defaultPath$: Observable<string[]>;
-  jobStates$ = (this.sysPref.getModulePreferences('jobs') as Observable<JobsSettings>).pipe(
-    map(pref => pref.jobStates.filter(st => st.state < 50))
+  jobStates$ = this.sysPref.preferences$.pipe(
+    map(pref => pref.jobs.jobStates.filter(st => st.state < 50))
   );
-  categories$ = (this.sysPref.getModulePreferences('jobs') as Observable<JobsSettings>).pipe(
-    map(pref => pref.productCategories),
+  categories$ = this.sysPref.preferences$.pipe(
+    map(pref => pref.jobs.productCategories),
   );
 
   large$: Observable<boolean> = this.layoutService.isLarge$;

@@ -19,9 +19,8 @@ export class ProductsService {
   ) { }
 
   private _products$: Observable<ProductPartial[]>;
-  readonly categories$ = this.systemPreferencesService.sysPreferences$.pipe(
-    map(sysPref => sysPref.get('jobs') as JobsSettings),
-    map(js => js.productCategories),
+  readonly categories$ = this.systemPreferencesService.preferences$.pipe(
+    map(sysPref => sysPref.jobs.productCategories),
     share(),
   );
 

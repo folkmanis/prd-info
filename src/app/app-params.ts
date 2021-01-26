@@ -26,12 +26,15 @@ export const PRD_DEFAULTS: AppParams = {
     versionCheckInterval: 10 * 1000,
     passwordMinimumLenght: 3,
     userModules: USER_MODULES,
-    defaultSystemPreferences: new Map<SystemPreferencesGroups, ModuleSettings>()
-        .set('kastes', {
+    defaultSystemPreferences: {
+        kastes: {
             colors: { yellow: 'hsl(45,75%,60%)', rose: '315,75%,50%', white: '0,0%,50%', },
-        } as KastesSettings)
-        .set('system', { menuExpandedByDefault: false } as SystemSettings)
-        .set('jobs', {
+        },
+        system: {
+            menuExpandedByDefault: false,
+            logLevels: [],
+        },
+        jobs: {
             productCategories: [
                 { category: 'plates', description: 'Iespiedformas' },
                 { category: 'perforated paper', description: 'Perforētais papīrs' },
@@ -40,5 +43,6 @@ export const PRD_DEFAULTS: AppParams = {
             jobStates: [
                 { state: 10, description: 'Sagatavošana' },
             ]
-        } as JobsSettings),
+        }
+    }
 };

@@ -1,15 +1,11 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { Observable } from 'rxjs';
-import { map, take } from 'rxjs/operators';
-import { DbModulePreferences, MODULES, ModuleSettings, SystemPreferencesGroups } from 'src/app/interfaces';
+import { take } from 'rxjs/operators';
+import { MODULES, PreferencesDbModule, SystemPreferences } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { SystemPreferencesService } from 'src/app/services';
-
-type PreferencesFormValue = {
-  [key in SystemPreferencesGroups]: ModuleSettings;
-};
 
 @Component({
   selector: 'app-module-preferences',
@@ -21,7 +17,7 @@ export class ModulePreferencesComponent implements OnInit, CanComponentDeactivat
 
   fb: IFormBuilder;
 
-  prefForm: IFormGroup<PreferencesFormValue>;
+  prefForm: IFormGroup<SystemPreferences>;
 
   constructor(
     private systemPreferencesService: SystemPreferencesService,
@@ -29,7 +25,7 @@ export class ModulePreferencesComponent implements OnInit, CanComponentDeactivat
     fb: FormBuilder,
   ) {
     this.fb = fb;
-    this.prefForm = this.fb.group<PreferencesFormValue>(
+    this.prefForm = this.fb.group<SystemPreferences>(
       Object.assign(
         {},
         ...MODULES.map(mod => ({ [mod]: [{}] }))
@@ -55,7 +51,7 @@ export class ModulePreferencesComponent implements OnInit, CanComponentDeactivat
   }
 
   onResetAll() {
-    this.formStateFromApi().pipe(
+    this.systemPreferencesService.preferences$.pipe(
       take(1),
     ).subscribe(prefs => {
       this.prefForm.reset(prefs);
@@ -64,13 +60,7 @@ export class ModulePreferencesComponent implements OnInit, CanComponentDeactivat
     });
   }
 
-  private formStateFromApi(): Observable<PreferencesFormValue> {
-    return this.systemPreferencesService.sysPreferences$.pipe(
-      map(prefs => Object.assign({}, ...MODULES.map(mod => ({ [mod]: prefs.get(mod) })))),
-    );
-  }
-
-  private formToDb(): DbModulePreferences[] {
+  private formToDb(): PreferencesDbModule[] {
     return MODULES.map(module => ({
       module,
       settings: this.prefForm.value[module],

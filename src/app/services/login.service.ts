@@ -1,23 +1,7 @@
-/**
- * Piedāvā:
- * user$ - lietotāja info pakete
- * modules$ - pieejamie moduļi
- * isLogin$ - vai ir pieslēgums
- * login() - mēģinājums pieslēgties
- * logout() - atslēgšanās
- *
- * Klausās:
- * login()
- * logout()
- *
- *
- */
-
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { merge, Observable, Subject } from 'rxjs';
 import { map, shareReplay, take, tap } from 'rxjs/operators';
-import { APP_PARAMS } from 'src/app/app-params';
-import { AppParams, Login, SystemPreferencesMap, User } from 'src/app/interfaces';
+import { Login, User } from 'src/app/interfaces';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 
 

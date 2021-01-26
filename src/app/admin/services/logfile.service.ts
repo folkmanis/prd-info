@@ -23,10 +23,9 @@ export class LogfileService implements OnDestroy {
     private systemPreferencesService: SystemPreferencesService,
   ) { }
 
-  private _logLevelMap$: Observable<Map<number, string>> = this.systemPreferencesService.sysPreferences$
+  private _logLevelMap$: Observable<Map<number, string>> = this.systemPreferencesService.preferences$
     .pipe(
-      map(pref => (pref.get('system') as SystemSettings)),
-      map(sys => new Map<number, string>(sys.logLevels)),
+      map(pref => new Map<number, string>(pref.system.logLevels)),
     );
 
   private _logFilter$: Subject<GetLogEntriesParams> = new ReplaySubject(1);

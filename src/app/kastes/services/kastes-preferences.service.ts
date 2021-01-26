@@ -14,8 +14,8 @@ export class KastesPreferencesService {
     private prdApi: PrdApiService,
   ) { }
 
-  kastesSystemPreferences$ = this.systemPreferencesService.sysPreferences$.pipe(
-    map(sys => sys.get('kastes') as KastesSettings),
+  kastesSystemPreferences$ = this.systemPreferencesService.preferences$.pipe(
+    map(sys => sys.kastes),
   );
 
   private _userPreferences$: Observable<KastesUserPreferences>;

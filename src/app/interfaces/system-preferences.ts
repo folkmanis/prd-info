@@ -5,14 +5,20 @@ export const MODULES = ['kastes', 'system', 'jobs'] as const;
 
 export type ModuleSettings = KastesSettings | SystemSettings | JobsSettings;
 
-export interface DbModulePreferences {
+export interface PreferencesDbModule {
     module: SystemPreferencesGroups;
     settings: ModuleSettings;
 }
 
 export type SystemPreferencesGroups = typeof MODULES[number];
 
-export type SystemPreferencesMap = Map<SystemPreferencesGroups, ModuleSettings>;
+export type SystemPreferencesType = { [key in SystemPreferencesGroups]: ModuleSettings; };
+
+export abstract class SystemPreferences implements SystemPreferencesType {
+    system: SystemSettings;
+    kastes: KastesSettings;
+    jobs: JobsSettings;
+}
 
 export interface KastesSettings {
     colors: {
@@ -42,5 +48,5 @@ export interface JobsSettings {
 
 
 
-export interface SystemPreferencesResponse extends AppHttpResponseBase<DbModulePreferences> {
+export interface SystemPreferencesResponse extends AppHttpResponseBase<PreferencesDbModule> {
 }

@@ -1,11 +1,11 @@
-import { Injectable, Inject } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
-import { merge, Observable, Subject, of, combineLatest, EMPTY } from 'rxjs';
-import { map, shareReplay, take, tap, switchMap, filter, mapTo, concatMap } from 'rxjs/operators';
-import { AppParams, SystemPreferencesMap, UserModule, SystemPreferencesGroups, ModuleSettings, DbModulePreferences } from '../interfaces';
+import { Inject, Injectable } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { combineLatest, EMPTY, merge, Observable, of, Subject } from 'rxjs';
+import { concatMap, filter, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { APP_PARAMS } from '../app-params';
-import { PrdApiService } from './prd-api/prd-api.service';
+import { AppParams, PreferencesDbModule, SystemPreferences, UserModule } from '../interfaces';
 import { LoginService } from './login.service';
+import { PrdApiService } from './prd-api/prd-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,17 +20,15 @@ export class SystemPreferencesService {
   ) { }
   /** Piespiedu ielāde no servera */
   private _reloadFromServer$: Subject<void> = new Subject();
-  private newPreferences$: Subject<SystemPreferencesMap> = new Subject();
 
-  sysPreferences$: Observable<SystemPreferencesMap> = merge(
+  preferences$: Observable<SystemPreferences> = merge(
     of(this.params.defaultSystemPreferences), // sāk ar default
     this.loginService.user$.pipe( // ielādējoties user, ielādē no servera
       filter(usr => !!usr),
-      switchMap(() => this.systemPreferencesMap()),
+      switchMap(_ => this._systemPreferences()),
     ),
-    this.newPreferences$,  // Jaunas preferences
     this._reloadFromServer$.pipe(
-      switchMap(() => this.systemPreferencesMap()),
+      switchMap(_ => this._systemPreferences()),
     )
   ).pipe(
     shareReplay(1), // kešo
@@ -59,35 +57,18 @@ export class SystemPreferencesService {
     map(active => active.childMenu || [])
   );
 
-  updatePreferences(pref: DbModulePreferences[]): Observable<boolean | null> {
+  updatePreferences(pref: PreferencesDbModule[]): Observable<boolean | null> {
     return this.prdApi.systemPreferences.update(pref).pipe(
       concatMap(resp => resp > 0 ? of(true) : EMPTY),
       tap(_ => this._reloadFromServer$.next()),
     );
   }
 
-  /**
-   * Multicast Observable ar moduļa iestatījumiem
-   * @param mod Moduļa nosaukums
-   */
-  getModulePreferences<T extends ModuleSettings>(mod: SystemPreferencesGroups): Observable<T> {
-    return this.sysPreferences$.pipe(
-      map(pref => pref.get(mod) as T),
-      filter(modPref => !!modPref),
-    );
-  }
-
-  private systemPreferencesMap(): Observable<SystemPreferencesMap> {
+  private _systemPreferences(): Observable<SystemPreferences> {
     return this.prdApi.systemPreferences.get().pipe(
-      map(
-        dbpref => dbpref.reduce(
-          (acc, curr) => acc.set(curr.module, curr.settings),
-          new Map<SystemPreferencesGroups, ModuleSettings>()
-        )
-      )
+      map(dbpref => Object.assign({}, ...dbpref.map(mod => ({ [mod.module]: mod.settings }))))
     );
   }
-
 }
 
 function findModule([ev, modules]: [NavigationEnd, UserModule[]]) {

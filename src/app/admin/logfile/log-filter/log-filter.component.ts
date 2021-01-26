@@ -1,13 +1,12 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import * as moment from 'moment';
-import { Observable, Subscription } from 'rxjs';
-import { distinctUntilChanged, filter, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
-import { SystemSettings } from 'src/app/interfaces';
+import { Observable } from 'rxjs';
+import { distinctUntilChanged, filter, map, switchMap, takeUntil } from 'rxjs/operators';
+import { DestroyService } from 'src/app/library/rx';
 import { SystemPreferencesService } from 'src/app/services';
 import { GetLogEntriesParams } from '../../services/logfile-record';
 import { LogfileService, ValidDates } from '../../services/logfile.service';
-import { DestroyService } from 'src/app/library/rx';
 
 
 interface FilterForm {
@@ -37,9 +36,8 @@ export class LogFilterComponent implements OnInit, OnDestroy, AfterViewInit {
   });
   private readonly dateControl = this.filterForm.get('date');
 
-  logLevels$: Observable<{ key: number, value: string; }[]> = this.systemPreferencesService.sysPreferences$.pipe(
-    map(pref => pref.get('system')),
-    map(pref => (pref as SystemSettings).logLevels),
+  logLevels$: Observable<{ key: number, value: string; }[]> = this.systemPreferencesService.preferences$.pipe(
+    map(pref => pref.system.logLevels),
     map(levels => levels.sort((a, b) => a[0] - b[0])),
     map(levels => levels.map(level => ({ key: level[0], value: level[1] }))),
   );
