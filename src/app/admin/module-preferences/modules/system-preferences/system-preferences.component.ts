@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { Subject } from 'rxjs';
@@ -11,6 +11,7 @@ type SystemSettingsPartial = Partial<SystemSettings>;
   selector: 'app-system-preferences',
   templateUrl: './system-preferences.component.html',
   styleUrls: ['./system-preferences.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{ provide: PreferencesCardControl, useExisting: SystemPreferencesComponent }]
 })
 export class SystemPreferencesComponent implements PreferencesCardControl<SystemSettings>, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { Subject } from 'rxjs';
@@ -11,6 +11,7 @@ type KastesSettingsPartial = Partial<KastesSettings>;
   selector: 'app-kastes-preferences',
   templateUrl: './kastes-preferences.component.html',
   styleUrls: ['./kastes-preferences.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{ provide: PreferencesCardControl, useExisting: KastesPreferencesComponent }],
 })
 export class KastesPreferencesComponent implements PreferencesCardControl<KastesSettings>, OnDestroy {
