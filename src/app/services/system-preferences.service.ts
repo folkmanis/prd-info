@@ -3,7 +3,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { combineLatest, EMPTY, merge, Observable, of, Subject } from 'rxjs';
 import { concatMap, filter, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { APP_PARAMS } from '../app-params';
-import { AppParams, PreferencesDbModule, SystemPreferences, UserModule } from '../interfaces';
+import { AppParams, MODULES, PreferencesDbModule, SystemPreferences, UserModule } from '../interfaces';
 import { LoginService } from './login.service';
 import { PrdApiService } from './prd-api/prd-api.service';
 
@@ -21,17 +21,23 @@ export class SystemPreferencesService {
   /** Piespiedu ielāde no servera */
   private _reloadFromServer$: Subject<void> = new Subject();
 
+  private readonly _preferencesUpdate$ = new Subject<PreferencesDbModule[]>();
+
   preferences$: Observable<SystemPreferences> = merge(
     of(this.params.defaultSystemPreferences), // sāk ar default
-    this.loginService.user$.pipe( // ielādējoties user, ielādē no servera
-      filter(usr => !!usr),
-      switchMap(_ => this._systemPreferences()),
+    this.loginService.user$.pipe( // mainoties user, ielādē no servera
+      switchMap(usr => usr ? this._systemPreferences() : of(this.params.defaultSystemPreferences)),
     ),
     this._reloadFromServer$.pipe(
       switchMap(_ => this._systemPreferences()),
+    ),
+    this._preferencesUpdate$.pipe(
+      concatMap(pref => this.prdApi.systemPreferences.update(pref)),
+      concatMap(resp => resp > 0 ? of(true) : EMPTY),
+      switchMap(_ => this._systemPreferences()),
     )
   ).pipe(
-    shareReplay(1), // kešo
+    shareReplay(1),
   );
   /**
    * Lietotājam pieejamie Moduļi
@@ -57,11 +63,14 @@ export class SystemPreferencesService {
     map(active => active.childMenu || [])
   );
 
-  updatePreferences(pref: PreferencesDbModule[]): Observable<boolean | null> {
-    return this.prdApi.systemPreferences.update(pref).pipe(
-      concatMap(resp => resp > 0 ? of(true) : EMPTY),
-      tap(_ => this._reloadFromServer$.next()),
+  updatePreferences(pref: SystemPreferences) {
+    this._preferencesUpdate$.next(
+      MODULES.map(module => ({
+        module,
+        settings: pref[module],
+      }))
     );
+
   }
 
   private _systemPreferences(): Observable<SystemPreferences> {

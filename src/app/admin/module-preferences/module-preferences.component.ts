@@ -2,9 +2,10 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { FormBuilder } from '@angular/forms';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
-import { MODULES, PreferencesDbModule, SystemPreferences } from 'src/app/interfaces';
+import { takeUntil } from 'rxjs/operators';
+import { MODULES, SystemPreferences } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
+import { DestroyService } from 'src/app/library/rx';
 import { SystemPreferencesService } from 'src/app/services';
 
 @Component({
@@ -12,6 +13,7 @@ import { SystemPreferencesService } from 'src/app/services';
   templateUrl: './module-preferences.component.html',
   styleUrls: ['./module-preferences.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [DestroyService]
 })
 export class ModulePreferencesComponent implements OnInit, CanComponentDeactivate {
 
@@ -19,9 +21,12 @@ export class ModulePreferencesComponent implements OnInit, CanComponentDeactivat
 
   prefForm: IFormGroup<SystemPreferences>;
 
+  private initialValue: SystemPreferences | undefined;
+
   constructor(
     private systemPreferencesService: SystemPreferencesService,
     private cd: ChangeDetectorRef,
+    private destroy$: DestroyService,
     fb: FormBuilder,
   ) {
     this.fb = fb;
@@ -34,7 +39,14 @@ export class ModulePreferencesComponent implements OnInit, CanComponentDeactivat
   }
 
   ngOnInit() {
-    this.onResetAll();
+    this.systemPreferencesService.preferences$.pipe(
+      takeUntil(this.destroy$),
+    ).subscribe(prefs => {
+      this.prefForm.reset(prefs);
+      this.prefForm.markAsPristine();
+      this.initialValue = prefs;
+      this.cd.markForCheck();
+    });
   }
 
   canDeactivate(): boolean | Observable<boolean> {
@@ -43,28 +55,13 @@ export class ModulePreferencesComponent implements OnInit, CanComponentDeactivat
 
   onSaveAll() {
     this.systemPreferencesService.updatePreferences(
-      this.formToDb()
-    ).subscribe(_ => {
-      this.prefForm.markAsPristine();
-      this.cd.markForCheck();
-    });
+      this.prefForm.value
+    );
   }
 
   onResetAll() {
-    this.systemPreferencesService.preferences$.pipe(
-      take(1),
-    ).subscribe(prefs => {
-      this.prefForm.reset(prefs);
-      this.prefForm.markAsPristine();
-      this.cd.markForCheck();
-    });
-  }
-
-  private formToDb(): PreferencesDbModule[] {
-    return MODULES.map(module => ({
-      module,
-      settings: this.prefForm.value[module],
-    }));
+    this.prefForm.reset(this.initialValue);
+    this.prefForm.markAsPristine();
   }
 
 }
