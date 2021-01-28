@@ -19,7 +19,7 @@ export class ProductsListComponent implements OnInit {
   ) { }
   large$ = this.layout.isLarge$;
 
-  displayedColumns = ['name', 'category', 'inactive'];
+  displayedColumns = ['name', 'category'];
 
   private filter = new BehaviorSubject('');
 

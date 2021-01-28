@@ -27,7 +27,7 @@ export class CustomersListComponent implements OnInit, OnDestroy {
     map(([fltr, cust]) => cust.filter(c => c.CustomerName.toUpperCase().includes(fltr)))
   );
   large$ = this.layOutService.isLarge$;
-  displayedColumns = ['CustomerName', 'disabled'];
+  displayedColumns = ['CustomerName'];
 
   ngOnInit(): void {
   }
