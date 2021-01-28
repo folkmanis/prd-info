@@ -17,6 +17,9 @@
         &.selected {
             background-color: mat-color($primary, 50);
         }
+        &.disabled {
+            opacity: 0.5;
+        }
     }
 }
 
@@ -33,7 +36,7 @@
 }
 
 @mixin simple-form-table() {
-    table.simple-form-table {
+    .simple-form-table table {
         width: 100%;
         cursor: pointer;
     }
