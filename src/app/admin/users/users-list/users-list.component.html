@@ -1,10 +1,10 @@
 <app-simple-list-container [large]="large$ | async" (filter)="filter$.next($event)" plusButton filterInput>
 
-    <table mat-table [dataSource]="users$" class="simple-form-table">
+    <table mat-table [dataSource]="users$">
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let user; columns: displayedColumns;" [routerLink]="user.username"
-            routerLinkActive="selected"></tr>
+            [class.disabled]="user.userDisabled" routerLinkActive="selected"></tr>
 
         <ng-container matColumnDef="username">
             <th mat-header-cell *matHeaderCellDef> Lietotājvārds </th>
