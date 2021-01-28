@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, SimpleChanges, Input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 /**
  * Meklē fragmentu steksta rindā un izceļ ar stiliem
  *
@@ -8,47 +8,43 @@ import { Component, OnInit, OnChanges, SimpleChanges, Input } from '@angular/cor
  */
 interface Chunk {
   text: string;
-  style?: { [key: string]: string; };
+  styled: boolean;
 }
 
 @Component({
   selector: 'app-tagged-string',
-  template: `<span *ngFor="let chunk of chunks" [ngStyle]="chunk.style">{{chunk.text}}</span>`,
+  template: `<span *ngFor="let chunk of chunks" [style]="chunk.styled ? style : undefined">{{chunk.text}}</span>`,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TaggedStringComponent implements OnInit, OnChanges {
-  @Input() text: string;
-  @Input() search: string;
-  @Input('style') set st(s: { [key: string]: string; }) {
-    this.style = s;
+export class TaggedStringComponent {
+  @Input() set text(text: string) {
+    this._text = text;
+    this.parseValues();
   }
+  get text(): string { return this._text; }
+  private _text = '';
 
-  chunks: Chunk[];
-  style: { [key: string]: string; } = {
+  @Input() set search(search: string) {
+    this._search = search;
+    this.parseValues();
+  }
+  get search(): string | undefined { return this._search; }
+  private _search: string | undefined;
+
+  @Input() set style(style: { [key: string]: string; }) {
+    this._style = style;
+  }
+  get style(): { [key: string]: string; } {
+    return this._style;
+  }
+  private _style: { [key: string]: string; } = {
     'font-weight': 'bold',
     color: 'red',
   };
+
+  chunks: Chunk[] = [];
+
   constructor() { }
-
-  ngOnChanges(changes: SimpleChanges) {
-    for (const key in changes) {
-      if (!changes.hasOwnProperty(key)) {
-        continue;
-      }
-      switch (key) {
-        case 'text':
-          this.text = changes[key].currentValue;
-          break;
-        case 'search':
-          this.search = changes[key].currentValue;
-          break;
-      }
-    }
-    this.parseValues();
-  }
-
-  ngOnInit() {
-    this.parseValues();
-  }
 
   parseValues() {
     this.chunks = [];
@@ -58,7 +54,7 @@ export class TaggedStringComponent implements OnInit, OnChanges {
     }
 
     if (!this.search) {
-      this.chunks.push({ text: this.text });
+      this.chunks.push({ text: this.text, styled: false });
       return;
     }
 
@@ -66,6 +62,7 @@ export class TaggedStringComponent implements OnInit, OnChanges {
     while (remainder.length > 0) {
       remainder = this.splitStr(remainder);
     }
+
   }
   /**
    * Meklē rindu this.search rindā str.
@@ -75,17 +72,18 @@ export class TaggedStringComponent implements OnInit, OnChanges {
    * @param str teksta rinda apstrādei
    */
   private splitStr(str: string): string {
-    const search = this.search.toUpperCase();
-    const idx = str.toUpperCase().indexOf(search);
+
+    const idx = str.toUpperCase().indexOf(this.search.toUpperCase());
+
     if (idx === -1) { // nav atrasts
-      this.chunks.push({ text: str });
+      this.chunks.push({ text: str, styled: false });
       return ''; // atlikumā tukša rinda
     }
     if (idx > 0) {
-      this.chunks.push({ text: str.slice(0, idx) });
+      this.chunks.push({ text: str.slice(0, idx), styled: false });
     }
-    const end = search.length + idx;
-    this.chunks.push({ text: str.slice(idx, end), style: this.style });
+    const end = this.search.length + idx;
+    this.chunks.push({ text: str.slice(idx, end), styled: true });
     if (end <= str.length) {
       return str.slice(end);
     }
