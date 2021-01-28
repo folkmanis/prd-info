@@ -4,12 +4,9 @@
             <div [style.fontWeight]="dataItem.JDFJobID === search ? 'bold' : undefined " class="jobId">
                 {{dataItem.JDFJobID}}
             </div>
-            <div *ngIf="search.length >= 3; else nameElse">
+            <div>
                 <app-tagged-string [text]="dataItem.DescriptiveName" [search]="search"></app-tagged-string>
             </div>
-            <ng-template #nameElse>
-                {{dataItem.DescriptiveName}}
-            </ng-template>
             <div class="search-table">
                 <div *ngFor="let row of dataItem.Archives">
                     <div class="table-element table-location" [appCopyClipboard]="row.Location">
