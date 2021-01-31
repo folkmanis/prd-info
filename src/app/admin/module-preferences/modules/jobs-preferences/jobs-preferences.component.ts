@@ -6,7 +6,7 @@ import { EMPTY, of, Subject } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { JobsSettings, ProductCategory } from 'src/app/interfaces';
 import { PreferencesCardControl } from '../../preferences-card-control';
-import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
+import { CategoryDialogComponent } from './job-categories/category-dialog/category-dialog.component';
 
 type JobsSettingsControls = Pick<JobsSettings, 'productCategories'>;
 
@@ -23,9 +23,7 @@ export class JobsPreferencesComponent implements PreferencesCardControl<JobsSett
     return this.controls.value;
   }
   set value(obj: JobsSettingsControls) {
-    this.controls.setControl('productCategories',
-      this.fb.array<ProductCategory>(obj.productCategories)
-    );
+    this.controls.patchValue(obj);
     this.stateChanges.next();
   }
 
@@ -36,33 +34,15 @@ export class JobsPreferencesComponent implements PreferencesCardControl<JobsSett
   stateChanges = new Subject<void>();
 
   constructor(
-    private dialog: MatDialog,
     fb: FormBuilder,
     private changeDetector: ChangeDetectorRef,
   ) {
     this.fb = fb;
     this.controls = this.fb.group<JobsSettingsControls>(
       {
-        productCategories: this.fb.array<ProductCategory>([]),
+        productCategories: [],
       }
     );
-  }
-
-  get productCategories() { return this.controls.controls.productCategories as IFormArray<ProductCategory>; }
-
-  onNewCategory(): void {
-    const dialogRef = this.dialog.open<CategoryDialogComponent, any, ProductCategory | undefined>(CategoryDialogComponent);
-    dialogRef.afterClosed().pipe(
-      mergeMap(resp => resp ? of(resp) : EMPTY),
-    ).subscribe(cat => {
-      this.productCategories.push(this.fb.group(cat));
-      this.stateChanges.next();
-    });
-  }
-
-  onRemoveCategory(idx: number) {
-    this.productCategories.removeAt(idx);
-    this.stateChanges.next();
   }
 
   ngOnInit() {

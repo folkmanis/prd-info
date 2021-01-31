@@ -28,6 +28,7 @@
     $config: mat-get-typography-config($config-or-theme);
 
     .app-table tbody tr {
+        cursor: default;
         &:hover {
             font-weight: 800;
             // font-weight: mat-font-weight($config, body+3);
