@@ -1,6 +1,6 @@
 <section [formGroup]="controls">
 
-    <app-job-categories formControlName="productCategories">
+    <app-job-categories formControlName="productCategories" [columns]="['category', 'description']">
         Kategorijas
     </app-job-categories>
 

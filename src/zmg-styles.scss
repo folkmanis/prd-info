@@ -54,6 +54,13 @@ $warn: map-get($zmg-app-theme, warn);
   }
 }
 
+@mixin zmg-table() {
+  table.app-table {
+    width: 100%;
+    cursor: pointer;
+  }
+}
+
 @mixin zmg-table-theme($theme) {
   // Extracts the color and typography configurations from the theme.
   $color: mat-get-color-config($theme);
@@ -67,4 +74,6 @@ $warn: map-get($zmg-app-theme, warn);
   @if $typography != null {
     @include zmg-table-typography($typography);
   }
+
+  @include zmg-table();
 }
