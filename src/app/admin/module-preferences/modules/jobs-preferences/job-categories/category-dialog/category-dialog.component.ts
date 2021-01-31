@@ -1,19 +1,18 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { JobsSettings, ProductCategory } from 'src/app/interfaces';
-import { IFormBuilder, IControlValueAccessor, IFormArray, IFormGroup } from '@rxweb/types';
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { IFormGroup } from '@rxweb/types';
+import { ProductCategory } from 'src/app/interfaces';
 
 @Component({
   selector: 'app-category-dialog',
   templateUrl: './category-dialog.component.html',
   styleUrls: ['./category-dialog.component.scss']
 })
-export class CategoryDialogComponent implements OnInit {
-
+export class CategoryDialogComponent {
 
   constructor(
-    private dialogRef: MatDialogRef<CategoryDialogComponent>,
+    private dialogRef: MatDialogRef<CategoryDialogComponent, ProductCategory>,
     @Inject(MAT_DIALOG_DATA) private data: ProductCategory,
   ) { }
 
@@ -21,9 +20,6 @@ export class CategoryDialogComponent implements OnInit {
     category: new FormControl({ value: this.data?.category, disabled: this.data }, { validators: Validators.required }),
     description: new FormControl(this.data?.description),
   }) as IFormGroup<ProductCategory>;
-
-  ngOnInit(): void {
-  }
 
   onSubmit() {
     this.dialogRef.close(this.productForm.value);

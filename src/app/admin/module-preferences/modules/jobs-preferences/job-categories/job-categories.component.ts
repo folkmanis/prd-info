@@ -1,11 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, Input, OnDestroy } from '@angular/core';
-import { IFormBuilder, IControlValueAccessor, IFormArray } from '@rxweb/types';
-import { JobsSettings, ProductCategory } from 'src/app/interfaces';
-import { ControlValueAccessor, FormBuilder, NgControl } from '@angular/forms';
+import { ComponentType } from '@angular/cdk/portal';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { NgControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { EMPTY, of, BehaviorSubject, Subject, Observable, merge } from 'rxjs';
-import { map, mergeAll, mergeMap, share, shareReplay, skip, takeUntil, tap } from 'rxjs/operators';
-import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
+import { IControlValueAccessor } from '@rxweb/types';
+import { BehaviorSubject, EMPTY, merge, Observable, of, Subject } from 'rxjs';
+import { map, mergeAll, mergeMap, shareReplay, skip, takeUntil, tap } from 'rxjs/operators';
 import { DestroyService } from 'src/app/library/rx';
 
 enum Action { ADD, REMOVE, UPDATE }
@@ -18,20 +17,30 @@ interface UpdateAction<T> { type: Action; data?: T; idx?: number; }
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DestroyService],
 })
-export class JobCategoriesComponent implements OnInit, OnDestroy, IControlValueAccessor<ProductCategory[]> {
-@Input() columns: string[] = [];
+export class JobCategoriesComponent<T> implements OnInit, OnDestroy, IControlValueAccessor<T[]> {
+  @Input() set columns(columns: (keyof T)[]) {
+    this._columns = columns;
+    this.displayedColumns = ['button', ...columns];
+  }
+  get columns(): (keyof T)[] { return this._columns; }
+  private _columns: (keyof T)[] = [];
 
-  private updateFn: (obj: ProductCategory[]) => void;
+  @Input() editDialog: ComponentType<any>;
+
+  @Input() set disabled(disabled: boolean) { this._disabled = disabled; }
+  get disabled(): boolean { return this._disabled; }
+  private _disabled = false;
+
+  private updateFn: (obj: T[]) => void;
   private touchedFn: () => void;
 
-  displayedColumns: (keyof ProductCategory | 'button')[] = ['button', 'category', 'description'];
+  displayedColumns: (keyof T | 'button')[] = [];
 
-  disabled = false;
 
-  private _initialCategories$ = new BehaviorSubject<ProductCategory[]>([]);
-  private _updateData$ = new Subject<UpdateAction<ProductCategory>>();
+  private _initialCategories$ = new BehaviorSubject<T[]>([]);
+  private _updateData$ = new Subject<UpdateAction<T>>();
 
-  categories$: Observable<ProductCategory[]> = this._initialCategories$.pipe(
+  categories$: Observable<T[]> = this._initialCategories$.pipe(
     map(categories => merge(
       of(categories),
       this._updateData$.pipe(
@@ -51,11 +60,11 @@ export class JobCategoriesComponent implements OnInit, OnDestroy, IControlValueA
     control.valueAccessor = this;
   }
 
-  writeValue(obj: ProductCategory[]) {
+  writeValue(obj: T[]) {
     this._initialCategories$.next(obj || []);
   }
 
-  registerOnChange(fn: (obj: ProductCategory[]) => void) {
+  registerOnChange(fn: (obj: T[]) => void) {
     this.updateFn = fn;
   }
 
@@ -81,7 +90,8 @@ export class JobCategoriesComponent implements OnInit, OnDestroy, IControlValueA
   }
 
   onAddRow() {
-    const dialogRef = this.dialog.open<CategoryDialogComponent, any, ProductCategory | undefined>(CategoryDialogComponent);
+    if (!this.editDialog) { return; }
+    const dialogRef = this.dialog.open<any, T, T | undefined>(this.editDialog);
     dialogRef.afterClosed().pipe(
       tap(_ => this.touchedFn()),
       mergeMap(resp => resp ? of(resp) : EMPTY),
@@ -91,10 +101,10 @@ export class JobCategoriesComponent implements OnInit, OnDestroy, IControlValueA
     });
   }
 
-  onEditRow(obj: ProductCategory, idx: number) {
-    if (this.disabled) { return; }
+  onEditRow(obj: T, idx: number) {
+    if (this.disabled || !this.editDialog) { return; }
     const dialogRef = this.dialog
-      .open<CategoryDialogComponent, ProductCategory, ProductCategory | undefined>(CategoryDialogComponent, { data: obj });
+      .open<any, T, T | undefined>(this.editDialog, { data: obj });
     dialogRef.afterClosed().pipe(
       tap(_ => this.touchedFn()),
       mergeMap(resp => resp ? of(resp) : EMPTY),
@@ -109,7 +119,7 @@ export class JobCategoriesComponent implements OnInit, OnDestroy, IControlValueA
     this.touchedFn();
   }
 
-  private updateData<T>({ type, data, idx }: UpdateAction<T>, dataArray: T[]): T[] {
+  private updateData({ type, data, idx }: UpdateAction<T>, dataArray: T[]): T[] {
     if (type === Action.ADD) {
       return [...dataArray, data];
     }
@@ -119,7 +129,6 @@ export class JobCategoriesComponent implements OnInit, OnDestroy, IControlValueA
     if (type === Action.UPDATE && typeof idx === 'number' && data) {
       return dataArray.map((d, i) => i === idx ? data : d);
     }
-
     return dataArray;
   }
 

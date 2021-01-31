@@ -8,7 +8,7 @@
             <mat-label>
                 Kategorijas nosaukums
             </mat-label>
-            <input type="text" matInput formControlName="category">
+            <input type="text" matInput formControlName="category" required>
         </mat-form-field>
 
         <mat-form-field>
@@ -23,7 +23,7 @@
         <button mat-raised-button [mat-dialog-close]="undefined">
             ATCELT
         </button>
-        <button mat-raised-button type="submit" color="accent" [disabled]="!productForm.valid">
+        <button mat-raised-button type="submit" color="accent" [disabled]="!productForm.valid || productForm.pristine">
             OK
         </button>
     </mat-dialog-actions>

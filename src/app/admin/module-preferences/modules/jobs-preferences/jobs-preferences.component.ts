@@ -27,6 +27,8 @@ export class JobsPreferencesComponent implements PreferencesCardControl<JobsSett
     this.stateChanges.next();
   }
 
+  categoryDialog = CategoryDialogComponent;
+
   private fb: IFormBuilder;
 
   controls: IFormGroup<JobsSettingsControls>;
