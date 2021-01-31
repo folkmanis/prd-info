@@ -1,7 +1,8 @@
 <section [formGroup]="controls">
 
-    <app-job-categories formControlName="productCategories" [columns]="['category', 'description']" [editDialog]="categoryDialog">
+    <app-simple-list-table formControlName="productCategories" [columns]="['category', 'description']"
+        [editDialog]="categoryDialog">
         Kategorijas
-    </app-job-categories>
+    </app-simple-list-table>
 
 </section>

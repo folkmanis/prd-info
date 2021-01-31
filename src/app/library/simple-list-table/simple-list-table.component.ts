@@ -11,13 +11,13 @@ enum Action { ADD, REMOVE, UPDATE }
 interface UpdateAction<T> { type: Action; data?: T; idx?: number; }
 
 @Component({
-  selector: 'app-job-categories',
-  templateUrl: './job-categories.component.html',
-  styleUrls: ['./job-categories.component.scss'],
+  selector: 'app-simple-list-table',
+  templateUrl: './simple-list-table.component.html',
+  styleUrls: ['./simple-list-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DestroyService],
 })
-export class JobCategoriesComponent<T> implements OnInit, OnDestroy, IControlValueAccessor<T[]> {
+export class SimpleListTableComponent<T>  implements OnInit, OnDestroy, IControlValueAccessor<T[]> {
   @Input() set columns(columns: (keyof T)[]) {
     this._columns = columns;
     this.displayedColumns = ['button', ...columns];
@@ -37,14 +37,14 @@ export class JobCategoriesComponent<T> implements OnInit, OnDestroy, IControlVal
   displayedColumns: (keyof T | 'button')[] = [];
 
 
-  private _initialCategories$ = new BehaviorSubject<T[]>([]);
+  private _initialData$ = new BehaviorSubject<T[]>([]);
   private _updateData$ = new Subject<UpdateAction<T>>();
 
-  categories$: Observable<T[]> = this._initialCategories$.pipe(
-    map(categories => merge(
-      of(categories),
+  data$: Observable<T[]> = this._initialData$.pipe(
+    map(data => merge(
+      of(data),
       this._updateData$.pipe(
-        map(upd => categories = this.updateData(upd, categories))
+        map(upd => data = this.updateData(upd, data))
       ),
     )),
     mergeAll(),
@@ -61,7 +61,7 @@ export class JobCategoriesComponent<T> implements OnInit, OnDestroy, IControlVal
   }
 
   writeValue(obj: T[]) {
-    this._initialCategories$.next(obj || []);
+    this._initialData$.next(obj || []);
   }
 
   registerOnChange(fn: (obj: T[]) => void) {
@@ -78,11 +78,11 @@ export class JobCategoriesComponent<T> implements OnInit, OnDestroy, IControlVal
   }
 
   ngOnInit(): void {
-    this.categories$.pipe(
+    this.data$.pipe(
       skip(1),
       takeUntil(this.destroy$)
     )
-      .subscribe(categories => this.updateFn(categories));
+      .subscribe(data => this.updateFn(data));
   }
 
   ngOnDestroy(): void {
@@ -131,6 +131,5 @@ export class JobCategoriesComponent<T> implements OnInit, OnDestroy, IControlVal
     }
     return dataArray;
   }
-
 
 }

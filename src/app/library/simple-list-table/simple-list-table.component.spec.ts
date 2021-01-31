@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { JobCategoriesComponent } from './job-categories.component';
+import { SimpleListTableComponent } from './simple-list-table.component';
 
-describe('JobCategoriesComponent', () => {
-  let component: JobCategoriesComponent;
-  let fixture: ComponentFixture<JobCategoriesComponent>;
+describe('SimpleListTableComponent', () => {
+  let component: SimpleListTableComponent;
+  let fixture: ComponentFixture<SimpleListTableComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ JobCategoriesComponent ]
+      declarations: [ SimpleListTableComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(JobCategoriesComponent);
+    fixture = TestBed.createComponent(SimpleListTableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

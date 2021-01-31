@@ -6,7 +6,7 @@ import { EMPTY, of, Subject } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { JobsSettings, ProductCategory } from 'src/app/interfaces';
 import { PreferencesCardControl } from '../../preferences-card-control';
-import { CategoryDialogComponent } from './job-categories/category-dialog/category-dialog.component';
+import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
 
 type JobsSettingsControls = Pick<JobsSettings, 'productCategories'>;
 
