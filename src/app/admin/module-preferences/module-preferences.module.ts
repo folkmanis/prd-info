@@ -10,6 +10,7 @@ import { CategoryDialogComponent } from './modules/jobs-preferences/category-dia
 import { ModuleGroupComponent } from './module-group/module-group.component';
 import { ColorSliderComponent } from './modules/kastes-preferences/color-slider/color-slider.component';
 import { CardTitleDirective } from './card-title.directive';
+import { UnitsDialogComponent } from './modules/jobs-preferences/units-dialog/units-dialog.component';
 
 
 
@@ -24,6 +25,7 @@ import { CardTitleDirective } from './card-title.directive';
     SystemPreferencesComponent,
     ColorSliderComponent,
     CardTitleDirective,
+    UnitsDialogComponent,
   ],
   imports: [
     CommonModule,

@@ -2,7 +2,7 @@
 
     <ng-container *ngFor="let col of columns" [matColumnDef]="col">
         <td mat-cell *matCellDef="let data">
-            <span [class.disabled]="disabled">
+            <span [class.disabled]="disabled || data.disabled">
                 {{data[col]}}
             </span>
         </td>

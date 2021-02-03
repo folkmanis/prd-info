@@ -41,9 +41,16 @@ export interface JobState {
     description: string;
 }
 
+export interface ProductUnit {
+    shortName: string;
+    description: string;
+    disabled: boolean;
+}
+
 export interface JobsSettings {
     productCategories: ProductCategory[];
     jobStates: JobState[];
+    productUnits: ProductUnit[];
 }
 
 

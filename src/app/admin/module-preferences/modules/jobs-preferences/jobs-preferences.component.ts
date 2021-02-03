@@ -1,14 +1,13 @@
-import { ChangeDetectionStrategy, OnInit, Component, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { IFormArray, IFormBuilder, IFormGroup } from '@rxweb/types';
-import { EMPTY, of, Subject } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
-import { JobsSettings, ProductCategory } from 'src/app/interfaces';
+import { IFormBuilder, IFormGroup } from '@rxweb/types';
+import { Subject } from 'rxjs';
+import { JobsSettings } from 'src/app/interfaces';
 import { PreferencesCardControl } from '../../preferences-card-control';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
+import { UnitsDialogComponent } from './units-dialog/units-dialog.component';
 
-type JobsSettingsControls = Pick<JobsSettings, 'productCategories'>;
+type JobsSettingsControls = Pick<JobsSettings, 'productCategories' | 'productUnits'>;
 
 @Component({
   selector: 'app-jobs-preferences',
@@ -28,6 +27,7 @@ export class JobsPreferencesComponent implements PreferencesCardControl<JobsSett
   }
 
   categoryDialog = CategoryDialogComponent;
+  unitsDialog = UnitsDialogComponent;
 
   private fb: IFormBuilder;
 
@@ -43,6 +43,7 @@ export class JobsPreferencesComponent implements PreferencesCardControl<JobsSett
     this.controls = this.fb.group<JobsSettingsControls>(
       {
         productCategories: [],
+        productUnits: [],
       }
     );
   }

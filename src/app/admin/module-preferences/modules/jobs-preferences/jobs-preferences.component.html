@@ -5,4 +5,9 @@
         Kategorijas
     </app-simple-list-table>
 
+    <app-simple-list-table formControlName="productUnits" [columns]="['shortName','description']"
+        [editDialog]="unitsDialog">
+        Mērvienības
+    </app-simple-list-table>
+
 </section>

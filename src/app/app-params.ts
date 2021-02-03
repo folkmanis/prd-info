@@ -42,7 +42,8 @@ export const PRD_DEFAULTS: AppParams = {
             ],
             jobStates: [
                 { state: 10, description: 'Sagatavošana' },
-            ]
+            ],
+            productUnits: [],
         }
     }
 };
