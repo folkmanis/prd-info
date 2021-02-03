@@ -11,6 +11,7 @@ export interface CustomerProduct {
     productName: string;
     customerName: string;
     price: number;
+    units: string;
 }
 
 export interface Product {
@@ -18,6 +19,7 @@ export interface Product {
     inactive: boolean;
     category: string;
     name: string;
+    units: string;
     description?: string;
     prices?: ProductPrice[];
 }

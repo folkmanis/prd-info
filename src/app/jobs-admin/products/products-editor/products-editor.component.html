@@ -5,7 +5,7 @@
         <h2 *ngIf="isNew; else existingProduct">
             <mat-form-field>
                 <mat-label>Nosaukums</mat-label>
-                <input matInput formControlName="name">
+                <input matInput formControlName="name" required>
                 <mat-error *ngIf="form.controls.name.hasError('required')">
                     Jānorāda obligāti
                 </mat-error>
@@ -24,7 +24,7 @@
         <section>
             <mat-form-field>
                 <mat-label>Kategorija</mat-label>
-                <mat-select formControlName="category">
+                <mat-select formControlName="category" required>
                     <mat-option *ngFor="let category of categories$ | async" [value]="category.category">
                         {{category.description}}
                     </mat-option>
@@ -37,6 +37,17 @@
                 Neaktīvs
             </mat-checkbox>
         </section>
+        <!-- Mērvienības -->
+        <section>
+            <mat-form-field>
+                <mat-label>Mērvienības</mat-label>
+                <mat-select formControlName="units" required>
+                    <mat-option *ngFor="let unit of units$ | async" [value]="unit.shortName">
+                        {{unit.shortName}} ({{unit.description}})
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </section>
         <!-- Apraksts -->
         <section>
             <mat-form-field>
@@ -46,7 +57,8 @@
         </section>
         <!-- Cenu tabula -->
         <section>
-            <app-product-prices formGroupName="prices" [customers]="customers$ | async" (addPrice)="onAddPrice(form.controls.prices)"
+            <app-product-prices formGroupName="prices" [customers]="customers$ | async"
+                (addPrice)="onAddPrice(form.controls.prices)"
                 (removePrice)="onDeletePrice(form.controls.prices, $event)">
             </app-product-prices>
         </section>

@@ -38,6 +38,12 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
                 }
             ],
             description: [undefined],
+            units: [
+                undefined,
+                {
+                    validators: Validators.required,
+                }
+            ],
             prices: this.fb.array(
                 [],
                 { validators: [this.duplicateCustomersValidator] }

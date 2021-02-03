@@ -7,6 +7,8 @@ import { Product, ProductPrice } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { CustomersService, ProductsService } from 'src/app/services';
 import { ProductsFormSource } from '../services/products-form-source';
+import { SystemPreferencesService } from 'src/app/services/system-preferences.service';
+import { map, pluck } from 'rxjs/operators';
 
 @Component({
   selector: 'app-products-editor',
@@ -19,6 +21,7 @@ export class ProductsEditorComponent implements OnInit, CanComponentDeactivate {
   constructor(
     private customersService: CustomersService,
     private productService: ProductsService,
+    private systemPreferences: SystemPreferencesService,
     private fb: FormBuilder,
   ) { }
 
@@ -27,6 +30,10 @@ export class ProductsEditorComponent implements OnInit, CanComponentDeactivate {
 
   readonly categories$ = this.productService.categories$;
   readonly customers$ = this.customersService.customers$;
+  readonly units$ = this.systemPreferences.preferences$.pipe(
+    pluck('jobs', 'productUnits'),
+    map(units => units.filter(u => !u.disabled)),
+  );
 
   get isNew(): boolean { return this.formSource.isNew; }
 
