@@ -5,6 +5,7 @@
             <th *ngIf="isEnabled" class="column-action"></th>
             <th class="column-name">Prece</th>
             <th class="column-count">Skaits</th>
+            <th class="column-count">Mērvienība</th>
             <th class="column-price">Cena</th>
             <th class="column-total">Summa</th>
             <th class="column-comments">Piezīmes</th>
@@ -30,6 +31,14 @@
                 <mat-form-field>
                     <input matInput type="number" formControlName="count">
                 </mat-form-field>
+            </td>
+            <!-- Mērvienība -->
+            <td class="column-count">
+                    <mat-select formControlName="units">
+                        <mat-option *ngFor="let unit of units$ | async" [value]="unit.shortName">
+                            {{unit.shortName}}
+                        </mat-option>
+                    </mat-select>
             </td>
             <!-- Cena -->
             <td class="column-price">

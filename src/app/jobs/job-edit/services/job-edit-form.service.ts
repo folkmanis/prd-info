@@ -7,6 +7,8 @@ import { CustomersService } from 'src/app/services/customers.service';
 import { IFormBuilder, IFormGroup, IFormControl } from '@rxweb/types';
 import { ProductsService } from 'src/app/services';
 
+export const DEFAULT_UNITS = 'gab.';
+
 @Injectable()
 export class JobEditFormService {
   fb: IFormBuilder;
@@ -135,6 +137,12 @@ export class JobEditFormService {
           validators: [Validators.min(0)],
         }
       ],
+      units: [
+        product?.units || DEFAULT_UNITS,
+        {
+          validators: [Validators.required],
+        }
+      ],
       comment: [product?.comment],
     });
     enabled ? _group.enable() : _group.disable();
@@ -153,12 +161,12 @@ export class JobEditFormService {
         return null;
       }
       /* ja pirmoreiz, vai mainās produkta nosaukums */
-      if ((prevVal === undefined || prevVal.name !== control.value.name)) {
-        const prodPrice = prod?.find(product => product.productName === control.value.name)?.price;
+      if (prevVal === undefined || prevVal.name !== control.value.name) {
+        const customerProduct = prod?.find(product => product.productName === control.value.name);
         /* un ja ir atrasta cena */
-        if (prodPrice) {
-          prevVal = { ...control.value, price: prodPrice }; // saglabā uzstādīto produktu
-          control.controls.price.setValue(prodPrice); // un nomaina cenu ievades laukā
+        if (customerProduct) {
+          prevVal = { ...control.value, price: customerProduct.price || 0, units: customerProduct.units };
+          control.setValue(prevVal);
         }
       }
       return null;
