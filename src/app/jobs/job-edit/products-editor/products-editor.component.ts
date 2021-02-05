@@ -33,11 +33,11 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
 
   private _customerProducts: CustomerProduct[] = [];
 
-  stateChanges = new Subject<void>();
+  readonly stateChanges = new Subject<void>();
 
   prodFormArray: IFormArray<JobProduct>;
 
-  units$ = this.sysPref.preferences$.pipe(
+  readonly units$ = this.sysPref.preferences$.pipe(
     pluck('jobs', 'productUnits'),
     switchMap(units => from(units).pipe(
       filter(unit => !unit.disabled),
@@ -61,13 +61,6 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
     private sysPref: SystemPreferencesService,
   ) { }
 
-  get isEnabled(): boolean {
-    return !this.prodFormArray.disabled;
-  }
-  get isValid(): boolean {
-    return !this.prodFormArray.disabled && this.prodFormArray.valid;
-  }
-
   ngOnInit(): void {
     this.prodFormArray = this.controlContainer.control as IFormArray<JobProduct>;
     this.setAllValidators(this.prodFormArray);
@@ -79,7 +72,7 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
   }
 
   onAddNewProduct() {
-    if (!this.isValid) { return; }
+    if (!this.prodFormArray.valid) { return; }
     const prodForm = this.jobFormService.productFormGroup();
     this.setProductGroupValidators(prodForm);
     this.prodFormArray.push(prodForm);

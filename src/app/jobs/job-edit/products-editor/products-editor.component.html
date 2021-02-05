@@ -1,8 +1,10 @@
+
+
 <table class="mat-elevation-z4" [formGroup]="prodFormArray">
 
     <thead>
         <tr>
-            <th *ngIf="isEnabled" class="column-action"></th>
+            <th class="column-action"></th>
             <th class="column-name">Prece</th>
             <th class="column-count">Skaits</th>
             <th class="column-count">Mērvienība</th>
@@ -16,8 +18,8 @@
 
         <tr *ngFor="let prod of prodFormArray.controls; index as idx;" [formArrayName]="idx">
             <!-- Dzēšanas poga -->
-            <td *ngIf="isEnabled">
-                <button mat-icon-button (click)="removeProduct(idx)">
+            <td>
+                <button mat-icon-button (click)="removeProduct(idx)" [disabled]="prodFormArray.disabled">
                     <mat-icon>delete</mat-icon>
                 </button>
             </td>
@@ -63,8 +65,8 @@
 
     <tfoot>
         <tr>
-            <td *ngIf="isEnabled">
-                <button mat-icon-button (click)="onAddNewProduct()" [disabled]="isValid === false"
+            <td *ngIf="!prodFormArray.disabled">
+                <button mat-icon-button (click)="onAddNewProduct()" [disabled]="!prodFormArray.valid"
                     matTooltip="Ctrl-+">
                     <mat-icon>add</mat-icon>
                 </button>
