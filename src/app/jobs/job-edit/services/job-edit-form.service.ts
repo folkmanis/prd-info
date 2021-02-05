@@ -116,7 +116,6 @@ export class JobEditFormService {
     }
   }
 
-
   productFormGroup(product?: Partial<JobProduct>, enabled = true): IFormGroup<JobProduct> {
     const _group = this.fb.group<JobProduct>({
       name: [
@@ -148,38 +147,6 @@ export class JobEditFormService {
     enabled ? _group.enable() : _group.disable();
     return _group;
   }
-
-  setProductGroupValidators(gr: IFormGroup<JobProduct>, prod: CustomerProduct[]) {
-    gr.controls.name.setValidators([Validators.required, this.productValidatorFn(prod)]);
-    gr.setValidators([this.defaultPriceValidatorFn(prod)]);
-  }
-
-  private defaultPriceValidatorFn(prod: CustomerProduct[]): ValidatorFn {
-    let prevVal: JobProduct | undefined;
-    return (control: IFormGroup<JobProduct>): null | ValidationErrors => {
-      if (!control.controls.name.valid) {
-        return null;
-      }
-      /* ja pirmoreiz, vai mainās produkta nosaukums */
-      if (prevVal === undefined || prevVal.name !== control.value.name) {
-        const customerProduct = prod?.find(product => product.productName === control.value.name);
-        /* un ja ir atrasta cena */
-        if (customerProduct) {
-          prevVal = { ...control.value, price: customerProduct.price || 0, units: customerProduct.units };
-          control.setValue(prevVal);
-        }
-      }
-      return null;
-    };
-
-  }
-
-  private productValidatorFn(prod: CustomerProduct[]): ValidatorFn {
-    return (control: IFormControl<string>): null | ValidationErrors =>
-      prod.some(product => product.productName === control.value) ? null : { invalidProduct: 'Prece nav atrasta katalogā' };
-  }
-
-
 
   private validateCustomerFn(): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {

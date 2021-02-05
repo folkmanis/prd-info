@@ -3,12 +3,11 @@ import {
   HostListener, Input, OnDestroy, OnInit,
   QueryList, ViewChildren
 } from '@angular/core';
-import { ControlContainer } from '@angular/forms';
-import { IFormArray, IFormGroup } from '@rxweb/types';
-import { combineLatest, from, Observable, Subject } from 'rxjs';
-import { filter, pluck, switchMap, takeUntil, toArray } from 'rxjs/operators';
+import { ControlContainer, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { IFormArray, IFormControl, IFormGroup } from '@rxweb/types';
+import { from, Subject } from 'rxjs';
+import { filter, pluck, switchMap, toArray } from 'rxjs/operators';
 import { CustomerProduct, JobProduct } from 'src/app/interfaces';
-import { DestroyService } from 'src/app/library/rx/destroy.service';
 import { SystemPreferencesService } from 'src/app/services';
 import { JobEditFormService } from '../services/job-edit-form.service';
 import { ProductAutocompleteComponent } from './product-autocomplete/product-autocomplete.component';
@@ -19,7 +18,6 @@ const COLUMNS = ['name', 'count', 'price', 'total', 'comment'];
   selector: 'app-products-editor',
   templateUrl: './products-editor.component.html',
   styleUrls: ['./products-editor.component.scss'],
-  providers: [DestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductsEditorComponent implements OnInit, OnDestroy {
@@ -27,9 +25,7 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
 
   @Input() set customerProducts(customerProducts: CustomerProduct[]) {
     this._customerProducts = customerProducts || [];
-    if (this.prodFormArray) {
-      this.setArrayValidators(this.prodFormArray, customerProducts);
-    }
+    this.updateValueAndValidity();
   }
   get customerProducts(): CustomerProduct[] {
     return this._customerProducts;
@@ -60,7 +56,6 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
 
   constructor(
     private changeDetector: ChangeDetectorRef,
-    private destroy$: DestroyService,
     private jobFormService: JobEditFormService,
     private controlContainer: ControlContainer,
     private sysPref: SystemPreferencesService,
@@ -75,6 +70,7 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.prodFormArray = this.controlContainer.control as IFormArray<JobProduct>;
+    this.setAllValidators(this.prodFormArray);
     this.stateChanges.subscribe(_ => this.changeDetector.markForCheck());
   }
 
@@ -85,7 +81,7 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
   onAddNewProduct() {
     if (!this.isValid) { return; }
     const prodForm = this.jobFormService.productFormGroup();
-    this.jobFormService.setProductGroupValidators(prodForm, this.customerProducts);
+    this.setProductGroupValidators(prodForm);
     this.prodFormArray.push(prodForm);
     setTimeout(() => {
       this.nameInputs.last.focus();
@@ -99,8 +95,50 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
     this.stateChanges.next();
   }
 
-  private setArrayValidators(frm: IFormArray<JobProduct>, customerProducts: CustomerProduct[]) {
-    frm.controls.forEach((contr: IFormGroup<JobProduct>) => this.jobFormService.setProductGroupValidators(contr, customerProducts));
+  private setAllValidators(frm: IFormArray<JobProduct>) {
+    frm.controls.forEach((contr: IFormGroup<JobProduct>) => this.setProductGroupValidators(contr));
+  }
+
+  private updateValueAndValidity() {
+    if (!this.prodFormArray) { return; }
+    for (const cg of this.prodFormArray.controls) {
+      cg.get('name').updateValueAndValidity();
+      cg.updateValueAndValidity();
+    }
+    this.stateChanges.next();
+  }
+
+  private setProductGroupValidators(gr: IFormGroup<JobProduct>) {
+    gr.controls.name.setValidators([Validators.required, this.productValidatorFn()]);
+    gr.setValidators([this.defaultPriceValidatorFn()]);
+  }
+
+  private defaultPriceValidatorFn(): ValidatorFn {
+    let prevVal: JobProduct | undefined;
+    return (control: IFormGroup<JobProduct>): null | ValidationErrors => {
+      if (!control.controls.name.valid) {
+        return null;
+      }
+      /* ja pirmoreiz, vai mainās produkta nosaukums */
+      if (prevVal === undefined || prevVal.name !== control.value.name) {
+        const customerProduct = this.customerProducts.find(product => product.productName === control.value.name);
+        /* un ja ir atrasta cena */
+        if (customerProduct) {
+          prevVal = { ...control.value, price: customerProduct.price || 0, units: customerProduct.units };
+          control.setValue(prevVal);
+        }
+      }
+      return null;
+    };
+  }
+
+  private productValidatorFn(): ValidatorFn {
+    return (control: IFormControl<string>): null | ValidationErrors => {
+      return this.customerProducts.some(
+        product => product.productName === control.value
+      ) ? null : { invalidProduct: 'Prece nav atrasta katalogā' };
+
+    };
   }
 
 
