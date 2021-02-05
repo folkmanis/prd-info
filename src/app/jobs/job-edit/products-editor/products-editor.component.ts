@@ -1,6 +1,6 @@
 import {
   ChangeDetectionStrategy, ChangeDetectorRef, Component,
-  HostListener, OnDestroy, OnInit,
+  HostListener, Input, OnDestroy, OnInit,
   QueryList, ViewChildren
 } from '@angular/core';
 import { ControlContainer } from '@angular/forms';
@@ -24,9 +24,23 @@ const COLUMNS = ['name', 'count', 'price', 'total', 'comment'];
 })
 export class ProductsEditorComponent implements OnInit, OnDestroy {
   @ViewChildren(ProductAutocompleteComponent) private nameInputs: QueryList<ProductAutocompleteComponent>;
+
+  @Input() set customerProducts(customerProducts: CustomerProduct[]) {
+    this._customerProducts = customerProducts || [];
+    if (this.prodFormArray) {
+      this.setArrayValidators(this.prodFormArray, customerProducts);
+    }
+    this.ch.markForCheck();
+    console.log(customerProducts);
+  }
+  get customerProducts(): CustomerProduct[] {
+    return this._customerProducts;
+  }
+
+  private _customerProducts: CustomerProduct[] = [];
+
   prodFormArray: IFormArray<JobProduct>;
-  customerProducts$: Observable<CustomerProduct[]>;
-  addNewProduct$ = new Subject<void>();
+
   units$ = this.sysPref.preferences$.pipe(
     pluck('jobs', 'productUnits'),
     switchMap(units => from(units).pipe(
@@ -34,11 +48,13 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
       toArray(),
     ))
   );
+
+
   /** Ctrl-+ event */
   @HostListener('window:keydown', ['$event']) keyEvent(event: KeyboardEvent) {
     if (event.key === '+' && event.ctrlKey) {
       event.preventDefault();
-      this.addNewProduct$.next();
+      this.onAddNewProduct();
     }
   }
 
@@ -60,23 +76,15 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.prodFormArray = this.controlContainer.control as IFormArray<JobProduct>;
 
-    this.customerProducts$ = this.jobFormService.customerProducts$;
-    this.customerProducts$.pipe(
-      takeUntil(this.destroy$),
-    ).subscribe(prod => this.setArrayValidators(this.prodFormArray, prod));
-
-    combineLatest([this.customerProducts$, this.addNewProduct$]).pipe(
-      takeUntil(this.destroy$),
-    ).subscribe(([products, _]) => this.addNewProduct(products));
   }
 
   ngOnDestroy(): void {
   }
 
-  addNewProduct(products: CustomerProduct[]) {
+  onAddNewProduct() {
     if (!this.isValid) { return; }
     const prodForm = this.jobFormService.productFormGroup();
-    this.jobFormService.setProductGroupValidators(prodForm, products);
+    this.jobFormService.setProductGroupValidators(prodForm, this.customerProducts);
     this.prodFormArray.push(prodForm);
     this.ch.markForCheck();
     setTimeout(() => {

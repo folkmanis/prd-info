@@ -3,7 +3,7 @@ import { IFormGroup } from '@rxweb/types';
 import * as moment from 'moment';
 import { combineLatest, Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { CustomerPartial, JobBase, JobsSettings } from 'src/app/interfaces';
+import { CustomerPartial, CustomerProduct, JobBase, JobsSettings } from 'src/app/interfaces';
 import { LayoutService } from 'src/app/layout/layout.service';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { CustomersService, SystemPreferencesService } from 'src/app/services';
@@ -38,6 +38,7 @@ export class PlateJobEditorComponent implements OnInit, OnDestroy {
   categories$ = this.sysPref.preferences$.pipe(
     map(pref => pref.jobs.productCategories),
   );
+  customerProducts$: Observable<CustomerProduct[]>;
 
   large$: Observable<boolean> = this.layoutService.isLarge$;
 
@@ -69,6 +70,7 @@ export class PlateJobEditorComponent implements OnInit, OnDestroy {
     this.defaultPath$ = this.jobFormService.job$.pipe(
       map(job => FolderPath.toArray(job)),
     );
+    this.customerProducts$ = this.jobFormService.customerProducts$;
 
   }
 

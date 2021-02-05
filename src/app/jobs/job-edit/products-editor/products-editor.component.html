@@ -23,7 +23,7 @@
             </td>
             <!-- Preces nosaukums -->
             <td>
-                <app-product-autocomplete formControlName="name" [customerProducts]="customerProducts$ | async">
+                <app-product-autocomplete formControlName="name" [customerProducts]="customerProducts">
                 </app-product-autocomplete>
             </td>
             <!-- Skaits -->
@@ -64,7 +64,7 @@
     <tfoot>
         <tr>
             <td *ngIf="isEnabled">
-                <button mat-icon-button (click)="addNewProduct$.next()" [disabled]="isValid === false"
+                <button mat-icon-button (click)="onAddNewProduct()" [disabled]="isValid === false"
                     matTooltip="Ctrl-+">
                     <mat-icon>add</mat-icon>
                 </button>
