@@ -30,14 +30,14 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
     if (this.prodFormArray) {
       this.setArrayValidators(this.prodFormArray, customerProducts);
     }
-    this.ch.markForCheck();
-    console.log(customerProducts);
   }
   get customerProducts(): CustomerProduct[] {
     return this._customerProducts;
   }
 
   private _customerProducts: CustomerProduct[] = [];
+
+  stateChanges = new Subject<void>();
 
   prodFormArray: IFormArray<JobProduct>;
 
@@ -59,7 +59,7 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private ch: ChangeDetectorRef,
+    private changeDetector: ChangeDetectorRef,
     private destroy$: DestroyService,
     private jobFormService: JobEditFormService,
     private controlContainer: ControlContainer,
@@ -75,10 +75,11 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.prodFormArray = this.controlContainer.control as IFormArray<JobProduct>;
-
+    this.stateChanges.subscribe(_ => this.changeDetector.markForCheck());
   }
 
   ngOnDestroy(): void {
+    this.stateChanges.complete();
   }
 
   onAddNewProduct() {
@@ -86,16 +87,16 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
     const prodForm = this.jobFormService.productFormGroup();
     this.jobFormService.setProductGroupValidators(prodForm, this.customerProducts);
     this.prodFormArray.push(prodForm);
-    this.ch.markForCheck();
     setTimeout(() => {
       this.nameInputs.last.focus();
     }, 0);
+    this.stateChanges.next();
   }
 
   removeProduct(idx: number) {
     this.prodFormArray.removeAt(idx);
     this.prodFormArray.markAsDirty();
-    this.ch.markForCheck();
+    this.stateChanges.next();
   }
 
   private setArrayValidators(frm: IFormArray<JobProduct>, customerProducts: CustomerProduct[]) {
