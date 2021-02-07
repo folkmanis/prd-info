@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Job, JobProduct, JobBase, CustomerProduct } from 'src/app/interfaces';
-import { FormGroup, FormBuilder, Validators, AsyncValidatorFn, AbstractControl, ValidationErrors, AbstractControlOptions, ValidatorFn } from '@angular/forms';
-import { Observable, EMPTY, of, combineLatest, merge } from 'rxjs';
-import { take, map, startWith, filter, distinctUntilChanged, switchMap, shareReplay, tap, debounceTime, withLatestFrom } from 'rxjs/operators';
-import { CustomersService } from 'src/app/services/customers.service';
-import { IFormBuilder, IFormGroup, IFormControl } from '@rxweb/types';
+import { AbstractControl, AsyncValidatorFn, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
+import { IFormBuilder, IFormGroup } from '@rxweb/types';
+import { EMPTY, merge, Observable, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, shareReplay, switchMap, take, withLatestFrom } from 'rxjs/operators';
+import { CustomerProduct, Job, JobBase, JobProduct } from 'src/app/interfaces';
 import { ProductsService } from 'src/app/services';
+import { CustomersService } from 'src/app/services/customers.service';
 
 export const DEFAULT_UNITS = 'gab.';
 
