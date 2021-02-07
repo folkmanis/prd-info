@@ -1,78 +1,78 @@
+<mat-table *ngIf="prodFormArray" [dataSource]="prodFormArray.controls" class="app-table">
 
+    <ng-container matColumnDef="action">
+        <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+        <mat-cell *matCellDef="let group; index as idx;">
+            <button mat-icon-button (click)="removeProduct(idx)" [disabled]="prodFormArray.disabled">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </mat-cell>
+    </ng-container>
 
-<table class="mat-elevation-z4" [formGroup]="prodFormArray">
+    <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef> Prece </mat-header-cell>
+        <mat-cell *matCellDef="let group;">
+            <app-product-autocomplete [formControl]="group.controls.name" [customerProducts]="customerProducts">
+            </app-product-autocomplete>
+        </mat-cell>
+    </ng-container>
 
-    <thead>
-        <tr>
-            <th class="column-action"></th>
-            <th class="column-name">Prece</th>
-            <th class="column-count">Skaits</th>
-            <th class="column-count">Mērvienība</th>
-            <th class="column-price">Cena</th>
-            <th class="column-total">Summa</th>
-            <th class="column-comments">Piezīmes</th>
-        </tr>
-    </thead>
+    <ng-container matColumnDef="count">
+        <mat-header-cell *matHeaderCellDef> Skaits </mat-header-cell>
+        <mat-cell *matCellDef="let group;">
+            <mat-form-field>
+                <input matInput type="number" [formControl]="group.controls.count">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
 
-    <tbody>
+    <ng-container matColumnDef="units">
+        <mat-header-cell *matHeaderCellDef> Mērvienība </mat-header-cell>
+        <mat-cell *matCellDef="let group;">
+            <mat-select [formControl]="group.controls.units">
+                <mat-option *ngFor="let unit of units$ | async" [value]="unit.shortName">
+                    {{unit.shortName}}
+                </mat-option>
+            </mat-select>
+        </mat-cell>
+    </ng-container>
 
-        <tr *ngFor="let prod of prodFormArray.controls; index as idx;" [formArrayName]="idx">
-            <!-- Dzēšanas poga -->
-            <td>
-                <button mat-icon-button (click)="removeProduct(idx)" [disabled]="prodFormArray.disabled">
-                    <mat-icon>delete</mat-icon>
-                </button>
-            </td>
-            <!-- Preces nosaukums -->
-            <td>
-                <app-product-autocomplete formControlName="name" [customerProducts]="customerProducts">
-                </app-product-autocomplete>
-            </td>
-            <!-- Skaits -->
-            <td class="column-count">
-                <mat-form-field>
-                    <input matInput type="number" formControlName="count">
-                </mat-form-field>
-            </td>
-            <!-- Mērvienība -->
-            <td class="column-count">
-                    <mat-select formControlName="units">
-                        <mat-option *ngFor="let unit of units$ | async" [value]="unit.shortName">
-                            {{unit.shortName}}
-                        </mat-option>
-                    </mat-select>
-            </td>
-            <!-- Cena -->
-            <td class="column-price">
-                <mat-form-field>
-                    <input matInput type="number" formControlName="price">
-                </mat-form-field>
-            </td>
-            <!-- Summa -->
-            <td>
-                {{prod.value.count * prod.value.price | currency}}
-            </td>
-            <!-- Piezīmes -->
-            <td>
-                <mat-form-field>
-                    <input matInput type="text" formControlName="comment">
-                </mat-form-field>
-            </td>
+    <ng-container matColumnDef="price">
+        <mat-header-cell *matHeaderCellDef> Cena </mat-header-cell>
+        <mat-cell *matCellDef="let group;">
+            <mat-form-field>
+                <input matInput type="number" [formControl]="group.controls.price">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
 
-        </tr>
+    <ng-container matColumnDef="total">
+        <mat-header-cell *matHeaderCellDef> Summa </mat-header-cell>
+        <mat-cell *matCellDef="let group;" [class.disabled]="group.disabled">
+            {{group.value.count * group.value.price | currency}}
+        </mat-cell>
+    </ng-container>
 
-    </tbody>
+    <ng-container matColumnDef="comments">
+        <mat-header-cell *matHeaderCellDef> Piezīmes </mat-header-cell>
+        <mat-cell *matCellDef="let group;">
+            <mat-form-field>
+                <input matInput type="text" [formControl]="group.controls.comment">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
 
-    <tfoot>
-        <tr>
-            <td *ngIf="!prodFormArray.disabled">
-                <button mat-icon-button (click)="onAddNewProduct()" [disabled]="!prodFormArray.valid"
-                    matTooltip="Ctrl-+">
-                    <mat-icon>add</mat-icon>
-                </button>
-            </td>
-            <td [colSpan]="5"></td>
-        </tr>
-    </tfoot>
+    <ng-container matColumnDef="footer">
+        <mat-footer-cell *matFooterCellDef>
+            <button *ngIf="!prodFormArray.disabled" mat-icon-button (click)="onAddNewProduct()"
+                [disabled]="!prodFormArray.valid" matTooltip="Ctrl-+">
+                <mat-icon>add</mat-icon>
+            </button>
+        </mat-footer-cell>
+    </ng-container>
 
-</table>
+    <mat-header-row *matHeaderRowDef="columns;"></mat-header-row>
+    <mat-row *matRowDef="let group; columns: columns;"></mat-row>
+    <mat-footer-row *matFooterRowDef="['footer']"></mat-footer-row>
+
+</mat-table>

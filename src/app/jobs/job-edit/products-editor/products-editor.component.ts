@@ -1,7 +1,7 @@
 import {
   ChangeDetectionStrategy, ChangeDetectorRef, Component,
   HostListener, Input, OnDestroy, OnInit,
-  QueryList, ViewChildren
+  QueryList, ViewChildren, ViewChild
 } from '@angular/core';
 import { ControlContainer, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { IFormArray, IFormControl, IFormGroup } from '@rxweb/types';
@@ -11,8 +11,8 @@ import { CustomerProduct, JobProduct } from 'src/app/interfaces';
 import { SystemPreferencesService } from 'src/app/services';
 import { JobEditFormService } from '../services/job-edit-form.service';
 import { ProductAutocompleteComponent } from './product-autocomplete/product-autocomplete.component';
+import { MatTable } from '@angular/material/table';
 
-const COLUMNS = ['name', 'count', 'price', 'total', 'comment'];
 
 @Component({
   selector: 'app-products-editor',
@@ -22,6 +22,7 @@ const COLUMNS = ['name', 'count', 'price', 'total', 'comment'];
 })
 export class ProductsEditorComponent implements OnInit, OnDestroy {
   @ViewChildren(ProductAutocompleteComponent) private nameInputs: QueryList<ProductAutocompleteComponent>;
+  @ViewChild(MatTable) private table: MatTable<IFormGroup<JobProduct>>;
 
   @Input() set customerProducts(customerProducts: CustomerProduct[]) {
     this._customerProducts = customerProducts || [];
@@ -30,6 +31,8 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
   get customerProducts(): CustomerProduct[] {
     return this._customerProducts;
   }
+
+  columns: string[] = ['action', 'name', 'count', 'units', 'price', 'total', 'comments'];
 
   private _customerProducts: CustomerProduct[] = [];
 
@@ -64,7 +67,10 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.prodFormArray = this.controlContainer.control as IFormArray<JobProduct>;
     this.setAllValidators(this.prodFormArray);
-    this.stateChanges.subscribe(_ => this.changeDetector.markForCheck());
+    this.stateChanges.subscribe(_ => {
+      this.table.renderRows();
+      this.changeDetector.markForCheck();
+    });
   }
 
   ngOnDestroy(): void {

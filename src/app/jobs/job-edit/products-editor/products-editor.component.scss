@@ -1,31 +1,43 @@
-table {
-    width: 100%;
-    table-layout: fixed;
+.mat-cell {
+    box-sizing: border-box;
 }
 
-.column-action {
-    width: 40px;
-}
-
-.column-price, 
-.column-count,
-.column-total {
-    width: 64px;
-}
-
-.column-name {
-    min-width: 240px;
-}
-
-td input[type="number"] {
-    text-align: right;
-}
-
-th, td {
+.mat-cell:not(:last-of-type) {
     padding-left: 8px;
     padding-right: 8px;
 }
 
-td .mat-form-field {
+.mat-column-action {
+    flex: 0 0 40px;
+    padding-right: 0;
+}
+
+.mat-column-price,
+.mat-column-count,
+.mat-column-total {
+    flex: 0 0 64px;
+}
+
+.mat-column-units {
+    flex: 1 ;
+}
+
+.mat-column-name {
+    flex: 1 80px;
+}
+
+.mat-column-comments {
+    flex: 1;
+}
+
+input[type="number"] {
+    text-align: right;
+}
+
+.mat-form-field {
     width: 100%;
+}
+
+.disabled {
+    opacity: 0.4;
 }
