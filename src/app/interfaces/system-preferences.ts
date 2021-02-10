@@ -1,9 +1,9 @@
 import { AppHttpResponseBase } from 'src/app/library/http';
 import { Colors } from './kaste';
 
-export const MODULES = ['kastes', 'system', 'jobs'] as const;
+export const MODULES = ['kastes', 'system', 'jobs', 'paytraq'] as const;
 
-export type ModuleSettings = KastesSettings | SystemSettings | JobsSettings;
+export type ModuleSettings = KastesSettings | SystemSettings | JobsSettings | PaytraqSettings;
 
 export interface PreferencesDbModule {
     module: SystemPreferencesGroups;
@@ -18,6 +18,7 @@ export abstract class SystemPreferences implements SystemPreferencesType {
     system: SystemSettings;
     kastes: KastesSettings;
     jobs: JobsSettings;
+    paytraq: PaytraqSettings;
 }
 
 export interface KastesSettings {
@@ -53,6 +54,13 @@ export interface JobsSettings {
     productUnits: ProductUnit[];
 }
 
+export type PaytraqSettings = Partial<{
+    connectUrl: string;
+    connectKey: string;
+    apiUrl: string;
+    apiKey: string;
+    apiToken: string;
+}>;
 
 
 export interface SystemPreferencesResponse extends AppHttpResponseBase<PreferencesDbModule> {

@@ -44,6 +44,8 @@ export const PRD_DEFAULTS: AppParams = {
                 { state: 10, description: 'Sagatavošana' },
             ],
             productUnits: [],
-        }
+        },
+        paytraq: {
+        },
     }
 };

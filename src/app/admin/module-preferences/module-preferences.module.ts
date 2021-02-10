@@ -11,6 +11,7 @@ import { ModuleGroupComponent } from './module-group/module-group.component';
 import { ColorSliderComponent } from './modules/kastes-preferences/color-slider/color-slider.component';
 import { CardTitleDirective } from './card-title.directive';
 import { UnitsDialogComponent } from './modules/jobs-preferences/units-dialog/units-dialog.component';
+import { PaytraqPreferencesComponent } from './modules/paytraq-preferences/paytraq-preferences.component';
 
 
 
@@ -26,6 +27,7 @@ import { UnitsDialogComponent } from './modules/jobs-preferences/units-dialog/un
     ColorSliderComponent,
     CardTitleDirective,
     UnitsDialogComponent,
+    PaytraqPreferencesComponent,
   ],
   imports: [
     CommonModule,
