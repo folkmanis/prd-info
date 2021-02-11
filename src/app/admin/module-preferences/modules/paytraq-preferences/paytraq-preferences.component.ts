@@ -33,6 +33,7 @@ export class PaytraqPreferencesComponent implements OnInit, OnDestroy, Preferenc
   ngOnInit(): void {
     this.controls = this.fb.group<PaytraqSettings>(
       {
+        enabled: [false],
         connectUrl: [undefined],
         connectKey: [undefined],
         apiUrl: [undefined],

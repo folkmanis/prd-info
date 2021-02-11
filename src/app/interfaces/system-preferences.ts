@@ -54,13 +54,14 @@ export interface JobsSettings {
     productUnits: ProductUnit[];
 }
 
-export type PaytraqSettings = Partial<{
-    connectUrl: string;
-    connectKey: string;
-    apiUrl: string;
-    apiKey: string;
-    apiToken: string;
-}>;
+export interface PaytraqSettings {
+    enabled: boolean;
+    connectUrl?: string;
+    connectKey?: string;
+    apiUrl?: string;
+    apiKey?: string;
+    apiToken?: string;
+}
 
 
 export interface SystemPreferencesResponse extends AppHttpResponseBase<PreferencesDbModule> {

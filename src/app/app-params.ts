@@ -1,15 +1,7 @@
 import { InjectionToken } from '@angular/core';
-import {
-    AppParams,
-    SystemPreferencesGroups,
-    ModuleSettings,
-    KastesSettings,
-    SystemSettings,
-    JobsSettings,
-    UserModule,
-} from './interfaces';
-import { version } from 'src/version.json';
 import { USER_MODULES } from 'src/app/user-modules';
+import { version } from 'src/version.json';
+import { AppParams } from './interfaces';
 
 export const APP_PARAMS = new InjectionToken<AppParams>('prd.defaults');
 export const PRD_DEFAULTS: AppParams = {
@@ -46,6 +38,7 @@ export const PRD_DEFAULTS: AppParams = {
             productUnits: [],
         },
         paytraq: {
+            enabled: false,
         },
     }
 };
