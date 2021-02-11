@@ -22,35 +22,58 @@
             </h2>
         </ng-template>
 
-        <!-- Kods -->
-        <section>
-            <mat-form-field>
-                <mat-label>Klienta kods</mat-label>
-                <input matInput appFocused formControlName="code" placeholder="Kods" autocomplete="off">
-                <mat-error *ngIf="form.controls.code.hasError('required')">
-                    Kodu jāievada obligāti!
-                </mat-error>
-                <mat-error *ngIf="form.controls.code.hasError('occupied')">
-                    Kods jau tiek izmantots
-                </mat-error>
-            </mat-form-field>
-        </section>
-        <!-- apraksts -->
-        <section>
-            <mat-form-field>
-                <input matInput formControlName="description" placeholder="Apraksts" autocomplete="off">
-            </mat-form-field>
-        </section>
-        <!-- Neaktīvs -->
-        <section>
-            <mat-checkbox class="input-element" formControlName="disabled">
-                Neaktīvs
-            </mat-checkbox>
-        </section>
+        <mat-accordion multi>
+            <mat-expansion-panel expanded [hideToggle]="true">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Pamatinformācija
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
 
-        <section class="input-element">
-            <app-paytraq-customer formControlName="financial"></app-paytraq-customer>
-        </section>
+                <!-- Kods -->
+                <section>
+                    <mat-form-field>
+                        <mat-label>Klienta kods</mat-label>
+                        <input matInput appFocused formControlName="code" placeholder="Kods" autocomplete="off">
+                        <mat-error *ngIf="form.controls.code.hasError('required')">
+                            Kodu jāievada obligāti!
+                        </mat-error>
+                        <mat-error *ngIf="form.controls.code.hasError('occupied')">
+                            Kods jau tiek izmantots
+                        </mat-error>
+                    </mat-form-field>
+                </section>
+                <!-- apraksts -->
+                <section>
+                    <mat-form-field>
+                        <input matInput formControlName="description" placeholder="Apraksts" autocomplete="off">
+                    </mat-form-field>
+                </section>
+                <!-- Neaktīvs -->
+                <section>
+                    <mat-checkbox class="input-element" formControlName="disabled">
+                        Neaktīvs
+                    </mat-checkbox>
+                </section>
+
+            </mat-expansion-panel>
+
+            <mat-expansion-panel expanded [disabled]="paytraqDisabled$ | async">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Sasaiste ar Paytraq
+                    </mat-panel-title>
+                    <mat-panel-description *ngIf="form.value.financial?.paytraqId">
+                        {{form.value.financial.paytraqId}} /
+                        {{form.value.financial.clientName}}
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+    
+                <app-paytraq-customer formControlName="financial" [customer]="form.value"></app-paytraq-customer>
+    
+            </mat-expansion-panel>
+
+        </mat-accordion>
 
     </form>
 </app-simple-form-container>

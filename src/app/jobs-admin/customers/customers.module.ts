@@ -6,6 +6,7 @@ import { CustomerEditComponent } from './customer-edit/customer-edit.component';
 import { CustomersListComponent } from './customers-list/customers-list.component';
 import { CustomerResolverService } from './services/customer-resolver.service';
 import { PaytraqCustomerComponent } from './customer-edit/paytraq-customer/paytraq-customer.component';
+import { PaytraqCustomerTableComponent } from './customer-edit/paytraq-customer/paytraq-customer-table/paytraq-customer-table.component';
 
 
 @NgModule({
@@ -13,6 +14,7 @@ import { PaytraqCustomerComponent } from './customer-edit/paytraq-customer/paytr
     CustomersListComponent,
     CustomerEditComponent,
     PaytraqCustomerComponent,
+    PaytraqCustomerTableComponent,
   ],
   imports: [
     CommonModule,

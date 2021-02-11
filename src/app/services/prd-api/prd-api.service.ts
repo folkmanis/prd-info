@@ -12,6 +12,7 @@ import { UsersApi } from './users-api';
 import { XmfArchiveApi } from './xmf-archive-api';
 import { AppParams } from 'src/app/interfaces';
 import { APP_PARAMS } from 'src/app/app-params';
+import { PaytraqApi } from './paytraq-api';
 
 @Injectable({
   providedIn: 'root'
@@ -35,4 +36,6 @@ export class PrdApiService {
   kastesOrders = new KastesOrdersApi(this.http, this.apiPath + 'kastes-orders/');
   users = new UsersApi(this.http, this.apiPath + 'users/');
   xmfArchive = new XmfArchiveApi(this.http, this.apiPath + 'xmf-archive/');
+  paytraq = new PaytraqApi(this.http, this.apiPath + 'paytraq/');
+
 }

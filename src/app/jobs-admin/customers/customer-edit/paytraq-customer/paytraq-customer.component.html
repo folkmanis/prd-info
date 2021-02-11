@@ -1,10 +1,26 @@
-<section [formGroup]="control">
-
+<div>
     <mat-form-field>
         <mat-label>
-            Klienta nosaukums grāmatvedības sistēmā
+            Meklēt paytraq
         </mat-label>
-        <input matInput formControlName="clientName">
+        <input matInput [formControl]="clientSearch">
+        <button matSuffix mat-icon-button (click)="clientSearch.reset()">
+            <mat-icon>
+                clear
+            </mat-icon>
+        </button>
     </mat-form-field>
-    
-</section>
+
+    <button mat-icon-button [disabled]="!clientSearch.value" #searchButton
+        (click)="onSearchClient(clientSearch.value, searchButton)">
+        <mat-icon>
+            person_search
+        </mat-icon>
+    </button>
+</div>
+
+<div>
+    <app-paytraq-customer-table [clients]="clients$ | async" (clientSelected)="onClientSelected($event)">
+
+    </app-paytraq-customer-table>
+</div>

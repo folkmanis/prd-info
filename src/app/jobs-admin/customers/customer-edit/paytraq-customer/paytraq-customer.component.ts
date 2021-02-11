@@ -1,10 +1,14 @@
-import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
-import { NgControl, FormBuilder } from '@angular/forms';
-import { IFormBuilder, IFormGroup, IControlValueAccessor } from '@rxweb/types';
+import { Component, OnInit, ChangeDetectionStrategy, OnDestroy, Input } from '@angular/core';
+import { NgControl, FormBuilder, FormControl } from '@angular/forms';
+import { IFormBuilder, IFormGroup, IControlValueAccessor, IFormControl } from '@rxweb/types';
 import { SystemPreferencesService } from 'src/app/services';
 import { Customer, CustomerFinancial } from 'src/app/interfaces';
 import { DestroyService } from 'src/app/library/rx';
-import { takeUntil } from 'rxjs/operators';
+import { map, pluck, takeUntil } from 'rxjs/operators';
+import { PaytraqClientService } from '../../services/paytraq-client.service';
+import { Subject } from 'rxjs';
+import { PaytraqClient } from 'src/app/interfaces/paytraq';
+import { MatButton } from '@angular/material/button';
 
 const DEFAULT_VALUE: CustomerFinancial = {
   clientName: '',
@@ -18,34 +22,33 @@ const DEFAULT_VALUE: CustomerFinancial = {
   providers: [DestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PaytraqCustomerComponent implements OnInit, IControlValueAccessor<CustomerFinancial> {
+export class PaytraqCustomerComponent implements OnInit, OnDestroy, IControlValueAccessor<CustomerFinancial> {
 
-  private fb: IFormBuilder;
-
-  private preferences$ = this.systemPreferencesService.preferences$;
-
+  @Input() set customer(customer: Customer) {
+    this.clientSearch.setValue(
+      customer.financial?.paytraqId ? '' : customer.financial?.clientName || customer.CustomerName
+    );
+  }
   private onChanges: (obj: CustomerFinancial) => void;
   private onTouched: () => void;
 
-  control: IFormGroup<CustomerFinancial>;
+  clients$ = new Subject<PaytraqClient[]>();
+
+  clientSearch: IFormControl<string> = new FormControl('');
+
+  private _financial: CustomerFinancial;
 
   constructor(
-    fb: FormBuilder,
     private ngControl: NgControl,
-    private systemPreferencesService: SystemPreferencesService,
     private destroy$: DestroyService,
+    private paytraqService: PaytraqClientService,
   ) {
-    this.fb = fb;
-    this.control = this.fb.group<CustomerFinancial>({
-      clientName: [undefined],
-      paytraqId: [undefined],
-    });
     this.ngControl.valueAccessor = this;
   }
 
   writeValue(obj: CustomerFinancial) {
-    console.log(obj);
-    this.control.patchValue({ ...DEFAULT_VALUE, ...obj });
+    this.clients$.next([]);
+    this._financial = { ...DEFAULT_VALUE, ...obj };
   }
 
   registerOnChange(fn: (obj: CustomerFinancial) => void) {
@@ -57,19 +60,32 @@ export class PaytraqCustomerComponent implements OnInit, IControlValueAccessor<C
   }
 
   setDisabledState(isDisabled: boolean) {
-    if (isDisabled) {
-      this.control.disable();
-    } else {
-      this.control.enable();
-    }
+    this.clientSearch.reset();
+    this.clientSearch.disable();
   }
 
   ngOnInit(): void {
-    this.control.valueChanges.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(
-      value => this.onChanges(value)
-    );
+  }
+
+  ngOnDestroy(): void {
+    this.clients$.complete();
+  }
+
+  onSearchClient(ev: string, button: MatButton) {
+    button.disabled = true;
+    this.onTouched();
+    this.paytraqService.getClients({ query: ev })
+      .subscribe(clients => {
+        this.clients$.next(clients);
+        button.disabled = false;
+      });
+  }
+
+  onClientSelected(ev: PaytraqClient) {
+    this.onChanges({
+      clientName: ev.name,
+      paytraqId: ev.clientID,
+    });
   }
 
 }
