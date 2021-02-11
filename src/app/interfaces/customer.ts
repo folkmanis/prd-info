@@ -1,5 +1,10 @@
 import { AppHttpResponseBase } from 'src/app/library';
 
+export interface CustomerFinancial {
+    clientName: string;
+    paytraqId?: number;
+}
+
 export interface Customer {
     _id: string;
     code: string;
@@ -7,9 +12,7 @@ export interface Customer {
     disabled: boolean;
     insertedFromXmf?: Date;
     description: string;
-    financial?: {
-        clientName: string;
-    };
+    financial?: CustomerFinancial;
 }
 
 export interface CustomerResponse extends AppHttpResponseBase<Customer> {

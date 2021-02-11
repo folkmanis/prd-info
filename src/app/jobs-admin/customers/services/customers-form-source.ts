@@ -29,9 +29,7 @@ export class CustomersFormSource extends SimpleFormSource<Customer> {
             ],
             disabled: [false],
             description: [''],
-            financial: this.fb.group({
-                clientName: [undefined],
-            })
+            financial: [undefined],
         });
     }
 

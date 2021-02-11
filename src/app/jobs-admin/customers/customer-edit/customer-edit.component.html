@@ -48,13 +48,8 @@
             </mat-checkbox>
         </section>
 
-        <section formGroupName="financial" class="input-element">
-            <mat-form-field>
-                <mat-label>
-                    Klienta nosaukums grāmatvedības sistēmā
-                </mat-label>
-                <input matInput formControlName="clientName">
-            </mat-form-field>
+        <section class="input-element">
+            <app-paytraq-customer formControlName="financial"></app-paytraq-customer>
         </section>
 
     </form>

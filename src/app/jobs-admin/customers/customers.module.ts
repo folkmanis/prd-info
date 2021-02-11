@@ -5,12 +5,14 @@ import { SimpleFormModule } from 'src/app/library/simple-form';
 import { CustomerEditComponent } from './customer-edit/customer-edit.component';
 import { CustomersListComponent } from './customers-list/customers-list.component';
 import { CustomerResolverService } from './services/customer-resolver.service';
+import { PaytraqCustomerComponent } from './customer-edit/paytraq-customer/paytraq-customer.component';
 
 
 @NgModule({
   declarations: [
     CustomersListComponent,
     CustomerEditComponent,
+    PaytraqCustomerComponent,
   ],
   imports: [
     CommonModule,
