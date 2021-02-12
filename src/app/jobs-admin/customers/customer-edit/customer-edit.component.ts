@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { CustomersFormSource } from '../services/customers-form-source';
@@ -7,13 +7,17 @@ import { IFormGroup } from '@rxweb/types';
 import { Customer } from 'src/app/interfaces';
 import { map, pluck } from 'rxjs/operators';
 import { SystemPreferencesService } from 'src/app/services';
+import { MatExpansionPanel } from '@angular/material/expansion';
 
 @Component({
   selector: 'app-customer-edit',
   templateUrl: './customer-edit.component.html',
-  styleUrls: ['./customer-edit.component.scss']
+  styleUrls: ['./customer-edit.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CustomerEditComponent implements OnInit, CanComponentDeactivate {
+
+  @ViewChild('paytraqPanel') paytraqPanel: MatExpansionPanel;
 
   paytraqDisabled$ = this.systemPreferencesService.preferences$.pipe(
     pluck('paytraq', 'enabled'),

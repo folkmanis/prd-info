@@ -5,8 +5,7 @@
         <h2 *ngIf="isNew; else existing">
             <mat-form-field>
                 <mat-label>Klienta nosaukums</mat-label>
-                <input matInput appFocused formControlName="CustomerName" placeholder="Nosaukums" autocomplete="off"
-                    required>
+                <input matInput formControlName="CustomerName" placeholder="Nosaukums" autocomplete="off" required>
                 <mat-error *ngIf="form.controls.CustomerName.hasError('required')">
                     Nosaukums jāievada obligāti!
                 </mat-error>
@@ -34,7 +33,7 @@
                 <section>
                     <mat-form-field>
                         <mat-label>Klienta kods</mat-label>
-                        <input matInput appFocused formControlName="code" placeholder="Kods" autocomplete="off">
+                        <input matInput formControlName="code" placeholder="Kods" autocomplete="off">
                         <mat-error *ngIf="form.controls.code.hasError('required')">
                             Kodu jāievada obligāti!
                         </mat-error>
@@ -58,7 +57,8 @@
 
             </mat-expansion-panel>
 
-            <mat-expansion-panel expanded [disabled]="paytraqDisabled$ | async">
+            <!-- Paytraq panelis -->
+            <mat-expansion-panel #paytraqPanel [disabled]="paytraqDisabled$ | async">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
                         Sasaiste ar Paytraq
@@ -68,9 +68,9 @@
                         {{form.value.financial.clientName}}
                     </mat-panel-description>
                 </mat-expansion-panel-header>
-    
+
                 <app-paytraq-customer formControlName="financial" [customer]="form.value"></app-paytraq-customer>
-    
+
             </mat-expansion-panel>
 
         </mat-accordion>
