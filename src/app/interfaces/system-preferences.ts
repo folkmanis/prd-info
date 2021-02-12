@@ -56,13 +56,16 @@ export interface JobsSettings {
 
 export interface PaytraqSettings {
     enabled: boolean;
-    connectUrl?: string;
-    connectKey?: string;
-    apiUrl?: string;
-    apiKey?: string;
-    apiToken?: string;
+    connectionParams?: PaytraqConnectionParams;
 }
 
+export interface PaytraqConnectionParams {
+    connectUrl: string;
+    connectKey: string;
+    apiUrl: string;
+    apiKey: string;
+    apiToken: string;
+}
 
 export interface SystemPreferencesResponse extends AppHttpResponseBase<PreferencesDbModule> {
 }

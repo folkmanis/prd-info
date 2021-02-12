@@ -1,16 +1,21 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { PaytraqSettings } from 'src/app/interfaces';
+import { PaytraqSettings, PaytraqConnectionParams } from 'src/app/interfaces';
 import { PreferencesCardControl } from '../../preferences-card-control';
-import { Subject } from 'rxjs';
-import { FormBuilder } from '@angular/forms';
-import { IFormBuilder, IFormGroup } from '@rxweb/types';
+import { Observable, Subject } from 'rxjs';
+import { FormBuilder, ValidationErrors, Validators } from '@angular/forms';
+import { IFormBuilder, IFormControl, IFormGroup } from '@rxweb/types';
+import { map, takeUntil } from 'rxjs/operators';
+import { DestroyService } from 'src/app/library/rx';
 
 @Component({
   selector: 'app-paytraq-preferences',
   templateUrl: './paytraq-preferences.component.html',
   styleUrls: ['./paytraq-preferences.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [{ provide: PreferencesCardControl, useExisting: PaytraqPreferencesComponent }]
+  providers: [
+    { provide: PreferencesCardControl, useExisting: PaytraqPreferencesComponent },
+    DestroyService,
+  ]
 })
 export class PaytraqPreferencesComponent implements OnInit, OnDestroy, PreferencesCardControl<PaytraqSettings> {
 
@@ -26,30 +31,51 @@ export class PaytraqPreferencesComponent implements OnInit, OnDestroy, Preferenc
   controls: IFormGroup<PaytraqSettings>;
   private fb: IFormBuilder;
 
+  paramsValid$: Observable<boolean>;
+
   constructor(
     fb: FormBuilder,
-  ) { this.fb = fb; }
-
-  ngOnInit(): void {
+    private destroy$: DestroyService,
+  ) {
+    this.fb = fb;
     this.controls = this.fb.group<PaytraqSettings>(
       {
         enabled: [false],
-        connectUrl: [undefined],
-        connectKey: [undefined],
-        apiUrl: [undefined],
-        apiKey: [undefined],
-        apiToken: [undefined],
+        connectionParams: [undefined, this.connectionParamsValidator],
       }
     );
+    this.paramsValid$ = this.controls.controls.connectionParams.statusChanges.pipe(
+      map(status => status === 'VALID')
+    );
+  }
+
+  ngOnInit(): void {
+    this.controls.controls.connectionParams.statusChanges.pipe(
+      map(status => status === 'VALID'),
+      takeUntil(this.destroy$),
+    ).subscribe(valid => {
+      if (valid) {
+        this.controls.controls.enabled.enable();
+      } else {
+        this.controls.controls.enabled.disable();
+        this.controls.controls.enabled.setValue(false);
+      }
+    });
   }
 
   ngOnDestroy(): void {
     this.stateChanges.complete();
   }
 
-  onClear(key: keyof PaytraqSettings) {
-    this.controls.get(key).reset();
-    this.stateChanges.next();
+  connectionParamsValidator(control: IFormControl<PaytraqConnectionParams>): ValidationErrors | null {
+    const value = control.value;
+    if (!value) { return { missing: 'all' }; }
+    for (const k of Object.keys(value)) {
+      const v: string = value[k];
+      if (!v?.length) { return { missing: k }; }
+    }
+    return null;
   }
+
 
 }

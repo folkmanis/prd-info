@@ -12,6 +12,7 @@ import { ColorSliderComponent } from './modules/kastes-preferences/color-slider/
 import { CardTitleDirective } from './card-title.directive';
 import { UnitsDialogComponent } from './modules/jobs-preferences/units-dialog/units-dialog.component';
 import { PaytraqPreferencesComponent } from './modules/paytraq-preferences/paytraq-preferences.component';
+import { PaytraqConnectionParamsComponent } from './modules/paytraq-preferences/paytraq-connection-params/paytraq-connection-params.component';
 
 
 
@@ -28,6 +29,7 @@ import { PaytraqPreferencesComponent } from './modules/paytraq-preferences/paytr
     CardTitleDirective,
     UnitsDialogComponent,
     PaytraqPreferencesComponent,
+    PaytraqConnectionParamsComponent,
   ],
   imports: [
     CommonModule,
