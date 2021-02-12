@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, merge, Subject, EMPTY } from 'rxjs';
+import { Observable, merge, Subject, EMPTY, of } from 'rxjs';
 import { map, pluck, filter, tap, switchMap, share, shareReplay, startWith } from 'rxjs/operators';
 import { Customer, CustomerPartial, NewCustomer } from 'src/app/interfaces';
 
@@ -27,7 +27,7 @@ export class CustomersService {
     return this._customers$;
   }
 
-  updateCustomer({_id, ...rest}: Partial<Customer>): Observable<boolean> {
+  updateCustomer({ _id, ...rest }: Partial<Customer>): Observable<boolean> {
     return this.prdApi.customers.updateOne(_id, rest).pipe(
       tap(() => this.updateCustomers$.next()),
     );
@@ -60,8 +60,13 @@ export class CustomersService {
   }
 
   validator<K extends keyof Customer>(key: K, value: Customer[K]): Observable<boolean> {
+    if (!value) {
+      return of(false);
+    }
+    const str = value?.toString().toUpperCase();
     return this.prdApi.customers.validatorData(key).pipe(
-      map(values => !values.includes(value))
+      map(values => values.map(val => val.toString().toUpperCase())),
+      map(values => !values.includes(str)),
     );
   }
 

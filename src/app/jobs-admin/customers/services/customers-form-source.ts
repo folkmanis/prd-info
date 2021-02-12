@@ -37,14 +37,14 @@ export class CustomersFormSource extends SimpleFormSource<Customer> {
         return !this.value._id;
     }
 
-    initValue(cust: Partial<Customer>) {
-        this.customer = cust;
-        if (cust._id) {
+    initValue(customer: Partial<Customer>) {
+        this.customer = customer;
+        if (customer._id) {
             this.form.controls.CustomerName.setAsyncValidators([]);
         } else {
             this.form.controls.CustomerName.setAsyncValidators([this.validateName()]);
         }
-        super.initValue(cust);
+        super.initValue(customer);
     }
 
     updateFn(val: Customer): Observable<Customer> {
@@ -58,7 +58,7 @@ export class CustomersFormSource extends SimpleFormSource<Customer> {
     }
 
     private validateCode(): AsyncValidatorFn {
-        return (control: AbstractControl): Observable<{ [key: string]: any; } | null> => {
+        return (control: AbstractControl): Observable<ValidationErrors | null> => {
             return this.customer?.code === control.value ? of(null) : this.customersService.validator('code', control.value).pipe(
                 map(val => val ? null : { occupied: control.value })
             );
