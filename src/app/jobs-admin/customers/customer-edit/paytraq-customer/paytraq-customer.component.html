@@ -17,6 +17,10 @@
             person_search
         </mat-icon>
     </button>
+    <!-- Dzēst savienojumu -->
+    <button mat-button (click)="onClearValue()" [disabled]="!value?.paytraqId">
+        ATVIENOT
+    </button>
 </div>
 
 <div>

@@ -29,14 +29,16 @@ export class PaytraqCustomerComponent implements OnInit, OnDestroy, IControlValu
       customer.financial?.paytraqId ? '' : customer.financial?.clientName || customer.CustomerName
     );
   }
-  private onChanges: (obj: CustomerFinancial) => void;
+  private onChanges: (obj: CustomerFinancial | null) => void;
   private onTouched: () => void;
 
   clients$ = new Subject<PaytraqClient[]>();
 
   clientSearch: IFormControl<string> = new FormControl('');
 
-  private _financial: CustomerFinancial;
+  get value(): CustomerFinancial { return this._value; }
+  set value(value: CustomerFinancial) { this._value = value; }
+  private _value: CustomerFinancial;
 
   constructor(
     private ngControl: NgControl,
@@ -48,10 +50,10 @@ export class PaytraqCustomerComponent implements OnInit, OnDestroy, IControlValu
 
   writeValue(obj: CustomerFinancial) {
     this.clients$.next([]);
-    this._financial = { ...DEFAULT_VALUE, ...obj };
+    this.value = { ...DEFAULT_VALUE, ...obj };
   }
 
-  registerOnChange(fn: (obj: CustomerFinancial) => void) {
+  registerOnChange(fn: (obj: CustomerFinancial | null) => void) {
     this.onChanges = fn;
   }
 
@@ -60,8 +62,12 @@ export class PaytraqCustomerComponent implements OnInit, OnDestroy, IControlValu
   }
 
   setDisabledState(isDisabled: boolean) {
-    this.clientSearch.reset();
-    this.clientSearch.disable();
+    if (isDisabled) {
+      this.clientSearch.reset();
+      this.clientSearch.disable();
+    } else {
+      this.clientSearch.enable();
+    }
   }
 
   ngOnInit(): void {
@@ -82,10 +88,16 @@ export class PaytraqCustomerComponent implements OnInit, OnDestroy, IControlValu
   }
 
   onClientSelected(ev: PaytraqClient) {
-    this.onChanges({
+    this.value = {
       clientName: ev.name,
       paytraqId: ev.clientID,
-    });
+    };
+    this.onChanges(this.value);
+  }
+
+  onClearValue() {
+    this.value = null;
+    this.onChanges(this.value);
   }
 
 }
