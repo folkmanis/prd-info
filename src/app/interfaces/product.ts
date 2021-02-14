@@ -20,6 +20,7 @@ export interface Product {
     category: string;
     name: string;
     units: string;
+    paytraqId?: number;
     description?: string;
     prices?: ProductPrice[];
 }

@@ -29,6 +29,12 @@ export class ProductsEditorComponent implements OnInit, CanComponentDeactivate, 
     private fb: FormBuilder,
   ) { }
 
+  paytraqDisabled$ = this.systemPreferences.preferences$.pipe(
+    pluck('paytraq', 'enabled'),
+    map(enabled => !enabled),
+  );
+
+
   formSource = new ProductsFormSource(this.fb, this.productService);
   get form(): IFormGroup<Product> { return this.formSource.form; }
 

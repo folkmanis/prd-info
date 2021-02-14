@@ -20,48 +20,85 @@
                 {{form.controls.name.value}}
             </h2>
         </ng-template>
-        <!-- Kategorija -->
-        <section>
-            <mat-form-field>
-                <mat-label>Kategorija</mat-label>
-                <mat-select formControlName="category" required>
-                    <mat-option *ngFor="let category of categories$ | async" [value]="category.category">
-                        {{category.description}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </section>
-        <!-- Neaktīvs -->
-        <section>
-            <mat-checkbox formControlName="inactive">
-                Neaktīvs
-            </mat-checkbox>
-        </section>
-        <!-- Mērvienības -->
-        <section>
-            <mat-form-field>
-                <mat-label>Mērvienības</mat-label>
-                <mat-select formControlName="units" required>
-                    <mat-option *ngFor="let unit of units$ | async" [value]="unit.shortName">
-                        {{unit.shortName}} ({{unit.description}})
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </section>
-        <!-- Apraksts -->
-        <section>
-            <mat-form-field>
-                <mat-label>Apraksts</mat-label>
-                <textarea matInput matAutosize formControlName="description"></textarea>
-            </mat-form-field>
-        </section>
-        <!-- Cenu tabula -->
-        <section>
-            <app-product-prices formGroupName="prices" [customers]="customers$ | async"
-                (addPrice)="onAddPrice(form.controls.prices)"
-                (removePrice)="onDeletePrice(form.controls.prices, $event)">
-            </app-product-prices>
-        </section>
+
+        <mat-accordion multi>
+            <mat-expansion-panel expanded [hideToggle]="true">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Pamatinformācija
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+
+                <!-- Kategorija -->
+                <section>
+                    <mat-form-field>
+                        <mat-label>Kategorija</mat-label>
+                        <mat-select formControlName="category" required>
+                            <mat-option *ngFor="let category of categories$ | async" [value]="category.category">
+                                {{category.description}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </section>
+                <!-- Neaktīvs -->
+                <section>
+                    <mat-checkbox formControlName="inactive">
+                        Neaktīvs
+                    </mat-checkbox>
+                </section>
+                <!-- Mērvienības -->
+                <section>
+                    <mat-form-field>
+                        <mat-label>Mērvienības</mat-label>
+                        <mat-select formControlName="units" required>
+                            <mat-option *ngFor="let unit of units$ | async" [value]="unit.shortName">
+                                {{unit.shortName}} ({{unit.description}})
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </section>
+                <!-- Apraksts -->
+                <section>
+                    <mat-form-field>
+                        <mat-label>Apraksts</mat-label>
+                        <textarea matInput matAutosize formControlName="description"></textarea>
+                    </mat-form-field>
+                </section>
+            </mat-expansion-panel>
+
+            <!-- Paytraq -->
+            <mat-expansion-panel #paytraqPanel [disabled]="paytraqDisabled$ | async">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Paytraq savienojums
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+
+
+            </mat-expansion-panel>
+
+            <mat-expansion-panel expanded>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Cenas
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <!-- Cenu tabula -->
+                <section>
+                    <app-product-prices formGroupName="prices" [customers]="customers$ | async"
+                        (addPrice)="onAddPrice(form.controls.prices)"
+                        (removePrice)="onDeletePrice(form.controls.prices, $event)">
+                    </app-product-prices>
+                </section>
+
+            </mat-expansion-panel>
+
+        </mat-accordion>
+
+
     </form>
 
 </app-simple-form-container>
