@@ -8,14 +8,18 @@ import { Customer } from 'src/app/interfaces';
 import { map, pluck } from 'rxjs/operators';
 import { SystemPreferencesService } from 'src/app/services';
 import { MatExpansionPanel } from '@angular/material/expansion';
+import { SimpleFormControl } from 'src/app/library/simple-form';
 
 @Component({
   selector: 'app-customer-edit',
   templateUrl: './customer-edit.component.html',
   styleUrls: ['./customer-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    { provide: SimpleFormControl, useExisting: CustomerEditComponent },
+  ]
 })
-export class CustomerEditComponent implements OnInit, CanComponentDeactivate {
+export class CustomerEditComponent implements OnInit, CanComponentDeactivate, SimpleFormControl<Customer> {
 
   @ViewChild('paytraqPanel') paytraqPanel: MatExpansionPanel;
 

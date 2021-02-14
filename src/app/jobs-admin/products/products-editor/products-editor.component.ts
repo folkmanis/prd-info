@@ -9,14 +9,18 @@ import { CustomersService, ProductsService } from 'src/app/services';
 import { ProductsFormSource } from '../services/products-form-source';
 import { SystemPreferencesService } from 'src/app/services/system-preferences.service';
 import { map, pluck } from 'rxjs/operators';
+import { SimpleFormControl } from 'src/app/library/simple-form';
 
 @Component({
   selector: 'app-products-editor',
   templateUrl: './products-editor.component.html',
   styleUrls: ['./products-editor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    { provide: SimpleFormControl, useExisting: ProductsEditorComponent }
+  ]
 })
-export class ProductsEditorComponent implements OnInit, CanComponentDeactivate {
+export class ProductsEditorComponent implements OnInit, CanComponentDeactivate, SimpleFormControl<Product> {
 
   constructor(
     private customersService: CustomersService,

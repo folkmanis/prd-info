@@ -1,18 +1,23 @@
-import { Component, ContentChild, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ContentChild, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { filter, last, map, shareReplay, take } from 'rxjs/operators';
 import { SimpleFormSource } from '../simple-form-source';
+import { SimpleFormControl } from './simple-form-control';
 import { SimpleFormLabelDirective } from './simple-form-label.directive';
 
 
 @Component({
   selector: 'app-simple-form-container',
   templateUrl: './simple-form-container.component.html',
-  styleUrls: ['./simple-form-container.component.scss']
+  styleUrls: ['./simple-form-container.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SimpleFormContainerComponent<T> implements OnInit, OnDestroy {
-  @Input() formSource: SimpleFormSource<T> | undefined;
+
+  get formSource(): SimpleFormSource<T> | undefined {
+    return this._formControl?.formSource;
+  }
 
   @Input() set data(data: T) {
     if (data) { this._data$.next(data); }
@@ -40,6 +45,7 @@ export class SimpleFormContainerComponent<T> implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
+    @Inject(SimpleFormControl) private _formControl: SimpleFormControl<T>,
   ) { }
 
   private readonly _subs = new Subscription();
@@ -48,7 +54,6 @@ export class SimpleFormContainerComponent<T> implements OnInit, OnDestroy {
     this._subs.add(
       this.dataChange.subscribe(data => this.formSource?.initValue(data, { emitEvent: false }))
     );
-
   }
 
   onResetForm(): void {

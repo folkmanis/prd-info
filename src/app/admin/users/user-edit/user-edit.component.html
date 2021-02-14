@@ -1,7 +1,7 @@
-<app-simple-form-container [formSource]="userFormSource">
-    <form [formGroup]="userFormSource.form">
+<app-simple-form-container>
+    <form [formGroup]="formSource.form">
         <!-- Lietotājvārds -->
-        <h2 *ngIf="userFormSource.isNew; else existing">
+        <h2 *ngIf="formSource.isNew; else existing">
             <mat-form-field>
                 <input formControlName="username" matInput placeholder="Lietotājvārds" autocomplete="off" required>
                 <mat-error *ngIf="username.hasError('minlength') && !username.hasError('symbol')">
@@ -26,7 +26,7 @@
             <input formControlName="name" matInput placeholder="Pilns vārds" autocomplete="off">
         </mat-form-field>
         <!-- Parole jaunam lietotājam -->
-        <section *ngIf="userFormSource.isNew; else changePassword;">
+        <section *ngIf="formSource.isNew; else changePassword;">
             <h4>
                 Parole
             </h4>
@@ -35,7 +35,7 @@
         <!-- Paroles maiņa -->
         <ng-template #changePassword>
             <section>
-                <button mat-raised-button (click)="onPasswordChange(userFormSource.value.username)" color="primary">
+                <button mat-raised-button (click)="onPasswordChange(formSource.value.username)" color="primary">
                     MAINĪT PAROLI
                 </button>
             </section>
