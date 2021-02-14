@@ -41,6 +41,10 @@ export class UserEditComponent implements OnInit, CanComponentDeactivate, Simple
     return this.formSource.form.controls.username as IFormControl<string>;
   }
 
+  writeValue(obj: User) {
+    this.formSource.initValue(obj);
+  }
+
   ngOnInit(): void {
   }
 

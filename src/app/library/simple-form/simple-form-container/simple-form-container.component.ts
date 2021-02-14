@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ContentChild, Inject, Input, OnDestroy, OnInit, Output, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ContentChild, Inject, Input, OnDestroy, OnInit, Output, ChangeDetectorRef, Optional } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { filter, last, map, shareReplay, take } from 'rxjs/operators';
@@ -40,26 +40,28 @@ export class SimpleFormContainerComponent<T> implements OnInit, OnDestroy {
   }
   private _label: SimpleFormLabelDirective;
 
-  get form() { return this.formSource.form; }
+  get form() { return this.formSource?.form; }
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    @Inject(SimpleFormControl) private _formControl: SimpleFormControl<T>,
+    @Inject(SimpleFormControl) @Optional() private _formControl: SimpleFormControl<T>,
     private changeDetector: ChangeDetectorRef,
   ) { }
 
   private readonly _subs = new Subscription();
 
   ngOnInit(): void {
-    this._subs.add(
-      this.dataChange.subscribe(data => this.formSource?.initValue(data, { emitEvent: false }))
-    );
-    this._subs.add(
-      this.form.valueChanges.subscribe(
-        () => this.changeDetector.markForCheck()
-      )
-    );
+    if (this.form) {
+      this._subs.add(
+        this.dataChange.subscribe(data => this._formControl.writeValue(data))
+      );
+      this._subs.add(
+        this.form.valueChanges.subscribe(
+          () => this.changeDetector.markForCheck()
+        )
+      );
+    }
   }
 
   onResetForm(): void {

@@ -36,6 +36,11 @@ export class CustomerEditComponent implements OnInit, CanComponentDeactivate, Si
 
   formSource = new CustomersFormSource(this.fb, this.customersService);
 
+  writeValue(obj: Customer) {
+    this.paytraqPanel?.close();
+    this.formSource.initValue(obj);
+  }
+
   get form(): IFormGroup<Customer> { return this.formSource.form; }
   get isNew(): boolean { return this.formSource.isNew; }
 

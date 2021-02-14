@@ -41,6 +41,10 @@ export class ProductsEditorComponent implements OnInit, CanComponentDeactivate, 
 
   get isNew(): boolean { return this.formSource.isNew; }
 
+  writeValue(obj: Product) {
+    this.formSource.initValue(obj);
+  }
+
   ngOnInit(): void {
   }
 
