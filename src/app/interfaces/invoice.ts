@@ -37,6 +37,7 @@ export interface InvoiceProduct {
     count: number;
     price?: number;
     comment?: string;
+    paytraqId?: number;
 }
 
 export interface InvoiceResponse extends AppHttpResponseBase<Invoice> {

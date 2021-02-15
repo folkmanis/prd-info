@@ -11,6 +11,7 @@ import { NewInvoiceComponent } from './new-invoice/new-invoice.component';
 import { InvoicesListComponent } from './invoices-list/invoices-list.component';
 import { SelectionTotalsComponent } from './new-invoice/selection-totals/selection-totals.component';
 import { JobsWithoutInvoicesComponent } from './jobs-without-invoices/jobs-without-invoices.component';
+import { InvoiceProductsComponent } from './invoice-editor/invoice-products/invoice-products.component';
 
 
 @NgModule({
@@ -22,6 +23,7 @@ import { JobsWithoutInvoicesComponent } from './jobs-without-invoices/jobs-witho
     InvoicesListComponent,
     SelectionTotalsComponent,
     JobsWithoutInvoicesComponent,
+    InvoiceProductsComponent,
   ],
   imports: [
     CommonModule,

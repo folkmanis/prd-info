@@ -36,7 +36,8 @@
 							"lodash",
 							"xlsx",
 							"@angular/common/locales/lv",
-							"file-saver"
+							"file-saver",
+							"pdfmake"
 						]
 					},
 					"configurations": {

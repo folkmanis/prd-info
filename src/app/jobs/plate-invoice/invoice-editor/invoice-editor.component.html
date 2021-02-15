@@ -17,14 +17,9 @@
         <h4>
             Preces
         </h4>
-        <ul>
-            <li *ngFor="let product of invoice.products;">
-                {{product._id}} | {{product.count}} | {{product.price | currency}} | {{product.total | currency}}
-            </li>
-            <li>
-                <strong>Kopā: {{invoice.total | currency}}</strong>
-            </li>
-        </ul>
+        <div>
+            <app-invoice-products [products]="invoice.products" [total]="invoice.total"></app-invoice-products>
+        </div>
     </section>
     <section>
         <h4>
