@@ -1,15 +1,24 @@
 import { AppHttpResponseBase } from 'src/app/library/http';
-import { Clients, Client } from './client';
+import { PaytraqClients, PaytraqClient } from './client';
+import { PaytraqProduct, PaytraqProducts } from './product';
 
 interface ClientData {
-    client: Client;
+    client: PaytraqClient;
 }
 
 interface ClientsData {
-    clients: Clients;
+    clients: PaytraqClients;
 }
 
-export type PaytraqData = ClientData | ClientsData;
+interface ProductData {
+    product: PaytraqProduct;
+}
+
+interface ProductsData {
+    products: PaytraqProducts
+}
+
+export type PaytraqData = ClientData | ClientsData | ProductData | ProductsData;
 
 export interface PaytraqResponse<T> extends AppHttpResponseBase<T> {
     data?: T;

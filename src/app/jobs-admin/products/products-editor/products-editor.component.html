@@ -68,14 +68,18 @@
             </mat-expansion-panel>
 
             <!-- Paytraq -->
-            <mat-expansion-panel #paytraqPanel [disabled]="paytraqDisabled$ | async">
+            <mat-expansion-panel #paytraqPanel expanded [disabled]="paytraqDisabled$ | async">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
                         Paytraq savienojums
                     </mat-panel-title>
+                    <mat-panel-description *ngIf="form.value.paytraqId as id;">
+                        {{ id }}
+                    </mat-panel-description>
                 </mat-expansion-panel-header>
 
-
+                <app-paytraq-product formControlName="paytraqId" [product]="form.value">
+                </app-paytraq-product>
 
             </mat-expansion-panel>
 

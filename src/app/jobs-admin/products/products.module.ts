@@ -6,12 +6,16 @@ import { ProductPricesComponent } from './products-editor/product-prices/product
 import { ProductsEditorComponent } from './products-editor/products-editor.component';
 import { ProductsListComponent } from './products-list/products-list.component';
 import { ProductResolverService } from './services/product-resolver.service';
+import { PaytraqProductComponent } from './products-editor/paytraq-product/paytraq-product.component';
+import { PaytraqProductTableComponent } from './products-editor/paytraq-product/paytraq-product-table/paytraq-product-table.component';
 
 @NgModule({
   declarations: [
     ProductPricesComponent,
     ProductsListComponent,
     ProductsEditorComponent,
+    PaytraqProductComponent,
+    PaytraqProductTableComponent,
   ],
   imports: [
     CommonModule,

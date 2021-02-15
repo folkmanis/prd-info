@@ -1,2 +1,3 @@
-export { Client as PaytraqClient, Clients as PaytraqClients } from './client';
+export { PaytraqClient, PaytraqClients } from './client';
+export { PaytraqProduct, PaytraqProducts } from './product';
 export * from './api-base';

@@ -1,0 +1,29 @@
+<div>
+    <mat-form-field>
+        <mat-label>
+            Meklēt Paytraq
+        </mat-label>
+        <input matInput [formControl]="productSearch">
+        <button matSuffix mat-icon-button (click)="productSearch.reset()">
+            <mat-icon>
+                clear
+            </mat-icon>
+        </button>
+    </mat-form-field>
+
+    <button mat-icon-button [disabled]="!productSearch.value" (click)="onSearchProducts(productSearch.value)">
+        <mat-icon>
+            search
+        </mat-icon>
+    </button>
+    <!-- Atvienot -->
+    <button mat-button (click)="onClearValue()" [disabled]="!value || !pristine">
+        ATVIENOT
+    </button>
+</div>
+
+<div>
+    <app-paytraq-product-table [products]="products$ | async" (productSelected)="onProductSelected($event)">
+
+    </app-paytraq-product-table>
+</div>

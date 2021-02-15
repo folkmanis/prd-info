@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { IFormArray, IFormGroup } from '@rxweb/types';
 import { IAbstractControl } from '@rxweb/types/reactive-form/i-abstract-control';
@@ -10,6 +10,7 @@ import { ProductsFormSource } from '../services/products-form-source';
 import { SystemPreferencesService } from 'src/app/services/system-preferences.service';
 import { map, pluck } from 'rxjs/operators';
 import { SimpleFormControl } from 'src/app/library/simple-form';
+import { MatExpansionPanel } from '@angular/material/expansion';
 
 @Component({
   selector: 'app-products-editor',
@@ -21,6 +22,7 @@ import { SimpleFormControl } from 'src/app/library/simple-form';
   ]
 })
 export class ProductsEditorComponent implements OnInit, CanComponentDeactivate, SimpleFormControl<Product> {
+  @ViewChild('paytraqPanel') paytraqPanel: MatExpansionPanel;
 
   constructor(
     private customersService: CustomersService,
@@ -48,6 +50,7 @@ export class ProductsEditorComponent implements OnInit, CanComponentDeactivate, 
   get isNew(): boolean { return this.formSource.isNew; }
 
   writeValue(obj: Product) {
+    // this.paytraqPanel?.close();
     this.formSource.initValue(obj);
   }
 

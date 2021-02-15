@@ -48,6 +48,7 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
                 [],
                 { validators: [this.duplicateCustomersValidator] }
             ),
+            paytraqId: [undefined]
         });
 
         return productForm;

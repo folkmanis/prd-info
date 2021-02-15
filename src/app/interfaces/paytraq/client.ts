@@ -1,12 +1,10 @@
 import { TimeStamps } from './timestamps';
 
-export interface Clients {
-    clients: {
-        client: Client[];
-    };
+export interface PaytraqClients {
+    client: PaytraqClient[];
 }
 
-export interface Client {
+export interface PaytraqClient {
     clientID: number;
     name: string;
     type: number;

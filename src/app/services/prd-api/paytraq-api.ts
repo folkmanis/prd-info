@@ -13,8 +13,17 @@ export class PaytraqApi extends ApiBase<Pt.PaytraqData> {
             new HttpOptions(query).cacheable()
         )
             .pipe(
-                pluck('data'),
+                pluck('data', 'clients'),
             );
+    }
+
+    getProducts(query: Pt.RequestOptions): Observable<Pt.PaytraqProducts> {
+        return this.http.get<Pt.PaytraqResponse<Pt.PaytraqProducts>>(
+            this.path + 'products',
+            new HttpOptions(query).cacheable()
+        ).pipe(
+            pluck('data', 'products'),
+        );
     }
 
 }

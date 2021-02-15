@@ -13,7 +13,7 @@ export class PaytraqClientService {
 
   getClients(query: Pt.RequestOptions = {}): Observable<Pt.PaytraqClient[]> {
     return this.api.paytraq.getClients(query).pipe(
-      pluck('clients', 'client'),
+      pluck('client'),
       map(cl => cl || [])
     );
   }
