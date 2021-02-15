@@ -50,7 +50,7 @@ export class ProductsEditorComponent implements OnInit, CanComponentDeactivate, 
   get isNew(): boolean { return this.formSource.isNew; }
 
   writeValue(obj: Product) {
-    // this.paytraqPanel?.close();
+    this.paytraqPanel?.close();
     this.formSource.initValue(obj);
   }
 
