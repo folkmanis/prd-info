@@ -3,15 +3,13 @@
 </section>
 
 <section>
-    <table mat-table [dataSource]="datasource">
+    <table mat-table [dataSource]="datasource" class="app-table">
         <ng-container matColumnDef="invoiceId">
             <th mat-header-cell *matHeaderCellDef>
                 Aprēķina nr.
             </th>
             <td mat-cell *matCellDef="let invoice;">
-                <a [routerLink]="['invoice', {invoiceId: invoice.invoiceId}]">
-                    {{invoice.invoiceId}}
-                </a>
+                {{invoice.invoiceId}}
             </td>
         </ng-container>
 
@@ -32,6 +30,7 @@
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <tr mat-row *matRowDef="let invoice; columns: displayedColumns;"
+            [routerLink]="['invoice', {invoiceId: invoice.invoiceId}]"></tr>
     </table>
 </section>
