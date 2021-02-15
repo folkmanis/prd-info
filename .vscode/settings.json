@@ -1,4 +1,4 @@
 {
-    "typescript.tsdk": "node_modules/typescript/lib",
+    "angular.enable-experimental-ivy-prompt": false,
     "angular.experimental-ivy": true
 }
