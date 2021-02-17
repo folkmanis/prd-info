@@ -1,6 +1,7 @@
 import { AppHttpResponseBase } from 'src/app/library/http';
 import { Job } from './job';
 import { JobBase } from './job-base';
+import { CustomerFinancial, Customer } from './customer';
 
 export interface Invoice {
     invoiceId: string;
@@ -11,13 +12,11 @@ export interface Invoice {
     products: InvoiceProduct[];
     total?: number;
     comment?: string;
+    customerInfo?: Customer;
 }
 
-export type InvoiceLike = Partial<Invoice> & {
-    financial?: {
-        clientName: string;
-    };
-};
+export type InvoiceForReport = Pick<Invoice, 'invoiceId' | 'customer' | 'createdDate' | 'jobs' | 'products' | 'total' | 'customerInfo'>;
+// export type InvoiceLike = Partial<Invoice>;
 
 export type InvoiceTable = Pick<Invoice, 'invoiceId' | 'customer' | 'createdDate'> & {
     totals: {

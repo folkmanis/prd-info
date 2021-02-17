@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 import { map, startWith, tap, take, shareReplay, share, takeUntil } from 'rxjs/operators';
-import { CustomerPartial, JobQueryFilter, Job, JobBase, JobPartial, ProductTotals, InvoiceLike } from 'src/app/interfaces';
+import { CustomerPartial, JobQueryFilter, Job, JobBase, JobPartial, ProductTotals, Invoice, InvoiceForReport } from 'src/app/interfaces';
 import { CustomersService, PrdApiService } from 'src/app/services';
 import { InvoicesService } from '../../services/invoices.service';
 import { JobService } from 'src/app/services/job.service';
@@ -59,12 +59,13 @@ export class NewInvoiceComponent implements OnInit {
   }
 
   onPrintList(jobs: JobBase[], customer: string, { totals, grandTotal }: InvoicesTotals) {
-    const invoice: InvoiceLike = {
+    const invoice: InvoiceForReport = {
       customer,
       createdDate: new Date(Date.now()),
       jobs: jobs.filter(job => this.selectedJobs.some(id => id === job.jobId)),
       products: totals.map(tot => ({ ...tot, price: tot.total / tot.count, jobsCount: 0 })),
       total: grandTotal,
+      invoiceId: '',
     };
     const report = new InvoiceReport(invoice);
     report.open();

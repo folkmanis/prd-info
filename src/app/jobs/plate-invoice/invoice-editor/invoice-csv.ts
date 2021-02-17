@@ -1,4 +1,4 @@
-import { InvoiceLike, InvoiceProduct, Job, JobProduct, Product } from 'src/app/interfaces';
+import { Invoice, InvoiceProduct, Job, JobProduct, Product } from 'src/app/interfaces';
 import * as moment from 'moment';
 
 const DOCUMENT_FIELDS: string[] = [
@@ -21,7 +21,7 @@ const REPORT_FIELDS: string[] = [
 
 export class InvoiceCsv {
     constructor(
-        private invoice: InvoiceLike,
+        private invoice: Invoice,
         private params: { separator: string; locale: string; } = { separator: ',', locale: 'lv' },
     ) {
         moment.locale(params.locale);
@@ -35,7 +35,7 @@ export class InvoiceCsv {
 
         const data: string[] = [
             moment(this.invoice.createdDate).format('L'),
-            this.invoice.financial?.clientName || this.invoice.customer,
+            this.invoice.customerInfo.financial?.clientName || this.invoice.customer,
             '1',
             this.invoice.comment || '',
         ];

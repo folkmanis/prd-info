@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy } from '@angular/core';
-import { Invoice, InvoiceLike, InvoiceProduct } from 'src/app/interfaces';
+import { Invoice, InvoiceProduct } from 'src/app/interfaces';
 import { Subject, ReplaySubject, from, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 

@@ -1,11 +1,11 @@
 import { PdfMakeWrapper, Table, Columns, Txt, Cell } from 'pdfmake-wrapper';
-import { InvoiceLike, InvoiceProduct, Job, JobBase, JobProduct, Product } from 'src/app/interfaces';
+import { InvoiceProduct, Invoice, Job, JobBase, JobProduct, Product, InvoiceForReport } from 'src/app/interfaces';
 import * as moment from 'moment';
 
 export class InvoiceReport {
     private _pdf: PdfMakeWrapper = new PdfMakeWrapper();
     constructor(
-        private _invoice: InvoiceLike,
+        private _invoice: InvoiceForReport,
         private _locale = 'lv',
     ) {
         moment.locale(this._locale);
@@ -15,7 +15,7 @@ export class InvoiceReport {
     }
 
     open(): void {
-        const title = (this._invoice.financial?.clientName || this._invoice.customer) + (this._invoice.invoiceId ? ` / ${this._invoice.invoiceId}` : '');
+        const title = (this._invoice.customerInfo?.financial?.clientName || this._invoice.customer) + (this._invoice.invoiceId ? ` / ${this._invoice.invoiceId}` : '');
         this._pdf.add(
             new Txt(title).fontSize(14).bold().end,
         );
