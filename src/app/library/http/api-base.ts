@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, pluck } from 'rxjs/operators';
 import { HttpOptions } from 'src/app/library/http/http-options';
 import { AppHttpResponseBase } from 'src/app/library/http/app-http-response-base';
 
@@ -40,13 +40,14 @@ export abstract class ApiBase<T> {
 
     update(data: Partial<T[]>): Observable<number> {
         return this.http.post<AppHttpResponseBase<T>>(this.path, data, new HttpOptions()).pipe(
-            map(resp => resp.modifiedCount),
+            pluck('modifiedCount'),
         );
     }
 
     updateOne(id: string | number, data: Partial<T>): Observable<boolean> {
         return this.http.post<AppHttpResponseBase<T>>(this.path + id, data, new HttpOptions()).pipe(
-            map(resp => !!resp.modifiedCount)
+            pluck('modifiedCount'),
+            map(count => !!count)
         );
     }
 

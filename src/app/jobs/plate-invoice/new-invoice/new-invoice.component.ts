@@ -5,7 +5,7 @@ import { Observable, Subscription, combineLatest } from 'rxjs';
 import { map, startWith, tap, take, shareReplay, share, takeUntil } from 'rxjs/operators';
 import { CustomerPartial, JobQueryFilter, Job, JobBase, JobPartial, ProductTotals, Invoice, InvoiceForReport } from 'src/app/interfaces';
 import { CustomersService, PrdApiService } from 'src/app/services';
-import { InvoicesService } from '../../services/invoices.service';
+import { InvoicesService } from '../services/invoices.service';
 import { JobService } from 'src/app/services/job.service';
 import { InvoiceReport } from '../invoice-editor/invoice-report';
 import { InvoicesTotals } from '../interfaces';

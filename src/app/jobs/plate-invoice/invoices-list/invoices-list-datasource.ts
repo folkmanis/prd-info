@@ -2,7 +2,7 @@ import { DataSource } from '@angular/cdk/table';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { InvoicesFilter, InvoiceTable } from 'src/app/interfaces';
-import { InvoicesService } from '../../services/invoices.service';
+import { InvoicesService } from '../services/invoices.service';
 
 export class InvoicesListDatasource extends DataSource<InvoiceTable> {
 

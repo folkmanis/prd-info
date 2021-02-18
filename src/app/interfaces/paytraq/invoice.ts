@@ -1,159 +1,164 @@
-export interface Invoice {
-    Sale: Sale;
+import { TimeStamps } from './timestamps';
+
+export interface PaytraqNewInvoiceResponse {
+    response: {
+        documentID: number;
+    };
+}
+
+export interface PaytraqInvoice {
+    sale: Sale;
 }
 export interface Sale {
-    Header: Header;
-    LineItems: LineItems;
-    Adjustments: Adjustments;
-    ShippingCharge: ShippingCharge;
-    Taxes: Taxes;
-    Totals: Totals;
+    header: Header;
+    lineItems: LineItems;
+    adjustments?: Adjustments;
+    shippingCharge?: ShippingCharge;
+    taxes?: Taxes;
+    totals?: Totals;
 }
 export interface Header {
-    Document: Document;
-    SaleType: string;
-    Operation: string;
-    Total: string;
-    AmountDue: string;
-    DueNoticeEnabled: string;
-    Currency: string;
-    BalanceCurrency: string;
-    CurrencyRate: string;
-    TaxBasis: string;
-    IncludeTax: string;
-    UseOverpayment: string;
-    DateDue: string;
-    DateApproved: string;
-    Discount: string;
-    Signature: string;
-    InvoicePeriod: InvoicePeriod;
-    PayTerm: PayTerm;
-    AccountID: string;
-    ShippingData: ShippingData;
-    TimeStamps: TimeStamps;
+    document: Document;
+    saleType: 'sales_order' | 'sales_proforma' | 'sales_invoice' | 'sales_receipt' | 'sales_estimate' | 'credit_note';
+    operation: 'sell_goods' | 'sell_services' | 'other_income';
+    total?: number;
+    amountDue?: number;
+    dueNoticeEnabled?: boolean;
+    currency?: string;
+    balanceCurrency?: string;
+    currencyRate?: number;
+    taxBasis?: number;
+    includeTax?: boolean;
+    useOverpayment?: boolean;
+    dateDue?: string;
+    dateApproved?: string;
+    discount?: number;
+    signature?: number;
+    invoicePeriod?: InvoicePeriod;
+    payTerm?: PayTerm;
+    paymentMethod?: number;
+    accountID?: number;
+    shippingData?: ShippingData;
+    timeStamps?: TimeStamps;
 }
 export interface Document {
-    DocumentID: string;
-    DocumentDate: string;
-    DocumentRef: string;
-    DocumentType: string;
-    DocumentStatus: string;
-    Client: Client;
+    documentID?: number;
+    documentDate?: string;
+    documentRef?: string;
+    documentType?: string;
+    documentStatus?: string;
+    client: Client;
 }
 export interface Client {
-    ClientID: string;
-    ClientName: string;
+    clientID: number;
+    clientName?: string;
 }
 export interface InvoicePeriod {
-    PeriodType: string;
+    periodType?: number;
 }
 export interface PayTerm {
-    PayTermType: string;
-    PayTermDays: string;
+    payTermType?: number;
+    payTermDays?: number;
 }
 export interface ShippingData {
-    ShippingType: string;
-    Warehouse: Warehouse;
-    LoadingArea: LoadingArea;
-    Shipper: Shipper;
-    ShippingAddress: ShippingAddress;
+    shippingType?: number;
+    warehouse?: Warehouse;
+    loadingArea?: LoadingArea;
+    shipper?: Shipper;
+    shippingAddress?: ShippingAddress;
 }
 export interface Warehouse {
-    WarehouseID: string;
-    WarehouseName: string;
+    warehouseID?: number;
+    warehouseName?: string;
 }
 export interface LoadingArea {
-    LoadingAreaID: string;
-    LoadingAreaName: string;
-    LoadingAreaAddress: LoadingAreaAddress;
+    loadingAreaID?: number;
+    loadingAreaName?: string;
+    loadingAreaAddress?: LoadingAreaAddress;
 }
 export interface LoadingAreaAddress {
-    Address: string;
-    Zip: string;
-    Country: string;
+    address?: string;
+    zip?: string;
+    country?: string;
 }
 export interface Shipper {
-    ShipperID: string;
-    ShipperName: string;
-    ShipperRegNumber: string;
-    ShipperVehicle: string;
-    ShipperDriver: string;
+    shipperID?: number;
+    shipperName?: string;
+    shipperRegNumber?: number;
+    shipperVehicle?: string;
+    shipperDriver?: string;
 }
 export interface ShippingAddress {
-    AddressID: string;
-    ShipTo: string;
-    Address: string;
-    Zip: string;
-    Country: string;
-}
-export interface TimeStamps {
-    Created: string;
-    Updated: string;
+    addressID?: number;
+    shipTo?: string;
+    address?: string;
+    zip?: string;
+    country?: string;
 }
 export interface LineItems {
-    LineItem?: (LineItemEntity)[] | null;
+    lineItem: (LineItem)[];
 }
-export interface LineItemEntity {
-    Account: Account;
-    Item: Item;
-    Description: string;
-    ItemDescription: string;
-    Qty: string;
-    Price: string;
-    LineDiscount: string;
-    LineTotal: string;
-    Unit: Unit;
-    TaxKey: TaxKey;
+export interface LineItem {
+    account?: Account;
+    item: Item;
+    description?: string;
+    qty: number;
+    price: number;
+    lineDiscount?: number;
+    lineTotal?: number;
+    unit?: Unit;
+    taxKey?: TaxKey;
+    itemDescription?: string | null;
 }
 export interface Account {
-    AccountID: string;
-    AccountCode: string;
-    AccountName: string;
+    accountID?: number;
+    accountCode?: number;
+    accountName?: string;
 }
 export interface Item {
-    ItemID: string;
-    ItemName: string;
+    itemID: number;
+    itemName?: string;
 }
 export interface Unit {
-    UnitID: string;
-    UnitName: string;
+    unitID?: number;
+    unitName?: string;
 }
 export interface TaxKey {
-    TaxKeyID: string;
-    TaxKeyName: string;
+    taxKeyID?: number;
+    taxKeyName?: string;
 }
 export interface Adjustments {
-    Adjustment: Adjustment;
+    adjustment?: (Adjustment)[] | null;
 }
 export interface Adjustment {
-    Account: Account;
-    Amount: string;
-    TypeID: string;
-    PctOrAmount: string;
-    TaxKey: TaxKey;
+    account?: Account;
+    amount?: number;
+    typeID?: string;
+    pctOrAmount?: string;
+    taxKey?: TaxKey;
 }
 export interface ShippingCharge {
-    Account: Account;
-    Amount: string;
-    TaxKey: TaxKey;
+    account?: Account;
+    amount?: number;
+    taxKey?: TaxKey;
 }
 export interface Taxes {
-    Tax: Tax;
+    tax?: Tax;
 }
 export interface Tax {
-    TaxKey: TaxKey;
-    TaxName: string;
-    GrossAmount: string;
-    NetAmount: string;
-    TaxAmount: string;
-    Account: Account1;
+    taxKey?: TaxKey;
+    taxName?: string;
+    grossAmount?: number;
+    netAmount?: number;
+    taxAmount?: number;
+    account?: Account1;
 }
 export interface Account1 {
-    AccountID: string;
-    AccountName: string;
+    accountID?: number;
+    accountName?: string;
 }
 export interface Totals {
-    GrossAmount: string;
-    NetAmount: string;
-    Qty: string;
+    grossAmount?: number;
+    netAmount?: number;
+    qty?: number;
 }

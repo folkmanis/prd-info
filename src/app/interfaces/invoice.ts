@@ -13,10 +13,14 @@ export interface Invoice {
     total?: number;
     comment?: string;
     customerInfo?: Customer;
+    paytraq?: PaytraqInvoice;
 }
 
 export type InvoiceForReport = Pick<Invoice, 'invoiceId' | 'customer' | 'createdDate' | 'jobs' | 'products' | 'total' | 'customerInfo'>;
-// export type InvoiceLike = Partial<Invoice>;
+
+export const INVOICE_UPDATE_FIELDS = ['comment', 'paytraq'] as const;
+
+export type InvoiceUpdate = Partial<Pick<Invoice, typeof INVOICE_UPDATE_FIELDS[number]>>;
 
 export type InvoiceTable = Pick<Invoice, 'invoiceId' | 'customer' | 'createdDate'> & {
     totals: {
@@ -24,6 +28,11 @@ export type InvoiceTable = Pick<Invoice, 'invoiceId' | 'customer' | 'createdDate
         sum: number,
     };
 };
+
+export interface PaytraqInvoice {
+    paytraqId: number;
+    documentRef?: string;
+}
 
 export interface InvoicesFilter {
     customer?: string;

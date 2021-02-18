@@ -4,7 +4,17 @@
             Aprēķins nr. {{invoice.invoiceId}}
         </h3>
         <p>
-            {{invoice.createdDate | date}}
+            {{invoice.createdDate | date}} //
+        </p>
+        <p *ngIf="invoice.paytraq as paytraq;">
+            <a mat-button [href]="'https://go.paytraq.com/app/sales/docs/' + paytraq.paytraqId" target="new">
+                {{ paytraq.documentRef }} 
+            </a>
+            <button mat-icon-button (click)="onUnlinkPaytraq(invoice)">
+                <mat-icon>
+                    clear
+                </mat-icon>
+            </button>
         </p>
         <P>
             Klients: <b>{{invoice.customerInfo.CustomerName}} </b>
@@ -28,6 +38,8 @@
         <button mat-raised-button (click)="onPdfDownload(invoice)">PDF</button>
         <button mat-raised-button (click)="onCsvInvoice(invoice)">CSV PAVADZĪMEI</button>
         <button mat-raised-button (click)="onCsvReport(invoice)">CSV SARAKSTS</button>
+        <button mat-raised-button *ngIf="pyatraqEnabled$ | async" [disabled]="!(paytraqOk$ | async)"
+            (click)="onPaytraq(invoice)"> PAYTRAQ </button>
     </section>
     <section>
         <h4>

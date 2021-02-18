@@ -15,7 +15,7 @@ const SIMULTANEOUS_UPLOADS = 2;
 /** Minimālais laiks starp progresa ziņojumiem */
 const PERCENT_REPORT_INTERVAL = 500;
 
-@Injectable()
+@Injectable({ providedIn: 'any' })
 export class FileUploadService {
 
   /** Svarīgie ziņojumi */
