@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, LOCALE_ID, Inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, LOCALE_ID, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subject, merge, combineLatest } from 'rxjs';
 import { filter, map, switchMap, shareReplay, pluck, mergeMap, mapTo } from 'rxjs/operators';
@@ -13,7 +13,8 @@ import { saveAs } from 'file-saver';
 @Component({
   selector: 'app-invoice-editor',
   templateUrl: './invoice-editor.component.html',
-  styleUrls: ['./invoice-editor.component.scss']
+  styleUrls: ['./invoice-editor.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InvoiceEditorComponent implements OnInit, OnDestroy {
 

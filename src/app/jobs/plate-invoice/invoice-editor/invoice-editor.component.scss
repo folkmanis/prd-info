@@ -1,11 +1,17 @@
-section {
-    padding: 0px 16px;
+.mat-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 1;
 }
 
-ul {
-    list-style: none;
+.container {
+    margin: 16px;
 }
 
-button~button {
-    margin-left: 16px;
+.spacer {
+    flex: 1 1 auto;
+}
+
+.button-row > *:not(:last-child) {
+    margin-right: 8px;
 }

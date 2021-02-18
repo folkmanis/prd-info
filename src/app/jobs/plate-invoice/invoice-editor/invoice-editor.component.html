@@ -1,50 +1,92 @@
-<div *ngIf="invoice$ | async as invoice;">
-    <section>
-        <h3>
-            Aprēķins nr. {{invoice.invoiceId}}
-        </h3>
-        <p>
-            {{invoice.createdDate | date}}
-        </p>
-        <p *ngIf="invoice.paytraq as paytraq;">
-            <a mat-button [href]="paytraqUrl$ | async" target="new">
-                {{ paytraq.documentRef }} 
-            </a>
-            <button mat-icon-button (click)="onUnlinkPaytraq(invoice)">
-                <mat-icon>
-                    clear
-                </mat-icon>
-            </button>
-        </p>
-        <P>
-            Klients: <b>{{invoice.customerInfo.CustomerName}} </b>
-            <span *ngIf="invoice.customerInfo.financial">
-                ({{invoice.customerInfo.financial.clientName}})
-            </span>
-        </P>
-    </section>
-    <section>
-        <h4>
-            Preces
-        </h4>
-        <div>
-            <app-invoice-products [products]="invoice.products" [total]="invoice.total"></app-invoice-products>
-        </div>
-    </section>
-    <section>
-        <h4>
-            Eksports
-        </h4>
-        <button mat-raised-button (click)="onPdfDownload(invoice)">PDF</button>
-        <button mat-raised-button (click)="onCsvInvoice(invoice)">CSV PAVADZĪMEI</button>
-        <button mat-raised-button (click)="onCsvReport(invoice)">CSV SARAKSTS</button>
-        <button mat-raised-button *ngIf="pyatraqEnabled$ | async" [disabled]="!(paytraqOk$ | async)"
-            (click)="onPaytraq(invoice)"> PAYTRAQ </button>
-    </section>
-    <section>
-        <h4>
-            Iekļautie darbi
-        </h4>
-        <app-job-selection-table [jobs]="invoice.jobs" disabled></app-job-selection-table>
-    </section>
-</div>
+<ng-container *ngIf="invoice$ | async as invoice;">
+
+    <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="onPdfDownload(invoice)">PDF</button>
+        <button mat-menu-item (click)="onCsvInvoice(invoice)">CSV PAVADZĪMEI</button>
+        <button mat-menu-item (click)="onCsvReport(invoice)">CSV SARAKSTS</button>
+    </mat-menu>
+
+    <mat-toolbar>
+        <span>
+            {{invoice.invoiceId}} {{invoice.customerInfo.CustomerName}}
+        </span>
+
+        <span class="spacer"></span>
+
+        <span>
+            <small> {{invoice.createdDate | date}} </small>
+        </span>
+
+        <span class="spacer"></span>
+
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>
+                menu
+            </mat-icon>
+        </button>
+
+    </mat-toolbar>
+
+
+    <div class="container">
+
+        <mat-accordion multi>
+            <!-- Paytraq -->
+            <mat-expansion-panel *ngIf="pyatraqEnabled$ | async" expanded>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Paytraq pavadzīme
+                    </mat-panel-title>
+                    <mat-panel-description *ngIf="invoice.customerInfo.financial">
+                        ({{invoice.customerInfo.financial.clientName}})
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+
+
+                <div *ngIf="invoice.paytraq as paytraq; else newPaytraqInvoice" class="button-row">
+                    <a mat-raised-button [href]="paytraqUrl$ | async" target="new">
+                        {{ paytraq.documentRef }}
+                    </a>
+                    <button mat-raised-button color="primary" (click)="onUnlinkPaytraq(invoice)" matTooltip="Dzēst savienojumu">
+                        ATVIENOT
+                    </button>
+                </div>
+
+                <ng-template #newPaytraqInvoice>
+                    <button mat-raised-button [disabled]="!(paytraqOk$ | async)"
+                    (click)="onPaytraq(invoice)"> PAYTRAQ </button>
+                </ng-template>
+                
+            </mat-expansion-panel>
+
+            <!-- Preces -->
+            <mat-expansion-panel expanded>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Preces
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        {{ invoice.total | currency}}
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <app-invoice-products [products]="invoice.products" [total]="invoice.total"></app-invoice-products>
+
+            </mat-expansion-panel>
+
+            <!-- Darbi -->
+            <mat-expansion-panel expanded>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Darbi
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <app-job-selection-table [jobs]="invoice.jobs" disabled></app-job-selection-table>
+
+            </mat-expansion-panel>
+
+        </mat-accordion>
+    </div>
+
+</ng-container>
