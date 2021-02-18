@@ -10,6 +10,7 @@ const DEFAULT_VALUE: PaytraqConnectionParams = {
   apiUrl: null,
   apiKey: null,
   apiToken: null,
+  invoiceUrl: null,
 };
 
 @Component({
@@ -39,6 +40,7 @@ export class PaytraqConnectionParamsComponent implements OnInit, OnDestroy, ICon
       apiUrl: [undefined],
       apiKey: [undefined],
       apiToken: [undefined],
+      invoiceUrl: [undefined],
     });
   }
 
