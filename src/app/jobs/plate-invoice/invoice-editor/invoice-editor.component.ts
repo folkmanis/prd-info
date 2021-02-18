@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, LOCALE_ID, Inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, Subject, merge } from 'rxjs';
+import { Observable, Subject, merge, combineLatest } from 'rxjs';
 import { filter, map, switchMap, shareReplay, pluck, mergeMap, mapTo } from 'rxjs/operators';
 import { Invoice, InvoiceProduct } from 'src/app/interfaces';
 import { PaytraqInvoice, PaytraqNewInvoiceResponse } from 'src/app/interfaces/paytraq';
@@ -38,6 +38,15 @@ export class InvoiceEditorComponent implements OnInit, OnDestroy {
 
   pyatraqEnabled$: Observable<boolean> = this.systemPreferencesService.preferences$.pipe(
     pluck('paytraq', 'enabled'),
+  );
+
+  paytraqUrl$: Observable<string> = combineLatest([
+    this.systemPreferencesService.preferences$.pipe(
+      pluck('paytraq', 'connectionParams', 'invoiceUrl')
+    ),
+    this.invoice$
+  ]).pipe(
+    map(([base, invoice]) => base + invoice.paytraq?.paytraqId)
   );
 
   paytraqOk$: Observable<boolean> = this.invoice$.pipe(

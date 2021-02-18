@@ -7,7 +7,7 @@
             {{invoice.createdDate | date}} //
         </p>
         <p *ngIf="invoice.paytraq as paytraq;">
-            <a mat-button [href]="'https://go.paytraq.com/app/sales/docs/' + paytraq.paytraqId" target="new">
+            <a mat-button [href]="paytraqUrl$ | async" target="new">
                 {{ paytraq.documentRef }} 
             </a>
             <button mat-icon-button (click)="onUnlinkPaytraq(invoice)">
