@@ -4,7 +4,7 @@
             Aprēķins nr. {{invoice.invoiceId}}
         </h3>
         <p>
-            {{invoice.createdDate | date}} //
+            {{invoice.createdDate | date}}
         </p>
         <p *ngIf="invoice.paytraq as paytraq;">
             <a mat-button [href]="paytraqUrl$ | async" target="new">
