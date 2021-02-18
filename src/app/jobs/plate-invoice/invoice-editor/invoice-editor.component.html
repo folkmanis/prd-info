@@ -47,16 +47,22 @@
                     <a mat-raised-button [href]="paytraqUrl$ | async" target="new">
                         {{ paytraq.documentRef }}
                     </a>
-                    <button mat-raised-button color="primary" (click)="onUnlinkPaytraq(invoice)" matTooltip="Dzēst savienojumu">
+                    <button mat-raised-button color="primary" (click)="onUnlinkPaytraq(invoice)"
+                        matTooltip="Dzēst savienojumu">
                         ATVIENOT
                     </button>
                 </div>
 
                 <ng-template #newPaytraqInvoice>
-                    <button mat-raised-button [disabled]="!(paytraqOk$ | async)"
-                    (click)="onPaytraq(invoice)"> PAYTRAQ </button>
+                    <button mat-raised-button [disabled]="!(paytraqOk$ | async) || (paytraqBusy$ | async)"
+                        (click)="onPaytraq(invoice)">
+                        <span *ngIf="paytraqBusy$ | async; else notBusy"> SAGLABĀ... </span>
+                        <ng-template #notBusy>
+                            <span> UZ PAYTRAQ </span>
+                        </ng-template>
+                    </button>
                 </ng-template>
-                
+
             </mat-expansion-panel>
 
             <!-- Preces -->
