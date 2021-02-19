@@ -15,7 +15,6 @@ export interface CustomerProduct {
 }
 
 export interface Product {
-    _id: string;
     inactive: boolean;
     category: string;
     name: string;
@@ -25,13 +24,11 @@ export interface Product {
     prices?: ProductPrice[];
 }
 
-export type ProductPartial = Pick<Product, '_id' | 'name' | 'category' | 'inactive'>;
+export type ProductPartial = Pick<Product, 'name' | 'category' | 'inactive'>;
 
 export interface ProductPrice {
     customerName: string;
     price: number;
 }
-
-export type ProductNew = Omit<Product, '_id'>;
 
 export interface PriceChange { customerName: string; price: number | undefined; }

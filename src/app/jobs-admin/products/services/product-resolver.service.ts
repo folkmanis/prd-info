@@ -19,9 +19,8 @@ export class ProductResolverService extends SimpleFormResolverService<Product> {
 
   retrieveFn: RetrieveFn<Product> = (route) => {
     const id: string = route.paramMap.get('id');
-    if (!id || id.length !== 24) { return EMPTY; }
+    if (!id) { return EMPTY; }
     return this.productsService.getProduct(id);
-
   }
 
 }

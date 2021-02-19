@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { merge, Observable, Subject, MonoTypeOperatorFunction } from 'rxjs';
-import { map, share, shareReplay, switchMap, tap, startWith, concatMap, filter } from 'rxjs/operators';
-import { Product, ProductNew, ProductPartial, CustomerProduct } from 'src/app/interfaces';
+import { Observable, Subject } from 'rxjs';
+import { concatMap, map, share, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
+import { CustomerProduct, Product, ProductPartial } from 'src/app/interfaces';
 import { cacheWithUpdate } from 'src/app/library/rx';
-import { JobsSettings } from 'src/app/interfaces';
-import { SystemPreferencesService } from 'src/app/services/system-preferences.service';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
+import { SystemPreferencesService } from 'src/app/services/system-preferences.service';
 
 
 @Injectable({
@@ -34,7 +33,7 @@ export class ProductsService {
         switchMap(() => this.prdApi.products.get<ProductPartial>()),
         cacheWithUpdate(
           this._updateOneProduct$,
-          (o1, o2) => o1._id === o2._id
+          (o1, o2) => o1.name === o2.name
         ),
         shareReplay(1),
       );
@@ -52,9 +51,9 @@ export class ProductsService {
     return this.prdApi.products.get(id);
   }
 
-  updateProduct({ _id, ...rest }: Product): Observable<boolean> {
-    return this.prdApi.products.updateOne(_id, rest).pipe(
-      concatMap(result => this.prdApi.products.get(_id).pipe(
+  updateProduct({ name, ...rest }: Product): Observable<boolean> {
+    return this.prdApi.products.updateOne(name, rest).pipe(
+      concatMap(result => this.prdApi.products.get(name).pipe(
         tap(resp => this._updateOneProduct$.next(resp)),
         map(_ => result),
       )),
@@ -68,7 +67,7 @@ export class ProductsService {
     );
   }
 
-  insertProduct(prod: ProductNew): Observable<string> {
+  insertProduct(prod: Product): Observable<string> {
     return this.prdApi.products.insertOne(prod).pipe(
       tap(() => this._updateProducts$.next()),
       map(id => id.toString()),

@@ -20,12 +20,13 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
     }
 
     get isNew(): boolean {
-        return !this.form.controls._id.value;
+        return !this.initialValue?.name;
     }
+
+    protected initialValue: Partial<Product> | undefined;
 
     protected createForm(): IFormGroup<Product> {
         const productForm: IFormGroup<Product> = this.fb.group<Product>({
-            _id: [undefined],
             inactive: [false],
             category: [
                 undefined,
@@ -55,8 +56,8 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
     }
 
     initValue(product: Partial<Product>, params = { emitEvent: true }) {
-
-        if (!product._id) {
+        this.initialValue = product;
+        if (this.isNew) {
             this.setNameValidators();
         } else {
             this.removeNameValidators();
@@ -75,11 +76,11 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
 
     updateFn(prod: Product): Observable<Product> {
         return this.productService.updateProduct(prod).pipe(
-            switchMap(_ => this.productService.getProduct(prod._id)),
+            switchMap(_ => this.productService.getProduct(prod.name)),
         );
     }
 
-    insertFn({ _id, ...prod }: Product): Observable<string> {
+    insertFn(prod: Product): Observable<string> {
         return this.productService.insertProduct(prod);
     }
 
