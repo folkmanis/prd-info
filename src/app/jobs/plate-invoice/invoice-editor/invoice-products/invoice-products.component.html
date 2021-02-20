@@ -1,7 +1,9 @@
 <table mat-table [dataSource]="products$" class="app-table">
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let product; columns: displayedColumns"></tr>
+    <tr mat-row *matRowDef="let product; columns: displayedColumns"
+        [routerLink]="(isJobsAdmin$ | async) ? ['/', 'jobs-admin', 'products', product._id] : null">
+    </tr>
     <tr mat-footer-row *matFooterRowDef="['_id', 'total']"></tr>
 
     <!-- '_id' -->
