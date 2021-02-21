@@ -17,6 +17,7 @@ import { SidePanelComponent } from './side-panel/side-panel.component';
 import { UploadProgressComponent } from './side-panel/upload-progress/upload-progress.component';
 
 PdfMakeWrapper.setFonts(pdfFonts);
+import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 
 
 @NgModule({
@@ -31,6 +32,7 @@ PdfMakeWrapper.setFonts(pdfFonts);
   imports: [
     CommonModule,
     LibraryModule,
+    MaterialLibraryModule,
     JobsRoutingModule,
     PlateInvoiceModule,
     JobEditModule,

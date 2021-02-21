@@ -11,6 +11,7 @@ import { FolderPathComponent } from './folder-path/folder-path.component';
 
 import { JobEditDialogService } from './services/job-edit-dialog.service';
 import { UploadFilesComponent } from './upload-files/upload-files.component';
+import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import { UploadFilesComponent } from './upload-files/upload-files.component';
   imports: [
     CommonModule,
     LibraryModule,
+    MaterialLibraryModule,
   ],
   providers: [
     JobEditDialogService,

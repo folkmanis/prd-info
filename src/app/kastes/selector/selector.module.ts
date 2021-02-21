@@ -11,6 +11,7 @@ import { KopskaitiComponent } from './tabula/kopskaiti/kopskaiti.component';
 import { RefreshTableComponent } from './tabula/refresh-table/refresh-table.component';
 import { RowIdDirective } from './tabula/row-id.directive';
 import { OrderTotalsComponent } from './order-totals/order-totals.component';
+import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 
 
 @NgModule({
@@ -27,6 +28,7 @@ import { OrderTotalsComponent } from './order-totals/order-totals.component';
   imports: [
     CommonModule,
     LibraryModule,
+    MaterialLibraryModule,
     SelectorRoutingModule
   ]
 })

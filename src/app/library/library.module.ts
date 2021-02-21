@@ -22,7 +22,6 @@ import { SimpleListTableModule } from './simple-list-table/simple-list-table.mod
 import { TaggedStringComponent } from './tagged-string/tagged-string.component';
 import { MaterialLibraryModule } from './material-library.module';
 
-
 @NgModule({
   declarations: [
     CopyClipboardDirective,
@@ -38,7 +37,6 @@ import { MaterialLibraryModule } from './material-library.module';
     BackButtonDirective,
   ],
   imports: [
-    MaterialLibraryModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
@@ -50,9 +48,9 @@ import { MaterialLibraryModule } from './material-library.module';
     SideButtonModule,
     PortalModule,
     SimpleListTableModule,
+    MaterialLibraryModule,
   ],
   exports: [
-    MaterialLibraryModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,

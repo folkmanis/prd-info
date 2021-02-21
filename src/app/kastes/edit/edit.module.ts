@@ -12,6 +12,7 @@ import { PasutijumiTabulaComponent } from './pasutijumi-tabula/pasutijumi-tabula
 import { PasutijumsEditComponent } from './pasutijums-edit/pasutijums-edit.component';
 import { KastesJobResolverService } from './services/kastes-job-resolver.service';
 import { PlusSignPipe } from './services/plus-sign.pipe';
+import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 
 
 @NgModule({
@@ -27,6 +28,7 @@ import { PlusSignPipe } from './services/plus-sign.pipe';
   ],
   imports: [
     CommonModule,
+    MaterialLibraryModule,
     LibraryModule,
     KastesCommonModule,
     SimpleFormModule.forChildren({

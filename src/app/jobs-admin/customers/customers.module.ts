@@ -7,6 +7,7 @@ import { CustomersListComponent } from './customers-list/customers-list.componen
 import { CustomerResolverService } from './services/customer-resolver.service';
 import { PaytraqCustomerComponent } from './customer-edit/paytraq-customer/paytraq-customer.component';
 import { PaytraqCustomerTableComponent } from './customer-edit/paytraq-customer/paytraq-customer-table/paytraq-customer-table.component';
+import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import { PaytraqCustomerTableComponent } from './customer-edit/paytraq-customer/
   imports: [
     CommonModule,
     LibraryModule,
+    MaterialLibraryModule,
     SimpleFormModule.forChildren({
       path: 'customers',
       editorComponent: CustomerEditComponent,

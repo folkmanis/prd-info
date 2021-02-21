@@ -7,6 +7,7 @@ import { PasswordInputComponent } from './password-input/password-input.componen
 import { UserResolverService } from './services/user-resolver.service';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { UsersListComponent } from './users-list/users-list.component';
+import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import { UsersListComponent } from './users-list/users-list.component';
   imports: [
     CommonModule,
     LibraryModule,
+    MaterialLibraryModule,
     SimpleFormModule.forChildren({
       path: 'users',
       editorComponent: UserEditComponent,

@@ -8,6 +8,7 @@ import { SelectorModule } from './selector/selector.module';
 
 import { KastesRoutingModule } from './kastes-routing.module';
 import { KastesMainMenuComponent } from './kastes-main-menu/kastes-main-menu.component';
+import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import { KastesMainMenuComponent } from './kastes-main-menu/kastes-main-menu.com
     LibraryModule,
     SelectorModule,
     KastesRoutingModule,
+    MaterialLibraryModule,
   ],
   providers: [
     KastesPreferencesService,

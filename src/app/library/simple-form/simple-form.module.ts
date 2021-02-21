@@ -8,6 +8,7 @@ import { SimpleFormContainerComponent } from './simple-form-container/simple-for
 import { SimpleFormLabelDirective } from './simple-form-container/simple-form-label.directive';
 import { SimpleFormModuleConfiguration } from './simple-form-module-configuration';
 import { SimpleListContainerComponent } from './simple-list-container/simple-list-container.component';
+import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 
 
 
@@ -15,6 +16,7 @@ import { SimpleListContainerComponent } from './simple-list-container/simple-lis
   imports: [
     CommonModule,
     RouterModule,
+    MaterialLibraryModule,
     LibraryModule,
   ],
   declarations: [

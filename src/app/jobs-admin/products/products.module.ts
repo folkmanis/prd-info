@@ -8,6 +8,7 @@ import { ProductsListComponent } from './products-list/products-list.component';
 import { ProductResolverService } from './services/product-resolver.service';
 import { PaytraqProductComponent } from './products-editor/paytraq-product/paytraq-product.component';
 import { PaytraqProductTableComponent } from './products-editor/paytraq-product/paytraq-product-table/paytraq-product-table.component';
+import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { PaytraqProductTableComponent } from './products-editor/paytraq-product/
   imports: [
     CommonModule,
     LibraryModule,
+    MaterialLibraryModule,
     SimpleFormModule.forChildren({
       path: 'products',
       listComponent: ProductsListComponent,

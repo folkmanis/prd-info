@@ -9,8 +9,8 @@ import { SearchTableComponent } from './search-table/search-table.component';
 import { FacetComponent } from './facet/facet.component';
 import { FacetCheckerComponent } from './facet/facet-checker/facet-checker.component';
 import { SearchInputComponent } from './search-input/search-input.component';
-import { ArchiveSearchService } from './services/archive-search.service';
 import { StatusComponent } from './search-input/status.component';
+import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 
 
 @NgModule({
@@ -24,6 +24,7 @@ import { StatusComponent } from './search-input/status.component';
   ],
   imports: [
     CommonModule,
+    MaterialLibraryModule,
     XmfSearchRoutingModule,
     LibraryModule,
   ],

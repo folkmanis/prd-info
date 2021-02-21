@@ -23,6 +23,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { AppParams } from './interfaces';
 import { APP_PARAMS, PRD_DEFAULTS } from './app-params';
 import { ToolbarComponent } from './layout/toolbar/toolbar.component';
+import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { ToolbarComponent } from './layout/toolbar/toolbar.component';
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
+    MaterialLibraryModule,
     LibraryModule,
   ],
   providers: [

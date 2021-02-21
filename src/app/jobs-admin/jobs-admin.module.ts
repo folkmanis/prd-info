@@ -8,6 +8,7 @@ import { JobsAdminComponent } from './jobs-admin.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import { ProductsModule } from './products/products.module';
 import { CustomersModule } from './customers/customers.module';
+import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { CustomersModule } from './customers/customers.module';
   imports: [
     CommonModule,
     LibraryModule,
+    MaterialLibraryModule,
     ProductsModule,
     CustomersModule,
     JobsAdminRoutingModule,

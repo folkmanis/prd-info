@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { ColorTotalsComponent } from './color-totals/color-totals.component';
 import { KastesTotalsComponent } from './kastes-totals/kastes-totals.component';
+import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 
 
 @NgModule({
@@ -12,6 +13,7 @@ import { KastesTotalsComponent } from './kastes-totals/kastes-totals.component';
   ],
   imports: [
     CommonModule,
+    MaterialLibraryModule,
   ],
   exports: [
     ColorTotalsComponent,

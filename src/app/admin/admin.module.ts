@@ -10,6 +10,7 @@ import { LogfileTableComponent } from './logfile/logfile-table/logfile-table.com
 import { LogFilterComponent } from './logfile/log-filter/log-filter.component';
 import { UsersModule } from './users/users.module';
 import { ModulePreferencesModule } from './module-preferences/module-preferences.module';
+import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { ModulePreferencesModule } from './module-preferences/module-preferences
   imports: [
     CommonModule,
     LibraryModule,
+    MaterialLibraryModule,
     UsersModule,
     AdminRoutingModule,
     ModulePreferencesModule,

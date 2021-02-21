@@ -12,6 +12,7 @@ import { InvoicesListComponent } from './invoices-list/invoices-list.component';
 import { SelectionTotalsComponent } from './new-invoice/selection-totals/selection-totals.component';
 import { JobsWithoutInvoicesComponent } from './jobs-without-invoices/jobs-without-invoices.component';
 import { InvoiceProductsComponent } from './invoice-editor/invoice-products/invoice-products.component';
+import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 
 
 @NgModule({
@@ -28,6 +29,7 @@ import { InvoiceProductsComponent } from './invoice-editor/invoice-products/invo
   imports: [
     CommonModule,
     LibraryModule,
+    MaterialLibraryModule,
     PlateInvoiceRoutingModule,
   ]
 })

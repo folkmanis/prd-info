@@ -13,6 +13,7 @@ import { CardTitleDirective } from './card-title.directive';
 import { UnitsDialogComponent } from './modules/jobs-preferences/units-dialog/units-dialog.component';
 import { PaytraqPreferencesComponent } from './modules/paytraq-preferences/paytraq-preferences.component';
 import { PaytraqConnectionParamsComponent } from './modules/paytraq-preferences/paytraq-connection-params/paytraq-connection-params.component';
+import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 
 
 
@@ -34,6 +35,7 @@ import { PaytraqConnectionParamsComponent } from './modules/paytraq-preferences/
   imports: [
     CommonModule,
     LibraryModule,
+    MaterialLibraryModule,
   ]
 })
 export class ModulePreferencesModule { }
