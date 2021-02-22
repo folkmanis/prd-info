@@ -36,9 +36,7 @@ function usernamePatternValidator(control: AbstractControl): ValidationErrors {
 }
 
 function existingUsernameValidator(usersService: UsersService): AsyncValidatorFn {
-    return (control: AbstractControl): Observable<ValidationErrors> => {
-        return usersService.validateUsername(control.value).pipe(
+    return (control: AbstractControl): Observable<ValidationErrors> => usersService.validateUsername(control.value).pipe(
             map(valid => valid ? null : { existing: 'Esošs lietotājvārds' })
         );
-    };
 }

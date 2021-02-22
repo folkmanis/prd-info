@@ -14,6 +14,7 @@ export class PagedCache<T> {
     private _cachedPages = new Set<number>();
     /**
      * Konstruktors ar sākotnējiem iestatījumiem
+     *
      * @param _length Kopējais objektu skaits. Sākotnēji var būt nepiepildīts
      * @param _fetchFunction Funkcija, kas iegūs datus. Atgriež datu Observable, kuram ir jāpabeidzas
      * @param firstPage Pirmā datu porcija, ja tāda ir. Jābūt tieši 100 objektiem (vienai lapai)

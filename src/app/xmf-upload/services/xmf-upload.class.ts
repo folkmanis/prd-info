@@ -14,11 +14,11 @@ export interface XmfUploadProgress {
     username: string;
     state: 'uploading' | 'parsing' | 'saving' | 'finished';
     count: {
-        [key: string]: number,
-        processed: number,
-        modified: number,
-        upserted: number,
-        lines: number,
+        [key: string]: number;
+        processed: number;
+        modified: number;
+        upserted: number;
+        lines: number;
     };
     finished: Date | string;
 }

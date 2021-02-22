@@ -55,7 +55,7 @@ export class LabelsComponent implements OnInit {
   ngOnInit() {
   }
 
-  onLabelSubmit({ kods }: { kods: string; }): void {
+  onLabelSubmit({ kods }: { kods: string }): void {
     this.inputForm.disable();
     this.code.emit(kods);
   }

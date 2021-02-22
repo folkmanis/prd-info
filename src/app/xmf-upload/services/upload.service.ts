@@ -24,6 +24,7 @@ export class UploadService {
   /**
    * Augšuplādē failu ar papildinājumiem.
    * Atbildē saņem id kodu ar augšuplādes žurnāla numuru
+   *
    * @param file File objekts no formas
    */
   postFile(formData: FormData): Observable<XmfUploadProgressTable> {
@@ -85,14 +86,12 @@ export class UploadService {
   private reportProgress(_int: number = 2000): (obs: Observable<XmfUploadResponse>) => Observable<XmfUploadProgressTable> {
     let job: XmfUploadResponse;
     const serv = this;
-    return (obs) => {
-      return obs.pipe(
+    return (obs) => obs.pipe(
         tap(resp => job = resp),
         switchMap(() => interval(_int)),
         switchMap(() => serv.getStatussHttp(job.id)),
         takeWhile(stat => stat.state !== 'finished', true),
       );
-    };
   }
 
 }

@@ -15,4 +15,4 @@ export interface UserPreferences {
     modules: string[];
 }
 
-export interface UsersResponse extends AppHttpResponseBase<User> { }
+export type UsersResponse = AppHttpResponseBase<User>;

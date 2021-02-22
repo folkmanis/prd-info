@@ -132,12 +132,9 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
   }
 
   private productValidatorFn(): ValidatorFn {
-    return (control: IFormControl<string>): null | ValidationErrors => {
-      return this.customerProducts.some(
+    return (control: IFormControl<string>): null | ValidationErrors => this.customerProducts.some(
         product => product.productName === control.value
       ) ? null : { invalidProduct: 'Prece nav atrasta katalogā' };
-
-    };
   }
 
 

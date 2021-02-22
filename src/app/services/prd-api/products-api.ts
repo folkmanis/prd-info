@@ -23,7 +23,7 @@ export class ProductsApi extends ApiBase<Product> {
     }
     /** Preču cenas vairākiem klientu un preču */
     customersProducts(customerProducts: CustomerProductPrice[]): Observable<CustomerProductPrice[]> {
-        return this.http.get<{ data: CustomerProductPrice[]; }>(
+        return this.http.get<{ data: CustomerProductPrice[] }>(
             this.path + 'prices/customers',
             new HttpOptions({ filter: JSON.stringify(customerProducts) })
         ).pipe(

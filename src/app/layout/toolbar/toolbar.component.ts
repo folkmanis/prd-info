@@ -24,7 +24,7 @@ export class ToolbarComponent implements OnInit {
   // Lietotājs no servisa (lai būtu redzams templatē)
   user$: Observable<User> = this.loginService.user$;
   // Lietotāja menu
-  userMenu$: Observable<{ route: string[], text: string; }[]> = this.loginService.user$.pipe(
+  userMenu$: Observable<{ route: string[]; text: string }[]> = this.loginService.user$.pipe(
     map(usr => usr ? [{ route: ['/login'], text: 'Atslēgties' }] : [])
   );
   version = this.params.version.appBuild;

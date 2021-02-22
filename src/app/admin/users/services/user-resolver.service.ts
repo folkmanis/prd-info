@@ -19,6 +19,6 @@ export class UserResolverService extends SimpleFormResolverService<User> {
     const id = route.paramMap.get('id');
     if (!id?.length) { return EMPTY; }
     return this.usrService.getUser(id);
-  }
+  };
 
 }

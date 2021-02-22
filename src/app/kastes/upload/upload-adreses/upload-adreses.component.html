@@ -2,7 +2,7 @@
 
     <button *cdkPortal class="button-row" mat-raised-button (click)="onAddEmptyColumn()" [disabled]="!(datasource$ | async)?.length">Pievienot tukšu sleju</button>
     <button *cdkPortal class="button-row" mat-raised-button (click)="onDeleteColumns(checkCols.controls.columns.value)"
-        [disabled]="!(chkColCount$ | async)">Dzēst slejas</button>
+        [disabled]="(chkColCount$ | async) > 0">Dzēst slejas</button>
     <button *cdkPortal class="button-row" mat-raised-button (click)="onJoinColumns(checkCols.controls.columns.value)"
         [disabled]="(chkColCount$ | async) < 2">Apvienot slejas</button>
     <mat-checkbox *cdkPortal class="button-row" [formControl]="checkSkaitiPakas">Jādala ar 500</mat-checkbox>

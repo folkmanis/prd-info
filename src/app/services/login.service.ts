@@ -43,6 +43,7 @@ export class LoginService {
   /**
    * Login. true - veiksmīgi, false - neveiksmīgi
    * Bez sīkākas informācijas no servera
+   *
    * @param login Lietotājvārda objekts
    */
   logIn(login: Login): Observable<boolean> {
@@ -63,6 +64,7 @@ export class LoginService {
 
   /**
    * Vai lietotājam ir pieejams modulis mod
+   *
    * @param mod moduļa nosaukums
    */
   isModule(mod: string): Observable<boolean> {

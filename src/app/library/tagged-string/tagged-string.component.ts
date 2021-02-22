@@ -31,13 +31,13 @@ export class TaggedStringComponent {
   get search(): string | undefined { return this._search; }
   private _search: string | undefined;
 
-  @Input() set style(style: { [key: string]: string; }) {
+  @Input() set style(style: { [key: string]: string }) {
     this._style = style;
   }
-  get style(): { [key: string]: string; } {
+  get style(): { [key: string]: string } {
     return this._style;
   }
-  private _style: { [key: string]: string; } = {
+  private _style: { [key: string]: string } = {
     'font-weight': 'bold',
     color: 'red',
   };
@@ -69,6 +69,7 @@ export class TaggedStringComponent {
    * String daļu pirms atrastā liek this.chunks masīvā bez style
    * Atrasto daļu liek this.chunks ar stilu this.style
    * Atgriež atlikušo daļu
+   *
    * @param str teksta rinda apstrādei
    */
   private splitStr(str: string): string {

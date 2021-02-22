@@ -36,7 +36,7 @@ export class LogFilterComponent implements OnInit, OnDestroy, AfterViewInit {
   });
   private readonly dateControl = this.filterForm.get('date');
 
-  logLevels$: Observable<{ key: number, value: string; }[]> = this.systemPreferencesService.preferences$.pipe(
+  logLevels$: Observable<{ key: number; value: string }[]> = this.systemPreferencesService.preferences$.pipe(
     map(pref => pref.system.logLevels),
     map(levels => levels.sort((a, b) => a[0] - b[0])),
     map(levels => levels.map(level => ({ key: level[0], value: level[1] }))),

@@ -10,11 +10,11 @@ export abstract class ApiBase<T> {
         protected path: string,
     ) { }
 
-    get<P = Partial<T>>(params?: { [key: string]: any; }): Observable<P[]>;
-    get<P = Partial<T>>(id: string | number, params?: { [key: string]: any; }): Observable<T>;
+    get<P = Partial<T>>(params?: { [key: string]: any }): Observable<P[]>;
+    get<P = Partial<T>>(id: string | number, params?: { [key: string]: any }): Observable<T>;
     get<P = Partial<T>>(
-        idOrParams?: string | number | { [key: string]: any; },
-        params?: { [key: string]: any; }
+        idOrParams?: string | number | { [key: string]: any },
+        params?: { [key: string]: any }
     ): Observable<P[]> | Observable<T> {
 
         if (idOrParams && idOrParams instanceof Object) {

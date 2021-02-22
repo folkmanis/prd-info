@@ -10,12 +10,12 @@ import { XmfUploadTabulaDataSource } from './xmf-upload-tabula-data-source';
 })
 export class TabulaComponent implements OnInit {
 
+  dataSource = new XmfUploadTabulaDataSource(this.uploadService);
+  displayedColumns = TABULA_COLUMNS.map(col => col.name);
+
   constructor(
     private uploadService: UploadService,
   ) { }
-
-  dataSource = new XmfUploadTabulaDataSource(this.uploadService);
-  displayedColumns = TABULA_COLUMNS.map(col => col.name);
 
   ngOnInit(): void {
   }

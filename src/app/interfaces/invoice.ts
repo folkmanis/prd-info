@@ -24,8 +24,8 @@ export type InvoiceUpdate = Partial<Pick<Invoice, typeof INVOICE_UPDATE_FIELDS[n
 
 export type InvoiceTable = Pick<Invoice, 'invoiceId' | 'customer' | 'createdDate'> & {
     totals: {
-        count: number,
-        sum: number,
+        count: number;
+        sum: number;
     };
 };
 

@@ -11,7 +11,7 @@ export interface LogRecordHttp {
     level: number;
     timestamp: Date;
     info: string;
-    metadata: { [key: string]: any; };
+    metadata: { [key: string]: any };
 }
 
 export type LogRecord = LogRecordHttp & {
@@ -19,9 +19,9 @@ export type LogRecord = LogRecordHttp & {
 };
 
 export type GetLogEntriesParams = Partial<{
-    limit: number,
-    start: number,
-    level: number,
-    dateTo: string,
-    dateFrom: string,
+    limit: number;
+    start: number;
+    level: number;
+    dateTo: string;
+    dateFrom: string;
 }>;

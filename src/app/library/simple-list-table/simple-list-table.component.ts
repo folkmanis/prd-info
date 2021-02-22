@@ -8,7 +8,7 @@ import { map, mergeAll, mergeMap, shareReplay, skip, takeUntil, tap } from 'rxjs
 import { DestroyService } from 'src/app/library/rx';
 
 enum Action { ADD, REMOVE, UPDATE }
-interface UpdateAction<T> { type: Action; data?: T; idx?: number; }
+interface UpdateAction<T> { type: Action; data?: T; idx?: number }
 
 @Component({
   selector: 'app-simple-list-table',

@@ -22,7 +22,7 @@ const REPORT_FIELDS: string[] = [
 export class InvoiceCsv {
     constructor(
         private invoice: Invoice,
-        private params: { separator: string; locale: string; } = { separator: ',', locale: 'lv' },
+        private params: { separator: string; locale: string } = { separator: ',', locale: 'lv' },
     ) {
         moment.locale(params.locale);
     }

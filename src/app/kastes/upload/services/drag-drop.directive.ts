@@ -1,6 +1,6 @@
 import { Directive, Output, ElementRef, HostListener, EventEmitter } from '@angular/core';
 
-export interface DragData { text: string; source: string; }
+export interface DragData { text: string; source: string }
 
 @Directive({
   selector: '[appDragDrop]'

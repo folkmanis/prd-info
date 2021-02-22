@@ -19,6 +19,7 @@ export class AdresesCsv {
 
     /**
      * Izdzēš slejas, kuras norādītas masīvā
+     *
      * @param colMap Dzēšamās slejas norādītas ar true
      */
     deleteColumns(colMap: boolean[]) {
@@ -28,6 +29,7 @@ export class AdresesCsv {
     }
     /**
      * Apvieno norādītās slejas
+     *
      * @param colMap Apvienojamās slejas norādītas ar true
      */
     joinColumns(colMap: boolean[]) {

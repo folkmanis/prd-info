@@ -113,9 +113,7 @@ export class ArchiveSearchService {
   }
 
   private fetchRecords(): (start: number, limit: number) => Observable<ArchiveRecord[]> {
-    return (start: number, limit: number): Observable<ArchiveRecord[]> => {
-      return this._cachedQuery ? this.searchHttp(this._cachedQuery, start, limit) : of([]);
-    };
+    return (start: number, limit: number): Observable<ArchiveRecord[]> => this._cachedQuery ? this.searchHttp(this._cachedQuery, start, limit) : of([]);
   }
 
   private searchHttp(query: SearchQuery): Observable<ArchiveResp>;

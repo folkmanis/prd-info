@@ -46,7 +46,7 @@ export class UserFormSource extends SimpleFormSource<User> {
         return form;
     }
 
-    initValue(user: Partial<User>, params?: { emitEvent: boolean; }): void {
+    initValue(user: Partial<User>, params?: { emitEvent: boolean }): void {
         this.currentUser = user;
         const unameCtrl = this.form.controls.username;
         if (user.username) {
@@ -83,11 +83,9 @@ export class UserFormSource extends SimpleFormSource<User> {
     }
 
     private existingUsernameValidator(): AsyncValidatorFn {
-        return (control: AbstractControl): Observable<ValidationErrors> => {
-            return this.usersService.validateUsername(control.value).pipe(
+        return (control: AbstractControl): Observable<ValidationErrors> => this.usersService.validateUsername(control.value).pipe(
                 map(valid => valid ? null : { existing: 'Esošs lietotājvārds' })
             );
-        };
     }
 
 

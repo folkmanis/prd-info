@@ -9,13 +9,13 @@ import { ArchiveSearchService } from '../services/archive-search.service';
   styleUrls: ['./search-input.component.scss'],
 })
 export class SearchInputComponent  {
-  private _count = 0;
   @Input() set count(param: number) {
     this._count = param;
   }
   get count(): number { return this._count; }
 
   q: FormControl = new FormControl('');
+  private _count = 0;
 
   @Output() searchString = this.q.valueChanges.pipe(
     startWith(''),

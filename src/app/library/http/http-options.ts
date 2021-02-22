@@ -6,10 +6,11 @@ export class HttpOptions {
     params: HttpParams = new HttpParams();
     /**
      * Objekts lietošanai kā HttpClient.get() options parametrs
+     *
      * @param par: { [key: string]: any } http query parametri
      * tiks nodoti kā ?key=value&key=value...
      */
-    constructor(par: { [key: string]: any; } = {}) {
+    constructor(par: { [key: string]: any } = {}) {
         Object.keys(par).forEach((key) => {
             if (par[key] !== undefined) {
                 this.params = this.params.set(key, par[key]);
@@ -18,6 +19,7 @@ export class HttpOptions {
     }
     /**
      * Pievieno vērtību params objektam
+     *
      * @param key parametrs
      * @param val vērtība
      */

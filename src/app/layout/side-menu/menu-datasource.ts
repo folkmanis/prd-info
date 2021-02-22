@@ -26,6 +26,7 @@ export class MenuDataSource implements DataSource<SideMenuData> {
     /**
      * Datu struktūras obligātā funkcija. Parakstās uz lietotāja objektu
      * Mainoties lietotājam, mainās arī izvēlne
+     *
      * @param collectionViewer Parādāmais apgabals
      */
     connect(collectionViewer: CollectionViewer): Observable<SideMenuData[]> {
@@ -36,6 +37,7 @@ export class MenuDataSource implements DataSource<SideMenuData> {
     }
     /**
      * Pārveido UserModule tipa objektu par izvēlnes 'koku'
+     *
      * @param item UserModule objekta daļa
      * @param rte augstākā līmeņa ceļi kā masīvs (vai tukšs augstākā līmeņa objektam)
      */

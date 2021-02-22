@@ -57,6 +57,7 @@ export class JobDialogComponent implements OnInit {
    * Jauna darba izveides funkcija
    * Atgriež jaunā darba jobId
    * Ja formā jau ir jobId (darbs nav jauns), tad atgriež EMPTY
+   *
    * @param form forma ar darbu
    * @param jobCreateFn darba izveides funkcija
    */

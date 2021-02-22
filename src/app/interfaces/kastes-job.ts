@@ -23,7 +23,6 @@ export interface ApjomiTotals {
 
 export type KastesJobPartialKeys = 'category' | 'jobId' | 'name' | 'receivedDate' | 'dueDate';
 
-export type KastesJobPartial = Pick<KastesJob, KastesJobPartialKeys> & { veikaliCount?: number; };
+export type KastesJobPartial = Pick<KastesJob, KastesJobPartialKeys> & { veikaliCount?: number };
 
-export interface KastesJobResponse extends AppHttpResponseBase<KastesJob> {
-}
+export type KastesJobResponse = AppHttpResponseBase<KastesJob>;

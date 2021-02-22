@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { IFormGroup } from '@rxweb/types';
 
 @Directive()
-// tslint:disable-next-line: directive-class-suffix
+// eslint-disable-next-line @angular-eslint/directive-class-suffix
 export abstract class PreferencesCardControl<T> {
 
 abstract stateChanges: Observable<void>;

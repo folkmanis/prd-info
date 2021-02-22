@@ -15,7 +15,7 @@ export class PasutijumiService {
     private prdApi: PrdApiService,
   ) { }
 
-  getKastesJobs(options: { veikali: boolean; }): Observable<KastesJobPartial[]> {
+  getKastesJobs(options: { veikali: boolean }): Observable<KastesJobPartial[]> {
     return this.prdApi.kastesOrders.get({
       ...options,
       veikali: options.veikali ? 1 : 0,

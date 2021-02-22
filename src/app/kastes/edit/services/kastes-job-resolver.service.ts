@@ -19,6 +19,6 @@ export class KastesJobResolverService extends SimpleFormResolverService<KastesJo
     const id: number = +route.paramMap.get('id');
     if (isNaN(id)) { return EMPTY; }
     return this.pasutijumiService.getOrder(id);
-  }
+  };
 }
 

@@ -3,8 +3,8 @@ export interface ArchiveRecord {
     DescriptiveName: string;
     CustomerName: string;
     Archives: {
-        Location: string,
-        Date: string,
-        Action: number,
+        Location: string;
+        Date: string;
+        Action: number;
     }[];
 }

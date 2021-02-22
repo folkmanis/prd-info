@@ -32,6 +32,7 @@ export class UsersService {
   );
   /**
    * Saņem lietotāja ierakstu no REST
+   *
    * @param username Lietotājvārds
    */
   getUser(username: string): Observable<User> {
@@ -39,6 +40,7 @@ export class UsersService {
   }
   /**
    * Atjauno lietotāja iestatījumus, izņemot paroli
+   *
    * @param username Lietotājvārds
    * @param user Atjaunojamie dati, bet ne parole!
    */
@@ -50,6 +52,7 @@ export class UsersService {
   }
   /**
    * Nomaina paroli lietotājam
+   *
    * @param username lietotājvārds
    * @param password parole
    */
@@ -59,6 +62,7 @@ export class UsersService {
   /**
    * Pievieno lietotāju,
    * atjauno lietotāju sarakstu
+   *
    * @param data Pilni lietotāja dati
    */
   addUser(data: Partial<User>): Observable<boolean> {
@@ -69,6 +73,7 @@ export class UsersService {
   }
   /**
    * Izdzēš lietotāju, atjauno lietotāju sarakstu
+   *
    * @param username Lietotājvārds
    */
   deleteUser(username: string): Observable<boolean> {
@@ -81,6 +86,7 @@ export class UsersService {
    * Rezultāts: Observable
    * true -  ja lietotāja vārds nav aizņemts un derīgs
    * false - ja lietotāja vārds aizņemts
+   *
    * @param username Pārbaudāmais lietotāja vārds
    */
   validateUsername(username: string): Observable<boolean> {
@@ -90,6 +96,7 @@ export class UsersService {
   }
   /**
    * Atsvaidzina lietotāju statiskajā sarakstā
+   *
    * @param username Lietotājvārds
    * @param update Izmaiņas
    */

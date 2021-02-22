@@ -8,7 +8,7 @@ const DELAY_TIME = 5000;
   selector: 'tr[appRowId]'
 })
 export class RowIdDirective {
-  // tslint:disable-next-line: no-input-rename
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('appRowId') kaste: Kaste | undefined;
 
   constructor(

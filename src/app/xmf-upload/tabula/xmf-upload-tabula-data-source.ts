@@ -7,10 +7,6 @@ import { EMPTY_PROGRESS, XmfUploadProgressTable } from '../services/xmf-upload.c
 export class XmfUploadTabulaDataSource implements DataSource<XmfUploadProgressTable> {
 
     private data: XmfUploadProgressTable[];
-    constructor(
-        private service: UploadService
-    ) { }
-
     private initial$ = this.service.statusLog$.pipe(
         tap(log => this.data = log)
     );
@@ -19,6 +15,10 @@ export class XmfUploadTabulaDataSource implements DataSource<XmfUploadProgressTa
         map(upd => ({ ...EMPTY_PROGRESS, ...upd })),
         map(upd => this.updateTable(upd)),
     );
+
+    constructor(
+        private service: UploadService
+    ) { }
 
     connect(): Observable<XmfUploadProgressTable[]> {
         return merge(this.initial$, this.updates$);

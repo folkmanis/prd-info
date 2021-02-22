@@ -19,7 +19,7 @@ export class CustomerResolverService extends SimpleFormResolverService<Customer>
     const id: string = route.paramMap.get('id');
     if (!id || id.length !== 24) { return EMPTY; }
     return this.customerService.getCustomer(id);
-  }
+  };
 
 
 }

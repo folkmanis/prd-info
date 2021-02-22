@@ -68,5 +68,4 @@ export interface PaytraqConnectionParams {
     invoiceUrl: string;
 }
 
-export interface SystemPreferencesResponse extends AppHttpResponseBase<PreferencesDbModule> {
-}
+export type SystemPreferencesResponse = AppHttpResponseBase<PreferencesDbModule>;

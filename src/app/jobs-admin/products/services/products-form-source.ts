@@ -128,11 +128,9 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
     }
 
     private nameAsyncValidator(key: keyof Product): AsyncValidatorFn {
-        return (control: IFormControl<string>): Observable<ValidationErrors | null> => {
-            return this.productService.validate(key, control.value.trim()).pipe(
+        return (control: IFormControl<string>): Observable<ValidationErrors | null> => this.productService.validate(key, control.value.trim()).pipe(
                 map(valid => valid ? null : { occupied: control.value })
             );
-        };
     }
 
     private duplicateCustomersValidator(ctrl: IFormArray<ProductPrice>): ValidationErrors | null {

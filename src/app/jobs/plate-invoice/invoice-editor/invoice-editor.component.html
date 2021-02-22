@@ -54,7 +54,7 @@
                 </div>
 
                 <ng-template #newPaytraqInvoice>
-                    <button mat-raised-button [disabled]="!(paytraqOk$ | async) || (paytraqBusy$ | async)"
+                    <button mat-raised-button [disabled]="(paytraqOk$ | async) === false || (paytraqBusy$ | async)"
                         (click)="onPaytraq(invoice)">
                         <span *ngIf="paytraqBusy$ | async; else notBusy"> SAGLABĀ... </span>
                         <ng-template #notBusy>

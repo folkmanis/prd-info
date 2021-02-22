@@ -21,6 +21,6 @@ export class ProductResolverService extends SimpleFormResolverService<Product> {
     const id: string = route.paramMap.get('id');
     if (!id) { return EMPTY; }
     return this.productsService.getProduct(id);
-  }
+  };
 
 }

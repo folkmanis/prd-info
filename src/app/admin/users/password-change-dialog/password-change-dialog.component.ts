@@ -18,7 +18,7 @@ export class PasswordChangeDialogComponent implements OnInit {
 
   constructor(
     @Inject(APP_PARAMS) private params: AppParams,
-    @Inject(MAT_DIALOG_DATA) public data: { username: string; },
+    @Inject(MAT_DIALOG_DATA) public data: { username: string },
     private dialogRef: MatDialogRef<PasswordChangeDialogComponent>,
   ) { }
 

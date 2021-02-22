@@ -31,4 +31,4 @@ export interface ProductPrice {
     price: number;
 }
 
-export interface PriceChange { customerName: string; price: number | undefined; }
+export interface PriceChange { customerName: string; price: number | undefined }

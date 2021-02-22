@@ -6,7 +6,7 @@ describe('ColorsOutputComponent', () => {
   let component: ColorsOutputComponent;
   let fixture: ComponentFixture<ColorsOutputComponent>;
 
-  // tslint:disable-next-line: deprecation
+  // eslint-disable-next-line import/no-deprecated
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ColorsOutputComponent ]

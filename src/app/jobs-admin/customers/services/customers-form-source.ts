@@ -58,19 +58,15 @@ export class CustomersFormSource extends SimpleFormSource<Customer> {
     }
 
     private validateCode(): AsyncValidatorFn {
-        return (control: AbstractControl): Observable<ValidationErrors | null> => {
-            return this.customer?.code === control.value ? of(null) : this.customersService.validator('code', control.value).pipe(
+        return (control: AbstractControl): Observable<ValidationErrors | null> => this.customer?.code === control.value ? of(null) : this.customersService.validator('code', control.value).pipe(
                 map(val => val ? null : { occupied: control.value })
             );
-        };
     }
 
     private validateName(): AsyncValidatorFn {
-        return (control: AbstractControl): Observable<ValidationErrors | null> => {
-            return this.customersService.validator('CustomerName', control.value).pipe(
+        return (control: AbstractControl): Observable<ValidationErrors | null> => this.customersService.validator('CustomerName', control.value).pipe(
                 map(val => val ? null : { occupied: control.value })
             );
-        };
     }
 
 

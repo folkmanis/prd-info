@@ -29,6 +29,7 @@ class AdreseSkaits {
     /**
      * No rindas masīva atstāj tikai vajadzīgos elementus,
      * un piešķir tos attiecīgajiem objekta locekļiem
+     *
      * @param adrS string masīvs ar sākotnējām adreses rindām
      * @param colMap Map objekts
      * key - esošās slejas nosaukums
@@ -83,6 +84,7 @@ export class AdreseBox {
     box: Box[] = [];
     /**
      * Kontruktors izveido pakojumu pa kastēm
+     *
      * @param adr Objekts ar adreses pasūtījumu
      */
     constructor(adr: AdreseSkaits) {
@@ -120,6 +122,7 @@ export class AdreseBox {
     /**
      * Pārvieto vienu paku (pirmo pēc kārtas) no vienas kastes uz otru
      * Nepieciešams optimizācijas aktivitātei
+     *
      * @param from kastes indekss 'no'
      * @param to kastes indekss 'uz'
      */
