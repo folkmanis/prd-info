@@ -11,8 +11,8 @@ import { InvoiceCsv } from './invoice-csv';
 import { saveAs } from 'file-saver';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-const PAYTRAQ_SAVED_MESSAGE = "Izveidota pavadzīme Paytraq sistēmā";
-const PAYTRAQ_UNLINK_MESSAGE = "Paytraq savienojums dzēsts";
+const PAYTRAQ_SAVED_MESSAGE = 'Izveidota pavadzīme Paytraq sistēmā';
+const PAYTRAQ_UNLINK_MESSAGE = 'Paytraq savienojums dzēsts';
 
 @Component({
   selector: 'app-invoice-editor',
@@ -70,7 +70,7 @@ export class InvoiceEditorComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-  };
+  }
 
   ngOnDestroy() {
     this._invoiceUpdate$.complete();
@@ -80,13 +80,13 @@ export class InvoiceEditorComponent implements OnInit, OnDestroy {
   onPdfDownload(invoice: Invoice): void {
     const report = new InvoiceReport(invoice, this.locale);
     report.open();
-  };
+  }
 
   onCsvInvoice(invoice: Invoice): void {
     const csv = new InvoiceCsv(invoice, { separator: ',', locale: this.locale });
     const file = new File([csv.toCsvInvoice()], `Invoice ${invoice.invoiceId}.csv`, { type: 'text/csv' });
     saveAs(file);
-  };
+  }
 
   onCsvReport(invoice: Invoice): void {
     const csv = new InvoiceCsv(invoice, { separator: ',', locale: this.locale });

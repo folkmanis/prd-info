@@ -19,7 +19,7 @@ export class InvoiceProductsComponent implements OnInit, OnDestroy {
 
   @Input() set total(total: number) { this._total = total; }
   get total(): number { return this._total; }
-  private _total: number = 0;
+  private _total = 0;
 
   displayedColumns: (keyof InvoiceProduct)[] = ['paytraqId', '_id', 'count', 'price', 'total'];
 
@@ -27,8 +27,8 @@ export class InvoiceProductsComponent implements OnInit, OnDestroy {
 
   isJobsAdmin$: Observable<boolean> = this.loginService.user$.pipe(
     pluck('preferences', 'modules'),
-    map(modules=> modules.includes('jobs-admin'))
-  )
+    map(modules => modules.includes('jobs-admin'))
+  );
 
   constructor(
     private loginService: LoginService,

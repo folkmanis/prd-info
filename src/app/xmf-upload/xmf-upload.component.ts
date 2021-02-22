@@ -26,7 +26,7 @@ export class XmfUploadComponent implements OnInit, OnDestroy {
     private uploadService: UploadService,
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.fakeInput.disable();
     const sub = this.uploadService.uploadState$.pipe(
       tap(st => {
@@ -38,26 +38,26 @@ export class XmfUploadComponent implements OnInit, OnDestroy {
     ).subscribe(state => this.uploadState = state);
     this.subscr.add(sub);
   }
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscr.forEach(sub => sub.unsubscribe());
   }
 
-  onFileSelected(ev: any) {
+  onFileSelected(ev: any): void {
     this.setFile(ev.target.files[0]);
   }
 
-  onFileDropped(ev: FileList) {
+  onFileDropped(ev: FileList): void {
     this.setFile(ev.item(0));
   }
 
-  onUpload() {
+  onUpload(): void {
     this.uploadService.uploadState$.next(UPLOAD_STATE.UPLOADING);
     const formData: FormData = new FormData();
     formData.append('archive', this.file, this.file.name);
     this.uploadService.postFile(formData).subscribe();
   }
 
-  private setFile(fl: File) {
+  private setFile(fl: File): void {
     if (!this.validateFile(fl)) { return; }
     this.file = fl;
     this.fakeInput.setValue(this.file.name);

@@ -32,7 +32,7 @@ export class PaytraqApi extends ApiBase<Pt.PaytraqData> {
             new HttpOptions().cacheable()
         ).pipe(
             pluck('data')
-        )
+        );
     }
 
     postSale(data: Pt.PaytraqInvoice): Observable<Pt.PaytraqNewInvoiceResponse> {

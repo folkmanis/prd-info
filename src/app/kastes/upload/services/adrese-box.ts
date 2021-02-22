@@ -67,7 +67,7 @@ export class Box implements Record<Colors, number> {
     full(): boolean {
         return (this.sum() >= MAX_PAKAS);
     }
-    [Symbol.iterator] = function* () {
+    [Symbol.iterator] = function*() {
         yield this.yellow;
         yield this.rose;
         yield this.white;

@@ -20,7 +20,6 @@ import localeLv from '@angular/common/locales/lv';
 registerLocaleData(localeLv);
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
-import { AppParams } from './interfaces';
 import { APP_PARAMS, PRD_DEFAULTS } from './app-params';
 import { ToolbarComponent } from './layout/toolbar/toolbar.component';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';

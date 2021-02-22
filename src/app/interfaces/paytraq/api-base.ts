@@ -15,7 +15,7 @@ interface ProductData {
 }
 
 interface ProductsData {
-    products: PaytraqProducts
+    products: PaytraqProducts;
 }
 
 export type PaytraqData = ClientData | ClientsData | ProductData | ProductsData;

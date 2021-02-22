@@ -17,7 +17,7 @@ export class PaytraqProductTableComponent implements OnDestroy {
   @Output() productSelected = new EventEmitter<PaytraqProduct>();
 
   products$ = new ReplaySubject<PaytraqProduct[]>(1);
-  displayedColumns: (keyof PaytraqProduct)[]=['itemID', 'name'];
+  displayedColumns: (keyof PaytraqProduct)[] = ['itemID', 'name'];
 
   constructor() { }
 
