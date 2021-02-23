@@ -12,16 +12,16 @@ import { LoginService } from 'src/app/services';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(
-    private router: Router,
-    private snack: MatSnackBar,
-    private loginService: LoginService,
-  ) { }
-
   loginForm: FormGroup = new FormGroup({
     username: new FormControl('', [Validators.required]),
     password: new FormControl(),
   });
+
+  constructor(
+    private router: Router,
+    private snack: MatSnackBar,
+    private loginService: LoginService,
+  ) { }  
 
   ngOnInit() {
     this.loginService.isLogin$.pipe(

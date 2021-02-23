@@ -19,11 +19,6 @@ import { PaytraqApi } from './paytraq-api';
 })
 export class PrdApiService {
 
-  constructor(
-    private http: HttpClient,
-    @Inject(APP_PARAMS) private params: AppParams,
-  ) { }
-
   private readonly apiPath = this.params.apiPath;
 
   login = new LoginApi(this.http, this.apiPath + 'login/');
@@ -37,5 +32,10 @@ export class PrdApiService {
   users = new UsersApi(this.http, this.apiPath + 'users/');
   xmfArchive = new XmfArchiveApi(this.http, this.apiPath + 'xmf-archive/');
   paytraq = new PaytraqApi(this.http, this.apiPath + 'paytraq/');
+
+  constructor(
+    private http: HttpClient,
+    @Inject(APP_PARAMS) private params: AppParams,
+  ) { }
 
 }
