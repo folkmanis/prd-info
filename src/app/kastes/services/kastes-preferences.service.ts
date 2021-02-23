@@ -1,22 +1,20 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Observable, Subject, combineLatest } from 'rxjs';
-import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
-import { KastesSettings } from 'src/app/interfaces';
-import { SystemPreferencesService } from 'src/app/services';
+import { map, pluck, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
+import { KastesSettings, SystemPreferences } from 'src/app/interfaces';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 import { KastesUserPreferences } from 'src/app/interfaces';
+import { CONFIG } from 'src/app/services/config.provider';
 
 @Injectable()
 export class KastesPreferencesService {
 
   constructor(
-    private systemPreferencesService: SystemPreferencesService,
     private prdApi: PrdApiService,
+    @Inject(CONFIG) private config$: Observable<SystemPreferences>,
   ) { }
 
-  kastesSystemPreferences$ = this.systemPreferencesService.preferences$.pipe(
-    map(sys => sys.kastes),
-  );
+  kastesSystemPreferences$ = this.config$.pipe(pluck('kastes'));
 
   private _userPreferences$: Observable<KastesUserPreferences>;
   private _reload$ = new Subject<void>();

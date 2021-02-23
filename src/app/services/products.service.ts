@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { concatMap, map, share, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
-import { CustomerProduct, Product, ProductPartial } from 'src/app/interfaces';
+import { concatMap, map, pluck, share, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
+import { CustomerProduct, Product, ProductPartial, SystemPreferences } from 'src/app/interfaces';
 import { cacheWithUpdate } from 'src/app/library/rx';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
-import { SystemPreferencesService } from 'src/app/services/system-preferences.service';
+import { CONFIG } from 'src/app/services/config.provider';
 
 
 @Injectable({
@@ -14,13 +14,12 @@ export class ProductsService {
 
   constructor(
     private prdApi: PrdApiService,
-    private systemPreferencesService: SystemPreferencesService,
+    @Inject(CONFIG) private config$: Observable<SystemPreferences>,
   ) { }
 
   private _products$: Observable<ProductPartial[]>;
-  readonly categories$ = this.systemPreferencesService.preferences$.pipe(
-    map(sysPref => sysPref.jobs.productCategories),
-    share(),
+  readonly categories$ = this.config$.pipe(
+    pluck('jobs', 'productCategories'),
   );
 
   private readonly _updateProducts$: Subject<void> = new Subject();

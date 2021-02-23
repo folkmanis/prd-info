@@ -1,14 +1,15 @@
-import { Component, OnInit, ChangeDetectionStrategy, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
-import { CustomersFormSource } from '../services/customers-form-source';
-import { CustomersService } from 'src/app/services/customers.service';
-import { IFormGroup } from '@rxweb/types';
-import { Customer } from 'src/app/interfaces';
-import { map, pluck } from 'rxjs/operators';
-import { SystemPreferencesService } from 'src/app/services';
 import { MatExpansionPanel } from '@angular/material/expansion';
+import { IFormGroup } from '@rxweb/types';
+import { Observable } from 'rxjs';
+import { map, pluck } from 'rxjs/operators';
+import { Customer, SystemPreferences } from 'src/app/interfaces';
+import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { SimpleFormControl } from 'src/app/library/simple-form';
+import { CONFIG } from 'src/app/services/config.provider';
+import { CustomersService } from 'src/app/services/customers.service';
+import { CustomersFormSource } from '../services/customers-form-source';
 
 @Component({
   selector: 'app-customer-edit',
@@ -23,15 +24,15 @@ export class CustomerEditComponent implements OnInit, CanComponentDeactivate, Si
 
   @ViewChild('paytraqPanel') paytraqPanel: MatExpansionPanel;
 
-  paytraqDisabled$ = this.systemPreferencesService.preferences$.pipe(
+  paytraqDisabled$ = this.config$.pipe(
     pluck('paytraq', 'enabled'),
     map(enabled => !enabled),
   );
 
   constructor(
     private fb: FormBuilder,
-    private systemPreferencesService: SystemPreferencesService,
     private customersService: CustomersService,
+    @Inject(CONFIG) private config$: Observable<SystemPreferences>,
   ) { }
 
   formSource = new CustomersFormSource(this.fb, this.customersService);

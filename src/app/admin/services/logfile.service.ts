@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, OnDestroy } from '@angular/core';
+import { Inject, Injectable, OnDestroy } from '@angular/core';
 import * as moment from 'moment';
-import { combineLatest, Observable, pipe, ReplaySubject, Subject } from 'rxjs';
+import { combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
 import { map, pluck, share, switchMap } from 'rxjs/operators';
-import { SystemSettings } from 'src/app/interfaces';
-import { SystemPreferencesService } from 'src/app/services';
+import { SystemPreferences } from 'src/app/interfaces';
+import { CONFIG } from 'src/app/services/config.provider';
 import { HttpOptions } from '../../library/http/http-options';
 import { GetLogEntriesParams, LogData, LogDataHttp } from './logfile-record';
 
@@ -14,19 +14,19 @@ export interface ValidDates {
   max?: moment.Moment;
 }
 
-@Injectable()
+@Injectable({ providedIn: 'any' })
 export class LogfileService implements OnDestroy {
   private httpPathLogfile = '/data/log/';
 
   constructor(
     private http: HttpClient,
-    private systemPreferencesService: SystemPreferencesService,
+    @Inject(CONFIG) private config$: Observable<SystemPreferences>,
   ) { }
 
-  private _logLevelMap$: Observable<Map<number, string>> = this.systemPreferencesService.preferences$
-    .pipe(
-      map(pref => new Map<number, string>(pref.system.logLevels)),
-    );
+  private _logLevelMap$: Observable<Map<number, string>> = this.config$.pipe(
+    pluck('system', 'logLevels'),
+    map(levels => new Map<number, string>(levels)),
+  );
 
   private _logFilter$: Subject<GetLogEntriesParams> = new ReplaySubject(1);
   log$: Observable<LogData> = combineLatest([
@@ -50,10 +50,10 @@ export class LogfileService implements OnDestroy {
       map(records => ({
         ...records,
         data: records.data.map(rec =>
-          ({
-            ...rec,
-            levelVerb: levelMap.get(rec.level) || rec.level.toString(),
-          })
+        ({
+          ...rec,
+          levelVerb: levelMap.get(rec.level) || rec.level.toString(),
+        })
         )
       })
       )
@@ -61,7 +61,7 @@ export class LogfileService implements OnDestroy {
   }
 
   getInfos(): Observable<string[]> {
-    return this.http.get<{ data: string[] }>(this.httpPathLogfile + 'entries', new HttpOptions())
+    return this.http.get<{ data: string[]; }>(this.httpPathLogfile + 'entries', new HttpOptions())
       .pipe(map(dat => dat.data));
   }
   /**
@@ -69,8 +69,8 @@ export class LogfileService implements OnDestroy {
    *
    * @param params level: minimālais errorlevel, start, end: sākuma un beigu datumi
    */
-  getDatesGroupsHttp(params: { level: number; start?: string; end?: string }): Observable<ValidDates> {
-    return this.http.get<{ data: { _id: string }[] }>(this.httpPathLogfile + 'dates-groups', new HttpOptions(params)).pipe(
+  getDatesGroupsHttp(params: { level: number; start?: string; end?: string; }): Observable<ValidDates> {
+    return this.http.get<{ data: { _id: string; }[]; }>(this.httpPathLogfile + 'dates-groups', new HttpOptions(params)).pipe(
       pluck('data'),
       map(dates => dates.map(date => date._id)),
       map(dates => ({

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { combineLatest, EMPTY, merge, Observable, of, Subject } from 'rxjs';
-import { concatMap, filter, map, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { concatMap, filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { APP_PARAMS } from '../app-params';
 import { AppParams, MODULES, PreferencesDbModule, SystemPreferences, UserModule } from '../interfaces';
 import { LoginService } from './login.service';
@@ -80,7 +80,7 @@ export class SystemPreferencesService {
   }
 }
 
-function findModule([ev, modules]: [NavigationEnd, UserModule[]]) {
+function findModule([ev, modules]: [NavigationEnd, UserModule[]]): UserModule[] {
   const [, ...path] = ev.url.split(/[/;]/);
 
   let userModules: UserModule[] | undefined = [...modules];

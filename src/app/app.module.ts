@@ -23,6 +23,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { APP_PARAMS, PRD_DEFAULTS } from './app-params';
 import { ToolbarComponent } from './layout/toolbar/toolbar.component';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
+import { configProvider } from './services/config.provider';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import { MaterialLibraryModule } from 'src/app/library/material-library.module';
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
     { provide: APP_PARAMS, useValue: PRD_DEFAULTS },
+    configProvider,
   ],
   bootstrap: [AppComponent]
 })

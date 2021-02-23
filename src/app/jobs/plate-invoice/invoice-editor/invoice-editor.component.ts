@@ -1,15 +1,14 @@
-import { Component, OnInit, OnDestroy, LOCALE_ID, Inject, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Observable, Subject, merge, combineLatest } from 'rxjs';
-import { filter, map, switchMap, shareReplay, pluck, mergeMap, mapTo, delay } from 'rxjs/operators';
-import { Invoice, InvoiceProduct } from 'src/app/interfaces';
-import { PaytraqInvoice, PaytraqNewInvoiceResponse } from 'src/app/interfaces/paytraq';
-import { InvoicesService } from '../services/invoices.service';
-import { SystemPreferencesService } from 'src/app/services/system-preferences.service';
-import { InvoiceReport } from './invoice-report';
-import { InvoiceCsv } from './invoice-csv';
-import { saveAs } from 'file-saver';
+import { ChangeDetectionStrategy, Component, Inject, LOCALE_ID, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute } from '@angular/router';
+import { saveAs } from 'file-saver';
+import { combineLatest, merge, Observable, Subject } from 'rxjs';
+import { filter, map, mergeMap, pluck, shareReplay, switchMap } from 'rxjs/operators';
+import { Invoice, InvoiceProduct, SystemPreferences } from 'src/app/interfaces';
+import { CONFIG } from 'src/app/services/config.provider';
+import { InvoicesService } from '../services/invoices.service';
+import { InvoiceCsv } from './invoice-csv';
+import { InvoiceReport } from './invoice-report';
 
 const PAYTRAQ_SAVED_MESSAGE = 'Izveidota pavadzīme Paytraq sistēmā';
 const PAYTRAQ_UNLINK_MESSAGE = 'Paytraq savienojums dzēsts';
@@ -41,12 +40,12 @@ export class InvoiceEditorComponent implements OnInit, OnDestroy {
     shareReplay(1),
   );
 
-  pyatraqEnabled$: Observable<boolean> = this.systemPreferencesService.preferences$.pipe(
+  pyatraqEnabled$: Observable<boolean> = this.config$.pipe(
     pluck('paytraq', 'enabled'),
   );
 
   paytraqUrl$: Observable<string> = combineLatest([
-    this.systemPreferencesService.preferences$.pipe(
+    this.config$.pipe(
       pluck('paytraq', 'connectionParams', 'invoiceUrl')
     ),
     this.invoice$
@@ -64,7 +63,7 @@ export class InvoiceEditorComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private invoicesService: InvoicesService,
     @Inject(LOCALE_ID) private locale: string,
-    private systemPreferencesService: SystemPreferencesService,
+    @Inject(CONFIG) private config$: Observable<SystemPreferences>,
     private snack: MatSnackBar,
   ) { }
 

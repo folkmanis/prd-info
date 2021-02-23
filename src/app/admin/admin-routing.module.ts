@@ -14,7 +14,6 @@ const routes: Routes = [
   {
     path: 'logfile',
     component: LogfileComponent,
-    canDeactivate: [CanDeactivateGuard],
   },
   {
     path: '',

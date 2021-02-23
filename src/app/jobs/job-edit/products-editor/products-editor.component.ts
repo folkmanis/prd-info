@@ -1,17 +1,17 @@
 import {
   ChangeDetectionStrategy, ChangeDetectorRef, Component,
   HostListener, Input, OnDestroy, OnInit,
-  QueryList, ViewChildren, ViewChild
+  QueryList, ViewChildren, ViewChild, Inject
 } from '@angular/core';
 import { ControlContainer, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { IFormArray, IFormControl, IFormGroup } from '@rxweb/types';
-import { from, Subject } from 'rxjs';
+import { from, Observable, Subject } from 'rxjs';
 import { filter, pluck, switchMap, toArray } from 'rxjs/operators';
-import { CustomerProduct, JobProduct } from 'src/app/interfaces';
-import { SystemPreferencesService } from 'src/app/services';
+import { CustomerProduct, JobProduct, SystemPreferences } from 'src/app/interfaces';
 import { JobEditFormService } from '../services/job-edit-form.service';
 import { ProductAutocompleteComponent } from './product-autocomplete/product-autocomplete.component';
 import { MatTable } from '@angular/material/table';
+import { CONFIG } from 'src/app/services/config.provider';
 
 
 @Component({
@@ -40,7 +40,7 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
 
   prodFormArray: IFormArray<JobProduct>;
 
-  readonly units$ = this.sysPref.preferences$.pipe(
+  readonly units$ = this.config$.pipe(
     pluck('jobs', 'productUnits'),
     switchMap(units => from(units).pipe(
       filter(unit => !unit.disabled),
@@ -61,7 +61,7 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
     private changeDetector: ChangeDetectorRef,
     private jobFormService: JobEditFormService,
     private controlContainer: ControlContainer,
-    private sysPref: SystemPreferencesService,
+    @Inject(CONFIG) private config$: Observable<SystemPreferences>,
   ) { }
 
   ngOnInit(): void {
@@ -136,6 +136,5 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
         product => product.productName === control.value
       ) ? null : { invalidProduct: 'Prece nav atrasta katalogā' };
   }
-
 
 }

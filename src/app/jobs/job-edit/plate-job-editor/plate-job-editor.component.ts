@@ -1,12 +1,13 @@
-import { Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, Inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { IFormGroup } from '@rxweb/types';
 import * as moment from 'moment';
 import { combineLatest, Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
-import { CustomerPartial, CustomerProduct, JobBase, JobsSettings } from 'src/app/interfaces';
+import { map, pluck, startWith } from 'rxjs/operators';
+import { CustomerPartial, CustomerProduct, JobBase, SystemPreferences } from 'src/app/interfaces';
 import { LayoutService } from 'src/app/layout/layout.service';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
-import { CustomersService, SystemPreferencesService } from 'src/app/services';
+import { CustomersService } from 'src/app/services';
+import { CONFIG } from 'src/app/services/config.provider';
 import { FolderPath } from '../services/folder-path';
 import { JobEditFormService } from '../services/job-edit-form.service';
 
@@ -19,8 +20,8 @@ export class PlateJobEditorComponent implements OnInit, OnDestroy {
   @Input() jobFormGroup: IFormGroup<JobBase>;
 
   constructor(
+    @Inject(CONFIG) private config$: Observable<SystemPreferences>,
     private customersService: CustomersService,
-    private sysPref: SystemPreferencesService,
     private clipboard: ClipboardService,
     private layoutService: LayoutService,
     private jobFormService: JobEditFormService,
@@ -32,11 +33,12 @@ export class PlateJobEditorComponent implements OnInit, OnDestroy {
 
   customers$: Observable<CustomerPartial[]>;
   defaultPath$: Observable<string[]>;
-  jobStates$ = this.sysPref.preferences$.pipe(
-    map(pref => pref.jobs.jobStates.filter(st => st.state < 50))
+  jobStates$ = this.config$.pipe(
+    pluck('jobs', 'jobStates'),
+    map(states => states.filter(st => st.state < 50))
   );
-  categories$ = this.sysPref.preferences$.pipe(
-    map(pref => pref.jobs.productCategories),
+  categories$ = this.config$.pipe(
+    pluck('jobs', 'productCategories'),
   );
   customerProducts$: Observable<CustomerProduct[]>;
 

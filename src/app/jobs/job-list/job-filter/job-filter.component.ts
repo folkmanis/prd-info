@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { Observable } from 'rxjs';
-import { debounceTime, filter, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { CustomerPartial, JobQueryFilter, JobQueryFilterOptions, JobsSettings } from 'src/app/interfaces';
+import { debounceTime, filter, map, pluck, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { CustomerPartial, JobQueryFilter, JobQueryFilterOptions, SystemPreferences } from 'src/app/interfaces';
 import { DestroyService } from 'src/app/library/rx/destroy.service';
-import { CustomersService, SystemPreferencesService } from 'src/app/services';
+import { CustomersService } from 'src/app/services';
+import { CONFIG } from 'src/app/services/config.provider';
 import { JobService } from 'src/app/services/job.service';
 
 type JobFilter = Pick<JobQueryFilterOptions, 'customer' | 'jobsId' | 'name' | 'jobStatus'>;
@@ -25,8 +26,8 @@ const DEFAULT_FILTER = {
 })
 export class JobFilterComponent implements OnInit {
 
-  jobStates$ = this.sysPrefService.preferences$.pipe(
-    map(pref => pref.jobs.jobStates)
+  jobStates$ = this.config$.pipe(
+    pluck('jobs', 'jobStates')
   );
   customersFiltered$: Observable<CustomerPartial[]>;
 
@@ -35,10 +36,10 @@ export class JobFilterComponent implements OnInit {
 
   constructor(
     fb: FormBuilder,
-    private sysPrefService: SystemPreferencesService,
     private customersService: CustomersService,
     private jobService: JobService,
     private destroy$: DestroyService,
+    @Inject(CONFIG) private config$: Observable<SystemPreferences>,
   ) {
     this.fb = fb;
     this.filterForm = this.fb.group<JobFilter>({

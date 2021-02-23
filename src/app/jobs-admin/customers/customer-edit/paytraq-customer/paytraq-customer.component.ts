@@ -1,14 +1,12 @@
-import { Component, OnInit, ChangeDetectionStrategy, OnDestroy, Input } from '@angular/core';
-import { NgControl, FormBuilder, FormControl } from '@angular/forms';
-import { IFormBuilder, IFormGroup, IControlValueAccessor, IFormControl } from '@rxweb/types';
-import { SystemPreferencesService } from 'src/app/services';
-import { Customer, CustomerFinancial } from 'src/app/interfaces';
-import { DestroyService } from 'src/app/library/rx';
-import { map, pluck, takeUntil } from 'rxjs/operators';
-import { PaytraqClientService } from '../../services/paytraq-client.service';
-import { Subject } from 'rxjs';
-import { PaytraqClient } from 'src/app/interfaces/paytraq';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, NgControl } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
+import { IControlValueAccessor, IFormControl } from '@rxweb/types';
+import { Subject } from 'rxjs';
+import { Customer, CustomerFinancial } from 'src/app/interfaces';
+import { PaytraqClient } from 'src/app/interfaces/paytraq';
+import { DestroyService } from 'src/app/library/rx';
+import { PaytraqClientService } from '../../services/paytraq-client.service';
 
 const DEFAULT_VALUE: CustomerFinancial = {
   clientName: '',

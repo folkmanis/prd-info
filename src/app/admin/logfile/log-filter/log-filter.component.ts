@@ -1,10 +1,11 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
-import { distinctUntilChanged, filter, map, switchMap, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, pluck, switchMap, takeUntil } from 'rxjs/operators';
+import { SystemPreferences } from 'src/app/interfaces';
 import { DestroyService } from 'src/app/library/rx';
-import { SystemPreferencesService } from 'src/app/services';
+import { CONFIG } from 'src/app/services/config.provider';
 import { GetLogEntriesParams } from '../../services/logfile-record';
 import { LogfileService, ValidDates } from '../../services/logfile.service';
 
@@ -25,10 +26,10 @@ export class LogFilterComponent implements OnInit, OnDestroy, AfterViewInit {
   private validDates: ValidDates = { dates: new Set() };
 
   constructor(
-    private systemPreferencesService: SystemPreferencesService,
     private service: LogfileService,
     private destroy$: DestroyService,
-  ) { }
+    @Inject(CONFIG) private config$: Observable<SystemPreferences>,
+    ) { }
   maxDate = moment();
   filterForm = new FormGroup({
     logLevel: new FormControl(0),
@@ -36,8 +37,8 @@ export class LogFilterComponent implements OnInit, OnDestroy, AfterViewInit {
   });
   private readonly dateControl = this.filterForm.get('date');
 
-  logLevels$: Observable<{ key: number; value: string }[]> = this.systemPreferencesService.preferences$.pipe(
-    map(pref => pref.system.logLevels),
+  logLevels$: Observable<{ key: number; value: string }[]> = this.config$.pipe(
+    pluck('system', 'logLevels'),
     map(levels => levels.sort((a, b) => a[0] - b[0])),
     map(levels => levels.map(level => ({ key: level[0], value: level[1] }))),
   );
