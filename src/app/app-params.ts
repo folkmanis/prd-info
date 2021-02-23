@@ -15,7 +15,6 @@ export const PRD_DEFAULTS: AppParams = {
         medium: '1000px',
     },
     version,
-    versionCheckInterval: 10 * 1000,
     passwordMinimumLenght: 3,
     userModules: USER_MODULES,
     defaultSystemPreferences: {

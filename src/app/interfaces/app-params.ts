@@ -6,7 +6,6 @@ export interface AppParams {
     version: {
         appBuild: number;
     };
-    versionCheckInterval: number;
     defaultSystemPreferences: SystemPreferences;
     toolbarHeight: {
         desktop: number;
