@@ -49,7 +49,6 @@ import { configProvider } from './services/config.provider';
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
     { provide: APP_PARAMS, useValue: PRD_DEFAULTS },
-    configProvider,
   ],
   bootstrap: [AppComponent]
 })
