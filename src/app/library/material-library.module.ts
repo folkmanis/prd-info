@@ -27,7 +27,9 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
-
+import { LayoutModule } from '@angular/cdk/layout';
+import { PortalModule } from '@angular/cdk/portal';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 
 @NgModule({
@@ -61,6 +63,9 @@ import { MatTreeModule } from '@angular/material/tree';
     MatTooltipModule,
     MatAutocompleteModule,
     MatRadioModule,
+    LayoutModule,
+    ScrollingModule,
+    PortalModule,
   ],
   exports: [
     MatInputModule,
@@ -91,6 +96,9 @@ import { MatTreeModule } from '@angular/material/tree';
     MatTooltipModule,
     MatAutocompleteModule,
     MatRadioModule,
+    LayoutModule,
+    ScrollingModule,
+    PortalModule,
   ]
 })
 export class MaterialLibraryModule { }

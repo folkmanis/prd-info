@@ -1,6 +1,3 @@
-import { LayoutModule } from '@angular/cdk/layout';
-import { PortalModule } from '@angular/cdk/portal';
-import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
@@ -43,10 +40,7 @@ import { MaterialLibraryModule } from './material-library.module';
     RouterModule,
     HttpClientModule,
     ScrollToTopModule,
-    LayoutModule,
-    ScrollingModule,
     SideButtonModule,
-    PortalModule,
     SimpleListTableModule,
     MaterialLibraryModule,
   ],
@@ -54,7 +48,6 @@ import { MaterialLibraryModule } from './material-library.module';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    LayoutModule,
     CopyClipboardDirective,
     TaggedStringComponent,
     CardMenuComponent,
@@ -62,13 +55,11 @@ import { MaterialLibraryModule } from './material-library.module';
     AppMonthPipe,
     HideZeroPipe,
     ShortenTextPipe,
-    ScrollingModule,
     FocusedDirective,
     SideButtonModule,
     ScrollToTopModule,
     FilesizePipe,
     BackButtonDirective,
-    PortalModule,
     SimpleListTableModule,
   ],
 })
