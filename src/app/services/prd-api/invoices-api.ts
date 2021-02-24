@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, pluck } from 'rxjs/operators';
 import { Invoice, InvoiceResponse, ProductTotals, InvoiceUpdate } from 'src/app/interfaces';
-import { ApiBase, HttpOptions } from 'src/app/library';
+import { ApiBase, HttpOptions } from 'src/app/library/http';
 
 export class InvoicesApi extends ApiBase<Invoice> {
 

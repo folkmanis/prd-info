@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { LibraryModule } from 'src/app/library';
+import { LibraryModule } from 'src/app/library/library.module';
 import { KastesCommonModule } from '../common/kastes-common.module';
 import { EndDialogComponent } from './end-dialog/end-dialog.component';
 import { SelectFileComponent } from './select-file/select-file.component';

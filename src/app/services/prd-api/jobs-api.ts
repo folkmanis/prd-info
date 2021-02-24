@@ -2,7 +2,7 @@ import { HttpEvent, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Job, JobResponse, JobsWithoutInvoicesTotals } from 'src/app/interfaces';
-import { ApiBase, HttpOptions } from 'src/app/library';
+import { ApiBase, HttpOptions } from 'src/app/library/http';
 
 
 export class JobsApi extends ApiBase<Job> {

@@ -1,16 +1,12 @@
 import { Observable } from 'rxjs';
-import { ApiBase, HttpOptions } from 'src/app/library';
-
-import {
-    Kaste, KasteResponse, KastesJobPartial,
-    KastesUserPreferences, Veikals
-} from 'src/app/interfaces';
 import { map, mapTo } from 'rxjs/operators';
+import { Kaste, KasteResponse, KastesUserPreferences, Veikals } from 'src/app/interfaces';
+import { ApiBase, HttpOptions } from 'src/app/library/http';
 
 
 export class KastesApi extends ApiBase<Kaste> {
 
-    getApjomi(options: { pasutijumsId: number }): Observable<number[]> {
+    getApjomi(options: { pasutijumsId: number; }): Observable<number[]> {
         return this.http.get<KasteResponse>(this.path + 'apjomi', new HttpOptions(options)).pipe(
             map(resp => resp.apjomi),
         );
@@ -49,7 +45,7 @@ export class KastesApi extends ApiBase<Kaste> {
             );
     }
 
-    putTable(veikali: { orderId: number; data: Veikals[] }): Observable<number> {
+    putTable(veikali: { orderId: number; data: Veikals[]; }): Observable<number> {
         return this.http.put<KasteResponse>(this.path, veikali, new HttpOptions()).pipe(
             map(resp => resp.insertedCount)
         );
@@ -62,7 +58,7 @@ export class KastesApi extends ApiBase<Kaste> {
             );
     }
 
-    deleteVeikali(options: { pasutijumsId: number }): Observable<number> {
+    deleteVeikali(options: { pasutijumsId: number; }): Observable<number> {
         return this.http.delete<KasteResponse>(
             this.path,
             new HttpOptions(options)

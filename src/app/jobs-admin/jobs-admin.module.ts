@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { LibraryModule } from 'src/app/library';
+import { LibraryModule } from 'src/app/library/library.module';
 import { CacheInterceptorService } from 'src/app/library/http';
 import { JobsAdminRoutingModule } from './jobs-admin-routing.module';
 import { JobsAdminComponent } from './jobs-admin.component';

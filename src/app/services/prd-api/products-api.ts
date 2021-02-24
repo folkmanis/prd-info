@@ -1,8 +1,7 @@
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CustomerProduct, Product, ProductResponse } from 'src/app/interfaces';
-import { ApiBase, HttpOptions } from 'src/app/library';
+import { ApiBase, HttpOptions } from 'src/app/library/http';
 
 interface CustomerProductPrice {
     customerName: string;

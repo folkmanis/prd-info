@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 import { provideRoutes, RouterModule, Routes } from '@angular/router';
-import { LibraryModule } from 'src/app/library';
+import { LibraryModule } from 'src/app/library/library.module';
 import { CanDeactivateGuard } from 'src/app/library/guards/can-deactivate.guard';
 import { SimpleFormContainerComponent } from './simple-form-container/simple-form-container.component';
 import { SimpleFormLabelDirective } from './simple-form-container/simple-form-label.directive';

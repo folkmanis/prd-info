@@ -3,7 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { combineLatest, EMPTY, Observable, of, ReplaySubject, Subject } from 'rxjs';
 import { map, mapTo, mergeMap, pluck, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { KastesJob, Veikals } from 'src/app/interfaces';
-import { ConfirmationDialogService } from 'src/app/library';
+import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { cacheWithUpdate, DestroyService } from 'src/app/library/rx';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
 import { PasutijumiService } from '../../services/pasutijumi.service';

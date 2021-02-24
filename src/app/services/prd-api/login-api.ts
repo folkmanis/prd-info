@@ -1,4 +1,4 @@
-import { ApiBase } from 'src/app/library';
+import { ApiBase } from 'src/app/library/http';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { User, Login, LoginResponse } from 'src/app/interfaces';

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { LibraryModule } from 'src/app/library';
+import { LibraryModule } from 'src/app/library/library.module';
 import { SimpleFormModule } from 'src/app/library/simple-form';
 import { KastesCommonModule } from '../common/kastes-common.module';
 import { JobInfoComponent } from './job-info/job-info.component';

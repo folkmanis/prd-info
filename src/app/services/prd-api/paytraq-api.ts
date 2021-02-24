@@ -1,4 +1,4 @@
-import { ApiBase, HttpOptions } from 'src/app/library';
+import { ApiBase, HttpOptions } from 'src/app/library/http';
 import * as Pt from 'src/app/interfaces/paytraq';
 import { Observable } from 'rxjs';
 import { map, pluck, tap } from 'rxjs/operators';
