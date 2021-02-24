@@ -6,7 +6,6 @@ import { EMPTY, Observable, Subject } from 'rxjs';
 import { map, shareReplay, switchMap } from 'rxjs/operators';
 import { ColorTotals, KastesJobPartial } from 'src/app/interfaces';
 import { ParserService } from 'src/app/library';
-import * as XLSX from 'xlsx';
 import { KastesPreferencesService } from '../services/kastes-preferences.service';
 import { PasutijumiService } from '../services/pasutijumi.service';
 import { EndDialogComponent } from './end-dialog/end-dialog.component';
@@ -67,16 +66,8 @@ export class UploadComponent implements OnInit, OnDestroy {
   onXlsDrop(file: File) {
     const fileReader = new FileReader();
     fileReader.onload = (e: any) => {
-      /* read workbook */
-      const bstr: string = e.target.result;
-      const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
 
-      /* grab first sheet */
-      const wsname: string = wb.SheetNames[0];
-      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
-
-      /* save data */
-      const data = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true }) as [][];
+      const data = this.parserService.parseXml(e.target.result);
       this.inputData$.next(
         normalizeTable(data)
       );
