@@ -6,7 +6,6 @@ import { Observable } from 'rxjs';
 import { map, pluck } from 'rxjs/operators';
 import { Customer, SystemPreferences } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
-import { SimpleFormControl } from 'src/app/library/simple-form';
 import { CONFIG } from 'src/app/services/config.provider';
 import { CustomersService } from 'src/app/services/customers.service';
 import { CustomersFormSource } from '../services/customers-form-source';
@@ -16,11 +15,8 @@ import { CustomersFormSource } from '../services/customers-form-source';
   templateUrl: './customer-edit.component.html',
   styleUrls: ['./customer-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    { provide: SimpleFormControl, useExisting: CustomerEditComponent },
-  ]
 })
-export class CustomerEditComponent implements OnInit, CanComponentDeactivate, SimpleFormControl<Customer> {
+export class CustomerEditComponent implements OnInit, CanComponentDeactivate {
 
   @ViewChild('paytraqPanel') paytraqPanel: MatExpansionPanel;
 
@@ -37,7 +33,7 @@ export class CustomerEditComponent implements OnInit, CanComponentDeactivate, Si
 
   formSource = new CustomersFormSource(this.fb, this.customersService);
 
-  writeValue(obj: Customer) {
+  onDataChange(obj: Customer) {
     this.paytraqPanel?.close();
     this.formSource.initValue(obj);
   }

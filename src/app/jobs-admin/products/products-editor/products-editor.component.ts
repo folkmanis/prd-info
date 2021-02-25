@@ -9,7 +9,6 @@ import { CustomersService, ProductsService } from 'src/app/services';
 import { ProductsFormSource } from '../services/products-form-source';
 import { SystemPreferencesService } from 'src/app/services/system-preferences.service';
 import { map, pluck } from 'rxjs/operators';
-import { SimpleFormControl } from 'src/app/library/simple-form';
 import { MatExpansionPanel } from '@angular/material/expansion';
 
 @Component({
@@ -17,11 +16,8 @@ import { MatExpansionPanel } from '@angular/material/expansion';
   templateUrl: './products-editor.component.html',
   styleUrls: ['./products-editor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    { provide: SimpleFormControl, useExisting: ProductsEditorComponent }
-  ]
 })
-export class ProductsEditorComponent implements OnInit, CanComponentDeactivate, SimpleFormControl<Product> {
+export class ProductsEditorComponent implements OnInit, CanComponentDeactivate {
   @ViewChild('paytraqPanel') paytraqPanel: MatExpansionPanel;
 
   constructor(
@@ -49,7 +45,7 @@ export class ProductsEditorComponent implements OnInit, CanComponentDeactivate, 
 
   get isNew(): boolean { return this.formSource.isNew; }
 
-  writeValue(obj: Product) {
+  onDataChange(obj: Product) {
     this.paytraqPanel?.close();
     this.formSource.initValue(obj);
   }

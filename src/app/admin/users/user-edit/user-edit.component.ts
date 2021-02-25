@@ -12,18 +12,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { PasswordChangeDialogComponent } from '../password-change-dialog/password-change-dialog.component';
 import { mergeMap } from 'rxjs/operators';
-import { SimpleFormControl } from 'src/app/library/simple-form';
 
 @Component({
   selector: 'app-user-edit',
   templateUrl: './user-edit.component.html',
   styleUrls: ['./user-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    { provide: SimpleFormControl, useExisting: UserEditComponent }
-  ]
 })
-export class UserEditComponent implements OnInit, CanComponentDeactivate, SimpleFormControl<User> {
+export class UserEditComponent implements OnInit, CanComponentDeactivate {
 
   constructor(
     private fb: FormBuilder,
@@ -41,7 +37,7 @@ export class UserEditComponent implements OnInit, CanComponentDeactivate, Simple
     return this.formSource.form.controls.username as IFormControl<string>;
   }
 
-  writeValue(obj: User) {
+  onDataChange(obj: User) {
     this.formSource.initValue(obj);
   }
 

@@ -1,4 +1,4 @@
-<app-simple-form-container>
+<app-simple-form-container [formSource]="formSource" (dataChange)="onDataChange($event)">
 
     <form [formGroup]="form">
 

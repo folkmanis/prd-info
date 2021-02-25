@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { filter, last, map, shareReplay, take } from 'rxjs/operators';
 import { SimpleFormSource } from '../simple-form-source';
-import { SimpleFormControl } from './simple-form-control';
 import { SimpleFormLabelDirective } from './simple-form-label.directive';
 
 
@@ -15,9 +14,13 @@ import { SimpleFormLabelDirective } from './simple-form-label.directive';
 })
 export class SimpleFormContainerComponent<T> implements OnInit, OnDestroy {
 
-  get formSource(): SimpleFormSource<T> | undefined {
-    return this._formControl?.formSource;
+  @Input() set formSource(value: SimpleFormSource<T> | null) {
+    this._formSource = value;
   }
+  get formSource(): SimpleFormSource<T> | null {
+    return this._formSource;
+  }
+  private _formSource: SimpleFormSource<T> | null = null;
 
   @Input() set data(data: T) {
     if (data) { this._data$.next(data); }
@@ -45,7 +48,6 @@ export class SimpleFormContainerComponent<T> implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    @Inject(SimpleFormControl) @Optional() private _formControl: SimpleFormControl<T>,
     private changeDetector: ChangeDetectorRef,
   ) { }
 
@@ -53,9 +55,6 @@ export class SimpleFormContainerComponent<T> implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (this.form) {
-      this._subs.add(
-        this.dataChange.subscribe(data => this._formControl.writeValue(data))
-      );
       this._subs.add(
         this.form.valueChanges.subscribe(
           () => this.changeDetector.markForCheck()
