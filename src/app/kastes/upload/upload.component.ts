@@ -5,12 +5,12 @@ import { Router } from '@angular/router';
 import { EMPTY, Observable, Subject } from 'rxjs';
 import { map, shareReplay, switchMap } from 'rxjs/operators';
 import { ColorTotals, KastesJobPartial } from 'src/app/interfaces';
-import { ParserService } from 'src/app/library/services/parser.service';
 import { KastesPreferencesService } from '../services/kastes-preferences.service';
 import { PasutijumiService } from '../services/pasutijumi.service';
 import { EndDialogComponent } from './end-dialog/end-dialog.component';
 import { AdresesBox } from './services/adrese-box';
 import { sortColorTotals } from '../common';
+import { ParserService } from 'prd-cdk';
 
 @Component({
   selector: 'app-upload',
