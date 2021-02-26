@@ -9,7 +9,6 @@ import { BackButtonDirective } from './directives/back-button.directive';
 import { CopyClipboardDirective } from './directives/copy-clipboard.directive';
 import { FileDropDirective } from './directives/file-drop.directive';
 import { FocusedDirective } from './directives/focused.directive';
-import { AppMonthPipe } from './pipes/app-month.pipe';
 import { ScrollToTopModule } from './scroll-to-top/scroll-to-top.module';
 import { SideButtonModule } from './side-button/side-button.module';
 import { SimpleListTableModule } from './simple-list-table/simple-list-table.module';
@@ -22,7 +21,6 @@ import { PrdCdkModule } from 'prd-cdk';
     CopyClipboardDirective,
     TaggedStringComponent,
     FileDropDirective,
-    AppMonthPipe,
     ConfirmationDialogComponent,
     CardMenuComponent,
     FocusedDirective,
@@ -48,7 +46,6 @@ import { PrdCdkModule } from 'prd-cdk';
     TaggedStringComponent,
     CardMenuComponent,
     FileDropDirective,
-    AppMonthPipe,
     FocusedDirective,
     SideButtonModule,
     ScrollToTopModule,
