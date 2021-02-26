@@ -1,4 +1,3 @@
-export * from './services/parser.service';
 export * from './confirmation-dialog/confirmation-dialog.service';
 export * from './http';
 

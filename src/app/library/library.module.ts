@@ -10,14 +10,12 @@ import { CopyClipboardDirective } from './directives/copy-clipboard.directive';
 import { FileDropDirective } from './directives/file-drop.directive';
 import { FocusedDirective } from './directives/focused.directive';
 import { AppMonthPipe } from './pipes/app-month.pipe';
-import { FilesizePipe } from './pipes/filesize.pipe';
-import { HideZeroPipe } from './pipes/hide-zero.pipe';
-import { ShortenTextPipe } from './pipes/shorten-text.pipe';
 import { ScrollToTopModule } from './scroll-to-top/scroll-to-top.module';
 import { SideButtonModule } from './side-button/side-button.module';
 import { SimpleListTableModule } from './simple-list-table/simple-list-table.module';
 import { TaggedStringComponent } from './tagged-string/tagged-string.component';
 import { MaterialLibraryModule } from './material-library.module';
+import { PrdCdkModule } from 'prd-cdk';
 
 @NgModule({
   declarations: [
@@ -25,12 +23,9 @@ import { MaterialLibraryModule } from './material-library.module';
     TaggedStringComponent,
     FileDropDirective,
     AppMonthPipe,
-    HideZeroPipe,
     ConfirmationDialogComponent,
     CardMenuComponent,
-    ShortenTextPipe,
     FocusedDirective,
-    FilesizePipe,
     BackButtonDirective,
   ],
   imports: [
@@ -43,6 +38,7 @@ import { MaterialLibraryModule } from './material-library.module';
     SideButtonModule,
     SimpleListTableModule,
     MaterialLibraryModule,
+    PrdCdkModule,
   ],
   exports: [
     FormsModule,
@@ -53,14 +49,12 @@ import { MaterialLibraryModule } from './material-library.module';
     CardMenuComponent,
     FileDropDirective,
     AppMonthPipe,
-    HideZeroPipe,
-    ShortenTextPipe,
     FocusedDirective,
     SideButtonModule,
     ScrollToTopModule,
-    FilesizePipe,
     BackButtonDirective,
     SimpleListTableModule,
+    PrdCdkModule,
   ],
 })
 export class LibraryModule { }

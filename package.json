@@ -11,6 +11,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular-devkit/architect": "^0.1001.7",
     "@angular/animations": "~11.2.1",
     "@angular/cdk": "^11.2.1",
     "@angular/common": "~11.2.1",
@@ -28,7 +29,7 @@
     "moment": "^2.29.1",
     "pdfmake": "^0.1.70",
     "pdfmake-wrapper": "^2.1.1",
-    "prd-cdk": "0.0.1",
+    "prd-cdk": "^0.1.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "xlsx": "^0.16.9",
