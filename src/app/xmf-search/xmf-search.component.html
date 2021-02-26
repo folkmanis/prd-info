@@ -5,7 +5,7 @@
 
     <mat-drawer-content>
         <div>
-            <app-search-input [count]="count$ | async" (searchString)="facetComponent.deselect(); onSearch($event);">
+            <app-search-input [count]="count$ | async" (searchString)="facetComponent.onDeselectAll(); onSearch($event);">
             </app-search-input>
         </div>
 

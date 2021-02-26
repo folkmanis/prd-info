@@ -1,9 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'appMonth'
+  name: 'xmfFacet'
 })
-export class AppMonthPipe implements PipeTransform {
+export class FacetPipe implements PipeTransform {
 
   names = [
     'Janvāris', 'Februāris', 'Marts', 'Aprīlis', 'Maijs', 'Jūnijs',
