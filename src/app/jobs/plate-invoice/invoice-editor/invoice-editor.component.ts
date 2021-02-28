@@ -9,6 +9,7 @@ import { CONFIG } from 'src/app/services/config.provider';
 import { InvoicesService } from '../services/invoices.service';
 import { InvoiceCsv } from './invoice-csv';
 import { InvoiceReport } from './invoice-report';
+import { log } from 'src/app/library/rx';
 
 const PAYTRAQ_SAVED_MESSAGE = 'Izveidota pavadzīme Paytraq sistēmā';
 const PAYTRAQ_UNLINK_MESSAGE = 'Paytraq savienojums dzēsts';
@@ -56,7 +57,10 @@ export class InvoiceEditorComponent implements OnInit, OnDestroy {
   readonly paytraqBusy$ = new Subject<boolean>();
 
   paytraqOk$: Observable<boolean> = this.invoice$.pipe(
-    map(invoice => !invoice.paytraq && invoice.products.length > 0 && allProductsWithPaytraq(invoice.products))
+    map(
+      ({ paytraq, customerInfo, products }) =>
+        !paytraq && !!customerInfo.financial?.paytraqId && products.length > 0 && allProductsWithPaytraq(products)
+    ),
   );
 
   constructor(
