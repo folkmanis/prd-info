@@ -1,8 +1,7 @@
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { merge, Observable, of, Subject } from 'rxjs';
-import { map, mergeMap, share } from 'rxjs/operators';
-import { filterTime } from 'src/app/library/rx';
+import { map, mergeMap, share, throttleTime } from 'rxjs/operators';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 import { FileUploadEventType, FileUploadMessage, UploadMessageBase } from '../interfaces/file-upload-message';
 
@@ -24,7 +23,7 @@ export class FileUploadService {
   private _uploadProgressPercent$ = new Subject<Map<string, FileUploadMessage>>();
 
   uploadProgress$ = merge(
-    this._uploadProgressPercent$.pipe(filterTime(PERCENT_REPORT_INTERVAL)),
+    this._uploadProgressPercent$.pipe(throttleTime(PERCENT_REPORT_INTERVAL)),
     this._uploadProgress$,
   ).pipe(
     map(eventMapToArray),
