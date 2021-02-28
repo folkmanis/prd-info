@@ -1,7 +1,6 @@
 <ng-container *ngIf="invoice$ | async as invoice;">
 
     <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="onPdfDownload(invoice)">PDF</button>
         <button mat-menu-item (click)="onCsvInvoice(invoice)">CSV PAVADZĪMEI</button>
         <button mat-menu-item (click)="onCsvReport(invoice)">CSV SARAKSTS</button>
     </mat-menu>
@@ -19,9 +18,14 @@
 
         <span class="spacer"></span>
 
+        <button mat-icon-button (click)="onPdfDownload(invoice)">
+            <mat-icon>
+                picture_as_pdf
+            </mat-icon>
+        </button>
         <button mat-icon-button [matMenuTriggerFor]="menu">
             <mat-icon>
-                menu
+                more_vert
             </mat-icon>
         </button>
 
