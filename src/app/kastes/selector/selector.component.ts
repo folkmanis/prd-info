@@ -4,7 +4,7 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Observable, pipe, Subscription, Subject } from 'rxjs';
 import { map, tap, filter, switchMap, distinctUntilChanged, takeUntil, pluck } from 'rxjs/operators';
 import { KastesTabulaService } from './services/kastes-tabula.service';
-import { DestroyService } from 'src/app/library/rx/destroy.service';
+import { DestroyService } from 'prd-cdk';
 import { PasutijumiService } from '../services/pasutijumi.service';
 import { KastesJobPartial, Totals } from 'src/app/interfaces';
 import { LayoutService } from 'src/app/layout/layout.service';

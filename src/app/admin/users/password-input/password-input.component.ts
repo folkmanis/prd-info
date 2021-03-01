@@ -4,7 +4,7 @@ import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { takeUntil } from 'rxjs/operators';
 import { APP_PARAMS } from 'src/app/app-params';
 import { AppParams } from 'src/app/interfaces';
-import { DestroyService } from 'src/app/library/rx/destroy.service';
+import { DestroyService } from 'prd-cdk';
 
 interface Pwd {
   password1: string;

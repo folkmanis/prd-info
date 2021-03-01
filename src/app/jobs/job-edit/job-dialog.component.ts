@@ -9,7 +9,7 @@ import { IFormGroup, IFormControl } from '@rxweb/types';
 import { Observable, EMPTY } from 'rxjs';
 import { concatMap, filter, map, take, takeUntil, tap } from 'rxjs/operators';
 import { JobBase } from 'src/app/interfaces';
-import { DestroyService } from 'src/app/library/rx/destroy.service';
+import { DestroyService } from 'prd-cdk';
 import { JobEditDialogData } from './job-edit-dialog-data';
 import { JobEditFormService } from './services/job-edit-form.service';
 import { JobEditDialogResult } from './job-edit-dialog-result';

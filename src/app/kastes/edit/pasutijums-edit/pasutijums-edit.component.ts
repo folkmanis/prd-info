@@ -4,7 +4,7 @@ import { combineLatest, EMPTY, Observable, of, ReplaySubject, Subject } from 'rx
 import { map, mapTo, mergeMap, pluck, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { KastesJob, Veikals } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
-import { cacheWithUpdate, DestroyService } from 'src/app/library/rx';
+import { cacheWithUpdate, DestroyService } from 'prd-cdk';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
 import { PasutijumiService } from '../../services/pasutijumi.service';
 import { KastesJobResolverService } from '../services/kastes-job-resolver.service';

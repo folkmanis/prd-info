@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, mergeMap, pluck, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators';
 import { Colors, Kaste, Totals, COLORS } from 'src/app/interfaces';
-import { cacheWithUpdate } from 'src/app/library/rx';
+import { cacheWithUpdate } from 'prd-cdk';
 import { PrdApiService } from 'src/app/services';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
 

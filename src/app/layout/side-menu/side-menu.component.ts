@@ -5,7 +5,7 @@ import { tap, switchMap, map, distinctUntilChanged, filter, delay, takeUntil, sh
 import { SystemPreferencesService } from 'src/app/services';
 import { SystemSettings, UserModule } from 'src/app/interfaces';
 import { MenuDataSource, SideMenuData } from './menu-datasource';
-import { DestroyService } from 'src/app/library/rx/destroy.service';
+import { DestroyService } from 'prd-cdk';
 
 @Component({
   selector: 'app-side-menu',

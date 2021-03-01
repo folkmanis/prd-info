@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MODULES, SystemPreferences } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
-import { DestroyService } from 'src/app/library/rx';
+import { DestroyService } from 'prd-cdk';
 import { SystemPreferencesService } from 'src/app/services';
 
 @Component({

@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { IControlValueAccessor } from '@rxweb/types';
 import { BehaviorSubject, EMPTY, merge, Observable, of, Subject } from 'rxjs';
 import { map, mergeAll, mergeMap, shareReplay, skip, takeUntil, tap } from 'rxjs/operators';
-import { DestroyService } from 'src/app/library/rx';
+import { DestroyService } from 'prd-cdk';
 
 enum Action { ADD, REMOVE, UPDATE }
 interface UpdateAction<T> { type: Action; data?: T; idx?: number }

@@ -5,7 +5,7 @@ import { IControlValueAccessor, IFormControl } from '@rxweb/types';
 import { Subject } from 'rxjs';
 import { Customer, CustomerFinancial } from 'src/app/interfaces';
 import { PaytraqClient } from 'src/app/interfaces/paytraq';
-import { DestroyService } from 'src/app/library/rx';
+import { DestroyService } from 'prd-cdk';
 import { PaytraqClientService } from '../../services/paytraq-client.service';
 
 const DEFAULT_VALUE: CustomerFinancial = {

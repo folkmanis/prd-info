@@ -4,7 +4,7 @@ import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { Observable } from 'rxjs';
 import { debounceTime, filter, map, pluck, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { CustomerPartial, JobQueryFilter, JobQueryFilterOptions, SystemPreferences } from 'src/app/interfaces';
-import { DestroyService } from 'src/app/library/rx/destroy.service';
+import { DestroyService } from 'prd-cdk';
 import { CustomersService } from 'src/app/services';
 import { CONFIG } from 'src/app/services/config.provider';
 import { JobService } from 'src/app/services/job.service';

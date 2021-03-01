@@ -5,7 +5,7 @@ import { Observable, Subject } from 'rxjs';
 import { FormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { IFormBuilder, IFormControl, IFormGroup } from '@rxweb/types';
 import { map, takeUntil } from 'rxjs/operators';
-import { DestroyService } from 'src/app/library/rx';
+import { DestroyService } from 'prd-cdk';
 
 @Component({
   selector: 'app-paytraq-preferences',

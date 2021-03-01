@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { concatMap, map, pluck, share, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { CustomerProduct, Product, ProductPartial, SystemPreferences } from 'src/app/interfaces';
-import { cacheWithUpdate } from 'src/app/library/rx';
+import { cacheWithUpdate } from 'prd-cdk';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 import { CONFIG } from 'src/app/services/config.provider';
 

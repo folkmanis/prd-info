@@ -9,7 +9,7 @@ import { InvoicesService } from '../services/invoices.service';
 import { JobService } from 'src/app/services/job.service';
 import { InvoiceReport } from '../invoice-editor/invoice-report';
 import { InvoicesTotals } from '../interfaces';
-import { DestroyService } from 'src/app/library/rx/destroy.service';
+import { DestroyService } from 'prd-cdk';
 
 @Component({
   selector: 'app-new-invoice',

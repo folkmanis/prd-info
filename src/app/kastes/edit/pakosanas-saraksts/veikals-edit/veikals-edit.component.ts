@@ -8,7 +8,7 @@ import { ControlConfig } from '@rxweb/types/reactive-form/control-config';
 import { Observable, ReplaySubject, combineLatest } from 'rxjs';
 import { ActiveVeikalsDirective } from '../active-veikals.directive';
 import { VeikalsValidationErrors } from '../../services/veikals-validation-errors';
-import { DestroyService } from 'src/app/library/rx/destroy.service';
+import { DestroyService } from 'prd-cdk';
 
 @Component({
   selector: 'app-veikals-edit',

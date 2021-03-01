@@ -4,7 +4,7 @@ import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, pluck, switchMap, takeUntil } from 'rxjs/operators';
 import { SystemPreferences } from 'src/app/interfaces';
-import { DestroyService } from 'src/app/library/rx';
+import { DestroyService } from 'prd-cdk';
 import { CONFIG } from 'src/app/services/config.provider';
 import { GetLogEntriesParams } from '../../services/logfile-record';
 import { LogfileService, ValidDates } from '../../services/logfile.service';

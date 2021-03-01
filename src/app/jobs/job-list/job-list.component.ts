@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { JobProduct } from 'src/app/interfaces';
 import { LayoutService } from 'src/app/layout/layout.service';
-import { DestroyService } from 'src/app/library/rx/destroy.service';
+import { DestroyService } from 'prd-cdk';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { JobService } from 'src/app/services/job.service';
 import { JobEditDialogService } from '../job-edit';

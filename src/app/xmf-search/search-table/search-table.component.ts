@@ -1,7 +1,7 @@
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
-import { DestroyService } from 'src/app/library/rx/destroy.service';
+import { DestroyService } from 'prd-cdk';
 import { SearchQuery } from 'src/app/interfaces/xmf-search';
 import { ArchiveSearchService } from '../services/archive-search.service';
 import { SearchData } from './search-data';
