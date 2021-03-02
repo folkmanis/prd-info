@@ -23,6 +23,7 @@
     "@angular/platform-browser": "~11.2.3",
     "@angular/platform-browser-dynamic": "~11.2.3",
     "@angular/router": "~11.2.3",
+    "date-fns": "^2.18.0",
     "file-saver": "^2.0.5",
     "filesize": "^6.1.0",
     "lodash": "^4.17.21",
