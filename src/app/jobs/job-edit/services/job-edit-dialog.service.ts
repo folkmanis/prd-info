@@ -34,7 +34,6 @@ export class JobEditDialogService {
           job,
         }
       }).afterClosed()),
-      map(this.afterJobEdit),
       concatMap(resp => !resp ? of(false) : this.jobService.updateJob(resp.job)),
     );
   }
@@ -52,7 +51,6 @@ export class JobEditDialogService {
     });
 
     return dialogRef.afterClosed().pipe(
-      map(this.afterJobEdit),
       concatMap(resp => !resp ? of(undefined) : this.jobService.updateJob(resp.job).pipe(
         concatMap(_ => this.fileUploadService.uploadFiles(resp.job.jobId, resp.files)),
         map(_ => resp.job.jobId)
@@ -63,16 +61,6 @@ export class JobEditDialogService {
 
   private jobCreatorFn(): ((job: Partial<JobBase>) => Observable<number | null>) {
     return (job) => this.jobService.newJob(job);
-  }
-
-  private afterJobEdit<T extends JobEditDialogResult | undefined>(resp: T): T {
-    return resp?.job?.jobId ? {
-      ...resp,
-      job: {
-        ...resp.job,
-        dueDate: moment(resp.job.dueDate).endOf('day').toDate(),
-      }
-    } : undefined;
   }
 
 }
