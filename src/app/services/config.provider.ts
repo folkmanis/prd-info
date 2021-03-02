@@ -5,10 +5,10 @@ import { SystemPreferencesService } from './system-preferences.service';
 
 export const CONFIG = new InjectionToken<Observable<SystemPreferences>>(
     'System configuration',
-    {
-        providedIn: 'root',
-        factory: () => inject(SystemPreferencesService).preferences$
-    }
+    // {
+    //     providedIn: 'root',
+    //     factory: () => inject(SystemPreferencesService).preferences$
+    // }
 );
 
 export const configProvider: FactoryProvider = {
