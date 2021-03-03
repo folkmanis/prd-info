@@ -3,7 +3,7 @@
     <mat-toolbar>
         <span *ngIf="formSource">
             <button mat-raised-button (click)="onSave()" color="primary"
-                [disabled]="!form.valid || form.pristine">
+                [disabled]="!isSaveEnabled">
                 SAGLABĀT
             </button>
             <button mat-raised-button (click)="onResetForm()" [disabled]="form.pristine">

@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, ContentChild, Inject, Input, OnDestroy, OnInit, Output, ChangeDetectorRef, Optional } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { merge, Observable, Subject, Subscription } from 'rxjs';
-import { filter, last, map, shareReplay, take } from 'rxjs/operators';
+import { DestroyService, log } from 'prd-cdk';
+import { merge, Observable, Subject } from 'rxjs';
+import { filter, last, map, shareReplay, take, takeUntil } from 'rxjs/operators';
 import { SimpleFormSource } from '../simple-form-source';
 import { SimpleFormLabelDirective } from './simple-form-label.directive';
 
@@ -11,8 +12,9 @@ import { SimpleFormLabelDirective } from './simple-form-label.directive';
   templateUrl: './simple-form-container.component.html',
   styleUrls: ['./simple-form-container.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [DestroyService],
 })
-export class SimpleFormContainerComponent<T> implements OnInit, OnDestroy {
+export class SimpleFormContainerComponent<T> implements OnInit, AfterViewInit, OnDestroy {
 
   @Input() set formSource(value: SimpleFormSource<T> | null) {
     this._formSource = value;
@@ -45,21 +47,32 @@ export class SimpleFormContainerComponent<T> implements OnInit, OnDestroy {
 
   get form() { return this.formSource?.form; }
 
+  get isSaveEnabled(): boolean {
+    return this.form?.valid && !this.form.pristine;
+  }
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private changeDetector: ChangeDetectorRef,
+    private destroy$: DestroyService,
   ) { }
 
-  private readonly _subs = new Subscription();
+  /** Ctrl-Enter triggers save */
+  @HostListener('window:keydown', ['$event']) keyEvent(event: KeyboardEvent) {
+    if (event.key === 'Enter' && event.ctrlKey && this.isSaveEnabled) {
+      this.onSave();
+    }
+  }
 
   ngOnInit(): void {
+  }
+
+  ngAfterViewInit() {
     if (this.form) {
-      this._subs.add(
-        this.form.valueChanges.subscribe(
-          () => this.changeDetector.markForCheck()
-        )
-      );
+      this.form.statusChanges.pipe(
+        takeUntil(this.destroy$),
+      ).subscribe(_ => this.changeDetector.markForCheck());
     }
   }
 
@@ -70,7 +83,6 @@ export class SimpleFormContainerComponent<T> implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this._subs.unsubscribe();
     this._data$.complete();
   }
 
@@ -80,6 +92,7 @@ export class SimpleFormContainerComponent<T> implements OnInit, OnDestroy {
     const value = this.form.value;
     if (!this.formSource.isNew) {
       this.formSource.updateFn(value).pipe(
+        log('save'),
         last(),
       ).subscribe(res => this._data$.next(res));
     } else {
