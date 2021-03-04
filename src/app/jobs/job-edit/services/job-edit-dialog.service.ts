@@ -17,7 +17,9 @@ const JOB_DIALOG_CONFIG: MatDialogConfig = {
   data: {},
 };
 
-@Injectable()
+@Injectable({
+  providedIn: 'any'
+})
 export class JobEditDialogService {
 
   constructor(

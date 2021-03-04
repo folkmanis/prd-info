@@ -5,16 +5,19 @@
 
 div.list {
     flex: 1;
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    // position: relative;
     .active:not(.large) & {
         display: none;
     }
 
     & > div {
+        flex: 1;
         height: 100%;
+        // position: relative;
         overflow: auto;
     }
-
 }
 
 .editor {
@@ -29,9 +32,9 @@ div.list {
 }
 
 .mat-toolbar {
-    position: sticky;
-    top: 0px;
-    z-index: 100;
+    // position: sticky;
+    // top: 0px;
+    // z-index: 100;
     & div.search {
         width: 100%;
         display: flex;

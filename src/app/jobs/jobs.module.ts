@@ -4,8 +4,6 @@ import { PdfMakeWrapper } from 'pdfmake-wrapper';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { LibraryModule } from '../library/library.module';
 
-import { JobFilterComponent } from './job-list/job-filter/job-filter.component';
-import { JobListComponent } from './job-list/job-list.component';
 import { JobsComponent } from './jobs.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import { JobsRoutingModule } from './jobs-routing.module';
@@ -18,14 +16,14 @@ import { UploadProgressComponent } from './side-panel/upload-progress/upload-pro
 
 PdfMakeWrapper.setFonts(pdfFonts);
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
+import { ReproJobModule } from './repro-job/repro-job.module';
+import { JobListModule } from './job-list/job-list.module';
 
 
 @NgModule({
   declarations: [
     JobsComponent,
     MainMenuComponent,
-    JobListComponent,
-    JobFilterComponent,
     SidePanelComponent,
     UploadProgressComponent,
   ],
@@ -36,6 +34,8 @@ import { MaterialLibraryModule } from 'src/app/library/material-library.module';
     JobsRoutingModule,
     PlateInvoiceModule,
     JobEditModule,
+    ReproJobModule,
+    JobListModule,
   ],
   providers: [
   ],

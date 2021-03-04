@@ -1,17 +1,18 @@
 <div class="container" [class.large]="large" [class.active]="editor.isActivated">
     <div class="list">
 
-        <div cdkScrollable scroll-to-top class="simple-form-table">
-            <mat-toolbar>
-                <div *ngIf="plusButton">
-                    <button mat-mini-fab color="primary" routerLink="new">
-                        <mat-icon>add</mat-icon>
-                    </button>
-                </div>
-                <div *ngIf="filterInput" class="search">
-                    <ng-container *ngTemplateOutlet="filterTemplate || defaultFilterTemplate"></ng-container>
-                </div>
-            </mat-toolbar>
+        <mat-toolbar>
+            <div *ngIf="plusButton">
+                <button mat-mini-fab color="primary" routerLink="new">
+                    <mat-icon>add</mat-icon>
+                </button>
+            </div>
+            <div *ngIf="filterInput" class="search">
+                <ng-container *ngTemplateOutlet="filterTemplate || defaultFilterTemplate"></ng-container>
+            </div>
+        </mat-toolbar>
+
+        <div class="simple-form-table" cdk-scrollable scroll-to-top>
 
             <ng-content></ng-content>
 
