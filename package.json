@@ -30,7 +30,7 @@
     "moment": "^2.29.1",
     "pdfmake": "^0.1.70",
     "pdfmake-wrapper": "^2.1.1",
-    "prd-cdk": "^0.2.2",
+    "prd-cdk": "^0.3.0",
     "rxjs": "~6.6.6",
     "tslib": "^2.0.0",
     "xlsx": "^0.16.9",

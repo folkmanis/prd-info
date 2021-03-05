@@ -25,7 +25,7 @@
             <app-selection-totals [totals]="totals$ | async"></app-selection-totals>
         </section>
     </div>
-    <div class="jobs" cdk-scrollable>
+    <div class="jobs" cdk-scrollable scroll-to-top>
         <!-- Darbu atlase -->
         <app-job-selection-table [jobs]="jobs$ | async" (selected)="onJobSelected($event)">
         </app-job-selection-table>
