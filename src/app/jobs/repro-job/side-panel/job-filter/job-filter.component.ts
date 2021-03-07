@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, Output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { Observable } from 'rxjs';
@@ -9,7 +9,7 @@ import { CustomersService } from 'src/app/services';
 import { CONFIG } from 'src/app/services/config.provider';
 import { JobService } from 'src/app/services/job.service';
 
-type JobFilter = Pick<JobQueryFilterOptions, 'customer' | 'jobsId' | 'name' | 'jobStatus'>;
+type JobFilter = Pick<JobQueryFilter, 'customer' | 'jobsId' | 'name' | 'jobStatus'>;
 
 const DEFAULT_FILTER = {
   jobsId: null,
@@ -31,27 +31,27 @@ export class JobFilterComponent implements OnInit {
   );
   customersFiltered$: Observable<CustomerPartial[]>;
 
-  private fb: IFormBuilder;
-  filterForm: IFormGroup<JobFilter>;
+  filterForm: IFormGroup<JobFilter> = this.fb.group({
+    name: undefined,
+    jobsId: [
+      undefined,
+      { validators: [Validators.pattern(/^[0-9]+$/)] }
+    ],
+    customer: undefined,
+    jobStatus: undefined,
+  });;
+
+  @Output('jobFilter') jobFilter$: Observable<JobFilter> = this.filterForm.valueChanges.pipe(
+    filter(_ => this.filterForm.valid),
+    debounceTime(500),
+    map(normalizeFilter),
+  );
 
   constructor(
-    fb: FormBuilder,
+    private fb: FormBuilder,
     private customersService: CustomersService,
-    private jobService: JobService,
-    private destroy$: DestroyService,
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
-  ) {
-    this.fb = fb;
-    this.filterForm = this.fb.group<JobFilter>({
-      name: undefined,
-      jobsId: [
-        undefined,
-        { validators: [Validators.pattern(/^[0-9]+$/)] }
-      ],
-      customer: undefined,
-      jobStatus: undefined,
-    });
-  }
+  ) { }
 
 
   ngOnInit(): void {
@@ -64,13 +64,6 @@ export class JobFilterComponent implements OnInit {
         map(cust => cust.filter(c => c.CustomerName.toUpperCase().includes(val)))
       )),
     );
-
-    this.filterForm.valueChanges.pipe(
-      filter(_ => this.filterForm.valid),
-      debounceTime(500),
-      map(normalizeFilter),
-      takeUntil(this.destroy$),
-    ).subscribe(fltr => this.jobService.setFilter(fltr));
 
     this.onReset();
 

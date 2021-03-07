@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FileUploadMessage, FileUploadEventType } from '../../interfaces/file-upload-message';
+import { FileUploadMessage, FileUploadEventType } from '../../../interfaces/file-upload-message';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 
 @Component({

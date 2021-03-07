@@ -1,8 +1,8 @@
-<mat-card appFileDrop (filesEmitter)="onFileDrop($event)">
+<mat-card appFileDrop (filesEmitter)="fileDrop.next($event)">
     <mat-card-header>Nomest darbu</mat-card-header>
 </mat-card>
 <div>
-    <app-job-filter></app-job-filter>
+    <app-job-filter (jobFilter)="jobFilter.next($event)"></app-job-filter>
 </div>
 <div>
     <app-upload-progress [progress]="progress$ | async"></app-upload-progress>

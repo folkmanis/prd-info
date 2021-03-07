@@ -1,5 +1,15 @@
-<app-simple-list-container plusButton [large]="large$ | async">
+<mat-drawer-container>
+    <mat-drawer button [small]="small$ | async">
+        <app-side-panel (jobFilter)="onJobFilter($event)" (file)="onFileDrop($event)"></app-side-panel>
+    </mat-drawer>
 
-    <app-job-list></app-job-list>
+    <mat-drawer-content>
 
-</app-simple-list-container>
+            <app-simple-list-container plusButton [large]="large$ | async">
+
+                <app-job-list></app-job-list>
+            
+            </app-simple-list-container>
+
+    </mat-drawer-content>
+</mat-drawer-container>
