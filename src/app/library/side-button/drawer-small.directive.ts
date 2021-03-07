@@ -5,7 +5,7 @@ import { MatDrawer } from '@angular/material/sidenav';
  * Angular Material mat-drawer on small screens
  */
 @Directive({
-  selector: '[appDrawerSmall], mat-drawer[small]'
+  selector: 'mat-drawer[small]'
 })
 export class DrawerSmallDirective {
 

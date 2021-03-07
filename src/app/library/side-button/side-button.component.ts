@@ -1,17 +1,18 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { MatDrawer } from '@angular/material/sidenav';
 
 @Component({
-  selector: 'app-side-button',
   templateUrl: './side-button.component.html',
-  styleUrls: ['./side-button.component.scss']
+  styleUrls: ['./side-button.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SideButtonComponent {
-  @Input() set opened(param: boolean) {
-    this._opened = param;
-  }
-  get opened(): boolean { return this._opened; }
-  private _opened = false;
 
-  @Output() clicks: EventEmitter<void> = new EventEmitter<void>();
+  opened = false;
+  drawer: MatDrawer;
+
+  onClick() {
+    this.drawer?.toggle();
+  }
 
 }

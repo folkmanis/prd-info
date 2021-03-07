@@ -18,7 +18,6 @@ import { DrawerSmallDirective } from './drawer-small.directive';
     MatButtonModule,
   ],
   exports: [
-    SideButtonComponent,
     DrawerButtonDirective,
     DrawerSmallDirective,
   ]
