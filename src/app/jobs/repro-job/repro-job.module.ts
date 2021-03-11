@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
-import { JobListModule } from '../job-list/job-list.module';
 import { JobEditModule } from '../job-edit/job-edit.module';
 import { SimpleFormModule } from 'src/app/library/simple-form';
 import { ReproJobListComponent } from './repro-job-list/repro-job-list.component';
@@ -11,6 +10,7 @@ import { LibraryModule } from 'src/app/library/library.module';
 import { JobFilterComponent } from './side-panel/job-filter/job-filter.component';
 import { SidePanelComponent } from './side-panel/side-panel.component';
 import { UploadProgressComponent } from './side-panel/upload-progress/upload-progress.component';
+import { JobListComponent } from './repro-job-list/job-list/job-list.component';
 
 @NgModule({
   declarations: [
@@ -19,12 +19,12 @@ import { UploadProgressComponent } from './side-panel/upload-progress/upload-pro
     ReproJobEditComponent,
     SidePanelComponent,
     UploadProgressComponent,
+    JobListComponent,
   ],
   imports: [
     CommonModule,
     MaterialLibraryModule,
     LibraryModule,
-    JobListModule,
     JobEditModule,
     SimpleFormModule.forChildren({
       path: 'repro',

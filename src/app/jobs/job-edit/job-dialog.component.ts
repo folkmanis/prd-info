@@ -13,7 +13,7 @@ import { DestroyService } from 'prd-cdk';
 import { JobEditDialogData } from './job-edit-dialog-data';
 import { JobEditFormService } from './services/job-edit-form.service';
 import { JobEditDialogResult } from './job-edit-dialog-result';
-import { endOfDay } from 'date-fns';
+import { endOfDay, parseISO } from 'date-fns';
 
 @Component({
   selector: 'app-job-dialog',
@@ -87,8 +87,8 @@ export class JobDialogComponent implements OnInit {
   onSave() {
     const job = {
       ...this.jobForm.value,
-      dueDate: endOfDay(this.jobForm.value.dueDate),
-    }
+      dueDate: endOfDay(new Date(this.jobForm.value.dueDate)),
+    };
     const result: JobEditDialogResult = {
       job: this.jobForm.value,
       files: this.files?.length ? this.files : undefined,

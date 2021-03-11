@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Output, OnDestroy } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { JobQueryFilter } from 'src/app/interfaces';
@@ -11,7 +11,7 @@ import { FileUploadService } from '../../services/file-upload.service';
   styleUrls: ['./side-panel.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SidePanelComponent {
+export class SidePanelComponent implements OnDestroy {
 
   @Output() jobFilter = new Subject<JobQueryFilter>();
 
@@ -26,5 +26,9 @@ export class SidePanelComponent {
   ) { }
 
   progress$ = this.fileUploadService.uploadProgress$;
+
+  ngOnDestroy() {
+    this.fileDrop.complete();
+  }
 
 }

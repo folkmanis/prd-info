@@ -3,7 +3,7 @@
     <ng-container matColumnDef="action">
         <mat-header-cell *matHeaderCellDef> </mat-header-cell>
         <mat-cell *matCellDef="let group; index as idx;">
-            <button mat-icon-button (click)="removeProduct(idx)" [disabled]="prodFormArray.disabled">
+            <button mat-icon-button (click)="onRemoveProduct(idx)" [disabled]="prodFormArray.disabled">
                 <mat-icon>delete</mat-icon>
             </button>
         </mat-cell>

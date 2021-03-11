@@ -1,16 +1,16 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { Component, Input, OnDestroy, Output, TemplateRef, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, Output, TemplateRef, ViewChild, AfterViewInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
 import { IFormControl } from '@rxweb/types';
-import { Subject } from 'rxjs';
+import { ReplaySubject, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-simple-list-container',
   templateUrl: './simple-list-container.component.html',
   styleUrls: ['./simple-list-container.component.scss'],
 })
-export class SimpleListContainerComponent implements OnDestroy {
+export class SimpleListContainerComponent implements AfterViewInit, OnDestroy {
   @ViewChild('editor') private routerOutlet: RouterOutlet;
 
   searchControl: IFormControl<string> = new FormControl('');
@@ -38,13 +38,17 @@ export class SimpleListContainerComponent implements OnDestroy {
 
   @Output() filter = this.searchControl.valueChanges;
 
-  @Output() activeStatusChanges = new Subject<boolean>();
+  @Output() activeStatusChanges = new ReplaySubject<boolean>(1);
 
   get isActivated(): boolean {
     return this.routerOutlet?.isActivated || false;
   }
 
   constructor() { }
+
+  ngAfterViewInit() {
+    this.activeStatusChanges.next(this.isActivated);
+  }
 
   ngOnDestroy(): void {
     this.activeStatusChanges.complete();

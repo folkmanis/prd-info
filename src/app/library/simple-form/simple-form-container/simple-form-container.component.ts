@@ -92,7 +92,6 @@ export class SimpleFormContainerComponent<T> implements OnInit, AfterViewInit, O
     const value = this.form.value;
     if (!this.formSource.isNew) {
       this.formSource.updateFn(value).pipe(
-        log('save'),
         last(),
       ).subscribe(res => this._data$.next(res));
     } else {

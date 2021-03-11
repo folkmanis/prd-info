@@ -1,13 +1,13 @@
 <mat-drawer-container>
-    <mat-drawer button [small]="small$ | async">
+    <mat-drawer button [small]="(large$ | async) === false">
         <app-side-panel (jobFilter)="onJobFilter($event)" (file)="onFileDrop($event)"></app-side-panel>
     </mat-drawer>
 
     <mat-drawer-content>
 
-            <app-simple-list-container plusButton [large]="large$ | async">
+            <app-simple-list-container plusButton [large]="large$ | async" editorWidth="60%" (activeStatusChanges)="editorActive = $event">
 
-                <app-job-list></app-job-list>
+                <app-job-list [editorActive]="editorActive"></app-job-list>
             
             </app-simple-list-container>
 

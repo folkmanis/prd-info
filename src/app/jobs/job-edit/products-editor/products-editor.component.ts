@@ -1,18 +1,20 @@
 import {
   ChangeDetectionStrategy, ChangeDetectorRef, Component,
-  HostListener, Input, OnDestroy, OnInit,
-  QueryList, ViewChildren, ViewChild, Inject
+  HostListener,
+  Inject, Input, OnDestroy, OnInit,
+  QueryList, ViewChild, ViewChildren
 } from '@angular/core';
-import { ControlContainer, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { IFormArray, IFormControl, IFormGroup } from '@rxweb/types';
+import { FormArray, FormBuilder, NgControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { MatTable } from '@angular/material/table';
+import { IControlValueAccessor, IFormArray, IFormBuilder, IFormControl, IFormGroup } from '@rxweb/types';
 import { from, Observable, Subject } from 'rxjs';
 import { filter, pluck, switchMap, toArray } from 'rxjs/operators';
 import { CustomerProduct, JobProduct, SystemPreferences } from 'src/app/interfaces';
-import { JobEditFormService } from '../services/job-edit-form.service';
-import { ProductAutocompleteComponent } from './product-autocomplete/product-autocomplete.component';
-import { MatTable } from '@angular/material/table';
 import { CONFIG } from 'src/app/services/config.provider';
+import { ProductAutocompleteComponent } from './product-autocomplete/product-autocomplete.component';
+import * as equal from 'fast-deep-equal';
 
+export const DEFAULT_UNITS = 'gab.';
 
 @Component({
   selector: 'app-products-editor',
@@ -20,7 +22,7 @@ import { CONFIG } from 'src/app/services/config.provider';
   styleUrls: ['./products-editor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProductsEditorComponent implements OnInit, OnDestroy {
+export class ProductsEditorComponent implements OnInit, OnDestroy, IControlValueAccessor<JobProduct[]> {
   @ViewChildren(ProductAutocompleteComponent) private nameInputs: QueryList<ProductAutocompleteComponent>;
   @ViewChild(MatTable) private table: MatTable<IFormGroup<JobProduct>>;
 
@@ -31,14 +33,16 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
   get customerProducts(): CustomerProduct[] {
     return this._customerProducts;
   }
-
-  columns: string[] = ['action', 'name', 'count', 'units', 'price', 'total', 'comments'];
-
   private _customerProducts: CustomerProduct[] = [];
 
-  readonly stateChanges = new Subject<void>();
+  columns: string[] = ['action', 'name', 'count', 'units', 'comments']; // 'price', 'total', 
 
-  prodFormArray: IFormArray<JobProduct>;
+  readonly stateChanges = new Subject<void>();
+  private previousValue: JobProduct[];
+
+  prodFormArray: IFormArray<JobProduct> = new FormArray([]);
+  private fb: IFormBuilder;
+  private valid = false;
 
   readonly units$ = this.config$.pipe(
     pluck('jobs', 'productUnits'),
@@ -48,6 +52,8 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
     ))
   );
 
+  onChangeFn: (obj: JobProduct[]) => void;
+  onTouchFn: () => void;
 
   /** Ctrl-+ event */
   @HostListener('window:keydown', ['$event']) keyEvent(event: KeyboardEvent) {
@@ -59,18 +65,66 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
 
   constructor(
     private changeDetector: ChangeDetectorRef,
-    private jobFormService: JobEditFormService,
-    private controlContainer: ControlContainer,
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
-  ) { }
+    private ngControl: NgControl,
+    fb: FormBuilder,
+  ) {
+    this.ngControl.valueAccessor = this;
+    this.fb = fb;
+  }
+
+  writeValue(obj: JobProduct[]) {
+    // TODO make smarter
+    this.previousValue = obj;
+    if (this.prodFormArray.length > 0) {
+      this.prodFormArray.clear();
+    }
+
+    if (!obj) { return; }
+
+    for (const product of obj) {
+      this.prodFormArray.push(
+        this.productFormGroup(product)
+      );
+    };
+    this.stateChanges.next();
+  }
+
+  registerOnChange(fn: (obj: JobProduct[]) => void) {
+    this.onChangeFn = fn;
+  }
+
+  registerOnTouched(fn: () => void) {
+    this.onTouchFn = fn;
+  }
+
+  setDisabledState(isDisabled: boolean) {
+    isDisabled ? this.prodFormArray.disable() : this.prodFormArray.enable();
+    this.stateChanges.next();
+  }
 
   ngOnInit(): void {
-    this.prodFormArray = this.controlContainer.control as IFormArray<JobProduct>;
-    this.setAllValidators(this.prodFormArray);
     this.stateChanges.subscribe(_ => {
       this.table.renderRows();
       this.changeDetector.markForCheck();
     });
+    this.prodFormArray.valueChanges
+      .subscribe(val => {
+        if (!equal(this.previousValue, val)) {
+          this.previousValue = val;
+          this.onChangeFn(val);
+        }
+      });
+    this.prodFormArray.statusChanges
+      .subscribe(status => {
+        this.valid = (status === 'VALID');
+        this.ngControl.control.updateValueAndValidity();
+      });
+    this.ngControl.control.setValidators(this.validate());
+  }
+
+  validate(): ValidatorFn {
+    return () => this.valid ? null : { products: 'Invalid' };
   }
 
   ngOnDestroy(): void {
@@ -79,8 +133,7 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
 
   onAddNewProduct() {
     if (!this.prodFormArray.valid) { return; }
-    const prodForm = this.jobFormService.productFormGroup();
-    this.setProductGroupValidators(prodForm);
+    const prodForm = this.productFormGroup();
     this.prodFormArray.push(prodForm);
     setTimeout(() => {
       this.nameInputs.last.focus();
@@ -88,38 +141,65 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
     this.stateChanges.next();
   }
 
-  removeProduct(idx: number) {
+  onRemoveProduct(idx: number) {
     this.prodFormArray.removeAt(idx);
     this.prodFormArray.markAsDirty();
     this.stateChanges.next();
   }
 
-  private setAllValidators(frm: IFormArray<JobProduct>) {
-    frm.controls.forEach((contr: IFormGroup<JobProduct>) => this.setProductGroupValidators(contr));
-  }
-
   private updateValueAndValidity() {
     if (!this.prodFormArray) { return; }
     for (const cg of this.prodFormArray.controls) {
-      cg.get('name').updateValueAndValidity();
-      cg.updateValueAndValidity();
+      cg.get('name').updateValueAndValidity({ emitEvent: false });
     }
     this.stateChanges.next();
   }
 
-  private setProductGroupValidators(gr: IFormGroup<JobProduct>) {
-    gr.controls.name.setValidators([Validators.required, this.productValidatorFn()]);
-    gr.setValidators([this.defaultPriceValidatorFn()]);
+  private productFormGroup(product?: Partial<JobProduct>, enabled = true): IFormGroup<JobProduct> {
+    const _group = this.fb.group<JobProduct>({
+      name: [
+        product?.name,
+        {
+          validators: [Validators.required, this.productValidatorFn()],
+        }
+      ],
+      price: [
+        product?.price,
+        {
+          validators: [Validators.min(0)],
+        }
+      ],
+      count: [
+        product?.count || 0,
+        {
+          validators: [Validators.min(0)],
+        }
+      ],
+      units: [
+        product?.units || DEFAULT_UNITS,
+        {
+          validators: [Validators.required],
+        }
+      ],
+      comment: [product?.comment],
+    }, {
+      // validators: [this.defaultPriceValidatorFn()],
+    }
+    );
+    enabled ? _group.enable() : _group.disable();
+    return _group;
   }
+
 
   private defaultPriceValidatorFn(): ValidatorFn {
     let prevVal: JobProduct | undefined;
     return (control: IFormGroup<JobProduct>): null | ValidationErrors => {
-      if (!control.controls.name.valid) {
-        return null;
-      }
-      /* ja pirmoreiz, vai mainās produkta nosaukums */
-      if (prevVal === undefined || prevVal.name !== control.value.name) {
+      // if (!control.controls.name.valid) {
+      //   return null;
+      // }
+      /* ja pirmoreiz */
+      /* ja mainās produkta nosaukums */
+      if ((prevVal === undefined || prevVal.name !== control.value.name) && !control.value.price) {
         const customerProduct = this.customerProducts.find(product => product.productName === control.value.name);
         /* un ja ir atrasta cena */
         if (customerProduct) {
@@ -127,14 +207,15 @@ export class ProductsEditorComponent implements OnInit, OnDestroy {
           control.setValue(prevVal);
         }
       }
+      prevVal = control.value;
       return null;
     };
   }
 
   private productValidatorFn(): ValidatorFn {
     return (control: IFormControl<string>): null | ValidationErrors => this.customerProducts.some(
-        product => product.productName === control.value
-      ) ? null : { invalidProduct: 'Prece nav atrasta katalogā' };
+      product => product.productName === control.value
+    ) ? null : { invalidProduct: 'Prece nav atrasta katalogā' };
   }
 
 }

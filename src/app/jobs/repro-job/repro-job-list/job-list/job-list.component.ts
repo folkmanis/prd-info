@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { JobProduct } from 'src/app/interfaces';
+import { JobBase, JobProduct } from 'src/app/interfaces';
 import { LayoutService } from 'src/app/layout/layout.service';
 import { DestroyService } from 'prd-cdk';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { JobService } from 'src/app/services/job.service';
-import { JobEditDialogService } from '../job-edit';
+import { JobEditDialogService } from '../../../job-edit';
 
 @Component({
   selector: 'app-job-list',
@@ -16,6 +16,14 @@ import { JobEditDialogService } from '../job-edit';
   providers: [DestroyService],
 })
 export class JobListComponent implements OnInit {
+
+  @Input('editorActive') set active(active: boolean) {
+    this._active = active;
+  }
+  get active(): boolean {
+    return this._active;
+  }
+  private _active = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -31,39 +39,29 @@ export class JobListComponent implements OnInit {
   isLarge$ = this.layout.isLarge$;
 
   dataSource$ = this.jobService.jobs$.pipe(
-    map(jobs => jobs.map(job => ({ ...job, productsObj: job.products as JobProduct })))
+    map(jobs => jobs.map(job => ({ ...job, productsObj: job.products as JobProduct }))),
   );
 
   ngOnInit(): void {
-    this.route.paramMap.pipe(
-      map(params => params.get('id') as string | undefined),
-      filter(id => id === 'new' || /^\d+$/.test(id)),
-      switchMap(id => {
-        if (id === 'new') {
-          return this.jobEditDialog.newJob({ category: 'repro' });
-        } else {
-          return this.jobEditDialog.editJob(+id);
-        }
-      }),
-      takeUntil(this.destroy$),
-    ).subscribe(() => this.router.navigate(['/jobs']));
   }
 
   onJobEdit(jobId: number) {
-    this.router.navigate([{ id: jobId }], { relativeTo: this.route });
+    this.router.navigate([jobId], { relativeTo: this.route });
   }
 
-  copyJobIdAndName(jobId: number, name: string) {
-    this.clipboard.copy(`${jobId}-${name}`);
+  copyJobIdAndName(job: Pick<JobBase, 'jobId' | 'name'>, event: MouseEvent) {
+    this.clipboard.copy(`${job.jobId}-${job.name}`);
+    event.stopPropagation();
   }
 
-  onSetJobStatus(jobId: number, status: number) {
+  onSetJobStatus(jobId: number, status: number, event: MouseEvent) {
     this.jobService.updateJob({
       jobId,
       jobStatus: {
         generalStatus: status,
       }
     }).subscribe();
+    event.stopPropagation();
   }
 
 }

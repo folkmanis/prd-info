@@ -68,7 +68,7 @@
         </mat-form-field>
         <!-- Preces apakšforma -->
         <div *ngIf="isProductsSet()" class="width-span">
-            <app-products-editor formArrayName="products" [customerProducts]="customerProducts$ | async">
+            <app-products-editor formControlName="products" [customerProducts]="customerProducts$ | async">
             </app-products-editor>
         </div>
     </div>
