@@ -1,7 +1,7 @@
 import { AbstractControl, AsyncValidatorFn, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
-import { IFormBuilder, IFormGroup } from '@rxweb/types';
+import { IFormBuilder, IFormControl, IFormGroup } from '@rxweb/types';
 import { endOfDay } from 'date-fns';
-import { EMPTY, Observable, of } from 'rxjs';
+import { EMPTY, Observable, of, BehaviorSubject } from 'rxjs';
 import { concatMap, map, take } from 'rxjs/operators';
 import { CustomerProduct, Job, JobBase, JobProduct } from 'src/app/interfaces';
 import { SimpleFormSource } from 'src/app/library/simple-form';
@@ -9,6 +9,8 @@ import { CustomersService, ProductsService } from 'src/app/services';
 import { JobService } from 'src/app/services/job.service';
 
 export class JobFormSource extends SimpleFormSource<JobBase> {
+
+    folderPath$: BehaviorSubject<string> = new BehaviorSubject('');
 
     constructor(
         fb: FormBuilder,
@@ -21,12 +23,11 @@ export class JobFormSource extends SimpleFormSource<JobBase> {
 
     insertFn(job: JobBase): Observable<number> {
         console.log(job);
-
-        return this.jobService.newJob(job);
+        const createFolder = true; // TODO
+        return this.jobService.newJob(job, { createFolder });
     }
 
     updateFn(job: JobBase): Observable<JobBase> {
-        console.log(job);
         job = {
             ...job,
             dueDate: endOfDay(new Date(job.dueDate)),
@@ -74,7 +75,12 @@ export class JobFormSource extends SimpleFormSource<JobBase> {
                         validators: Validators.required,
                     }
                 ],
-                category: [undefined],
+                category: [
+                    undefined,
+                    {
+                        validators: Validators.required,
+                    }
+                ],
                 comment: [undefined],
                 customerJobId: [undefined],
                 custCode: [{ value: undefined, disabled: true }],
@@ -82,10 +88,7 @@ export class JobFormSource extends SimpleFormSource<JobBase> {
                     generalStatus: 10,
                 }),
                 products: [undefined],
-                files: this.fb.group({
-                    path: this.fb.control(undefined),
-                    fileNames: this.fb.array([]),
-                })
+                files: [undefined],
             });
         return jobForm;
 
@@ -99,6 +102,7 @@ export class JobFormSource extends SimpleFormSource<JobBase> {
         if (value.receivedDate) {
             this.form.get('receivedDate').disable({ emitEvent: false });
         }
+        this.folderPath$.next(value.files?.path?.join('/') || '');
 
     }
 

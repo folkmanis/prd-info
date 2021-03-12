@@ -35,7 +35,7 @@
         <!-- Darba kategorija -->
         <mat-form-field>
             <mat-label>Kategorija</mat-label>
-            <mat-select formControlName="category">
+            <mat-select formControlName="category" required>
                 <mat-option *ngFor="let cat of categories$ | async" [value]="cat.category">
                     {{cat.description}}
                 </mat-option>
@@ -64,10 +64,18 @@
             <input matInput formControlName="customerJobId">
         </mat-form-field>
         <!-- Folderis -->
+        <div *ngIf="isNew === false">
+            <span *ngIf="(formSource.folderPath$ | async).length > 0; else create;">
+                {{ formSource.folderPath$ | async }}
+            </span>
 
+            <ng-template #create>
+                <button mat-raised-button (click)="onCreateFolder()">
+                    IZVEIDOT FOLDERI
+                </button>
+            </ng-template>
+        </div>
 
-
-        
         <!-- Papildus apraksts -->
         <mat-form-field class="width-span">
             <mat-label>Papildus apraksts</mat-label>

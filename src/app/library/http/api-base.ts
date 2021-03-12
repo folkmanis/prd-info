@@ -4,17 +4,21 @@ import { map, pluck } from 'rxjs/operators';
 import { HttpOptions } from 'src/app/library/http/http-options';
 import { AppHttpResponseBase } from 'src/app/library/http/app-http-response-base';
 
+interface Params {
+    [key: string]: any;
+}
+
 export abstract class ApiBase<T> {
     constructor(
         protected http: HttpClient,
         protected path: string,
     ) { }
 
-    get<P = Partial<T>>(params?: { [key: string]: any }): Observable<P[]>;
-    get<P = Partial<T>>(id: string | number, params?: { [key: string]: any }): Observable<T>;
+    get<P = Partial<T>>(params?: Params): Observable<P[]>;
+    get<P = Partial<T>>(id: string | number, params?: Params): Observable<T>;
     get<P = Partial<T>>(
-        idOrParams?: string | number | { [key: string]: any },
-        params?: { [key: string]: any }
+        idOrParams?: string | number | Params,
+        params?: Params
     ): Observable<P[]> | Observable<T> {
 
         if (idOrParams && idOrParams instanceof Object) {
@@ -44,15 +48,15 @@ export abstract class ApiBase<T> {
         );
     }
 
-    updateOne(id: string | number, data: Partial<T>): Observable<boolean> {
-        return this.http.post<AppHttpResponseBase<T>>(this.path + id, data, new HttpOptions()).pipe(
+    updateOne(id: string | number, data: Partial<T>, params?: Params): Observable<boolean> {
+        return this.http.post<AppHttpResponseBase<T>>(this.path + id, data, new HttpOptions(params)).pipe(
             pluck('modifiedCount'),
             map(count => !!count)
         );
     }
 
-    insertOne(data: Partial<T>): Observable<string | number | null> {
-        return this.http.put<AppHttpResponseBase<T>>(this.path, data, new HttpOptions()).pipe(
+    insertOne(data: Partial<T>, params?: Params): Observable<string | number | null> {
+        return this.http.put<AppHttpResponseBase<T>>(this.path, data, new HttpOptions(params)).pipe(
             map(resp => resp.error ? null : resp.insertedId),
         );
     }

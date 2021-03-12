@@ -8,7 +8,7 @@ import { LayoutService } from 'src/app/layout/layout.service';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { CustomersService, ProductsService } from 'src/app/services';
 import { CONFIG } from 'src/app/services/config.provider';
-import { FolderPath } from '../services/folder-path';
+import { FolderPath } from '../../services/folder-path';
 import { JobEditFormService } from '../services/job-edit-form.service';
 
 @Component({

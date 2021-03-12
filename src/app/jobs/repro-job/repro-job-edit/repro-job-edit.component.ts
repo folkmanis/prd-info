@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { IFormGroup } from '@rxweb/types';
-import { combineLatest, merge, Observable, of } from 'rxjs';
+import { combineLatest, EMPTY, merge, Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, pluck, shareReplay, startWith, switchMap, withLatestFrom } from 'rxjs/operators';
 import { CustomerPartial, CustomerProduct, Job, JobBase, SystemPreferences } from 'src/app/interfaces';
 import { LayoutService } from 'src/app/layout/layout.service';
@@ -11,6 +11,8 @@ import { CONFIG } from 'src/app/services/config.provider';
 import { JobService } from 'src/app/services/job.service';
 import { JobFormSource } from '../services/job-form-source';
 import { startOfWeek, endOfWeek } from 'date-fns';
+import { ReproJobResolverService } from '../services/repro-job-resolver.service';
+
 
 @Component({
   selector: 'app-repro-job-edit',
@@ -32,6 +34,8 @@ export class ReproJobEditComponent implements OnInit {
   get customerControl() { return this.form.controls.customer; }
   get nameControl() { return this.form.controls.name; }
   get productsControl() { return this.form.controls.products; }
+
+  get isNew(): boolean { return this.formSource.isNew; }
 
   large$: Observable<boolean> = this.layoutService.isLarge$;
   customers$: Observable<CustomerPartial[]>;
@@ -57,6 +61,7 @@ export class ReproJobEditComponent implements OnInit {
     private clipboard: ClipboardService,
     private layoutService: LayoutService,
     private productsService: ProductsService,
+    private resolver: ReproJobResolverService,
   ) { }
 
   ngOnInit(): void {
@@ -101,6 +106,16 @@ export class ReproJobEditComponent implements OnInit {
 
   isProductsSet(): boolean {
     return this.customerControl.valid || (this.productsControl.value instanceof Array && this.productsControl.value.length > 0);
+  }
+
+  onCreateFolder() {
+    this.jobService.updateJob({ jobId: this.form.value.jobId }, { createFolder: true }).pipe(
+      switchMap(resp => resp ? this.resolver.reload() : EMPTY),
+      pluck('files'),
+    ).subscribe(files => {
+      this.form.controls.files.setValue(files);
+      this.formSource.folderPath$.next(files.path?.join('/'));
+    });
   }
 
   private setNewJobDefaults(job: Partial<JobBase>): Partial<JobBase> {

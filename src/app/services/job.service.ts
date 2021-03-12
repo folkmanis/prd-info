@@ -4,6 +4,10 @@ import { map, share, startWith, switchMap, tap } from 'rxjs/operators';
 import { Job, JobPartial, JobQueryFilter } from 'src/app/interfaces';
 import { PrdApiService } from 'src/app/services';
 
+interface JobUpdateParams {
+  createFolder?: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -28,8 +32,8 @@ export class JobService {
     this._filter$.next(fltr);
   }
 
-  newJob(job: Partial<Job>): Observable<number | null> {
-    return this.prdApi.jobs.insertOne(job).pipe(
+  newJob(job: Partial<Job>, params?: JobUpdateParams): Observable<number | null> {
+    return this.prdApi.jobs.insertOne(job, params).pipe(
       map(id => +id),
       tap(() => this._updateJobs$.next()),
     );
@@ -41,7 +45,7 @@ export class JobService {
     );
   }
 
-  updateJob(job: Partial<Job>): Observable<boolean> {
+  updateJob(job: Partial<Job>, params?: JobUpdateParams): Observable<boolean> {
     if (!job.jobId) { return of(false); }
     return this.prdApi.jobs.updateOne(
       job.jobId,
@@ -49,7 +53,8 @@ export class JobService {
         ...job,
         jobId: undefined,
         _id: undefined,
-      }
+      },
+      params
     ).pipe(
       tap(resp => resp && this._updateJobs$.next()),
     );

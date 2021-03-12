@@ -37,7 +37,7 @@ export abstract class SimpleFormResolverService<T> implements Resolve<T> {
     );
   }
 
-  reload(): Observable<T> | Observable<never> | undefined {
+  reload(): Observable<T> | Observable<never> {
     if (!this.savedState) { return EMPTY; }
     const { route, state } = this.savedState;
     return this.resolve(route, state);
