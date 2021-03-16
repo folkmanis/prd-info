@@ -1,8 +1,12 @@
-import { Component, OnInit, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, OnInit, OnDestroy, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
+import { Router, ActivatedRoute, ActivationEnd } from '@angular/router';
 import { LayoutService } from 'src/app/layout/layout.service';
 import { Job, JobPartial, JobQueryFilter } from 'src/app/interfaces';
 import { JobService } from 'src/app/services/job.service';
+import { FileUploadService } from '../../services/file-upload.service';
+import { Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
+import { DestroyService, log } from 'prd-cdk';
 
 const MAX_JOB_NAME_LENGTH = 100;
 
@@ -11,6 +15,7 @@ const MAX_JOB_NAME_LENGTH = 100;
   templateUrl: './repro-job-list.component.html',
   styleUrls: ['./repro-job-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [DestroyService],
 })
 export class ReproJobListComponent implements OnInit {
 
@@ -22,8 +27,10 @@ export class ReproJobListComponent implements OnInit {
   constructor(
     private layoutService: LayoutService,
     private jobService: JobService,
+    private fileUploadService: FileUploadService,
     private router: Router,
     private route: ActivatedRoute,
+    private destroy$: DestroyService,
   ) { }
 
   ngOnInit(): void {
@@ -39,8 +46,7 @@ export class ReproJobListComponent implements OnInit {
       .reduce((acc, curr) => [...acc, curr.name.replace(/\.[^/.]+$/, '')], [])
       .reduce((acc, curr, _, names) => [...acc, curr.slice(0, MAX_JOB_NAME_LENGTH / names.length)], [])
       .join('_');
-    // this.jobDialog.newJob({ name, category: 'repro' }, fileListArray).subscribe();
-    // console.log(this.route);
+    this.fileUploadService.setFiles(fileListArray);
     this.router.navigate(['newName', { name }], { relativeTo: this.route });
   }
 

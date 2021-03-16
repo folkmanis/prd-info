@@ -7,23 +7,26 @@ export enum FileUploadEventType {
 
 export interface UploadMessageBase {
     id: string;
-    jobId: number;
+    // jobId: number;
     name: string;
     size: number;
 }
 
 interface UploadStartMessage extends UploadMessageBase {
     type: FileUploadEventType.UploadStart;
+    jobId: number;
 }
 
 interface UploadProgressMessage extends UploadMessageBase {
     type: FileUploadEventType.UploadProgress;
     done: number;
     precentDone: number;
+    jobId: number;
 }
 
 interface UploadFinishMessage extends UploadMessageBase {
     type: FileUploadEventType.UploadFinish;
+    jobId: number;
 }
 
 interface UploadWaitingMessage extends UploadMessageBase {

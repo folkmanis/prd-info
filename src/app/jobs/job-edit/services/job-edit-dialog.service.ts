@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import * as moment from 'moment';
 import { EMPTY, Observable, of } from 'rxjs';
 import { concatMap, map, tap } from 'rxjs/operators';
 import { JobBase } from 'src/app/interfaces';

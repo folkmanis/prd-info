@@ -1,19 +1,8 @@
 <app-simple-form-container [formSource]="formSource" (dataChange)="onDataChange($event)">
 
-    <ng-template appSimpleFormLabel>
-        {{ form.value.jobId }}
-    </ng-template>
-
-
     <div class="wrapper" [class.large]="large$ | async" [formGroup]="form">
         <!-- Klients -->
-        <mat-form-field class="left-column">
-            <mat-label>Klients</mat-label>
-            <input #customer type="text" matInput formControlName="customer" [matAutocomplete]="auto" required>
-            <mat-error *ngIf="customerControl.hasError('noCustomer')">
-                {{customerControl.getError('noCustomer')}}
-            </mat-error>
-        </mat-form-field>
+        <app-customer-input class="left-column" formControlName="customer" [customers]="customers$ | async" required>Klients</app-customer-input>
         <!-- Darba nosaukums -->
         <mat-form-field class="right-column">
             <mat-label>Darba nosaukums</mat-label>
@@ -88,12 +77,8 @@
         </div>
     </div>
 
-    <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
-        <mat-option *ngFor="let customer of customers$ | async" [value]="customer.CustomerName">
-            {{customer.CustomerName}}
-        </mat-option>
-    </mat-autocomplete>
-
-
+    <ng-template appSimpleFormLabel>
+        {{ form.value.jobId }}
+    </ng-template>
 
 </app-simple-form-container>

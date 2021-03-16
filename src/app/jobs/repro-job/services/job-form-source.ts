@@ -2,11 +2,12 @@ import { AbstractControl, AsyncValidatorFn, FormBuilder, ValidationErrors, Valid
 import { IFormBuilder, IFormControl, IFormGroup } from '@rxweb/types';
 import { endOfDay } from 'date-fns';
 import { EMPTY, Observable, of, BehaviorSubject } from 'rxjs';
-import { concatMap, map, take } from 'rxjs/operators';
+import { concatMap, map, mergeMap, take, tap } from 'rxjs/operators';
 import { CustomerProduct, Job, JobBase, JobProduct } from 'src/app/interfaces';
 import { SimpleFormSource } from 'src/app/library/simple-form';
 import { CustomersService, ProductsService } from 'src/app/services';
 import { JobService } from 'src/app/services/job.service';
+import { FileUploadService } from '../../services/file-upload.service';
 
 export class JobFormSource extends SimpleFormSource<JobBase> {
 
@@ -16,15 +17,18 @@ export class JobFormSource extends SimpleFormSource<JobBase> {
         fb: FormBuilder,
         private customersService: CustomersService,
         private jobService: JobService,
-        // private productsService: ProductsService,
+        private fileUploadService: FileUploadService,
+        private fileUploadFn: (jobId: number) => void,
     ) {
         super(fb);
     }
 
     insertFn(job: JobBase): Observable<number> {
         console.log(job);
-        const createFolder = true; // TODO
-        return this.jobService.newJob(job, { createFolder });
+        const createFolder = !!this.fileUploadService.filesCount;
+        return this.jobService.newJob(job, { createFolder }).pipe(
+            tap(jobId => this.fileUploadFn(jobId)),
+        );
     }
 
     updateFn(job: JobBase): Observable<JobBase> {
@@ -103,7 +107,6 @@ export class JobFormSource extends SimpleFormSource<JobBase> {
             this.form.get('receivedDate').disable({ emitEvent: false });
         }
         this.folderPath$.next(value.files?.path?.join('/') || '');
-
     }
 
     private validateCustomerFn(): AsyncValidatorFn {

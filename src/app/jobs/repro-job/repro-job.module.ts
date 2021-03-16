@@ -11,6 +11,7 @@ import { JobFilterComponent } from './side-panel/job-filter/job-filter.component
 import { SidePanelComponent } from './side-panel/side-panel.component';
 import { UploadProgressComponent } from './side-panel/upload-progress/upload-progress.component';
 import { JobListComponent } from './repro-job-list/job-list/job-list.component';
+import { CustomerInputComponent } from './repro-job-edit/customer-input/customer-input.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { JobListComponent } from './repro-job-list/job-list/job-list.component';
     SidePanelComponent,
     UploadProgressComponent,
     JobListComponent,
+    CustomerInputComponent,
   ],
   imports: [
     CommonModule,

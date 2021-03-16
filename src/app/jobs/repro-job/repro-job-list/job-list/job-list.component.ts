@@ -6,7 +6,6 @@ import { LayoutService } from 'src/app/layout/layout.service';
 import { DestroyService } from 'prd-cdk';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { JobService } from 'src/app/services/job.service';
-import { JobEditDialogService } from '../../../job-edit';
 
 @Component({
   selector: 'app-job-list',
@@ -29,7 +28,6 @@ export class JobListComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private jobService: JobService,
-    private jobEditDialog: JobEditDialogService,
     private clipboard: ClipboardService,
     private layout: LayoutService,
     private destroy$: DestroyService,
@@ -43,10 +41,6 @@ export class JobListComponent implements OnInit {
   );
 
   ngOnInit(): void {
-  }
-
-  onJobEdit(jobId: number) {
-    this.router.navigate([jobId], { relativeTo: this.route });
   }
 
   copyJobIdAndName(job: Pick<JobBase, 'jobId' | 'name'>, event: MouseEvent) {

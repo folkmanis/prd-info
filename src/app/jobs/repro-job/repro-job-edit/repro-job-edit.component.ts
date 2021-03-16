@@ -1,8 +1,8 @@
-import { Component, OnInit, ChangeDetectionStrategy, Inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Inject, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { IFormGroup } from '@rxweb/types';
 import { combineLatest, EMPTY, merge, Observable, of } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, pluck, shareReplay, startWith, switchMap, withLatestFrom } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, mapTo, pluck, shareReplay, startWith, switchMap, withLatestFrom } from 'rxjs/operators';
 import { CustomerPartial, CustomerProduct, Job, JobBase, SystemPreferences } from 'src/app/interfaces';
 import { LayoutService } from 'src/app/layout/layout.service';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
@@ -12,6 +12,10 @@ import { JobService } from 'src/app/services/job.service';
 import { JobFormSource } from '../services/job-form-source';
 import { startOfWeek, endOfWeek } from 'date-fns';
 import { ReproJobResolverService } from '../services/repro-job-resolver.service';
+import { FileUploadService } from '../../services/file-upload.service';
+import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
+import { MatInput } from '@angular/material/input';
+import { CustomerInputComponent } from './customer-input/customer-input.component';
 
 
 @Component({
@@ -20,12 +24,21 @@ import { ReproJobResolverService } from '../services/repro-job-resolver.service'
   styleUrls: ['./repro-job-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ReproJobEditComponent implements OnInit {
+export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
+  @ViewChild(CustomerInputComponent) set customerInput(value: CustomerInputComponent) {
+    console.log(value);
+  }
+
+  fileUploadFn = (jobId: number): void => {
+    this.fileUploadService.startUpload(jobId).subscribe();
+  };
 
   formSource = new JobFormSource(
     this.fb,
     this.customersService,
-    this.jobService
+    this.jobService,
+    this.fileUploadService,
+    this.fileUploadFn,
   );
 
   get form(): IFormGroup<JobBase> {
@@ -38,7 +51,7 @@ export class ReproJobEditComponent implements OnInit {
   get isNew(): boolean { return this.formSource.isNew; }
 
   large$: Observable<boolean> = this.layoutService.isLarge$;
-  customers$: Observable<CustomerPartial[]>;
+  customers$: Observable<CustomerPartial[]> = this.customersService.customers$;
   jobStates$ = this.config$.pipe(
     pluck('jobs', 'jobStates'),
     map(states => states.filter(st => st.state < 50))
@@ -62,6 +75,7 @@ export class ReproJobEditComponent implements OnInit {
     private layoutService: LayoutService,
     private productsService: ProductsService,
     private resolver: ReproJobResolverService,
+    private fileUploadService: FileUploadService,
   ) { }
 
   ngOnInit(): void {
@@ -79,25 +93,18 @@ export class ReproJobEditComponent implements OnInit {
       map(job => job?.customer),
       distinctUntilChanged(),
       switchMap(customer => this.productsService.productsCustomer(customer || 'NULL')),
-      shareReplay(1),
-    );
-
-    this.customers$ = combineLatest([
-      this.customersService.customers$.pipe(
-        map(customers => customers.filter(cust => !cust.disabled)),
-      ),
-      this.customerControl.valueChanges.pipe(
-        startWith(''),
-      ),
-    ]).pipe(
-      map(filterCustomer)
+      // shareReplay(1),
     );
 
   }
 
   onDataChange(data: Partial<JobBase>) {
+    console.log(this.customerInput);
     data = this.setNewJobDefaults(data);
     this.formSource.initValue(data);
+    if (this.customerInput) {
+      this.customerInput.focus();
+    }
   }
 
   copyJobIdAndName() {
@@ -118,6 +125,10 @@ export class ReproJobEditComponent implements OnInit {
     });
   }
 
+  canDeactivate(): boolean {
+    return this.form.pristine;
+  }
+
   private setNewJobDefaults(job: Partial<JobBase>): Partial<JobBase> {
     return {
       ...job,
@@ -129,6 +140,7 @@ export class ReproJobEditComponent implements OnInit {
 
     };
   }
+
 
 }
 
