@@ -12,6 +12,7 @@ import { SidePanelComponent } from './side-panel/side-panel.component';
 import { UploadProgressComponent } from './side-panel/upload-progress/upload-progress.component';
 import { JobListComponent } from './repro-job-list/job-list/job-list.component';
 import { CustomerInputComponent } from './repro-job-edit/customer-input/customer-input.component';
+import { FolderPathComponent } from './repro-job-edit/folder-path/folder-path.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { CustomerInputComponent } from './repro-job-edit/customer-input/customer
     UploadProgressComponent,
     JobListComponent,
     CustomerInputComponent,
+    FolderPathComponent,
   ],
   imports: [
     CommonModule,

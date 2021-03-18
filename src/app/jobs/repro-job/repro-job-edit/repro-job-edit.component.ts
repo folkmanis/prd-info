@@ -1,20 +1,19 @@
-import { Component, OnInit, ChangeDetectionStrategy, Inject, ViewChild, ElementRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { IFormGroup } from '@rxweb/types';
-import { combineLatest, EMPTY, merge, Observable, of } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, mapTo, pluck, shareReplay, startWith, switchMap, withLatestFrom } from 'rxjs/operators';
-import { CustomerPartial, CustomerProduct, Job, JobBase, SystemPreferences } from 'src/app/interfaces';
+import { endOfWeek, startOfWeek } from 'date-fns';
+import { EMPTY, merge, Observable, of } from 'rxjs';
+import { distinctUntilChanged, filter, map, pluck, switchMap } from 'rxjs/operators';
+import { CustomerPartial, CustomerProduct, JobBase, SystemPreferences } from 'src/app/interfaces';
 import { LayoutService } from 'src/app/layout/layout.service';
+import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { CustomersService, ProductsService } from 'src/app/services';
 import { CONFIG } from 'src/app/services/config.provider';
 import { JobService } from 'src/app/services/job.service';
-import { JobFormSource } from '../services/job-form-source';
-import { startOfWeek, endOfWeek } from 'date-fns';
-import { ReproJobResolverService } from '../services/repro-job-resolver.service';
 import { FileUploadService } from '../../services/file-upload.service';
-import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
-import { MatInput } from '@angular/material/input';
+import { JobFormSource } from '../services/job-form-source';
+import { ReproJobResolverService } from '../services/repro-job-resolver.service';
 import { CustomerInputComponent } from './customer-input/customer-input.component';
 
 
@@ -25,20 +24,14 @@ import { CustomerInputComponent } from './customer-input/customer-input.componen
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
-  @ViewChild(CustomerInputComponent) set customerInput(value: CustomerInputComponent) {
-    console.log(value);
-  }
 
-  fileUploadFn = (jobId: number): void => {
-    this.fileUploadService.startUpload(jobId).subscribe();
-  };
+  @ViewChild(CustomerInputComponent) customerInputElement: CustomerInputComponent;
 
   formSource = new JobFormSource(
     this.fb,
     this.customersService,
     this.jobService,
     this.fileUploadService,
-    this.fileUploadFn,
   );
 
   get form(): IFormGroup<JobBase> {
@@ -79,31 +72,24 @@ export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
   ) { }
 
   ngOnInit(): void {
-    const job$ = merge(
+
+    this.customerProducts$ = merge(
       this.form.valueChanges,
       of(this.form.value)
     ).pipe(
-      // map(jobFrm => ({ ...this._job, ...jobFrm })),
-      debounceTime(200),
-      withLatestFrom(this.customersService.customers$),
-      map(([job, customers]) => ({ ...job, custCode: customers.find(cust => cust.CustomerName === job.customer)?.code })),
-    );
-
-    this.customerProducts$ = job$.pipe(
-      map(job => job?.customer),
+      pluck('customer'),
+      filter(customer=> !!customer),
       distinctUntilChanged(),
-      switchMap(customer => this.productsService.productsCustomer(customer || 'NULL')),
-      // shareReplay(1),
+      switchMap(customer => this.productsService.productsCustomer(customer)),
     );
 
   }
 
   onDataChange(data: Partial<JobBase>) {
-    console.log(this.customerInput);
     data = this.setNewJobDefaults(data);
     this.formSource.initValue(data);
-    if (this.customerInput) {
-      this.customerInput.focus();
+    if (!data.customer) {
+      setTimeout(() => this.customerInputElement.focus(), 200);
     }
   }
 
@@ -137,14 +123,8 @@ export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
       jobStatus: {
         generalStatus: job.jobStatus?.generalStatus || 10
       }
-
     };
   }
 
 
-}
-
-function filterCustomer([customers, value]: [CustomerPartial[], string]): CustomerPartial[] {
-  const filterValue = new RegExp(value, 'i');
-  return customers.filter(state => filterValue.test(state.CustomerName));
 }

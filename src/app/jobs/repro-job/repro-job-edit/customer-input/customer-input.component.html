@@ -1,5 +1,7 @@
-<mat-form-field class="left-column">
-    <mat-label>Klients</mat-label>
+<mat-form-field>
+    <mat-label>
+        <ng-content></ng-content>
+    </mat-label>
     <input #customerInput type="text" matInput [formControl]="inputControl" [matAutocomplete]="auto" required (blur)="touchFn()">
     <mat-error *ngIf="control.hasError('noCustomer')">
         {{ control.getError('noCustomer') }}

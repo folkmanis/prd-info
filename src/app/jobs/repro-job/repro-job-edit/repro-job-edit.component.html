@@ -2,9 +2,11 @@
 
     <div class="wrapper" [class.large]="large$ | async" [formGroup]="form">
         <!-- Klients -->
-        <app-customer-input class="left-column" formControlName="customer" [customers]="customers$ | async" required>Klients</app-customer-input>
+        <app-customer-input class="left-column" formControlName="customer" [customers]="customers$ | async" required>
+            Klients
+        </app-customer-input>
         <!-- Darba nosaukums -->
-        <mat-form-field class="right-column">
+        <mat-form-field class="width-span">
             <mat-label>Darba nosaukums</mat-label>
             <input type="text" matInput formControlName="name" required>
             <mat-error *ngIf="nameControl.hasError('required')">
@@ -53,16 +55,15 @@
             <input matInput formControlName="customerJobId">
         </mat-form-field>
         <!-- Folderis -->
-        <div *ngIf="isNew === false">
-            <span *ngIf="(formSource.folderPath$ | async).length > 0; else create;">
-                {{ formSource.folderPath$ | async }}
-            </span>
+        <app-folder-path *ngIf="isNew === false" class="width-span" [path]="formSource.folderPath$ | async"
+            (createFolder)="onCreateFolder()">
 
-            <ng-template #create>
-                <button mat-raised-button (click)="onCreateFolder()">
-                    IZVEIDOT FOLDERI
-                </button>
-            </ng-template>
+        </app-folder-path>
+
+        <!-- Preces apakšforma -->
+        <div *ngIf="isProductsSet()" class="width-span">
+            <app-products-editor formControlName="products" [customerProducts]="customerProducts$ | async">
+            </app-products-editor>
         </div>
 
         <!-- Papildus apraksts -->
@@ -70,11 +71,6 @@
             <mat-label>Papildus apraksts</mat-label>
             <textarea matInput formControlName="comment"></textarea>
         </mat-form-field>
-        <!-- Preces apakšforma -->
-        <div *ngIf="isProductsSet()" class="width-span">
-            <app-products-editor formControlName="products" [customerProducts]="customerProducts$ | async">
-            </app-products-editor>
-        </div>
     </div>
 
     <ng-template appSimpleFormLabel>

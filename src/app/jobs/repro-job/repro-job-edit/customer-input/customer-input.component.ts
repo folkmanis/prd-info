@@ -72,7 +72,6 @@ export class CustomerInputComponent implements OnInit, AfterViewInit, IControlVa
         map(customers => customers.filter(cust => !cust.disabled)),
       ),
       merge(
-        // this.form.valueChanges.pipe(mapTo('')),
         this.inputControl.valueChanges,
         of(''),
       )
@@ -80,10 +79,10 @@ export class CustomerInputComponent implements OnInit, AfterViewInit, IControlVa
       map(this.filterCustomer)
     );
 
-    this.inputControl.valueChanges.subscribe(val => this.valueChangeFn(val));
   }
 
   ngAfterViewInit(): void {
+    this.inputControl.valueChanges.subscribe(val => this.valueChangeFn(val));
   }
 
   focus() {
@@ -94,6 +93,5 @@ export class CustomerInputComponent implements OnInit, AfterViewInit, IControlVa
     const filterValue = new RegExp(value, 'i');
     return customers.filter(state => filterValue.test(state.CustomerName));
   }
-
 
 }

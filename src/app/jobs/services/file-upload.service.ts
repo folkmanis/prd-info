@@ -77,11 +77,11 @@ export class FileUploadService {
    * Sāk augšupielādi ar sagatavoto rindu un doto darba numuru
    * @param jobId darba numurs
    */
-  startUpload(jobId: number): Observable<any> {
-    if (this.uploadQueue.size === 0) { return EMPTY; }
-    return of(...this.uploadQueue.values()).pipe(
+  startUpload(jobId: number):void {
+    if (this.uploadQueue.size === 0) { return; }
+    of(...this.uploadQueue.values()).pipe(
       mergeMap(file => this.uploadFile(jobId, file), SIMULTANEOUS_UPLOADS),
-    );
+    ).subscribe();
   }
 
   private uploadFile(jobId: number, file: File): Observable<any> {

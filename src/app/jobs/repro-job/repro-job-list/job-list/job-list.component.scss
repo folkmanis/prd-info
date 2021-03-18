@@ -39,52 +39,61 @@ th:first-of-type, td:first-of-type {
     padding-left: 8px;
 }
 
-td.column-state {
+.column-state {
     width: 24px;
 }
 
-td.column-jobId {
+.column-jobId {
     width: 2.7em;
 }
 
-td.column-customer {
+.column-customer {
     width: 1.8em;
 }
 
-td.column-date {
+.column-date {
     width: 5.5em;
 }
 
-td.column-productsObj-name {
+.column-productsObj-name {
     width: 11em;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-td.column-productsObj-count {
+.column-productsObj-count,
+.column-productsObj-units {
     width: 4em;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-td.column-jobId button[mat-button].mat-button {
+.column-productsObj-count {
+    text-align: right;
+}
+
+.column-jobId button[mat-button].mat-button {
     padding: 0;
 }
 
-td.column-name div {
+.column-name div {
     display: flex;
     align-items: baseline;
 }
 
-td.column-name span.name {
+.column-name span.name {
     flex: 1 1 700px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-td.column-name span.buttons {
+.column-name span.buttons {
     display: none;
     flex: 0 0 40px;
 }
 
-td.column-name .mat-icon {
+.column-name .mat-icon {
     font-size: 18px;
 }
 

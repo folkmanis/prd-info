@@ -18,16 +18,15 @@ export class JobFormSource extends SimpleFormSource<JobBase> {
         private customersService: CustomersService,
         private jobService: JobService,
         private fileUploadService: FileUploadService,
-        private fileUploadFn: (jobId: number) => void,
     ) {
         super(fb);
     }
 
     insertFn(job: JobBase): Observable<number> {
-        console.log(job);
         const createFolder = !!this.fileUploadService.filesCount;
+        console.log('createFolder', createFolder);
         return this.jobService.newJob(job, { createFolder }).pipe(
-            tap(jobId => this.fileUploadFn(jobId)),
+            tap(jobId => this.fileUploadService.startUpload(jobId)),
         );
     }
 

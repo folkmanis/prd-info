@@ -5,29 +5,29 @@
 }
 
 .wrapper.large {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     column-gap: 16px;
     row-gap: 8px;
     align-items: baseline;
 }
 
-div>.mat-form-field {
+.wrapper > * {
     width: 100%;
 }
 
-.mat-radio-button~.mat-radio-button {
+.mat-radio-button ~ .mat-radio-button {
     margin-left: 16px;
 }
 
-.large>.left-column {
+.large > .left-column {
     grid-column: 1;
 }
 
-.large>.right-column {
-    grid-column: 2 / -1;
+.large > .right-column {
+    grid-column: -2 / -1;
 }
 
-.large>.width-span {
+.large > .width-span {
     grid-column-start: 1;
     grid-column-end: -1;
 }

@@ -1,0 +1,22 @@
+<div class="container">
+    <div *ngIf="path.length > 0; else create;">
+
+        <span>
+            <mat-icon>
+                folder_open
+            </mat-icon>
+        </span>
+
+        <span class="path">
+            {{ path }}
+        </span>
+
+    </div>
+
+    <ng-template #create>
+        <button mat-raised-button (click)="createFolder.next()">
+            IZVEIDOT FOLDERI
+        </button>
+    </ng-template>
+
+</div>

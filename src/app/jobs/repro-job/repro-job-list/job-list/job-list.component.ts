@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { JobBase, JobProduct } from 'src/app/interfaces';
@@ -25,22 +25,28 @@ export class JobListComponent implements OnInit {
   private _active = false;
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
     private jobService: JobService,
     private clipboard: ClipboardService,
     private layout: LayoutService,
     private destroy$: DestroyService,
+    private changeDetector: ChangeDetectorRef,
   ) { }
 
 
-  isLarge$ = this.layout.isLarge$;
+  isLarge = true;
 
   dataSource$ = this.jobService.jobs$.pipe(
-    map(jobs => jobs.map(job => ({ ...job, productsObj: job.products as JobProduct }))),
+    map(jobs => jobs.map(job => ({
+      ...job,
+      productsObj: this.combineProducts(job.products),
+    }))),
   );
 
   ngOnInit(): void {
+    this.layout.isLarge$.pipe(
+      tap(_ => this.changeDetector.markForCheck()),
+      takeUntil(this.destroy$),
+    ).subscribe(large => this.isLarge = large);
   }
 
   copyJobIdAndName(job: Pick<JobBase, 'jobId' | 'name'>, event: MouseEvent) {
@@ -56,6 +62,14 @@ export class JobListComponent implements OnInit {
       }
     }).subscribe();
     event.stopPropagation();
+  }
+
+  private combineProducts(products: JobProduct[] | JobProduct): Pick<JobProduct, 'name'> {
+    if (!(products instanceof Array)) { return products; }
+    if (products.length === 1) { return products[0]; }
+    return {
+      name: products.map(prod => prod.name).join(', '),
+    };
   }
 
 }

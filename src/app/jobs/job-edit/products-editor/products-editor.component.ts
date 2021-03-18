@@ -35,7 +35,7 @@ export class ProductsEditorComponent implements OnInit, OnDestroy, IControlValue
   }
   private _customerProducts: CustomerProduct[] = [];
 
-  columns: string[] = ['action', 'name', 'count', 'units', 'comments']; // 'price', 'total', 
+  columns: string[] = ['action', 'name', 'count', 'units' ]; // 'price', 'total', 'comments'
 
   readonly stateChanges = new Subject<void>();
   private previousValue: JobProduct[];

@@ -85,6 +85,6 @@ function normalizeFilter(jobFilter: JobQueryFilter): JobQueryFilter {
     name: jobFilter.name ? jobFilter.name : undefined,
     customer: jobFilter.customer ? jobFilter.customer : undefined,
     jobStatus: jobFilter.jobStatus?.length ? jobFilter.jobStatus : undefined,
-    unwindProducts: 1,
+    unwindProducts: 0,
   };
 }
