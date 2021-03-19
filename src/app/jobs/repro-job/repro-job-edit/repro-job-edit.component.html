@@ -54,17 +54,18 @@
             <mat-label>Klienta darba numurs</mat-label>
             <input matInput formControlName="customerJobId">
         </mat-form-field>
-        <!-- Folderis -->
-        <app-folder-path *ngIf="isNew === false" class="width-span" [path]="formSource.folderPath$ | async"
-            (createFolder)="onCreateFolder()">
-
-        </app-folder-path>
 
         <!-- Preces apakšforma -->
         <div *ngIf="isProductsSet()" class="width-span">
             <app-products-editor formControlName="products" [customerProducts]="customerProducts$ | async">
             </app-products-editor>
         </div>
+
+        <!-- Folderis -->
+        <app-folder-path *ngIf="isNew === false" class="width-span" [path]="formSource.folderPath$ | async"
+            (createFolder)="onCreateFolder()">
+
+        </app-folder-path>
 
         <!-- Papildus apraksts -->
         <mat-form-field class="width-span">
