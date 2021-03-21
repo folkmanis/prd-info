@@ -5,7 +5,7 @@ export const USER_MODULES: UserModule[] = [
     { name: 'Pievienot XMF arhīvu', description: 'XFM arhīva jaunināšana', route: 'xmf-upload' },
     {
         name: 'Darbi', description: 'Ražošanas darbi', route: 'jobs', childMenu: [
-            { name: 'Jauns repro pasūtījums', route: 'new', description: 'Izveidot jaunu repro darbu' },
+            { name: 'Jauns repro pasūtījums', route: 'repro/new', description: 'Izveidot jaunu repro darbu' },
             { name: 'Repro darbi', route: 'repro', description: 'Repro darbu saraksts' },
             { name: 'Repro rēķini', route: 'plate-invoice', description: 'Repro aprēķini' },
         ]
