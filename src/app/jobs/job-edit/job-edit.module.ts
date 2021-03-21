@@ -25,10 +25,6 @@ import { MaterialLibraryModule } from 'src/app/library/material-library.module';
     CommonModule,
     LibraryModule,
     MaterialLibraryModule,
-  ],
-  exports: [
-    PlateJobEditorComponent,
-    ProductsEditorComponent,
   ]
 })
 export class JobEditModule { }

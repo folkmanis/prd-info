@@ -1,0 +1,51 @@
+.mat-cell {
+    box-sizing: border-box;
+}
+
+.mat-cell:not(:last-of-type) {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.mat-column-action {
+    flex: 0 0 40px;
+    padding-right: 0;
+}
+
+.mat-column-price {
+    flex: 1 0 6em;
+}
+.mat-column-count,
+.mat-column-total {
+    flex: 1 0 4em;
+}
+
+.mat-column-units {
+    flex: 1 1 5em;
+}
+
+.mat-column-name {
+    flex: 2 1 auto;
+}
+
+.mat-column-comments {
+    flex: 1;
+}
+
+input[type="number"] {
+    text-align: right;
+}
+
+.mat-form-field {
+    width: 100%;
+}
+
+.disabled {
+    opacity: 0.4;
+}
+
+mat-row,
+mat-header-row,
+mat-footer-row {
+    align-items: baseline;
+}

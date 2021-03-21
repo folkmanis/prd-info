@@ -1,7 +1,7 @@
 .wrapper {
     // display: grid;
     // grid-template-columns: 1fr;
-    padding-bottom: 16px;
+    margin-top: 16px;
 }
 
 .wrapper.large {
@@ -31,4 +31,12 @@
 .large > .width-span {
     grid-column-start: 1;
     grid-column-end: -1;
+}
+
+.mat-card {
+    margin-top: 8px;
+}
+
+.full-width {
+    width: 100%;
 }

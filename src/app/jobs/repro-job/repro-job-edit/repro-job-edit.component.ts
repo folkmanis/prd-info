@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { IFormGroup } from '@rxweb/types';
 import { endOfWeek, startOfWeek } from 'date-fns';
@@ -15,6 +15,7 @@ import { FileUploadService } from '../../services/file-upload.service';
 import { JobFormSource } from '../services/job-form-source';
 import { ReproJobResolverService } from '../services/repro-job-resolver.service';
 import { CustomerInputComponent } from './customer-input/customer-input.component';
+import { ReproProductsEditorComponent } from './repro-products-editor/repro-products-editor.component';
 
 
 @Component({
@@ -26,6 +27,8 @@ import { CustomerInputComponent } from './customer-input/customer-input.componen
 export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
 
   @ViewChild(CustomerInputComponent) customerInputElement: CustomerInputComponent;
+
+  @ViewChild(ReproProductsEditorComponent) private productsEditor: ReproProductsEditorComponent;
 
   formSource = new JobFormSource(
     this.fb,
@@ -78,7 +81,7 @@ export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
       of(this.form.value)
     ).pipe(
       pluck('customer'),
-      filter(customer=> !!customer),
+      filter(customer => !!customer),
       distinctUntilChanged(),
       switchMap(customer => this.productsService.productsCustomer(customer)),
     );
@@ -90,6 +93,14 @@ export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
     this.formSource.initValue(data);
     if (!data.customer) {
       setTimeout(() => this.customerInputElement.focus(), 200);
+    }
+  }
+
+  /** Ctrl-+ event */
+  @HostListener('window:keydown', ['$event']) keyEvent(event: KeyboardEvent) {
+    if (event.key === '+' && event.ctrlKey) {
+      event.preventDefault();
+      this.productsEditor.onAddNewProduct();
     }
   }
 

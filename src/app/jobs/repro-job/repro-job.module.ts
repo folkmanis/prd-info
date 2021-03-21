@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
-import { JobEditModule } from '../job-edit/job-edit.module';
 import { SimpleFormModule } from 'src/app/library/simple-form';
 import { ReproJobListComponent } from './repro-job-list/repro-job-list.component';
 import { ReproJobEditComponent } from './repro-job-edit/repro-job-edit.component';
@@ -13,6 +12,8 @@ import { UploadProgressComponent } from './side-panel/upload-progress/upload-pro
 import { JobListComponent } from './repro-job-list/job-list/job-list.component';
 import { CustomerInputComponent } from './repro-job-edit/customer-input/customer-input.component';
 import { FolderPathComponent } from './repro-job-edit/folder-path/folder-path.component';
+import { ReproProductsEditorComponent } from './repro-job-edit/repro-products-editor/repro-products-editor.component';
+import { ProductAutocompleteComponent } from './repro-job-edit/repro-products-editor/product-autocomplete/product-autocomplete.component';
 
 @NgModule({
   declarations: [
@@ -24,12 +25,13 @@ import { FolderPathComponent } from './repro-job-edit/folder-path/folder-path.co
     JobListComponent,
     CustomerInputComponent,
     FolderPathComponent,
+    ReproProductsEditorComponent,
+    ProductAutocompleteComponent,
   ],
   imports: [
     CommonModule,
     MaterialLibraryModule,
     LibraryModule,
-    JobEditModule,
     SimpleFormModule.forChildren({
       path: 'repro',
       resolver: ReproJobResolverService,
