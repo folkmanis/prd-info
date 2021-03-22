@@ -7,9 +7,10 @@ import { CustomerPartial, JobQueryFilter, Job, JobBase, JobPartial, ProductTotal
 import { CustomersService, PrdApiService } from 'src/app/services';
 import { InvoicesService } from '../services/invoices.service';
 import { JobService } from 'src/app/services/job.service';
-import { InvoiceReport } from '../invoice-editor/invoice-report';
+import { InvoiceReport } from '../services/invoice-report';
 import { InvoicesTotals } from '../interfaces';
 import { DestroyService } from 'prd-cdk';
+import { LayoutService } from 'src/app/layout/layout.service';
 
 @Component({
   selector: 'app-new-invoice',
@@ -19,9 +20,14 @@ import { DestroyService } from 'prd-cdk';
   providers: [DestroyService],
 })
 export class NewInvoiceComponent implements OnInit {
+
+
+  isSmall$ = this.layoutService.isSmall$;
+
   constructor(
     private invoiceService: InvoicesService,
     private jobService: JobService,
+    private layoutService: LayoutService,
     private router: Router,
     private route: ActivatedRoute,
     private destroy$: DestroyService,
@@ -55,7 +61,7 @@ export class NewInvoiceComponent implements OnInit {
 
   onCreateInvoice() {
     this.invoiceService.createInvoice({ selectedJobs: this.selectedJobs, customerId: this.customerId.value })
-      .subscribe(id => this.router.navigate(['../invoice', { invoiceId: id.invoiceId }], { relativeTo: this.route }));
+      .subscribe(({ invoiceId }) => this.router.navigate(['calculations', 'plate-invoice', invoiceId]));
   }
 
   onPrintList(jobs: JobBase[], customer: string, { totals, grandTotal }: InvoicesTotals) {

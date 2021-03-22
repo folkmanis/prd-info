@@ -8,6 +8,7 @@ import { CalculationsRoutingModule } from './calculations-routing.module';
 import { CalculationsComponent } from './calculations.component';
 
 import { PlateInvoiceModule } from './plate-invoice/plate-invoice.module';
+import { NewInvoiceModule } from './new-invoice/new-invoice.module';
 
 
 @NgModule({
@@ -20,6 +21,7 @@ import { PlateInvoiceModule } from './plate-invoice/plate-invoice.module';
     LibraryModule,
     CalculationsRoutingModule,
     PlateInvoiceModule,
+    NewInvoiceModule,
   ]
 })
 export class CalculationsModule { }

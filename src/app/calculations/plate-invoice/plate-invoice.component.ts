@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { LayoutService } from 'src/app/layout/layout.service';
 
 @Component({
   selector: 'app-plate-invoice',
@@ -9,9 +8,7 @@ import { LayoutService } from 'src/app/layout/layout.service';
 export class PlateInvoiceComponent implements OnInit {
 
   constructor(
-    private layoutService: LayoutService,
   ) { }
-  isSmall$ = this.layoutService.isSmall$;
 
   ngOnInit(): void {
   }

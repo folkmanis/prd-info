@@ -6,9 +6,9 @@ import { combineLatest, merge, Observable, Subject } from 'rxjs';
 import { filter, map, mergeMap, pluck, shareReplay, switchMap } from 'rxjs/operators';
 import { Invoice, InvoiceProduct, SystemPreferences } from 'src/app/interfaces';
 import { CONFIG } from 'src/app/services/config.provider';
-import { InvoicesService } from '../services/invoices.service';
+import { InvoicesService } from '../../services/invoices.service';
 import { InvoiceCsv } from './invoice-csv';
-import { InvoiceReport } from './invoice-report';
+import { InvoiceReport } from '../../services/invoice-report';
 
 const PAYTRAQ_SAVED_MESSAGE = 'Izveidota pavadzīme Paytraq sistēmā';
 const PAYTRAQ_UNLINK_MESSAGE = 'Paytraq savienojums dzēsts';
