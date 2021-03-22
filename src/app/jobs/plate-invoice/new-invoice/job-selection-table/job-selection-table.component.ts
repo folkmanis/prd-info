@@ -2,7 +2,6 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
-import { JobEditDialogService } from '../../../job-edit';
 import { JobPartial } from 'src/app/interfaces';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 
@@ -28,7 +27,6 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
   jobIdSet: Set<number> | undefined;
 
   constructor(
-    private jobEditDialog: JobEditDialogService,
   ) { }
 
   displayedColumns: string[] = this.columnsWithSelection();
@@ -63,10 +61,6 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
   deselectAll(): void {
     this.selector.clear();
     this.selected.next(this.selector.selected);
-  }
-
-  onEditJob(jobId: number) {
-    this.jobEditDialog.editJob(jobId).subscribe();
   }
 
   private setNewJobList(jobs: JobPartial[]): void {
