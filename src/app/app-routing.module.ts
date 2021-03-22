@@ -52,6 +52,12 @@ const routes: Routes = [
     canActivate: [LoginGuard],
   },
   {
+    path: 'calculations',
+    canLoad: [LoginGuard],
+    loadChildren: () => import('./calculations/calculations.module').then(m => m.CalculationsModule),
+    canActivate: [LoginGuard],
+  },
+  {
     path: '**',
     redirectTo: '',
   },
