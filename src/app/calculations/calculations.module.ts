@@ -9,6 +9,7 @@ import { CalculationsComponent } from './calculations.component';
 
 import { PlateInvoiceModule } from './plate-invoice/plate-invoice.module';
 import { NewInvoiceModule } from './new-invoice/new-invoice.module';
+import { JobPricesModule } from './job-prices/job-prices.module';
 
 
 @NgModule({
@@ -22,6 +23,7 @@ import { NewInvoiceModule } from './new-invoice/new-invoice.module';
     CalculationsRoutingModule,
     PlateInvoiceModule,
     NewInvoiceModule,
+    JobPricesModule,
   ]
 })
 export class CalculationsModule { }

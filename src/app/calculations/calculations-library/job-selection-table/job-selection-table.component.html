@@ -87,6 +87,6 @@
         </td>
     </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
     <tr mat-row *matRowDef="let job; columns: displayedColumns;" [routerLink]="['/','jobs','repro', job.jobId]"></tr>
 </table>

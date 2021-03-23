@@ -12,6 +12,7 @@ export const USER_MODULES: UserModule[] = [
     {
         name: 'Aprēķini', description: 'Kalkulācijas un rēķini', route: 'calculations', childMenu: [
             { name: 'Repro rēķini', route: 'plate-invoice', description: 'Repro rēķini un pavadzīmes' },
+            { name: 'Darbu cenas', route: 'job-prices', description: 'Produkcijas pārdošanas cenas' },
             { name: 'Jauns rēķins', route: 'new-invoice', description: 'Izveidot jaunu repro rēķinu' },
         ]
     },
