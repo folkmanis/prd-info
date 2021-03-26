@@ -1,9 +1,10 @@
 <mat-toolbar>
-
+    <span>
+        <app-customer-selector [customers]="customers$ | async" (customerChanges)="onCustomerSelect($event)"
+            [customer]="initialCustomer$ | async"></app-customer-selector>
+    </span>
 </mat-toolbar>
 
 <div class="table">
-    <app-job-selection-table [jobs]="jobs$ | async" cdk-scrollable scroll-to-top>
-    </app-job-selection-table>
-
+    <router-outlet></router-outlet>
 </div>

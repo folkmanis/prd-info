@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { JobService } from 'src/app/services/job.service';
-import { Job, JobPartial, JobQueryFilter } from 'src/app/interfaces';
+import { Customer, CustomerPartial, Job, JobPartial, JobQueryFilter } from 'src/app/interfaces';
+import { CustomersService } from 'src/app/services/customers.service';
+import { filter, map, pluck } from 'rxjs/operators';
+import { InvoicesService } from '../services/invoices.service';
 
 @Component({
   selector: 'app-job-prices',
@@ -10,14 +14,32 @@ import { Job, JobPartial, JobQueryFilter } from 'src/app/interfaces';
 })
 export class JobPricesComponent implements OnInit {
 
-  jobs$: Observable<JobPartial[]> = this.jobService.jobs$;
+
+  customers$ = this.invoicesService.jobsWithoutInvoicesTotals$.pipe(
+    map(tot => tot.map(cust => cust._id)),
+  );
+
+  // DEBUG
+  initialCustomer$: Observable<string> = this.customers$.pipe(
+    map(value => value.find(c => c === 'Apsara')),
+    filter(value => !!value),
+  );
 
   constructor(
     private jobService: JobService,
+    private invoicesService: InvoicesService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private customersService: CustomersService,
   ) { }
 
   ngOnInit(): void {
-    this.jobService.setFilter({ invoice: 0, unwindProducts: 1 });
+  }
+
+  onCustomerSelect(value: string | undefined) {
+    const name = value ? value : 'all';
+    console.log(name);
+    this.router.navigate([name], { relativeTo: this.route });
   }
 
 }

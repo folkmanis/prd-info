@@ -14,7 +14,7 @@ import { JobPricesModule } from './job-prices/job-prices.module';
 
 @NgModule({
   declarations: [
-    CalculationsComponent
+    CalculationsComponent,
   ],
   imports: [
     CommonModule,
