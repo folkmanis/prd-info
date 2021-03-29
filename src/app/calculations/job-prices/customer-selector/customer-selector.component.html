@@ -1,10 +1,7 @@
 <mat-form-field>
-    <mat-label>Klients</mat-label>
     <input type="text" matInput [formControl]="customerControl" [matAutocomplete]="auto">
     <button mat-icon-button matSuffix (click)="customerControl.reset()">
-        <mat-icon>
-            clear
-        </mat-icon>
+        <mat-icon> clear </mat-icon>
     </button>
     <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption [displayWith]="displayFn">
         <mat-option *ngFor="let option of customersFiltered$ | async" [value]="option">

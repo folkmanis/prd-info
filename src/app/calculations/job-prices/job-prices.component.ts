@@ -6,6 +6,7 @@ import { Customer, CustomerPartial, Job, JobPartial, JobQueryFilter } from 'src/
 import { CustomersService } from 'src/app/services/customers.service';
 import { filter, map, pluck } from 'rxjs/operators';
 import { InvoicesService } from '../services/invoices.service';
+import { log } from 'prd-cdk';
 
 @Component({
   selector: 'app-job-prices',
@@ -20,9 +21,10 @@ export class JobPricesComponent implements OnInit {
   );
 
   // DEBUG
-  initialCustomer$: Observable<string> = this.customers$.pipe(
-    map(value => value.find(c => c === 'Apsara')),
+  initialCustomer$: Observable<string> = this.route.firstChild.paramMap.pipe(
+    map(params => params.get('customer')),
     filter(value => !!value),
+    log('customer route'),
   );
 
   constructor(
