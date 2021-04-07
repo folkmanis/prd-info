@@ -1,3 +1,51 @@
+$padd: 4px;
+
 :host {
   display: block;
+  height: 100%;
+}
+
+.mat-table {
+  height: 100%;
+  overflow: auto;
+}
+
+.mat-column-jobId {
+  flex: 0 0 3em;
+}
+
+.mat-column-custCode {
+  flex: 0 0 2em;
+  padding-left: $padd;
+}
+
+.mat-column-name {
+  flex: 5 1 600px;
+  padding-left: $padd;
+  & > div {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.mat-column-products-name {
+  flex: 1 1 11em;
+  padding-left: $padd;
+}
+
+.mat-column-products-price,
+.mat-column-products-total,
+.mat-column-products-count {
+  flex: 1 0 5em;
+  padding-left: $padd;
+  & > div {
+    width: 100%;
+    text-align: right;
+  }
+}
+
+.mat-column-products-units {
+  flex: 1 0 6em;
+  padding-left: $padd;
 }

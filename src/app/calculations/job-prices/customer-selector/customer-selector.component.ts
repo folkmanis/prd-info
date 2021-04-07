@@ -1,8 +1,8 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input, Output } from '@angular/core';
+import { Component, OnInit, OnChanges, ChangeDetectionStrategy, Input, Output, SimpleChanges, SimpleChange } from '@angular/core';
 import { FormControl, ValidatorFn } from '@angular/forms';
 import { IFormControl } from '@rxweb/types';
 import { Subject, BehaviorSubject, Observable, combineLatest } from 'rxjs';
-import { filter, map, startWith, tap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, startWith, tap } from 'rxjs/operators';
 import { log } from 'prd-cdk';
 
 interface CustomerSelect {
@@ -21,38 +21,25 @@ const ALL_CUSTOMER: CustomerSelect = {
   styleUrls: ['./customer-selector.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CustomerSelectorComponent implements OnInit {
+export class CustomerSelectorComponent implements OnInit, OnChanges {
 
-  customersSelect: CustomerSelect[] = [];
+  customersSelect: CustomerSelect[] = [ALL_CUSTOMER];
+  customersFiltered$: Observable<CustomerSelect[]>;
 
-  @Input() set customers(value: string[]) {
-    if (!value) { return; }
-    this.customersSelect = [ALL_CUSTOMER, ...value.map(val => ({ id: val, displayname: val }))];
-    this.updateControlValue();
-    this.customerControl.updateValueAndValidity();
-  }
+  @Input() customers: string[] = [];
 
-  @Input() set customer(value: string) {
-    this._customer = value || '';
-    this.updateControlValue();
-  }
-  get customer(): string {
-    return this._customer;
-  }
-  private _customer: string = '';
+  @Input() customer: string | undefined;
 
   customerControl: IFormControl<CustomerSelect> = new FormControl(
-    ALL_CUSTOMER,
+    undefined,
     { validators: [this.customerValidatorFn()] }
   );
 
   @Output() customerChanges: Observable<string> = this.customerControl.valueChanges.pipe(
     filter(_ => this.customerControl.valid),
     map(value => value.id),
-    log('value'),
+    distinctUntilChanged(),
   );
-
-  customersFiltered$: Observable<CustomerSelect[]>;
 
   constructor() { }
 
@@ -62,8 +49,19 @@ export class CustomerSelectorComponent implements OnInit {
       map(val => val || ''),
       map(val => typeof val === 'string' ? val : val.id),
       map(val => this.filterCustomers(val)),
-      log('customers filtered'),
     );
+  }
+
+  ngOnChanges({ customer, customers }: SimpleChanges) {
+    if (customers?.currentValue && customers.currentValue !== customers.previousValue) {
+      this.customers = customers.currentValue;
+      this.customersSelect = [ALL_CUSTOMER, ...this.customers.map(val => ({ id: val, displayname: val }))];
+    }
+    if (customer?.currentValue) { this.customer = customer.currentValue; }
+
+    this.updateControlValue();
+    this.customerControl.updateValueAndValidity({ emitEvent: false });
+
   }
 
   displayFn(value: CustomerSelect): string {
@@ -83,8 +81,11 @@ export class CustomerSelectorComponent implements OnInit {
   }
 
   private updateControlValue() {
-    const select: CustomerSelect = this.customersSelect.find(cust => cust.id === this.customer) || ALL_CUSTOMER;
-    this.customerControl.setValue(select, { emitEvent: false });
+    if (this.customerControl.value?.id === this.customer) { return; }
+    const select: CustomerSelect = this.customersSelect.find(cust => cust.id === this.customer);
+    if (select) {
+      this.customerControl.setValue(select, { emitEvent: false });
+    }
   }
 
 }

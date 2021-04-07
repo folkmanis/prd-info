@@ -1,1 +1,70 @@
-<p  cdk-scrollable scroll-to-top>job-prices-table works!</p>
+<mat-table [dataSource]="jobs$" cdk-scrollable scroll-to-top class="app-table">
+
+    <!-- Darba numurs -->
+    <ng-container matColumnDef="jobId">
+        <mat-cell *matCellDef="let job;">
+            {{ job.jobId }}
+        </mat-cell>
+    </ng-container>
+
+    <!-- Klienta kods -->
+    <ng-container matColumnDef="custCode">
+        <mat-cell *matCellDef="let job;">
+            {{ job.custCode }}
+        </mat-cell>
+    </ng-container>
+
+    <!-- Darba nosaukums -->
+    <ng-container matColumnDef="name">
+        <mat-cell *matCellDef="let job;">
+            <div>
+                {{ job.name }}
+            </div>
+        </mat-cell>
+    </ng-container>
+
+    <!-- Preces dati -->
+    <!-- Izstrādājuma nosaukums -->
+    <ng-container matColumnDef="products.name">
+        <mat-cell *matCellDef="let job;">
+            {{ job['products.name'] }}
+        </mat-cell>
+    </ng-container>
+
+    <!-- Cena -->
+    <ng-container matColumnDef="products.price">
+        <mat-cell *matCellDef="let job;">
+            <div>
+                {{ job['products.price'] | currency }}
+            </div>
+        </mat-cell>
+    </ng-container>
+
+    <!-- Skaits -->
+    <ng-container matColumnDef="products.count">
+        <mat-cell *matCellDef="let job;">
+            <div>
+                {{ job['products.count'] }}
+            </div>
+        </mat-cell>
+    </ng-container>
+
+    <!-- Mērvienības -->
+    <ng-container matColumnDef="products.units">
+        <mat-cell *matCellDef="let job;">
+            {{ job['products.units'] }}
+        </mat-cell>
+    </ng-container>
+
+    <!-- Summa -->
+    <ng-container matColumnDef="products.total">
+        <mat-cell *matCellDef="let job;">
+            <div>
+                {{ job ['products.total'] | currency }}
+            </div>
+        </mat-cell>
+    </ng-container>
+
+    <mat-row *matRowDef="let job; columns: displayedColumns" [routerLink]="['/', 'jobs', 'repro', job.jobId]"></mat-row>
+
+</mat-table>

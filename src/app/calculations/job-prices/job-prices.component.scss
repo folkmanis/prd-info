@@ -5,8 +5,18 @@
     flex-direction: column;
 }
 
+.customer {
+    min-width: 240px;
+    max-width: 400px;
+    flex: 1;
+}
+
 div.table {
     flex: 1;
     overflow: auto;
     height: 100%;
+}
+
+.mat-toolbar > section:not(:first-of-type) {
+    padding-left: 16px;
 }
