@@ -58,7 +58,7 @@ export class JobPricesComponent implements OnInit {
   }
 
   private navigate() {
-    this.router.navigate([this.filter.name, this.filter], { relativeTo: this.route });
+    this.router.navigate([this.filter.name, this.filter.routeParams], { relativeTo: this.route });
   }
 
 }
