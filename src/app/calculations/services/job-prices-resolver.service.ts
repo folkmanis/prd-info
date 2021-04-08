@@ -12,6 +12,12 @@ export class Filter {
     public name: string = '',
     public noPrice: boolean = false,
   ) { }
+
+  get routeParams(): Pick<Filter, 'noPrice'> {
+    return {
+      noPrice: this.noPrice,
+    };
+  }
 }
 
 @Injectable({
@@ -33,15 +39,12 @@ export class JobPricesResolverService implements Resolve<JobPartial[]> {
     );
     this._filter$.next(filter);
 
-    this.jobService.setFilter({
+    return this.jobService.getJobList({
       invoice: 0,
       unwindProducts: 1,
       customer: filter.name === 'all' ? undefined : filter.name
-    });
-
-    return this.jobService.jobs$.pipe(
+    }).pipe(
       map(jobs => this.filterJobs(jobs, filter)),
-      take(1),
     );
   }
 
