@@ -8,6 +8,16 @@
             Tikai bez cenas
         </mat-checkbox>
     </section>
+    <section>
+        <mat-checkbox (change)="onUpdatePrices($event)" [checked]="findPrices$ | async">
+            Meklēt cenas
+        </mat-checkbox>
+    </section>
+    <section>
+        <button mat-raised-button (click)="onSavePrices()" [disabled]="(saveEnabled$ | async) === false">
+            SAGLABĀT
+        </button>
+    </section>
 </mat-toolbar>
 
 <div class="table">

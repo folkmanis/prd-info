@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { combineLatest, Observable, of, ReplaySubject, Subject } from 'rxjs';
+import { combineLatest, EMPTY, Observable, of, ReplaySubject, Subject } from 'rxjs';
 import { map, share, startWith, switchMap, tap } from 'rxjs/operators';
 import { Job, JobPartial, JobQueryFilter } from 'src/app/interfaces';
 import { PrdApiService } from 'src/app/services';
@@ -58,6 +58,13 @@ export class JobService {
     ).pipe(
       tap(resp => resp && this._updateJobs$.next()),
     );
+  }
+
+  updateJobs(jobs: Partial<Job>[], params?: JobUpdateParams): Observable<number> {
+    jobs.forEach(job => {
+      if (!job.jobId) { return EMPTY; }
+    });
+    return this.prdApi.jobs.update(jobs);
   }
 
   getJob(jobId: number): Observable<Job | undefined> {

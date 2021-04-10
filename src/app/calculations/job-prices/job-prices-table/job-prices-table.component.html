@@ -35,7 +35,7 @@
     <ng-container matColumnDef="products.price">
         <mat-cell *matCellDef="let job;">
             <div>
-                {{ job['products.price'] | currency }}
+                {{ (job['products.priceUpdate'] !== undefined ? job['products.priceUpdate'] : job['products.price']) | currency }}
             </div>
         </mat-cell>
     </ng-container>
@@ -65,6 +65,7 @@
         </mat-cell>
     </ng-container>
 
-    <mat-row *matRowDef="let job; columns: displayedColumns" [routerLink]="['/', 'jobs', 'repro', job.jobId]"></mat-row>
+    <mat-row *matRowDef="let job; columns: displayedColumns" [routerLink]="['/', 'jobs', 'repro', job.jobId]"
+        [class.price-update]="job['products.priceUpdate'] !== undefined"></mat-row>
 
 </mat-table>

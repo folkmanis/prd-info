@@ -42,7 +42,7 @@ export abstract class ApiBase<T> {
         );
     }
 
-    update(data: Partial<T[]>): Observable<number> {
+    update(data: Partial<T>[]): Observable<number> {
         return this.http.post<AppHttpResponseBase<T>>(this.path, data, new HttpOptions()).pipe(
             pluck('modifiedCount'),
         );

@@ -31,9 +31,13 @@ export class InvoicesService {
   reloadJobsWithoutInvoicesTotals$ = new Subject();
   jobsWithoutInvoicesTotals$: Observable<JobsWithoutInvoicesTotals[]> = this.reloadJobsWithoutInvoicesTotals$.pipe(
     startWith({}),
-    switchMap(() => this.prdApi.jobs.jobsWithoutInvoicesTotals()),
+    switchMap(() => this.getJobsWithoutInvoicesTotals()),
     shareReplay(1),
   );
+
+  getJobsWithoutInvoicesTotals(): Observable<JobsWithoutInvoicesTotals[]> {
+    return this.prdApi.jobs.jobsWithoutInvoicesTotals();
+  }
 
   createInvoice(params: { selectedJobs: number[]; customerId: string }): Observable<Invoice> {
     return this.prdApi.invoices.createInvoice(params).pipe(

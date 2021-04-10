@@ -45,6 +45,14 @@ $padd: 4px;
   }
 }
 
+.price-update {
+  & .mat-column-products-price,
+  & .mat-column-products-total {
+    color: red;
+    font-weight: bold;
+  }
+}
+
 .mat-column-products-units {
   flex: 1 0 6em;
   padding-left: $padd;
