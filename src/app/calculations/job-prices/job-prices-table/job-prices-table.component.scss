@@ -10,6 +10,10 @@ $padd: 4px;
   overflow: auto;
 }
 
+.mat-column-selection {
+  flex: 0 0 2em;
+}
+
 .mat-column-jobId {
   flex: 0 0 3em;
 }

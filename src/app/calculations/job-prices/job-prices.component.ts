@@ -4,9 +4,9 @@ import { from, merge, Observable, of } from 'rxjs';
 import { JobService } from 'src/app/services/job.service';
 import { Customer, CustomerPartial, Job, JobPartial, JobProduct, JobQueryFilter } from 'src/app/interfaces';
 import { CustomersService } from 'src/app/services/customers.service';
-import { concatMap, filter, map, mergeMap, pluck, take, takeUntil, toArray } from 'rxjs/operators';
+import { concatMap, filter, map, mergeMap, pluck, startWith, take, takeUntil, toArray } from 'rxjs/operators';
 import { InvoicesService } from '../services/invoices.service';
-import { log, DestroyService } from 'prd-cdk';
+import { log, DestroyService, omit } from 'prd-cdk';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { JobPricesService, Filter } from '../services/job-prices.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -22,9 +22,13 @@ const updateMessage = (n: number) => `Izmainīti ${n} ieraksti.`;
 })
 export class JobPricesComponent implements OnInit {
 
-  filter = new Filter();
+  filter: Filter = {
+    name: '',
+    noPrice: false,
+    findPrices: false,
+  };
 
-  customers$ = this.jobPricesService.customers$;
+  customers$: Observable<string[]>;
 
   initialCustomer$: Observable<string> = this.jobPricesService.filter$.pipe(
     pluck('name'),
@@ -38,7 +42,7 @@ export class JobPricesComponent implements OnInit {
 
   saveEnabled$: Observable<boolean> = merge(
     of(false),
-    this.jobPricesService.jobUpdates$.pipe(
+    this.jobPricesService.jobUpdatesSelected$.pipe(
       map(upd => upd.length > 0)
     )
   );
@@ -52,6 +56,9 @@ export class JobPricesComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+
+    this.customers$ = this.jobPricesService.getCustomers();
+
     this.jobPricesService.filter$.pipe(
       takeUntil(this.destroy$),
     ).subscribe(fltr => this.filter = fltr);
@@ -73,7 +80,7 @@ export class JobPricesComponent implements OnInit {
   }
 
   onSavePrices() {
-    this.jobPricesService.jobUpdates$.pipe(
+    this.jobPricesService.jobUpdatesSelected$.pipe(
       take(1),
       mergeMap(jobs => jobs.length === 0 ? of(0) : this.jobPricesService.saveJobs(jobs)),
       map(updates => this.snack.open(updateMessage(updates), 'OK', { duration: 3000 }))
@@ -81,7 +88,7 @@ export class JobPricesComponent implements OnInit {
   }
 
   private navigate() {
-    this.router.navigate([this.filter.name, this.filter.routeParams], { relativeTo: this.route });
+    this.router.navigate([this.filter.name, omit(this.filter, 'name')], { relativeTo: this.route });
   }
 
   private isJobsWithoutPrice(jobs: JobPartial[]): boolean {

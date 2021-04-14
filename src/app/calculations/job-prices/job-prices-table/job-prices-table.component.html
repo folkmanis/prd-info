@@ -1,7 +1,21 @@
 <mat-table [dataSource]="jobs$" cdk-scrollable scroll-to-top class="app-table">
 
+    <!-- Selection -->
+    <ng-container matColumnDef="selection">
+        <mat-header-cell *matHeaderCellDef>
+            <mat-checkbox (click)="$event.stopPropagation()" (change)="checkAll$.next($event.checked)" [checked]="allSelected$ | async"
+                [indeterminate]="partSelected$ | async"></mat-checkbox>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let job;">
+            <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(job) : null"
+                [checked]="selection.isSelected(job)" [disabled]="job['products.priceUpdate'] === undefined">
+            </mat-checkbox>
+        </mat-cell>
+    </ng-container>
+
     <!-- Darba numurs -->
     <ng-container matColumnDef="jobId">
+        <mat-header-cell *matHeaderCellDef> Nr </mat-header-cell>
         <mat-cell *matCellDef="let job;">
             {{ job.jobId }}
         </mat-cell>
@@ -9,6 +23,7 @@
 
     <!-- Klienta kods -->
     <ng-container matColumnDef="custCode">
+        <mat-header-cell *matHeaderCellDef> Klients </mat-header-cell>
         <mat-cell *matCellDef="let job;">
             {{ job.custCode }}
         </mat-cell>
@@ -16,7 +31,15 @@
 
     <!-- Darba nosaukums -->
     <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef> Nosaukums </mat-header-cell>
         <mat-cell *matCellDef="let job;">
+            <div>
+                <a mat-icon-button [routerLink]="['/', 'jobs', 'repro', job.jobId]">
+                    <mat-icon>
+                        arrow_right
+                    </mat-icon>
+                </a>
+            </div>
             <div>
                 {{ job.name }}
             </div>
@@ -26,6 +49,7 @@
     <!-- Preces dati -->
     <!-- Izstrādājuma nosaukums -->
     <ng-container matColumnDef="products.name">
+        <mat-header-cell *matHeaderCellDef> Izstrādājums </mat-header-cell>
         <mat-cell *matCellDef="let job;">
             {{ job['products.name'] }}
         </mat-cell>
@@ -33,15 +57,18 @@
 
     <!-- Cena -->
     <ng-container matColumnDef="products.price">
+        <mat-header-cell *matHeaderCellDef> Cena </mat-header-cell>
         <mat-cell *matCellDef="let job;">
             <div>
-                {{ (job['products.priceUpdate'] !== undefined ? job['products.priceUpdate'] : job['products.price']) | currency }}
+                {{ (job['products.priceUpdate'] !== undefined ? job['products.priceUpdate'] : job['products.price']) |
+                currency }}
             </div>
         </mat-cell>
     </ng-container>
 
     <!-- Skaits -->
     <ng-container matColumnDef="products.count">
+        <mat-header-cell *matHeaderCellDef> Skaits </mat-header-cell>
         <mat-cell *matCellDef="let job;">
             <div>
                 {{ job['products.count'] }}
@@ -51,6 +78,7 @@
 
     <!-- Mērvienības -->
     <ng-container matColumnDef="products.units">
+        <mat-header-cell *matHeaderCellDef> Mērv. </mat-header-cell>
         <mat-cell *matCellDef="let job;">
             {{ job['products.units'] }}
         </mat-cell>
@@ -58,6 +86,7 @@
 
     <!-- Summa -->
     <ng-container matColumnDef="products.total">
+        <mat-header-cell *matHeaderCellDef> Summa </mat-header-cell>
         <mat-cell *matCellDef="let job;">
             <div>
                 {{ job ['products.total'] | currency }}
@@ -65,7 +94,8 @@
         </mat-cell>
     </ng-container>
 
-    <mat-row *matRowDef="let job; columns: displayedColumns" [routerLink]="['/', 'jobs', 'repro', job.jobId]"
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let job; columns: displayedColumns"
         [class.price-update]="job['products.priceUpdate'] !== undefined"></mat-row>
 
 </mat-table>
