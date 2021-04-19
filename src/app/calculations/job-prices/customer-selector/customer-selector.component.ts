@@ -4,15 +4,18 @@ import { IFormControl } from '@rxweb/types';
 import { Subject, BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith, tap } from 'rxjs/operators';
 import { log } from 'prd-cdk';
+import { JobsWithoutInvoicesTotals } from 'src/app/interfaces';
 
-interface CustomerSelect {
-  id: string;
+type CustomerSelect = JobsWithoutInvoicesTotals & {
   displayname: string;
-}
+};
 
 const ALL_CUSTOMER: CustomerSelect = {
-  id: 'all',
+  _id: 'all',
   displayname: 'Visi',
+  jobs: 0,
+  totals: 0,
+  noPrice: 0,
 };
 
 @Component({
@@ -26,7 +29,7 @@ export class CustomerSelectorComponent implements OnInit, OnChanges {
   customersSelect: CustomerSelect[] = [ALL_CUSTOMER];
   customersFiltered$: Observable<CustomerSelect[]>;
 
-  @Input() customers: string[] = [];
+  @Input() customers: JobsWithoutInvoicesTotals[] = [];
 
   @Input() customer: string | undefined;
 
@@ -37,7 +40,7 @@ export class CustomerSelectorComponent implements OnInit, OnChanges {
 
   @Output() customerChanges: Observable<string> = this.customerControl.valueChanges.pipe(
     filter(_ => this.customerControl.valid),
-    map(value => value.id),
+    map(value => value._id),
     distinctUntilChanged(),
   );
 
@@ -47,7 +50,7 @@ export class CustomerSelectorComponent implements OnInit, OnChanges {
     this.customersFiltered$ = this.customerControl.valueChanges.pipe(
       startWith(''),
       map(val => val || ''),
-      map(val => typeof val === 'string' ? val : val.id),
+      map(val => typeof val === 'string' ? val : val._id),
       map(val => this.filterCustomers(val)),
     );
   }
@@ -55,7 +58,15 @@ export class CustomerSelectorComponent implements OnInit, OnChanges {
   ngOnChanges({ customer, customers }: SimpleChanges) {
     if (customers?.currentValue && customers.currentValue !== customers.previousValue) {
       this.customers = customers.currentValue;
-      this.customersSelect = [ALL_CUSTOMER, ...this.customers.map(val => ({ id: val, displayname: val }))];
+      this.customersSelect = [
+        {
+          ...ALL_CUSTOMER,
+          jobs: this.customers.reduce((acc, curr) => acc + curr.jobs, 0),
+          totals: this.customers.reduce((acc, curr) => acc + curr.totals, 0),
+          noPrice: this.customers.reduce((acc, curr) => acc + curr.noPrice, 0),
+        },
+        ...this.customers.map(val => ({ ...val, displayname: val._id }))
+      ];
     }
     if (customer?.currentValue) { this.customer = customer.currentValue; }
 
@@ -65,24 +76,25 @@ export class CustomerSelectorComponent implements OnInit, OnChanges {
   }
 
   displayFn(value: CustomerSelect): string {
-    return value?.displayname || '';
+    if (!value?.displayname) { return ''; }
+    return value.displayname + (value.noPrice > 0 ? ` (${value.noPrice})` : '');
   }
 
   private filterCustomers(name: string): CustomerSelect[] {
     const value = new RegExp(name, 'i');
-    return this.customersSelect.filter(option => value.test(option.id));
+    return this.customersSelect.filter(option => value.test(option._id));
   }
 
   private customerValidatorFn(): ValidatorFn {
     return (control: IFormControl<CustomerSelect>) => {
-      const name = control.value?.id;
-      return !!name && this.customersSelect.some(element => element.id === name) ? null : { invalid: name };
+      const name = control.value?._id;
+      return !!name && this.customersSelect.some(element => element._id === name) ? null : { invalid: name };
     };
   }
 
   private updateControlValue() {
-    if (this.customerControl.value?.id === this.customer) { return; }
-    const select: CustomerSelect = this.customersSelect.find(cust => cust.id === this.customer);
+    if (this.customerControl.value?._id === this.customer) { return; }
+    const select: CustomerSelect = this.customersSelect.find(cust => cust._id === this.customer);
     if (select) {
       this.customerControl.setValue(select, { emitEvent: false });
     }

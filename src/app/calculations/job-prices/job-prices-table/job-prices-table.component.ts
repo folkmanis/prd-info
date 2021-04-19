@@ -38,6 +38,10 @@ export class JobPricesTableComponent implements OnInit, OnDestroy {
     map(([selected, updated]) => selected.length > 0 && selected.length !== updated.length)
   );
 
+  updatedCount$: Observable<number> = this.jobPricesService.jobsUpdated$.pipe(
+    map(jobs => jobs.length)
+  );
+
   constructor(
     private route: ActivatedRoute,
     private jobPricesService: JobPricesService,
@@ -47,8 +51,6 @@ export class JobPricesTableComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => this.jobPricesService.loadJobs({
       name: params.get('customer') || 'all',
-      noPrice: params.get('noPrice') === 'true',
-      findPrices: params.get('findPrices') === 'true',
     }));
 
     this.jobPricesService.jobs$.pipe(

@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { from, merge, Observable, of } from 'rxjs';
 import { JobService } from 'src/app/services/job.service';
-import { Customer, CustomerPartial, Job, JobPartial, JobProduct, JobQueryFilter } from 'src/app/interfaces';
+import { Customer, CustomerPartial, Job, JobPartial, JobProduct, JobQueryFilter, JobsWithoutInvoicesTotals } from 'src/app/interfaces';
 import { CustomersService } from 'src/app/services/customers.service';
 import { concatMap, filter, map, mergeMap, pluck, startWith, take, takeUntil, toArray } from 'rxjs/operators';
 import { InvoicesService } from '../services/invoices.service';
@@ -24,26 +24,25 @@ export class JobPricesComponent implements OnInit {
 
   filter: Filter = {
     name: '',
-    noPrice: false,
-    findPrices: false,
   };
 
-  customers$: Observable<string[]>;
+  customers$: Observable<JobsWithoutInvoicesTotals[]> = this.jobPricesService.customers$;
 
   initialCustomer$: Observable<string> = this.jobPricesService.filter$.pipe(
     pluck('name'),
-  );
-  noPrice$: Observable<boolean> = this.jobPricesService.filter$.pipe(
-    pluck('noPrice'),
-  );
-  findPrices$: Observable<boolean> = this.jobPricesService.filter$.pipe(
-    pluck('findPrices'),
   );
 
   saveEnabled$: Observable<boolean> = merge(
     of(false),
     this.jobPricesService.jobUpdatesSelected$.pipe(
       map(upd => upd.length > 0)
+    )
+  );
+
+  selectedCount$: Observable<number> = merge(
+    of(0),
+    this.jobPricesService.jobUpdatesSelected$.pipe(
+      map(upd => upd.length)
     )
   );
 
@@ -57,8 +56,6 @@ export class JobPricesComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.customers$ = this.jobPricesService.getCustomers();
-
     this.jobPricesService.filter$.pipe(
       takeUntil(this.destroy$),
     ).subscribe(fltr => this.filter = fltr);
@@ -69,32 +66,16 @@ export class JobPricesComponent implements OnInit {
     this.navigate();
   }
 
-  onPriceFilterChecked(ev: MatCheckboxChange) {
-    this.filter.noPrice = ev.checked;
-    this.navigate();
-  }
-
-  onUpdatePrices(ev: MatCheckboxChange) {
-    this.filter.findPrices = ev.checked;
-    this.navigate();
-  }
-
   onSavePrices() {
     this.jobPricesService.jobUpdatesSelected$.pipe(
       take(1),
       mergeMap(jobs => jobs.length === 0 ? of(0) : this.jobPricesService.saveJobs(jobs)),
-      map(updates => this.snack.open(updateMessage(updates), 'OK', { duration: 3000 }))
-    ).subscribe(_ => this.jobPricesService.reload());
+    ).subscribe(updates => this.snack.open(updateMessage(updates), 'OK', { duration: 3000 }));
   }
 
   private navigate() {
     this.router.navigate([this.filter.name, omit(this.filter, 'name')], { relativeTo: this.route });
   }
 
-  private isJobsWithoutPrice(jobs: JobPartial[]): boolean {
-    if (jobs.length === 0) { return false; }
-
-    return jobs.reduce((acc, curr) => acc || curr.products && !(curr.products instanceof Array) && !curr.products.price, false);
-  }
 
 }

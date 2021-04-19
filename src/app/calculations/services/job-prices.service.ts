@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router, Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Customer, CustomerPartial, Job, JobPartial, JobQueryFilter, JobProduct, CustomerProduct, JobsWithoutInvoicesTotals } from 'src/app/interfaces';
 import { Observable, EMPTY, ReplaySubject, BehaviorSubject, Subject, merge, of, combineLatest, from } from 'rxjs';
-import { tap, map, take, withLatestFrom, switchMap, shareReplay, toArray, concatMap, filter } from 'rxjs/operators';
+import { tap, map, take, withLatestFrom, switchMap, shareReplay, toArray, concatMap, filter, startWith } from 'rxjs/operators';
 import { log, omit } from 'prd-cdk';
 import { JobService } from 'src/app/services/job.service';
 import { CustomersService } from 'src/app/services/customers.service';
@@ -12,8 +12,6 @@ import { SelectionModel } from '@angular/cdk/collections';
 
 export interface Filter {
   name: string;
-  noPrice: boolean;
-  findPrices: boolean;
 }
 
 type JobPartialUnwinded = JobPartial & {
@@ -58,20 +56,15 @@ export class JobPricesService {
             invoice: 0,
             unwindProducts: 1,
             customer: filter.name === 'all' ? undefined : filter.name
-          }).pipe(
-            map((jobs: JobPartialUnwinded[]) => this.filterJobs(jobs, filter)),
-          ),
-          filter.findPrices ? this.productsService.productsCustomer(filter.name) : of([]),
+          }).pipe(map(jobs => jobs as JobPartialUnwinded[])),
+          filter.name === 'all' ? of([]) : this.productsService.productsCustomer(filter.name),
         ])),
       )
     )
   ).pipe(
-    switchMap(([jobs, filter]) => from(jobs).pipe(
-      map(job => this.updateJobs(job, filter)),
-      toArray(),
-    )),
-    switchMap(jobs => from(jobs).pipe(
-      map(this.columnData),
+    switchMap(([jobs, products]) => from(jobs).pipe(
+      map(job => this.updateJobs(job, products)),
+      map(job => this.columnData(job)),
       toArray(),
     )),
     log('after price update'),
@@ -88,17 +81,18 @@ export class JobPricesService {
     shareReplay(1),
   );
 
+  customers$: Observable<JobsWithoutInvoicesTotals[]> = merge(
+    of(''),
+    this._reload$
+  ).pipe(
+    switchMap(_ => this.invoicesService.getJobsWithoutInvoicesTotals()),
+  );
+
   constructor(
     private jobService: JobService,
     private invoicesService: InvoicesService,
     private productsService: ProductsService,
   ) { }
-
-  getCustomers(): Observable<string[]> {
-    return this.invoicesService.getJobsWithoutInvoicesTotals().pipe(
-      map(tot => tot.map(cust => cust._id)),
-    );
-  }
 
   loadJobs(filter: Filter) {
     this._filter$.next(filter);
@@ -109,11 +103,9 @@ export class JobPricesService {
   }
 
   saveJobs(jobs: JobUpdateFields[]): Observable<number> {
-    return this.jobService.updateJobs(jobs);
-  }
-
-  private filterJobs(jobs: JobPartialUnwinded[], filter: Filter): JobPartialUnwinded[] {
-    return filter.noPrice ? jobs.filter(jb => !jb.products?.price) : jobs;
+    return this.jobService.updateJobs(jobs).pipe(
+      tap(_ => this.reload()),
+    );
   }
 
   private updateJobs(job: JobPartialUnwinded, cProducts: CustomerProduct[]): JobWithUpdate {
@@ -138,7 +130,7 @@ export class JobPricesService {
   }
 
   private columnData(job: JobWithUpdate): JobData {
-    const product = job.products as JobProduct;
+    const product = job.products;
     return {
       ...job,
       'products.name': product?.name || '',

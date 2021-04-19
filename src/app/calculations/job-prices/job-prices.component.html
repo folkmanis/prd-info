@@ -4,17 +4,8 @@
             [customer]="initialCustomer$ | async"></app-customer-selector>
     </section>
     <section>
-        <mat-checkbox (change)="onPriceFilterChecked($event)" [checked]="noPrice$ | async">
-            Tikai bez cenas
-        </mat-checkbox>
-    </section>
-    <section>
-        <mat-checkbox (change)="onUpdatePrices($event)" [checked]="findPrices$ | async">
-            Meklēt cenas
-        </mat-checkbox>
-    </section>
-    <section>
-        <button mat-raised-button (click)="onSavePrices()" [disabled]="(saveEnabled$ | async) === false">
+        <button mat-raised-button [matBadge]="selectedCount$ | async" [matBadgeHidden]="(saveEnabled$ | async) === false"
+            (click)="onSavePrices()" [disabled]="(saveEnabled$ | async) === false">
             SAGLABĀT
         </button>
     </section>

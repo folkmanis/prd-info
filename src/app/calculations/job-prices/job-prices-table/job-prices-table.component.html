@@ -4,7 +4,7 @@
     <ng-container matColumnDef="selection">
         <mat-header-cell *matHeaderCellDef>
             <mat-checkbox (click)="$event.stopPropagation()" (change)="checkAll$.next($event.checked)" [checked]="allSelected$ | async"
-                [indeterminate]="partSelected$ | async"></mat-checkbox>
+                [indeterminate]="partSelected$ | async" [disabled]="!((updatedCount$ | async) > 0)"></mat-checkbox>
         </mat-header-cell>
         <mat-cell *matCellDef="let job;">
             <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(job) : null"

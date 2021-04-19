@@ -64,7 +64,9 @@ export class JobService {
     jobs.forEach(job => {
       if (!job.jobId) { return EMPTY; }
     });
-    return this.prdApi.jobs.update(jobs);
+    return this.prdApi.jobs.update(jobs, params).pipe(
+      tap(resp => resp && this._updateJobs$.next()),
+    );
   }
 
   getJob(jobId: number): Observable<Job | undefined> {

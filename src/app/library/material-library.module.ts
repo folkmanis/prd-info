@@ -30,6 +30,7 @@ import { MatTreeModule } from '@angular/material/tree';
 import { LayoutModule } from '@angular/cdk/layout';
 import { PortalModule } from '@angular/cdk/portal';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { MatBadgeModule } from '@angular/material/badge';
 
 
 @NgModule({
@@ -63,6 +64,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     MatTooltipModule,
     MatAutocompleteModule,
     MatRadioModule,
+    MatBadgeModule,
     LayoutModule,
     ScrollingModule,
     PortalModule,
@@ -99,6 +101,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     LayoutModule,
     ScrollingModule,
     PortalModule,
+    MatBadgeModule,
   ]
 })
 export class MaterialLibraryModule { }

@@ -11,6 +11,7 @@ export interface JobsWithoutInvoicesTotals {
     _id: string;
     jobs: number;
     totals: number;
+    noPrice: number;
 }
 
 export interface JobResponse extends AppHttpResponseBase<Job> {

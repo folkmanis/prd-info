@@ -6,6 +6,7 @@
     <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption [displayWith]="displayFn">
         <mat-option *ngFor="let option of customersFiltered$ | async" [value]="option">
             {{ option.displayname }}
+            <span *ngIf="option.noPrice > 0"> ({{ option.noPrice }}) </span>
         </mat-option>
     </mat-autocomplete>
 </mat-form-field>
