@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Customer, CustomerPartial, Job, JobPartial, JobQueryFilter, JobProduct, CustomerProduct, JobsWithoutInvoicesTotals } from 'src/app/interfaces';
 import { Observable, EMPTY, ReplaySubject, BehaviorSubject, Subject, merge, of, combineLatest, from } from 'rxjs';
-import { tap, map, take, withLatestFrom, switchMap, shareReplay, toArray, concatMap, filter, startWith } from 'rxjs/operators';
+import { tap, map, take, withLatestFrom, switchMap, shareReplay, toArray, concatMap, filter, startWith, finalize, share } from 'rxjs/operators';
 import { log, omit } from 'prd-cdk';
 import { JobService } from 'src/app/services/job.service';
 import { CustomersService } from 'src/app/services/customers.service';
 import { ProductsService } from 'src/app/services/products.service';
-import { InvoicesService } from './invoices.service';
+import { InvoicesService } from '../services/invoices.service';
 import { SelectionModel } from '@angular/cdk/collections';
 
 export interface Filter {
@@ -36,9 +36,7 @@ export const COLUMNS = ['selection', ...JOB_COLUMNS, ...PRODUCT_COLUMNS.map(col 
 
 type JobUpdateFields = Pick<Job, 'jobId' | 'productsIdx' | 'products'>;
 
-@Injectable({
-  providedIn: 'any'
-})
+@Injectable()
 export class JobPricesService {
 
   private readonly _filter$ = new ReplaySubject<Filter>(1);
@@ -48,36 +46,44 @@ export class JobPricesService {
 
   private readonly _reload$ = new Subject<unknown>();
 
+  private _customerProducts$: Observable<CustomerProduct[]> = this._filter$.pipe(
+    switchMap(filter =>
+      filter.name === 'all' ? of([]) : this.productsService.productsCustomer(filter.name),
+    )
+  );
+
   jobs$: Observable<JobData[]> = merge(of(''), this._reload$).pipe(
     switchMap(_ =>
       this._filter$.pipe(
-        switchMap(filter => combineLatest([
-          this.jobService.getJobList({
-            invoice: 0,
-            unwindProducts: 1,
-            customer: filter.name === 'all' ? undefined : filter.name
-          }).pipe(map(jobs => jobs as JobPartialUnwinded[])),
-          filter.name === 'all' ? of([]) : this.productsService.productsCustomer(filter.name),
-        ])),
+        switchMap(filter => this.jobService.getJobList({
+          invoice: 0,
+          unwindProducts: 1,
+          customer: filter.name === 'all' ? undefined : filter.name
+        }).pipe(
+          map(jobs => jobs as JobPartialUnwinded[])
+        ),
+        ),
       )
     )
   ).pipe(
+    withLatestFrom(this._customerProducts$),
     switchMap(([jobs, products]) => from(jobs).pipe(
       map(job => this.updateJobs(job, products)),
       map(job => this.columnData(job)),
       toArray(),
     )),
-    log('after price update'),
     shareReplay(1),
   );
 
   jobsUpdated$: Observable<JobData[]> = this.jobs$.pipe(
     map(jobs => jobs.filter(job => job['products.priceUpdate'] !== undefined)),
+    log('jobs'),
+    // share(),
   );
 
   jobUpdatesSelected$: Observable<JobUpdateFields[]> = this.selection.changed.pipe(
     map(({ source }) => source.selected.map(job => this.jobUpdateFields(job))),
-    log('update'),
+    // log('update'),
     shareReplay(1),
   );
 

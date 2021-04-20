@@ -8,7 +8,7 @@ import { concatMap, filter, map, mergeMap, pluck, startWith, take, takeUntil, to
 import { InvoicesService } from '../services/invoices.service';
 import { log, DestroyService, omit } from 'prd-cdk';
 import { MatCheckboxChange } from '@angular/material/checkbox';
-import { JobPricesService, Filter } from '../services/job-prices.service';
+import { JobPricesService, Filter } from './job-prices.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 const updateMessage = (n: number) => `Izmainīti ${n} ieraksti.`;
@@ -18,7 +18,10 @@ const updateMessage = (n: number) => `Izmainīti ${n} ieraksti.`;
   templateUrl: './job-prices.component.html',
   styleUrls: ['./job-prices.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DestroyService]
+  providers: [
+    JobPricesService,
+    DestroyService,
+  ]
 })
 export class JobPricesComponent implements OnInit {
 
