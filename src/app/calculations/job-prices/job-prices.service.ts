@@ -107,7 +107,6 @@ export class JobPricesService {
     return pipe(
       tap((filter: Filter) => {
         if (typeof filter === 'object' && 'name' in filter) { fl = filter; }
-        console.log(fl);
       }),
       filterOperator(_ => !!fl),
       switchMap(_ => this.jobService.getJobList({

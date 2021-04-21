@@ -75,7 +75,6 @@ export class JobPricesTableComponent implements OnInit, OnDestroy {
 
   trackByFn(_: number, item: JobData) {
     const id = `${item.jobId}-${item.productsIdx}`;
-    console.log(id);
     return id;
   }
 
