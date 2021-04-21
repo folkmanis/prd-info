@@ -24,7 +24,6 @@ export class JobFormSource extends SimpleFormSource<JobBase> {
 
     insertFn(job: JobBase): Observable<number> {
         const createFolder = !!this.fileUploadService.filesCount;
-        console.log('createFolder', createFolder);
         return this.jobService.newJob(job, { createFolder }).pipe(
             tap(jobId => this.fileUploadService.startUpload(jobId)),
         );
