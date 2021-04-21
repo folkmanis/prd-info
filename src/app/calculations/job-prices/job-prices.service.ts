@@ -31,6 +31,7 @@ export type JobData =
   & Prefix<typeof PREFIX, Pick<JobProduct & { total: number; priceUpdate?: number; }, typeof PRODUCT_COLUMNS[number]>>;
 
 export const COLUMNS = ['selection', ...JOB_COLUMNS, ...PRODUCT_COLUMNS.map(col => `${PREFIX}.${col}`)];
+export const COLUMNS_SMALL = ['selection', 'jobId', 'custCode', ...['name', 'price'].map(col => `${PREFIX}.${col}`), 'edit'];
 
 type JobUpdateFields = Pick<Job, 'jobId' | 'productsIdx' | 'products'>;
 

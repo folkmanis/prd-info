@@ -5,48 +5,66 @@ $padd: 4px;
   height: 100%;
 }
 
-.mat-table {
+.container {
   height: 100%;
   overflow: auto;
 }
 
+table {
+  table-layout: fixed;
+}
+
 .mat-column-selection {
-  flex: 0 0 2em;
+  width: 28px;
 }
 
 .mat-column-jobId {
-  flex: 0 0 3em;
+  width: 3.5em;
 }
 
 .mat-column-custCode {
-  flex: 0 0 2em;
+  width: 2.5em;
   padding-left: $padd;
 }
 
 .mat-column-name {
-  flex: 5 1 600px;
   padding-left: $padd;
   & > div {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    display: flex;
+    align-items: baseline;
+    & span.name {
+      flex: 1 1 600px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    & span.buttons {
+      display: none;
+      flex: 0 0 40px;
+    }
   }
 }
 
+tr:hover .mat-column-name span.buttons {
+  display: initial;
+}
+
 .mat-column-products-name {
-  flex: 1 1 11em;
   padding-left: $padd;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  .large & {
+    width: 11em;
+  }
 }
 
 .mat-column-products-price,
 .mat-column-products-total,
 .mat-column-products-count {
-  flex: 1 0 5em;
+  width: 5em;
   padding-left: $padd;
-  & > div {
-    width: 100%;
-    text-align: right;
-  }
+  text-align: right;
 }
 
 .price-update {
@@ -57,11 +75,18 @@ $padd: 4px;
   }
 }
 
-.no-price {
+.no-price .mat-column-products-price {
   font-weight: bold;
 }
 
 .mat-column-products-units {
-  flex: 1 0 6em;
+  width: 6em;
   padding-left: $padd;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.mat-column-edit {
+  width: 24px;
 }

@@ -4,7 +4,8 @@ import { BehaviorSubject, combineLatest, from, Observable, Subject } from 'rxjs'
 import { pluck, filter, switchMap, map, toArray, startWith, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { JobPartial, JobProduct } from 'src/app/interfaces';
 import { log, DestroyService } from 'prd-cdk';
-import { Filter, JobPricesService, COLUMNS, JobData } from '..//job-prices.service';
+import { Filter, JobPricesService, COLUMNS, COLUMNS_SMALL, JobData } from '../job-prices.service';
+import { LayoutService } from 'src/app/layout/layout.service';
 
 @Component({
   selector: 'app-job-prices-table',
@@ -17,7 +18,11 @@ import { Filter, JobPricesService, COLUMNS, JobData } from '..//job-prices.servi
 })
 export class JobPricesTableComponent implements OnInit, OnDestroy {
 
-  displayedColumns = [...COLUMNS];
+  isLarge$: Observable<boolean> = this.layout.isLarge$;
+
+  displayedColumns$: Observable<string[]> = this.layout.isSmall$.pipe(
+    map(small => small ? COLUMNS_SMALL : COLUMNS),
+  );
 
   jobs$: Observable<JobData[]> = this.jobPricesService.jobs$;
 
@@ -45,6 +50,7 @@ export class JobPricesTableComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private jobPricesService: JobPricesService,
     private destroy$: DestroyService,
+    private layout: LayoutService,
   ) { }
 
   ngOnInit(): void {
@@ -65,6 +71,12 @@ export class JobPricesTableComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.checkAll$.complete();
+  }
+
+  trackByFn(_: number, item: JobData) {
+    const id = `${item.jobId}-${item.productsIdx}`;
+    console.log(id);
+    return id;
   }
 
 
