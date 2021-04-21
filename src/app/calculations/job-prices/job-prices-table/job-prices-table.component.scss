@@ -57,6 +57,10 @@ $padd: 4px;
   }
 }
 
+.no-price {
+  font-weight: bold;
+}
+
 .mat-column-products-units {
   flex: 1 0 6em;
   padding-left: $padd;

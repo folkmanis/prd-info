@@ -96,6 +96,6 @@
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let job; columns: displayedColumns"
-        [class.price-update]="job['products.priceUpdate'] !== undefined"></mat-row>
+        [class.price-update]="job['products.priceUpdate'] !== undefined" [class.no-price]="!job['products.price']"></mat-row>
 
 </mat-table>
