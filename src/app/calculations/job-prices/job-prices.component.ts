@@ -1,15 +1,11 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { from, merge, Observable, of } from 'rxjs';
-import { JobService } from 'src/app/services/job.service';
-import { Customer, CustomerPartial, Job, JobPartial, JobProduct, JobQueryFilter, JobsWithoutInvoicesTotals } from 'src/app/interfaces';
-import { CustomersService } from 'src/app/services/customers.service';
-import { concatMap, filter, map, mergeMap, pluck, startWith, take, takeUntil, toArray } from 'rxjs/operators';
-import { InvoicesService } from '../services/invoices.service';
-import { log, DestroyService, omit } from 'prd-cdk';
-import { MatCheckboxChange } from '@angular/material/checkbox';
-import { JobPricesService, Filter } from './job-prices.service';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DestroyService, omit } from 'prd-cdk';
+import { merge, Observable, of } from 'rxjs';
+import { map, mergeMap, pluck, take, takeUntil } from 'rxjs/operators';
+import { JobsWithoutInvoicesTotals } from 'src/app/interfaces';
+import { Filter, JobPricesService } from './job-prices.service';
 
 const updateMessage = (n: number) => `Izmainīti ${n} ieraksti.`;
 
