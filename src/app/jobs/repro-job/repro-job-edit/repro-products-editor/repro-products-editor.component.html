@@ -3,7 +3,7 @@
     <ng-container matColumnDef="action">
         <mat-header-cell *matHeaderCellDef> </mat-header-cell>
         <mat-cell *matCellDef="let group; index as idx;">
-            <button mat-icon-button (click)="onRemoveProduct(idx)" [disabled]="prodFormArray.disabled">
+            <button mat-icon-button (click)="removeProduct$.next(idx)" [disabled]="prodFormArray.disabled">
                 <mat-icon>delete</mat-icon>
             </button>
         </mat-cell>
@@ -12,7 +12,7 @@
     <ng-container matColumnDef="name">
         <mat-header-cell *matHeaderCellDef> Prece </mat-header-cell>
         <mat-cell *matCellDef="let group;">
-            <app-product-autocomplete [formControl]="group.controls.name" [customerProducts]="customerProducts">
+            <app-product-autocomplete [control]="group.controls.name" [customerProducts]="customerProducts">
             </app-product-autocomplete>
         </mat-cell>
     </ng-container>
@@ -39,13 +39,13 @@
 
     <ng-container matColumnDef="price">
         <mat-header-cell *matHeaderCellDef> Cena </mat-header-cell>
-        <mat-cell *matCellDef="let group;">
+        <mat-cell *matCellDef="let group; index as idx;">
             <mat-form-field>
                 <input matInput type="number" [formControl]="group.controls.price">
                 <span matSuffix>
                    &nbsp;&euro;
                 </span>
-                <button matSuffix mat-icon-button matTooltip="Pievienot no cenrāža" (click)="onAddPrice(group)" [disabled]="group.valid !== true">
+                <button matSuffix mat-icon-button matTooltip="Pievienot no cenrāža" (click)="onAddPrice(idx)" [disabled]="group.valid !== true">
                     <mat-icon>
                         keyboard_arrow_left
                     </mat-icon>

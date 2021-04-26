@@ -16,6 +16,7 @@ import { JobFormSource } from '../services/job-form-source';
 import { ReproJobResolverService } from '../services/repro-job-resolver.service';
 import { CustomerInputComponent } from './customer-input/customer-input.component';
 import { ReproProductsEditorComponent } from './repro-products-editor/repro-products-editor.component';
+import { JobFormService } from '../services/job-form.service';
 
 
 @Component({
@@ -32,9 +33,7 @@ export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
 
   formSource = new JobFormSource(
     this.fb,
-    this.customersService,
-    this.jobService,
-    this.fileUploadService,
+    this.jobFormService,
   );
 
   get form(): IFormGroup<JobBase> {
@@ -71,7 +70,7 @@ export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
     private layoutService: LayoutService,
     private productsService: ProductsService,
     private resolver: ReproJobResolverService,
-    private fileUploadService: FileUploadService,
+    private jobFormService: JobFormService,
   ) { }
 
   ngOnInit(): void {
@@ -100,7 +99,7 @@ export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
   @HostListener('window:keydown', ['$event']) keyEvent(event: KeyboardEvent) {
     if (event.key === '+' && event.ctrlKey) {
       event.preventDefault();
-      this.productsEditor.onAddNewProduct();
+      this.onAddProduct();
     }
   }
 
@@ -120,6 +119,14 @@ export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
       this.form.controls.files.setValue(files);
       this.formSource.folderPath$.next(files.path?.join('/'));
     });
+  }
+
+  onRemoveProduct(idx: number) {
+    this.formSource.removeProduct(idx);
+  }
+
+  onAddProduct() {
+    this.formSource.addProduct();
   }
 
   canDeactivate(): boolean {

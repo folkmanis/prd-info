@@ -1,13 +1,14 @@
-import { AbstractControl, AsyncValidatorFn, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
-import { IFormBuilder, IFormControl, IFormGroup } from '@rxweb/types';
+import { AbstractControl, AsyncValidatorFn, FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { IFormArray, IFormBuilder, IFormControl, IFormGroup } from '@rxweb/types';
 import { endOfDay } from 'date-fns';
 import { EMPTY, Observable, of, BehaviorSubject } from 'rxjs';
-import { concatMap, map, mergeMap, take, tap } from 'rxjs/operators';
+import { concatMap, map, mergeMap, startWith, take, tap } from 'rxjs/operators';
 import { CustomerProduct, Job, JobBase, JobProduct } from 'src/app/interfaces';
 import { SimpleFormSource } from 'src/app/library/simple-form';
 import { CustomersService, ProductsService } from 'src/app/services';
 import { JobService } from 'src/app/services/job.service';
 import { FileUploadService } from '../../services/file-upload.service';
+import { JobFormService } from './job-form.service';
 
 export class JobFormSource extends SimpleFormSource<JobBase> {
 
@@ -15,88 +16,27 @@ export class JobFormSource extends SimpleFormSource<JobBase> {
 
     constructor(
         fb: FormBuilder,
-        private customersService: CustomersService,
-        private jobService: JobService,
-        private fileUploadService: FileUploadService,
+        private jobFormService: JobFormService,
     ) {
         super(fb);
     }
 
-    insertFn(job: JobBase): Observable<number> {
-        const createFolder = !!this.fileUploadService.filesCount;
-        return this.jobService.newJob(job, { createFolder }).pipe(
-            tap(jobId => this.fileUploadService.startUpload(jobId)),
-        );
-    }
+    insertFn = this.jobFormService.insertFn();
 
-    updateFn(job: JobBase): Observable<JobBase> {
-        job = {
-            ...job,
-            dueDate: endOfDay(new Date(job.dueDate)),
-        };
-        return this.jobService.updateJob(job).pipe(
-            concatMap(resp => resp ? this.jobService.getJob(job.jobId) : EMPTY)
-        );
-    }
+    updateFn = this.jobFormService.updateFn();
 
     get isNew(): boolean {
         return !this.form.value.jobId;
     }
 
-    createForm(): IFormGroup<JobBase> {
-        const jobForm: IFormGroup<JobBase> = this.fb.group<JobBase>(
-            {
-                jobId: [
-                    undefined,
-/*                     {
-                        validators: Validators.required,
-                    }
- */                ],
-                customer: [
-                    '',
-                    {
-                        validators: Validators.required,
-                        asyncValidators: this.validateCustomerFn(),
-                    },
-                ],
-                name: [
-                    undefined,
-                    {
-                        validators: Validators.required,
-                    },
-                ],
-                receivedDate: [
-                    new Date(),
-                    {
-                        validators: Validators.required,
-                    }
-                ],
-                dueDate: [
-                    new Date(),
-                    {
-                        validators: Validators.required,
-                    }
-                ],
-                category: [
-                    undefined,
-                    {
-                        validators: Validators.required,
-                    }
-                ],
-                comment: [undefined],
-                customerJobId: [undefined],
-                custCode: [{ value: undefined, disabled: true }],
-                jobStatus: this.fb.group({
-                    generalStatus: 10,
-                }),
-                products: [undefined],
-                files: [undefined],
-            });
-        return jobForm;
-
+    get prodControl(): IFormArray<JobProduct> {
+        return this.form.controls.products as IFormArray<JobProduct>;
     }
 
+    createForm = this.jobFormService.createJobForm();
+
     initValue(value: Partial<JobBase>, params?: { emitEvent: boolean; }): void {
+        this.setProductsControls(value?.products as JobProduct[] || []);
         super.initValue(value, params);
         if (this.form.disabled && !value.invoiceId) {
             this.form.enable({ emitEvent: false });
@@ -113,16 +53,21 @@ export class JobFormSource extends SimpleFormSource<JobBase> {
         this.folderPath$.next(value.files?.path?.join('/') || '');
     }
 
-    private validateCustomerFn(): AsyncValidatorFn {
-        return (control: AbstractControl): Observable<ValidationErrors | null> => {
-            const value = control.value;
-            return this.customersService.customers$.pipe(
-                map(customers =>
-                    customers.some(customer => customer.CustomerName === value) ? null : { noCustomer: `Klients ${value} nav atrasts` }
-                ),
-                take(1),
-            );
-        };
+    setProductsControls(products: JobProduct[]) {
+        if (this.prodControl.length) { this.prodControl.clear(); }
+        for (const prod of products) {
+            this.addProduct();
+        }
+    }
+
+    addProduct() {
+        this.prodControl.push(this.jobFormService.productFormGroup());
+        this.form.controls.products.markAsDirty();
+    }
+
+    removeProduct(idx: number) {
+        this.prodControl.removeAt(idx);
+        this.form.controls.products.markAsDirty();
     }
 
 }

@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, Self, ViewChild, ElementRef } from '@angular/core';
-import { NgControl, ControlValueAccessor, FormControl } from '@angular/forms';
+import { Component, OnInit, Input, Self, ViewChild, ElementRef, ChangeDetectionStrategy } from '@angular/core';
+import { NgControl, ControlValueAccessor, FormControl, ControlContainer } from '@angular/forms';
 import { CustomerProduct, JobProduct } from 'src/app/interfaces';
 import { Observable, combineLatest, BehaviorSubject } from 'rxjs';
 import { startWith, map, share, shareReplay, tap, filter } from 'rxjs/operators';
@@ -8,9 +8,10 @@ import { IControlValueAccessor, IFormControl } from '@rxweb/types';
 @Component({
   selector: 'app-product-autocomplete',
   templateUrl: './product-autocomplete.component.html',
-  styleUrls: ['./product-autocomplete.component.scss']
+  styleUrls: ['./product-autocomplete.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProductAutocompleteComponent implements OnInit, IControlValueAccessor<string> {
+export class ProductAutocompleteComponent implements OnInit {
   @ViewChild('name') private inputElement: ElementRef;
 
   @Input() set customerProducts(val: CustomerProduct[]) {
@@ -18,60 +19,37 @@ export class ProductAutocompleteComponent implements OnInit, IControlValueAccess
     this.customerProducts$.next(val);
   }
 
+  @Input('control') productsControl: IFormControl<string>;
+
   private customerProducts$ = new BehaviorSubject<CustomerProduct[]>([]);
 
-  constructor(
-    @Self() private ngControl: NgControl
-  ) {
-    this.ngControl.valueAccessor = this;
-  }
+  constructor() { }
 
-  productsControl: IFormControl<string> = new FormControl('');
   invalidProduct$: Observable<string | undefined>;
 
-  private filteredProducts$: Observable<CustomerProduct[]> = combineLatest([
-    this.productsControl.valueChanges.pipe(startWith('')),
-    this.customerProducts$,
-  ]).pipe(
-    map(this.filterProducts),
-    shareReplay(1),
-  );
-  firstProducts$: Observable<CustomerProduct[]> = this.filteredProducts$.pipe(
-    map(prod => prod.filter(pr => pr.price !== undefined))
-  );
-  restProducts$: Observable<CustomerProduct[]> = this.filteredProducts$.pipe(
-    map(prod => prod.filter(pr => pr.price === undefined))
-  );
-
-
-  private onChange: (val: string) => void;
-  onTouched: () => void;
+  private filteredProducts$: Observable<CustomerProduct[]>;
+  firstProducts$: Observable<CustomerProduct[]>;
+  restProducts$: Observable<CustomerProduct[]>;
 
   ngOnInit(): void {
-    this.invalidProduct$ = this.ngControl.statusChanges.pipe(
-      map(_ => this.ngControl.hasError('invalidProduct') ? undefined : this.ngControl.getError('invalidProduct')),
+
+    this.filteredProducts$ = combineLatest([
+      this.productsControl.valueChanges.pipe(startWith('')),
+      this.customerProducts$,
+    ]).pipe(
+      map(this.filterProducts),
+      shareReplay(1),
     );
-    this.productsControl.valueChanges.subscribe(val => this.onChange(val));
-  }
+    this.firstProducts$ = this.filteredProducts$.pipe(
+      map(prod => prod.filter(pr => pr.price !== undefined))
+    );
+    this.restProducts$ = this.filteredProducts$.pipe(
+      map(prod => prod.filter(pr => pr.price === undefined))
+    );
 
-  writeValue(obj: string) {
-    this.productsControl.setValue(obj, { emitEvent: false });
-  }
-
-  registerOnChange(fn: (val: string) => void) {
-    this.onChange = fn;
-  }
-
-  registerOnTouched(fn: () => void) {
-    this.onTouched = fn;
-  }
-
-  setDisabledState?(isDisabled: boolean) {
-    if (isDisabled) {
-      this.productsControl.disable();
-    } else {
-      this.productsControl.enable();
-    }
+    this.invalidProduct$ = this.productsControl.statusChanges.pipe(
+      map(_ => this.productsControl.hasError('invalidProduct') ? undefined : this.productsControl.getError('invalidProduct')),
+    );
   }
 
   focus(): void {
