@@ -3,8 +3,9 @@ import { FormControl, NgControl } from '@angular/forms';
 import { IControlValueAccessor, IFormControl } from '@rxweb/types';
 import { CustomerPartial, CustomerProduct, Job, JobBase, SystemPreferences } from 'src/app/interfaces';
 import { BehaviorSubject, combineLatest, merge, Observable, of } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map, startWith, tap } from 'rxjs/operators';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { log } from 'prd-cdk';
 
 @Component({
   selector: 'app-customer-input',
@@ -12,12 +13,18 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
   styleUrls: ['./customer-input.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CustomerInputComponent implements OnInit, AfterViewInit, IControlValueAccessor<string> {
+export class CustomerInputComponent implements OnInit {
 
   @ViewChild('customerInput') private input: ElementRef<HTMLInputElement>;
 
+  @Input() control: IFormControl<string>;
+
   @Input() set customers(value: CustomerPartial[]) {
-    this.customers$.next(value || []);
+    console.log(value);
+    if (!(value instanceof Array)) { return; }
+    this.customers$.next(
+      value.filter(cust => !cust.disabled)
+    );
   }
   private customers$ = new BehaviorSubject<CustomerPartial[]>([]);
 
@@ -31,58 +38,16 @@ export class CustomerInputComponent implements OnInit, AfterViewInit, IControlVa
 
   customersFiltered$: Observable<CustomerPartial[]>;
 
-  inputControl: IFormControl<string> = new FormControl();
-
-  get control() {
-    return this.ngControl.control;
-  }
-
-  valueChangeFn: (obj: string) => void;
-  touchFn: () => void;
-
-  constructor(
-    private ngControl: NgControl,
-  ) {
-    this.ngControl.valueAccessor = this;
-  }
-
-  writeValue(obj: string) {
-    this.inputControl.setValue(obj);
-  }
-
-  registerOnChange(fn: (obj: string) => void) {
-    this.valueChangeFn = fn;
-  }
-
-  registerOnTouched(fn: () => void) {
-    this.touchFn = fn;
-  }
-
-  setDisabledState(isDisabled: boolean) {
-    if (isDisabled) {
-      this.inputControl.disable();
-    } else {
-      this.inputControl.enable();
-    }
-  }
+  constructor() { }
 
   ngOnInit(): void {
     this.customersFiltered$ = combineLatest([
-      this.customers$.pipe(
-        map(customers => customers.filter(cust => !cust.disabled)),
-      ),
-      merge(
-        this.inputControl.valueChanges,
-        of(''),
-      )
+      this.customers$,
+      this.control.valueChanges.pipe(startWith('')),
     ]).pipe(
-      map(this.filterCustomer)
+      map(this.filterCustomer),
     );
 
-  }
-
-  ngAfterViewInit(): void {
-    this.inputControl.valueChanges.subscribe(val => this.valueChangeFn(val));
   }
 
   focus() {
@@ -90,7 +55,7 @@ export class CustomerInputComponent implements OnInit, AfterViewInit, IControlVa
   }
 
   private filterCustomer([customers, value]: [CustomerPartial[], string]): CustomerPartial[] {
-    const filterValue = new RegExp(value, 'i');
+    const filterValue = new RegExp(value || '', 'i');
     return customers.filter(state => filterValue.test(state.CustomerName));
   }
 

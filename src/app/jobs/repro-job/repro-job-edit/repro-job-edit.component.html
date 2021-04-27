@@ -2,7 +2,7 @@
 
     <div class="wrapper" [class.large]="large$ | async">
         <!-- Klients -->
-        <app-customer-input class="left-column" formControlName="customer" [customers]="customers$ | async" required>
+        <app-customer-input class="left-column" [control]="customerControl" [customers]="customers$ | async" required>
             Klients
         </app-customer-input>
         <!-- Darba nosaukums -->

@@ -1,12 +1,13 @@
 <mat-form-field>
-    <input matInput type="text" [formControl]="productsControl" [matAutocomplete]="auto" #name>
-    <button mat-icon-button matSuffix (click)="productsControl.setValue('')" tabindex="-1" [disabled]="productsControl.disabled">
+    <input matInput type="text" [formControl]="productNameControl" [matAutocomplete]="auto" #name>
+    <button mat-icon-button matSuffix (click)="productNameControl.setValue('')" tabindex="-1"
+        [disabled]="productNameControl.disabled">
         <mat-icon>
             clear
         </mat-icon>
     </button>
-    <mat-error *ngIf="invalidProduct$ | async as err;">
-        {{err}}
+    <mat-error *ngIf="this.productNameControl.hasError('invalidProduct');">
+        {{ this.productNameControl.getError('invalidProduct') }}
     </mat-error>
 </mat-form-field>
 

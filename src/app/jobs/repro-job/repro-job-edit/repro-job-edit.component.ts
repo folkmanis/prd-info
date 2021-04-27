@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, HostListener, Inject, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, Inject, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { IFormGroup } from '@rxweb/types';
+import { IFormControl, IFormGroup } from '@rxweb/types';
 import { endOfWeek, startOfWeek } from 'date-fns';
 import { EMPTY, merge, Observable, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, pluck, switchMap } from 'rxjs/operators';
@@ -17,6 +17,7 @@ import { ReproJobResolverService } from '../services/repro-job-resolver.service'
 import { CustomerInputComponent } from './customer-input/customer-input.component';
 import { ReproProductsEditorComponent } from './repro-products-editor/repro-products-editor.component';
 import { JobFormService } from '../services/job-form.service';
+import { ProductAutocompleteComponent } from './repro-products-editor/product-autocomplete/product-autocomplete.component';
 
 
 @Component({
@@ -39,9 +40,9 @@ export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
   get form(): IFormGroup<JobBase> {
     return this.formSource.form;
   }
-  get customerControl() { return this.form.controls.customer; }
-  get nameControl() { return this.form.controls.name; }
-  get productsControl() { return this.form.controls.products; }
+  get customerControl() { return this.form.get('customer'); }
+  get nameControl() { return this.form.get('name'); }
+  get productsControl() { return this.form.get('products'); }
 
   get isNew(): boolean { return this.formSource.isNew; }
 
@@ -99,6 +100,7 @@ export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
   @HostListener('window:keydown', ['$event']) keyEvent(event: KeyboardEvent) {
     if (event.key === '+' && event.ctrlKey) {
       event.preventDefault();
+      event.stopPropagation();
       this.onAddProduct();
     }
   }
@@ -127,6 +129,7 @@ export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
 
   onAddProduct() {
     this.formSource.addProduct();
+    setTimeout(() => this.productsEditor.focusLatest(), 0);
   }
 
   canDeactivate(): boolean {
