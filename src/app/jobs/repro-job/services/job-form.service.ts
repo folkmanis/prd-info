@@ -28,6 +28,7 @@ export class JobFormService {
 
   insertFn(): (job: JobBase) => Observable<number> {
     return (job) => {
+      console.log(this.fileUploadService.filesCount); // debug
       const createFolder = !!this.fileUploadService.filesCount;
       return this.jobService.newJob(job, { createFolder }).pipe(
         tap(jobId => this.fileUploadService.startUpload(jobId)),

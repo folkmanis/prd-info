@@ -20,7 +20,6 @@ export class CustomerInputComponent implements OnInit {
   @Input() control: IFormControl<string>;
 
   @Input() set customers(value: CustomerPartial[]) {
-    console.log(value);
     if (!(value instanceof Array)) { return; }
     this.customers$.next(
       value.filter(cust => !cust.disabled)

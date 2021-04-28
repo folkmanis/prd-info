@@ -14,6 +14,7 @@ import { CustomerInputComponent } from './repro-job-edit/customer-input/customer
 import { FolderPathComponent } from './repro-job-edit/folder-path/folder-path.component';
 import { ReproProductsEditorComponent } from './repro-job-edit/repro-products-editor/repro-products-editor.component';
 import { ProductAutocompleteComponent } from './repro-job-edit/repro-products-editor/product-autocomplete/product-autocomplete.component';
+import { ProductControlDirective } from './repro-job-edit/repro-products-editor/product-control.directive';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { ProductAutocompleteComponent } from './repro-job-edit/repro-products-ed
     FolderPathComponent,
     ReproProductsEditorComponent,
     ProductAutocompleteComponent,
+    ProductControlDirective,
   ],
   imports: [
     CommonModule,

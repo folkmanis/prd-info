@@ -27,7 +27,6 @@ export class ReproProductsEditorComponent implements OnInit {
 
   @Input() set customerProducts(customerProducts: CustomerProduct[]) {
     this._customerProducts = customerProducts || [];
-    console.log('customer products', customerProducts);
   }
   get customerProducts(): CustomerProduct[] {
     return this._customerProducts;
