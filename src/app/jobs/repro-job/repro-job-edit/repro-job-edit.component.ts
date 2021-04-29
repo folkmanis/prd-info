@@ -16,6 +16,7 @@ import { ReproJobResolverService } from '../services/repro-job-resolver.service'
 import { CustomerInputComponent } from './customer-input/customer-input.component';
 import { ReproProductsEditorComponent } from './repro-products-editor/repro-products-editor.component';
 import { JobFormService } from '../services/job-form.service';
+import { LoginService } from 'src/app/services/login.service';
 
 
 @Component({
@@ -60,6 +61,8 @@ export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
     max: endOfWeek(Date.now()),
   };
 
+  showPrice$: Observable<boolean>;
+
   constructor(
     private fb: FormBuilder,
     private customersService: CustomersService,
@@ -70,6 +73,7 @@ export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
     private productsService: ProductsService,
     private resolver: ReproJobResolverService,
     private jobFormService: JobFormService,
+    private loginService: LoginService,
   ) { }
 
   ngOnInit(): void {
@@ -83,6 +87,8 @@ export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
       distinctUntilChanged(),
       switchMap(customer => this.productsService.productsCustomer(customer)),
     );
+
+  this.showPrice$ = this.loginService.isModule('calculations');
 
   }
 
