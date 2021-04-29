@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { EMPTY, merge, Observable, of, Subject } from 'rxjs';
 import { finalize, map, mergeMap, share, tap, throttleTime } from 'rxjs/operators';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
-import { FileUploadEventType, FileUploadMessage, UploadMessageBase } from '../interfaces/file-upload-message';
+import { FileUploadEventType, FileUploadMessage, UploadMessageBase } from '../../interfaces/file-upload-message';
 
 /** Laiks, pēc kura tiek nosūtīts papildus slēdzošaias ziņojums */
 const CLOSE_EVENT_DELAY = 1000 * 5;
@@ -41,17 +41,6 @@ export class FileUploadService {
     private prdApi: PrdApiService,
   ) { }
 
-  uploadFiles(jobId: number, files?: File[]): Observable<undefined> {
-    if (!jobId || !files?.length) { return of(undefined); }
-    const jobFiles = files
-      .sort((a, b) => a.size - b.size); // mazākie vispirms
-
-    this.startProgressWaiting(files);
-    of(...jobFiles).pipe(
-      mergeMap(file => this.uploadFile(jobId, file), SIMULTANEOUS_UPLOADS),
-    ).subscribe();
-    return of(undefined);
-  }
   /**
    * Pievieno failus gaidīšanas sarakstam
    * @param files masīvs ar failiem
@@ -77,7 +66,7 @@ export class FileUploadService {
    * Sāk augšupielādi ar sagatavoto rindu un doto darba numuru
    * @param jobId darba numurs
    */
-  startUpload(jobId: number):void {
+  startUpload(jobId: number): void {
     if (this.uploadQueue.size === 0) { return; }
     of(...this.uploadQueue.values()).pipe(
       mergeMap(file => this.uploadFile(jobId, file), SIMULTANEOUS_UPLOADS),

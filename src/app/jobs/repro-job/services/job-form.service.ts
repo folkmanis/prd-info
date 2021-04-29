@@ -3,7 +3,7 @@ import { AbstractControl, AsyncValidatorFn, FormBuilder, ValidationErrors, Valid
 import { CustomersService } from 'src/app/services/customers.service';
 import { JobService } from 'src/app/services/job.service';
 import { ProductsService } from 'src/app/services/products.service';
-import { FileUploadService } from '../../services/file-upload.service';
+import { FileUploadService } from './file-upload.service';
 import { IFormBuilder, IFormControl, IFormGroup } from '@rxweb/types';
 import { JobBase, JobProduct } from 'src/app/interfaces';
 import { EMPTY, Observable } from 'rxjs';
@@ -12,7 +12,7 @@ import { endOfDay } from 'date-fns';
 
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'any'
 })
 export class JobFormService {
 
@@ -28,7 +28,6 @@ export class JobFormService {
 
   insertFn(): (job: JobBase) => Observable<number> {
     return (job) => {
-      console.log(this.fileUploadService.filesCount); // debug
       const createFolder = !!this.fileUploadService.filesCount;
       return this.jobService.newJob(job, { createFolder }).pipe(
         tap(jobId => this.fileUploadService.startUpload(jobId)),

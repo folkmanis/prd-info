@@ -11,13 +11,11 @@ import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { CustomersService, ProductsService } from 'src/app/services';
 import { CONFIG } from 'src/app/services/config.provider';
 import { JobService } from 'src/app/services/job.service';
-import { FileUploadService } from '../../services/file-upload.service';
 import { JobFormSource } from '../services/job-form-source';
 import { ReproJobResolverService } from '../services/repro-job-resolver.service';
 import { CustomerInputComponent } from './customer-input/customer-input.component';
 import { ReproProductsEditorComponent } from './repro-products-editor/repro-products-editor.component';
 import { JobFormService } from '../services/job-form.service';
-import { ProductAutocompleteComponent } from './repro-products-editor/product-autocomplete/product-autocomplete.component';
 
 
 @Component({

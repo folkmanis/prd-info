@@ -1,13 +1,8 @@
-import { AbstractControl, AsyncValidatorFn, FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { IFormArray, IFormBuilder, IFormControl, IFormGroup } from '@rxweb/types';
-import { endOfDay } from 'date-fns';
-import { EMPTY, Observable, of, BehaviorSubject } from 'rxjs';
-import { concatMap, map, mergeMap, startWith, take, tap } from 'rxjs/operators';
-import { CustomerProduct, Job, JobBase, JobProduct } from 'src/app/interfaces';
+import { FormBuilder } from '@angular/forms';
+import { IFormArray } from '@rxweb/types';
+import { BehaviorSubject } from 'rxjs';
+import { JobBase, JobProduct } from 'src/app/interfaces';
 import { SimpleFormSource } from 'src/app/library/simple-form';
-import { CustomersService, ProductsService } from 'src/app/services';
-import { JobService } from 'src/app/services/job.service';
-import { FileUploadService } from '../../services/file-upload.service';
 import { JobFormService } from './job-form.service';
 
 export class JobFormSource extends SimpleFormSource<JobBase> {

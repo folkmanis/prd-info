@@ -4,7 +4,7 @@ import { Observable, EMPTY, of } from 'rxjs';
 import { RetrieveFn, SimpleFormResolverService } from 'src/app/library/simple-form/simple-form-resolver.service';
 import { JobBase } from 'src/app/interfaces';
 import { JobService } from 'src/app/services/job.service';
-import { FileUploadService } from '../../services/file-upload.service';
+import { FileUploadService } from './file-upload.service';
 
 @Injectable({
   providedIn: 'any'
