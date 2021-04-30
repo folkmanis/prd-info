@@ -33,18 +33,15 @@ export class JobFormSource extends SimpleFormSource<JobBase> {
     initValue(value: Partial<JobBase>, params?: { emitEvent: boolean; }): void {
         this.setProductsControls(value?.products as JobProduct[] || []);
         super.initValue(value, params);
-        if (this.form.disabled && !value.invoiceId) {
-            this.form.enable({ emitEvent: false });
-            this.form.markAsPristine();
-        }
         if (value.invoiceId) {
             this.form.disable({ emitEvent: false });
-            this.form.markAsPristine();
+        } else {
+            this.form.enable({ emitEvent: false });
         }
         if (value.receivedDate) {
             this.form.get('receivedDate').disable({ emitEvent: false });
-            this.form.markAsPristine();
         }
+        this.form.markAsPristine();
         this.folderPath$.next(value.files?.path?.join('/') || '');
     }
 
