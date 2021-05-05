@@ -1,10 +1,8 @@
-<div *ngIf="totals">
-    <p>
-        <strong>
-            Kopā | {{totals.grandTotal | currency}}
-        </strong>
-    </p>
-    <p *ngFor="let total of totals.totals">
-        {{total._id}} | {{total.count}} | {{total.total | currency}}
-    </p>
-</div>
+<p>
+    <strong>
+        Kopā | {{ invoicesTotals.grandTotal | currency }}
+    </strong>
+</p>
+<p *ngFor="let total of invoicesTotals.totals">
+    {{total._id}} | {{total.count}} | {{total.total | currency}}
+</p>

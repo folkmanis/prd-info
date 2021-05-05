@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 import { JobPartial } from 'src/app/interfaces';
@@ -10,7 +10,8 @@ const TABLE_COLUMNS = ['jobId', 'receivedDate', 'customer', 'name', 'productName
 @Component({
   selector: 'app-job-selection-table',
   templateUrl: './job-selection-table.component.html',
-  styleUrls: ['./job-selection-table.component.scss']
+  styleUrls: ['./job-selection-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JobSelectionTableComponent implements OnInit, OnDestroy {
   @Input('jobs') set _jobs(jobs: JobPartial[]) {

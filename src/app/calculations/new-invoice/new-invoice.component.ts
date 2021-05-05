@@ -1,9 +1,9 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subscription, combineLatest } from 'rxjs';
-import { map, startWith, tap, take, shareReplay, share, takeUntil } from 'rxjs/operators';
-import { CustomerPartial, JobQueryFilter, Job, JobBase, JobPartial, ProductTotals, Invoice, InvoiceForReport } from 'src/app/interfaces';
+import { Observable, BehaviorSubject, Subscription, combineLatest, merge } from 'rxjs';
+import { map, startWith, tap, take, shareReplay, share, takeUntil, switchMap } from 'rxjs/operators';
+import { CustomerPartial, JobQueryFilter, Job, JobBase, JobPartial, ProductTotals, Invoice, InvoiceForReport, JobsWithoutInvoicesTotals, JobProduct } from 'src/app/interfaces';
 import { CustomersService, PrdApiService } from 'src/app/services';
 import { InvoicesService } from '../services/invoices.service';
 import { JobService } from 'src/app/services/job.service';
@@ -17,58 +17,67 @@ import { LayoutService } from 'src/app/layout/layout.service';
   templateUrl: './new-invoice.component.html',
   styleUrls: ['./new-invoice.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DestroyService],
 })
 export class NewInvoiceComponent implements OnInit {
 
 
   isSmall$ = this.layoutService.isSmall$;
 
-  constructor(
-    private invoiceService: InvoicesService,
-    private jobService: JobService,
-    private layoutService: LayoutService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private destroy$: DestroyService,
-  ) { }
+  noInvoices$ = this.invoicesService.jobsWithoutInvoicesTotals$.pipe(
+    shareReplay(1),
+  );
 
-  selectedJobs: number[] | undefined;
-  canSubmit = false;
+  jobs$: Observable<JobPartial[]>;
+  selectedJobs$: Observable<JobPartial[]>;
+
+  selection$ = new BehaviorSubject<number[]>([]);
+
+  invoicesTotals$: Observable<InvoicesTotals>;
+
   customerId = new FormControl('');
 
-  customers$: Observable<string[]> = this.invoiceService.jobsWithoutInvoicesTotals$.pipe(
-    map(custs => custs.map(cust => cust._id))
-  );
-
-  jobs$ = this.jobService.jobs$;
-  totals$: Observable<InvoicesTotals> = combineLatest([
-    this.invoiceService.totals$,
-    this.invoiceService.grandTotal$,
-  ]).pipe(
-    map(([totals, grandTotal]) => ({ totals, grandTotal })),
-    share(),
-  );
-
+  constructor(
+    private invoicesService: InvoicesService,
+    private layoutService: LayoutService,
+    private router: Router,
+  ) { }
 
   ngOnInit(): void {
-    this.customerId.valueChanges.pipe(
+
+    this.jobs$ = this.customerId.valueChanges.pipe(
       startWith(''),
-      takeUntil(this.destroy$),
-    )
-      .subscribe(customer => this.jobService.setFilter({ customer, unwindProducts: 1, invoice: 0 }));
+      switchMap(customer => this.invoicesService.getJobs({ customer, unwindProducts: 1, invoice: 0 })),
+      share(),
+    );
+
+    this.selectedJobs$ = combineLatest([
+      this.jobs$,
+      this.selection$,
+    ]).pipe(
+      map(([jobs, sel]) => this.filterJobs(jobs, sel))
+    );
+
+    this.invoicesTotals$ = merge(
+      this.jobs$,
+      this.selectedJobs$,
+    ).pipe(
+      map(this.jobTotals),
+      share(),
+    );
+
   }
 
   onCreateInvoice() {
-    this.invoiceService.createInvoice({ selectedJobs: this.selectedJobs, customerId: this.customerId.value })
+    this.invoicesService.createInvoice({ selectedJobs: this.selection$.value, customerId: this.customerId.value })
       .subscribe(({ invoiceId }) => this.router.navigate(['calculations', 'plate-invoice', invoiceId]));
   }
 
-  onPrintList(jobs: JobBase[], customer: string, { totals, grandTotal }: InvoicesTotals) {
+  onPrintList(jobs: JobBase[]) {
+    const { totals, grandTotal } = this.jobTotals(jobs);
     const invoice: InvoiceForReport = {
-      customer,
-      createdDate: new Date(Date.now()),
-      jobs: jobs.filter(job => this.selectedJobs.some(id => id === job.jobId)),
+      customer: this.customerId.value,
+      createdDate: new Date(),
+      jobs,
       products: totals.map(tot => ({ ...tot, price: tot.total / tot.count, jobsCount: 0 })),
       total: grandTotal,
       invoiceId: '',
@@ -78,9 +87,33 @@ export class NewInvoiceComponent implements OnInit {
   }
 
   onJobSelected(selectedJobs: number[]) {
-    this.selectedJobs = selectedJobs;
-    this.invoiceService.totalsFilter$.next(selectedJobs);
-    this.canSubmit = !!selectedJobs.length;
+    this.selection$.next(selectedJobs);
   }
+
+  private filterJobs(jobs: JobPartial[], sel: number[]): JobPartial[] {
+    return jobs.filter(job => sel.some(num => num === job.jobId));
+  }
+
+  private jobTotals(jobs: JobPartial[]): InvoicesTotals {
+    const totM = new Map<string, ProductTotals>();
+    for (const { products } of jobs) {
+      if (!products) { continue; }
+      const { name, price, count } = products as JobProduct;
+      totM.set(
+        name,
+        {
+          _id: name,
+          count: (totM.get(name)?.count || 0) + count,
+          total: (totM.get(name)?.total || 0) + price * count
+        }
+      );
+    }
+    const totals = [...totM.values()].sort((a, b) => a._id > b._id ? 1 : -1);
+    return {
+      totals,
+      grandTotal: totals.reduce((acc, curr) => acc + curr.total, 0),
+    };
+  }
+
 
 }

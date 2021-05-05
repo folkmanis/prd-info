@@ -1,45 +1,41 @@
 import { Injectable } from '@angular/core';
-import { Observable, merge, Subject, BehaviorSubject, EMPTY, of, observable } from 'rxjs';
-import { map, pluck, filter, tap, switchMap, share, shareReplay, startWith } from 'rxjs/operators';
-import { PrdApiService } from 'src/app/services';
-
+import { pick } from 'prd-cdk';
+import { EMPTY, Observable, of, Subject } from 'rxjs';
+import { pluck, startWith, switchMap, tap } from 'rxjs/operators';
 import {
-  Invoice, InvoiceTable, InvoicesFilter,
-  ProductTotals, JobsWithoutInvoicesTotals, InvoiceUpdate, INVOICE_UPDATE_FIELDS,
+  Invoice, InvoicesFilter, InvoiceTable,
+  InvoiceUpdate, INVOICE_UPDATE_FIELDS, JobPartial, JobQueryFilter, JobsWithoutInvoicesTotals
 } from 'src/app/interfaces';
 import { PaytraqInvoice } from 'src/app/interfaces/paytraq';
 import { Sale } from 'src/app/interfaces/paytraq/invoice';
+import { PrdApiService } from 'src/app/services';
 
 @Injectable({ providedIn: 'any' })
 export class InvoicesService {
-  totalsFilter$ = new Subject<number[]>();
 
   constructor(
     private prdApi: PrdApiService,
   ) { }
 
-  totals$: Observable<ProductTotals[]> = this.totalsFilter$.pipe(
-    switchMap(f => this.prdApi.invoices.getTotals(f)),
-    share(),
-  );
-
-  grandTotal$: Observable<number> = this.totals$.pipe(
-    map(totals => totals.reduce((acc, curr) => acc + curr.total, 0)),
-    share(),
-  );
-
-  reloadJobsWithoutInvoicesTotals$ = new Subject();
+  private reloadJobsWithoutInvoicesTotals$ = new Subject();
   jobsWithoutInvoicesTotals$: Observable<JobsWithoutInvoicesTotals[]> = this.reloadJobsWithoutInvoicesTotals$.pipe(
     startWith({}),
     switchMap(() => this.getJobsWithoutInvoicesTotals()),
-    shareReplay(1),
   );
 
   getJobsWithoutInvoicesTotals(): Observable<JobsWithoutInvoicesTotals[]> {
     return this.prdApi.jobs.jobsWithoutInvoicesTotals();
   }
 
-  createInvoice(params: { selectedJobs: number[]; customerId: string }): Observable<Invoice> {
+  getJobs(filter: JobQueryFilter): Observable<JobPartial[]> {
+    return this.prdApi.jobs.get(filter);
+  }
+
+  reloadJobsWithoutInvoicesTotals() {
+    this.reloadJobsWithoutInvoicesTotals$.next();
+  }
+
+  createInvoice(params: { selectedJobs: number[]; customerId: string; }): Observable<Invoice> {
     return this.prdApi.invoices.createInvoice(params).pipe(
       tap(() => this.reloadJobsWithoutInvoicesTotals$.next()),
     );
@@ -50,7 +46,7 @@ export class InvoicesService {
   }
 
   updateInvoice(id: string, update: InvoiceUpdate): Observable<any> {
-    update = pick(update, INVOICE_UPDATE_FIELDS);
+    update = pick(update, ...INVOICE_UPDATE_FIELDS);
     return this.prdApi.invoices.updateOne(id, update).pipe(
       switchMap(resp => resp ? of(resp) : EMPTY),
     );
@@ -99,13 +95,4 @@ class PaytraqInvoiceClass implements PaytraqInvoice {
       }
     };
   }
-}
-
-function pick<T, K extends keyof T>(obj: T, keys: readonly K[]): Pick<T, K> {
-  return Object.assign(
-    {},
-    ...Object.entries(obj)
-      .filter(([k]) => keys.filter(key => key === k))
-      .map(([k, v]) => ({ [k]: v }))
-  );
 }
