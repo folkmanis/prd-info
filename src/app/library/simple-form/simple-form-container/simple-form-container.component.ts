@@ -59,9 +59,18 @@ export class SimpleFormContainerComponent<T> implements OnInit, AfterViewInit, O
   ) { }
 
   /** Ctrl-Enter triggers save */
-  @HostListener('window:keydown', ['$event']) keyEvent(event: KeyboardEvent) {
+  @HostListener('window:keyup', ['$event']) keyEvent(event: KeyboardEvent) {
     if (event.key === 'Enter' && event.ctrlKey && this.isSaveEnabled) {
-      this.onSave();
+      const leave = event.shiftKey; // +Shift closes
+      event.stopPropagation();
+      event.preventDefault();
+      this.onSave({ leave });
+    }
+
+    if (event.key === 'Escape') {
+      event.stopPropagation();
+      event.preventDefault();
+      this.close();
     }
   }
 
@@ -86,22 +95,29 @@ export class SimpleFormContainerComponent<T> implements OnInit, AfterViewInit, O
     this._data$.complete();
   }
 
-  onSave() {
+  onSave({ leave }: { leave?: boolean; } = {}) {
     if (!this.formSource) { return; }
 
     const value = this.form.value;
     if (!this.formSource.isNew) {
       this.formSource.updateFn(value).pipe(
         last(),
-      ).subscribe(res => this._data$.next(res));
+      ).subscribe(res => {
+        this._data$.next(res);
+        leave && this.close();
+      });
     } else {
       this.formSource.insertFn(value).pipe(
         last(),
       ).subscribe(res => {
         this.form.markAsPristine();
-        this.router.navigate(['..', res], { relativeTo: this.route });
+        leave ? this.close() : this.router.navigate(['..', res], { relativeTo: this.route });
       });
     }
+  }
+
+  close() {
+    this.router.navigate(['..'], { relativeTo: this.route });
   }
 
 
