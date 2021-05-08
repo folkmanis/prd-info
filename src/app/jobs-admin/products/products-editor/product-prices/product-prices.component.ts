@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ControlContainer } from '@angular/forms';
+import { FormGroup, ControlContainer } from '@angular/forms';
 import { IFormArray } from '@rxweb/types';
 import { CustomerPartial, ProductPrice } from 'src/app/interfaces';
 
@@ -24,10 +24,14 @@ export class ProductPricesComponent implements OnInit {
     private controlContainer: ControlContainer,
   ) { }
 
+  pricesGroup: FormGroup;
   pricesForm: IFormArray<ProductPrice>;
 
   ngOnInit(): void {
     this.pricesForm = this.controlContainer.control as IFormArray<ProductPrice>;
+    this.pricesGroup = new FormGroup({
+      prices: this.pricesForm,
+    });
   }
 
 

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, Inject, OnDestroy } from '@angular/core';
-import { FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { IFormBuilder, IFormGroup, IFormArray } from '@rxweb/types';
 import { VeikalsBox, Colors, COLORS, MAX_ITEMS_BOX, Veikals } from 'src/app/interfaces';
 import { KastesPreferencesService } from '../../../services/kastes-preferences.service';
@@ -37,6 +37,7 @@ export class VeikalsEditComponent implements OnInit, OnDestroy {
   }
 
   fb: IFormBuilder;
+  veikalsForm: FormGroup;
   veikalsFormArray: IFormArray<VeikalsBox>;
 
   private _veikals$ = new ReplaySubject<Veikals>(1);
@@ -50,6 +51,9 @@ export class VeikalsEditComponent implements OnInit, OnDestroy {
   ) {
     this.fb = fb;
     this.veikalsFormArray = this.fb.array<VeikalsBox>([], { validators: this.totalsValidator() });
+    this.veikalsForm = new FormGroup({
+      boxs: this.veikalsFormArray,
+    })
     this._veikalsKastesChanges$ = this.veikalsFormArray.valueChanges.pipe(
       filter(_ => this.veikalsFormArray.valid),
       map(_ => this.recalculateTotals(this.veikalsFormArray.getRawValue())),

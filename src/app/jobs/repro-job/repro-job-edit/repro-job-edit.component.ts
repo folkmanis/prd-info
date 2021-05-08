@@ -39,7 +39,8 @@ export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
   get form(): IFormGroup<JobBase> {
     return this.formSource.form;
   }
-  get customerControl() { return this.form.get('customer'); }
+  get customerControl(): IFormControl<string> { 
+    return this.form.get('customer') as unknown as IFormControl<string>; }
   get nameControl() { return this.form.get('name'); }
   get productsControl() { return this.form.get('products'); }
 

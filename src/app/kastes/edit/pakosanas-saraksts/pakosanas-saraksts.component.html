@@ -30,7 +30,7 @@
                             <button mat-icon-button (click)="edited = undefined">
                                 <mat-icon>clear</mat-icon>
                             </button>
-                            <button mat-icon-button [disabled]="active.validationErrors"
+                            <button mat-icon-button [disabled]="!!active.validationErrors"
                                 (click)="onSaveVeikals(active.veikalsUpdate)">
                                 <mat-icon>save_alt</mat-icon>
                             </button>

@@ -17,13 +17,13 @@ interface UpdateAction<T> { type: Action; data?: T; idx?: number }
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DestroyService],
 })
-export class SimpleListTableComponent<T>  implements OnInit, OnDestroy, IControlValueAccessor<T[]> {
-  @Input() set columns(columns: (keyof T)[]) {
+export class SimpleListTableComponent<T, K extends keyof T & string>  implements OnInit, OnDestroy, IControlValueAccessor<T[]> {
+  @Input() set columns(columns: K[]) {
     this._columns = columns;
     this.displayedColumns = ['button', ...columns];
   }
-  get columns(): (keyof T)[] { return this._columns; }
-  private _columns: (keyof T)[] = [];
+  get columns(): K[] { return this._columns; }
+  private _columns: K[] = [];
 
   @Input() editDialog: ComponentType<any>;
 

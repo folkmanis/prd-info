@@ -1,11 +1,11 @@
-<table>
+<table [formGroup]="pricesGroup">
     <thead>
         <th class="buttons"> </th>
         <th class="customer-name"> Klients </th>
         <th class="price"> Cena </th>
     </thead>
 
-    <tbody [formGroup]="pricesForm">
+    <tbody formGroupName="prices">
         <tr *ngFor="let control of pricesForm.controls; index as idx;" [formArrayName]="idx">
             <!-- Pogas -->
             <td class="buttons">
