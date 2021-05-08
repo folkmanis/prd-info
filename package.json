@@ -11,7 +11,7 @@
   },
   "private": true,
   "dependencies": {
-    "@angular-devkit/architect": "^0.1102.11",
+    "@angular-devkit/architect": "^0.1102.12",
     "@angular/animations": "~11.2.12",
     "@angular/cdk": "^11.2.11",
     "@angular/common": "~11.2.12",
@@ -38,13 +38,13 @@
     "zone.js": "~0.11.3"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.1102.11",
+    "@angular-devkit/build-angular": "~0.1102.12",
     "@angular-eslint/builder": "^4.0.0",
     "@angular-eslint/eslint-plugin": "^4.0.0",
     "@angular-eslint/eslint-plugin-template": "^4.0.0",
     "@angular-eslint/schematics": "4.2.0",
     "@angular-eslint/template-parser": "^4.0.0",
-    "@angular/cli": "~11.2.11",
+    "@angular/cli": "~11.2.12",
     "@angular/compiler-cli": "~11.2.12",
     "@rxweb/types": "^1.0.6",
     "@types/file-saver": "^2.0.1",
