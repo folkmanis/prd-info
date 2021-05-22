@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 @import 'src/zmg-styles.scss';
 
 .scroll-container {
@@ -33,7 +34,7 @@
     width: 100%;
     font-size: 12pt;
     border-collapse: collapse;
-    border: 1px solid mat-color($primary, darker);
+    border: 1px solid mat.get-color-from-palette($primary, darker);
     text-align: left;
     margin-top: 5px;
     margin-bottom: 20px;
@@ -41,12 +42,12 @@
 
 .table-element {
     padding: 1px;
-    border: 1px solid mat-color($primary, darker);
+    border: 1px solid mat.get-color-from-palette($primary, darker);
 }
 
 .table-location {
     overflow-wrap: anywhere;
-    background-color: mat-color($primary, lighter);
+    background-color: mat.get-color-from-palette($primary, lighter);
     min-height: 32px;
     cursor: copy;
 }

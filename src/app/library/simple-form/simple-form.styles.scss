@@ -1,4 +1,4 @@
-@import "~@angular/material/theming";
+@use '~@angular/material' as mat;
 
 @mixin simple-form-color($config-or-theme) {
     // Extract the color configuration in case a theme has been passed.
@@ -11,11 +11,11 @@
     // Define any styles affected by the theme.
     .simple-form-table tbody tr {
         &:hover {
-            background-color: mat-color($primary, "lighter");
-            border-bottom-color: mat-color($primary, "darker");
+            background-color: mat.get-color-from-palette($primary, "lighter");
+            border-bottom-color: mat.get-color-from-palette($primary, "darker");
         }
         &.selected {
-            background-color: mat-color($primary, 50);
+            background-color: mat.get-color-from-palette($primary, 50);
         }
         &.disabled {
             opacity: 0.5;
@@ -31,7 +31,7 @@
         cursor: default;
         &:hover {
             font-weight: 800;
-            // font-weight: mat-font-weight($config, body+3);
+            // font-weight: mat.font-weight($config, body+3);
         }
     }
 }

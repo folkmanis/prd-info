@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 @use "src/zmg-styles.scss" as zmg;
 
 .mat-nav-list {
@@ -15,16 +16,16 @@
 .mat-list-item,
 .mat-tree-node {
   &.active {
-    background-color: zmg.mat-color(zmg.$primary, lighter);
-    color: zmg.mat-color(zmg.$primary, "primary-contrast");
+    background-color: zmg.mat.get-color-from-palette(zmg.$primary, lighter);
+    color: zmg.mat.get-color-from-palette(zmg.$primary, "primary-contrast");
 
     &:hover {
-      background-color: zmg.mat-color(zmg.$primary);
-      color: zmg.mat-color(zmg.$primary, "darker-contrast");
+      background-color: zmg.mat.get-color-from-palette(zmg.$primary);
+      color: zmg.mat.get-color-from-palette(zmg.$primary, "darker-contrast");
     }
   }
 }
 
 .active>a:hover {
-  color: zmg.mat-color(zmg.$primary, "darker-contrast");
+  color: zmg.mat.get-color-from-palette(zmg.$primary, "darker-contrast");
 }
