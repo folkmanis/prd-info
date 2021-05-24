@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 // Plus imports for other components in your app.
 
 // Include the common styles for Angular Material. We include this here so that you only
@@ -9,7 +10,6 @@
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
 
-@use '~@angular/material' as mat;
 @import "./zmg-styles.scss";
 
 // Include theme styles for core and each component used in your app.

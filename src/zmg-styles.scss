@@ -25,7 +25,7 @@ $warn: map-get($zmg-app-theme, warn);
 @mixin zmg-table-color($config-or-theme) {
   // Extract the color configuration in case a theme has been passed.
   // This allows consumers to either pass a theme object or a color configuration.
-  $config: mat-get-color-config($config-or-theme);
+  $config: mat.get-color-config($config-or-theme);
   // Extract the palettes you need from the theme definition.
   $primary: map-get($config, primary);
   $accent: map-get($config, accent);
@@ -45,7 +45,7 @@ $warn: map-get($zmg-app-theme, warn);
 
 @mixin zmg-table-typography($config-or-theme) {
   // Extract the typography configuration in case a theme has been passed.
-  $config: mat-get-typography-config($config-or-theme);
+  $config: mat.get-typography-config($config-or-theme);
 
   .app-table tbody tr,
   .app-table .mat-row {
@@ -66,8 +66,8 @@ $warn: map-get($zmg-app-theme, warn);
 
 @mixin zmg-table-theme($theme) {
   // Extracts the color and typography configurations from the theme.
-  $color: mat-get-color-config($theme);
-  $typography: mat-get-typography-config($theme);
+  $color: mat.get-color-config($theme);
+  $typography: mat.get-typography-config($theme);
 
   // Do not generate styles if configurations for individual theming
   // systems have been explicitly set to `null`.
