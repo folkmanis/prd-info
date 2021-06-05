@@ -5,11 +5,8 @@
 
     <mat-drawer-content>
 
-            <app-simple-list-container plusButton [large]="large$ | async" editorWidth="60%" (activeStatusChanges)="editorActive = $event">
-
-                <app-job-list [editorActive]="editorActive"></app-job-list>
-            
-            </app-simple-list-container>
+        <app-job-list></app-job-list>
+        <!-- <router-outlet></router-outlet> -->
 
     </mat-drawer-content>
 </mat-drawer-container>

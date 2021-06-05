@@ -28,7 +28,7 @@ export class JobFormSource extends SimpleFormSource<JobBase> {
         return this.form.controls.products as IFormArray<JobProduct>;
     }
 
-    createForm = this.jobFormService.createJobForm();
+    createForm = this.jobFormService.createJobForm;
 
     initValue(value: Partial<JobBase>, params?: { emitEvent: boolean; }): void {
         this.setProductsControls(value?.products as JobProduct[] || []);

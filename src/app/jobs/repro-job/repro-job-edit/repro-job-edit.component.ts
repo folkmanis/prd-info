@@ -1,22 +1,24 @@
 import { ChangeDetectionStrategy, Component, HostListener, Inject, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
-import { IFormControl, IFormGroup } from '@rxweb/types';
+import { IFormArray, IFormControl, IFormGroup } from '@rxweb/types';
 import { endOfWeek, startOfWeek } from 'date-fns';
 import { EMPTY, merge, Observable, of } from 'rxjs';
-import { distinctUntilChanged, filter, map, pluck, switchMap } from 'rxjs/operators';
-import { CustomerPartial, CustomerProduct, JobBase, SystemPreferences } from 'src/app/interfaces';
+import { distinctUntilChanged, filter, map, pluck, subscribeOn, switchMap } from 'rxjs/operators';
+import { CustomerPartial, CustomerProduct, JobBase, JobProduct, SystemPreferences } from 'src/app/interfaces';
 import { LayoutService } from 'src/app/layout/layout.service';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { CustomersService, ProductsService } from 'src/app/services';
 import { CONFIG } from 'src/app/services/config.provider';
 import { JobService } from 'src/app/services/job.service';
-import { JobFormSource } from '../services/job-form-source';
 import { ReproJobResolverService } from '../services/repro-job-resolver.service';
 import { CustomerInputComponent } from './customer-input/customer-input.component';
 import { ReproProductsEditorComponent } from './repro-products-editor/repro-products-editor.component';
 import { JobFormService } from '../services/job-form.service';
 import { LoginService } from 'src/app/services/login.service';
+import { ReproJobService } from '../services/repro-job.service';
+import { log } from 'prd-cdk';
 
 
 @Component({
@@ -26,25 +28,22 @@ import { LoginService } from 'src/app/services/login.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
-
   @ViewChild(CustomerInputComponent) customerInputElement: CustomerInputComponent;
-
   @ViewChild(ReproProductsEditorComponent) private productsEditor: ReproProductsEditorComponent;
 
-  formSource = new JobFormSource(
-    this.fb,
-    this.jobFormService,
-  );
+  form: IFormGroup<JobBase> = this.jobFormService.createJobForm();
 
-  get form(): IFormGroup<JobBase> {
-    return this.formSource.form;
+  get customerControl(): IFormControl<string> {
+    return this.form.get('customer') as unknown as IFormControl<string>;
   }
-  get customerControl(): IFormControl<string> { 
-    return this.form.get('customer') as unknown as IFormControl<string>; }
   get nameControl() { return this.form.get('name'); }
   get productsControl() { return this.form.get('products'); }
 
-  get isNew(): boolean { return this.formSource.isNew; }
+  get isNew(): boolean {
+    return !this.form.value.jobId;
+  }
+
+  folderPath$ = this.jobFormService.folderPath$;
 
   large$: Observable<boolean> = this.layoutService.isLarge$;
   customers$: Observable<CustomerPartial[]> = this.customersService.customers$;
@@ -62,10 +61,9 @@ export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
     max: endOfWeek(Date.now()),
   };
 
-  showPrice$: Observable<boolean>;
+  showPrice$: Observable<boolean> = this.loginService.isModule('calculations');
 
   constructor(
-    private fb: FormBuilder,
     private customersService: CustomersService,
     private jobService: JobService,
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
@@ -75,9 +73,15 @@ export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
     private resolver: ReproJobResolverService,
     private jobFormService: JobFormService,
     private loginService: LoginService,
+    private route: ActivatedRoute,
+    private reproJobService: ReproJobService,
   ) { }
 
   ngOnInit(): void {
+
+    this.route.data.pipe(
+      pluck('job'),
+    ).subscribe(job => this.onDataChange(job));
 
     this.customerProducts$ = merge(
       this.form.valueChanges,
@@ -89,13 +93,11 @@ export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
       switchMap(customer => this.productsService.productsCustomer(customer)),
     );
 
-  this.showPrice$ = this.loginService.isModule('calculations');
-
   }
 
   onDataChange(data: Partial<JobBase>) {
     data = this.setNewJobDefaults(data);
-    this.formSource.initValue(data);
+    this.jobFormService.initValue(this.form, data);
     if (!data.customer) {
       setTimeout(() => this.customerInputElement.focus(), 200);
     }
@@ -124,16 +126,16 @@ export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
       pluck('files'),
     ).subscribe(files => {
       this.form.controls.files.setValue(files);
-      this.formSource.folderPath$.next(files.path?.join('/'));
+      this.jobFormService.folderPath$.next(files.path?.join('/'));
     });
   }
 
   onRemoveProduct(idx: number) {
-    this.formSource.removeProduct(idx);
+    this.jobFormService.removeProduct(this.form.controls.products as IFormArray<JobProduct>, idx);
   }
 
   onAddProduct() {
-    this.formSource.addProduct();
+    this.jobFormService.addProduct(this.form.controls.products as IFormArray<JobProduct>);
     setTimeout(() => this.productsEditor.focusLatest(), 0);
   }
 

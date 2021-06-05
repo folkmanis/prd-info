@@ -1,10 +1,14 @@
+.container {
+    padding: 8px;
+}
+
 .wrapper {
     // display: grid;
     // grid-template-columns: 1fr;
     margin-top: 16px;
 }
 
-.wrapper.large {
+.large .wrapper {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     column-gap: 16px;
@@ -20,15 +24,15 @@
     margin-left: 16px;
 }
 
-.large > .left-column {
+.large .left-column {
     grid-column: 1;
 }
 
-.large > .right-column {
+.large .right-column {
     grid-column: -2 / -1;
 }
 
-.large > .width-span {
+.large .width-span {
     grid-column-start: 1;
     grid-column-end: -1;
 }

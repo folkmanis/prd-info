@@ -1,12 +1,12 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
-import { Router, ActivatedRoute, ActivationEnd } from '@angular/router';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DestroyService } from 'prd-cdk';
+import { JobQueryFilter } from 'src/app/interfaces/job';
 import { LayoutService } from 'src/app/layout/layout.service';
-import { Job, JobPartial, JobQueryFilter } from 'src/app/interfaces';
 import { JobService } from 'src/app/services/job.service';
 import { FileUploadService } from '../services/file-upload.service';
-import { DestroyService, log } from 'prd-cdk';
 
-const MAX_JOB_NAME_LENGTH = 100;
+const MAX_JOB_NAME_LENGTH = 100; // TODO take from global config
 
 @Component({
   selector: 'app-repro-job-list',
@@ -16,9 +16,6 @@ const MAX_JOB_NAME_LENGTH = 100;
   providers: [DestroyService],
 })
 export class ReproJobListComponent implements OnInit {
-
-  editorActive = false;
-
   large$ = this.layoutService.isLarge$;
   small$ = this.layoutService.isSmall$;
 
@@ -28,7 +25,6 @@ export class ReproJobListComponent implements OnInit {
     private fileUploadService: FileUploadService,
     private router: Router,
     private route: ActivatedRoute,
-    private destroy$: DestroyService,
   ) { }
 
   ngOnInit(): void {

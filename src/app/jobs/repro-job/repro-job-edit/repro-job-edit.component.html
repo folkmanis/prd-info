@@ -1,6 +1,7 @@
-<app-simple-form-container [formSource]="formSource" (dataChange)="onDataChange($event)" [formGroup]="form">
+<div class="container" [formGroup]="form" [class.large]="large$ | async">
 
-    <div class="wrapper" [class.large]="large$ | async">
+
+    <div class="wrapper">
         <!-- Klients -->
         <app-customer-input class="left-column" [control]="customerControl" [customers]="customers$ | async" required>
             Klients
@@ -64,12 +65,12 @@
         </mat-card-subtitle>
         <mat-card-content>
             <app-repro-products-editor #productsEditor formGroupName="products"
-                [customerProducts]="customerProducts$ | async" [showPrices]="showPrice$ | async" (removeProduct)="onRemoveProduct($event)">
+                [customerProducts]="customerProducts$ | async" [showPrices]="showPrice$ | async"
+                (removeProduct)="onRemoveProduct($event)">
             </app-repro-products-editor>
         </mat-card-content>
         <mat-card-actions>
-            <button mat-mini-fab (click)="onAddProduct()" [disabled]="!form.valid"
-                matTooltip="Ctrl-+" color="primary">
+            <button mat-mini-fab (click)="onAddProduct()" [disabled]="!form.valid" matTooltip="Ctrl-+" color="primary">
                 <mat-icon>add</mat-icon>
             </button>
         </mat-card-actions>
@@ -78,7 +79,7 @@
     <!-- Folderis -->
     <mat-card *ngIf="isNew === false">
         <mat-card-content>
-            <app-folder-path [path]="formSource.folderPath$ | async" (createFolder)="onCreateFolder()">
+            <app-folder-path [path]="folderPath$ | async" (createFolder)="onCreateFolder()">
             </app-folder-path>
         </mat-card-content>
     </mat-card>
@@ -95,4 +96,4 @@
         {{ form.value.jobId }}
     </ng-template>
 
-</app-simple-form-container>
+</div>
