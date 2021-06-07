@@ -28,27 +28,6 @@ export class JobFormService {
     private productsService: ProductsService,
   ) { this.fb = fb; }
 
-  insertFn(): (job: JobBase) => Observable<number> {
-    return (job) => {
-      const createFolder = !!this.fileUploadService.filesCount;
-      return this.jobService.newJob(job, { createFolder }).pipe(
-        tap(jobId => this.fileUploadService.startUpload(jobId)),
-      );
-    };
-  }
-
-  updateFn(): (job: JobBase) => Observable<JobBase> {
-    return (job) => {
-      job = {
-        ...job,
-        dueDate: endOfDay(new Date(job.dueDate)),
-      };
-      return this.jobService.updateJob(job).pipe(
-        concatMap(resp => resp ? this.jobService.getJob(job.jobId) : EMPTY)
-      );
-    };
-  }
-
   createJobForm(): IFormGroup<JobBase> {
     const jobForm: IFormGroup<JobBase> = this.fb.group<JobBase>(
       {

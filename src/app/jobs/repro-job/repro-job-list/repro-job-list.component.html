@@ -1,3 +1,5 @@
+<app-plus-button></app-plus-button>
+
 <mat-drawer-container>
     <mat-drawer button [small]="(large$ | async) === false">
         <app-side-panel (jobFilter)="onJobFilter($event)" (file)="onFileDrop($event)"></app-side-panel>
@@ -6,7 +8,6 @@
     <mat-drawer-content>
 
         <app-job-list></app-job-list>
-        <!-- <router-outlet></router-outlet> -->
 
     </mat-drawer-content>
 </mat-drawer-container>

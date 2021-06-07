@@ -1,20 +1,78 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
+import { endOfDay } from 'date-fns';
+import { EMPTY, Observable, of } from 'rxjs';
+import { concatMap, mergeMap, tap } from 'rxjs/operators';
 import { JobBase } from 'src/app/interfaces';
 import { JobService } from 'src/app/services/job.service';
 import { FileUploadService } from './file-upload.service';
 
+interface SavedState {
+  route: ActivatedRouteSnapshot;
+  state: RouterStateSnapshot;
+}
+
 @Injectable({
   providedIn: 'any'
 })
-export class ReproJobService {
+export class ReproJobService implements Resolve<Partial<JobBase>>{
+
+  private savedState: SavedState | undefined;
 
   constructor(
+    private router: Router,
     private jobsService: JobService,
     private fileUploadService: FileUploadService,
   ) { }
 
-  getJob(jobId: number): Observable<JobBase> | Observable<never> {
+
+  resolve(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<Partial<JobBase>> | Observable<never> {
+    this.savedState = { route, state };
+    return this.retrieveJob(route).pipe(
+      mergeMap(data => {
+        if (data) {
+          return of(data);
+        } else {
+          this.cancelNavigation(state);
+          return EMPTY;
+        }
+      })
+    );
+  }
+
+  reload(): Observable<Partial<JobBase>> | Observable<never> {
+    if (!this.savedState) { return EMPTY; }
+    const { route, state } = this.savedState;
+    return this.resolve(route, state);
+  }
+
+  private retrieveJob(route: ActivatedRouteSnapshot): Observable<Partial<JobBase>> {
+    const id = route.paramMap.get('jobId');
+    if (!isNaN(+id)) {
+      this.fileUploadService.setFiles([]);
+      return this.getJob(+id);
+    }
+    if (id === 'newName') {
+      return of({
+        name: route.paramMap.get('name'),
+        category: 'repro',
+        jobStatus: {
+          generalStatus: 20
+        }
+      });
+    }
+    return EMPTY;
+  };
+
+  private cancelNavigation(state: RouterStateSnapshot) {
+    this.router.navigate(state.url.split('/').slice(0, -1));
+  }
+
+
+  private getJob(jobId: number): Observable<JobBase> | Observable<never> {
     this.fileUploadService.setFiles([]);
     return this.jobsService.getJob(jobId);
   }
@@ -29,4 +87,23 @@ export class ReproJobService {
     });
 
   }
+
+  insertJob(job: JobBase): Observable<number> {
+    const createFolder = !!this.fileUploadService.filesCount;
+    return this.jobsService.newJob(job, { createFolder }).pipe(
+      tap(jobId => this.fileUploadService.startUpload(jobId)),
+    );
+  }
+
+  updateJob(job: JobBase): Observable<boolean> {
+    job = {
+      ...job,
+      dueDate: endOfDay(new Date(job.dueDate)),
+    };
+    return this.jobsService.updateJob(job).pipe(
+      concatMap(resp => resp ? of(true) : EMPTY)
+    );
+  }
+
+
 }

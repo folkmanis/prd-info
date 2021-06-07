@@ -6,7 +6,7 @@
         </div>
         <mat-progress-bar mode="determinate" [value]="progressPercent(progr)"></mat-progress-bar>
         <div *ngIf="isWaiting(progr)">
-            Gaida rindā...
+            Gaida augšupielādi...
         </div>
         <div *ngIf="isProgress(progr)">
             {{progressPercent(progr)}}%

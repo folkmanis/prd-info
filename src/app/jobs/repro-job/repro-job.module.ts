@@ -17,6 +17,8 @@ import { ProductAutocompleteComponent } from './repro-job-edit/repro-products-ed
 import { ProductControlDirective } from './repro-job-edit/repro-products-editor/product-control.directive';
 import { ReproJobComponent } from './repro-job.component';
 import { JobsRoutingModule } from './repro-job-routing.module';
+import { PlusButtonComponent } from './plus-button/plus-button.component';
+import { KeyPressDirective } from './repro-job-edit/key-press.directive';
 
 @NgModule({
   declarations: [
@@ -32,6 +34,8 @@ import { JobsRoutingModule } from './repro-job-routing.module';
     ProductAutocompleteComponent,
     ProductControlDirective,
     ReproJobComponent,
+    PlusButtonComponent,
+    KeyPressDirective,
   ],
   imports: [
     CommonModule,

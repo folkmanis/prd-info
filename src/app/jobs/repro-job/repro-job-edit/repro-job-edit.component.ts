@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, Component, HostListener, Inject, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { FormBuilder } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IFormArray, IFormControl, IFormGroup } from '@rxweb/types';
 import { endOfWeek, startOfWeek } from 'date-fns';
-import { EMPTY, merge, Observable, of } from 'rxjs';
-import { distinctUntilChanged, filter, map, pluck, subscribeOn, switchMap } from 'rxjs/operators';
+import { EMPTY, merge, Observable, of, Subject } from 'rxjs';
+import { delayWhen, distinctUntilChanged, filter, map, pluck, subscribeOn, switchMap, takeUntil } from 'rxjs/operators';
 import { CustomerPartial, CustomerProduct, JobBase, JobProduct, SystemPreferences } from 'src/app/interfaces';
 import { LayoutService } from 'src/app/layout/layout.service';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
@@ -12,13 +11,13 @@ import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { CustomersService, ProductsService } from 'src/app/services';
 import { CONFIG } from 'src/app/services/config.provider';
 import { JobService } from 'src/app/services/job.service';
-import { ReproJobResolverService } from '../services/repro-job-resolver.service';
 import { CustomerInputComponent } from './customer-input/customer-input.component';
 import { ReproProductsEditorComponent } from './repro-products-editor/repro-products-editor.component';
 import { JobFormService } from '../services/job-form.service';
 import { LoginService } from 'src/app/services/login.service';
 import { ReproJobService } from '../services/repro-job.service';
-import { log } from 'prd-cdk';
+import { log, DestroyService } from 'prd-cdk';
+import { FileUploadService } from '../services/file-upload.service';
 
 
 @Component({
@@ -26,12 +25,24 @@ import { log } from 'prd-cdk';
   templateUrl: './repro-job-edit.component.html',
   styleUrls: ['./repro-job-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [DestroyService],
 })
 export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
   @ViewChild(CustomerInputComponent) customerInputElement: CustomerInputComponent;
   @ViewChild(ReproProductsEditorComponent) private productsEditor: ReproProductsEditorComponent;
 
   form: IFormGroup<JobBase> = this.jobFormService.createJobForm();
+
+  reload$ = new Subject<void>();
+
+  private readonly job$: Observable<Partial<JobBase>> = merge(
+    this.route.data.pipe(pluck('job')),
+    this.reload$.pipe(
+      switchMap(_ => this.reproJobService.reload())
+    )
+  ).pipe(
+    map(job => this.setJobDefaults(job)),
+  );
 
   get customerControl(): IFormControl<string> {
     return this.form.get('customer') as unknown as IFormControl<string>;
@@ -60,6 +71,7 @@ export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
     min: startOfWeek(Date.now()),
     max: endOfWeek(Date.now()),
   };
+  progress$ = this.fileUploadService.uploadProgress$;
 
   showPrice$: Observable<boolean> = this.loginService.isModule('calculations');
 
@@ -70,18 +82,25 @@ export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
     private clipboard: ClipboardService,
     private layoutService: LayoutService,
     private productsService: ProductsService,
-    private resolver: ReproJobResolverService,
     private jobFormService: JobFormService,
     private loginService: LoginService,
     private route: ActivatedRoute,
     private reproJobService: ReproJobService,
+    private destroy$: DestroyService,
+    private router: Router,
+    private fileUploadService: FileUploadService,
   ) { }
 
   ngOnInit(): void {
 
-    this.route.data.pipe(
-      pluck('job'),
-    ).subscribe(job => this.onDataChange(job));
+    this.job$.pipe(
+      takeUntil(this.destroy$),
+    ).subscribe(job => {
+      this.jobFormService.initValue(this.form, job);
+      if (!job.customer) {
+        setTimeout(() => this.customerInputElement.focus(), 200);
+      }
+    });
 
     this.customerProducts$ = merge(
       this.form.valueChanges,
@@ -95,20 +114,22 @@ export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
 
   }
 
-  onDataChange(data: Partial<JobBase>) {
-    data = this.setNewJobDefaults(data);
-    this.jobFormService.initValue(this.form, data);
-    if (!data.customer) {
-      setTimeout(() => this.customerInputElement.focus(), 200);
+  onSave() {
+    if (!this.form.valid || this.form.pristine) {
+      return;
     }
-  }
-
-  /** Ctrl-+ event */
-  @HostListener('window:keydown', ['$event']) keyEvent(event: KeyboardEvent) {
-    if (event.key === '+' && event.ctrlKey) {
-      event.preventDefault();
-      event.stopPropagation();
-      this.onAddProduct();
+    if (this.isNew) {
+      this.reproJobService.insertJob(this.form.value)
+        .subscribe(id => {
+          this.form.markAsPristine();
+          this.router.navigate(['..'], { relativeTo: this.route });
+        });
+    } else {
+      this.reproJobService.updateJob(this.form.value)
+        .subscribe(_ => {
+          this.form.markAsPristine();
+          this.router.navigate(['..'], { relativeTo: this.route });
+        });
     }
   }
 
@@ -122,7 +143,7 @@ export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
 
   onCreateFolder() {
     this.jobService.updateJob({ jobId: this.form.value.jobId }, { createFolder: true }).pipe(
-      switchMap(resp => resp ? this.resolver.reload() : EMPTY),
+      switchMap(resp => resp ? this.reproJobService.reload() : EMPTY),
       pluck('files'),
     ).subscribe(files => {
       this.form.controls.files.setValue(files);
@@ -143,7 +164,7 @@ export class ReproJobEditComponent implements OnInit, CanComponentDeactivate {
     return this.form.pristine;
   }
 
-  private setNewJobDefaults(job: Partial<JobBase>): Partial<JobBase> {
+  private setJobDefaults(job: Partial<JobBase>): Partial<JobBase> {
     return {
       ...job,
       receivedDate: job.receivedDate || new Date(),

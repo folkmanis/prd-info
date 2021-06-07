@@ -1,7 +1,7 @@
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EMPTY, merge, Observable, of, Subject } from 'rxjs';
-import { finalize, map, mergeMap, share, tap, throttleTime } from 'rxjs/operators';
+import { finalize, map, mergeMap, share, shareReplay, tap, throttleTime } from 'rxjs/operators';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 import { FileUploadEventType, FileUploadMessage, UploadMessageBase } from '../../interfaces/file-upload-message';
 
@@ -27,7 +27,7 @@ export class FileUploadService {
     this._uploadProgress$,
   ).pipe(
     map(eventMapToArray),
-    share(),
+    shareReplay(1),
   );
 
   private uploadQueue: Map<string, File> = new Map();

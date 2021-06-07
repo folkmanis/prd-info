@@ -51,8 +51,8 @@
                                 matTooltip="Kopēt nosaukumu">
                                 <mat-icon>filter_none</mat-icon>
                             </button>
-                            <button *ngIf="job.jobStatus.generalStatus === 20" mat-icon-button color="primary"
-                                matToolTip="Pabeigts!" (click)="onSetJobStatus(job.jobId, 30, $event)">
+                            <button *ngIf="job.jobStatus.generalStatus === 20" mat-icon-button
+                                matToolTip="Atzīmēt pabeigtu" (click)="onSetJobStatus(job.jobId, 30, $event)">
                                 <mat-icon>check</mat-icon>
                             </button>
                             <button *ngIf="job.jobStatus.generalStatus === 10" mat-icon-button color="primary"
