@@ -9,28 +9,7 @@ import { CanDeactivateGuard } from 'src/app/library/guards/can-deactivate.guard'
 const routes: Routes = [
     {
         path: 'repro',
-        component: ReproJobComponent,
-        children: [
-            {
-                path: '',
-                component: ReproJobListComponent,
-            },
-            {
-                path: 'new',
-                component: ReproJobEditComponent,
-                data: {
-                    job: {},
-                },
-            },
-            {
-                path: ':jobId',
-                component: ReproJobEditComponent,
-                resolve: {
-                    job: ReproJobService,
-                },
-                canDeactivate: [CanDeactivateGuard]
-            }
-        ]
+        component: ReproJobListComponent,
     },
 ];
 

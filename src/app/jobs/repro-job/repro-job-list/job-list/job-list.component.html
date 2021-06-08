@@ -17,7 +17,7 @@
         </thead>
         <tbody>
             <tr *cdkVirtualFor="let job of dataSource$; let idx=index;" [class.job-completed]="job.invoiceId"
-                [routerLink]="job.jobId" routerLinkActive="selected">
+                [routerLink]="['./']" [queryParams]="{jobId: job.jobId}">
                 <!-- statusa indikators -->
                 <td class="column-state">
                     <mat-icon *ngIf="job.jobStatus.generalStatus === 20" color="primary">

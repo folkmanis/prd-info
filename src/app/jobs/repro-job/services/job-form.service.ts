@@ -12,7 +12,7 @@ import { endOfDay } from 'date-fns';
 
 
 @Injectable({
-  providedIn: 'any'
+  providedIn: 'root'
 })
 export class JobFormService {
 

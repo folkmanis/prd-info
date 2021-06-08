@@ -13,7 +13,7 @@ interface SavedState {
 }
 
 @Injectable({
-  providedIn: 'any'
+  providedIn: 'root'
 })
 export class ReproJobService implements Resolve<Partial<JobBase>>{
 
@@ -72,7 +72,7 @@ export class ReproJobService implements Resolve<Partial<JobBase>>{
   }
 
 
-  private getJob(jobId: number): Observable<JobBase> | Observable<never> {
+  getJob(jobId: number): Observable<JobBase> {
     this.fileUploadService.setFiles([]);
     return this.jobsService.getJob(jobId);
   }

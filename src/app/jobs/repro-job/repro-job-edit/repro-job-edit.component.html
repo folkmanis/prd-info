@@ -1,20 +1,18 @@
-<mat-toolbar>
+<h1 mat-dialog-title>
+    {{ form.value.jobId }} // {{form.value.name}}
+</h1>
+
+<mat-dialog-content>
+    <app-repro-job-form [jobForm]="form"></app-repro-job-form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
     <button mat-raised-button color="primary" [disabled]="form.pristine || form.valid === false" (click)="onSave()"
         appKeyPress="ctrlEnter">
         SAGLABĀT
     </button>
-    <button *ngIf="isNew === false" mat-raised-button [disabled]="form.pristine" (click)="reload$.next()">
-        ATIESTATĪT
+    <button mat-raised-button mat-dialog-close>
+        ATCELT
     </button>
-    <span>
-        {{ form.value.jobId }}
-    </span>
-    <span class="spacer"> </span>
-    <button mat-mini-fab routerLink="../" appKeyPress="escape">
-        <mat-icon>
-            close
-        </mat-icon>
-    </button>
-</mat-toolbar>
 
-<app-repro-job-form [jobForm]="form"></app-repro-job-form>
+</mat-dialog-actions>
