@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
 import { endOfDay } from 'date-fns';
 import { EMPTY, Observable, of } from 'rxjs';
-import { concatMap, mergeMap, tap } from 'rxjs/operators';
+import { concatMap, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { JobBase } from 'src/app/interfaces';
 import { JobService } from 'src/app/services/job.service';
 import { FileUploadService } from './file-upload.service';
@@ -102,6 +102,12 @@ export class ReproJobService implements Resolve<Partial<JobBase>>{
     };
     return this.jobsService.updateJob(job).pipe(
       concatMap(resp => resp ? of(true) : EMPTY)
+    );
+  }
+
+  createFolder(jobId: number): Observable<JobBase> {
+    return this.jobsService.updateJob({ jobId }, { createFolder: true }).pipe(
+      switchMap(resp => resp ? this.jobsService.getJob(jobId) : EMPTY),
     );
   }
 

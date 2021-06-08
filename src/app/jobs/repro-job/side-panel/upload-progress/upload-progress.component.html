@@ -1,5 +1,5 @@
-<ul *ngIf="progress;">
-    <li *ngFor="let progr of progress; trackBy: trackByFn;" @collapseAnimation>
+<ul>
+    <li *ngFor="let progr of progress$ | async; trackBy: trackByFn;" @collapseAnimation>
         <mat-divider></mat-divider>
         <div class="filename">
             {{progr.name}}

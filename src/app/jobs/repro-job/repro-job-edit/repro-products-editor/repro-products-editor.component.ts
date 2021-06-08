@@ -5,9 +5,10 @@ import { MatTable } from '@angular/material/table';
 import { IFormArray, IFormBuilder, IFormControl, IFormGroup } from '@rxweb/types';
 import * as equal from 'fast-deep-equal';
 import { from, Observable, Subject } from 'rxjs';
-import { filter, pluck, switchMap, toArray } from 'rxjs/operators';
+import { filter, map, pluck, switchMap, toArray } from 'rxjs/operators';
 import { CustomerProduct, JobProduct, SystemPreferences } from 'src/app/interfaces';
 import { CONFIG } from 'src/app/services/config.provider';
+import { LoginService } from 'src/app/services/login.service';
 import { ProductAutocompleteComponent } from './product-autocomplete/product-autocomplete.component';
 
 export const DEFAULT_UNITS = 'gab.';
@@ -33,15 +34,11 @@ export class ReproProductsEditorComponent implements OnInit {
   }
   private _customerProducts: CustomerProduct[] = [];
 
-  @Input() set showPrices(value: any){
-    if (coerceBooleanProperty(value)) {
-      this.columns = [...COLUMNS, 'price', 'total'];
-    }
-  }
+  columns$: Observable<string[]> = this.loginService.isModule('calculations').pipe(
+    map(show => show ? [...COLUMNS, 'price', 'total'] : COLUMNS)
+  );
 
   @Output('removeProduct') removeProduct$ = new EventEmitter<number>();
-
-  columns: string[] = [...COLUMNS]; // 'price', 'total', 'comments'
 
   readonly stateChanges = new Subject<void>();
 
@@ -57,10 +54,10 @@ export class ReproProductsEditorComponent implements OnInit {
 
   constructor(
     private changeDetector: ChangeDetectorRef,
+    private loginService: LoginService,
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
     @Self() private controlContainer: ControlContainer,
   ) { }
-
 
   ngOnInit(): void {
     this.prodFormArray = this.controlContainer.control as FormArray;

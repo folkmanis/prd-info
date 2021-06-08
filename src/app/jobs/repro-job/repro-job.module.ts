@@ -19,6 +19,7 @@ import { ReproJobComponent } from './repro-job.component';
 import { JobsRoutingModule } from './repro-job-routing.module';
 import { PlusButtonComponent } from './plus-button/plus-button.component';
 import { KeyPressDirective } from './repro-job-edit/key-press.directive';
+import { ReproJobFormComponent } from './repro-job-edit/repro-job-form/repro-job-form.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { KeyPressDirective } from './repro-job-edit/key-press.directive';
     ReproJobComponent,
     PlusButtonComponent,
     KeyPressDirective,
+    ReproJobFormComponent,
   ],
   imports: [
     CommonModule,

@@ -22,10 +22,7 @@ export class SidePanelComponent implements OnDestroy {
   );
 
   constructor(
-    private fileUploadService: FileUploadService,
   ) { }
-
-  progress$ = this.fileUploadService.uploadProgress$;
 
   ngOnDestroy() {
     this.fileDrop.complete();

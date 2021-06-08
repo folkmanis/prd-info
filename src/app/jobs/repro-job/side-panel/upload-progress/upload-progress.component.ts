@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FileUploadMessage, FileUploadEventType } from '../../../interfaces/file-upload-message';
 import { trigger, state, style, animate, transition } from '@angular/animations';
+import { FileUploadService } from '../../services/file-upload.service';
 
 @Component({
   selector: 'app-upload-progress',
@@ -21,9 +22,12 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
   ]
 })
 export class UploadProgressComponent implements OnInit {
-  @Input() progress: FileUploadMessage[] | undefined;
 
-  constructor() { }
+  progress$ = this.fileUploadService.uploadProgress$;
+
+  constructor(
+    private fileUploadService: FileUploadService,
+  ) { }
 
   ngOnInit(): void {
   }

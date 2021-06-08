@@ -43,9 +43,10 @@
             <mat-form-field>
                 <input matInput type="number" [formControl]="group.controls.price">
                 <span matSuffix>
-                   &nbsp;&euro;
+                    &nbsp;&euro;
                 </span>
-                <button matSuffix mat-icon-button matTooltip="Pievienot no cenrāža" (click)="onAddPrice(idx)" [disabled]="group.valid !== true">
+                <button matSuffix mat-icon-button matTooltip="Pievienot no cenrāža" (click)="onAddPrice(idx)"
+                    [disabled]="group.valid !== true">
                     <mat-icon>
                         keyboard_arrow_left
                     </mat-icon>
@@ -71,6 +72,7 @@
     </ng-container>
 
     <!-- <mat-header-row *matHeaderRowDef="columns;"></mat-header-row> -->
-    <mat-row *matRowDef="let group; columns: columns;" [appProductControl]="group" [customerProducts]="customerProducts"></mat-row>
+    <mat-row *matRowDef="let group; columns: columns$ | async;" [appProductControl]="group"
+        [customerProducts]="customerProducts"></mat-row>
 
 </mat-table>

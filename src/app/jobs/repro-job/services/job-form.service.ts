@@ -23,8 +23,6 @@ export class JobFormService {
   constructor(
     fb: FormBuilder,
     private customersService: CustomersService,
-    private jobService: JobService,
-    private fileUploadService: FileUploadService,
     private productsService: ProductsService,
   ) { this.fb = fb; }
 
