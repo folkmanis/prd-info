@@ -9,3 +9,10 @@
 .mat-drawer {
     width: 240px;
 }
+
+.plus-button {
+    z-index: 99;
+    position: absolute;
+    bottom: 20px;
+    left: 40px;
+}

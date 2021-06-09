@@ -4,7 +4,7 @@ import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { LibraryModule } from '../library/library.module';
 import { JobsRoutingModule } from './jobs-routing.module';
 import { JobsComponent } from './jobs.component';
-import { ReproJobModule } from './repro-job/repro-job.module';
+import { ReproJobsModule } from './repro-jobs/repro-jobs.module';
 
 
 
@@ -18,7 +18,7 @@ import { ReproJobModule } from './repro-job/repro-job.module';
     LibraryModule,
     MaterialLibraryModule,
     JobsRoutingModule,
-    ReproJobModule,
+    ReproJobsModule,
   ],
 })
 export class JobsModule { }

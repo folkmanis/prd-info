@@ -1,0 +1,31 @@
+<header>
+    <h4 *ngIf="isNew === false">
+        {{ form.value.jobId }}&nbsp;-&nbsp;
+    </h4>
+    <h4 class="job-name">
+        {{form.value.name}}
+    </h4>
+    <span class="spacer"></span>
+
+    <button mat-mini-fab mat-dialog-close tabindex="-1">
+        <mat-icon>
+            close
+        </mat-icon>
+    </button>
+</header>
+
+
+<mat-dialog-content>
+    <app-repro-job-form [jobForm]="form"></app-repro-job-form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+    <button mat-raised-button color="primary" [disabled]="form.pristine || form.valid === false" appKeyPress="ctrlEnter"
+        [mat-dialog-close]="{ form: this.form, job: this.form.value }">
+        SAGLABĀT
+    </button>
+    <button mat-raised-button mat-dialog-close>
+        ATCELT
+    </button>
+
+</mat-dialog-actions>

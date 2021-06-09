@@ -1,4 +1,8 @@
-<app-plus-button></app-plus-button>
+<button mat-fab color="primary" class="plus-button mat-elevation-z8" (click)="onNewJob()">
+    <mat-icon>
+        add
+    </mat-icon>
+</button>
 
 <mat-drawer-container>
     <mat-drawer button [small]="(large$ | async) === false">

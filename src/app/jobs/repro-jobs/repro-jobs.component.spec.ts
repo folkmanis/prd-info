@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ReproJobListComponent } from './repro-job-list.component';
+import { ReproJobsComponent } from './repro-jobs.component';
 
 describe('ReproJobListComponent', () => {
-  let component: ReproJobListComponent;
-  let fixture: ComponentFixture<ReproJobListComponent>;
+  let component: ReproJobsComponent;
+  let fixture: ComponentFixture<ReproJobsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ReproJobListComponent ]
+      declarations: [ReproJobsComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ReproJobListComponent);
+    fixture = TestBed.createComponent(ReproJobsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

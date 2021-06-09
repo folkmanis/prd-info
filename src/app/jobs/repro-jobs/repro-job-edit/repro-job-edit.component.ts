@@ -1,8 +1,21 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { IFormGroup } from '@rxweb/types';
+import { log } from 'prd-cdk';
+import { Observable } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { JobBase } from 'src/app/interfaces';
+import { LayoutService } from 'src/app/layout/layout.service';
 import { DialogData } from '../services/repro-job-dialog.service';
+
+const LARGE_SCREEN_SIZE = {
+  height: '80%',
+  width: '80%',
+};
+const SMALL_SCREEN_SIZE = {
+  height: '100%',
+  width: '100%',
+};
 
 
 @Component({
@@ -15,6 +28,8 @@ export class ReproJobEditComponent implements OnInit {
 
   form: IFormGroup<JobBase>;
 
+  isLarge$: Observable<boolean> = this.layoutService.isLarge$;
+
   get isNew(): boolean {
     return !this.form.value.jobId;
   }
@@ -22,17 +37,22 @@ export class ReproJobEditComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: DialogData,
     private dialogRef: MatDialogRef<ReproJobEditComponent, DialogData>,
+    private layoutService: LayoutService,
   ) { }
 
   ngOnInit(): void {
     this.form = this.data.form;
+
+    this.layoutService.isLarge$.pipe(
+      takeUntil(this.dialogRef.beforeClosed()),
+    ).subscribe(isLarge => this.setScreenConfig(isLarge));
   }
 
-  onSave() {
-    if (!this.form.valid || this.form.pristine) {
-      return;
-    }
-    this.dialogRef.close({ form: this.form, job: this.form.value });
+  private setScreenConfig(isLarge: boolean): void {
+    this.dialogRef.updateSize(
+      isLarge ? LARGE_SCREEN_SIZE.width : SMALL_SCREEN_SIZE.width,
+      isLarge ? LARGE_SCREEN_SIZE.height : SMALL_SCREEN_SIZE.height,
+    );
   }
 
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, ParamMap, Resolve, Router, RouterStateSnapshot } from '@angular/router';
 import { endOfDay } from 'date-fns';
 import { EMPTY, Observable, of } from 'rxjs';
 import { concatMap, mergeMap, switchMap, tap } from 'rxjs/operators';
@@ -15,9 +15,7 @@ interface SavedState {
 @Injectable({
   providedIn: 'root'
 })
-export class ReproJobService implements Resolve<Partial<JobBase>>{
-
-  private savedState: SavedState | undefined;
+export class ReproJobService {
 
   constructor(
     private router: Router,
@@ -25,52 +23,14 @@ export class ReproJobService implements Resolve<Partial<JobBase>>{
     private fileUploadService: FileUploadService,
   ) { }
 
-
-  resolve(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Observable<Partial<JobBase>> | Observable<never> {
-    this.savedState = { route, state };
-    return this.retrieveJob(route).pipe(
-      mergeMap(data => {
-        if (data) {
-          return of(data);
-        } else {
-          this.cancelNavigation(state);
-          return EMPTY;
-        }
-      })
-    );
-  }
-
-  reload(): Observable<Partial<JobBase>> | Observable<never> {
-    if (!this.savedState) { return EMPTY; }
-    const { route, state } = this.savedState;
-    return this.resolve(route, state);
-  }
-
-  private retrieveJob(route: ActivatedRouteSnapshot): Observable<Partial<JobBase>> {
-    const id = route.paramMap.get('jobId');
+  retrieveJob(paramMap: ParamMap): Observable<Partial<JobBase>> {
+    const id = paramMap.get('jobId');
     if (!isNaN(+id)) {
       this.fileUploadService.setFiles([]);
       return this.getJob(+id);
     }
-    if (id === 'newName') {
-      return of({
-        name: route.paramMap.get('name'),
-        category: 'repro',
-        jobStatus: {
-          generalStatus: 20
-        }
-      });
-    }
     return EMPTY;
   };
-
-  private cancelNavigation(state: RouterStateSnapshot) {
-    this.router.navigate(state.url.split('/').slice(0, -1));
-  }
-
 
   getJob(jobId: number): Observable<JobBase> {
     this.fileUploadService.setFiles([]);
@@ -88,14 +48,14 @@ export class ReproJobService implements Resolve<Partial<JobBase>>{
 
   }
 
-  insertJob(job: JobBase): Observable<number> {
+  insertJobAndUploadFiles(job: Partial<JobBase>): Observable<number> {
     const createFolder = !!this.fileUploadService.filesCount;
     return this.jobsService.newJob(job, { createFolder }).pipe(
       tap(jobId => this.fileUploadService.startUpload(jobId)),
     );
   }
 
-  updateJob(job: JobBase): Observable<boolean> {
+  updateJob(job: Partial<JobBase>): Observable<boolean> {
     job = {
       ...job,
       dueDate: endOfDay(new Date(job.dueDate)),

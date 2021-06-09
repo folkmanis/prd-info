@@ -1,0 +1,15 @@
+header {
+    display: flex;
+    align-items: center;
+    height: 48px;
+}
+
+.spacer {
+    flex: 1;
+}
+
+h4.job-name {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+}
