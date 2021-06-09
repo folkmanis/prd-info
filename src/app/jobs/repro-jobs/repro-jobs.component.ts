@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DestroyService } from 'prd-cdk';
 import { concatMap, filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
@@ -29,11 +30,11 @@ export class ReproJobsComponent implements OnInit {
     private layoutService: LayoutService,
     private jobService: JobService,
     private fileUploadService: FileUploadService,
-    private router: Router,
     private route: ActivatedRoute,
     private editDialogService: ReproJobDialogService,
     private reproJobService: ReproJobService,
     private destroy$: DestroyService,
+    private location: Location,
   ) { }
 
   ngOnInit(): void {
@@ -42,7 +43,7 @@ export class ReproJobsComponent implements OnInit {
       filter(jobId => jobId && !isNaN(+jobId)),
       switchMap(jobId => this.reproJobService.getJob(+jobId)),
       concatMap(job => this.editDialogService.openJob(job).afterClosed().pipe(
-        tap(_ => this.router.navigate(['.'], { relativeTo: this.route })),
+        tap(_ => this.location.back()),
         concatMap(data => data ? of(data.job) : EMPTY),
         concatMap(job => this.reproJobService.updateJob(job))
       )),
