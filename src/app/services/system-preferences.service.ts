@@ -81,7 +81,7 @@ export class SystemPreferencesService {
 }
 
 function findModule([ev, modules]: [NavigationEnd, UserModule[]]): UserModule[] {
-  const [, ...path] = ev.url.split(/[/;]/);
+  const [, ...path] = ev.url.split(/[/;?]/);
 
   let userModules: UserModule[] | undefined = [...modules];
   const activeModules: UserModule[] = [];
