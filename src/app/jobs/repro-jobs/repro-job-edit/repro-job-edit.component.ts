@@ -9,7 +9,7 @@ import { LayoutService } from 'src/app/layout/layout.service';
 import { DialogData } from '../services/repro-job-dialog.service';
 
 const LARGE_SCREEN_SIZE = {
-  height: '80%',
+  height: '90%',
   width: '80%',
 };
 const SMALL_SCREEN_SIZE = {
