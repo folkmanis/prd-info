@@ -11,7 +11,7 @@ import { ReproJobDialogService } from './services/repro-job-dialog.service';
 import { log } from 'prd-cdk';
 import { EMPTY, Observable, of, pipe } from 'rxjs';
 import { JobBase } from 'src/app/interfaces';
-import { ReproJobService } from './services/repro-job.service';
+import { endOfDay } from 'date-fns';
 
 const MAX_JOB_NAME_LENGTH = 100; // TODO take from global config
 
@@ -32,7 +32,6 @@ export class ReproJobsComponent implements OnInit {
     private fileUploadService: FileUploadService,
     private route: ActivatedRoute,
     private editDialogService: ReproJobDialogService,
-    private reproJobService: ReproJobService,
     private destroy$: DestroyService,
     private location: Location,
   ) { }
@@ -41,12 +40,13 @@ export class ReproJobsComponent implements OnInit {
     this.route.queryParamMap.pipe(
       map(params => params.get('jobId')),
       filter(jobId => jobId && !isNaN(+jobId)),
-      switchMap(jobId => this.reproJobService.getJob(+jobId)),
+      switchMap(jobId => this.jobService.getJob(+jobId)),
       concatMap(job => this.editDialogService.openJob(job).afterClosed().pipe(
         tap(_ => this.location.back()),
         concatMap(data => data ? of(data.job) : EMPTY),
-        concatMap(job => this.reproJobService.updateJob(job))
+        concatMap(job => this.updateJob(job))
       )),
+      takeUntil(this.destroy$),
     ).subscribe();
   }
 
@@ -72,7 +72,7 @@ export class ReproJobsComponent implements OnInit {
       concatMap(data => {
         if (data) {
           return of(data.form.value).pipe(
-            concatMap(job => this.reproJobService.insertJobAndUploadFiles(job)),
+            concatMap(job => this.insertJobAndUploadFiles(job)),
           );
         } else {
           this.fileUploadService.clearUploadQueue();
@@ -86,13 +86,26 @@ export class ReproJobsComponent implements OnInit {
   onNewJob(job: Partial<JobBase> = {}) {
     this.editDialogService.openJob(job).afterClosed().pipe(
       concatMap(data => data ? of(data.job) : EMPTY),
-      concatMap(job => this.reproJobService.insertJobAndUploadFiles(job)),
+      concatMap(job => this.insertJobAndUploadFiles(job)),
       takeUntil(this.destroy$),
     ).subscribe();
 
   }
 
+  private updateJob(job: Partial<JobBase>): Observable<boolean> {
+    job = {
+      ...job,
+      dueDate: endOfDay(new Date(job.dueDate)),
+    };
+    return this.jobService.updateJob(job);
+  }
 
+  private insertJobAndUploadFiles(job: Partial<JobBase>): Observable<number> {
+    const createFolder = !!this.fileUploadService.filesCount;
+    return this.jobService.newJob(job, { createFolder }).pipe(
+      tap(jobId => this.fileUploadService.startUpload(jobId)),
+    );
+  }
 
 
 }

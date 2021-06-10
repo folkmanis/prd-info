@@ -1,14 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable, EMPTY, of } from 'rxjs';
-import { map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
-import { MatDialog, MAT_DIALOG_DATA, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
-import { JobBase } from 'src/app/interfaces';
-import { ReproJobService } from './repro-job.service';
-import { JobFormService } from './job-form.service';
-import { FileUploadService } from './file-upload.service';
-import { ReproJobEditComponent } from '../repro-job-edit/repro-job-edit.component';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { IFormGroup } from '@rxweb/types';
-import { LayoutService } from 'src/app/layout/layout.service';
+import { JobBase } from 'src/app/interfaces';
+import { ReproJobEditComponent } from '../repro-job-edit/repro-job-edit.component';
+import { JobFormService } from './job-form.service';
 
 export interface DialogData {
   form: IFormGroup<JobBase>;
@@ -28,7 +23,6 @@ export class ReproJobDialogService {
 
   constructor(
     private matDialog: MatDialog,
-    private reproJobService: ReproJobService,
     private formService: JobFormService,
   ) { }
 

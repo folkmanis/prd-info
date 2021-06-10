@@ -1,23 +1,25 @@
-import { Component, OnInit, Input, Output, ViewChild, EventEmitter, Inject } from '@angular/core';
+import { Component, OnInit, Input, Output, ViewChild, EventEmitter, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { IFormArray, IFormControl, IFormGroup } from '@rxweb/types';
 import { endOfWeek, startOfWeek } from 'date-fns';
-import { merge, Observable, of } from 'rxjs';
-import { distinctUntilChanged, filter, map, pluck, switchMap } from 'rxjs/operators';
+import { EMPTY, merge, Observable, of, BehaviorSubject } from 'rxjs';
+import { distinctUntilChanged, filter, map, pluck, startWith, switchMap } from 'rxjs/operators';
 import { CustomerPartial, CustomerProduct, JobBase, JobProduct, SystemPreferences } from 'src/app/interfaces';
 import { LayoutService } from 'src/app/layout/layout.service';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { CONFIG } from 'src/app/services/config.provider';
 import { CustomersService } from 'src/app/services/customers.service';
+import { JobService } from 'src/app/services/job.service';
 import { ProductsService } from 'src/app/services/products.service';
 import { JobFormService } from '../../services/job-form.service';
-import { ReproJobService } from '../../services/repro-job.service';
 import { CustomerInputComponent } from '../customer-input/customer-input.component';
 import { ReproProductsEditorComponent } from '../repro-products-editor/repro-products-editor.component';
+import { log } from 'prd-cdk';
 
 @Component({
   selector: 'app-repro-job-form',
   templateUrl: './repro-job-form.component.html',
-  styleUrls: ['./repro-job-form.component.scss']
+  styleUrls: ['./repro-job-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReproJobFormComponent implements OnInit {
 
@@ -50,7 +52,7 @@ export class ReproJobFormComponent implements OnInit {
   categories$ = this.config$.pipe(
     pluck('jobs', 'productCategories'),
   );
-  folderPath$ = this.jobFormService.folderPath$;
+  folderPath$: Observable<string>;
   customers$: Observable<CustomerPartial[]> = this.customersService.customers$;
   customerProducts$: Observable<CustomerProduct[]>;
 
@@ -59,8 +61,8 @@ export class ReproJobFormComponent implements OnInit {
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
     private clipboard: ClipboardService,
     private layoutService: LayoutService,
+    private jobsService: JobService,
     private jobFormService: JobFormService,
-    private reproJobService: ReproJobService,
     private customersService: CustomersService,
     private productsService: ProductsService,
   ) { }
@@ -74,6 +76,12 @@ export class ReproJobFormComponent implements OnInit {
       filter(customer => !!customer),
       distinctUntilChanged(),
       switchMap(customer => this.productsService.productsCustomer(customer)),
+    );
+
+    this.folderPath$ = this.form.valueChanges.pipe(
+      startWith(this.form.value),
+      pluck('files'),
+      map(files => files?.path?.join('/'))
     );
 
   }
@@ -96,15 +104,14 @@ export class ReproJobFormComponent implements OnInit {
   }
 
   onCreateFolder() {
-    this.reproJobService.createFolder(this.form.value.jobId).pipe(
+    const jobId = this.form.value.jobId;
+    this.jobsService.updateJob({ jobId }, { createFolder: true }).pipe(
+      switchMap(resp => resp ? this.jobsService.getJob(jobId) : EMPTY),
       pluck('files'),
     ).subscribe(files => {
       this.form.controls.files.setValue(files);
-      this.jobFormService.folderPath$.next(files.path?.join('/'));
     });
   }
-
-
 
 
 }

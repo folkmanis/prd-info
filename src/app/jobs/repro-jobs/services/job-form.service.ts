@@ -18,8 +18,6 @@ export class JobFormService {
 
   private fb: IFormBuilder;
 
-  folderPath$: BehaviorSubject<string> = new BehaviorSubject('');
-
   constructor(
     fb: FormBuilder,
     private customersService: CustomersService,
@@ -143,7 +141,6 @@ export class JobFormService {
       form.get('receivedDate').disable({ emitEvent: false });
     }
     form.markAsPristine();
-    this.folderPath$.next(value.files?.path?.join('/') || '');
   }
 
   setProductsControls(controls: IFormArray<JobProduct>, products: JobProduct[]) {
