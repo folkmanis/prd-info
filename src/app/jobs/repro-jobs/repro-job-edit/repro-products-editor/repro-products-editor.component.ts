@@ -1,14 +1,13 @@
-import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnInit, Output, QueryList, ViewChild, ViewChildren, ChangeDetectionStrategy, Self } from '@angular/core';
-import { FormArray, FormBuilder, NgControl, ValidationErrors, ValidatorFn, Validators, ControlContainer } from '@angular/forms';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnInit, Output, QueryList, Self, ViewChild, ViewChildren } from '@angular/core';
+import { ControlContainer } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
-import { IFormArray, IFormBuilder, IFormControl, IFormGroup } from '@rxweb/types';
-import * as equal from 'fast-deep-equal';
 import { from, Observable, Subject } from 'rxjs';
 import { filter, map, pluck, switchMap, toArray } from 'rxjs/operators';
-import { CustomerProduct, JobProduct, SystemPreferences } from 'src/app/interfaces';
+import { CustomerProduct, SystemPreferences } from 'src/app/interfaces';
 import { CONFIG } from 'src/app/services/config.provider';
 import { LoginService } from 'src/app/services/login.service';
+import { ProductFormArray } from '../../services/product-form-array';
+import { ProductFormGroup } from '../../services/product-form-group';
 import { ProductAutocompleteComponent } from './product-autocomplete/product-autocomplete.component';
 
 export const DEFAULT_UNITS = 'gab.';
@@ -24,7 +23,7 @@ const COLUMNS = ['action', 'name', 'count', 'units'];
 export class ReproProductsEditorComponent implements OnInit {
 
   @ViewChildren(ProductAutocompleteComponent) private nameInputs: QueryList<ProductAutocompleteComponent>;
-  @ViewChild(MatTable) private table: MatTable<IFormGroup<JobProduct>>;
+  @ViewChild(MatTable) private table: MatTable<ProductFormGroup>;
 
   @Input() set customerProducts(customerProducts: CustomerProduct[]) {
     this._customerProducts = customerProducts || [];
@@ -42,7 +41,7 @@ export class ReproProductsEditorComponent implements OnInit {
 
   readonly stateChanges = new Subject<void>();
 
-  prodFormArray: IFormArray<JobProduct>;
+  prodFormArray: ProductFormArray;
 
   readonly units$ = this.config$.pipe(
     pluck('jobs', 'productUnits'),
@@ -60,7 +59,7 @@ export class ReproProductsEditorComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.prodFormArray = this.controlContainer.control as FormArray;
+    this.prodFormArray = this.controlContainer.control as ProductFormArray;
 
     this.stateChanges.subscribe(_ => {
       this.table.renderRows();

@@ -1,9 +1,10 @@
 import { Directive, Input, Output, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { IFormControl, IFormGroup } from '@rxweb/types';
 import { combineLatest, BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime, filter, map, pluck, takeUntil } from 'rxjs/operators';
 import { CustomerProduct, JobProduct, SystemPreferences } from 'src/app/interfaces';
 import { DestroyService, log } from 'prd-cdk';
+import { ProductFormGroup } from '../../services/product-form-group';
+import { FormControl } from '@angular/forms';
 
 @Directive({
   selector: '[appProductControl]',
@@ -11,7 +12,7 @@ import { DestroyService, log } from 'prd-cdk';
 })
 export class ProductControlDirective implements OnInit {
 
-  @Input('appProductControl') control: IFormGroup<JobProduct>;
+  @Input('appProductControl') control: ProductFormGroup;
 
   @Output() customerProducts$ = new BehaviorSubject<CustomerProduct[]>([]);
 
@@ -20,9 +21,9 @@ export class ProductControlDirective implements OnInit {
     this.customerProducts$.next(value);
   }
 
-  get unitsControl() { return this.control.get('units') as unknown as IFormControl<string>; }
-  get nameControl() { return this.control.get('name') as unknown as IFormControl<string>; }
-  get priceControl() { return this.control.get('price') as unknown as IFormControl<number>; }
+  get unitsControl() { return this.control.get('units') as FormControl; }
+  get nameControl() { return this.control.get('name') as FormControl; }
+  get priceControl() { return this.control.get('price') as FormControl; }
 
   selectedProduct$: Observable<CustomerProduct>;
 

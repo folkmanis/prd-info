@@ -10,7 +10,7 @@
         <mat-label>Izveidošanas datums</mat-label>
         <input matInput formControlName="receivedDate" [matDatepicker]="datePicker" required [min]="receivedDate.min"
             [max]="receivedDate.max">
-        <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+        <mat-datepicker-toggle matSuffix [for]="datePicker" tabindex="-1"></mat-datepicker-toggle>
         <mat-datepicker #datePicker></mat-datepicker>
     </mat-form-field>
 
@@ -86,7 +86,7 @@
     </mat-card>
 
     <!-- Folderis -->
-    <mat-card *ngIf="isNew === false" class="right-column">
+    <mat-card *ngIf="form.isNew === false" class="right-column">
         <mat-card-content>
             <app-folder-path [path]="folderPath$ | async" (createFolder)="onCreateFolder()">
             </app-folder-path>

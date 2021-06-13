@@ -7,6 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 import { JobBase } from 'src/app/interfaces';
 import { LayoutService } from 'src/app/layout/layout.service';
 import { DialogData } from '../services/repro-job-dialog.service';
+import { JobFormGroup } from '../services/job-form-group';
 
 const LARGE_SCREEN_SIZE = {
   height: '90%',
@@ -26,12 +27,12 @@ const SMALL_SCREEN_SIZE = {
 })
 export class ReproJobEditComponent implements OnInit {
 
-  form: IFormGroup<JobBase>;
+  form: JobFormGroup;
 
   isLarge$: Observable<boolean> = this.layoutService.isLarge$;
 
   get isNew(): boolean {
-    return !this.form.value.jobId;
+    return !this.form.jobValue.jobId;
   }
 
   constructor(

@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, ViewChild, EventEmitter, Inject, ChangeDetectionStrategy } from '@angular/core';
-import { IFormArray, IFormControl, IFormGroup } from '@rxweb/types';
-import { endOfWeek, startOfWeek } from 'date-fns';
+import { addDays, subDays, endOfWeek, startOfWeek } from 'date-fns';
 import { EMPTY, merge, Observable, of, BehaviorSubject } from 'rxjs';
 import { distinctUntilChanged, filter, map, pluck, startWith, switchMap } from 'rxjs/operators';
 import { CustomerPartial, CustomerProduct, JobBase, JobProduct, SystemPreferences } from 'src/app/interfaces';
@@ -10,10 +9,11 @@ import { CONFIG } from 'src/app/services/config.provider';
 import { CustomersService } from 'src/app/services/customers.service';
 import { JobService } from 'src/app/services/job.service';
 import { ProductsService } from 'src/app/services/products.service';
-import { JobFormService } from '../../services/job-form.service';
 import { CustomerInputComponent } from '../customer-input/customer-input.component';
 import { ReproProductsEditorComponent } from '../repro-products-editor/repro-products-editor.component';
 import { log } from 'prd-cdk';
+import { JobFormGroup } from '../../services/job-form-group';
+import { AbstractControl, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-repro-job-form',
@@ -26,24 +26,24 @@ export class ReproJobFormComponent implements OnInit {
   @ViewChild(CustomerInputComponent) customerInput: CustomerInputComponent;
   @ViewChild(ReproProductsEditorComponent) private productsEditor: ReproProductsEditorComponent;
 
-  @Input('jobForm') form: IFormGroup<JobBase>;
+  @Input('jobForm') form: JobFormGroup;
 
   large$: Observable<boolean> = this.layoutService.isLarge$;
 
   receivedDate = {
-    min: startOfWeek(Date.now()),
-    max: endOfWeek(Date.now()),
+    min: subDays(Date.now(), 5),
+    max: addDays(Date.now(), 3),
   };
 
-  get isNew(): boolean {
-    return !this.form.value.jobId;
+  get customerControl(): FormControl {
+    return this.form.get('customer') as FormControl;
   }
-
-  get customerControl(): IFormControl<string> {
-    return this.form.get('customer') as unknown as IFormControl<string>;
+  get nameControl() {
+    return this.form.get('name') as FormControl;
   }
-  get nameControl() { return this.form.get('name'); }
-  get productsControl() { return this.form.get('products'); }
+  get productsControl() {
+    return this.form.products;
+  }
 
   jobStates$ = this.config$.pipe(
     pluck('jobs', 'jobStates'),
@@ -62,12 +62,12 @@ export class ReproJobFormComponent implements OnInit {
     private clipboard: ClipboardService,
     private layoutService: LayoutService,
     private jobsService: JobService,
-    private jobFormService: JobFormService,
     private customersService: CustomersService,
     private productsService: ProductsService,
   ) { }
 
   ngOnInit(): void {
+
     this.customerProducts$ = merge(
       this.form.valueChanges,
       of(this.form.value)
@@ -95,11 +95,11 @@ export class ReproJobFormComponent implements OnInit {
   }
 
   onRemoveProduct(idx: number) {
-    this.jobFormService.removeProduct(this.form.controls.products as IFormArray<JobProduct>, idx);
+    this.form.products.removeProduct(idx);
   }
 
   onAddProduct() {
-    this.jobFormService.addProduct(this.form.controls.products as IFormArray<JobProduct>);
+    this.form.products.addProduct();
     setTimeout(() => this.productsEditor.focusLatest(), 0);
   }
 

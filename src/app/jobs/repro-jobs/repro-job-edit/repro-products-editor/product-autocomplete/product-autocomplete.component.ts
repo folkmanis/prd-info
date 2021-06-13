@@ -1,11 +1,8 @@
-import { Component, OnInit, Input, Self, ViewChild, ElementRef, ChangeDetectionStrategy, Inject, Host } from '@angular/core';
-import { NgControl, ControlValueAccessor, FormControl, ControlContainer, FormGroup } from '@angular/forms';
-import { CustomerProduct, JobProduct } from 'src/app/interfaces';
-import { Observable, combineLatest, BehaviorSubject } from 'rxjs';
-import { startWith, map, share, shareReplay, tap, filter, debounceTime, distinctUntilChanged, pluck, takeUntil } from 'rxjs/operators';
-import { IControlValueAccessor, IFormControl, IFormGroup } from '@rxweb/types';
-import { log, DestroyService } from 'prd-cdk';
-import { ProductControlDirective } from '../product-control.directive';
+import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { map, shareReplay, startWith } from 'rxjs/operators';
+import { CustomerProduct } from 'src/app/interfaces';
 
 @Component({
   selector: 'app-product-autocomplete',
@@ -21,11 +18,11 @@ export class ProductAutocompleteComponent implements OnInit {
     this.customerProducts$.next(val);
   }
 
-  @Input('control') productNameControl: IFormControl<string>;
+  @Input('control') productNameControl: FormControl;
 
   private customerProducts$ = new BehaviorSubject<CustomerProduct[]>([]);
 
-  constructor(  ) { }
+  constructor() { }
 
   private filteredProducts$: Observable<CustomerProduct[]>;
   firstProducts$: Observable<CustomerProduct[]>;

@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
-import { IFormGroup } from '@rxweb/types';
 import { JobBase } from 'src/app/interfaces';
 import { ReproJobEditComponent } from '../repro-job-edit/repro-job-edit.component';
-import { JobFormService } from './job-form.service';
+import { JobFormGroup } from './job-form-group';
+import { CustomersService, ProductsService } from 'src/app/services';
 
 export interface DialogData {
-  form: IFormGroup<JobBase>;
+  form: JobFormGroup;
   job: Partial<JobBase>;
 }
 
@@ -23,13 +23,13 @@ export class ReproJobDialogService {
 
   constructor(
     private matDialog: MatDialog,
-    private formService: JobFormService,
+    private customersService: CustomersService,
+    private productsService: ProductsService,
   ) { }
 
   openJob(job: Partial<JobBase>): MatDialogRef<ReproJobEditComponent, DialogData> {
     job = this.setJobDefaults(job);
-    const form = this.formService.createJobForm();
-    this.formService.initValue(form, job);
+    const form = new JobFormGroup(this.customersService, this.productsService, job);
     const config: MatDialogConfig = {
       ...CONFIG,
       autoFocus: !job.customer,
