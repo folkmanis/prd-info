@@ -17,9 +17,13 @@ export class InvoiceProductsComponent implements OnInit, OnDestroy {
     this.products$.next(products);
   }
 
-  @Input() set total(total: number) { this._total = total; }
-  get total(): number { return this._total; }
   private _total = 0;
+  @Input() set total(total: number) {
+    this._total = total;
+  }
+  get total(): number {
+    return this._total;
+  }
 
   displayedColumns: (keyof InvoiceProduct)[] = ['paytraqId', '_id', 'count', 'price', 'total'];
 

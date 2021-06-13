@@ -95,7 +95,7 @@ export class SimpleFormContainerComponent<T> implements OnInit, AfterViewInit, O
     this._data$.complete();
   }
 
-  onSave({ leave }: { leave?: boolean; } = {}) {
+  onSave({ leave }: { leave?: boolean } = {}) {
     if (!this.formSource) { return; }
 
     const value = this.form.value;

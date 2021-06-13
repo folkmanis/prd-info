@@ -19,10 +19,14 @@ const REPORT_FIELDS: string[] = [
     'Datums', 'Klients', 'Numurs', 'Nosaukums', 'Veids', 'Skaits', 'Cena', 'Summa'
 ];
 
+const stringify = (r: string[][], separator: string): string =>
+    r.map(row => row.map(wrapField).join(separator)).join('\n');
+
+
 export class InvoiceCsv {
     constructor(
         private invoice: Invoice,
-        private params: { separator: string; locale: string } = { separator: ',', locale: 'lv' },
+        private params: { separator: string; locale: string; } = { separator: ',', locale: 'lv' },
     ) {
         moment.locale(params.locale);
     }
@@ -75,6 +79,3 @@ export class InvoiceCsv {
 
 const wrapField: (r: string) => string = (r) => '"' + r + '"';
 
-function stringify(r: string[][], separator: string): string {
-    return r.map(row => row.map(wrapField).join(separator)).join('\n');
-}

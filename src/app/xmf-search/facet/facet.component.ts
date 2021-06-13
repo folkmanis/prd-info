@@ -11,10 +11,10 @@ import { FacetCheckerComponent } from './facet-checker/facet-checker.component';
 })
 export class FacetComponent implements OnInit, OnDestroy {
 
-  @ViewChildren(FacetCheckerComponent) private blocks: QueryList<FacetCheckerComponent>;
-
   @Input() facet: ArchiveFacet;
   @Output() filter = new EventEmitter<Partial<FacetFilter>>();
+
+  @ViewChildren(FacetCheckerComponent) private blocks: QueryList<FacetCheckerComponent>;
 
   constructor() { }
 

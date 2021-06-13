@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private snack: MatSnackBar,
     private loginService: LoginService,
-  ) { }  
+  ) { }
 
   ngOnInit() {
     this.loginService.isLogin$.pipe(

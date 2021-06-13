@@ -43,6 +43,7 @@ export class FileUploadService {
 
   /**
    * Pievieno failus gaidīšanas sarakstam
+   *
    * @param files masīvs ar failiem
    */
   setFiles(files: File[]) {
@@ -64,6 +65,7 @@ export class FileUploadService {
   }
   /**
    * Sāk augšupielādi ar sagatavoto rindu un doto darba numuru
+   *
    * @param jobId darba numurs
    */
   startUpload(jobId: number): void {

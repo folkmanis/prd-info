@@ -8,15 +8,14 @@ import { ArchiveSearchService } from '../services/archive-search.service';
   templateUrl: './search-input.component.html',
   styleUrls: ['./search-input.component.scss'],
 })
-export class SearchInputComponent  {
+export class SearchInputComponent {
+
   @Input() set count(param: number) {
     this._count = param;
   }
   get count(): number { return this._count; }
 
   q: FormControl = new FormControl('');
-  private _count = 0;
-
   @Output() searchString = this.q.valueChanges.pipe(
     startWith(''),
     debounceTime(300),
@@ -26,6 +25,8 @@ export class SearchInputComponent  {
   );
 
   busy$ = this.service.busy$;
+
+  private _count = 0;
 
   constructor(
     private service: ArchiveSearchService,

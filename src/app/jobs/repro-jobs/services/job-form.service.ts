@@ -126,7 +126,7 @@ export class JobFormService {
     };
   }
 
-  initValue(form: IFormGroup<JobBase>, value: Partial<JobBase>, params?: { emitEvent: boolean; }): void {
+  initValue(form: IFormGroup<JobBase>, value: Partial<JobBase>, params?: { emitEvent: boolean }): void {
     this.setProductsControls(form.get('products') as unknown as IFormArray<JobProduct>, value?.products as JobProduct[] || []);
     form.reset(undefined, params);
     form.patchValue(value, params);

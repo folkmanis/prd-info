@@ -53,7 +53,7 @@ export class VeikalsEditComponent implements OnInit, OnDestroy {
     this.veikalsFormArray = this.fb.array<VeikalsBox>([], { validators: this.totalsValidator() });
     this.veikalsForm = new FormGroup({
       boxs: this.veikalsFormArray,
-    })
+    });
     this._veikalsKastesChanges$ = this.veikalsFormArray.valueChanges.pipe(
       filter(_ => this.veikalsFormArray.valid),
       map(_ => this.recalculateTotals(this.veikalsFormArray.getRawValue())),

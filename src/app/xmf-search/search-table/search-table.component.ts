@@ -17,15 +17,15 @@ import { SearchData } from './search-data';
 export class SearchTableComponent implements OnInit {
   @ViewChild(CdkScrollable, { static: true }) content: CdkScrollable;
 
-  constructor(
-    private service: ArchiveSearchService,
-    private destroy$: DestroyService,
-  ) { }
-
   query: SearchQuery;
   actions: string[] = [, 'Archive', 'Restore', 'Skip', 'Delete'];
   search = '';
   data = new SearchData(this.service);
+
+  constructor(
+    private service: ArchiveSearchService,
+    private destroy$: DestroyService,
+  ) { }
 
   ngOnInit() {
     this.service.searchString$.pipe(takeUntil(this.destroy$))

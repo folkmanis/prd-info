@@ -43,8 +43,8 @@ export class KeyPressDirective implements OnInit {
 
 }
 
-function isEqual(obj1: { [key: string]: any; }, obj2: { [key: string]: any; }): boolean {
-  let props1 = Object.getOwnPropertyNames(obj1);
+function isEqual(obj1: { [key: string]: any }, obj2: { [key: string]: any }): boolean {
+  const props1 = Object.getOwnPropertyNames(obj1);
 
   for (const prop of props1) {
     if (obj1[prop] !== obj2[prop]) {

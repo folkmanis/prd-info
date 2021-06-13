@@ -11,7 +11,7 @@ import { Count } from 'src/app/interfaces/xmf-search';
 export class FacetCheckerComponent implements OnInit {
   @ViewChild(MatSelectionList) selection: MatSelectionList;
 
-  @Input() title: string = '';
+  @Input() title = '';
   @Input() data: Count[] = [];
 
   @Output() filterValue: EventEmitter<Array<number | string>> = new EventEmitter();

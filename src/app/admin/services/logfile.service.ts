@@ -61,7 +61,7 @@ export class LogfileService implements OnDestroy {
   }
 
   getInfos(): Observable<string[]> {
-    return this.http.get<{ data: string[]; }>(this.httpPathLogfile + 'entries', new HttpOptions())
+    return this.http.get<{ data: string[] }>(this.httpPathLogfile + 'entries', new HttpOptions())
       .pipe(map(dat => dat.data));
   }
   /**
@@ -69,8 +69,8 @@ export class LogfileService implements OnDestroy {
    *
    * @param params level: minimālais errorlevel, start, end: sākuma un beigu datumi
    */
-  getDatesGroupsHttp(params: { level: number; start?: string; end?: string; }): Observable<ValidDates> {
-    return this.http.get<{ data: { _id: string; }[]; }>(this.httpPathLogfile + 'dates-groups', new HttpOptions(params)).pipe(
+  getDatesGroupsHttp(params: { level: number; start?: string; end?: string }): Observable<ValidDates> {
+    return this.http.get<{ data: { _id: string }[] }>(this.httpPathLogfile + 'dates-groups', new HttpOptions(params)).pipe(
       pluck('data'),
       map(dates => dates.map(date => date._id)),
       map(dates => ({
