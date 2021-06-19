@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { EMPTY, merge, Observable, Subject } from 'rxjs';
-import { map, startWith, switchMap, tap } from 'rxjs/operators';
+import { EMPTY, from, merge, Observable, Subject } from 'rxjs';
+import { concatMap, map, mergeMap, reduce, startWith, switchMap, tap } from 'rxjs/operators';
 import { User } from 'src/app/interfaces';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 import { XmfCustomer } from 'src/app/interfaces/xmf-search';
@@ -80,6 +80,13 @@ export class UsersService {
     return this.prdApi.users.deleteOne(username).pipe(
       map(resp => !!resp),
       tap(resp => resp && this.reloadUsers$.next()),
+    );
+  }
+
+  deleteSession(...sessionIds: string[]): Observable<number> {
+    return from(sessionIds).pipe(
+      concatMap(id => this.prdApi.users.deleteSession(id)),
+      reduce((acc, resp) => acc + resp, 0),
     );
   }
   /**

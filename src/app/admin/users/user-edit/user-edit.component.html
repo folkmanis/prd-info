@@ -45,35 +45,41 @@
             <mat-checkbox formControlName="userDisabled">Neaktīvs</mat-checkbox>
         </section>
 
-        <h4>
-            Lietotāja iestatījumi
-        </h4>
-        <div formGroupName="preferences">
-            <!-- Pieejamie moduļi -->
-            <section>
-                <mat-form-field>
-                    <mat-label>Pieejamie moduļi</mat-label>
-                    <mat-select formControlName="modules" multiple>
-                        <mat-option *ngFor="let mod of userModules" [value]="mod.route">
-                            {{mod.name}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </section>
+        <mat-expansion-panel hideToggle [expanded]="true">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Lietotāja iestatījumi
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div formGroupName="preferences">
+                <!-- Pieejamie moduļi -->
+                <section>
+                    <mat-form-field>
+                        <mat-label>Pieejamie moduļi</mat-label>
+                        <mat-select formControlName="modules" multiple>
+                            <mat-option *ngFor="let mod of userModules" [value]="mod.route">
+                                {{mod.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </section>
 
-            <!-- Piiejamie klienti -->
-            <section>
-                <mat-form-field>
-                    <mat-label>Pieejamie XMF klienti</mat-label>
-                    <mat-select formControlName="customers" multiple>
-                        <mat-option *ngFor="let customer of (customers$ | async)" [value]="customer.value">
-                            {{customer.name}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </section>
-        </div>
+                <!-- Piiejamie klienti -->
+                <section>
+                    <mat-form-field>
+                        <mat-label>Pieejamie XMF klienti</mat-label>
+                        <mat-select formControlName="customers" multiple>
+                            <mat-option *ngFor="let customer of (customers$ | async)" [value]="customer.value">
+                                {{customer.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </section>
+            </div>
+        </mat-expansion-panel>
 
     </form>
+
+    <app-sessions [userId]="formSource.value.username"></app-sessions>
 
 </app-simple-form-container>

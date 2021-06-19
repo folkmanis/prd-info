@@ -8,6 +8,7 @@ import { UserResolverService } from './services/user-resolver.service';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { UsersListComponent } from './users-list/users-list.component';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
+import { SessionsComponent } from './user-edit/sessions/sessions.component';
 
 
 @NgModule({
@@ -16,6 +17,7 @@ import { MaterialLibraryModule } from 'src/app/library/material-library.module';
     UserEditComponent,
     PasswordInputComponent,
     PasswordChangeDialogComponent,
+    SessionsComponent,
   ],
   imports: [
     CommonModule,

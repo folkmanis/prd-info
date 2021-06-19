@@ -9,4 +9,10 @@ export class UsersApi extends ApiBase<User> {
             map(resp => resp.modifiedCount !== 0)
         );
     }
+
+    deleteSession(sessionId: string): Observable<number> {
+        return this.http.delete<UsersResponse>(this.path + 'session/' + sessionId).pipe(
+            map(resp => resp.deletedCount || 0),
+        );
+    }
 }
