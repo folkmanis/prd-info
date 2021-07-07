@@ -1,0 +1,23 @@
+<app-simple-list-container [large]="large$ | async" plusButton editorWidth="70%">
+    <table mat-table [dataSource]="materials$">
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns;"></tr>
+        <tr mat-row *matRowDef="let material; columns: displayedColumns" [routerLink]="[material._id]"
+            routerLinkActive="selected" [class.disabled]="material.inactive"></tr>
+
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Nosaukums </th>
+            <td mat-cell *matCellDef="let material">
+                {{material.name}}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="category">
+            <th mat-header-cell *matHeaderCellDef> Grupa </th>
+            <td mat-cell *matCellDef="let material">
+                {{material.category}}
+            </td>
+        </ng-container>
+
+    </table>
+</app-simple-list-container>

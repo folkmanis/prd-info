@@ -9,6 +9,7 @@ import { MainMenuComponent } from './main-menu/main-menu.component';
 import { ProductsModule } from './products/products.module';
 import { CustomersModule } from './customers/customers.module';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
+import { MaterialsModule } from './materials/materials.module';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { MaterialLibraryModule } from 'src/app/library/material-library.module';
     MaterialLibraryModule,
     ProductsModule,
     CustomersModule,
+    MaterialsModule,
     JobsAdminRoutingModule,
   ],
   providers: [

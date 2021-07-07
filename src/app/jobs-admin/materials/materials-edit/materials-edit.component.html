@@ -1,0 +1,66 @@
+<app-simple-form-container [formSource]="formSource" (dataChange)="onDataChange($event)" [class.large]="large$ | async">
+
+    <form [formGroup]="form">
+
+        <h2>
+            <mat-form-field class="full-width">
+                <mat-label>Nosaukums</mat-label>
+                <input matInput formControlName="name" autocomplete="off" required>
+                <mat-error *ngIf="form.controls.name.hasError('required')">
+                    Nosaukums jāievada obligāti!
+                </mat-error>
+                <mat-error *ngIf="form.controls.name.hasError('occupied')">
+                    Nosaukums jau tiek izmantots
+                </mat-error>
+            </mat-form-field>
+        </h2>
+
+
+        <mat-accordion multi>
+            <mat-expansion-panel expanded [hideToggle]="true">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Pamatinformācija
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+
+                <section class="input-container">
+                    <!-- Grupa -->
+                    <mat-form-field class="full-width">
+                        <mat-label> Grupa </mat-label>
+                        <mat-select formControlName="category" required>
+                            <mat-option *ngFor="let category of categories$ | async" [value]="category.category">
+                                {{ category.description }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <div class="spacer"></div>
+
+                    <!-- Mērvienības -->
+                    <mat-form-field class="full-width">
+                        <mat-label> Mērvienības </mat-label>
+                        <mat-select formControlName="units" required>
+                            <mat-option *ngFor="let unit of units$ | async;" [value]="unit.shortName">
+                                {{unit.description}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </section>
+
+                <section>
+                    <mat-checkbox formControlName="inactive">
+                        Neaktīvs
+                    </mat-checkbox>
+                </section>
+
+            </mat-expansion-panel>
+
+        </mat-accordion>
+
+    </form>
+
+</app-simple-form-container>
+
+{{form.value}}
