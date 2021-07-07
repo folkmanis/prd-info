@@ -20,10 +20,10 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
     }
 
     get isNew(): boolean {
-        return !this.initialValue?.name;
+        return !this.startValue?.name;
     }
 
-    protected initialValue: Partial<Product> | undefined;
+    private startValue: Partial<Product> | undefined;
 
     protected createForm(): IFormGroup<Product> {
         const productForm: IFormGroup<Product> = this.fb.group<Product>({
@@ -56,7 +56,7 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
     }
 
     initValue(product: Partial<Product>, params = { emitEvent: true }) {
-        this.initialValue = product;
+        this.startValue = product;
         if (this.isNew) {
             this.setNameValidators();
         } else {
@@ -129,8 +129,8 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
 
     private nameAsyncValidator(key: keyof Product): AsyncValidatorFn {
         return (control: IFormControl<string>): Observable<ValidationErrors | null> => this.productService.validate(key, control.value.trim()).pipe(
-                map(valid => valid ? null : { occupied: control.value })
-            );
+            map(valid => valid ? null : { occupied: control.value })
+        );
     }
 
     private duplicateCustomersValidator(ctrl: IFormArray<ProductPrice>): ValidationErrors | null {
