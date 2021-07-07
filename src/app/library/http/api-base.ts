@@ -61,10 +61,10 @@ export abstract class ApiBase<T> {
         );
     }
 
-    validatorData<K extends keyof T>(key: K): Observable<T[keyof T][]> {
+    validatorData<K extends keyof T & string>(key: K): Observable<T[K][]> {
         return this.http.get<AppHttpResponseBase<T>>(this.path + 'validate/' + key, new HttpOptions().cacheable()).pipe(
-            map((values) => values.validatorData),
-        );
+            pluck('validatorData'),
+        ) as Observable<T[K][]>;
     }
 
     protected post<U>(body: any): Observable<U>;

@@ -10,5 +10,5 @@ export interface AppHttpResponseBase<T = any> {
         n: number;
     };
     data?: Partial<T>[] | T;
-    validatorData?: T[keyof T][];
+    validatorData?: T[keyof T & string][];
 }
