@@ -18,10 +18,7 @@ export class ErrorsService implements ErrorHandler {
         this.zone.run(() => this.router.navigate(['/login']));
       }
     }
-    if (error.error instanceof ErrorEvent) {
-    } else {
-      console.error(`Status code ${error.status}, body:`, error.error);
-    }
+    console.error(error);
     return throwError('Kļūda!');
   }
 
