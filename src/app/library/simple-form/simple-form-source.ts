@@ -3,6 +3,9 @@ import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { Observable } from 'rxjs';
 
 export abstract class SimpleFormSource<T> {
+
+    initialValue: T | undefined;
+
     protected fb: IFormBuilder;
 
     get form(): IFormGroup<T> {
@@ -28,7 +31,8 @@ export abstract class SimpleFormSource<T> {
     abstract updateFn(value: T): Observable<T>;
     abstract insertFn(value: T): Observable<string | number>;
 
-    initValue(value: Partial<T>, params?: { emitEvent: boolean }): void {
+    initValue(value: Partial<T>, params?: { emitEvent: boolean; }): void {
+        this.initialValue = { ...this.initialValue, ...value };
         this.form.reset(undefined, params);
         this.form.patchValue(value, params);
         this.form.markAsPristine();
