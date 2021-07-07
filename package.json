@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "scripts": {
     "ng": "ng",
-    "serve": "NG_PERSISTENT_BUILD_CACHE=1 ng serve --port 4230",
+    "serve": "ng serve --port 4230",
     "build": "ng build --configuration production",
     "test": "ng test",
     "lint": "ng lint",
