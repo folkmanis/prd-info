@@ -4,6 +4,7 @@ import { FormControl } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
 import { IFormControl } from '@rxweb/types';
 import { ReplaySubject, Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-simple-list-container',
@@ -36,7 +37,9 @@ export class SimpleListContainerComponent implements AfterViewInit, OnDestroy {
   get filterInput() { return this._filterInput; }
   private _filterInput = false;
 
-  @Output() filter = this.searchControl.valueChanges;
+  @Output() filter = this.searchControl.valueChanges.pipe(
+    debounceTime(200),
+  );
 
   @Output() activeStatusChanges = new ReplaySubject<boolean>(1);
 
