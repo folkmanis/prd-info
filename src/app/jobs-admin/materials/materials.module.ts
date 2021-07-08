@@ -9,6 +9,7 @@ import { MaterialsEditComponent } from './materials-edit/materials-edit.componen
 import { MaterialsResolverService } from './services/materials-resolver.service';
 import { MaterialsPricesComponent } from './materials-edit/materials-prices/materials-prices.component';
 import { MaterialsPriceDialogComponent } from './materials-edit/materials-price-dialog/materials-price-dialog.component';
+import { MaterialsFilterComponent } from './materials-list/materials-filter/materials-filter.component';
 
 
 
@@ -17,7 +18,8 @@ import { MaterialsPriceDialogComponent } from './materials-edit/materials-price-
     MaterialsListComponent,
     MaterialsEditComponent,
     MaterialsPricesComponent,
-    MaterialsPriceDialogComponent
+    MaterialsPriceDialogComponent,
+    MaterialsFilterComponent
   ],
   imports: [
     CommonModule,

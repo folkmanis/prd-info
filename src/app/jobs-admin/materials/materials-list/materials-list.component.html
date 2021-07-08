@@ -1,4 +1,4 @@
-<app-simple-list-container [large]="large$ | async" plusButton editorWidth="60%">
+<app-simple-list-container [large]="large$ | async" plusButton editorWidth="50%" [filterInput]="filter">
     <table mat-table [dataSource]="materials$">
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns;"></tr>
@@ -21,3 +21,7 @@
 
     </table>
 </app-simple-list-container>
+
+<ng-template #filter>
+    <app-materials-filter (filter)="onSetFilter($event)"></app-materials-filter>
+</ng-template>
