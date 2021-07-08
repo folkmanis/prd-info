@@ -3,13 +3,13 @@
     <section>
         <mat-form-field>
             <span matPrefix>No &nbsp;</span>
-            <input matInput formControlName="min">
+            <input type="number" matInput formControlName="min">
             <span matSuffix> {{ units }} </span>
         </mat-form-field>
         &nbsp;
         <mat-form-field>
             <span matPrefix>Līdz &nbsp;</span>
-            <input matInput formControlName="max">
+            <input type="number" matInput formControlName="max">
             <span matSuffix> {{ units }} </span>
         </mat-form-field>
     </section>
@@ -17,7 +17,7 @@
     <section>
         <mat-form-field>
             <mat-label> Cena </mat-label>
-            <input matInput formControlName="price">
+            <input type="number" matInput formControlName="price">
             <span matSuffix>&nbsp; &euro;/{{ units }}</span>
         </mat-form-field>
     </section>
