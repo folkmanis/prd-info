@@ -1,5 +1,5 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { Component, Input, OnDestroy, Output, TemplateRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, Input, OnDestroy, Output, TemplateRef, ViewChild, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
 import { IFormControl } from '@rxweb/types';
@@ -10,6 +10,7 @@ import { debounceTime } from 'rxjs/operators';
   selector: 'app-simple-list-container',
   templateUrl: './simple-list-container.component.html',
   styleUrls: ['./simple-list-container.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SimpleListContainerComponent implements AfterViewInit, OnDestroy {
   @ViewChild('editor') private routerOutlet: RouterOutlet;
