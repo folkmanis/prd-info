@@ -15,16 +15,8 @@
             </mat-form-field>
         </h2>
 
-
-        <mat-accordion multi>
-            <mat-expansion-panel expanded [hideToggle]="true">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        Pamatinformācija
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-
-
+        <mat-card>
+            <mat-card-content>
                 <section class="input-container">
                     <!-- Grupa -->
                     <mat-form-field class="full-width">
@@ -55,12 +47,35 @@
                     </mat-checkbox>
                 </section>
 
-            </mat-expansion-panel>
+                <mat-form-field class="full-width">
+                    <mat-label> Apraksts </mat-label>
+                    <textarea matInput formControlName="description"></textarea>
+                </mat-form-field>
 
-        </mat-accordion>
+            </mat-card-content>
+
+        </mat-card>
+
+        <div class="w-spacer"></div>
+
+        <mat-card>
+            <mat-card-title>
+                Cenas
+            </mat-card-title>
+
+            <mat-card-content>
+                <app-materials-prices [pricesArray]="pricesControl" (deletePrice)="onRemovePrice($event)"
+                    (editPrice)="onEditPrice($event)" [units]="form.value.units">
+                </app-materials-prices>
+            </mat-card-content>
+
+            <mat-card-actions>
+                <button mat-raised-button (click)="onAddPrice()" [disabled]="!form.valid">
+                    PIEVIENOT
+                </button>
+            </mat-card-actions>
+        </mat-card>
 
     </form>
 
 </app-simple-form-container>
-
-{{form.value}}

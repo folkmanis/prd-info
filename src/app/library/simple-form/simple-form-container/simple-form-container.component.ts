@@ -88,14 +88,14 @@ export class SimpleFormContainerComponent<T> implements OnInit, AfterViewInit, O
   onResetForm(): void {
     this.dataChange.pipe(
       take(1),
-    ).subscribe(data => this.formSource?.initValue(data, { emitEvent: false }));
+    ).subscribe(data => this.formSource?.initValue(data)); // , { emitEvent: false }
   }
 
   ngOnDestroy(): void {
     this._data$.complete();
   }
 
-  onSave({ leave }: { leave?: boolean } = {}) {
+  onSave({ leave }: { leave?: boolean; } = {}) {
     if (!this.formSource) { return; }
 
     const value = this.form.value;
