@@ -67,11 +67,6 @@ export class SimpleFormContainerComponent<T> implements OnInit, AfterViewInit, O
       this.onSave({ leave });
     }
 
-    if (event.key === 'Escape') {
-      event.stopPropagation();
-      event.preventDefault();
-      this.close();
-    }
   }
 
   ngOnInit(): void {
