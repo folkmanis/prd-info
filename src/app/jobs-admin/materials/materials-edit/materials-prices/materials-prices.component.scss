@@ -2,3 +2,14 @@
     color: red;
     font-weight: bold;
 }
+
+.mat-cell:first-of-type {
+    padding-left: 8px;
+}
+.mat-cell:last-of-type {
+    padding-right: 8px;
+}
+
+.mat-column-actions {
+    width: 42px;
+}
