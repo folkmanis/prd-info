@@ -1,9 +1,10 @@
-import { Component, OnInit, Input, Output, ChangeDetectionStrategy, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, ChangeDetectionStrategy, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormArray } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { startWith } from 'rxjs/operators';
+import { merge, Observable } from 'rxjs';
+import { startWith, takeUntil } from 'rxjs/operators';
 import { MaterialPrice } from 'src/app/interfaces';
-import { log } from 'prd-cdk';
+import { log, DestroyService } from 'prd-cdk';
+import { MaterialPriceGroup } from '../../services/materials-form-source';
 
 @Component({
   selector: 'app-materials-prices',
@@ -21,9 +22,14 @@ export class MaterialsPricesComponent implements OnInit {
   @Output() editPrice = new EventEmitter<number>();
 
   data$: Observable<MaterialPrice[]>;
+  trackBy = (idx: number): any => this.pricesArray.controls[idx];
+
+  isDuplicate = (idx: number): boolean => {
+    return this.pricesArray.hasError('duplicates') && (this.pricesArray.getError('duplicates') as MaterialPriceGroup[]).includes(this.pricesArray.at(idx) as MaterialPriceGroup);
+  };
 
   displayedColumns = [
-    'minMax',
+    'min',
     'price',
     'description',
     'actions',
@@ -44,5 +50,6 @@ export class MaterialsPricesComponent implements OnInit {
   onDeletePrice(idx: number) {
     this.deletePrice.next(idx);
   }
+
 
 }

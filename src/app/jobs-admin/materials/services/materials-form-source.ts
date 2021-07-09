@@ -1,5 +1,5 @@
 import { SimpleFormSource } from 'src/app/library/simple-form';
-import { FormBuilder, FormControl, FormGroup, FormArray, Validators, AsyncValidatorFn, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormArray, Validators, AsyncValidatorFn, AbstractControl, ValidatorFn } from '@angular/forms';
 import { IFormArray, IFormControl, IFormGroup } from '@rxweb/types';
 import { Material, MaterialPrice } from 'src/app/interfaces';
 import { MaterialsService } from './materials.service';
@@ -42,7 +42,11 @@ export class MaterialsFormSource extends SimpleFormSource<Material> {
                 [Validators.required],
             ],
             inactive: [false],
-            prices: this.fb.array<MaterialPrice>([]),
+            prices: this.fb.array<MaterialPrice>(
+                [],
+                [this.duplicatePriceValidator()],
+            ),
+            fixedPrice: [undefined],
         });
     }
 
@@ -64,7 +68,7 @@ export class MaterialsFormSource extends SimpleFormSource<Material> {
         this.pricesCtrl.clear({ emitEvent: false });
         for (const price of val.prices || []) {
             this.pricesCtrl.push(
-                this.newMaterialPriceGroup(),
+                new MaterialPriceGroup(),
                 { emitEvent: false },
             );
         }
@@ -76,29 +80,29 @@ export class MaterialsFormSource extends SimpleFormSource<Material> {
         this.pricesCtrl.markAsDirty();
     }
 
-    newMaterialPriceGroup(price: Partial<MaterialPrice> = {}): IFormGroup<MaterialPrice> {
-        return this.fb.group<MaterialPrice>({
-            min: [
-                price.min,
-                [Validators.min(0)],
-            ],
-            max: [
-                price.max,
-                [Validators.min(0)],
-            ],
-            price: [
-                price.price,
-                [Validators.required, Validators.min(0)],
-            ],
-            description: [price.description],
-        });
-    }
-
     private cleanValue(val: Material): Material {
         return {
             ...val,
             name: val.name.trim(),
         };
+    }
+
+    updatePriceControl(control: MaterialPriceGroup, idx?: number) {
+
+        if (idx !== undefined) {
+            this.pricesCtrl.removeAt(idx, { emitEvent: false });
+        }
+
+        const controls = this.pricesCtrl.controls as MaterialPriceGroup[];
+        const newMin = control.priceValue.min;
+        let newPos = 0;
+        while (newPos < this.pricesCtrl.length && newMin > controls[newPos].priceValue.min) {
+            newPos++;
+        }
+
+        this.pricesCtrl.insert(newPos, control);
+        this.pricesCtrl.updateValueAndValidity();
+        this.pricesCtrl.markAsDirty();
     }
 
     private nameValidator(): AsyncValidatorFn {
@@ -114,4 +118,38 @@ export class MaterialsFormSource extends SimpleFormSource<Material> {
         };
     }
 
+    private duplicatePriceValidator(): ValidatorFn {
+        return (control: FormArray) => {
+            const ctrls = control.controls as MaterialPriceGroup[];
+            const duplicates = ctrls
+                .filter((el, idx, a) => a.findIndex(m => m.priceValue.min === el.priceValue.min) !== idx)
+                .map(ctrl => ctrl.priceValue.min);
+            if (duplicates.length === 0) {
+                return null;
+            }
+            return { duplicates: ctrls.filter(ctrl => duplicates.includes(ctrl.priceValue.min)) };
+        };
+    }
+
+}
+
+export class MaterialPriceGroup extends FormGroup {
+
+    get priceValue(): MaterialPrice {
+        return this.value;
+    }
+
+    constructor(price: Partial<MaterialPrice> = {}) {
+        super({
+            min: new FormControl(
+                price.min,
+                [Validators.min(0)],
+            ),
+            price: new FormControl(
+                price.price,
+                [Validators.required, Validators.min(0)],
+            ),
+            description: new FormControl(price.description),
+        });
+    }
 }

@@ -1,10 +1,10 @@
 import { Inject, Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MaterialsFormSource } from '../../services/materials-form-source';
+import { MaterialsFormSource, MaterialPriceGroup } from '../../services/materials-form-source';
 
 export interface DialogData {
-  control: FormGroup;
+  control: MaterialPriceGroup;
   units: string;
 }
 

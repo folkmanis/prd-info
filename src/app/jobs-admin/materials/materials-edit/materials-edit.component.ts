@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy, Inject } from '@angular/cor
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { IFormGroup } from '@rxweb/types';
 import { MaterialsService } from '../services/materials.service';
-import { MaterialsFormSource } from '../services/materials-form-source';
+import { MaterialsFormSource, MaterialPriceGroup } from '../services/materials-form-source';
 import { Material, ProductUnit, SystemPreferences } from 'src/app/interfaces';
 import { CONFIG } from 'src/app/services/config.provider';
 import { Observable } from 'rxjs';
@@ -61,30 +61,34 @@ export class MaterialsEditComponent implements OnInit, CanComponentDeactivate {
   }
 
   onAddPrice() {
-    this.onEditPrice();
+    this.updatePrice(new MaterialPriceGroup());
   }
 
-  onEditPrice(idx?: number) {
-    const val = idx !== undefined ? this.pricesControl.at(idx).value : undefined;
+  onEditPrice(idx: number) {
+    this.updatePrice(
+      new MaterialPriceGroup(this.pricesControl.at(idx).value),
+      idx
+    );
+  }
+
+  private updatePrice(control: MaterialPriceGroup, idx?: number) {
     const data: DialogData = {
-      control: this.formSource.newMaterialPriceGroup(val),
+      control,
       units: this.form.value.units,
     };
-    this.dialogService.open<MaterialsPriceDialogComponent, DialogData, FormGroup>(
+    this.dialogService.open<MaterialsPriceDialogComponent, DialogData, MaterialPriceGroup>(
       MaterialsPriceDialogComponent,
       { data }
     )
       .afterClosed()
       .pipe(
         filter(data => !!data),
-      ).subscribe(data => {
-        idx !== undefined ? this.pricesControl.setControl(idx, data) : this.pricesControl.push(data);
-        this.pricesControl.markAsDirty();
-      });
+      ).subscribe(data => this.formSource.updatePriceControl(data, idx));
   }
 
   onRemovePrice(idx: number) {
     this.formSource.deletePrice(idx);
   }
+
 
 }

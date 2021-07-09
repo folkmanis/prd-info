@@ -6,11 +6,11 @@ export interface Material {
     category: string;
     inactive: boolean;
     prices: MaterialPrice[];
+    fixedPrice?: number;
 }
 
 export interface MaterialPrice {
     min: number;
-    max: number;
     price: number;
     description: number;
 }

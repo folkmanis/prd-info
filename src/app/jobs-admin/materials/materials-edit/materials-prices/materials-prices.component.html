@@ -1,4 +1,4 @@
-<table mat-table [dataSource]="data$" class="app-table">
+<table mat-table [dataSource]="data$" [trackBy]="trackBy" class="app-table">
 
     <tr mat-row *matRowDef="let price; columns: displayedColumns"></tr>
 
@@ -17,9 +17,13 @@
         </td>
     </ng-container>
 
-    <ng-container matColumnDef="minMax">
-        <td mat-cell *matCellDef="let price">
-            {{price.min}} &nbsp; - &nbsp; {{price.max}} &nbsp; {{ units }}
+    <ng-container matColumnDef="min">
+        <td mat-cell *matCellDef="let price; index as idx;">
+            No
+            <span [class.error]="isDuplicate(idx)">
+                {{price.min}}
+            </span>
+            {{ units }}
         </td>
     </ng-container>
 
