@@ -35,7 +35,7 @@ export class InvoicesService {
     this.reloadJobsWithoutInvoicesTotals$.next();
   }
 
-  createInvoice(params: { selectedJobs: number[]; customerId: string }): Observable<Invoice> {
+  createInvoice(params: { selectedJobs: number[]; customerId: string; }): Observable<Invoice> {
     return this.prdApi.invoices.createInvoice(params).pipe(
       tap(() => this.reloadJobsWithoutInvoicesTotals$.next()),
     );
@@ -67,6 +67,10 @@ export class InvoicesService {
     return this.prdApi.paytraq.postSale(ptInvoice).pipe(
       pluck('response', 'documentID')
     );
+  }
+
+  deleteInvoice(invoiceId: string): Observable<number> {
+    return this.prdApi.invoices.deleteOne(invoiceId);
   }
 
 }

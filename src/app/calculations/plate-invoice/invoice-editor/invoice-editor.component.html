@@ -1,8 +1,19 @@
 <ng-container *ngIf="invoice$ | async as invoice;">
 
     <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="onCsvInvoice(invoice)">CSV PAVADZĪMEI</button>
-        <button mat-menu-item (click)="onCsvReport(invoice)">CSV SARAKSTS</button>
+        <button mat-menu-item (click)="onCsvInvoice(invoice)">
+            <mat-icon>file_download</mat-icon>
+            <span> CSV PAVADZĪMEI </span>
+        </button>
+        <button mat-menu-item (click)="onCsvReport(invoice)">
+            <mat-icon>file_download</mat-icon>
+            <span> CSV SARAKSTS </span>
+        </button>
+        <button mat-menu-item [appInvoiceDelete]="invoice.invoiceId"
+            appAfterDeleteMessage="Aprēķins {{invoice.invoiceId}} izdzēsts">
+            <mat-icon>delete_forever</mat-icon>
+            <span> DZĒST </span>
+        </button>
     </mat-menu>
 
     <mat-toolbar>
@@ -41,7 +52,7 @@
                     <mat-panel-title>
                         Paytraq pavadzīme
                     </mat-panel-title>
-                    <mat-panel-description *ngIf="invoice.customerInfo.financial">
+                    <mat-panel-description *ngIf="invoice.customerInfo.financial?.clientName">
                         ({{invoice.customerInfo.financial.clientName}})
                     </mat-panel-description>
                 </mat-expansion-panel-header>

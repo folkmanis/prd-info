@@ -13,6 +13,7 @@ import { InvoiceEditorComponent } from './invoice-editor/invoice-editor.componen
 import { InvoicesListComponent } from './invoices-list/invoices-list.component';
 import { InvoiceProductsComponent } from './invoice-editor/invoice-products/invoice-products.component';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
+import { InvoiceDeleteDirective } from './invoice-editor/invoice-delete.directive';
 
 PdfMakeWrapper.setFonts(pdfFonts);
 
@@ -22,6 +23,7 @@ PdfMakeWrapper.setFonts(pdfFonts);
     InvoiceEditorComponent,
     InvoicesListComponent,
     InvoiceProductsComponent,
+    InvoiceDeleteDirective,
   ],
   imports: [
     CommonModule,
