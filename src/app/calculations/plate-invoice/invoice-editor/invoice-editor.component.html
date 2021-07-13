@@ -57,26 +57,7 @@
                     </mat-panel-description>
                 </mat-expansion-panel-header>
 
-
-                <div *ngIf="invoice.paytraq as paytraq; else newPaytraqInvoice" class="button-row">
-                    <a mat-raised-button [href]="paytraqUrl$ | async" target="new">
-                        {{ paytraq.documentRef }}
-                    </a>
-                    <button mat-raised-button color="warn" (click)="onUnlinkPaytraq(invoice)"
-                        matTooltip="Dzēst savienojumu">
-                        ATVIENOT
-                    </button>
-                </div>
-
-                <ng-template #newPaytraqInvoice>
-                    <button mat-raised-button [disabled]="(paytraqOk$ | async) === false || (paytraqBusy$ | async)"
-                        (click)="onPaytraq(invoice)">
-                        <span *ngIf="paytraqBusy$ | async; else notBusy"> SAGLABĀ... </span>
-                        <ng-template #notBusy>
-                            <span> UZ PAYTRAQ </span>
-                        </ng-template>
-                    </button>
-                </ng-template>
+                <app-invoice-paytraq [invoice]="invoice" (paytraqUpdate)="onReload()"></app-invoice-paytraq>
 
             </mat-expansion-panel>
 
