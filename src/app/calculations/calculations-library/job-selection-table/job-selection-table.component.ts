@@ -4,6 +4,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 import { JobPartial } from 'src/app/interfaces';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { ReproJobDialogService } from 'src/app/jobs/repro-jobs/services/repro-job-dialog.service';
 
 const TABLE_COLUMNS = ['jobId', 'receivedDate', 'customer', 'name', 'productName', 'count', 'price', 'total'];
 
@@ -28,6 +29,7 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
   jobIdSet: Set<number> | undefined;
 
   constructor(
+    private jobDialog: ReproJobDialogService,
   ) { }
 
   displayedColumns: string[] = this.columnsWithSelection();
