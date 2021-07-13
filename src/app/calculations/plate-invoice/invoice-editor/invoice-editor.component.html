@@ -18,13 +18,17 @@
 
     <mat-toolbar>
         <span>
-            {{invoice.invoiceId}} {{invoice.customerInfo.CustomerName}}
+            <button mat-mini-fab routerLink="..">
+                <mat-icon>
+                    arrow_back
+                </mat-icon>
+            </button>
         </span>
 
-        <span class="spacer"></span>
+        <span class="distancer"></span>
 
         <span>
-            <small> {{invoice.createdDate | date}} </small>
+            {{invoice.invoiceId}} {{invoice.customerInfo.CustomerName}}
         </span>
 
         <span class="spacer"></span>
@@ -44,6 +48,8 @@
 
 
     <div class="container">
+
+        <p> {{invoice.createdDate | date}} </p>
 
         <mat-accordion multi>
             <!-- Paytraq -->
