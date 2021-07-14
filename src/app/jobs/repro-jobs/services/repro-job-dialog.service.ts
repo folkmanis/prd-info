@@ -6,7 +6,7 @@ import { JobFormGroup } from './job-form-group';
 import { CustomersService, ProductsService } from 'src/app/services';
 import { EMPTY, Observable, of } from 'rxjs';
 import { JobService } from 'src/app/services/job.service';
-import { concatMap, map, switchMap } from 'rxjs/operators';
+import { concatMap, filter, map, switchMap } from 'rxjs/operators';
 import { endOfDay } from 'date-fns';
 
 export interface DialogData {
@@ -51,12 +51,7 @@ export class ReproJobDialogService {
   editJob(jobId: number): Observable<boolean> {
     return this.jobService.getJob(jobId).pipe(
       concatMap(job => this.openJob(job).afterClosed()),
-      concatMap(data => data ? of(data.job) : EMPTY),
-      map(job => ({
-        ...job,
-        dueDate: endOfDay(new Date(job.dueDate)),
-      })),
-      concatMap(job => this.jobService.updateJob(job)),
+      concatMap(data => data ? this.jobService.updateJob(data.job) : of(false)),
     );
   }
 

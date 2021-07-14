@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { endOfDay } from 'date-fns';
 import { combineLatest, EMPTY, Observable, of, ReplaySubject, Subject } from 'rxjs';
 import { map, share, startWith, switchMap, tap } from 'rxjs/operators';
 import { Job, JobPartial, JobQueryFilter } from 'src/app/interfaces';
@@ -51,6 +52,7 @@ export class JobService {
       job.jobId,
       {
         ...job,
+        dueDate: endOfDay(new Date(job.dueDate)),
         jobId: undefined,
         _id: undefined,
       },

@@ -33,21 +33,16 @@ export class ReproJobsComponent implements OnInit {
     private route: ActivatedRoute,
     private editDialogService: ReproJobDialogService,
     private destroy$: DestroyService,
-    private location: Location,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
     this.route.queryParamMap.pipe(
       map(params => params.get('jobId')),
       filter(jobId => jobId && !isNaN(+jobId)),
-      switchMap(jobId => this.jobService.getJob(+jobId)),
-      concatMap(job => this.editDialogService.openJob(job).afterClosed().pipe(
-        tap(_ => this.location.back()),
-        concatMap(data => data ? of(data.job) : EMPTY),
-        concatMap(job => this.updateJob(job))
-      )),
+      concatMap(jobId => this.editDialogService.editJob(+jobId)),
       takeUntil(this.destroy$),
-    ).subscribe();
+    ).subscribe(_ => this.router.navigate(['.'], { relativeTo: this.route }));
   }
 
   onJobFilter(filter: JobQueryFilter) {
@@ -90,14 +85,6 @@ export class ReproJobsComponent implements OnInit {
       takeUntil(this.destroy$),
     ).subscribe();
 
-  }
-
-  private updateJob(job: Partial<JobBase>): Observable<boolean> {
-    job = {
-      ...job,
-      dueDate: endOfDay(new Date(job.dueDate)),
-    };
-    return this.jobService.updateJob(job);
   }
 
   private insertJobAndUploadFiles(job: Partial<JobBase>): Observable<number> {
