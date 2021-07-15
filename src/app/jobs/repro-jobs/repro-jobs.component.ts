@@ -49,7 +49,7 @@ export class ReproJobsComponent implements OnInit {
     this.jobService.setFilter(filter);
   }
 
-  onFileDrop(fileList: FileList) {
+  async onFileDrop(fileList: FileList) {
     const fileListArray = Array.from(fileList);
     const name: string = fileListArray
       .reduce((acc, curr) => [...acc, curr.name.replace(/\.[^/.]+$/, '')], [])
@@ -58,27 +58,30 @@ export class ReproJobsComponent implements OnInit {
     this.fileUploadService.setFiles(fileListArray);
     const job: Partial<JobBase> = {
       name,
+      receivedDate: new Date(),
+      dueDate: new Date(),
       category: 'repro',
       jobStatus: {
         generalStatus: 20
       },
     };
-    this.editDialogService.openJob(job).afterClosed().pipe(
-      concatMap(data => {
-        if (data) {
-          return of(data.form.value).pipe(
-            concatMap(job => this.insertJobAndUploadFiles(job)),
-          );
-        } else {
-          this.fileUploadService.clearUploadQueue();
-          return EMPTY;
-        }
-      }),
-      takeUntil(this.destroy$),
-    ).subscribe();
+    const data = await this.editDialogService.openJob(job).afterClosed().toPromise();
+    if (data) {
+      await this.insertJobAndUploadFiles(data.form.value).toPromise();
+    } else {
+      this.fileUploadService.clearUploadQueue();
+    }
   }
 
-  onNewJob(job: Partial<JobBase> = {}) {
+  onNewJob() {
+    const job = {
+      receivedDate: new Date(),
+      dueDate: new Date(),
+      jobStatus: {
+        generalStatus: 10
+      }
+    };
+
     this.editDialogService.openJob(job).afterClosed().pipe(
       concatMap(data => data ? of(data.job) : EMPTY),
       concatMap(job => this.insertJobAndUploadFiles(job)),

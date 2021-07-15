@@ -48,11 +48,13 @@ export class JobService {
 
   updateJob(job: Partial<Job>, params?: JobUpdateParams): Observable<boolean> {
     if (!job.jobId) { return of(false); }
+    if (job.dueDate) {
+      job.dueDate = endOfDay(new Date(job.dueDate));
+    }
     return this.prdApi.jobs.updateOne(
       job.jobId,
       {
         ...job,
-        dueDate: endOfDay(new Date(job.dueDate)),
         jobId: undefined,
         _id: undefined,
       },

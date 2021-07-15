@@ -33,7 +33,6 @@ export class ReproJobDialogService {
   ) { }
 
   openJob(job: Partial<JobBase>): MatDialogRef<ReproJobEditComponent, DialogData> {
-    job = this.setJobDefaults(job);
     const form = new JobFormGroup(this.customersService, this.productsService, job);
     const config: MatDialogConfig = {
       ...CONFIG,
@@ -53,17 +52,6 @@ export class ReproJobDialogService {
       concatMap(job => this.openJob(job).afterClosed()),
       concatMap(data => data ? this.jobService.updateJob(data.job) : of(false)),
     );
-  }
-
-  private setJobDefaults<T extends Partial<JobBase>>(job: T): T {
-    return {
-      ...job,
-      receivedDate: job.receivedDate || new Date(),
-      dueDate: job.dueDate || new Date(),
-      jobStatus: {
-        generalStatus: job.jobStatus?.generalStatus || 10
-      }
-    };
   }
 
 
