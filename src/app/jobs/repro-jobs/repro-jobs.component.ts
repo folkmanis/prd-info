@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DestroyService } from 'prd-cdk';
-import { concatMap, filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { concatMap, filter, map, mergeAll, mergeMap, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { JobQueryFilter } from 'src/app/interfaces/job';
 import { LayoutService } from 'src/app/layout/layout.service';
 import { JobService } from 'src/app/services/job.service';
@@ -49,7 +49,7 @@ export class ReproJobsComponent implements OnInit {
     this.jobService.setFilter(filter);
   }
 
-  async onFileDrop(fileList: FileList) {
+  onFileDrop(fileList: FileList) {
     const fileListArray = Array.from(fileList);
     const name: string = fileListArray
       .reduce((acc, curr) => [...acc, curr.name.replace(/\.[^/.]+$/, '')], [])
@@ -65,12 +65,11 @@ export class ReproJobsComponent implements OnInit {
         generalStatus: 20
       },
     };
-    const data = await this.editDialogService.openJob(job).afterClosed().toPromise();
-    if (data) {
-      await this.insertJobAndUploadFiles(data.form.value).toPromise();
-    } else {
-      this.fileUploadService.clearUploadQueue();
-    }
+    this.editDialogService.openJob(job).afterClosed().pipe(
+      map(data => data ? data.form.value : this.fileUploadService.clearUploadQueue()),
+      mergeMap(job => this.insertJobAndUploadFiles(job)),
+      takeUntil(this.destroy$),
+    ).subscribe();
   }
 
   onNewJob() {
@@ -90,7 +89,10 @@ export class ReproJobsComponent implements OnInit {
 
   }
 
-  private insertJobAndUploadFiles(job: Partial<JobBase>): Observable<number> {
+  private insertJobAndUploadFiles(job: Partial<JobBase> | undefined): Observable<number> {
+    if (job === undefined) {
+      return EMPTY;
+    }
     const createFolder = !!this.fileUploadService.filesCount;
     return this.jobService.newJob(job, { createFolder }).pipe(
       tap(jobId => this.fileUploadService.startUpload(jobId)),
