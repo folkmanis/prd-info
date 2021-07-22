@@ -9,8 +9,13 @@ export class FocusedDirective implements AfterViewInit {
     private el: ElementRef<HTMLInputElement>,
   ) { }
 
-  ngAfterViewInit(): void {
-    setTimeout(() => this.el.nativeElement.focus(), 0);
+  focus() {
+    this.el.nativeElement.focus();
   }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.focus(), 0);
+  }
+
 
 }
