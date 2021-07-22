@@ -2,11 +2,10 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 const enum StatusText {
-  DEFAULT_TEXT = 'Atlasīt csv vai xls failu',
+  DEFAULT_TEXT = 'Atlasīt xlsx failu',
   TOO_MANY = 'Tieši vienu failu!',
   TOO_LARGE = 'Pārsniegts Maksimālais faila izmērs 200kb',
 }
-
 
 @Component({
   selector: 'app-select-file',
@@ -15,7 +14,6 @@ const enum StatusText {
 })
 export class SelectFileComponent implements OnInit {
 
-  @Output() csvFile: EventEmitter<File | null> = new EventEmitter();
   @Output() xlsFile: EventEmitter<File | null> = new EventEmitter();
 
   readonly status$ = new BehaviorSubject<string>(StatusText.DEFAULT_TEXT);
@@ -32,11 +30,6 @@ export class SelectFileComponent implements OnInit {
     }
     if (fileList[0].size > 200 * 1024) {
       this.status$.next(StatusText.TOO_LARGE);
-      return;
-    }
-    if (fileList[0].name.endsWith('.csv')) {
-      this.status$.next(this.fileStatus(fileList[0]));
-      this.csvFile.emit(fileList[0]);
       return;
     }
     if (fileList[0].name.endsWith('.xls') || fileList[0].name.endsWith('xlsx')) {

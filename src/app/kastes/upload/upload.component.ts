@@ -55,23 +55,16 @@ export class UploadComponent implements OnInit, OnDestroy {
     this.inputData$.complete();
   }
 
-  onCsvDrop(file: File) {
-    const fileReader = new FileReader();
-    fileReader.onload = (e) => {
-      this.parserService.parseCsv(fileReader.result.toString(), ';');
-    };
-    fileReader.readAsText(file);
-  }
-
   onXlsDrop(file: File) {
     const fileReader = new FileReader();
-    fileReader.onload = (e: any) => {
 
+    fileReader.onload = (e: any) => {
       const data = this.parserService.parseXml(e.target.result);
       this.inputData$.next(
         normalizeTable(data)
       );
     };
+
     fileReader.readAsBinaryString(file);
   }
 
