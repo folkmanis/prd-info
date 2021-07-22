@@ -24,7 +24,7 @@ export class LoginGuard implements CanLoad, CanActivate {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    return this.loginService.isLogin$.pipe(
+    return this.loginService.isLogin().pipe(
       tap(logged => logged || this.router.navigate(['login'])),
     );
   }

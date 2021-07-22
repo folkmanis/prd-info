@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { filter, switchMap, take } from 'rxjs/operators';
+import { filter, switchMap } from 'rxjs/operators';
 import { LoginService } from 'src/app/services';
+import { FocusedDirective } from 'src/app/library/directives/focused.directive';
 
 @Component({
   selector: 'app-login',
@@ -11,6 +12,8 @@ import { LoginService } from 'src/app/services';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
+
+  @ViewChild(FocusedDirective) username: FocusedDirective;
 
   loginForm: FormGroup = new FormGroup({
     username: new FormControl('', [Validators.required]),
@@ -24,22 +27,23 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.loginService.isLogin$.pipe(
-      take(1),
+    this.loginService.isLogin().pipe(
       filter(login => login),
-      switchMap(() => this.loginService.logOut()),
+      switchMap(_ => this.loginService.logOut()),
     ).subscribe();
   }
 
   onLogin() {
-    this.loginService.logIn(this.loginForm.value).subscribe((success) => {
-      if (success) {
-        this.router.navigate(['/']);
-      } else {
-        this.snack.open('Nepareiza parole vai lietotājs', 'OK', { duration: 5000 });
-        this.loginForm.reset();
-      }
-    });
+    this.loginService.logIn(this.loginForm.value)
+      .subscribe(success => {
+        if (success) {
+          this.router.navigate(['/']);
+        } else {
+          this.snack.open('Nepareiza parole vai lietotājs', 'OK', { duration: 5000 });
+          this.loginForm.reset();
+          this.username.focus();
+        }
+      });
   }
 
 }
