@@ -11,9 +11,9 @@
  */
 
 import { EventEmitter, Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, merge, Observable, of, ReplaySubject } from 'rxjs';
+import { BehaviorSubject, combineLatest, merge, MonoTypeOperatorFunction, Observable, of, ReplaySubject } from 'rxjs';
 import { map, mergeMap, pluck, share, shareReplay, switchMap, tap } from 'rxjs/operators';
-import { cloneDeep } from 'lodash';
+import { deepCopy } from 'prd-cdk';
 import { HttpOptions } from '../../library/http/http-options';
 import { ArchiveFacet, ArchiveRecord, ArchiveResp, FacetFilter, SearchQuery } from 'src/app/interfaces/xmf-search';
 import { PagedCache, Range } from './paged-cache';
@@ -77,15 +77,15 @@ export class ArchiveSearchService {
     return this._stringSearch$;
   }
 
-  private updateFacet(): (nF: Observable<ArchiveFacet>) => Observable<ArchiveFacet> {
+  private updateFacet(): MonoTypeOperatorFunction<ArchiveFacet> {
     return map(
       (newFacet: ArchiveFacet): ArchiveFacet => {
         if (!this.facetData) { // ja prasa pirmo reizi
           this.facetData = newFacet; // tad izmanto visu ierakstu
-          return cloneDeep(this.facetData);
+          return deepCopy(this.facetData);
         }
         // ja elementi jau ir, tad izmantos tikai skaitus
-        const facetFiltered: ArchiveFacet = cloneDeep(this.facetData);
+        const facetFiltered: ArchiveFacet = deepCopy(this.facetData);
         for (const key of Object.keys(facetFiltered)) { // pa grupām
           facetFiltered[key] = facetFiltered[key].map(val => newFacet[key].find(nVal => nVal._id === val._id) || { ...val, count: 0 });
         }
