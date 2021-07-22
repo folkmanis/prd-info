@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { PlateInvoiceRoutingModule } from './plate-invoice-routing.module';
 import { LibraryModule } from 'src/app/library/library.module';
-import { PdfMakeWrapper } from 'pdfmake-wrapper';
-import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 
 import { CalculationsLibraryModule } from '../calculations-library/calculations-library.module';
 
@@ -15,8 +13,6 @@ import { InvoiceProductsComponent } from './invoice-editor/invoice-products/invo
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { InvoiceDeleteDirective } from './invoice-editor/invoice-delete.directive';
 import { InvoicePaytraqComponent } from './invoice-editor/invoice-paytraq/invoice-paytraq.component';
-
-PdfMakeWrapper.setFonts(pdfFonts);
 
 @NgModule({
   declarations: [

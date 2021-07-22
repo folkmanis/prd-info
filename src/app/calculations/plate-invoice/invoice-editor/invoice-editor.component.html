@@ -33,11 +33,11 @@
 
         <span class="spacer"></span>
 
-        <button mat-icon-button (click)="onPdfDownload(invoice)">
+        <a mat-icon-button href="/data/invoices/report_{{invoice.invoiceId}}.pdf" target="new" matTooltip="Atvērt PDF">
             <mat-icon>
                 picture_as_pdf
             </mat-icon>
-        </button>
+        </a>
         <button mat-icon-button [matMenuTriggerFor]="menu">
             <mat-icon>
                 more_vert

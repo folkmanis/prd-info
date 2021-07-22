@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { pick } from 'prd-cdk';
 import { EMPTY, Observable, of, Subject } from 'rxjs';
-import { pluck, startWith, switchMap, tap } from 'rxjs/operators';
+import { map, pluck, startWith, switchMap, tap } from 'rxjs/operators';
 import {
   Invoice, InvoicesFilter, InvoiceTable,
-  InvoiceUpdate, INVOICE_UPDATE_FIELDS, JobPartial, JobQueryFilter, JobsWithoutInvoicesTotals
+  InvoiceUpdate, INVOICE_UPDATE_FIELDS, JobPartial, JobQueryFilter, JobsWithoutInvoicesTotals, InvoiceForReport
 } from 'src/app/interfaces';
 import { PaytraqInvoice } from 'src/app/interfaces/paytraq';
 import { Sale } from 'src/app/interfaces/paytraq/invoice';
@@ -43,6 +43,10 @@ export class InvoicesService {
 
   getInvoice(invoiceId: string): Observable<Invoice> {
     return this.prdApi.invoices.get(invoiceId);
+  }
+
+  getReport(data: InvoiceForReport) {
+    return this.prdApi.invoices.getReport(data);
   }
 
   updateInvoice(id: string, update: InvoiceUpdate): Observable<any> {

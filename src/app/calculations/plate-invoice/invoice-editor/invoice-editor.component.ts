@@ -8,7 +8,6 @@ import { Invoice, InvoiceProduct, SystemPreferences } from 'src/app/interfaces';
 import { CONFIG } from 'src/app/services/config.provider';
 import { InvoicesService } from '../../services/invoices.service';
 import { InvoiceCsv } from './invoice-csv';
-import { InvoiceReport } from '../../services/invoice-report';
 import { InvoiceResolverService } from '../../services/invoice-resolver.service';
 
 
@@ -30,10 +29,6 @@ export class InvoiceEditorComponent implements OnInit, OnDestroy {
     this._routeInvoice$,
     this.reload$.pipe(switchMap(_ => this.invoiceResolver.reload())),
   ).pipe(
-    map(invoice => ({
-      ...invoice,
-      total: invoice.products.reduce((acc, curr) => acc + curr.total, 0)
-    })),
     share(),
   );
 
@@ -54,11 +49,6 @@ export class InvoiceEditorComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.reload$.complete();
-  }
-
-  onPdfDownload(invoice: Invoice): void {
-    const report = new InvoiceReport(invoice, this.locale);
-    report.open();
   }
 
   onCsvInvoice(invoice: Invoice): void {
