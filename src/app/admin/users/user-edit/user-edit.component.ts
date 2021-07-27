@@ -61,9 +61,5 @@ export class UserEditComponent implements OnInit, CanComponentDeactivate {
     });
   }
 
-  onDeleteSessions(sessions: string[]) {
-    console.log(sessions);
-  }
-
 
 }

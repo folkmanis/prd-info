@@ -80,6 +80,6 @@
 
     </form>
 
-    <app-sessions [userId]="formSource.value.username"></app-sessions>
+    <app-sessions *ngIf="formSource.isNew === false" [userId]="formSource.value.username"></app-sessions>
 
 </app-simple-form-container>
