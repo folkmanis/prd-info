@@ -15,7 +15,7 @@ export class PasutijumiService {
     private prdApi: PrdApiService,
   ) { }
 
-  getKastesJobs(options: { veikali: boolean }): Observable<KastesJobPartial[]> {
+  getKastesJobs(options: { veikali: boolean; }): Observable<KastesJobPartial[]> {
     return this.prdApi.kastesOrders.get({
       ...options,
       veikali: options.veikali ? 1 : 0,
@@ -24,23 +24,6 @@ export class PasutijumiService {
 
   getOrder(id: number): Observable<KastesJob> {
     return this.prdApi.kastesOrders.get(id);
-  }
-
-  addOrder(nameOrOrder: string | Partial<KastesJob>): Observable<string> {
-    const order = typeof nameOrOrder === 'string' ? { name: nameOrOrder } : nameOrOrder;
-    return this.prdApi.kastesOrders.insertOne(order).pipe(
-      map((id: string) => id),
-      tap(() => this.reload$.next()),
-    );
-  }
-
-  updateOrder(pas: Partial<KastesJob>): Observable<boolean> {
-    if (!pas._id || !pas._id.length) {
-      return EMPTY;
-    }
-    return this.prdApi.kastesOrders.updateOne(pas._id, pas).pipe(
-      tap(upd => upd && this.reload$.next()),
-    );
   }
 
   updateOrderVeikali(veikali: Veikals[]): Observable<number> {
