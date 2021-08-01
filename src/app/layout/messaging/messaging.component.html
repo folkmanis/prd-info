@@ -1,0 +1,19 @@
+<span *ngIf="messages$ | async as messages;">
+    <button mat-icon-button #trigger="matMenuTrigger" [matMenuTriggerFor]="messagesMenu"
+        (menuOpened)="messagesOpened$.next(trigger)" (menuClosed)="onMessagesClosed()"
+        [disabled]="messages.length == 0">
+        <mat-icon [matBadge]="unreadCount$ | async" [matBadgeHidden]="(unreadCount$ | async) === 0"
+            matBadgeColor="accent">
+            notifications
+        </mat-icon>
+    </button>
+</span>
+
+
+<mat-menu #messagesMenu="matMenu">
+    <ng-template matMenuContent>
+        <span mat-menu-item *ngFor="let message of messages$ | async;" class="app-menu">
+            <app-alert-message [message]="message"></app-alert-message>
+        </span>
+    </ng-template>
+</mat-menu>

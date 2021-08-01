@@ -24,6 +24,8 @@ import { APP_PARAMS, PRD_DEFAULTS } from './app-params';
 import { ToolbarComponent } from './layout/toolbar/toolbar.component';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { configProvider } from './services/config.provider';
+import { AlertMessageComponent } from './layout/messaging/alert-message/alert-message.component';
+import { MessagingComponent } from './layout/messaging/messaging.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +34,8 @@ import { configProvider } from './services/config.provider';
     SideMenuComponent,
     MainMenuComponent,
     ToolbarComponent,
+    AlertMessageComponent,
+    MessagingComponent,
   ],
   imports: [
     BrowserModule,

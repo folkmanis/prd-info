@@ -2,7 +2,7 @@ import { Injectable, ErrorHandler, NgZone } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { EMPTY, Observable, throwError } from 'rxjs';
 
 @Injectable()
 export class ErrorsService implements ErrorHandler {

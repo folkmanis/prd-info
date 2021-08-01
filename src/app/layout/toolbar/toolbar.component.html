@@ -21,13 +21,7 @@
   <span class="spacer"></span>
 
   <!-- Ziņojumi -->
-  <span>
-    <button mat-icon-button>
-      <mat-icon>
-        notifications
-      </mat-icon>
-    </button>
-  </span>
+  <app-messaging></app-messaging>
 
   <!-- Mazais lietotāja menu -->
   <span>
@@ -37,16 +31,17 @@
       <mat-icon>arrow_drop_down</mat-icon>
     </button>
 
-    <mat-menu #userMenu="matMenu">
-      <span mat-menu-item>
-        Versija {{version}}
-      </span>
-      <span mat-menu-item class="mat-caption username">
-        Lietotājs: <strong>{{user.name}}</strong>
-      </span>
-      <button mat-menu-item [routerLink]="['/', 'login']">
-        Atslēgties
-      </button>
-    </mat-menu>
   </span>
 </mat-toolbar>
+
+<mat-menu #userMenu="matMenu">
+  <span mat-menu-item>
+    Versija {{version}}
+  </span>
+  <span mat-menu-item class="mat-caption username">
+    Lietotājs: <strong>{{user.name}}</strong>
+  </span>
+  <button mat-menu-item [routerLink]="['/', 'login']">
+    Atslēgties
+  </button>
+</mat-menu>

@@ -6,6 +6,7 @@ import { LayoutService } from './layout/layout.service';
 import { AppParams } from 'src/app/interfaces';
 import { APP_PARAMS } from './app-params';
 import { ApiVersionService } from 'src/app/library/http/api-version.service';
+import { MessagingService } from './services/messaging.service';
 
 @Component({
   selector: 'app-root',
@@ -37,6 +38,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.apiVersion.version$.pipe(
       filter(ver => ver.appBuild > this.params.version.appBuild),
     ).subscribe(() => location.reload());
+
   }
 
   ngOnDestroy() {

@@ -2,7 +2,7 @@ import { Component, OnInit, Output, EventEmitter, Inject, ChangeDetectionStrateg
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { LoginService, SystemPreferencesService } from 'src/app/services';
-import { User, AppParams, UserModule } from 'src/app/interfaces';
+import { User, AppParams, UserModule, Message } from 'src/app/interfaces';
 import { APP_PARAMS } from 'src/app/app-params';
 
 @Component({
@@ -12,6 +12,7 @@ import { APP_PARAMS } from 'src/app/app-params';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToolbarComponent implements OnInit {
+
 
   @Input() user: User;
 
@@ -28,5 +29,6 @@ export class ToolbarComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
 
 }
