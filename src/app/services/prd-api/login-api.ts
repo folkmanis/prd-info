@@ -31,4 +31,10 @@ export class LoginApi extends ApiBase<User> {
         );
     }
 
+    deleteMessage(id: string): Observable<number> {
+        return this.http.delete<MessageResponse>(this.path + 'messages/' + id, new HttpOptions()).pipe(
+            map(resp => resp.deletedCount || 0),
+        );
+    }
+
 }

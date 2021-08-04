@@ -14,6 +14,7 @@ import { AppParams } from 'src/app/interfaces';
 import { APP_PARAMS } from 'src/app/app-params';
 import { PaytraqApi } from './paytraq-api';
 import { MaterialsApi } from './materials-api';
+import { NotificationsApi } from './notifications-api';
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +35,7 @@ export class PrdApiService {
   xmfArchive = new XmfArchiveApi(this.http, this.apiPath + 'xmf-archive/');
   paytraq = new PaytraqApi(this.http, this.apiPath + 'paytraq/');
   materials = new MaterialsApi(this.http, this.apiPath + 'materials/');
+  notifications = new NotificationsApi(this.http, this.apiPath + 'notifications/');
 
   constructor(
     private http: HttpClient,

@@ -1,4 +1,4 @@
-import { Input, Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Input, Component, OnInit, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { Message, FsOperations, JobMessageActions, JobFtpUpdate } from 'src/app/interfaces';
 
 const FS_ACTIONS: {
@@ -19,14 +19,21 @@ const FS_ACTIONS: {
 })
 export class AlertMessageComponent<T extends JobMessageActions> implements OnInit {
 
+  private _message: Message<T>;
   @Input()
   set message(value: Message<T>) {
+    this._message = value;
     this.date = value.timestamp;
 
     this.action = value.module === 'jobs' && value.data.action === 'ftpUpload' && FS_ACTIONS.find(act => act.operation === value.data.operation)?.action || '';
     this.description = value.module === 'jobs' && value.data.action === 'ftpUpload' && (value.data as JobFtpUpdate).path.join('/') || '';
     this.unread = !value.seen;
   }
+  get message(): Message<T> {
+    return this._message;
+  }
+
+  @Output() delete = new EventEmitter<string>();
 
   date: Date;
 
@@ -40,5 +47,6 @@ export class AlertMessageComponent<T extends JobMessageActions> implements OnIni
 
   ngOnInit(): void {
   }
+
 
 }

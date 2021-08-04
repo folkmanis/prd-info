@@ -1,8 +1,15 @@
-<div [class.unread]="unread">
+<span [class.unread]="unread">
     <small>
         {{date | date : 'short'}}
     </small>
     {{action}}
-    <br>
+</span>
+<span>
     {{description}}
-</div>
+</span>
+
+<button mat-mini-fab class="actions" (click)="delete.next(message._id); $event.stopPropagation()">
+    <mat-icon>
+        delete
+    </mat-icon>
+</button>

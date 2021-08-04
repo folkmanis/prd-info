@@ -1,13 +1,25 @@
 :host {
     display: flex;
+    flex-direction: column;
     height: 48px;
-    align-items: center;
+    justify-content: center;
 }
 
-.button {
-    width: 24px;
+span {
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .unread small {
     font-weight: bold;
+}
+
+button.actions {
+    position: absolute;
+    right: 20px;
+    visibility: hidden;
+}
+
+:host:hover button.actions {
+    visibility: inherit;
 }

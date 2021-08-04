@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpResponse } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable, of, scheduled, asyncScheduler } from 'rxjs';
 import { tap, finalize } from 'rxjs/operators';
 import { HttpCacheService } from './http-cache.service';
 
@@ -19,7 +19,7 @@ export class CacheInterceptorService implements HttpInterceptor {
     }
     const cachedResponse = this.cache.get(req);
     if (cachedResponse !== null) {
-      return of(cachedResponse);
+      return scheduled([cachedResponse], asyncScheduler);
     }
     return next.handle(req).pipe(
       tap(event => (event instanceof HttpResponse) && this.cache.put(req, event)),

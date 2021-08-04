@@ -3,6 +3,8 @@ import { Colors } from './kaste';
 
 export const MODULES = ['kastes', 'system', 'jobs', 'paytraq'] as const;
 
+export type Modules = typeof MODULES[number];
+
 export type ModuleSettings = KastesSettings | SystemSettings | JobsSettings | PaytraqSettings;
 
 export interface PreferencesDbModule {

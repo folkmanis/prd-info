@@ -1,7 +1,6 @@
 import { AppHttpResponseBase } from 'src/app/library/http/app-http-response-base';
-import { MODULES } from './system-preferences';
+import { Modules } from './system-preferences';
 
-type Modules = typeof MODULES[number];
 
 export interface MessageBase {
     _id: string;

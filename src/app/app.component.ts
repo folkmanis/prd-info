@@ -1,12 +1,11 @@
 import { Component, OnInit, OnDestroy, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription, combineLatest, Observable, interval, timer } from 'rxjs';
-import { map, switchMap, filter } from 'rxjs/operators';
+import { map, switchMap, filter, takeUntil, timeout } from 'rxjs/operators';
 import { LoginService, SystemPreferencesService } from 'src/app/services';
 import { LayoutService } from './layout/layout.service';
 import { AppParams } from 'src/app/interfaces';
 import { APP_PARAMS } from './app-params';
 import { ApiVersionService } from 'src/app/library/http/api-version.service';
-import { MessagingService } from './services/messaging.service';
 
 @Component({
   selector: 'app-root',

@@ -15,3 +15,4 @@ export * from './user-module';
 export * from './job-base';
 export * from './materials';
 export * from './message';
+export * from './notification';

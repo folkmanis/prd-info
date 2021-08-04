@@ -1,10 +1,10 @@
-import { Component, Input, Output, OnInit, ChangeDetectionStrategy, ViewChild, EventEmitter } from '@angular/core';
-import { Message, FsOperations, JobMessageActions, JobFtpUpdate } from 'src/app/interfaces';
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { Observable, Subject, timer } from 'rxjs';
-import { takeUntil, delay, auditTime, skipWhile, debounceTime, filter, map, mergeMap, finalize, share, shareReplay } from 'rxjs/operators';
-import { log, DestroyService } from 'prd-cdk';
+import { DestroyService } from 'prd-cdk';
+import { Subject } from 'rxjs';
+import { debounceTime, filter, map, mergeMap, shareReplay, takeUntil } from 'rxjs/operators';
 import { MessagingService } from 'src/app/services/messaging.service';
+import { NotificationsService } from 'src/app/services/notifications.service';
 
 @Component({
   selector: 'app-messaging',
@@ -13,11 +13,9 @@ import { MessagingService } from 'src/app/services/messaging.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DestroyService],
 })
-export class MessagingComponent implements OnInit {
+export class MessagingComponent implements OnInit, AfterViewInit {
 
-  @ViewChild(MatMenuTrigger) private trigger: MatMenuTrigger;
-
-  messages$ = this.messaging.alertMessages$;
+  messages$ = this.messaging.messages$;
 
   messagesOpened$ = new Subject<MatMenuTrigger>();
 
@@ -29,9 +27,16 @@ export class MessagingComponent implements OnInit {
   constructor(
     private messaging: MessagingService,
     private destroy$: DestroyService,
+    private notifications: NotificationsService,
   ) { }
 
   ngOnInit(): void {
+
+    this.notifications.multiplex('system').pipe(
+      takeUntil(this.destroy$),
+    )
+      .subscribe(() => this.messaging.reload());
+
     this.unreadCount$.pipe(
       filter(count => count > 0),
       mergeMap(_ => this.messagesOpened$),
@@ -40,17 +45,20 @@ export class MessagingComponent implements OnInit {
       mergeMap(_ => this.messaging.markAllAsRead()),
       takeUntil(this.destroy$),
     )
-      .subscribe();
+      .subscribe(updated => updated && this.messaging.reload());
   }
 
-  onMessagesOpened() {
-    this.messagesOpened$.next(this.trigger);
+  onMessagesOpened(trigger: MatMenuTrigger) {
+    this.messagesOpened$.next(trigger);
   }
 
-  onMessagesClosed() {
-    console.log('messages closed');
+  ngAfterViewInit() {
+    this.messaging.reload();
   }
 
-
+  onDelete(id: string) {
+    this.messaging.deleteMessage(id)
+      .subscribe(resp => resp && this.messaging.reload());
+  }
 
 }
