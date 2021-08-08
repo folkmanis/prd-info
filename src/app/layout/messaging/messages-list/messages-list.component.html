@@ -1,0 +1,15 @@
+<div [class.container]="dropDown">
+    <mat-table [dataSource]="messages$" class="app-table">
+
+        <ng-container matColumnDef="messageText">
+            <mat-cell *matCellDef="let message;">
+
+                <app-alert-message [message]="message" (delete)="onDelete($event)"></app-alert-message>
+
+            </mat-cell>
+        </ng-container>
+
+        <mat-row *matRowDef="let row; columns: ['messageText']"></mat-row>
+
+    </mat-table>
+</div>

@@ -25,7 +25,8 @@ import { ToolbarComponent } from './layout/toolbar/toolbar.component';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { configProvider } from './services/config.provider';
 import { AlertMessageComponent } from './layout/messaging/alert-message/alert-message.component';
-import { MessagingComponent } from './layout/messaging/messaging.component';
+import { MessagesListComponent } from './layout/messaging/messages-list/messages-list.component';
+import { MessagesTriggerDirective } from './layout/messaging/messages-trigger.directive';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { MessagingComponent } from './layout/messaging/messaging.component';
     MainMenuComponent,
     ToolbarComponent,
     AlertMessageComponent,
-    MessagingComponent,
+    MessagesListComponent,
+    MessagesTriggerDirective,
   ],
   imports: [
     BrowserModule,

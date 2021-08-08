@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import { LoginService, SystemPreferencesService } from 'src/app/services';
 import { User, AppParams, UserModule, Message } from 'src/app/interfaces';
 import { APP_PARAMS } from 'src/app/app-params';
+import { MessagingService } from 'src/app/services/messaging.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -22,8 +23,11 @@ export class ToolbarComponent implements OnInit {
 
   version = this.params.version.appBuild;
 
+  unreadMessagesCount$: Observable<number> = this.messagingService.unreadCount$;
+
   constructor(
     @Inject(APP_PARAMS) private params: AppParams,
+    private messagingService: MessagingService,
   ) { }
 
 

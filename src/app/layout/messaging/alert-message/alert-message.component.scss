@@ -1,4 +1,8 @@
 :host {
+    width: 100%;
+}
+
+.container {
     display: flex;
     flex-direction: column;
     height: 48px;
@@ -8,6 +12,7 @@
 span {
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .unread small {
@@ -16,10 +21,10 @@ span {
 
 button.actions {
     position: absolute;
-    right: 20px;
+    right: 0px;
     visibility: hidden;
 }
 
-:host:hover button.actions {
+.container:hover button.actions {
     visibility: inherit;
 }

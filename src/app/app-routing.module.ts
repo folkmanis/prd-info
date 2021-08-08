@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { MainMenuComponent } from './layout/main-menu/main-menu.component';
 import { LoginGuard } from './login/login.guard';
+import { MessagesListComponent } from './layout/messaging/messages-list/messages-list.component';
 
 const routes: Routes = [
   {
@@ -14,6 +15,12 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent
+  },
+  {
+    path: 'messages',
+    component: MessagesListComponent,
+    pathMatch: 'full',
+    canActivate: [LoginGuard],
   },
   {
     path: 'xmf-search',

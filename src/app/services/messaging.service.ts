@@ -14,8 +14,14 @@ export class MessagingService {
   private reload$ = new Subject<void>();
 
   messages$: Observable<Message[]> = this.reload$.pipe(
+    startWith(''),
     switchMap(_ => this.api.login.messages()),
     pluck('data'),
+    shareReplay(1),
+  );
+
+  unreadCount$ = this.messages$.pipe(
+    map(messages => messages.filter(msg => !msg.seen).length),
     shareReplay(1),
   );
 
