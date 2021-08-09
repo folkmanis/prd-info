@@ -4,6 +4,16 @@
 
 .container {
     display: flex;
+    align-items: center;
+}
+
+.message-icon {
+    flex: 0 0 24px;
+}
+
+.message {
+    max-width: 100%;
+    display: flex;
     flex-direction: column;
     height: 48px;
     justify-content: center;
@@ -15,13 +25,13 @@ span {
     white-space: nowrap;
 }
 
-.unread small {
+.unread {
     font-weight: bold;
 }
 
 button.actions {
     position: absolute;
-    right: 0px;
+    right: 8px;
     visibility: hidden;
 }
 

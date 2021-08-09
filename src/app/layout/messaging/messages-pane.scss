@@ -1,0 +1,49 @@
+@use '~@angular/material' as mat;
+
+@mixin messages-pane-color($config-or-theme) {
+    // Extract the color configuration in case a theme has been passed.
+    // This allows consumers to either pass a theme object or a color configuration.
+    $config: mat.get-color-config($config-or-theme);
+    // Extract the palettes you need from the theme definition.
+    $background: map-get($config, background);
+
+    // Define any styles affected by the theme.
+    .app-messages-pane {
+        background-color: map-get($background, "card");
+
+        .mat-mini-fab {
+            background-color: map-get($background, "card");
+        }
+    }
+}
+
+@mixin messages-pane-typography($config-or-theme) {
+    // Extract the typography configuration in case a theme has been passed.
+    $config: mat.get-typography-config($config-or-theme);
+}
+
+@mixin app-messages-pane() {
+    .app-messages-pane {
+        max-height: calc(100vh - 72px);
+        overflow-x: hidden;
+        overflow-y: auto;
+        border-radius: 4px;
+    }
+}
+
+@mixin messages-pane($theme) {
+    // Extracts the color and typography configurations from the theme.
+    $color: mat.get-color-config($theme);
+    $typography: mat.get-typography-config($theme);
+
+    // Do not generate styles if configurations for individual theming
+    // systems have been explicitly set to `null`.
+    @if $color != null {
+        @include messages-pane-color($color);
+    }
+    @if $typography != null {
+        @include messages-pane-typography($typography);
+    }
+
+    @include app-messages-pane();
+}

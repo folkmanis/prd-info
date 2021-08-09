@@ -22,3 +22,7 @@
 @import "./app/library/simple-form/simple-form.styles.scss";
 
 @include simple-form-theme($zmg-app-theme);
+
+@import "./app/layout/messaging/messages-pane.scss";
+
+@include messages-pane($zmg-app-theme);
