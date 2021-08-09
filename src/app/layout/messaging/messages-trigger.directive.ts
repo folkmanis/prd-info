@@ -21,7 +21,7 @@ export class MessagesTriggerDirective implements OnInit { //  extends CdkOverlay
 
   private readonly connectedPoistions: ConnectedPosition[] = [
     {
-      offsetX: 0,
+      offsetX: 10,
       offsetY: 0,
       originX: 'end',
       originY: 'bottom',
@@ -65,7 +65,7 @@ export class MessagesTriggerDirective implements OnInit { //  extends CdkOverlay
       width: '320px',
       hasBackdrop: true,
       backdropClass: ['cdk-overlay-transparent-backdrop'],
-      panelClass: ['mat-elevation-z4']
+      panelClass: ['mat-elevation-z4', 'app-messages-pane'],
     });
   }
 

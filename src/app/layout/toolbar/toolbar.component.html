@@ -21,10 +21,8 @@
   <span class="spacer"></span>
 
   <!-- Ziņojumi -->
-  <!-- <app-messaging></app-messaging> -->
-
   <span>
-    <button mat-icon-button appMessagesTrigger>
+    <button mat-icon-button appMessagesTrigger [disabled]="(messagesCount$ | async) === 0">
       <mat-icon [matBadge]="unreadMessagesCount$ | async" [matBadgeHidden]="(unreadMessagesCount$ | async) === 0"
         matBadgeColor="accent">
         notifications

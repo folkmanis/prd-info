@@ -2,7 +2,8 @@ import { Inject, Injectable } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { Message } from 'src/app/interfaces';
 import { PrdApiService } from './prd-api/prd-api.service';
-import { asyncScheduler, interval, merge, Observable, of, OperatorFunction, pipe, scheduled, Subject } from 'rxjs';
+import { LoginService } from 'src/app/services/login.service';
+import { asyncScheduler, combineLatest, interval, merge, Observable, of, OperatorFunction, pipe, scheduled, Subject } from 'rxjs';
 import { filter, map, pluck, retry, share, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 
 
@@ -13,11 +14,16 @@ export class MessagingService {
 
   private reload$ = new Subject<void>();
 
-  messages$: Observable<Message[]> = this.reload$.pipe(
-    startWith(''),
-    switchMap(_ => this.api.login.messages()),
-    pluck('data'),
+  messages$: Observable<Message[]> = combineLatest([
+    this.reload$.pipe(startWith('')),
+    this.login.user$,
+  ]).pipe(
+    switchMap(([_, user]) => user ? this.api.login.messages() : []),
     shareReplay(1),
+  );
+
+  messagesCount$: Observable<number> = this.messages$.pipe(
+    map(messages => messages.length)
   );
 
   unreadCount$ = this.messages$.pipe(
@@ -27,6 +33,7 @@ export class MessagingService {
 
   constructor(
     private api: PrdApiService,
+    private login: LoginService,
   ) { }
 
   reload() {
@@ -36,12 +43,14 @@ export class MessagingService {
   markAllAsRead(): Observable<boolean> {
     return this.api.login.setAllMessagesRead().pipe(
       map(n => n > 0),
+      tap(resp => resp && this.reload()),
     );
   }
 
   deleteMessage(id: string): Observable<boolean> {
     return this.api.login.deleteMessage(id).pipe(
       map(n => n > 0),
+      tap(resp => resp && this.reload()),
     );
   }
 

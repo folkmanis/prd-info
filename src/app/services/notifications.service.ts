@@ -34,7 +34,6 @@ export class NotificationsService {
     startWith(''),
     map(_ => this.document.visibilityState === 'visible'),
     switchMap(visible => visible ? timer(INITIAL_DELAY, TIMER_INTERVAL) : EMPTY),
-    // share(),
   );
 
   private comesVisible$: Observable<SystemNotification> = this.visibilitychange$.pipe(
@@ -77,7 +76,6 @@ export class NotificationsService {
       filter(ntf => ntf.module === module),
       finalize(() => {
         this.removeModuleSubs(module);
-        console.log('modules final', this.subscribed());
       }),
     ) as Observable<T>;
 

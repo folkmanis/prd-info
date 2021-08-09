@@ -1,19 +1,29 @@
 <div class="container">
 
-    <span [class.unread]="unread">
-        <small>
-            {{date | date : 'short'}}
-        </small>
-        {{action}}
-    </span>
-    <span>
-        {{description}}
-    </span>
-
-    <button mat-icon-button class="actions" (click)="delete.next(message._id); $event.stopPropagation()">
-        <mat-icon>
-            delete
+    <div class="message-icon">
+        <mat-icon *ngIf="!message.seen">
+            fmd_bad
         </mat-icon>
-    </button>
+
+    </div>
+
+    <div class="message">
+
+        <span [class.unread]="unread">
+            <small>
+                {{ date }} {{action}}
+            </small>
+        </span>
+        <span>
+            {{description}}
+        </span>
+
+        <button mat-mini-fab class="actions" (click)="delete.next(message._id); $event.stopPropagation()">
+            <mat-icon>
+                delete
+            </mat-icon>
+        </button>
+
+    </div>
 
 </div>

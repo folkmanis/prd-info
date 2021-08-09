@@ -4,6 +4,8 @@ import { map, pluck, tap } from 'rxjs/operators';
 import { User, Login, LoginResponse } from 'src/app/interfaces';
 import { Message, MessageResponse, JobMessageActions } from 'src/app/interfaces';
 
+const normalizeMessage: <T extends JobMessageActions = any>(message: Message<T>) => Message<T> = (message) => ({ ...message, timestamp: new Date(message.timestamp) });
+
 export class LoginApi extends ApiBase<User> {
 
     login(login: Login): Observable<User | null> {
@@ -18,10 +20,11 @@ export class LoginApi extends ApiBase<User> {
         );
     }
 
-    messages<T extends JobMessageActions>(fromDate?: Date): Observable<{ data: Message<T>[], timestamp: Date; }> {
+    messages<T extends JobMessageActions>(fromDate?: Date): Observable<Message<T>[]> {
         const from = fromDate?.getTime();
         return this.http.get<MessageResponse<T>>(this.path + 'messages', new HttpOptions({ from })).pipe(
-            map(resp => ({ data: resp.data as Message<T>[], timestamp: new Date(resp.timestamp) }))
+            map(resp => resp.data as Message<T>[]),
+            map(resp => resp.map(normalizeMessage))
         );
     }
 

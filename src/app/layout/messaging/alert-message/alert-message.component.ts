@@ -1,5 +1,7 @@
 import { Input, Component, OnInit, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { Message, FsOperations, JobMessageActions, JobFtpUpdate } from 'src/app/interfaces';
+import { formatDistanceToNow, formatDistanceToNowStrict } from 'date-fns';
+import { lv } from 'date-fns/locale';
 
 const FS_ACTIONS: {
   operation: FsOperations;
@@ -23,7 +25,7 @@ export class AlertMessageComponent<T extends JobMessageActions> implements OnIni
   @Input()
   set message(value: Message<T>) {
     this._message = value;
-    this.date = value.timestamp;
+    this.date = formatDistanceToNowStrict(value.timestamp, { addSuffix: true, locale: lv });
 
     this.action = value.module === 'jobs' && value.data.action === 'ftpUpload' && FS_ACTIONS.find(act => act.operation === value.data.operation)?.action || '';
     this.description = value.module === 'jobs' && value.data.action === 'ftpUpload' && (value.data as JobFtpUpdate).path.join('/') || '';
@@ -35,7 +37,7 @@ export class AlertMessageComponent<T extends JobMessageActions> implements OnIni
 
   @Output() delete = new EventEmitter<string>();
 
-  date: Date;
+  date: string;
 
   action: string;
 
