@@ -7,7 +7,6 @@ export interface MessageBase {
     timestamp: Date;
     seen: boolean;
     deleted: boolean;
-    alert: boolean;
     readonly module: Modules;
 }
 
