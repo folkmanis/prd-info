@@ -9,22 +9,12 @@ import { DOCUMENT } from '@angular/common';
 const INITIAL_DELAY = 3000;
 const TIMER_INTERVAL = 3000;
 
-const visibilityChange: SystemNotification = {
-  _id: '',
-  module: 'system',
-  timestamp: new Date(),
-  payload: {
-    operation: 'visibilityState',
-    id: 'visible',
-  }
-};
-
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationsService {
 
-  private subscribedModules = new Map<ModulesWithNotifications, number>();
+  private subscribedModulesMap = new Map<ModulesWithNotifications, number>();
 
   private fromDate: Date | undefined;
 
@@ -52,7 +42,7 @@ export class NotificationsService {
 
   notifications$: Observable<Notification> = merge(
     this.interval$.pipe(
-      map(_ => this.subscribed()),
+      map(_ => this.subscribedModules()),
       filter(modules => modules.length > 0),
       switchMap(modules => this.api.notifications.getNotification(modules, this.fromDate)),
       tap(resp => this.fromDate = resp.timestamp),
@@ -83,21 +73,21 @@ export class NotificationsService {
 
 
   private addModuleSubs(k: ModulesWithNotifications) {
-    const m = this.subscribedModules.get(k) || 0;
-    this.subscribedModules.set(k, m + 1);
+    const m = this.subscribedModulesMap.get(k) || 0;
+    this.subscribedModulesMap.set(k, m + 1);
   }
 
   private removeModuleSubs(k: ModulesWithNotifications) {
-    const m = this.subscribedModules.get(k) || 0;
+    const m = this.subscribedModulesMap.get(k) || 0;
     if (m <= 1) {
-      this.subscribedModules.delete(k);
+      this.subscribedModulesMap.delete(k);
     } else {
-      this.subscribedModules.set(k, m - 1);
+      this.subscribedModulesMap.set(k, m - 1);
     }
   }
 
-  private subscribed(): ModulesWithNotifications[] {
-    return [...this.subscribedModules.keys()];
+  private subscribedModules(): ModulesWithNotifications[] {
+    return [...this.subscribedModulesMap.keys()];
   }
 
 
