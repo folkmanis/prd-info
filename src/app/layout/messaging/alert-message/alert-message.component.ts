@@ -1,17 +1,6 @@
-import { Input, Component, OnInit, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
+import { Input, Component, OnInit, ChangeDetectionStrategy, Output, EventEmitter, Inject } from '@angular/core';
 import { Message, FsOperations, JobMessageActions, JobFtpUpdate } from 'src/app/interfaces';
-import { formatDistanceToNow, formatDistanceToNowStrict } from 'date-fns';
-import { lv } from 'date-fns/locale';
 
-const FS_ACTIONS: {
-  operation: FsOperations;
-  action: string;
-}[] = [
-    { operation: 'addDir', action: 'Izveidots folderis' },
-    { operation: 'add', action: 'Jauns fails' },
-    { operation: 'change', action: 'Mainīts fails' },
-    { operation: 'unlink', action: 'Izdzēsts fails' },
-  ];
 
 @Component({
   selector: 'app-alert-message',
@@ -21,31 +10,13 @@ const FS_ACTIONS: {
 })
 export class AlertMessageComponent<T extends JobMessageActions> implements OnInit {
 
-  private _message: Message<T>;
-  @Input()
-  set message(value: Message<T>) {
-    this._message = value;
-    this.date = formatDistanceToNowStrict(value.timestamp, { addSuffix: true, locale: lv });
-
-    this.action = value.module === 'jobs' && value.data.action === 'ftpUpload' && FS_ACTIONS.find(act => act.operation === value.data.operation)?.action || '';
-    this.description = value.module === 'jobs' && value.data.action === 'ftpUpload' && (value.data as JobFtpUpdate).path.join('/') || '';
-    this.unread = !value.seen;
-  }
-  get message(): Message<T> {
-    return this._message;
-  }
+  @Input() message: Message<T>;
 
   @Output() delete = new EventEmitter<string>();
 
-  date: string;
 
-  action: string;
-
-  description: string;
-
-  unread = false;
-
-  constructor() { }
+  constructor(
+  ) { }
 
   ngOnInit(): void {
   }

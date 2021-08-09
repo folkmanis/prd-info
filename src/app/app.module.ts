@@ -27,6 +27,10 @@ import { configProvider } from './services/config.provider';
 import { AlertMessageComponent } from './layout/messaging/alert-message/alert-message.component';
 import { MessagesListComponent } from './layout/messaging/messages-list/messages-list.component';
 import { MessagesTriggerDirective } from './layout/messaging/messages-trigger.directive';
+import { DATE_FNS_LOCALE } from './library/date-services';
+import { lv } from 'date-fns/locale';
+import { MessageActionsPipe } from './layout/messaging/alert-message/message-actions.pipe';
+import { MessageDescriptionPipe } from './layout/messaging/alert-message/message-description.pipe';
 
 @NgModule({
   declarations: [
@@ -38,6 +42,8 @@ import { MessagesTriggerDirective } from './layout/messaging/messages-trigger.di
     AlertMessageComponent,
     MessagesListComponent,
     MessagesTriggerDirective,
+    MessageActionsPipe,
+    MessageDescriptionPipe,
   ],
   imports: [
     BrowserModule,
@@ -48,6 +54,7 @@ import { MessagesTriggerDirective } from './layout/messaging/messages-trigger.di
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'lv' },
+    { provide: DATE_FNS_LOCALE, useValue: lv },
     { provide: DEFAULT_CURRENCY_CODE, useValue: 'EUR' },
     { provide: ErrorHandler, useClass: ErrorsService, },
     { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptorService, multi: true, },
@@ -55,7 +62,7 @@ import { MessagesTriggerDirective } from './layout/messaging/messages-trigger.di
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
     { provide: APP_PARAMS, useValue: PRD_DEFAULTS },
-    configProvider
+    configProvider,
   ],
   bootstrap: [AppComponent]
 })

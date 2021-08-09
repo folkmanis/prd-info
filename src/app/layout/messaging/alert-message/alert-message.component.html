@@ -9,13 +9,13 @@
 
     <div class="message">
 
-        <span [class.unread]="unread">
+        <span [class.unread]="!message.seen">
             <small>
-                {{ date }} {{action}}
+                {{ message.timestamp | relativeDate:'strict' }} {{ message | messageActions }}
             </small>
         </span>
         <span>
-            {{description}}
+            {{message | messageDescription}}
         </span>
 
         <button mat-mini-fab class="actions" (click)="delete.next(message._id); $event.stopPropagation()">
