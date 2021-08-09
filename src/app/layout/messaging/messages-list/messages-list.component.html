@@ -1,17 +1,40 @@
-<div [class.container]="dropDown">
-    <mat-table [dataSource]="messages$" class="app-table">
+<div *ngIf="messages$ | async as messages; else noMessages">
 
-        <ng-container matColumnDef="messageText">
-            <mat-cell *matCellDef="let message;">
 
-                <app-alert-message [message]="message" (delete)="onDelete($event)"></app-alert-message>
+    <div *ngFor="let message of messages;" class="container">
 
-            </mat-cell>
-        </ng-container>
+        <div class="message-icon">
+            <mat-icon *ngIf="!message.seen">
+                fmd_bad
+            </mat-icon>
 
-        <mat-row *matRowDef="let row; columns: ['messageText']"></mat-row>
+        </div>
 
-        <ng-template matNoDataRow>Nav ziņojumu</ng-template>
+        <div class="message">
 
-    </mat-table>
+            <span [class.unread]="!message.seen">
+                <small>
+                    {{ message.timestamp | relativeDate:'strict' }} {{ message | messageActions }}
+                </small>
+            </span>
+            <span>
+                {{message | messageDescription}}
+            </span>
+
+            <button mat-mini-fab class="actions" (click)="onDelete(message._id); $event.stopPropagation()">
+                <mat-icon>
+                    delete
+                </mat-icon>
+            </button>
+
+        </div>
+
+    </div>
+
 </div>
+
+<ng-template #noMessages>
+    <div>
+        Ziņojumu nav
+    </div>
+</ng-template>

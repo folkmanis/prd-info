@@ -1,7 +1,7 @@
 import { AfterViewInit, Input, EventEmitter, Output, ChangeDetectionStrategy, Component, OnInit, Optional } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { DestroyService, log } from 'prd-cdk';
-import { ReplaySubject, Subject } from 'rxjs';
+import { EMPTY, ReplaySubject, Subject } from 'rxjs';
 import { debounceTime, delay, filter, map, mergeMap, shareReplay, take, takeUntil } from 'rxjs/operators';
 import { MessagingService } from 'src/app/services/messaging.service';
 import { NotificationsService } from 'src/app/services/notifications.service';
@@ -36,7 +36,8 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
       take(1),
       filter(count => count > 0),
       delay(3000),
-      mergeMap(_ => this.messaging.markAllAsRead()),
+      mergeMap(_ => EMPTY), //  DEBUG
+      // mergeMap(_ => this.messaging.markAllAsRead()), 
       takeUntil(this.destroy$),
     )
       .subscribe();

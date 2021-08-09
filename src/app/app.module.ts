@@ -24,13 +24,12 @@ import { APP_PARAMS, PRD_DEFAULTS } from './app-params';
 import { ToolbarComponent } from './layout/toolbar/toolbar.component';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { configProvider } from './services/config.provider';
-import { AlertMessageComponent } from './layout/messaging/alert-message/alert-message.component';
 import { MessagesListComponent } from './layout/messaging/messages-list/messages-list.component';
 import { MessagesTriggerDirective } from './layout/messaging/messages-trigger.directive';
 import { DATE_FNS_LOCALE } from './library/date-services';
 import { lv } from 'date-fns/locale';
-import { MessageActionsPipe } from './layout/messaging/alert-message/message-actions.pipe';
-import { MessageDescriptionPipe } from './layout/messaging/alert-message/message-description.pipe';
+import { MessageActionsPipe } from './layout/messaging/message-pipes/message-actions.pipe';
+import { MessageDescriptionPipe } from './layout/messaging/message-pipes/message-description.pipe';
 
 @NgModule({
   declarations: [
@@ -39,7 +38,6 @@ import { MessageDescriptionPipe } from './layout/messaging/alert-message/message
     SideMenuComponent,
     MainMenuComponent,
     ToolbarComponent,
-    AlertMessageComponent,
     MessagesListComponent,
     MessagesTriggerDirective,
     MessageActionsPipe,

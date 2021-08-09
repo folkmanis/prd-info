@@ -1,12 +1,53 @@
-.mat-table {
-    background: none;
-    margin: 8px 0;
+:host {
+    width: 100%;
+    color: rgba(0, 0, 0, 0.87);
 }
 
-.mat-cell {
+.container {
+    height: 48px;
+    padding: 0px 8px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+}
+
+.container:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease-in-out;
+}
+
+.message-icon {
+    flex: 0 0 24px;
+}
+
+.message {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: center;
     overflow: hidden;
+
+    span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 }
 
-.mat-column-icon {
-    flex: 0 1 24px;
+.unread {
+    font-weight: bold;
+}
+
+button.actions {
+    position: absolute;
+    right: 8px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease-in-out;
+}
+
+.container:hover button.actions {
+    opacity: 1;
+    visibility: visible;
 }
