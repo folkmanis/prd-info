@@ -85,14 +85,15 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
     }
 
 
-    addPrice(frm: IFormArray<ProductPrice>, price?: ProductPrice) {
-        frm.push(this.productPriceGroup(price));
-        frm.markAsDirty();
+    addPrice(price?: ProductPrice) {
+        this.formPrices.push(this.productPriceGroup(price));
+        this.form.markAsDirty();
+        console.log('price added', this.form);
     }
 
-    removePrice(frm: IFormArray<ProductPrice>, idx: number) {
-        frm.removeAt(idx);
-        frm.markAsDirty();
+    removePrice(idx: number) {
+        this.formPrices.removeAt(idx);
+        this.form.markAsDirty();
     }
 
     private setNameValidators() {
