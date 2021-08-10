@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Message, FsOperations, JobMessageActions, JobFtpUpdate } from 'src/app/interfaces';
+import { FsOperations, Message } from 'src/app/interfaces';
 
 const FS_ACTIONS: {
   operation: FsOperations;
@@ -18,7 +18,10 @@ const FS_ACTIONS: {
 export class MessageActionsPipe implements PipeTransform {
 
   transform(value: Message): string {
-    return value.module === 'jobs' && value.data.action === 'ftpUpload' && FS_ACTIONS.find(act => act.operation === value.data.operation)?.action || '';
+    if (value.module === 'jobs' && value.data.action === 'ftpUpload') {
+      return FS_ACTIONS.find(act => act.operation === value.data.operation)?.action || '';
+    }
+    return value.data.operation;
   }
 
 }

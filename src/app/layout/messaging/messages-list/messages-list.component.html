@@ -1,7 +1,7 @@
-<div *ngIf="messages$ | async as messages; else noMessages">
+<div *ngIf="messages$ | async as messages; else noMessages" class="messages-container">
 
 
-    <div *ngFor="let message of messages;" class="container">
+    <div *ngFor="let message of messages; trackBy: trackByFn" class="message">
 
         <div class="message-icon">
             <mat-icon *ngIf="!message.seen">
@@ -10,7 +10,7 @@
 
         </div>
 
-        <div class="message">
+        <div class="message-text">
 
             <span [class.unread]="!message.seen">
                 <small>

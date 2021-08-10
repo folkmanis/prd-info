@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Message, FsOperations, JobMessageActions, JobFtpUpdate } from 'src/app/interfaces';
+import { Message } from 'src/app/interfaces';
 
 @Pipe({
   name: 'messageDescription',

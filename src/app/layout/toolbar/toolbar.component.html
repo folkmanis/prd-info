@@ -21,14 +21,25 @@
   <span class="spacer"></span>
 
   <!-- Ziņojumi -->
-  <span>
-    <button mat-icon-button appMessagesTrigger [disabled]="(messagesCount$ | async) === 0">
+  <span *ngIf="small$ | async; else large">
+    <a mat-icon-button [disabled]="(messagesCount$ | async) === 0" routerLink="/messages">
       <mat-icon [matBadge]="unreadMessagesCount$ | async" [matBadgeHidden]="(unreadMessagesCount$ | async) === 0"
         matBadgeColor="accent">
         notifications
       </mat-icon>
-    </button>
+    </a>
   </span>
+
+  <ng-template #large>
+    <span>
+      <button mat-icon-button appMessagesTrigger [disabled]="(messagesCount$ | async) === 0">
+        <mat-icon [matBadge]="unreadMessagesCount$ | async" [matBadgeHidden]="(unreadMessagesCount$ | async) === 0"
+          matBadgeColor="accent">
+          notifications
+        </mat-icon>
+      </button>
+    </span>
+  </ng-template>
 
 
   <!-- Mazais lietotāja menu -->

@@ -1,12 +1,8 @@
-import { AfterViewInit, Input, EventEmitter, Output, ChangeDetectionStrategy, Component, OnInit, Optional } from '@angular/core';
-import { MatMenuTrigger } from '@angular/material/menu';
-import { DestroyService, log } from 'prd-cdk';
-import { EMPTY, ReplaySubject, Subject } from 'rxjs';
-import { debounceTime, delay, filter, map, mergeMap, shareReplay, take, takeUntil } from 'rxjs/operators';
-import { MessagingService } from 'src/app/services/messaging.service';
-import { NotificationsService } from 'src/app/services/notifications.service';
+import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output, TrackByFunction } from '@angular/core';
+import { DestroyService } from 'prd-cdk';
+import { delay, filter, mergeMap, take, takeUntil } from 'rxjs/operators';
 import { Message } from 'src/app/interfaces';
-import { MessagesTriggerDirective } from '../messages-trigger.directive';
+import { MessagingService } from 'src/app/services/messaging.service';
 
 @Component({
   selector: 'app-messages-list',
@@ -23,6 +19,8 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
 
   @Output() readonly delete = new EventEmitter<Message>();
 
+  trackByFn: TrackByFunction<Message> = (idx, msg) => msg._id;
+
   constructor(
     private messaging: MessagingService,
     private destroy$: DestroyService,
@@ -36,8 +34,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
       take(1),
       filter(count => count > 0),
       delay(3000),
-      mergeMap(_ => EMPTY), //  DEBUG
-      // mergeMap(_ => this.messaging.markAllAsRead()), 
+      mergeMap(_ => this.messaging.markAllAsRead()),
       takeUntil(this.destroy$),
     )
       .subscribe();

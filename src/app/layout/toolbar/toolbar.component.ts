@@ -1,12 +1,11 @@
-import { Component, OnInit, Output, EventEmitter, Inject, ChangeDetectionStrategy, Input, AfterViewInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
-import { LoginService, SystemPreferencesService } from 'src/app/services';
-import { User, AppParams, UserModule, Message } from 'src/app/interfaces';
-import { APP_PARAMS } from 'src/app/app-params';
-import { MessagingService } from 'src/app/services/messaging.service';
+import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
 import { DestroyService } from 'prd-cdk';
-import { NotificationsService } from 'src/app/services/notifications.service';
+import { Observable } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { APP_PARAMS } from 'src/app/app-params';
+import { AppParams, User, UserModule } from 'src/app/interfaces';
+import { MessagingService, NotificationsService } from 'src/app/services';
+import { LayoutService } from '../layout.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -29,11 +28,14 @@ export class ToolbarComponent implements OnInit {
   messagesCount$: Observable<number> = this.messagingService.messagesCount$;
   unreadMessagesCount$: Observable<number> = this.messagingService.unreadCount$;
 
+  small$ = this.layout.isSmall$;
+
   constructor(
     @Inject(APP_PARAMS) private params: AppParams,
     private messagingService: MessagingService,
     private notifications: NotificationsService,
     private destroy$: DestroyService,
+    private layout: LayoutService,
   ) { }
 
 
