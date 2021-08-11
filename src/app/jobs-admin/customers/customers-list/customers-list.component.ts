@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CustomersService } from 'src/app/services';
-import { LayoutService } from 'src/app/layout/layout.service';
+import { LayoutService } from 'src/app/services';
 import { combineLatest, BehaviorSubject } from 'rxjs';
 import { map, debounceTime } from 'rxjs/operators';
 

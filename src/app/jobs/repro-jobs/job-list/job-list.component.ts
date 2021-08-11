@@ -3,7 +3,7 @@ import { DestroyService } from 'prd-cdk';
 import { OperatorFunction, pipe } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { JobBase, JobProduct } from 'src/app/interfaces';
-import { LayoutService } from 'src/app/layout/layout.service';
+import { LayoutService } from 'src/app/services';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { JobService } from 'src/app/services/job.service';
 

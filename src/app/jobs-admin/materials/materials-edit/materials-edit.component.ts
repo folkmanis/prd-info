@@ -7,7 +7,7 @@ import { Material, ProductUnit, SystemPreferences } from 'src/app/interfaces';
 import { CONFIG } from 'src/app/services/config.provider';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { LayoutService } from 'src/app/layout/layout.service';
+import { LayoutService } from 'src/app/services';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { MatDialog } from '@angular/material/dialog';
 import { MaterialsPriceDialogComponent, DialogData } from './materials-price-dialog/materials-price-dialog.component';

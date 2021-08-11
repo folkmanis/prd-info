@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
-import { LayoutService } from 'src/app/layout/layout.service';
+import { LayoutService } from 'src/app/services';
 import { ProductsService } from 'src/app/services';
 
 @Component({

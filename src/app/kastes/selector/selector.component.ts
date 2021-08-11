@@ -7,7 +7,7 @@ import { KastesTabulaService } from './services/kastes-tabula.service';
 import { DestroyService } from 'prd-cdk';
 import { PasutijumiService } from '../services/pasutijumi.service';
 import { KastesJobPartial, Totals } from 'src/app/interfaces';
-import { LayoutService } from 'src/app/layout/layout.service';
+import { LayoutService } from 'src/app/services';
 import { Status as LabelStatuss } from './labels/labels.component';
 import { TabulaComponent } from './tabula/tabula.component';
 

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { LayoutService } from 'src/app/layout/layout.service';
+import { LayoutService } from 'src/app/services';
 import { ArchiveSearchService } from './services/archive-search.service';
 import { FacetFilter } from 'src/app/interfaces/xmf-search';
 

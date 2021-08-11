@@ -1,10 +1,9 @@
-import { Injectable, Inject, ViewContainerRef } from '@angular/core';
-import { AppParams } from '../interfaces';
-import { APP_PARAMS } from '../app-params';
-import { MatSidenavContent } from '@angular/material/sidenav';
-import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
+import { APP_PARAMS } from '../app-params';
+import { AppParams } from '../interfaces';
 
 
 @Injectable({

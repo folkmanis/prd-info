@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, map, startWith } from 'rxjs/operators';
 import { KastesJobPartial } from 'src/app/interfaces';
-import { LayoutService } from 'src/app/layout/layout.service';
+import { LayoutService } from 'src/app/services';
 import { JobService } from 'src/app/services/job.service';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
 

@@ -5,7 +5,7 @@ import { log } from 'prd-cdk';
 import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { JobBase } from 'src/app/interfaces';
-import { LayoutService } from 'src/app/layout/layout.service';
+import { LayoutService } from 'src/app/services';
 import { DialogData } from '../services/repro-job-dialog.service';
 import { JobFormGroup } from '../services/job-form-group';
 

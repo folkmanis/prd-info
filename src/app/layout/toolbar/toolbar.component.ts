@@ -5,7 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { APP_PARAMS } from 'src/app/app-params';
 import { AppParams, User, UserModule } from 'src/app/interfaces';
 import { MessagingService, NotificationsService } from 'src/app/services';
-import { LayoutService } from '../layout.service';
+import { LayoutService } from 'src/app/services';
 
 @Component({
   selector: 'app-toolbar',

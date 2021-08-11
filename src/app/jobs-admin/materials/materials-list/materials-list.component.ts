@@ -3,7 +3,7 @@ import { Component, OnInit, ChangeDetectionStrategy, AfterViewInit, ViewChild } 
 import { combineLatest, Observable } from 'rxjs';
 import { map, pluck } from 'rxjs/operators';
 import { Material, ProductCategory, SystemPreferences } from 'src/app/interfaces';
-import { LayoutService } from 'src/app/layout/layout.service';
+import { LayoutService } from 'src/app/services';
 import { CONFIG } from 'src/app/services/config.provider';
 import { MaterialsService, MaterialsFilter } from '../services/materials.service';
 import { MaterialsFilterComponent } from './materials-filter/materials-filter.component';

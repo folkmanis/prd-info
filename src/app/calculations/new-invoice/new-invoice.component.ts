@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, merge, Observable } from 'rxjs';
 import { map, share, shareReplay, startWith, switchMap } from 'rxjs/operators';
 import { InvoiceForReport, JobBase, JobPartial, JobProduct, ProductTotals } from 'src/app/interfaces';
-import { LayoutService } from 'src/app/layout/layout.service';
+import { LayoutService } from 'src/app/services';
 import { InvoicesTotals } from '../interfaces';
 import { InvoicesService } from '../services/invoices.service';
 

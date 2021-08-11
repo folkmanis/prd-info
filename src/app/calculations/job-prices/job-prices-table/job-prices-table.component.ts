@@ -5,7 +5,7 @@ import { pluck, filter, switchMap, map, toArray, startWith, takeUntil, withLates
 import { JobPartial, JobProduct } from 'src/app/interfaces';
 import { log, DestroyService } from 'prd-cdk';
 import { Filter, JobPricesService, COLUMNS, COLUMNS_SMALL, JobData } from '../job-prices.service';
-import { LayoutService } from 'src/app/layout/layout.service';
+import { LayoutService } from 'src/app/services';
 
 @Component({
   selector: 'app-job-prices-table',

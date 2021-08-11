@@ -5,3 +5,4 @@ export * from './system-preferences.service';
 export * from './login.service';
 export * from './messaging.service';
 export * from './notifications.service';
+export * from './layout.service';
