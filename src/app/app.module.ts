@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule, ErrorHandler, LOCALE_ID, DEFAULT_CURRENCY_CODE } from '@angular/core';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { LibraryModule } from './library/library.module';
 
@@ -12,8 +11,6 @@ import { LoginComponent } from './login/login.component';
 import { SideMenuComponent } from './layout/side-menu/side-menu.component';
 import { MainMenuComponent } from './layout/main-menu/main-menu.component';
 import { ErrorsService } from './library/errors/errors.service';
-import { CacheInterceptorService } from './library/http';
-import { VersionInterceptorService } from './library/http/version-interceptor.service';
 
 import { registerLocaleData } from '@angular/common';
 import localeLv from '@angular/common/locales/lv';
@@ -30,6 +27,7 @@ import { DATE_FNS_LOCALE } from './library/date-services';
 import { lv } from 'date-fns/locale';
 import { MessageActionsPipe } from './layout/messaging/message-pipes/message-actions.pipe';
 import { MessageDescriptionPipe } from './layout/messaging/message-pipes/message-description.pipe';
+import { httpInterceptorsProvider } from './library/http/http-interceptors-provider';
 
 @NgModule({
   declarations: [
@@ -55,8 +53,7 @@ import { MessageDescriptionPipe } from './layout/messaging/message-pipes/message
     { provide: DATE_FNS_LOCALE, useValue: lv },
     { provide: DEFAULT_CURRENCY_CODE, useValue: 'EUR' },
     { provide: ErrorHandler, useClass: ErrorsService, },
-    { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptorService, multi: true, },
-    { provide: HTTP_INTERCEPTORS, useClass: VersionInterceptorService, multi: true, },
+    httpInterceptorsProvider,
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
     { provide: APP_PARAMS, useValue: PRD_DEFAULTS },
