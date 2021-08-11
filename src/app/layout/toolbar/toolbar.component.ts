@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
 import { DestroyService } from 'prd-cdk';
 import { Observable } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 import { APP_PARAMS } from 'src/app/app-params';
 import { AppParams, User, UserModule } from 'src/app/interfaces';
 import { MessagingService, NotificationsService } from 'src/app/services';
@@ -41,6 +41,7 @@ export class ToolbarComponent implements OnInit {
 
   ngOnInit(): void {
     this.notifications.multiplex('system').pipe(
+      debounceTime(10),
       takeUntil(this.destroy$),
     )
       .subscribe(() => this.messagingService.reload());
