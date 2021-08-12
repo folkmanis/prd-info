@@ -1,10 +1,11 @@
 import { Inject, Injectable } from '@angular/core';
 import { PrdApiService } from './prd-api/prd-api.service';
-import { Notification, SystemNotification, Modules, ModulesWithNotifications } from 'src/app/interfaces';
-import { Subject, Observable, interval, from, Subscriber, Subscription, EMPTY, fromEvent, combineLatest, timer, merge } from 'rxjs';
-import { filter, finalize, map, mergeMap, share, startWith, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { Notification, SystemNotification, Modules, ModulesWithNotifications, GlobalNotification } from 'src/app/interfaces';
+import { Subject, Observable, interval, from, Subscriber, Subscription, EMPTY, fromEvent, combineLatest, timer, merge, Observer } from 'rxjs';
+import { filter, finalize, map, mergeMap, retry, share, startWith, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { log } from 'prd-cdk';
 import { DOCUMENT } from '@angular/common';
+import { HttpCacheService } from '../library/http/http-cache.service';
 
 const INITIAL_DELAY = 3000;
 const TIMER_INTERVAL = 3000;
@@ -26,16 +27,16 @@ export class NotificationsService {
     switchMap(visible => visible ? timer(INITIAL_DELAY, TIMER_INTERVAL) : EMPTY),
   );
 
-  private comesVisible$: Observable<SystemNotification> = this.visibilitychange$.pipe(
+  private comesVisible$: Observable<GlobalNotification> = this.visibilitychange$.pipe(
     map(_ => this.document.visibilityState),
     filter(state => state === 'visible'),
     map(state => ({
       _id: '',
-      module: 'system',
+      module: 'global',
       timestamp: new Date(),
       payload: {
         operation: 'visibilityState',
-        id: state,
+        state,
       }
     })),
   );
@@ -44,9 +45,12 @@ export class NotificationsService {
     this.interval$.pipe(
       map(_ => this.subscribedModules()),
       filter(modules => modules.length > 0),
-      switchMap(modules => this.api.notifications.getNotification(modules, this.fromDate)),
+      switchMap(modules => this.api.notifications.getNotification(modules, this.fromDate).pipe(
+        retry(3),
+      )),
       tap(resp => this.fromDate = resp.timestamp),
       mergeMap(resp => from(resp.data)),
+      tap(() => this.cache.clear()),
     ),
     this.comesVisible$,
   ).pipe(
@@ -55,19 +59,27 @@ export class NotificationsService {
 
   constructor(
     private api: PrdApiService,
+    private cache: HttpCacheService,
     @Inject(DOCUMENT) private document: Document,
   ) { }
 
   multiplex<T extends Notification, K extends T['module']>(module: K): Observable<T> {
 
-    this.addModuleSubs(module);
 
-    return this.notifications$.pipe(
-      filter(ntf => ntf.module === module),
-      finalize(() => {
+    return new Observable<T>(subscriber => {
+
+      this.addModuleSubs(module);
+
+      const subscription = this.notifications$.pipe(
+        filter(ntf => ntf.module === module || ntf.module === 'global'),
+      )
+        .subscribe(notification => subscriber.next(notification as T));
+
+      return () => {
         this.removeModuleSubs(module);
-      }),
-    ) as Observable<T>;
+        subscription.unsubscribe();
+      };
+    });
 
   }
 

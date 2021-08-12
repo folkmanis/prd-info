@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { endOfDay } from 'date-fns';
-import { combineLatest, EMPTY, Observable, of, ReplaySubject, Subject } from 'rxjs';
+import { combineLatest, EMPTY, merge, Observable, of, ReplaySubject, Subject } from 'rxjs';
 import { map, share, startWith, switchMap, tap } from 'rxjs/operators';
 import { Job, JobPartial, JobQueryFilter } from 'src/app/interfaces';
 import { PrdApiService } from 'src/app/services';
+import { NotificationsService } from './notifications.service';
 
 interface JobUpdateParams {
   createFolder?: boolean;
@@ -14,16 +15,24 @@ interface JobUpdateParams {
 })
 export class JobService {
 
-  private readonly _updateJobs$: Subject<void> = new Subject();
   private readonly _filter$: Subject<JobQueryFilter> = new ReplaySubject(1);
+
+  private readonly forceReload$: Subject<void> = new Subject();
+  private readonly reload$ = merge(
+    this.forceReload$,
+    this.notificatinsService.multiplex('jobs'),
+  ).pipe(
+    startWith('')
+  );
 
   constructor(
     private prdApi: PrdApiService,
+    private notificatinsService: NotificationsService,
   ) { }
 
   jobs$: Observable<JobPartial[]> = combineLatest([
     this._filter$,
-    this._updateJobs$.pipe(startWith('')),
+    this.reload$,
   ]).pipe(
     switchMap(([filter]) => this.getJobList(filter)),
     share(),
@@ -33,16 +42,20 @@ export class JobService {
     this._filter$.next(fltr);
   }
 
+  reload() {
+    this.forceReload$.next();
+  }
+
   newJob(job: Partial<Job>, params?: JobUpdateParams): Observable<number | null> {
     return this.prdApi.jobs.insertOne(job, params).pipe(
       map(id => +id),
-      tap(() => this._updateJobs$.next()),
+      tap(() => this.forceReload$.next()),
     );
   }
 
   newJobs(jobs: Partial<Job>[]): Observable<number | null> {
     return this.prdApi.jobs.insertMany(jobs).pipe(
-      tap(() => this._updateJobs$.next()),
+      tap(() => this.forceReload$.next()),
     );
   }
 
@@ -60,7 +73,7 @@ export class JobService {
       },
       params
     ).pipe(
-      tap(resp => resp && this._updateJobs$.next()),
+      tap(resp => resp && this.forceReload$.next()),
     );
   }
 
@@ -69,7 +82,7 @@ export class JobService {
       if (!job.jobId) { return EMPTY; }
     });
     return this.prdApi.jobs.update(jobs, params).pipe(
-      tap(resp => resp && this._updateJobs$.next()),
+      tap(resp => resp && this.forceReload$.next()),
     );
   }
 

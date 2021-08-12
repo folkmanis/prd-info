@@ -39,7 +39,7 @@ export class KastesPreferencesService {
   );
 
   pasutijumsId$ = this.kastesUserPreferences$.pipe(
-    map(pref => pref.pasutijums),
+    map(pref => pref?.pasutijums),
   );
 
   updateUserPreferences(prefs: Partial<KastesUserPreferences>): Observable<boolean> {

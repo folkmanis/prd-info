@@ -1,6 +1,6 @@
 import { Modules } from './system-preferences';
 
-export type ModulesWithNotifications = 'jobs' | 'system';
+export type ModulesWithNotifications = (Modules & 'jobs' | 'system') | 'global';
 
 export interface NotificationBase {
     module: ModulesWithNotifications;
@@ -23,9 +23,17 @@ export interface SystemNotification extends NotificationBase {
     module: 'system';
 
     payload: {
-        operation: 'visibilityState' | 'ftpWatcher';
+        operation: 'ftpWatcher';
         id: string;
     };
 }
 
-export type Notification = SystemNotification | JobsNotification;
+export interface GlobalNotification extends NotificationBase {
+    module: 'global';
+    payload: {
+        operation: 'visibilityState';
+        state: string;
+    };
+}
+
+export type Notification = GlobalNotification | SystemNotification | JobsNotification;
