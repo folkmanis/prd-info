@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { EMPTY, Observable, Subject } from 'rxjs';
+import { EMPTY, Observable, of, Subject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { KastesJob, KastesJobPartial, Veikals } from 'src/app/interfaces';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
-import { KastesPreferencesService } from './kastes-preferences.service';
 
 @Injectable({
   providedIn: 'any',
@@ -41,4 +40,29 @@ export class PasutijumiService {
     return this.prdApi.kastes.deleteVeikali({ pasutijumsId });
   }
 
+  parseXlsx(file: File | undefined): Observable<(string | number)[][]> {
+    if (!file) {
+      return of([]);
+    }
+    const form = new FormData;
+    form.append('table', file, file.name);
+    return this.prdApi.kastes.parseXlsx(form).pipe(
+      map(data => normalizeTable(data))
+    );
+  }
+
 }
+
+
+function normalizeTable(data: any[][]): Array<string | number>[] {
+  const width = data.reduce((acc, row) => row.length > acc ? row.length : acc, 0);
+  const ndata = data.map(row => {
+    const nrow = new Array(width);
+    for (let idx = 0; idx < width; idx++) {
+      nrow[idx] = row[idx] || '';
+    }
+    return nrow;
+  });
+  return ndata;
+}
+

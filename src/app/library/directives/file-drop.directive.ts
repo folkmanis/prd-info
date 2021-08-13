@@ -5,7 +5,7 @@ import { Directive, Output, EventEmitter, ElementRef, HostListener } from '@angu
 })
 export class FileDropDirective {
 
-  @Output() private filesEmitter = new EventEmitter<FileList>();
+  @Output() filesEmitter = new EventEmitter<FileList>();
 
   constructor(private el: ElementRef) {
 

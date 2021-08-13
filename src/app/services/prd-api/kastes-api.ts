@@ -6,7 +6,7 @@ import { ApiBase, HttpOptions } from 'src/app/library/http';
 
 export class KastesApi extends ApiBase<Kaste> {
 
-    getApjomi(options: { pasutijumsId: number }): Observable<number[]> {
+    getApjomi(options: { pasutijumsId: number; }): Observable<number[]> {
         return this.http.get<KasteResponse>(this.path + 'apjomi', new HttpOptions(options)).pipe(
             map(resp => resp.apjomi),
         );
@@ -45,25 +45,31 @@ export class KastesApi extends ApiBase<Kaste> {
             );
     }
 
-    putTable(veikali: { orderId: number; data: Veikals[] }): Observable<number> {
+    putTable(veikali: { orderId: number; data: Veikals[]; }): Observable<number> {
         return this.http.put<KasteResponse>(this.path, veikali, new HttpOptions()).pipe(
             map(resp => resp.insertedCount)
         );
     }
 
     updateVeikali(veikali: Veikals[]): Observable<number> {
-        return this.http.post<KasteResponse>(this.path + '/veikali', { veikali }, new HttpOptions())
+        return this.http.post<KasteResponse>(this.path + 'veikali', { veikali }, new HttpOptions())
             .pipe(
                 map(resp => resp.modifiedCount || 0),
             );
     }
 
-    deleteVeikali(options: { pasutijumsId: number }): Observable<number> {
+    deleteVeikali(options: { pasutijumsId: number; }): Observable<number> {
         return this.http.delete<KasteResponse>(
             this.path,
             new HttpOptions(options)
         ).pipe(
             map(resp => resp.deletedCount || 0)
+        );
+    }
+
+    parseXlsx(form: FormData): Observable<any[][]> {
+        return this.http.put<{ data: any[][]; }>(this.path + 'parseXlsx', form).pipe(
+            map(resp => resp.data)
         );
     }
 }

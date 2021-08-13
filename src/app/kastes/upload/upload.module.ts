@@ -9,6 +9,7 @@ import { UploadAdresesComponent } from './upload-adreses/upload-adreses.componen
 import { UploadRoutingModule } from './upload-routing.module';
 import { UploadComponent } from './upload.component';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
+import { KastesTabulaDropDirective } from './kastes-tabula-drop.directive';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { MaterialLibraryModule } from 'src/app/library/material-library.module';
     DragDropDirective,
     DragableDirective,
     SelectFileComponent,
+    KastesTabulaDropDirective,
   ],
   imports: [
     CommonModule,

@@ -10,7 +10,6 @@ import { PasutijumiService } from '../services/pasutijumi.service';
 import { EndDialogComponent } from './end-dialog/end-dialog.component';
 import { AdresesBox } from './services/adrese-box';
 import { sortColorTotals } from '../common';
-import { ParserService } from 'prd-cdk';
 
 @Component({
   selector: 'app-upload',
@@ -19,6 +18,8 @@ import { ParserService } from 'prd-cdk';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UploadComponent implements OnInit, OnDestroy {
+
+  adresesBox: AdresesBox | undefined;
 
   orderIdControl = new FormControl(null, [Validators.required]);
 
@@ -32,21 +33,19 @@ export class UploadComponent implements OnInit, OnDestroy {
 
   inputData$ = new Subject<Array<string | number>[]>();
 
-  constructor(
-    private pasutijumiService: PasutijumiService,
-    private parserService: ParserService,
-    private preferences: KastesPreferencesService,
-    private matDialog: MatDialog,
-    private router: Router,
-  ) { }
-
   orders$: Observable<KastesJobPartial[]> = this.pasutijumiService.getKastesJobs({ veikali: false });
 
   colors$ = this.preferences.kastesSystemPreferences$.pipe(
     map(pref => pref.colors),
   );
 
-  adresesBox: AdresesBox | undefined;
+  constructor(
+    private pasutijumiService: PasutijumiService,
+    private preferences: KastesPreferencesService,
+    private matDialog: MatDialog,
+    private router: Router,
+  ) { }
+
 
   ngOnInit() {
   }
@@ -55,17 +54,11 @@ export class UploadComponent implements OnInit, OnDestroy {
     this.inputData$.complete();
   }
 
-  onXlsDrop(file: File) {
-    const fileReader = new FileReader();
+  onXlsDrop(file: File | undefined) {
 
-    fileReader.onload = (e: any) => {
-      const data = this.parserService.parseXml(e.target.result);
-      this.inputData$.next(
-        normalizeTable(data)
-      );
-    };
+    this.pasutijumiService.parseXlsx(file)
+      .subscribe(data => this.inputData$.next(data));
 
-    fileReader.readAsBinaryString(file);
   }
 
   onSave(adrBox: AdresesBox) {
@@ -81,17 +74,5 @@ export class UploadComponent implements OnInit, OnDestroy {
       .subscribe(_ => this.router.navigate(['kastes', 'edit', orderId]));
   }
 
-}
-
-function normalizeTable(data: any[][]): Array<string | number>[] {
-  const width = data.reduce((acc, row) => row.length > acc ? row.length : acc, 0);
-  const ndata = data.map(row => {
-    const nrow = new Array(width);
-    for (let idx = 0; idx < width; idx++) {
-      nrow[idx] = row[idx] || '';
-    }
-    return nrow;
-  });
-  return ndata;
 }
 
