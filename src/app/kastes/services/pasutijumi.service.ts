@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { EMPTY, Observable, of, Subject } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { Observable, of, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { KastesJob, KastesJobPartial, Veikals } from 'src/app/interfaces';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 

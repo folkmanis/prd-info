@@ -1,5 +1,5 @@
-import { Directive, EventEmitter, Output } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Directive, Output } from '@angular/core';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FileDropDirective } from 'src/app/library/directives/file-drop.directive';
 
