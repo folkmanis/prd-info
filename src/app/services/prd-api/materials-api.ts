@@ -1,6 +1,5 @@
-import { HttpEvent, HttpRequest } from '@angular/common/http';
-import { ApiBase, HttpOptions } from 'src/app/library/http';
 import { Material } from 'src/app/interfaces';
+import { ApiBase } from 'src/app/library/http';
 
 export class MaterialsApi extends ApiBase<Material> {
 }
