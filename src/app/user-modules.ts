@@ -20,6 +20,7 @@ export const USER_MODULES: UserModule[] = [
             { name: 'Klienti', route: 'customers', description: 'Informācija par klientiem' },
             { name: 'Preces', route: 'products', description: 'Produkcija' },
             { name: 'Materiāli', route: 'materials', description: 'Izejvielas' },
+            { name: 'Iekārtas', route: 'equipment', description: 'Darba procesam izmantojamās iekārtas' },
         ]
     },
     {

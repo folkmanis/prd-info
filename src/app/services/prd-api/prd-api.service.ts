@@ -15,6 +15,7 @@ import { APP_PARAMS } from 'src/app/app-params';
 import { PaytraqApi } from './paytraq-api';
 import { MaterialsApi } from './materials-api';
 import { NotificationsApi } from './notifications-api';
+import { EquipmentApi } from './equipment-api';
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +37,7 @@ export class PrdApiService {
   paytraq = new PaytraqApi(this.http, this.apiPath + 'paytraq/');
   materials = new MaterialsApi(this.http, this.apiPath + 'materials/');
   notifications = new NotificationsApi(this.http, this.apiPath + 'notifications/');
+  equipment = new EquipmentApi(this.http, this.apiPath + 'equipment/');
 
   constructor(
     private http: HttpClient,

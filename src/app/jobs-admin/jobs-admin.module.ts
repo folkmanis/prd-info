@@ -10,6 +10,7 @@ import { ProductsModule } from './products/products.module';
 import { CustomersModule } from './customers/customers.module';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { MaterialsModule } from './materials/materials.module';
+import { EquipmentModule } from './equipment/equipment.module';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { MaterialsModule } from './materials/materials.module';
     ProductsModule,
     CustomersModule,
     MaterialsModule,
+    EquipmentModule,
     JobsAdminRoutingModule,
   ],
   providers: [
