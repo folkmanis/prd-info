@@ -11,6 +11,7 @@ import { CustomersModule } from './customers/customers.module';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { MaterialsModule } from './materials/materials.module';
 import { EquipmentModule } from './equipment/equipment.module';
+import { ProductionStagesModule } from './production-stages/production-stages.module';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { EquipmentModule } from './equipment/equipment.module';
     CustomersModule,
     MaterialsModule,
     EquipmentModule,
+    ProductionStagesModule,
     JobsAdminRoutingModule,
   ],
   providers: [

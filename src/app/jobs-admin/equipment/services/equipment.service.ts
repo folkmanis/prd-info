@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 import { Equipment, EquipmentPartial } from 'src/app/interfaces';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { debounceTime, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, shareReplay, switchMap, tap } from 'rxjs/operators';
 
 interface EquipmentFilter {
   name?: string;
@@ -16,7 +16,9 @@ export class EquipmentService {
   private _filter = new BehaviorSubject<EquipmentFilter | null>(null);
 
   equipment$: Observable<EquipmentPartial[]> = this._filter.pipe(
+    distinctUntilChanged(),
     switchMap(filter => this.api.equipment.get<EquipmentPartial>(filter)),
+    shareReplay(1),
   );
 
   constructor(

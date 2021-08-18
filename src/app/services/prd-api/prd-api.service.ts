@@ -16,6 +16,7 @@ import { PaytraqApi } from './paytraq-api';
 import { MaterialsApi } from './materials-api';
 import { NotificationsApi } from './notifications-api';
 import { EquipmentApi } from './equipment-api';
+import { ProductionStagesApi } from './production-stages-api';
 
 @Injectable({
   providedIn: 'root'
@@ -38,6 +39,7 @@ export class PrdApiService {
   materials = new MaterialsApi(this.http, this.apiPath + 'materials/');
   notifications = new NotificationsApi(this.http, this.apiPath + 'notifications/');
   equipment = new EquipmentApi(this.http, this.apiPath + 'equipment/');
+  productionStages = new ProductionStagesApi(this.http, this.apiPath + 'production-stages/');
 
   constructor(
     private http: HttpClient,

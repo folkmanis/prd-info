@@ -108,7 +108,7 @@ export class MaterialsFormSource extends SimpleFormSource<Material> {
     private nameValidator(): AsyncValidatorFn {
         return (control: AbstractControl) => {
             const nameCtrl: string = (control.value as string).trim().toUpperCase();
-            if (!this.initialValue || nameCtrl === this.initialValue.name.toUpperCase()) {
+            if (nameCtrl === this.initialValue.name?.toUpperCase()) {
                 return of(null);
             }
             return this.materialsService.getNamesForValidation().pipe(

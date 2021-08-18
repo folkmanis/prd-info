@@ -1,0 +1,29 @@
+<app-simple-form-container [formSource]="formSource" (dataChange)="onSetData($event)" [formGroup]="form">
+
+    <div>
+        <mat-form-field class="full-width">
+            <mat-label> Nosaukums </mat-label>
+            <input matInput formControlName="name">
+        </mat-form-field>
+    </div>
+
+    <div>
+        <mat-form-field class="full-width">
+            <mat-label> Iekārtas </mat-label>
+            <mat-select multiple formControlName="equipmentIds">
+                <mat-option *ngFor="let option of equipment$ | async" [value]="option._id">
+                    {{ option.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div>
+        <mat-form-field class="full-width">
+            <mat-label> Apraksts </mat-label>
+            <textarea matInput formControlName="description"></textarea>
+        </mat-form-field>
+    </div>
+
+
+</app-simple-form-container>
