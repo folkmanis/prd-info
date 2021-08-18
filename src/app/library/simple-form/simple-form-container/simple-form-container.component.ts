@@ -1,10 +1,9 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DestroyService, log } from 'prd-cdk';
+import { DestroyService } from 'prd-cdk';
 import { merge, Observable, Subject } from 'rxjs';
 import { filter, last, map, shareReplay, take, takeUntil } from 'rxjs/operators';
 import { SimpleFormSource } from '../simple-form-source';
-import { SimpleFormLabelDirective } from './simple-form-label.directive';
 
 
 @Component({
@@ -37,13 +36,6 @@ export class SimpleFormContainerComponent<T> implements OnInit, AfterViewInit, O
   @Output() dataChange: Observable<T> = merge(this._data$, this._routerData$).pipe(
     shareReplay(1),
   );
-
-  @ContentChild(SimpleFormLabelDirective)
-  get label(): SimpleFormLabelDirective { return this._label; }
-  set label(label: SimpleFormLabelDirective) {
-    if (label) { this._label = label; }
-  }
-  private _label: SimpleFormLabelDirective;
 
   get form() { return this.formSource?.form; }
 
