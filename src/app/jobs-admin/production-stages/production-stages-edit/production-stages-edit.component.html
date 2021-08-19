@@ -1,29 +1,39 @@
 <app-simple-form-container [formSource]="formSource" (dataChange)="onSetData($event)" [formGroup]="form">
 
-    <div>
+    <h2>
         <mat-form-field class="full-width">
-            <mat-label> Nosaukums </mat-label>
-            <input matInput formControlName="name">
+            <mat-label></mat-label>
+            <input matInput formControlName="name" placeholder="Nosaukums">
+            <mat-error *ngIf="form.controls.name.hasError('occupied')">
+                Nosaukums jau tiek izmantots
+            </mat-error>
         </mat-form-field>
-    </div>
+    </h2>
 
-    <div>
-        <mat-form-field class="full-width">
-            <mat-label> Iekārtas </mat-label>
-            <mat-select multiple formControlName="equipmentIds">
-                <mat-option *ngFor="let option of equipment$ | async" [value]="option._id">
-                    {{ option.name }}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-    </div>
+    <mat-card>
 
-    <div>
-        <mat-form-field class="full-width">
-            <mat-label> Apraksts </mat-label>
-            <textarea matInput formControlName="description"></textarea>
-        </mat-form-field>
-    </div>
+        <mat-card-content>
 
+            <div>
+                <mat-form-field class="full-width">
+                    <mat-label> Iekārtas </mat-label>
+                    <mat-select multiple formControlName="equipmentIds">
+                        <mat-option *ngFor="let option of equipment$ | async" [value]="option._id">
+                            {{ option.name }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div>
+                <mat-form-field class="full-width">
+                    <mat-label> Apraksts </mat-label>
+                    <textarea matInput formControlName="description"></textarea>
+                </mat-form-field>
+            </div>
+
+        </mat-card-content>
+
+    </mat-card>
 
 </app-simple-form-container>
