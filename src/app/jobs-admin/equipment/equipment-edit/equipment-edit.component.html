@@ -1,17 +1,24 @@
 <app-simple-form-container [formSource]="formSource" (dataChange)="onDataChange($event)" [formGroup]="form">
 
-    <div>
-        <mat-form-field>
+    <h2>
+        <mat-form-field class="full-width">
             <mat-label> Nosaukums </mat-label>
             <input matInput required formControlName="name">
         </mat-form-field>
-    </div>
+    </h2>
 
-    <div>
-        <mat-form-field class="description">
-            <mat-label> Apraksts </mat-label>
-            <textarea matInput formControlName="description"></textarea>
-        </mat-form-field>
-    </div>
+
+    <mat-card>
+
+        <mat-card-content>
+            <div>
+                <mat-form-field class="full-width">
+                    <mat-label> Apraksts </mat-label>
+                    <textarea matInput formControlName="description"></textarea>
+                </mat-form-field>
+            </div>
+        </mat-card-content>
+
+    </mat-card>
 
 </app-simple-form-container>
