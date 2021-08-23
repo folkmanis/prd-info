@@ -18,3 +18,4 @@ export * from './message';
 export * from './notification';
 export * from './equipment';
 export * from './production-stage';
+export * from './job-production-stage';

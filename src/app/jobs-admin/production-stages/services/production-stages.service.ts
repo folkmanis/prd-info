@@ -28,7 +28,7 @@ export class ProductionStagesService {
     this.setFilter(this._filter$.value);
   }
 
-  setFilter(filter: ProductionStagesFilter) {
+  setFilter(filter: ProductionStagesFilter | null) {
     this._filter$.next(filter);
   }
 

@@ -1,0 +1,20 @@
+.inputs-container {
+    display: flex;
+}
+
+.small .inputs-container {
+    flex-direction: column;
+}
+
+:not(.small) .inputs-container > * {
+    padding: {
+        left: 8px;
+        right: 8px;
+    }
+    &:first-child {
+        padding-left: 0px;
+    }
+    &:last-child {
+        padding-right: 0px;
+    }
+}

@@ -1,4 +1,4 @@
-<app-simple-form-container [formSource]="formSource" (dataChange)="onDataChange($event)">
+<app-simple-form-container (dataChange)="onDataChange($event)">
 
     <form [formGroup]="form">
         <!-- Nosaukums labojams -->
@@ -83,7 +83,8 @@
 
             </mat-expansion-panel>
 
-            <mat-expansion-panel expanded>
+            <!-- <mat-expansion-panel expanded> -->
+            <mat-expansion-panel>
                 <mat-expansion-panel-header>
                     <mat-panel-title>
                         Pārdošanas cenas
@@ -102,6 +103,27 @@
                         <mat-icon>
                             add
                         </mat-icon>
+                    </button>
+                </mat-action-row>
+
+            </mat-expansion-panel>
+
+            <mat-expansion-panel expanded>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Ražošanas procesi
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <!-- Ražošanas procesu tabula -->
+                <section>
+                    <app-product-production-stages #prodStages>
+                    </app-product-production-stages>
+                </section>
+
+                <mat-action-row>
+                    <button mat-mini-fab color="primary" (click)="prodStages.onNewProductionStage();">
+                        <mat-icon> add </mat-icon>
                     </button>
                 </mat-action-row>
 

@@ -43,8 +43,8 @@ export class ToolbarComponent implements OnInit {
     this.notifications.multiplex('system').pipe(
       debounceTime(10),
       takeUntil(this.destroy$),
-    )
-      .subscribe(() => this.messagingService.reload());
+    );
+    // .subscribe(() => this.messagingService.reload());  // DEBUG
   }
 
 

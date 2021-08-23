@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { EMPTY, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, EMPTY, Observable, Subject } from 'rxjs';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 import { Material, ProductCategory, SystemPreferences } from 'src/app/interfaces';
 import { map, pluck, switchMap, tap } from 'rxjs/operators';
@@ -20,7 +20,7 @@ export interface MaterialsFilter {
 })
 export class MaterialsService {
 
-  private filter$ = new Subject<MaterialsFilter | undefined>();
+  private filter$ = new BehaviorSubject<MaterialsFilter | null>(null);
 
   materials$ = combineLatest([
     this.filter$.pipe(switchMap(filter => this.api.materials.get(filter))),
@@ -34,8 +34,12 @@ export class MaterialsService {
     private api: PrdApiService,
   ) { }
 
-  setFilter(filter?: MaterialsFilter) {
+  setFilter(filter: MaterialsFilter | null = null) {
     this.filter$.next(filter);
+  }
+
+  reload() {
+    this.filter$.next(this.filter$.value);
   }
 
   getMaterials(): Observable<Material[]> {
@@ -56,14 +60,14 @@ export class MaterialsService {
       return EMPTY;
     }
     return this.api.materials.updateOne(id, upd).pipe(
-      tap(_ => this.setFilter())
+      tap(_ => this.reload())
     );
   }
 
   insertMaterial(material: Partial<Material>): Observable<string> {
     delete material._id;
     return this.api.materials.insertOne(material).pipe(
-      tap(_ => this.setFilter()),
+      tap(_ => this.reload()),
     ) as Observable<string>;
   }
 
