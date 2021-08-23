@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, Input, OnDestroy, OnInit, Optional, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DestroyService } from 'prd-cdk';
 import { merge, Observable, Subject } from 'rxjs';
@@ -15,13 +15,7 @@ import { SimpleFormSource } from '../simple-form-source';
 })
 export class SimpleFormContainerComponent<T> implements OnInit, AfterViewInit, OnDestroy {
 
-  @Input() set formSource(value: SimpleFormSource<T> | null) {
-    this._formSource = value;
-  }
-  get formSource(): SimpleFormSource<T> | null {
-    return this._formSource;
-  }
-  private _formSource: SimpleFormSource<T> | null = null;
+  @Input() formSource: SimpleFormSource<T>;
 
   @Input() set data(data: T) {
     if (data) { this._data$.next(data); }
@@ -48,7 +42,10 @@ export class SimpleFormContainerComponent<T> implements OnInit, AfterViewInit, O
     private route: ActivatedRoute,
     private changeDetector: ChangeDetectorRef,
     private destroy$: DestroyService,
-  ) { }
+    @Optional() formSource: SimpleFormSource<T>,
+  ) {
+    this.formSource = formSource;
+  }
 
   /** Ctrl-Enter triggers save */
   @HostListener('window:keyup', ['$event']) keyEvent(event: KeyboardEvent) {
