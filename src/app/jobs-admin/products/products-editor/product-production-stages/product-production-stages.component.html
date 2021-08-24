@@ -1,25 +1,81 @@
-<table mat-table [dataSource]="data$" class="app-table" fixedLayout>
+<mat-table [dataSource]="stagesArray.controls" fixedLayout multiTemplateDataRows>
 
-    <tr mat-row *matRowDef="let stage; index as idx; columns: displayedColumns" (click)="onEditStage(idx)"> </tr>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let stage; columns: displayedColumns" [class.expanded]="expanded === stage"> </mat-row>
+    <mat-row *matRowDef="let stage; columns: ['materials']; when: whenFn">
+    </mat-row>
 
     <ng-template matNoDataRow>
-        Nav rašošanas procesu
+        Nav ražošanas procesu
     </ng-template>
 
-    <ng-container matColumnDef="name">
-        <td mat-cell *matCellDef="let stage;">
-            {{ stage.name }}
-        </td>
+    <ng-container matColumnDef="expand">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let stage; dataIndex as idx;">
+            <button mat-icon-button (click)="onExpand(stage)">
+                <mat-icon *ngIf="expanded === stage; else chExpaned;">
+                    expand_less
+                </mat-icon>
+                <ng-template #chExpaned>
+                    <mat-icon> expand_more </mat-icon>
+                </ng-template>
+            </button>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="productionStageId">
+        <mat-header-cell *matHeaderCellDef> Process </mat-header-cell>
+        <mat-cell *matCellDef="let stage; dataIndex as idx;">
+
+            <mat-form-field>
+                <mat-select [formControl]="stage.get('productionStageId')">
+                    <mat-option *ngFor="let stage of stages$ | async" [value]="stage._id">
+                        {{ stage.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="amount">
+        <mat-header-cell *matHeaderCellDef> Daudzums </mat-header-cell>
+        <mat-cell *matCellDef="let stage; dataIndex as idx;">
+
+            <mat-form-field>
+                <input matInput type="number" [formControl]="stage.get('amount')">
+            </mat-form-field>
+
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="fixedAmount">
+        <mat-header-cell *matHeaderCellDef> Fiksētais daudzums </mat-header-cell>
+        <mat-cell *matCellDef="let stage; dataIndex as idx;">
+
+            <mat-form-field>
+                <input matInput type="number" [formControl]="stage.get('fixedAmount')">
+            </mat-form-field>
+
+        </mat-cell>
     </ng-container>
 
     <ng-conatiner matColumnDef="actions">
-        <td mat-cell *matCellDef="let stage; index as idx;" (click)="onDeleteStage(idx); $event.stopPropagation()">
+        <mat-header-cell *matHeaderCellDef> Dzēst </mat-header-cell>
+        <mat-cell *matCellDef="let stage; dataIndex as idx;" (click)="onDeleteStage(idx); $event.stopPropagation()">
             <button mat-icon-button color="warn">
                 <mat-icon>
                     delete_outline
                 </mat-icon>
             </button>
-        </td>
+        </mat-cell>
     </ng-conatiner>
 
-</table>
+
+    <ng-container matColumnDef="materials">
+        <mat-cell *matCellDef="let stage; dataIndex as idx;" [attr.colspan]="displayedColumns.length">
+            <app-production-stage-material [materialsControl]="stage.get('materials')"></app-production-stage-material>
+        </mat-cell>
+    </ng-container>
+
+</mat-table>

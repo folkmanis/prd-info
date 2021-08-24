@@ -10,8 +10,8 @@ import { PaytraqProductComponent } from './products-editor/paytraq-product/paytr
 import { PaytraqProductTableComponent } from './products-editor/paytraq-product/paytraq-product-table/paytraq-product-table.component';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { ProductProductionStagesComponent } from './products-editor/product-production-stages/product-production-stages.component';
-import { ProductionStageEditorComponent } from './products-editor/production-stage-editor/production-stage-editor.component';
 import { ProductionStageMaterialComponent } from './products-editor/production-stage-material/production-stage-material.component';
+import { MaterialUnitsDirective } from './products-editor/production-stage-material/material-units.directive';
 
 @NgModule({
   declarations: [
@@ -21,8 +21,8 @@ import { ProductionStageMaterialComponent } from './products-editor/production-s
     PaytraqProductComponent,
     PaytraqProductTableComponent,
     ProductProductionStagesComponent,
-    ProductionStageEditorComponent,
     ProductionStageMaterialComponent,
+    MaterialUnitsDirective,
   ],
   imports: [
     CommonModule,

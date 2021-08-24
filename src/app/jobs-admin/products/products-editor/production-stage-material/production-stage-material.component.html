@@ -36,6 +36,9 @@
         <mat-cell *matCellDef="let material; index as idx;">
             <mat-form-field>
                 <input matInput type="number" [formControl]="amountControl(idx)">
+                <span matSuffix *appMaterialUnits="let unit of materials$ | async; id: idControl(idx).value">
+                    {{ unit }}
+                </span>
             </mat-form-field>
         </mat-cell>
     </ng-container>
@@ -47,6 +50,9 @@
         <mat-cell *matCellDef="let material; index as idx;">
             <mat-form-field>
                 <input matInput type="number" [formControl]="fixedAmountControl(idx)">
+                <span matSuffix *appMaterialUnits="let unit of materials$ | async; id: idControl(idx).value">
+                    {{ unit }}
+                </span>
             </mat-form-field>
         </mat-cell>
     </ng-container>

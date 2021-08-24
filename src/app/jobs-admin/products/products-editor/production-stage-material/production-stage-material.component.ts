@@ -19,7 +19,7 @@ export class ProductionStageMaterialComponent implements OnInit {
   materials$ = this.materialsService.materials$;
   jobProductionStageMaterials$: Observable<JobProductionStageMaterial[]>;
 
-  displayedColumns = ['materialId', 'amount', 'fixedAmount', 'actions'];
+  displayedColumns = ['materialId', 'amount', 'fixedAmount', 'actions']; // 'units', 
 
   trackByFn = (idx: number) => this.materialsControl.controls[idx];
 
@@ -41,7 +41,6 @@ export class ProductionStageMaterialComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.materialsControl.value);
     this.materialsService.setFilter(null);
     this.jobProductionStageMaterials$ = this.materialsControl.valueChanges.pipe(
       startWith(this.materialsControl.value)
