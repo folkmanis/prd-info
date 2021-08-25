@@ -1,15 +1,13 @@
-import { FormGroup, FormControl, FormArray, FormBuilder, Validators, AsyncValidatorFn, ValidationErrors, AbstractControl } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
-import { JobBase, JobProduct } from 'src/app/interfaces';
-import { CustomersService, ProductsService } from 'src/app/services';
-import { ProductFormGroup } from './product-form-group';
+import { CustomerPartial, JobBase, JobProduct, ProductPartial } from 'src/app/interfaces';
 import { ProductFormArray } from './product-form-array';
 
-const validateCustomerFn = (customersService: CustomersService): AsyncValidatorFn => {
+const validateCustomerFn = (customers$: Observable<CustomerPartial[]>): AsyncValidatorFn => {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
         const value: string = control.value;
-        return customersService.customers$.pipe(
+        return customers$.pipe(
             map(customers => customers.some(customer => customer.CustomerName === value)),
             map(cust => cust ? null : { noCustomer: `Klients ${value} nav atrasts` }),
             take(1),
@@ -33,8 +31,8 @@ export class JobFormGroup extends FormGroup {
     }
 
     constructor(
-        customersService: CustomersService,
-        productsService: ProductsService,
+        customers$: Observable<CustomerPartial[]>,
+        products$: Observable<ProductPartial[]>,
         value: Partial<JobBase> = {},
     ) {
         super(
@@ -43,7 +41,7 @@ export class JobFormGroup extends FormGroup {
                 customer: new FormControl('',
                     {
                         validators: Validators.required,
-                        asyncValidators: validateCustomerFn(customersService),
+                        asyncValidators: validateCustomerFn(customers$),
                     },
                 ),
                 name: new FormControl(
@@ -71,7 +69,7 @@ export class JobFormGroup extends FormGroup {
                 jobStatus: new FormGroup({
                     generalStatus: new FormControl(10),
                 }),
-                products: new ProductFormArray(productsService),
+                products: new ProductFormArray(products$),
                 files: new FormControl(undefined),
             }
         );

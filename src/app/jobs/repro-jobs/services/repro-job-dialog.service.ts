@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
+import { Observable, of } from 'rxjs';
+import { concatMap } from 'rxjs/operators';
 import { JobBase } from 'src/app/interfaces';
+import { CustomersService, ProductsService } from 'src/app/services';
+import { JobService } from 'src/app/services/job.service';
 import { ReproJobEditComponent } from '../repro-job-edit/repro-job-edit.component';
 import { JobFormGroup } from './job-form-group';
-import { CustomersService, ProductsService } from 'src/app/services';
-import { EMPTY, Observable, of } from 'rxjs';
-import { JobService } from 'src/app/services/job.service';
-import { concatMap, filter, map, switchMap } from 'rxjs/operators';
-import { endOfDay } from 'date-fns';
 
 export interface DialogData {
   form: JobFormGroup;
@@ -33,7 +32,11 @@ export class ReproJobDialogService {
   ) { }
 
   openJob(job: Partial<JobBase>): MatDialogRef<ReproJobEditComponent, DialogData> {
-    const form = new JobFormGroup(this.customersService, this.productsService, job);
+    const form = new JobFormGroup(
+      this.customersService.customers$,
+      this.productsService.products$,
+      job
+    );
     const config: MatDialogConfig = {
       ...CONFIG,
       autoFocus: !job.customer,

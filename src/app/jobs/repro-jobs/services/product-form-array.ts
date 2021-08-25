@@ -1,14 +1,13 @@
-import { FormGroup, FormControl, FormArray, FormBuilder, Validators, AsyncValidatorFn, ValidationErrors, AbstractControl } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormArray } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
-import { JobBase, JobProduct } from 'src/app/interfaces';
-import { CustomersService, ProductsService } from 'src/app/services';
+import { ProductPartial } from 'src/app/interfaces';
 import { ProductFormGroup } from './product-form-group';
 
-const productNameValidatorFn = (productsService: ProductsService): AsyncValidatorFn => {
+const productNameValidatorFn = (products$: Observable<ProductPartial[]>): AsyncValidatorFn => {
     return (control: AbstractControl) => {
         const val: string = control.value;
-        return productsService.products$.pipe(
+        return products$.pipe(
             map(products => products.some(prod => prod.name === val)),
             map(is => is ? null : { invalidProduct: 'Prece nav atrasta katalogā' }),
             take(1),
@@ -19,7 +18,7 @@ const productNameValidatorFn = (productsService: ProductsService): AsyncValidato
 export class ProductFormArray extends FormArray {
 
     constructor(
-        private productsService: ProductsService,
+        private products$: Observable<ProductPartial[]>,
     ) {
         super([]);
     }
@@ -34,7 +33,7 @@ export class ProductFormArray extends FormArray {
     addProduct() {
         this.push(
             new ProductFormGroup(
-                productNameValidatorFn(this.productsService),
+                productNameValidatorFn(this.products$),
             )
         );
         this.markAsDirty();
