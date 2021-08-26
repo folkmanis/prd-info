@@ -1,4 +1,4 @@
-import { Provider } from "@angular/core";
+import { Provider } from '@angular/core';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CacheInterceptorService } from './cache-interceptor.service';
 import { VersionInterceptorService } from './version-interceptor.service';

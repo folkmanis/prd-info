@@ -11,11 +11,12 @@ export class ModuleGroupComponent implements OnInit {
   @Output() saving = new EventEmitter<any>();
   @Output() reseting = new EventEmitter<void>();
 
+  controlForm: AbstractControl;
+
   constructor(
     private controlContainer: ControlContainer,
   ) { }
 
-  controlForm: AbstractControl;
 
   ngOnInit(): void {
     this.controlForm = this.controlContainer.control;

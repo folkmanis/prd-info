@@ -7,9 +7,10 @@ import { SystemPreferencesService } from 'src/app/services';
 })
 export class AdminMainMenuComponent {
 
+  modules$ = this.systemPreferencesService.childMenu$;
+
   constructor(
     private systemPreferencesService: SystemPreferencesService,
   ) { }
-  modules$ = this.systemPreferencesService.childMenu$;
 
 }

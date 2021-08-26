@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
@@ -19,29 +19,32 @@ interface FilterForm {
   selector: 'app-log-filter',
   templateUrl: './log-filter.component.html',
   styleUrls: ['./log-filter.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DestroyService],
 })
 export class LogFilterComponent implements OnInit, OnDestroy, AfterViewInit {
 
+  maxDate = moment();
+  filterForm = new FormGroup({
+    logLevel: new FormControl(0),
+    date: new FormControl(moment()),
+  });
+
+  logLevels$: Observable<{ key: number; value: string; }[]> = this.config$.pipe(
+    pluck('system', 'logLevels'),
+    map(levels => levels.sort((a, b) => a[0] - b[0])),
+    map(levels => levels.map(level => ({ key: level[0], value: level[1] }))),
+  );
+
+
+  private readonly dateControl = this.filterForm.get('date');
   private validDates: ValidDates = { dates: new Set() };
 
   constructor(
     private service: LogfileService,
     private destroy$: DestroyService,
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
-    ) { }
-  maxDate = moment();
-  filterForm = new FormGroup({
-    logLevel: new FormControl(0),
-    date: new FormControl(moment()),
-  });
-  private readonly dateControl = this.filterForm.get('date');
-
-  logLevels$: Observable<{ key: number; value: string }[]> = this.config$.pipe(
-    pluck('system', 'logLevels'),
-    map(levels => levels.sort((a, b) => a[0] - b[0])),
-    map(levels => levels.map(level => ({ key: level[0], value: level[1] }))),
-  );
+  ) { }
 
   ngOnInit(): void {
     /** Jauna tabula */

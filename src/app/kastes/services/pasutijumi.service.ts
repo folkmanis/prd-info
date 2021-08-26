@@ -37,7 +37,7 @@ export class PasutijumiService {
   }
 
   deleteKastes(pasutijumsId: number): Observable<number> {
-    return this.prdApi.kastes.deleteVeikali({ pasutijumsId });
+    return this.prdApi.kastes.deleteVeikali(pasutijumsId);
   }
 
   parseXlsx(file: File | undefined): Observable<(string | number)[][]> {

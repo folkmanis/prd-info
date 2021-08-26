@@ -23,7 +23,7 @@ import { ProductionStagesApi } from './production-stages-api';
 })
 export class PrdApiService {
 
-  private readonly apiPath = this.params.apiPath;
+  readonly apiPath = this.params.apiPath;
 
   login = new LoginApi(this.http, this.apiPath + 'login/');
   customers = new CustomersApi(this.http, this.apiPath + 'customers/');
