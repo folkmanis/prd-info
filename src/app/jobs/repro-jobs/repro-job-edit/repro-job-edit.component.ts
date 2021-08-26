@@ -8,6 +8,8 @@ import { JobBase } from 'src/app/interfaces';
 import { LayoutService } from 'src/app/services';
 import { DialogData } from '../services/repro-job-dialog.service';
 import { JobFormGroup } from '../services/job-form-group';
+import { CustomersService, ProductsService } from 'src/app/services';
+import { pickBy, isEqual } from 'lodash';
 
 const LARGE_SCREEN_SIZE = {
   height: '90%',
@@ -39,14 +41,27 @@ export class ReproJobEditComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) private data: DialogData,
     private dialogRef: MatDialogRef<ReproJobEditComponent, DialogData>,
     private layoutService: LayoutService,
+    private customersService: CustomersService,
+    private productsService: ProductsService,
   ) { }
 
   ngOnInit(): void {
-    this.form = this.data.form;
+    // this.form = this.data.form;
+
+    this.form = new JobFormGroup(
+      this.customersService.customers$,
+      this.productsService.products$,
+      this.data.job,
+    );
+
 
     this.layoutService.isLarge$.pipe(
       takeUntil(this.dialogRef.beforeClosed()),
     ).subscribe(isLarge => this.setScreenConfig(isLarge));
+  }
+
+  jobUpdate(): Partial<JobBase> | undefined {
+    return this.isFormValid() && jobDiff(this.form.value, this.data.job);
   }
 
   private setScreenConfig(isLarge: boolean): void {
@@ -56,5 +71,18 @@ export class ReproJobEditComponent implements OnInit {
     );
   }
 
+  isFormValid() {
+    return !this.form.pristine && this.form.valid;
+  }
 
 }
+
+function jobDiff(newJob: JobBase, oldJob: Partial<JobBase>): Partial<JobBase> | undefined {
+  const diff = pickBy(newJob, (value, key) => key === 'jobId' || !isEqual(value, oldJob[key]));
+  console.log(diff);
+  if (Object.keys(diff).length > 1) {
+    return diff;
+  }
+  return undefined;
+}
+

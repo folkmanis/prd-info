@@ -62,6 +62,7 @@ export class FileUploadService {
     this.uploadQueue.clear();
     this._activeUploads.clear();
     this._uploadProgress$.next(this._activeUploads);
+    return undefined;
   }
   /**
    * Sāk augšupielādi ar sagatavoto rindu un doto darba numuru

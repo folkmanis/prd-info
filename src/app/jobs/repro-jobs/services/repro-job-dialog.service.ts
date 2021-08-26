@@ -9,7 +9,6 @@ import { ReproJobEditComponent } from '../repro-job-edit/repro-job-edit.componen
 import { JobFormGroup } from './job-form-group';
 
 export interface DialogData {
-  form: JobFormGroup;
   job: Partial<JobBase>;
 }
 
@@ -31,29 +30,23 @@ export class ReproJobDialogService {
     private jobService: JobService,
   ) { }
 
-  openJob(job: Partial<JobBase>): MatDialogRef<ReproJobEditComponent, DialogData> {
-    const form = new JobFormGroup(
-      this.customersService.customers$,
-      this.productsService.products$,
-      job
-    );
+  openJob(job: Partial<JobBase>): MatDialogRef<ReproJobEditComponent, JobBase> {
     const config: MatDialogConfig = {
       ...CONFIG,
       autoFocus: !job.customer,
       data: {
-        form,
         job,
       }
     };
 
-    return this.matDialog.open<ReproJobEditComponent, DialogData, DialogData>(ReproJobEditComponent, config);
+    return this.matDialog.open<ReproJobEditComponent, DialogData, JobBase | undefined>(ReproJobEditComponent, config);
 
   }
 
   editJob(jobId: number): Observable<boolean> {
     return this.jobService.getJob(jobId).pipe(
       concatMap(job => this.openJob(job).afterClosed()),
-      concatMap(data => data ? this.jobService.updateJob(data.job) : of(false)),
+      concatMap(data => data ? this.jobService.updateJob(data) : of(false)),
     );
   }
 

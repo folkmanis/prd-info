@@ -63,8 +63,8 @@ export class ReproJobsComponent implements OnInit {
       },
     };
     this.editDialogService.openJob(job).afterClosed().pipe(
-      map(data => data ? data.form.value : this.fileUploadService.clearUploadQueue()),
-      mergeMap(job => this.insertJobAndUploadFiles(job)),
+      map(data => data ? data : this.fileUploadService.clearUploadQueue()),
+      mergeMap(data => this.insertJobAndUploadFiles(data)),
       takeUntil(this.destroy$),
     ).subscribe();
   }
@@ -79,7 +79,7 @@ export class ReproJobsComponent implements OnInit {
     };
 
     this.editDialogService.openJob(job).afterClosed().pipe(
-      concatMap(data => data ? of(data.job) : EMPTY),
+      concatMap(data => data ? of(data) : EMPTY),
       concatMap(job => this.insertJobAndUploadFiles(job)),
       takeUntil(this.destroy$),
     ).subscribe();
@@ -88,7 +88,7 @@ export class ReproJobsComponent implements OnInit {
 
   private insertJobAndUploadFiles(job: Partial<JobBase> | undefined): Observable<number> {
     if (job === undefined) {
-      return EMPTY;
+      return of(0);
     }
     const createFolder = !!this.fileUploadService.filesCount;
     return this.jobService.newJob(job, { createFolder }).pipe(

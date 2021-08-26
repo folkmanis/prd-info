@@ -20,8 +20,8 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="center">
-    <button mat-raised-button color="primary" [disabled]="form.pristine || form.valid === false" appKeyPress="ctrlEnter"
-        [mat-dialog-close]="{ form: this.form, job: this.form.value }">
+    <button mat-raised-button color="primary" [disabled]="!isFormValid()" appKeyPress="ctrlEnter"
+        [mat-dialog-close]="jobUpdate()">
         SAGLABĀT
     </button>
 
