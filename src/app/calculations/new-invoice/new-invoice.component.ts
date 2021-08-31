@@ -68,7 +68,7 @@ export class NewInvoiceComponent implements OnInit {
       .subscribe(({ invoiceId }) => this.router.navigate(['calculations', 'plate-invoice', invoiceId]));
   }
 
-  onPrintList(jobs: JobBase[]) {
+  onPrintList(jobs: JobPartial[]) {
     const { totals, grandTotal } = jobTotalsFromJob(jobs);
     const invoice: InvoiceForReport = {
       customer: this.customerId.value,

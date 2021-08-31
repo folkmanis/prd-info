@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { RetrieveFn, SimpleFormResolverService } from 'src/app/library/simple-form';
 import { EMPTY } from 'rxjs';
 import { ProductionStage } from 'src/app/interfaces';
-import { ProductionStagesService } from './production-stages.service';
+import { ProductionStagesService } from 'src/app/services/production-stages.service';
 
 @Injectable({
   providedIn: 'any'

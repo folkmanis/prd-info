@@ -4,7 +4,7 @@ import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { EquipmentService } from '../../equipment/services/equipment.service';
 
-import { ProductionStagesService } from '../services/production-stages.service';
+import { ProductionStagesService } from 'src/app/services/production-stages.service';
 
 @Component({
   selector: 'app-production-stages-list',

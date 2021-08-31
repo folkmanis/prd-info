@@ -1,5 +1,5 @@
 import { AppHttpResponseBase } from 'src/app/library/http';
-import { Job } from './job';
+import { Job, JobPartial } from './job';
 import { JobBase } from './job-base';
 import { CustomerFinancial, Customer } from './customer';
 
@@ -8,7 +8,7 @@ export interface Invoice {
     customer: string;
     createdDate: Date;
     jobsId: number[];
-    jobs?: JobBase[];
+    jobs?: JobPartial[];
     products: InvoiceProduct[];
     total?: number;
     comment?: string;

@@ -4,7 +4,7 @@ import { MatTable } from '@angular/material/table';
 import { DestroyService } from 'prd-cdk';
 import { merge } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { ProductionStagesService } from '../../../production-stages/services/production-stages.service';
+import { ProductionStagesService } from 'src/app/services/production-stages.service';
 import { ProductionStageGroup, ProductsFormSource } from '../../services/products-form-source';
 
 @Component({

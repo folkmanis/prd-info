@@ -62,7 +62,7 @@ export class ReproJobsComponent implements OnInit {
         generalStatus: 20
       },
     };
-    this.editDialogService.openJob(job).afterClosed().pipe(
+    this.editDialogService.openJob(job).pipe(
       map(data => data ? data : this.fileUploadService.clearUploadQueue()),
       mergeMap(data => this.insertJobAndUploadFiles(data)),
       takeUntil(this.destroy$),
@@ -78,7 +78,7 @@ export class ReproJobsComponent implements OnInit {
       }
     };
 
-    this.editDialogService.openJob(job).afterClosed().pipe(
+    this.editDialogService.openJob(job).pipe(
       concatMap(data => data ? of(data) : EMPTY),
       concatMap(job => this.insertJobAndUploadFiles(job)),
       takeUntil(this.destroy$),

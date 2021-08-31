@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { concatMap, map, pluck, share, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
-import { CustomerProduct, Product, ProductPartial, SystemPreferences } from 'src/app/interfaces';
+import { CustomerProduct, JobProductionStage, Product, ProductPartial, SystemPreferences } from 'src/app/interfaces';
 import { cacheWithUpdate } from 'prd-cdk';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 import { CONFIG } from 'src/app/services/config.provider';
@@ -12,18 +12,18 @@ import { CONFIG } from 'src/app/services/config.provider';
 })
 export class ProductsService {
 
+  readonly categories$ = this.config$.pipe(
+    pluck('jobs', 'productCategories'),
+  );
+  private _products$: Observable<ProductPartial[]>;
+
+  private readonly _updateProducts$: Subject<void> = new Subject();
+  private readonly _updateOneProduct$: Subject<ProductPartial> = new Subject();
+
   constructor(
     private prdApi: PrdApiService,
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
   ) { }
-
-  private _products$: Observable<ProductPartial[]>;
-  readonly categories$ = this.config$.pipe(
-    pluck('jobs', 'productCategories'),
-  );
-
-  private readonly _updateProducts$: Subject<void> = new Subject();
-  private readonly _updateOneProduct$: Subject<ProductPartial> = new Subject();
 
   get products$(): Observable<ProductPartial[]> {
     if (!this._products$) {
@@ -81,6 +81,10 @@ export class ProductsService {
 
   productsCustomer(customer: string): Observable<CustomerProduct[]> {
     return this.prdApi.products.productsCustomer(customer);
+  }
+
+  productionStages(product: string): Observable<JobProductionStage[]> {
+    return this.prdApi.products.productionStages(product);
   }
 
 }

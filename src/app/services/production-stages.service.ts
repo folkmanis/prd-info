@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { log } from 'prd-cdk';
-import { Observable, BehaviorSubject, of, EMPTY } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { ProductionStage } from 'src/app/interfaces';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
@@ -10,7 +9,7 @@ interface ProductionStagesFilter {
 }
 
 @Injectable({
-  providedIn: 'any'
+  providedIn: 'root'
 })
 export class ProductionStagesService {
 

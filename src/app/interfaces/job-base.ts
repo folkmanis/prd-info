@@ -1,4 +1,5 @@
 import { JobProduct } from './job-product';
+import { JobProductionStage, JobProductionStageMaterial } from './job-production-stage';
 
 export interface JobBase {
     _id?: string;
@@ -21,4 +22,5 @@ export interface JobBase {
         path: string[];
         fileNames: string[];
     };
+    productionStages: Omit<JobProductionStage, 'productionStageId' | 'fixedAmount'>[];
 }

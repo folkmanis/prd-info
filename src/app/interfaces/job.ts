@@ -1,11 +1,12 @@
 import { KastesJob } from './kastes-job';
 import { ReproJob } from './repro-job';
 import { AppHttpResponseBase } from 'src/app/library/http';
+import { JobBase } from './job-base';
 
 export type Job = ReproJob | KastesJob;
 
 export type JobPartial =
-    Pick<Job, 'category' | 'receivedDate' | 'customerJobId' | 'name' | 'jobId' | 'customer' | 'products' | 'invoiceId' | 'custCode' | 'dueDate' | 'jobStatus'>;
+    Pick<JobBase, 'category' | 'receivedDate' | 'customerJobId' | 'name' | 'jobId' | 'customer' | 'products' | 'invoiceId' | 'custCode' | 'dueDate' | 'jobStatus'>;
 
 export interface JobsWithoutInvoicesTotals {
     _id: string;

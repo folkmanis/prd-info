@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ProductionStagesFormSource } from '../services/production-stages-form-source';
-import { ProductionStagesService } from '../services/production-stages.service';
+import { ProductionStagesService } from 'src/app/services/production-stages.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { ProductionStage } from 'src/app/interfaces';

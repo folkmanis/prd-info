@@ -11,4 +11,6 @@ export interface JobProductionStage {
     materials: JobProductionStageMaterial[];
     amount: number;
     fixedAmount: number;
+    productionStatus?: number;
+
 }
