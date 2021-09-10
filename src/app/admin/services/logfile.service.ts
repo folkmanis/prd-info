@@ -63,10 +63,6 @@ export class LogfileService implements OnDestroy {
     );
   }
 
-  getInfos(): Observable<string[]> {
-    return this.http.get<{ data: string[]; }>(this.httpPathLogfile + 'entries', new HttpOptions())
-      .pipe(map(dat => dat.data));
-  }
   /**
    * Datumi, kuros ir log ieraksti attiecīgajam min errorlevel
    *
