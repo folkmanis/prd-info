@@ -76,7 +76,7 @@ function jobStages(products: JobProduct[], getStageFn: (productName: string) => 
     map(stages => stages.map(stage => ({
       ...stage,
       amount: stage.amount * prod.count + stage.fixedAmount,
-      productionStatus: 0,
+      productionStatus: 10,
     })))
   ));
 }
