@@ -1,25 +1,31 @@
-import { Injectable, ErrorHandler, NgZone } from '@angular/core';
-import { Location } from '@angular/common';
+import { DOCUMENT } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ErrorHandler, Inject, Injectable, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { EMPTY, Observable, throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
+import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 
 @Injectable()
-export class ErrorsService implements ErrorHandler {
+export class ErrorsService extends ErrorHandler {
 
   constructor(
     private router: Router,
     private zone: NgZone,
-  ) { }
+    private confirm: ConfirmationDialogService,
+    @Inject(DOCUMENT) private document: Document,
+  ) {
+    super();
+  }
 
-  handleError(error: HttpErrorResponse) {
+  handleError(error: Error) {
     if (error instanceof HttpErrorResponse) {
       if (error.status === 401) {
         this.zone.run(() => this.router.navigate(['/login']));
       }
     }
-    console.error(error);
-    return throwError('Kļūda!');
+    // console.error(error);
+    super.handleError(error);
+    // return throwError('Kļūda!');
   }
 
 }

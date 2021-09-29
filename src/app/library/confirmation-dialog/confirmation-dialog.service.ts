@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ConfirmationDialogComponent } from './confirmation-dialog.component';
-import { switchMap, filter } from 'rxjs/operators';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
+import { ConfirmationDialogComponent } from './confirmation-dialog.component';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +10,6 @@ export class ConfirmationDialogService {
 
   constructor(
     private dialog: MatDialog,
-
   ) { }
 
   confirm(prompt: string, config: MatDialogConfig = {}): Observable<boolean> {
@@ -37,6 +35,16 @@ export class ConfirmationDialogService {
         no: 'Tomēr nē',
       }
     });
+  }
+
+  confirmDataError(message: string): Observable<boolean> {
+    return this.confirm('Radusies problēma ar serveri. Mēģiniet vēlreiz vēlāk vai sazinieties ar atbalstu',
+      {
+        data: {
+          yes: 'OK'
+        }
+      }
+    );
   }
 
 }

@@ -69,10 +69,7 @@ export class UserFormSource extends SimpleFormSource<User> {
     }
 
     updateFn(user: User): Observable<User> {
-        const userName = this.value.username;
-        return this.usersService.updateUser(user).pipe(
-            switchMap(_ => this.usersService.getUser(userName))
-        );
+        return this.usersService.updateUser(user);
     }
 
     private usernamePatternValidator(control: AbstractControl): ValidationErrors {

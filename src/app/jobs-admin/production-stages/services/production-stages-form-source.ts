@@ -4,7 +4,7 @@ import { IFormArray, IFormBuilder, IFormControl, IFormGroup } from '@rxweb/types
 import { ProductionStage } from 'src/app/interfaces';
 import { ProductionStagesService } from 'src/app/services/production-stages.service';
 import { EMPTY, Observable, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, pluck, switchMap } from 'rxjs/operators';
 
 
 export class ProductionStagesFormSource extends SimpleFormSource<ProductionStage> {
@@ -36,7 +36,9 @@ export class ProductionStagesFormSource extends SimpleFormSource<ProductionStage
     }
 
     insertFn(value: ProductionStage): Observable<string> {
-        return this.productionStagesService.insertOne(this.preProcessValue(value));
+        return this.productionStagesService.insertOne(this.preProcessValue(value)).pipe(
+            pluck('_id'),
+        );
     }
 
     updateFn(value: ProductionStage): Observable<ProductionStage> {

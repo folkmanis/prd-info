@@ -104,8 +104,8 @@ export class ReproJobFormComponent implements OnInit {
   }
 
   onCreateFolder() {
-    const jobId = this.form.value.jobId;
-    this.jobsService.updateJob({ jobId }, { createFolder: true }).pipe(
+    const jobId = this.form.value.jobId as number;
+    this.jobsService.updateJob(jobId, {}, { createFolder: true }).pipe(
       switchMap(resp => resp ? this.jobsService.getJob(jobId) : EMPTY),
       pluck('files'),
     ).subscribe(files => {

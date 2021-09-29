@@ -41,13 +41,13 @@ export class EquipmentService {
     return this.api.equipment.get(id);
   }
 
-  insertOne(equipment: Equipment): Observable<string> {
-    return (this.api.equipment.insertOne(equipment) as Observable<string>).pipe(
+  insertOne(equipment: Equipment): Observable<Equipment> {
+    return this.api.equipment.insertOne(equipment).pipe(
       tap(_ => this.reload()),
     );
   }
 
-  updateOne(equipment: Equipment): Observable<boolean> {
+  updateOne(equipment: Equipment): Observable<Equipment> {
     const { _id, ...update } = equipment;
     return this.api.equipment.updateOne(_id, update).pipe(
       tap(_ => this.reload()),

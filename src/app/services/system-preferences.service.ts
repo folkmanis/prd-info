@@ -32,7 +32,7 @@ export class SystemPreferencesService {
       switchMap(_ => this._systemPreferences()),
     ),
     this._preferencesUpdate$.pipe(
-      concatMap(pref => this.prdApi.systemPreferences.update(pref)),
+      concatMap(pref => this.prdApi.systemPreferences.updateMany(pref)),
       concatMap(resp => resp > 0 ? of(true) : EMPTY),
       switchMap(_ => this._systemPreferences()),
     )

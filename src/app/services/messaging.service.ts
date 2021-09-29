@@ -18,7 +18,7 @@ export class MessagingService {
     this.reload$.pipe(startWith('')),
     this.login.user$,
   ]).pipe(
-    switchMap(([_, user]) => user ? this.api.login.messages() : []),
+    switchMap(([_, user]) => user ? this.api.messages.messages() : []),
     shareReplay(1),
   );
 
@@ -41,14 +41,14 @@ export class MessagingService {
   }
 
   markAllAsRead(): Observable<boolean> {
-    return this.api.login.setAllMessagesRead().pipe(
+    return this.api.messages.setAllMessagesRead().pipe(
       map(n => n > 0),
       tap(resp => resp && this.reload()),
     );
   }
 
   deleteMessage(id: string): Observable<boolean> {
-    return this.api.login.deleteMessage(id).pipe(
+    return this.api.messages.deleteMessage(id).pipe(
       map(n => n > 0),
       tap(resp => resp && this.reload()),
     );

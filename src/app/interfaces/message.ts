@@ -1,4 +1,3 @@
-import { AppHttpResponseBase } from 'src/app/library/http/app-http-response-base';
 import { Modules } from './system-preferences';
 
 
@@ -34,7 +33,3 @@ export type JobMessage<T extends JobMessageActions> = MessageBase & {
 };
 
 export type Message<T extends JobMessageActions = any> = JobMessage<T>;
-
-export interface MessageResponse<T extends JobMessageActions = any> extends AppHttpResponseBase<Message<T>> {
-    timestamp: string;
-}

@@ -39,8 +39,7 @@ export class JobListComponent implements OnInit {
 
   onSetJobStatus(jobId: number, status: number, event: MouseEvent) {
     event.stopPropagation();
-    this.jobService.updateJob({
-      jobId,
+    this.jobService.updateJob(jobId, {
       jobStatus: {
         generalStatus: status,
       }

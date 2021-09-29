@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, pluck } from 'rxjs/operators';
 import { HttpOptions } from 'src/app/library/http/http-options';
-import { AppHttpResponseBase } from 'src/app/library/http/app-http-response-base';
 
 interface Params {
     [key: string]: any;
@@ -22,49 +21,32 @@ export abstract class ApiBase<T> {
     ): Observable<P[]> | Observable<T> {
 
         if (idOrParams && idOrParams instanceof Object) {
-            return this.http.get<AppHttpResponseBase<T>>(this.path, new HttpOptions(idOrParams).cacheable()).pipe(
-                map(resp => resp.data as P[])
-            );
+            return this.http.get<P[]>(this.path, new HttpOptions(idOrParams).cacheable());
         }
         if (idOrParams) {
-            return this.http.get<AppHttpResponseBase<T>>(this.path + idOrParams, new HttpOptions(params).cacheable()).pipe(
-                map(resp => resp.data as T)
-            );
+            return this.http.get<T>(this.path + idOrParams, new HttpOptions(params).cacheable());
         }
-        return this.http.get<AppHttpResponseBase<T>>(this.path, new HttpOptions().cacheable()).pipe(
-            map(resp => resp.data as P[])
-        );
+        return this.http.get<P[]>(this.path, new HttpOptions().cacheable());
     }
 
     deleteOne(id: string | number): Observable<number> {
-        return this.http.delete<AppHttpResponseBase<T>>(this.path + id, new HttpOptions()).pipe(
-            map(resp => resp.deletedCount || 0),
-        );
+        return this.http.delete<number>(this.path + id, new HttpOptions());
     }
 
-    update(data: Partial<T>[], params?: Params): Observable<number> {
-        return this.http.post<AppHttpResponseBase<T>>(this.path, data, new HttpOptions(params)).pipe(
-            pluck('modifiedCount'),
-        );
+    updateMany(data: Partial<T>[], params?: Params): Observable<number> {
+        return this.http.patch<number>(this.path, data, new HttpOptions(params));
     }
 
-    updateOne(id: string | number, data: Partial<T>, params?: Params): Observable<boolean> {
-        return this.http.post<AppHttpResponseBase<T>>(this.path + id, data, new HttpOptions(params)).pipe(
-            pluck('modifiedCount'),
-            map(count => !!count)
-        );
+    updateOne(id: string | number, data: Partial<T>, params?: Params): Observable<T> {
+        return this.http.patch<T>(this.path + id, data, new HttpOptions(params));
     }
 
-    insertOne(data: Partial<T>, params?: Params): Observable<string | number | null> {
-        return this.http.put<AppHttpResponseBase<T>>(this.path, data, new HttpOptions(params)).pipe(
-            map(resp => resp.error ? null : resp.insertedId),
-        );
+    insertOne(data: Partial<T>, params?: Params): Observable<T> {
+        return this.http.put<T>(this.path, data, new HttpOptions(params));
     }
 
     validatorData<K extends keyof T & string>(key: K): Observable<T[K][]> {
-        return this.http.get<AppHttpResponseBase<T>>(this.path + 'validate/' + key, new HttpOptions().cacheable()).pipe(
-            pluck('validatorData'),
-        ) as Observable<T[K][]>;
+        return this.http.get<T[K][]>(this.path + 'validate/' + key, new HttpOptions().cacheable());
     }
 
     protected post<U>(body: any): Observable<U>;

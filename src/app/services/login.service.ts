@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { merge, Observable, Subject } from 'rxjs';
-import { map, shareReplay, take, tap } from 'rxjs/operators';
+import { merge, Observable, of, Subject } from 'rxjs';
+import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { Login, User } from 'src/app/interfaces';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 
@@ -11,12 +11,12 @@ import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 export class LoginService {
 
   private _user$: Observable<User | undefined>;
-  private readonly _updateLogin$ = new Subject<User | undefined>();
+  private readonly _updateLogin$ = new Subject<User | null>();
 
   get user$(): Observable<User | undefined> {
     if (!this._user$) {
       this._user$ = merge(
-        this.prdApi.login.get(''),
+        this.prdApi.login.getLogin(),
         this._updateLogin$,
       ).pipe(
         shareReplay(1),

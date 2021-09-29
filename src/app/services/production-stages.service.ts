@@ -35,13 +35,13 @@ export class ProductionStagesService {
     return this.api.productionStages.get(id);
   }
 
-  insertOne(equipment: ProductionStage): Observable<string> {
-    return (this.api.productionStages.insertOne(equipment) as Observable<string>).pipe(
+  insertOne(equipment: ProductionStage): Observable<ProductionStage> {
+    return (this.api.productionStages.insertOne(equipment)).pipe(
       tap(_ => this.reload()),
     );
   }
 
-  updateOne(equipment: ProductionStage): Observable<boolean> {
+  updateOne(equipment: ProductionStage): Observable<ProductionStage> {
     const { _id, ...update } = equipment;
     return this.api.productionStages.updateOne(_id, update).pipe(
       tap(resp => resp && this.reload()),

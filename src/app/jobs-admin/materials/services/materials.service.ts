@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, EMPTY, Observable, Subject } from 'rxjs';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 import { Material, ProductCategory, SystemPreferences } from 'src/app/interfaces';
-import { map, pluck, switchMap, tap } from 'rxjs/operators';
+import { map, mapTo, pluck, switchMap, tap } from 'rxjs/operators';
 import { CONFIG } from 'src/app/services/config.provider';
 import { combineLatest } from 'rxjs';
 
@@ -60,7 +60,8 @@ export class MaterialsService {
       return EMPTY;
     }
     return this.api.materials.updateOne(id, upd).pipe(
-      tap(_ => this.reload())
+      tap(_ => this.reload()),
+      mapTo(true),
     );
   }
 

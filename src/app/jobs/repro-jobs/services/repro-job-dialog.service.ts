@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { flatten } from 'lodash';
 import { forkJoin, Observable, of } from 'rxjs';
-import { concatMap, map } from 'rxjs/operators';
+import { concatMap, map, mapTo } from 'rxjs/operators';
 import { JobBase, JobProduct, JobProductionStage } from 'src/app/interfaces';
 import { ProductsService } from 'src/app/services';
 import { JobService } from 'src/app/services/job.service';
@@ -11,6 +11,8 @@ import { ReproJobEditComponent } from '../repro-job-edit/repro-job-edit.componen
 export interface DialogData {
   job: Partial<JobBase>;
 }
+
+export type PartialJob = Pick<JobBase, 'jobId'> & Partial<JobBase>;
 
 const CONFIG: MatDialogConfig = {
   autoFocus: false,
@@ -31,7 +33,7 @@ export class ReproJobDialogService {
     private jobService: JobService,
   ) { }
 
-  openJob(job: Partial<JobBase>): Observable<Partial<JobBase> | undefined> {
+  openJob(job: Partial<JobBase>): Observable<PartialJob | undefined> {
 
     const config: MatDialogConfig = {
       ...CONFIG,
@@ -42,7 +44,7 @@ export class ReproJobDialogService {
     };
 
     return this.matDialog
-      .open<ReproJobEditComponent, DialogData, JobBase | undefined>(ReproJobEditComponent, config)
+      .open<ReproJobEditComponent, DialogData, PartialJob | undefined>(ReproJobEditComponent, config)
       .afterClosed().pipe(
         concatMap(job => addProductionStages(job, this.productionStagesFn)),
       );
@@ -52,14 +54,14 @@ export class ReproJobDialogService {
   editJob(jobId: number): Observable<boolean> {
     return this.jobService.getJob(jobId).pipe(
       concatMap(job => this.openJob(job)),
-      concatMap(data => data ? this.jobService.updateJob(data) : of(false)),
+      concatMap(data => data ? this.jobService.updateJob(jobId, data).pipe(mapTo(true)) : of(false)),
     );
   }
 
 
 }
 
-function addProductionStages(job: Partial<JobBase>, getStageFn: (productName: string) => Observable<JobProductionStage[]>): Observable<Partial<JobBase>> {
+function addProductionStages(job: PartialJob, getStageFn: (productName: string) => Observable<JobProductionStage[]>): Observable<PartialJob> {
   if (job?.products instanceof Array && job.products.length > 0) {
     return forkJoin(jobStages(job.products, getStageFn)).pipe(
       map(allStages => ({

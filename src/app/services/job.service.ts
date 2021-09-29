@@ -59,13 +59,12 @@ export class JobService {
     );
   }
 
-  updateJob(job: Partial<JobBase>, params?: JobUpdateParams): Observable<boolean> {
-    if (!job.jobId) { return of(false); }
+  updateJob(jobId: number, job: Partial<JobBase>, params?: JobUpdateParams): Observable<JobBase> {
     if (job.dueDate) {
       job.dueDate = endOfDay(new Date(job.dueDate));
     }
     return this.prdApi.jobs.updateOne(
-      job.jobId,
+      jobId,
       {
         ...job,
         jobId: undefined,
@@ -81,7 +80,7 @@ export class JobService {
     jobs.forEach(job => {
       if (!job.jobId) { return EMPTY; }
     });
-    return this.prdApi.jobs.update(jobs, params).pipe(
+    return this.prdApi.jobs.updateMany(jobs, params).pipe(
       tap(resp => resp && this.forceReload$.next()),
     );
   }

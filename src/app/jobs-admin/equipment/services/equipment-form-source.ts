@@ -4,7 +4,7 @@ import { IFormArray, IFormBuilder, IFormControl, IFormGroup } from '@rxweb/types
 import { Equipment } from 'src/app/interfaces';
 import { EquipmentService } from './equipment.service';
 import { EMPTY, Observable, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, pluck, switchMap } from 'rxjs/operators';
 
 
 export class EquipmentFormSource extends SimpleFormSource<Equipment> {
@@ -33,13 +33,13 @@ export class EquipmentFormSource extends SimpleFormSource<Equipment> {
     }
 
     insertFn(value: Equipment): Observable<string> {
-        return this.equipmentService.insertOne(this.preProcessValue(value));
+        return this.equipmentService.insertOne(this.preProcessValue(value)).pipe(
+            pluck('_id'),
+        );
     }
 
     updateFn(value: Equipment): Observable<Equipment> {
-        return this.equipmentService.updateOne(this.preProcessValue(value)).pipe(
-            switchMap(resp => resp ? this.equipmentService.getOne(value._id) : EMPTY)
-        );
+        return this.equipmentService.updateOne(this.preProcessValue(value));
     }
 
     private preProcessValue(value: Equipment): Equipment {

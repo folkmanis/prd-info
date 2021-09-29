@@ -44,7 +44,7 @@ export class UsersService {
    * @param username Lietotājvārds
    * @param user Atjaunojamie dati, bet ne parole!
    */
-  updateUser(user: Partial<User>): Observable<boolean> {
+  updateUser(user: Partial<User>): Observable<User> {
     if (!user.username) { return EMPTY; }
     return this.prdApi.users.updateOne(user.username, user).pipe(
       tap(resp => resp && this.updateUsers(user)),
