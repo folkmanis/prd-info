@@ -14,7 +14,7 @@ export abstract class ApiBase<T> {
     ) { }
 
     get<P = Partial<T>>(params?: Params): Observable<P[]>;
-    get<P = Partial<T>>(id: string | number, params?: Params): Observable<T>;
+    get(id: string | number, params?: Params): Observable<T>;
     get<P = Partial<T>>(
         idOrParams?: string | number | Params,
         params?: Params
@@ -30,7 +30,9 @@ export abstract class ApiBase<T> {
     }
 
     deleteOne(id: string | number): Observable<number> {
-        return this.http.delete<number>(this.path + id, new HttpOptions());
+        return this.http.delete<{ deletedCount: number; }>(this.path + id, new HttpOptions()).pipe(
+            pluck('deletedCount'),
+        );
     }
 
     updateMany(data: Partial<T>[], params?: Params): Observable<number> {
@@ -49,16 +51,16 @@ export abstract class ApiBase<T> {
         return this.http.get<T[K][]>(this.path + 'validate/' + key, new HttpOptions().cacheable());
     }
 
-    protected post<U>(body: any): Observable<U>;
-    protected post<U>(path: string, body: any): Observable<U>;
-    protected post<U>(pathOrBody: string | any, body?: any): Observable<U> {
+    protected patch<U>(body: any): Observable<U>;
+    protected patch<U>(path: string, body: any): Observable<U>;
+    protected patch<U>(pathOrBody: string | any, body?: any): Observable<U> {
         let path = this.path;
         if (typeof pathOrBody === 'string') {
             path = path + pathOrBody;
         } else {
             body = pathOrBody;
         }
-        return this.http.post<U>(path, body, new HttpOptions());
+        return this.http.patch<U>(path, body, new HttpOptions());
     }
 
 }

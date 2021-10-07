@@ -1,7 +1,5 @@
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { ApiBase, HttpOptions } from 'src/app/library/http';
-import { KastesJob, KastesJobResponse, Veikals } from 'src/app/interfaces';
+import { KastesJob } from 'src/app/interfaces';
+import { ApiBase } from 'src/app/library/http';
 
 export class KastesOrdersApi extends ApiBase<KastesJob> {
 

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { endOfDay } from 'date-fns';
 import { combineLatest, EMPTY, merge, Observable, of, ReplaySubject, Subject } from 'rxjs';
 import { map, share, startWith, switchMap, tap } from 'rxjs/operators';
-import { Job, JobBase, JobPartial, JobQueryFilter } from 'src/app/interfaces';
+import { Job, JobPartial, JobQueryFilter } from 'src/app/interfaces';
 import { PrdApiService } from 'src/app/services';
 import { NotificationsService } from './notifications.service';
 
@@ -53,13 +53,7 @@ export class JobService {
     );
   }
 
-  newJobs(jobs: Partial<Job>[]): Observable<number | null> {
-    return this.prdApi.jobs.insertMany(jobs).pipe(
-      tap(() => this.forceReload$.next()),
-    );
-  }
-
-  updateJob(jobId: number, job: Partial<JobBase>, params?: JobUpdateParams): Observable<JobBase> {
+  updateJob(jobId: number, job: Partial<Job>, params?: JobUpdateParams): Observable<Job> {
     if (job.dueDate) {
       job.dueDate = endOfDay(new Date(job.dueDate));
     }
@@ -85,7 +79,7 @@ export class JobService {
     );
   }
 
-  getJob(jobId: number): Observable<JobBase | undefined> {
+  getJob(jobId: number): Observable<Job> {
     return this.prdApi.jobs.get(jobId);
   }
 
