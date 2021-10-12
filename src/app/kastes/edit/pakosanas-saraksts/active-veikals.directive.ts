@@ -1,5 +1,5 @@
-import { Directive, ChangeDetectorRef, Input } from '@angular/core';
-import { KastesJob, Veikals, VeikalsBox, COLORS, Colors, ColorTotals } from 'src/app/interfaces';
+import { Directive, Input } from '@angular/core';
+import { Veikals } from 'src/app/kastes/interfaces';
 import { VeikalsValidationErrors } from '../services/veikals-validation-errors';
 
 @Directive({

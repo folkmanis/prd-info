@@ -2,11 +2,11 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { pluck } from 'rxjs/operators';
-import { Kaste, Colors } from 'src/app/interfaces';
+import { VeikalsKaste, Colors } from 'src/app/kastes/interfaces';
 
 export interface Status {
   type: 'empty' | 'kaste' | 'none';
-  kaste?: Kaste;
+  kaste?: VeikalsKaste;
 }
 
 export class NoopErrorStateMatcher implements ErrorStateMatcher {
@@ -39,7 +39,7 @@ export class LabelsComponent implements OnInit {
 
   @Input() colors: { [key in Colors]: string } | undefined;
 
-  @Output() code = new EventEmitter<string | number>();
+  @Output() code = new EventEmitter<number>();
 
   inputForm = new FormGroup({
     kods: new FormControl(
@@ -55,7 +55,7 @@ export class LabelsComponent implements OnInit {
   ngOnInit() {
   }
 
-  onLabelSubmit({ kods }: { kods: string }): void {
+  onLabelSubmit({ kods }: { kods: number; }): void {
     this.inputForm.disable();
     this.code.emit(kods);
   }

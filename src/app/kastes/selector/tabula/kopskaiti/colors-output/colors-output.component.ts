@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { Colors, ColorTotals } from 'src/app/interfaces';
+import { Colors, ColorTotals } from 'src/app/kastes/interfaces';
 
 interface TotalColorNames {
   name: string;

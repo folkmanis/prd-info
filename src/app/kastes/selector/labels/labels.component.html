@@ -1,4 +1,4 @@
-<form [formGroup]="inputForm" (ngSubmit)="onLabelSubmit(inputForm.value)">
+<form [formGroup]="inputForm" (submit)="onLabelSubmit(inputForm.value)">
     <p>
         <mat-form-field>
             <input matInput formControlName="kods" type="text" placeholder="Adreses kods" autocomplete="off" #kodsInput>

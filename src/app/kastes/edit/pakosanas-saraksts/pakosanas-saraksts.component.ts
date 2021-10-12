@@ -2,7 +2,7 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Subject, ReplaySubject, Observable, BehaviorSubject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { KastesJob, Veikals, COLORS, Colors, ColorTotals } from 'src/app/interfaces';
+import { KastesJob, Veikals, COLORS, Colors, ColorTotals } from '../../interfaces';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
 import { kastesTotalsFromVeikali } from '../../common';
 

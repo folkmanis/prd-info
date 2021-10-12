@@ -1,5 +1,5 @@
 import { AppHttpResponseBase } from 'src/app/library/http';
-import { Colors } from './kaste';
+import { Colors } from '../kastes/interfaces';
 
 export const MODULES = ['kastes', 'system', 'jobs', 'paytraq'] as const;
 

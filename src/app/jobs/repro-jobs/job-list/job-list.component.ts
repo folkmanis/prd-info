@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { DestroyService } from 'prd-cdk';
 import { OperatorFunction, pipe } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { JobBase, JobProduct } from 'src/app/interfaces';
-import { LayoutService } from 'src/app/services';
+import { JobPartial, JobProduct } from 'src/app/interfaces';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
+import { LayoutService } from 'src/app/services';
 import { JobService } from 'src/app/services/job.service';
 
 @Component({
@@ -32,7 +32,7 @@ export class JobListComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  copyJobIdAndName(job: Pick<JobBase, 'jobId' | 'name'>, event: MouseEvent) {
+  copyJobIdAndName(job: Pick<JobPartial, 'jobId' | 'name'>, event: MouseEvent) {
     this.clipboard.copy(`${job.jobId}-${job.name}`);
     event.stopPropagation();
   }
@@ -49,7 +49,7 @@ export class JobListComponent implements OnInit {
 
 }
 
-function addProductsInformation(): OperatorFunction<JobBase[], (JobBase & { productsObj: Partial<JobProduct>; })[]> {
+function addProductsInformation(): OperatorFunction<JobPartial[], (JobPartial & { productsObj: Partial<JobProduct>; })[]> {
 
   return pipe(
     map(jobs =>
@@ -61,7 +61,9 @@ function addProductsInformation(): OperatorFunction<JobBase[], (JobBase & { prod
 
 function productsObj(products: JobProduct | JobProduct[] | undefined): Partial<JobProduct> {
   if (!products) {
-    return { name: '' };
+    return {
+      name: ''
+    };
   }
   if (!(products instanceof Array)) {
     return { ...products };

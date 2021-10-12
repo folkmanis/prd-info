@@ -4,7 +4,6 @@ export * from './equipment';
 export * from './invoice';
 export * from './job';
 export * from './job-production-stage';
-export * from './kaste';
 export * from './login';
 export * from './materials';
 export * from './message';

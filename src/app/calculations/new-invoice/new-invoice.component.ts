@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, merge, Observable } from 'rxjs';
 import { map, share, shareReplay, startWith, switchMap } from 'rxjs/operators';
-import { InvoiceForReport, JobBase, JobPartial, JobProduct, ProductTotals } from 'src/app/interfaces';
+import { InvoiceForReport, JobUnwindedPartial, ProductTotals } from 'src/app/interfaces';
 import { LayoutService } from 'src/app/services';
 import { InvoicesTotals } from '../interfaces';
 import { InvoicesService } from '../services/invoices.service';
@@ -23,8 +23,8 @@ export class NewInvoiceComponent implements OnInit {
     shareReplay(1),
   );
 
-  jobs$: Observable<JobPartial[]>;
-  selectedJobs$: Observable<JobPartial[]>;
+  jobs$: Observable<JobUnwindedPartial[]>;
+  selectedJobs$: Observable<JobUnwindedPartial[]>;
 
   selection$ = new BehaviorSubject<number[]>([]);
 
@@ -42,7 +42,7 @@ export class NewInvoiceComponent implements OnInit {
 
     this.jobs$ = this.customerId.valueChanges.pipe(
       startWith(''),
-      switchMap(customer => this.invoicesService.getJobs({ customer, unwindProducts: 1, invoice: 0 })),
+      switchMap(customer => this.invoicesService.getJobsUnwinded({ customer, invoice: 0 })),
       share(),
     );
 
@@ -68,7 +68,7 @@ export class NewInvoiceComponent implements OnInit {
       .subscribe(({ invoiceId }) => this.router.navigate(['calculations', 'plate-invoice', invoiceId]));
   }
 
-  onPrintList(jobs: JobPartial[]) {
+  onPrintList(jobs: JobUnwindedPartial[]) {
     const { totals, grandTotal } = jobTotalsFromJob(jobs);
     const invoice: InvoiceForReport = {
       customer: this.customerId.value,
@@ -89,11 +89,11 @@ export class NewInvoiceComponent implements OnInit {
 
 }
 
-function jobTotalsFromJob(jobs: JobPartial[]): InvoicesTotals {
+function jobTotalsFromJob(jobs: JobUnwindedPartial[]): InvoicesTotals {
   const totM = new Map<string, ProductTotals>();
   for (const { products } of jobs) {
     if (!products) { continue; }
-    const { name, price, count } = products as JobProduct;
+    const { name, price, count } = products;
     totM.set(
       name,
       {
@@ -110,6 +110,6 @@ function jobTotalsFromJob(jobs: JobPartial[]): InvoicesTotals {
   };
 }
 
-function filterSelectedJobs([jobs, sel]: [JobPartial[], number[]]): JobPartial[] {
+function filterSelectedJobs([jobs, sel]: [JobUnwindedPartial[], number[]]): JobUnwindedPartial[] {
   return jobs.filter(job => sel.some(num => num === job.jobId));
 }

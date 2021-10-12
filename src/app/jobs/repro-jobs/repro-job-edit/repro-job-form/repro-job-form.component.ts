@@ -1,19 +1,18 @@
-import { Component, OnInit, Input, Output, ViewChild, EventEmitter, Inject, ChangeDetectionStrategy } from '@angular/core';
-import { addDays, subDays, endOfWeek, startOfWeek } from 'date-fns';
-import { EMPTY, merge, Observable, of, BehaviorSubject } from 'rxjs';
+import { ChangeDetectionStrategy, Component, Inject, Input, OnInit, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { addDays, subDays } from 'date-fns';
+import { EMPTY, merge, Observable, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, pluck, startWith, switchMap } from 'rxjs/operators';
-import { CustomerPartial, CustomerProduct, JobBase, JobProduct, SystemPreferences } from 'src/app/interfaces';
-import { LayoutService } from 'src/app/services';
+import { CustomerPartial, CustomerProduct, SystemPreferences } from 'src/app/interfaces';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
+import { LayoutService } from 'src/app/services';
 import { CONFIG } from 'src/app/services/config.provider';
 import { CustomersService } from 'src/app/services/customers.service';
 import { JobService } from 'src/app/services/job.service';
 import { ProductsService } from 'src/app/services/products.service';
+import { JobFormGroup } from '../../services/job-form-group';
 import { CustomerInputComponent } from '../customer-input/customer-input.component';
 import { ReproProductsEditorComponent } from '../repro-products-editor/repro-products-editor.component';
-import { log } from 'prd-cdk';
-import { JobFormGroup } from '../../services/job-form-group';
-import { AbstractControl, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-repro-job-form',

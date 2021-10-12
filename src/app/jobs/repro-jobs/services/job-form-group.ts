@@ -1,7 +1,7 @@
 import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
-import { CustomerPartial, JobBase, JobProduct, ProductPartial } from 'src/app/interfaces';
+import { CustomerPartial, Job, JobProduct, ProductPartial } from 'src/app/interfaces';
 import { ProductFormArray } from './product-form-array';
 
 const validateCustomerFn = (customers$: Observable<CustomerPartial[]>): AsyncValidatorFn => {
@@ -18,7 +18,7 @@ const validateCustomerFn = (customers$: Observable<CustomerPartial[]>): AsyncVal
 
 export class JobFormGroup extends FormGroup {
 
-    get jobValue(): JobBase {
+    get jobValue(): Job {
         return this.value;
     }
 
@@ -33,7 +33,7 @@ export class JobFormGroup extends FormGroup {
     constructor(
         customers$: Observable<CustomerPartial[]>,
         products$: Observable<ProductPartial[]>,
-        value: Partial<JobBase> = {},
+        value: Partial<Job> = {},
     ) {
         super(
             {
@@ -59,10 +59,12 @@ export class JobFormGroup extends FormGroup {
                     new Date(),
                     Validators.required,
                 ),
-                category: new FormControl(
-                    undefined,
-                    Validators.required,
-                ),
+                production: new FormGroup({
+                    category: new FormControl(
+                        undefined,
+                        Validators.required,
+                    ),
+                }),
                 comment: new FormControl(undefined),
                 customerJobId: new FormControl(undefined),
                 custCode: new FormControl(undefined), // , { disabled: true }
@@ -76,7 +78,7 @@ export class JobFormGroup extends FormGroup {
         this.patchValue(value);
     }
 
-    patchValue(value: Partial<JobBase>, params: { emitEvent?: boolean; } = {}): void {
+    patchValue(value: Partial<Job>, params: { emitEvent?: boolean; } = {}): void {
         this.products.setProductControls((value.products as JobProduct[])?.length || 0);
         this.reset(undefined, params);
         super.patchValue(value, params);

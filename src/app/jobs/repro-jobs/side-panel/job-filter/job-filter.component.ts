@@ -81,7 +81,7 @@ export class JobFilterComponent implements OnInit {
 
 function normalizeFilter(jobFilter: JobQueryFilter): JobQueryFilter {
   return {
-    jobsId: jobFilter.jobsId ? +jobFilter.jobsId : undefined,
+    jobsId: jobFilter.jobsId ? [+jobFilter.jobsId] : undefined,
     name: jobFilter.name ? jobFilter.name : undefined,
     customer: jobFilter.customer ? jobFilter.customer : undefined,
     jobStatus: jobFilter.jobStatus?.length ? jobFilter.jobStatus : undefined,

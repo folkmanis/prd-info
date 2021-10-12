@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DestroyService } from 'prd-cdk';
 import { EMPTY, Observable, of } from 'rxjs';
 import { concatMap, filter, map, mergeMap, takeUntil, tap } from 'rxjs/operators';
-import { JobBase } from 'src/app/interfaces';
+import { Job } from 'src/app/interfaces';
 import { JobQueryFilter } from 'src/app/interfaces/job';
 import { LayoutService } from 'src/app/services';
 import { JobService } from 'src/app/services/job.service';
@@ -53,11 +53,13 @@ export class ReproJobsComponent implements OnInit {
       .reduce((acc, curr, _, names) => [...acc, curr.slice(0, MAX_JOB_NAME_LENGTH / names.length)], [])
       .join('_');
     this.fileUploadService.setFiles(fileListArray);
-    const job: Partial<JobBase> = {
+    const job: Partial<Job> = {
       name,
       receivedDate: new Date(),
       dueDate: new Date(),
-      category: 'repro',
+      production: {
+        category: 'repro',
+      },
       jobStatus: {
         generalStatus: 20
       },
@@ -86,7 +88,7 @@ export class ReproJobsComponent implements OnInit {
 
   }
 
-  private insertJobAndUploadFiles(job: Partial<JobBase> | undefined): Observable<number> {
+  private insertJobAndUploadFiles(job: Partial<Job> | undefined): Observable<number> {
     if (job === undefined) {
       return of(0);
     }

@@ -1,6 +1,5 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { InvoicesTotals } from '../../interfaces';
-import { JobPartial, JobProduct, Product, ProductTotals } from 'src/app/interfaces';
 
 @Component({
   selector: 'app-selection-totals',
@@ -11,7 +10,9 @@ import { JobPartial, JobProduct, Product, ProductTotals } from 'src/app/interfac
 export class SelectionTotalsComponent implements OnInit {
 
   @Input() set invoicesTotals(value: InvoicesTotals) {
-    if (!value) { return; }
+    if (!value) {
+      return;
+    }
     this._invoicesTotals = value;
   }
   get invoicesTotals(): InvoicesTotals {

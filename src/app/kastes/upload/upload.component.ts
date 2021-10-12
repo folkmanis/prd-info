@@ -4,12 +4,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { EMPTY, Observable, Subject } from 'rxjs';
 import { map, shareReplay, switchMap } from 'rxjs/operators';
-import { ColorTotals, KastesJobPartial } from 'src/app/interfaces';
+import { ColorTotals } from '../interfaces';
 import { KastesPreferencesService } from '../services/kastes-preferences.service';
-import { PasutijumiService } from '../services/pasutijumi.service';
+import { KastesPasutijumiService } from '../services/kastes-pasutijumi.service';
 import { EndDialogComponent } from './end-dialog/end-dialog.component';
 import { AdresesBox } from './services/adrese-box';
-import { sortColorTotals } from '../common';
+import { sortColorTotals, jobProductsToColorTotals } from '../common';
+import { KastesJobPartial } from '../interfaces/kastes-job-partial';
 
 @Component({
   selector: 'app-upload',
@@ -24,23 +25,21 @@ export class UploadComponent implements OnInit, OnDestroy {
   orderIdControl = new FormControl(null, [Validators.required]);
 
   plannedTotals$: Observable<ColorTotals[]> = this.orderIdControl.valueChanges.pipe(
-    switchMap((id: string) => this.pasutijumiService.getOrder(+id)),
-    map(order => order.apjomsPlanned || []),
-    map(plan => plan.map(pl => ({ ...pl, total: pl.total * 2 }))),
-    map(totals => sortColorTotals(totals)),
+    switchMap((id: string) => this.pasutijumiService.getKastesJob(+id)),
+    map(job => jobProductsToColorTotals(job.products)),
     shareReplay(1),
   );
 
   inputData$ = new Subject<Array<string | number>[]>();
 
-  orders$: Observable<KastesJobPartial[]> = this.pasutijumiService.getKastesJobs({ veikali: false });
+  orders$: Observable<KastesJobPartial[]> = this.pasutijumiService.getKastesJobs({});
 
   colors$ = this.preferences.kastesSystemPreferences$.pipe(
     map(pref => pref.colors),
   );
 
   constructor(
-    private pasutijumiService: PasutijumiService,
+    private pasutijumiService: KastesPasutijumiService,
     private preferences: KastesPreferencesService,
     private matDialog: MatDialog,
     private router: Router,
@@ -65,11 +64,10 @@ export class UploadComponent implements OnInit, OnDestroy {
     const orderId = this.orderIdControl.value;
     if (!orderId) { return; }
     this.pasutijumiService.addKastes(
-      orderId,
-      adrBox.uploadRows(orderId),
+      adrBox.uploadRows(orderId)
     ).pipe(
       switchMap(affectedRows => this.matDialog.open(EndDialogComponent, { data: affectedRows }).afterClosed()),
-      switchMap(_ => this.preferences.updateUserPreferences({ pasutijums: orderId }) || EMPTY),
+      switchMap(_ => this.preferences.updateUserPreferences({ pasutijums: orderId })),
     )
       .subscribe(_ => this.router.navigate(['kastes', 'edit', orderId]));
   }

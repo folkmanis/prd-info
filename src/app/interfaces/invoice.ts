@@ -1,7 +1,6 @@
 import { AppHttpResponseBase } from 'src/app/library/http';
-import { Job, JobPartial } from './job';
-import { JobBase } from './job-base';
-import { CustomerFinancial, Customer } from './customer';
+import { Customer } from './customer';
+import { JobPartial } from './job';
 
 export interface Invoice {
     invoiceId: string;

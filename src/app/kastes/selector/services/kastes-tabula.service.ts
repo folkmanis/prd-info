@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, mergeMap, pluck, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators';
-import { Colors, Kaste, Totals, COLORS } from 'src/app/interfaces';
+import { Colors, Totals, COLORS, VeikalsKaste } from 'src/app/kastes/interfaces';
 import { cacheWithUpdate } from 'prd-cdk';
 import { PrdApiService } from 'src/app/services';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
@@ -9,30 +9,25 @@ import { KastesPreferencesService } from '../../services/kastes-preferences.serv
 @Injectable()
 export class KastesTabulaService {
 
-  constructor(
-    private prdApi: PrdApiService,
-    private prefService: KastesPreferencesService,
-  ) { }
-
   private _pasutijumsId$ = this.prefService.pasutijumsId$;
 
   private readonly _apjoms$ = new BehaviorSubject(0);
   private readonly _reloadKastes$ = new Subject<void>();
-  private readonly _updateKaste$ = new Subject<Kaste>();
+  private readonly _updateKaste$ = new Subject<VeikalsKaste>();
 
   apjoms$ = this._apjoms$.asObservable();
   apjomi$: Observable<number[]> = this._pasutijumsId$.pipe(
-    switchMap(pasutijumsId => this.prdApi.kastes.getApjomi({ pasutijumsId })),
+    switchMap(pasutijumsId => this.prdApi.kastes.getApjomi(pasutijumsId)),
   );
 
-  kastesAll$: Observable<Kaste[]> = this._reloadKastes$.pipe(
+  kastesAll$: Observable<VeikalsKaste[]> = this._reloadKastes$.pipe(
     startWith({}),
     switchMap(() => this._pasutijumsId$),
-    switchMap(pasutijumsId => this.prdApi.kastes.get<Kaste>({ pasutijumsId })),
+    switchMap(pasutijumsId => this.prdApi.kastes.getKastes(pasutijumsId)),
     cacheWithUpdate(this._updateKaste$, (o1, o2) => o1._id === o2._id && o1.kaste === o2.kaste),
   );
 
-  kastesApjoms$: Observable<Kaste[]> = combineLatest([
+  kastesApjoms$: Observable<VeikalsKaste[]> = combineLatest([
     this.kastesAll$,
     this._apjoms$,
   ]).pipe(
@@ -44,38 +39,37 @@ export class KastesTabulaService {
     map(calcTotals),
   );
 
+  constructor(
+    private prdApi: PrdApiService,
+    private prefService: KastesPreferencesService,
+  ) { }
+
   setApjoms(apjoms: number) {
     this._apjoms$.next(apjoms);
   }
 
-  reload() {
+  reloadState() {
     this._reloadKastes$.next();
   }
 
-  setGatavs(kaste: Kaste, yesno: boolean): Observable<boolean> {
-    return this.prdApi.kastes.setGatavs(kaste, yesno).pipe(
-      mergeMap(() => this.prdApi.kastes.get(kaste._id, { kaste: kaste.kaste }).pipe(
-        tap(k => this._updateKaste$.next(k)),
-      )),
-      map(resp => !!resp),
-    );
+  setPartialState(kaste: VeikalsKaste) {
+    this._updateKaste$.next(kaste);
   }
 
-  setLabel(kods: number | string): Observable<Kaste | null> {
+  setGatavs(kaste: VeikalsKaste, yesno: boolean): Observable<VeikalsKaste> {
+    return this.prdApi.kastes.setGatavs(kaste, yesno);
+  }
+
+  setLabel(kods: number): Observable<VeikalsKaste | null> {
     return this._pasutijumsId$.pipe(
       take(1),
-      mergeMap(pasutijumsId => this.prdApi.kastes.setLabel(pasutijumsId, kods)),
-      mergeMap(
-        resp => resp ? this.prdApi.kastes.get(resp._id, { kaste: resp.kaste }).pipe(
-          tap(k => this._updateKaste$.next(k)),
-        ) : of(null)
-      ),
+      mergeMap(pasutijums => this.prdApi.kastes.setLabel({ pasutijums, kods })),
     );
   }
 
 }
 
-function calcTotals(kastes: Kaste[]): Totals {
+function calcTotals(kastes: VeikalsKaste[]): Totals {
   const colorsPakas =
     kastes.reduce((total, curr) => {
       const _ = curr.kastes.gatavs || Object.keys(total).forEach(key => total[key] += curr.kastes[key]);

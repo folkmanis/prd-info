@@ -33,7 +33,7 @@ export class PrdApiService {
   invoices = new InvoicesApi(this.http, this.apiPath + 'invoices/');
   systemPreferences = new SystemPreferencesApi(this.http, this.apiPath + 'preferences/');
   kastes = new KastesApi(this.http, this.apiPath + 'kastes/');
-  kastesOrders = new KastesOrdersApi(this.http, this.apiPath + 'kastes-orders/');
+  kastesOrders = new KastesOrdersApi(this.http, this.apiPath + 'kastes/jobs/');
   users = new UsersApi(this.http, this.apiPath + 'users/');
   xmfArchive = new XmfArchiveApi(this.http, this.apiPath + 'xmf-archive/');
   paytraq = new PaytraqApi(this.http, this.apiPath + 'paytraq/');

@@ -1,5 +1,4 @@
-import { UploadRow } from './upload-row';
-import { Kaste, Colors, ColorTotals, COLORS } from 'src/app/interfaces';
+import { VeikalsUpload, Kaste, Colors, ColorTotals, COLORS } from 'src/app/kastes/interfaces';
 
 export const MAX_PAKAS = 5;
 
@@ -68,7 +67,7 @@ export class Box implements Record<Colors, number> {
     full(): boolean {
         return (this.sum() >= MAX_PAKAS);
     }
-    [Symbol.iterator] = function*() {
+    [Symbol.iterator] = function* () {
         yield this.yellow;
         yield this.rose;
         yield this.white;
@@ -157,8 +156,8 @@ export class AdreseBox {
     /**
      * No pakojuma uz tabulas ierakstu
      */
-    reduce(pasutijums: number): UploadRow {
-        const data: UploadRow = {
+    reduce(pasutijums: number): VeikalsUpload {
+        const data: VeikalsUpload = {
             kods: this.kods,
             adrese: this.adrese,
             pasutijums,
@@ -213,7 +212,7 @@ export class AdresesBox {
         };
     }
 
-    uploadRows(pasutijums: number): UploadRow[] {
+    uploadRows(pasutijums: number): VeikalsUpload[] {
         return this.data.map(veikals => veikals.reduce(pasutijums));
     }
 

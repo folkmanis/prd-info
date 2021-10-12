@@ -1,12 +1,12 @@
 import { Component, Input } from '@angular/core';
-import { Colors, Totals } from 'src/app/interfaces';
+import { Colors, Totals } from 'src/app/kastes/interfaces';
 
 @Component({
   selector: 'app-kopskaiti',
   templateUrl: './kopskaiti.component.html',
   styleUrls: ['./kopskaiti.component.scss'],
 })
-export class KopskaitiComponent  {
+export class KopskaitiComponent {
   @Input() colorCodes: { [key in Colors]: string; };
   @Input() totals: Totals;
 

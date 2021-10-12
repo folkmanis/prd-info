@@ -1,8 +1,5 @@
-import { FormGroup, FormControl, FormArray, FormBuilder, Validators, AsyncValidatorFn, ValidationErrors, AbstractControl } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { map, take } from 'rxjs/operators';
-import { JobBase, JobProduct } from 'src/app/interfaces';
-import { CustomersService, ProductsService } from 'src/app/services';
+import { AsyncValidatorFn, FormControl, FormGroup, Validators } from '@angular/forms';
+import { JobProduct } from 'src/app/interfaces';
 
 
 

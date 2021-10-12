@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { Subject } from 'rxjs';
-import { Colors, COLORS, KastesSettings } from 'src/app/interfaces';
+import { Colors, COLORS, KastesSettings } from 'src/app/kastes/interfaces';
 import { PreferencesCardControl } from '../../preferences-card-control';
 
 type KastesSettingsPartial = Partial<KastesSettings>;

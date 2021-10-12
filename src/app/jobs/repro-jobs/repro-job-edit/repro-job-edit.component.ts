@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { isEqual, pickBy } from 'lodash';
 import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { JobBase } from 'src/app/interfaces';
+import { Job } from 'src/app/interfaces';
 import { CustomersService, LayoutService, ProductsService } from 'src/app/services';
 import { JobFormGroup } from '../services/job-form-group';
 import { DialogData } from '../services/repro-job-dialog.service';
@@ -60,7 +60,7 @@ export class ReproJobEditComponent implements OnInit {
     return !this.form.pristine && this.form.valid;
   }
 
-  jobUpdate(): Partial<JobBase> | undefined {
+  jobUpdate(): Partial<Job> | undefined {
     return this.isFormValid() && jobDiff(this.form.value, this.data.job);
   }
 
@@ -73,7 +73,7 @@ export class ReproJobEditComponent implements OnInit {
 
 }
 
-function jobDiff(newJob: JobBase, oldJob: Partial<JobBase>): Partial<JobBase> | undefined {
+function jobDiff(newJob: Job, oldJob: Partial<Job>): Partial<Job> | undefined {
   const diff = pickBy(newJob, (value, key) => key === 'jobId' || !isEqual(value, oldJob[key]));
   if (Object.keys(diff).length > 1) {
     return diff;

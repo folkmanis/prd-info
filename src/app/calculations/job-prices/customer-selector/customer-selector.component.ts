@@ -1,9 +1,8 @@
-import { Component, OnInit, OnChanges, ChangeDetectionStrategy, Input, Output, SimpleChanges, SimpleChange } from '@angular/core';
-import { FormControl, ValidatorFn } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { IFormControl } from '@rxweb/types';
-import { Subject, BehaviorSubject, Observable, combineLatest } from 'rxjs';
-import { distinctUntilChanged, filter, map, startWith, tap } from 'rxjs/operators';
-import { log } from 'prd-cdk';
+import { Observable } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs/operators';
 import { JobsWithoutInvoicesTotals } from 'src/app/interfaces';
 
 @Component({

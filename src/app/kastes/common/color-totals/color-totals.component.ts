@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { map } from 'rxjs/operators';
-import { Colors, ColorTotals } from 'src/app/interfaces';
+import { Colors, ColorTotals } from 'src/app/kastes/interfaces';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
 
 @Component({

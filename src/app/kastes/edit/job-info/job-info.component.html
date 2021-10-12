@@ -25,7 +25,7 @@
             NOTEIKT KĀ AKTĪVO
         </button>
         <button mat-raised-button (click)="deleteVeikali.next(job.jobId)"
-            [disabled]="job.jobStatus.generalStatus >= 30 || !job.veikali?.length">
+            [disabled]="job.jobStatus.generalStatus >= 30 || veikali.length > 0">
             IZDZĒST PAKOŠANAS SARAKSTU
         </button>
 

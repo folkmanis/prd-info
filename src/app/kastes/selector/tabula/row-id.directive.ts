@@ -1,6 +1,6 @@
 import { Directive, Input, HostBinding, ElementRef, Inject, HostListener } from '@angular/core';
 import { CdkScrollable } from '@angular/cdk/scrolling';
-import { Kaste } from 'src/app/interfaces';
+import { VeikalsKaste } from 'src/app/kastes/interfaces';
 
 const DELAY_TIME = 5000;
 
@@ -9,7 +9,7 @@ const DELAY_TIME = 5000;
 })
 export class RowIdDirective {
   // eslint-disable-next-line @angular-eslint/no-input-rename
-  @Input('appRowId') kaste: Kaste | undefined;
+  @Input('appRowId') kaste: VeikalsKaste | undefined;
 
   constructor(
     private element: ElementRef<HTMLTableRowElement>,

@@ -27,7 +27,7 @@
             </div>
             <div>
                 <mat-divider></mat-divider>
-                <app-order-totals [job]="kastesJob" [colors]="colors$ | async"></app-order-totals>
+                <app-order-totals [veikali]="kastesAll$ | async" [colors]="colors$ | async"></app-order-totals>
             </div>
         </div>
     </mat-drawer>

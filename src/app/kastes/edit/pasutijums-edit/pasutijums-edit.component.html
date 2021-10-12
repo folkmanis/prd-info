@@ -1,12 +1,13 @@
-<app-simple-form-container (dataChange)="jobInit$.next($event)" [data]="dataUpdate$ | async">
+<app-simple-form-container (dataChange)="setJob($event)" [data]="dataUpdate$ | async">
 
     <mat-tab-group *ngIf="job$ | async as job" [selectedIndex]="0">
         <mat-tab label="Informācija">
-            <app-job-info [job]="job" (activeJob)="onSetAsActive($event)" (deleteVeikali)="onDeleteVeikali()">
+            <app-job-info [job]="job" [veikali]="veikali$ | async" (activeJob)="onSetAsActive($event)"
+                (deleteVeikali)="onDeleteVeikali()">
             </app-job-info>
         </mat-tab>
 
-        <mat-tab label="Pakošanas saraksts" [disabled]="!job.veikali?.length">
+        <mat-tab label="Pakošanas saraksts" [disabled]="(isVeikali$ | async) === false">
             <ng-template matTabContent>
                 <app-pakosanas-saraksts [veikali]="veikali$ | async" [disabled]="job.jobStatus?.generalStatus >= 30"
                     (veikalsChange)="onUpdateVeikals($event)">

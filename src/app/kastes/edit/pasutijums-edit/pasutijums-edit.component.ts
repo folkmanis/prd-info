@@ -1,12 +1,12 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { combineLatest, EMPTY, Observable, of, ReplaySubject, Subject } from 'rxjs';
-import { map, mapTo, mergeMap, pluck, shareReplay, switchMap, take, tap } from 'rxjs/operators';
-import { KastesJob, Veikals } from 'src/app/interfaces';
+import { filter, map, mapTo, mergeMap, pluck, shareReplay, switchMap, take, tap } from 'rxjs/operators';
+import { KastesJob, Veikals } from '../../interfaces';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { cacheWithUpdate, DestroyService } from 'prd-cdk';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
-import { PasutijumiService } from '../../services/pasutijumi.service';
+import { KastesPasutijumiService } from '../../services/kastes-pasutijumi.service';
 import { KastesJobResolverService } from '../services/kastes-job-resolver.service';
 
 const VEIKALI_DELETED_MESSAGE = 'Pakošanas saraksts izdzēsts';
@@ -20,7 +20,7 @@ const VEIKALI_DELETED_MESSAGE = 'Pakošanas saraksts izdzēsts';
 export class PasutijumsEditComponent implements OnInit, OnDestroy {
 
   constructor(
-    private pasService: PasutijumiService,
+    private pasService: KastesPasutijumiService,
     private prefService: KastesPreferencesService,
     private confirmationDialog: ConfirmationDialogService,
     private snack: MatSnackBar,
@@ -29,20 +29,19 @@ export class PasutijumsEditComponent implements OnInit, OnDestroy {
 
   private _veikalsUpdate$ = new Subject<Veikals>();
 
-  jobInit$ = new ReplaySubject<KastesJob>(1);
-  job$: Observable<KastesJob> = this.jobInit$.pipe(
-    mergeMap(job => combineLatest([
-      of(job),
-      of(job.veikali).pipe(
-        cacheWithUpdate(this._veikalsUpdate$, this.compareFn),
-      )
-    ])),
-    map(([job, veikali]) => ({ ...job, veikali })),
+  readonly job$ = new ReplaySubject<KastesJob>(1);
+  readonly veikali$: Observable<Veikals[]> = this.job$.pipe(
+    filter(job => !!job),
+    switchMap(job => this.pasService.getVeikali(job.jobId)),
+    cacheWithUpdate(this._veikalsUpdate$, this.compareFn),
     shareReplay(1),
   );
-  veikali$: Observable<Veikals[]> = this.job$.pipe(pluck('veikali'));
 
-  dataUpdate$ = new Subject<KastesJob>();
+  readonly isVeikali$: Observable<boolean> = this.veikali$.pipe(
+    map(veikali => veikali.length > 0)
+  );
+
+  readonly dataUpdate$ = new Subject<KastesJob>();
 
   ngOnInit(): void {
   }
@@ -52,10 +51,14 @@ export class PasutijumsEditComponent implements OnInit, OnDestroy {
     this.dataUpdate$.complete();
   }
 
+  setJob(job: KastesJob) {
+    this.job$.next(job);
+  }
+
   onUpdateVeikals(veikals: Veikals) {
-    this.pasService.updateOrderVeikali([veikals]).pipe(
-      mergeMap(count => count === 1 ? of(veikals) : EMPTY),
-    ).subscribe(veik => this._veikalsUpdate$.next(veik));
+    // TODO handel error
+    this.pasService.updateOrderVeikals(veikals)
+      .subscribe(veik => this._veikalsUpdate$.next(veik));
   }
 
   onSetAsActive(pasutijums: number) {

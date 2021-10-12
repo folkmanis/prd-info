@@ -1,11 +1,9 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
-import { FormControl, NgControl } from '@angular/forms';
-import { IControlValueAccessor, IFormControl } from '@rxweb/types';
-import { CustomerPartial, CustomerProduct, Job, JobBase, SystemPreferences } from 'src/app/interfaces';
-import { BehaviorSubject, combineLatest, merge, Observable, of } from 'rxjs';
-import { map, startWith, tap } from 'rxjs/operators';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { log } from 'prd-cdk';
+import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { IFormControl } from '@rxweb/types';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
+import { CustomerPartial } from 'src/app/interfaces';
 
 @Component({
   selector: 'app-customer-input',

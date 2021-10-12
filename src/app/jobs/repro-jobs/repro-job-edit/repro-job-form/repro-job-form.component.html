@@ -35,14 +35,16 @@
         </button>
     </mat-form-field>
     <!-- Darba kategorija -->
-    <mat-form-field>
-        <mat-label>Kategorija</mat-label>
-        <mat-select formControlName="category" required>
-            <mat-option *ngFor="let cat of categories$ | async" [value]="cat.category">
-                {{cat.description}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
+    <ng-container formGroupName="production">
+        <mat-form-field>
+            <mat-label>Kategorija</mat-label>
+            <mat-select formControlName="category" required>
+                <mat-option *ngFor="let cat of categories$ | async" [value]="cat.category">
+                    {{cat.description}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </ng-container>
     <!-- Statuss -->
     <mat-form-field formGroupName="jobStatus">
         <mat-label>Stadija</mat-label>

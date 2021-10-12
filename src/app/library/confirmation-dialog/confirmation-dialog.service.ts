@@ -14,7 +14,13 @@ export class ConfirmationDialogService {
 
   confirm(prompt: string, config: MatDialogConfig = {}): Observable<boolean> {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      ...config, data: { ...(config.data || {}), prompt },
+      ...config,
+      data: {
+        yes: 'JĀ!',
+        no: 'NĒ!',
+        ...(config.data || {}),
+        prompt,
+      },
     });
     return dialogRef.afterClosed();
   }

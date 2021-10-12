@@ -3,16 +3,16 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { flatten } from 'lodash';
 import { forkJoin, Observable, of } from 'rxjs';
 import { concatMap, map, mapTo } from 'rxjs/operators';
-import { JobBase, JobProduct, JobProductionStage } from 'src/app/interfaces';
+import { Job, JobProduct, JobProductionStage } from 'src/app/interfaces';
 import { ProductsService } from 'src/app/services';
 import { JobService } from 'src/app/services/job.service';
 import { ReproJobEditComponent } from '../repro-job-edit/repro-job-edit.component';
 
 export interface DialogData {
-  job: Partial<JobBase>;
+  job: Partial<Job>;
 }
 
-export type PartialJob = Pick<JobBase, 'jobId'> & Partial<JobBase>;
+export type PartialJob = Pick<Job, 'jobId'> & Partial<Job>;
 
 const CONFIG: MatDialogConfig = {
   autoFocus: false,
@@ -33,7 +33,7 @@ export class ReproJobDialogService {
     private jobService: JobService,
   ) { }
 
-  openJob(job: Partial<JobBase>): Observable<PartialJob | undefined> {
+  openJob(job: Partial<Job>): Observable<PartialJob | undefined> {
 
     const config: MatDialogConfig = {
       ...CONFIG,

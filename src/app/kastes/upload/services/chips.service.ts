@@ -1,7 +1,10 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { map, shareReplay, tap } from 'rxjs/operators';
-import { TABLE_COLUMNS } from './upload-row';
+
+export const TABLE_COLUMNS = [
+  'kods', 'adrese', 'yellow', 'rose', 'white'
+];
 
 interface Chips {
   available: string[]; // Vajadzīgo sleju nosaukumi
@@ -18,7 +21,7 @@ const InitialChips: Chips = {
   assignement: [],
 };
 
-@Injectable({providedIn: 'any'})
+@Injectable({ providedIn: 'any' })
 export class ChipsService {
 
   private _available: Set<string>;

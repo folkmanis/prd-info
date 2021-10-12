@@ -4,7 +4,7 @@ import { EMPTY, Observable, of, Subject } from 'rxjs';
 import { map, pluck, startWith, switchMap, tap } from 'rxjs/operators';
 import {
   Invoice, InvoicesFilter, InvoiceTable,
-  InvoiceUpdate, INVOICE_UPDATE_FIELDS, JobPartial, JobQueryFilter, JobsWithoutInvoicesTotals, InvoiceForReport
+  InvoiceUpdate, INVOICE_UPDATE_FIELDS, JobPartial, JobQueryFilter, JobsWithoutInvoicesTotals, InvoiceForReport, JobUnwindedPartial
 } from 'src/app/interfaces';
 import { PaytraqInvoice } from 'src/app/interfaces/paytraq';
 import { Sale } from 'src/app/interfaces/paytraq/invoice';
@@ -28,6 +28,12 @@ export class InvoicesService {
   }
 
   getJobs(filter: JobQueryFilter): Observable<JobPartial[]> {
+    filter.unwindProducts = 0;
+    return this.prdApi.jobs.get(filter);
+  }
+
+  getJobsUnwinded(filter: JobQueryFilter): Observable<JobUnwindedPartial[]> {
+    filter.unwindProducts = 1;
     return this.prdApi.jobs.get(filter);
   }
 
