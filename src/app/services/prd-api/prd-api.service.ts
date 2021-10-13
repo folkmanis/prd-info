@@ -18,6 +18,7 @@ import { NotificationsApi } from './notifications-api';
 import { EquipmentApi } from './equipment-api';
 import { ProductionStagesApi } from './production-stages-api';
 import { MessagesApi } from './messages-api';
+import { LogfileApi } from './logfile-api';
 
 @Injectable({
   providedIn: 'root'
@@ -42,6 +43,7 @@ export class PrdApiService {
   equipment = new EquipmentApi(this.http, this.apiPath + 'equipment/');
   productionStages = new ProductionStagesApi(this.http, this.apiPath + 'production-stages/');
   messages = new MessagesApi(this.http, this.apiPath + 'messages/');
+  logfile = new LogfileApi(this.http, this.apiPath + 'logging/');
 
   constructor(
     private http: HttpClient,

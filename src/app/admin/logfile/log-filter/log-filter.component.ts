@@ -6,8 +6,9 @@ import { distinctUntilChanged, filter, map, pluck, switchMap, takeUntil } from '
 import { SystemPreferences } from 'src/app/interfaces';
 import { DestroyService } from 'prd-cdk';
 import { CONFIG } from 'src/app/services/config.provider';
-import { GetLogEntriesParams } from '../../services/logfile-record';
+import { LogQueryFilter } from '../../services/logfile-record';
 import { LogfileService, ValidDates } from '../../services/logfile.service';
+import { log } from 'prd-cdk';
 
 
 interface FilterForm {
@@ -32,6 +33,7 @@ export class LogFilterComponent implements OnInit, OnDestroy, AfterViewInit {
 
   logLevels$: Observable<{ key: number; value: string; }[]> = this.config$.pipe(
     pluck('system', 'logLevels'),
+    log('loglevels'),
     map(levels => levels.sort((a, b) => a[0] - b[0])),
     map(levels => levels.map(level => ({ key: level[0], value: level[1] }))),
   );
@@ -56,7 +58,7 @@ export class LogFilterComponent implements OnInit, OnDestroy, AfterViewInit {
     this.filterForm.get('logLevel').valueChanges.pipe(
       filter(val => val > 0),
       distinctUntilChanged(),
-      switchMap(level => this.service.getDatesGroupsHttp({ level })),
+      switchMap(level => this.service.datesGroups({ level })),
       takeUntil(this.destroy$),
     ).subscribe(dates => {
       this.validDates = dates;
@@ -64,7 +66,7 @@ export class LogFilterComponent implements OnInit, OnDestroy, AfterViewInit {
         this.filterForm.patchValue({ date: this.validDates.max });
       }
     });
-    // Sākotnējais loglevel
+
     this.logLevels$.pipe(
       map(levs => Math.max(...levs.map(({ key }) => key))),
       takeUntil(this.destroy$),
@@ -102,12 +104,12 @@ export class LogFilterComponent implements OnInit, OnDestroy, AfterViewInit {
     this.dateControl.setValue(this.isValiddate(moment()) ? moment() : this.validDates.max);
   }
 
-  private formToReq(val: FilterForm): GetLogEntriesParams {
+  private formToReq(val: FilterForm): LogQueryFilter {
     return ({
       level: val.logLevel,
       dateFrom: (val.date as moment.Moment).startOf('day').toISOString(),
       dateTo: (val.date as moment.Moment).endOf('day').toISOString(),
-    } as GetLogEntriesParams);
+    } as LogQueryFilter);
   }
 
 }

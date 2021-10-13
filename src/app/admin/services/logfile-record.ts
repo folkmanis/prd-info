@@ -1,27 +1,19 @@
-export interface LogDataHttp {
-    count: number;
-    data: LogRecordHttp[];
-}
-
-export interface LogData extends LogDataHttp {
-    data: LogRecord[];
-}
-
 export interface LogRecordHttp {
+    _id: string;
     level: number;
-    timestamp: Date;
+    timestamp: string;
     info: string;
-    metadata: { [key: string]: any };
+    metadata: string[];
 }
 
 export type LogRecord = LogRecordHttp & {
     levelVerb: string;
 };
 
-export type GetLogEntriesParams = Partial<{
+export type LogQueryFilter = Partial<{
     limit: number;
     start: number;
     level: number;
-    dateTo: string;
     dateFrom: string;
+    dateTo: string;
 }>;
