@@ -18,7 +18,7 @@
     <mat-drawer button [small]="isSmall$ | async">
         <div *ngIf="kastesJob$ | async as kastesJob">
             <h4>
-                {{kastesJob.name}}
+                {{kastesJob.jobId}} - {{kastesJob.name}}
             </h4>
             <div *ngIf="(apjoms$ | async) === 0">
                 <mat-divider></mat-divider>

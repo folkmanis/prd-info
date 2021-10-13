@@ -64,6 +64,7 @@ export class KastesTabulaService {
     return this._pasutijumsId$.pipe(
       take(1),
       mergeMap(pasutijums => this.prdApi.kastes.setLabel({ pasutijums, kods })),
+      tap(kaste => this.setPartialState(kaste)),
     );
   }
 
