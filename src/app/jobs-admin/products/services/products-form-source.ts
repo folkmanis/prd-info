@@ -66,14 +66,15 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
         this.startValue = product;
         if (this.isNew) {
             this.setNameValidators();
+            this.startValue.inactive = false;
         } else {
             this.removeNameValidators();
         }
-        this.setPrices(product.prices);
+        this.setPrices(this.startValue.prices);
 
-        this.setProductionStages(product.productionStages);
+        this.setProductionStages(this.startValue.productionStages);
 
-        super.initValue(product, params);
+        super.initValue(this.startValue, params);
     }
 
     get value(): Product {
@@ -90,6 +91,7 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
     }
 
     insertFn(prod: Product): Observable<string> {
+        console.log(this.form.value);
         return this.productService.insertProduct(prod);
     }
 

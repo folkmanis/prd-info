@@ -67,7 +67,7 @@ export class ProductsService {
   insertProduct(prod: Product): Observable<string> {
     return this.prdApi.products.insertOne(prod).pipe(
       tap(() => this._updateProducts$.next()),
-      map(id => id.toString()),
+      map(id => id.name),
     );
   }
 

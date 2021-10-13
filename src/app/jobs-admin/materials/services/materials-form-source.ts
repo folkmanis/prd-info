@@ -143,7 +143,7 @@ export class MaterialPriceGroup extends FormGroup {
         super({
             min: new FormControl(
                 price.min,
-                [Validators.min(0)],
+                [Validators.required, Validators.min(0)],
             ),
             price: new FormControl(
                 price.price,
