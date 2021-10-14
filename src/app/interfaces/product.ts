@@ -1,10 +1,4 @@
-import { AppHttpResponseBase } from 'src/app/library/http';
 import { JobProductionStage } from './job-production-stage';
-
-export interface ProductResponse extends AppHttpResponseBase<Product> {
-    customerProducts?: CustomerProduct[];
-    prices?: any[];
-}
 
 export interface CustomerProduct {
     category: string;

@@ -20,7 +20,7 @@ export class NotificationsApi extends ApiBase<Notification> {
             this.path,
             new HttpOptions({
                 modules,
-                from: fromDate?.getTime()
+                from: fromDate.getTime()
             })
         ).pipe(
             map(resp => ({ data: resp.data, timestamp: new Date(resp.timestamp) }))

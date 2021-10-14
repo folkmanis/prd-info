@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import { concatMap, map, mapTo, pluck, share, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
+import { Observable, of, Subject } from 'rxjs';
+import { catchError, concatMap, map, mapTo, pluck, share, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { CustomerProduct, JobProductionStage, Product, ProductPartial, SystemPreferences } from 'src/app/interfaces';
 import { cacheWithUpdate } from 'prd-cdk';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
@@ -78,7 +78,9 @@ export class ProductsService {
   }
 
   productsCustomer(customer: string): Observable<CustomerProduct[]> {
-    return this.prdApi.products.productsCustomer(customer);
+    return this.prdApi.products.productsCustomer(customer).pipe(
+      catchError(() => of([])),
+    );
   }
 
   productionStages(product: string): Observable<JobProductionStage[]> {

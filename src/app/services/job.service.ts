@@ -32,13 +32,14 @@ export class JobService {
 
   jobs$: Observable<JobPartial[]> = combineLatest([
     this._filter$,
-    // this.reload$,  // DEBUG
+    this.reload$,
   ]).pipe(
     switchMap(([filter]) => this.getJobList(filter)),
     share(),
   );
 
   setFilter(fltr: JobQueryFilter): void {
+    console.log(fltr);
     this._filter$.next(fltr);
   }
 

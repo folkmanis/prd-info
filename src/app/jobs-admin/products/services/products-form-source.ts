@@ -199,11 +199,12 @@ export class MaterialGroup extends FormGroup {
                 [Validators.required],
             ),
             amount: new FormControl(
-                material?.amount,
+                material?.amount || 0,
                 [Validators.required, Validators.min(0)]
             ),
             fixedAmount: new FormControl(
-                material?.fixedAmount,
+                material?.fixedAmount || 0,
+                [Validators.required, Validators.min(0)]
             )
         });
     }

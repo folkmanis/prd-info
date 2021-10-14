@@ -17,7 +17,7 @@ export class NotificationsService {
 
   private subscribedModulesMap = new Map<ModulesWithNotifications, number>();
 
-  private fromDate: Date | undefined;
+  private fromDate: Date = new Date(0);
 
   private visibilitychange$ = fromEvent(this.document, 'visibilitychange');
 
