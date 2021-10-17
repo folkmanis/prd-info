@@ -36,7 +36,7 @@ export class PrdApiService {
   kastes = new KastesApi(this.http, this.apiPath + 'kastes/');
   kastesOrders = new KastesOrdersApi(this.http, this.apiPath + 'kastes/jobs/');
   users = new UsersApi(this.http, this.apiPath + 'users/');
-  xmfArchive = new XmfArchiveApi(this.http, this.apiPath + 'xmf-archive/');
+  xmfArchive = new XmfArchiveApi(this.http, this.apiPath + 'xmf-search/');
   paytraq = new PaytraqApi(this.http, this.apiPath + 'paytraq/');
   materials = new MaterialsApi(this.http, this.apiPath + 'materials/');
   notifications = new NotificationsApi(this.http, this.apiPath + 'notifications/');

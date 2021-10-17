@@ -1,11 +1,11 @@
 <cdk-virtual-scroll-viewport itemSize="137" class="scroll-container" templateCacheSize="0" scroll-to-top>
-    <div *cdkVirtualFor="let dataItem of data; let lastItem = last; let idx=index;" class="item">
+    <div *cdkVirtualFor="let dataItem of data$ | async; let lastItem = last; let idx = index;" class="item">
         <div *ngIf="dataItem; else waiting;">
-            <div [style.fontWeight]="dataItem.JDFJobID === search ? 'bold' : undefined " class="jobId">
+            <div [style.fontWeight]="dataItem.JDFJobID === query?.q ? 'bold' : undefined " class="jobId">
                 {{dataItem.JDFJobID}}
             </div>
             <div>
-                <app-tagged-string [text]="dataItem.DescriptiveName" [search]="search"></app-tagged-string>
+                <app-tagged-string [text]="dataItem.DescriptiveName" [search]="query?.q"></app-tagged-string>
             </div>
             <div class="search-table">
                 <div *ngFor="let row of dataItem.Archives">

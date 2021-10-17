@@ -1,7 +1,6 @@
 export interface FacetFilter {
-    [key: string]: Array<string | number>;
-    customerName: string[];
-    year: number[];
-    month: number[];
+    customerName?: (string | number)[];
+    year?: (string | number)[];
+    month?: (string | number)[];
 }
 

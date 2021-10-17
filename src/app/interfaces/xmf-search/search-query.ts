@@ -1,6 +1,5 @@
-export interface SearchQuery {
+import { FacetFilter } from './facet-filter';
+
+export interface SearchQuery extends FacetFilter {
     q: string;
-    customers?: string[];
-    year?: number[];
-    month?: number[];
 }

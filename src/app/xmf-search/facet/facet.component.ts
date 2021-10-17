@@ -12,13 +12,16 @@ import { FacetCheckerComponent } from './facet-checker/facet-checker.component';
 export class FacetComponent implements OnInit, OnDestroy {
 
   @Input() facet: ArchiveFacet;
-  @Output() filter = new EventEmitter<Partial<FacetFilter>>();
+  @Output() filter = new EventEmitter<FacetFilter>();
 
   @ViewChildren(FacetCheckerComponent) private blocks: QueryList<FacetCheckerComponent>;
+
+  facetFilter: FacetFilter = {};
 
   constructor() { }
 
   onDeselectAll() {
+    this.facetFilter = {};
     this.blocks.forEach(bl => bl.deselect());
   }
 
@@ -28,8 +31,9 @@ export class FacetComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
   }
 
-  onSelect(selected: Array<number | string>, key: keyof ArchiveFacet) {
-    this.filter.next({ [key]: selected });
+  onSelect(selected: (string | number)[], key: keyof FacetFilter) {
+    this.facetFilter[key] = selected;
+    this.filter.next(this.facetFilter);
   }
 
 }
