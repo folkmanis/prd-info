@@ -61,6 +61,9 @@ export class ReproJobEditComponent implements OnInit {
   }
 
   jobUpdate(): Partial<Job> | undefined {
+    if (this.isNew) {
+      return this.form.value;
+    }
     return this.isFormValid() && jobDiff(this.form.value, this.data.job);
   }
 

@@ -39,7 +39,6 @@ export class JobService {
   );
 
   setFilter(fltr: JobQueryFilter): void {
-    console.log(fltr);
     this._filter$.next(fltr);
   }
 

@@ -9,32 +9,27 @@ import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
   providedIn: 'root'
 })
 export class CustomersService {
-  private updateCustomers$: Subject<void> = new Subject();
-  private _customers$: Observable<CustomerPartial[]>;
+
+  private reloadCustomers$: Subject<void> = new Subject();
+
+  customers$: Observable<CustomerPartial[]> = this.reloadCustomers$.pipe(
+    startWith({}),
+    switchMap(() => this.getCustomerList()),
+    shareReplay(1),
+  );
 
   constructor(
     private prdApi: PrdApiService,
   ) { }
 
-  get customers$(): Observable<CustomerPartial[]> {
-    if (!this._customers$) {
-      this._customers$ = this.updateCustomers$.pipe(
-        startWith({}),
-        switchMap(() => this.getCustomerList()),
-        shareReplay(1),
-      );
-    }
-    return this._customers$;
-  }
-
   updateCustomer({ _id, ...rest }: Partial<Customer>): Observable<Customer> {
     return this.prdApi.customers.updateOne(_id, rest).pipe(
-      tap(() => this.updateCustomers$.next()),
+      tap(() => this.reloadCustomers$.next()),
     );
   }
 
   getCustomerList(): Observable<CustomerPartial[]> {
-    return this.prdApi.customers.get({ disabled: false });
+    return this.prdApi.customers.get({ disabled: true });
   }
 
   getCustomer(id: string): Observable<Customer | never> {
@@ -47,7 +42,7 @@ export class CustomersService {
 
   deleteCustomer(id: string): Observable<boolean> {
     return this.prdApi.customers.deleteOne(id).pipe(
-      tap(() => this.updateCustomers$.next()),
+      tap(() => this.reloadCustomers$.next()),
       map(resp => !!resp),
     );
   }
@@ -55,7 +50,7 @@ export class CustomersService {
   saveNewCustomer(customer: NewCustomer): Observable<string | null> {
     return this.prdApi.customers.insertOne(customer).pipe(
       map(resp => resp ? resp.toString() : null),
-      tap(() => this.updateCustomers$.next()),
+      tap(() => this.reloadCustomers$.next()),
     );
   }
 

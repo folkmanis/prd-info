@@ -29,12 +29,9 @@ export class ProductsApi extends ApiBase<Product> {
     }
 
     productionStages(product: string): Observable<JobProductionStage[]> {
-        return of([]);
-        return this.http.get(
+        return this.http.get<JobProductionStage[]>(
             this.path + product + '/productionStages',
             new HttpOptions().cacheable(),
-        ).pipe(
-            pluck('data'),
         );
     }
 

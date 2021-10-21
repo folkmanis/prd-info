@@ -79,7 +79,7 @@ function jobStages(products: JobProduct[], getStageFn: (productName: string) => 
       ...stage,
       amount: stage.amount * prod.count + stage.fixedAmount,
       productionStatus: 10,
-    })))
+    }))),
   ));
 }
 
