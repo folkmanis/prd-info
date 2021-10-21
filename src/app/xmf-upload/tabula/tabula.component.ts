@@ -1,20 +1,36 @@
-import { Component, OnInit } from '@angular/core';
-import { UploadService } from '../services/upload.service';
-import { TABULA_COLUMNS } from './tabula-columns.class';
-import { XmfUploadTabulaDataSource } from './xmf-upload-tabula-data-source';
+import { Input, Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { XmfUploadService } from '../services/xmf-upload.service';
+import { XmfUploadHistory } from '../interfaces/xmf-upload-history';
+import { ReplaySubject } from 'rxjs';
 
 @Component({
   selector: 'app-tabula',
   templateUrl: './tabula.component.html',
-  styleUrls: ['./tabula.component.scss']
+  styleUrls: ['./tabula.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TabulaComponent implements OnInit {
 
-  dataSource = new XmfUploadTabulaDataSource(this.uploadService);
-  displayedColumns = TABULA_COLUMNS.map(col => col.name);
+  dataSource$ = new ReplaySubject<XmfUploadHistory[]>(1);
+
+  @Input() set history(value: XmfUploadHistory[]) {
+    if (value instanceof Array) {
+      this.dataSource$.next(value);
+    }
+  }
+
+  displayedColumns = [
+    // 'started',
+    'finished',
+    'fileName',
+    'fileSize',
+    'count.processed',
+    'count.upserted',
+    'count.modified',
+  ];
 
   constructor(
-    private uploadService: UploadService,
+    private uploadService: XmfUploadService,
   ) { }
 
   ngOnInit(): void {
