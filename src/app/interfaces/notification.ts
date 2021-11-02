@@ -1,12 +1,12 @@
 import { Modules } from './system-preferences';
 
-export type ModulesWithNotifications = (Modules & 'jobs' | 'system') | 'global';
+export type ModulesWithNotifications = (Modules & 'jobs' | 'system');
 
 export interface NotificationBase {
     module: ModulesWithNotifications;
-    _id: string;
     payload: any;
     timestamp: Date;
+    instanceId?: string;
 }
 
 export interface JobsNotification extends NotificationBase {
@@ -28,12 +28,4 @@ export interface SystemNotification extends NotificationBase {
     };
 }
 
-export interface GlobalNotification extends NotificationBase {
-    module: 'global';
-    payload: {
-        operation: 'visibilityState';
-        state: string;
-    };
-}
-
-export type Notification = GlobalNotification | SystemNotification | JobsNotification;
+export type Notification = SystemNotification | JobsNotification;

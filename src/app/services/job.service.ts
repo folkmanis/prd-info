@@ -5,6 +5,8 @@ import { map, share, startWith, switchMap, tap } from 'rxjs/operators';
 import { Job, JobPartial, JobQueryFilter } from 'src/app/interfaces';
 import { PrdApiService } from 'src/app/services';
 import { NotificationsService } from './notifications.service';
+import { log } from 'prd-cdk';
+import { HttpCacheService } from 'src/app/library/http';
 
 interface JobUpdateParams {
   createFolder?: boolean;
@@ -18,16 +20,19 @@ export class JobService {
   private readonly _filter$: Subject<JobQueryFilter> = new ReplaySubject(1);
 
   private readonly forceReload$: Subject<void> = new Subject();
+
   private readonly reload$ = merge(
     this.forceReload$,
-    this.notificatinsService.multiplex('jobs'),
+    this.notificatinsService.wsMultiplex('jobs')
   ).pipe(
-    startWith('')
+    tap(() => this.cacheService.clear()),
+    startWith(''),
   );
 
   constructor(
     private prdApi: PrdApiService,
     private notificatinsService: NotificationsService,
+    private cacheService: HttpCacheService,
   ) { }
 
   jobs$: Observable<JobPartial[]> = combineLatest([

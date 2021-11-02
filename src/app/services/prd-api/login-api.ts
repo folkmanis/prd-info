@@ -1,8 +1,7 @@
-import { ApiBase, HttpOptions } from 'src/app/library/http';
 import { Observable, of } from 'rxjs';
-import { catchError, map, mapTo, pluck, switchMap, switchMapTo, tap } from 'rxjs/operators';
-import { User, Login, LoginResponse } from 'src/app/interfaces';
-import { log } from 'prd-cdk';
+import { catchError, map, mapTo, pluck, switchMap } from 'rxjs/operators';
+import { Login, User } from 'src/app/interfaces';
+import { ApiBase } from 'src/app/library/http';
 
 
 export class LoginApi extends ApiBase<User> {
@@ -24,6 +23,12 @@ export class LoginApi extends ApiBase<User> {
         return this.http.get<User>(this.path).pipe(
             switchMap(user => user.username ? of(user) : of(undefined)),
             catchError(() => of(null)),
+        );
+    }
+
+    getSessionToken(): Observable<string> {
+        return this.http.get<{ data: string; }>(this.path + 'session-token').pipe(
+            pluck('data'),
         );
     }
 

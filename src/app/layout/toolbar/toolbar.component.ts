@@ -1,11 +1,14 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
 import { DestroyService } from 'prd-cdk';
-import { Observable } from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { debounceTime, takeUntil, delay, mergeMap } from 'rxjs/operators';
 import { APP_PARAMS } from 'src/app/app-params';
-import { AppParams, User, UserModule } from 'src/app/interfaces';
+import { Notification, AppParams, User, UserModule, ModulesWithNotifications } from 'src/app/interfaces';
 import { MessagingService, NotificationsService } from 'src/app/services';
 import { LayoutService } from 'src/app/services';
+import { DOCUMENT } from '@angular/common';
+
+const INITIAL_DELAY = 3000;
 
 @Component({
   selector: 'app-toolbar',
@@ -40,11 +43,14 @@ export class ToolbarComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.notifications.multiplex('system').pipe(
-      debounceTime(10),
+
+    of('system').pipe(
+      delay(INITIAL_DELAY),
+      mergeMap((module: ModulesWithNotifications) => this.notifications.wsMultiplex(module)),
       takeUntil(this.destroy$),
-    );
-    // .subscribe(() => this.messagingService.reload());  // DEBUG
+    )
+      .subscribe(() => this.messagingService.reload());
+
   }
 
 
