@@ -27,7 +27,7 @@ export class MessagingService {
   );
 
   unreadCount$ = this.messages$.pipe(
-    map(messages => messages.filter(msg => !msg.seen).length),
+    map(messages => messages.reduce((count, msg) => count + +!msg.seen, 0)),
     shareReplay(1),
   );
 
