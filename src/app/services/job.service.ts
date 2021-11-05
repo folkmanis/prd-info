@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { endOfDay } from 'date-fns';
 import { combineLatest, EMPTY, merge, Observable, of, ReplaySubject, Subject } from 'rxjs';
-import { map, share, startWith, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, pluck, share, startWith, switchMap, tap } from 'rxjs/operators';
 import { Job, JobPartial, JobQueryFilter } from 'src/app/interfaces';
 import { PrdApiService } from 'src/app/services';
 import { NotificationsService } from './notifications.service';
 import { log } from 'prd-cdk';
 import { HttpCacheService } from 'src/app/library/http';
+import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 
 interface JobUpdateParams {
   createFolder?: boolean;
@@ -33,6 +34,7 @@ export class JobService {
     private prdApi: PrdApiService,
     private notificatinsService: NotificationsService,
     private cacheService: HttpCacheService,
+    private confirmationDialogService: ConfirmationDialogService,
   ) { }
 
   jobs$: Observable<JobPartial[]> = combineLatest([
@@ -51,10 +53,11 @@ export class JobService {
     this.forceReload$.next();
   }
 
-  newJob(job: Partial<Job>, params?: JobUpdateParams): Observable<number | null> {
+  newJob(job: Partial<Job>, params?: JobUpdateParams): Observable<number> {
     return this.prdApi.jobs.insertOne(job, params).pipe(
-      map(id => +id),
+      pluck('jobId'),
       tap(() => this.forceReload$.next()),
+      catchError(() => this.confirmationDialogService.confirmDataError())
     );
   }
 
@@ -72,6 +75,12 @@ export class JobService {
       params
     ).pipe(
       tap(resp => resp && this.forceReload$.next()),
+    );
+  }
+
+  createFolder(jobId: number) {
+    return this.prdApi.jobs.createFolder(jobId).pipe(
+      catchError(() => this.confirmationDialogService.confirmDataError())
     );
   }
 

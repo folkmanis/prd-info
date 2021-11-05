@@ -90,8 +90,12 @@ export class JobPricesService {
     this._reload$.next('');
   }
 
-  saveJobs(jobs: JobUpdateFields[]): Observable<number> {
-    return this.jobService.updateJobs(jobs).pipe(
+  updateJobPrices(jobs: JobUpdateFields[]): Observable<number> {
+    const update = jobs.map(job => ({
+      jobId: job.jobId,
+      [`products.${job.productsIdx}.price`]: job.products.price,
+    }));
+    return this.jobService.updateJobs(update).pipe(
       tap(_ => this.reload()),
     );
   }

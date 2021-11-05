@@ -68,7 +68,7 @@ export class JobPricesComponent implements OnInit {
   onSavePrices() {
     this.jobPricesService.jobUpdatesSelected$.pipe(
       take(1),
-      mergeMap(jobs => jobs.length === 0 ? of(0) : this.jobPricesService.saveJobs(jobs)),
+      mergeMap(jobs => jobs.length === 0 ? of(0) : this.jobPricesService.updateJobPrices(jobs)),
     ).subscribe(updates => this.snack.open(updateMessage(updates), 'OK', { duration: 3000 }));
   }
 

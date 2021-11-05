@@ -11,9 +11,13 @@ export class JobsApi extends ApiBase<Job> {
         return this.http.get<JobsWithoutInvoicesTotals[]>(this.path + 'jobs-without-invoices-totals', new HttpOptions().cacheable());
     }
 
+    createFolder(jobId: number): Observable<Job> {
+        return this.http.patch<Job>(this.path + jobId + '/createFolder', {}, new HttpOptions());
+    }
+
     fileUpload(jobId: number, form: FormData): Observable<HttpEvent<Job>> {
         const request = new HttpRequest(
-            'POST',
+            'PUT',
             this.path + jobId + '/file',
             form,
             { reportProgress: true, }

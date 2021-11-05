@@ -90,10 +90,9 @@ export class ReproJobsComponent implements OnInit {
 
   private insertJobAndUploadFiles(job: Partial<Job> | undefined): Observable<number> {
     if (job === undefined) {
-      return of(0);
+      return EMPTY;
     }
-    const createFolder = !!this.fileUploadService.filesCount;
-    return this.jobService.newJob(job, { createFolder }).pipe(
+    return this.jobService.newJob(job).pipe(
       tap(jobId => this.fileUploadService.startUpload(jobId)),
     );
   }

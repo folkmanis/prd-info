@@ -91,7 +91,6 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
     }
 
     insertFn(prod: Product): Observable<string> {
-        console.log(this.form.value);
         return this.productService.insertProduct(prod);
     }
 

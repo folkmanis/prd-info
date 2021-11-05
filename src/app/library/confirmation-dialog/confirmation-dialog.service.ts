@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
+import { EMPTY, Observable } from 'rxjs';
+import { mergeMapTo } from 'rxjs/operators';
 import { ConfirmationDialogComponent } from './confirmation-dialog.component';
 
 @Injectable({
@@ -43,13 +44,16 @@ export class ConfirmationDialogService {
     });
   }
 
-  confirmDataError(message: string): Observable<boolean> {
-    return this.confirm('Radusies problēma ar serveri. Mēģiniet vēlreiz vēlāk vai sazinieties ar atbalstu',
+  confirmDataError(message?: string): Observable<never> {
+    return this.confirm(message || 'Radusies problēma ar serveri. Mēģiniet vēlreiz vēlāk vai sazinieties ar atbalstu',
       {
         data: {
-          yes: 'OK'
+          yes: 'OK',
+          no: undefined,
         }
       }
+    ).pipe(
+      mergeMapTo(EMPTY),
     );
   }
 

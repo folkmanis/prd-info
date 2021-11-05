@@ -5,14 +5,14 @@ import { finalize, map, mergeMap, share, shareReplay, tap, throttleTime } from '
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 import { FileUploadEventType, FileUploadMessage, UploadMessageBase } from '../../interfaces/file-upload-message';
 
-/** Laiks, pēc kura tiek nosūtīts papildus slēdzošaias ziņojums */
 const CLOSE_EVENT_DELAY = 1000 * 5;
-
-/** Paralēlo augšupielāžu skaits vienam darbam */
 const SIMULTANEOUS_UPLOADS = 2;
-
-/** Minimālais laiks starp progresa ziņojumiem */
 const PERCENT_REPORT_INTERVAL = 500;
+
+const uploadId = (file: File): string => file.name;
+
+const eventMapToArray = (ev: Map<string, FileUploadMessage>): FileUploadMessage[] =>
+  Array.from(ev.values());
 
 @Injectable({ providedIn: 'root' })
 export class FileUploadService {
@@ -91,7 +91,6 @@ export class FileUploadService {
       {
         type: FileUploadEventType.UploadWaiting,
         id: uploadId(file),
-        // jobId,
         name: file.name,
         size: file.size,
       }
@@ -102,7 +101,6 @@ export class FileUploadService {
     const id = uploadId(file);
     const messageBase: UploadMessageBase = {
       id,
-      // jobId,
       name: file.name,
       size: file.size,
     };
@@ -143,10 +141,4 @@ export class FileUploadService {
   }
 
 }
-
-/* kombinē augšupielādes Id no faila informācijas */
-const uploadId = (file: File): string => file.name;
-
-const eventMapToArray = (ev: Map<string, FileUploadMessage>): FileUploadMessage[] =>
-  Array.from(ev.values());
 

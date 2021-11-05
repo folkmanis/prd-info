@@ -77,6 +77,7 @@ function jobStages(products: JobProduct[], getStageFn: (productName: string) => 
   return products.map(prod => getStageFn(prod.name).pipe(
     map(stages => stages.map(stage => ({
       ...stage,
+      fixedAmount: stage.fixedAmount || 0,
       amount: stage.amount * prod.count + stage.fixedAmount,
       productionStatus: 10,
     }))),
