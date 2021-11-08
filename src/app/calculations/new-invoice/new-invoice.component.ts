@@ -42,7 +42,7 @@ export class NewInvoiceComponent implements OnInit {
 
     this.jobs$ = this.customerId.valueChanges.pipe(
       startWith(''),
-      switchMap(customer => this.invoicesService.getJobsUnwinded({ customer, invoice: 0 })),
+      switchMap(customer => this.invoicesService.getJobsUnwinded({ customer, invoice: 0, limit: 1000 })),
       share(),
     );
 
