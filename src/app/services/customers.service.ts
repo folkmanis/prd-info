@@ -47,10 +47,10 @@ export class CustomersService {
     );
   }
 
-  saveNewCustomer(customer: NewCustomer): Observable<string | null> {
+  saveNewCustomer(customer: NewCustomer): Observable<string> {
     return this.prdApi.customers.insertOne(customer).pipe(
-      map(resp => resp ? resp.toString() : null),
-      tap(() => this.reloadCustomers$.next()),
+      tap(_ => this.reloadCustomers$.next()),
+      pluck('_id'),
     );
   }
 

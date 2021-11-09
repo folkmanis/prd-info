@@ -1,8 +1,9 @@
 import { FormBuilder } from '@angular/forms';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { Observable } from 'rxjs';
+import { isEqual, pickBy } from 'lodash';
 
-export abstract class SimpleFormSource<T> {
+export abstract class SimpleFormSource<T extends Object> {
 
     initialValue: T | undefined;
 
@@ -20,6 +21,11 @@ export abstract class SimpleFormSource<T> {
         return this.form.value;
     }
 
+    get changes(): Partial<T> | undefined {
+        const diff = pickBy(this.value, (value, key) => !isEqual(value, this.initialValue[key]));
+        return Object.keys(diff).length ? diff : undefined;
+    }
+
     constructor(
         fb: FormBuilder
     ) {
@@ -28,8 +34,8 @@ export abstract class SimpleFormSource<T> {
 
     abstract readonly isNew: boolean;
     protected abstract createForm(): IFormGroup<T>;
-    abstract updateFn(value: T): Observable<T>;
-    abstract insertFn(value: T): Observable<string | number>;
+    abstract updateEntity(): Observable<T>;
+    abstract createEntity(): Observable<string | number>;
 
     initValue(value: Partial<T>, params?: { emitEvent: boolean; }): void {
         this.initialValue = { ...this.initialValue, ...value };

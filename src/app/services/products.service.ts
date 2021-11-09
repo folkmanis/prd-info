@@ -50,10 +50,9 @@ export class ProductsService {
     return this.prdApi.products.get(id);
   }
 
-  updateProduct({ name, ...rest }: Product): Observable<boolean> {
+  updateProduct({ name, ...rest }: Product): Observable<Product> {
     return this.prdApi.products.updateOne(name, rest).pipe(
       tap(resp => this._updateOneProduct$.next(resp)),
-      mapTo(true),
     );
   }
 
@@ -66,7 +65,7 @@ export class ProductsService {
 
   insertProduct(prod: Product): Observable<string> {
     return this.prdApi.products.insertOne(prod).pipe(
-      tap(() => this._updateProducts$.next()),
+      tap(_ => this._updateProducts$.next()),
       map(id => id.name),
     );
   }

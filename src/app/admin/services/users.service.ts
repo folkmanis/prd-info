@@ -65,10 +65,9 @@ export class UsersService {
    *
    * @param data Pilni lietotāja dati
    */
-  addUser(data: Partial<User>): Observable<boolean> {
+  addUser(data: Partial<User>): Observable<User> {
     return this.prdApi.users.insertOne(data).pipe(
-      map(userName => !!userName),
-      tap(resp => resp && this.reloadUsers$.next()),
+      tap(_ => this.reloadUsers$.next()),
     );
   }
   /**

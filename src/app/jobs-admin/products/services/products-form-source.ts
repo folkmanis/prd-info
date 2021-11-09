@@ -84,14 +84,12 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
         };
     }
 
-    updateFn(prod: Product): Observable<Product> {
-        return this.productService.updateProduct(prod).pipe(
-            switchMap(_ => this.productService.getProduct(prod.name)),
-        );
+    updateEntity(): Observable<Product> {
+        return this.productService.updateProduct(this.value);
     }
 
-    insertFn(prod: Product): Observable<string> {
-        return this.productService.insertProduct(prod);
+    createEntity(): Observable<string> {
+        return this.productService.insertProduct(this.value);
     }
 
     addPrice(price?: ProductPrice) {

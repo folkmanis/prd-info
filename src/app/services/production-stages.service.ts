@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { pluck, switchMap, tap } from 'rxjs/operators';
 import { ProductionStage } from 'src/app/interfaces';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 
@@ -35,16 +35,17 @@ export class ProductionStagesService {
     return this.api.productionStages.get(id);
   }
 
-  insertOne(equipment: ProductionStage): Observable<ProductionStage> {
+  insertOne(equipment: ProductionStage): Observable<string> {
     return (this.api.productionStages.insertOne(equipment)).pipe(
       tap(_ => this.reload()),
+      pluck('_id'),
     );
   }
 
   updateOne(equipment: ProductionStage): Observable<ProductionStage> {
     const { _id, ...update } = equipment;
     return this.api.productionStages.updateOne(_id, update).pipe(
-      tap(resp => resp && this.reload()),
+      tap(_ => this.reload()),
     );
   }
 

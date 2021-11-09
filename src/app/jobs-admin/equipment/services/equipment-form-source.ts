@@ -32,21 +32,20 @@ export class EquipmentFormSource extends SimpleFormSource<Equipment> {
         });
     }
 
-    insertFn(value: Equipment): Observable<string> {
-        return this.equipmentService.insertOne(this.preProcessValue(value)).pipe(
+    createEntity(): Observable<string> {
+        this.trimValue();
+        return this.equipmentService.insertOne(this.value).pipe(
             pluck('_id'),
         );
     }
 
-    updateFn(value: Equipment): Observable<Equipment> {
-        return this.equipmentService.updateOne(this.preProcessValue(value));
+    updateEntity(): Observable<Equipment> {
+        this.trimValue();
+        return this.equipmentService.updateOne(this.value);
     }
 
-    private preProcessValue(value: Equipment): Equipment {
-        return {
-            ...value,
-            name: value.name.trim(),
-        };
+    private trimValue() {
+        this.value.name = this.value.name.trim();
     }
 
     private nameValidator(): AsyncValidatorFn {

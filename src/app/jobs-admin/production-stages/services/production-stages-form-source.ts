@@ -35,23 +35,18 @@ export class ProductionStagesFormSource extends SimpleFormSource<ProductionStage
         });
     }
 
-    insertFn(value: ProductionStage): Observable<string> {
-        return this.productionStagesService.insertOne(this.preProcessValue(value)).pipe(
-            pluck('_id'),
-        );
+    createEntity(): Observable<string> {
+        this.trimValue();
+        return this.productionStagesService.insertOne(this.value);
     }
 
-    updateFn(value: ProductionStage): Observable<ProductionStage> {
-        return this.productionStagesService.updateOne(this.preProcessValue(value)).pipe(
-            switchMap(_ => this.productionStagesService.getOne(value._id)),
-        );
+    updateEntity(): Observable<ProductionStage> {
+        this.trimValue();
+        return this.productionStagesService.updateOne(this.value);
     }
 
-    private preProcessValue(value: ProductionStage): ProductionStage {
-        return {
-            ...value,
-            name: value.name.trim(),
-        };
+    private trimValue() {
+        this.value.name = this.value.name.trim();
     }
 
     private nameValidator(): AsyncValidatorFn {

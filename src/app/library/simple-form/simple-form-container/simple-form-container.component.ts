@@ -82,16 +82,15 @@ export class SimpleFormContainerComponent<T> implements OnInit, AfterViewInit, O
   onSave({ leave }: { leave?: boolean; } = {}) {
     if (!this.formSource) { return; }
 
-    const value = this.form.value;
     if (!this.formSource.isNew) {
-      this.formSource.updateFn(value).pipe(
+      this.formSource.updateEntity().pipe(
         last(),
       ).subscribe(res => {
         this._data$.next(res);
         leave && this.close();
       });
     } else {
-      this.formSource.insertFn(value).pipe(
+      this.formSource.createEntity().pipe(
         last(),
       ).subscribe(res => {
         this.form.markAsPristine();

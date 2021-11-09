@@ -61,15 +61,14 @@ export class UserFormSource extends SimpleFormSource<User> {
         super.initValue(user, params);
     }
 
-    insertFn(user: User): Observable<string> {
-        const userName = user.username;
-        return this.usersService.addUser(user).pipe(
-            map(_ => userName)
+    createEntity(): Observable<string> {
+        return this.usersService.addUser(this.value).pipe(
+            map(user => user.username)
         );
     }
 
-    updateFn(user: User): Observable<User> {
-        return this.usersService.updateUser(user);
+    updateEntity(): Observable<User> {
+        return this.usersService.updateUser(this.value);
     }
 
     private usernamePatternValidator(control: AbstractControl): ValidationErrors {

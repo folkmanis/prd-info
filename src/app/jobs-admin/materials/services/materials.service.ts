@@ -54,14 +54,13 @@ export class MaterialsService {
     return this.api.materials.validatorData('name');
   }
 
-  updateMaterial(material: Partial<Material>): Observable<boolean> {
+  updateMaterial(material: Partial<Material>): Observable<Material> {
     const { _id: id, ...upd } = material;
     if (!id) {
       return EMPTY;
     }
     return this.api.materials.updateOne(id, upd).pipe(
       tap(_ => this.reload()),
-      mapTo(true),
     );
   }
 

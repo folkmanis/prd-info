@@ -50,18 +50,14 @@ export class MaterialsFormSource extends SimpleFormSource<Material> {
         });
     }
 
-    updateFn(material: Material): Observable<Material> {
-        return this.materialsService.updateMaterial(
-            this.cleanValue(material)
-        ).pipe(
-            switchMap(res => res ? this.materialsService.getMaterial(material._id) : EMPTY)
-        );
+    updateEntity(): Observable<Material> {
+        this.trimName();
+        return this.materialsService.updateMaterial(this.value);
     }
 
-    insertFn(material: Material): Observable<string> {
-        return this.materialsService.insertMaterial(
-            this.cleanValue(material)
-        );
+    createEntity(): Observable<string> {
+        this.trimName();
+        return this.materialsService.insertMaterial(this.value);
     }
 
     initValue(val: Partial<Material>, params?: { emitEvent: boolean; }) {
@@ -80,11 +76,8 @@ export class MaterialsFormSource extends SimpleFormSource<Material> {
         this.pricesCtrl.markAsDirty();
     }
 
-    private cleanValue(val: Material): Material {
-        return {
-            ...val,
-            name: val.name.trim(),
-        };
+    private trimName() {
+        this.value.name = this.value.name.trim();
     }
 
     updatePriceControl(control: MaterialPriceGroup, idx?: number) {
