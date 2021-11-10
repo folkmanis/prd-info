@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { FormBuilder, Validators, AbstractControl, ValidationErrors, AsyncValidatorFn } from '@angular/forms';
 import { IFormGroup } from '@rxweb/types';
 import { SimpleFormSource } from 'src/app/library/simple-form';
@@ -6,9 +7,10 @@ import { UsersService } from '../../services/users.service';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
+@Injectable({
+    providedIn: 'root'
+})
 export class UserFormSource extends SimpleFormSource<User> {
-
-    private currentUser: Partial<User>;
 
     constructor(
         fb: FormBuilder,
@@ -18,7 +20,7 @@ export class UserFormSource extends SimpleFormSource<User> {
     }
 
     get isNew(): boolean {
-        return !this.currentUser?.username;
+        return !this.initialValue?.username;
     }
 
     createForm(): IFormGroup<User> {
@@ -47,8 +49,8 @@ export class UserFormSource extends SimpleFormSource<User> {
         return form;
     }
 
-    initValue(user: Partial<User>, params?: { emitEvent: boolean; }): void {
-        this.currentUser = user;
+    initValue(user: User, params?: { emitEvent: boolean; }): void {
+        this.initialValue = user;
         const unameCtrl = this.form.controls.username;
         if (user.username) {
             unameCtrl.clearValidators();

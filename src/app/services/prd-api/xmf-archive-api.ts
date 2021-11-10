@@ -13,9 +13,7 @@ export class XmfArchiveApi extends ApiBase<ArchiveRecord> {
     });
 
     getXmfCustomer(): Observable<string[]> {
-        return this.http.get<ArchiveResp>(this.path + 'customers').pipe(
-            map(resp => resp.xmfCustomers)
-        );
+        return this.http.get<string[]>(this.path + 'customers');
     }
 
     getArchive(query: SearchQuery, start?: number, limit?: number): Observable<ArchiveRecord[]> {

@@ -8,6 +8,5 @@ import { XmfCustomer } from './xmf-customer';
 export interface ArchiveResp extends AppHttpResponseBase<ArchiveRecord> {
     count?: number;
     facet?: ArchiveFacet;
-    xmfCustomers?: string[];
     data: Partial<ArchiveRecord[]>;
 }

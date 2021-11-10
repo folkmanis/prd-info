@@ -32,4 +32,10 @@ export class LoginApi extends ApiBase<User> {
         );
     }
 
+    getSessionId(): Observable<string> {
+        return this.http.get<{ sessionId: string; }>(this.path + 'session-id').pipe(
+            pluck('sessionId'),
+        );
+    }
+
 }

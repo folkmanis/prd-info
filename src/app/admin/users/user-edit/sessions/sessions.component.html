@@ -1,25 +1,16 @@
-<mat-expansion-panel [expanded]="true" *ngIf="sessions$ | async as sessions;">
-    <mat-expansion-panel-header>
-        <mat-panel-title>
-            Aktīvās sesijas
-        </mat-panel-title>
-    </mat-expansion-panel-header>
-
-    <mat-list dense>
-        <mat-list-item *ngFor="let session of sessions">
-            <button mat-icon-button (click)="onDelete(session._id)">
-                <mat-icon>
-                    close
-                </mat-icon>
-            </button>
-            {{ session.lastSeen.date | date:'full'}} - {{ session.lastSeen.ip}}
-        </mat-list-item>
-    </mat-list>
-
-    <mat-action-row>
-        <button mat-raised-button (click)="onDeleteAll()" [disabled]="!sessions.length || (isActiveUser$ | async)">
-            IZBEIGT VISAS
+<mat-list dense>
+    <mat-list-item *ngFor="let session of sessions">
+        <button mat-icon-button (click)="deleteSession.next([session._id])" [disabled]="session._id === currentSession">
+            <mat-icon>
+                delete
+            </mat-icon>
         </button>
-    </mat-action-row>
+        {{ session.lastSeen.date | date:'full'}} - {{ session.lastSeen.ip}}
+    </mat-list-item>
+</mat-list>
 
-</mat-expansion-panel>
+<mat-action-row>
+    <button mat-raised-button (click)="onDeleteAll(sessions)" [disabled]="deleteAllDisabled()">
+        IZBEIGT VISAS
+    </button>
+</mat-action-row>

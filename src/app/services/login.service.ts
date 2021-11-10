@@ -10,20 +10,19 @@ import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 })
 export class LoginService {
 
-  private _user$: Observable<User | undefined>;
   private readonly _updateLogin$ = new Subject<User | null>();
 
-  get user$(): Observable<User | undefined> {
-    if (!this._user$) {
-      this._user$ = merge(
-        this.prdApi.login.getLogin(),
-        this._updateLogin$,
-      ).pipe(
-        shareReplay(1),
-      );
-    }
-    return this._user$;
-  }
+  user$ = merge(
+    this.prdApi.login.getLogin(),
+    this._updateLogin$,
+  ).pipe(
+    shareReplay(1),
+  );
+
+  sessionId$ = this.user$.pipe(
+    switchMap(_ => this.prdApi.login.getSessionId()),
+    shareReplay(1),
+  );
 
   constructor(
     private prdApi: PrdApiService,

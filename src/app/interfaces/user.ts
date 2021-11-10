@@ -23,5 +23,3 @@ export interface UserSession {
         ip: string;
     };
 }
-
-export type UsersResponse = AppHttpResponseBase<User>;

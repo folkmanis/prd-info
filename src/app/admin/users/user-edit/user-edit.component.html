@@ -1,49 +1,57 @@
-<app-simple-form-container [formSource]="formSource" (dataChange)="onDataChange($event)">
-    <form [formGroup]="formSource.form">
-        <!-- Lietotājvārds -->
-        <h2 *ngIf="formSource.isNew; else existing">
-            <mat-form-field>
-                <input formControlName="username" matInput placeholder="Lietotājvārds" autocomplete="off" required>
-                <mat-error *ngIf="username.hasError('minlength') && !username.hasError('symbol')">
-                    Jābūt vismaz {{username.errors.minlength.requiredLength}} simboliem
-                </mat-error>
-                <mat-error *ngIf="username.hasError('symbol')">
-                    {{username.errors.symbol}}
-                </mat-error>
-                <mat-error *ngIf="username.hasError('existing')">
-                    {{username.errors.existing}}
-                </mat-error>
-            </mat-form-field>
-        </h2>
+<app-simple-form-container (dataChange)="onDataChange($event)" [formGroup]="form">
 
-        <ng-template #existing>
-            <h2>
-                {{username.value}}
-            </h2>
-        </ng-template>
+    <!-- Lietotājvārds -->
+    <h2 *ngIf="isNew; else existing">
+        <mat-form-field>
+            <input formControlName="username" matInput placeholder="Lietotājvārds" autocomplete="off" required>
+            <mat-error *ngIf="username.hasError('minlength') && !username.hasError('symbol')">
+                Jābūt vismaz {{username.errors.minlength.requiredLength}} simboliem
+            </mat-error>
+            <mat-error *ngIf="username.hasError('symbol')">
+                {{username.errors.symbol}}
+            </mat-error>
+            <mat-error *ngIf="username.hasError('existing')">
+                {{username.errors.existing}}
+            </mat-error>
+        </mat-form-field>
+    </h2>
+
+    <ng-template #existing>
+        <h2>
+            {{username.value}}
+        </h2>
+    </ng-template>
+
+    <mat-accordion [multi]="true">
 
         <mat-form-field>
             <input formControlName="name" matInput placeholder="Pilns vārds" autocomplete="off">
         </mat-form-field>
-        <!-- Parole jaunam lietotājam -->
-        <section *ngIf="formSource.isNew; else changePassword;">
-            <h4>
-                Parole
-            </h4>
-            <app-password-input formControlName="password"></app-password-input>
-        </section>
-        <!-- Paroles maiņa -->
-        <ng-template #changePassword>
-            <section>
-                <button mat-raised-button (click)="onPasswordChange(formSource.value.username)" color="primary">
-                    MAINĪT PAROLI
-                </button>
+
+        <mat-expansion-panel hideToggle [expanded]="true">
+            <!-- Parole jaunam lietotājam -->
+            <section *ngIf="isNew; else changePassword;">
+                <h4>
+                    Parole
+                </h4>
+                <app-password-input formControlName="password"></app-password-input>
             </section>
-        </ng-template>
-        <!-- Neaktīvs -->
-        <section>
-            <mat-checkbox formControlName="userDisabled">Neaktīvs</mat-checkbox>
-        </section>
+            <!-- Paroles maiņa -->
+            <ng-template #changePassword>
+                <section>
+                    <button mat-raised-button (click)="onPasswordChange(username.value)" color="primary">
+                        MAINĪT PAROLI
+                    </button>
+                </section>
+            </ng-template>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel hideToggle [expanded]="true">
+            <!-- Neaktīvs -->
+            <section>
+                <mat-checkbox formControlName="userDisabled">Neaktīvs</mat-checkbox>
+            </section>
+        </mat-expansion-panel>
 
         <mat-expansion-panel hideToggle [expanded]="true">
             <mat-expansion-panel-header>
@@ -78,8 +86,19 @@
             </div>
         </mat-expansion-panel>
 
-    </form>
+        <mat-expansion-panel *ngIf="sessions !== null" [expanded]="true">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Aktīvās sesijas
+                </mat-panel-title>
+            </mat-expansion-panel-header>
 
-    <app-sessions *ngIf="formSource.isNew === false" [userId]="formSource.value.username"></app-sessions>
+            <app-sessions [sessions]="sessions" [currentSession]="currentSessionId$ | async"
+                (deleteSession)="onDeleteSessions($event)"></app-sessions>
+
+        </mat-expansion-panel>
+
+    </mat-accordion>
+
 
 </app-simple-form-container>
