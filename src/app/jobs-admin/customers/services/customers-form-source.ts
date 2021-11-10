@@ -60,7 +60,7 @@ export class CustomersFormSource extends SimpleFormSource<Customer> {
     }
 
     createEntity(): Observable<string> {
-        const customer = pickBy(this.value, value => value !== null) as NewCustomer; // defaults(this.value, DEFAULT_CUSTOMER);
+        const customer = pickBy(this.value, value => value !== null) as NewCustomer;
         return this.customersService.saveNewCustomer(customer);
     }
 
