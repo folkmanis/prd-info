@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
 import { DestroyService } from 'prd-cdk';
-import { Observable, of } from 'rxjs';
-import { debounceTime, takeUntil, delay, mergeMap } from 'rxjs/operators';
+import { Observable, of, timer } from 'rxjs';
+import { debounceTime, takeUntil, delay, mergeMap, take, throttleTime } from 'rxjs/operators';
 import { APP_PARAMS } from 'src/app/app-params';
 import { Notification, AppParams, User, UserModule, ModulesWithNotifications } from 'src/app/interfaces';
 import { MessagingService, NotificationsService } from 'src/app/services';
@@ -43,10 +43,10 @@ export class ToolbarComponent implements OnInit {
 
 
   ngOnInit(): void {
-
-    of('system').pipe(
-      delay(INITIAL_DELAY),
-      mergeMap((module: ModulesWithNotifications) => this.notifications.wsMultiplex(module)),
+    timer(INITIAL_DELAY).pipe(
+      take(1),
+      mergeMap(_ => this.notifications.wsMultiplex('system')),
+      throttleTime(500),
       takeUntil(this.destroy$),
     )
       .subscribe(() => this.messagingService.reload());
