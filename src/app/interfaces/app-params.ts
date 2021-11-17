@@ -17,4 +17,5 @@ export interface AppParams {
         medium: string;
     };
     passwordMinimumLenght: number;
+    messagesReadDelay: number;
 }

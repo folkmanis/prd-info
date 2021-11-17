@@ -1,7 +1,8 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output, TrackByFunction } from '@angular/core';
+import { AfterViewInit, Inject, ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output, TrackByFunction } from '@angular/core';
 import { DestroyService } from 'prd-cdk';
 import { delay, filter, mergeMap, take, takeUntil } from 'rxjs/operators';
-import { Message } from 'src/app/interfaces';
+import { Message, AppParams } from 'src/app/interfaces';
+import { APP_PARAMS } from 'src/app/app-params';
 import { MessagingService } from 'src/app/services/messaging.service';
 
 @Component({
@@ -24,6 +25,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
   constructor(
     private messaging: MessagingService,
     private destroy$: DestroyService,
+    @Inject(APP_PARAMS) private appParams: AppParams,
   ) { }
 
   ngOnInit(): void {
@@ -33,7 +35,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
     this.messaging.unreadCount$.pipe(
       take(1),
       filter(count => count > 0),
-      delay(3000),
+      delay(this.appParams.messagesReadDelay),
       mergeMap(_ => this.messaging.markAllAsRead()),
       takeUntil(this.destroy$),
     )

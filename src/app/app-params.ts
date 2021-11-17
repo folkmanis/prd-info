@@ -17,6 +17,7 @@ export const PRD_DEFAULTS: AppParams = {
     version,
     passwordMinimumLenght: 3,
     userModules: USER_MODULES,
+    messagesReadDelay: 1000,
     defaultSystemPreferences: {
         kastes: {
             colors: { yellow: 'hsl(45,75%,60%)', rose: '315,75%,50%', white: '0,0%,50%', },
