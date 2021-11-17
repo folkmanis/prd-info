@@ -1,4 +1,4 @@
-<mat-drawer-container>
+<mat-drawer-container *ngIf="pasutijumsId$ | async; else noActive;">
 
     <mat-drawer-content>
 
@@ -33,3 +33,14 @@
     </mat-drawer>
 
 </mat-drawer-container>
+
+<ng-template #noActive>
+    <div class="no-active">
+        <p>
+            Nav izvēlēts aktīvais pakošanas saraksts.
+        </p>
+        <p>
+            <a mat-raised-button routerLink="../../edit">IZVĒLĒTIES</a>
+        </p>
+    </div>
+</ng-template>

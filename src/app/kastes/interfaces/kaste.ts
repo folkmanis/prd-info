@@ -9,6 +9,6 @@ export interface RowUpdate {
 }
 
 export interface KastesUserPreferences {
-    pasutijums: number;
+    pasutijums: number | null;
 }
 
