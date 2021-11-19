@@ -1,10 +1,8 @@
-import { AfterViewInit, Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import { FormControl, ValidatorFn, AbstractControl } from '@angular/forms';
-import { XmfUploadService } from './services/xmf-upload.service';
-import { tap, debounceTime, distinctUntilChanged, throttleTime, switchMap } from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
-import { log } from 'prd-cdk';
-import { XmfUploadHistory } from './interfaces/xmf-upload-history';
+import { switchMap } from 'rxjs/operators';
+import { XmfUploadProgress } from 'src/app/interfaces/xmf-search';
+import { XmfUploadService } from './services/xmf-upload.service';
 
 @Component({
   selector: 'app-xmf-upload',
@@ -20,9 +18,9 @@ export class XmfUploadComponent implements OnInit, OnDestroy {
 
   file: File | null = null;
 
-  private reloadHistory$ = new Subject<XmfUploadHistory>();
+  private reloadHistory$ = new Subject<XmfUploadProgress>();
 
-  history$: Observable<XmfUploadHistory[]> = merge(
+  history$: Observable<XmfUploadProgress[]> = merge(
     this.reloadHistory$.pipe(
       switchMap(_ => this.uploadService.getHistory()),
     ),

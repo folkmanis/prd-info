@@ -1,9 +1,9 @@
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { merge, Observable, Subject } from 'rxjs';
-import { last, map, switchMap, tap } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { last, map } from 'rxjs/operators';
+import { XmfUploadProgress } from 'src/app/interfaces/xmf-search';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
-import { XmfUploadHistory } from '../interfaces/xmf-upload-history';
 
 @Injectable({
   providedIn: 'root'
@@ -14,11 +14,11 @@ export class XmfUploadService {
     private prdApi: PrdApiService,
   ) { }
 
-  getHistory(): Observable<XmfUploadHistory[]> {
+  getHistory(): Observable<XmfUploadProgress[]> {
     return this.prdApi.xmfArchiveUpload.getHistory();
   }
 
-  postFile(formData: FormData, progress$: Subject<number>): Observable<XmfUploadHistory> {
+  postFile(formData: FormData, progress$: Subject<number>): Observable<XmfUploadProgress> {
     progress$.next(0);
     return this.prdApi.xmfArchiveUpload.uploadArchive(formData).pipe(
       map(this.reportUploadProgress(progress$)),
@@ -32,7 +32,7 @@ export class XmfUploadService {
   }
 
   private reportUploadProgress(progress$: Subject<number>) {
-    return (event: HttpEvent<XmfUploadHistory>): XmfUploadHistory | null => {
+    return (event: HttpEvent<XmfUploadProgress>): XmfUploadProgress | null => {
       switch (event.type) {
         case HttpEventType.UploadProgress:
           progress$.next(Math.round(event.loaded / event.total * 100));

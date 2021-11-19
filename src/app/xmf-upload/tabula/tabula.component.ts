@@ -1,6 +1,5 @@
-import { Input, Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { XmfUploadService } from '../services/xmf-upload.service';
-import { XmfUploadHistory } from '../interfaces/xmf-upload-history';
+import { Input, Component, ChangeDetectionStrategy } from '@angular/core';
+import { XmfUploadProgress } from 'src/app/interfaces/xmf-search';
 import { ReplaySubject } from 'rxjs';
 
 @Component({
@@ -9,11 +8,11 @@ import { ReplaySubject } from 'rxjs';
   styleUrls: ['./tabula.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TabulaComponent implements OnInit {
+export class TabulaComponent {
 
-  dataSource$ = new ReplaySubject<XmfUploadHistory[]>(1);
+  dataSource$ = new ReplaySubject<XmfUploadProgress[]>(1);
 
-  @Input() set history(value: XmfUploadHistory[]) {
+  @Input() set history(value: XmfUploadProgress[]) {
     if (value instanceof Array) {
       this.dataSource$.next(value);
     }
@@ -30,10 +29,7 @@ export class TabulaComponent implements OnInit {
   ];
 
   constructor(
-    private uploadService: XmfUploadService,
   ) { }
 
-  ngOnInit(): void {
-  }
 
 }
