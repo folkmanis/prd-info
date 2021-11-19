@@ -2,16 +2,16 @@ import { ApiBase, HttpOptions } from 'src/app/library/http';
 import { Observable } from 'rxjs';
 import { map, pluck, tap } from 'rxjs/operators';
 
-import { Message, JobMessageActions } from 'src/app/interfaces';
+import { Message } from 'src/app/interfaces';
 
 
 
-const normalizeMessage: <T extends JobMessageActions = any>(message: Message<T>) => Message<T> = (message) => ({ ...message, timestamp: new Date(message.timestamp) });
+const normalizeMessage: (message: Message) => Message = (message) => ({ ...message, timestamp: new Date(message.timestamp) });
 
 export class MessagesApi extends ApiBase<Message> {
 
-    messages<T extends JobMessageActions>(): Observable<Message<T>[]> {
-        return this.http.get<Message<T>[]>(this.path, new HttpOptions()).pipe(
+    messages(): Observable<Message[]> {
+        return this.http.get<Message[]>(this.path, new HttpOptions()).pipe(
             map(resp => resp.map(normalizeMessage))
         );
     }
