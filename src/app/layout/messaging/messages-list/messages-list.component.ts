@@ -1,9 +1,10 @@
 import { AfterViewInit, Inject, ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output, TrackByFunction } from '@angular/core';
 import { DestroyService } from 'prd-cdk';
 import { delay, filter, mergeMap, take, takeUntil } from 'rxjs/operators';
-import { Message, AppParams } from 'src/app/interfaces';
+import { AppParams } from 'src/app/interfaces';
 import { APP_PARAMS } from 'src/app/app-params';
-import { MessagingService } from 'src/app/services/messaging.service';
+import { MessagingService } from '../services/messaging.service';
+import { Message } from '../interfaces';
 
 @Component({
   selector: 'app-messages-list',

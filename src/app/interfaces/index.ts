@@ -6,7 +6,6 @@ export * from './job';
 export * from './job-production-stage';
 export * from './login';
 export * from './materials';
-export * from './messages';
 export * from './notification';
 export * from './panel-component';
 export * from './product';

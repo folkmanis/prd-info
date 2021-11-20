@@ -24,6 +24,8 @@ import { DATE_FNS_LOCALE } from './library/date-services';
 import { lv } from 'date-fns/locale';
 import { httpInterceptorsProvider } from './library/http/http-interceptors-provider';
 
+import { ClassTransformer } from 'class-transformer';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -47,6 +49,7 @@ import { httpInterceptorsProvider } from './library/http/http-interceptors-provi
     { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
     { provide: APP_PARAMS, useValue: PRD_DEFAULTS },
     configProvider,
+    { provide: ClassTransformer },
   ],
   bootstrap: [AppComponent]
 })

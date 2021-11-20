@@ -1,6 +1,11 @@
-export interface XmfUploadProgress {
+import { Type } from 'class-transformer';
+
+export class XmfUploadProgress {
     _id: string;
-    started: Date | string;
+
+    @Type(() => Date)
+    started: Date;
+
     fileName: string;
     fileSize: number;
     username: string;
@@ -11,5 +16,7 @@ export interface XmfUploadProgress {
         upserted: number;
         lines: number;
     };
-    finished: Date | string;
+
+    @Type(() => Date)
+    finished: Date;
 }

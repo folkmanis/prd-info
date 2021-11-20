@@ -4,8 +4,9 @@ import { Observable, of, timer } from 'rxjs';
 import { debounceTime, takeUntil, delay, mergeMap, take, throttleTime } from 'rxjs/operators';
 import { APP_PARAMS } from 'src/app/app-params';
 import { Notification, AppParams, User, UserModule, ModulesWithNotifications } from 'src/app/interfaces';
-import { MessagingService, NotificationsService } from 'src/app/services';
+import { NotificationsService } from 'src/app/services';
 import { LayoutService } from 'src/app/services';
+import { MessagingService } from '../messaging/services/messaging.service';
 import { DOCUMENT } from '@angular/common';
 
 const INITIAL_DELAY = 3000;
