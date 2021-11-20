@@ -1,14 +1,13 @@
-import { AfterViewInit, Component, Inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import * as moment from 'moment';
+import { DestroyService } from 'prd-cdk';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, pluck, switchMap, takeUntil } from 'rxjs/operators';
 import { SystemPreferences } from 'src/app/interfaces';
-import { DestroyService } from 'prd-cdk';
 import { CONFIG } from 'src/app/services/config.provider';
 import { LogQueryFilter } from '../../services/logfile-record';
 import { LogfileService, ValidDates } from '../../services/logfile.service';
-import { log } from 'prd-cdk';
 
 
 interface FilterForm {
@@ -33,7 +32,6 @@ export class LogFilterComponent implements OnInit, OnDestroy, AfterViewInit {
 
   logLevels$: Observable<{ key: number; value: string; }[]> = this.config$.pipe(
     pluck('system', 'logLevels'),
-    log('loglevels'),
     map(levels => levels.sort((a, b) => a[0] - b[0])),
     map(levels => levels.map(level => ({ key: level[0], value: level[1] }))),
   );
