@@ -2,8 +2,8 @@ import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { last, map } from 'rxjs/operators';
-import { XmfUploadProgress } from 'src/app/interfaces/xmf-search';
-import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
+import { XmfUploadProgress } from '../interfaces/xmf-upload-progress';
+import { XmfArchiveUploadApiService } from './xmf-archive-upload-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,16 +11,16 @@ import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 export class XmfUploadService {
 
   constructor(
-    private prdApi: PrdApiService,
+    private api: XmfArchiveUploadApiService,
   ) { }
 
   getHistory(): Observable<XmfUploadProgress[]> {
-    return this.prdApi.xmfArchiveUpload.getHistory();
+    return this.api.getHistory();
   }
 
   postFile(formData: FormData, progress$: Subject<number>): Observable<XmfUploadProgress> {
     progress$.next(0);
-    return this.prdApi.xmfArchiveUpload.uploadArchive(formData).pipe(
+    return this.api.uploadArchive(formData).pipe(
       map(this.reportUploadProgress(progress$)),
       last(),
     );

@@ -10,7 +10,6 @@ import { KastesApi } from './kastes-api';
 import { KastesOrdersApi } from './kastes-orders-api';
 import { UsersApi } from './users-api';
 import { XmfArchiveApi } from './xmf-archive-api';
-import { XmfArchiveUpload } from './xmf-archive-upload';
 import { AppParams } from 'src/app/interfaces';
 import { APP_PARAMS } from 'src/app/app-params';
 import { PaytraqApi } from './paytraq-api';
@@ -37,7 +36,6 @@ export class PrdApiService {
   kastesOrders = new KastesOrdersApi(this.http, this.apiPath + 'kastes/jobs/');
   users = new UsersApi(this.http, this.apiPath + 'users/');
   xmfArchive = new XmfArchiveApi(this.http, this.apiPath + 'xmf-search/');
-  xmfArchiveUpload = new XmfArchiveUpload(this.http, this.apiPath + 'xmf-upload/');
   paytraq = new PaytraqApi(this.http, this.apiPath + 'paytraq/');
   materials = new MaterialsApi(this.http, this.apiPath + 'materials/');
   notifications = new NotificationsApi(this.http, this.apiPath + 'notifications/');

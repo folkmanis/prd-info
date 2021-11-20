@@ -1,4 +1,4 @@
-import { XmfUploadProgress } from 'src/app/interfaces/xmf-search';
+import { XmfUploadProgress } from 'src/app/xmf-upload/interfaces/xmf-upload-progress';
 import { MessageData } from './message-data';
 import * as filesize from 'filesize';
 

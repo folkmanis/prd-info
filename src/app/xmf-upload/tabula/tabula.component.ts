@@ -1,5 +1,5 @@
 import { Input, Component, ChangeDetectionStrategy } from '@angular/core';
-import { XmfUploadProgress } from 'src/app/interfaces/xmf-search';
+import { XmfUploadProgress } from '../interfaces/xmf-upload-progress';
 import { ReplaySubject } from 'rxjs';
 
 @Component({
@@ -19,7 +19,6 @@ export class TabulaComponent {
   }
 
   displayedColumns = [
-    // 'started',
     'finished',
     'fileName',
     'fileSize',
