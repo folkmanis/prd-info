@@ -34,7 +34,7 @@ export class PaytraqApi extends ApiBase<Pt.PaytraqData> {
     }
 
     postSale(data: Pt.PaytraqInvoice): Observable<Pt.PaytraqNewInvoiceResponse> {
-        return this.http.post<Pt.PaytraqNewInvoiceResponse>(
+        return this.http.put<Pt.PaytraqNewInvoiceResponse>(
             this.path + 'sale',
             { data },
             new HttpOptions()

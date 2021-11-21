@@ -64,7 +64,7 @@ export class NewInvoiceComponent implements OnInit {
   }
 
   onCreateInvoice() {
-    this.invoicesService.createInvoice({ selectedJobs: this.selection$.value, customerId: this.customerId.value })
+    this.invoicesService.createInvoice({ jobIds: this.selection$.value, customerId: this.customerId.value })
       .subscribe(({ invoiceId }) => this.router.navigate(['calculations', 'plate-invoice', invoiceId]));
   }
 
