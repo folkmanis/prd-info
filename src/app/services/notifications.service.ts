@@ -54,7 +54,7 @@ export class NotificationsService {
 
     return this.wsNotifications.multiplexAuth(multiplexConfig).pipe(
       retryWhen(error => error.pipe(
-        take(5),
+        take(10),
         delay(5000),
       )),
     );
@@ -63,7 +63,7 @@ export class NotificationsService {
 
   private wsUrl(): string {
     const { protocol, host } = this.document.location;
-    return protocol.replace(/^http/, 'ws') + '//' + host + this.params.apiPath + 'notifications';
+    return protocol.replace(/^http/, 'ws') + '//' + host + this.params.wsPath;
   }
 
 

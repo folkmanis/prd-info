@@ -3,6 +3,7 @@ import { UserModule } from './user-module';
 
 export interface AppParams {
     apiPath: string;
+    wsPath: string;
     version: {
         appBuild: number;
     };
