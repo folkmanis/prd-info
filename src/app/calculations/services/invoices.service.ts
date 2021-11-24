@@ -38,12 +38,12 @@ export class InvoicesService {
   }
 
   reloadJobsWithoutInvoicesTotals() {
-    this.reloadJobsWithoutInvoicesTotals$.next();
+    this.reloadJobsWithoutInvoicesTotals$.next(null);
   }
 
   createInvoice(params: { jobIds: number[]; customerId: string; }): Observable<Invoice> {
     return this.prdApi.invoices.createInvoice(params).pipe(
-      tap(() => this.reloadJobsWithoutInvoicesTotals$.next()),
+      tap(() => this.reloadJobsWithoutInvoicesTotals$.next(null)),
     );
   }
 

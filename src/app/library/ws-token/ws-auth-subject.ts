@@ -21,8 +21,8 @@ export class WsAuthSubject<T> extends WebSocketSubject<T> {
                 observer.error(err);
             }
 
-            const subscription = this.subscribe(
-                (x) => {
+            const subscription = this.subscribe({
+                next: (x) => {
                     try {
                         if (messageFilter(x)) {
                             observer.next(x);
@@ -31,8 +31,9 @@ export class WsAuthSubject<T> extends WebSocketSubject<T> {
                         observer.error(err);
                     }
                 },
-                (err) => observer.error(err),
-                () => observer.complete()
+                error: (err) => observer.error(err),
+                complete: () => observer.complete()
+            }
             );
 
             return () => {

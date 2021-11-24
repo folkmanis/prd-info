@@ -28,7 +28,7 @@ export class XmfArchiveUploadApiService extends ApiBase<XmfUploadProgress> {
 
     getHistory(params: Params = {}): Observable<XmfUploadProgress[]> {
         return super.get<Record<string, any>[]>(params).pipe(
-            map(data => this.transformer.plainToClass(XmfUploadProgress, data))
+            map(data => this.transformer.plainToInstance(XmfUploadProgress, data))
         );
     }
 

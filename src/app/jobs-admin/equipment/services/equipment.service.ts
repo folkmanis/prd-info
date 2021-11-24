@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
-import { Equipment, EquipmentPartial } from 'src/app/interfaces';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, pluck, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { distinctUntilChanged, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { Equipment, EquipmentPartial } from 'src/app/interfaces';
+import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 
 interface EquipmentFilter {
   name?: string;
@@ -41,10 +41,9 @@ export class EquipmentService {
     return this.api.equipment.get(id);
   }
 
-  insertOne(equipment: Equipment): Observable<string> {
+  insertOne(equipment: Equipment): Observable<Equipment> {
     return this.api.equipment.insertOne(equipment).pipe(
       tap(_ => this.reload()),
-      pluck('_id'),
     );
   }
 

@@ -65,7 +65,7 @@ export class InvoiceEditorComponent implements OnInit, OnDestroy {
   }
 
   onReload() {
-    this.reload$.next();
+    this.reload$.next(null);
   }
 
 }

@@ -35,7 +35,7 @@ export class MessagesApiService extends ApiBase<Message> {
     messages(): Observable<Message[]> {
         return this.http.get<Record<string, any>[]>(this.path, new HttpOptions()).pipe(
             map(messages => messages.map(m => addDataType(m))),
-            map(resp => this.transformer.plainToClass(Message, resp)),
+            map(resp => this.transformer.plainToInstance(Message, resp)),
         );
     }
 
