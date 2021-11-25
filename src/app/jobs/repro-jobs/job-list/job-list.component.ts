@@ -6,6 +6,7 @@ import { JobPartial, JobProduct } from 'src/app/interfaces';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { LayoutService } from 'src/app/services';
 import { JobService } from 'src/app/services/job.service';
+import { SanitizeService } from 'src/app/library/services/sanitize.service';
 
 @Component({
   selector: 'app-job-list',
@@ -26,14 +27,15 @@ export class JobListComponent implements OnInit {
     private jobService: JobService,
     private clipboard: ClipboardService,
     private layout: LayoutService,
+    private sanitize: SanitizeService,
   ) { }
 
 
   ngOnInit(): void {
   }
 
-  copyJobIdAndName(job: Pick<JobPartial, 'jobId' | 'name'>, event: MouseEvent) {
-    this.clipboard.copy(`${job.jobId}-${job.name}`);
+  copyJobIdAndName({ name, jobId }: Pick<JobPartial, 'jobId' | 'name'>, event: MouseEvent) {
+    this.clipboard.copy(`${jobId}-${this.sanitize.sanitizeFileName(name)}`);
     event.stopPropagation();
   }
 

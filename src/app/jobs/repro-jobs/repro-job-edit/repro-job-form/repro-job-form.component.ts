@@ -13,6 +13,7 @@ import { ProductsService } from 'src/app/services/products.service';
 import { JobFormGroup } from '../../services/job-form-group';
 import { CustomerInputComponent } from '../customer-input/customer-input.component';
 import { ReproProductsEditorComponent } from '../repro-products-editor/repro-products-editor.component';
+import { SanitizeService } from 'src/app/library/services/sanitize.service';
 
 @Component({
   selector: 'app-repro-job-form',
@@ -63,6 +64,7 @@ export class ReproJobFormComponent implements OnInit {
     private jobsService: JobService,
     private customersService: CustomersService,
     private productsService: ProductsService,
+    private sanitize: SanitizeService,
   ) { }
 
   ngOnInit(): void {
@@ -86,7 +88,8 @@ export class ReproJobFormComponent implements OnInit {
   }
 
   copyJobIdAndName() {
-    this.clipboard.copy(`${this.form.value.jobId}-${this.form.value.name}`);
+    const name = this.sanitize.sanitizeFileName(this.form.value.name);
+    this.clipboard.copy(`${this.form.value.jobId}-${name}`);
   }
 
   isProductsSet(): boolean {
