@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MatSelectionList, MatSelectionListChange } from '@angular/material/list';
-import { FacetCount } from 'src/app/interfaces/xmf-search';
+import { FacetCount } from '../../interfaces';
 
 @Component({
   selector: 'app-facet-checker',

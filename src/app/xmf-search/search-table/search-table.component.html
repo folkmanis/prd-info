@@ -1,21 +1,21 @@
 <cdk-virtual-scroll-viewport itemSize="137" class="scroll-container" templateCacheSize="0" scroll-to-top>
     <div *cdkVirtualFor="let dataItem of data$ | async; let lastItem = last; let idx = index;" class="item">
         <div *ngIf="dataItem; else waiting;">
-            <div [style.fontWeight]="dataItem.JDFJobID === query?.q ? 'bold' : undefined " class="jobId">
-                {{dataItem.JDFJobID}}
+            <div [style.fontWeight]="dataItem.jdfJobId === search ? 'bold' : undefined " class="jobId">
+                {{dataItem.jdfJobId}}
             </div>
             <div>
-                <app-tagged-string [text]="dataItem.DescriptiveName" [search]="query?.q"></app-tagged-string>
+                <app-tagged-string [text]="dataItem.descriptiveName" [search]="search"></app-tagged-string>
             </div>
             <div class="search-table">
-                <div *ngFor="let row of dataItem.Archives">
-                    <div class="table-element table-location" [appCopyClipboard]="row.Location">
-                        {{row.Location}}
+                <div *ngFor="let row of dataItem.archives">
+                    <div class="table-element table-location" [appCopyClipboard]="row.location">
+                        {{row.location}}
                     </div>
                     <div style="display: flex;">
-                        <div style="flex: 0 1 8ch;" class="table-element">{{actions[row.Action]}}</div>
-                        <div style="flex: 1 1 170px;" class="table-element">{{row.Date}}</div>
-                        <div style="flex: 5 1 170px;" class="table-element">{{dataItem.CustomerName}}</div>
+                        <div style="flex: 0 1 8ch;" class="table-element">{{actions[row.action]}}</div>
+                        <div style="flex: 1 1 170px;" class="table-element">{{row.date}}</div>
+                        <div style="flex: 5 1 170px;" class="table-element">{{dataItem.customerName}}</div>
                     </div>
                 </div>
             </div>

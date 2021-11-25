@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { UsersService } from '../../services/users.service';
 import { UserFormSource } from '../services/user-form-source';
 import { IFormControl } from '@rxweb/types';
-import { XmfCustomer } from 'src/app/interfaces/xmf-search';
+import { XmfCustomer } from 'src/app/xmf-search/interfaces';
 import { EMPTY, from, Observable, of } from 'rxjs';
 import { APP_PARAMS } from 'src/app/app-params';
 import { AppParams, User, UserSession } from 'src/app/interfaces';

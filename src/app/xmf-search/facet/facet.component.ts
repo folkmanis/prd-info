@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren, ChangeDetectionStrategy } from '@angular/core';
-import { ArchiveFacet, FacetFilter } from 'src/app/interfaces/xmf-search';
+import { ArchiveFacet, FacetFilter } from '../interfaces';
 import { FacetCheckerComponent } from './facet-checker/facet-checker.component';
 
 
@@ -16,12 +16,12 @@ export class FacetComponent implements OnInit, OnDestroy {
 
   @ViewChildren(FacetCheckerComponent) private blocks: QueryList<FacetCheckerComponent>;
 
-  facetFilter: FacetFilter = {};
+  facetFilter = new FacetFilter();
 
   constructor() { }
 
   onDeselectAll() {
-    this.facetFilter = {};
+    this.facetFilter = new FacetFilter();
     this.blocks.forEach(bl => bl.deselect());
   }
 

@@ -1,13 +1,30 @@
+import { Injectable, Inject } from '@angular/core';
 import { ApiBase } from 'src/app/library/http/api-base';
-import { ArchiveRecord, SearchQuery, XmfCustomer, ArchiveResp, ArchiveFacet } from 'src/app/interfaces/xmf-search';
+import { ArchiveRecord, SearchQuery, ArchiveFacet } from '../interfaces';
 import { Observable } from 'rxjs';
 import { map, pluck } from 'rxjs/operators';
 import { HttpOptions } from 'src/app/library/http/http-options';
+import { APP_PARAMS } from 'src/app/app-params';
+import { AppParams } from 'src/app/interfaces';
+import { HttpClient } from '@angular/common/http';
+import { ClassTransformer } from 'class-transformer';
 
-export class XmfArchiveApi extends ApiBase<ArchiveRecord> {
+@Injectable({
+    providedIn: 'root'
+})
+export class XmfArchiveApiService extends ApiBase<ArchiveRecord> {
+
+    constructor(
+        @Inject(APP_PARAMS) params: AppParams,
+        http: HttpClient,
+        private transformer: ClassTransformer,
+    ) {
+        super(http, params.apiPath + 'xmf-search/');
+    }
+
 
     private queryStr = (query: SearchQuery, start?: number, limit?: number) => ({
-        query: JSON.stringify(query),
+        query: query.searialize(),
         start,
         limit,
     });
@@ -17,9 +34,11 @@ export class XmfArchiveApi extends ApiBase<ArchiveRecord> {
     }
 
     getArchive(query: SearchQuery, start?: number, limit?: number): Observable<ArchiveRecord[]> {
-        return this.http.get<ArchiveRecord[]>(
+        return this.http.get<Record<string, any>[]>(
             this.path,
             new HttpOptions(this.queryStr(query, start, limit))
+        ).pipe(
+            map(data => this.transformer.plainToInstance(ArchiveRecord, data))
         );
     }
 

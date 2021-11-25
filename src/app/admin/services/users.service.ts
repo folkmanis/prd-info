@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { EMPTY, from, merge, Observable, Subject, throwError } from 'rxjs';
-import { concatMap, map, mergeMap, pluck, reduce, startWith, switchMap, tap } from 'rxjs/operators';
-import { User, UserSession } from 'src/app/interfaces';
+import { Observable, Subject, throwError } from 'rxjs';
+import { map, startWith, switchMap, tap } from 'rxjs/operators';
+import { User } from 'src/app/interfaces';
 import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
-import { XmfCustomer } from 'src/app/interfaces/xmf-search';
-import { log } from 'prd-cdk';
+import { XmfCustomer } from 'src/app/xmf-search/interfaces';
+import { XmfArchiveApiService } from 'src/app/xmf-search/services/xmf-archive-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,13 +18,14 @@ export class UsersService {
     switchMap(() => this.prdApi.users.get()),
   );
 
-  xmfCustomers$: Observable<XmfCustomer[]> = this.prdApi.xmfArchive.getXmfCustomer().pipe(
+  xmfCustomers$: Observable<XmfCustomer[]> = this.xmfApi.getXmfCustomer().pipe(
     map(customer => customer.map(cust => ({ name: cust || 'Nenoteikts', value: cust })))
   );
 
 
   constructor(
     private prdApi: PrdApiService,
+    private xmfApi: XmfArchiveApiService,
   ) { }
 
 

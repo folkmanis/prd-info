@@ -2,7 +2,7 @@ import { CdkScrollable } from '@angular/cdk/scrolling';
 import { ChangeDetectionStrategy, Component, OnInit, ViewChild, Input } from '@angular/core';
 import { DestroyService } from 'prd-cdk';
 import { takeUntil } from 'rxjs/operators';
-import { SearchQuery } from 'src/app/interfaces/xmf-search';
+import { SearchQuery } from '../interfaces';
 import { ArchiveSearchService } from '../services/archive-search.service';
 
 
@@ -17,7 +17,7 @@ export class SearchTableComponent implements OnInit {
 
   @ViewChild(CdkScrollable) content: CdkScrollable;
 
-  @Input() query: SearchQuery | undefined;
+  @Input() search: string | undefined;
 
   actions: string[] = [, 'Archive', 'Restore', 'Skip', 'Delete'];
 

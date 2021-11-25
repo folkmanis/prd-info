@@ -1,7 +1,7 @@
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { Observable } from 'rxjs/index';
 import { debounceTime, startWith, switchMap } from 'rxjs/operators';
-import { ArchiveRecord } from 'src/app/interfaces/xmf-search';
+import { ArchiveRecord } from '../interfaces';
 import { PagedCache } from './paged-cache';
 
 

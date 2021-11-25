@@ -2,7 +2,7 @@ import { ViewChild, Component, OnInit, ChangeDetectionStrategy } from '@angular/
 import { Observable } from 'rxjs';
 import { LayoutService } from 'src/app/services';
 import { ArchiveSearchService } from './services/archive-search.service';
-import { FacetFilter, SearchQuery } from 'src/app/interfaces/xmf-search';
+import { FacetFilter, SearchQuery } from './interfaces';
 import { FacetComponent } from './facet/facet.component';
 
 @Component({
@@ -16,35 +16,29 @@ export class XmfSearchComponent implements OnInit {
 
   @ViewChild(FacetComponent) facetComponent: FacetComponent;
 
+  isSmall$: Observable<boolean> = this.layoutService.isSmall$;
+  count$ = this.service.count$;
+  facet$ = this.service.facet$;
+
+  query: SearchQuery;
+
   constructor(
     private service: ArchiveSearchService,
     private layoutService: LayoutService,
   ) { }
 
-  isSmall$: Observable<boolean> = this.layoutService.isSmall$;
-
-  count$ = this.service.count$;
-
-  facet$ = this.service.facet$;
-
-  query: SearchQuery = { q: '' };
-
   ngOnInit() {
+    this.query = new SearchQuery();
   }
 
   onSearch(search: string) {
-    this.query = {
-      q: search
-    };
+    this.query = new SearchQuery(search);
     this.facetComponent.onDeselectAll();
     this.service.setQuery(this.query);
   }
 
   onFacet(facet: FacetFilter) {
-    this.query = {
-      q: this.query.q,
-      ...facet,
-    };
+    this.query.setFacet(facet);
     this.service.setQuery(this.query);
   }
 
