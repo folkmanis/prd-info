@@ -16,7 +16,6 @@ export class EquipmentService {
   private _filter = new BehaviorSubject<EquipmentFilter | null>(null);
 
   equipment$: Observable<EquipmentPartial[]> = this._filter.pipe(
-    distinctUntilChanged(),
     switchMap(filter => this.api.equipment.get<EquipmentPartial>(filter)),
     shareReplay(1),
   );
