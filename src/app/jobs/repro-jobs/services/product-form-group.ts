@@ -19,11 +19,15 @@ export class ProductFormGroup extends FormGroup {
             ),
             price: new FormControl(
                 product.price,
-                Validators.min(0),
+                {
+                    validators: [Validators.required, Validators.min(0)],
+                }                ,
             ),
             count: new FormControl(
                 product.count || 0,
-                Validators.min(0),
+                {
+                    validators: [Validators.required, Validators.min(0)],
+                },
             ),
             units: new FormControl(
                 product.units,

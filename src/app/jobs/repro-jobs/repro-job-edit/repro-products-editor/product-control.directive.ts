@@ -49,7 +49,8 @@ export class ProductControlDirective implements OnInit {
 
     this.selectedProduct$.pipe(
       pluck('price'),
-      filter(price => price && !this.priceControl.value),
+      filter(_ => !this.priceControl.value),
+      map(price => price || 0),
       takeUntil(this.destroy$),
     ).subscribe(price => this.priceControl.setValue(price));
 
