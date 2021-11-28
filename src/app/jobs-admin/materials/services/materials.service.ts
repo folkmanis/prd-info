@@ -68,7 +68,8 @@ export class MaterialsService {
     delete material._id;
     return this.api.materials.insertOne(material).pipe(
       tap(_ => this.reload()),
-    ) as Observable<string>;
+      pluck('_id'),
+    );
   }
 
   private addCategoriesDescription([materials, categories]: [Material[], ProductCategory[]]): MaterialWithDescription[] {

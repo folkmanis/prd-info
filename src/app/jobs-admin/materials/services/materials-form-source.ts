@@ -1,10 +1,17 @@
-import { SimpleFormSource } from 'src/app/library/simple-form';
-import { FormBuilder, FormControl, FormGroup, FormArray, Validators, AsyncValidatorFn, AbstractControl, ValidatorFn } from '@angular/forms';
-import { IFormArray, IFormControl, IFormGroup } from '@rxweb/types';
+import { AbstractControl, AsyncValidatorFn, FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { IFormGroup } from '@rxweb/types';
+import { defaults, isEqual, pickBy } from 'lodash';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Material, MaterialPrice } from 'src/app/interfaces';
+import { SimpleFormSource } from 'src/app/library/simple-form';
 import { MaterialsService } from './materials.service';
-import { EMPTY, Observable, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+
+const DEFAULT_MATERIAL: Partial<Material> = {
+    inactive: false,
+    prices: [],
+    fixedPrice: 0,
+};
 
 export class MaterialsFormSource extends SimpleFormSource<Material> {
 
@@ -52,7 +59,8 @@ export class MaterialsFormSource extends SimpleFormSource<Material> {
 
     updateEntity(): Observable<Material> {
         this.trimName();
-        return this.materialsService.updateMaterial(this.value);
+        const diff = pickBy(this.value, (value, key) => key === '_id' || !isEqual(value, this.initialValue[key]));
+        return this.materialsService.updateMaterial(diff);
     }
 
     createEntity(): Observable<string> {
@@ -68,7 +76,10 @@ export class MaterialsFormSource extends SimpleFormSource<Material> {
                 { emitEvent: false },
             );
         }
-        super.initValue(val, params);
+        super.initValue(
+            defaults(val, DEFAULT_MATERIAL),
+            params
+        );
     }
 
     deletePrice(idx: number) {
