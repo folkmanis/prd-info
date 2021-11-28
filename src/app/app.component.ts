@@ -13,22 +13,9 @@ import { ApiVersionService } from 'src/app/library/http/api-version.service';
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent implements OnInit, OnDestroy {
-
-  isLarge$ = this.layoutService.isLarge$;
-
-  opened$: Observable<boolean> = combineLatest([this.loginService.user$, this.isLarge$]).pipe(
-    map(([user, large]) => !!user && large),
-  );
-
-  user$ = this.loginService.user$;
-
-  activeModule$ = this.systemPreferencesService.activeModule$;
+export class AppComponent implements OnInit {
 
   constructor(
-    private loginService: LoginService,
-    private systemPreferencesService: SystemPreferencesService,
-    private layoutService: LayoutService,
     @Inject(APP_PARAMS) private params: AppParams,
     private apiVersion: ApiVersionService,
   ) { }
@@ -40,7 +27,5 @@ export class AppComponent implements OnInit, OnDestroy {
 
   }
 
-  ngOnDestroy() {
-  }
 
 }

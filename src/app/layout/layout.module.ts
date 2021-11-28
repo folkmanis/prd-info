@@ -10,6 +10,7 @@ import { MessagesListComponent } from './messaging/messages-list/messages-list.c
 import { MessagesTriggerDirective } from './messaging/messages-trigger.directive';
 import { SideMenuComponent } from './side-menu/side-menu.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
+import { AppContainerComponent } from './app-container/app-container.component';
 
 
 
@@ -20,6 +21,7 @@ import { ToolbarComponent } from './toolbar/toolbar.component';
     MainMenuComponent,
     MessagesListComponent,
     MessagesTriggerDirective,
+    AppContainerComponent,
   ],
   imports: [
     CommonModule,

@@ -5,7 +5,7 @@ import { tap, switchMap, map, distinctUntilChanged, filter, delay, takeUntil, sh
 import { SystemPreferencesService } from 'src/app/services';
 import { SystemSettings, UserModule } from 'src/app/interfaces';
 import { MenuDataSource, SideMenuData } from './menu-datasource';
-import { DestroyService } from 'prd-cdk';
+import { DestroyService, log } from 'prd-cdk';
 
 @Component({
   selector: 'app-side-menu',
@@ -16,17 +16,18 @@ import { DestroyService } from 'prd-cdk';
 })
 export class SideMenuComponent implements OnInit {
 
-  constructor(
-    private systemPreferencesService: SystemPreferencesService,
-    private destroy$: DestroyService,
-    private changeDetector: ChangeDetectorRef,
-  ) { }
   treeControl = new NestedTreeControl<SideMenuData>(node => node.childMenu);
   dataSource = new MenuDataSource(this.systemPreferencesService.modules$);
 
   activeRoute: string;
 
   hasChild = (_: number, node: SideMenuData) => node.childMenu?.length > 0;
+
+  constructor(
+    private systemPreferencesService: SystemPreferencesService,
+    private destroy$: DestroyService,
+    private changeDetector: ChangeDetectorRef,
+  ) { }
 
   ngOnInit(): void {
     this.dataSource.dataChange$.pipe(
