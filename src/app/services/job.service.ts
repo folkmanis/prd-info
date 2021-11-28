@@ -5,7 +5,6 @@ import { catchError, map, pluck, share, startWith, switchMap, tap } from 'rxjs/o
 import { Job, JobPartial, JobQueryFilter } from 'src/app/interfaces';
 import { PrdApiService } from 'src/app/services';
 import { NotificationsService } from './notifications.service';
-import { log } from 'prd-cdk';
 import { HttpCacheService } from 'src/app/library/http';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 
