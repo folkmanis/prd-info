@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { IFormControl } from '@rxweb/types';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
-import { JobsWithoutInvoicesTotals } from 'src/app/interfaces';
+import { JobsWithoutInvoicesTotals } from 'src/app/jobs';
 
 @Component({
   selector: 'app-customer-selector',

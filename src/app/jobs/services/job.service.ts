@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { endOfDay } from 'date-fns';
 import { combineLatest, EMPTY, merge, Observable, of, ReplaySubject, Subject } from 'rxjs';
 import { catchError, map, pluck, share, startWith, switchMap, tap } from 'rxjs/operators';
-import { Job, JobPartial, JobQueryFilter } from 'src/app/interfaces';
-import { PrdApiService } from 'src/app/services';
-import { NotificationsService } from './notifications.service';
+import { Job, JobPartial, JobQueryFilter, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
+import { NotificationsService } from '../../services';
 import { HttpCacheService } from 'src/app/library/http';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
+import { JobsApiService } from './jobs-api.service';
 
 interface JobUpdateParams {
   createFolder?: boolean;
@@ -30,10 +30,10 @@ export class JobService {
   );
 
   constructor(
-    private prdApi: PrdApiService,
     private notificatinsService: NotificationsService,
     private cacheService: HttpCacheService,
     private confirmationDialogService: ConfirmationDialogService,
+    private api: JobsApiService,
   ) { }
 
   jobs$: Observable<JobPartial[]> = combineLatest([
@@ -53,7 +53,7 @@ export class JobService {
   }
 
   newJob(job: Partial<Job>, params?: JobUpdateParams): Observable<number> {
-    return this.prdApi.jobs.insertOne(job, params).pipe(
+    return this.api.insertOne(job, params).pipe(
       pluck('jobId'),
       tap(() => this.forceReload$.next()),
       catchError(() => this.confirmationDialogService.confirmDataError())
@@ -64,7 +64,7 @@ export class JobService {
     if (job.dueDate) {
       job.dueDate = endOfDay(new Date(job.dueDate));
     }
-    return this.prdApi.jobs.updateOne(
+    return this.api.updateOne(
       jobId,
       {
         ...job,
@@ -78,7 +78,7 @@ export class JobService {
   }
 
   createFolder(jobId: number) {
-    return this.prdApi.jobs.createFolder(jobId).pipe(
+    return this.api.createFolder(jobId).pipe(
       catchError(() => this.confirmationDialogService.confirmDataError())
     );
   }
@@ -87,17 +87,27 @@ export class JobService {
     jobs.forEach(job => {
       if (!job.jobId) { return EMPTY; }
     });
-    return this.prdApi.jobs.updateMany(jobs, params).pipe(
+    return this.api.updateMany(jobs, params).pipe(
       tap(resp => resp && this.forceReload$.next()),
     );
   }
 
   getJob(jobId: number): Observable<Job> {
-    return this.prdApi.jobs.get(jobId);
+    return this.api.get(jobId);
   }
 
-  getJobList(filter?: JobQueryFilter): Observable<JobPartial[]> {
-    return this.prdApi.jobs.get(filter);
+  getJobList(filter: JobQueryFilter = {}): Observable<JobPartial[]> {
+    filter.unwindProducts = 0;
+    return this.api.get(filter);
+  }
+
+  getJobListUnwinded(filter: JobQueryFilter = {}): Observable<JobUnwindedPartial[]> {
+    filter.unwindProducts = 1;
+    return this.api.get(filter);
+  }
+
+  getJobsWithoutInvoicesTotals(): Observable<JobsWithoutInvoicesTotals[]> {
+    return this.api.jobsWithoutInvoicesTotals();
   }
 
 }

@@ -2,10 +2,10 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { DestroyService } from 'prd-cdk';
 import { OperatorFunction, pipe } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { JobPartial, JobProduct } from 'src/app/interfaces';
+import { JobPartial, JobProduct } from '../../interfaces';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { LayoutService } from 'src/app/services';
-import { JobService } from 'src/app/services/job.service';
+import { JobService } from '../../services/job.service';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 
 @Component({

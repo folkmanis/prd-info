@@ -34,10 +34,11 @@ import { ClassTransformer } from 'class-transformer';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    AppRoutingModule,
     MaterialLibraryModule,
     LibraryModule,
     LayoutModule,
+    // JobsModule,
+    AppRoutingModule,
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'lv' },

@@ -3,7 +3,6 @@ import { Injectable, Inject } from '@angular/core';
 import { LoginApi } from './login-api';
 import { CustomersApi } from './customers-api';
 import { InvoicesApi } from './invoices-api';
-import { JobsApi } from './jobs-api';
 import { ProductsApi } from './products-api';
 import { SystemPreferencesApi } from './system-preferences-api';
 import { KastesApi } from './kastes-api';
@@ -28,7 +27,6 @@ export class PrdApiService {
   login = new LoginApi(this.http, this.apiPath + 'login/');
   customers = new CustomersApi(this.http, this.apiPath + 'customers/');
   products = new ProductsApi(this.http, this.apiPath + 'products/');
-  jobs = new JobsApi(this.http, this.apiPath + 'jobs/');
   invoices = new InvoicesApi(this.http, this.apiPath + 'invoices/');
   systemPreferences = new SystemPreferencesApi(this.http, this.apiPath + 'preferences/');
   kastes = new KastesApi(this.http, this.apiPath + 'kastes/');

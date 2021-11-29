@@ -2,19 +2,19 @@ import { Injectable } from '@angular/core';
 import { pick } from 'prd-cdk';
 import { EMPTY, Observable, of, Subject } from 'rxjs';
 import { map, pluck, startWith, switchMap, tap } from 'rxjs/operators';
-import {
-  Invoice, InvoicesFilter, InvoiceTable,
-  InvoiceUpdate, INVOICE_UPDATE_FIELDS, JobPartial, JobQueryFilter, JobsWithoutInvoicesTotals, InvoiceForReport, JobUnwindedPartial
-} from 'src/app/interfaces';
+import { Invoice, InvoicesFilter, InvoiceTable, InvoiceUpdate, INVOICE_UPDATE_FIELDS, InvoiceForReport } from 'src/app/interfaces';
+import { JobPartial, JobQueryFilter, JobsWithoutInvoicesTotals, JobUnwindedPartial, JobService } from 'src/app/jobs';
 import { PaytraqInvoice } from 'src/app/interfaces/paytraq';
 import { Sale } from 'src/app/interfaces/paytraq/invoice';
 import { PrdApiService } from 'src/app/services';
+import { } from 'src/app/jobs/services/job.service';
 
 @Injectable({ providedIn: 'any' })
 export class InvoicesService {
 
   constructor(
     private prdApi: PrdApiService,
+    private jobService: JobService,
   ) { }
 
   private reloadJobsWithoutInvoicesTotals$ = new Subject();
@@ -24,17 +24,11 @@ export class InvoicesService {
   );
 
   getJobsWithoutInvoicesTotals(): Observable<JobsWithoutInvoicesTotals[]> {
-    return this.prdApi.jobs.jobsWithoutInvoicesTotals();
-  }
-
-  getJobs(filter: JobQueryFilter): Observable<JobPartial[]> {
-    filter.unwindProducts = 0;
-    return this.prdApi.jobs.get(filter);
+    return this.jobService.getJobsWithoutInvoicesTotals();
   }
 
   getJobsUnwinded(filter: JobQueryFilter): Observable<JobUnwindedPartial[]> {
-    filter.unwindProducts = 1;
-    return this.prdApi.jobs.get(filter);
+    return this.jobService.getJobListUnwinded(filter);
   }
 
   reloadJobsWithoutInvoicesTotals() {

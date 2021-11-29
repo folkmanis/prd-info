@@ -3,9 +3,10 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { flatten } from 'lodash';
 import { forkJoin, Observable, of } from 'rxjs';
 import { concatMap, map, mapTo } from 'rxjs/operators';
-import { Job, JobProduct, JobProductionStage } from 'src/app/interfaces';
+import { JobProductionStage } from 'src/app/interfaces';
+import { Job, JobProduct } from '../../interfaces';
 import { ProductsService } from 'src/app/services';
-import { JobService } from 'src/app/services/job.service';
+import { JobService } from '../../services/job.service';
 import { ReproJobEditComponent } from '../repro-job-edit/repro-job-edit.component';
 
 export interface DialogData {

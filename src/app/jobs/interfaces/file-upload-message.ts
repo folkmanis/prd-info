@@ -7,7 +7,6 @@ export enum FileUploadEventType {
 
 export interface UploadMessageBase {
     id: string;
-    // jobId: number;
     name: string;
     size: number;
 }

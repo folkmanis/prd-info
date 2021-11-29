@@ -1,8 +1,7 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
-import { JobPartial } from 'src/app/interfaces';
+import { JobPartial } from 'src/app/jobs';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { ReproJobDialogService } from 'src/app/jobs/repro-jobs/services/repro-job-dialog.service';
 

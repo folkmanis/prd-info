@@ -11,7 +11,8 @@ import { ReproJobFormComponent } from './repro-job-edit/repro-job-form/repro-job
 import { ProductAutocompleteComponent } from './repro-job-edit/repro-products-editor/product-autocomplete/product-autocomplete.component';
 import { ProductControlDirective } from './repro-job-edit/repro-products-editor/product-control.directive';
 import { ReproProductsEditorComponent } from './repro-job-edit/repro-products-editor/repro-products-editor.component';
-import { JobsRoutingModule } from './repro-jobs-routing.module';
+import { RouterModule, Routes } from '@angular/router';
+import { ReproJobsRoutingModule } from './repro-jobs-routing.module';
 import { JobFilterComponent } from './side-panel/job-filter/job-filter.component';
 import { SidePanelComponent } from './side-panel/side-panel.component';
 import { UploadProgressComponent } from './side-panel/upload-progress/upload-progress.component';
@@ -37,7 +38,8 @@ import { ReproJobsComponent } from './repro-jobs.component';
     CommonModule,
     MaterialLibraryModule,
     LibraryModule,
-    JobsRoutingModule,
+    RouterModule,
+    // ReproJobsRoutingModule,
   ]
 })
 export class ReproJobsModule { }

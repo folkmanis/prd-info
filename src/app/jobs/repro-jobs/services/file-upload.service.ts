@@ -2,8 +2,8 @@ import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EMPTY, merge, Observable, of, Subject } from 'rxjs';
 import { finalize, map, mergeMap, share, shareReplay, tap, throttleTime } from 'rxjs/operators';
-import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 import { FileUploadEventType, FileUploadMessage, UploadMessageBase } from '../../interfaces/file-upload-message';
+import { JobsApiService } from '../../services/jobs-api.service';
 
 const CLOSE_EVENT_DELAY = 1000 * 5;
 const SIMULTANEOUS_UPLOADS = 2;
@@ -38,7 +38,7 @@ export class FileUploadService {
   private _activeUploads = new Map<string, FileUploadMessage>();
 
   constructor(
-    private prdApi: PrdApiService,
+    private api: JobsApiService,
   ) { }
 
   /**
@@ -79,7 +79,7 @@ export class FileUploadService {
   private uploadFile(jobId: number, file: File): Observable<any> {
     const formData = new FormData();
     formData.append('fileUpload', file, file.name);
-    return this.prdApi.jobs.fileUpload(jobId, formData).pipe(
+    return this.api.fileUpload(jobId, formData).pipe(
       tap(ev => this.reportProgress(ev, file, jobId)),
       finalize(() => this.uploadQueue.delete(uploadId(file))),
     );

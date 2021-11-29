@@ -8,7 +8,7 @@ import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { LayoutService } from 'src/app/services';
 import { CONFIG } from 'src/app/services/config.provider';
 import { CustomersService } from 'src/app/services/customers.service';
-import { JobService } from 'src/app/services/job.service';
+import { JobService } from '../../../services/job.service';
 import { ProductsService } from 'src/app/services/products.service';
 import { JobFormGroup } from '../../services/job-form-group';
 import { CustomerInputComponent } from '../customer-input/customer-input.component';

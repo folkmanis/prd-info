@@ -1,5 +1,5 @@
-import { Invoice, InvoiceProduct, Job, JobProduct, Product } from 'src/app/interfaces';
-import * as moment from 'moment';
+import { Invoice } from 'src/app/interfaces';
+import moment from 'moment';
 
 const DOCUMENT_FIELDS: string[] = [
     'InvoiceDate', // *

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { JobsWithoutInvoicesTotals } from 'src/app/interfaces';
+import { JobsWithoutInvoicesTotals } from 'src/app/jobs';
 
 @Component({
   selector: 'app-jobs-without-invoices',

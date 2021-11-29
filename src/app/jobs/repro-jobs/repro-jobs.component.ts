@@ -3,10 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DestroyService } from 'prd-cdk';
 import { EMPTY, Observable, of } from 'rxjs';
 import { concatMap, filter, map, mergeMap, takeUntil, tap } from 'rxjs/operators';
-import { Job } from 'src/app/interfaces';
-import { JobQueryFilter } from 'src/app/interfaces/job';
+import { Job, JobQueryFilter } from '../interfaces';
 import { LayoutService } from 'src/app/services';
-import { JobService } from 'src/app/services/job.service';
+import { JobService } from '../services/job.service';
 import { FileUploadService } from './services/file-upload.service';
 import { ReproJobDialogService } from './services/repro-job-dialog.service';
 

@@ -7,8 +7,6 @@ import { JobsComponent } from './jobs.component';
 import { ReproJobsModule } from './repro-jobs/repro-jobs.module';
 
 
-
-
 @NgModule({
   declarations: [
     JobsComponent,
@@ -17,8 +15,8 @@ import { ReproJobsModule } from './repro-jobs/repro-jobs.module';
     CommonModule,
     LibraryModule,
     MaterialLibraryModule,
-    JobsRoutingModule,
     ReproJobsModule,
+    JobsRoutingModule,
   ],
 })
 export class JobsModule { }

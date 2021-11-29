@@ -1,8 +1,8 @@
 import { Directive, Input, Output, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { combineLatest, BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime, filter, map, pluck, takeUntil } from 'rxjs/operators';
-import { CustomerProduct, JobProduct, SystemPreferences } from 'src/app/interfaces';
-import { DestroyService, log } from 'prd-cdk';
+import { CustomerProduct } from 'src/app/interfaces';
+import { DestroyService } from 'prd-cdk';
 import { ProductFormGroup } from '../../services/product-form-group';
 import { FormControl } from '@angular/forms';
 

@@ -1,7 +1,8 @@
 import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
-import { CustomerPartial, Job, JobProduct, ProductPartial } from 'src/app/interfaces';
+import { CustomerPartial, ProductPartial } from 'src/app/interfaces';
+import { Job, JobProduct } from '../../interfaces';
 import { ProductFormArray } from './product-form-array';
 
 const validateCustomerFn = (customers$: Observable<CustomerPartial[]>): AsyncValidatorFn => {

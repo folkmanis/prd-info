@@ -3,14 +3,14 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { isEqual, pickBy } from 'lodash';
 import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { Job } from 'src/app/interfaces';
+import { Job } from '../../interfaces';
 import { CustomersService, LayoutService, ProductsService } from 'src/app/services';
 import { JobFormGroup } from '../services/job-form-group';
 import { DialogData } from '../services/repro-job-dialog.service';
 
 const LARGE_SCREEN_SIZE = {
   height: '90%',
-  width: '80%',
+  width: '90%',
 };
 const SMALL_SCREEN_SIZE = {
   height: '100%',

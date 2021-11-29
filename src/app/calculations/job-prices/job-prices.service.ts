@@ -1,10 +1,9 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { Injectable } from '@angular/core';
-import { log } from 'prd-cdk';
-import { EMPTY, from, merge, Observable, of, pipe, ReplaySubject, Subject, OperatorFunction, ObservedValueOf } from 'rxjs';
-import { filter as filterOperator, map, shareReplay, switchMap, tap, toArray, withLatestFrom } from 'rxjs/operators';
-import { JobUnwindedPartial, JobUnwinded, CustomerProduct, Job, JobPartial, JobProduct, JobsWithoutInvoicesTotals } from 'src/app/interfaces';
-import { JobService } from 'src/app/services/job.service';
+import { merge, Observable, of, OperatorFunction, pipe, ReplaySubject, Subject } from 'rxjs';
+import { filter as filterOperator, map, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { CustomerProduct } from 'src/app/interfaces';
+import { JobProduct, JobService, JobsWithoutInvoicesTotals, JobUnwinded, JobUnwindedPartial } from 'src/app/jobs';
 import { ProductsService } from 'src/app/services/products.service';
 import { InvoicesService } from '../services/invoices.service';
 

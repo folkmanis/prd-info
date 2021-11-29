@@ -1,5 +1,3 @@
-import { AppHttpResponseBase } from 'src/app/library/http/app-http-response-base';
-
 export interface User {
     username: string;
     name: string;
