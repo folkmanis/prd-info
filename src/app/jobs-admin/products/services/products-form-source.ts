@@ -7,7 +7,9 @@ import { ProductsService } from 'src/app/services/products.service';
 import { SimpleFormSource } from 'src/app/library/simple-form';
 import { Injectable } from '@angular/core';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class ProductsFormSource extends SimpleFormSource<Product> {
 
     constructor(

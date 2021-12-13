@@ -17,7 +17,6 @@ import { ProductsFormSource } from '../services/products-form-source';
   styleUrls: ['./products-editor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    ProductsFormSource,
     { provide: SimpleFormSource, useExisting: ProductsFormSource },
   ]
 })
