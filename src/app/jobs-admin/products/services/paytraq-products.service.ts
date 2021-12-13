@@ -5,7 +5,7 @@ import { pluck, map } from 'rxjs/operators';
 import * as Pt from 'src/app/interfaces/paytraq';
 
 @Injectable({
-  providedIn: 'any'
+  providedIn: 'root'
 })
 export class PaytraqProductsService {
 
