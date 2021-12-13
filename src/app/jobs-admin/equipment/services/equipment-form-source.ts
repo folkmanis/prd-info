@@ -1,12 +1,16 @@
-import { SimpleFormSource } from 'src/app/library/simple-form';
-import { FormBuilder, FormControl, FormGroup, FormArray, Validators, AsyncValidatorFn, AbstractControl, ValidatorFn } from '@angular/forms';
-import { IFormArray, IFormBuilder, IFormControl, IFormGroup } from '@rxweb/types';
+import { Injectable } from '@angular/core';
+import { AbstractControl, AsyncValidatorFn, FormBuilder, Validators } from '@angular/forms';
+import { IFormGroup } from '@rxweb/types';
+import { Observable, of } from 'rxjs';
+import { map, pluck } from 'rxjs/operators';
 import { Equipment } from 'src/app/interfaces';
+import { SimpleFormSource } from 'src/app/library/simple-form';
 import { EquipmentService } from './equipment.service';
-import { EMPTY, Observable, of } from 'rxjs';
-import { map, pluck, switchMap } from 'rxjs/operators';
 
 
+@Injectable({
+    providedIn: 'root'
+})
 export class EquipmentFormSource extends SimpleFormSource<Equipment> {
 
     get isNew(): boolean {

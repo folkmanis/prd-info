@@ -1,31 +1,30 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { EquipmentFormSource } from '../services/equipment-form-source';
-import { EquipmentService } from '../services/equipment.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { Equipment } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
+import { SimpleFormSource } from 'src/app/library/simple-form';
+import { EquipmentFormSource } from '../services/equipment-form-source';
 
 
 @Component({
   selector: 'app-equipment-edit',
   templateUrl: './equipment-edit.component.html',
   styleUrls: ['./equipment-edit.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    { provide: SimpleFormSource, useExisting: EquipmentFormSource }
+  ]
 })
 export class EquipmentEditComponent implements OnInit, CanComponentDeactivate {
 
-  formSource: EquipmentFormSource;
 
   get form(): FormGroup {
     return this.formSource.form;
   }
 
   constructor(
-    private fb: FormBuilder,
-    private equipmentService: EquipmentService,
-  ) {
-    this.formSource = new EquipmentFormSource(this.fb, this.equipmentService);
-  }
+    private formSource: EquipmentFormSource,
+  ) { }
 
   ngOnInit(): void {
   }
