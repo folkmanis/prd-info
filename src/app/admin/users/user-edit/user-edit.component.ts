@@ -1,20 +1,21 @@
-import { Component, OnInit, Inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { UsersService } from '../../services/users.service';
-import { UserFormSource } from '../services/user-form-source';
-import { IFormControl } from '@rxweb/types';
-import { XmfCustomer } from 'src/app/xmf-search/interfaces';
-import { EMPTY, from, Observable, of } from 'rxjs';
-import { APP_PARAMS } from 'src/app/app-params';
-import { AppParams, User, UserSession } from 'src/app/interfaces';
-import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { PasswordChangeDialogComponent } from '../password-change-dialog/password-change-dialog.component';
-import { concatMap, map, mapTo, mergeMap, reduce, switchMap, tap, throwIfEmpty } from 'rxjs/operators';
-import { SimpleFormSource } from 'src/app/library/simple-form';
+import { IFormControl } from '@rxweb/types';
+import { EMPTY, Observable, of } from 'rxjs';
+import { mapTo, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { APP_PARAMS } from 'src/app/app-params';
+import { AppParams, User, UserSession } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library';
-import { LoginService } from 'src/app/services';
+import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
+import { SimpleFormSource } from 'src/app/library/simple-form';
+import { LoginService } from 'src/app/login';
+import { XmfCustomer } from 'src/app/xmf-search/interfaces';
+import { UsersService } from '../../services/users.service';
+import { PasswordChangeDialogComponent } from '../password-change-dialog/password-change-dialog.component';
+import { UserFormSource } from '../services/user-form-source';
+
 
 @Component({
   selector: 'app-user-edit',

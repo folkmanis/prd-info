@@ -1,7 +1,9 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { LayoutService, LoginService, SystemPreferencesService } from 'src/app/services';
+import { LayoutService, SystemPreferencesService } from 'src/app/services';
+import { LoginService } from 'src/app/login';
+
 
 @Component({
   selector: 'app-app-container',

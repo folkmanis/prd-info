@@ -4,7 +4,7 @@ import { combineLatest, EMPTY, merge, Observable, of, Subject } from 'rxjs';
 import { concatMap, filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { APP_PARAMS } from '../app-params';
 import { AppParams, MODULES, PreferencesDbModule, SystemPreferences, UserModule } from '../interfaces';
-import { LoginService } from './login.service';
+import { LoginService } from 'src/app/login';
 import { PrdApiService } from './prd-api/prd-api.service';
 
 @Injectable({

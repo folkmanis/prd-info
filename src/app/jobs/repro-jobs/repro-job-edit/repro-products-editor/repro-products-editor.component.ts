@@ -5,7 +5,7 @@ import { from, Observable, Subject } from 'rxjs';
 import { filter, map, pluck, switchMap, toArray } from 'rxjs/operators';
 import { CustomerProduct, SystemPreferences } from 'src/app/interfaces';
 import { CONFIG } from 'src/app/services/config.provider';
-import { LoginService } from 'src/app/services/login.service';
+import { LoginService } from 'src/app/login';
 import { ProductFormArray } from '../../services/product-form-array';
 import { ProductFormGroup } from '../../services/product-form-group';
 import { ProductAutocompleteComponent } from './product-autocomplete/product-autocomplete.component';

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy } from '@a
 import { Invoice, InvoiceProduct } from 'src/app/interfaces';
 import { Subject, ReplaySubject, from, Observable } from 'rxjs';
 import { map, pluck, switchMap } from 'rxjs/operators';
-import { LoginService } from 'src/app/services/login.service';
+import { LoginService } from 'src/app/login';
 
 @Component({
   selector: 'app-invoice-products',

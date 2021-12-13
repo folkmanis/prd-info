@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
-import { LoginService } from 'src/app/services/login.service';
+import { LoginService } from 'src/app/login';
 import { Message } from '../interfaces';
 import { MessagesApiService } from './messages-api.service';
 

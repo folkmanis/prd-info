@@ -5,7 +5,7 @@ import { delay, retryWhen, take } from 'rxjs/operators';
 import { AppParams, ModulesWithNotifications, Notification } from 'src/app/interfaces';
 import { MultiplexConfig, WsAuthSubject } from 'src/app/library/ws-token/ws-auth-subject';
 import { APP_PARAMS } from '../app-params';
-import { PrdApiService } from './prd-api/prd-api.service';
+import { LoginService } from 'src/app/login';
 
 interface WsEvent {
   event?: 'auth',
@@ -30,7 +30,7 @@ export class NotificationsService {
   constructor(
     @Inject(DOCUMENT) private document: Document,
     @Inject(APP_PARAMS) private params: AppParams,
-    private api: PrdApiService,
+    private loginService: LoginService,
   ) { }
 
   wsMultiplex<T extends Notification, K extends T['module']>(module: K) {
@@ -48,7 +48,7 @@ export class NotificationsService {
         data: { module }
       }),
       messageFilter: data => data.module === module,
-      tokenFn: () => this.api.login.getSessionToken(),
+      tokenFn: () => this.loginService.sessionToken(),
     };
 
 

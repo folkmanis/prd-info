@@ -1,10 +1,23 @@
+import { Injectable, Inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map, mapTo, pluck, switchMap } from 'rxjs/operators';
-import { Login, User } from 'src/app/interfaces';
+import { APP_PARAMS } from 'src/app/app-params';
+import { AppParams, Login, User } from 'src/app/interfaces';
 import { ApiBase } from 'src/app/library/http';
 
 
-export class LoginApi extends ApiBase<User> {
+@Injectable({
+    providedIn: 'root'
+})
+export class LoginApiService extends ApiBase<User> {
+
+    constructor(
+        @Inject(APP_PARAMS) params: AppParams,
+        http: HttpClient,
+    ) {
+        super(http, params.apiPath + 'login/');
+    }
 
     login(login: Login): Observable<User | null> {
         return this.http.post<User>(this.path, login).pipe(
