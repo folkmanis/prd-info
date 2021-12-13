@@ -1,4 +1,4 @@
-<app-simple-form-container [formSource]="formSource" (dataChange)="onDataChange($event)" [class.large]="large$ | async">
+<app-simple-form-container (dataChange)="onDataChange($event)" [class.large]="large$ | async">
 
     <form [formGroup]="form">
 

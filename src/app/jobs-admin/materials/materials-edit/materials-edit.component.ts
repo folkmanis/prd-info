@@ -1,26 +1,27 @@
-import { Component, OnInit, ChangeDetectionStrategy, Inject } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { FormArray } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { IFormGroup } from '@rxweb/types';
-import { MaterialsService } from '../services/materials.service';
-import { MaterialsFormSource, MaterialPriceGroup } from '../services/materials-form-source';
-import { Material, ProductUnit, SystemPreferences } from 'src/app/interfaces';
-import { CONFIG } from 'src/app/services/config.provider';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { LayoutService } from 'src/app/services';
+import { Material, ProductUnit, SystemPreferences } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
-import { MatDialog } from '@angular/material/dialog';
-import { MaterialsPriceDialogComponent, DialogData } from './materials-price-dialog/materials-price-dialog.component';
+import { SimpleFormSource } from 'src/app/library/simple-form';
+import { LayoutService } from 'src/app/services';
+import { CONFIG } from 'src/app/services/config.provider';
+import { MaterialPriceGroup, MaterialsFormSource } from '../services/materials-form-source';
+import { DialogData, MaterialsPriceDialogComponent } from './materials-price-dialog/materials-price-dialog.component';
 
 @Component({
   selector: 'app-materials-edit',
   templateUrl: './materials-edit.component.html',
   styleUrls: ['./materials-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    { provide: SimpleFormSource, useExisting: MaterialsFormSource }
+  ]
 })
 export class MaterialsEditComponent implements OnInit, CanComponentDeactivate {
-
-  formSource: MaterialsFormSource = new MaterialsFormSource(this.fb, this.materialsService);
 
   units$: Observable<ProductUnit[]> = this.config$.pipe(
     map(conf => conf.jobs.productUnits),
@@ -42,11 +43,11 @@ export class MaterialsEditComponent implements OnInit, CanComponentDeactivate {
   }
 
   constructor(
-    private materialsService: MaterialsService,
-    private fb: FormBuilder,
     private layout: LayoutService,
     private dialogService: MatDialog,
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
+    private formSource: MaterialsFormSource,
+
   ) { }
 
   ngOnInit(): void {
@@ -71,6 +72,10 @@ export class MaterialsEditComponent implements OnInit, CanComponentDeactivate {
     );
   }
 
+  onRemovePrice(idx: number) {
+    this.formSource.deletePrice(idx);
+  }
+
   private updatePrice(control: MaterialPriceGroup, idx?: number) {
     const data: DialogData = {
       control,
@@ -84,10 +89,6 @@ export class MaterialsEditComponent implements OnInit, CanComponentDeactivate {
       .pipe(
         filter(data => !!data),
       ).subscribe(data => this.formSource.updatePriceControl(data, idx));
-  }
-
-  onRemovePrice(idx: number) {
-    this.formSource.deletePrice(idx);
   }
 
 

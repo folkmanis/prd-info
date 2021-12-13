@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { IFormGroup } from '@rxweb/types';
 import { defaults, isEqual, pickBy } from 'lodash';
@@ -13,6 +14,9 @@ const DEFAULT_MATERIAL: Partial<Material> = {
     fixedPrice: 0,
 };
 
+@Injectable({
+    providedIn: 'root'
+})
 export class MaterialsFormSource extends SimpleFormSource<Material> {
 
     get isNew(): boolean {
