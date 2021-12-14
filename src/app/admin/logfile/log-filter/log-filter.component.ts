@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import * as moment from 'moment';
+import moment from 'moment';
 import { DestroyService } from 'prd-cdk';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, pluck, switchMap, takeUntil } from 'rxjs/operators';
@@ -61,7 +61,7 @@ export class LogFilterComponent implements OnInit, OnDestroy, AfterViewInit {
     ).subscribe(dates => {
       this.validDates = dates;
       if (!this.isValiddate(this.dateControl.value)) {
-        this.filterForm.patchValue({ date: this.validDates.max });
+        this.dateControl.setValue(this.validDates.max);
       }
     });
 

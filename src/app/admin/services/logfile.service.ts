@@ -1,11 +1,11 @@
 import { Inject, Injectable, OnDestroy } from '@angular/core';
-import * as moment from 'moment';
+import moment from 'moment';
 import { combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
-import { map, pluck, share, shareReplay, switchMap } from 'rxjs/operators';
+import { map, pluck, shareReplay, switchMap } from 'rxjs/operators';
 import { SystemPreferences } from 'src/app/interfaces';
 import { CONFIG } from 'src/app/services/config.provider';
+import { LogfileApiService } from './logfile-api.service';
 import { LogQueryFilter, LogRecord, LogRecordHttp } from './logfile-record';
-import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 
 export interface ValidDates {
   dates: Set<string>;
@@ -16,7 +16,6 @@ export interface ValidDates {
 @Injectable()
 export class LogfileService implements OnDestroy {
 
-  private httpPathLogfile = '/data/log/';
   private _logLevelMap$: Observable<Map<number, string>> = this.config$.pipe(
     pluck('system', 'logLevels'),
     map(levels => new Map<number, string>(levels)),
@@ -33,8 +32,8 @@ export class LogfileService implements OnDestroy {
   );
 
   constructor(
-    private apiService: PrdApiService,
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
+    private api: LogfileApiService,
   ) { }
 
 
@@ -47,7 +46,7 @@ export class LogfileService implements OnDestroy {
   }
 
   private logEntries(filter: LogQueryFilter, levelMap: Map<number, string>): Observable<LogRecord[]> {
-    return this.apiService.logfile.get<LogRecordHttp>(filter).pipe(
+    return this.api.get<LogRecordHttp>(filter).pipe(
       map(records => records.map(rec => ({
         ...rec,
         levelVerb: levelMap.get(rec.level) || rec.level.toString(),
@@ -56,7 +55,7 @@ export class LogfileService implements OnDestroy {
   }
 
   datesGroups(filter: LogQueryFilter): Observable<ValidDates> {
-    return this.apiService.logfile.getDatesGroups(filter).pipe(
+    return this.api.getDatesGroups(filter).pipe(
       map(dates => ({
         dates: new Set<string>(dates),
         min: moment(dates.slice(0, 1).pop()),
