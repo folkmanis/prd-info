@@ -1,7 +1,7 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Input, AfterViewInit, ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { LogRecord } from '../../services/logfile-record';
-import { LogfileService } from '../../services/logfile.service';
+import { ReplaySubject } from 'rxjs';
 
 @Component({
   selector: 'app-logfile-table',
@@ -16,22 +16,20 @@ import { LogfileService } from '../../services/logfile.service';
     ]),
   ],
 })
-export class LogfileTableComponent implements OnInit, AfterViewInit {
+export class LogfileTableComponent {
 
-  displayedColumns = ['level', 'timestamp', 'info', 'metadata'];
+  readonly displayedColumns = ['level', 'timestamp', 'info', 'metadata'];
+
+  datasource$ = new ReplaySubject<LogRecord[]>(1);
+
   expandedRecord: LogRecord | null;
-  datasource$ = this.logService.log$;
 
-  constructor(
-    private logService: LogfileService,
-  ) { }
-
-
-  ngOnInit(): void {
+  @Input() set log(value: LogRecord[] | null) {
+    if (value) {
+      this.datasource$.next(value);
+    }
   }
 
-  ngAfterViewInit(): void {
-  }
 
 }
 

@@ -1,17 +1,13 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, Input, OnInit, Output } from '@angular/core';
 import moment from 'moment';
-import { DestroyService } from 'prd-cdk';
-import { Observable } from 'rxjs';
-import { distinctUntilChanged, filter, map, pluck, switchMap, takeUntil } from 'rxjs/operators';
-import { SystemPreferences } from 'src/app/interfaces';
-import { CONFIG } from 'src/app/services/config.provider';
+import { combineLatest, merge, Observable, OperatorFunction, ReplaySubject, Subject } from 'rxjs';
+import { filter, map, scan } from 'rxjs/operators';
 import { LogQueryFilter } from '../../services/logfile-record';
-import { LogfileService, ValidDates } from '../../services/logfile.service';
-
+import { ValidDates } from '../valid-dates.class';
+import { LogLevel } from '../log-level.interface';
 
 interface FilterForm {
-  logLevel: number;
+  level: number;
   date: moment.Moment;
 }
 
@@ -20,94 +16,65 @@ interface FilterForm {
   templateUrl: './log-filter.component.html',
   styleUrls: ['./log-filter.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DestroyService],
 })
-export class LogFilterComponent implements OnInit, OnDestroy, AfterViewInit {
+export class LogFilterComponent implements OnInit {
 
-  maxDate = moment();
-  filterForm = new FormGroup({
-    logLevel: new FormControl(0),
-    date: new FormControl(moment()),
+
+  @Output() reload = new Subject<void>();
+
+  @Output('date') date$ = new ReplaySubject<moment.Moment>(1);
+
+  @Output('levelChange') level$ = new ReplaySubject<number>(1);
+
+  private filter$ = combineLatest({
+    level: this.level$,
+    date: this.date$
   });
 
-  logLevels$: Observable<{ key: number; value: string; }[]> = this.config$.pipe(
-    pluck('system', 'logLevels'),
-    map(levels => levels.sort((a, b) => a[0] - b[0])),
-    map(levels => levels.map(level => ({ key: level[0], value: level[1] }))),
+  @Input() validDates: ValidDates;
+
+  @Input() logLevels: LogLevel[];
+
+  @Output('filter') logFilter: Observable<LogQueryFilter> = merge(
+    this.filter$,
+    this.reload
+  ).pipe(
+    scan((initial, val) => {
+      if (!initial) {
+        throw new Error('Value must be supplied before reload');
+      }
+      return val || initial;
+    }),
+    this.formToFilter(),
   );
 
 
-  private readonly dateControl = this.filterForm.get('date');
-  private validDates: ValidDates = { dates: new Set() };
-
   constructor(
-    private service: LogfileService,
-    private destroy$: DestroyService,
-    @Inject(CONFIG) private config$: Observable<SystemPreferences>,
   ) { }
 
   ngOnInit(): void {
-    /** Jauna tabula */
-    this.filterForm.valueChanges.pipe(
-      map(form => this.formToReq(form)),
-      takeUntil(this.destroy$),
-    ).subscribe(fltr => this.service.setFilter(fltr));
-    /** Jauns kalendārs */
-    this.filterForm.get('logLevel').valueChanges.pipe(
-      filter(val => val > 0),
-      distinctUntilChanged(),
-      switchMap(level => this.service.datesGroups({ level })),
-      takeUntil(this.destroy$),
-    ).subscribe(dates => {
-      this.validDates = dates;
-      if (!this.isValiddate(this.dateControl.value)) {
-        this.dateControl.setValue(this.validDates.max);
-      }
-    });
-
-    this.logLevels$.pipe(
-      map(levs => Math.max(...levs.map(({ key }) => key))),
-      takeUntil(this.destroy$),
-    ).subscribe(logLevel => this.filterForm.patchValue({ logLevel }));
   }
 
-  ngAfterViewInit(): void {
-  }
-
-  ngOnDestroy(): void {
-  }
-
-  isValiddate = (date: moment.Moment): boolean => this.validDates.dates.has(date?.format('Y-MM-DD'));
-
-  isMinDate = (): boolean => this.dateControl.value.isSame(this.validDates.min, 'days');
-
-  isMaxDate = (): boolean => this.dateControl.value.isSame(this.validDates.max, 'days');
-
-  onDateShift(days: number): void {
-    const newDate = moment(this.dateControl.value).add(days, 'days');
-    while (newDate.isBetween(this.validDates.min, this.validDates.max, 'date', '[]') && !this.isValiddate(newDate)) {
-      newDate.add(days, 'days');
-    }
-    if (!newDate.isBetween(this.validDates.min, this.validDates.max, 'date', '[]')) {
-      return;
-    }
-    this.dateControl.setValue(newDate);
+  onSetDate(value: moment.Moment) {
+    this.date$.next(value);
   }
 
   onReload(): void {
-    this.service.setFilter(this.formToReq(this.filterForm.value));
+    this.reload.next();
   }
 
-  onToday(): void {
-    this.dateControl.setValue(this.isValiddate(moment()) ? moment() : this.validDates.max);
+  onLevel(level: number) {
+    if (level >= 0) {
+      this.level$.next(level);
+    }
   }
 
-  private formToReq(val: FilterForm): LogQueryFilter {
-    return ({
-      level: val.logLevel,
-      dateFrom: (val.date as moment.Moment).startOf('day').toISOString(),
-      dateTo: (val.date as moment.Moment).endOf('day').toISOString(),
-    } as LogQueryFilter);
+  private formToFilter(): OperatorFunction<FilterForm, LogQueryFilter> {
+    return map(({ level, date }) => ({
+      level,
+      dateFrom: date.startOf('day').toISOString(),
+      dateTo: date.endOf('day').toISOString(),
+    }));
   }
 
 }
