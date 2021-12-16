@@ -1,4 +1,3 @@
-import { AppHttpResponseBase } from 'src/app/library/http';
 import { Colors } from '../kastes/interfaces';
 
 export const MODULES = ['kastes', 'system', 'jobs', 'paytraq'] as const;
@@ -69,5 +68,3 @@ export interface PaytraqConnectionParams {
     apiToken: string;
     invoiceUrl: string;
 }
-
-export type SystemPreferencesResponse = AppHttpResponseBase<PreferencesDbModule>;

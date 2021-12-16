@@ -1,4 +1,3 @@
-import { AppHttpResponseBase } from 'src/app/library/http';
 import { Customer } from './customer';
 import { JobPartial } from 'src/app/jobs';
 
@@ -45,10 +44,6 @@ export interface InvoiceProduct {
     price?: number;
     comment?: string;
     paytraqId?: number;
-}
-
-export interface InvoiceResponse extends AppHttpResponseBase<Invoice> {
-    totals?: ProductTotals[];
 }
 
 export interface ProductTotals {

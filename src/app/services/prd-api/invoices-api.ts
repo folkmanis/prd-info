@@ -1,7 +1,6 @@
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map, pluck } from 'rxjs/operators';
-import { Invoice, InvoiceResponse, ProductTotals, InvoiceUpdate, InvoiceForReport } from 'src/app/interfaces';
+import { pluck } from 'rxjs/operators';
+import { Invoice, InvoiceForReport, ProductTotals } from 'src/app/interfaces';
 import { ApiBase, HttpOptions } from 'src/app/library/http';
 
 export class InvoicesApi extends ApiBase<Invoice> {
@@ -11,8 +10,8 @@ export class InvoicesApi extends ApiBase<Invoice> {
     }
 
     getTotals(jobsId: number[]): Observable<ProductTotals[]> {
-        return this.http.get<InvoiceResponse>(this.path + 'totals', new HttpOptions({ jobsId })).pipe(
-            map(resp => resp.totals),
+        return this.http.get<{ totals: ProductTotals[]; }>(this.path + 'totals', new HttpOptions({ jobsId })).pipe(
+            pluck('totals'),
         );
     }
 

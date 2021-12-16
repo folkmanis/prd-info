@@ -8,7 +8,7 @@ import { map, pluck, tap } from 'rxjs/operators';
 export class PaytraqApi extends ApiBase<Pt.PaytraqData> {
 
     getClients(query: Pt.RequestOptions): Observable<Pt.PaytraqClients> {
-        return this.http.get<Pt.PaytraqResponse<Pt.PaytraqClients>>(
+        return this.http.get<{ clients: Pt.PaytraqClients; }>(
             this.path + 'clients',
             new HttpOptions(query).cacheable()
         )
@@ -18,7 +18,7 @@ export class PaytraqApi extends ApiBase<Pt.PaytraqData> {
     }
 
     getProducts(query: Pt.RequestOptions): Observable<Pt.PaytraqProducts> {
-        return this.http.get<Pt.PaytraqResponse<Pt.PaytraqProducts>>(
+        return this.http.get<{ products: Pt.PaytraqProducts; }>(
             this.path + 'products',
             new HttpOptions(query).cacheable()
         ).pipe(
