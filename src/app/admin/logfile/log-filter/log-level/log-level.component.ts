@@ -1,7 +1,18 @@
-import { Component, ChangeDetectionStrategy, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { distinctUntilChanged, Observable } from 'rxjs';
+import { distinctUntilChanged, filter, map, Observable, OperatorFunction, pipe, pluck, tap } from 'rxjs';
+import { SystemPreferences } from 'src/app/interfaces';
+import { CONFIG } from 'src/app/services/config.provider';
 import { LogLevel } from '../../log-level.interface';
+
+const maxLevel = (levels: LogLevel[]) => Math.max(...levels.map(({ key }) => key));
+
+const logLevelsFromPreferences = (): OperatorFunction<SystemPreferences, LogLevel[]> => pipe(
+  pluck('system', 'logLevels'),
+  map(levels => levels.sort((a, b) => a[0] - b[0])),
+  map(levels => levels.map(level => ({ key: level[0], value: level[1] }))),
+);
+
 
 @Component({
   selector: 'app-log-level',
@@ -13,24 +24,19 @@ export class LogLevelComponent {
 
   levelControl = new FormControl(0);
 
-  private _logLevels: LogLevel[] = [];
-  @Input() set logLevels(value: LogLevel[]) {
-    if (!value) {
-      return;
-    }
-    this._logLevels = value;
-    const maxLevel = Math.max(...value.map(({ key }) => key));
-    this.levelControl.setValue(maxLevel);
-  }
-  get logLevels(): LogLevel[] {
-    return this._logLevels;
-  }
+  logLevels$: Observable<LogLevel[]> = this.config$.pipe(
+    logLevelsFromPreferences(),
+    tap(level => this.levelControl.setValue(maxLevel(level))),
+  );
 
   @Output() levelChange: Observable<number> = this.levelControl.valueChanges.pipe(
+    filter(level => level >= 0),
     distinctUntilChanged(),
   );
 
 
-  constructor() { }
+  constructor(
+    @Inject(CONFIG) private config$: Observable<SystemPreferences>,
+  ) { }
 
 }

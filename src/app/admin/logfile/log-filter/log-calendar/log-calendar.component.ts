@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, Input, Output, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import moment from 'moment';
-import { Observable, shareReplay, startWith } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ValidDates } from '../../valid-dates.class';
 
 @Component({
@@ -10,8 +10,7 @@ import { ValidDates } from '../../valid-dates.class';
   styleUrls: ['./log-calendar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LogCalendarComponent implements OnInit {
-
+export class LogCalendarComponent {
 
   dateControl = new FormControl(moment());
 
@@ -21,7 +20,10 @@ export class LogCalendarComponent implements OnInit {
       return;
     }
     this._validDates = value;
-    if (!this.isValiddate(this.dateControl.value)) {
+    const currentDate = this.dateControl.value;
+    if (this.isValiddate(currentDate)) {
+      this.dateControl.setValue(currentDate);
+    } else {
       this.dateControl.setValue(this.validDates.max);
     }
   }
@@ -29,19 +31,11 @@ export class LogCalendarComponent implements OnInit {
     return this._validDates;
   }
 
-  @Output() selectedDate: Observable<moment.Moment> = this.dateControl.valueChanges.pipe(
-    startWith(this.dateControl.value)
-  );
+  @Output() selectedDate: Observable<moment.Moment> = this.dateControl.valueChanges;
 
   isValiddate = (date: moment.Moment) => this.validDates.isValid(date);
   isMinDate = () => this.validDates.isMin(this.dateControl.value);
   isMaxDate = () => this.validDates.isMax(this.dateControl.value);
-
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
 
 
   onDateShift(days: 1 | -1): void {

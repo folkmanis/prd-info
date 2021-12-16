@@ -1,7 +1,7 @@
 <div class="main-content">
     <div class="filter-box">
-        <app-log-filter [validDates]="validDates$ | async" [logLevels]="logLevels$ | async" (filter)="setFilter($event)"
-            (levelChange)="onLevel($event)"></app-log-filter>
+        <app-log-filter [validDates]="validDates$ | async" (filter)="setFilter($event)" (levelChange)="onLevel($event)">
+        </app-log-filter>
     </div>
 
     <div class="table-container">

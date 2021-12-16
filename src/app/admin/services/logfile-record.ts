@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export interface LogRecordHttp {
     _id: string;
     level: number;
@@ -10,10 +12,18 @@ export type LogRecord = LogRecordHttp & {
     levelVerb: string;
 };
 
-export type LogQueryFilter = Partial<{
-    limit: number;
-    start: number;
-    level: number;
+export class LogQueryFilter {
+
+    limit?: number;
+    start?: number;
     dateFrom: string;
     dateTo: string;
-}>;
+
+    constructor(
+        public level: number,
+        date: moment.Moment,
+    ) {
+        this.dateFrom = date.startOf('day').toISOString();
+        this.dateTo = date.endOf('day').toISOString();
+    }
+};

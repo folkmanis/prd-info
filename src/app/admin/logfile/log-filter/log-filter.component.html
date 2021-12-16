@@ -4,7 +4,7 @@
         <mat-icon>refresh</mat-icon>
     </button>
     <!-- Log level selector -->
-    <app-log-level [logLevels]="logLevels" (levelChange)="onLevel($event)"></app-log-level>
+    <app-log-level (levelChange)="onLevel($event)"></app-log-level>
     <!-- Datums -->
 
     <app-log-calendar [validDates]="validDates" (selectedDate)="onSetDate($event)"></app-log-calendar>

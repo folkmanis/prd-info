@@ -13,7 +13,7 @@ export class ValidDates {
     }
 
     isValid(date: moment.Moment): boolean {
-        return this.dates.has(date?.format('Y-MM-DD'));
+        return date && this.dates.has(date.format('Y-MM-DD'));
     }
 
     isMin(value: moment.Moment): boolean {
