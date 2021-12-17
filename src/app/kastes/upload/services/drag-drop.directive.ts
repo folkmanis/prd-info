@@ -1,6 +1,10 @@
 import { Directive, Output, ElementRef, HostListener, EventEmitter } from '@angular/core';
+import { ColumnNames } from './chips.service';
 
-export interface DragData { text: string; source: string }
+export interface DragData {
+  text: ColumnNames;
+  source: string;
+}
 
 @Directive({
   selector: '[appDragDrop]'
@@ -31,7 +35,7 @@ export class DragDropDirective {
     event.stopPropagation();
     const data: DragData = {
       source: event.dataTransfer.getData('source'),
-      text: event.dataTransfer.getData('text'),
+      text: event.dataTransfer.getData('text') as ColumnNames,
     };
     this.el.nativeElement.style.backgroundColor = null;
     this.dropEmitter.emit(data);

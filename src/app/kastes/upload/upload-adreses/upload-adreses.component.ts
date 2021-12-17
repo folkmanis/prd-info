@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay, startWith, tap } from 'rxjs/operators';
-import { AdresesBox } from '../services/adrese-box';
-import { ChipsService } from '../services/chips.service';
+import { AdresesBoxes, AdresesBoxPreferences } from '../services/adrese-box';
+import { ChipsService, ColumnNames } from '../services/chips.service';
 import { DragData } from '../services/drag-drop.directive';
 import { UploadService } from '../services/upload.service';
 import { CdkPortal } from '@angular/cdk/portal';
@@ -36,21 +36,24 @@ export class UploadAdresesComponent implements OnInit {
   fb: IFormBuilder;
   checkCols: IFormGroup<ColumnSelection>;
   chkColCount$: Observable<number>;
-  checkSkaitiPakas = new FormControl(true);
+  settingsControl = new FormGroup({
+    toPakas: new FormControl(true),
+    mergeAddress: new FormControl(false),
+  });
   rowSelection = this.uploadService.rowSelection;
 
-  @Output() adresesBox: Observable<AdresesBox | null> = combineLatest([
+  @Output() adresesBox: Observable<AdresesBoxes | null> = combineLatest([
     this.chipsService.chips$,
     this.uploadService.adresesCsv$,
     this.rowSelection.changed.pipe(
       map(model => model.source),
       startWith(this.rowSelection)
     ),
-    this.checkSkaitiPakas.valueChanges.pipe(startWith(this.checkSkaitiPakas.value)),
+    this.settingsControl.valueChanges.pipe(startWith(this.settingsControl.value)) as Observable<AdresesBoxPreferences>,
   ]).pipe(
-    map(([chips, adreses, selection, toPakas]) =>
+    map(([chips, adreses, selection, settings]) =>
       chips.available.length || !selection.selected.length ?
-        null : new AdresesBox(adreses.filter((_, idx) => selection.isSelected(idx)), new Map(chips.assignement), toPakas)
+        null : new AdresesBoxes(adreses.filter((_, idx) => selection.isSelected(idx)), chips.assignement, settings)
     ),
     distinctUntilChanged(),
   );
@@ -63,15 +66,15 @@ export class UploadAdresesComponent implements OnInit {
 
   datasource$ = this.uploadService.adresesCsv$;
 
-  chipsAvailable$: Observable<string[]> = this.chipsService.chips$.pipe(
+  chipsAvailable$: Observable<ColumnNames[]> = this.chipsService.chips$.pipe(
     map(chips => chips.available),
   );
 
-  chipsAssignement$: Observable<[string, string][]> = this.chipsService.chips$.pipe(
+  chipsAssignement$: Observable<[string, ColumnNames][]> = this.chipsService.chips$.pipe(
     map(chips => chips.assignement),
   );
 
-  isChipAssigned(chips: [string, string][], col: string): string | undefined {
+  isChipAssigned(chips: [string, ColumnNames][], col: string): string | undefined {
     return chips.find(([column]) => column === col)?.[1];
   }
 

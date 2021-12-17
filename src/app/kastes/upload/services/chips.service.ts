@@ -1,31 +1,26 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { map, shareReplay, tap } from 'rxjs/operators';
 
 export const TABLE_COLUMNS = [
   'kods', 'adrese', 'yellow', 'rose', 'white'
-];
+] as const;
 
-interface Chips {
-  available: string[]; // Vajadzīgo sleju nosaukumi
-  assignement: [string, string][]; // [sleja, čips]
-}
+export type ColumnNames = typeof TABLE_COLUMNS[number];
 
 interface ChipsSet {
-  avail: Set<string>; // Vajadzīgo sleju nosaukumi
-  assign: Map<string, string>; // [sleja, čips]
+  avail: Set<ColumnNames>; // Vajadzīgo sleju nosaukumi
+  assign: Map<string, ColumnNames>; // [sleja, čips]
 }
 
-const InitialChips: Chips = {
-  available: TABLE_COLUMNS,
-  assignement: [],
-};
 
-@Injectable({ providedIn: 'any' })
+@Injectable({
+  providedIn: 'any'
+})
 export class ChipsService {
 
-  private _available: Set<string>;
-  private _assignement: Map<string, string>;
+  private _available: Set<ColumnNames>;
+  private _assignement: Map<string, ColumnNames>;
 
   private _chips$ = new ReplaySubject<ChipsSet>(1);
   chips$ = this._chips$.pipe(
@@ -50,7 +45,7 @@ export class ChipsService {
     this.submitChips();
   }
 
-  moveChip(chipName: string, destCol: string) {
+  moveChip(chipName: ColumnNames, destCol: string) {
     const [currCol] = [...this._assignement.entries()].find(([, chip]) => chip === chipName) || [];
     if (currCol) {
       this._assignement.delete(currCol);
@@ -69,7 +64,7 @@ export class ChipsService {
 
   private initChips() {
     this._available = new Set(TABLE_COLUMNS);
-    this._assignement = new Map<string, string>();
+    this._assignement = new Map();
   }
 
   private submitChips() {

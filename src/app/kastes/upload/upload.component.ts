@@ -2,15 +2,15 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { FormControl, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { EMPTY, Observable, Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { map, shareReplay, switchMap } from 'rxjs/operators';
+import { jobProductsToColorTotals } from '../common';
 import { ColorTotals } from '../interfaces';
-import { KastesPreferencesService } from '../services/kastes-preferences.service';
-import { KastesPasutijumiService } from '../services/kastes-pasutijumi.service';
-import { EndDialogComponent } from './end-dialog/end-dialog.component';
-import { AdresesBox } from './services/adrese-box';
-import { sortColorTotals, jobProductsToColorTotals } from '../common';
 import { KastesJobPartial } from '../interfaces/kastes-job-partial';
+import { KastesPasutijumiService } from '../services/kastes-pasutijumi.service';
+import { KastesPreferencesService } from '../services/kastes-preferences.service';
+import { EndDialogComponent } from './end-dialog/end-dialog.component';
+import { AdresesBoxes } from './services/adrese-box';
 
 @Component({
   selector: 'app-upload',
@@ -20,7 +20,7 @@ import { KastesJobPartial } from '../interfaces/kastes-job-partial';
 })
 export class UploadComponent implements OnInit, OnDestroy {
 
-  adresesBox: AdresesBox | undefined;
+  adresesBox: AdresesBoxes | undefined;
 
   orderIdControl = new FormControl(null, [Validators.required]);
 
@@ -60,7 +60,7 @@ export class UploadComponent implements OnInit, OnDestroy {
 
   }
 
-  onSave(adrBox: AdresesBox) {
+  onSave(adrBox: AdresesBoxes) {
     const orderId = this.orderIdControl.value;
     if (!orderId) { return; }
     this.pasutijumiService.addKastes(

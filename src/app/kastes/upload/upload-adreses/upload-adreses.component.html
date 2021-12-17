@@ -6,7 +6,10 @@
         [disabled]="!(chkColCount$ | async)">Dzēst slejas</button>
     <button *cdkPortal class="button-row" mat-raised-button (click)="onJoinColumns(checkCols.controls.columns.value)"
         [disabled]="(chkColCount$ | async) < 2">Apvienot slejas</button>
-    <mat-checkbox *cdkPortal class="button-row" [formControl]="checkSkaitiPakas">Jādala ar 500</mat-checkbox>
+    <span [formGroup]="settingsControl">
+        <mat-checkbox *cdkPortal class="button-row" formControlName="toPakas"> Jādala ar 500 </mat-checkbox>
+        <mat-checkbox *cdkPortal class="button-row" formControlName="mergeAddress"> Apvienot adreses </mat-checkbox>
+    </span>
 
     <div class="chips-bar">
         <mat-chip-list>
