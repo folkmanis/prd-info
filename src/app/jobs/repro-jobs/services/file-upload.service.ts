@@ -4,6 +4,7 @@ import { EMPTY, merge, Observable, of, Subject } from 'rxjs';
 import { finalize, map, mergeMap, share, shareReplay, tap, throttleTime } from 'rxjs/operators';
 import { FileUploadEventType, FileUploadMessage, UploadMessageBase } from '../../interfaces/file-upload-message';
 import { JobsApiService } from '../../services/jobs-api.service';
+import { SanitizeService } from 'src/app/library/services/sanitize.service';
 
 const CLOSE_EVENT_DELAY = 1000 * 5;
 const SIMULTANEOUS_UPLOADS = 2;
@@ -39,6 +40,7 @@ export class FileUploadService {
 
   constructor(
     private api: JobsApiService,
+    private sanitize: SanitizeService,
   ) { }
 
   /**
@@ -78,7 +80,7 @@ export class FileUploadService {
 
   private uploadFile(jobId: number, file: File): Observable<any> {
     const formData = new FormData();
-    formData.append('fileUpload', file, file.name);
+    formData.append('fileUpload', file, this.sanitize.sanitizeFileName(file.name));
     return this.api.fileUpload(jobId, formData).pipe(
       tap(ev => this.reportProgress(ev, file, jobId)),
       finalize(() => this.uploadQueue.delete(uploadId(file))),
