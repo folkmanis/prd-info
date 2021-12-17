@@ -3,8 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map, mapTo, pluck, switchMap } from 'rxjs/operators';
 import { APP_PARAMS } from 'src/app/app-params';
-import { AppParams, Login, User } from 'src/app/interfaces';
+import { AppParams, User } from 'src/app/interfaces';
 import { ApiBase } from 'src/app/library/http';
+import { Login } from '../login.interface';
 
 
 @Injectable({

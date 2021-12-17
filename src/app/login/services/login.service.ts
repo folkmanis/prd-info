@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { merge, Observable, of, Subject } from 'rxjs';
 import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
-import { Login, User } from 'src/app/interfaces';
+import { User } from 'src/app/interfaces';
 import { LoginApiService } from './login-api.service';
+import { Login } from '../login.interface';
 
 @Injectable({
   providedIn: 'root'
