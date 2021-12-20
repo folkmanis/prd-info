@@ -1,12 +1,12 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { combineLatest, EMPTY, Observable, of, ReplaySubject, Subject } from 'rxjs';
-import { filter, map, mapTo, mergeMap, pluck, shareReplay, switchMap, take, tap } from 'rxjs/operators';
-import { KastesJob, Veikals } from '../../interfaces';
+import { cacheWithUpdate } from 'prd-cdk';
+import { EMPTY, Observable, ReplaySubject, Subject } from 'rxjs';
+import { filter, map, mergeMap, pluck, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
-import { cacheWithUpdate, DestroyService } from 'prd-cdk';
-import { KastesPreferencesService } from '../../services/kastes-preferences.service';
+import { KastesJob, Veikals } from '../../interfaces';
 import { KastesPasutijumiService } from '../../services/kastes-pasutijumi.service';
+import { KastesPreferencesService } from '../../services/kastes-preferences.service';
 import { KastesJobResolverService } from '../services/kastes-job-resolver.service';
 
 const VEIKALI_DELETED_MESSAGE = 'Pakošanas saraksts izdzēsts';
@@ -56,7 +56,7 @@ export class PasutijumsEditComponent implements OnInit, OnDestroy {
   }
 
   onUpdateVeikals(veikals: Veikals) {
-    // TODO handel error
+    // TODO handle error
     this.pasService.updateOrderVeikals(veikals)
       .subscribe(veik => this._veikalsUpdate$.next(veik));
   }
@@ -79,7 +79,7 @@ export class PasutijumsEditComponent implements OnInit, OnDestroy {
   }
 
   private compareFn(o1: Veikals, o2: Veikals): boolean {
-    return o1.kods === o2.kods;
+    return o1._id === o2._id;
   }
 
 

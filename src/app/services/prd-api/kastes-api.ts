@@ -30,9 +30,9 @@ export class KastesApi extends ApiBase<Kaste> {
         );
     }
 
-    setGatavs({ pasutijums, kods, kaste }: Pick<VeikalsKaste, 'pasutijums' | 'kods' | 'kaste'>, yesno: boolean): Observable<VeikalsKaste> {
-        // `192.168.8.73:4030/data/kastes/43267/10/2/gatavs/false`
-        const path = `${this.path}${pasutijums}/${kods}/${kaste}/gatavs/${yesno}`;
+    setGatavs({ _id, kaste }: Pick<VeikalsKaste, '_id' | 'kaste'>, yesno: boolean): Observable<VeikalsKaste> {
+        // `192.168.8.73:4030/data/kastes/60f9214bf0b8622f7cedccaa/0/gatavs/false`
+        const path = `${this.path}${_id}/${kaste}/gatavs/${yesno}`;
         return this.http.patch<VeikalsKaste>(path, {}, new HttpOptions());
     }
 
