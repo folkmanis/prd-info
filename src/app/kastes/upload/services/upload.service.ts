@@ -4,7 +4,7 @@ import { ReplaySubject } from 'rxjs';
 import { AdresesCsv } from './adrese-csv';
 
 @Injectable({
-  providedIn: 'any'
+  providedIn: 'root'
 })
 export class UploadService {
   private adresesCsv: AdresesCsv;

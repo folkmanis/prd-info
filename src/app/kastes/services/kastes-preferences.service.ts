@@ -10,13 +10,10 @@ const DEFAULT_USER_PREFERENCES: KastesUserPreferences = {
   pasutijums: null
 };
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class KastesPreferencesService {
-
-  constructor(
-    @Inject(CONFIG) private config$: Observable<SystemPreferences>,
-    private api: KastesApiService,
-  ) { }
 
   kastesSystemPreferences$ = this.config$.pipe(pluck('kastes'));
 
@@ -41,6 +38,11 @@ export class KastesPreferencesService {
   pasutijumsId$ = this.kastesUserPreferences$.pipe(
     map(pref => pref?.pasutijums),
   );
+
+  constructor(
+    @Inject(CONFIG) private config$: Observable<SystemPreferences>,
+    private api: KastesApiService,
+  ) { }
 
   updateUserPreferences(prefs: Partial<KastesUserPreferences>): Observable<KastesUserPreferences> {
     return this.api.setUserPreferences(prefs).pipe(

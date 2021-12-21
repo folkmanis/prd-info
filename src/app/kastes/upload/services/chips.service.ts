@@ -15,7 +15,7 @@ interface ChipsSet {
 
 
 @Injectable({
-  providedIn: 'any'
+  providedIn: 'root'
 })
 export class ChipsService {
 
