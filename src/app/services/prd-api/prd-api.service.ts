@@ -4,8 +4,6 @@ import { CustomersApi } from './customers-api';
 import { InvoicesApi } from './invoices-api';
 import { ProductsApi } from './products-api';
 import { SystemPreferencesApi } from './system-preferences-api';
-import { KastesApi } from './kastes-api';
-import { KastesOrdersApi } from './kastes-orders-api';
 import { UsersApi } from './users-api';
 import { AppParams } from 'src/app/interfaces';
 import { APP_PARAMS } from 'src/app/app-params';
@@ -26,8 +24,6 @@ export class PrdApiService {
   products = new ProductsApi(this.http, this.apiPath + 'products/');
   invoices = new InvoicesApi(this.http, this.apiPath + 'invoices/');
   systemPreferences = new SystemPreferencesApi(this.http, this.apiPath + 'preferences/');
-  kastes = new KastesApi(this.http, this.apiPath + 'kastes/');
-  kastesOrders = new KastesOrdersApi(this.http, this.apiPath + 'kastes/jobs/');
   users = new UsersApi(this.http, this.apiPath + 'users/');
   paytraq = new PaytraqApi(this.http, this.apiPath + 'paytraq/');
   materials = new MaterialsApi(this.http, this.apiPath + 'materials/');

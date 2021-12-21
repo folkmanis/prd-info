@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, switchMap, throttleTime } from 'rxjs/operators';
 import { KastesJob, Veikals, VeikalsUpload } from '../interfaces';
-import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 import { KastesJobPartial } from '../interfaces/kastes-job-partial';
+import { KastesApiService } from './kastes-api.service';
+import { KastesOrdersApiService } from './kastes-orders-api.service';
 
 export interface KastesJobFilter {
   name?: string;
 }
 
 @Injectable({
-  providedIn: 'any',
+  providedIn: 'root',
 })
 export class KastesPasutijumiService {
 
@@ -22,7 +23,8 @@ export class KastesPasutijumiService {
   );
 
   constructor(
-    private prdApi: PrdApiService,
+    private api: KastesApiService,
+    private ordersApi: KastesOrdersApiService,
   ) { }
 
   setFilter(filter: KastesJobFilter) {
@@ -30,27 +32,27 @@ export class KastesPasutijumiService {
   }
 
   getKastesJobs(filter: KastesJobFilter): Observable<KastesJobPartial[]> {
-    return this.prdApi.kastesOrders.get(filter);
+    return this.ordersApi.get(filter);
   }
 
   getKastesJob(id: number): Observable<KastesJob> {
-    return this.prdApi.kastesOrders.get(id);
+    return this.ordersApi.get(id);
   }
 
   getVeikali(jobId: number): Observable<Veikals[]> {
-    return this.prdApi.kastes.getVeikali(jobId);
+    return this.api.getVeikali(jobId);
   }
 
   updateOrderVeikals(veikals: Veikals): Observable<Veikals> {
-    return this.prdApi.kastes.updateVeikals(veikals);
+    return this.api.updateVeikals(veikals);
   }
 
   addKastes(data: VeikalsUpload[]): Observable<number> {
-    return this.prdApi.kastes.putTable(data);
+    return this.api.putTable(data);
   }
 
   deleteKastes(pasutijumsId: number): Observable<number> {
-    return this.prdApi.kastes.deleteVeikali(pasutijumsId);
+    return this.api.deleteVeikali(pasutijumsId);
   }
 
   parseXlsx(file: File | undefined): Observable<(string | number)[][]> {
@@ -59,7 +61,7 @@ export class KastesPasutijumiService {
     }
     const form = new FormData;
     form.append('table', file, file.name);
-    return this.prdApi.kastes.parseXlsx(form).pipe(
+    return this.api.parseXlsx(form).pipe(
       map(data => this.normalizeTable(data))
     );
   }

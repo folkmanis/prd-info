@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@angular/core';
-import { Observable, Subject, combineLatest, merge } from 'rxjs';
-import { catchError, map, pluck, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
-import { KastesSettings, SystemPreferences } from 'src/app/interfaces';
-import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
+import { combineLatest, merge, Observable, Subject } from 'rxjs';
+import { catchError, map, pluck, shareReplay, tap } from 'rxjs/operators';
+import { SystemPreferences } from 'src/app/interfaces';
 import { KastesUserPreferences } from 'src/app/kastes/interfaces';
 import { CONFIG } from 'src/app/services/config.provider';
+import { KastesApiService } from './kastes-api.service';
 
 const DEFAULT_USER_PREFERENCES: KastesUserPreferences = {
   pasutijums: null
@@ -14,8 +14,8 @@ const DEFAULT_USER_PREFERENCES: KastesUserPreferences = {
 export class KastesPreferencesService {
 
   constructor(
-    private prdApi: PrdApiService,
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
+    private api: KastesApiService,
   ) { }
 
   kastesSystemPreferences$ = this.config$.pipe(pluck('kastes'));
@@ -24,7 +24,7 @@ export class KastesPreferencesService {
 
   kastesUserPreferences$: Observable<KastesUserPreferences> = merge(
     this._reload$,
-    this.prdApi.kastes.getUserPreferences(),
+    this.api.getUserPreferences(),
   ).pipe(
     catchError(() => this.updateUserPreferences(DEFAULT_USER_PREFERENCES)),
     shareReplay(1),
@@ -43,7 +43,7 @@ export class KastesPreferencesService {
   );
 
   updateUserPreferences(prefs: Partial<KastesUserPreferences>): Observable<KastesUserPreferences> {
-    return this.prdApi.kastes.setUserPreferences(prefs).pipe(
+    return this.api.setUserPreferences(prefs).pipe(
       tap(newPreferences => this._reload$.next(newPreferences)),
     );
   }

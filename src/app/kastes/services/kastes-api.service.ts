@@ -1,10 +1,23 @@
+import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, map, mapTo, pluck } from 'rxjs/operators';
+import { APP_PARAMS } from 'src/app/app-params';
+import { AppParams } from 'src/app/interfaces';
 import { Kaste, KastesUserPreferences, Veikals, VeikalsKaste, VeikalsUpload } from 'src/app/kastes/interfaces';
 import { ApiBase, HttpOptions } from 'src/app/library/http';
 
+@Injectable({
+    providedIn: 'root'
+})
+export class KastesApiService extends ApiBase<Kaste> {
 
-export class KastesApi extends ApiBase<Kaste> {
+    constructor(
+        @Inject(APP_PARAMS) params: AppParams,
+        http: HttpClient,
+    ) {
+        super(http, params.apiPath + 'kastes/');
+    }
 
     getKastes(jobId: number): Observable<VeikalsKaste[]> {
         return this.http.get<VeikalsKaste[]>(this.path + jobId, new HttpOptions());

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
-import { map, mergeMap, pluck, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators';
-import { Colors, Totals, COLORS, VeikalsKaste } from 'src/app/kastes/interfaces';
 import { cacheWithUpdate } from 'prd-cdk';
-import { PrdApiService } from 'src/app/services';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { map, mergeMap, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators';
+import { Colors, COLORS, Totals, VeikalsKaste } from 'src/app/kastes/interfaces';
+import { KastesApiService } from '../../services/kastes-api.service';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
 
 @Injectable()
@@ -17,13 +17,13 @@ export class KastesTabulaService {
 
   apjoms$ = this._apjoms$.asObservable();
   apjomi$: Observable<number[]> = this._pasutijumsId$.pipe(
-    switchMap(pasutijumsId => this.prdApi.kastes.getApjomi(pasutijumsId)),
+    switchMap(pasutijumsId => this.api.getApjomi(pasutijumsId)),
   );
 
   kastesAll$: Observable<VeikalsKaste[]> = this._reloadKastes$.pipe(
     startWith({}),
     switchMap(() => this._pasutijumsId$),
-    switchMap(pasutijumsId => this.prdApi.kastes.getKastes(pasutijumsId)),
+    switchMap(pasutijumsId => this.api.getKastes(pasutijumsId)),
     cacheWithUpdate(this._updateKaste$, (o1, o2) => o1._id === o2._id && o1.kaste === o2.kaste),
   );
 
@@ -40,7 +40,7 @@ export class KastesTabulaService {
   );
 
   constructor(
-    private prdApi: PrdApiService,
+    private api: KastesApiService,
     private prefService: KastesPreferencesService,
   ) { }
 
@@ -57,13 +57,13 @@ export class KastesTabulaService {
   }
 
   setGatavs(kaste: VeikalsKaste, yesno: boolean): Observable<VeikalsKaste> {
-    return this.prdApi.kastes.setGatavs(kaste, yesno);
+    return this.api.setGatavs(kaste, yesno);
   }
 
   setLabel(kods: number): Observable<VeikalsKaste | null> {
     return this._pasutijumsId$.pipe(
       take(1),
-      mergeMap(pasutijums => this.prdApi.kastes.setLabel({ pasutijums, kods })),
+      mergeMap(pasutijums => this.api.setLabel({ pasutijums, kods })),
       tap(kaste => this.setPartialState(kaste)),
     );
   }
