@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { cacheWithUpdate } from 'prd-cdk';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { map, mergeMap, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators';
+import { map, mergeMap, shareReplay, startWith, switchMap, take } from 'rxjs/operators';
 import { Colors, COLORS, Totals, VeikalsKaste } from 'src/app/kastes/interfaces';
 import { KastesApiService } from '../../services/kastes-api.service';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
@@ -64,7 +64,6 @@ export class KastesTabulaService {
     return this._pasutijumsId$.pipe(
       take(1),
       mergeMap(pasutijums => this.api.setLabel({ pasutijums, kods })),
-      tap(kaste => this.setPartialState(kaste)),
     );
   }
 
