@@ -25,7 +25,6 @@ export class KastesTabulaService {
     this._pasutijumsId$,
     this._reloadKastes$,
   ).pipe(
-    log('pasutijums'),
     switchMap(pasutijumsId => this.api.getKastes(pasutijumsId)),
     cacheWithUpdate(this._updateKaste$, (o1, o2) => o1._id === o2._id && o1.kaste === o2.kaste),
     shareReplay(1),
