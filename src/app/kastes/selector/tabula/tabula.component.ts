@@ -20,15 +20,10 @@ const COLUMNS = ['label', 'kods', 'adrese', 'yellow', 'rose', 'white', 'gatavs']
     { provide: MAT_CHECKBOX_DEFAULT_OPTIONS, useValue: { clickAction: 'noop' } }
   ]
 })
-export class TabulaComponent implements OnInit, OnDestroy {
+export class TabulaComponent {
+
   @ViewChild('container', { read: ScrollTopDirective }) private _scrollable: ScrollTopDirective;
   @ViewChildren(RowIdDirective) private _tableRows: QueryList<RowIdDirective>;
-
-  constructor(
-    private dialogService: ConfirmationDialogService,
-    private preferencesService: KastesPreferencesService,
-    private tabulaService: KastesTabulaService,
-  ) { }
 
   selectedKaste: VeikalsKaste | undefined;
 
@@ -37,11 +32,11 @@ export class TabulaComponent implements OnInit, OnDestroy {
   dataSource$: Observable<VeikalsKaste[]> = this.tabulaService.kastesApjoms$;
   totals$ = this.tabulaService.totals$;
 
-  ngOnInit() {
-  }
-
-  ngOnDestroy() {
-  }
+  constructor(
+    private dialogService: ConfirmationDialogService,
+    private preferencesService: KastesPreferencesService,
+    private tabulaService: KastesTabulaService,
+  ) { }
 
   trackByFn(_: number, item: VeikalsKaste): string {
     return item._id + item.kaste;
