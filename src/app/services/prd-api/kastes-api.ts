@@ -36,11 +36,9 @@ export class KastesApi extends ApiBase<Kaste> {
         return this.http.patch<VeikalsKaste>(path, {}, new HttpOptions());
     }
 
-    setLabel({ pasutijums, kods }: Pick<VeikalsKaste, 'pasutijums' | 'kods'>): Observable<VeikalsKaste | undefined> {
+    setLabel({ pasutijums, kods }: Pick<VeikalsKaste, 'pasutijums' | 'kods'>): Observable<VeikalsKaste> {
         const path = `${this.path}${pasutijums}/${kods}/label`;
         return this.http.patch<VeikalsKaste>(path, {}, new HttpOptions()
-        ).pipe(
-            catchError(_ => of(null))
         );
     }
 

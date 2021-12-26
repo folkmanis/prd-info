@@ -76,14 +76,13 @@ export class SelectorComponent implements OnInit {
 
   onSetLabel(kods: number) {
     this.tabulaService.setLabel(kods)
-      .subscribe(kaste => {
-        this.labelStatuss$.next({
-          type: kaste ? 'kaste' : 'empty',
-          kaste
-        });
-        if (kaste) {
+      .subscribe({
+        next: kaste => {
+          this.labelStatuss$.next({ type: 'kaste', kaste });
+          this.tabulaService.setPartialState(kaste);
           this._tabula.scrollToId(kaste);
-        }
+        },
+        error: () => this.labelStatuss$.next({ type: 'empty' }),
       });
   }
 
