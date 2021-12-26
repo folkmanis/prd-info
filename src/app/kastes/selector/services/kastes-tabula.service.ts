@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { cacheWithUpdate } from 'prd-cdk';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { map, mergeMap, shareReplay, startWith, switchMap, take } from 'rxjs/operators';
+import { cacheWithUpdate, log } from 'prd-cdk';
+import { BehaviorSubject, combineLatest, merge, Observable, Subject } from 'rxjs';
+import { map, mergeMap, scan, share, shareReplay, startWith, switchMap, switchScan, take } from 'rxjs/operators';
 import { Colors, COLORS, Totals, VeikalsKaste } from 'src/app/kastes/interfaces';
+import { combineReload } from 'src/app/library/rxjs';
 import { KastesApiService } from '../../services/kastes-api.service';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
 
@@ -20,11 +21,14 @@ export class KastesTabulaService {
     switchMap(pasutijumsId => this.api.getApjomi(pasutijumsId)),
   );
 
-  kastesAll$: Observable<VeikalsKaste[]> = this._reloadKastes$.pipe(
-    startWith({}),
-    switchMap(() => this._pasutijumsId$),
+  kastesAll$: Observable<VeikalsKaste[]> = combineReload(
+    this._pasutijumsId$,
+    this._reloadKastes$,
+  ).pipe(
+    log('pasutijums'),
     switchMap(pasutijumsId => this.api.getKastes(pasutijumsId)),
     cacheWithUpdate(this._updateKaste$, (o1, o2) => o1._id === o2._id && o1.kaste === o2.kaste),
+    shareReplay(1),
   );
 
   kastesApjoms$: Observable<VeikalsKaste[]> = combineLatest([
@@ -32,7 +36,7 @@ export class KastesTabulaService {
     this._apjoms$,
   ]).pipe(
     map(([kastes, apj]) => kastes.filter(k => !apj || k.kastes.total === apj)),
-    shareReplay(1),
+    share(),
   );
 
   readonly totals$ = this.kastesApjoms$.pipe(
