@@ -55,6 +55,8 @@ export class SideMenuComponent implements OnInit {
   }
 
   private setActiveRoute(modules: UserModule[]): void {
+    const active = this.dataSource.data.find(data => data.routeStr === modules[0]?.route);
+    this.treeControl.expand(active);
     this.activeRoute = modules.map(mod => mod.route).join('/');
     this.changeDetector.markForCheck();
   }
