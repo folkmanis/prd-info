@@ -3,7 +3,6 @@ import { Injectable, Inject } from '@angular/core';
 import { CustomersApi } from './customers-api';
 import { InvoicesApi } from './invoices-api';
 import { ProductsApi } from './products-api';
-import { SystemPreferencesApi } from './system-preferences-api';
 import { UsersApi } from './users-api';
 import { AppParams } from 'src/app/interfaces';
 import { APP_PARAMS } from 'src/app/app-params';
@@ -23,7 +22,6 @@ export class PrdApiService {
   customers = new CustomersApi(this.http, this.apiPath + 'customers/');
   products = new ProductsApi(this.http, this.apiPath + 'products/');
   invoices = new InvoicesApi(this.http, this.apiPath + 'invoices/');
-  systemPreferences = new SystemPreferencesApi(this.http, this.apiPath + 'preferences/');
   users = new UsersApi(this.http, this.apiPath + 'users/');
   paytraq = new PaytraqApi(this.http, this.apiPath + 'paytraq/');
   materials = new MaterialsApi(this.http, this.apiPath + 'materials/');

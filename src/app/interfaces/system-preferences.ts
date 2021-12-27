@@ -7,13 +7,11 @@ export type Modules = typeof MODULES[number];
 export type ModuleSettings = KastesSettings | SystemSettings | JobsSettings | PaytraqSettings;
 
 export interface PreferencesDbModule {
-    module: SystemPreferencesGroups;
+    module: Modules;
     settings: ModuleSettings;
 }
 
-export type SystemPreferencesGroups = typeof MODULES[number];
-
-export type SystemPreferencesType = { [key in SystemPreferencesGroups]: ModuleSettings; };
+export type SystemPreferencesType = { [key in Modules]: ModuleSettings; };
 
 export abstract class SystemPreferences implements SystemPreferencesType {
     system: SystemSettings;
