@@ -1,11 +1,12 @@
-import { Component, AfterViewInit, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NestedTreeControl } from '@angular/cdk/tree';
-
-import { tap, switchMap, map, distinctUntilChanged, filter, delay, takeUntil, share } from 'rxjs/operators';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { DestroyService } from 'prd-cdk';
+import { combineLatest, Observable } from 'rxjs';
+import { distinctUntilChanged, pluck, takeUntil } from 'rxjs/operators';
+import { UserModule } from 'src/app/interfaces';
 import { SystemPreferencesService } from 'src/app/services';
-import { SystemSettings, UserModule } from 'src/app/interfaces';
 import { MenuDataSource, SideMenuData } from './menu-datasource';
-import { DestroyService, log } from 'prd-cdk';
+
 
 @Component({
   selector: 'app-side-menu',
@@ -21,6 +22,16 @@ export class SideMenuComponent implements OnInit {
 
   activeRoute: string;
 
+  private expandedByDefault$: Observable<boolean> = this.systemPreferencesService.preferences$.pipe(
+    pluck('system', 'menuExpandedByDefault'),
+    distinctUntilChanged(),
+  );
+
+  private expandAll$: Observable<[SideMenuData[], boolean]> = combineLatest([
+    this.dataSource.dataChange$,
+    this.expandedByDefault$,
+  ]);
+
   hasChild = (_: number, node: SideMenuData) => node.childMenu?.length > 0;
 
   constructor(
@@ -30,22 +41,19 @@ export class SideMenuComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.dataSource.dataChange$.pipe(
-      tap(() => this.treeControl.dataNodes = this.dataSource.data),
-      switchMap(() => this.systemPreferencesService.preferences$),
-      map(pref => pref.system.menuExpandedByDefault),
-      distinctUntilChanged(),
+
+    this.expandAll$.pipe(
       takeUntil(this.destroy$),
-    )
-      .subscribe(expand => this.expandMenu(expand));
+    ).subscribe(value => this.expandAll(value));
 
     this.systemPreferencesService.activeModules$.pipe(
       takeUntil(this.destroy$),
-    )
-      .subscribe(mod => this.setActiveRoute(mod));
+    ).subscribe(mod => this.setActiveRoute(mod));
+
   }
 
-  private expandMenu(expand: boolean) {
+  private expandAll([data, expand]: [SideMenuData[], boolean]) {
+    this.treeControl.dataNodes = data;
     if (expand) {
       this.treeControl.expandAll();
     } else {
