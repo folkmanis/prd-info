@@ -21,7 +21,7 @@ export const PRD_DEFAULTS: AppParams = {
     messagesReadDelay: 3000,
     defaultSystemPreferences: {
         kastes: {
-            colors: { yellow: 'hsl(45,75%,60%)', rose: '315,75%,50%', white: '0,0%,50%', },
+            colors: { yellow: 'hsl(45,75%,60%)', rose: 'hsl(315,75%,50%)', white: 'hsl(0,0%,50%)', },
         },
         system: {
             menuExpandedByDefault: false,
