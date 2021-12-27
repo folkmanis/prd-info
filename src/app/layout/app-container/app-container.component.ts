@@ -21,7 +21,9 @@ export class AppContainerComponent implements OnInit {
 
   user$ = this.loginService.user$;
 
-  activeModule$ = this.systemPreferencesService.activeModule$;
+  activeModule$ = this.systemPreferencesService.activeModules$.pipe(
+    map(modules => modules[0]),
+  );
 
   constructor(
     private loginService: LoginService,

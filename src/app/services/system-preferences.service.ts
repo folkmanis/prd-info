@@ -1,30 +1,29 @@
 import { Inject, Injectable } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { combineLatest, EMPTY, merge, Observable, of, Subject } from 'rxjs';
-import { concatMap, filter, map, shareReplay, switchMap } from 'rxjs/operators';
+import { combineLatest, merge, Observable, of, Subject } from 'rxjs';
+import { concatMap, filter, map, retry, shareReplay, startWith, switchMap } from 'rxjs/operators';
+import { LoginService } from 'src/app/login';
 import { APP_PARAMS } from '../app-params';
 import { AppParams, MODULES, PreferencesDbModule, SystemPreferences, UserModule } from '../interfaces';
-import { LoginService } from 'src/app/login';
-import { PrdApiService } from './prd-api/prd-api.service';
+import { SystemPreferencesApiService } from './system-preferences-api';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SystemPreferencesService {
 
-  constructor(
-    @Inject(APP_PARAMS) private params: AppParams,
-    private router: Router,
-    private prdApi: PrdApiService,
-    private loginService: LoginService,
-  ) { }
-  /** Piespiedu ielāde no servera */
   private _reloadFromServer$: Subject<void> = new Subject();
 
   private readonly _preferencesUpdate$ = new Subject<PreferencesDbModule[]>();
 
+  private url$: Observable<string> = this.router.events.pipe(
+    filter(ev => ev instanceof NavigationEnd),
+    map((ev: NavigationEnd) => ev.url),
+    startWith(this.router.routerState.snapshot.url),
+  );
+
   preferences$: Observable<SystemPreferences> = merge(
-    of(this.params.defaultSystemPreferences), // sāk ar default
+    of(this.params.defaultSystemPreferences),
     this.loginService.user$.pipe( // mainoties user, ielādē no servera
       switchMap(usr => usr ? this._systemPreferences() : of(this.params.defaultSystemPreferences)),
     ),
@@ -32,36 +31,36 @@ export class SystemPreferencesService {
       switchMap(_ => this._systemPreferences()),
     ),
     this._preferencesUpdate$.pipe(
-      concatMap(pref => this.prdApi.systemPreferences.updateMany(pref)),
-      concatMap(resp => resp > 0 ? of(true) : EMPTY),
+      concatMap(pref => this.api.updateMany(pref)),
+      retry(3),
       switchMap(_ => this._systemPreferences()),
     )
   ).pipe(
     shareReplay(1),
   );
-  /**
-   * Lietotājam pieejamie Moduļi
-   * Multicast Observable
-   */
+
   modules$ = this.loginService.user$.pipe(
     map(usr => this.params.userModules.filter(mod => usr && usr.preferences.modules.includes(mod.route)))
   );
-  /* Aktīvie moduļi */
+
   activeModules$: Observable<UserModule[]> = combineLatest([
-    this.router.events.pipe(filter(ev => ev instanceof NavigationEnd)),
+    this.url$,
     this.modules$
   ]).pipe(
     map(findModule),
     shareReplay(1),
   );
-  /** Aktīvais modulis */
-  activeModule$: Observable<UserModule | undefined> = this.activeModules$.pipe(
-    map(modules => modules[0]),
+
+  childMenu$: Observable<UserModule[]> = this.activeModules$.pipe(
+    map(modules => modules[0]?.childMenu || []),
   );
-  /** Aktīvā moduļa child menu */
-  childMenu$: Observable<UserModule[]> = this.activeModule$.pipe(
-    map(active => active.childMenu || [])
-  );
+
+  constructor(
+    @Inject(APP_PARAMS) private params: AppParams,
+    private router: Router,
+    private loginService: LoginService,
+    private api: SystemPreferencesApiService,
+  ) { }
 
   updatePreferences(pref: SystemPreferences) {
     this._preferencesUpdate$.next(
@@ -74,14 +73,15 @@ export class SystemPreferencesService {
   }
 
   private _systemPreferences(): Observable<SystemPreferences> {
-    return this.prdApi.systemPreferences.get().pipe(
+    return this.api.get().pipe(
       map(dbpref => Object.assign({}, ...dbpref.map(mod => ({ [mod.module]: mod.settings }))))
     );
   }
 }
 
-function findModule([ev, modules]: [NavigationEnd, UserModule[]]): UserModule[] {
-  const [, ...path] = ev.url.split(/[/;?]/);
+function findModule([url, modules]: [string, UserModule[]]): UserModule[] {
+
+  const [, ...path] = url.split(/[/;?]/);
 
   let userModules: UserModule[] | undefined = [...modules];
   const activeModules: UserModule[] = [];
