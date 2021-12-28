@@ -1,14 +1,14 @@
-import { ChangeDetectionStrategy, Component, Inject, LOCALE_ID, OnDestroy, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit, Optional } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Locale } from 'date-fns';
 import { saveAs } from 'file-saver';
-import { combineLatest, merge, Observable, Subject } from 'rxjs';
-import { filter, map, mergeMap, pluck, share, shareReplay, switchMap } from 'rxjs/operators';
-import { Invoice, InvoiceProduct, SystemPreferences } from 'src/app/interfaces';
+import { merge, Observable, Subject } from 'rxjs';
+import { map, pluck, share, switchMap } from 'rxjs/operators';
+import { Invoice, SystemPreferences } from 'src/app/interfaces';
+import { DATE_FNS_LOCALE } from 'src/app/library/date-services';
 import { CONFIG } from 'src/app/services/config.provider';
-import { InvoicesService } from '../../services/invoices.service';
-import { InvoiceCsv } from './invoice-csv';
 import { InvoiceResolverService } from '../../services/invoice-resolver.service';
+import { InvoiceCsv } from './invoice-csv';
 
 
 @Component({
@@ -38,9 +38,9 @@ export class InvoiceEditorComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    @Inject(LOCALE_ID) private locale: string,
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
     private invoiceResolver: InvoiceResolverService,
+    @Optional() @Inject(DATE_FNS_LOCALE) private locale?: Locale,
   ) { }
 
 
