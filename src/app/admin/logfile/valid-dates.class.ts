@@ -1,35 +1,38 @@
-import moment from 'moment';
+import { isSameDay, min, max, format, addDays, Interval, startOfDay, endOfDay, isWithinInterval } from 'date-fns';
 
 export class ValidDates {
 
-    public dates: Set<string>;
-    public min: moment.Moment;
-    public max: moment.Moment;
+    public interval: Interval;
 
-    constructor(datesArray: string[]) {
-        this.dates = new Set(datesArray);
-        this.min = moment(datesArray.slice(0, 1).pop());
-        this.max = moment(datesArray.slice(-1).pop());
+    constructor(
+        public dates: Date[]
+    ) {
+        this.interval = {
+            start: startOfDay(min(dates)),
+            end: endOfDay(max(dates)),
+        };
     }
 
-    isValid(date: moment.Moment): boolean {
-        return date && this.dates.has(date.format('Y-MM-DD'));
+    private dateFormat = (date: Date) => format(date, 'y-MM-dd');
+
+    isValid(date: Date): boolean {
+        return date && this.dates.some(d => isSameDay(date, d));
     }
 
-    isMin(value: moment.Moment): boolean {
-        return value.isSame(this.min, 'days');
+    isMin(value: Date): boolean {
+        return isSameDay(value, this.interval.start);
     }
 
-    isMax(value: moment.Moment): boolean {
-        return value.isSame(this.max, 'days');
+    isMax(value: Date): boolean {
+        return isSameDay(value, this.interval.end);
     }
 
-    shift(date: moment.Moment, days: 1 | -1): moment.Moment {
-        const newDate = date.clone().add(days, 'days');
-        while (newDate.isBetween(this.min, this.max, 'date', '[]') && !this.isValid(newDate)) {
-            newDate.add(days, 'days');
+    shift(date: Date, days: 1 | -1): Date {
+        let newDate = addDays(date, days);
+        while (isWithinInterval(date, this.interval) && !this.isValid(newDate)) {
+            newDate = addDays(newDate, days);
         }
-        if (!newDate.isBetween(this.min, this.max, 'date', '[]')) {
+        if (!this.isValid(newDate)) {
             return date;
         }
         return newDate;

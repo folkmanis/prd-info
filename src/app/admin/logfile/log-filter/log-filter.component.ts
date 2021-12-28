@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
 import { isEqual } from 'lodash';
-import moment from 'moment';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
 import { distinctUntilChanged, map, withLatestFrom } from 'rxjs/operators';
 import { combineReload } from 'src/app/library/rxjs';
@@ -18,7 +17,7 @@ export class LogFilterComponent {
 
   private reload$ = new Subject<void>();
 
-  @Output('date') date$ = new ReplaySubject<moment.Moment>(1);
+  @Output('date') date$ = new ReplaySubject<Date>(1);
 
   @Output('levelChange') level$ = new ReplaySubject<number>(1);
 
@@ -34,7 +33,7 @@ export class LogFilterComponent {
   );
 
 
-  onSetDate(value: moment.Moment) {
+  onSetDate(value: Date) {
     this.date$.next(value);
   }
 

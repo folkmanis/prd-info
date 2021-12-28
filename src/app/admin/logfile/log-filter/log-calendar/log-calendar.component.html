@@ -1,7 +1,7 @@
 <mat-form-field>
     <mat-label>Datums</mat-label>
     <input matInput [matDatepicker]=picker [formControl]="dateControl" [matDatepickerFilter]="isValiddate"
-        [max]="validDates.max">
+        [max]="validDates.interval.end">
     <mat-datepicker-toggle matSuffix [for]="picker" matTooltip="Kalendārs"></mat-datepicker-toggle>
     <button mat-icon-button matSuffix (click)="onDateShift(-1)" [disabled]="isMinDate()" matTooltip="Iepriekšējā diena">
         <mat-icon>navigate_before</mat-icon>

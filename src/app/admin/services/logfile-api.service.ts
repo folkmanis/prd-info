@@ -7,6 +7,7 @@ import { map, pluck, withLatestFrom } from 'rxjs/operators';
 import { APP_PARAMS } from 'src/app/app-params';
 import { AppParams, SystemPreferences } from 'src/app/interfaces';
 import { CONFIG } from 'src/app/services/config.provider';
+import { parse } from 'date-fns';
 
 function addLevelName(config: Observable<SystemPreferences>): OperatorFunction<LogRecordHttp[], LogRecord[]> {
     const levelMap: Observable<Map<number, string>> = config.pipe(
@@ -50,8 +51,10 @@ export class LogfileApiService extends ApiBase<LogRecordHttp> {
         );
     }
 
-    getDatesGroups(level: number): Observable<string[]> {
-        return this.http.get<string[]>(this.path + 'dates-groups', new HttpOptions({ level }).cacheable());
+    getDatesGroups(level: number): Observable<Date[]> {
+        return this.http.get<string[]>(this.path + 'dates-groups', new HttpOptions({ level }).cacheable()).pipe(
+            map(dates => dates.map(date => parse(date, 'y-MM-dd', 0))),
+        );
     }
 
 

@@ -15,8 +15,7 @@ import { ErrorsService } from './library/errors/errors.service';
 import { registerLocaleData } from '@angular/common';
 import localeLv from '@angular/common/locales/lv';
 registerLocaleData(localeLv);
-import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
-import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { APP_PARAMS, PRD_DEFAULTS } from './app-params';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { configProvider } from './services/config.provider';
@@ -25,6 +24,8 @@ import { lv } from 'date-fns/locale';
 import { httpInterceptorsProvider } from './library/http/http-interceptors-provider';
 
 import { ClassTransformer } from 'class-transformer';
+
+import { MatDateFnsModule } from '@angular/material-date-fns-adapter';
 
 @NgModule({
   declarations: [
@@ -37,17 +38,16 @@ import { ClassTransformer } from 'class-transformer';
     MaterialLibraryModule,
     LibraryModule,
     LayoutModule,
-    // JobsModule,
     AppRoutingModule,
+    MatDateFnsModule,
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'lv' },
     { provide: DATE_FNS_LOCALE, useValue: lv },
+    { provide: MAT_DATE_LOCALE, useExisting: DATE_FNS_LOCALE },
     { provide: DEFAULT_CURRENCY_CODE, useValue: 'EUR' },
     { provide: ErrorHandler, useClass: ErrorsService, },
     httpInterceptorsProvider,
-    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
-    { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
     { provide: APP_PARAMS, useValue: PRD_DEFAULTS },
     configProvider,
     { provide: ClassTransformer },

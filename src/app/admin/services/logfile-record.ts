@@ -1,4 +1,4 @@
-import moment from 'moment';
+import { endOfDay, startOfDay } from 'date-fns';
 
 export interface LogRecordHttp {
     _id: string;
@@ -21,9 +21,9 @@ export class LogQueryFilter {
 
     constructor(
         public level: number,
-        date: moment.Moment,
+        date: Date,
     ) {
-        this.dateFrom = date.startOf('day').toISOString();
-        this.dateTo = date.endOf('day').toISOString();
+        this.dateFrom = startOfDay(date).toISOString();
+        this.dateTo = endOfDay(date).toISOString();
     }
 };

@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import moment from 'moment';
 import { Observable } from 'rxjs';
 import { ValidDates } from '../../valid-dates.class';
 
@@ -12,7 +11,7 @@ import { ValidDates } from '../../valid-dates.class';
 })
 export class LogCalendarComponent {
 
-  dateControl = new FormControl(moment());
+  dateControl = new FormControl(new Date());
 
   private _validDates = new ValidDates([]);
   @Input() set validDates(value: ValidDates) {
@@ -24,16 +23,16 @@ export class LogCalendarComponent {
     if (this.isValiddate(currentDate)) {
       this.dateControl.setValue(currentDate);
     } else {
-      this.dateControl.setValue(this.validDates.max);
+      this.dateControl.setValue(this.validDates.interval.end);
     }
   }
   get validDates() {
     return this._validDates;
   }
 
-  @Output() selectedDate: Observable<moment.Moment> = this.dateControl.valueChanges;
+  @Output() selectedDate: Observable<Date> = this.dateControl.valueChanges;
 
-  isValiddate = (date: moment.Moment) => this.validDates.isValid(date);
+  isValiddate = (date: Date) => this.validDates.isValid(date);
   isMinDate = () => this.validDates.isMin(this.dateControl.value);
   isMaxDate = () => this.validDates.isMax(this.dateControl.value);
 
@@ -47,7 +46,7 @@ export class LogCalendarComponent {
   }
 
   onToday(): void {
-    this.dateControl.setValue(this.isValiddate(moment()) ? moment() : this.validDates.max);
+    this.dateControl.setValue(this.isValiddate(new Date()) ? new Date() : this.validDates.interval.end);
   }
 
 }
