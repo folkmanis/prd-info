@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { LibraryModule } from 'src/app/library/library.module';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { JobListComponent } from './job-list/job-list.component';
@@ -11,12 +12,10 @@ import { ReproJobFormComponent } from './repro-job-edit/repro-job-form/repro-job
 import { ProductAutocompleteComponent } from './repro-job-edit/repro-products-editor/product-autocomplete/product-autocomplete.component';
 import { ProductControlDirective } from './repro-job-edit/repro-products-editor/product-control.directive';
 import { ReproProductsEditorComponent } from './repro-job-edit/repro-products-editor/repro-products-editor.component';
-import { RouterModule, Routes } from '@angular/router';
-import { ReproJobsRoutingModule } from './repro-jobs-routing.module';
+import { ReproJobsComponent } from './repro-jobs.component';
 import { JobFilterComponent } from './side-panel/job-filter/job-filter.component';
 import { SidePanelComponent } from './side-panel/side-panel.component';
 import { UploadProgressComponent } from './side-panel/upload-progress/upload-progress.component';
-import { ReproJobsComponent } from './repro-jobs.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +38,6 @@ import { ReproJobsComponent } from './repro-jobs.component';
     MaterialLibraryModule,
     LibraryModule,
     RouterModule,
-    // ReproJobsRoutingModule,
   ]
 })
 export class ReproJobsModule { }
