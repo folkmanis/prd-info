@@ -18,7 +18,6 @@ registerLocaleData(localeLv);
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { APP_PARAMS, PRD_DEFAULTS } from './app-params';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
-import { configProvider } from './services/config.provider';
 import { DATE_FNS_LOCALE } from './library/date-services';
 import { lv } from 'date-fns/locale';
 import { httpInterceptorsProvider } from './library/http/http-interceptors-provider';
@@ -49,7 +48,6 @@ import { MatDateFnsModule } from '@angular/material-date-fns-adapter';
     { provide: ErrorHandler, useClass: ErrorsService, },
     httpInterceptorsProvider,
     { provide: APP_PARAMS, useValue: PRD_DEFAULTS },
-    configProvider,
     { provide: ClassTransformer },
   ],
   bootstrap: [AppComponent]
