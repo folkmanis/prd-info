@@ -1,5 +1,5 @@
-import { Inject, Injectable, InjectionToken, Optional } from '@angular/core';
-import { formatDistanceToNow, formatDistanceToNowStrict, Locale } from 'date-fns';
+import { Inject, Injectable, InjectionToken } from '@angular/core';
+import { endOfMonth, endOfWeek, endOfYear, format, formatDistanceToNow, formatDistanceToNowStrict, Locale, startOfMonth, startOfWeek, startOfYear, subYears } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 
 export const DATE_FNS_LOCALE = new InjectionToken<Locale>('date-fns locale', {
@@ -31,6 +31,39 @@ export class DateUtilsService {
     const distanceFn = strict ? formatDistanceToNowStrict : formatDistanceToNow;
 
     return distanceFn(toDate(date), params);
+  }
+
+  localDate(date: Date): string {
+    return format(date, 'P', { locale: this.locale });
+  }
+
+  thisWeek() {
+    return {
+      start: startOfWeek(new Date(), { locale: this.locale }),
+      end: endOfWeek(new Date(), { locale: this.locale })
+    };
+  }
+
+  thisMonth() {
+    return {
+      start: startOfMonth(new Date()),
+      end: endOfMonth(new Date()),
+    };
+  }
+
+  thisYear() {
+    return {
+      start: startOfYear(new Date()),
+      end: endOfYear(new Date()),
+    };
+  }
+
+  pastYear() {
+    const { start, end } = this.thisYear();
+    return {
+      start: subYears(start, 1),
+      end: subYears(end, 1),
+    };
   }
 
 }
