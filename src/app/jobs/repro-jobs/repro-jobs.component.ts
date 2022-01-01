@@ -60,7 +60,8 @@ export class ReproJobsComponent implements OnInit {
         category: 'repro',
       },
       jobStatus: {
-        generalStatus: 20
+        generalStatus: 20,
+        timestamp: new Date(),
       },
     };
     this.editDialogService.openJob(job).pipe(
@@ -75,7 +76,8 @@ export class ReproJobsComponent implements OnInit {
       receivedDate: new Date(),
       dueDate: new Date(),
       jobStatus: {
-        generalStatus: 10
+        generalStatus: 10,
+        timestamp: new Date(),
       }
     };
 

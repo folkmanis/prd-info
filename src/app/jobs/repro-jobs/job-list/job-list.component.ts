@@ -44,6 +44,7 @@ export class JobListComponent implements OnInit {
     this.jobService.updateJob(jobId, {
       jobStatus: {
         generalStatus: status,
+        timestamp: new Date(),
       }
     }).subscribe();
   }

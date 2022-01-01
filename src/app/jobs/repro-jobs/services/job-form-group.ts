@@ -68,9 +68,9 @@ export class JobFormGroup extends FormGroup {
                 }),
                 comment: new FormControl(undefined),
                 customerJobId: new FormControl(undefined),
-                custCode: new FormControl(undefined), // , { disabled: true }
                 jobStatus: new FormGroup({
                     generalStatus: new FormControl(10),
+                    timestamp: new FormControl(),
                 }),
                 products: new ProductFormArray(products$),
                 files: new FormControl(undefined),

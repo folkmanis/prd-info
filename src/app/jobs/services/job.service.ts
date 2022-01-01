@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { endOfDay } from 'date-fns';
 import { combineLatest, EMPTY, merge, Observable, of, ReplaySubject, Subject } from 'rxjs';
-import { catchError, map, pluck, share, startWith, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, mapTo, pluck, share, startWith, switchMap, tap } from 'rxjs/operators';
 import { Job, JobPartial, JobQueryFilter, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
 import { NotificationsService } from '../../services';
 import { HttpCacheService } from 'src/app/library/http';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { JobsApiService } from './jobs-api.service';
+import { combineReload } from 'src/app/library/rxjs';
 
 interface JobUpdateParams {
   createFolder?: boolean;
@@ -21,12 +22,12 @@ export class JobService {
 
   private readonly forceReload$: Subject<void> = new Subject();
 
-  private readonly reload$ = merge(
+  private readonly reload$: Observable<void> = merge(
     this.forceReload$,
     this.notificatinsService.wsMultiplex('jobs')
   ).pipe(
     tap(() => this.cacheService.clear()),
-    startWith(''),
+    mapTo(undefined),
   );
 
   constructor(
@@ -36,11 +37,11 @@ export class JobService {
     private api: JobsApiService,
   ) { }
 
-  jobs$: Observable<JobPartial[]> = combineLatest([
+  jobs$: Observable<JobPartial[]> = combineReload(
     this._filter$,
     this.reload$,
-  ]).pipe(
-    switchMap(([filter]) => this.getJobList(filter)),
+  ).pipe(
+    switchMap(filter => this.getJobList(filter)),
     share(),
   );
 
@@ -63,6 +64,9 @@ export class JobService {
   updateJob(jobId: number, job: Partial<Job>, params?: JobUpdateParams): Observable<Job> {
     if (job.dueDate) {
       job.dueDate = endOfDay(new Date(job.dueDate));
+    }
+    if (job.jobStatus) {
+      job.jobStatus.timestamp = new Date();
     }
     return this.api.updateOne(
       jobId,

@@ -5,6 +5,7 @@ import { JobProduct } from './job-product';
 
 export interface JobStatus {
     generalStatus: number;
+    timestamp: Date;
 }
 
 export interface Files {
