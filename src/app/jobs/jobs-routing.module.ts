@@ -12,6 +12,7 @@ const routes: Routes = [
     path: '',
     component: JobsComponent,
   },
+  { path: 'products-production', loadChildren: () => import('./products-production/products-production.module').then(m => m.ProductsProductionModule) },
 ];
 
 @NgModule({

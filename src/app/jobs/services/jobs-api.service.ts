@@ -1,11 +1,17 @@
 import { HttpClient, HttpEvent, HttpRequest } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { ApiBase, HttpOptions } from 'src/app/library/http';
-import { Job, JobsWithoutInvoicesTotals } from '../interfaces';
-import { Observable } from 'rxjs';
+import { Job, JobsWithoutInvoicesTotals, JobsProductionQuery, JobsProduction } from '../interfaces';
+import { map, Observable } from 'rxjs';
 import { APP_PARAMS } from 'src/app/app-params';
 import { AppParams } from 'src/app/interfaces';
 import { ClassTransformer } from 'class-transformer';
+import { Dictionary, pickBy } from 'lodash';
+
+export function pickNotNull<T>(obj: Dictionary<T>): Dictionary<T> {
+  return pickBy(obj, val => val !== undefined && val !== null);
+}
+
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +42,13 @@ export class JobsApiService extends ApiBase<Job> {
       { reportProgress: true, }
     );
     return this.http.request<Job>(request);
+  }
+
+  getJobsProduction(filter: JobsProductionQuery): Observable<JobsProduction[]> {
+    const query = pickNotNull(this.transformer.instanceToPlain(filter));
+    return this.http.get<Record<string, any>[]>(this.path + 'products', new HttpOptions(query)).pipe(
+      map(data => this.transformer.plainToInstance(JobsProduction, data)),
+    );
   }
 
 
