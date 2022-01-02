@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { endOfDay } from 'date-fns';
-import { combineLatest, EMPTY, merge, Observable, of, ReplaySubject, Subject } from 'rxjs';
-import { catchError, map, mapTo, pluck, share, startWith, switchMap, tap } from 'rxjs/operators';
-import { Job, JobPartial, JobQueryFilter, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
-import { NotificationsService } from '../../services';
-import { HttpCacheService } from 'src/app/library/http';
+import { EMPTY, merge, Observable, ReplaySubject, Subject } from 'rxjs';
+import { catchError, mapTo, pluck, share, switchMap, tap } from 'rxjs/operators';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
-import { JobsApiService } from './jobs-api.service';
+import { HttpCacheService } from 'src/app/library/http';
 import { combineReload } from 'src/app/library/rxjs';
+import { NotificationsService } from '../../services';
+import { Job, JobPartial, JobQueryFilter, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
+import { JobsApiService } from './jobs-api.service';
 
 interface JobUpdateParams {
   createFolder?: boolean;

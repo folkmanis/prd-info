@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { Production, JOB_CATEGORIES, JobCategories, ReproProduction, KastesProduction, PrintProduction, ProductionCategory } from './job-categories';
+import { KastesProduction, PrintProduction, Production, ReproProduction } from './job-categories';
 import { JobProduct } from './job-product';
 
 
@@ -16,7 +16,7 @@ export interface Files {
 export interface Job {
 
     _id: ObjectId;
-    _v: 2;
+    _v: 3;
     jobId: number;
     customer: string;
     name: string;
