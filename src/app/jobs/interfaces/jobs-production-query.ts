@@ -1,7 +1,12 @@
 import { Expose, Type, Transform } from 'class-transformer';
 import { formatISO } from 'date-fns';
 
-export class JobsProductionQuery {
+export type JobsProductionSortQuery = JobsProductionFilter & {
+    sort?: [string, 1 | -1 | undefined];
+};
+
+
+export class JobsProductionFilter {
 
     start = 0;
     limit = 100;

@@ -4,7 +4,7 @@ import { ClassTransformer } from 'class-transformer';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { DateUtilsService } from 'src/app/library/date-services/date-utils.service';
-import { JobsProductionQuery } from '../../interfaces';
+import { JobsProductionFilter } from '../../interfaces';
 
 interface NullableInterval {
     start: Date | null;
@@ -29,7 +29,7 @@ export const REPRO_DEFAULTS: FormData = {
 @Injectable()
 export class FilterForm extends FormGroup {
 
-    filterChanges: Observable<JobsProductionQuery>;
+    filterChanges: Observable<JobsProductionFilter>;
 
     thisWeek = () => this.setInterval(this.dateUtils.thisWeek());
     thisYear = () => this.setInterval(this.dateUtils.thisYear());
@@ -51,7 +51,7 @@ export class FilterForm extends FormGroup {
         this.filterChanges = this.valueChanges.pipe(
             startWith(this.value),
             map(value => this.flattenForm(value)),
-            map((value) => this.transformer.plainToInstance(JobsProductionQuery, value)),
+            map((value) => this.transformer.plainToInstance(JobsProductionFilter, value)),
         );
     }
 

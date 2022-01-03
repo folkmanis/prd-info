@@ -1,10 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
-import { debounceTime, mapTo, switchMap } from 'rxjs/operators';
-import { JobsProductionQuery } from '../interfaces';
-import { JobsApiService } from '../services/jobs-api.service';
+import { BehaviorSubject, combineLatest, Observable, ReplaySubject } from 'rxjs';
+import { debounceTime, map, mapTo, switchMap } from 'rxjs/operators';
+import { JobsProductionFilter, JobsProductionSortQuery } from '../interfaces';
+import { JobsApiService, pickNotNull } from '../services/jobs-api.service';
 import { NotificationsService } from 'src/app/services/notifications.service';
 import { combineReload } from 'src/app/library/rxjs';
+import { Sort } from '@angular/material/sort';
+import { ClassTransformer } from 'class-transformer';
 
 @Component({
   selector: 'app-products-production',
@@ -16,26 +18,52 @@ export class ProductsProductionComponent implements OnInit {
 
   displayedColumns = ['name', 'category', 'units', 'count', 'sum', 'total'];
 
-  filter$ = new ReplaySubject<JobsProductionQuery>(1);
+  filter$ = new ReplaySubject<JobsProductionFilter>(1);
+
+  sort$ = new BehaviorSubject<[string, 1 | -1 | undefined] | undefined>(undefined);
+
+  private query$: Observable<JobsProductionSortQuery> = combineLatest([
+    this.filter$.pipe(map(filter => this.transformer.instanceToPlain(filter))),
+    this.sort$
+  ]).pipe(
+    map(([filter, sort]) => ({
+      ...filter,
+      sort,
+    })),
+    map(query => pickNotNull(query) as unknown as JobsProductionSortQuery),
+  );
 
   jobsProduction$ = combineReload(
-    this.filter$,
+    this.query$,
     this.notifications.wsMultiplex('jobs').pipe(mapTo(undefined))
   ).pipe(
     debounceTime(300),
-    switchMap(filter => this.api.getJobsProduction(filter))
+    switchMap(filter => this.api.getJobsProduction(filter)),
   );
 
   constructor(
     private api: JobsApiService,
     private notifications: NotificationsService,
+    private transformer: ClassTransformer,
   ) { }
 
   ngOnInit(): void {
   }
 
-  onFilter(filter: JobsProductionQuery) {
+  onFilter(filter: JobsProductionFilter) {
     this.filter$.next(filter);
+  }
+
+  onSortChange(sort: Sort) {
+    if (sort.direction === 'asc') {
+      this.sort$.next([sort.active, 1]);
+      return;
+    }
+    if (sort.direction === 'desc') {
+      this.sort$.next([sort.active, -1]);
+      return;
+    }
+    this.sort$.next(null);
   }
 
 }
