@@ -47,8 +47,8 @@
         </ng-container>
 
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let product; columns: displayedColumns;"></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns$ | async"></tr>
+        <tr mat-row *matRowDef="let product; columns: displayedColumns$ | async;"></tr>
 
     </table>
 

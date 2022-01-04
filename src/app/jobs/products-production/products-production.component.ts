@@ -1,12 +1,16 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject } from 'rxjs';
-import { debounceTime, map, mapTo, switchMap } from 'rxjs/operators';
+import { debounceTime, map, mapTo, share, switchMap } from 'rxjs/operators';
 import { JobsProductionFilter, JobsProductionSortQuery } from '../interfaces';
 import { JobsApiService, pickNotNull } from '../services/jobs-api.service';
 import { NotificationsService } from 'src/app/services/notifications.service';
 import { combineReload } from 'src/app/library/rxjs';
 import { Sort } from '@angular/material/sort';
 import { ClassTransformer } from 'class-transformer';
+import { LoginService } from 'src/app/login';
+
+const COLUMNS = ['name', 'category', 'units', 'count', 'sum'];
+const ADMIN_COLUMNS = [...COLUMNS, 'total'];
 
 @Component({
   selector: 'app-products-production',
@@ -16,7 +20,10 @@ import { ClassTransformer } from 'class-transformer';
 })
 export class ProductsProductionComponent implements OnInit {
 
-  displayedColumns = ['name', 'category', 'units', 'count', 'sum', 'total'];
+  displayedColumns$ = this.loginService.isModule('jobs-admin').pipe(
+    map(isAdmin => isAdmin ? ADMIN_COLUMNS : COLUMNS),
+    share(),
+  );
 
   filter$ = new ReplaySubject<JobsProductionFilter>(1);
 
@@ -45,6 +52,7 @@ export class ProductsProductionComponent implements OnInit {
     private api: JobsApiService,
     private notifications: NotificationsService,
     private transformer: ClassTransformer,
+    private loginService: LoginService,
   ) { }
 
   ngOnInit(): void {
