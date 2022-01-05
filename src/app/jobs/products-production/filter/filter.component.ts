@@ -1,20 +1,23 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit, Output, Self } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, Output } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { log } from 'prd-cdk';
 import { Observable, pluck } from 'rxjs';
 import { SystemPreferences } from 'src/app/interfaces';
 import { LayoutService } from 'src/app/services';
 import { CONFIG } from 'src/app/services/config.provider';
-import { FilterForm, REPRO_DEFAULTS } from './filter-form';
+import { FilterForm } from './filter-form';
 
 @Component({
   selector: 'app-filter',
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [FilterForm]
 })
 export class FilterComponent implements OnInit {
 
-  @Output() filterChange = this.form.filterChanges;
+  @Output() filterChange = this.form.filterChanges.pipe(
+    log('filter changes')
+  );
 
   jobStates$ = this.config$.pipe(
     pluck('jobs', 'jobStates')
@@ -27,16 +30,16 @@ export class FilterComponent implements OnInit {
   large$ = this.layout.isLarge$;
 
   constructor(
-    @Self() public form: FilterForm,
+    public form: FilterForm,
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
-    private layout: LayoutService
+    private layout: LayoutService,
+    private route: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
-  }
-
-  setRepro() {
-    this.form.setValue(REPRO_DEFAULTS);
+    this.route.queryParams.subscribe(query => {
+      this.form.setFormFromRouteParams(query, { emitEvent: false });
+    });
   }
 
 

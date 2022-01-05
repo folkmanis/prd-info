@@ -7,13 +7,15 @@ import { ProductsProductionRoutingModule } from './products-production-routing.m
 import { ProductsProductionComponent } from './products-production.component';
 import { FilterComponent } from './filter/filter.component';
 import { FilterSummaryComponent } from './filter/filter-summary/filter-summary.component';
+import { ProductsTableComponent } from './products-table/products-table.component';
 
 
 @NgModule({
   declarations: [
     ProductsProductionComponent,
     FilterComponent,
-    FilterSummaryComponent
+    FilterSummaryComponent,
+    ProductsTableComponent
   ],
   imports: [
     CommonModule,

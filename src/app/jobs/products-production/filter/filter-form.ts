@@ -1,25 +1,28 @@
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ClassTransformer } from 'class-transformer';
+import { parseISO } from 'date-fns';
+import { log } from 'prd-cdk';
 import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { distinctUntilChanged, map, share } from 'rxjs/operators';
 import { DateUtilsService } from 'src/app/library/date-services/date-utils.service';
 import { JobsProductionFilter } from '../../interfaces';
+import { isEqual } from 'lodash';
 
 interface NullableInterval {
     start: Date | null;
     end: Date | null;
 }
 
-interface FormData {
+export interface FormData {
     jobStatus: number[] | null,
     category: string[] | null,
     timeInterval: NullableInterval;
 }
 
-export const REPRO_DEFAULTS: FormData = {
-    jobStatus: [10, 20],
-    category: ['repro'],
+const DEFAULT_FORM: FormData = {
+    jobStatus: [],
+    category: [],
     timeInterval: {
         start: null,
         end: null,
@@ -41,7 +44,7 @@ export class FilterForm extends FormGroup {
         private dateUtils: DateUtilsService,
     ) {
         super({
-            jobStatus: new FormControl([10, 20]),
+            jobStatus: new FormControl(),
             category: new FormControl(),
             timeInterval: new FormGroup({
                 start: new FormControl(),
@@ -49,14 +52,39 @@ export class FilterForm extends FormGroup {
             })
         });
         this.filterChanges = this.valueChanges.pipe(
-            startWith(this.value),
+            distinctUntilChanged(isEqual),
             map(value => this.flattenForm(value)),
-            map((value) => this.transformer.plainToInstance(JobsProductionFilter, value)),
+            map(value => this.transformer.plainToInstance(JobsProductionFilter, value)),
         );
+    }
+
+    get filterValue(): JobsProductionFilter {
+        return this.transformer.plainToInstance(JobsProductionFilter, this.flattenForm(this.value));
     }
 
     setInterval(interval: NullableInterval = { start: null, end: null, }) {
         this.get('timeInterval').setValue(interval);
+    }
+
+    setFormFromRouteParams(params: Record<string, string>, options?: { emitEvent: boolean; }) {
+        const data: FormData = { ...DEFAULT_FORM };
+        const { jobStatus, category, fromDate, toDate } = params;
+        if (jobStatus) {
+            data.jobStatus = jobStatus.split(',').map(s => +s);
+        }
+        if (category) {
+            data.category = category.split(',');
+        }
+        if (fromDate || toDate) {
+            data.timeInterval = {
+                start: fromDate ? parseISO(fromDate) : null,
+                end: toDate ? parseISO(toDate) : null
+            };
+        }
+        if (!isEqual(data, this.value)) {
+            this.patchValue(data, options);
+        }
+
     }
 
     private flattenForm(value: FormData): Record<string, any> {

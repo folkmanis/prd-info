@@ -1,15 +1,18 @@
 import { Expose, Type, Transform } from 'class-transformer';
 import { formatISO } from 'date-fns';
 
-export type JobsProductionSortQuery = JobsProductionFilter & {
-    sort?: [string, 1 | -1 | undefined];
+export interface JobsProductionQuery {
+    start: number;
+    limit: number;
+    sort?: string;
+    fromDate?: Date;
+    toDate?: Date;
+    jobStatus?: number[];
+    category?: string[];
 };
 
 
-export class JobsProductionFilter {
-
-    start = 0;
-    limit = 100;
+export class JobsProductionFilter implements Omit<JobsProductionQuery, 'sort' | 'limit' | 'start'> {
 
     @Transform(
         ({ value }) => value && formatISO(value, { representation: 'date' }),
@@ -27,11 +30,19 @@ export class JobsProductionFilter {
         ({ value }) => value?.length ? value : undefined,
         { toClassOnly: true }
     )
+    @Transform(
+        ({ value }) => value?.join(','),
+        { toPlainOnly: true }
+    )
     jobStatus?: number[];
 
     @Transform(
         ({ value }) => value?.length ? value : undefined,
         { toClassOnly: true }
+    )
+    @Transform(
+        ({ value }) => value?.join(','),
+        { toPlainOnly: true }
     )
     category?: string[];
 

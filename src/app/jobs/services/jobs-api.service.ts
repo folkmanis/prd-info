@@ -1,7 +1,7 @@
 import { HttpClient, HttpEvent, HttpRequest } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { ApiBase, HttpOptions } from 'src/app/library/http';
-import { Job, JobsWithoutInvoicesTotals, JobsProductionFilter, JobsProduction, JobsProductionSortQuery } from '../interfaces';
+import { Job, JobsWithoutInvoicesTotals, JobsProductionFilter, JobsProduction, JobsProductionQuery } from '../interfaces';
 import { map, Observable } from 'rxjs';
 import { APP_PARAMS } from 'src/app/app-params';
 import { AppParams } from 'src/app/interfaces';
@@ -44,7 +44,7 @@ export class JobsApiService extends ApiBase<Job> {
     return this.http.request<Job>(request);
   }
 
-  getJobsProduction(query: JobsProductionSortQuery): Observable<JobsProduction[]> {
+  getJobsProduction(query: JobsProductionQuery): Observable<JobsProduction[]> {
     return this.http.get<Record<string, any>[]>(this.path + 'products', new HttpOptions(query)).pipe(
       map(data => this.transformer.plainToInstance(JobsProduction, data)),
     );

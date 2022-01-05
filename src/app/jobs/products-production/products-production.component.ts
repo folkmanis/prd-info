@@ -1,77 +1,63 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { BehaviorSubject, combineLatest, Observable, ReplaySubject } from 'rxjs';
-import { debounceTime, map, mapTo, share, switchMap } from 'rxjs/operators';
-import { JobsProductionFilter, JobsProductionSortQuery } from '../interfaces';
-import { JobsApiService, pickNotNull } from '../services/jobs-api.service';
-import { NotificationsService } from 'src/app/services/notifications.service';
-import { combineReload } from 'src/app/library/rxjs';
-import { Sort } from '@angular/material/sort';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { ClassTransformer } from 'class-transformer';
-import { LoginService } from 'src/app/login';
+import { JobsProductionFilter, JobsProductionQuery } from '../interfaces';
+import { pickNotNull } from '../services/jobs-api.service';
+import { FilterForm, FormData } from './filter/filter-form';
+import { ProductsTableComponent } from './products-table/products-table.component';
 
-const COLUMNS = ['name', 'category', 'units', 'count', 'sum'];
-const ADMIN_COLUMNS = [...COLUMNS, 'total'];
+export const REPRO_DEFAULTS: FormData = {
+  jobStatus: [10, 20],
+  category: ['repro'],
+  timeInterval: {
+    start: null,
+    end: null,
+  }
+};
+
 
 @Component({
   selector: 'app-products-production',
   templateUrl: './products-production.component.html',
   styleUrls: ['./products-production.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [FilterForm],
 })
-export class ProductsProductionComponent implements OnInit {
+export class ProductsProductionComponent implements AfterViewInit {
 
-  displayedColumns$ = this.loginService.isModule('jobs-admin').pipe(
-    map(isAdmin => isAdmin ? ADMIN_COLUMNS : COLUMNS),
-    share(),
-  );
+  @ViewChild(ProductsTableComponent)
+  private table: ProductsTableComponent;
 
-  filter$ = new ReplaySubject<JobsProductionFilter>(1);
-
-  sort$ = new BehaviorSubject<[string, 1 | -1 | undefined] | undefined>(undefined);
-
-  private query$: Observable<JobsProductionSortQuery> = combineLatest([
-    this.filter$.pipe(map(filter => this.transformer.instanceToPlain(filter))),
-    this.sort$
-  ]).pipe(
-    map(([filter, sort]) => ({
-      ...filter,
-      sort,
-    })),
-    map(query => pickNotNull(query) as unknown as JobsProductionSortQuery),
-  );
-
-  jobsProduction$ = combineReload(
-    this.query$,
-    this.notifications.wsMultiplex('jobs').pipe(mapTo(undefined))
-  ).pipe(
-    debounceTime(300),
-    switchMap(filter => this.api.getJobsProduction(filter)),
-  );
+  filter: JobsProductionFilter;
 
   constructor(
-    private api: JobsApiService,
-    private notifications: NotificationsService,
     private transformer: ClassTransformer,
-    private loginService: LoginService,
+    private router: Router,
+    private form: FilterForm,
   ) { }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
+    this.filter = this.form.filterValue;
   }
 
-  onFilter(filter: JobsProductionFilter) {
-    this.filter$.next(filter);
+  onFilter(value: JobsProductionFilter) {
+    this.filter = value;
+    this.navigate();
   }
 
-  onSortChange(sort: Sort) {
-    if (sort.direction === 'asc') {
-      this.sort$.next([sort.active, 1]);
-      return;
-    }
-    if (sort.direction === 'desc') {
-      this.sort$.next([sort.active, -1]);
-      return;
-    }
-    this.sort$.next(null);
+  navigate() {
+    const queryParams: JobsProductionQuery = this.transformer.instanceToPlain(this.filter) as JobsProductionQuery;
+    queryParams.sort = this.table.activeSortStr;
+    queryParams.start = 0;
+    queryParams.limit = 100;
+
+    this.router.navigate([], { queryParams });
+
   }
+
+  setRepro() {
+    this.form.setValue(REPRO_DEFAULTS);
+  }
+
 
 }
