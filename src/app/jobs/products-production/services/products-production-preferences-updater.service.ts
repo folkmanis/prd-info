@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ClassTransformer } from 'class-transformer';
 import { OperatorFunction, pipe } from 'rxjs';
-import { concatMap, map, withLatestFrom } from 'rxjs/operators';
+import { bufferTime, concatMap, filter, map, withLatestFrom } from 'rxjs/operators';
 import { JobsUserPreferences, SavedJobsProductionQuery } from '../../interfaces/jobs-user-preferences';
 import { JobsUserPreferencesService } from '../../services/jobs-user-preferences.service';
 
@@ -18,22 +18,26 @@ export class ProductsProductionPreferencesUpdaterService {
   savePreferences(): OperatorFunction<Partial<SavedJobsProductionQuery>, any> {
 
     return pipe(
+      bufferTime(5000),
+      filter(buffer => buffer.length > 0),
       withLatestFrom(this.prefService.userPreferences$),
-      map(([update, pref]) => (
-        {
-          ...pref,
-          jobsProductionQuery: {
-            ...pref.jobsProductionQuery,
-            ...update,
-          }
-        }
-      )),
+      map(([updates, pref]) => this.applyPreferences(pref, updates)),
       map(update => this.transformer.plainToInstance(JobsUserPreferences, update)),
       concatMap(pref => this.prefService.setUserPreferences(pref)),
     );
 
   }
 
+  private applyPreferences(preferences: JobsUserPreferences, updates: Partial<SavedJobsProductionQuery>[]): JobsUserPreferences {
+    const jobsProductionQuery = this.reduceUpdates(preferences.jobsProductionQuery, updates);
+    return {
+      ...preferences,
+      jobsProductionQuery,
+    };
+  }
 
+  private reduceUpdates(savedQuery: SavedJobsProductionQuery, updates: Partial<SavedJobsProductionQuery>[]): SavedJobsProductionQuery {
+    return updates.reduce((acc, update) => ({ ...acc, ...update }), savedQuery);
+  }
 
 }
