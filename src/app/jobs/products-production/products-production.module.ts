@@ -8,6 +8,7 @@ import { ProductsProductionComponent } from './products-production.component';
 import { FilterComponent } from './filter/filter.component';
 import { FilterSummaryComponent } from './filter/filter-summary/filter-summary.component';
 import { ProductsTableComponent } from './products-table/products-table.component';
+import { ProductsSortDirective } from './products-table/products-sort.directive';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { ProductsTableComponent } from './products-table/products-table.componen
     ProductsProductionComponent,
     FilterComponent,
     FilterSummaryComponent,
-    ProductsTableComponent
+    ProductsTableComponent,
+    ProductsSortDirective
   ],
   imports: [
     CommonModule,

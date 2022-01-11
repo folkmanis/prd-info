@@ -1,38 +1,30 @@
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ClassTransformer } from 'class-transformer';
-import { parseISO } from 'date-fns';
-import { log } from 'prd-cdk';
+import { formatISO, parseISO } from 'date-fns';
 import { Observable } from 'rxjs';
-import { distinctUntilChanged, map, share } from 'rxjs/operators';
+import { map, skip } from 'rxjs/operators';
 import { DateUtilsService } from 'src/app/library/date-services/date-utils.service';
-import { JobsProductionFilter } from '../../interfaces';
-import { isEqual } from 'lodash';
+import { JobsProductionFilterQuery } from '../../interfaces';
+import { SavedJobsProductionQuery } from '../../interfaces/jobs-user-preferences';
 
 interface NullableInterval {
     start: Date | null;
     end: Date | null;
 }
 
-export interface FormData {
-    jobStatus: number[] | null,
-    category: string[] | null,
-    timeInterval: NullableInterval;
+export interface ProductsFormData {
+    jobStatus: number[],
+    category: string[],
+    fromDate: Date | null,
+    toDate: Date | null,
 }
-
-const DEFAULT_FORM: FormData = {
-    jobStatus: [],
-    category: [],
-    timeInterval: {
-        start: null,
-        end: null,
-    }
-};
 
 @Injectable()
 export class FilterForm extends FormGroup {
 
-    filterChanges: Observable<JobsProductionFilter>;
+    filterChanges: Observable<JobsProductionFilterQuery>;
+
+    valueChanges: Observable<ProductsFormData>;
 
     thisWeek = () => this.setInterval(this.dateUtils.thisWeek());
     thisYear = () => this.setInterval(this.dateUtils.thisYear());
@@ -40,60 +32,59 @@ export class FilterForm extends FormGroup {
     pastYear = () => this.setInterval(this.dateUtils.pastYear());
 
     constructor(
-        private transformer: ClassTransformer,
         private dateUtils: DateUtilsService,
     ) {
         super({
             jobStatus: new FormControl(),
             category: new FormControl(),
-            timeInterval: new FormGroup({
-                start: new FormControl(),
-                end: new FormControl(),
-            })
+            fromDate: new FormControl(),
+            toDate: new FormControl(),
         });
         this.filterChanges = this.valueChanges.pipe(
-            distinctUntilChanged(isEqual),
-            map(value => this.flattenForm(value)),
-            map(value => this.transformer.plainToInstance(JobsProductionFilter, value)),
+            skip(2), // 2 false events from date inputs
+            map(value => this.formToFilterQuery(value)),
         );
     }
 
-    get filterValue(): JobsProductionFilter {
-        return this.transformer.plainToInstance(JobsProductionFilter, this.flattenForm(this.value));
+    get filterValue(): JobsProductionFilterQuery {
+        return this.value;
     }
 
-    setInterval(interval: NullableInterval = { start: null, end: null, }) {
-        this.get('timeInterval').setValue(interval);
+    setFilterValue(value: ProductsFormData, options?: { emitEvent: boolean; }) {
+        super.setValue(value, options);
     }
 
-    setFormFromRouteParams(params: Record<string, string>, options?: { emitEvent: boolean; }) {
-        const data: FormData = { ...DEFAULT_FORM };
-        const { jobStatus, category, fromDate, toDate } = params;
-        if (jobStatus) {
-            data.jobStatus = jobStatus.split(',').map(s => +s);
-        }
-        if (category) {
-            data.category = category.split(',');
-        }
-        if (fromDate || toDate) {
-            data.timeInterval = {
-                start: fromDate ? parseISO(fromDate) : null,
-                end: toDate ? parseISO(toDate) : null
-            };
-        }
-        if (!isEqual(data, this.value)) {
-            this.patchValue(data, options);
-        }
-
+    setInterval({ start, end }: NullableInterval = { start: null, end: null, }) {
+        super.patchValue({
+            fromDate: start,
+            toDate: end,
+        });
     }
 
-    private flattenForm(value: FormData): Record<string, any> {
-        const { timeInterval, ...filter } = value;
+    setValueFromQuery(query: SavedJobsProductionQuery, options?: { emitEvent: boolean; }) {
+        this.setValue(this.filterQueryToForm(query), options);
+    }
+
+
+    private formToFilterQuery({ jobStatus, category, fromDate, toDate }: Partial<ProductsFormData>): JobsProductionFilterQuery {
+
         return {
-            ...filter,
-            fromDate: timeInterval.start,
-            toDate: timeInterval.end,
+            fromDate: fromDate && formatISO(fromDate, { representation: 'date' }),
+            toDate: toDate && formatISO(toDate, { representation: 'date' }),
+            jobStatus: jobStatus?.length ? jobStatus : undefined,
+            category: category?.length ? category : undefined,
         };
     }
+
+    private filterQueryToForm(query: JobsProductionFilterQuery) {
+        const { fromDate, toDate, jobStatus, category } = query;
+        return {
+            fromDate: fromDate ? parseISO(fromDate) : null,
+            toDate: toDate ? parseISO(toDate) : null,
+            jobStatus: jobStatus || [],
+            category: category || [],
+        };
+    }
+
 
 }

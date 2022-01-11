@@ -4,8 +4,8 @@
             Atlase
         </mat-panel-title>
         <mat-panel-description [class.invisible]="panel.expanded">
-            <app-filter-summary [states]="jobStates$ | async" [categories]="categories$ | async"
-                [query]="form.filterChanges | async"></app-filter-summary>
+            <app-filter-summary [states]="jobStates$ | async" [categories]="categories$ | async" [query]="form.value">
+            </app-filter-summary>
         </mat-panel-description>
     </mat-expansion-panel-header>
 
@@ -35,9 +35,9 @@
 
     <mat-form-field>
         <mat-label> Laiks </mat-label>
-        <mat-date-range-input formGroupName="timeInterval" [rangePicker]="picker">
-            <input matStartDate formControlName="start">
-            <input matEndDate formControlName="end">
+        <mat-date-range-input [rangePicker]="picker">
+            <input matStartDate formControlName="fromDate">
+            <input matEndDate formControlName="toDate">
         </mat-date-range-input>
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <button mat-icon-button matSuffix (click)="form.setInterval()">
@@ -59,6 +59,8 @@
 
     <span></span>
 
-    <ng-content></ng-content>
+    <button mat-raised-button (click)="setRepro()">
+        REPRO
+    </button>
 
 </mat-expansion-panel>

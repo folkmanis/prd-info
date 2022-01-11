@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { JobState, ProductCategory } from 'src/app/interfaces';
 import { DateUtilsService } from 'src/app/library/date-services';
-import { JobsProductionFilter } from '../../../interfaces';
+import { JobsProductionFilterQuery } from '../../../interfaces';
+import { ProductsFormData } from '../filter-form';
 
 @Component({
   selector: 'app-filter-summary',
@@ -11,7 +12,7 @@ import { JobsProductionFilter } from '../../../interfaces';
 })
 export class FilterSummaryComponent implements OnChanges {
 
-  @Input() query: JobsProductionFilter | null;
+  @Input() query: ProductsFormData | null;
 
   @Input() states: JobState[] = [];
 

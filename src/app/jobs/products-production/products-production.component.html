@@ -1,12 +1,10 @@
 <div class="container" cdk-scrollable scroll-to-top>
 
-    <app-filter (filterChange)="onFilter($event)">
-        <button mat-raised-button (click)="setRepro()">
-            REPRO
-        </button>
+    <app-filter [filter]="savedFilter$ | async" (filterChanges)="onFilter($event)">
 
     </app-filter>
 
-    <app-products-table (sortChange)="navigate()"></app-products-table>
+    <app-products-table [data]="data$ | async" [initialSort]="savedSort$ | async" (sortChange)="onSort($event)">
+    </app-products-table>
 
 </div>

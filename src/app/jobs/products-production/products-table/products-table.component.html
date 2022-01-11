@@ -1,5 +1,5 @@
-<table mat-table [dataSource]="jobsProduction$" matSort matSortDisableClear [matSortActive]="activeSort$ | async"
-    [matSortDirection]="activeSortDirection$ | async" class="app-table" (matSortChange)="onSortChange($event)">
+<table mat-table [dataSource]="data$" appProductsSort (sortStringChange)="onSortChange($event)"
+    [activeSortString]="initialSort" matSortDisableClear class="app-table">
 
     <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Izstrādājums </th>

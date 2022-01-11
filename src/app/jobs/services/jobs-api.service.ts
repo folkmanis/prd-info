@@ -1,12 +1,13 @@
 import { HttpClient, HttpEvent, HttpRequest } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { ApiBase, HttpOptions } from 'src/app/library/http';
-import { Job, JobsWithoutInvoicesTotals, JobsProductionFilter, JobsProduction, JobsProductionQuery } from '../interfaces';
+import { Job, JobsWithoutInvoicesTotals, JobsProductionFilterQuery, JobsProduction, JobsProductionQuery } from '../interfaces';
 import { map, Observable } from 'rxjs';
 import { APP_PARAMS } from 'src/app/app-params';
 import { AppParams } from 'src/app/interfaces';
 import { ClassTransformer } from 'class-transformer';
 import { Dictionary, pickBy } from 'lodash';
+import { JobsUserPreferences } from '../interfaces/jobs-user-preferences';
 
 export function pickNotNull<T>(obj: Dictionary<T>): Dictionary<T> {
   return pickBy(obj, val => val !== undefined && val !== null);
@@ -45,8 +46,24 @@ export class JobsApiService extends ApiBase<Job> {
   }
 
   getJobsProduction(query: JobsProductionQuery): Observable<JobsProduction[]> {
-    return this.http.get<Record<string, any>[]>(this.path + 'products', new HttpOptions(query)).pipe(
+    const httpOptions = new HttpOptions(
+      pickNotNull(query)
+    );
+    return this.http.get<Record<string, any>[]>(this.path + 'products', httpOptions).pipe(
       map(data => this.transformer.plainToInstance(JobsProduction, data)),
+    );
+  }
+
+  getUserPreferences(): Observable<JobsUserPreferences> {
+    return this.http.get<Record<string, any>>(this.path + 'preferences', new HttpOptions()).pipe(
+      map(data => this.transformer.plainToInstance(JobsUserPreferences, data, { excludeExtraneousValues: true })),
+    );
+  }
+
+  setUserPreferences(preferences: JobsUserPreferences) {
+    const data = this.transformer.instanceToPlain(preferences);
+    return this.http.patch<Record<string, any>>(this.path + 'preferences', data, new HttpOptions()).pipe(
+      map(data => this.transformer.plainToInstance(JobsUserPreferences, data, { excludeExtraneousValues: true })),
     );
   }
 

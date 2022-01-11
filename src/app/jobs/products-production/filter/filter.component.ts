@@ -1,11 +1,19 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit, Output } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { log } from 'prd-cdk';
+import { ChangeDetectionStrategy, Component, Inject, Input, OnInit, Output } from '@angular/core';
 import { Observable, pluck } from 'rxjs';
 import { SystemPreferences } from 'src/app/interfaces';
 import { LayoutService } from 'src/app/services';
 import { CONFIG } from 'src/app/services/config.provider';
-import { FilterForm } from './filter-form';
+import { JobsProductionFilterQuery } from '../../interfaces';
+import { ProductsProductionPreferencesUpdaterService } from '../services/products-production-preferences-updater.service';
+import { FilterForm, ProductsFormData } from './filter-form';
+
+export const REPRO_DEFAULTS: ProductsFormData = {
+  jobStatus: [10, 20],
+  category: ['repro'],
+  fromDate: null,
+  toDate: null,
+};
+
 
 @Component({
   selector: 'app-filter',
@@ -15,9 +23,18 @@ import { FilterForm } from './filter-form';
 })
 export class FilterComponent implements OnInit {
 
-  @Output() filterChange = this.form.filterChanges.pipe(
-    log('filter changes')
-  );
+  @Input('filter')
+  set filter(value: JobsProductionFilterQuery) {
+    if (!value) {
+      return;
+    }
+    this.form.setValueFromQuery(value, { emitEvent: false });
+  }
+  get filter(): JobsProductionFilterQuery {
+    return this.form.filterValue;
+  }
+
+  @Output() filterChanges = this.form.filterChanges;
 
   jobStates$ = this.config$.pipe(
     pluck('jobs', 'jobStates')
@@ -33,14 +50,13 @@ export class FilterComponent implements OnInit {
     public form: FilterForm,
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
     private layout: LayoutService,
-    private route: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(query => {
-      this.form.setFormFromRouteParams(query, { emitEvent: false });
-    });
   }
 
+  setRepro() {
+    this.form.setValue(REPRO_DEFAULTS);
+  }
 
 }
