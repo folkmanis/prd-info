@@ -6,7 +6,6 @@ import { NotificationsService } from 'src/app/services/notifications.service';
 import { JobsProductionFilterQuery } from '../interfaces';
 import { JobsApiService } from '../services/jobs-api.service';
 import { JobsUserPreferencesService } from '../services/jobs-user-preferences.service';
-import { FilterForm } from './filter/filter-form';
 import { ProductsProductionPreferencesUpdaterService } from './services/products-production-preferences-updater.service';
 
 
@@ -16,7 +15,6 @@ import { ProductsProductionPreferencesUpdaterService } from './services/products
   styleUrls: ['./products-production.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    FilterForm,
     DestroyService,
   ],
 })
@@ -74,7 +72,7 @@ export class ProductsProductionComponent implements OnInit {
 
     merge(
       this.sortChange$.pipe(map(sort => ({ sort }))),
-      this.filterChange$.pipe(debounceTime(1000))
+      this.filterChange$.pipe(debounceTime(100))
     ).pipe(
       takeUntil(this.destroy$),
       this.prefStorage.savePreferences()

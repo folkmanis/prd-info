@@ -4,7 +4,6 @@ import { SystemPreferences } from 'src/app/interfaces';
 import { LayoutService } from 'src/app/services';
 import { CONFIG } from 'src/app/services/config.provider';
 import { JobsProductionFilterQuery } from '../../interfaces';
-import { ProductsProductionPreferencesUpdaterService } from '../services/products-production-preferences-updater.service';
 import { FilterForm, ProductsFormData } from './filter-form';
 
 export const REPRO_DEFAULTS: ProductsFormData = {
@@ -20,6 +19,9 @@ export const REPRO_DEFAULTS: ProductsFormData = {
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    FilterForm,
+  ]
 })
 export class FilterComponent implements OnInit {
 
@@ -34,7 +36,7 @@ export class FilterComponent implements OnInit {
     return this.form.filterValue;
   }
 
-  @Output() filterChanges = this.form.filterChanges;
+  @Output() filterChanges = this.form.filterQueryChanges;
 
   jobStates$ = this.config$.pipe(
     pluck('jobs', 'jobStates')
