@@ -13,7 +13,7 @@ import { ProductAutocompleteComponent } from './repro-job-edit/repro-products-ed
 import { ProductControlDirective } from './repro-job-edit/repro-products-editor/product-control.directive';
 import { ReproProductsEditorComponent } from './repro-job-edit/repro-products-editor/repro-products-editor.component';
 import { ReproJobsComponent } from './repro-jobs.component';
-import { JobFilterComponent } from './side-panel/job-filter/job-filter.component';
+import { JobFilterComponent } from './job-filter/job-filter.component';
 import { SidePanelComponent } from './side-panel/side-panel.component';
 import { UploadProgressComponent } from './side-panel/upload-progress/upload-progress.component';
 

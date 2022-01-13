@@ -1,3 +1,7 @@
+:host {
+    height: 100%;
+}
+
 .container {
     height: 100%;
     overflow: auto;
@@ -16,26 +20,28 @@ tr {
 }
 
 tbody tr:hover {
-    background-color: rgba(0, 0, 0, .08);
+    background-color: rgba(0, 0, 0, 0.08);
     cursor: pointer;
 }
 
-td, th {
+td,
+th {
     display: table-cell;
     padding: 0 4px;
     font-size: 14px;
-    color: rgba(0, 0, 0, .87);
-    border-bottom-color: rgba(0, 0, 0, .12);
+    color: rgba(0, 0, 0, 0.87);
+    border-bottom-color: rgba(0, 0, 0, 0.12);
     border-bottom-width: 1px;
     border-bottom-style: solid;
     text-align: left;
 }
 
 .job-completed td {
-    color: rgba(0, 0, 0, .50);
+    color: rgba(0, 0, 0, 0.5);
 }
 
-th:first-of-type, td:first-of-type {
+th:first-of-type,
+td:first-of-type {
     padding-left: 8px;
 }
 

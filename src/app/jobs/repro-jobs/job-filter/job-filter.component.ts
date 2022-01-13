@@ -1,13 +1,12 @@
-import { Component, Inject, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, Output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { IFormGroup } from '@rxweb/types';
 import { Observable } from 'rxjs';
-import { debounceTime, filter, map, pluck, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, map, pluck, startWith, switchMap } from 'rxjs/operators';
 import { CustomerPartial, SystemPreferences } from 'src/app/interfaces';
-import { JobQueryFilter } from '../../../interfaces';
-import { DestroyService } from 'prd-cdk';
 import { CustomersService } from 'src/app/services';
 import { CONFIG } from 'src/app/services/config.provider';
+import { JobQueryFilter } from '../../interfaces';
 
 type JobFilter = Pick<JobQueryFilter, 'customer' | 'jobsId' | 'name' | 'jobStatus'>;
 
@@ -23,7 +22,6 @@ const DEFAULT_FILTER = {
   templateUrl: './job-filter.component.html',
   styleUrls: ['./job-filter.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DestroyService],
 })
 export class JobFilterComponent implements OnInit {
 
