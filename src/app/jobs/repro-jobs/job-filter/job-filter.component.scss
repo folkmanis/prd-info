@@ -3,11 +3,11 @@
     padding: 16px;
 }
 
-div.container {
+div.container.large {
     display: flex;
 }
 
-div.container > :first-child {
+div.container.large > :first-child {
     margin-right: 16px;
     margin-top: 8px;
 }

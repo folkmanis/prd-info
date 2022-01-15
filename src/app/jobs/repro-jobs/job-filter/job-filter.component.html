@@ -1,12 +1,17 @@
-<mat-expansion-panel expanded>
+<mat-expansion-panel [expanded]="large$ | async">
 
     <mat-expansion-panel-header>
         <mat-panel-title>
             Filtrs
         </mat-panel-title>
+
+        <mat-panel-description *ngIf="filterForm.valid">
+            <app-job-filter-summary [jobStates]="jobStates$ | async"></app-job-filter-summary>
+        </mat-panel-description>
+
     </mat-expansion-panel-header>
 
-    <div class="container">
+    <div class="container" [class.large]="large$ | async">
 
         <div>
             <!-- Atiestatīt formu -->

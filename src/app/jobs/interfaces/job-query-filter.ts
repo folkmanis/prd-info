@@ -24,3 +24,12 @@ export interface JobQueryFilterOptions {
 }
 
 export type JobQueryFilter = Partial<JobQueryFilterOptions>;
+
+export type JobFilterKeys = 'customer' | 'jobsId' | 'name' | 'jobStatus';
+
+export interface JobFilter {
+    customer: string;
+    jobsId: string;
+    name: string;
+    jobStatus: number[];
+}

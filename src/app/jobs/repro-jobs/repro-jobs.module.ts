@@ -16,6 +16,7 @@ import { ReproJobsComponent } from './repro-jobs.component';
 import { JobFilterComponent } from './job-filter/job-filter.component';
 import { SidePanelComponent } from './side-panel/side-panel.component';
 import { UploadProgressComponent } from './side-panel/upload-progress/upload-progress.component';
+import { JobFilterSummaryComponent } from './job-filter/job-filter-summary/job-filter-summary.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { UploadProgressComponent } from './side-panel/upload-progress/upload-pro
     ProductControlDirective,
     KeyPressDirective,
     ReproJobFormComponent,
+    JobFilterSummaryComponent,
   ],
   imports: [
     CommonModule,

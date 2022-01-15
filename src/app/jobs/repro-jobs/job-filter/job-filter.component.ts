@@ -1,55 +1,64 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit, Output } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { IFormGroup } from '@rxweb/types';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { debounceTime, filter, map, pluck, startWith, switchMap } from 'rxjs/operators';
 import { CustomerPartial, SystemPreferences } from 'src/app/interfaces';
-import { CustomersService } from 'src/app/services';
+import { CustomersService, SystemPreferencesService } from 'src/app/services';
 import { CONFIG } from 'src/app/services/config.provider';
-import { JobQueryFilter } from '../../interfaces';
+import { JobQueryFilter, JobFilter } from '../../interfaces';
+import { LayoutService } from 'src/app/services';
 
-type JobFilter = Pick<JobQueryFilter, 'customer' | 'jobsId' | 'name' | 'jobStatus'>;
 
-const DEFAULT_FILTER = {
+const DEFAULT_FILTER: JobFilter = {
   jobsId: null,
   name: '',
   customer: '',
   jobStatus: [10, 20]
 };
 
+export abstract class JobFilterFormProvider {
+  abstract filterForm: FormGroup;
+}
+
 @Component({
   selector: 'app-job-filter',
   templateUrl: './job-filter.component.html',
   styleUrls: ['./job-filter.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    { provide: JobFilterFormProvider, useExisting: JobFilterComponent }
+  ]
 })
-export class JobFilterComponent implements OnInit {
+export class JobFilterComponent implements JobFilterFormProvider, OnInit {
 
   jobStates$ = this.config$.pipe(
     pluck('jobs', 'jobStates')
   );
   customersFiltered$: Observable<CustomerPartial[]>;
 
-  filterForm: IFormGroup<JobFilter> = this.fb.group({
+  filterForm: FormGroup = this.fb.group({
     name: undefined,
     jobsId: [
       undefined,
       { validators: [Validators.pattern(/^[0-9]+$/)] }
     ],
     customer: undefined,
-    jobStatus: undefined,
+    jobStatus: [],
   });;
 
-  @Output('jobFilter') jobFilter$: Observable<JobFilter> = this.filterForm.valueChanges.pipe(
+  @Output('jobFilter') jobFilter$: Observable<JobQueryFilter> = this.filterForm.valueChanges.pipe(
     filter(_ => this.filterForm.valid),
     debounceTime(500),
     map(normalizeFilter),
   );
 
+  large$ = this.layout.isLarge$;
+
   constructor(
     private fb: FormBuilder,
     private customersService: CustomersService,
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
+    private layout: LayoutService,
   ) { }
 
 
@@ -68,7 +77,7 @@ export class JobFilterComponent implements OnInit {
 
   }
 
-  onReset(key?: keyof JobFilter) {
+  onReset<T extends keyof JobFilter>(key?: T) {
     if (key) {
       this.filterForm.controls[key].setValue(DEFAULT_FILTER[key]);
     } else {
@@ -78,7 +87,7 @@ export class JobFilterComponent implements OnInit {
 
 }
 
-function normalizeFilter(jobFilter: JobQueryFilter): JobQueryFilter {
+function normalizeFilter(jobFilter: JobFilter): JobQueryFilter {
   return {
     jobsId: jobFilter.jobsId ? [+jobFilter.jobsId] : undefined,
     name: jobFilter.name ? jobFilter.name : undefined,
