@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs';
-import { concatMap, filter, map, retry, shareReplay, startWith, switchMap } from 'rxjs/operators';
+import { concatMap, filter, map, retry, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { LoginService } from 'src/app/login';
 import { APP_PARAMS } from '../app-params';
 import { AppParams, MODULES, PreferencesDbModule, SystemPreferences, UserModule } from '../interfaces';
@@ -22,6 +22,8 @@ export class SystemPreferencesService {
     startWith(this.router.routerState.snapshot.url),
   );
 
+  preferencesSnapshot: SystemPreferences = this.params.defaultSystemPreferences;
+
   preferences$: Observable<SystemPreferences> = merge(
     of(this.params.defaultSystemPreferences),
     this.loginService.user$.pipe( // mainoties user, ielādē no servera
@@ -36,6 +38,7 @@ export class SystemPreferencesService {
       switchMap(_ => this._systemPreferences()),
     )
   ).pipe(
+    tap(pref => this.preferencesSnapshot = pref),
     shareReplay(1),
   );
 
