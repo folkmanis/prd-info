@@ -1,4 +1,9 @@
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
+@use "./zmg-styles.scss" as app-styles;
+@use "./app/library/simple-form/simple-form.styles.scss" as simple-form;
+@use "./app/layout/messaging/messages-pane.scss" as message-pane;
+@use "./app/library/table/table-theme.scss" as table;
+
 // Plus imports for other components in your app.
 
 // Include the common styles for Angular Material. We include this here so that you only
@@ -10,19 +15,16 @@
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
 
-@import "./zmg-styles.scss";
+$theme: app-styles.$theme;
+// @import "./zmg-styles.scss";
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include mat.all-component-themes($zmg-app-theme);
+@include mat.all-component-themes($theme);
 
-@include zmg-table-theme($zmg-app-theme);
+@include simple-form.theme($theme);
 
-@import "./app/library/simple-form/simple-form.styles.scss";
+@include message-pane.theme($theme);
 
-@include simple-form-theme($zmg-app-theme);
-
-@import "./app/layout/messaging/messages-pane.scss";
-
-@include messages-pane($zmg-app-theme);
+@include table.theme($theme);

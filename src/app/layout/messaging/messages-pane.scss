@@ -1,4 +1,4 @@
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
 
 @mixin messages-pane-color($config-or-theme) {
     // Extract the color configuration in case a theme has been passed.
@@ -31,7 +31,7 @@
     }
 }
 
-@mixin messages-pane($theme) {
+@mixin theme($theme) {
     // Extracts the color and typography configurations from the theme.
     $color: mat.get-color-config($theme);
     $typography: mat.get-typography-config($theme);
