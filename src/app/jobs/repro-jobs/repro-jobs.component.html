@@ -6,14 +6,14 @@
 
 <mat-drawer-container>
     <mat-drawer button [small]="(large$ | async) === false">
-        <app-side-panel (jobFilter)="onJobFilter($event)" (file)="onFileDrop($event)"></app-side-panel>
+        <app-side-panel (file)="onFileDrop($event)" [jobs]="jobs$ | async"></app-side-panel>
     </mat-drawer>
 
     <mat-drawer-content>
 
         <app-job-filter (jobFilter)="onJobFilter($event)"></app-job-filter>
 
-        <app-job-list></app-job-list>
+        <app-job-list [jobs]="jobs$ | async" (statusUpdate)="onSetJobStatus($event)"></app-job-list>
 
     </mat-drawer-content>
 </mat-drawer-container>

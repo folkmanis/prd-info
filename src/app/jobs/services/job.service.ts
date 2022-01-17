@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { endOfDay } from 'date-fns';
 import { EMPTY, merge, Observable, ReplaySubject, Subject } from 'rxjs';
-import { catchError, mapTo, pluck, share, switchMap, tap } from 'rxjs/operators';
+import { catchError, timeout, mapTo, pluck, share, switchMap, tap } from 'rxjs/operators';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { HttpCacheService } from 'src/app/library/http';
 import { combineReload } from 'src/app/library/rxjs';
@@ -79,6 +79,7 @@ export class JobService {
       },
       params
     ).pipe(
+      timeout(10 * 1000),
       tap(resp => resp && this.forceReload$.next()),
     );
   }

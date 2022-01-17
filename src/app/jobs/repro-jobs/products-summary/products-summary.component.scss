@@ -1,0 +1,11 @@
+.spacer {
+    flex: 1;
+}
+
+.count {
+    font-weight: 500;
+}
+
+.mat-list-item:hover {
+    background-color: rgba($color: #000000, $alpha: 0.04);
+}

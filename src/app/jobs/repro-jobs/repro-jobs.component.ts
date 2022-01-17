@@ -19,8 +19,11 @@ const MAX_JOB_NAME_LENGTH = 100; // TODO take from global config
   providers: [DestroyService],
 })
 export class ReproJobsComponent implements OnInit {
+
   large$ = this.layoutService.isLarge$;
   small$ = this.layoutService.isSmall$;
+
+  jobs$ = this.jobService.jobs$;
 
   constructor(
     private layoutService: LayoutService,
@@ -88,6 +91,11 @@ export class ReproJobsComponent implements OnInit {
     ).subscribe();
 
   }
+
+  onSetJobStatus({ jobId, jobStatus }: Pick<Job, 'jobId' | 'jobStatus'>) {
+    this.jobService.updateJob(jobId, { jobStatus }).subscribe();
+  }
+
 
   private insertJobAndUploadFiles(job: Partial<Job> | undefined): Observable<number> {
     if (job === undefined) {

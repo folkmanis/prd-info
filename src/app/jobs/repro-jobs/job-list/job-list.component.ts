@@ -1,12 +1,18 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Output, Input, ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { DestroyService } from 'prd-cdk';
-import { OperatorFunction, pipe } from 'rxjs';
+import { OperatorFunction, pipe, ReplaySubject, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { LayoutService } from 'src/app/services';
-import { JobPartial, JobProduct } from '../../interfaces';
+import { Job, JobPartial, JobProduct } from '../../interfaces';
 import { JobService } from '../../services/job.service';
+
+
+type JobWithJobProduct = JobPartial & {
+  productsObj: Partial<JobProduct>;
+};
+
 
 @Component({
   selector: 'app-job-list',
@@ -19,12 +25,21 @@ export class JobListComponent implements OnInit {
 
   isLarge$ = this.layout.isLarge$;
 
-  dataSource$ = this.jobService.jobs$.pipe(
-    addProductsInformation(),
-  );
+  dataSource$ = new ReplaySubject<JobWithJobProduct[]>(1);
+
+  @Input() set jobs(value: JobPartial[]) {
+
+    if (!value) {
+      return;
+    }
+
+    this.dataSource$.next(addProductsInformation(value));
+
+  }
+
+  @Output() statusUpdate = new Subject<Pick<Job, 'jobId' | 'jobStatus'>>();
 
   constructor(
-    private jobService: JobService,
     private clipboard: ClipboardService,
     private layout: LayoutService,
     private sanitize: SanitizeService,
@@ -41,24 +56,23 @@ export class JobListComponent implements OnInit {
 
   onSetJobStatus(jobId: number, status: number, event: MouseEvent) {
     event.stopPropagation();
-    this.jobService.updateJob(jobId, {
+    this.statusUpdate.next({
+      jobId,
       jobStatus: {
         generalStatus: status,
         timestamp: new Date(),
       }
-    }).subscribe();
+
+    });
   }
 
 
 }
 
-function addProductsInformation(): OperatorFunction<JobPartial[], (JobPartial & { productsObj: Partial<JobProduct>; })[]> {
 
-  return pipe(
-    map(jobs =>
-      jobs.map(job => ({ ...job, productsObj: productsObj(job.products), }))
-    ),
-  );
+function addProductsInformation(jobs: JobPartial[]): JobWithJobProduct[] {
+
+  return jobs.map(job => ({ ...job, productsObj: productsObj(job.products), }));
 
 }
 
