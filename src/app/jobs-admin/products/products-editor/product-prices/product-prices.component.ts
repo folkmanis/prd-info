@@ -1,37 +1,47 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormGroup, ControlContainer } from '@angular/forms';
-import { IFormArray } from '@rxweb/types';
-import { CustomerPartial, ProductPrice } from 'src/app/interfaces';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
+import { DestroyService } from 'prd-cdk';
+import { merge } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { CustomerPartial } from 'src/app/interfaces';
 
 
 @Component({
   selector: 'app-product-prices',
   templateUrl: './product-prices.component.html',
-  styleUrls: ['./product-prices.component.scss']
+  styleUrls: ['./product-prices.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [DestroyService],
 })
 export class ProductPricesComponent implements OnInit {
-  @Input()
-  get customers(): CustomerPartial[] { return this._customers; }
-  set customers(customers: CustomerPartial[]) {
-    if (customers) { this._customers = customers; }
-  }
-  private _customers: CustomerPartial[] = [];
 
-  @Output() addPrice = new EventEmitter<void>();
+  @Input() pricesFormArray: FormArray;
+  @Input() customers: CustomerPartial[] = [];
+
   @Output() removePrice = new EventEmitter<number>();
 
   constructor(
-    private controlContainer: ControlContainer,
+    private chDetector: ChangeDetectorRef,
+    private destroy$: DestroyService,
   ) { }
 
-  pricesGroup: FormGroup;
-  pricesForm: IFormArray<ProductPrice>;
+  get pricesControls() { return this.pricesFormArray.controls as FormGroup[]; }
+
+  customerNameControl(group: AbstractControl) {
+    return group.get('customerName') as FormControl;
+  }
+
+  priceControl(group: AbstractControl) {
+    return group.get('price') as FormControl;
+  }
 
   ngOnInit(): void {
-    this.pricesForm = this.controlContainer.control as IFormArray<ProductPrice>;
-    this.pricesGroup = new FormGroup({
-      prices: this.pricesForm,
-    });
+    merge(
+      this.pricesFormArray.valueChanges,
+      this.pricesFormArray.statusChanges,
+    ).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(() => this.chDetector.markForCheck());
   }
 
 

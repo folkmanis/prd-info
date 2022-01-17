@@ -15,6 +15,7 @@ import { SimpleListTableModule } from './simple-list-table/simple-list-table.mod
 import { TaggedStringComponent } from './tagged-string/tagged-string.component';
 import { MaterialLibraryModule } from './material-library.module';
 import { PrdCdkModule } from 'prd-cdk';
+import { DateServicesModule } from './date-services';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { PrdCdkModule } from 'prd-cdk';
     SimpleListTableModule,
     MaterialLibraryModule,
     PrdCdkModule,
+    DateServicesModule,
   ],
   exports: [
     FormsModule,
@@ -52,6 +54,7 @@ import { PrdCdkModule } from 'prd-cdk';
     BackButtonDirective,
     SimpleListTableModule,
     PrdCdkModule,
+    DateServicesModule,
   ],
 })
 export class LibraryModule { }

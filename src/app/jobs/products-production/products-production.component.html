@@ -1,0 +1,10 @@
+<div class="container" cdk-scrollable scroll-to-top>
+
+    <app-filter [filter]="savedFilter$ | async" (filterChanges)="onFilter($event)">
+
+    </app-filter>
+
+    <app-products-table [data]="data$ | async" [initialSort]="savedSort$ | async" (sortChange)="onSort($event)">
+    </app-products-table>
+
+</div>

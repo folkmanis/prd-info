@@ -1,10 +1,9 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, Input, OnDestroy, OnInit, Optional, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DestroyService, log } from 'prd-cdk';
+import { DestroyService } from 'prd-cdk';
 import { merge, Observable, Subject } from 'rxjs';
 import { filter, last, map, shareReplay, take, takeUntil } from 'rxjs/operators';
 import { SimpleFormSource } from '../simple-form-source';
-import { SimpleFormLabelDirective } from './simple-form-label.directive';
 
 
 @Component({
@@ -16,13 +15,7 @@ import { SimpleFormLabelDirective } from './simple-form-label.directive';
 })
 export class SimpleFormContainerComponent<T> implements OnInit, AfterViewInit, OnDestroy {
 
-  @Input() set formSource(value: SimpleFormSource<T> | null) {
-    this._formSource = value;
-  }
-  get formSource(): SimpleFormSource<T> | null {
-    return this._formSource;
-  }
-  private _formSource: SimpleFormSource<T> | null = null;
+  @Input() formSource: SimpleFormSource<T>;
 
   @Input() set data(data: T) {
     if (data) { this._data$.next(data); }
@@ -38,13 +31,6 @@ export class SimpleFormContainerComponent<T> implements OnInit, AfterViewInit, O
     shareReplay(1),
   );
 
-  @ContentChild(SimpleFormLabelDirective)
-  get label(): SimpleFormLabelDirective { return this._label; }
-  set label(label: SimpleFormLabelDirective) {
-    if (label) { this._label = label; }
-  }
-  private _label: SimpleFormLabelDirective;
-
   get form() { return this.formSource?.form; }
 
   get isSaveEnabled(): boolean {
@@ -56,7 +42,10 @@ export class SimpleFormContainerComponent<T> implements OnInit, AfterViewInit, O
     private route: ActivatedRoute,
     private changeDetector: ChangeDetectorRef,
     private destroy$: DestroyService,
-  ) { }
+    @Optional() formSource: SimpleFormSource<T>,
+  ) {
+    this.formSource = formSource;
+  }
 
   /** Ctrl-Enter triggers save */
   @HostListener('window:keyup', ['$event']) keyEvent(event: KeyboardEvent) {
@@ -67,11 +56,6 @@ export class SimpleFormContainerComponent<T> implements OnInit, AfterViewInit, O
       this.onSave({ leave });
     }
 
-    if (event.key === 'Escape') {
-      event.stopPropagation();
-      event.preventDefault();
-      this.close();
-    }
   }
 
   ngOnInit(): void {
@@ -88,7 +72,7 @@ export class SimpleFormContainerComponent<T> implements OnInit, AfterViewInit, O
   onResetForm(): void {
     this.dataChange.pipe(
       take(1),
-    ).subscribe(data => this.formSource?.initValue(data, { emitEvent: false }));
+    ).subscribe(data => this.formSource?.initValue(data)); // , { emitEvent: false }
   }
 
   ngOnDestroy(): void {
@@ -98,16 +82,15 @@ export class SimpleFormContainerComponent<T> implements OnInit, AfterViewInit, O
   onSave({ leave }: { leave?: boolean; } = {}) {
     if (!this.formSource) { return; }
 
-    const value = this.form.value;
     if (!this.formSource.isNew) {
-      this.formSource.updateFn(value).pipe(
+      this.formSource.updateEntity().pipe(
         last(),
       ).subscribe(res => {
         this._data$.next(res);
         leave && this.close();
       });
     } else {
-      this.formSource.insertFn(value).pipe(
+      this.formSource.createEntity().pipe(
         last(),
       ).subscribe(res => {
         this.form.markAsPristine();

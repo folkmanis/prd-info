@@ -1,10 +1,11 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { Injectable } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
-import { AdresesBox } from './adrese-box';
 import { AdresesCsv } from './adrese-csv';
 
-@Injectable({ providedIn: 'any' })
+@Injectable({
+  providedIn: 'root'
+})
 export class UploadService {
   private adresesCsv: AdresesCsv;
 
@@ -43,10 +44,6 @@ export class UploadService {
   addEmptyColumn() {
     this.adresesCsv.addColumn();
     this.emitAdresesCsv();
-  }
-
-  adresesToKastes(colMap: Map<string, string>, toPakas: boolean): AdresesBox {
-    return new AdresesBox(this.adresesCsv.value, colMap, toPakas);
   }
 
   private emitAdresesCsv(): void {

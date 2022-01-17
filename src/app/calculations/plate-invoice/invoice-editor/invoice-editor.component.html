@@ -1,28 +1,43 @@
 <ng-container *ngIf="invoice$ | async as invoice;">
 
     <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="onCsvInvoice(invoice)">CSV PAVADZĪMEI</button>
-        <button mat-menu-item (click)="onCsvReport(invoice)">CSV SARAKSTS</button>
+        <button mat-menu-item (click)="onCsvInvoice(invoice)">
+            <mat-icon>file_download</mat-icon>
+            <span> CSV PAVADZĪMEI </span>
+        </button>
+        <button mat-menu-item (click)="onCsvReport(invoice)">
+            <mat-icon>file_download</mat-icon>
+            <span> CSV SARAKSTS </span>
+        </button>
+        <button mat-menu-item [appInvoiceDelete]="invoice.invoiceId"
+            appAfterDeleteMessage="Aprēķins {{invoice.invoiceId}} izdzēsts">
+            <mat-icon>delete_forever</mat-icon>
+            <span> DZĒST </span>
+        </button>
     </mat-menu>
 
     <mat-toolbar>
+        <span>
+            <button mat-mini-fab routerLink="..">
+                <mat-icon>
+                    arrow_back
+                </mat-icon>
+            </button>
+        </span>
+
+        <span class="distancer"></span>
+
         <span>
             {{invoice.invoiceId}} {{invoice.customerInfo.CustomerName}}
         </span>
 
         <span class="spacer"></span>
 
-        <span>
-            <small> {{invoice.createdDate | date}} </small>
-        </span>
-
-        <span class="spacer"></span>
-
-        <button mat-icon-button (click)="onPdfDownload(invoice)">
+        <a mat-icon-button href="/data/invoices/report_{{invoice.invoiceId}}.pdf" target="new" matTooltip="Atvērt PDF">
             <mat-icon>
                 picture_as_pdf
             </mat-icon>
-        </button>
+        </a>
         <button mat-icon-button [matMenuTriggerFor]="menu">
             <mat-icon>
                 more_vert
@@ -34,6 +49,8 @@
 
     <div class="container">
 
+        <p> {{invoice.createdDate | date}} </p>
+
         <mat-accordion multi>
             <!-- Paytraq -->
             <mat-expansion-panel *ngIf="pyatraqEnabled$ | async" expanded>
@@ -41,31 +58,12 @@
                     <mat-panel-title>
                         Paytraq pavadzīme
                     </mat-panel-title>
-                    <mat-panel-description *ngIf="invoice.customerInfo.financial">
+                    <mat-panel-description *ngIf="invoice.customerInfo.financial?.clientName">
                         ({{invoice.customerInfo.financial.clientName}})
                     </mat-panel-description>
                 </mat-expansion-panel-header>
 
-
-                <div *ngIf="invoice.paytraq as paytraq; else newPaytraqInvoice" class="button-row">
-                    <a mat-raised-button [href]="paytraqUrl$ | async" target="new">
-                        {{ paytraq.documentRef }}
-                    </a>
-                    <button mat-raised-button color="warn" (click)="onUnlinkPaytraq(invoice)"
-                        matTooltip="Dzēst savienojumu">
-                        ATVIENOT
-                    </button>
-                </div>
-
-                <ng-template #newPaytraqInvoice>
-                    <button mat-raised-button [disabled]="(paytraqOk$ | async) === false || (paytraqBusy$ | async)"
-                        (click)="onPaytraq(invoice)">
-                        <span *ngIf="paytraqBusy$ | async; else notBusy"> SAGLABĀ... </span>
-                        <ng-template #notBusy>
-                            <span> UZ PAYTRAQ </span>
-                        </ng-template>
-                    </button>
-                </ng-template>
+                <app-invoice-paytraq [invoice]="invoice" (paytraqUpdate)="onReload()"></app-invoice-paytraq>
 
             </mat-expansion-panel>
 

@@ -16,7 +16,6 @@ export class UnitsDialogComponent implements OnInit {
 
   constructor(
     fb: FormBuilder,
-    private dialogRef: MatDialogRef<UnitsDialogComponent, ProductUnit>,
     @Inject(MAT_DIALOG_DATA) private data?: ProductUnit,
   ) {
     this.fb = fb;
@@ -33,10 +32,6 @@ export class UnitsDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-  }
-
-  onSubmit() {
-    this.dialogRef.close(this.unitsForm.value);
   }
 
 

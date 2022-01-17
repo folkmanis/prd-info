@@ -18,6 +18,9 @@ type JobsSettingsControls = Pick<JobsSettings, 'productCategories' | 'productUni
 })
 export class JobsPreferencesComponent implements PreferencesCardControl<JobsSettings>, OnInit, OnDestroy {
 
+  controls: IFormGroup<JobsSettingsControls>;
+  stateChanges = new Subject<void>();
+
   get value(): JobsSettingsControls {
     return this.controls.value;
   }
@@ -26,29 +29,26 @@ export class JobsPreferencesComponent implements PreferencesCardControl<JobsSett
     this.stateChanges.next();
   }
 
+
   categoryDialog = CategoryDialogComponent;
   unitsDialog = UnitsDialogComponent;
 
   private fb: IFormBuilder;
-
-  controls: IFormGroup<JobsSettingsControls>;
-
-  stateChanges = new Subject<void>();
 
   constructor(
     fb: FormBuilder,
     private changeDetector: ChangeDetectorRef,
   ) {
     this.fb = fb;
+  }
+
+  ngOnInit() {
     this.controls = this.fb.group<JobsSettingsControls>(
       {
         productCategories: [],
         productUnits: [],
       }
     );
-  }
-
-  ngOnInit() {
     this.stateChanges.subscribe(_ => this.changeDetector.markForCheck());
   }
 

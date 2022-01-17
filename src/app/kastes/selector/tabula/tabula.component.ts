@@ -1,13 +1,13 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild, ViewChildren, QueryList, ElementRef } from '@angular/core';
 import { MAT_CHECKBOX_DEFAULT_OPTIONS } from '@angular/material/checkbox';
-import { EMPTY, Observable, of } from 'rxjs';
+import { EMPTY, Observable, Observer, of, Subscriber } from 'rxjs';
 import { switchMap, tap, concatMap } from 'rxjs/operators';
-import { Kaste } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
 import { KastesTabulaService } from '../services/kastes-tabula.service';
 import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
 import { RowIdDirective } from './row-id.directive';
+import { VeikalsKaste } from '../../interfaces';
 
 
 const COLUMNS = ['label', 'kods', 'adrese', 'yellow', 'rose', 'white', 'gatavs'];
@@ -20,9 +20,17 @@ const COLUMNS = ['label', 'kods', 'adrese', 'yellow', 'rose', 'white', 'gatavs']
     { provide: MAT_CHECKBOX_DEFAULT_OPTIONS, useValue: { clickAction: 'noop' } }
   ]
 })
-export class TabulaComponent implements OnInit, OnDestroy {
+export class TabulaComponent {
+
   @ViewChild('container', { read: ScrollTopDirective }) private _scrollable: ScrollTopDirective;
   @ViewChildren(RowIdDirective) private _tableRows: QueryList<RowIdDirective>;
+
+  selectedKaste: VeikalsKaste | undefined;
+
+  preferences$ = this.preferencesService.preferences$;
+  displayedColumns: string[] = COLUMNS;
+  dataSource$: Observable<VeikalsKaste[]> = this.tabulaService.kastesApjoms$;
+  totals$ = this.tabulaService.totals$;
 
   constructor(
     private dialogService: ConfirmationDialogService,
@@ -30,33 +38,7 @@ export class TabulaComponent implements OnInit, OnDestroy {
     private tabulaService: KastesTabulaService,
   ) { }
 
-  selectedKaste: Kaste | undefined;
-
-  preferences$ = this.preferencesService.preferences$;
-  displayedColumns: string[] = COLUMNS;
-  dataSource$: Observable<Kaste[]> = this.tabulaService.kastesApjoms$;
-  totals$ = this.tabulaService.totals$;
-
-  ngOnInit() {
-  }
-
-  ngOnDestroy() {
-  }
-
-  onGatavs(row: Kaste): void {
-    if (row.loading) { return; }
-    row.loading = true;
-    if (row.kastes.gatavs) {
-      this.dialogService.confirm('Tiešām?').pipe(
-        tap(resp => row.loading = resp),
-        switchMap(resp => resp ? this.tabulaService.setGatavs(row, false) : EMPTY),
-      ).subscribe();
-    } else {
-      this.tabulaService.setGatavs(row, true).subscribe();
-    }
-  }
-
-  trackByFn(_: number, item: Kaste): string {
+  trackByFn(_: number, item: VeikalsKaste): string {
     return item._id + item.kaste;
   }
 
@@ -64,15 +46,37 @@ export class TabulaComponent implements OnInit, OnDestroy {
     this._scrollable?.scrollToTop();
   }
 
-  scrollToId(kaste: Kaste) {
+  scrollToId(kaste: VeikalsKaste) {
     const element = this._tableRows.find(el => el.kaste._id === kaste._id && el.kaste.kaste === kaste.kaste);
     if (!element) { return; }
     element.scrollIn();
   }
 
   onReload() {
-    this.tabulaService.reload();
+    this.tabulaService.reloadState();
     this.scrollToTop();
   }
+
+  onGatavs(kaste: VeikalsKaste): void {
+
+    if (kaste.loading) {
+      return;
+    }
+
+    this.tabulaService.setPartialState({
+      ...kaste,
+      loading: true,
+    });
+
+    if (kaste.kastes.gatavs) {
+      this.dialogService.confirm('Tiešām?').pipe(
+        switchMap(resp => resp ? this.tabulaService.setGatavs(kaste, false) : of(kaste)),
+      ).subscribe(resp => this.tabulaService.setPartialState(resp));
+    } else {
+      this.tabulaService.setGatavs(kaste, true)
+        .subscribe(resp => this.tabulaService.setPartialState(resp));
+    }
+  }
+
 
 }

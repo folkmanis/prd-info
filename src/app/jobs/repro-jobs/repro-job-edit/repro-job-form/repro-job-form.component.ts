@@ -1,47 +1,49 @@
-import { Component, OnInit, Input, Output, ViewChild, EventEmitter, Inject } from '@angular/core';
-import { IFormArray, IFormControl, IFormGroup } from '@rxweb/types';
-import { endOfWeek, startOfWeek } from 'date-fns';
-import { merge, Observable, of } from 'rxjs';
-import { distinctUntilChanged, filter, map, pluck, switchMap } from 'rxjs/operators';
-import { CustomerPartial, CustomerProduct, JobBase, JobProduct, SystemPreferences } from 'src/app/interfaces';
-import { LayoutService } from 'src/app/layout/layout.service';
+import { ChangeDetectionStrategy, Component, Inject, Input, OnInit, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { addDays, subDays } from 'date-fns';
+import { EMPTY, merge, Observable, of } from 'rxjs';
+import { distinctUntilChanged, filter, map, pluck, startWith, switchMap } from 'rxjs/operators';
+import { CustomerPartial, CustomerProduct, SystemPreferences } from 'src/app/interfaces';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
+import { LayoutService } from 'src/app/services';
 import { CONFIG } from 'src/app/services/config.provider';
 import { CustomersService } from 'src/app/services/customers.service';
+import { JobService } from '../../../services/job.service';
 import { ProductsService } from 'src/app/services/products.service';
-import { JobFormService } from '../../services/job-form.service';
-import { ReproJobService } from '../../services/repro-job.service';
+import { JobFormGroup } from '../../services/job-form-group';
 import { CustomerInputComponent } from '../customer-input/customer-input.component';
 import { ReproProductsEditorComponent } from '../repro-products-editor/repro-products-editor.component';
+import { SanitizeService } from 'src/app/library/services/sanitize.service';
 
 @Component({
   selector: 'app-repro-job-form',
   templateUrl: './repro-job-form.component.html',
-  styleUrls: ['./repro-job-form.component.scss']
+  styleUrls: ['./repro-job-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReproJobFormComponent implements OnInit {
 
   @ViewChild(CustomerInputComponent) customerInput: CustomerInputComponent;
   @ViewChild(ReproProductsEditorComponent) private productsEditor: ReproProductsEditorComponent;
 
-  @Input('jobForm') form: IFormGroup<JobBase>;
+  @Input('jobForm') form: JobFormGroup;
 
   large$: Observable<boolean> = this.layoutService.isLarge$;
 
   receivedDate = {
-    min: startOfWeek(Date.now()),
-    max: endOfWeek(Date.now()),
+    min: subDays(Date.now(), 5),
+    max: addDays(Date.now(), 3),
   };
 
-  get isNew(): boolean {
-    return !this.form.value.jobId;
+  get customerControl(): FormControl {
+    return this.form.get('customer') as FormControl;
   }
-
-  get customerControl(): IFormControl<string> {
-    return this.form.get('customer') as unknown as IFormControl<string>;
+  get nameControl() {
+    return this.form.get('name') as FormControl;
   }
-  get nameControl() { return this.form.get('name'); }
-  get productsControl() { return this.form.get('products'); }
+  get productsControl() {
+    return this.form.products;
+  }
 
   jobStates$ = this.config$.pipe(
     pluck('jobs', 'jobStates'),
@@ -50,7 +52,7 @@ export class ReproJobFormComponent implements OnInit {
   categories$ = this.config$.pipe(
     pluck('jobs', 'productCategories'),
   );
-  folderPath$ = this.jobFormService.folderPath$;
+  folderPath$: Observable<string>;
   customers$: Observable<CustomerPartial[]> = this.customersService.customers$;
   customerProducts$: Observable<CustomerProduct[]>;
 
@@ -59,13 +61,14 @@ export class ReproJobFormComponent implements OnInit {
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
     private clipboard: ClipboardService,
     private layoutService: LayoutService,
-    private jobFormService: JobFormService,
-    private reproJobService: ReproJobService,
+    private jobsService: JobService,
     private customersService: CustomersService,
     private productsService: ProductsService,
+    private sanitize: SanitizeService,
   ) { }
 
   ngOnInit(): void {
+
     this.customerProducts$ = merge(
       this.form.valueChanges,
       of(this.form.value)
@@ -76,10 +79,17 @@ export class ReproJobFormComponent implements OnInit {
       switchMap(customer => this.productsService.productsCustomer(customer)),
     );
 
+    this.folderPath$ = this.form.valueChanges.pipe(
+      startWith(this.form.value),
+      pluck('files'),
+      map(files => files?.path?.join('/'))
+    );
+
   }
 
   copyJobIdAndName() {
-    this.clipboard.copy(`${this.form.value.jobId}-${this.form.value.name}`);
+    const name = this.sanitize.sanitizeFileName(this.form.value.name);
+    this.clipboard.copy(`${this.form.value.jobId}-${name}`);
   }
 
   isProductsSet(): boolean {
@@ -87,24 +97,21 @@ export class ReproJobFormComponent implements OnInit {
   }
 
   onRemoveProduct(idx: number) {
-    this.jobFormService.removeProduct(this.form.controls.products as IFormArray<JobProduct>, idx);
+    this.form.products.removeProduct(idx);
   }
 
   onAddProduct() {
-    this.jobFormService.addProduct(this.form.controls.products as IFormArray<JobProduct>);
+    this.form.products.addProduct();
     setTimeout(() => this.productsEditor.focusLatest(), 0);
   }
 
   onCreateFolder() {
-    this.reproJobService.createFolder(this.form.value.jobId).pipe(
+    const jobId = this.form.value.jobId as number;
+    this.jobsService.createFolder(jobId).pipe(
       pluck('files'),
-    ).subscribe(files => {
-      this.form.controls.files.setValue(files);
-      this.jobFormService.folderPath$.next(files.path?.join('/'));
-    });
+    )
+      .subscribe(files => this.form.controls.files.setValue(files));
   }
-
-
 
 
 }

@@ -2,10 +2,9 @@ import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, Input, EventEmit
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, from, Observable, Subject } from 'rxjs';
 import { pluck, filter, switchMap, map, toArray, startWith, takeUntil, withLatestFrom } from 'rxjs/operators';
-import { JobPartial, JobProduct } from 'src/app/interfaces';
 import { log, DestroyService } from 'prd-cdk';
 import { Filter, JobPricesService, COLUMNS, COLUMNS_SMALL, JobData } from '../job-prices.service';
-import { LayoutService } from 'src/app/layout/layout.service';
+import { LayoutService } from 'src/app/services';
 
 @Component({
   selector: 'app-job-prices-table',

@@ -1,31 +1,27 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
-import { IFormArray, IFormGroup } from '@rxweb/types';
-import { IAbstractControl } from '@rxweb/types/reactive-form/i-abstract-control';
-import { Observable } from 'rxjs';
-import { Product, ProductPrice } from 'src/app/interfaces';
-import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
-import { CustomersService, ProductsService } from 'src/app/services';
-import { ProductsFormSource } from '../services/products-form-source';
-import { SystemPreferencesService } from 'src/app/services/system-preferences.service';
-import { map, pluck } from 'rxjs/operators';
+import { AbstractControl, FormArray } from '@angular/forms';
 import { MatExpansionPanel } from '@angular/material/expansion';
+import { IFormGroup } from '@rxweb/types';
+import { Observable } from 'rxjs';
+import { map, pluck } from 'rxjs/operators';
+import { Product } from 'src/app/interfaces';
+import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
+import { SimpleFormSource } from 'src/app/library/simple-form';
+import { CustomersService, ProductsService } from 'src/app/services';
+import { SystemPreferencesService } from 'src/app/services/system-preferences.service';
+import { ProductsFormSource } from '../services/products-form-source';
 
 @Component({
   selector: 'app-products-editor',
   templateUrl: './products-editor.component.html',
   styleUrls: ['./products-editor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    { provide: SimpleFormSource, useExisting: ProductsFormSource },
+  ]
 })
 export class ProductsEditorComponent implements OnInit, CanComponentDeactivate {
   @ViewChild('paytraqPanel') paytraqPanel: MatExpansionPanel;
-
-  constructor(
-    private customersService: CustomersService,
-    private productService: ProductsService,
-    private systemPreferences: SystemPreferencesService,
-    private fb: FormBuilder,
-  ) { }
 
   paytraqDisabled$ = this.systemPreferences.preferences$.pipe(
     pluck('paytraq', 'enabled'),
@@ -33,8 +29,10 @@ export class ProductsEditorComponent implements OnInit, CanComponentDeactivate {
   );
 
 
-  formSource = new ProductsFormSource(this.fb, this.productService);
   get form(): IFormGroup<Product> { return this.formSource.form; }
+  get productionStages() {
+    return this.formSource.productionStages;
+  }
 
   readonly categories$ = this.productService.categories$;
   readonly customers$ = this.customersService.customers$;
@@ -45,6 +43,15 @@ export class ProductsEditorComponent implements OnInit, CanComponentDeactivate {
 
   get isNew(): boolean { return this.formSource.isNew; }
 
+  get pricesFormArray() { return this.form.get('prices') as AbstractControl as FormArray; }
+
+  constructor(
+    private customersService: CustomersService,
+    private productService: ProductsService,
+    private systemPreferences: SystemPreferencesService,
+    public formSource: ProductsFormSource,
+  ) { }
+
   onDataChange(obj: Product) {
     this.paytraqPanel?.close();
     this.formSource.initValue(obj);
@@ -53,12 +60,12 @@ export class ProductsEditorComponent implements OnInit, CanComponentDeactivate {
   ngOnInit(): void {
   }
 
-  onAddPrice(frm: IAbstractControl<ProductPrice[], Product>): void {
-    this.formSource.addPrice(frm as IFormArray<ProductPrice>);
+  onAddPrice(): void {
+    this.formSource.addPrice();
   }
 
-  onDeletePrice(frm: IAbstractControl<ProductPrice[], Product>, idx: number): void {
-    this.formSource.removePrice(frm as IFormArray<ProductPrice>, idx);
+  onDeletePrice(idx: number): void {
+    this.formSource.removePrice(idx);
   }
 
   canDeactivate(): Observable<boolean> | boolean {

@@ -1,0 +1,68 @@
+<mat-table [dataSource]="jobProductionStageMaterials$" [trackBy]="trackByFn">
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let material; columns: displayedColumns"></mat-row>
+
+    <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+        <mat-cell *matCellDef="let material; index as idx;">
+            <button mat-icon-button color="warn" (click)="onDeleteMaterial(idx)">
+                <mat-icon>
+                    delete_outline
+                </mat-icon>
+            </button>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="materialId">
+        <mat-header-cell *matHeaderCellDef>
+            Materiāls
+        </mat-header-cell>
+        <mat-cell *matCellDef="let material; index as idx;">
+            <mat-form-field>
+                <mat-select [formControl]="idControl(idx)">
+                    <mat-option *ngFor="let material of materials$ | async" [value]="material._id">
+                        {{ material.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="amount">
+        <mat-header-cell *matHeaderCellDef>
+            Daudzums
+        </mat-header-cell>
+        <mat-cell *matCellDef="let material; index as idx;">
+            <mat-form-field>
+                <input matInput type="number" [formControl]="amountControl(idx)">
+                <span matSuffix *appMaterialUnits="let unit of materials$ | async; id: idControl(idx).value">
+                    {{ unit }}
+                </span>
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="fixedAmount">
+        <mat-header-cell *matHeaderCellDef>
+            Nemainīgais daudzums
+        </mat-header-cell>
+        <mat-cell *matCellDef="let material; index as idx;">
+            <mat-form-field>
+                <input matInput type="number" [formControl]="fixedAmountControl(idx)">
+                <span matSuffix *appMaterialUnits="let unit of materials$ | async; id: idControl(idx).value">
+                    {{ unit }}
+                </span>
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+
+</mat-table>
+
+<div>
+    <button mat-icon-button color="primary" (click)="onNewMaterial()">
+        <mat-icon>
+            add
+        </mat-icon>
+    </button>
+</div>

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, Inject, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { IFormBuilder, IFormGroup, IFormArray } from '@rxweb/types';
-import { VeikalsBox, Colors, COLORS, MAX_ITEMS_BOX, Veikals } from 'src/app/interfaces';
+import { Kaste, Colors, COLORS, MAX_ITEMS_BOX, Veikals } from 'src/app/kastes/interfaces';
 import { KastesPreferencesService } from '../../../services/kastes-preferences.service';
 import { filter, map, takeUntil, tap } from 'rxjs/operators';
 import { ControlConfig } from '@rxweb/types/reactive-form/control-config';
@@ -38,10 +38,10 @@ export class VeikalsEditComponent implements OnInit, OnDestroy {
 
   fb: IFormBuilder;
   veikalsForm: FormGroup;
-  veikalsFormArray: IFormArray<VeikalsBox>;
+  veikalsFormArray: IFormArray<Kaste>;
 
   private _veikals$ = new ReplaySubject<Veikals>(1);
-  private _veikalsKastesChanges$: Observable<VeikalsBox[]>;
+  private _veikalsKastesChanges$: Observable<Kaste[]>;
 
   constructor(
     fb: FormBuilder,
@@ -50,10 +50,10 @@ export class VeikalsEditComponent implements OnInit, OnDestroy {
     private destroy$: DestroyService,
   ) {
     this.fb = fb;
-    this.veikalsFormArray = this.fb.array<VeikalsBox>([], { validators: this.totalsValidator() });
+    this.veikalsFormArray = this.fb.array<Kaste>([], { validators: this.totalsValidator() });
     this.veikalsForm = new FormGroup({
       boxs: this.veikalsFormArray,
-    })
+    });
     this._veikalsKastesChanges$ = this.veikalsFormArray.valueChanges.pipe(
       filter(_ => this.veikalsFormArray.valid),
       map(_ => this.recalculateTotals(this.veikalsFormArray.getRawValue())),
@@ -86,18 +86,18 @@ export class VeikalsEditComponent implements OnInit, OnDestroy {
     this._veikals$.complete();
   }
 
-  boxTotals(val: VeikalsBox): number {
+  boxTotals(val: Kaste): number {
     return COLORS.reduce((acc, k) => acc + val[k], 0);
   }
 
-  private recalculateTotals(kastes: VeikalsBox[]): VeikalsBox[] {
+  private recalculateTotals(kastes: Kaste[]): Kaste[] {
     return kastes.map(k => ({
       ...k,
       total: this.boxTotals(k),
     }));
   }
 
-  private colorTotals(veikals: VeikalsBox[]): { [key in Colors]: number; } {
+  private colorTotals(veikals: Kaste[]): { [key in Colors]: number; } {
     const tot: { [key in Colors]: number } = Object.assign({}, ...COLORS.map(col => ({ [col]: 0 })));
     for (const box of veikals) {
       for (const color of COLORS) {
@@ -107,10 +107,10 @@ export class VeikalsEditComponent implements OnInit, OnDestroy {
     return tot;
   }
 
-  private initForm(boxs: VeikalsBox[]) {
+  private initForm(boxs: Kaste[]) {
     this.veikalsFormArray.clear();
     for (const box of boxs) {
-      const boxForm = this.fb.group<VeikalsBox>(
+      const boxForm = this.fb.group<Kaste>(
         {
           ...this.colorsControlsArray(box),
           total: [box.total],
@@ -124,7 +124,7 @@ export class VeikalsEditComponent implements OnInit, OnDestroy {
     }
   }
 
-  private colorsControlsArray(box: VeikalsBox): { [key in Colors]: ControlConfig<number> } {
+  private colorsControlsArray(box: Kaste): { [key in Colors]: ControlConfig<number> } {
     return Object.assign(
       {},
       ...COLORS.map(col => ({
@@ -138,14 +138,14 @@ export class VeikalsEditComponent implements OnInit, OnDestroy {
   }
 
   private maxItemsValidator(maxItemsBox: number): ValidatorFn {
-    return (control: IFormGroup<VeikalsBox>): ValidationErrors => {
+    return (control: IFormGroup<Kaste>): ValidationErrors => {
       const items = this.boxTotals(control.value);
       return items > maxItemsBox ? { maxItemsBox, items } : null;
     };
   }
 
   private totalsValidator(): ValidatorFn {
-    return (control: IFormArray<VeikalsBox>): ValidationErrors => {
+    return (control: IFormArray<Kaste>): ValidationErrors => {
       if (!this.veikals || control.value.length === 0) { return null; }
       const totals = this.colorTotals(control.value);
       const initTotals = this.colorTotals(this.veikals.kastes.filter(k => !k.gatavs));

@@ -1,16 +1,13 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DestroyService } from 'prd-cdk';
-import { concatMap, filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { JobQueryFilter } from 'src/app/interfaces/job';
-import { LayoutService } from 'src/app/layout/layout.service';
-import { JobService } from 'src/app/services/job.service';
+import { EMPTY, Observable, of } from 'rxjs';
+import { concatMap, filter, map, mergeMap, takeUntil, tap } from 'rxjs/operators';
+import { Job, JobQueryFilter } from '../interfaces';
+import { LayoutService } from 'src/app/services';
+import { JobService } from '../services/job.service';
 import { FileUploadService } from './services/file-upload.service';
 import { ReproJobDialogService } from './services/repro-job-dialog.service';
-import { log } from 'prd-cdk';
-import { EMPTY, Observable, of, pipe } from 'rxjs';
-import { JobBase } from 'src/app/interfaces';
-import { ReproJobService } from './services/repro-job.service';
 
 const MAX_JOB_NAME_LENGTH = 100; // TODO take from global config
 
@@ -29,24 +26,19 @@ export class ReproJobsComponent implements OnInit {
     private layoutService: LayoutService,
     private jobService: JobService,
     private fileUploadService: FileUploadService,
-    private router: Router,
     private route: ActivatedRoute,
     private editDialogService: ReproJobDialogService,
-    private reproJobService: ReproJobService,
     private destroy$: DestroyService,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
     this.route.queryParamMap.pipe(
       map(params => params.get('jobId')),
       filter(jobId => jobId && !isNaN(+jobId)),
-      switchMap(jobId => this.reproJobService.getJob(+jobId)),
-      concatMap(job => this.editDialogService.openJob(job).afterClosed().pipe(
-        tap(_ => this.router.navigate(['.'], { relativeTo: this.route })),
-        concatMap(data => data ? of(data.job) : EMPTY),
-        concatMap(job => this.reproJobService.updateJob(job))
-      )),
-    ).subscribe();
+      concatMap(jobId => this.editDialogService.editJob(+jobId)),
+      takeUntil(this.destroy$),
+    ).subscribe(_ => this.router.navigate(['.'], { relativeTo: this.route }));
   }
 
   onJobFilter(filter: JobQueryFilter) {
@@ -60,38 +52,51 @@ export class ReproJobsComponent implements OnInit {
       .reduce((acc, curr, _, names) => [...acc, curr.slice(0, MAX_JOB_NAME_LENGTH / names.length)], [])
       .join('_');
     this.fileUploadService.setFiles(fileListArray);
-    const job: Partial<JobBase> = {
+    const job: Partial<Job> = {
       name,
-      category: 'repro',
+      receivedDate: new Date(),
+      dueDate: new Date(),
+      production: {
+        category: 'repro',
+      },
       jobStatus: {
-        generalStatus: 20
+        generalStatus: 20,
+        timestamp: new Date(),
       },
     };
-    this.editDialogService.openJob(job).afterClosed().pipe(
-      concatMap(data => {
-        if (data) {
-          return of(data.form.value).pipe(
-            concatMap(job => this.reproJobService.insertJobAndUploadFiles(job)),
-          );
-        } else {
-          this.fileUploadService.clearUploadQueue();
-          return EMPTY;
-        }
-      }),
+    this.editDialogService.openJob(job).pipe(
+      map(data => data ? data : this.fileUploadService.clearUploadQueue()),
+      mergeMap(data => this.insertJobAndUploadFiles(data)),
       takeUntil(this.destroy$),
     ).subscribe();
   }
 
-  onNewJob(job: Partial<JobBase> = {}) {
-    this.editDialogService.openJob(job).afterClosed().pipe(
-      concatMap(data => data ? of(data.job) : EMPTY),
-      concatMap(job => this.reproJobService.insertJobAndUploadFiles(job)),
+  onNewJob() {
+    const job = {
+      receivedDate: new Date(),
+      dueDate: new Date(),
+      jobStatus: {
+        generalStatus: 10,
+        timestamp: new Date(),
+      }
+    };
+
+    this.editDialogService.openJob(job).pipe(
+      concatMap(data => data ? of(data) : EMPTY),
+      concatMap(job => this.insertJobAndUploadFiles(job)),
       takeUntil(this.destroy$),
     ).subscribe();
 
   }
 
-
+  private insertJobAndUploadFiles(job: Partial<Job> | undefined): Observable<number> {
+    if (job === undefined) {
+      return EMPTY;
+    }
+    return this.jobService.newJob(job).pipe(
+      tap(jobId => this.fileUploadService.startUpload(jobId)),
+    );
+  }
 
 
 }

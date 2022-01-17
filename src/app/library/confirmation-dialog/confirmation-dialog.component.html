@@ -1,8 +1,14 @@
 <h2 mat-dialog-title>Apstipriniet!</h2>
+
 <mat-dialog-content>
     {{data.prompt}}
 </mat-dialog-content>
+
 <mat-dialog-actions>
-    <button mat-raised-button color="primary" [mat-dialog-close]="true">{{yes}}</button>
-    <button mat-raised-button [mat-dialog-close]="false">{{no}}</button>
+    <button *ngIf="data.yes as yes" mat-raised-button color="primary" [mat-dialog-close]="true">
+        {{ yes }}
+    </button>
+    <button *ngIf="data.no as no" mat-raised-button [mat-dialog-close]="false">
+        {{ no }}
+    </button>
 </mat-dialog-actions>

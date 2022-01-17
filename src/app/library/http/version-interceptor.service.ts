@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { AppHttpResponseBase } from './app-http-response-base';
 import { ApiVersionService } from './api-version.service';
 import { ApiVersion } from './api-version';
 
@@ -13,7 +12,7 @@ export class VersionInterceptorService implements HttpInterceptor {
     private versionService: ApiVersionService,
   ) { }
 
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<AppHttpResponseBase>> {
+  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
       tap(event => {
         if (event instanceof HttpResponse && event.headers.has('API-Version')) {

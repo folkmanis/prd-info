@@ -1,0 +1,29 @@
+<ng-container [formGroup]="filterGroup">
+
+    <ng-container *ngIf="large$ | async">
+
+        <mat-form-field>
+            <input matInput type="search" formControlName="name">
+            <button mat-icon-button disabled matSuffix>
+                <mat-icon>search</mat-icon>
+            </button>
+        </mat-form-field>
+
+        <span class="spacer"></span>
+
+        <mat-form-field>
+            <mat-label> Materiālu grupas </mat-label>
+            <mat-select formControlName="categories" multiple>
+                <mat-option *ngFor="let category of categories$ | async" [value]="category.category">
+                    {{category.description}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <button mat-icon-button (click)="clear()">
+            <mat-icon>clear</mat-icon>
+        </button>
+
+    </ng-container>
+
+</ng-container>

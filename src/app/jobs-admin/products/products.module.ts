@@ -9,6 +9,9 @@ import { ProductResolverService } from './services/product-resolver.service';
 import { PaytraqProductComponent } from './products-editor/paytraq-product/paytraq-product.component';
 import { PaytraqProductTableComponent } from './products-editor/paytraq-product/paytraq-product-table/paytraq-product-table.component';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
+import { ProductProductionStagesComponent } from './products-editor/product-production-stages/product-production-stages.component';
+import { ProductionStageMaterialComponent } from './products-editor/production-stage-material/production-stage-material.component';
+import { MaterialUnitsDirective } from './products-editor/production-stage-material/material-units.directive';
 
 @NgModule({
   declarations: [
@@ -17,6 +20,9 @@ import { MaterialLibraryModule } from 'src/app/library/material-library.module';
     ProductsEditorComponent,
     PaytraqProductComponent,
     PaytraqProductTableComponent,
+    ProductProductionStagesComponent,
+    ProductionStageMaterialComponent,
+    MaterialUnitsDirective,
   ],
   imports: [
     CommonModule,

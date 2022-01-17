@@ -1,0 +1,40 @@
+<div *ngIf="messages$ | async as messages; else noMessages" class="messages-container">
+
+
+    <div *ngFor="let message of messages; trackBy: trackByFn" class="message">
+
+        <div class="message-icon">
+            <mat-icon *ngIf="!message.seen">
+                fmd_bad
+            </mat-icon>
+
+        </div>
+
+        <div class="message-text">
+
+            <span [class.unread]="!message.seen">
+                <small>
+                    {{ message.timestamp | relativeDate:'strict' }} {{ message.data.toAction() }}
+                </small>
+            </span>
+            <span>
+                {{message.data.toDescription()}}
+            </span>
+
+            <button mat-mini-fab class="actions" (click)="onDelete(message._id); $event.stopPropagation()">
+                <mat-icon>
+                    delete
+                </mat-icon>
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<ng-template #noMessages>
+    <div>
+        Ziņojumu nav
+    </div>
+</ng-template>

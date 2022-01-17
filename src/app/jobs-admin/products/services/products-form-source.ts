@@ -1,11 +1,15 @@
-import { AsyncValidatorFn, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
+import { AsyncValidatorFn, FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { IFormArray, IFormControl, IFormGroup } from '@rxweb/types';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { Product, ProductPrice } from 'src/app/interfaces';
+import { Product, ProductPrice, JobProductionStage, ProductionStage, JobProductionStageMaterial } from 'src/app/interfaces';
 import { ProductsService } from 'src/app/services/products.service';
 import { SimpleFormSource } from 'src/app/library/simple-form';
+import { Injectable } from '@angular/core';
 
+@Injectable({
+    providedIn: 'root'
+})
 export class ProductsFormSource extends SimpleFormSource<Product> {
 
     constructor(
@@ -19,11 +23,15 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
         return this.form.controls.prices as IFormArray<ProductPrice>;
     }
 
-    get isNew(): boolean {
-        return !this.initialValue?.name;
+    get productionStages() {
+        return this.form.get('productionStages') as unknown as FormArray;
     }
 
-    protected initialValue: Partial<Product> | undefined;
+    get isNew(): boolean {
+        return !this.startValue?.name;
+    }
+
+    private startValue: Partial<Product> | undefined;
 
     protected createForm(): IFormGroup<Product> {
         const productForm: IFormGroup<Product> = this.fb.group<Product>({
@@ -49,22 +57,26 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
                 [],
                 { validators: [this.duplicateCustomersValidator] }
             ),
-            paytraqId: [undefined]
+            paytraqId: [undefined],
+            productionStages: new FormArray([]),
         });
 
         return productForm;
     }
 
     initValue(product: Partial<Product>, params = { emitEvent: true }) {
-        this.initialValue = product;
+        this.startValue = product;
         if (this.isNew) {
             this.setNameValidators();
+            this.startValue.inactive = false;
         } else {
             this.removeNameValidators();
         }
-        this.setPrices(product.prices);
+        this.setPrices(this.startValue.prices);
 
-        super.initValue(product, params);
+        this.setProductionStages(this.startValue.productionStages);
+
+        super.initValue(this.startValue, params);
     }
 
     get value(): Product {
@@ -74,25 +86,34 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
         };
     }
 
-    updateFn(prod: Product): Observable<Product> {
-        return this.productService.updateProduct(prod).pipe(
-            switchMap(_ => this.productService.getProduct(prod.name)),
+    updateEntity(): Observable<Product> {
+        return this.productService.updateProduct(this.value);
+    }
+
+    createEntity(): Observable<string> {
+        return this.productService.insertProduct(this.value);
+    }
+
+    addPrice(price?: ProductPrice) {
+        this.formPrices.push(this.productPriceGroup(price));
+        this.form.markAsDirty();
+    }
+
+    removePrice(idx: number) {
+        this.formPrices.removeAt(idx);
+        this.form.markAsDirty();
+    }
+
+    addProductionStage(prStage?: JobProductionStage) {
+        this.productionStages.push(
+            new ProductionStageGroup(prStage)
         );
+        this.form.markAsDirty();
     }
 
-    insertFn(prod: Product): Observable<string> {
-        return this.productService.insertProduct(prod);
-    }
-
-
-    addPrice(frm: IFormArray<ProductPrice>, price?: ProductPrice) {
-        frm.push(this.productPriceGroup(price));
-        frm.markAsDirty();
-    }
-
-    removePrice(frm: IFormArray<ProductPrice>, idx: number) {
-        frm.removeAt(idx);
-        frm.markAsDirty();
+    removeProductionStage(idx: number) {
+        this.productionStages.removeAt(idx);
+        this.form.markAsDirty();
     }
 
     private setNameValidators() {
@@ -127,10 +148,20 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
         });
     }
 
+    private setProductionStages(stages: JobProductionStage[] | undefined) {
+        this.productionStages.clear();
+        for (const stage of stages || []) {
+            this.productionStages.push(
+                new ProductionStageGroup(stage),
+                { emitEvent: false }
+            );
+        }
+    }
+
     private nameAsyncValidator(key: keyof Product): AsyncValidatorFn {
         return (control: IFormControl<string>): Observable<ValidationErrors | null> => this.productService.validate(key, control.value.trim()).pipe(
-                map(valid => valid ? null : { occupied: control.value })
-            );
+            map(valid => valid ? null : { occupied: control.value })
+        );
     }
 
     private duplicateCustomersValidator(ctrl: IFormArray<ProductPrice>): ValidationErrors | null {
@@ -139,4 +170,41 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
         return duplicates.length === 0 ? null : { duplicates: duplicates.join() };
     }
 
+
+
+}
+
+export class ProductionStageGroup extends FormGroup {
+
+    constructor(stage?: Partial<JobProductionStage>) {
+        const materials = new FormArray(
+            (stage?.materials || []).map(material => new MaterialGroup(material))
+        );
+        super({
+            productionStageId: new FormControl(stage?.productionStageId),
+            materials: materials,
+            amount: new FormControl(stage?.amount || 0),
+            fixedAmount: new FormControl(stage?.fixedAmount || 0),
+        });
+    }
+
+}
+
+export class MaterialGroup extends FormGroup {
+    constructor(material?: Partial<JobProductionStageMaterial>) {
+        super({
+            materialId: new FormControl(
+                material?.materialId,
+                [Validators.required],
+            ),
+            amount: new FormControl(
+                material?.amount || 0,
+                [Validators.required, Validators.min(0)]
+            ),
+            fixedAmount: new FormControl(
+                material?.fixedAmount || 0,
+                [Validators.required, Validators.min(0)]
+            )
+        });
+    }
 }

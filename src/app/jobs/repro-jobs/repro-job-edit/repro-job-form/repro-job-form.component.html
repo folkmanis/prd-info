@@ -10,7 +10,7 @@
         <mat-label>Izveidošanas datums</mat-label>
         <input matInput formControlName="receivedDate" [matDatepicker]="datePicker" required [min]="receivedDate.min"
             [max]="receivedDate.max">
-        <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+        <mat-datepicker-toggle matSuffix [for]="datePicker" tabindex="-1"></mat-datepicker-toggle>
         <mat-datepicker #datePicker></mat-datepicker>
     </mat-form-field>
 
@@ -35,14 +35,16 @@
         </button>
     </mat-form-field>
     <!-- Darba kategorija -->
-    <mat-form-field>
-        <mat-label>Kategorija</mat-label>
-        <mat-select formControlName="category" required>
-            <mat-option *ngFor="let cat of categories$ | async" [value]="cat.category">
-                {{cat.description}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
+    <ng-container formGroupName="production">
+        <mat-form-field>
+            <mat-label>Kategorija</mat-label>
+            <mat-select formControlName="category" required>
+                <mat-option *ngFor="let cat of categories$ | async" [value]="cat.category">
+                    {{cat.description}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </ng-container>
     <!-- Statuss -->
     <mat-form-field formGroupName="jobStatus">
         <mat-label>Stadija</mat-label>
@@ -86,7 +88,7 @@
     </mat-card>
 
     <!-- Folderis -->
-    <mat-card *ngIf="isNew === false" class="right-column">
+    <mat-card *ngIf="form.isNew === false" class="right-column">
         <mat-card-content>
             <app-folder-path [path]="folderPath$ | async" (createFolder)="onCreateFolder()">
             </app-folder-path>

@@ -3,7 +3,7 @@ import { UsersService } from '../../services/users.service';
 import { User } from 'src/app/interfaces';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
-import { LayoutService } from 'src/app/layout/layout.service';
+import { LayoutService } from 'src/app/services';
 
 @Component({
   selector: 'app-users-list',
@@ -15,7 +15,7 @@ export class UsersListComponent implements OnInit, OnDestroy {
   constructor(
     private usersService: UsersService,
     private layOutService: LayoutService,
-    ) { }
+  ) { }
 
   displayedColumns = [
     'username',

@@ -9,8 +9,8 @@
                 </mat-option>
             </mat-select>
         </mat-form-field>
-        <div>
-            <app-select-file (csvFile)="onCsvDrop($event)" (xlsFile)="onXlsDrop($event)"></app-select-file>
+        <div (appKastesTabulaDrop)="onXlsDrop($event)" #fileDrop="appKastesTabulaDrop">
+            {{ fileDrop.status }}
         </div>
     </section>
     <!-- Kopējie daudzumi -->

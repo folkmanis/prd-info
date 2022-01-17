@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy } from '@a
 import { Invoice, InvoiceProduct } from 'src/app/interfaces';
 import { Subject, ReplaySubject, from, Observable } from 'rxjs';
 import { map, pluck, switchMap } from 'rxjs/operators';
-import { LoginService } from 'src/app/services/login.service';
+import { LoginService } from 'src/app/login';
 
 @Component({
   selector: 'app-invoice-products',
@@ -17,9 +17,13 @@ export class InvoiceProductsComponent implements OnInit, OnDestroy {
     this.products$.next(products);
   }
 
-  @Input() set total(total: number) { this._total = total; }
-  get total(): number { return this._total; }
   private _total = 0;
+  @Input() set total(total: number) {
+    this._total = total;
+  }
+  get total(): number {
+    return this._total;
+  }
 
   displayedColumns: (keyof InvoiceProduct)[] = ['paytraqId', '_id', 'count', 'price', 'total'];
 

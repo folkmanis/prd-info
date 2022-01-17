@@ -1,5 +1,4 @@
-import { Inject, Injectable, InjectionToken } from '@angular/core';
-import { Router, RouterStateSnapshot, Resolve, ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
 import { EMPTY, Observable, of } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 

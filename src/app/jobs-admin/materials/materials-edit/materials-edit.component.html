@@ -1,0 +1,95 @@
+<app-simple-form-container (dataChange)="onDataChange($event)" [class.large]="large$ | async">
+
+    <form [formGroup]="form">
+
+        <h2>
+            <mat-form-field class="full-width">
+                <mat-label>Nosaukums</mat-label>
+                <input matInput formControlName="name" autocomplete="off" required>
+                <mat-error *ngIf="form.controls.name.hasError('required')">
+                    Nosaukums jāievada obligāti!
+                </mat-error>
+                <mat-error *ngIf="form.controls.name.hasError('occupied')">
+                    Nosaukums jau tiek izmantots
+                </mat-error>
+            </mat-form-field>
+        </h2>
+
+        <mat-card>
+            <mat-card-content>
+                <section class="input-container">
+                    <!-- Grupa -->
+                    <mat-form-field class="full-width">
+                        <mat-label> Grupa </mat-label>
+                        <mat-select formControlName="category" required>
+                            <mat-option *ngFor="let category of categories$ | async" [value]="category.category">
+                                {{ category.description }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <div class="spacer"></div>
+
+                    <!-- Mērvienības -->
+                    <mat-form-field class="full-width">
+                        <mat-label> Mērvienības </mat-label>
+                        <mat-select formControlName="units" required>
+                            <mat-option *ngFor="let unit of units$ | async;" [value]="unit.shortName">
+                                {{unit.description}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </section>
+
+                <section>
+                    <mat-checkbox formControlName="inactive">
+                        Neaktīvs
+                    </mat-checkbox>
+                </section>
+
+                <section>
+                    <mat-form-field class="full-width">
+                        <mat-label> Apraksts </mat-label>
+                        <textarea matInput formControlName="description"></textarea>
+                    </mat-form-field>
+                </section>
+
+            </mat-card-content>
+
+        </mat-card>
+
+        <div class="w-spacer"></div>
+
+        <mat-card>
+            <mat-card-title>
+                Cenas
+            </mat-card-title>
+
+            <mat-card-content>
+
+                <section>
+                    <mat-form-field>
+                        <mat-label> Fiksētā cena </mat-label>
+                        <input matInput type="number" formControlName="fixedPrice">
+                        <span matSuffix>&nbsp;&euro;</span>
+                    </mat-form-field>
+                </section>
+
+                <section>
+                    <app-materials-prices [pricesArray]="pricesControl" (deletePrice)="onRemovePrice($event)"
+                        (editPrice)="onEditPrice($event)" [units]="form.value.units">
+                    </app-materials-prices>
+                </section>
+
+            </mat-card-content>
+
+            <mat-card-actions>
+                <button mat-raised-button (click)="onAddPrice()" [disabled]="!form.valid">
+                    PIEVIENOT
+                </button>
+            </mat-card-actions>
+        </mat-card>
+
+    </form>
+
+</app-simple-form-container>

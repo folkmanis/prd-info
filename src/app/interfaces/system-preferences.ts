@@ -1,18 +1,17 @@
-import { AppHttpResponseBase } from 'src/app/library/http';
-import { Colors } from './kaste';
+import { Colors } from '../kastes/interfaces';
 
 export const MODULES = ['kastes', 'system', 'jobs', 'paytraq'] as const;
+
+export type Modules = typeof MODULES[number];
 
 export type ModuleSettings = KastesSettings | SystemSettings | JobsSettings | PaytraqSettings;
 
 export interface PreferencesDbModule {
-    module: SystemPreferencesGroups;
+    module: Modules;
     settings: ModuleSettings;
 }
 
-export type SystemPreferencesGroups = typeof MODULES[number];
-
-export type SystemPreferencesType = { [key in SystemPreferencesGroups]: ModuleSettings; };
+export type SystemPreferencesType = { [key in Modules]: ModuleSettings; };
 
 export abstract class SystemPreferences implements SystemPreferencesType {
     system: SystemSettings;
@@ -67,5 +66,3 @@ export interface PaytraqConnectionParams {
     apiToken: string;
     invoiceUrl: string;
 }
-
-export type SystemPreferencesResponse = AppHttpResponseBase<PreferencesDbModule>;

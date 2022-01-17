@@ -1,4 +1,4 @@
-<app-simple-form-container [formSource]="formSource" (dataChange)="onDataChange($event)">
+<app-simple-form-container (dataChange)="onDataChange($event)">
 
     <form [formGroup]="form">
 
@@ -76,4 +76,5 @@
         </mat-accordion>
 
     </form>
+
 </app-simple-form-container>

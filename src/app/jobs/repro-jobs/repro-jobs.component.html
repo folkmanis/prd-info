@@ -11,6 +11,8 @@
 
     <mat-drawer-content>
 
+        <app-job-filter (jobFilter)="onJobFilter($event)"></app-job-filter>
+
         <app-job-list></app-job-list>
 
     </mat-drawer-content>

@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 // Plus imports for other components in your app.
 
 // Include the common styles for Angular Material. We include this here so that you only
@@ -22,3 +22,7 @@
 @import "./app/library/simple-form/simple-form.styles.scss";
 
 @include simple-form-theme($zmg-app-theme);
+
+@import "./app/layout/messaging/messages-pane.scss";
+
+@include messages-pane($zmg-app-theme);

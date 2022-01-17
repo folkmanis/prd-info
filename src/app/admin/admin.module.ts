@@ -11,6 +11,8 @@ import { LogFilterComponent } from './logfile/log-filter/log-filter.component';
 import { UsersModule } from './users/users.module';
 import { ModulePreferencesModule } from './module-preferences/module-preferences.module';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
+import { LogCalendarComponent } from './logfile/log-filter/log-calendar/log-calendar.component';
+import { LogLevelComponent } from './logfile/log-filter/log-level/log-level.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +20,8 @@ import { MaterialLibraryModule } from 'src/app/library/material-library.module';
     LogfileComponent,
     LogfileTableComponent,
     LogFilterComponent,
+    LogCalendarComponent,
+    LogLevelComponent,
   ],
   imports: [
     CommonModule,

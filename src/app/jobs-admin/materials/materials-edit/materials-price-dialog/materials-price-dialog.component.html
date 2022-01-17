@@ -1,0 +1,36 @@
+<mat-dialog-content [formGroup]="priceControl">
+
+    <section>
+        <mat-form-field>
+            <span matPrefix>No &nbsp;</span>
+            <input type="number" matInput formControlName="min">
+            <span matSuffix> {{ units }} </span>
+        </mat-form-field>
+    </section>
+
+    <section>
+        <mat-form-field>
+            <mat-label> Cena </mat-label>
+            <input type="number" matInput formControlName="price">
+            <span matSuffix>&nbsp; &euro;/{{ units }}</span>
+        </mat-form-field>
+    </section>
+
+    <section>
+        <mat-form-field>
+            <mat-label> Apraksts </mat-label>
+            <input matInput formControlName="description">
+        </mat-form-field>
+    </section>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button mat-raised-button color="primary" [disabled]="!priceControl.valid || priceControl.pristine"
+        [mat-dialog-close]="priceControl">
+        SAGLABĀT
+    </button>
+    <button mat-raised-button mat-dialog-close>
+        ATCELT
+    </button>
+</mat-dialog-actions>

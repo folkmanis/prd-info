@@ -1,0 +1,16 @@
+<mat-list dense>
+    <mat-list-item *ngFor="let session of sessions">
+        <button mat-icon-button (click)="deleteSession.next([session._id])" [disabled]="session._id === currentSession">
+            <mat-icon>
+                delete
+            </mat-icon>
+        </button>
+        {{ session.lastSeen.date | date:'full'}} - {{ session.lastSeen.ip}}
+    </mat-list-item>
+</mat-list>
+
+<mat-action-row>
+    <button mat-raised-button (click)="onDeleteAll(sessions)" [disabled]="deleteAllDisabled()">
+        IZBEIGT VISAS
+    </button>
+</mat-action-row>

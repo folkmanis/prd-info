@@ -5,9 +5,8 @@ import { Observable, pipe, Subscription, Subject } from 'rxjs';
 import { map, tap, filter, switchMap, distinctUntilChanged, takeUntil, pluck } from 'rxjs/operators';
 import { KastesTabulaService } from './services/kastes-tabula.service';
 import { DestroyService } from 'prd-cdk';
-import { PasutijumiService } from '../services/pasutijumi.service';
-import { KastesJobPartial, Totals } from 'src/app/interfaces';
-import { LayoutService } from 'src/app/layout/layout.service';
+import { KastesPasutijumiService } from '../services/kastes-pasutijumi.service';
+import { LayoutService } from 'src/app/services';
 import { Status as LabelStatuss } from './labels/labels.component';
 import { TabulaComponent } from './tabula/tabula.component';
 
@@ -27,7 +26,7 @@ export class SelectorComponent implements OnInit {
     private kastesPreferencesService: KastesPreferencesService,
     private tabulaService: KastesTabulaService,
     private destroy$: DestroyService,
-    private pasutijumiService: PasutijumiService,
+    private pasutijumiService: KastesPasutijumiService,
     private layoutService: LayoutService
   ) { }
 
@@ -46,11 +45,12 @@ export class SelectorComponent implements OnInit {
 
   labelStatuss$ = new Subject<LabelStatuss>();
 
+  kastesAll$ = this.tabulaService.kastesAll$;
+
   kastesJob$ = this.pasutijumsId$.pipe(
     filter(id => !isNaN(+id)),
-    switchMap(id => this.pasutijumiService.getOrder(+id)),
+    switchMap(id => this.pasutijumiService.getKastesJob(+id)),
   );
-
 
   ngOnInit() {
 
@@ -74,16 +74,15 @@ export class SelectorComponent implements OnInit {
     );
   }
 
-  onSetLabel(kods: number | string) {
+  onSetLabel(kods: number) {
     this.tabulaService.setLabel(kods)
-      .subscribe(kaste => {
-        this.labelStatuss$.next({
-          type: kaste ? 'kaste' : 'empty',
-          kaste
-        });
-        if (kaste) {
+      .subscribe({
+        next: kaste => {
+          this.labelStatuss$.next({ type: 'kaste', kaste });
+          this.tabulaService.setPartialState(kaste);
           this._tabula.scrollToId(kaste);
-        }
+        },
+        error: () => this.labelStatuss$.next({ type: 'empty' }),
       });
   }
 

@@ -3,8 +3,8 @@
         Kopējie skaiti
     </h4>
     <ul>
-        <li *ngFor="let color of job.totals.colorTotals;" [style.color]="colors[color.color]">
-            {{color.total}}
+        <li *ngFor="let colorTotal of colorTotals;" [style.color]="colors && colors[colorTotal.color]">
+            {{colorTotal.total}}
         </li>
     </ul>
 </section>
@@ -13,8 +13,8 @@
         Apjomi
     </h4>
     <ul>
-        <li *ngFor="let apjoms of job.totals.apjomiTotals;">
-            {{apjoms.apjoms}}-{{apjoms.total}}
+        <li *ngFor="let apjoms of apjomiTotals;">
+            {{apjoms[0]}}-{{apjoms[1]}}
         </li>
     </ul>
 </section>

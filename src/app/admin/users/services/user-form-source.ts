@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { FormBuilder, Validators, AbstractControl, ValidationErrors, AsyncValidatorFn } from '@angular/forms';
 import { IFormGroup } from '@rxweb/types';
 import { SimpleFormSource } from 'src/app/library/simple-form';
@@ -6,9 +7,10 @@ import { UsersService } from '../../services/users.service';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
+@Injectable({
+    providedIn: 'root'
+})
 export class UserFormSource extends SimpleFormSource<User> {
-
-    private currentUser: Partial<User>;
 
     constructor(
         fb: FormBuilder,
@@ -18,7 +20,7 @@ export class UserFormSource extends SimpleFormSource<User> {
     }
 
     get isNew(): boolean {
-        return !this.currentUser?.username;
+        return !this.initialValue?.username;
     }
 
     createForm(): IFormGroup<User> {
@@ -41,13 +43,14 @@ export class UserFormSource extends SimpleFormSource<User> {
             preferences: this.fb.group<UserPreferences>({
                 customers: [''],
                 modules: [''],
-            })
+            }),
+            sessions: [{ value: undefined, disabled: true }]
         });
         return form;
     }
 
-    initValue(user: Partial<User>, params?: { emitEvent: boolean }): void {
-        this.currentUser = user;
+    initValue(user: User, params?: { emitEvent: boolean; }): void {
+        this.initialValue = user;
         const unameCtrl = this.form.controls.username;
         if (user.username) {
             unameCtrl.clearValidators();
@@ -60,18 +63,14 @@ export class UserFormSource extends SimpleFormSource<User> {
         super.initValue(user, params);
     }
 
-    insertFn(user: User): Observable<string> {
-        const userName = user.username;
-        return this.usersService.addUser(user).pipe(
-            map(_ => userName)
+    createEntity(): Observable<string> {
+        return this.usersService.addUser(this.value).pipe(
+            map(user => user.username)
         );
     }
 
-    updateFn(user: User): Observable<User> {
-        const userName = this.value.username;
-        return this.usersService.updateUser(user).pipe(
-            switchMap(_ => this.usersService.getUser(userName))
-        );
+    updateEntity(): Observable<User> {
+        return this.usersService.updateUser(this.value);
     }
 
     private usernamePatternValidator(control: AbstractControl): ValidationErrors {
@@ -84,8 +83,8 @@ export class UserFormSource extends SimpleFormSource<User> {
 
     private existingUsernameValidator(): AsyncValidatorFn {
         return (control: AbstractControl): Observable<ValidationErrors> => this.usersService.validateUsername(control.value).pipe(
-                map(valid => valid ? null : { existing: 'Esošs lietotājvārds' })
-            );
+            map(valid => valid ? null : { existing: 'Esošs lietotājvārds' })
+        );
     }
 
 

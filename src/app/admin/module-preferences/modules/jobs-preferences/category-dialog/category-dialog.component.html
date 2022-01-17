@@ -6,25 +6,25 @@
 
         <mat-form-field>
             <mat-label>
-                Kategorijas nosaukums
+                Kods (nav maināms)
             </mat-label>
             <input type="text" matInput formControlName="category" required>
         </mat-form-field>
 
         <mat-form-field>
             <mat-label>
-                Apraksts
+                Nosaukums
             </mat-label>
             <input type="text" matInput formControlName="description">
         </mat-form-field>
 
     </mat-dialog-content>
     <mat-dialog-actions>
+        <button mat-raised-button type="submit" color="primary" [disabled]="!productForm.valid || productForm.pristine">
+            OK
+        </button>
         <button mat-raised-button [mat-dialog-close]="undefined">
             ATCELT
-        </button>
-        <button mat-raised-button type="submit" color="accent" [disabled]="!productForm.valid || productForm.pristine">
-            OK
         </button>
     </mat-dialog-actions>
 </form>

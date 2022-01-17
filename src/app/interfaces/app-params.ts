@@ -3,6 +3,7 @@ import { UserModule } from './user-module';
 
 export interface AppParams {
     apiPath: string;
+    wsPath: string;
     version: {
         appBuild: number;
     };
@@ -17,4 +18,5 @@ export interface AppParams {
         medium: string;
     };
     passwordMinimumLenght: number;
+    messagesReadDelay: number;
 }

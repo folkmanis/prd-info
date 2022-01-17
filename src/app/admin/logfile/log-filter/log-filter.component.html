@@ -1,34 +1,12 @@
-<form [formGroup]="filterForm" class="form-group">
+<div class="form-group">
     <!-- Reload button -->
     <button mat-icon-button (click)="onReload()" matTooltip="Atjaunināt">
         <mat-icon>refresh</mat-icon>
     </button>
     <!-- Log level selector -->
-    <mat-form-field class="form-element">
-        <mat-label>Log level</mat-label>
-        <mat-select formControlName="logLevel">
-            <mat-option *ngFor="let level of logLevels$ | async" [value]="level.key">
-                {{level.value}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
+    <app-log-level (levelChange)="onLevel($event)"></app-log-level>
     <!-- Datums -->
-    <mat-form-field class="form-element">
-        <mat-label>Datums</mat-label>
-        <input matInput [matDatepicker]=picker formControlName="date" [matDatepickerFilter]="isValiddate"
-            [max]="maxDate">
-        <mat-datepicker-toggle matSuffix [for]="picker" matTooltip="Kalendārs"></mat-datepicker-toggle>
-        <button mat-icon-button matSuffix (click)="onDateShift(-1)" [disabled]="isMinDate()" matTooltip="Iepriekšējā diena">
-            <mat-icon>navigate_before</mat-icon>
-        </button>
-        <button mat-icon-button matSuffix (click)="onDateShift(+1)" [disabled]="isMaxDate()" matTooltip="Nākamā diena">
-            <mat-icon>navigate_next</mat-icon>
-        </button>
-        <!-- Šodiena -->
-        <button mat-icon-button matSuffix (click)="onToday()" matTooltip="Šodiena">
-            <mat-icon>calendar_today</mat-icon>
-        </button>
-        <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
 
-</form>
+    <app-log-calendar [validDates]="validDates" (selectedDate)="onSetDate($event)"></app-log-calendar>
+
+</div>

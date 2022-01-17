@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DestroyService, omit } from 'prd-cdk';
 import { merge, Observable, of } from 'rxjs';
 import { map, mergeMap, pluck, take, takeUntil } from 'rxjs/operators';
-import { JobsWithoutInvoicesTotals } from 'src/app/interfaces';
+import { JobsWithoutInvoicesTotals } from 'src/app/jobs';
 import { Filter, JobPricesService } from './job-prices.service';
 
 const updateMessage = (n: number) => `Izmainīti ${n} ieraksti.`;
@@ -68,7 +68,7 @@ export class JobPricesComponent implements OnInit {
   onSavePrices() {
     this.jobPricesService.jobUpdatesSelected$.pipe(
       take(1),
-      mergeMap(jobs => jobs.length === 0 ? of(0) : this.jobPricesService.saveJobs(jobs)),
+      mergeMap(jobs => jobs.length === 0 ? of(0) : this.jobPricesService.updateJobPrices(jobs)),
     ).subscribe(updates => this.snack.open(updateMessage(updates), 'OK', { duration: 3000 }));
   }
 

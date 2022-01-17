@@ -1,8 +1,8 @@
 <p>
     <strong>
-        Kopā | {{ invoicesTotals.grandTotal | currency }}
+        Kopā | {{ invoicesTotals?.grandTotal | currency }}
     </strong>
 </p>
-<p *ngFor="let total of invoicesTotals.totals">
+<p *ngFor="let total of invoicesTotals?.totals">
     {{total._id}} | {{total.count}} | {{total.total | currency}}
 </p>

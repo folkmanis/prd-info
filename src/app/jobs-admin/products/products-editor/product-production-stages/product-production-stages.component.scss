@@ -1,0 +1,34 @@
+.mat-cell,
+.mat-header-cell {
+    padding: {
+        left: 8px;
+        right: 8px;
+    }
+    &:first-of-type {
+        padding-left: 0px;
+    }
+    &:last-of-type {
+        padding-right: 0px;
+    }
+}
+
+.mat-column-actions,
+.mat-column-expand {
+    max-width: 32px;
+}
+
+.mat-column-amount,
+.mat-column-fixedAmount {
+    max-width: 72px;
+    & .mat-form-field {
+        max-width: 72px;
+    }
+}
+
+.mat-column-productionStageId .mat-form-field {
+    width: 100%;
+}
+
+.mat-row.expanded {
+    border-bottom-width: 0;
+}

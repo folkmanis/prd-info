@@ -1,14 +1,16 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { Component, Input, OnDestroy, Output, TemplateRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, Input, OnDestroy, Output, TemplateRef, ViewChild, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
 import { IFormControl } from '@rxweb/types';
 import { ReplaySubject, Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-simple-list-container',
   templateUrl: './simple-list-container.component.html',
   styleUrls: ['./simple-list-container.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SimpleListContainerComponent implements AfterViewInit, OnDestroy {
   @ViewChild('editor') private routerOutlet: RouterOutlet;
@@ -36,7 +38,9 @@ export class SimpleListContainerComponent implements AfterViewInit, OnDestroy {
   get filterInput() { return this._filterInput; }
   private _filterInput = false;
 
-  @Output() filter = this.searchControl.valueChanges;
+  @Output() filter = this.searchControl.valueChanges.pipe(
+    debounceTime(200),
+  );
 
   @Output() activeStatusChanges = new ReplaySubject<boolean>(1);
 

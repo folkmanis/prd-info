@@ -6,6 +6,7 @@ export const USER_MODULES: UserModule[] = [
     {
         name: 'Darbi', description: 'Ražošanas darbi', route: 'jobs', childMenu: [
             { name: 'Repro darbi', route: 'repro', description: 'Repro darbu saraksts' },
+            { name: 'Ražošanā', route: 'products-production', description: 'Izstrādājumi ražošanā' },
         ]
     },
     {
@@ -19,6 +20,9 @@ export const USER_MODULES: UserModule[] = [
         name: 'Darbu iestatījumi', description: 'Ražošanas darbu moduļa iestatījumi', route: 'jobs-admin', childMenu: [
             { name: 'Klienti', route: 'customers', description: 'Informācija par klientiem' },
             { name: 'Preces', route: 'products', description: 'Produkcija' },
+            { name: 'Materiāli', route: 'materials', description: 'Izejvielas' },
+            { name: 'Iekārtas', route: 'equipment', description: 'Darba procesam izmantojamās iekārtas' },
+            { name: 'Procesi', route: 'production-stages', description: 'Ražošanas procesi' }
         ]
     },
     {

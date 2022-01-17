@@ -1,0 +1,17 @@
+<div *ngIf="invoice?.paytraq as paytraq; else newPaytraqInvoice" class="button-row">
+    <a mat-raised-button [href]="(paytraqUrl$ | async) + paytraq.paytraqId" target="new">
+        {{ paytraq.documentRef }}
+    </a>
+    <button mat-raised-button color="warn" (click)="onUnlinkPaytraq()" matTooltip="Dzēst savienojumu">
+        ATVIENOT
+    </button>
+</div>
+
+<ng-template #newPaytraqInvoice>
+    <button mat-raised-button [disabled]="paytraqOk  === false || (paytraqBusy$ | async)" (click)="onPaytraq()">
+        <span *ngIf="paytraqBusy$ | async; else notBusy"> SAGLABĀ... </span>
+        <ng-template #notBusy>
+            <span> UZ PAYTRAQ </span>
+        </ng-template>
+    </button>
+</ng-template>

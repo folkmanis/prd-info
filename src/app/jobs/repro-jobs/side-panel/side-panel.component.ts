@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, Output, OnDestroy } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { JobQueryFilter } from 'src/app/interfaces';
-import { FileUploadService } from '../services/file-upload.service';
+import { JobQueryFilter } from '../../interfaces';
 
 
 @Component({

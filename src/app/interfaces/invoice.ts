@@ -1,14 +1,12 @@
-import { AppHttpResponseBase } from 'src/app/library/http';
-import { Job } from './job';
-import { JobBase } from './job-base';
-import { CustomerFinancial, Customer } from './customer';
+import { Customer } from './customer';
+import { JobPartial } from 'src/app/jobs';
 
 export interface Invoice {
     invoiceId: string;
     customer: string;
     createdDate: Date;
     jobsId: number[];
-    jobs?: JobBase[];
+    jobs?: JobPartial[];
     products: InvoiceProduct[];
     total?: number;
     comment?: string;
@@ -46,10 +44,6 @@ export interface InvoiceProduct {
     price?: number;
     comment?: string;
     paytraqId?: number;
-}
-
-export interface InvoiceResponse extends AppHttpResponseBase<Invoice> {
-    totals?: ProductTotals[];
 }
 
 export interface ProductTotals {

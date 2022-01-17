@@ -2,8 +2,7 @@
 
     <mat-toolbar>
         <span *ngIf="formSource">
-            <button mat-raised-button (click)="onSave()" color="primary"
-                [disabled]="!isSaveEnabled">
+            <button mat-raised-button (click)="onSave()" color="primary" [disabled]="!isSaveEnabled">
                 SAGLABĀT
             </button>
             <button mat-raised-button (click)="onResetForm()" [disabled]="form.pristine || formSource.isNew">
@@ -11,9 +10,9 @@
             </button>
         </span>
         <span class="spacer"></span>
-        <span *ngIf="label">
-            <ng-template [cdkPortalOutlet]="label"></ng-template>
-        </span>
+
+        <ng-content select="[appSimpleFormLabel]"></ng-content>
+
         <span class="spacer"></span>
         <span>
             <button mat-mini-fab color="primary" (click)="close()">

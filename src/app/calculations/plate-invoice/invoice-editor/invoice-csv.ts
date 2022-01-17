@@ -1,5 +1,5 @@
-import { Invoice, InvoiceProduct, Job, JobProduct, Product } from 'src/app/interfaces';
-import * as moment from 'moment';
+import { Invoice } from 'src/app/interfaces';
+import { format, Locale } from 'date-fns';
 
 const DOCUMENT_FIELDS: string[] = [
     'InvoiceDate', // *
@@ -19,13 +19,16 @@ const REPORT_FIELDS: string[] = [
     'Datums', 'Klients', 'Numurs', 'Nosaukums', 'Veids', 'Skaits', 'Cena', 'Summa'
 ];
 
+const stringify = (r: string[][], separator: string): string =>
+    r.map(row => row.map(wrapField).join(separator)).join('\n');
+
+
 export class InvoiceCsv {
+
     constructor(
         private invoice: Invoice,
-        private params: { separator: string; locale: string } = { separator: ',', locale: 'lv' },
-    ) {
-        moment.locale(params.locale);
-    }
+        private params: { separator: string; locale?: Locale; } = { separator: ',' },
+    ) { }
 
     toCsvInvoice(): string {
         if (!this.invoice.jobs) { return DOCUMENT_FIELDS.join(this.params.separator); }
@@ -34,7 +37,7 @@ export class InvoiceCsv {
         this.invoice.products.forEach((_, idx) => ITEM_FIELDS.forEach(itm => head.push(itm + (idx + 1))), []);
 
         const data: string[] = [
-            moment(this.invoice.createdDate).format('L'),
+            format(new Date(this.invoice.createdDate), 'P', { locale: this.params.locale }),
             this.invoice.customerInfo.financial?.clientName || this.invoice.customer,
             '1',
             this.invoice.comment || '',
@@ -59,7 +62,7 @@ export class InvoiceCsv {
         this.invoice.jobs.forEach(job => {
             const pr = job.products instanceof Array ? undefined : job.products;
             data.push([
-                moment(job.receivedDate).format('L'),
+                format(new Date(job.receivedDate), 'P', { locale: this.params.locale }),
                 this.invoice.customer,
                 job.jobId.toString(),
                 job.name,
@@ -75,6 +78,3 @@ export class InvoiceCsv {
 
 const wrapField: (r: string) => string = (r) => '"' + r + '"';
 
-function stringify(r: string[][], separator: string): string {
-    return r.map(row => row.map(wrapField).join(separator)).join('\n');
-}

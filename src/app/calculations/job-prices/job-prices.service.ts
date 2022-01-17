@@ -1,10 +1,9 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { Injectable } from '@angular/core';
-import { log } from 'prd-cdk';
-import { EMPTY, from, merge, Observable, of, pipe, ReplaySubject, Subject, OperatorFunction, ObservedValueOf } from 'rxjs';
-import { filter as filterOperator, map, shareReplay, switchMap, tap, toArray, withLatestFrom } from 'rxjs/operators';
-import { CustomerProduct, Job, JobPartial, JobProduct, JobsWithoutInvoicesTotals } from 'src/app/interfaces';
-import { JobService } from 'src/app/services/job.service';
+import { merge, Observable, of, OperatorFunction, pipe, ReplaySubject, Subject } from 'rxjs';
+import { filter as filterOperator, map, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { CustomerProduct } from 'src/app/interfaces';
+import { JobProduct, JobService, JobsWithoutInvoicesTotals, JobUnwinded, JobUnwindedPartial } from 'src/app/jobs';
 import { ProductsService } from 'src/app/services/products.service';
 import { InvoicesService } from '../services/invoices.service';
 
@@ -12,12 +11,7 @@ export interface Filter {
   name: string;
 }
 
-type JobPartialUnwinded = JobPartial & {
-  products: JobProduct;
-  productsIdx: number;
-};
-
-type JobWithUpdate = JobPartialUnwinded & {
+type JobWithUpdate = JobUnwindedPartial & {
   'products.priceUpdate'?: number;
 };
 
@@ -33,7 +27,7 @@ export type JobData =
 export const COLUMNS = ['selection', ...JOB_COLUMNS, ...PRODUCT_COLUMNS.map(col => `${PREFIX}.${col}`)];
 export const COLUMNS_SMALL = ['selection', 'jobId', 'custCode', ...['name', 'price'].map(col => `${PREFIX}.${col}`), 'edit'];
 
-type JobUpdateFields = Pick<Job, 'jobId' | 'productsIdx' | 'products'>;
+type JobUpdateFields = Pick<JobUnwinded, 'jobId' | 'productsIdx' | 'products'>;
 
 @Injectable()
 export class JobPricesService {
@@ -95,13 +89,17 @@ export class JobPricesService {
     this._reload$.next('');
   }
 
-  saveJobs(jobs: JobUpdateFields[]): Observable<number> {
-    return this.jobService.updateJobs(jobs).pipe(
+  updateJobPrices(jobs: JobUpdateFields[]): Observable<number> {
+    const update = jobs.map(job => ({
+      jobId: job.jobId,
+      [`products.${job.productsIdx}.price`]: job.products.price,
+    }));
+    return this.jobService.updateJobs(update).pipe(
       tap(_ => this.reload()),
     );
   }
 
-  private getJobs(): OperatorFunction<Filter | unknown, JobPartialUnwinded[] | never> {
+  private getJobs(): OperatorFunction<Filter | unknown, JobUnwindedPartial[] | never> {
     let fl: Filter | undefined;
 
     return pipe(
@@ -113,12 +111,12 @@ export class JobPricesService {
         invoice: 0,
         unwindProducts: 1,
         customer: fl.name === 'all' ? undefined : fl.name
-      }) as Observable<JobPartialUnwinded[]>)
+      }) as Observable<JobUnwindedPartial[]>)
     );
 
   }
 
-  private updateJobs(job: JobPartialUnwinded, cProducts: CustomerProduct[]): JobWithUpdate {
+  private updateJobs(job: JobUnwindedPartial, cProducts: CustomerProduct[]): JobWithUpdate {
     if (cProducts.length === 0) { return job; }
 
     const product = job.products;

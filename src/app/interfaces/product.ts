@@ -1,9 +1,4 @@
-import { AppHttpResponseBase } from 'src/app/library/http';
-
-export interface ProductResponse extends AppHttpResponseBase<Product> {
-    customerProducts?: CustomerProduct[];
-    prices?: any[];
-}
+import { JobProductionStage } from './job-production-stage';
 
 export interface CustomerProduct {
     category: string;
@@ -22,6 +17,7 @@ export interface Product {
     paytraqId?: number;
     description?: string;
     prices?: ProductPrice[];
+    productionStages?: JobProductionStage[];
 }
 
 export type ProductPartial = Pick<Product, 'name' | 'category' | 'inactive'>;
@@ -31,4 +27,4 @@ export interface ProductPrice {
     price: number;
 }
 
-export interface PriceChange { customerName: string; price: number | undefined }
+export interface PriceChange { customerName: string; price: number | undefined; }

@@ -1,27 +1,29 @@
-export interface LogDataHttp {
-    count: number;
-    data: LogRecordHttp[];
-}
-
-export interface LogData extends LogDataHttp {
-    data: LogRecord[];
-}
+import { endOfDay, startOfDay } from 'date-fns';
 
 export interface LogRecordHttp {
+    _id: string;
     level: number;
-    timestamp: Date;
+    timestamp: string;
     info: string;
-    metadata: { [key: string]: any };
+    metadata: string[];
 }
 
 export type LogRecord = LogRecordHttp & {
     levelVerb: string;
 };
 
-export type GetLogEntriesParams = Partial<{
-    limit: number;
-    start: number;
-    level: number;
-    dateTo: string;
+export class LogQueryFilter {
+
+    limit?: number;
+    start?: number;
     dateFrom: string;
-}>;
+    dateTo: string;
+
+    constructor(
+        public level: number,
+        date: Date,
+    ) {
+        this.dateFrom = startOfDay(date).toISOString();
+        this.dateTo = endOfDay(date).toISOString();
+    }
+};

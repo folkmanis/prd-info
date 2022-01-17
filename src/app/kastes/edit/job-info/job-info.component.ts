@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { ColorTotals, KastesJob, Veikals } from 'src/app/interfaces';
-import { colorTotalsFromVeikali, kastesTotalsFromVeikali, sortColorTotals } from '../../common';
+import { ColorTotals, KastesJob, Veikals } from 'src/app/kastes/interfaces';
+import { colorTotalsFromVeikali, kastesTotalsFromVeikali, sortColorTotals, jobProductsToColorTotals } from '../../common';
 
 @Component({
   selector: 'app-job-info',
@@ -9,14 +9,31 @@ import { colorTotalsFromVeikali, kastesTotalsFromVeikali, sortColorTotals } from
 })
 export class JobInfoComponent implements OnInit {
 
-  @Input() get job(): KastesJob | undefined { return this._job; }
-  set job(job: KastesJob | undefined) {
-    this._job = job;
-    this.plannedTotals = sortColorTotals(job?.apjomsPlanned || []).map(tot => ({ ...tot, total: tot.total * 2 }));
-    this.colorTotals = colorTotalsFromVeikali(job?.veikali || []);
-    this.kastesTotals = kastesTotalsFromVeikali(job?.veikali || []);
-  }
   private _job: KastesJob | undefined;
+  @Input() get job(): KastesJob | undefined {
+    return this._job;
+  }
+  set job(value: KastesJob | undefined) {
+    if (!value) {
+      return;
+    }
+    this._job = value;
+    this.plannedTotals = jobProductsToColorTotals(value.products);
+  }
+
+  private _veikali: Veikals[] = [];
+  @Input() set veikali(value: Veikals[]) {
+    if (!value) {
+      this._veikali = [];
+      return;
+    }
+    this._veikali = value;
+    this.colorTotals = colorTotalsFromVeikali(value || []);
+    this.kastesTotals = kastesTotalsFromVeikali(value || []);
+  }
+  get veikali() {
+    return this._veikali;
+  }
 
   colorTotals: ColorTotals[] = [];
   plannedTotals: ColorTotals[] = [];

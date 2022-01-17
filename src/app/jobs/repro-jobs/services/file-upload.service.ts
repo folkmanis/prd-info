@@ -2,17 +2,18 @@ import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EMPTY, merge, Observable, of, Subject } from 'rxjs';
 import { finalize, map, mergeMap, share, shareReplay, tap, throttleTime } from 'rxjs/operators';
-import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 import { FileUploadEventType, FileUploadMessage, UploadMessageBase } from '../../interfaces/file-upload-message';
+import { JobsApiService } from '../../services/jobs-api.service';
+import { SanitizeService } from 'src/app/library/services/sanitize.service';
 
-/** Laiks, pēc kura tiek nosūtīts papildus slēdzošaias ziņojums */
 const CLOSE_EVENT_DELAY = 1000 * 5;
-
-/** Paralēlo augšupielāžu skaits vienam darbam */
 const SIMULTANEOUS_UPLOADS = 2;
-
-/** Minimālais laiks starp progresa ziņojumiem */
 const PERCENT_REPORT_INTERVAL = 500;
+
+const uploadId = (file: File): string => file.name;
+
+const eventMapToArray = (ev: Map<string, FileUploadMessage>): FileUploadMessage[] =>
+  Array.from(ev.values());
 
 @Injectable({ providedIn: 'root' })
 export class FileUploadService {
@@ -38,11 +39,13 @@ export class FileUploadService {
   private _activeUploads = new Map<string, FileUploadMessage>();
 
   constructor(
-    private prdApi: PrdApiService,
+    private api: JobsApiService,
+    private sanitize: SanitizeService,
   ) { }
 
   /**
    * Pievieno failus gaidīšanas sarakstam
+   *
    * @param files masīvs ar failiem
    */
   setFiles(files: File[]) {
@@ -61,9 +64,11 @@ export class FileUploadService {
     this.uploadQueue.clear();
     this._activeUploads.clear();
     this._uploadProgress$.next(this._activeUploads);
+    return undefined;
   }
   /**
    * Sāk augšupielādi ar sagatavoto rindu un doto darba numuru
+   *
    * @param jobId darba numurs
    */
   startUpload(jobId: number): void {
@@ -75,8 +80,8 @@ export class FileUploadService {
 
   private uploadFile(jobId: number, file: File): Observable<any> {
     const formData = new FormData();
-    formData.append('fileUpload', file, file.name);
-    return this.prdApi.jobs.fileUpload(jobId, formData).pipe(
+    formData.append('fileUpload', file, this.sanitize.sanitizeFileName(file.name));
+    return this.api.fileUpload(jobId, formData).pipe(
       tap(ev => this.reportProgress(ev, file, jobId)),
       finalize(() => this.uploadQueue.delete(uploadId(file))),
     );
@@ -88,7 +93,6 @@ export class FileUploadService {
       {
         type: FileUploadEventType.UploadWaiting,
         id: uploadId(file),
-        // jobId,
         name: file.name,
         size: file.size,
       }
@@ -99,7 +103,6 @@ export class FileUploadService {
     const id = uploadId(file);
     const messageBase: UploadMessageBase = {
       id,
-      // jobId,
       name: file.name,
       size: file.size,
     };
@@ -140,10 +143,4 @@ export class FileUploadService {
   }
 
 }
-
-/* kombinē augšupielādes Id no faila informācijas */
-const uploadId = (file: File): string => file.name;
-
-const eventMapToArray = (ev: Map<string, FileUploadMessage>): FileUploadMessage[] =>
-  Array.from(ev.values());
 

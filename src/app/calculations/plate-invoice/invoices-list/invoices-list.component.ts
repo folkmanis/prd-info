@@ -12,11 +12,12 @@ const COLUMNS = ['invoiceId', 'customer', 'createdDate', 'totalSum'];
 })
 export class InvoicesListComponent implements OnInit {
 
+  datasource = new InvoicesListDatasource(this.service);
+  displayedColumns: string[] = COLUMNS;
+
   constructor(
     private service: InvoicesService,
   ) { }
-  displayedColumns: string[] = COLUMNS;
-  datasource = new InvoicesListDatasource(this.service);
 
   ngOnInit(): void {
   }

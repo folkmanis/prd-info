@@ -1,8 +1,13 @@
-<app-simple-form-container [formSource]="formSource" (dataChange)="onDataChange($event)">
+<app-simple-form-container (dataChange)="onDataChange($event)">
+
+    <!-- Nosaukums nelabojams -->
+    <span *ngIf="!isNew;" appSimpleFormLabel>
+        {{form.controls.name.value}}
+    </span>
 
     <form [formGroup]="form">
         <!-- Nosaukums labojams -->
-        <h2 *ngIf="isNew; else existingProduct">
+        <h2 *ngIf="isNew;">
             <mat-form-field>
                 <mat-label>Nosaukums</mat-label>
                 <input matInput formControlName="name" required>
@@ -14,12 +19,6 @@
                 </mat-error>
             </mat-form-field>
         </h2>
-        <!-- Nosaukums nelabojams -->
-        <ng-template #existingProduct>
-            <h2>
-                {{form.controls.name.value}}
-            </h2>
-        </ng-template>
 
         <mat-accordion multi>
             <mat-expansion-panel expanded [hideToggle]="true">
@@ -83,20 +82,49 @@
 
             </mat-expansion-panel>
 
-            <mat-expansion-panel expanded>
+            <!-- <mat-expansion-panel expanded> -->
+            <mat-expansion-panel>
                 <mat-expansion-panel-header>
                     <mat-panel-title>
-                        Cenas
+                        Pārdošanas cenas
                     </mat-panel-title>
                 </mat-expansion-panel-header>
 
                 <!-- Cenu tabula -->
                 <section>
-                    <app-product-prices formGroupName="prices" [customers]="customers$ | async"
-                        (addPrice)="onAddPrice(form.controls.prices)"
-                        (removePrice)="onDeletePrice(form.controls.prices, $event)">
+                    <app-product-prices [pricesFormArray]="pricesFormArray" [customers]="customers$ | async"
+                        (removePrice)="onDeletePrice($event)">
                     </app-product-prices>
                 </section>
+
+                <mat-action-row>
+                    <button mat-mini-fab (click)="onAddPrice()" [disabled]="form.invalid" color="primary">
+                        <mat-icon>
+                            add
+                        </mat-icon>
+                    </button>
+                </mat-action-row>
+
+            </mat-expansion-panel>
+
+            <mat-expansion-panel expanded>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Ražošanas procesi
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <!-- Ražošanas procesu tabula -->
+                <section>
+                    <app-product-production-stages #prodStages [stagesArray]="productionStages">
+                    </app-product-production-stages>
+                </section>
+
+                <mat-action-row>
+                    <button mat-mini-fab color="primary" (click)="prodStages.onNewProductionStage();">
+                        <mat-icon> add </mat-icon>
+                    </button>
+                </mat-action-row>
 
             </mat-expansion-panel>
 

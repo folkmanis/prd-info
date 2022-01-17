@@ -1,4 +1,4 @@
-<mat-drawer-container>
+<mat-drawer-container *ngIf="pasutijumsId$ | async; else noActive;">
 
     <mat-drawer-content>
 
@@ -18,7 +18,7 @@
     <mat-drawer button [small]="isSmall$ | async">
         <div *ngIf="kastesJob$ | async as kastesJob">
             <h4>
-                {{kastesJob.name}}
+                {{kastesJob.jobId}} - {{kastesJob.name}}
             </h4>
             <div *ngIf="(apjoms$ | async) === 0">
                 <mat-divider></mat-divider>
@@ -27,9 +27,20 @@
             </div>
             <div>
                 <mat-divider></mat-divider>
-                <app-order-totals [job]="kastesJob" [colors]="colors$ | async"></app-order-totals>
+                <app-order-totals [veikali]="kastesAll$ | async" [colors]="colors$ | async"></app-order-totals>
             </div>
         </div>
     </mat-drawer>
 
 </mat-drawer-container>
+
+<ng-template #noActive>
+    <div class="no-active">
+        <p>
+            Nav izvēlēts aktīvais pakošanas saraksts.
+        </p>
+        <p>
+            <a mat-raised-button routerLink="../../edit">IZVĒLĒTIES</a>
+        </p>
+    </div>
+</ng-template>

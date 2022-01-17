@@ -1,10 +1,11 @@
 <div class="main-content">
     <div class="filter-box">
-        <app-log-filter></app-log-filter>
+        <app-log-filter [validDates]="validDates$ | async" (filter)="setFilter($event)" (levelChange)="onLevel($event)">
+        </app-log-filter>
     </div>
 
     <div class="table-container">
-        <app-logfile-table></app-logfile-table>
+        <app-logfile-table [log]="log$ | async"></app-logfile-table>
     </div>
 
 </div>

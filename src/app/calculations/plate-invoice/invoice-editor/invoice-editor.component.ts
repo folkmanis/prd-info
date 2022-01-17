@@ -1,17 +1,15 @@
-import { ChangeDetectionStrategy, Component, Inject, LOCALE_ID, OnDestroy, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit, Optional } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Locale } from 'date-fns';
 import { saveAs } from 'file-saver';
-import { combineLatest, merge, Observable, Subject } from 'rxjs';
-import { filter, map, mergeMap, pluck, shareReplay, switchMap } from 'rxjs/operators';
-import { Invoice, InvoiceProduct, SystemPreferences } from 'src/app/interfaces';
+import { merge, Observable, Subject } from 'rxjs';
+import { map, pluck, share, switchMap } from 'rxjs/operators';
+import { Invoice, SystemPreferences } from 'src/app/interfaces';
+import { DATE_FNS_LOCALE } from 'src/app/library/date-services';
 import { CONFIG } from 'src/app/services/config.provider';
-import { InvoicesService } from '../../services/invoices.service';
+import { InvoiceResolverService } from '../../services/invoice-resolver.service';
 import { InvoiceCsv } from './invoice-csv';
-import { InvoiceReport } from '../../services/invoice-report';
 
-const PAYTRAQ_SAVED_MESSAGE = 'Izveidota pavadzīme Paytraq sistēmā';
-const PAYTRAQ_UNLINK_MESSAGE = 'Paytraq savienojums dzēsts';
 
 @Component({
   selector: 'app-invoice-editor',
@@ -21,50 +19,28 @@ const PAYTRAQ_UNLINK_MESSAGE = 'Paytraq savienojums dzēsts';
 })
 export class InvoiceEditorComponent implements OnInit, OnDestroy {
 
-  private _routeInvoice$: Observable<string> = this.route.paramMap.pipe(
-    map(params => params.get('invoiceId') as string | undefined),
-    filter(invoiceId => !!invoiceId),
+  private _routeInvoice$: Observable<Invoice> = this.route.data.pipe(
+    map(data => data.invoice),
   );
 
-  private _invoiceUpdate$ = new Subject<string>();
+  private reload$ = new Subject<string>();
 
   invoice$: Observable<Invoice> = merge(
     this._routeInvoice$,
-    this._invoiceUpdate$,
+    this.reload$.pipe(switchMap(_ => this.invoiceResolver.reload())),
   ).pipe(
-    switchMap(invoiceId => this.invoicesService.getInvoice(invoiceId)),
-    map(invoice => ({
-      ...invoice,
-      total: invoice.products.reduce((acc, curr) => acc + curr.total, 0)
-    })),
-    shareReplay(1),
+    share(),
   );
 
   pyatraqEnabled$: Observable<boolean> = this.config$.pipe(
     pluck('paytraq', 'enabled'),
   );
 
-  paytraqUrl$: Observable<string> = combineLatest([
-    this.config$.pipe(
-      pluck('paytraq', 'connectionParams', 'invoiceUrl')
-    ),
-    this.invoice$
-  ]).pipe(
-    map(([base, invoice]) => base + invoice.paytraq?.paytraqId)
-  );
-
-  readonly paytraqBusy$ = new Subject<boolean>();
-
-  paytraqOk$: Observable<boolean> = this.invoice$.pipe(
-    map(invoice => !invoice.paytraq && invoice.products.length > 0 && allProductsWithPaytraq(invoice.products))
-  );
-
   constructor(
     private route: ActivatedRoute,
-    private invoicesService: InvoicesService,
-    @Inject(LOCALE_ID) private locale: string,
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
-    private snack: MatSnackBar,
+    private invoiceResolver: InvoiceResolverService,
+    @Optional() @Inject(DATE_FNS_LOCALE) private locale?: Locale,
   ) { }
 
 
@@ -72,13 +48,7 @@ export class InvoiceEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this._invoiceUpdate$.complete();
-    this.paytraqBusy$.complete();
-  }
-
-  onPdfDownload(invoice: Invoice): void {
-    const report = new InvoiceReport(invoice, this.locale);
-    report.open();
+    this.reload$.complete();
   }
 
   onCsvInvoice(invoice: Invoice): void {
@@ -94,38 +64,9 @@ export class InvoiceEditorComponent implements OnInit, OnDestroy {
     );
   }
 
-  onPaytraq(invoice: Invoice): void {
-    this.paytraqBusy$.next(true);
-    this.invoicesService.postPaytraqInvoice(invoice).pipe(
-      mergeMap(paytraqId => this.invoicesService.getPaytraqInvoiceRef(paytraqId).pipe(
-        mergeMap(documentRef => this.invoicesService.updateInvoice(
-          invoice.invoiceId,
-          { paytraq: { paytraqId, documentRef } })
-        ),
-      ))
-    ).subscribe(_ => {
-      this._invoiceUpdate$.next(invoice.invoiceId);
-      this.paytraqBusy$.next(false);
-      this.snack.open(PAYTRAQ_SAVED_MESSAGE, 'OK', { duration: 5000 });
-    });
-  }
-
-  onUnlinkPaytraq(invoice: Invoice): void {
-    const id = invoice.invoiceId;
-    this.invoicesService.updateInvoice(
-      id,
-      { paytraq: null }
-    ).subscribe(_ => {
-      this._invoiceUpdate$.next(id);
-      this.snack.open(PAYTRAQ_UNLINK_MESSAGE, 'OK', { duration: 5000 });
-    });
+  onReload() {
+    this.reload$.next(null);
   }
 
 }
 
-function allProductsWithPaytraq(products: InvoiceProduct[]): boolean {
-  for (const prod of products) {
-    if (!prod.paytraqId) { return false; }
-  }
-  return true;
-}

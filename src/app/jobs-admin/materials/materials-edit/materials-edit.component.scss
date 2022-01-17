@@ -1,0 +1,23 @@
+section {
+    margin: 8px 0;
+}
+
+.mat-form-field.full-width {
+    width: 100%;
+}
+
+.large section.input-container {
+    display: flex;
+}
+
+.input-container > .mat-form-field {
+    flex: 1;
+}
+
+.spacer {
+    width: 16px;
+}
+
+.w-spacer {
+    height: 16px;
+}

@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
-import { Observable, EMPTY, of } from 'rxjs';
-import { map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
-import { MatDialog, MAT_DIALOG_DATA, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
-import { JobBase } from 'src/app/interfaces';
-import { ReproJobService } from './repro-job.service';
-import { JobFormService } from './job-form.service';
-import { FileUploadService } from './file-upload.service';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { flatten } from 'lodash';
+import { forkJoin, Observable, of } from 'rxjs';
+import { concatMap, map, mapTo } from 'rxjs/operators';
+import { JobProductionStage } from 'src/app/interfaces';
+import { Job, JobProduct } from '../../interfaces';
+import { ProductsService } from 'src/app/services';
+import { JobService } from '../../services/job.service';
 import { ReproJobEditComponent } from '../repro-job-edit/repro-job-edit.component';
-import { IFormGroup } from '@rxweb/types';
-import { LayoutService } from 'src/app/layout/layout.service';
 
 export interface DialogData {
-  form: IFormGroup<JobBase>;
-  job: Partial<JobBase>;
+  job: Partial<Job>;
 }
+
+export type PartialJob = Pick<Job, 'jobId'> & Partial<Job>;
 
 const CONFIG: MatDialogConfig = {
   autoFocus: false,
@@ -26,39 +26,62 @@ const CONFIG: MatDialogConfig = {
 })
 export class ReproJobDialogService {
 
+  private readonly productionStagesFn = (productName: string) => this.productsService.productionStages(productName);
+
   constructor(
     private matDialog: MatDialog,
-    private reproJobService: ReproJobService,
-    private formService: JobFormService,
+    private productsService: ProductsService,
+    private jobService: JobService,
   ) { }
 
-  openJob(job: Partial<JobBase>): MatDialogRef<ReproJobEditComponent, DialogData> {
-    job = this.setJobDefaults(job);
-    const form = this.formService.createJobForm();
-    this.formService.initValue(form, job);
+  openJob(job: Partial<Job>): Observable<PartialJob | undefined> {
+
     const config: MatDialogConfig = {
       ...CONFIG,
       autoFocus: !job.customer,
       data: {
-        form,
         job,
       }
     };
 
-    return this.matDialog.open<ReproJobEditComponent, DialogData, DialogData>(ReproJobEditComponent, config);
+    return this.matDialog
+      .open<ReproJobEditComponent, DialogData, PartialJob | undefined>(ReproJobEditComponent, config)
+      .afterClosed().pipe(
+        concatMap(job => addProductionStages(job, this.productionStagesFn)),
+      );
 
   }
 
-  private setJobDefaults<T extends Partial<JobBase>>(job: T): T {
-    return {
-      ...job,
-      receivedDate: job.receivedDate || new Date(),
-      dueDate: job.dueDate || new Date(),
-      jobStatus: {
-        generalStatus: job.jobStatus?.generalStatus || 10
-      }
-    };
+  editJob(jobId: number): Observable<boolean> {
+    return this.jobService.getJob(jobId).pipe(
+      concatMap(job => this.openJob(job)),
+      concatMap(data => data ? this.jobService.updateJob(jobId, data).pipe(mapTo(true)) : of(false)),
+    );
   }
 
 
 }
+
+function addProductionStages(job: PartialJob, getStageFn: (productName: string) => Observable<JobProductionStage[]>): Observable<PartialJob> {
+  if (job?.products instanceof Array && job.products.length > 0) {
+    return forkJoin(jobStages(job.products, getStageFn)).pipe(
+      map(allStages => ({
+        ...job,
+        productionStages: flatten(allStages),
+      })),
+    );
+  }
+  return of(job);
+}
+
+function jobStages(products: JobProduct[], getStageFn: (productName: string) => Observable<JobProductionStage[]>): Observable<JobProductionStage[]>[] {
+  return products.map(prod => getStageFn(prod.name).pipe(
+    map(stages => stages.map(stage => ({
+      ...stage,
+      fixedAmount: stage.fixedAmount || 0,
+      amount: stage.amount * prod.count + stage.fixedAmount,
+      productionStatus: 10,
+    }))),
+  ));
+}
+

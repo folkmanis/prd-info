@@ -1,6 +1,6 @@
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { CustomerProduct, Product, ProductResponse } from 'src/app/interfaces';
+import { Observable, of } from 'rxjs';
+import { map, pluck } from 'rxjs/operators';
+import { CustomerProduct, JobProductionStage, Product } from 'src/app/interfaces';
 import { ApiBase, HttpOptions } from 'src/app/library/http';
 
 interface CustomerProductPrice {
@@ -12,21 +12,26 @@ interface CustomerProductPrice {
 export class ProductsApi extends ApiBase<Product> {
 
     productsCustomer(customer: string): Observable<CustomerProduct[]> {
-        return this.http.get<ProductResponse>(
+        return this.http.get<CustomerProduct[]>(
             this.path + 'prices/customer/' + customer,
             new HttpOptions().cacheable(),
-        ).pipe(
-            map(resp => resp.customerProducts)
         );
 
     }
     /** Preču cenas vairākiem klientu un preču */
     customersProducts(customerProducts: CustomerProductPrice[]): Observable<CustomerProductPrice[]> {
-        return this.http.get<{ data: CustomerProductPrice[] }>(
+        return this.http.get<{ data: CustomerProductPrice[]; }>(
             this.path + 'prices/customers',
             new HttpOptions({ filter: JSON.stringify(customerProducts) })
         ).pipe(
             map(resp => resp.data)
+        );
+    }
+
+    productionStages(product: string): Observable<JobProductionStage[]> {
+        return this.http.get<JobProductionStage[]>(
+            this.path + product + '/productionStages',
+            new HttpOptions().cacheable(),
         );
     }
 

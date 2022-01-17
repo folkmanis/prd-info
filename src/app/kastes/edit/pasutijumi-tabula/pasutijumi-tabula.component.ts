@@ -1,9 +1,9 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { debounceTime, map, startWith } from 'rxjs/operators';
-import { KastesJobPartial } from 'src/app/interfaces';
-import { LayoutService } from 'src/app/layout/layout.service';
-import { JobService } from 'src/app/services/job.service';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { LayoutService } from 'src/app/services';
+import { KastesJobPartial } from '../../interfaces/kastes-job-partial';
+import { KastesPasutijumiService } from '../../services/kastes-pasutijumi.service';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
 
 export interface KastesJobTable extends KastesJobPartial {
@@ -22,40 +22,31 @@ export class PasutijumiTabulaComponent implements OnInit {
   readonly columnsActive = ['active', 'jobId', 'name'];
 
   private activeJob$ = this.preferencesService.pasutijumsId$;
-  private jobs$ = this.jobService.jobs$.pipe(
-    map(jobs => jobs.filter(job => job.category === 'perforated paper') as KastesJobPartial[]),
-  );
-  filter$ = new BehaviorSubject<string>('');
 
   datasource$: Observable<KastesJobTable[]> = combineLatest([
-    this.jobs$,
+    this.kastesJobsService.kastesJobs$,
     this.activeJob$,
-    this.filter$.pipe(
-      debounceTime(200),
-      map(fltr => fltr.toUpperCase()),
-    )
   ]).pipe(
-    map(([jobs, act, fltr]) =>
-      jobs
-        .filter(job => job.name.toUpperCase().includes(fltr))
-        .map(job => ({ ...job, active: job.jobId === act }))
+    map(
+      ([jobs, act]) => jobs.map(job => ({ ...job, active: job.jobId === act }))
     ),
   );
 
+  large$ = this.layOutService.isLarge$;
+
   constructor(
-    private jobService: JobService,
+    private kastesJobsService: KastesPasutijumiService,
     private preferencesService: KastesPreferencesService,
     private layOutService: LayoutService,
   ) { }
 
-  large$ = this.layOutService.isLarge$;
-
   ngOnInit(): void {
-    this.jobService.setFilter({ category: 'perforated paper' });
+    this.kastesJobsService.setFilter({});
   }
 
-  onFilter(fltr: string): void {
-    this.filter$.next(fltr);
+  onFilter(name: string): void {
+    const filter = name.length > 0 ? { name } : {};
+    this.kastesJobsService.setFilter(filter);
   }
 
 }

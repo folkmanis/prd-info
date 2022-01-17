@@ -11,15 +11,16 @@ import { ProductCategory } from 'src/app/interfaces';
 })
 export class CategoryDialogComponent {
 
+  productForm = new FormGroup({
+    category: new FormControl({ value: this.data?.category, disabled: this.data }, { validators: Validators.required }),
+    description: new FormControl(this.data?.description),
+  }) as IFormGroup<ProductCategory>;
+
   constructor(
     private dialogRef: MatDialogRef<CategoryDialogComponent, ProductCategory>,
     @Inject(MAT_DIALOG_DATA) private data: ProductCategory,
   ) { }
 
-  productForm = new FormGroup({
-    category: new FormControl({ value: this.data?.category, disabled: this.data }, { validators: Validators.required }),
-    description: new FormControl(this.data?.description),
-  }) as IFormGroup<ProductCategory>;
 
   onSubmit() {
     this.dialogRef.close(this.productForm.value);

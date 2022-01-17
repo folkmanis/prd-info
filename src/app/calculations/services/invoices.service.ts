@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
 import { pick } from 'prd-cdk';
 import { EMPTY, Observable, of, Subject } from 'rxjs';
-import { pluck, startWith, switchMap, tap } from 'rxjs/operators';
-import {
-  Invoice, InvoicesFilter, InvoiceTable,
-  InvoiceUpdate, INVOICE_UPDATE_FIELDS, JobPartial, JobQueryFilter, JobsWithoutInvoicesTotals
-} from 'src/app/interfaces';
+import { map, pluck, startWith, switchMap, tap } from 'rxjs/operators';
+import { Invoice, InvoicesFilter, InvoiceTable, InvoiceUpdate, INVOICE_UPDATE_FIELDS, InvoiceForReport } from 'src/app/interfaces';
+import { JobPartial, JobQueryFilter, JobsWithoutInvoicesTotals, JobUnwindedPartial, JobService } from 'src/app/jobs';
 import { PaytraqInvoice } from 'src/app/interfaces/paytraq';
 import { Sale } from 'src/app/interfaces/paytraq/invoice';
 import { PrdApiService } from 'src/app/services';
+import { } from 'src/app/jobs/services/job.service';
 
 @Injectable({ providedIn: 'any' })
 export class InvoicesService {
 
   constructor(
     private prdApi: PrdApiService,
+    private jobService: JobService,
   ) { }
 
   private reloadJobsWithoutInvoicesTotals$ = new Subject();
@@ -24,25 +24,29 @@ export class InvoicesService {
   );
 
   getJobsWithoutInvoicesTotals(): Observable<JobsWithoutInvoicesTotals[]> {
-    return this.prdApi.jobs.jobsWithoutInvoicesTotals();
+    return this.jobService.getJobsWithoutInvoicesTotals();
   }
 
-  getJobs(filter: JobQueryFilter): Observable<JobPartial[]> {
-    return this.prdApi.jobs.get(filter);
+  getJobsUnwinded(filter: JobQueryFilter): Observable<JobUnwindedPartial[]> {
+    return this.jobService.getJobListUnwinded(filter);
   }
 
   reloadJobsWithoutInvoicesTotals() {
-    this.reloadJobsWithoutInvoicesTotals$.next();
+    this.reloadJobsWithoutInvoicesTotals$.next(null);
   }
 
-  createInvoice(params: { selectedJobs: number[]; customerId: string; }): Observable<Invoice> {
+  createInvoice(params: { jobIds: number[]; customerId: string; }): Observable<Invoice> {
     return this.prdApi.invoices.createInvoice(params).pipe(
-      tap(() => this.reloadJobsWithoutInvoicesTotals$.next()),
+      tap(() => this.reloadJobsWithoutInvoicesTotals$.next(null)),
     );
   }
 
   getInvoice(invoiceId: string): Observable<Invoice> {
     return this.prdApi.invoices.get(invoiceId);
+  }
+
+  getReport(data: InvoiceForReport) {
+    return this.prdApi.invoices.getReport(data);
   }
 
   updateInvoice(id: string, update: InvoiceUpdate): Observable<any> {
@@ -67,6 +71,10 @@ export class InvoicesService {
     return this.prdApi.paytraq.postSale(ptInvoice).pipe(
       pluck('response', 'documentID')
     );
+  }
+
+  deleteInvoice(invoiceId: string): Observable<number> {
+    return this.prdApi.invoices.deleteOne(invoiceId);
   }
 
 }
