@@ -30,20 +30,22 @@ export class JobService {
     mapTo(undefined),
   );
 
-  constructor(
-    private notificatinsService: NotificationsService,
-    private cacheService: HttpCacheService,
-    private confirmationDialogService: ConfirmationDialogService,
-    private api: JobsApiService,
-  ) { }
-
-  jobs$: Observable<JobPartial[]> = combineReload(
+  readonly jobs$: Observable<JobPartial[]> = combineReload(
     this._filter$,
     this.reload$,
   ).pipe(
     switchMap(filter => this.getJobList(filter)),
     share(),
   );
+
+  readonly filter$: Observable<JobQueryFilter> = this._filter$.asObservable();
+
+  constructor(
+    private notificatinsService: NotificationsService,
+    private cacheService: HttpCacheService,
+    private confirmationDialogService: ConfirmationDialogService,
+    private api: JobsApiService,
+  ) { }
 
   setFilter(fltr: JobQueryFilter): void {
     this._filter$.next(fltr);
