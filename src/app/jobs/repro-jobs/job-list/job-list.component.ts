@@ -1,12 +1,10 @@
-import { Output, Input, ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, Output } from '@angular/core';
 import { DestroyService } from 'prd-cdk';
-import { OperatorFunction, pipe, ReplaySubject, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { ReplaySubject, Subject } from 'rxjs';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { LayoutService } from 'src/app/services';
 import { Job, JobPartial, JobProduct } from '../../interfaces';
-import { JobService } from '../../services/job.service';
 
 
 type JobWithJobProduct = JobPartial & {

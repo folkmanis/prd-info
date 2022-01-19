@@ -1,7 +1,7 @@
-import { Input, ChangeDetectionStrategy, Component, Output, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, Output } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { JobQueryFilter, JobPartial } from '../../interfaces';
+import { JobPartial } from '../../interfaces';
 
 
 @Component({
@@ -19,9 +19,6 @@ export class SidePanelComponent implements OnDestroy {
   @Output() file: Observable<FileList> = this.fileDrop.pipe(
     filter(drop => drop instanceof FileList && drop.length > 0),
   );
-
-  constructor(
-  ) { }
 
   ngOnDestroy() {
     this.fileDrop.complete();

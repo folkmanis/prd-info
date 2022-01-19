@@ -1,8 +1,8 @@
-import { ChangeDetectorRef, Component, Input, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { JobFilterFormProvider } from '../job-filter.component';
-import { JobState } from 'src/app/interfaces';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { merge, Subscription } from 'rxjs';
+import { JobState } from 'src/app/interfaces';
+import { JobFilterFormProvider } from '../job-filter.component';
 
 @Component({
   selector: 'app-job-filter-summary',
