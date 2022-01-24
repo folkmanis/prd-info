@@ -38,7 +38,7 @@ export class JobsApiService extends ApiBase<Job> {
   fileUpload(jobId: number, form: FormData): Observable<HttpEvent<Job>> {
     const request = new HttpRequest(
       'PUT',
-      this.path + jobId + '/file',
+      this.path + 'files/' + jobId + '/upload',
       form,
       { reportProgress: true, }
     );

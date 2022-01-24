@@ -1,7 +1,7 @@
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EMPTY, merge, Observable, of, Subject } from 'rxjs';
-import { finalize, map, mergeMap, share, shareReplay, tap, throttleTime } from 'rxjs/operators';
+import { finalize, map, mapTo, mergeMap, share, shareReplay, tap, throttleTime } from 'rxjs/operators';
 import { FileUploadEventType, FileUploadMessage, UploadMessageBase } from '../../interfaces/file-upload-message';
 import { JobsApiService } from '../../services/jobs-api.service';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
@@ -11,9 +11,6 @@ const SIMULTANEOUS_UPLOADS = 2;
 const PERCENT_REPORT_INTERVAL = 500;
 
 const uploadId = (file: File): string => file.name;
-
-const eventMapToArray = (ev: Map<string, FileUploadMessage>): FileUploadMessage[] =>
-  Array.from(ev.values());
 
 @Injectable({ providedIn: 'root' })
 export class FileUploadService {
@@ -27,7 +24,7 @@ export class FileUploadService {
     this._uploadProgressPercent$.pipe(throttleTime(PERCENT_REPORT_INTERVAL)),
     this._uploadProgress$,
   ).pipe(
-    map(eventMapToArray),
+    map(eventMap => [...eventMap.values()]),
     shareReplay(1),
   );
 
@@ -64,18 +61,18 @@ export class FileUploadService {
     this.uploadQueue.clear();
     this._activeUploads.clear();
     this._uploadProgress$.next(this._activeUploads);
-    return undefined;
   }
   /**
    * Sāk augšupielādi ar sagatavoto rindu un doto darba numuru
    *
    * @param jobId darba numurs
    */
-  startUpload(jobId: number): void {
-    if (this.uploadQueue.size === 0) { return; }
-    of(...this.uploadQueue.values()).pipe(
+  startUpload(jobId: number): Observable<number> {
+    if (this.uploadQueue.size === 0) return of(jobId);
+    return of(...this.uploadQueue.values()).pipe(
       mergeMap(file => this.uploadFile(jobId, file), SIMULTANEOUS_UPLOADS),
-    ).subscribe();
+      mapTo(jobId),
+    );
   }
 
   private uploadFile(jobId: number, file: File): Observable<any> {
