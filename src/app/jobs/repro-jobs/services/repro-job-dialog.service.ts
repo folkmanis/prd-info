@@ -8,9 +8,11 @@ import { Job, JobProduct } from '../../interfaces';
 import { ProductsService } from 'src/app/services';
 import { JobService } from '../../services/job.service';
 import { ReproJobEditComponent } from '../repro-job-edit/repro-job-edit.component';
+import { FileUploadEventType, FileUploadMessage, UploadMessageBase } from '../../interfaces/file-upload-message';
 
 export interface DialogData {
   job: Partial<Job>;
+  fileUploadProgress?: Observable<FileUploadMessage[]>;
 }
 
 export type PartialJob = Pick<Job, 'jobId'> & Partial<Job>;
@@ -34,13 +36,14 @@ export class ReproJobDialogService {
     private jobService: JobService,
   ) { }
 
-  openJob(job: Partial<Job>): Observable<PartialJob | undefined> {
+  openJob(job: Partial<Job>, fileUploadProgress?: Observable<FileUploadMessage[]>): Observable<PartialJob | undefined> {
 
     const config: MatDialogConfig = {
       ...CONFIG,
       autoFocus: !job.customer,
       data: {
         job,
+        fileUploadProgress,
       }
     };
 

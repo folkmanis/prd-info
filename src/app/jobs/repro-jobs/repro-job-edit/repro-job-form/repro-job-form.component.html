@@ -62,22 +62,8 @@
     </mat-form-field>
 
     <!-- Preces apakšforma -->
-    <mat-card *ngIf="isProductsSet()" class="width-span">
-        <mat-card-subtitle>
-            Preces
-        </mat-card-subtitle>
-        <mat-card-content>
-            <app-repro-products-editor #productsEditor formGroupName="products"
-                [customerProducts]="customerProducts$ | async" (removeProduct)="onRemoveProduct($event)">
-            </app-repro-products-editor>
-        </mat-card-content>
-        <mat-card-actions>
-            <button mat-mini-fab (click)="onAddProduct()" [disabled]="!form.valid" matTooltip="Ctrl +" color="primary"
-                appKeyPress="ctrlPlus">
-                <mat-icon>add</mat-icon>
-            </button>
-        </mat-card-actions>
-    </mat-card>
+    <app-repro-products-editor *ngIf="isProductsSet()" class="width-span" formGroupName="products"
+        [customerProducts]="customerProducts$ | async" [disabled]="!form.valid"></app-repro-products-editor>
 
     <!-- Papildus apraksts -->
     <mat-card class="left-column">

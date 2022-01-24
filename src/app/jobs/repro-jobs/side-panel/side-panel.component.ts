@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, Output } from '@angular/core';
+import { FileUploadMessage, FileUploadEventType } from '../../interfaces/file-upload-message';
 import { Observable, Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { JobPartial } from '../../interfaces';
@@ -13,6 +14,8 @@ import { JobPartial } from '../../interfaces';
 export class SidePanelComponent implements OnDestroy {
 
   @Input() jobs: JobPartial[];
+
+  @Input() fileUploadProgress: FileUploadMessage[] = [];
 
   fileDrop = new Subject<FileList | any>();
 

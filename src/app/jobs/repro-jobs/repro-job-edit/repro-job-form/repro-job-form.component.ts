@@ -12,7 +12,6 @@ import { JobService } from '../../../services/job.service';
 import { ProductsService } from 'src/app/services/products.service';
 import { JobFormGroup } from '../../services/job-form-group';
 import { CustomerInputComponent } from '../customer-input/customer-input.component';
-import { ReproProductsEditorComponent } from '../repro-products-editor/repro-products-editor.component';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 
 @Component({
@@ -24,7 +23,6 @@ import { SanitizeService } from 'src/app/library/services/sanitize.service';
 export class ReproJobFormComponent implements OnInit {
 
   @ViewChild(CustomerInputComponent) customerInput: CustomerInputComponent;
-  @ViewChild(ReproProductsEditorComponent) private productsEditor: ReproProductsEditorComponent;
 
   @Input('jobForm') form: JobFormGroup;
 
@@ -94,15 +92,6 @@ export class ReproJobFormComponent implements OnInit {
 
   isProductsSet(): boolean {
     return this.customerControl.valid || (this.productsControl.value instanceof Array && this.productsControl.value.length > 0);
-  }
-
-  onRemoveProduct(idx: number) {
-    this.form.products.removeProduct(idx);
-  }
-
-  onAddProduct() {
-    this.form.products.addProduct();
-    setTimeout(() => this.productsEditor.focusLatest(), 0);
   }
 
   onCreateFolder() {

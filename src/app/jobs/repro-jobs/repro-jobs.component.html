@@ -6,7 +6,8 @@
 
 <mat-drawer-container>
     <mat-drawer button [small]="(large$ | async) === false">
-        <app-side-panel (file)="onFileDrop($event)" [jobs]="jobs$ | async"></app-side-panel>
+        <app-side-panel [fileUploadProgress]="progress$ | async" (file)="onFileDrop($event)" [jobs]="jobs$ | async">
+        </app-side-panel>
     </mat-drawer>
 
     <mat-drawer-content>

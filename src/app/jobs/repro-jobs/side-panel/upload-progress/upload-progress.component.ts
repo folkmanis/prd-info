@@ -1,12 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { FileUploadMessage, FileUploadEventType } from '../../../interfaces/file-upload-message';
-import { trigger, state, style, animate, transition } from '@angular/animations';
-import { FileUploadService } from '../../services/file-upload.service';
+import { animate, style, transition, trigger } from '@angular/animations';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { FileUploadEventType, FileUploadMessage } from '../../../interfaces/file-upload-message';
 
 @Component({
   selector: 'app-upload-progress',
   templateUrl: './upload-progress.component.html',
   styleUrls: ['./upload-progress.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('collapseAnimation', [
 
@@ -21,16 +21,11 @@ import { FileUploadService } from '../../services/file-upload.service';
     ])
   ]
 })
-export class UploadProgressComponent implements OnInit {
+export class UploadProgressComponent {
 
-  progress$ = this.fileUploadService.uploadProgress$;
 
-  constructor(
-    private fileUploadService: FileUploadService,
-  ) { }
+  @Input() progress: FileUploadMessage[] = [];
 
-  ngOnInit(): void {
-  }
 
   trackByFn(_: number, progr: FileUploadMessage): string {
     return progr.id;

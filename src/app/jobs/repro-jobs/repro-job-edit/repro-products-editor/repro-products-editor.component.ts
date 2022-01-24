@@ -9,10 +9,12 @@ import { LoginService } from 'src/app/login';
 import { ProductFormArray } from '../../services/product-form-array';
 import { ProductFormGroup } from '../../services/product-form-group';
 import { ProductAutocompleteComponent } from './product-autocomplete/product-autocomplete.component';
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
 
 export const DEFAULT_UNITS = 'gab.';
 
-const COLUMNS = ['action', 'name', 'count', 'units'];
+const COLUMNS = ['name', 'count'];
+// const COLUMNS = ['action', 'name', 'count', 'units'];
 
 @Component({
   selector: 'app-repro-products-editor',
@@ -24,6 +26,14 @@ export class ReproProductsEditorComponent implements OnInit {
 
   @ViewChildren(ProductAutocompleteComponent) private nameInputs: QueryList<ProductAutocompleteComponent>;
   @ViewChild(MatTable) private table: MatTable<ProductFormGroup>;
+
+  private _disabled = false;
+  @Input() set disabled(value: boolean) {
+    this._disabled = coerceBooleanProperty(value);
+  }
+  get disabled() {
+    return this._disabled;
+  }
 
   @Input() set customerProducts(customerProducts: CustomerProduct[]) {
     this._customerProducts = customerProducts || [];
@@ -86,5 +96,16 @@ export class ReproProductsEditorComponent implements OnInit {
   focusLatest() {
     this.nameInputs.last.focus();
   }
+
+  onRemoveProduct(idx: number) {
+    this.prodFormArray.removeProduct(idx);
+  }
+
+  onAddProduct() {
+    this.prodFormArray.addProduct();
+    setTimeout(() => this.focusLatest(), 0);
+  }
+
+
 
 }

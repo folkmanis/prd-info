@@ -25,6 +25,8 @@ export class ReproJobsComponent implements OnInit {
 
   jobs$ = this.jobService.jobs$;
 
+  progress$ = this.fileUploadService.uploadProgress$;
+
   constructor(
     private layoutService: LayoutService,
     private jobService: JobService,
@@ -67,7 +69,7 @@ export class ReproJobsComponent implements OnInit {
         timestamp: new Date(),
       },
     };
-    this.editDialogService.openJob(job).pipe(
+    this.editDialogService.openJob(job, this.progress$).pipe(
       mergeMap(data => this.insertJobAndUploadFiles(data)),
       takeUntil(this.destroy$),
     ).subscribe();
