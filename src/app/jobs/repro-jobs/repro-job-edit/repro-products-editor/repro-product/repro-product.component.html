@@ -1,9 +1,9 @@
-<div [formGroup]="control" class="container" [class.small]="small$ | async">
+<div [formGroup]="form" class="container" [class.small]="small$ | async">
 
     <div>
 
         <!-- Prece -->
-        <button mat-icon-button (click)="remove.next()" [disabled]="disabled">
+        <button mat-icon-button (click)="remove.next()" [disabled]="form.disabled">
             <mat-icon>delete</mat-icon>
         </button>
 
@@ -30,7 +30,7 @@
                 &nbsp;&euro;
             </span>
             <button matSuffix mat-icon-button matTooltip="Pievienot no cenrāža" (click)="onAddPrice()"
-                [disabled]="control.valid !== true">
+                [disabled]="form.valid !== true">
                 <mat-icon>
                     keyboard_arrow_left
                 </mat-icon>
@@ -38,8 +38,8 @@
         </mat-form-field>
 
         <!-- Summa -->
-        <div [class.disabled]="control.disabled">
-            {{control.value.count * control.value.price | currency}}
+        <div [class.disabled]="form.disabled">
+            {{form.value.count * form.value.price | currency}}
         </div>
 
 

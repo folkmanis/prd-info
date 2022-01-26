@@ -7,8 +7,8 @@
     <mat-card-content>
 
         <div *ngFor="let control of controls; index as idx;">
-            <app-repro-product (remove)="onRemoveProduct(idx)" [customerProducts]="customerProducts"
-                [control]="control">
+            <app-repro-product (remove)="onRemoveProduct(idx)" [customerProducts]="customerProducts" appProductControl
+                [formControl]="control">
             </app-repro-product>
         </div>
 

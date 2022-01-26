@@ -1,46 +1,75 @@
-import { Output, Component, OnInit, ViewChild, Input, ChangeDetectionStrategy, Self } from '@angular/core';
-import { ControlContainer, FormControl } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, Input, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  AbstractControl,
+  ControlValueAccessor,
+  FormControl,
+  NG_VALIDATORS, NG_VALUE_ACCESSOR,
+  ValidationErrors, Validator, ValidatorFn
+} from '@angular/forms';
 import { DestroyService } from 'prd-cdk';
-import { BehaviorSubject, combineLatest, debounceTime, filter, map, Observable, pluck, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { CustomerProduct } from 'src/app/interfaces';
-import { ProductFormGroup } from '../../../services/product-form-group';
-import { ProductAutocompleteComponent } from '../product-autocomplete/product-autocomplete.component';
+import { JobProduct } from 'src/app/jobs';
 import { LayoutService } from 'src/app/services/layout.service';
+import { ProductAutocompleteComponent } from '../product-autocomplete/product-autocomplete.component';
+import { ProductFormGroup } from './product-form-group';
+
+const DEFAULT_PRODUCT: JobProduct = {
+  name: '',
+  price: 0,
+  units: 'gab.',
+  count: 0,
+  comment: null,
+};
 
 @Component({
   selector: 'app-repro-product',
   templateUrl: './repro-product.component.html',
   styleUrls: ['./repro-product.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DestroyService],
+  providers: [
+    DestroyService,
+    {
+      provide: NG_VALUE_ACCESSOR,
+      multi: true,
+      useExisting: ReproProductComponent,
+    },
+    {
+      provide: NG_VALIDATORS,
+      multi: true,
+      useExisting: ReproProductComponent,
+    },
+  ],
 })
-export class ReproProductComponent implements OnInit {
+export class ReproProductComponent implements OnInit, ControlValueAccessor, Validator {
 
   @ViewChild(ProductAutocompleteComponent)
   productNameControl: ProductAutocompleteComponent;
 
-  @Input() disabled = false;
+  customerProducts$ = new BehaviorSubject<CustomerProduct[]>([]);
 
-  @Input() control: ProductFormGroup;
+  form: ProductFormGroup = new ProductFormGroup(this.productNameValidatorFn(), DEFAULT_PRODUCT);
 
-  private customerProducts$ = new BehaviorSubject<CustomerProduct[]>([]);
   @Input('customerProducts')
   set customerProducts(value: CustomerProduct[]) {
     this.customerProducts$.next(value || []);
+    this.nameControl.updateValueAndValidity();
+    this.onValidationChange();
   }
   get customerProducts() {
     return this.customerProducts$.value;
   }
 
+  onTouched: () => void = () => { };
+  onValidationChange: () => void = () => { };
+
   @Output() remove = new Subject<void>();
 
   small$ = this.layout.isSmall$;
 
-  get nameControl() { return this.control.get('name') as FormControl; }
-  get priceControl() { return this.control.get('price') as FormControl; }
-  get unitsControl() { return this.control.get('units') as FormControl; }
-
-  private selectedProduct$: Observable<CustomerProduct>;
+  get nameControl() { return this.form.get('name') as FormControl; }
+  get priceControl() { return this.form.get('price') as FormControl; }
+  get unitsControl() { return this.form.get('units') as FormControl; }
 
 
   constructor(
@@ -48,28 +77,48 @@ export class ReproProductComponent implements OnInit {
     private layout: LayoutService,
   ) { }
 
+  writeValue(obj: JobProduct): void {
+    this.form.patchValue(obj || DEFAULT_PRODUCT, { emitEvent: false });
+  }
+
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
+
+  registerOnChange(fn: any): void {
+    this.form.valueChanges.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(fn);
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    if (isDisabled) {
+      this.form.disable();
+    } else {
+      this.form.enable();
+    }
+  }
+
+  validate(): ValidationErrors {
+    if (this.form.valid) {
+      return null;
+    }
+
+    let errors: Record<string, any> = {};
+    errors = this.addControlErrors(errors, 'name');
+    errors = this.addControlErrors(errors, 'price');
+    errors = this.addControlErrors(errors, 'count');
+    errors = this.addControlErrors(errors, 'units');
+
+    return errors;
+
+  }
+
+  registerOnValidatorChange(fn: () => void): void {
+    this.onValidationChange = fn;
+  }
+
   ngOnInit(): void {
-
-    this.selectedProduct$ = combineLatest([
-      this.nameControl.valueChanges,
-      this.customerProducts$,
-    ]).pipe(
-      debounceTime(300),
-      map(([value, products]) => products.find(prod => prod.productName === value)),
-      filter(product => !!product),
-    );
-
-    this.selectedProduct$.pipe(
-      pluck('units'),
-      takeUntil(this.destroy$),
-    ).subscribe(units => this.unitsControl.setValue(units, { emitEvent: false }));
-
-    this.selectedProduct$.pipe(
-      pluck('price'),
-      filter(_ => !this.priceControl.value),
-      map(price => price || 0),
-      takeUntil(this.destroy$),
-    ).subscribe(price => this.priceControl.setValue(price));
 
   }
 
@@ -78,13 +127,31 @@ export class ReproProductComponent implements OnInit {
   }
 
   onAddPrice() {
-    const price = this.customerProducts.find(prod => prod.productName === this.control.value.name)?.price;
+    const price = this.customerProducts.find(prod => prod.productName === this.form.value.name)?.price;
     if (price) {
-      this.control.patchValue({ price });
-      this.control.get('price').markAsDirty();
+      this.form.patchValue({ price });
+      this.form.get('price').markAsDirty();
     }
   }
 
+  private productNameValidatorFn(): ValidatorFn {
+    return (control: AbstractControl) => {
+      const val: string = control.value;
+      const err = { invalidProduct: 'Prece nav atrasta katalogā' };
+      return this.customerProducts.some(prod => prod.productName === val) ? null : err;
+    };
+  };
 
+  private addControlErrors(allErrors: Record<string, any>, controlName: string): Record<string, any> {
+
+    const errors = { ...allErrors };
+    const control = this.form.get(controlName);
+
+    if (control.errors) {
+      errors[controlName] = control.errors;
+    }
+
+    return errors;
+  }
 
 }

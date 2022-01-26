@@ -79,7 +79,7 @@ export class JobFormGroup extends FormGroup {
                     generalStatus: new FormControl(value.jobStatus?.generalStatus || 10),
                     timestamp: new FormControl(value.jobStatus?.timestamp || new Date()),
                 }),
-                products: new ProductFormArray(products$, value.products),
+                products: new ProductFormArray(value.products),
                 files: new FormControl(value.files),
             }
         );

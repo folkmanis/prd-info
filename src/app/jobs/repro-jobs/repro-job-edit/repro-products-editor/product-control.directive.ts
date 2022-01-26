@@ -1,20 +1,21 @@
-import { Directive, Input, Output, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { combineLatest, BehaviorSubject, Observable } from 'rxjs';
+import { Directive, Input, OnInit, Self } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { DestroyService } from 'prd-cdk';
+import { combineLatest, Observable } from 'rxjs';
 import { debounceTime, filter, map, pluck, takeUntil } from 'rxjs/operators';
 import { CustomerProduct } from 'src/app/interfaces';
-import { DestroyService } from 'prd-cdk';
-import { ProductFormGroup } from '../../services/product-form-group';
-import { FormControl } from '@angular/forms';
+import { ProductFormGroup } from './repro-product/product-form-group';
+import { ReproProductComponent } from './repro-product/repro-product.component';
 
 @Directive({
-  selector: '[appProductControl]',
+  selector: 'app-repro-product[appProductControl]',
   providers: [DestroyService],
 })
 export class ProductControlDirective implements OnInit {
 
-  @Input('appProductControl') control: ProductFormGroup;
+  control: ProductFormGroup = this.component.form;
 
-  @Output() customerProducts$ = new BehaviorSubject<CustomerProduct[]>([]);
+  customerProducts$ = this.component.customerProducts$;
 
   @Input() set customerProducts(value: CustomerProduct[]) {
     if (!value) { return; }
@@ -29,6 +30,7 @@ export class ProductControlDirective implements OnInit {
 
   constructor(
     private destroy$: DestroyService,
+    @Self() private component: ReproProductComponent,
   ) { }
 
   ngOnInit(): void {
@@ -45,7 +47,7 @@ export class ProductControlDirective implements OnInit {
     this.selectedProduct$.pipe(
       pluck('units'),
       takeUntil(this.destroy$),
-    ).subscribe(units => this.unitsControl.setValue(units, { emitEvent: false }));
+    ).subscribe(units => this.unitsControl.setValue(units));
 
     this.selectedProduct$.pipe(
       pluck('price'),

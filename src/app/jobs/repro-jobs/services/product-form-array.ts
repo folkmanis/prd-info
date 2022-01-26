@@ -1,9 +1,9 @@
-import { AbstractControl, AsyncValidatorFn, FormArray } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormArray, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { ProductPartial } from 'src/app/interfaces';
 import { JobProduct } from '../..';
-import { ProductFormGroup } from './product-form-group';
+import { ProductFormGroup } from '../repro-job-edit/repro-products-editor/repro-product/product-form-group';
 
 const productNameValidatorFn = (products$: Observable<ProductPartial[]>): AsyncValidatorFn => {
     return (control: AbstractControl) => {
@@ -18,23 +18,18 @@ const productNameValidatorFn = (products$: Observable<ProductPartial[]>): AsyncV
 
 export class ProductFormArray extends FormArray {
 
-    private validatorFn: AsyncValidatorFn;
-
     constructor(
-        products$: Observable<ProductPartial[]>,
         products: JobProduct[] = [],
     ) {
-        const validatorFn = productNameValidatorFn(products$);
         const productControls = products
-            .map(prod => new ProductFormGroup(validatorFn, prod));
+            .map(prod => new FormControl(prod));
 
         super(productControls);
 
-        this.validatorFn = validatorFn;
     }
 
     addProduct(product?: JobProduct) {
-        this.push(new ProductFormGroup(this.validatorFn, product));
+        this.push(new FormControl(product));
         this.markAsDirty();
     }
 

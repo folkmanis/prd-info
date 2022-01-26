@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnInit, Output, QueryList, Self, ViewChild, ViewChildren } from '@angular/core';
-import { ControlContainer } from '@angular/forms';
+import { ControlContainer, FormControl } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
 import { from, Observable, Subject } from 'rxjs';
 import { filter, map, pluck, switchMap, toArray } from 'rxjs/operators';
@@ -7,7 +7,7 @@ import { CustomerProduct, SystemPreferences } from 'src/app/interfaces';
 import { CONFIG } from 'src/app/services/config.provider';
 import { LoginService } from 'src/app/login';
 import { ProductFormArray } from '../../services/product-form-array';
-import { ProductFormGroup } from '../../services/product-form-group';
+import { ProductFormGroup } from './repro-product/product-form-group';
 import { ProductAutocompleteComponent } from './product-autocomplete/product-autocomplete.component';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { ReproProductComponent } from './repro-product/repro-product.component';
@@ -55,7 +55,7 @@ export class ReproProductsEditorComponent implements OnInit {
     return this.form.products;
   }
   get controls() {
-    return this.form.products.controls as ProductFormGroup[];
+    return this.form.products.controls as FormControl[];
   }
 
   constructor(
