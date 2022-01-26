@@ -4,8 +4,8 @@ import { DestroyService } from 'prd-cdk';
 import { combineLatest, Observable } from 'rxjs';
 import { debounceTime, filter, map, pluck, takeUntil } from 'rxjs/operators';
 import { CustomerProduct } from 'src/app/interfaces';
-import { ProductFormGroup } from './repro-product/product-form-group';
-import { ReproProductComponent } from './repro-product/repro-product.component';
+import { ProductFormGroup } from './product-form-group';
+import { ReproProductComponent } from './repro-product.component';
 
 @Directive({
   selector: 'app-repro-product[appProductControl]',
