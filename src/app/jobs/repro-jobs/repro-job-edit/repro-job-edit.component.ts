@@ -17,14 +17,21 @@ const SMALL_SCREEN_SIZE = {
   width: '100%',
 };
 
+export abstract class JobFormProvider {
+  form: JobFormGroup;
+}
+
 
 @Component({
   selector: 'app-repro-job-edit',
   templateUrl: './repro-job-edit.component.html',
   styleUrls: ['./repro-job-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    { provide: JobFormProvider, useExisting: ReproJobEditComponent }
+  ]
 })
-export class ReproJobEditComponent implements OnInit {
+export class ReproJobEditComponent implements OnInit, JobFormProvider {
 
   form: JobFormGroup;
 

@@ -4,7 +4,6 @@ import { addDays, subDays } from 'date-fns';
 import { EMPTY, merge, Observable, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, pluck, startWith, switchMap } from 'rxjs/operators';
 import { CustomerPartial, CustomerProduct, SystemPreferences } from 'src/app/interfaces';
-import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { LayoutService } from 'src/app/services';
 import { CONFIG } from 'src/app/services/config.provider';
 import { CustomersService } from 'src/app/services/customers.service';
@@ -13,6 +12,8 @@ import { ProductsService } from 'src/app/services/products.service';
 import { JobFormGroup } from '../../services/job-form-group';
 import { CustomerInputComponent } from '../customer-input/customer-input.component';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
+import { JobFormProvider } from '../repro-job-edit.component';
+import { Job } from 'src/app/jobs/interfaces';
 
 @Component({
   selector: 'app-repro-job-form',
@@ -24,7 +25,9 @@ export class ReproJobFormComponent implements OnInit {
 
   @ViewChild(CustomerInputComponent) customerInput: CustomerInputComponent;
 
-  @Input('jobForm') form: JobFormGroup;
+  get form(): JobFormGroup {
+    return this.formProvider.form;
+  }
 
   large$: Observable<boolean> = this.layoutService.isLarge$;
 
@@ -33,7 +36,7 @@ export class ReproJobFormComponent implements OnInit {
     max: addDays(Date.now(), 3),
   };
 
-  get customerControl(): FormControl {
+  get customerControl() {
     return this.form.get('customer') as FormControl;
   }
   get nameControl() {
@@ -53,41 +56,42 @@ export class ReproJobFormComponent implements OnInit {
   folderPath$: Observable<string>;
   customers$: Observable<CustomerPartial[]> = this.customersService.customers$;
   customerProducts$: Observable<CustomerProduct[]>;
+  jobIdAndName$: Observable<string>;
 
 
   constructor(
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
-    private clipboard: ClipboardService,
     private layoutService: LayoutService,
     private jobsService: JobService,
     private customersService: CustomersService,
     private productsService: ProductsService,
     private sanitize: SanitizeService,
+    private formProvider: JobFormProvider,
   ) { }
 
   ngOnInit(): void {
 
-    this.customerProducts$ = merge(
-      this.form.valueChanges,
-      of(this.form.value)
-    ).pipe(
+    this.customerProducts$ = this.form.value$.pipe(
       pluck('customer'),
       filter(customer => !!customer),
       distinctUntilChanged(),
       switchMap(customer => this.productsService.productsCustomer(customer)),
     );
 
-    this.folderPath$ = this.form.valueChanges.pipe(
-      startWith(this.form.value),
+    this.folderPath$ = this.form.value$.pipe(
       pluck('files'),
       map(files => files?.path?.join('/'))
     );
 
+    this.jobIdAndName$ = this.form.value$.pipe(
+      map(job => this.jobIdAndName(job)),
+    );
+
   }
 
-  copyJobIdAndName() {
-    const name = this.sanitize.sanitizeFileName(this.form.value.name);
-    this.clipboard.copy(`${this.form.value.jobId}-${name}`);
+  private jobIdAndName(job: Job) {
+    const name = this.sanitize.sanitizeFileName(job.name);
+    return `${job.jobId}-${name}`;
   }
 
   isProductsSet(): boolean {

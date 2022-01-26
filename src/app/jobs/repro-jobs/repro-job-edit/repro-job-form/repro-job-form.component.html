@@ -30,7 +30,7 @@
         <mat-error *ngIf="nameControl.hasError('required')">
             Jānorāda obligāti
         </mat-error>
-        <button mat-icon-button (click)="copyJobIdAndName()" matSuffix tabindex="-1">
+        <button mat-icon-button [appCopyClipboard]="jobIdAndName$ | async" matSuffix tabindex="-1">
             <mat-icon>filter_none</mat-icon>
         </button>
     </mat-form-field>
@@ -62,8 +62,8 @@
     </mat-form-field>
 
     <!-- Preces apakšforma -->
-    <app-repro-products-editor *ngIf="isProductsSet()" class="width-span" formGroupName="products"
-        [customerProducts]="customerProducts$ | async" [disabled]="!form.valid"></app-repro-products-editor>
+    <app-repro-products-editor *ngIf="isProductsSet()" class="width-span" [customerProducts]="customerProducts$ | async"
+        [disabled]="!form.valid"></app-repro-products-editor>
 
     <!-- Papildus apraksts -->
     <mat-card class="left-column">

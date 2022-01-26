@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, Self, ViewChild } from '@angular/core';
+import { ControlContainer, FormControl } from '@angular/forms';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map, shareReplay, startWith } from 'rxjs/operators';
 import { CustomerProduct } from 'src/app/interfaces';
@@ -18,11 +18,12 @@ export class ProductAutocompleteComponent implements OnInit {
     this.customerProducts$.next(val);
   }
 
-  @Input('control') productNameControl: FormControl;
+  @Input() control: FormControl;
 
   private customerProducts$ = new BehaviorSubject<CustomerProduct[]>([]);
 
-  constructor() { }
+  constructor(
+  ) { }
 
   private filteredProducts$: Observable<CustomerProduct[]>;
   firstProducts$: Observable<CustomerProduct[]>;
@@ -31,7 +32,7 @@ export class ProductAutocompleteComponent implements OnInit {
   ngOnInit(): void {
 
     this.filteredProducts$ = combineLatest([
-      this.productNameControl.valueChanges.pipe(startWith('')),
+      this.control.valueChanges.pipe(startWith('')),
       this.customerProducts$,
     ]).pipe(
       map(this.filterProducts),

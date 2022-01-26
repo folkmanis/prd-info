@@ -1,0 +1,39 @@
+.container {
+    display: flex;
+    border-width: 0;
+    border-bottom-width: 1px;
+    border-color: rgba($color: #000000, $alpha: 0.4);
+    border-style: solid;
+    box-sizing: border-box;
+    align-self: center;
+}
+
+.container.small {
+    flex-direction: column;
+    & > div {
+        width: 100%;
+    }
+}
+
+.container > * {
+    font-size: 14px;
+    padding: 0 8px;
+    color: rgba($color: #000000, $alpha: 0.87);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    word-wrap: break-word;
+}
+
+.small.container :nth-child(2) .mat-form-field {
+    max-width: 100px;
+}
+
+.container :nth-child(2) > * {
+    box-sizing: border-box;
+    padding: 0 8px;
+}
+
+input[type="number"] {
+    text-align: end;
+}

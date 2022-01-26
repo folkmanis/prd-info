@@ -1,6 +1,7 @@
 import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { log } from 'prd-cdk';
 import { Observable } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { map, share, shareReplay, startWith, take } from 'rxjs/operators';
 import { CustomerPartial, ProductPartial } from 'src/app/interfaces';
 import { Job, JobProduct } from '../../interfaces';
 import { ProductFormArray } from './product-form-array';
@@ -31,6 +32,11 @@ export class JobFormGroup extends FormGroup {
         return !this.value.jobId;
     }
 
+    value$: Observable<Job> = this.valueChanges.pipe(
+        startWith(this.jobValue),
+        shareReplay(1),
+    );
+
     constructor(
         customers$: Observable<CustomerPartial[]>,
         products$: Observable<ProductPartial[]>,
@@ -38,52 +44,45 @@ export class JobFormGroup extends FormGroup {
     ) {
         super(
             {
-                jobId: new FormControl(),
-                customer: new FormControl('',
+                jobId: new FormControl(value.jobId),
+                customer: new FormControl(
+                    value.customer,
                     {
                         validators: Validators.required,
                         asyncValidators: validateCustomerFn(customers$),
                     },
                 ),
                 name: new FormControl(
-                    undefined,
+                    value.name,
                     {
                         validators: Validators.required,
                     },
 
                 ),
                 receivedDate: new FormControl(
-                    new Date(),
+                    new Date(value.receivedDate),
                     Validators.required,
                 ),
                 dueDate: new FormControl(
-                    new Date(),
+                    new Date(value.dueDate),
                     Validators.required,
                 ),
                 production: new FormGroup({
                     category: new FormControl(
-                        undefined,
+                        value.production?.category,
                         Validators.required,
                     ),
                 }),
-                comment: new FormControl(undefined),
-                customerJobId: new FormControl(undefined),
+                comment: new FormControl(value.comment),
+                customerJobId: new FormControl(value.customerJobId),
                 jobStatus: new FormGroup({
-                    generalStatus: new FormControl(10),
-                    timestamp: new FormControl(),
+                    generalStatus: new FormControl(value.jobStatus?.generalStatus || 10),
+                    timestamp: new FormControl(value.jobStatus?.timestamp || new Date()),
                 }),
-                products: new ProductFormArray(products$),
-                files: new FormControl(undefined),
+                products: new ProductFormArray(products$, value.products),
+                files: new FormControl(value.files),
             }
         );
-        this.patchValue(value);
-    }
-
-    patchValue(value: Partial<Job>, params: { emitEvent?: boolean; } = {}): void {
-        this.products.setProductControls((value.products as JobProduct[])?.length || 0);
-        this.reset(undefined, params);
-        super.patchValue(value, params);
-        this.markAsPristine();
 
         if (value.invoiceId) {
             this.disable({ emitEvent: false });
@@ -93,7 +92,7 @@ export class JobFormGroup extends FormGroup {
         if (value.jobId !== undefined) {
             this.get('receivedDate').disable({ emitEvent: false });
         }
-        this.markAsPristine();
+
     }
 
 

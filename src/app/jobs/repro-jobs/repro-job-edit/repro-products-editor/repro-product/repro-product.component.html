@@ -1,0 +1,53 @@
+<div [formGroup]="control" class="container" [class.small]="small$ | async">
+
+    <div>
+
+        <!-- Prece -->
+        <button mat-icon-button (click)="remove.next()" [disabled]="disabled">
+            <mat-icon>delete</mat-icon>
+        </button>
+
+        <app-product-autocomplete [control]="nameControl" [customerProducts]="customerProducts">
+        </app-product-autocomplete>
+
+    </div>
+
+    <div>
+
+        <!-- Skaits -->
+        <mat-form-field>
+            <input matInput type="number" formControlName="count">
+            <span matSuffix>
+                &nbsp;{{ unitsControl.value }}
+            </span>
+        </mat-form-field>
+
+
+        <!-- Cena -->
+        <mat-form-field>
+            <input matInput type="number" formControlName="price">
+            <span matSuffix>
+                &nbsp;&euro;
+            </span>
+            <button matSuffix mat-icon-button matTooltip="Pievienot no cenrāža" (click)="onAddPrice()"
+                [disabled]="control.valid !== true">
+                <mat-icon>
+                    keyboard_arrow_left
+                </mat-icon>
+            </button>
+        </mat-form-field>
+
+        <!-- Summa -->
+        <div [class.disabled]="control.disabled">
+            {{control.value.count * control.value.price | currency}}
+        </div>
+
+
+    </div>
+    <!-- Piezīmes -->
+    <mat-form-field>
+        <input matInput type="text" formControlName="comment">
+    </mat-form-field>
+
+
+</div>

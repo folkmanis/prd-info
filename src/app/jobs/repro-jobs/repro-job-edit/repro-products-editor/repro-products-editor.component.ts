@@ -10,6 +10,9 @@ import { ProductFormArray } from '../../services/product-form-array';
 import { ProductFormGroup } from '../../services/product-form-group';
 import { ProductAutocompleteComponent } from './product-autocomplete/product-autocomplete.component';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { ReproProductComponent } from './repro-product/repro-product.component';
+import { JobFormProvider } from '../repro-job-edit.component';
+import { JobFormGroup } from '../../services/job-form-group';
 
 export const DEFAULT_UNITS = 'gab.';
 
@@ -24,24 +27,11 @@ const COLUMNS = ['name', 'count'];
 })
 export class ReproProductsEditorComponent implements OnInit {
 
-  @ViewChildren(ProductAutocompleteComponent) private nameInputs: QueryList<ProductAutocompleteComponent>;
-  @ViewChild(MatTable) private table: MatTable<ProductFormGroup>;
+  @ViewChildren(ReproProductComponent) productComponents: QueryList<ReproProductComponent>;
 
-  private _disabled = false;
-  @Input() set disabled(value: boolean) {
-    this._disabled = coerceBooleanProperty(value);
-  }
-  get disabled() {
-    return this._disabled;
-  }
+  @Input() disabled = false;
 
-  @Input() set customerProducts(customerProducts: CustomerProduct[]) {
-    this._customerProducts = customerProducts || [];
-  }
-  get customerProducts(): CustomerProduct[] {
-    return this._customerProducts;
-  }
-  private _customerProducts: CustomerProduct[] = [];
+  @Input() customerProducts: CustomerProduct[] = [];
 
   columns$: Observable<string[]> = this.loginService.isModule('calculations').pipe(
     map(show => show ? [...COLUMNS, 'price', 'total'] : COLUMNS)
@@ -51,7 +41,7 @@ export class ReproProductsEditorComponent implements OnInit {
 
   readonly stateChanges = new Subject<void>();
 
-  prodFormArray: ProductFormArray;
+  form: JobFormGroup;
 
   readonly units$ = this.config$.pipe(
     pluck('jobs', 'productUnits'),
@@ -61,22 +51,30 @@ export class ReproProductsEditorComponent implements OnInit {
     ))
   );
 
+  get productsControl() {
+    return this.form.products;
+  }
+  get controls() {
+    return this.form.products.controls as ProductFormGroup[];
+  }
+
   constructor(
     private changeDetector: ChangeDetectorRef,
     private loginService: LoginService,
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
-    @Self() private controlContainer: ControlContainer,
+    private formProvider: JobFormProvider,
   ) { }
 
   ngOnInit(): void {
-    this.prodFormArray = this.controlContainer.control as ProductFormArray;
+
+    this.form = this.formProvider.form;
 
     this.stateChanges.subscribe(_ => {
-      this.table.renderRows();
+      // this.table.renderRows();
       this.changeDetector.markForCheck();
     });
 
-    this.prodFormArray.valueChanges.subscribe(_ => this.stateChanges.next());
+    this.productsControl.valueChanges.subscribe(_ => this.stateChanges.next());
 
   }
 
@@ -84,25 +82,16 @@ export class ReproProductsEditorComponent implements OnInit {
     this.stateChanges.complete();
   }
 
-  onAddPrice(idx: number) {
-    const group = this.prodFormArray.at(idx);
-    const price = this.customerProducts.find(prod => prod.productName === group.value.name)?.price;
-    if (price) {
-      group.patchValue({ price });
-      group.get('price').markAsDirty();
-    }
-  }
-
   focusLatest() {
-    this.nameInputs.last.focus();
+    this.productComponents.last.focus();
   }
 
   onRemoveProduct(idx: number) {
-    this.prodFormArray.removeProduct(idx);
+    this.productsControl.removeProduct(idx);
   }
 
   onAddProduct() {
-    this.prodFormArray.addProduct();
+    this.productsControl.addProduct();
     setTimeout(() => this.focusLatest(), 0);
   }
 

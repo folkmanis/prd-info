@@ -2,6 +2,7 @@ import { AbstractControl, AsyncValidatorFn, FormArray } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { ProductPartial } from 'src/app/interfaces';
+import { JobProduct } from '../..';
 import { ProductFormGroup } from './product-form-group';
 
 const productNameValidatorFn = (products$: Observable<ProductPartial[]>): AsyncValidatorFn => {
@@ -17,25 +18,23 @@ const productNameValidatorFn = (products$: Observable<ProductPartial[]>): AsyncV
 
 export class ProductFormArray extends FormArray {
 
+    private validatorFn: AsyncValidatorFn;
+
     constructor(
-        private products$: Observable<ProductPartial[]>,
+        products$: Observable<ProductPartial[]>,
+        products: JobProduct[] = [],
     ) {
-        super([]);
+        const validatorFn = productNameValidatorFn(products$);
+        const productControls = products
+            .map(prod => new ProductFormGroup(validatorFn, prod));
+
+        super(productControls);
+
+        this.validatorFn = validatorFn;
     }
 
-    setProductControls(count: number) {
-        if (this.length) { this.clear(); }
-        for (let i = 0; i < count; i++) {
-            this.addProduct();
-        }
-    }
-
-    addProduct() {
-        this.push(
-            new ProductFormGroup(
-                productNameValidatorFn(this.products$),
-            )
-        );
+    addProduct(product?: JobProduct) {
+        this.push(new ProductFormGroup(this.validatorFn, product));
         this.markAsDirty();
     }
 
