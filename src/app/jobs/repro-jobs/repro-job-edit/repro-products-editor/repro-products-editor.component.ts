@@ -1,19 +1,12 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import {
-  FormControl, FormGroup,
-  ControlValueAccessor,
-  Validator,
-  NG_VALUE_ACCESSOR, NG_VALIDATORS, FormArray, AbstractControl, ValidationErrors
+  ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator
 } from '@angular/forms';
-import { from, Observable, Subject } from 'rxjs';
-import { filter, pluck, switchMap, takeUntil, toArray } from 'rxjs/operators';
-import { CustomerProduct, SystemPreferences } from 'src/app/interfaces';
-import { CONFIG } from 'src/app/services/config.provider';
-import { JobFormGroup } from '../../services/job-form-group';
-import { JobFormProvider } from '../repro-job-edit.component';
-import { ReproProductComponent } from './repro-product/repro-product.component';
 import { DestroyService } from 'prd-cdk';
+import { takeUntil } from 'rxjs/operators';
+import { CustomerProduct } from 'src/app/interfaces';
 import { JobProduct } from 'src/app/jobs';
+import { ReproProductComponent } from './repro-product/repro-product.component';
 
 @Component({
   selector: 'app-repro-products-editor',
@@ -102,7 +95,6 @@ export class ReproProductsEditorComponent implements OnInit, OnDestroy, ControlV
 
   ngOnInit(): void {
 
-    // this.form.valueChanges.subscribe(_ => this.stateChanges.next());
     this.form.statusChanges.subscribe(_ => this.check());
 
   }

@@ -1,7 +1,6 @@
-import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { map, shareReplay, startWith, take } from 'rxjs/operators';
-import { CustomerPartial } from 'src/app/interfaces';
+import { shareReplay, startWith } from 'rxjs/operators';
 import { Job } from '../../interfaces';
 
 
