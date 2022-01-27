@@ -1,3 +1,4 @@
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { ChangeDetectionStrategy, Component, Input, OnInit, Output, ViewChild } from '@angular/core';
 import {
   AbstractControl,
@@ -58,6 +59,14 @@ export class ReproProductComponent implements OnInit, ControlValueAccessor, Vali
   }
   get customerProducts() {
     return this.customerProducts$.value;
+  }
+
+  private _showPrices = false;
+  @Input() set showPrices(value: any) {
+    this._showPrices = coerceBooleanProperty(value);
+  }
+  get showPrices() {
+    return this._showPrices;
   }
 
   onTouched: () => void = () => { };

@@ -62,8 +62,9 @@
     </mat-form-field>
 
     <!-- Preces apakšforma -->
-    <app-repro-products-editor *ngIf="isProductsSet()" class="width-span" [customerProducts]="customerProducts$ | async"
-        [disabled]="!form.valid"></app-repro-products-editor>
+    <app-repro-products-editor *ngIf="customerProducts$ | async as customerProducts" class="width-span"
+        [customerProducts]="customerProducts" formControlName="products" [showPrices]="showPrices$|async">
+    </app-repro-products-editor>
 
     <!-- Papildus apraksts -->
     <mat-card class="left-column">

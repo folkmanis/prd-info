@@ -1,10 +1,8 @@
 import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
-import { log } from 'prd-cdk';
 import { Observable } from 'rxjs';
-import { map, share, shareReplay, startWith, take } from 'rxjs/operators';
-import { CustomerPartial, ProductPartial } from 'src/app/interfaces';
-import { Job, JobProduct } from '../../interfaces';
-import { ProductFormArray } from './product-form-array';
+import { map, shareReplay, startWith, take } from 'rxjs/operators';
+import { CustomerPartial } from 'src/app/interfaces';
+import { Job } from '../../interfaces';
 
 const validateCustomerFn = (customers$: Observable<CustomerPartial[]>): AsyncValidatorFn => {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
@@ -24,10 +22,6 @@ export class JobFormGroup extends FormGroup {
         return this.value;
     }
 
-    get products(): ProductFormArray {
-        return this.get('products') as ProductFormArray;
-    }
-
     get isNew(): boolean {
         return !this.value.jobId;
     }
@@ -39,7 +33,6 @@ export class JobFormGroup extends FormGroup {
 
     constructor(
         customers$: Observable<CustomerPartial[]>,
-        products$: Observable<ProductPartial[]>,
         value: Partial<Job> = {},
     ) {
         super(
@@ -79,7 +72,7 @@ export class JobFormGroup extends FormGroup {
                     generalStatus: new FormControl(value.jobStatus?.generalStatus || 10),
                     timestamp: new FormControl(value.jobStatus?.timestamp || new Date()),
                 }),
-                products: new ProductFormArray(value.products),
+                products: new FormControl(value.products),
                 files: new FormControl(value.files),
             }
         );

@@ -1,22 +1,22 @@
-<mat-card>
+<mat-card [formGroup]="form">
 
     <mat-card-subtitle>
         Preces
     </mat-card-subtitle>
 
-    <mat-card-content>
+    <mat-card-content formArrayName="products">
 
-        <div *ngFor="let control of controls; index as idx;">
+        <div *ngFor="let control of productsControl.controls; index as idx;">
             <app-repro-product (remove)="onRemoveProduct(idx)" [customerProducts]="customerProducts" appProductControl
-                [formControl]="control">
+                [formControlName]="idx" [showPrices]="showPrices">
             </app-repro-product>
         </div>
 
     </mat-card-content>
 
     <mat-card-actions>
-        <button mat-mini-fab (click)="onAddProduct()" [disabled]="disabled" matTooltip="Ctrl +" color="primary"
-            appKeyPress="ctrlPlus">
+        <button mat-mini-fab (click)="onAddProduct()" [disabled]="form.disabled || form.invalid" matTooltip="Ctrl +"
+            color="primary" appKeyPress="ctrlPlus">
             <mat-icon>add</mat-icon>
         </button>
     </mat-card-actions>

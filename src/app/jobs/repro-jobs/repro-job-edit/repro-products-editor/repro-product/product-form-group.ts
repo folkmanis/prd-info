@@ -1,5 +1,5 @@
-import { AsyncValidatorFn, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { JobProduct } from '../../../../interfaces';
+import { FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { JobProduct } from 'src/app/jobs/interfaces';
 
 
 

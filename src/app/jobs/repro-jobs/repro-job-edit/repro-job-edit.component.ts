@@ -3,8 +3,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { isEqual, pickBy } from 'lodash';
 import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { CustomersService, LayoutService } from 'src/app/services';
 import { Job } from '../../interfaces';
-import { CustomersService, LayoutService, ProductsService } from 'src/app/services';
 import { JobFormGroup } from '../services/job-form-group';
 import { DialogData } from '../services/repro-job-dialog.service';
 
@@ -46,14 +46,12 @@ export class ReproJobEditComponent implements OnInit, JobFormProvider {
     private dialogRef: MatDialogRef<ReproJobEditComponent, DialogData>,
     private layoutService: LayoutService,
     private customersService: CustomersService,
-    private productsService: ProductsService,
   ) { }
 
   ngOnInit(): void {
 
     this.form = new JobFormGroup(
       this.customersService.customers$,
-      this.productsService.products$,
       this.data.job,
     );
 

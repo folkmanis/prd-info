@@ -14,6 +14,7 @@ import { CustomerInputComponent } from '../customer-input/customer-input.compone
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { JobFormProvider } from '../repro-job-edit.component';
 import { Job } from 'src/app/jobs/interfaces';
+import { LoginService } from 'src/app/login';
 
 @Component({
   selector: 'app-repro-job-form',
@@ -42,9 +43,8 @@ export class ReproJobFormComponent implements OnInit {
   get nameControl() {
     return this.form.get('name') as FormControl;
   }
-  get productsControl() {
-    return this.form.products;
-  }
+
+  showPrices$: Observable<boolean> = this.loginService.isModule('calculations');
 
   jobStates$ = this.config$.pipe(
     pluck('jobs', 'jobStates'),
@@ -67,6 +67,7 @@ export class ReproJobFormComponent implements OnInit {
     private productsService: ProductsService,
     private sanitize: SanitizeService,
     private formProvider: JobFormProvider,
+    private loginService: LoginService,
   ) { }
 
   ngOnInit(): void {
@@ -92,10 +93,6 @@ export class ReproJobFormComponent implements OnInit {
   private jobIdAndName(job: Job) {
     const name = this.sanitize.sanitizeFileName(job.name);
     return `${job.jobId}-${name}`;
-  }
-
-  isProductsSet(): boolean {
-    return this.customerControl.valid || (this.productsControl.value instanceof Array && this.productsControl.value.length > 0);
   }
 
   onCreateFolder() {

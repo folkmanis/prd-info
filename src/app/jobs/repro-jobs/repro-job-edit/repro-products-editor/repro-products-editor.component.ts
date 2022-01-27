@@ -1,85 +1,113 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnInit, Output, QueryList, Self, ViewChild, ViewChildren } from '@angular/core';
-import { ControlContainer, FormControl } from '@angular/forms';
-import { MatTable } from '@angular/material/table';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import {
+  FormControl, FormGroup,
+  ControlValueAccessor,
+  Validator,
+  NG_VALUE_ACCESSOR, NG_VALIDATORS, FormArray, AbstractControl, ValidationErrors
+} from '@angular/forms';
 import { from, Observable, Subject } from 'rxjs';
-import { filter, map, pluck, switchMap, toArray } from 'rxjs/operators';
+import { filter, pluck, switchMap, takeUntil, toArray } from 'rxjs/operators';
 import { CustomerProduct, SystemPreferences } from 'src/app/interfaces';
 import { CONFIG } from 'src/app/services/config.provider';
-import { LoginService } from 'src/app/login';
-import { ProductFormArray } from '../../services/product-form-array';
-import { ProductFormGroup } from './repro-product/product-form-group';
-import { ProductAutocompleteComponent } from './product-autocomplete/product-autocomplete.component';
-import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { ReproProductComponent } from './repro-product/repro-product.component';
-import { JobFormProvider } from '../repro-job-edit.component';
 import { JobFormGroup } from '../../services/job-form-group';
-
-export const DEFAULT_UNITS = 'gab.';
-
-const COLUMNS = ['name', 'count'];
-// const COLUMNS = ['action', 'name', 'count', 'units'];
+import { JobFormProvider } from '../repro-job-edit.component';
+import { ReproProductComponent } from './repro-product/repro-product.component';
+import { DestroyService } from 'prd-cdk';
+import { JobProduct } from 'src/app/jobs';
 
 @Component({
   selector: 'app-repro-products-editor',
   templateUrl: './repro-products-editor.component.html',
   styleUrls: ['./repro-products-editor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    DestroyService,
+    {
+      provide: NG_VALUE_ACCESSOR,
+      multi: true,
+      useExisting: ReproProductsEditorComponent,
+    },
+    {
+      provide: NG_VALIDATORS,
+      multi: true,
+      useExisting: ReproProductsEditorComponent,
+    }
+  ]
 })
-export class ReproProductsEditorComponent implements OnInit {
+export class ReproProductsEditorComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
 
   @ViewChildren(ReproProductComponent) productComponents: QueryList<ReproProductComponent>;
 
-  @Input() disabled = false;
-
   @Input() customerProducts: CustomerProduct[] = [];
 
-  columns$: Observable<string[]> = this.loginService.isModule('calculations').pipe(
-    map(show => show ? [...COLUMNS, 'price', 'total'] : COLUMNS)
-  );
+  @Input() showPrices: boolean;
 
-  @Output('removeProduct') removeProduct$ = new EventEmitter<number>();
-
-  readonly stateChanges = new Subject<void>();
-
-  form: JobFormGroup;
-
-  readonly units$ = this.config$.pipe(
-    pluck('jobs', 'productUnits'),
-    switchMap(units => from(units).pipe(
-      filter(unit => !unit.disabled),
-      toArray(),
-    ))
-  );
+  form = new FormGroup({
+    products: new FormArray([]),
+  });
 
   get productsControl() {
-    return this.form.products;
+    return this.form.get('products') as FormArray;
   }
-  get controls() {
-    return this.form.products.controls as FormControl[];
-  }
+
+  onTouched: () => void = () => { };
+  onValidationChange: () => void = () => { };
 
   constructor(
     private changeDetector: ChangeDetectorRef,
-    private loginService: LoginService,
-    @Inject(CONFIG) private config$: Observable<SystemPreferences>,
-    private formProvider: JobFormProvider,
+    private destroy$: DestroyService,
   ) { }
+
+  writeValue(obj: JobProduct[] | null): void {
+    if (!(obj instanceof Array)) {
+      this.productsControl.clear({ emitEvent: false });
+      this.check();
+      return;
+    }
+    if (obj.length === this.productsControl.length) {
+      this.productsControl.setValue(obj, { emitEvent: false });
+      return;
+    }
+    this.productsControl.clear();
+    obj.forEach(prod => this.productsControl.push(new FormControl(prod)), { emitEvent: false });
+    this.check();
+  }
+
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
+
+  registerOnChange(fn: any): void {
+    this.productsControl.valueChanges.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(fn);
+  }
+
+
+  setDisabledState(isDisabled: boolean): void {
+    if (isDisabled) {
+      this.form.disable();
+    } else {
+      this.form.enable();
+    }
+  }
+
+  validate(): ValidationErrors {
+
+    if (this.productsControl.valid) return null;
+
+    return this.productsControl.controls.map(({ errors }) => errors);
+
+  }
 
   ngOnInit(): void {
 
-    this.form = this.formProvider.form;
-
-    this.stateChanges.subscribe(_ => {
-      // this.table.renderRows();
-      this.changeDetector.markForCheck();
-    });
-
-    this.productsControl.valueChanges.subscribe(_ => this.stateChanges.next());
+    // this.form.valueChanges.subscribe(_ => this.stateChanges.next());
+    this.form.statusChanges.subscribe(_ => this.check());
 
   }
 
   ngOnDestroy(): void {
-    this.stateChanges.complete();
   }
 
   focusLatest() {
@@ -87,14 +115,16 @@ export class ReproProductsEditorComponent implements OnInit {
   }
 
   onRemoveProduct(idx: number) {
-    this.productsControl.removeProduct(idx);
+    this.productsControl.removeAt(idx);
   }
 
   onAddProduct() {
-    this.productsControl.addProduct();
+    this.productsControl.push(new FormControl());
     setTimeout(() => this.focusLatest(), 0);
   }
 
-
+  private check() {
+    this.changeDetector.markForCheck();
+  }
 
 }
