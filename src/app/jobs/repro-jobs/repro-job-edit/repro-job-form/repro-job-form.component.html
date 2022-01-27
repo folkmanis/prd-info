@@ -1,7 +1,7 @@
 <div [formGroup]="form" class="container" [class.large]="large$ | async">
 
     <!-- Klients -->
-    <app-customer-input [control]="customerControl" [customers]="customers$ | async" required>
+    <app-customer-input formControlName="customer" [customers]="customers$ | async" required>
         Klients
     </app-customer-input>
 
@@ -75,7 +75,7 @@
     </mat-card>
 
     <!-- Folderis -->
-    <mat-card *ngIf="form.isNew === false" class="right-column">
+    <mat-card *ngIf="isNew === false" class="right-column">
         <mat-card-content>
             <app-folder-path [path]="folderPath$ | async" (createFolder)="onCreateFolder()">
             </app-folder-path>

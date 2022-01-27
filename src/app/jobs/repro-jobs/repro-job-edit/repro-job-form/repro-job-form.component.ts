@@ -29,6 +29,9 @@ export class ReproJobFormComponent implements OnInit {
   get form(): JobFormGroup {
     return this.formProvider.form;
   }
+  get isNew(): boolean {
+    return !this.form.value.jobId;
+  }
 
   large$: Observable<boolean> = this.layoutService.isLarge$;
 
@@ -37,9 +40,6 @@ export class ReproJobFormComponent implements OnInit {
     max: addDays(Date.now(), 3),
   };
 
-  get customerControl() {
-    return this.form.get('customer') as FormControl;
-  }
   get nameControl() {
     return this.form.get('name') as FormControl;
   }

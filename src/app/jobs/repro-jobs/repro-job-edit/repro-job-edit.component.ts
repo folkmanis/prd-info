@@ -38,7 +38,7 @@ export class ReproJobEditComponent implements OnInit, JobFormProvider {
   isLarge$: Observable<boolean> = this.layoutService.isLarge$;
 
   get isNew(): boolean {
-    return !this.form.jobValue.jobId;
+    return !this.form.value.jobId;
   }
 
   constructor(
@@ -51,7 +51,6 @@ export class ReproJobEditComponent implements OnInit, JobFormProvider {
   ngOnInit(): void {
 
     this.form = new JobFormGroup(
-      this.customersService.customers$,
       this.data.job,
     );
 

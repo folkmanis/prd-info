@@ -4,47 +4,21 @@ import { map, shareReplay, startWith, take } from 'rxjs/operators';
 import { CustomerPartial } from 'src/app/interfaces';
 import { Job } from '../../interfaces';
 
-const validateCustomerFn = (customers$: Observable<CustomerPartial[]>): AsyncValidatorFn => {
-    return (control: AbstractControl): Observable<ValidationErrors | null> => {
-        const value: string = control.value;
-        return customers$.pipe(
-            map(customers => customers.some(customer => customer.CustomerName === value)),
-            map(cust => cust ? null : { noCustomer: `Klients ${value} nav atrasts` }),
-            take(1),
-        );
-    };
-};
-
 
 export class JobFormGroup extends FormGroup {
 
-    get jobValue(): Job {
-        return this.value;
-    }
-
-    get isNew(): boolean {
-        return !this.value.jobId;
-    }
-
     value$: Observable<Job> = this.valueChanges.pipe(
-        startWith(this.jobValue),
+        startWith(this.value),
         shareReplay(1),
     );
 
     constructor(
-        customers$: Observable<CustomerPartial[]>,
         value: Partial<Job> = {},
     ) {
         super(
             {
                 jobId: new FormControl(value.jobId),
-                customer: new FormControl(
-                    value.customer,
-                    {
-                        validators: Validators.required,
-                        asyncValidators: validateCustomerFn(customers$),
-                    },
-                ),
+                customer: new FormControl(value.customer),
                 name: new FormControl(
                     value.name,
                     {

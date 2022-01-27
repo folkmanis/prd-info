@@ -2,11 +2,9 @@
     <mat-label>
         <ng-content></ng-content>
     </mat-label>
-    <input #customerInput type="text" matInput [formControl]="control" [matAutocomplete]="auto" [required]="required">
-    <button matSuffix mat-icon-button (click)="control.reset()">
-        <mat-icon>
-            clear
-        </mat-icon>
+    <input #customerInput type="text" matInput [formControl]="control" [matAutocomplete]="auto" required>
+    <button matSuffix mat-icon-button (click)="control.reset()" [disabled]="control.disabled">
+        <mat-icon> clear </mat-icon>
     </button>
     <mat-error *ngIf="control.hasError('noCustomer')">
         {{ control.getError('noCustomer') }}
