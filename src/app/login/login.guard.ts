@@ -19,6 +19,7 @@ export class LoginGuard implements CanLoad, CanActivate {
     segments: UrlSegment[],
   ): Observable<boolean> | Promise<boolean> | boolean {
     return this.loginService.isModule(route.path).pipe(
+      take(1),
       tap(access => access || this.router.navigate(['login']))
     );
   }

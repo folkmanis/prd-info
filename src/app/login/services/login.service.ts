@@ -50,7 +50,6 @@ export class LoginService {
 
   isModule(mod: string): Observable<boolean> {
     return this.user$.pipe(
-      take(1),
       map(usr => usr && !!usr.preferences.modules.find(m => m === mod)),
     );
   }
