@@ -8,7 +8,6 @@ import { CustomerInputComponent } from './repro-job-edit/customer-input/customer
 import { FolderPathComponent } from './repro-job-edit/folder-path/folder-path.component';
 import { KeyPressDirective } from './repro-job-edit/key-press.directive';
 import { ReproJobEditComponent } from './repro-job-edit/repro-job-edit.component';
-import { ReproJobFormComponent } from './repro-job-edit/repro-job-form/repro-job-form.component';
 import { ProductAutocompleteComponent } from './repro-job-edit/repro-products-editor/product-autocomplete/product-autocomplete.component';
 import { ProductControlDirective } from './repro-job-edit/repro-products-editor/repro-product/product-control.directive';
 import { ReproProductsEditorComponent } from './repro-job-edit/repro-products-editor/repro-products-editor.component';
@@ -34,7 +33,6 @@ import { ReproProductComponent } from './repro-job-edit/repro-products-editor/re
     ProductAutocompleteComponent,
     ProductControlDirective,
     KeyPressDirective,
-    ReproJobFormComponent,
     JobFilterSummaryComponent,
     ProductsSummaryComponent,
     ReproProductComponent,

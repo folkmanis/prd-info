@@ -69,12 +69,19 @@ export class ReproProductComponent implements OnInit, ControlValueAccessor, Vali
     return this._showPrices;
   }
 
+  private _small = false;
+  @Input()
+  set small(value: any) {
+    this._small = coerceBooleanProperty(value);
+  }
+  get small() {
+    return this._small;
+  }
+
   onTouched: () => void = () => { };
   onValidationChange: () => void = () => { };
 
   @Output() remove = new Subject<void>();
-
-  small$ = this.layout.isSmall$;
 
   get nameControl() { return this.form.get('name') as FormControl; }
   get priceControl() { return this.form.get('price') as FormControl; }
@@ -83,7 +90,6 @@ export class ReproProductComponent implements OnInit, ControlValueAccessor, Vali
 
   constructor(
     private destroy$: DestroyService,
-    private layout: LayoutService,
   ) { }
 
   writeValue(obj: JobProduct): void {

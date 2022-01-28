@@ -8,7 +8,7 @@
 
         <div *ngFor="let control of productsControl.controls; index as idx;">
             <app-repro-product (remove)="onRemoveProduct(idx)" [customerProducts]="customerProducts" appProductControl
-                [formControlName]="idx" [showPrices]="showPrices">
+                [formControlName]="idx" [showPrices]="showPrices" [small]="small">
             </app-repro-product>
         </div>
 

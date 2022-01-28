@@ -27,13 +27,15 @@ import { ReproProductComponent } from './repro-product/repro-product.component';
     }
   ]
 })
-export class ReproProductsEditorComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
+export class ReproProductsEditorComponent implements OnInit, ControlValueAccessor, Validator {
 
   @ViewChildren(ReproProductComponent) productComponents: QueryList<ReproProductComponent>;
 
   @Input() customerProducts: CustomerProduct[] = [];
 
   @Input() showPrices: boolean;
+
+  @Input() small = false;
 
   form = new FormGroup({
     products: new FormArray([]),
@@ -94,12 +96,7 @@ export class ReproProductsEditorComponent implements OnInit, OnDestroy, ControlV
   }
 
   ngOnInit(): void {
-
     this.form.statusChanges.subscribe(_ => this.check());
-
-  }
-
-  ngOnDestroy(): void {
   }
 
   focusLatest() {

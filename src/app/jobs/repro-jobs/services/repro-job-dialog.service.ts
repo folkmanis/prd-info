@@ -2,17 +2,22 @@ import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { flatten } from 'lodash';
 import { forkJoin, Observable, of } from 'rxjs';
-import { concatMap, map, mapTo } from 'rxjs/operators';
+import { concatMap, map, mapTo, pluck } from 'rxjs/operators';
 import { JobProductionStage } from 'src/app/interfaces';
 import { Job, JobProduct } from '../../interfaces';
 import { ProductsService } from 'src/app/services';
 import { JobService } from '../../services/job.service';
 import { ReproJobEditComponent } from '../repro-job-edit/repro-job-edit.component';
 import { FileUploadEventType, FileUploadMessage, UploadMessageBase } from '../../interfaces/file-upload-message';
+import { log } from 'prd-cdk';
 
 export interface DialogData {
   job: Partial<Job>;
   fileUploadProgress?: Observable<FileUploadMessage[]>;
+}
+
+interface DialogResponse {
+  job: PartialJob;
 }
 
 export type PartialJob = Pick<Job, 'jobId'> & Partial<Job>;
@@ -48,8 +53,9 @@ export class ReproJobDialogService {
     };
 
     return this.matDialog
-      .open<ReproJobEditComponent, DialogData, PartialJob | undefined>(ReproJobEditComponent, config)
+      .open<ReproJobEditComponent, DialogData, DialogResponse>(ReproJobEditComponent, config)
       .afterClosed().pipe(
+        pluck('job'),
         concatMap(job => addProductionStages(job, this.productionStagesFn)),
       );
 

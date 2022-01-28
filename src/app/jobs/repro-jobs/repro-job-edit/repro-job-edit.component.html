@@ -16,12 +16,99 @@
 
 
 <mat-dialog-content>
-    <app-repro-job-form></app-repro-job-form>
+    <div [formGroup]="form" class="container" [class.large]="isLarge$ | async">
+
+        <!-- Klients -->
+        <app-customer-input formControlName="customer" [customers]="customers$ | async">
+            Klients
+        </app-customer-input>
+
+        <!-- Izveidošanas Datums -->
+        <mat-form-field>
+            <mat-label>Izveidošanas datums</mat-label>
+            <input matInput formControlName="receivedDate" [matDatepicker]="datePicker" required
+                [min]="receivedDate.min" [max]="receivedDate.max">
+            <mat-datepicker-toggle matSuffix [for]="datePicker" tabindex="-1"></mat-datepicker-toggle>
+            <mat-datepicker #datePicker></mat-datepicker>
+        </mat-form-field>
+
+        <!-- Nodošanas termiņš -->
+        <mat-form-field>
+            <mat-label>Nodošanas datums</mat-label>
+            <input matInput required [matDatepicker]="dueDatePicker" formControlName="dueDate">
+            <mat-datepicker-toggle matSuffix [for]="dueDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #dueDatePicker></mat-datepicker>
+        </mat-form-field>
+
+
+        <!-- Darba nosaukums -->
+        <mat-form-field class="width-span">
+            <mat-label>Darba nosaukums</mat-label>
+            <input type="text" matInput formControlName="name" required>
+            <mat-error *ngIf="nameControl.hasError('required')">
+                Jānorāda obligāti
+            </mat-error>
+            <button mat-icon-button [appCopyClipboard]="jobIdAndName$ | async" matSuffix tabindex="-1">
+                <mat-icon>filter_none</mat-icon>
+            </button>
+        </mat-form-field>
+        <!-- Darba kategorija -->
+        <ng-container formGroupName="production">
+            <mat-form-field>
+                <mat-label>Kategorija</mat-label>
+                <mat-select formControlName="category" required>
+                    <mat-option *ngFor="let cat of categories$ | async" [value]="cat.category">
+                        {{cat.description}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </ng-container>
+        <!-- Statuss -->
+        <mat-form-field formGroupName="jobStatus">
+            <mat-label>Stadija</mat-label>
+            <mat-select formControlName="generalStatus">
+                <mat-option *ngFor="let state of jobStates$ | async" [value]="state.state">
+                    {{state.description}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <!-- Klienta darba numurs -->
+        <mat-form-field>
+            <mat-label>Klienta darba numurs</mat-label>
+            <input matInput formControlName="customerJobId">
+        </mat-form-field>
+
+        <!-- Preces apakšforma -->
+        <app-repro-products-editor *ngIf="customerProducts$ | async as customerProducts" class="width-span"
+            [customerProducts]="customerProducts" formControlName="products" [showPrices]="showPrices$ | async"
+            [small]="isSmall$ | async">
+        </app-repro-products-editor>
+
+        <!-- Papildus apraksts -->
+        <mat-card class="left-column">
+            <mat-form-field class="full-width">
+                <mat-label>Piezīmes</mat-label>
+                <textarea matInput formControlName="comment"></textarea>
+            </mat-form-field>
+        </mat-card>
+
+        <!-- Folderis -->
+        <mat-card *ngIf="isNew === false" class="right-column">
+            <mat-card-content>
+                <app-folder-path [path]="folderPath$ | async" (createFolder)="onCreateFolder()">
+                </app-folder-path>
+            </mat-card-content>
+        </mat-card>
+
+        <app-upload-progress class="right-column" [progress]="fileUploadProgress$ | async"></app-upload-progress>
+
+
+    </div>
 </mat-dialog-content>
 
 <mat-dialog-actions align="center">
-    <button mat-raised-button color="primary" [disabled]="!isFormValid()" appKeyPress="ctrlEnter"
-        [mat-dialog-close]="jobUpdate()">
+    <button mat-raised-button color="primary" [disabled]="!isFormValid()" appKeyPress="ctrlEnter" (click)="onUpdate()">
         SAGLABĀT
     </button>
 
