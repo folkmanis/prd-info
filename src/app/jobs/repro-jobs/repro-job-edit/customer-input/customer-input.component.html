@@ -6,13 +6,13 @@
     <button matSuffix mat-icon-button (click)="control.reset()" [disabled]="control.disabled">
         <mat-icon> clear </mat-icon>
     </button>
-    <mat-error *ngIf="control.hasError('noCustomer')">
-        {{ control.getError('noCustomer') }}
+    <mat-error *ngIf="control.hasError('notFound')">
+        {{ control.getError('notFound') }}
     </mat-error>
 </mat-form-field>
 
 <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
-    <mat-option *ngFor="let customer of customersFiltered$ | async" [value]="customer.CustomerName">
+    <mat-option *ngFor="let customer of filtered$ | async" [value]="customer.CustomerName">
         {{ customer.CustomerName }}
     </mat-option>
 </mat-autocomplete>

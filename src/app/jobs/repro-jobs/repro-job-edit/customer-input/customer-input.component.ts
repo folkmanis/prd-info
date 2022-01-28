@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { OnDestroy, AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, ValidatorFn, Validators } from '@angular/forms';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
@@ -22,18 +22,17 @@ import { CustomerPartial } from 'src/app/interfaces';
     }
   ]
 })
-export class CustomerInputComponent implements AfterViewInit, ControlValueAccessor, Validator {
+export class CustomerInputComponent implements OnDestroy, AfterViewInit, ControlValueAccessor, Validator {
 
   @ViewChild('customerInput') private input: ElementRef<HTMLInputElement>;
 
 
-  private customers$ = new BehaviorSubject<CustomerPartial[]>([]);
-  @Input() set customers(value: CustomerPartial[]) {
-    this.customers$.next(value || []);
-    this.onValidationChange();
+  private values$ = new BehaviorSubject<CustomerPartial[]>([]);
+  @Input('listItems') set values(value: CustomerPartial[]) {
+    this.values$.next(value || []);
   }
-  get customers() {
-    return this.customers$.value;
+  get values() {
+    return this.values$.value;
   }
 
   control = new FormControl(
@@ -46,8 +45,8 @@ export class CustomerInputComponent implements AfterViewInit, ControlValueAccess
     }
   );
 
-  customersFiltered$: Observable<CustomerPartial[]> = combineLatest([
-    this.customers$,
+  filtered$: Observable<CustomerPartial[]> = combineLatest([
+    this.values$,
     this.control.valueChanges.pipe(startWith('')),
   ]).pipe(
     map(this.filterCustomer),
@@ -86,6 +85,14 @@ export class CustomerInputComponent implements AfterViewInit, ControlValueAccess
 
   ngAfterViewInit(): void {
     this.input.nativeElement.onfocus = this.onTouched;
+    this.values$.subscribe(() => {
+      this.control.updateValueAndValidity({ emitEvent: false });
+      this.onValidationChange();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.values$.complete();
   }
 
   focus() {
@@ -94,14 +101,14 @@ export class CustomerInputComponent implements AfterViewInit, ControlValueAccess
 
   private filterCustomer([customers, value]: [CustomerPartial[], string]): CustomerPartial[] {
     const filterValue = new RegExp(value || '', 'i');
-    return customers.filter(customer => !customer.disabled && filterValue.test(customer.CustomerName));
+    return customers.filter(customer => filterValue.test(customer.CustomerName));
   }
 
   private validatorFn(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const value: string = control.value;
-      const isValid = this.customers.some(customer => customer.CustomerName === value);
-      return isValid ? null : { noCustomer: `Klients ${value} nav atrasts` };
+      const isValid = this.values.some(customer => customer.CustomerName === value);
+      return isValid ? null : { notFound: `Klients ${value} nav atrasts` };
     };
   };
 

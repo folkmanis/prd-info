@@ -18,7 +18,7 @@
 <mat-dialog-content [formGroup]="form" class="container" [class.large]="isLarge$ | async">
 
     <!-- Klients -->
-    <app-customer-input formControlName="customer" [customers]="customers$ | async">
+    <app-customer-input formControlName="customer" [listItems]="customers$ | async">
         Klients
     </app-customer-input>
 

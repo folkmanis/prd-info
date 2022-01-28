@@ -38,7 +38,9 @@ export class ReproJobEditComponent implements OnInit {
   isLarge$: Observable<boolean> = this.layoutService.isLarge$;
   isSmall$ = this.layoutService.isSmall$;
 
-  customers$: Observable<CustomerPartial[]> = this.customersService.customers$;
+  customers$: Observable<CustomerPartial[]> = this.customersService.customers$.pipe(
+    map(customers => customers.filter(customer => !customer.disabled)),
+  );
 
   receivedDate = {
     min: subDays(Date.now(), 5),
