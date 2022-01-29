@@ -16,12 +16,12 @@ import { JobFormGroup } from '../services/job-form-group';
 import { DialogData } from '../services/repro-job-dialog.service';
 
 const LARGE_SCREEN_SIZE = {
-  height: '90%',
-  width: '90%',
+  height: '90vh',
+  width: '90vw',
 };
 const SMALL_SCREEN_SIZE = {
-  height: '100%',
-  width: '100%',
+  height: '100vh',
+  width: '100vw',
 };
 
 

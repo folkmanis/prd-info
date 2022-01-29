@@ -1,5 +1,5 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { ChangeDetectionStrategy, Component, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, Output, ViewChild, ChangeDetectorRef } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -89,6 +89,7 @@ export class ReproProductComponent implements OnInit, ControlValueAccessor, Vali
 
 
   constructor(
+    private changedetector: ChangeDetectorRef,
     private destroy$: DestroyService,
   ) { }
 
@@ -134,7 +135,9 @@ export class ReproProductComponent implements OnInit, ControlValueAccessor, Vali
   }
 
   ngOnInit(): void {
-
+    this.form.valueChanges.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(() => this.check());
   }
 
   focus() {
@@ -147,6 +150,10 @@ export class ReproProductComponent implements OnInit, ControlValueAccessor, Vali
       this.form.patchValue({ price });
       this.form.get('price').markAsDirty();
     }
+  }
+
+  check() {
+    this.changedetector.markForCheck();
   }
 
   private productNameValidatorFn(): ValidatorFn {
