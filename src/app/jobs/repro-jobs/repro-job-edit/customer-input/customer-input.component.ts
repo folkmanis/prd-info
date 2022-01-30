@@ -107,8 +107,8 @@ export class CustomerInputComponent implements OnDestroy, AfterViewInit, Control
   private validatorFn(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const value: string = control.value;
-      const isValid = this.values.some(customer => customer.CustomerName === value);
-      return isValid ? null : { notFound: `Klients ${value} nav atrasts` };
+      const isValid = value && this.values.some(customer => customer.CustomerName === value);
+      return isValid ? null : { notFound: value };
     };
   };
 

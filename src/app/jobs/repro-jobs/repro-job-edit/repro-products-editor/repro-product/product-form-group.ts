@@ -6,16 +6,10 @@ import { JobProduct } from 'src/app/jobs/interfaces';
 export class ProductFormGroup extends FormGroup {
 
     constructor(
-        nameValidator: ValidatorFn,
         product: Partial<JobProduct> = {},
     ) {
         super({
-            name: new FormControl(
-                product.name,
-                {
-                    validators: [Validators.required, nameValidator],
-                },
-            ),
+            name: new FormControl(product.name),
             price: new FormControl(
                 product.price,
                 {
@@ -32,9 +26,7 @@ export class ProductFormGroup extends FormGroup {
                 product.units,
                 Validators.required,
             ),
-            comment: new FormControl(
-                product.comment,
-            ),
+            comment: new FormControl(product.comment),
         });
     }
 

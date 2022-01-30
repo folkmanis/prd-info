@@ -1,5 +1,5 @@
 <mat-form-field>
-    <input matInput type="text" [formControl]="control" [matAutocomplete]="auto" #name>
+    <input matInput type="text" [formControl]="control" [matAutocomplete]="auto" #name required>
     <button mat-icon-button matSuffix (click)="control.setValue('')" tabindex="-1" [disabled]="control.disabled">
         <mat-icon>
             clear

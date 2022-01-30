@@ -49,7 +49,7 @@ export class ReproProductComponent implements OnInit, ControlValueAccessor, Vali
 
   customerProducts$ = new BehaviorSubject<CustomerProduct[]>([]);
 
-  form: ProductFormGroup = new ProductFormGroup(this.productNameValidatorFn(), DEFAULT_PRODUCT);
+  form: ProductFormGroup = new ProductFormGroup(DEFAULT_PRODUCT);
 
   @Input('customerProducts')
   set customerProducts(value: CustomerProduct[]) {
@@ -155,14 +155,6 @@ export class ReproProductComponent implements OnInit, ControlValueAccessor, Vali
   check() {
     this.changedetector.markForCheck();
   }
-
-  private productNameValidatorFn(): ValidatorFn {
-    return (control: AbstractControl) => {
-      const val: string = control.value;
-      const err = { invalidProduct: 'Prece nav atrasta katalogā' };
-      return this.customerProducts.some(prod => prod.productName === val) ? null : err;
-    };
-  };
 
   private addControlErrors(allErrors: Record<string, any>, controlName: string): Record<string, any> {
 

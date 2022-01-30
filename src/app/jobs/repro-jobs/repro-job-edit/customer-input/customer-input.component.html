@@ -6,8 +6,11 @@
     <button matSuffix mat-icon-button (click)="control.reset()" [disabled]="control.disabled">
         <mat-icon> clear </mat-icon>
     </button>
+    <mat-error *ngIf="control.hasError('required')">
+        Jānorāda obligāti
+    </mat-error>
     <mat-error *ngIf="control.hasError('notFound')">
-        {{ control.getError('notFound') }}
+        Klients {{ control.getError('notFound') }} nav atrasts
     </mat-error>
 </mat-form-field>
 

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import {
-  ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator
+  ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators
 } from '@angular/forms';
 import { DestroyService } from 'prd-cdk';
 import { takeUntil } from 'rxjs/operators';
@@ -95,6 +95,10 @@ export class ReproProductsEditorComponent implements OnInit, ControlValueAccesso
 
   }
 
+  registerOnValidatorChange(fn: () => void): void {
+    this.onValidationChange = fn;
+  }
+
   ngOnInit(): void {
     this.form.statusChanges.subscribe(_ => this.check());
   }
@@ -108,7 +112,10 @@ export class ReproProductsEditorComponent implements OnInit, ControlValueAccesso
   }
 
   onAddProduct() {
-    this.productsControl.push(new FormControl());
+    this.productsControl.push(new FormControl(
+      null,
+      [Validators.required]
+    ));
     setTimeout(() => this.focusLatest(), 0);
   }
 

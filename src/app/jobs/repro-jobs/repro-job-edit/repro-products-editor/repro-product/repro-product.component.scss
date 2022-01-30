@@ -1,32 +1,45 @@
 .container {
     display: flex;
     align-self: center;
-}
-
-.container.small {
-    flex-direction: column;
-    & > div {
-        width: 100%;
-    }
+    gap: 8px;
 }
 
 .container > * {
     font-size: 14px;
-    padding: 0 8px;
     color: rgba($color: #000000, $alpha: 0.87);
     display: flex;
+    gap: 8px;
     align-items: center;
     overflow: hidden;
     word-wrap: break-word;
 }
 
-.small.container :nth-child(2) .mat-form-field {
-    max-width: 100px;
+.container.small {
+    flex-direction: column;
+    gap: 0;
 }
 
-.container :nth-child(2) > * {
-    box-sizing: border-box;
-    padding: 0 8px;
+.numbers {
+    & > .count,
+    & > .price {
+        width: 8em;
+    }
+    & > .total {
+        min-width: 4em;
+        text-align: right;
+    }
+}
+
+.name {
+    flex: 2 1 auto;
+}
+
+.numbers {
+    flex: 0 1 auto;
+}
+
+.coments {
+    flex: 1 1 auto;
 }
 
 input[type="number"] {
@@ -35,4 +48,16 @@ input[type="number"] {
 
 .disabled {
     color: rgba($color: #000000, $alpha: 0.38);
+}
+
+.full-width {
+    width: 100%;
+}
+
+app-product-autocomplete {
+    min-width: 18em;
+}
+
+button[mat-raised-button] {
+    margin-bottom: 16px;
 }
