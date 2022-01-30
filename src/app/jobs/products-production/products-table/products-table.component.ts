@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
 import { ReplaySubject, Subject } from 'rxjs';
-import { map, share } from 'rxjs/operators';
+import { map, share, shareReplay, take } from 'rxjs/operators';
 import { LoginService } from 'src/app/login';
 import { JobsProduction } from '../../interfaces';
 
@@ -32,7 +32,7 @@ export class ProductsTableComponent {
 
   displayedColumns$ = this.loginService.isModule('jobs-admin').pipe(
     map(isAdmin => isAdmin ? ADMIN_COLUMNS : COLUMNS),
-    share(),
+    shareReplay(1),
   );
 
   constructor(
