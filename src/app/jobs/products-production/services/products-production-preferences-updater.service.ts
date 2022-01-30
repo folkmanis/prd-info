@@ -18,7 +18,7 @@ export class ProductsProductionPreferencesUpdaterService {
   savePreferences(): OperatorFunction<Partial<SavedJobsProductionQuery>, any> {
 
     return pipe(
-      bufferTime(5000),
+      bufferTime(1000),
       filter(buffer => buffer.length > 0),
       withLatestFrom(this.prefService.userPreferences$),
       map(([updates, pref]) => this.applyPreferences(pref, updates)),
