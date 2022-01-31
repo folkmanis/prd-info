@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "serve": "ng serve --port 4230",
-    "build": "ng build --stats-json --configuration production",
+    "build": "ng build --configuration production",
     "stats": "ng build --stats-json",
     "test": "ng test",
     "lint": "ng lint",
@@ -33,6 +33,7 @@
     "file-saver": "^2.0.5",
     "filesize": "^8.0.6",
     "lodash": "^4.17.21",
+    "npm": "^8.4.0",
     "prd-cdk": "^0.8.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.4.0",
