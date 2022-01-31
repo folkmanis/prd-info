@@ -34,7 +34,8 @@
             "allowedCommonJsDependencies": [
               "xlsx",
               "@angular/common/locales/lv",
-              "file-saver"
+              "file-saver",
+              "sanitize-filename"
             ],
             "vendorChunk": true,
             "extractLicenses": false,

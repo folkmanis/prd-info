@@ -1,4 +1,3 @@
-import { ObjectId } from 'mongodb';
 import { KastesProduction, PrintProduction, Production, ReproProduction } from './job-categories';
 import { JobProduct } from './job-product';
 
@@ -15,7 +14,7 @@ export interface Files {
 
 export interface Job {
 
-    _id: ObjectId;
+    _id: string;
     _v: 3;
     jobId: number;
     customer: string;
