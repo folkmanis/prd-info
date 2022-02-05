@@ -9,6 +9,10 @@ import { ClassTransformer } from 'class-transformer';
 import { Dictionary, pickBy } from 'lodash';
 import { JobsUserPreferences } from '../interfaces/jobs-user-preferences';
 
+export enum FileMoveActions {
+  USER_TO_JOB
+}
+
 export function pickNotNull<T>(obj: Dictionary<T>): Dictionary<T> {
   return pickBy(obj, val => val !== undefined && val !== null);
 }
@@ -43,6 +47,26 @@ export class JobsApiService extends ApiBase<Job> {
       { reportProgress: true, }
     );
     return this.http.request<Job>(request);
+  }
+
+  userFileUpload(form: FormData): Observable<HttpEvent<{ names: string[]; }>> {
+    const request = new HttpRequest(
+      'PUT',
+      this.path + 'files/user/upload',
+      form,
+      { reportProgress: true }
+    );
+    return this.http.request(request);
+  }
+
+  transferUserfilesToJob(jobId: number, fileNames: string[]): Observable<Job> {
+    return this.http.patch<Job>(
+      this.path + 'files/' + jobId + '/move',
+      {
+        action: FileMoveActions.USER_TO_JOB,
+        fileNames
+      }
+    );
   }
 
   getJobsProduction(query: JobsProductionQuery): Observable<JobsProduction[]> {

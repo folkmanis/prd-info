@@ -58,7 +58,7 @@ export class JobService {
   newJob(job: Partial<Job>, params?: JobUpdateParams): Observable<number> {
     return this.api.insertOne(job, params).pipe(
       pluck('jobId'),
-      tap(() => this.forceReload$.next()),
+      tap(() => this.reload()),
       catchError(() => this.confirmationDialogService.confirmDataError())
     );
   }
@@ -80,7 +80,7 @@ export class JobService {
       params
     ).pipe(
       timeout(10 * 1000),
-      tap(resp => resp && this.forceReload$.next()),
+      tap(_ => this.reload()),
     );
   }
 
@@ -95,7 +95,7 @@ export class JobService {
       if (!job.jobId) { return EMPTY; }
     });
     return this.api.updateMany(jobs, params).pipe(
-      tap(resp => resp && this.forceReload$.next()),
+      tap(_ => this.reload()),
     );
   }
 
@@ -115,6 +115,12 @@ export class JobService {
 
   getJobsWithoutInvoicesTotals(): Observable<JobsWithoutInvoicesTotals[]> {
     return this.api.jobsWithoutInvoicesTotals();
+  }
+
+  moveFilesToJob(jobId: number, fileNames: string[]): Observable<Job> {
+    return this.api.transferUserfilesToJob(jobId, fileNames).pipe(
+      tap(() => this.reload()),
+    );
   }
 
 }
