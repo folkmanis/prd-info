@@ -6,8 +6,19 @@
 
 <mat-drawer-container>
     <mat-drawer button [small]="(large$ | async) === false">
-        <app-side-panel [fileUploadProgress]="progress$ | async" (file)="onFileDrop($event)" [jobs]="jobs$ | async">
-        </app-side-panel>
+
+        <mat-card appFileDrop (filesEmitter)="onFileDrop($event)">
+            <mat-card-header>Nomest jauna darba failus</mat-card-header>
+        </mat-card>
+
+        <div>
+            <app-upload-progress *ngIf="progress$" [progress]="progress$ | async"></app-upload-progress>
+        </div>
+
+        <div>
+            <app-products-summary [jobs]="jobs$ | async"></app-products-summary>
+        </div>
+
     </mat-drawer>
 
     <mat-drawer-content>

@@ -108,7 +108,6 @@ export class FileUploadService {
     if (event.type === HttpEventType.Sent) {
       this._activeUploads.set(id, {
         ...messageBase,
-        jobId,
         type: FileUploadEventType.UploadStart,
       });
       this._uploadProgress$.next(this._activeUploads);
@@ -119,8 +118,7 @@ export class FileUploadService {
         ...messageBase,
         type: FileUploadEventType.UploadProgress,
         done: event.loaded,
-        jobId,
-        precentDone: Math.round(100 * event.loaded / event.total),
+        percentDone: Math.round(100 * event.loaded / event.total),
       });
       this._uploadProgressPercent$.next(this._activeUploads);
     }
@@ -128,8 +126,8 @@ export class FileUploadService {
     if (event.type === HttpEventType.Response) {
       this._activeUploads.set(id, {
         ...messageBase,
-        jobId,
         type: FileUploadEventType.UploadFinish,
+        fileNames: [messageBase.name],
       });
       setTimeout(() => {
         this._activeUploads.delete(id);

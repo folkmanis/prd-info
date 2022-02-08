@@ -23,35 +23,22 @@ import { FileUploadEventType, FileUploadMessage } from '../../../interfaces/file
 })
 export class UploadProgressComponent {
 
+  readonly types = FileUploadEventType;
 
   @Input() progress: FileUploadMessage[] = [];
 
 
-  trackByFn(_: number, progr: FileUploadMessage): string {
-    return progr.id;
-  }
-
-  isProgress(message: FileUploadMessage): boolean {
-    return message.type === FileUploadEventType.UploadProgress;
-  }
+  trackByFn = (_: number, progr: FileUploadMessage): string => progr.id;
 
   progressPercent(message: FileUploadMessage): number {
     switch (message.type) {
       case FileUploadEventType.UploadProgress:
-        return message.precentDone;
+        return message.percentDone;
       case FileUploadEventType.UploadFinish:
         return 100;
       default:
         return 0;
     }
-  }
-
-  isComplete(message: FileUploadMessage): boolean {
-    return message.type === FileUploadEventType.UploadFinish;
-  }
-
-  isWaiting(message: FileUploadMessage): boolean {
-    return message.type === FileUploadEventType.UploadWaiting;
   }
 
 }

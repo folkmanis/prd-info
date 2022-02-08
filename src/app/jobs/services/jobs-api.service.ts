@@ -2,7 +2,7 @@ import { HttpClient, HttpEvent, HttpRequest } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { ApiBase, HttpOptions } from 'src/app/library/http';
 import { Job, JobsWithoutInvoicesTotals, JobsProductionFilterQuery, JobsProduction, JobsProductionQuery } from '../interfaces';
-import { map, Observable } from 'rxjs';
+import { concatMap, from, map, Observable, pluck, reduce } from 'rxjs';
 import { APP_PARAMS } from 'src/app/app-params';
 import { AppParams } from 'src/app/interfaces';
 import { ClassTransformer } from 'class-transformer';
@@ -66,6 +66,14 @@ export class JobsApiService extends ApiBase<Job> {
         action: FileMoveActions.USER_TO_JOB,
         fileNames
       }
+    );
+  }
+
+  deleteUserFiles(fileNames: string[]) {
+    return from(fileNames).pipe(
+      concatMap(fileName => this.http.delete<{ deletedCount: number; }>(this.path + 'files/user/' + fileName)),
+      pluck('deletedCount'),
+      reduce((acc, value) => acc + value, 0),
     );
   }
 

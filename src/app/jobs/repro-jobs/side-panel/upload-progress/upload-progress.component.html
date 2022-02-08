@@ -1,18 +1,35 @@
 <ul>
     <li *ngFor="let progr of progress; trackBy: trackByFn;" @collapseAnimation>
+
         <mat-divider></mat-divider>
+
         <div class="filename">
             {{progr.name}}
         </div>
-        <mat-progress-bar mode="determinate" [value]="progressPercent(progr)"></mat-progress-bar>
-        <div *ngIf="isWaiting(progr)">
-            Gaida augšupielādi...
+
+        <mat-progress-bar mode="determinate" [value]="progressPercent(progr)"
+            [color]="progr.type === types.UploadAbort ? 'warn' : 'primary'">
+        </mat-progress-bar>
+
+        <div [ngSwitch]="progr.type">
+
+            <ng-container *ngSwitchCase="types.UploadWaiting">
+                Gaida augšupielādi...
+            </ng-container>
+
+            <ng-container *ngSwitchCase="types.UploadProgress">
+                {{progressPercent(progr)}}%
+            </ng-container>
+
+            <ng-container *ngSwitchCase="types.UploadFinish">
+                Augšupielāde pabeigta!
+            </ng-container>
+
+            <ng-container *ngSwitchCase="types.UploadAbort">
+                Augšupielāde atcelta!
+            </ng-container>
+
         </div>
-        <div *ngIf="isProgress(progr)">
-            {{progressPercent(progr)}}%
-        </div>
-        <div *ngIf="isComplete(progr)">
-            Augšupielāde pabeigta!
-        </div>
+
     </li>
 </ul>

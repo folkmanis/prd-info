@@ -3,6 +3,7 @@ export enum FileUploadEventType {
     UploadProgress,
     UploadWaiting,
     UploadFinish,
+    UploadAbort,
 }
 
 export interface UploadMessageBase {
@@ -13,27 +14,30 @@ export interface UploadMessageBase {
 
 interface UploadStartMessage extends UploadMessageBase {
     type: FileUploadEventType.UploadStart;
-    jobId: number;
 }
 
 interface UploadProgressMessage extends UploadMessageBase {
     type: FileUploadEventType.UploadProgress;
     done: number;
-    precentDone: number;
-    jobId: number;
+    percentDone: number;
 }
 
-interface UploadFinishMessage extends UploadMessageBase {
+export interface UploadFinishMessage extends UploadMessageBase {
     type: FileUploadEventType.UploadFinish;
-    jobId: number;
+    fileNames: string[];
 }
 
 interface UploadWaitingMessage extends UploadMessageBase {
     type: FileUploadEventType.UploadWaiting;
 }
 
+interface UploadAbortMessage extends UploadMessageBase {
+    type: FileUploadEventType.UploadAbort;
+}
+
 export type FileUploadMessage =
     UploadStartMessage |
     UploadProgressMessage |
     UploadFinishMessage |
-    UploadWaitingMessage;
+    UploadWaitingMessage |
+    UploadAbortMessage; 

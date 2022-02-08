@@ -117,7 +117,7 @@ export class JobService {
     return this.api.jobsWithoutInvoicesTotals();
   }
 
-  moveFilesToJob(jobId: number, fileNames: string[]): Observable<Job> {
+  moveUserFilesToJob(jobId: number, fileNames: string[]): Observable<Job> {
     return this.api.transferUserfilesToJob(jobId, fileNames).pipe(
       tap(() => this.reload()),
     );
