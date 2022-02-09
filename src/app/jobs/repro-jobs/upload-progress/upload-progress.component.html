@@ -1,8 +1,6 @@
 <ul>
     <li *ngFor="let progr of progress; trackBy: trackByFn;" @collapseAnimation>
 
-        <mat-divider></mat-divider>
-
         <div class="filename">
             {{progr.name}}
         </div>
@@ -22,7 +20,7 @@
             </ng-container>
 
             <ng-container *ngSwitchCase="types.UploadFinish">
-                Augšupielāde pabeigta!
+                100% Augšupielāde pabeigta!
             </ng-container>
 
             <ng-container *ngSwitchCase="types.UploadAbort">
@@ -30,6 +28,8 @@
             </ng-container>
 
         </div>
+
+        <mat-divider></mat-divider>
 
     </li>
 </ul>

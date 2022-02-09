@@ -13,8 +13,7 @@ import { ProductControlDirective } from './repro-job-edit/repro-products-editor/
 import { ReproProductsEditorComponent } from './repro-job-edit/repro-products-editor/repro-products-editor.component';
 import { ReproJobsComponent } from './repro-jobs.component';
 import { JobFilterComponent } from './job-filter/job-filter.component';
-import { SidePanelComponent } from './side-panel/side-panel.component';
-import { UploadProgressComponent } from './side-panel/upload-progress/upload-progress.component';
+import { UploadProgressComponent } from './upload-progress/upload-progress.component';
 import { JobFilterSummaryComponent } from './job-filter/job-filter-summary/job-filter-summary.component';
 import { ProductsSummaryComponent } from './products-summary/products-summary.component';
 import { ReproProductComponent } from './repro-job-edit/repro-products-editor/repro-product/repro-product.component';
@@ -24,7 +23,6 @@ import { ReproProductComponent } from './repro-job-edit/repro-products-editor/re
     ReproJobsComponent,
     JobFilterComponent,
     ReproJobEditComponent,
-    SidePanelComponent,
     UploadProgressComponent,
     JobListComponent,
     CustomerInputComponent,

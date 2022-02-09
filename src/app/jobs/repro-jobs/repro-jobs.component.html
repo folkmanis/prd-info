@@ -11,13 +11,9 @@
             <mat-card-header>Nomest jauna darba failus</mat-card-header>
         </mat-card>
 
-        <div>
-            <app-upload-progress *ngIf="progress$" [progress]="progress$ | async"></app-upload-progress>
-        </div>
+        <app-upload-progress *ngIf="progress$" [progress]="progress$ | async"></app-upload-progress>
 
-        <div>
-            <app-products-summary [jobs]="jobs$ | async"></app-products-summary>
-        </div>
+        <app-products-summary [jobs]="jobs$ | async"></app-products-summary>
 
     </mat-drawer>
 

@@ -40,4 +40,4 @@ export type FileUploadMessage =
     UploadProgressMessage |
     UploadFinishMessage |
     UploadWaitingMessage |
-    UploadAbortMessage; 
+    UploadAbortMessage;

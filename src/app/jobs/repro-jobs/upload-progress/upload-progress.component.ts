@@ -1,6 +1,6 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { FileUploadEventType, FileUploadMessage } from '../../../interfaces/file-upload-message';
+import { FileUploadEventType, FileUploadMessage } from '../../interfaces/file-upload-message';
 
 @Component({
   selector: 'app-upload-progress',
