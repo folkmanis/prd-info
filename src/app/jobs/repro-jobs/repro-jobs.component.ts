@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DestroyService, log } from 'prd-cdk';
 import { combineLatest, concat, EMPTY, from, merge, Observable, of, OperatorFunction, pipe, Subject, timer } from 'rxjs';
-import { concatMap, delay, filter, finalize, last, map, mapTo, mergeAll, mergeMap, pluck, scan, shareReplay, takeUntil, tap, toArray } from 'rxjs/operators';
+import { concatMap, delay, filter, finalize, last, map, mapTo, mergeAll, mergeMap, pluck, scan, share, shareReplay, takeUntil, tap, toArray } from 'rxjs/operators';
 import { UploadFinishMessage, FileUploadEventType, FileUploadMessage, Job, JobQueryFilter } from '../interfaces';
 import { LayoutService } from 'src/app/services';
 import { JobService } from '../services/job.service';
@@ -67,80 +67,40 @@ export class ReproJobsComponent implements OnInit {
     };
 
     this.editDialogService.openJob(emptyJob).pipe(
-      concatMap(job => this.insertJob(job)),
+      concatMap(job => job ? this.jobService.newJob(job) : EMPTY),
     ).subscribe();
 
   }
 
   onFileDrop(fileList: FileList) {
 
-    const cancelUpload$ = new Subject<void>();
-
-    const upload$ = this.userFileUpload.upload(Array.from(fileList), cancelUpload$)
-      .pipe(
-        takeUntil(cancelUpload$),
-        shareReplay(1),
-      );
+    const uploadRef = this.userFileUpload.userFileUploadRef(Array.from(fileList));
 
     this.progress$ = concat(
-      this.cancelMessageWhen(upload$, cancelUpload$),
+      uploadRef.onMessages(),
       timer(5000).pipe(mapTo([]))
     );
 
-    const job: Partial<Job> = this.jobFromFiles(fileList);
+    const job: Partial<Job> = this.jobDataFromFiles(fileList);
 
-    combineLatest({
-      jobId: this.editDialogService.openJob(job, upload$).pipe(
-        tap(job => !job && cancelUpload$.next()),
-        mergeMap(job => this.insertJob(job)),
-      ),
-      files: upload$.pipe(
-        last(),
-        this.uploadEventsToFilenames()
-      )
-    }).pipe(
-      mergeMap(({ jobId, files }) => this.addFilesToJob(jobId, files)),
+    const job$: Observable<Partial<Job> | null> = this.editDialogService.openJob(job, uploadRef.onMessages()).pipe(
+      share(),
+    );
+
+    job$.pipe(
+      filter(job => !job)
+    ).subscribe(() => uploadRef.cancel());
+
+    job$.pipe(
+      filter(job => !!job),
+      mergeMap(job => this.jobService.newJob(job)),
+      mergeMap(jobId => uploadRef.addToJob(jobId)),
       tap(jobId => jobId && this.snack.open('Visi faili pievienoti darbam', 'OK', { duration: 3000 })),
-      finalize(() => cancelUpload$.complete()),
     ).subscribe();
 
   }
 
-  private insertJob(job: Partial<Job> | undefined): Observable<number | null> {
-    if (!job) {
-      return of(null);
-    } else {
-      return this.jobService.newJob(job);
-    }
-  }
-
-  private addFilesToJob(jobId: number | null, fileNames: string[]): Observable<number | null> {
-    if (!jobId) {
-      return this.userFileUpload.deleteUploads(fileNames);
-    } else {
-      return this.jobService.moveUserFilesToJob(jobId, fileNames).pipe(
-        pluck('jobId'),
-      );
-    }
-  }
-
-  private uploadEventsToFilenames(): OperatorFunction<FileUploadMessage[], string[]> {
-    return pipe(
-      mergeMap(events => from(events)),
-      filter(event => event.type === FileUploadEventType.UploadFinish),
-      mergeMap((event: UploadFinishMessage) => from(event.fileNames)),
-      toArray(),
-    );
-  }
-
-  private cancelMessageWhen(messages$: Observable<FileUploadMessage[]>, canceller$: Observable<void>): Observable<FileUploadMessage[]> {
-    return merge(messages$, canceller$).pipe(
-      scan((acc, messages) => messages || acc.map(msg => ({ ...msg, type: FileUploadEventType.UploadAbort })), []),
-      map(messages => messages as FileUploadMessage[]),
-    );
-  }
-
-  private jobFromFiles(fileList: FileList): Partial<Job> {
+  private jobDataFromFiles(fileList: FileList): Partial<Job> {
 
     return {
       name: Array.from(fileList)
