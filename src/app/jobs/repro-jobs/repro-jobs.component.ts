@@ -81,11 +81,14 @@ export class ReproJobsComponent implements OnInit {
       timer(5000).pipe(mapTo([]))
     );
 
-    const job: Partial<Job> = this.jobDataFromFiles(fileList);
 
-    const job$: Observable<Partial<Job> | null> = this.editDialogService.openJob(job, uploadRef.onMessages()).pipe(
-      share(),
-    );
+    const job$: Observable<Partial<Job> | null> =
+      this.editDialogService.openJob(
+        this.jobDataFromFiles(fileList),
+        uploadRef.onMessages()
+      ).pipe(
+        share(),
+      );
 
     job$.pipe(
       filter(job => !job)
