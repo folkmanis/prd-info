@@ -18,10 +18,9 @@ export class UploadRef {
             shareReplay(1),
         );
 
-        this.fileNames$ =
-            this.messages$.pipe(
-                this.uploadEventsToFilenames(),
-            );
+        this.fileNames$ = this.messages$.pipe(
+            this.uploadEventsToFilenames(),
+        );
     }
 
     onMessages(): Observable<FileUploadMessage[]> {
