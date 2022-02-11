@@ -33,7 +33,6 @@ export class UserFileUploadService {
     const sortedFiles = files.sort((a, b) => a.size - b.size);
     const uploadMessages$ = from(sortedFiles).pipe(
       mergeMap(file => this.uploadFile(file), SIMULTANEOUS_UPLOADS),
-      share(),
     );
 
     const messages$ = merge(
@@ -79,6 +78,7 @@ export class UserFileUploadService {
     const upload$ = this.api.userFileUpload(formData).pipe(
       map(event => this.progressMessage(event, messageBase)),
       filter(event => event !== null),
+      share(),
     );
 
     const [important$, nonImportant$] = partition(upload$, message => this.isImportant(message));
