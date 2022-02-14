@@ -1,6 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
-import { JobProduct, JobsProduction, JobsProductionQuery, JobPartial } from '../../interfaces';
-import { ReplaySubject } from 'rxjs';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { JobPartial } from '../../interfaces';
 
 interface ProductSum {
   name: string;
@@ -19,16 +18,15 @@ export class ProductsSummaryComponent {
   productSums: ProductSum[] = [];
 
   @Input() set jobs(value: JobPartial[]) {
-
-    if (value) {
-      this.productSums = this.productsSummary(value);
-    }
+    this.productSums = this.productsSummary(value);
   }
 
 
-  private productsSummary(jobs: JobPartial[]): ProductSum[] {
+  private productsSummary(jobs: JobPartial[] | undefined): ProductSum[] {
 
-    const products = jobs.reduce((acc, curr) => [...acc, ...curr.products], []);
+    const products = jobs
+      ?.filter(job => job.products instanceof Array)
+      .reduce((acc, curr) => [...acc, ...curr.products], []) || [];
     const productMap = new Map<string, ProductSum>();
 
     for (const product of products) {
