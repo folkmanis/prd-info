@@ -64,6 +64,15 @@ export class JobsApiService extends ApiBase<Job> {
     );
   }
 
+  transferFtpFilesToJob(jobId: number, fileNames: string[][]): Observable<Job> {
+    return this.http.patch<Job>(
+      `${this.path}files/copy/ftp/${jobId}`,
+      {
+        files: fileNames
+      }
+    );
+  }
+
   deleteUserFiles(fileNames: string[]) {
     return from(fileNames).pipe(
       concatMap(fileName => this.http.delete<{ deletedCount: number; }>(this.path + 'files/user/' + fileName)),
