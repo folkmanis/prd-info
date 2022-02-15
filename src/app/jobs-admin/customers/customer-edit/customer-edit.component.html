@@ -48,6 +48,17 @@
                         <input matInput formControlName="description" placeholder="Apraksts" autocomplete="off">
                     </mat-form-field>
                 </section>
+                <mat-divider></mat-divider>
+                <!-- ftp folderis -->
+                <section>
+                    <mat-checkbox class="input-element" formControlName="ftpUser" #ftpUser
+                        (change)="onFtpUserState($event)">
+                        FTP lietotājs
+                    </mat-checkbox>
+                    <app-ftp-user [class.hidden]="form.get('ftpUserData').disabled" formControlName="ftpUserData">
+                    </app-ftp-user>
+                </section>
+                <mat-divider></mat-divider>
                 <!-- Neaktīvs -->
                 <section>
                     <mat-checkbox class="input-element" formControlName="disabled">

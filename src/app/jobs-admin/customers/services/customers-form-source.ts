@@ -42,6 +42,8 @@ export class CustomersFormSource extends SimpleFormSource<Customer> {
             disabled: [false],
             description: [''],
             financial: [undefined],
+            ftpUser: [false],
+            ftpUserData: [undefined],
         });
     }
 
@@ -51,6 +53,7 @@ export class CustomersFormSource extends SimpleFormSource<Customer> {
         } else {
             this.form.controls.CustomerName.setAsyncValidators([this.validateName()]);
         }
+        this.setFtpUserDisabledState(customer.ftpUser); // , { emitEvent: false }
         super.initValue(defaults(customer, DEFAULT_CUSTOMER));
     }
 
@@ -62,6 +65,16 @@ export class CustomersFormSource extends SimpleFormSource<Customer> {
     createEntity(): Observable<string> {
         const customer = pickBy(this.value, value => value !== null) as NewCustomer;
         return this.customersService.saveNewCustomer(customer);
+    }
+
+    setFtpUserDisabledState(state: boolean, options?: { emitEvent: boolean; }): void {
+        const control = this.form.get('ftpUserData');
+        if (state) {
+            control.enable(options);
+        } else {
+            control.disable(options);
+        }
+        this.form.updateValueAndValidity();
     }
 
     private validateCode(): AsyncValidatorFn {

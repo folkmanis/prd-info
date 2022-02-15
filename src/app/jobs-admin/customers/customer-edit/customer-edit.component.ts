@@ -8,6 +8,7 @@ import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.gu
 import { SimpleFormSource } from 'src/app/library/simple-form';
 import { CONFIG } from 'src/app/services/config.provider';
 import { CustomersFormSource } from '../services/customers-form-source';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-customer-edit',
@@ -22,18 +23,18 @@ export class CustomerEditComponent implements OnInit, CanComponentDeactivate {
 
   @ViewChild('paytraqPanel') paytraqPanel: MatExpansionPanel;
 
-  paytraqDisabled$ = this.config$.pipe(
+  readonly paytraqDisabled$ = this.config$.pipe(
     pluck('paytraq', 'enabled'),
     map(enabled => !enabled),
   );
+
+  get form(): IFormGroup<Customer> { return this.formSource.form; }
+  get isNew(): boolean { return this.formSource.isNew; }
 
   constructor(
     private formSource: CustomersFormSource,
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
   ) { }
-
-  get form(): IFormGroup<Customer> { return this.formSource.form; }
-  get isNew(): boolean { return this.formSource.isNew; }
 
   onDataChange(obj: Customer) {
     this.paytraqPanel?.close();
@@ -45,6 +46,10 @@ export class CustomerEditComponent implements OnInit, CanComponentDeactivate {
 
   canDeactivate(): boolean {
     return this.form.pristine;
+  }
+
+  onFtpUserState({ checked }: MatCheckboxChange) {
+    this.formSource.setFtpUserDisabledState(checked);
   }
 
 }

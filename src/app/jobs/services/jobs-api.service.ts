@@ -9,6 +9,11 @@ import { ClassTransformer } from 'class-transformer';
 import { Dictionary, pickBy } from 'lodash';
 import { JobsUserPreferences } from '../interfaces/jobs-user-preferences';
 
+interface DirReadResponse {
+  folders: string[];
+  files: string[];
+}
+
 export function pickNotNull<T>(obj: Dictionary<T>): Dictionary<T> {
   return pickBy(obj, val => val !== undefined && val !== null);
 }
@@ -78,6 +83,13 @@ export class JobsApiService extends ApiBase<Job> {
       concatMap(fileName => this.http.delete<{ deletedCount: number; }>(this.path + 'files/user/' + fileName)),
       pluck('deletedCount'),
       reduce((acc, value) => acc + value, 0),
+    );
+  }
+
+  readFtp(folder?: string): Observable<DirReadResponse> {
+    return this.http.get<DirReadResponse>(
+      this.path + 'files/read/ftp',
+      new HttpOptions({ folder }).cacheable()
     );
   }
 

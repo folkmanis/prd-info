@@ -8,6 +8,7 @@ import { CustomerResolverService } from './services/customer-resolver.service';
 import { PaytraqCustomerComponent } from './customer-edit/paytraq-customer/paytraq-customer.component';
 import { PaytraqCustomerTableComponent } from './customer-edit/paytraq-customer/paytraq-customer-table/paytraq-customer-table.component';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
+import { FtpUserComponent } from './customer-edit/ftp-user/ftp-user.component';
 
 
 @NgModule({
@@ -16,6 +17,7 @@ import { MaterialLibraryModule } from 'src/app/library/material-library.module';
     CustomerEditComponent,
     PaytraqCustomerComponent,
     PaytraqCustomerTableComponent,
+    FtpUserComponent,
   ],
   imports: [
     CommonModule,
