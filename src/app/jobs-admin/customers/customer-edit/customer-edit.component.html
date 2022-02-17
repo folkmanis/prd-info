@@ -33,7 +33,7 @@
                 <section>
                     <mat-form-field>
                         <mat-label>Klienta kods</mat-label>
-                        <input matInput formControlName="code" placeholder="Kods" autocomplete="off">
+                        <input matInput appInputUppercase formControlName="code" placeholder="Kods" autocomplete="off">
                         <mat-error *ngIf="form.controls.code.hasError('required')">
                             Kodu jāievada obligāti!
                         </mat-error>

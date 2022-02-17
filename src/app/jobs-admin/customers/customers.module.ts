@@ -9,6 +9,7 @@ import { PaytraqCustomerComponent } from './customer-edit/paytraq-customer/paytr
 import { PaytraqCustomerTableComponent } from './customer-edit/paytraq-customer/paytraq-customer-table/paytraq-customer-table.component';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { FtpUserComponent } from './customer-edit/ftp-user/ftp-user.component';
+import { InputUppercaseDirective } from './customer-edit/input-uppercase.directive';
 
 
 @NgModule({
@@ -18,6 +19,7 @@ import { FtpUserComponent } from './customer-edit/ftp-user/ftp-user.component';
     PaytraqCustomerComponent,
     PaytraqCustomerTableComponent,
     FtpUserComponent,
+    InputUppercaseDirective,
   ],
   imports: [
     CommonModule,
