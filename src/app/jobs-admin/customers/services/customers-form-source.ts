@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Customer, NewCustomer, DEFAULT_CUSTOMER } from 'src/app/interfaces';
-import { IFormBuilder, IFormGroup } from '@rxweb/types';
-import { FormBuilder, Validators, AsyncValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
-import { CustomersService } from 'src/app/services';
-import { Observable, of, EMPTY } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
-import { SimpleFormSource } from 'src/app/library/simple-form';
+import { AbstractControl, AsyncValidatorFn, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
+import { IFormGroup } from '@rxweb/types';
 import { defaults, pickBy } from 'lodash';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Customer, DEFAULT_CUSTOMER, NewCustomer } from 'src/app/interfaces';
+import { SimpleFormSource } from 'src/app/library/simple-form';
+import { CustomersService } from 'src/app/services';
 
 @Injectable({
     providedIn: 'root'
@@ -53,7 +53,7 @@ export class CustomersFormSource extends SimpleFormSource<Customer> {
         } else {
             this.form.controls.CustomerName.setAsyncValidators([this.validateName()]);
         }
-        this.setFtpUserDisabledState(customer.ftpUser); // , { emitEvent: false }
+        this.setFtpUserDisabledState(customer.ftpUser, { emitEvent: false });
         super.initValue(defaults(customer, DEFAULT_CUSTOMER));
     }
 
@@ -74,7 +74,6 @@ export class CustomersFormSource extends SimpleFormSource<Customer> {
         } else {
             control.disable(options);
         }
-        this.form.updateValueAndValidity();
     }
 
     private validateCode(): AsyncValidatorFn {

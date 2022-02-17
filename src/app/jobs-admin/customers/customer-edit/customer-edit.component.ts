@@ -45,7 +45,7 @@ export class CustomerEditComponent implements OnInit, CanComponentDeactivate {
   }
 
   canDeactivate(): boolean {
-    return this.form.pristine;
+    return this.form.pristine || !this.formSource.changes;
   }
 
   onFtpUserState({ checked }: MatCheckboxChange) {

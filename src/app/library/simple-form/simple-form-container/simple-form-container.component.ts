@@ -34,7 +34,11 @@ export class SimpleFormContainerComponent<T> implements OnInit, AfterViewInit, O
   get form() { return this.formSource?.form; }
 
   get isSaveEnabled(): boolean {
-    return this.form?.valid && !this.form.pristine;
+    return this.form?.valid && !this.form.pristine && !!this.formSource.changes;
+  }
+
+  get isChanges(): boolean {
+    return !!this.formSource?.changes;
   }
 
   constructor(

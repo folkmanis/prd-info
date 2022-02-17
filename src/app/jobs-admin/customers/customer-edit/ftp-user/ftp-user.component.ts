@@ -1,19 +1,14 @@
-import { Input, Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import {
-  FormControl, FormGroup, ControlValueAccessor, Validator, FormBuilder,
-  AbstractControl, ValidationErrors, NG_VALUE_ACCESSOR, NG_VALIDATORS, Validators,
-  ValidatorFn, AsyncValidator, AsyncValidatorFn, NG_ASYNC_VALIDATORS
-} from '@angular/forms';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ControlValueAccessor, FormBuilder, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators } from '@angular/forms';
+import { pluck } from 'rxjs/operators';
 import { FtpUserData } from 'src/app/interfaces';
 import { JobsApiService } from 'src/app/jobs';
-import { Observable } from 'rxjs';
-import { map, pluck, shareReplay, take } from 'rxjs/operators';
-import { log } from 'prd-cdk';
+import { defaults } from 'lodash';
 
 const DEFAULT_DATA: FtpUserData = {
-  folder: '',
-  username: '',
-  password: '',
+  folder: null,
+  username: null,
+  password: null,
 };
 
 @Component({
@@ -28,18 +23,15 @@ const DEFAULT_DATA: FtpUserData = {
       useExisting: FtpUserComponent,
     },
     {
-      provide: NG_ASYNC_VALIDATORS,
+      provide: NG_VALIDATORS,
       multi: true,
       useExisting: FtpUserComponent,
     }
   ]
 })
-export class FtpUserComponent implements OnInit, ControlValueAccessor, AsyncValidator {
+export class FtpUserComponent implements ControlValueAccessor, Validator {
 
-  readonly ftpFolders$ = this.jobsApi.readFtp().pipe(
-    pluck('folders'),
-    shareReplay(1)
-  );
+  readonly ftpFolders$ = this.jobsApi.readFtp().pipe(pluck('folders'));
 
   form = this.fb.group({
     folder: [
@@ -47,9 +39,6 @@ export class FtpUserComponent implements OnInit, ControlValueAccessor, AsyncVali
       [
         Validators.required,
       ],
-      [
-        this.folderValidator(),
-      ]
     ],
     username: [DEFAULT_DATA.username],
     password: [DEFAULT_DATA.password],
@@ -62,15 +51,11 @@ export class FtpUserComponent implements OnInit, ControlValueAccessor, AsyncVali
   constructor(
     private fb: FormBuilder,
     private jobsApi: JobsApiService,
-    private chDetector: ChangeDetectorRef,
   ) { }
 
   writeValue(obj: FtpUserData): void {
     this.form.setValue(
-      {
-        ...DEFAULT_DATA,
-        ...obj,
-      },
+      defaults(obj, DEFAULT_DATA),
       { emitEvent: false }
     );
   }
@@ -84,28 +69,17 @@ export class FtpUserComponent implements OnInit, ControlValueAccessor, AsyncVali
   }
 
   setDisabledState(isDisabled: boolean): void {
+    // return;
     if (isDisabled) {
       this.form.disable({ emitEvent: false });
     } else {
       this.form.enable({ emitEvent: false });
     }
-    this.chDetector.markForCheck();
+    this.form.updateValueAndValidity();
   }
 
-  validate(): Observable<ValidationErrors> {
-    const validator = this.folderValidator();
-    return validator(this.folderControl);
-  }
-
-  ngOnInit(): void {
-  }
-
-  private folderValidator(): (control: AbstractControl) => Observable<ValidationErrors | null> {
-    return control =>
-      this.ftpFolders$.pipe(
-        take(1),
-        map(folders => folders.includes(control.value) ? null : { nonExist: control.value })
-      );
+  validate(): ValidationErrors {
+    return this.folderControl.errors;
   }
 
 }

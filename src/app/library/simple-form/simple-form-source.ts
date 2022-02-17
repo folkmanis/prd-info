@@ -5,7 +5,7 @@ import { isEqual, pickBy } from 'lodash';
 
 export abstract class SimpleFormSource<T extends Object> {
 
-    initialValue: T | undefined;
+    initialValue: Partial<T> | undefined;
 
     protected fb: IFormBuilder;
 
@@ -38,7 +38,7 @@ export abstract class SimpleFormSource<T extends Object> {
     abstract createEntity(): Observable<string | number>;
 
     initValue(value: Partial<T>, params?: { emitEvent: boolean; }): void {
-        this.initialValue = { ...this.initialValue, ...value };
+        this.initialValue = { ...value }; // ...this.initialValue,
         this.form.reset(undefined, params);
         this.form.patchValue(value, params);
         this.form.markAsPristine();

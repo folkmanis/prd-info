@@ -1,14 +1,13 @@
 <div [formGroup]="form">
     <mat-form-field>
-        <input matInput formControlName="folder" autocomplete="off" spellcheck="false" required>
-        <mat-label>
-            Lietotāja folderis
-        </mat-label>
+        <mat-label> Lietotāja folderis </mat-label>
+        <mat-select formControlName="folder" required>
+            <mat-option *ngFor="let folder of ftpFolders$ | async" [value]="folder">
+                {{ folder }}
+            </mat-option>
+        </mat-select>
         <mat-error *ngIf="folderControl.hasError('required')">
             Jānorāda obligāti
-        </mat-error>
-        <mat-error *ngIf="folderControl.hasError('nonExist')">
-            Mape {{ folderControl.getError('nonExist') }} nav uz servera
         </mat-error>
     </mat-form-field>
 
