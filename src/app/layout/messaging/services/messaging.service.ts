@@ -4,6 +4,7 @@ import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { LoginService } from 'src/app/login';
 import { Message } from '../interfaces';
 import { MessagesApiService } from './messages-api.service';
+import { combineReload } from 'src/app/library/rxjs';
 
 
 @Injectable({
@@ -13,11 +14,11 @@ export class MessagingService {
 
   private reload$ = new Subject<void>();
 
-  messages$: Observable<Message[]> = combineLatest([
-    this.reload$.pipe(startWith('')),
+  messages$: Observable<Message[]> = combineReload(
     this.login.user$,
-  ]).pipe(
-    switchMap(([_, user]) => user ? this.messagesApi.messages() : []),
+    this.reload$,
+  ).pipe(
+    switchMap(user => user ? this.messagesApi.messages() : []),
     shareReplay(1),
   );
 
