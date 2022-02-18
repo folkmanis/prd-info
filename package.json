@@ -34,7 +34,6 @@
     "filesize": "^8.0.6",
     "lodash": "^4.17.21",
     "npm": "^8.4.0",
-    "prd-cdk": "^0.8.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.4.0",
     "sanitize-filename": "^1.6.3",
