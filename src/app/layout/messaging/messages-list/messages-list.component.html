@@ -1,18 +1,15 @@
 <div *ngIf="messages$ | async as messages; else noMessages" class="messages-container">
 
 
-    <div *ngFor="let message of messages; trackBy: trackByFn" class="message">
+    <div *ngFor="let message of messages; trackBy: trackByFn" class="message" [class.unread]="!message.seen"
+        [class.selected]="message === selected">
 
-        <div class="message-icon">
-            <mat-icon *ngIf="!message.seen">
-                fmd_bad
-            </mat-icon>
-
+        <div class="signal">
         </div>
 
         <div class="message-text">
 
-            <span [class.unread]="!message.seen">
+            <span>
                 <small>
                     {{ message.timestamp | relativeDate:'strict' }} {{ message.data.toAction() }}
                 </small>
@@ -21,20 +18,42 @@
                 {{message.data.toDescription()}}
             </span>
 
-            <button mat-mini-fab class="actions" (click)="onDelete(message._id); $event.stopPropagation()">
-                <mat-icon>
-                    delete
-                </mat-icon>
-            </button>
-
         </div>
+
+        <button mat-icon-button *ngIf="ftpUsers(message).length > 0" class="message-menu" [matMenuTriggerFor]="ftpSave"
+            [matMenuTriggerData]="{ users: ftpUsers(message), message }" (menuOpened)="selected = message"
+            (menuClosed)="selected = null">
+            <mat-icon>
+                save
+            </mat-icon>
+        </button>
+
+        <button mat-icon-button *ngIf="!message.seen" class="message-menu" (click)="onMarkAsRead(message._id)">
+            <mat-icon>
+                done
+            </mat-icon>
+        </button>
+
+        <button mat-icon-button class="message-menu" (click)="onDelete(message._id)">
+            <mat-icon>
+                delete
+            </mat-icon>
+        </button>
 
     </div>
 
 </div>
 
 <ng-template #noMessages>
-    <div>
+    <div class="message">
         Ziņojumu nav
     </div>
 </ng-template>
+
+<mat-menu #ftpSave="matMenu">
+    <ng-template matMenuContent let-users="users" let-message="message">
+        <button mat-menu-item *ngFor="let ftpUser of users" (click)="onCreateJob(ftpUser, message)">
+            {{ ftpUser.CustomerName }}
+        </button>
+    </ng-template>
+</mat-menu>

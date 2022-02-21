@@ -20,13 +20,24 @@
     }
 }
 
-.message:hover {
-    background-color: rgba(0, 0, 0, 0.12);
+.signal {
+    flex: 0 0 8px;
+    height: 100%;
+    margin-left: -8px;
+    margin-right: 8px;
+    visibility: hidden;
+    background-color: var(--accent-color);
     transition: all 0.2s ease-in-out;
 }
 
-.message-icon {
-    flex: 0 0 24px;
+.unread .signal {
+    visibility: visible;
+}
+
+.message:hover,
+.message.selected {
+    background-color: rgba(0, 0, 0, 0.12);
+    transition: all 0.2s ease-in-out;
 }
 
 .message-text {
@@ -43,19 +54,22 @@
     }
 }
 
-.unread {
+.unread .message-text {
     font-weight: bold;
 }
 
-button.actions {
-    position: absolute;
-    right: 8px;
-    opacity: 0;
+.message-menu {
     visibility: hidden;
+    width: 0;
     transition: all 0.2s ease-in-out;
 }
 
-.message:hover button.actions {
-    opacity: 1;
+.message-menu:first-of-type {
+    margin-left: auto;
+}
+
+.message:hover .message-menu,
+.selected .message-menu {
     visibility: visible;
+    width: 40px;
 }

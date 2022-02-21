@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { ClassTransformer } from 'class-transformer';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, pluck } from 'rxjs/operators';
 import { APP_PARAMS } from 'src/app/app-params';
 import { AppParams } from 'src/app/interfaces';
 import { ApiBase, HttpOptions } from 'src/app/library/http';
@@ -39,12 +39,28 @@ export class MessagesApiService extends ApiBase<Message> {
         );
     }
 
+    setOneMessageRead(id: string): Observable<Message> {
+        return this.http.patch<Record<string, any>>(
+            this.path + 'read/' + id, new HttpOptions()
+        ).pipe(
+            map(message => addDataType(message)),
+            map(resp => this.transformer.plainToInstance(Message, resp)),
+        );
+    }
+
     setAllMessagesRead(): Observable<number> {
-        return this.http.delete<number>(this.path + 'allRead', new HttpOptions());
+        return this.http.patch<{ modifiedCount: number; }>(this.path + 'read', new HttpOptions()).pipe(
+            pluck('modifiedCount'),
+        );
     }
 
     deleteMessage(id: string): Observable<number> {
-        return this.http.delete<0 | 1>(this.path + id, new HttpOptions());
+        return this.http.delete<{ deletedCount: 0 | 1; }>(
+            this.path + id,
+            new HttpOptions()
+        ).pipe(
+            pluck('deletedCount')
+        );
     }
 
 

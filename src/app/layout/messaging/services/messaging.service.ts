@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { combineLatest, Observable, Subject } from 'rxjs';
-import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
+import { combineLatest, Observable, of, Subject } from 'rxjs';
+import { map, mapTo, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { LoginService } from 'src/app/login';
 import { Message } from '../interfaces';
 import { MessagesApiService } from './messages-api.service';
 import { combineReload } from 'src/app/library/rxjs';
+import { cacheWithUpdate } from 'prd-cdk';
 
 
 @Injectable({
@@ -14,11 +15,14 @@ export class MessagingService {
 
   private reload$ = new Subject<void>();
 
+  private update$ = new Subject<Message>();
+
   messages$: Observable<Message[]> = combineReload(
     this.login.user$,
     this.reload$,
   ).pipe(
     switchMap(user => user ? this.messagesApi.messages() : []),
+    cacheWithUpdate(this.update$, (m1, m2) => m1._id === m2._id),
     shareReplay(1),
   );
 
@@ -38,6 +42,17 @@ export class MessagingService {
 
   reload() {
     this.reload$.next();
+  }
+
+  replaceOne(message: Message) {
+    this.update$.next(message);
+  }
+
+  markOneRead(id: string): Observable<boolean> {
+    return this.messagesApi.setOneMessageRead(id).pipe(
+      tap(message => this.replaceOne(message)),
+      mapTo(true),
+    );
   }
 
   markAllAsRead(): Observable<boolean> {

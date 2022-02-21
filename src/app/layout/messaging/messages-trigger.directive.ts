@@ -1,25 +1,19 @@
-import { Input, Output, Directive, HostListener, ElementRef, ComponentRef, OnInit, OnDestroy } from '@angular/core';
-import { MessagesListComponent } from './messages-list/messages-list.component';
-import { Overlay, FlexibleConnectedPositionStrategy, OverlayPositionBuilder, CdkOverlayOrigin, OverlayConfig, OverlayRef, ConnectedPosition } from '@angular/cdk/overlay';
+import { CdkOverlayOrigin, ConnectedPosition, Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
-import { Subscription } from 'rxjs';
+import { Directive, ElementRef, HostListener, Injector, OnDestroy, OnInit } from '@angular/core';
 import { DestroyService } from 'prd-cdk';
 import { takeUntil } from 'rxjs/operators';
+import { MessagesListComponent } from './messages-list/messages-list.component';
 
 @Directive({
   selector: 'button[appMessagesTrigger]',
   providers: [DestroyService],
 })
-export class MessagesTriggerDirective implements OnInit { //  extends CdkOverlayOrigin
+export class MessagesTriggerDirective extends CdkOverlayOrigin implements OnInit, OnDestroy {
 
   private overlayRef: OverlayRef;
-  private portal = new ComponentPortal(MessagesListComponent);
 
-  private messagesComponentRef: ComponentRef<MessagesListComponent> | undefined;
-
-  opened = false;
-
-  private readonly connectedPoistions: ConnectedPosition[] = [
+  private readonly connectedPositions: ConnectedPosition[] = [
     {
       offsetX: 10,
       offsetY: 0,
@@ -31,19 +25,22 @@ export class MessagesTriggerDirective implements OnInit { //  extends CdkOverlay
   ];
 
   @HostListener('click') onClick() {
-    this.opened ? this.closeOverlay() : this.openOverlay();
+    this.overlayRef.hasAttached() ? this.closeOverlay() : this.openOverlay();
   }
 
   constructor(
     private overlay: Overlay,
-    private elementRef: ElementRef,
+    elementRef: ElementRef,
     private destroy$: DestroyService,
   ) {
-    const config = this.getOveraylConfig();
-    this.overlayRef = this.overlay.create(config);
+    super(elementRef);
   }
 
   ngOnInit() {
+
+    const config = this.overlayConfig();
+    this.overlayRef = this.overlay.create(config);
+
     this.overlayRef.backdropClick().pipe(
       takeUntil(this.destroy$),
     )
@@ -54,11 +51,27 @@ export class MessagesTriggerDirective implements OnInit { //  extends CdkOverlay
       });
   }
 
-  private getOveraylConfig(): OverlayConfig {
+  ngOnDestroy(): void {
+    this.overlayRef.hasAttached() && this.closeOverlay();
+  }
+
+  openOverlay() {
+    const injector = Injector.create({
+      providers: [{ provide: OverlayRef, useValue: this.overlayRef }]
+    });
+    const portal = new ComponentPortal(MessagesListComponent, undefined, injector);
+    this.overlayRef.attach(portal);
+  }
+
+  closeOverlay() {
+    this.overlayRef.detach();
+  }
+
+  private overlayConfig(): OverlayConfig {
     return new OverlayConfig({
       positionStrategy: this.overlay.position()
         .flexibleConnectedTo(this.elementRef)
-        .withPositions(this.connectedPoistions)
+        .withPositions(this.connectedPositions)
         .withGrowAfterOpen()
         .withLockedPosition(),
       scrollStrategy: this.overlay.scrollStrategies.block(),
@@ -67,17 +80,6 @@ export class MessagesTriggerDirective implements OnInit { //  extends CdkOverlay
       backdropClass: ['cdk-overlay-transparent-backdrop'],
       panelClass: ['mat-elevation-z4', 'app-messages-pane'],
     });
-  }
-
-  private openOverlay() {
-    this.messagesComponentRef = this.overlayRef.attach(this.portal);
-    this.messagesComponentRef.instance.dropDown = true;
-    this.opened = true;
-  }
-
-  private closeOverlay() {
-    this.overlayRef.detach();
-    this.opened = false;
   }
 
 }

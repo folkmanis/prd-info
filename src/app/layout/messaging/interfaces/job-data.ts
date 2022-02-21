@@ -11,6 +11,12 @@ const FS_ACTIONS: {
         { operation: 'unlink', action: 'Izdzēsts fails' },
     ];
 
+export class MessageFtpUser {
+    _id: string;
+    CustomerName: string;
+    code: string;
+    folder: string;
+}
 
 export type FsOperations = 'add' | 'addDir' | 'change' | 'unlink' | 'ready';
 
@@ -19,6 +25,9 @@ export class JobData extends MessageData {
     action: 'ftpUpload';
     operation: FsOperations;
     path: string[];
+
+    @Type(() => MessageFtpUser)
+    ftpUsers: MessageFtpUser[];
 
     toAction() {
         if (this.action === 'ftpUpload') {

@@ -1,10 +1,11 @@
-import { AfterViewInit, Inject, ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output, TrackByFunction } from '@angular/core';
+import { OverlayRef } from '@angular/cdk/overlay';
+import { AfterViewInit, ChangeDetectionStrategy, Component, Inject, OnInit, Optional, TrackByFunction } from '@angular/core';
 import { DestroyService } from 'prd-cdk';
 import { delay, filter, mergeMap, take, takeUntil } from 'rxjs/operators';
-import { AppParams } from 'src/app/interfaces';
 import { APP_PARAMS } from 'src/app/app-params';
+import { AppParams } from 'src/app/interfaces';
+import { JobData, Message, MessageFtpUser } from '../interfaces';
 import { MessagingService } from '../services/messaging.service';
-import { Message } from '../interfaces';
 
 @Component({
   selector: 'app-messages-list',
@@ -17,14 +18,13 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
 
   readonly messages$ = this.messaging.messages$;
 
-  dropDown = false;
-
-  @Output() readonly delete = new EventEmitter<Message>();
+  selected: Message | null = null;
 
   trackByFn: TrackByFunction<Message> = (idx, msg) => msg._id;
 
   constructor(
     private messaging: MessagingService,
+    @Optional() private overlayRef: OverlayRef,
     private destroy$: DestroyService,
     @Inject(APP_PARAMS) private appParams: AppParams,
   ) { }
@@ -33,22 +33,25 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.messaging.unreadCount$.pipe(
-      take(1),
-      filter(count => count > 0),
-      delay(this.appParams.messagesReadDelay),
-      mergeMap(_ => this.messaging.markAllAsRead()),
-      takeUntil(this.destroy$),
-    )
-      .subscribe();
+  }
 
+  ftpUsers({ data }: Message): MessageFtpUser[] {
+    return data instanceof JobData && data.operation === 'add' && data.ftpUsers || [];
   }
 
   onDelete(id: string) {
-    this.messaging.deleteMessage(id).pipe(
-      takeUntil(this.destroy$),
-    )
+    this.messaging.deleteMessage(id)
       .subscribe();
+  }
+
+  onMarkAsRead(id: string) {
+    this.messaging.markOneRead(id)
+      .subscribe();
+  }
+
+  onCreateJob(customer: MessageFtpUser, message: Message) {
+    this.overlayRef?.detach();
+    console.log('create job!', customer, message);
   }
 
 
