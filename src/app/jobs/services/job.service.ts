@@ -123,4 +123,10 @@ export class JobService {
     );
   }
 
+  copyFtpFilesToJob(jobId: number, files: string[][]): Observable<Job> {
+    return this.api.transferFtpFilesToJob(jobId, files).pipe(
+      tap(() => this.reload()),
+    );
+  }
+
 }

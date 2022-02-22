@@ -52,7 +52,7 @@
 
 <mat-menu #ftpSave="matMenu">
     <ng-template matMenuContent let-users="users" let-message="message">
-        <button mat-menu-item *ngFor="let ftpUser of users" (click)="onCreateJob(ftpUser, message)">
+        <button mat-menu-item *ngFor="let ftpUser of users" [appMessageJob]="message" [appMessageJobFtpUser]="ftpUser">
             {{ ftpUser.CustomerName }}
         </button>
     </ng-template>

@@ -24,8 +24,9 @@ export class MessagesTriggerDirective extends CdkOverlayOrigin implements OnInit
     }
   ];
 
-  @HostListener('click') onClick() {
-    this.overlayRef.hasAttached() ? this.closeOverlay() : this.openOverlay();
+  @HostListener('click')
+  onClick() {
+    this.overlayRef.hasAttached() ? this.overlayRef.detach() : this.openOverlay();
   }
 
   constructor(
@@ -47,12 +48,12 @@ export class MessagesTriggerDirective extends CdkOverlayOrigin implements OnInit
       .subscribe(event => {
         event.stopPropagation();
         event.preventDefault();
-        this.closeOverlay();
+        this.overlayRef.detach();
       });
   }
 
   ngOnDestroy(): void {
-    this.overlayRef.hasAttached() && this.closeOverlay();
+    this.overlayRef.detach();
   }
 
   openOverlay() {
@@ -61,10 +62,6 @@ export class MessagesTriggerDirective extends CdkOverlayOrigin implements OnInit
     });
     const portal = new ComponentPortal(MessagesListComponent, undefined, injector);
     this.overlayRef.attach(portal);
-  }
-
-  closeOverlay() {
-    this.overlayRef.detach();
   }
 
   private overlayConfig(): OverlayConfig {

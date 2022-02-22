@@ -4,12 +4,11 @@ import { flatten } from 'lodash';
 import { forkJoin, Observable, of } from 'rxjs';
 import { concatMap, map, mapTo, pluck } from 'rxjs/operators';
 import { JobProductionStage } from 'src/app/interfaces';
-import { Job, JobProduct } from '../../interfaces';
 import { ProductsService } from 'src/app/services';
+import { Job, JobProduct } from '../../interfaces';
+import { FileUploadMessage } from '../../interfaces/file-upload-message';
 import { JobService } from '../../services/job.service';
 import { ReproJobEditComponent } from '../repro-job-edit/repro-job-edit.component';
-import { FileUploadEventType, FileUploadMessage, UploadMessageBase } from '../../interfaces/file-upload-message';
-import { log } from 'prd-cdk';
 
 export interface DialogData {
   job: Partial<Job>;

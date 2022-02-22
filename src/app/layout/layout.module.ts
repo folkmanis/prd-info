@@ -11,6 +11,7 @@ import { MessagesTriggerDirective } from './messaging/messages-trigger.directive
 import { SideMenuComponent } from './side-menu/side-menu.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { AppContainerComponent } from './app-container/app-container.component';
+import { MessageJobDirective } from './messaging/message-job.directive';
 
 
 
@@ -22,6 +23,7 @@ import { AppContainerComponent } from './app-container/app-container.component';
     MessagesListComponent,
     MessagesTriggerDirective,
     AppContainerComponent,
+    MessageJobDirective,
   ],
   imports: [
     CommonModule,
