@@ -1,3 +1,16 @@
 <form [formGroup]="controls">
-    <mat-checkbox formControlName="menuExpandedByDefault">Sānu izvēlne izvērsta</mat-checkbox>
+
+    <p>
+        <mat-checkbox formControlName="menuExpandedByDefault">Sānu izvēlne izvērsta</mat-checkbox>
+    </p>
+
+    <p>
+        <mat-form-field>
+            <mat-label>
+                Hostname
+            </mat-label>
+            <input matInput formControlName="hostname">
+        </mat-form-field>
+    </p>
+
 </form>
