@@ -29,6 +29,7 @@ export interface KastesSettings {
 export interface SystemSettings {
     menuExpandedByDefault: boolean;
     logLevels: [number, string][];
+    hostname: string;
 }
 
 export interface ProductCategory {
