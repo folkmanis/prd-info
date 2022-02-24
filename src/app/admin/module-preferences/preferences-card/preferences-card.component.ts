@@ -1,16 +1,28 @@
 import { FocusMonitor } from '@angular/cdk/a11y';
-import { Component, OnInit, ContentChild, AfterContentInit, ChangeDetectorRef, ElementRef, OnDestroy } from '@angular/core';
-import { NgControl } from '@angular/forms';
-import { IControlValueAccessor } from '@rxweb/types';
+import { AfterContentInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, ElementRef, OnDestroy, OnInit } from '@angular/core';
+import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { PreferencesCardControl } from '../preferences-card-control';
 
 @Component({
   selector: 'app-preferences-card',
   templateUrl: './preferences-card.component.html',
-  styleUrls: ['./preferences-card.component.scss']
+  styleUrls: ['./preferences-card.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: PreferencesCardComponent,
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: PreferencesCardComponent,
+      multi: true,
+    }
+  ]
 })
-export class PreferencesCardComponent<T> implements IControlValueAccessor<T>, OnInit, OnDestroy, AfterContentInit {
+export class PreferencesCardComponent<T> implements ControlValueAccessor, Validator, OnInit, OnDestroy, AfterContentInit {
 
   @ContentChild(PreferencesCardControl) private _controler: PreferencesCardControl<T>;
 
@@ -22,13 +34,10 @@ export class PreferencesCardComponent<T> implements IControlValueAccessor<T>, On
   private _subs = new Subscription();
 
   constructor(
-    ngControl: NgControl,
     private changeDetectorRef: ChangeDetectorRef,
     private focusMonitor: FocusMonitor,
     private elRef: ElementRef<HTMLElement>,
-  ) {
-    ngControl.valueAccessor = this;
-  }
+  ) { }
 
   writeValue(obj: T) {
     this.initialValue = obj;
@@ -57,6 +66,12 @@ export class PreferencesCardComponent<T> implements IControlValueAccessor<T>, On
     });
   }
 
+  validate(): ValidationErrors {
+    if (!this._controler) return null;
+    const component = Object.getPrototypeOf(this._controler).constructor.name;
+    return this._controler?.controls.valid ? null : { component };
+  }
+
   ngAfterContentInit(): void {
     this._validateControler();
     this._controler.value = this.initialValue;
@@ -65,7 +80,6 @@ export class PreferencesCardComponent<T> implements IControlValueAccessor<T>, On
       this._controler.controls.valueChanges.pipe(
       ).subscribe(val => this.valueChangeFn({ ...this.initialValue, ...val }))
     );
-
   }
 
   ngOnDestroy() {
