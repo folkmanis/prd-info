@@ -1,11 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
-import { IFormBuilder, IFormGroup } from '@rxweb/types';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { SystemSettings } from 'src/app/interfaces';
 import { PreferencesCardControl } from '../../preferences-card-control';
-
-type SystemSettingsPartial = Partial<SystemSettings>;
 
 @Component({
   selector: 'app-system-preferences',
@@ -24,18 +21,21 @@ export class SystemPreferencesComponent implements PreferencesCardControl<System
     return this.controls.value;
   }
 
-  controls: IFormGroup<Partial<SystemSettings>>;
+  controls: FormGroup;
 
   stateChanges = new Subject<void>();
-
-  private fb: IFormBuilder;
 
   constructor(
     fb: FormBuilder,
   ) {
-    this.fb = fb;
-    this.controls = this.fb.group<SystemSettingsPartial>({
+    this.controls = fb.group({
       menuExpandedByDefault: [true],
+      hostname: [
+        null,
+        {
+          validators: [Validators.required]
+        }
+      ]
     });
   }
 
