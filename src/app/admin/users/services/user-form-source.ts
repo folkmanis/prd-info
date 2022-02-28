@@ -44,6 +44,7 @@ export class UserFormSource extends SimpleFormSource<User> {
                 customers: [''],
                 modules: [''],
             }),
+            eMail: [null],
             sessions: [{ value: undefined, disabled: true }]
         });
         return form;
