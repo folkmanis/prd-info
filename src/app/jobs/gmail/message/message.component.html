@@ -1,0 +1,35 @@
+<div class="container">
+
+    <mat-card>
+        <a mat-mini-fab routerLink="..">
+            <mat-icon>
+                chevron_left
+            </mat-icon>
+        </a>
+    </mat-card>
+
+    <mat-card *ngFor="let message of messages$ | async">
+
+
+        <mat-card-content class="snippet">
+            <span [innerHTML]="message.snippet"></span>
+            <span *ngIf="message.hasAttachment">
+                <mat-icon>
+                    attachment
+                </mat-icon>
+            </span>
+        </mat-card-content>
+
+        <mat-card-actions *ngIf="message.hasAttachment">
+
+            <button mat-icon-button>
+                <mat-icon>
+                    attachment
+                </mat-icon>
+            </button>
+
+        </mat-card-actions>
+
+    </mat-card>
+
+</div>

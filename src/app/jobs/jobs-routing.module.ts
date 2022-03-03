@@ -13,6 +13,7 @@ const routes: Routes = [
     component: JobsComponent,
   },
   { path: 'products-production', loadChildren: () => import('./products-production/products-production.module').then(m => m.ProductsProductionModule) },
+  { path: 'gmail', loadChildren: () => import('./gmail/gmail.module').then(m => m.GmailModule) },
 ];
 
 @NgModule({
