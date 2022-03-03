@@ -10,6 +10,7 @@ export class ConfirmationDialogComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: {
       prompt: string;
+      title?: string;
       yes?: string;
       no?: string;
     },

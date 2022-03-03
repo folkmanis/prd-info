@@ -48,6 +48,7 @@ export class ConfirmationDialogService {
     return this.confirm(message || 'Radusies problēma ar serveri. Mēģiniet vēlreiz vēlāk vai sazinieties ar atbalstu',
       {
         data: {
+          title: 'Kļūda!',
           yes: 'OK',
           no: undefined,
         }
