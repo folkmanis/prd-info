@@ -6,12 +6,14 @@ import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { GmailRoutingModule } from './gmail-routing.module';
 import { GmailComponent } from './gmail.component';
 import { MessageComponent } from './message/message.component';
+import { AttachmentsComponent } from './attachments/attachments.component';
 
 
 @NgModule({
   declarations: [
     GmailComponent,
-    MessageComponent
+    MessageComponent,
+    AttachmentsComponent
   ],
   imports: [
     CommonModule,

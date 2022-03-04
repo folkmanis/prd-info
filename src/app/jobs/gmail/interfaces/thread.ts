@@ -12,5 +12,9 @@ export class Thread {
     @Type(() => Message)
     messages: Message[];
 
+    get from(): string {
+        return this.messages[0]?.from;
+    }
+
 
 }

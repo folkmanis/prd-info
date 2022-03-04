@@ -5,3 +5,4 @@ export * from './message-part-body';
 export * from './threads-filter-query';
 export * from './thread';
 export * from './threads';
+export * from './attachment';

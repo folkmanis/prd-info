@@ -1,5 +1,7 @@
 import { Type } from 'class-transformer';
 import { MessagePart } from './message-part';
+import { Attachment } from './attachment';
+
 
 export class Message {
 
@@ -28,6 +30,10 @@ export class Message {
 
     get hasAttachment(): boolean {
         return this.payload?.hasAttachment;
+    }
+
+    get attachments(): Attachment[] {
+        return this.payload.attachments;
     }
 
 

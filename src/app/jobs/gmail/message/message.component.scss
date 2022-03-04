@@ -5,15 +5,15 @@
     gap: 8px;
 }
 
-mat-card-content.snippet {
+.snippet {
     display: flex;
     align-items: center;
 }
 
-mat-card-content.snippet > span:last-of-type {
+.snippet > span:last-of-type {
     margin-left: auto;
 }
-mat-card-content.snippet > span:first-of-type {
+.snippet > span:first-of-type {
     flex: 1;
     white-space: nowrap;
     overflow: hidden;

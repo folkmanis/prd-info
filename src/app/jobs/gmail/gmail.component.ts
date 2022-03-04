@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { GmailService } from './services/gmail.service';
 import { log } from 'prd-cdk';
@@ -7,7 +7,8 @@ import { pluck, map } from 'rxjs';
 @Component({
   selector: 'app-gmail',
   templateUrl: './gmail.component.html',
-  styleUrls: ['./gmail.component.scss']
+  styleUrls: ['./gmail.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GmailComponent implements OnInit {
 

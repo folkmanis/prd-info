@@ -23,6 +23,10 @@ export class MessageComponent implements OnInit {
     // map(messages => messages.map(msg => msg.payload))
   );
 
+  from$ = this.thread$.pipe(
+    pluck('from'),
+  );
+
   constructor(
     private readonly route: ActivatedRoute,
     private sanitizer: DomSanitizer,
