@@ -36,5 +36,9 @@ export class Message {
         return this.payload.attachments;
     }
 
+    get text(): string[] {
+        return this.payload.text;
+    }
+
 
 }

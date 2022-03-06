@@ -1,5 +1,7 @@
-<mat-selection-list dense>
-    <mat-list-option *ngFor="let attachment of attachments" [value]="attachment">
-        {{ attachment.filename }}
+<mat-selection-list>
+    <mat-list-option *ngFor="let attachment of attachments" [value]="attachment" checkboxPosition="before"
+        [selected]="isPdf(attachment.filename)">
+        {{ attachment.filename }} - {{ attachment.size | filesize }}
+        <!-- {{ attachment.filename }} -->
     </mat-list-option>
 </mat-selection-list>

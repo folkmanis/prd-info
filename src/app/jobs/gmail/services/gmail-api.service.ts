@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { ClassTransformer } from 'class-transformer';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { Message, ThreadsFilterQuery, Thread, Threads } from '../interfaces';
+import { Attachment, Message, ThreadsFilterQuery, Thread, Threads } from '../interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -39,6 +39,16 @@ export class GmailApiService {
     return this.http.get<Record<string, any>>(this.path + 'thread/' + id, new HttpOptions()).pipe(
       map(data => this.toClass(Thread, data)),
     );
+  }
+
+  attachmentToUserStorage(messageId: string, attachment: Attachment): Observable<{ names: string[]; }> {
+    return this.http.put<{ names: string[]; }>(
+      this.path + 'message/attachment',
+      {
+        messageId,
+        attachment
+      },
+      new HttpOptions());
   }
 
 

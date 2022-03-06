@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { GmailApiService } from './gmail-api.service';
-import { ThreadsFilterQuery } from '../interfaces';
+import { Attachment, ThreadsFilterQuery } from '../interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -29,5 +29,9 @@ export class GmailService {
 
   message(id: string) {
     return this.api.getMessage(id);
+  }
+
+  saveAttachments(messageId: string, attachment: Attachment) {
+    return this.api.attachmentToUserStorage(messageId, attachment);
   }
 }

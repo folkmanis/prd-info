@@ -46,4 +46,15 @@ export class MessagePart {
         return [...partsAttachments, attachment];
     }
 
+    get text(): string[] {
+        const partsMsgs = this.parts?.map(part => part.text).reduce((acc, curr) => [...acc, ...curr], []) || [];
+        if (this.mimeType !== 'text/plain') {
+            return partsMsgs;
+        }
+        if (this.body.decoded) {
+            return [...partsMsgs, this.body.decoded];
+        }
+        return partsMsgs;
+    }
+
 }
