@@ -12,9 +12,8 @@ import { Job } from '../../interfaces';
 import { JobService } from '../../services/job.service';
 import { JobsApiService } from '../../services/jobs-api.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { JobCreatorService } from '../../services/job-creator.service';
 
-
-const MAX_JOB_NAME_LENGTH = 100; // TODO take from global config
 
 
 @Component({
@@ -40,13 +39,11 @@ export class MessageComponent implements OnInit {
   );
 
   constructor(
-    private readonly route: ActivatedRoute,
-    private readonly sanitizer: DomSanitizer,
-    private readonly gmail: GmailService,
-    private readonly jobDialog: ReproJobDialogService,
-    private readonly jobService: JobService,
-    private readonly jobsApi: JobsApiService,
-    private readonly snack: MatSnackBar,
+    private route: ActivatedRoute,
+    private sanitizer: DomSanitizer,
+    private gmail: GmailService,
+    private snack: MatSnackBar,
+    private jobCreator: JobCreatorService,
   ) { }
 
   ngOnInit(): void {
@@ -62,47 +59,14 @@ export class MessageComponent implements OnInit {
 
     from(attachments).pipe(
       concatMap(attachment => this.gmail.saveAttachments(message.id, attachment)),
-      pluck('names'),
       toArray(),
-      map(files => files.reduce((acc, curr) => acc.concat(...curr), [])),
-      mergeMap(fileNames => this.jobDialog.openJob(
-        this.jobDataFromFiles(fileNames, message.text.join(';'))
-      ).pipe(
-        mergeMap(job => job ? this.jobService.newJob(job) : this.uploadCleanup(fileNames)),
-        mergeMap(jobId => this.jobService.moveUserFilesToJob(jobId, fileNames)),
-      )),
+      mergeMap(fileNames => this.jobCreator.fromUserFiles(fileNames, { comment: message.text.join(';') })),
       finalize(() => this.busy$.value && this.busy$.next(false)),
     )
       .subscribe(job => this.snack.open(`Darbs ${job.jobId}-${job.name} izveidots!`, 'OK', { duration: 5000 }));
 
   }
 
-  private uploadCleanup(fileNames: string[]): Observable<never> {
-    return this.jobsApi.deleteUserFiles(fileNames).pipe(
-      mergeMapTo(EMPTY),
-    );
-  }
-
-  private jobDataFromFiles(fileNames: string[], comment: string): Partial<Job> {
-
-    return {
-      name: fileNames
-        .reduce((acc, curr) => [...acc, curr.replace(/\.[^/.]+$/, '')], [])
-        .reduce((acc, curr, _, names) => [...acc, curr.slice(0, MAX_JOB_NAME_LENGTH / names.length)], [])
-        .join('_'),
-      receivedDate: new Date(),
-      dueDate: new Date(),
-      production: {
-        category: 'repro',
-      },
-      jobStatus: {
-        generalStatus: 20,
-        timestamp: new Date(),
-      },
-      comment,
-    };
-
-  }
 
 
 }

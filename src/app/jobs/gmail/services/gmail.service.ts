@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Observable, ReplaySubject } from 'rxjs';
+import { map, pluck, single, switchMap, toArray } from 'rxjs/operators';
 import { GmailApiService } from './gmail-api.service';
 import { Attachment, ThreadsFilterQuery } from '../interfaces';
 
@@ -31,7 +31,11 @@ export class GmailService {
     return this.api.getMessage(id);
   }
 
-  saveAttachments(messageId: string, attachment: Attachment) {
-    return this.api.attachmentToUserStorage(messageId, attachment);
+  saveAttachments(messageId: string, attachment: Attachment): Observable<string> {
+    return this.api.attachmentToUserStorage(messageId, attachment).pipe(
+      pluck('names'),
+      single(fileNames => fileNames.length === 1),
+      map(fileNames => fileNames[0]),
+    );
   }
 }
