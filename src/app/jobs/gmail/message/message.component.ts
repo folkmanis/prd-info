@@ -1,8 +1,8 @@
 import { Input, Component, OnInit, ChangeDetectionStrategy, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Thread, Message, MessagePart } from '../interfaces';
-import { pluck, map, concatMap, toArray, tap, finalize, mergeMap, throwIfEmpty, catchError, mergeMapTo } from 'rxjs/operators';
-import { Observable, from, of, BehaviorSubject, EMPTY, pipe, OperatorFunction, MonoTypeOperatorFunction } from 'rxjs';
+import { pluck, map, concatMap, toArray, tap, finalize, mergeMap, throwIfEmpty, catchError, mergeMapTo, withLatestFrom } from 'rxjs/operators';
+import { Observable, from, of, BehaviorSubject, EMPTY, pipe, OperatorFunction, MonoTypeOperatorFunction, combineLatest } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
 import { log } from 'prd-cdk';
 import { Attachment } from '../interfaces';
@@ -14,7 +14,7 @@ import { JobsApiService } from '../../services/jobs-api.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { JobCreatorService } from '../../services/job-creator.service';
 import { AttachmentsComponent } from '../attachments/attachments.component';
-
+import { CustomersService } from 'src/app/services/customers.service';
 
 
 @Component({
@@ -27,15 +27,27 @@ export class MessageComponent implements OnInit {
 
   @ViewChild(AttachmentsComponent) private attachmentsList: AttachmentsComponent;
 
-  @Input() message: Message;
+  private _message: Message;
+  @Input() set message(value: Message) {
+    if (value instanceof Message) {
+      this._message = value;
+      this.expanded = this.message.hasAttachment && this.message.labelIds.every(label => label !== 'SENT');
+    }
+  }
+  get message() {
+    return this._message;
+  }
 
   busy$ = new BehaviorSubject<boolean>(false);
+
+  expanded = false;
 
   constructor(
     private sanitizer: DomSanitizer,
     private gmail: GmailService,
     private snack: MatSnackBar,
     private jobCreator: JobCreatorService,
+    private customers: CustomersService,
   ) { }
 
   ngOnInit(): void {
@@ -52,7 +64,8 @@ export class MessageComponent implements OnInit {
     from(attachments).pipe(
       concatMap(attachment => this.gmail.saveAttachments(this.message.id, attachment)),
       toArray(),
-      mergeMap(fileNames => this.jobCreator.fromUserFiles(fileNames, { comment: this.message.plain })),
+      withLatestFrom(this.resolveJob(this.message)),
+      mergeMap(([fileNames, job]) => this.jobCreator.fromUserFiles(fileNames, job)),
       finalize(() => this.busy$.value && this.busy$.next(false)),
     )
       .subscribe(job => {
@@ -62,6 +75,23 @@ export class MessageComponent implements OnInit {
 
   }
 
+  private resolveJob(message: Message): Observable<Partial<Job>> {
+
+    const job: Partial<Job> = {
+      comment: message.plain,
+    };
+    const email = message.from.match(/[^<]+(?=>)/g)[0];
+
+    return this.customers.getCustomerList({ email }).pipe(
+      map(customers => {
+        if (customers.length === 1) {
+          job.customer = customers[0].CustomerName;
+        }
+        return job;
+      }),
+    );
+
+  }
 
 
 }

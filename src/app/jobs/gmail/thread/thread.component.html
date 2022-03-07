@@ -4,7 +4,7 @@
 
         <mat-card-title>
 
-            <a mat-mini-fab routerLink="..">
+            <a mat-mini-fab routerLink=".." color="primary">
                 <mat-icon>
                     chevron_left
                 </mat-icon>
@@ -16,6 +16,11 @@
                 </h3>
                 <h4>
                     {{ thread.subject }}
+                    <button mat-icon-button>
+                        <mat-icon>
+                            arrow_circle_right
+                        </mat-icon>
+                    </button>
                 </h4>
             </div>
 

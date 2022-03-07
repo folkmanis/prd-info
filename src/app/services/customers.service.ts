@@ -28,8 +28,8 @@ export class CustomersService {
     );
   }
 
-  getCustomerList(): Observable<CustomerPartial[]> {
-    return this.prdApi.customers.get({ disabled: true });
+  getCustomerList(filter: { name?: string, email?: string; } = {}): Observable<CustomerPartial[]> {
+    return this.prdApi.customers.get({ disabled: true, ...filter });
   }
 
   getCustomer(id: string): Observable<Customer | never> {

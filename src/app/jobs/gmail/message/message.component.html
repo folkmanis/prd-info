@@ -1,7 +1,7 @@
 <mat-card>
 
-    <mat-card-content *ngIf="message.hasAttachment; else snippet">
-        <div class="message">
+    <mat-card-content *ngIf="expanded; else snippet">
+        <div class="message" (click)="expanded = false">
             <span [innerHTML]="replaceBr(message.html || message.plain)"></span>
             <span *ngIf="message.hasAttachment">
                 <mat-icon>
@@ -27,8 +27,13 @@
     </mat-card-content>
 
     <ng-template #snippet>
-        <mat-card-content class="snippet">
+        <mat-card-content class="snippet" (click)="expanded = true">
             <span [innerHTML]="message.snippet">
+            </span>
+            <span *ngIf="message.hasAttachment">
+                <mat-icon>
+                    attachment
+                </mat-icon>
             </span>
         </mat-card-content>
     </ng-template>
