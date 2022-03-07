@@ -20,5 +20,9 @@ export class Thread {
         return this.messages[0]?.subject;
     }
 
+    get plain(): string {
+        return this.messages.map(message => message.plain).join(';\r\n');
+    }
+
 
 }

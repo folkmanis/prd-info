@@ -1,8 +1,8 @@
-import { Input, Component, OnInit, ChangeDetectionStrategy, ViewChild } from '@angular/core';
+import { Output, Input, Component, OnInit, ChangeDetectionStrategy, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Thread, Message, MessagePart } from '../interfaces';
 import { pluck, map, concatMap, toArray, tap, finalize, mergeMap, throwIfEmpty, catchError, mergeMapTo, withLatestFrom } from 'rxjs/operators';
-import { Observable, from, of, BehaviorSubject, EMPTY, pipe, OperatorFunction, MonoTypeOperatorFunction, combineLatest } from 'rxjs';
+import { Observable, from, of, BehaviorSubject, EMPTY, pipe, OperatorFunction, MonoTypeOperatorFunction, combineLatest, Subject } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
 import { log } from 'prd-cdk';
 import { Attachment } from '../interfaces';
@@ -25,7 +25,7 @@ import { CustomersService } from 'src/app/services/customers.service';
 })
 export class MessageComponent implements OnInit {
 
-  @ViewChild(AttachmentsComponent) private attachmentsList: AttachmentsComponent;
+  @ViewChild(AttachmentsComponent) attachmentsList: AttachmentsComponent;
 
   private _message: Message;
   @Input() set message(value: Message) {
@@ -38,16 +38,15 @@ export class MessageComponent implements OnInit {
     return this._message;
   }
 
+  @Output()
+  attachmentsConfirm = new Subject<Attachment[]>();
+
   busy$ = new BehaviorSubject<boolean>(false);
 
   expanded = false;
 
   constructor(
     private sanitizer: DomSanitizer,
-    private gmail: GmailService,
-    private snack: MatSnackBar,
-    private jobCreator: JobCreatorService,
-    private customers: CustomersService,
   ) { }
 
   ngOnInit(): void {
@@ -57,41 +56,8 @@ export class MessageComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustHtml(str?.replace(/\r\n/g, '<br />'));
   }
 
-  createJob(attachments: Attachment[]) {
-
-    this.busy$.next(true);
-
-    from(attachments).pipe(
-      concatMap(attachment => this.gmail.saveAttachments(this.message.id, attachment)),
-      toArray(),
-      withLatestFrom(this.resolveJob(this.message)),
-      mergeMap(([fileNames, job]) => this.jobCreator.fromUserFiles(fileNames, job)),
-      finalize(() => this.busy$.value && this.busy$.next(false)),
-    )
-      .subscribe(job => {
-        this.snack.open(`Darbs ${job.jobId}-${job.name} izveidots!`, 'OK', { duration: 5000 });
-        this.attachmentsList.deselect(attachments);
-      });
-
+  onCreateJob(attachments: Attachment[]) {
+    this.attachmentsConfirm.next(attachments);
   }
-
-  private resolveJob(message: Message): Observable<Partial<Job>> {
-
-    const job: Partial<Job> = {
-      comment: message.plain,
-    };
-    const email = message.from.match(/[^<]+(?=>)/g)[0];
-
-    return this.customers.getCustomerList({ email }).pipe(
-      map(customers => {
-        if (customers.length === 1) {
-          job.customer = customers[0].CustomerName;
-        }
-        return job;
-      }),
-    );
-
-  }
-
 
 }

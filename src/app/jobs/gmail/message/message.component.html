@@ -14,7 +14,7 @@
         </app-attachments>
 
         <mat-card-actions *ngIf="message.hasAttachment">
-            <button mat-raised-button (click)="createJob(attachmentList.selected)"
+            <button mat-raised-button (click)="onCreateJob(attachmentList.selected)"
                 [disabled]="!attachmentList.selected?.length || (busy$ | async)">
                 SAGLABĀT
             </button>

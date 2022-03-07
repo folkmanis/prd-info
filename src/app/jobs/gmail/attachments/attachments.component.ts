@@ -46,5 +46,8 @@ export class AttachmentsComponent implements OnInit {
     }
   }
 
+  deselectAll() {
+    this.list.deselectAll();
+  }
 
 }
