@@ -44,6 +44,7 @@ export class CustomersFormSource extends SimpleFormSource<Customer> {
             financial: [undefined],
             ftpUser: [false],
             ftpUserData: [undefined],
+            email: [undefined],
         });
     }
 
