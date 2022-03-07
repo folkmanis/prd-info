@@ -1,0 +1,29 @@
+<div class="container">
+
+    <mat-card *ngIf="thread$ | async as thread">
+
+        <mat-card-title>
+
+            <a mat-mini-fab routerLink="..">
+                <mat-icon>
+                    chevron_left
+                </mat-icon>
+            </a>
+
+            <div class="header">
+                <h3>
+                    {{ thread.from }}
+                </h3>
+                <h4>
+                    {{ thread.subject }}
+                </h4>
+            </div>
+
+        </mat-card-title>
+
+    </mat-card>
+
+    <app-message *ngFor="let message of messages$ | async" [message]="message"> </app-message>
+
+
+</div>

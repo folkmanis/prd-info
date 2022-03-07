@@ -12,8 +12,12 @@ export class Thread {
     @Type(() => Message)
     messages: Message[];
 
-    get from(): string {
-        return this.messages[0]?.from;
+    get from(): string | undefined {
+        return this.messages.find(msg => msg.labelIds.every(label => label !== 'SENT'))?.from;
+    }
+
+    get subject(): string | undefined {
+        return this.messages[0]?.subject;
     }
 
 

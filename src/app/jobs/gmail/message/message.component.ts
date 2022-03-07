@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Input, Component, OnInit, ChangeDetectionStrategy, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Thread, Message, MessagePart } from '../interfaces';
 import { pluck, map, concatMap, toArray, tap, finalize, mergeMap, throwIfEmpty, catchError, mergeMapTo } from 'rxjs/operators';
@@ -13,6 +13,7 @@ import { JobService } from '../../services/job.service';
 import { JobsApiService } from '../../services/jobs-api.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { JobCreatorService } from '../../services/job-creator.service';
+import { AttachmentsComponent } from '../attachments/attachments.component';
 
 
 
@@ -24,22 +25,13 @@ import { JobCreatorService } from '../../services/job-creator.service';
 })
 export class MessageComponent implements OnInit {
 
+  @ViewChild(AttachmentsComponent) private attachmentsList: AttachmentsComponent;
+
+  @Input() message: Message;
+
   busy$ = new BehaviorSubject<boolean>(false);
 
-  thread$: Observable<Thread> = this.route.data.pipe(
-    pluck('thread'),
-  );
-
-  messages$: Observable<Message[]> = this.thread$.pipe(
-    pluck('messages'),
-  );
-
-  from$ = this.thread$.pipe(
-    pluck('from'),
-  );
-
   constructor(
-    private route: ActivatedRoute,
     private sanitizer: DomSanitizer,
     private gmail: GmailService,
     private snack: MatSnackBar,
@@ -53,17 +45,20 @@ export class MessageComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustHtml(str?.replace(/\r\n/g, '<br />'));
   }
 
-  createJob(message: Message, attachments: Attachment[]) {
+  createJob(attachments: Attachment[]) {
 
     this.busy$.next(true);
 
     from(attachments).pipe(
-      concatMap(attachment => this.gmail.saveAttachments(message.id, attachment)),
+      concatMap(attachment => this.gmail.saveAttachments(this.message.id, attachment)),
       toArray(),
-      mergeMap(fileNames => this.jobCreator.fromUserFiles(fileNames, { comment: message.text.join(';') })),
+      mergeMap(fileNames => this.jobCreator.fromUserFiles(fileNames, { comment: this.message.plain })),
       finalize(() => this.busy$.value && this.busy$.next(false)),
     )
-      .subscribe(job => this.snack.open(`Darbs ${job.jobId}-${job.name} izveidots!`, 'OK', { duration: 5000 }));
+      .subscribe(job => {
+        this.snack.open(`Darbs ${job.jobId}-${job.name} izveidots!`, 'OK', { duration: 5000 });
+        this.attachmentsList.deselect(attachments);
+      });
 
   }
 

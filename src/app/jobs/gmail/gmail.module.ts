@@ -7,13 +7,15 @@ import { GmailRoutingModule } from './gmail-routing.module';
 import { GmailComponent } from './gmail.component';
 import { MessageComponent } from './message/message.component';
 import { AttachmentsComponent } from './attachments/attachments.component';
+import { ThreadComponent } from './thread/thread.component';
 
 
 @NgModule({
   declarations: [
     GmailComponent,
     MessageComponent,
-    AttachmentsComponent
+    AttachmentsComponent,
+    ThreadComponent
   ],
   imports: [
     CommonModule,

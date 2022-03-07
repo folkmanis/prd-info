@@ -35,5 +35,16 @@ export class AttachmentsComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  deselect(attachments: Attachment[]) {
+    for (const attachment of attachments) {
+      this.list.options.forEach(option => {
+        if (option.value === attachment) {
+          option.selected = false;
+        }
+      });
+
+    }
+  }
+
 
 }

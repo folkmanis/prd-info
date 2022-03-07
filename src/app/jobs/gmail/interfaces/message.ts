@@ -36,8 +36,16 @@ export class Message {
         return this.payload.attachments;
     }
 
-    get text(): string[] {
-        return this.payload.text;
+    get plain(): string {
+        return this.payload.plain.join(';\n\r');
+    }
+
+    get html(): string {
+        return this.payload.html.join('<br />');
+    }
+
+    get subject(): string {
+        return this.payload.getHeader('Subject');
     }
 
 

@@ -1,19 +1,16 @@
-.container {
-    margin: 16px;
+.message {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
+}
+
+.message > span:last-of-type {
+    margin-left: auto;
 }
 
 .snippet {
     display: flex;
-    align-items: center;
 }
 
-.snippet > span:last-of-type {
-    margin-left: auto;
-}
-.snippet > span:first-of-type {
+.snippet > span {
     flex: 1;
     white-space: nowrap;
     overflow: hidden;

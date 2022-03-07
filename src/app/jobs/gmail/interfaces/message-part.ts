@@ -21,7 +21,7 @@ export class MessagePart {
     parts?: MessagePart[];
 
     getHeader(name: string): string | undefined {
-        return this.headers.find(h => h.name === name)?.value;
+        return this.headers.find(h => h.name.toUpperCase() === name.toUpperCase())?.value;
     }
 
     get hasAttachment(): boolean {
@@ -46,9 +46,17 @@ export class MessagePart {
         return [...partsAttachments, attachment];
     }
 
-    get text(): string[] {
-        const partsMsgs = this.parts?.map(part => part.text).reduce((acc, curr) => [...acc, ...curr], []) || [];
-        if (this.mimeType !== 'text/plain') {
+    get plain(): string[] {
+        return this.mimeTypeContents('text/plain');
+    }
+
+    get html(): string[] {
+        return this.mimeTypeContents('text/html');
+    }
+
+    mimeTypeContents(mimeType: string): string[] {
+        const partsMsgs = this.parts?.map(part => part.plain).reduce((acc, curr) => [...acc, ...curr], []) || [];
+        if (this.mimeType !== mimeType) {
             return partsMsgs;
         }
         if (this.body.decoded) {

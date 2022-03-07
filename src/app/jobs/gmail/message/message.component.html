@@ -1,44 +1,20 @@
-<div class="container">
+<mat-card>
 
-    <mat-card>
-        <mat-card-title>
-
-            <a mat-mini-fab routerLink="..">
+    <mat-card-content *ngIf="message.hasAttachment; else snippet">
+        <div class="message">
+            <span [innerHTML]="replaceBr(message.html || message.plain)"></span>
+            <span *ngIf="message.hasAttachment">
                 <mat-icon>
-                    chevron_left
+                    attachment
                 </mat-icon>
-            </a>
-
-            <span>
-                {{ from$ | async }}
             </span>
+        </div>
 
-        </mat-card-title>
-    </mat-card>
-
-
-
-    <mat-card *ngFor="let message of messages$ | async">
-
-
-        <mat-card-content>
-            <div class="snippet">
-                <span [innerHTML]="message.snippet"></span>
-                <span *ngIf="message.hasAttachment">
-                    <mat-icon>
-                        attachment
-                    </mat-icon>
-                </span>
-            </div>
-
-            <app-attachments [attachments]="message.attachments" #attachmentList>
-            </app-attachments>
-
-        </mat-card-content>
-
+        <app-attachments [attachments]="message.attachments" #attachmentList>
+        </app-attachments>
 
         <mat-card-actions *ngIf="message.hasAttachment">
-            <button mat-raised-button (click)="createJob(message, attachmentList.selected)"
+            <button mat-raised-button (click)="createJob(attachmentList.selected)"
                 [disabled]="!attachmentList.selected?.length || (busy$ | async)">
                 SAGLABĀT
             </button>
@@ -48,7 +24,14 @@
             <mat-progress-bar mode="indeterminate"></mat-progress-bar>
         </mat-card-footer>
 
-    </mat-card>
+    </mat-card-content>
+
+    <ng-template #snippet>
+        <mat-card-content class="snippet">
+            <span [innerHTML]="message.snippet">
+            </span>
+        </mat-card-content>
+    </ng-template>
 
 
-</div>
+</mat-card>
