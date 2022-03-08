@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { last } from 'lodash';
 import { EMPTY, mergeMap, mergeMapTo, Observable, of } from 'rxjs';
 import { Job, FileUploadEventType, FileUploadMessage } from '../interfaces';
 import { ReproJobDialogService } from '../repro-jobs/services/repro-job-dialog.service';
@@ -32,11 +33,26 @@ export class JobCreatorService {
 
     const job = this.jobTemplateFromFiles(fileNames, optionalJobParams);
 
-    const progress = of(files.map(file => this.uploadMessage(file)));
+    const progress$ = of(files.map(file => this.uploadMessage(file)));
 
-    return this.jobDialog.openJob(job, progress).pipe(
+    return this.jobDialog.openJob(job, progress$).pipe(
       mergeMap(job => job ? this.jobService.newJob(job) : this.onAbort(fileNames)),
       mergeMap(jobId => this.jobService.moveUserFilesToJob(jobId, fileNames)),
+    );
+
+  }
+
+  fromFtpFile(path: string[], optionalJobParams: Partial<Job> = {}): Observable<Job> {
+
+    const fileName = last(path);
+
+    const progress$ = of([this.uploadMessage({ name: fileName, size: 0 })]);
+
+    return of(this.jobTemplateFromFiles([fileName], optionalJobParams)).pipe(
+      mergeMap(job => this.jobDialog.openJob(job, progress$)),
+      mergeMap(job => !job ? EMPTY : of(job)),
+      mergeMap(job => this.jobService.newJob(job)),
+      mergeMap(jobId => this.jobService.copyFtpFilesToJob(jobId, [path])),
     );
 
   }
