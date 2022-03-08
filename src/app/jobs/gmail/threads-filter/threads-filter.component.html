@@ -1,0 +1,12 @@
+<div [formGroup]="filterForm">
+
+    <mat-form-field>
+        <mat-label>Iezīmes</mat-label>
+        <mat-select formControlName="label">
+            <mat-option *ngFor="let label of labels" [value]="label.id">
+                {{ label.displayName }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+</div>

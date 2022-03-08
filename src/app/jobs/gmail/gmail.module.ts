@@ -8,6 +8,7 @@ import { GmailComponent } from './gmail.component';
 import { MessageComponent } from './message/message.component';
 import { AttachmentsComponent } from './attachments/attachments.component';
 import { ThreadComponent } from './thread/thread.component';
+import { ThreadsFilterComponent } from './threads-filter/threads-filter.component';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { ThreadComponent } from './thread/thread.component';
     GmailComponent,
     MessageComponent,
     AttachmentsComponent,
-    ThreadComponent
+    ThreadComponent,
+    ThreadsFilterComponent
   ],
   imports: [
     CommonModule,

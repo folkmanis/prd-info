@@ -3,6 +3,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { GmailService } from './services/gmail.service';
 import { log } from 'prd-cdk';
 import { pluck, map } from 'rxjs';
+import { LabelListItem, ThreadsFilterQuery } from './interfaces';
 
 @Component({
   selector: 'app-gmail',
@@ -12,10 +13,16 @@ import { pluck, map } from 'rxjs';
 })
 export class GmailComponent implements OnInit {
 
+  private filter: ThreadsFilterQuery = {
+    maxResults: 20,
+  };
+
   threads$ = this.gmail.threads$.pipe(
     pluck('threads'),
-    map(threads => threads.map(th => ({ ...th, html: this.sanitizer.bypassSecurityTrustHtml(th.snippet) })))
+    map(threads => threads?.map(th => ({ ...th, html: this.sanitizer.bypassSecurityTrustHtml(th.snippet) })) || [])
   );
+
+  labels$ = this.gmail.labels();
 
   constructor(
     private gmail: GmailService,
@@ -23,10 +30,14 @@ export class GmailComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.gmail.setThreadsFilter({
-      labelIds: ['CATEGORY_PERSONAL'],
-      maxResults: 25,
-    });
+  }
+
+  setFilter(filter: Partial<ThreadsFilterQuery>) {
+    this.filter = {
+      ...this.filter,
+      ...filter,
+    };
+    this.gmail.setThreadsFilter(this.filter);
   }
 
   onReload() {

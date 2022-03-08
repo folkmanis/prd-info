@@ -41,6 +41,10 @@ export class GmailService {
     return this.api.getMessage(id);
   }
 
+  labels() {
+    return this.api.getLabels();
+  }
+
   saveAttachments(messageId: string, attachment: Attachment): Observable<string> {
     return this.api.attachmentToUserStorage(messageId, attachment).pipe(
       pluck('names'),

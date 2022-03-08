@@ -1,9 +1,17 @@
 <mat-card>
-    <button mat-mini-fab color="primary" (click)="onReload()">
-        <mat-icon>
-            refresh
-        </mat-icon>
-    </button>
+
+    <div>
+
+        <button mat-mini-fab color="primary" (click)="onReload()">
+            <mat-icon>
+                refresh
+            </mat-icon>
+        </button>
+
+        <app-threads-filter [labels]="labels$ | async" (valueChanges)="setFilter($event)"></app-threads-filter>
+
+    </div>
+
 </mat-card>
 
 <table mat-table [dataSource]="threads$" class="app-table">

@@ -3,8 +3,8 @@ import { HttpOptions } from 'src/app/library/http';
 import { HttpClient } from '@angular/common/http';
 import { ClassTransformer } from 'class-transformer';
 import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { Attachment, Message, ThreadsFilterQuery, Thread, Threads } from '../interfaces';
+import { map, pluck, tap } from 'rxjs/operators';
+import { Attachment, Message, ThreadsFilterQuery, Thread, Threads, Label, LabelListItem } from '../interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -38,6 +38,13 @@ export class GmailApiService {
   getThread(id: string): Observable<Thread> {
     return this.http.get<Record<string, any>>(this.path + 'thread/' + id, new HttpOptions()).pipe(
       map(data => this.toClass(Thread, data)),
+    );
+  }
+
+  getLabels(): Observable<LabelListItem[]> {
+    return this.http.get<Record<string, any>>(this.path + 'labels', new HttpOptions()).pipe(
+      pluck('labels'),
+      map(data => this.toClass(Label, data)),
     );
   }
 
