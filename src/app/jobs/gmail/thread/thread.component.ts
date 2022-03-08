@@ -42,6 +42,7 @@ export class ThreadComponent implements OnInit {
   ngOnInit(): void { }
 
   onCreateFromThread(thread: Thread) {
+
     this.busy$.next(true);
 
     const selected = this.messageList.filter(item => !!item.attachmentsList?.selected.length);
@@ -54,11 +55,13 @@ export class ThreadComponent implements OnInit {
     };
 
     from(attachments).pipe(
-      concatMap(att => this.gmail.saveAttachments(att.messageId, att.attachment)),
+      concatMap(att => this.gmail.saveAttachments(att.messageId, att.attachment).pipe(
+        map(name => ({ name, size: att.attachment.size })),
+      )),
       toArray(),
       withLatestFrom(this.resolveCustomer(thread.from, jobPreset)),
       mergeMap(([fileNames, job]) => this.jobCreator.fromUserFiles(fileNames, job)),
-      finalize(() => this.busy$.value && this.busy$.next(false)),
+      finalize(() => this.busy$.next(false)),
     )
       .subscribe(job => {
         this.snack.open(`Darbs ${job.jobId}-${job.name} izveidots!`, 'OK', { duration: 5000 });
@@ -67,25 +70,28 @@ export class ThreadComponent implements OnInit {
 
   }
 
-  onCreateFromMessage(messageComponent: MessageComponent, attachments: Attachment[]) {
+  onCreateFromMessage(component: MessageComponent) {
 
-    const message = messageComponent.message;
-    messageComponent.busy$.next(true);
+    component.busy$.next(true);
+    const message = component.message;
+    const attachments = component.attachmentsList.selected;
 
     const jobPreset: Partial<Job> = {
       comment: message.plain,
     };
 
     from(attachments).pipe(
-      concatMap(attachment => this.gmail.saveAttachments(message.id, attachment)),
+      concatMap(attachment => this.gmail.saveAttachments(message.id, attachment).pipe(
+        map(name => ({ name, size: attachment.size })),
+      )),
       toArray(),
       withLatestFrom(this.resolveCustomer(message.from, jobPreset)),
       mergeMap(([fileNames, job]) => this.jobCreator.fromUserFiles(fileNames, job)),
-      finalize(() => messageComponent.busy$.value && messageComponent.busy$.next(false)),
+      finalize(() => component.busy$.next(false)),
     )
       .subscribe(job => {
         this.snack.open(`Darbs ${job.jobId}-${job.name} izveidots!`, 'OK', { duration: 5000 });
-        messageComponent.attachmentsList.deselect(attachments);
+        component.attachmentsList.deselectAll();
       });
 
   }

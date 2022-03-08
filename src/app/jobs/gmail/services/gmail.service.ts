@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable, ReplaySubject } from 'rxjs';
+import { Observable, ReplaySubject, Subject } from 'rxjs';
 import { map, pluck, single, switchMap, toArray } from 'rxjs/operators';
 import { GmailApiService } from './gmail-api.service';
 import { Attachment, ThreadsFilterQuery } from '../interfaces';
+import { combineReload } from 'src/app/library/rxjs/combine-reload';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,12 @@ export class GmailService {
 
   private readonly threadsFilter$ = new ReplaySubject<ThreadsFilterQuery>(1);
 
-  threads$ = this.threadsFilter$.pipe(
+  private readonly reload$ = new Subject<void>();
+
+  threads$ = combineReload(
+    this.threadsFilter$,
+    this.reload$
+  ).pipe(
     switchMap(filter => this.api.getThreads(filter)),
   );
 
@@ -21,6 +27,10 @@ export class GmailService {
 
   setThreadsFilter(filter: ThreadsFilterQuery) {
     this.threadsFilter$.next(filter);
+  }
+
+  reload() {
+    this.reload$.next();
   }
 
   thread(id: string) {

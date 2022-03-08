@@ -33,7 +33,7 @@
     </mat-card>
 
     <app-message *ngFor="let message of thread.messages" #messageComponent [message]="message"
-        (attachmentsConfirm)="onCreateFromMessage(messageComponent, $event)"> </app-message>
+        (attachmentsConfirm)="onCreateFromMessage(messageComponent)"> </app-message>
 
 
 </div>

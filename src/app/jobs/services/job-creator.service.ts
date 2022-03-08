@@ -1,12 +1,17 @@
 import { Injectable } from '@angular/core';
-import { EMPTY, mergeMap, mergeMapTo, Observable } from 'rxjs';
-import { Job } from '../interfaces';
+import { EMPTY, mergeMap, mergeMapTo, Observable, of } from 'rxjs';
+import { Job, FileUploadEventType, FileUploadMessage } from '../interfaces';
 import { ReproJobDialogService } from '../repro-jobs/services/repro-job-dialog.service';
 import { JobService } from './job.service';
 import { JobsApiService } from './jobs-api.service';
 
 
 const MAX_JOB_NAME_LENGTH = 100; // TODO take from global config
+
+export interface UserFile {
+  name: string;
+  size: number;
+}
 
 
 @Injectable({
@@ -21,11 +26,15 @@ export class JobCreatorService {
   ) { }
 
 
-  fromUserFiles(fileNames: string[], optionalJobParams: Partial<Job> = {}): Observable<Job> {
+  fromUserFiles(files: UserFile[], optionalJobParams: Partial<Job> = {}): Observable<Job> {
+
+    const fileNames = files.map(file => file.name);
 
     const job = this.jobTemplateFromFiles(fileNames, optionalJobParams);
 
-    return this.jobDialog.openJob(job).pipe(
+    const progress = of(files.map(file => this.uploadMessage(file)));
+
+    return this.jobDialog.openJob(job, progress).pipe(
       mergeMap(job => job ? this.jobService.newJob(job) : this.onAbort(fileNames)),
       mergeMap(jobId => this.jobService.moveUserFilesToJob(jobId, fileNames)),
     );
@@ -57,6 +66,16 @@ export class JobCreatorService {
       ...job,
     };
 
+  }
+
+  private uploadMessage(file: UserFile): FileUploadMessage {
+    return {
+      type: FileUploadEventType.UploadFinish,
+      id: file.name,
+      name: file.name,
+      size: file.size,
+      fileNames: [file.name],
+    };
   }
 
 
