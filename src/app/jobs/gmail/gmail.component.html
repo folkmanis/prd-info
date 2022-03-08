@@ -1,3 +1,11 @@
+<mat-card>
+    <button mat-mini-fab color="primary" (click)="onReload()">
+        <mat-icon>
+            refresh
+        </mat-icon>
+    </button>
+</mat-card>
+
 <table mat-table [dataSource]="threads$" class="app-table">
 
     <ng-container matColumnDef="snippet">

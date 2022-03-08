@@ -12,10 +12,6 @@ import { pluck, map } from 'rxjs';
 })
 export class GmailComponent implements OnInit {
 
-  message$ = this.gmail.message('17f30e1fa1c55a35').pipe(
-    log('message'),
-  );
-
   threads$ = this.gmail.threads$.pipe(
     pluck('threads'),
     map(threads => threads.map(th => ({ ...th, html: this.sanitizer.bypassSecurityTrustHtml(th.snippet) })))
@@ -31,6 +27,10 @@ export class GmailComponent implements OnInit {
       labelIds: ['CATEGORY_PERSONAL'],
       maxResults: 25,
     });
+  }
+
+  onReload() {
+    this.gmail.reload();
   }
 
   replaceBr(str: string) {
