@@ -104,8 +104,8 @@ export class ReproJobEditComponent implements OnInit {
 
   }
 
-  isFormValid() {
-    return !this.form.pristine && this.form.valid;
+  isSaveDisabled(): boolean {
+    return this.form.pristine && !this.isNew || !this.form.valid;
   }
 
   onUpdate() {

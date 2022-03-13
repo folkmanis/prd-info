@@ -42,8 +42,14 @@ export class GmailApiService {
   }
 
   getLabels(): Observable<LabelListItem[]> {
-    return this.http.get<Record<string, any>>(this.path + 'labels', new HttpOptions()).pipe(
+    return this.http.get<Record<string, any>>(this.path + 'labels', new HttpOptions().cacheable()).pipe(
       pluck('labels'),
+      map(data => this.toClass(Label, data)),
+    );
+  }
+
+  getLabel(id: string): Observable<Label> {
+    return this.http.get<Record<string, any>>(this.path + 'label/' + id, new HttpOptions()).pipe(
       map(data => this.toClass(Label, data)),
     );
   }

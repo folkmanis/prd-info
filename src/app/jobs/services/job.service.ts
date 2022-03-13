@@ -55,11 +55,9 @@ export class JobService {
     this.forceReload$.next();
   }
 
-  newJob(job: Partial<Job>, params?: JobUpdateParams): Observable<number> {
+  newJob(job: Partial<Job>, params?: JobUpdateParams): Observable<Job> {
     return this.api.insertOne(job, params).pipe(
-      pluck('jobId'),
       tap(() => this.reload()),
-      catchError(() => this.confirmationDialogService.confirmDataError())
     );
   }
 

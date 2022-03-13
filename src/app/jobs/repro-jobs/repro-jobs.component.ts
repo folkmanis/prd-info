@@ -97,7 +97,7 @@ export class ReproJobsComponent implements OnInit {
     job$.pipe(
       filter(job => !!job),
       mergeMap(job => this.jobService.newJob(job)),
-      mergeMap(jobId => uploadRef.addToJob(jobId)),
+      mergeMap(({ jobId }) => uploadRef.addToJob(jobId)),
       tap(jobId => jobId && this.snack.open('Visi faili pievienoti darbam', 'OK', { duration: 3000 })),
     ).subscribe();
 

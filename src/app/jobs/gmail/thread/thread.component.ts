@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewChildren, QueryList } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Thread, Message, MessagePart, Attachment } from '../interfaces';
-import { pluck, map, concatMap, toArray, tap, finalize, mergeMap, throwIfEmpty, catchError, mergeMapTo, withLatestFrom } from 'rxjs/operators';
+import { pluck, map, concatMap, toArray, tap, finalize, mergeMap, throwIfEmpty, catchError, mergeMapTo, withLatestFrom, defaultIfEmpty } from 'rxjs/operators';
 import { Observable, from, of, BehaviorSubject, EMPTY, pipe, OperatorFunction, MonoTypeOperatorFunction } from 'rxjs';
 import { MessageComponent } from '../message/message.component';
 import { GmailService } from '../services/gmail.service';
@@ -12,6 +12,7 @@ import { JobsApiService } from '../../services/jobs-api.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { JobCreatorService } from '../../services/job-creator.service';
 import { CustomersService } from 'src/app/services/customers.service';
+import { log } from 'prd-cdk';
 
 
 @Component({
@@ -43,30 +44,44 @@ export class ThreadComponent implements OnInit {
 
   onCreateFromThread(thread: Thread) {
 
-    this.busy$.next(true);
-
-    const selected = this.messageList.filter(item => !!item.attachmentsList?.selected.length);
-    const attachments: { messageId: string, attachment: Attachment; }[] = selected
-      .reduce((acc, curr) => [...acc, ...curr.attachmentsList.selected.map(item => ({ messageId: curr.message.id, attachment: item }))], []);
 
     const jobPreset: Partial<Job> = {
       comment: thread.plain,
       name: thread.subject,
     };
 
-    from(attachments).pipe(
-      concatMap(att => this.gmail.saveAttachments(att.messageId, att.attachment).pipe(
-        map(name => ({ name, size: att.attachment.size })),
-      )),
-      toArray(),
-      withLatestFrom(this.resolveCustomer(thread.from, jobPreset)),
-      mergeMap(([fileNames, job]) => this.jobCreator.fromUserFiles(fileNames, job)),
-      finalize(() => this.busy$.next(false)),
-    )
-      .subscribe(job => {
+    const selected = this.messageList.filter(item => !!item.attachmentsList?.selected.length);
+
+    if (selected.length === 0) {
+
+      this.resolveCustomer(thread.from, jobPreset).pipe(
+        mergeMap(job => this.jobCreator.createJob(job)),
+      ).subscribe(job => {
         this.snack.open(`Darbs ${job.jobId}-${job.name} izveidots!`, 'OK', { duration: 5000 });
-        selected.forEach(list => list.attachmentsList.deselectAll());
       });
+
+    } else {
+
+      this.busy$.next(true);
+
+      const attachments: { messageId: string, attachment: Attachment; }[] = selected
+        .reduce((acc, curr) => [...acc, ...curr.attachmentsList.selected.map(item => ({ messageId: curr.message.id, attachment: item }))], []);
+
+      from(attachments).pipe(
+        concatMap(att => this.gmail.saveAttachments(att.messageId, att.attachment).pipe(
+          map(name => ({ name, size: att.attachment.size })),
+        )),
+        toArray(),
+        withLatestFrom(this.resolveCustomer(thread.from, jobPreset)),
+        mergeMap(([fileNames, job]) => this.jobCreator.fromUserFiles(fileNames, job)),
+        finalize(() => this.busy$.next(false)),
+      )
+        .subscribe(job => {
+          this.snack.open(`Darbs ${job.jobId}-${job.name} izveidots!`, 'OK', { duration: 5000 });
+          selected.forEach(list => list.attachmentsList.deselectAll());
+        });
+
+    }
 
   }
 

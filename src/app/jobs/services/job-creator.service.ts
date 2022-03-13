@@ -26,18 +26,27 @@ export class JobCreatorService {
     private jobsApi: JobsApiService,
   ) { }
 
+  createJob(optionalJobParams: Partial<Job> = {}): Observable<Job> {
+    const job = this.reproJobTemplate(optionalJobParams);
+    return this.jobDialog.openJob(job).pipe(
+      mergeMap(job => job ? this.jobService.newJob(job) : EMPTY),
+    );
+  }
 
   fromUserFiles(files: UserFile[], optionalJobParams: Partial<Job> = {}): Observable<Job> {
 
     const fileNames = files.map(file => file.name);
 
-    const job = this.jobTemplateFromFiles(fileNames, optionalJobParams);
+    const job = this.reproJobTemplate(optionalJobParams);
+    if (!job.name) {
+      job.name = this.jobNameFromFiles(fileNames);
+    }
 
     const progress$ = of(files.map(file => this.uploadMessage(file)));
 
     return this.jobDialog.openJob(job, progress$).pipe(
       mergeMap(job => job ? this.jobService.newJob(job) : this.onAbort(fileNames)),
-      mergeMap(jobId => this.jobService.moveUserFilesToJob(jobId, fileNames)),
+      mergeMap(({ jobId }) => this.jobService.moveUserFilesToJob(jobId, fileNames)),
     );
 
   }
@@ -48,11 +57,15 @@ export class JobCreatorService {
 
     const progress$ = of([this.uploadMessage({ name: fileName, size: 0 })]);
 
-    return of(this.jobTemplateFromFiles([fileName], optionalJobParams)).pipe(
-      mergeMap(job => this.jobDialog.openJob(job, progress$)),
-      mergeMap(job => !job ? EMPTY : of(job)),
+    const job = this.reproJobTemplate(optionalJobParams);
+    if (!job.name) {
+      job.name = this.jobNameFromFiles([fileName]);
+    }
+
+    return this.jobDialog.openJob(job, progress$).pipe(
+      mergeMap(job => job ? of(job) : EMPTY),
       mergeMap(job => this.jobService.newJob(job)),
-      mergeMap(jobId => this.jobService.copyFtpFilesToJob(jobId, [path])),
+      mergeMap(({ jobId }) => this.jobService.copyFtpFilesToJob(jobId, [path])),
     );
 
   }
@@ -63,13 +76,8 @@ export class JobCreatorService {
     );
   }
 
-  private jobTemplateFromFiles(fileNames: string[], job: Partial<Job>): Partial<Job> {
-
+  private reproJobTemplate(job: Partial<Job>): Partial<Job> {
     return {
-      name: fileNames
-        .reduce((acc, curr) => [...acc, curr.replace(/\.[^/.]+$/, '')], [])
-        .reduce((acc, curr, _, names) => [...acc, curr.slice(0, MAX_JOB_NAME_LENGTH / names.length)], [])
-        .join('_'),
       receivedDate: new Date(),
       dueDate: new Date(),
       production: {
@@ -81,6 +89,15 @@ export class JobCreatorService {
       },
       ...job,
     };
+
+  }
+
+  private jobNameFromFiles(fileNames: string[]): string {
+
+    return fileNames
+      .reduce((acc, curr) => [...acc, curr.replace(/\.[^/.]+$/, '')], [])
+      .reduce((acc, curr, _, names) => [...acc, curr.slice(0, MAX_JOB_NAME_LENGTH / names.length)], [])
+      .join('_');
 
   }
 

@@ -125,7 +125,8 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="center">
-    <button mat-raised-button color="primary" [disabled]="!isFormValid()" appKeyPress="ctrlEnter" (click)="onUpdate()">
+    <button mat-raised-button color="primary" [disabled]="isSaveDisabled()" appKeyPress="ctrlEnter"
+        (click)="onUpdate()">
         SAGLABĀT
     </button>
 

@@ -9,6 +9,7 @@ import { MessageComponent } from './message/message.component';
 import { AttachmentsComponent } from './attachments/attachments.component';
 import { ThreadComponent } from './thread/thread.component';
 import { ThreadsFilterComponent } from './threads-filter/threads-filter.component';
+import { ThreadsPaginatorDirective } from './thread/threads-paginator.directive';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { ThreadsFilterComponent } from './threads-filter/threads-filter.componen
     MessageComponent,
     AttachmentsComponent,
     ThreadComponent,
-    ThreadsFilterComponent
+    ThreadsFilterComponent,
+    ThreadsPaginatorDirective
   ],
   imports: [
     CommonModule,
