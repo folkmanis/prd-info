@@ -1,18 +1,14 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewChildren, QueryList } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Thread, Message, MessagePart, Attachment } from '../interfaces';
-import { pluck, map, concatMap, toArray, tap, finalize, mergeMap, throwIfEmpty, catchError, mergeMapTo, withLatestFrom, defaultIfEmpty } from 'rxjs/operators';
-import { Observable, from, of, BehaviorSubject, EMPTY, pipe, OperatorFunction, MonoTypeOperatorFunction } from 'rxjs';
+import { ChangeDetectionStrategy, Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute } from '@angular/router';
+import { BehaviorSubject, from, Observable } from 'rxjs';
+import { concatMap, finalize, map, mergeMap, pluck, toArray, withLatestFrom } from 'rxjs/operators';
+import { CustomersService } from 'src/app/services/customers.service';
+import { Job } from '../../interfaces';
+import { JobCreatorService } from '../../services/job-creator.service';
+import { Attachment, Thread } from '../interfaces';
 import { MessageComponent } from '../message/message.component';
 import { GmailService } from '../services/gmail.service';
-import { ReproJobDialogService } from '../../repro-jobs/services/repro-job-dialog.service';
-import { Job } from '../../interfaces';
-import { JobService } from '../../services/job.service';
-import { JobsApiService } from '../../services/jobs-api.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { JobCreatorService } from '../../services/job-creator.service';
-import { CustomersService } from 'src/app/services/customers.service';
-import { log } from 'prd-cdk';
 
 
 @Component({
@@ -55,7 +51,7 @@ export class ThreadComponent implements OnInit {
     if (selected.length === 0) {
 
       this.resolveCustomer(thread.from, jobPreset).pipe(
-        mergeMap(job => this.jobCreator.createJob(job)),
+        mergeMap(job => this.jobCreator.newJob(job)),
       ).subscribe(job => {
         this.snack.open(`Darbs ${job.jobId}-${job.name} izveidots!`, 'OK', { duration: 5000 });
       });

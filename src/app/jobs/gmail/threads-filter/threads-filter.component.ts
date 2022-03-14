@@ -1,11 +1,9 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { map, Observable, startWith } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { LabelListItem, ThreadsFilterQuery } from '../interfaces';
 
 type FilterOutput = Pick<ThreadsFilterQuery, 'labelIds'>;
-
-const defaultLabel = 'CATEGORY_PERSONAL';
 
 @Component({
   selector: 'app-threads-filter',
@@ -13,22 +11,20 @@ const defaultLabel = 'CATEGORY_PERSONAL';
   styleUrls: ['./threads-filter.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ThreadsFilterComponent implements OnInit {
+export class ThreadsFilterComponent {
+
+  @Input() set initialCategory(value: string) {
+    this.filterForm.get('label').setValue(value);
+  }
 
   @Input() labels: LabelListItem[] = [];
 
   filterForm = new FormGroup({
-    label: new FormControl(defaultLabel)
+    label: new FormControl()
   });
 
   @Output() valueChanges: Observable<FilterOutput> = this.filterForm.valueChanges.pipe(
-    startWith(this.filterForm.value),
-    map(value => ({ labelIds: [value.label] }))
+    map(value => ({ labelIds: [value.label] })),
   );
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }

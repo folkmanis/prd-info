@@ -8,7 +8,8 @@
             </mat-icon>
         </button>
 
-        <app-threads-filter [labels]="labels$ | async" (valueChanges)="setFilter($event)"></app-threads-filter>
+        <app-threads-filter [initialCategory]="defaultLabel" [labels]="labels$ | async"
+            (valueChanges)="setFilter($event)"></app-threads-filter>
 
     </div>
 

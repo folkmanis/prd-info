@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { pipe, from, Observable, ReplaySubject, Subject, OperatorFunction, combineLatest, of } from 'rxjs';
-import { tap, concatMap, map, pluck, shareReplay, single, switchMap, toArray, startWith, distinctUntilChanged } from 'rxjs/operators';
-import { GmailApiService } from './gmail-api.service';
-import { Attachment, Thread, ThreadsFilterQuery, Threads } from '../interfaces';
+import { combineLatest, from, Observable, of, ReplaySubject, Subject } from 'rxjs';
+import { concatMap, map, pluck, shareReplay, single, startWith, switchMap, tap, toArray } from 'rxjs/operators';
 import { combineReload } from 'src/app/library/rxjs/combine-reload';
+import { Attachment, Threads, ThreadsFilterQuery } from '../interfaces';
+import { GmailApiService } from './gmail-api.service';
 
 function threadCache(
   filter$: Observable<ThreadsFilterQuery>,
@@ -16,18 +16,16 @@ function threadCache(
 
   return combineLatest({
     filter: filter$.pipe(
-      tap(() => nextPageTokens = []),
-      tap(_ => pageIndex = 0),
+      tap(_ => { nextPageTokens = []; pageIndex = 0; }),
     ),
     idx: pageIndex$.pipe(
       startWith(0),
       tap(idx => pageIndex = idx),
     )
   }).pipe(
-    switchMap(({ filter, idx }) => of({ ...filter, pageToken: nextPageTokens[pageIndex - 1] }).pipe(
+    switchMap(({ filter }) => of({ ...filter, pageToken: nextPageTokens[pageIndex - 1] }).pipe(
       switchMap(query => retrieveFn(query)),
       tap(threads => nextPageTokens[pageIndex] = threads.nextPageToken),
-
     )),
 
   );

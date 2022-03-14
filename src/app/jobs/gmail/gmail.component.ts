@@ -1,25 +1,32 @@
-import { Component, OnInit, ChangeDetectionStrategy, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { MatPaginatorIntl, PageEvent } from '@angular/material/paginator';
 import { DomSanitizer } from '@angular/platform-browser';
+import { map, pluck } from 'rxjs';
+import { ThreadsFilterQuery } from './interfaces';
 import { GmailService } from './services/gmail.service';
-import { log } from 'prd-cdk';
-import { pluck, map } from 'rxjs';
-import { LabelListItem, ThreadsFilterQuery } from './interfaces';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatPaginatorIntlLv } from './thread/mat-paginator-intl-lv';
 import { ThreadsPaginatorDirective } from './thread/threads-paginator.directive';
+
 
 @Component({
   selector: 'app-gmail',
   templateUrl: './gmail.component.html',
   styleUrls: ['./gmail.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    { provide: MatPaginatorIntl, useClass: MatPaginatorIntlLv },
+  ]
 })
 export class GmailComponent implements OnInit {
+
+  readonly initialPageSize = 10;
+  readonly defaultLabel = 'CATEGORY_PERSONAL';
 
   @ViewChild(ThreadsPaginatorDirective) private threadsPaginator: ThreadsPaginatorDirective;
 
   private filter: ThreadsFilterQuery = {
-    maxResults: 10,
-    labelIds: ['CATEGORY_PERSONAL'],
+    maxResults: this.initialPageSize,
+    labelIds: [this.defaultLabel],
   };
 
   threads$ = this.gmail.threads$.pipe(
@@ -54,7 +61,6 @@ export class GmailComponent implements OnInit {
   }
 
   setPaginator(event: PageEvent) {
-    console.log('paginator', event);
     if (event.pageSize !== this.filter.maxResults) {
       this.filter.maxResults = event.pageSize;
       this.threadsPaginator.firstPage();

@@ -26,7 +26,7 @@ export class JobCreatorService {
     private jobsApi: JobsApiService,
   ) { }
 
-  createJob(optionalJobParams: Partial<Job> = {}): Observable<Job> {
+  newJob(optionalJobParams: Partial<Job> = {}): Observable<Job> {
     const job = this.reproJobTemplate(optionalJobParams);
     return this.jobDialog.openJob(job).pipe(
       mergeMap(job => job ? this.jobService.newJob(job) : EMPTY),
