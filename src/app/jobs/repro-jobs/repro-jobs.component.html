@@ -13,7 +13,8 @@
 
         <app-upload-progress *ngIf="progress$" [progress]="progress$ | async"></app-upload-progress>
 
-        <app-products-summary [jobs]="jobs$ | async"></app-products-summary>
+        <app-products-summary [jobs]="jobs$ | async" (productHover)="highlited = $event">
+        </app-products-summary>
 
     </mat-drawer>
 
@@ -21,7 +22,8 @@
 
         <app-job-filter (jobFilter)="onJobFilter($event)"></app-job-filter>
 
-        <app-job-list [jobs]="jobs$ | async" (statusUpdate)="onSetJobStatus($event)"></app-job-list>
+        <app-job-list [jobs]="jobs$ | async" (statusUpdate)="onSetJobStatus($event)" #jobList
+            [highlitedProduct]="highlited"></app-job-list>
 
     </mat-drawer-content>
 </mat-drawer-container>

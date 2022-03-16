@@ -4,12 +4,8 @@ import { ReplaySubject, Subject } from 'rxjs';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { LayoutService } from 'src/app/services';
-import { Job, JobPartial, JobProduct } from '../../interfaces';
+import { Job, JobPartial } from '../../interfaces';
 
-
-type JobWithJobProduct = JobPartial & {
-  productsObj: Partial<JobProduct>;
-};
 
 
 @Component({
@@ -23,17 +19,17 @@ export class JobListComponent implements OnInit {
 
   isLarge$ = this.layout.isLarge$;
 
-  dataSource$ = new ReplaySubject<JobWithJobProduct[]>(1);
+  dataSource$ = new ReplaySubject<JobPartial[]>(1);
 
   @Input() set jobs(value: JobPartial[]) {
 
-    if (!value) {
-      return;
+    if (value) {
+      this.dataSource$.next(value);
     }
 
-    this.dataSource$.next(addProductsInformation(value));
-
   }
+
+  @Input('highlitedProduct') highlited: string | null = null;
 
   @Output() statusUpdate = new Subject<Pick<Job, 'jobId' | 'jobStatus'>>();
 
@@ -64,29 +60,8 @@ export class JobListComponent implements OnInit {
     });
   }
 
-
-}
-
-
-function addProductsInformation(jobs: JobPartial[]): JobWithJobProduct[] {
-
-  return jobs.map(job => ({ ...job, productsObj: productsObj(job.products), }));
-
-}
-
-function productsObj(products: JobProduct | JobProduct[] | undefined): Partial<JobProduct> {
-  if (!products) {
-    return {
-      name: ''
-    };
+  hasProduct(job: JobPartial, productName: string): boolean {
+    return job.products?.some(product => product.name === productName);
   }
-  if (!(products instanceof Array)) {
-    return { ...products };
-  }
-  if (products.length === 1) {
-    return { ...products[0] };
-  }
-  return {
-    name: products.map(prod => prod.name).join(', '),
-  };
+
 }

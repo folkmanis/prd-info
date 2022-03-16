@@ -18,7 +18,7 @@
         </thead>
         <tbody>
             <tr *cdkVirtualFor="let job of dataSource$; let idx=index;" [class.job-completed]="job.invoiceId"
-                [routerLink]="['./']" [queryParams]="{jobId: job.jobId}">
+                [routerLink]="['./']" [queryParams]="{jobId: job.jobId}" [class.highlited]="hasProduct(job, highlited)">
                 <!-- statusa indikators -->
                 <td class="column-state">
                     <mat-icon *ngIf="job.jobStatus.generalStatus === 20" color="primary">
@@ -66,16 +66,20 @@
 
                 <ng-container *ngIf="isLarge$ | async">
                     <!-- Izstrādājums -->
-                    <td class="column-productsObj-name" [colSpan]="job.productsObj?.count > 0 ? 0 : 3">
-                        {{job.productsObj?.name}}
+                    <td class="column-productsObj-name" [colSpan]="job.products?.length === 1 ? 0 : 3">
+                        <span *ngFor="let product of job.products; last as last;"
+                            [class.highlited-product]="product.name === highlited">
+                            {{ product.name }}{{last? '' : ','}}
+                        </span>
+                        <!-- {{job.productsObj?.name}} -->
                     </td>
                     <!-- Skaits -->
-                    <td *ngIf="job.productsObj?.count > 0" class="column-productsObj-count">
-                        {{job.productsObj?.count}}
+                    <td *ngIf="job.products?.length === 1" class="column-productsObj-count">
+                        {{job.products[0].count}}
                     </td>
                     <!-- Mērvienības! -->
-                    <td *ngIf="job.productsObj?.count > 0" class="column-productsObj-units">
-                        {{ job.productsObj?.units }}
+                    <td *ngIf="job.products?.length === 1" class="column-productsObj-units">
+                        {{ job.products[0].units }}
                     </td>
                 </ng-container>
 

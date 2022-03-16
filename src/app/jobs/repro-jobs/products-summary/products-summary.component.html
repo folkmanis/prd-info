@@ -1,5 +1,6 @@
 <mat-list dense>
-    <mat-list-item *ngFor="let product of productSums">
+    <mat-list-item *ngFor="let product of productSums" (mouseenter)="onMouseEnter(product.name)"
+        (mouseleave)="onMouseLeave(product.name)">
         <span>
             {{ product.name }}
         </span>

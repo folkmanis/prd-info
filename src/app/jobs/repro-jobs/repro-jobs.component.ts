@@ -28,6 +28,8 @@ export class ReproJobsComponent implements OnInit {
 
   progress$: Observable<FileUploadMessage[]> | null = null;
 
+  highlited: string | null = null;
+
   constructor(
     private layoutService: LayoutService,
     private jobService: JobService,

@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Output, Input } from '@angular/core';
 import { JobPartial } from '../../interfaces';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 interface ProductSum {
   name: string;
@@ -19,6 +21,19 @@ export class ProductsSummaryComponent {
 
   @Input() set jobs(value: JobPartial[]) {
     this.productSums = this.productsSummary(value);
+  }
+
+  private readonly hover = new Subject<string | null>();
+  @Output() productHover = this.hover.pipe(
+    debounceTime(100)
+  );
+
+  onMouseEnter(name: string) {
+    this.hover.next(name);
+  }
+
+  onMouseLeave(name: string) {
+    this.hover.next(null);
   }
 
 
