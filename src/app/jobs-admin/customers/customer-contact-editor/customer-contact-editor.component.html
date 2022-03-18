@@ -1,0 +1,8 @@
+<div [formGroup]="controlGroup">
+
+    <mat-form-field>
+        <mat-label> e-pasts </mat-label>
+        <input matInput type="email" formControlName="email" required (blur)="complete.next()" #email>
+    </mat-form-field>
+
+</div>

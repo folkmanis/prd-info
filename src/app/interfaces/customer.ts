@@ -9,6 +9,11 @@ export interface FtpUserData {
     password: string;
 }
 
+export interface CustomerContact {
+    email?: string;
+}
+
+
 export interface Customer {
     _id: string;
     code: string;
@@ -19,12 +24,12 @@ export interface Customer {
     financial?: CustomerFinancial;
     ftpUser: boolean;
     ftpUserData?: FtpUserData;
-    email?: string;
+    contacts?: CustomerContact[];
 }
 
 export type CustomerPartial = Pick<Customer, '_id' | 'CustomerName' | 'code' | 'disabled'>;
 
-export type NewCustomer = Pick<Customer, 'CustomerName' | 'disabled' | 'code' | 'description' | 'ftpUser' | 'email'>;
+export type NewCustomer = Pick<Customer, 'CustomerName' | 'disabled' | 'code' | 'description' | 'ftpUser' | 'contacts'>;
 
 export const DEFAULT_CUSTOMER: NewCustomer = {
     CustomerName: '',
@@ -32,6 +37,6 @@ export const DEFAULT_CUSTOMER: NewCustomer = {
     code: '',
     description: undefined,
     ftpUser: false,
-    email: undefined,
+    contacts: undefined,
 };
 

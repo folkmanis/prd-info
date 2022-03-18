@@ -1,0 +1,11 @@
+:host {
+  display: block;
+}
+
+.email {
+  cursor: pointer;
+}
+
+.invalid .email {
+  color: var(--warn-color);
+}
