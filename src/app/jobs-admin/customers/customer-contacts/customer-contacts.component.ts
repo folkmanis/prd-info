@@ -1,5 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { ControlValueAccessor, Validator, NG_VALUE_ACCESSOR, NG_VALIDATORS, AbstractControl, ValidationErrors, FormGroup, FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { AbstractControl, ControlValueAccessor, FormArray, FormBuilder, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
 
 const DEFAULT_CONTACT = {
   email: '',
@@ -80,7 +80,7 @@ export class CustomerContactsComponent implements OnInit, ControlValueAccessor, 
   }
 
   addContact() {
-    const newContact = new FormControl(DEFAULT_CONTACT);
+    const newContact = this.fb.control(DEFAULT_CONTACT);
     this.contactsArray.push(
       newContact,
       { emitEvent: false }
