@@ -7,7 +7,7 @@ export const USER_MODULES: UserModule[] = [
         name: 'Darbi', description: 'Ražošanas darbi', route: 'jobs', childMenu: [
             { name: 'Repro darbi', route: 'repro', description: 'Repro darbu saraksts' },
             { name: 'Kopsavilkums', route: 'products-production', description: 'Izstrādājumi ražošanā' },
-            { name: 'e-pasts', route: 'gmail', description: 'Darba izveidošana no e-pasta' },
+            { name: 'gmail', route: 'gmail', description: 'Darba izveidošana no Gmail e-pasta' },
         ]
     },
     {
