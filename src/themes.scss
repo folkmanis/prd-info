@@ -29,8 +29,16 @@ $theme: app-styles.$theme;
 
 @include table.theme($theme);
 
+$primary: map-get($theme, primary);
+$accent: map-get($theme, accent);
+$warn: map-get($theme, warn);
+
 :root {
-    --primary-color: #{mat.get-color-from-palette(app-styles.$primary)};
-    --accent-color: #{mat.get-color-from-palette(app-styles.$accent)};
-    --warn-color: #{mat.get-color-from-palette(app-styles.$warn)};
+    --primary-color: #{mat.get-color-from-palette($primary)};
+    --accent-color: #{mat.get-color-from-palette($accent)};
+    --warn-color: #{mat.get-color-from-palette($warn)};
+
+    --primary-lighter: #{mat.get-color-from-palette($primary, "lighter")};
+    --primary-contrast: #{mat.get-color-from-palette($primary, "primary-contrast")};
+    --primary-darker-contrast: #{mat.get-color-from-palette($primary, "darker-contrast")};
 }
