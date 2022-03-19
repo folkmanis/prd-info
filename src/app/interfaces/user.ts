@@ -4,13 +4,13 @@ export interface User {
     password: string;
     admin: boolean;
     last_login: Date;
-    eMail: string;
     userDisabled: boolean;
     preferences: UserPreferences;
     sessions: UserSession[];
 }
 
 export interface UserPreferences {
+    eMail: string;
     customers: string[];
     modules: string[];
 }

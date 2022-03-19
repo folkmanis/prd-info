@@ -41,10 +41,10 @@ export class UserFormSource extends SimpleFormSource<User> {
             last_login: [undefined],
             userDisabled: [false],
             preferences: this.fb.group<UserPreferences>({
+                eMail: [null],
                 customers: [''],
                 modules: [''],
             }),
-            eMail: [null],
             sessions: [{ value: undefined, disabled: true }]
         });
         return form;
