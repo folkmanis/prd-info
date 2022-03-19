@@ -43,7 +43,9 @@ export class SystemPreferencesService {
   );
 
   modules$ = this.loginService.user$.pipe(
-    map(usr => this.params.userModules.filter(mod => usr && usr.preferences.modules.includes(mod.route)))
+    switchMap(usr => of(this.params.userModules.filter(mod => usr && usr.preferences.modules.includes(mod.route))).pipe(
+      map(modules => usr.preferences.eMail ? modules : removeGmail(modules)),
+    ))
   );
 
   activeModules$: Observable<UserModule[]> = combineLatest([
@@ -99,4 +101,10 @@ function findModule([url, modules]: [string, UserModule[]]): UserModule[] {
   }
 
   return activeModules;
+}
+
+function removeGmail(modules: UserModule[]): UserModule[] {
+  return modules
+    .filter(module => module.name !== 'gmail')
+    .map(module => module.childMenu ? { ...module, childMenu: removeGmail(module.childMenu) } : module);
 }
