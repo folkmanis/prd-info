@@ -44,7 +44,7 @@ export class SystemPreferencesService {
 
   modules$ = this.loginService.user$.pipe(
     switchMap(usr => of(this.params.userModules.filter(mod => usr && usr.preferences.modules.includes(mod.route))).pipe(
-      map(modules => usr.preferences.eMail ? modules : removeGmail(modules)),
+      map(modules => usr.isGmail ? modules : removeGmail(modules)),
     ))
   );
 

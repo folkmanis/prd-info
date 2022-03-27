@@ -1,3 +1,12 @@
 .spacer {
     flex: 1 1 auto;
 }
+
+.avatar {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-size: cover;
+}

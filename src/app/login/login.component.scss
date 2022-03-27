@@ -1,8 +1,12 @@
-form {
-    width: 50%;
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    // width: 50%;
     min-width: 300px;
+    max-width: 500px;
     margin: 10% auto;
 }
-form > * {
+.container > * {
     width: 100%;
 }

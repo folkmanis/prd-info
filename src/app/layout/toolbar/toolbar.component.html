@@ -47,8 +47,16 @@
   <span>
 
     <button mat-button [matMenuTriggerFor]='userMenu'>
-      <mat-icon>account_circle</mat-icon>
-      <mat-icon>arrow_drop_down</mat-icon>
+      <span *ngIf="user.google?.picture; else genericUser" class="avatar"
+        style.background-image="url({{user.google.picture}})">
+      </span>
+      <ng-template #genericUser>
+        <mat-icon>account_circle</mat-icon>
+      </ng-template>
+
+      <mat-icon>
+        arrow_drop_down
+      </mat-icon>
     </button>
 
   </span>
