@@ -35,10 +35,9 @@ export class LoginService {
     );
   }
 
-  logIn(login: Login): Observable<boolean> {
+  logIn(login: Login): Observable<User> {
     return this.api.login(login).pipe(
       tap(usr => this._updateLogin$.next(usr)),
-      map(usr => !!usr),
     );
   }
 

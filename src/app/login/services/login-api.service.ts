@@ -21,10 +21,7 @@ export class LoginApiService extends ApiBase<User> {
     }
 
     login(login: Login): Observable<User | null> {
-        return this.http.post<User>(this.path, login).pipe(
-            map(resp => resp.username ? resp : null),
-            catchError(() => of(null)),
-        );
+        return this.http.post<User>(this.path, login);
     }
 
     logout(): Observable<boolean> {
@@ -35,7 +32,6 @@ export class LoginApiService extends ApiBase<User> {
 
     getLogin(): Observable<User | null> {
         return this.http.get<User>(this.path).pipe(
-            switchMap(user => user.username ? of(user) : of(undefined)),
             catchError(() => of(null)),
         );
     }

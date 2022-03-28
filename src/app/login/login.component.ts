@@ -37,10 +37,9 @@ export class LoginComponent implements OnInit {
 
   onLogin() {
     this.loginService.logIn(this.loginForm.value)
-      .subscribe(success => {
-        if (success) {
-          this.router.navigate(['/']);
-        } else {
+      .subscribe({
+        next: () => this.router.navigate(['/']),
+        error: () => {
           this.snack.open('Nepareiza parole vai lietotājs', 'OK', { duration: 5000 });
           this.loginForm.reset();
           this.username.focus();
