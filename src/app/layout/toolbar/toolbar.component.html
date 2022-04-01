@@ -66,10 +66,10 @@
   <span mat-menu-item>
     Versija {{version}}
   </span>
-  <span mat-menu-item class="mat-caption username">
+  <a mat-menu-item class="mat-caption username" routerLink="/user-settings">
     Lietotājs: <strong>{{user.name}}</strong>
-  </span>
-  <button mat-menu-item [routerLink]="['/', 'login']">
+  </a>
+  <a mat-menu-item routerLink="/login">
     Atslēgties
-  </button>
+  </a>
 </mat-menu>

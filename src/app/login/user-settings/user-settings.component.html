@@ -1,0 +1,47 @@
+<div *ngIf="user$ | async as user;">
+
+    <section class="container">
+
+        <h3>
+            {{ user.username }}
+        </h3>
+
+        <form [formGroup]="userForm" (submit)="onSave( userForm.value)"
+            (reset)="onSetInitial(); $event.preventDefault();">
+
+            <section>
+
+                <mat-form-field class="name">
+                    <mat-label>
+                        Pilns vārds
+                    </mat-label>
+                    <input appInputTrim matInput formControlName="name">
+                </mat-form-field>
+
+            </section>
+
+            <section class="buttons">
+                <button mat-raised-button type="submit"
+                    [disabled]="!userForm.valid || !isChanged(userForm.value) || userForm.disabled" color="primary">
+                    SAGLABĀT
+                </button>
+
+                <button mat-raised-button type="reset" [disabled]="userForm.pristine || userForm.disabled">
+                    ATIESTATĪT
+                </button>
+            </section>
+
+        </form>
+
+    </section>
+
+    <mat-divider></mat-divider>
+
+    <section class="container">
+        <button mat-raised-button appPasswordInput (appPasswordChange)="onPasswordChange($event)"
+            [passwordMinimumLength]="5">
+            MAINĪT PAROLI
+        </button>
+    </section>
+
+</div>

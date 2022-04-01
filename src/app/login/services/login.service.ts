@@ -5,6 +5,8 @@ import { User } from 'src/app/interfaces';
 import { LoginApiService } from './login-api.service';
 import { Login } from '../login.interface';
 
+type UserUpdate = Partial<User>;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -55,6 +57,12 @@ export class LoginService {
 
   sessionToken(): Observable<string> {
     return this.api.getSessionToken();
+  }
+
+  updateUser(update: UserUpdate) {
+    return this.api.patchUser(update).pipe(
+      tap(resp => this._updateLogin$.next(resp)),
+    );
   }
 
 }

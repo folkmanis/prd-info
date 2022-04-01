@@ -13,7 +13,6 @@ import { SimpleFormSource } from 'src/app/library/simple-form';
 import { LoginService } from 'src/app/login';
 import { XmfCustomer } from 'src/app/xmf-search/interfaces';
 import { UsersService } from '../../services/users.service';
-import { PasswordChangeDialogComponent } from '../password-change-dialog/password-change-dialog.component';
 import { UserFormSource } from '../services/user-form-source';
 
 
@@ -36,7 +35,6 @@ export class UserEditComponent implements OnInit, CanComponentDeactivate {
   form: FormGroup;
 
   constructor(
-    private dialog: MatDialog,
     private snackBar: MatSnackBar,
     private usersService: UsersService,
     private formSource: UserFormSource,
@@ -67,13 +65,8 @@ export class UserEditComponent implements OnInit, CanComponentDeactivate {
     return this.formSource.form.pristine;
   }
 
-  onPasswordChange(username: string) {
-    this.dialog.open(PasswordChangeDialogComponent, {
-      width: '300px',
-      data: { username },
-    }).afterClosed().pipe(
-      mergeMap(result => result ? this.usersService.updatePassword(username, result) : EMPTY),
-    ).subscribe({
+  onPasswordChange(password: string, username: string) {
+    this.usersService.updatePassword(username, password).subscribe({
       next: (user) => this.snackBar.open(`Lietotāja ${user.username} parole nomainita!`, 'OK', { duration: 3000 }),
       error: () => this.snackBar.open(`Paroli nomainīt neizdevās`, 'OK', { duration: 5000 }),
     }

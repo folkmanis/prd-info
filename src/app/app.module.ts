@@ -9,7 +9,6 @@ import { LayoutModule } from './layout/layout.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { LoginComponent } from './login/login.component';
 import { ErrorsService } from './library/errors/errors.service';
 
 import { registerLocaleData } from '@angular/common';
@@ -25,11 +24,11 @@ import { httpInterceptorsProvider } from './library/http/http-interceptors-provi
 import { ClassTransformer } from 'class-transformer';
 
 import { MatDateFnsModule } from '@angular/material-date-fns-adapter';
+import { LoginModule } from './login/login.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent,
   ],
   imports: [
     BrowserModule,
@@ -37,6 +36,7 @@ import { MatDateFnsModule } from '@angular/material-date-fns-adapter';
     MaterialLibraryModule,
     LibraryModule,
     LayoutModule,
+    LoginModule,
     AppRoutingModule,
     MatDateFnsModule,
   ],

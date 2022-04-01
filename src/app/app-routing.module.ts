@@ -5,12 +5,9 @@ import { MainMenuComponent } from './layout/main-menu/main-menu.component';
 import { LoginGuard } from './login/login.guard';
 import { MessagesListComponent } from './layout/messaging/messages-list/messages-list.component';
 import { AppContainerComponent } from './layout/app-container/app-container.component';
+import { UserSettingsComponent } from './login/user-settings/user-settings.component';
 
 const routes: Routes = [
-  {
-    path: 'login',
-    component: LoginComponent
-  },
   {
     path: '',
     component: AppContainerComponent,
@@ -19,6 +16,11 @@ const routes: Routes = [
         path: '',
         component: MainMenuComponent,
         pathMatch: 'full',
+        canActivate: [LoginGuard],
+      },
+      {
+        path: 'user-settings',
+        component: UserSettingsComponent,
         canActivate: [LoginGuard],
       },
       {

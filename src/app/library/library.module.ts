@@ -16,6 +16,8 @@ import { TaggedStringComponent } from './tagged-string/tagged-string.component';
 import { MaterialLibraryModule } from './material-library.module';
 import { PrdCdkModule } from 'prd-cdk';
 import { DateServicesModule } from './date-services';
+import { InputTrimDirective } from './directives/input-trim.directive';
+import { PasswordInputModule } from './password-input/password-input.module';
 
 @NgModule({
   declarations: [
@@ -26,6 +28,7 @@ import { DateServicesModule } from './date-services';
     CardMenuComponent,
     FocusedDirective,
     BackButtonDirective,
+    InputTrimDirective,
   ],
   imports: [
     CommonModule,
@@ -39,6 +42,7 @@ import { DateServicesModule } from './date-services';
     MaterialLibraryModule,
     PrdCdkModule,
     DateServicesModule,
+    PasswordInputModule,
   ],
   exports: [
     FormsModule,
@@ -52,9 +56,11 @@ import { DateServicesModule } from './date-services';
     SideButtonModule,
     ScrollToTopModule,
     BackButtonDirective,
+    InputTrimDirective,
     SimpleListTableModule,
     PrdCdkModule,
     DateServicesModule,
+    PasswordInputModule,
   ],
 })
 export class LibraryModule { }

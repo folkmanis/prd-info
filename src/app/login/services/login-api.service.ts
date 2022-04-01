@@ -1,10 +1,10 @@
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { catchError, map, mapTo, pluck, switchMap } from 'rxjs/operators';
+import { catchError, map, pluck, switchMap } from 'rxjs/operators';
 import { APP_PARAMS } from 'src/app/app-params';
 import { AppParams, User } from 'src/app/interfaces';
-import { ApiBase } from 'src/app/library/http';
+import { ApiBase, HttpOptions } from 'src/app/library/http';
 import { Login } from '../login.interface';
 
 
@@ -26,7 +26,7 @@ export class LoginApiService extends ApiBase<User> {
 
     logout(): Observable<boolean> {
         return this.http.delete<string>(this.path).pipe(
-            mapTo(true)
+            map(() => true)
         );
     }
 
@@ -46,6 +46,10 @@ export class LoginApiService extends ApiBase<User> {
         return this.http.get<{ sessionId: string; }>(this.path + 'session-id').pipe(
             pluck('sessionId'),
         );
+    }
+
+    patchUser({ username, ...update }: Partial<User>): Observable<User> {
+        return this.http.patch<User>(this.path, update, new HttpOptions());
     }
 
 }

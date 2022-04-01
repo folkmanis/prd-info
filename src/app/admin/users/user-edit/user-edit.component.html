@@ -39,7 +39,8 @@
             <!-- Paroles maiņa -->
             <ng-template #changePassword>
                 <section>
-                    <button mat-raised-button (click)="onPasswordChange(username.value)" color="primary">
+                    <button mat-raised-button appPasswordInput
+                        (appPasswordChange)="onPasswordChange($event, username.value)" color="primary">
                         MAINĪT PAROLI
                     </button>
                 </section>
