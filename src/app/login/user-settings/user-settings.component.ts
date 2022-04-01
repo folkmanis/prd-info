@@ -66,7 +66,6 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
   }
 
   onPasswordChange(password: string) {
-    console.log(password);
     this.loginService.updateUser({ password }).subscribe({
       next: () => this.snack('Parole nomainīta!'),
       error: () => this.snack('Neizdevās nomainīt paroli!'),
