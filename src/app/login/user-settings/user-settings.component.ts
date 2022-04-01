@@ -2,9 +2,10 @@ import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/
 import { FormBuilder, Validators, FormGroup, FormControl } from '@angular/forms';
 import { User } from 'src/app/interfaces';
 import { LoginService } from '../services/login.service';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { isEqual } from 'lodash';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 
 type UserUpdate = Pick<User, 'name'>;
 
@@ -14,13 +15,15 @@ type UserUpdate = Pick<User, 'name'>;
   styleUrls: ['./user-settings.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UserSettingsComponent implements OnInit, OnDestroy {
+export class UserSettingsComponent implements OnInit, OnDestroy, CanComponentDeactivate {
 
   userForm: FormGroup;
 
   user$ = this.loginService.user$;
 
   initialUser: UserUpdate;
+
+  canDeactivate: () => boolean | Observable<boolean> | Promise<boolean> = () => this.userForm.pristine;
 
   private subs: Subscription;
 

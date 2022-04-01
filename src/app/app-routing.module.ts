@@ -6,6 +6,7 @@ import { LoginGuard } from './login/login.guard';
 import { MessagesListComponent } from './layout/messaging/messages-list/messages-list.component';
 import { AppContainerComponent } from './layout/app-container/app-container.component';
 import { UserSettingsComponent } from './login/user-settings/user-settings.component';
+import { CanDeactivateGuard } from 'src/app/library/guards/can-deactivate.guard';
 
 const routes: Routes = [
   {
@@ -22,6 +23,7 @@ const routes: Routes = [
         path: 'user-settings',
         component: UserSettingsComponent,
         canActivate: [LoginGuard],
+        canDeactivate: [CanDeactivateGuard],
       },
       {
         path: 'messages',
