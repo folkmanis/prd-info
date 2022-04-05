@@ -52,6 +52,17 @@
             <section>
                 <mat-checkbox formControlName="userDisabled">Neaktīvs</mat-checkbox>
             </section>
+
+            <!-- e-pasts -->
+            <section>
+                <mat-form-field>
+                    <input matInput formControlName="eMail" type="email">
+                    <mat-label>
+                        google e-pats
+                    </mat-label>
+                </mat-form-field>
+            </section>
+
         </mat-expansion-panel>
 
         <mat-expansion-panel hideToggle [expanded]="true">
@@ -61,15 +72,8 @@
                 </mat-panel-title>
             </mat-expansion-panel-header>
 
+
             <div formGroupName="preferences">
-
-                <mat-form-field>
-                    <input matInput formControlName="eMail" type="email">
-                    <mat-label>
-                        google e-pats
-                    </mat-label>
-                </mat-form-field>
-
                 <!-- Pieejamie moduļi -->
                 <section>
                     <mat-form-field>

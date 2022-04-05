@@ -47,8 +47,7 @@
   <span>
 
     <button mat-button [matMenuTriggerFor]='userMenu'>
-      <span *ngIf="user.google?.picture; else genericUser" class="avatar"
-        style.background-image="url({{user.google.picture}})">
+      <span *ngIf="user.google?.picture; else genericUser" class="avatar">
       </span>
       <ng-template #genericUser>
         <mat-icon>account_circle</mat-icon>

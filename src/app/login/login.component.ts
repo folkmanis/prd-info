@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
-import { filter, switchMap } from 'rxjs/operators';
+import { Router, ActivatedRoute } from '@angular/router';
+import { filter, map, switchMap } from 'rxjs/operators';
 import { LoginService } from './services/login.service';
 import { FocusedDirective } from 'src/app/library/directives/focused.directive';
 
@@ -24,6 +24,7 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private snack: MatSnackBar,
     private loginService: LoginService,
   ) { }
@@ -33,6 +34,11 @@ export class LoginComponent implements OnInit {
       filter(login => login),
       switchMap(_ => this.loginService.logOut()),
     ).subscribe();
+
+    const err = this.route.snapshot.queryParamMap.get('error');
+    if (typeof err === 'string') {
+      this.snack.open(`Kļūda '${err}'`, 'OK', { duration: 5000 });
+    }
   }
 
   onLogin() {

@@ -9,7 +9,7 @@ import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/c
 const NOT_FOUND_MESSAGE = 'Ieraksts nav atrasts';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'any'
 })
 export class ThreadResolverService implements Resolve<Thread> {
 

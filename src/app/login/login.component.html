@@ -1,22 +1,26 @@
-<div [formGroup]="loginForm" class="container">
+<div class="container">
 
-    <mat-form-field>
-        <mat-label>
-            Lietotājs
-        </mat-label>
-        <input matInput formControlName="username" type="text" autocomplete="off" autocapitalize="none" appFocused>
-    </mat-form-field>
+    <form [formGroup]="loginForm" (submit)="onLogin()">
 
-    <mat-form-field>
-        <mat-label>
-            Parole
-        </mat-label>
-        <input matInput formControlName="password" type="password">
-    </mat-form-field>
+        <mat-form-field class="item">
+            <mat-label>
+                Lietotājs
+            </mat-label>
+            <input matInput formControlName="username" type="text" autocomplete="off" autocapitalize="none" appFocused>
+        </mat-form-field>
 
-    <button mat-raised-button (click)="onLogin()" color="primary" [disabled]="loginForm.invalid">
-        PIESLĒGTIES
-    </button>
+        <mat-form-field class="item">
+            <mat-label>
+                Parole
+            </mat-label>
+            <input matInput formControlName="password" type="password">
+        </mat-form-field>
+
+        <button mat-raised-button type="submit" color="primary" [disabled]="loginForm.invalid" class="item">
+            PIESLĒGTIES
+        </button>
+
+    </form>
 
     <hr>
 

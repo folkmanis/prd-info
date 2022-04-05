@@ -1,9 +1,11 @@
-import { Injectable } from '@angular/core';
-import { combineLatest, from, Observable, of, ReplaySubject, Subject } from 'rxjs';
-import { concatMap, map, pluck, shareReplay, single, startWith, switchMap, tap, toArray } from 'rxjs/operators';
+import { Injectable, Inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { combineLatest, EMPTY, from, Observable, of, ReplaySubject, Subject } from 'rxjs';
+import { catchError, concatMap, map, pluck, shareReplay, single, startWith, switchMap, tap, toArray } from 'rxjs/operators';
 import { combineReload } from 'src/app/library/rxjs/combine-reload';
 import { Attachment, Threads, ThreadsFilterQuery } from '../interfaces';
 import { GmailApiService } from './gmail-api.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 function threadCache(
   filter$: Observable<ThreadsFilterQuery>,
@@ -34,7 +36,7 @@ function threadCache(
 
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'any'
 })
 export class GmailService {
 
@@ -67,6 +69,7 @@ export class GmailService {
 
   constructor(
     private api: GmailApiService,
+    @Inject(DOCUMENT) private document: Document,
   ) { }
 
   setThreadsFilter(filter: ThreadsFilterQuery) {
@@ -104,4 +107,7 @@ export class GmailService {
       map(fileNames => fileNames[0]),
     );
   }
+
+
+
 }

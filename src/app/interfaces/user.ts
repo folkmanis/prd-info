@@ -7,12 +7,11 @@ export interface User {
     userDisabled: boolean;
     preferences: UserPreferences;
     sessions: UserSession[];
+    eMail: string;
     google?: GoogleUser;
-    isGmail?: boolean;
 }
 
 export interface UserPreferences {
-    eMail: string;
     customers: string[];
     modules: string[];
 }

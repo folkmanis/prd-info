@@ -38,10 +38,34 @@
     <mat-divider></mat-divider>
 
     <section class="container">
+
         <button mat-raised-button appPasswordInput (appPasswordChange)="onPasswordChange($event)"
             [passwordMinimumLength]="5">
             MAINĪT PAROLI
         </button>
+
+    </section>
+
+    <mat-divider></mat-divider>
+
+    <section class="container">
+
+        <section class="buttons">
+
+            <a mat-raised-button href="/data/login/google?redirect=/{{returnPath}}">
+                SAVIENOT AR GOOGLE
+            </a>
+
+            <button mat-raised-button (click)="onDeleteGoogle()" [disabled]="!user.google">
+                DZĒST GOOGLE SAVIENOJUMU
+            </button>
+
+        </section>
+
+        <app-google-info *ngIf="user.google as googleInfo;" [googleInfo]="googleInfo">
+
+        </app-google-info>
+
     </section>
 
 </div>

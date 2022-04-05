@@ -1,13 +1,12 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
 import { DestroyService } from 'prd-cdk';
-import { Observable, of, timer } from 'rxjs';
-import { debounceTime, takeUntil, delay, mergeMap, take, throttleTime } from 'rxjs/operators';
+import { Observable, timer } from 'rxjs';
+import { filter, mergeMap, pluck, share, take, takeUntil, throttleTime } from 'rxjs/operators';
 import { APP_PARAMS } from 'src/app/app-params';
-import { Notification, AppParams, User, UserModule, ModulesWithNotifications } from 'src/app/interfaces';
-import { NotificationsService } from 'src/app/services';
-import { LayoutService } from 'src/app/services';
+import { AppParams, SystemNotification, SystemOperations, User, UserModule } from 'src/app/interfaces';
+import { LoginService } from 'src/app/login';
+import { LayoutService, NotificationsService } from 'src/app/services';
 import { MessagingService } from '../messaging/services/messaging.service';
-import { DOCUMENT } from '@angular/common';
 
 const INITIAL_DELAY = 3000;
 
@@ -34,23 +33,33 @@ export class ToolbarComponent implements OnInit {
 
   small$ = this.layout.isSmall$;
 
+  private systemNotifications$ = timer(INITIAL_DELAY).pipe(
+    take(1),
+    mergeMap(_ => this.notifications.wsMultiplex('system') as Observable<SystemNotification>),
+    throttleTime(500),
+    takeUntil(this.destroy$),
+    share(),
+  );
+
   constructor(
     @Inject(APP_PARAMS) private params: AppParams,
     private messagingService: MessagingService,
     private notifications: NotificationsService,
     private destroy$: DestroyService,
     private layout: LayoutService,
+    private loginService: LoginService,
   ) { }
 
 
   ngOnInit(): void {
-    timer(INITIAL_DELAY).pipe(
-      take(1),
-      mergeMap(_ => this.notifications.wsMultiplex('system')),
-      throttleTime(500),
-      takeUntil(this.destroy$),
-    )
-      .subscribe(() => this.messagingService.reload());
+
+    this.systemNotifications$.subscribe(() => this.messagingService.reload());
+
+    this.systemNotifications$.pipe(
+      pluck('payload'),
+      filter(({ operation, id }) => operation === SystemOperations.USER_UPDATED && id === this.user.username),
+    ).subscribe(() => this.loginService.reloadUser());
+
 
   }
 

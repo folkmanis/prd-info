@@ -1,5 +1,14 @@
 import { Modules } from './system-preferences';
 
+export enum SystemOperations {
+    MESSAGE_DELETED,
+    MESSAGE_ADDED,
+    MESSAGE_ALL_READ,
+    MESSAGES_UPDATED,
+    USER_UPDATED,
+}
+
+
 export type ModulesWithNotifications = (Modules & 'jobs' | 'system');
 
 export interface NotificationBase {
@@ -10,8 +19,8 @@ export interface NotificationBase {
 }
 
 export interface JobsNotification extends NotificationBase {
-    module: 'jobs';
 
+    module: 'jobs';
     payload: {
         jobId: number,
         operation: 'create' | 'delete' | 'update',
@@ -20,10 +29,10 @@ export interface JobsNotification extends NotificationBase {
 }
 
 export interface SystemNotification extends NotificationBase {
-    module: 'system';
 
+    module: 'system';
     payload: {
-        operation: 'ftpWatcher';
+        operation: SystemOperations;
         id: string;
     };
 }

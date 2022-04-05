@@ -7,7 +7,7 @@ import { map, pluck, tap } from 'rxjs/operators';
 import { Attachment, Message, ThreadsFilterQuery, Thread, Threads, Label, LabelListItem } from '../interfaces';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'any'
 })
 export class GmailApiService {
 

@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, Validators, FormGroup, FormControl } from '@angular/forms';
 import { User } from 'src/app/interfaces';
 import { LoginService } from '../services/login.service';
@@ -23,16 +24,20 @@ export class UserSettingsComponent implements OnInit, OnDestroy, CanComponentDea
 
   initialUser: UserUpdate;
 
+  returnPath = this.route.snapshot.url.join('%2F');
+
   canDeactivate: () => boolean | Observable<boolean> | Promise<boolean> = () => this.userForm.pristine;
 
   private subs: Subscription;
 
   private snack = (msg: string) => this.snackService.open(msg, 'OK', { duration: 3000 });
 
+
   constructor(
     private loginService: LoginService,
     private fb: FormBuilder,
     private snackService: MatSnackBar,
+    private route: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
@@ -73,6 +78,10 @@ export class UserSettingsComponent implements OnInit, OnDestroy, CanComponentDea
       next: () => this.snack('Parole nomainīta!'),
       error: () => this.snack('Neizdevās nomainīt paroli!'),
     });
+  }
+
+  onDeleteGoogle() {
+    this.loginService.updateUser({ google: null }).subscribe();
   }
 
   isChanged(update: UserUpdate): boolean {

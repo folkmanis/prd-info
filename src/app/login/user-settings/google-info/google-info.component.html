@@ -1,0 +1,10 @@
+<mat-list>
+
+    <mat-list-item *ngFor="let value of values;">
+        {{ value[0] | titlecase }}:&nbsp;
+        <span class="value">
+            {{ value[1] }}
+        </span>
+    </mat-list-item>
+
+</mat-list>

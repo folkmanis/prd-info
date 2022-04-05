@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { merge, Observable, of, Subject } from 'rxjs';
-import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
+import { map, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators';
 import { User } from 'src/app/interfaces';
 import { LoginApiService } from './login-api.service';
 import { Login } from '../login.interface';
+import { combineReload } from 'src/app/library/rxjs';
 
 type UserUpdate = Partial<User>;
 
@@ -14,8 +15,13 @@ export class LoginService {
 
   private readonly _updateLogin$ = new Subject<User | null>();
 
+  private reload$ = new Subject<void>();
+
   user$ = merge(
-    this.api.getLogin(),
+    this.reload$.pipe(
+      startWith({}),
+      switchMap(() => this.api.getLogin()),
+    ),
     this._updateLogin$,
   ).pipe(
     shareReplay(1),
@@ -41,6 +47,10 @@ export class LoginService {
     return this.api.login(login).pipe(
       tap(usr => this._updateLogin$.next(usr)),
     );
+  }
+
+  reloadUser() {
+    this.reload$.next();
   }
 
   logOut(): Observable<boolean> {
