@@ -19,4 +19,5 @@ export interface AppParams {
     };
     passwordMinimumLenght: number;
     messagesReadDelay: number;
+    gmailScope: string;
 }
