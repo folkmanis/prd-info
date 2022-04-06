@@ -1,22 +1,24 @@
-import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { FormBuilder, Validators, FormGroup, FormControl } from '@angular/forms';
-import { User } from 'src/app/interfaces';
-import { LoginService } from '../services/login.service';
-import { Observable, Subscription } from 'rxjs';
-import { isEqual } from 'lodash';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute } from '@angular/router';
+import { isEqual } from 'lodash';
+import { DestroyService } from 'prd-cdk';
+import { takeUntil } from 'rxjs';
+import { User } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
+import { LoginService } from '../services/login.service';
 
-type UserUpdate = Pick<User, 'name'>;
+type UserUpdate = Pick<User, 'name' | 'eMail'>;
 
 @Component({
   selector: 'app-user-settings',
   templateUrl: './user-settings.component.html',
   styleUrls: ['./user-settings.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [DestroyService]
 })
-export class UserSettingsComponent implements OnInit, OnDestroy, CanComponentDeactivate {
+export class UserSettingsComponent implements OnInit, CanComponentDeactivate {
 
   userForm: FormGroup;
 
@@ -26,9 +28,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy, CanComponentDea
 
   returnPath = this.route.snapshot.url.join('%2F');
 
-  canDeactivate: () => boolean | Observable<boolean> | Promise<boolean> = () => this.userForm.pristine;
-
-  private subs: Subscription;
+  canDeactivate = () => !this.isChanged;
 
   private snack = (msg: string) => this.snackService.open(msg, 'OK', { duration: 3000 });
 
@@ -38,7 +38,12 @@ export class UserSettingsComponent implements OnInit, OnDestroy, CanComponentDea
     private fb: FormBuilder,
     private snackService: MatSnackBar,
     private route: ActivatedRoute,
+    private destroy$: DestroyService,
   ) { }
+
+  get isChanged(): boolean {
+    return !isEqual(this.userForm.value, this.initialUser);
+  }
 
   ngOnInit(): void {
 
@@ -46,31 +51,36 @@ export class UserSettingsComponent implements OnInit, OnDestroy, CanComponentDea
       name: [
         undefined,
         [Validators.required]
+      ],
+      eMail: [
+        undefined,
+        [Validators.email]
       ]
     });
 
-    this.subs = this.user$.subscribe(user => {
+    this.user$.pipe(
+      takeUntil(this.destroy$),
+    ).subscribe(user => {
       this.initialUser = {
-        name: user.name
+        name: user.name,
+        eMail: user.eMail,
       };
       this.onSetInitial();
     });
 
   }
 
-  ngOnDestroy(): void {
-    this.subs.unsubscribe();
-  }
-
   onSave(userFormValue: UserUpdate) {
-    this.userForm.disable();
-    this.loginService.updateUser(userFormValue).subscribe();
+    this.loginService.updateUser(userFormValue)
+      .subscribe({
+        next: () => this.snack('Dati saglabāti'),
+        error: () => this.snack('Neizdevās saglabāt'),
+      });
   }
 
   onSetInitial() {
     this.userForm.setValue(this.initialUser);
     this.userForm.markAsPristine();
-    this.userForm.enable();
   }
 
   onPasswordChange(password: string) {
@@ -84,8 +94,21 @@ export class UserSettingsComponent implements OnInit, OnDestroy, CanComponentDea
     this.loginService.updateUser({ google: null }).subscribe();
   }
 
-  isChanged(update: UserUpdate): boolean {
-    return !isEqual(update, this.initialUser);
+  onGoogleValueClicked([key, value]: [string, string]) {
+    switch (key) {
+      case 'name':
+        this.userForm.patchValue({ name: value });
+        break;
+
+      case 'email':
+        this.userForm.patchValue({ eMail: value });
+        break;
+
+      default:
+        return;
+    }
+    this.userForm.markAsDirty();
   }
+
 
 }

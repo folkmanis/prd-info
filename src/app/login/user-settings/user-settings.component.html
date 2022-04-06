@@ -1,13 +1,22 @@
 <div *ngIf="user$ | async as user;">
 
-    <section class="container">
+    <mat-card class="container">
 
-        <h3>
-            {{ user.username }}
-        </h3>
+        <mat-card-header>
 
-        <form [formGroup]="userForm" (submit)="onSave( userForm.value)"
-            (reset)="onSetInitial(); $event.preventDefault();">
+            <div mat-card-avatar class="avatar"> </div>
+
+            <mat-card-title>
+                {{ user.username }}
+            </mat-card-title>
+
+            <mat-card-subtitle>
+                {{ userForm.value.name }}&nbsp;
+            </mat-card-subtitle>
+
+        </mat-card-header>
+
+        <mat-card-content [formGroup]="userForm">
 
             <section>
 
@@ -20,52 +29,73 @@
 
             </section>
 
-            <section class="buttons">
-                <button mat-raised-button type="submit"
-                    [disabled]="!userForm.valid || !isChanged(userForm.value) || userForm.disabled" color="primary">
-                    SAGLABĀT
-                </button>
+            <section>
 
-                <button mat-raised-button type="reset" [disabled]="userForm.pristine || userForm.disabled">
-                    ATIESTATĪT
-                </button>
+                <mat-form-field class="name">
+                    <mat-label>
+                        e-pasts
+                    </mat-label>
+                    <input type="email" appInputTrim matInput formControlName="eMail">
+                </mat-form-field>
+
             </section>
 
-        </form>
+        </mat-card-content>
 
-    </section>
+        <mat-divider inset></mat-divider>
 
-    <mat-divider></mat-divider>
+        <mat-card-actions>
+            <button mat-button (click)="onSave(userForm.value)"
+                [disabled]="!userForm.valid || !isChanged || userForm.disabled" color="primary">
+                SAGLABĀT
+            </button>
+            <button mat-button (click)="onSetInitial()"
+                [disabled]="userForm.pristine || userForm.disabled || !isChanged">
+                ATIESTATĪT
+            </button>
+            <button mat-button appPasswordInput (appPasswordChange)="onPasswordChange($event)"
+                [passwordMinimumLength]="5">
+                MAINĪT PAROLI
+            </button>
+        </mat-card-actions>
 
-    <section class="container">
+    </mat-card>
 
-        <button mat-raised-button appPasswordInput (appPasswordChange)="onPasswordChange($event)"
-            [passwordMinimumLength]="5">
-            MAINĪT PAROLI
-        </button>
+    <mat-card class="container">
 
-    </section>
+        <mat-card-title-group>
+            <mat-card-title> Google savienojums </mat-card-title>
 
-    <mat-divider></mat-divider>
+            <mat-card-subtitle> {{ user.google?.id }} </mat-card-subtitle>
 
-    <section class="container">
+            <img *ngIf="user.google as googleInfo;" mat-card-sm-image [src]="googleInfo.picture">
 
-        <section class="buttons">
+        </mat-card-title-group>
 
-            <a mat-raised-button href="/data/login/google?redirect=/{{returnPath}}">
-                SAVIENOT AR GOOGLE
+        <mat-card-content>
+
+            <app-google-info *ngIf="user.google as googleInfo;" [googleInfo]="googleInfo"
+                (valueClicked)="onGoogleValueClicked($event)">
+            </app-google-info>
+
+        </mat-card-content>
+
+
+        <mat-divider inset></mat-divider>
+
+        <mat-card-actions>
+
+            <a mat-button href="/data/login/google?redirect=/{{returnPath}}">
+                SAVIENOT
             </a>
 
-            <button mat-raised-button (click)="onDeleteGoogle()" [disabled]="!user.google">
-                DZĒST GOOGLE SAVIENOJUMU
+            <button mat-button (click)="onDeleteGoogle()" [disabled]="!user.google">
+                ATVIENOT
             </button>
 
-        </section>
+        </mat-card-actions>
 
-        <app-google-info *ngIf="user.google as googleInfo;" [googleInfo]="googleInfo">
 
-        </app-google-info>
-
-    </section>
+    </mat-card>
 
 </div>

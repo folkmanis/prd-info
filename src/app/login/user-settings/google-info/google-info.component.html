@@ -2,7 +2,7 @@
 
     <mat-list-item *ngFor="let value of values;">
         {{ value[0] | titlecase }}:&nbsp;
-        <span class="value">
+        <span class="value" (click)="clickEvent.next(value)">
             {{ value[1] }}
         </span>
     </mat-list-item>

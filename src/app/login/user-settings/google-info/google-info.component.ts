@@ -1,6 +1,5 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { GoogleUser } from 'src/app/interfaces';
-import { pick } from 'lodash';
 
 const FIELDS_FOR_DISPLAY: (keyof GoogleUser)[] = [
   'id',
@@ -27,6 +26,8 @@ export class GoogleInfoComponent implements OnInit {
       this.values = Object.entries(value).filter(val => FIELDS_FOR_DISPLAY.includes(val[0] as keyof GoogleUser));
     }
   }
+
+  @Output('valueClicked') clickEvent = new EventEmitter<[string, string]>();
 
   constructor() { }
 
