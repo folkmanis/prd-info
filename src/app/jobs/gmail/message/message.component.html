@@ -1,56 +1,16 @@
-<mat-card>
+<div [innerHTML]="replaceBr(message.html || message.plain)">
+</div>
 
-    <mat-card-content *ngIf="expanded; else snippet">
-        <div class="message">
-            <span [innerHTML]="replaceBr(message.html || message.plain)"></span>
-            <span *ngIf="message.hasAttachment">
-                <button mat-icon-button disabled>
-                    <mat-icon>
-                        attachment
-                    </mat-icon>
-                </button>
-            </span>
-            <span>
-                <button mat-icon-button (click)="expanded = false">
-                    <mat-icon>
-                        chevron_left
-                    </mat-icon>
-                </button>
-            </span>
-        </div>
+<app-attachments [attachments]="message.attachments" #attachmentList>
+</app-attachments>
 
-        <app-attachments [attachments]="message.attachments" #attachmentList>
-        </app-attachments>
+<mat-action-row *ngIf="message.hasAttachment">
+    <button mat-button (click)="onCreateJob(attachmentList.selected)"
+        [disabled]="!attachmentList.selected?.length || (busy$ | async)">
+        SAGLABĀT
+    </button>
+</mat-action-row>
 
-        <mat-card-actions *ngIf="message.hasAttachment">
-            <button mat-raised-button (click)="onCreateJob(attachmentList.selected)"
-                [disabled]="!attachmentList.selected?.length || (busy$ | async)">
-                SAGLABĀT
-            </button>
-        </mat-card-actions>
-
-        <mat-card-footer *ngIf="busy$ | async">
-            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-        </mat-card-footer>
-
-    </mat-card-content>
-
-    <ng-template #snippet>
-        <mat-card-content class="snippet" (click)="expanded = true">
-            <span [innerHTML]="message.snippet">
-            </span>
-            <span *ngIf="message.hasAttachment">
-                <mat-icon>
-                    attachment
-                </mat-icon>
-            </span>
-            <span>
-                <mat-icon>
-                    expand_more
-                </mat-icon>
-            </span>
-        </mat-card-content>
-    </ng-template>
-
-
-</mat-card>
+<mat-card-footer *ngIf="busy$ | async">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</mat-card-footer>

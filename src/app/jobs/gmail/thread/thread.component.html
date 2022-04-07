@@ -32,8 +32,30 @@
 
     </mat-card>
 
-    <app-message *ngFor="let message of thread.messages" #messageComponent [message]="message"
-        (attachmentsConfirm)="onCreateFromMessage(messageComponent)"> </app-message>
+    <mat-accordion multi displayMode="flat">
+
+        <mat-expansion-panel *ngFor="let message of thread.messages" [expanded]="isExpanded(message)">
+
+            <mat-expansion-panel-header>
+                <mat-panel-title [innerHTML]="message.snippet" class="snippet">
+                </mat-panel-title>
+
+                <mat-panel-description>
+                    <mat-icon *ngIf="message.hasAttachment">
+                        attachment
+                    </mat-icon>
+                </mat-panel-description>
+
+            </mat-expansion-panel-header>
+
+            <app-message #messageComponent [message]="message"
+                (attachmentsConfirm)="onCreateFromMessage(messageComponent)">
+            </app-message>
+
+        </mat-expansion-panel>
+
+    </mat-accordion>
+
 
 
 </div>

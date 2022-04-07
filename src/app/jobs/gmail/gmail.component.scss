@@ -2,13 +2,25 @@
     margin: 16px;
 }
 
-.mat-card > div {
+.mat-card>div {
     display: flex;
     gap: 8px;
 }
 
-.mat-column-snippet > div {
+.mat-column-snippet>div {
+
+    overflow: hidden;
+    width: 100%;
+
+}
+
+.mat-column-snippet .snippet-text {
+    margin-top: 8px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.mat-column-snippet .progress-container {
+    height: 4px;
 }

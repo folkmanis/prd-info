@@ -6,9 +6,10 @@ import { concatMap, finalize, map, mergeMap, pluck, toArray, withLatestFrom } fr
 import { CustomersService } from 'src/app/services/customers.service';
 import { Job } from '../../interfaces';
 import { JobCreatorService } from '../../services/job-creator.service';
-import { Attachment, Thread } from '../interfaces';
+import { Attachment, Message, Thread } from '../interfaces';
 import { MessageComponent } from '../message/message.component';
 import { GmailService } from '../services/gmail.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 
 @Component({
@@ -27,6 +28,9 @@ export class ThreadComponent implements OnInit {
 
   busy$ = new BehaviorSubject<boolean>(false);
 
+  replaceBr = (str: string) => this.sanitizer.bypassSecurityTrustHtml(str?.replace(/\r\n/g, '<br />'));
+
+  isExpanded = (msg: Message) => msg.hasAttachment && msg.labelIds.every(label => label !== 'SENT');
 
   constructor(
     private route: ActivatedRoute,
@@ -34,6 +38,7 @@ export class ThreadComponent implements OnInit {
     private snack: MatSnackBar,
     private jobCreator: JobCreatorService,
     private customers: CustomersService,
+    private sanitizer: DomSanitizer,
   ) { }
 
   ngOnInit(): void { }

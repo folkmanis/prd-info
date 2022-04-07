@@ -6,6 +6,7 @@ import { ThreadsFilterQuery } from './interfaces';
 import { GmailService } from './services/gmail.service';
 import { MatPaginatorIntlLv } from './threads-paginator/mat-paginator-intl-lv';
 import { ThreadsPaginatorDirective } from './threads-paginator/threads-paginator.directive';
+import { Thread } from './interfaces/thread';
 
 
 @Component({
@@ -39,6 +40,8 @@ export class GmailComponent implements OnInit {
   messagesTotal$ = this.gmail.label$.pipe(
     map(labels => labels.length === 1 ? labels[0].messagesTotal : undefined),
   );
+
+  loading: Thread | null;
 
   constructor(
     private gmail: GmailService,

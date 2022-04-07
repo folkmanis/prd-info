@@ -25,12 +25,23 @@
     <ng-container matColumnDef="snippet">
         <mat-header-cell *matHeaderCellDef></mat-header-cell>
         <mat-cell *matCellDef="let thread">
-            <div [innerHTML]="thread.html">
+
+            <div>
+
+                <div [innerHTML]="thread.html" class="snippet-text">
+                </div>
+
+                <div class="progress-container">
+                    <mat-progress-bar *ngIf="thread === loading" mode="indeterminate"></mat-progress-bar>
+                </div>
+
+
             </div>
-            <!-- {{ thread.snippet }} -->
+
         </mat-cell>
     </ng-container>
 
-    <mat-row *matRowDef="let snippet; columns: ['snippet']" [routerLink]="[snippet.id]"></mat-row>
+    <mat-row *matRowDef="let thread; columns: ['snippet']" [routerLink]="[thread.id]" (click)="loading=thread;">
+    </mat-row>
 
 </mat-table>
