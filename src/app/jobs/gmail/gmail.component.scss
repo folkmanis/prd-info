@@ -6,3 +6,9 @@
     display: flex;
     gap: 8px;
 }
+
+.mat-column-snippet > div {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

@@ -1,12 +1,21 @@
 <mat-card>
 
     <mat-card-content *ngIf="expanded; else snippet">
-        <div class="message" (click)="expanded = false">
+        <div class="message">
             <span [innerHTML]="replaceBr(message.html || message.plain)"></span>
             <span *ngIf="message.hasAttachment">
-                <mat-icon>
-                    attachment
-                </mat-icon>
+                <button mat-icon-button disabled>
+                    <mat-icon>
+                        attachment
+                    </mat-icon>
+                </button>
+            </span>
+            <span>
+                <button mat-icon-button (click)="expanded = false">
+                    <mat-icon>
+                        chevron_left
+                    </mat-icon>
+                </button>
             </span>
         </div>
 
@@ -33,6 +42,11 @@
             <span *ngIf="message.hasAttachment">
                 <mat-icon>
                     attachment
+                </mat-icon>
+            </span>
+            <span>
+                <mat-icon>
+                    expand_more
                 </mat-icon>
             </span>
         </mat-card-content>
