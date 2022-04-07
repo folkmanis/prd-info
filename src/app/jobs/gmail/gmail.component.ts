@@ -4,8 +4,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { map, pluck } from 'rxjs';
 import { ThreadsFilterQuery } from './interfaces';
 import { GmailService } from './services/gmail.service';
-import { MatPaginatorIntlLv } from './thread/mat-paginator-intl-lv';
-import { ThreadsPaginatorDirective } from './thread/threads-paginator.directive';
+import { MatPaginatorIntlLv } from './threads-paginator/mat-paginator-intl-lv';
+import { ThreadsPaginatorDirective } from './threads-paginator/threads-paginator.directive';
 
 
 @Component({

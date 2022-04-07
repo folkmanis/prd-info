@@ -10,7 +10,7 @@ import { MessageComponent } from './message/message.component';
 import { AttachmentsComponent } from './attachments/attachments.component';
 import { ThreadComponent } from './thread/thread.component';
 import { ThreadsFilterComponent } from './threads-filter/threads-filter.component';
-import { ThreadsPaginatorDirective } from './thread/threads-paginator.directive';
+import { ThreadsPaginatorDirective } from './threads-paginator/threads-paginator.directive';
 import { GmailLoginInterceptor } from './services/gmail-login.interceptor';
 
 
