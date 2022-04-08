@@ -12,13 +12,16 @@
     gap: 16px;
 }
 
-.mat-card-title .header > * {
+.mat-card-title .header>* {
     margin-block-start: 0;
     margin-block-end: 0;
 }
 
 .snippet {
-    // flex: 1;
+    overflow: hidden;
+}
+
+.snippet>* {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

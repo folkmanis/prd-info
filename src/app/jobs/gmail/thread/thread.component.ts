@@ -30,7 +30,7 @@ export class ThreadComponent implements OnInit {
 
   replaceBr = (str: string) => this.sanitizer.bypassSecurityTrustHtml(str?.replace(/\r\n/g, '<br />'));
 
-  isExpanded = (msg: Message) => msg.hasAttachment && msg.labelIds.every(label => label !== 'SENT');
+  isExpanded = (msg: Message) => msg.hasPdf && msg.labelIds.every(label => label !== 'SENT');
 
   constructor(
     private route: ActivatedRoute,

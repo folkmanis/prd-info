@@ -36,6 +36,10 @@ export class Message {
         return this.payload.attachments;
     }
 
+    get hasPdf(): boolean {
+        return this.attachments.some(attachment => attachment.isPdf);
+    }
+
     get plain(): string {
         return this.payload.plain.join(';\n\r');
     }

@@ -37,7 +37,8 @@
         <mat-expansion-panel *ngFor="let message of thread.messages" [expanded]="isExpanded(message)">
 
             <mat-expansion-panel-header>
-                <mat-panel-title [innerHTML]="message.snippet" class="snippet">
+                <mat-panel-title class="snippet">
+                    <div [innerHTML]="message.snippet"></div>
                 </mat-panel-title>
 
                 <mat-panel-description>
@@ -48,9 +49,13 @@
 
             </mat-expansion-panel-header>
 
-            <app-message #messageComponent [message]="message"
-                (attachmentsConfirm)="onCreateFromMessage(messageComponent)">
-            </app-message>
+            <ng-template matExpansionPanelContent>
+
+                <app-message #messageComponent [message]="message"
+                    (attachmentsConfirm)="onCreateFromMessage(messageComponent)">
+                </app-message>
+
+            </ng-template>
 
         </mat-expansion-panel>
 

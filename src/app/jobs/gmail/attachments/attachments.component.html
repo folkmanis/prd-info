@@ -1,7 +1,6 @@
 <mat-selection-list>
     <mat-list-option *ngFor="let attachment of attachments" [value]="attachment" checkboxPosition="before"
-        [selected]="isPdf(attachment.filename)">
+        [selected]="attachment.isPdf">
         {{ attachment.filename }} - {{ attachment.size | filesize }}
-        <!-- {{ attachment.filename }} -->
     </mat-list-option>
 </mat-selection-list>

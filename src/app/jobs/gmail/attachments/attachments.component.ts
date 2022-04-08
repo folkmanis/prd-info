@@ -1,9 +1,7 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input, Output, ViewChild } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { Attachment } from '../interfaces';
-import { isEqual } from 'lodash';
+import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatSelectionList } from '@angular/material/list';
+import { isEqual } from 'lodash';
+import { Attachment } from '../interfaces';
 
 @Component({
   selector: 'app-attachments',
@@ -27,8 +25,6 @@ export class AttachmentsComponent implements OnInit {
   get selected(): Attachment[] | undefined {
     return this.list?.selectedOptions.selected.map(opt => opt.value);
   }
-
-  isPdf = (name: string) => name.slice(name.lastIndexOf('.')) === '.pdf';
 
   constructor() { }
 
