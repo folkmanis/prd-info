@@ -1,9 +1,9 @@
 import { map, merge, Observable, scan } from 'rxjs';
 
-export function combineReload<T>(data$: Observable<T>, reload$: Observable<void>): Observable<T> {
+export function combineReload<T>(data$: Observable<T>, ...reloads$: Observable<void>[]): Observable<T> {
     return merge(
         data$,
-        reload$
+        ...reloads$
     ).pipe(
         scan((initial, val) => {
             if (!initial && !val) {
