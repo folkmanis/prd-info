@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { endOfDay } from 'date-fns';
 import { EMPTY, merge, Observable, ReplaySubject, Subject } from 'rxjs';
-import { catchError, timeout, mapTo, pluck, share, switchMap, tap } from 'rxjs/operators';
+import { catchError, timeout, mapTo, pluck, share, switchMap, tap, map, shareReplay } from 'rxjs/operators';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { HttpCacheService } from 'src/app/library/http';
 import { combineReload } from 'src/app/library/rxjs';
@@ -18,27 +18,21 @@ interface JobUpdateParams {
 })
 export class JobService {
 
-  private readonly _filter$: Subject<JobQueryFilter> = new ReplaySubject(1);
+  private readonly filter$: Subject<JobQueryFilter> = new ReplaySubject(1);
 
   private readonly forceReload$: Subject<void> = new Subject();
 
-  private readonly reload$: Observable<void> = merge(
+  readonly jobs$: Observable<JobPartial[]> = combineReload(
+    this.filter$,
     this.forceReload$,
-    this.notificatinsService.wsMultiplex('jobs')
+    this.notificatinsService.wsMultiplex('jobs').pipe(map(() => undefined))
   ).pipe(
     tap(() => this.cacheService.clear()),
-    mapTo(undefined),
-  );
-
-  readonly jobs$: Observable<JobPartial[]> = combineReload(
-    this._filter$,
-    this.reload$,
-  ).pipe(
     switchMap(filter => this.getJobList(filter)),
-    share(),
+    shareReplay(1),
   );
 
-  readonly filter$: Observable<JobQueryFilter> = this._filter$.asObservable();
+  readonly activeFilter$: Observable<JobQueryFilter> = this.filter$.asObservable();
 
   constructor(
     private notificatinsService: NotificationsService,
@@ -48,7 +42,7 @@ export class JobService {
   ) { }
 
   setFilter(fltr: JobQueryFilter): void {
-    this._filter$.next(fltr);
+    this.filter$.next(fltr);
   }
 
   reload() {
