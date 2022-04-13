@@ -10,67 +10,38 @@ import { FileUploadMessage } from '../../interfaces/file-upload-message';
 import { JobService } from '../../services/job.service';
 
 
-export interface DialogData {
-  job: Partial<Job>;
-  fileUploadProgress: Observable<FileUploadMessage[]>;
-}
-
-interface DialogResponse {
-  job: PartialJob;
-}
-
 export type PartialJob = Pick<Job, 'jobId'> & Partial<Job>;
 
-const CONFIG: MatDialogConfig = {
-  autoFocus: false,
-  maxHeight: '100vh',
-  maxWidth: '100vw',
-};
 
 @Injectable({
   providedIn: 'root'
 })
-export class ReproJobDialogService {
+export class ReproJobService {
 
   private readonly productionStagesFn = (productName: string) => this.productsService.productionStages(productName);
 
   constructor(
-    private matDialog: MatDialog,
     private productsService: ProductsService,
     private jobService: JobService,
   ) { }
 
-  openJob(job: Partial<Job>, fileUploadProgress?: Observable<FileUploadMessage[]>): Observable<PartialJob | undefined> {
+  updateJob(jobUpdate: PartialJob): Observable<Job> {
 
-    const config: MatDialogConfig = {
-      ...CONFIG,
-      autoFocus: !job.customer,
-      data: {
-        job,
-        fileUploadProgress,
-      }
-    };
-    return of();
-    // return this.matDialog
-    //   .open<ReproJobDialogComponent, DialogData, DialogResponse>(ReproJobDialogComponent, config)
-    //   .afterClosed().pipe(
-    //     pluck('job'),
-    //     concatMap(job => addProductionStages(job, this.productionStagesFn)),
-    //   );
+    return addProductionStages(jobUpdate, this.productionStagesFn).pipe(
+      concatMap(job => this.jobService.updateJob(job.jobId, job))
+    );
 
   }
 
-  editJob(jobId: number): Observable<boolean> {
-    return this.jobService.getJob(jobId).pipe(
-      concatMap(job => this.openJob(job)),
-      concatMap(data => data ? this.jobService.updateJob(jobId, data).pipe(mapTo(true)) : of(false)),
+  createJob(jobUpdate: Omit<Job, 'jobId'>) {
+    return addProductionStages(jobUpdate, this.productionStagesFn).pipe(
+      concatMap(job => this.jobService.newJob(job)),
     );
   }
-
-
 }
 
-function addProductionStages(job: PartialJob, getStageFn: (productName: string) => Observable<JobProductionStage[]>): Observable<PartialJob> {
+
+function addProductionStages<T extends Partial<Job>>(job: T, getStageFn: (productName: string) => Observable<JobProductionStage[]>): Observable<T> {
   if (job?.products instanceof Array && job.products.length > 0) {
     return forkJoin(jobStages(job.products, getStageFn)).pipe(
       map(allStages => ({

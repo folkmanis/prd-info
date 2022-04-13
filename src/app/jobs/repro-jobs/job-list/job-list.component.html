@@ -1,3 +1,10 @@
+<button mat-fab color="primary" class="plus-button mat-elevation-z8" routerLink="new">
+    <mat-icon>
+        add
+    </mat-icon>
+</button>
+
+
 <cdk-virtual-scroll-viewport itemSize="32" class="container" scroll-to-top>
 
 
@@ -18,7 +25,7 @@
         </thead>
         <tbody>
             <tr *cdkVirtualFor="let job of dataSource$; let idx=index;" [class.job-completed]="job.invoiceId"
-                [routerLink]="['./']" [queryParams]="{jobId: job.jobId}" [class.highlited]="hasProduct(job, highlited)">
+                [routerLink]="[job.jobId]" [class.highlited]="hasProduct(job, highlited)">
                 <!-- statusa indikators -->
                 <td class="column-state">
                     <mat-icon *ngIf="job.jobStatus.generalStatus === 20" color="primary">
@@ -53,11 +60,13 @@
                                 <mat-icon>filter_none</mat-icon>
                             </button>
                             <button *ngIf="job.jobStatus.generalStatus === 20" mat-icon-button
-                                matToolTip="Atzīmēt pabeigtu" (click)="onSetJobStatus(job.jobId, 30, $event)">
+                                matToolTip="Atzīmēt pabeigtu"
+                                (click)="$event.stopPropagation(); onSetJobStatus(job.jobId, 30)">
                                 <mat-icon>check</mat-icon>
                             </button>
                             <button *ngIf="job.jobStatus.generalStatus === 10" mat-icon-button color="primary"
-                                matToolTip="Darbs aktīvs" (click)="onSetJobStatus(job.jobId, 20, $event)">
+                                matToolTip="Darbs aktīvs"
+                                (click)="$event.stopPropagation(); onSetJobStatus(job.jobId, 20)">
                                 <mat-icon>label_important</mat-icon>
                             </button>
                         </span>

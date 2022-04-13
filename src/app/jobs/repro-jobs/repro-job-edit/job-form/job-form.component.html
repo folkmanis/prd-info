@@ -1,0 +1,109 @@
+<form [formGroup]="form" [class.large]="isLarge$ | async">
+
+    <div class="container-multi">
+
+        <!-- Klients -->
+        <app-customer-input formControlName="customer" [listItems]="customers$ | async">
+            Klients
+        </app-customer-input>
+
+        <!-- Izveidošanas Datums -->
+        <mat-form-field>
+            <mat-label>Izveidošanas datums</mat-label>
+            <input matInput formControlName="receivedDate" [matDatepicker]="datePicker" required
+                [min]="receivedDate.min" [max]="receivedDate.max">
+            <mat-datepicker-toggle matSuffix [for]="datePicker" tabindex="-1"></mat-datepicker-toggle>
+            <mat-datepicker #datePicker></mat-datepicker>
+        </mat-form-field>
+
+        <!-- Nodošanas termiņš -->
+        <mat-form-field>
+            <mat-label>Nodošanas datums</mat-label>
+            <input matInput required [matDatepicker]="dueDatePicker" formControlName="dueDate">
+            <mat-datepicker-toggle matSuffix [for]="dueDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #dueDatePicker></mat-datepicker>
+        </mat-form-field>
+
+    </div>
+
+    <div>
+
+        <!-- Darba nosaukums -->
+        <mat-form-field class="full-width">
+            <mat-label>Darba nosaukums</mat-label>
+            <input type="text" matInput formControlName="name" required>
+            <mat-error *ngIf="nameControl.hasError('required')">
+                Jānorāda obligāti
+            </mat-error>
+            <button mat-icon-button [appCopyClipboard]="jobIdAndName$ | async" matSuffix tabindex="-1">
+                <mat-icon>filter_none</mat-icon>
+            </button>
+        </mat-form-field>
+
+    </div>
+
+    <div class="container-multi">
+
+        <!-- Darba kategorija -->
+        <ng-container formGroupName="production">
+            <mat-form-field>
+                <mat-label>Kategorija</mat-label>
+                <mat-select formControlName="category" required>
+                    <mat-option *ngFor="let cat of categories$ | async" [value]="cat.category">
+                        {{cat.description}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </ng-container>
+        <!-- Statuss -->
+        <mat-form-field formGroupName="jobStatus">
+            <mat-label>Stadija</mat-label>
+            <mat-select formControlName="generalStatus">
+                <mat-option *ngFor="let state of jobStates$ | async" [value]="state.state">
+                    {{state.description}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <!-- Klienta darba numurs -->
+        <mat-form-field>
+            <mat-label>Klienta darba numurs</mat-label>
+            <input matInput formControlName="customerJobId">
+        </mat-form-field>
+
+    </div>
+
+    <!-- Preces apakšforma -->
+    <app-repro-products-editor *ngIf="customerProducts$ | async as customerProducts"
+        [customerProducts]="customerProducts" formControlName="products" [showPrices]="showPrices$ | async"
+        [small]="isSmall$ | async">
+    </app-repro-products-editor>
+
+    <div class="container-multi">
+
+        <!-- Papildus apraksts -->
+        <mat-card>
+            <mat-form-field class="full-width">
+                <mat-label>Piezīmes</mat-label>
+                <textarea matInput formControlName="comment"></textarea>
+            </mat-form-field>
+        </mat-card>
+
+        <div>
+
+            <!-- Folderis -->
+            <mat-card *ngIf="isNew === false">
+                <mat-card-content>
+                    <app-folder-path [path]="folderPath$ | async" (createFolder)="onCreateFolder()">
+                    </app-folder-path>
+                </mat-card-content>
+            </mat-card>
+
+            <app-upload-progress [progress]="fileUploadProgress">
+            </app-upload-progress>
+
+        </div>
+
+    </div>
+
+</form>

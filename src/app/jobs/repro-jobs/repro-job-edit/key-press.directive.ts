@@ -1,9 +1,4 @@
-import { Directive, Input, HostListener, ElementRef, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
-import { DialogData } from '../services/repro-job-dialog.service';
-import { ReproJobEditComponent } from './repro-job-edit.component';
-import { DestroyService, log } from 'prd-cdk';
-import { filter, takeUntil } from 'rxjs/operators';
+import { Directive, ElementRef, HostListener, Input } from '@angular/core';
 
 export type Events = 'escape' | 'ctrlPlus' | 'ctrlEnter';
 
@@ -14,10 +9,9 @@ const KEYS = new Map<Events, Partial<KeyboardEvent>>([
 ]);
 
 @Directive({
-  selector: 'button[appKeyPress]',
-  providers: [DestroyService],
+  selector: 'button[appKeyPress],a[appKeyPress]',
 })
-export class KeyPressDirective implements OnInit {
+export class KeyPressDirective {
   @Input() set appKeyPress(value: Events) {
     this.eventToListen = KEYS.get(value as Events) || {};
   }
@@ -26,24 +20,20 @@ export class KeyPressDirective implements OnInit {
 
   constructor(
     private elRef: ElementRef<HTMLButtonElement>,
-    private dialogRef: MatDialogRef<ReproJobEditComponent, DialogData>,
-    private destroy$: DestroyService,
   ) { }
 
-  ngOnInit() {
-    this.dialogRef.keydownEvents().pipe(
-      filter(event => isEqual(this.eventToListen, event)),
-      takeUntil(this.destroy$),
-    ).subscribe(event => {
+  @HostListener('window:keydown', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    if (isEqual(this.eventToListen, event)) {
+      this.elRef.nativeElement.click();
       event.preventDefault();
       event.stopPropagation();
-      this.elRef.nativeElement.click();
-    });
+    }
   }
 
 }
 
-function isEqual(obj1: { [key: string]: any }, obj2: { [key: string]: any }): boolean {
+function isEqual(obj1: Record<string, any>, obj2: Record<string, any>): boolean {
   const props1 = Object.getOwnPropertyNames(obj1);
 
   for (const prop of props1) {

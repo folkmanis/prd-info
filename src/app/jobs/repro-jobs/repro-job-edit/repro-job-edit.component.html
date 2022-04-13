@@ -1,133 +1,43 @@
-<header>
-
-    <h4>
-        <span *ngIf="isNew === false">
-            {{ form.value.jobId }}&nbsp;-&nbsp;
-        </span>
-        {{form.value.name}}
-    </h4>
-
-    <button mat-mini-fab mat-dialog-close tabindex="-1">
-        <mat-icon> close </mat-icon>
-    </button>
-
-</header>
+<ng-container *ngIf="job$ | async as job;">
 
 
-<mat-dialog-content [formGroup]="form" [class.large]="isLarge$ | async">
+    <header>
 
-    <div class="container-multi">
+        <a mat-icon-button appKeyPress="escape" tabindex="-1" routerLink="..">
+            <mat-icon> arrow_back </mat-icon>
+        </a>
 
-        <!-- Klients -->
-        <app-customer-input formControlName="customer" [listItems]="customers$ | async">
-            Klients
-        </app-customer-input>
+        <h4>
+            <span *ngIf="job.jobId">
+                {{ job.jobId }}&nbsp;-&nbsp;
+            </span>
+            {{ form.value.name }}
+        </h4>
 
-        <!-- Izveidošanas Datums -->
-        <mat-form-field>
-            <mat-label>Izveidošanas datums</mat-label>
-            <input matInput formControlName="receivedDate" [matDatepicker]="datePicker" required
-                [min]="receivedDate.min" [max]="receivedDate.max">
-            <mat-datepicker-toggle matSuffix [for]="datePicker" tabindex="-1"></mat-datepicker-toggle>
-            <mat-datepicker #datePicker></mat-datepicker>
-        </mat-form-field>
+    </header>
 
-        <!-- Nodošanas termiņš -->
-        <mat-form-field>
-            <mat-label>Nodošanas datums</mat-label>
-            <input matInput required [matDatepicker]="dueDatePicker" formControlName="dueDate">
-            <mat-datepicker-toggle matSuffix [for]="dueDatePicker"></mat-datepicker-toggle>
-            <mat-datepicker #dueDatePicker></mat-datepicker>
-        </mat-form-field>
+    <mat-divider></mat-divider>
 
+    <div class="content">
+        <app-job-form [fileUploadProgress]="[]"></app-job-form>
     </div>
 
-    <div>
+    <mat-divider></mat-divider>
 
-        <!-- Darba nosaukums -->
-        <mat-form-field class="full-width">
-            <mat-label>Darba nosaukums</mat-label>
-            <input type="text" matInput formControlName="name" required>
-            <mat-error *ngIf="nameControl.hasError('required')">
-                Jānorāda obligāti
-            </mat-error>
-            <button mat-icon-button [appCopyClipboard]="jobIdAndName$ | async" matSuffix tabindex="-1">
-                <mat-icon>filter_none</mat-icon>
+    <footer>
+
+        <button *ngIf="job.jobId else createButton;" mat-raised-button color="primary" appKeyPress="ctrlEnter"
+            [disabled]="form.status !== 'VALID' || form.update == undefined" (click)="onUpdate(form.update)">
+            SAGLABĀT
+        </button>
+
+        <ng-template #createButton>
+            <button mat-raised-button color="primary" [disabled]="form.status !== 'VALID'" appKeyPress="ctrlEnter"
+                (click)="onCreate(form.update)">
+                IZVEIDOT
             </button>
-        </mat-form-field>
+        </ng-template>
 
-    </div>
+    </footer>
 
-    <div class="container-multi">
-
-        <!-- Darba kategorija -->
-        <ng-container formGroupName="production">
-            <mat-form-field>
-                <mat-label>Kategorija</mat-label>
-                <mat-select formControlName="category" required>
-                    <mat-option *ngFor="let cat of categories$ | async" [value]="cat.category">
-                        {{cat.description}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </ng-container>
-        <!-- Statuss -->
-        <mat-form-field formGroupName="jobStatus">
-            <mat-label>Stadija</mat-label>
-            <mat-select formControlName="generalStatus">
-                <mat-option *ngFor="let state of jobStates$ | async" [value]="state.state">
-                    {{state.description}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-
-        <!-- Klienta darba numurs -->
-        <mat-form-field>
-            <mat-label>Klienta darba numurs</mat-label>
-            <input matInput formControlName="customerJobId">
-        </mat-form-field>
-
-    </div>
-
-    <!-- Preces apakšforma -->
-    <app-repro-products-editor *ngIf="customerProducts$ | async as customerProducts"
-        [customerProducts]="customerProducts" formControlName="products" [showPrices]="showPrices$ | async"
-        [small]="isSmall$ | async">
-    </app-repro-products-editor>
-
-    <div class="container-multi">
-
-        <!-- Papildus apraksts -->
-        <mat-card>
-            <mat-form-field class="full-width">
-                <mat-label>Piezīmes</mat-label>
-                <textarea matInput formControlName="comment"></textarea>
-            </mat-form-field>
-        </mat-card>
-
-        <div>
-
-            <!-- Folderis -->
-            <mat-card *ngIf="isNew === false">
-                <mat-card-content>
-                    <app-folder-path [path]="folderPath$ | async" (createFolder)="onCreateFolder()">
-                    </app-folder-path>
-                </mat-card-content>
-            </mat-card>
-
-            <app-upload-progress *ngIf="fileUploadProgress$ | async as progress;" [progress]="progress">
-            </app-upload-progress>
-
-        </div>
-
-    </div>
-
-</mat-dialog-content>
-
-<mat-dialog-actions align="center">
-    <button mat-raised-button color="primary" [disabled]="isSaveDisabled()" appKeyPress="ctrlEnter"
-        (click)="onUpdate()">
-        SAGLABĀT
-    </button>
-
-</mat-dialog-actions>
+</ng-container>

@@ -1,9 +1,3 @@
-<button mat-fab color="primary" class="plus-button mat-elevation-z8" (click)="onNewJob()">
-    <mat-icon>
-        add
-    </mat-icon>
-</button>
-
 <mat-drawer-container>
     <mat-drawer button [small]="(large$ | async) === false">
 
@@ -22,8 +16,7 @@
 
         <app-job-filter (jobFilter)="onJobFilter($event)"></app-job-filter>
 
-        <app-job-list [jobs]="jobs$ | async" (statusUpdate)="onSetJobStatus($event)" #jobList
-            [highlitedProduct]="highlited"></app-job-list>
+        <router-outlet></router-outlet>
 
     </mat-drawer-content>
 </mat-drawer-container>

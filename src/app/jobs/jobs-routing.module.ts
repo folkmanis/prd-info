@@ -2,11 +2,42 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { JobsComponent } from './jobs.component';
 import { ReproJobsComponent } from './repro-jobs/repro-jobs.component';
+import { JobListComponent } from './repro-jobs/job-list/job-list.component';
+import { ReproJobEditComponent } from './repro-jobs/repro-job-edit/repro-job-edit.component';
+import { ReproJobResolverService } from './repro-jobs/services/repro-job-resolver.service';
+
 
 const routes: Routes = [
   {
     path: 'repro',
     component: ReproJobsComponent,
+    children: [
+      {
+        path: 'new',
+        component: ReproJobEditComponent,
+        data: {
+          job: {
+            receivedDate: new Date(),
+            dueDate: new Date(),
+            jobStatus: {
+              generalStatus: 10,
+              timestamp: new Date(),
+            }
+          }
+        }
+      },
+      {
+        path: ':jobId',
+        component: ReproJobEditComponent,
+        resolve: {
+          job: ReproJobResolverService,
+        }
+      },
+      {
+        path: '',
+        component: JobListComponent,
+      },
+    ]
   },
   {
     path: '',

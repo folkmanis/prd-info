@@ -17,6 +17,7 @@ import { UploadProgressComponent } from './upload-progress/upload-progress.compo
 import { JobFilterSummaryComponent } from './job-filter/job-filter-summary/job-filter-summary.component';
 import { ProductsSummaryComponent } from './products-summary/products-summary.component';
 import { ReproProductComponent } from './repro-job-edit/repro-products-editor/repro-product/repro-product.component';
+import { JobFormComponent } from './repro-job-edit/job-form/job-form.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { ReproProductComponent } from './repro-job-edit/repro-products-editor/re
     JobFilterSummaryComponent,
     ProductsSummaryComponent,
     ReproProductComponent,
+    JobFormComponent,
   ],
   imports: [
     CommonModule,

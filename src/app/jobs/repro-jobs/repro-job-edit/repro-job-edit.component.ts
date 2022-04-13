@@ -1,28 +1,20 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Input, Output, ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormControl, FormControlStatus } from '@angular/forms';
 import { addDays, subDays } from 'date-fns';
-import { isEqual, pickBy } from 'lodash';
 import { Observable } from 'rxjs';
-import { distinctUntilChanged, filter, map, pluck, switchMap, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, pluck, shareReplay, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { CustomerPartial, SystemPreferences } from 'src/app/interfaces';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { LoginService } from 'src/app/login';
 import { CustomersService, LayoutService, ProductsService } from 'src/app/services';
 import { CONFIG } from 'src/app/services/config.provider';
-import { Job } from '../../interfaces';
+import { FileUploadMessage, Job } from '../../interfaces';
 import { JobService } from '../../services/job.service';
 import { JobFormGroup } from '../services/job-form-group';
-import { DialogData } from '../services/repro-job-dialog.service';
-
-const LARGE_SCREEN_SIZE = {
-  height: '90vh',
-  width: '90vw',
-};
-const SMALL_SCREEN_SIZE = {
-  height: '100vh',
-  width: '100vw',
-};
+import { DestroyService, log } from 'prd-cdk';
+import { ReproJobService } from '../services/repro-job.service';
+import { MatSnackBar, MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarConfig } from '@angular/material/snack-bar';
 
 
 @Component({
@@ -30,123 +22,48 @@ const SMALL_SCREEN_SIZE = {
   templateUrl: './repro-job-edit.component.html',
   styleUrls: ['./repro-job-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    DestroyService,
+    JobFormGroup,
+  ]
 })
 export class ReproJobEditComponent implements OnInit {
 
-  form = new JobFormGroup(this.data.job);
-
-  isLarge$: Observable<boolean> = this.layoutService.isLarge$;
-  isSmall$ = this.layoutService.isSmall$;
-
-  customers$: Observable<CustomerPartial[]> = this.customersService.customers$.pipe(
-    map(customers => customers.filter(customer => !customer.disabled)),
+  job$: Observable<Job> = this.route.data.pipe(
+    pluck('job'),
   );
 
-  receivedDate = {
-    min: subDays(Date.now(), 5),
-    max: addDays(Date.now(), 3),
-  };
-
-  jobStates$ = this.config$.pipe(
-    pluck('jobs', 'jobStates'),
-    map(states => states.filter(st => st.state < 50))
-  );
-  categories$ = this.config$.pipe(
-    pluck('jobs', 'productCategories'),
-  );
-
-  jobIdAndName$ = this.form.value$.pipe(
-    map(job => this.jobIdAndName(job)),
-  );
-
-  customerProducts$ = this.form.value$.pipe(
-    pluck('customer'),
-    filter(customer => !!customer),
-    distinctUntilChanged(),
-    switchMap(customer => this.productsService.productsCustomer(customer)),
-  );
-
-  showPrices$: Observable<boolean> = this.loginService.isModule('calculations');
-
-  folderPath$ = this.form.value$.pipe(
-    pluck('files'),
-    map(files => files?.path?.join('/'))
-  );
-
-  fileUploadProgress$ = this.data.fileUploadProgress;
-
-  get nameControl() {
-    return this.form.get('name') as FormControl;
-  }
-
-
-  get isNew(): boolean {
-    return !this.form.value.jobId;
-  }
 
   constructor(
-    @Inject(CONFIG) private config$: Observable<SystemPreferences>,
-    @Inject(MAT_DIALOG_DATA) private data: DialogData,
-    private dialogRef: MatDialogRef<ReproJobEditComponent, DialogData>,
-    private layoutService: LayoutService,
-    private productsService: ProductsService,
-    private customersService: CustomersService,
-    private sanitize: SanitizeService,
-    private loginService: LoginService,
-    private jobsService: JobService,
+    private route: ActivatedRoute,
+    private destroy$: DestroyService,
+    public form: JobFormGroup,
+    private router: Router,
+    private reproJobServcie: ReproJobService,
+    private snack: MatSnackBar,
   ) { }
 
   ngOnInit(): void {
+    this.job$.subscribe(job => this.form.patchValue(job));
+  }
 
-    this.layoutService.isLarge$.pipe(
-      takeUntil(this.dialogRef.beforeClosed()),
-    ).subscribe(isLarge => this.setScreenConfig(isLarge));
+  onUpdate(jobUpdate: Partial<Job>) {
+    console.log(jobUpdate);
+    const jobId = this.form.value.jobId;
+    this.reproJobServcie.updateJob({ jobId, ...jobUpdate })
+      .subscribe({
+        next: (job) => {
+          this.snack.open(`Darbs ${job.jobId}-${job.name} saglabāts!`, 'OK');
+          this.router.navigate(['..'], { relativeTo: this.route });
+        },
+        error: () => this.snack.open(`Neizdevā saglabāt darbu.`, 'OK')
+      });
 
   }
 
-  isSaveDisabled(): boolean {
-    return this.form.pristine && !this.isNew || !this.form.valid;
+  onCreate(job: Partial<Job>) {
+    console.log(job);
   }
-
-  onUpdate() {
-    const job = this.jobDiff();
-    this.dialogRef.close({ job });
-  }
-
-  onCreateFolder() {
-    const jobId = this.form.value.jobId as number;
-    this.jobsService.createFolder(jobId).pipe(
-      pluck('files'),
-    )
-      .subscribe(files => this.form.controls.files.setValue(files));
-  }
-
-  private setScreenConfig(isLarge: boolean): void {
-    this.dialogRef.updateSize(
-      isLarge ? LARGE_SCREEN_SIZE.width : SMALL_SCREEN_SIZE.width,
-      isLarge ? LARGE_SCREEN_SIZE.height : SMALL_SCREEN_SIZE.height,
-    );
-  }
-
-  private jobDiff(): Partial<Job> | undefined {
-    if (this.isNew) {
-      return this.form.value;
-    }
-    const newJob = this.form.value;
-    const oldJob = this.data.job;
-    const diff = pickBy(newJob, (value, key) => key === 'jobId' || !isEqual(value, oldJob[key]));
-    if (Object.keys(diff).length > 1) {
-      return diff;
-    }
-    return undefined;
-  }
-
-  private jobIdAndName(job: Job) {
-    const name = this.sanitize.sanitizeFileName(job.name);
-    return `${job.jobId}-${name}`;
-  }
-
 
 }
-
 

@@ -42,36 +42,10 @@ export class ReproJobsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.route.queryParamMap.pipe(
-      map(params => params.get('jobId')),
-      filter(jobId => jobId && !isNaN(+jobId)),
-      concatMap(jobId => this.editDialogService.editJob(+jobId)),
-      takeUntil(this.destroy$),
-    ).subscribe(_ => this.router.navigate(['.'], { relativeTo: this.route }));
   }
 
   onJobFilter(filter: JobQueryFilter) {
     this.jobService.setFilter(filter);
-  }
-
-  onSetJobStatus({ jobId, jobStatus }: Pick<Job, 'jobId' | 'jobStatus'>) {
-    this.jobService.updateJob(jobId, { jobStatus }).subscribe();
-  }
-
-  onNewJob() {
-    const emptyJob = {
-      receivedDate: new Date(),
-      dueDate: new Date(),
-      jobStatus: {
-        generalStatus: 10,
-        timestamp: new Date(),
-      }
-    };
-
-    this.editDialogService.openJob(emptyJob).pipe(
-      concatMap(job => job ? this.jobService.newJob(job) : EMPTY),
-    ).subscribe();
-
   }
 
   onFileDrop(fileList: FileList) {

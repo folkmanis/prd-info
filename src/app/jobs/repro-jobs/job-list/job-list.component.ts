@@ -5,7 +5,7 @@ import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { LayoutService } from 'src/app/services';
 import { Job, JobPartial } from '../../interfaces';
-
+import { JobService } from '../../services/job.service';
 
 
 @Component({
@@ -19,21 +19,13 @@ export class JobListComponent implements OnInit {
 
   isLarge$ = this.layout.isLarge$;
 
-  dataSource$ = new ReplaySubject<JobPartial[]>(1);
+  dataSource$ = this.jobService.jobs$;
 
-  @Input() set jobs(value: JobPartial[]) {
-
-    if (value) {
-      this.dataSource$.next(value);
-    }
-
-  }
 
   @Input('highlitedProduct') highlited: string | null = null;
 
-  @Output() statusUpdate = new Subject<Pick<Job, 'jobId' | 'jobStatus'>>();
-
   constructor(
+    private jobService: JobService,
     private clipboard: ClipboardService,
     private layout: LayoutService,
     private sanitize: SanitizeService,
@@ -48,20 +40,22 @@ export class JobListComponent implements OnInit {
     event.stopPropagation();
   }
 
-  onSetJobStatus(jobId: number, status: number, event: MouseEvent) {
-    event.stopPropagation();
-    this.statusUpdate.next({
-      jobId,
-      jobStatus: {
-        generalStatus: status,
-        timestamp: new Date(),
-      }
+  onSetJobStatus(jobId: number, status: number) {
 
-    });
+    this.jobService.updateJob(
+      jobId,
+      {
+        jobStatus: {
+          generalStatus: status,
+          timestamp: new Date(),
+        }
+      }
+    ).subscribe();
   }
 
   hasProduct(job: JobPartial, productName: string): boolean {
     return job.products?.some(product => product.name === productName);
   }
+
 
 }
