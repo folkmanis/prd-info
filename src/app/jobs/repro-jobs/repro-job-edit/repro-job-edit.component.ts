@@ -52,7 +52,6 @@ export class ReproJobEditComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.reproJobService.uploadRef = null;
   }
 
   onUpdate() {
@@ -68,6 +67,7 @@ export class ReproJobEditComponent implements OnInit, OnDestroy {
 
   onCreate() {
     const jobUpdate: Partial<Omit<Job, 'jobId'>> = this.form.update;
+    this.reproJobService.uploadRef = null;
     this.reproJobService.createJob(jobUpdate).pipe(
       tap(() => this.saved = true),
       tap(() => this.router.navigate(['..'], { relativeTo: this.route })),

@@ -1,6 +1,7 @@
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { from, merge, Observable, OperatorFunction, pipe, partition } from 'rxjs';
+import { last } from 'lodash';
+import { from, merge, Observable, OperatorFunction, pipe, partition, of } from 'rxjs';
 import { concatMap, filter, map, mapTo, mergeMap, pluck, scan, share, tap, throttleTime } from 'rxjs/operators';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { FileUploadEventType, FileUploadMessage, UploadMessageBase } from '../../interfaces/file-upload-message';
@@ -42,13 +43,29 @@ export class UserFileUploadService {
       this.uploadProgress(),
     );
 
-    const uploadRef = new UploadRef(messages$, this.addFilesToJobFn());
+    const uploadRef = new UploadRef(messages$, this.addUserFilesToJobFn());
 
     uploadRef.onCancel().pipe(
       concatMap(fileNames => this.deleteUploads(fileNames))
     ).subscribe();
 
     return uploadRef;
+  }
+
+  ftpUploadRef(path: string[]): UploadRef {
+
+    const fileName = last(path);
+    const message: FileUploadMessage = {
+      type: FileUploadEventType.UploadFinish,
+      id: fileName,
+      name: fileName,
+      size: 0,
+      fileNames: [fileName],
+    };
+    const progress$: Observable<FileUploadMessage[]> = of([message]);
+
+    return new UploadRef(progress$, this.addFtpFilesToJobFn(path.slice(0, -1)));
+
   }
 
   private deleteUploads(fileNames: string[]): Observable<null> {
@@ -144,8 +161,17 @@ export class UserFileUploadService {
     return from(waiting);
   }
 
-  private addFilesToJobFn(): (jobId: number, fileNames: string[]) => Observable<number> {
+  private addUserFilesToJobFn(): (jobId: number, fileNames: string[]) => Observable<number> {
     return (jobId, fileNames) => this.jobService.moveUserFilesToJob(jobId, fileNames).pipe(
+      pluck('jobId'),
+    );
+  }
+
+  private addFtpFilesToJobFn(basePath: string[]): (jobId: number, fileNames: string[]) => Observable<number> {
+    return (jobId, fileNames) => this.jobService.copyFtpFilesToJob(
+      jobId,
+      fileNames.map(name => [...basePath, name])
+    ).pipe(
       pluck('jobId'),
     );
   }

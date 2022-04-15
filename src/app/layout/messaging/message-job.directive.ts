@@ -3,12 +3,19 @@ import { Directive, HostListener, Input, Optional } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { last } from 'lodash';
-import { MonoTypeOperatorFunction, Observable, of } from 'rxjs';
-import { map, mapTo, mergeMapTo, pluck, switchMap, tap } from 'rxjs/operators';
-import { Job, JobsApiService } from '../../jobs';
-import { JobCreatorService } from '../../jobs/services/job-creator.service';
+import { from, MonoTypeOperatorFunction, Observable, of } from 'rxjs';
+import { map, mapTo, mergeMap, mergeMapTo, pluck, switchMap, tap } from 'rxjs/operators';
+import { Job, JobsApiService, FileUploadMessage, FileUploadEventType } from '../../jobs';
 import { JobData, Message, MessageFtpUser } from './interfaces';
 import { MessagingService } from './services/messaging.service';
+import { ReproJobService } from 'src/app/jobs/repro-jobs/services/repro-job.service';
+import { UserFileUploadService } from 'src/app/jobs/repro-jobs/services/user-file-upload.service';
+import { log } from 'prd-cdk';
+
+export interface UserFile {
+  name: string;
+  size: number;
+}
 
 
 class FileMissingError extends Error {
@@ -34,7 +41,8 @@ export class MessageJobDirective {
     private snack: MatSnackBar,
     private jobsApi: JobsApiService,
     @Optional() private overlayRef: OverlayRef,
-    private jobCreator: JobCreatorService,
+    private reproJobService: ReproJobService,
+    private userFileUploadService: UserFileUploadService,
   ) { }
 
   @HostListener('click')
@@ -43,15 +51,24 @@ export class MessageJobDirective {
     if (this.message?.data instanceof JobData && this.message.data.operation === 'add' && this.ftpUser instanceof MessageFtpUser) {
 
       this.overlayRef?.detach();
-      const customer = this.ftpUser;
+
+
       const path = this.message.data.path;
 
+      const customer = this.ftpUser;
+      const name = this.reproJobService.jobNameFromFiles([last(path)]);
+
+
       this.fileExists(path).pipe(
-        switchMap(() => this.router.navigate(['/', 'jobs', 'repro'])),
-        mergeMapTo(this.jobCreator.fromFtpFile(path, { customer: customer.CustomerName })), // to service
+        map(() => this.userFileUploadService.ftpUploadRef(path)),
+        tap(uploadRef => this.reproJobService.uploadRef = uploadRef),
+        mergeMap(uploadRef => from(this.router.navigate(['/', 'jobs', 'repro', 'new', { name, customer: customer?.CustomerName }])).pipe(
+          mergeMap(() => uploadRef.onAddedToJob()),
+        )),
         this.setMessageRead(this.message),
+        log('uploadRef'),
       ).subscribe({
-        next: job => this.snack.open(`Fails ${last(path)} pievienots darbam ${job.jobId}`, 'OK', { duration: 3000 }),
+        next: jobId => this.snack.open(`Fails ${last(path)} pievienots darbam ${jobId}`, 'OK'),
         error: err => this.snack.open(`Neizdevās saglabāt darbu. ${err}`, 'OK'),
       });
 
@@ -70,11 +87,12 @@ export class MessageJobDirective {
     );
   }
 
-  private setMessageRead(msg: Message): MonoTypeOperatorFunction<Job> {
+  private setMessageRead<T>(msg: Message): MonoTypeOperatorFunction<T> {
 
-    return switchMap(job => msg.seen ? of(job) : this.messaging.markOneRead(this.message._id).pipe(mapTo(job)));
+    return switchMap(arg => msg.seen ? of(arg) : this.messaging.markOneRead(this.message._id).pipe(mapTo(arg)));
 
   }
+
 
 
 }

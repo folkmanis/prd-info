@@ -34,8 +34,14 @@ export class NewReproJobResolver implements Resolve<NewJob> {
       ...DEFAULT_REPRO_JOB,
     };
 
+    console.log(route.params);
+
     if (route.paramMap.get('name')) {
       job.name = route.paramMap.get('name');
+    }
+
+    if (route.paramMap.get('customer')) {
+      job.customer = route.paramMap.get('customer');
     }
 
     return job;

@@ -1,4 +1,3 @@
-import { log } from 'prd-cdk';
 import { concat, from, merge, Observable, OperatorFunction, pipe, Subject, timer } from 'rxjs';
 import { concatMap, filter, last, map, mergeMap, mergeMapTo, scan, shareReplay, takeUntil, tap, toArray } from 'rxjs/operators';
 import { FileUploadEventType, FileUploadMessage, UploadFinishMessage } from '../../interfaces/file-upload-message';
@@ -9,6 +8,7 @@ export class UploadRef {
     private readonly cancel$ = new Subject<void>();
     private readonly messages$: Observable<FileUploadMessage[]>;
     private readonly fileNames$: Observable<string[]>;
+    private readonly addedToJob$ = new Subject<number>();
 
     constructor(
         messages$: Observable<FileUploadMessage[]>,
@@ -32,18 +32,26 @@ export class UploadRef {
         );
     }
 
-
-
     addToJob(jobId: number): Observable<number> {
         return this.fileNames$.pipe(
             tap(() => this.cancel$.complete()),
-            concatMap(files => this.addToJobFn(jobId, files))
+            concatMap(files => this.addToJobFn(jobId, files)),
+            tap(jobId => {
+                this.addedToJob$.next(jobId);
+                this.addedToJob$.complete();
+            })
         );
+    }
+
+    onAddedToJob(): Observable<number> {
+        return this.addedToJob$.asObservable();
     }
 
     cancel(): void {
         this.cancel$.next();
         this.cancel$.complete();
+        this.addedToJob$.error(new Error('Upload cancelled'));
+        this.addedToJob$.complete();
     }
 
     onCancel(): Observable<string[]> {
