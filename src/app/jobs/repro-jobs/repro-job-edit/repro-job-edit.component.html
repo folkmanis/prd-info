@@ -1,43 +1,38 @@
-<ng-container *ngIf="job$ | async as job;">
+<header>
 
+    <a mat-icon-button appKeyPress="escape" tabindex="-1" routerLink="..">
+        <mat-icon> arrow_back </mat-icon>
+    </a>
 
-    <header>
+    <h4>
+        <span *ngIf="job.jobId">
+            {{ job.jobId }}&nbsp;-&nbsp;
+        </span>
+        {{ form.value.name }}
+    </h4>
 
-        <a mat-icon-button appKeyPress="escape" tabindex="-1" routerLink="..">
-            <mat-icon> arrow_back </mat-icon>
-        </a>
+</header>
 
-        <h4>
-            <span *ngIf="job.jobId">
-                {{ job.jobId }}&nbsp;-&nbsp;
-            </span>
-            {{ form.value.name }}
-        </h4>
+<mat-divider></mat-divider>
 
-    </header>
+<div class="content">
+    <app-job-form [fileUploadProgress]="fileUploadProgress$ | async"></app-job-form>
+</div>
 
-    <mat-divider></mat-divider>
+<mat-divider></mat-divider>
 
-    <div class="content">
-        <app-job-form [fileUploadProgress]="[]"></app-job-form>
-    </div>
+<footer>
 
-    <mat-divider></mat-divider>
+    <button *ngIf="job.jobId else createButton;" mat-raised-button color="primary" appKeyPress="ctrlEnter"
+        [disabled]="form.status !== 'VALID' || form.update == undefined" (click)="onUpdate()">
+        SAGLABĀT
+    </button>
 
-    <footer>
-
-        <button *ngIf="job.jobId else createButton;" mat-raised-button color="primary" appKeyPress="ctrlEnter"
-            [disabled]="form.status !== 'VALID' || form.update == undefined" (click)="onUpdate(form.update)">
-            SAGLABĀT
+    <ng-template #createButton>
+        <button mat-raised-button color="primary" [disabled]="form.status !== 'VALID'" appKeyPress="ctrlEnter"
+            (click)="onCreate()">
+            IZVEIDOT
         </button>
+    </ng-template>
 
-        <ng-template #createButton>
-            <button mat-raised-button color="primary" [disabled]="form.status !== 'VALID'" appKeyPress="ctrlEnter"
-                (click)="onCreate(form.update)">
-                IZVEIDOT
-            </button>
-        </ng-template>
-
-    </footer>
-
-</ng-container>
+</footer>

@@ -1,20 +1,13 @@
-import { Input, Output, ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormControl, FormControlStatus } from '@angular/forms';
-import { addDays, subDays } from 'date-fns';
-import { Observable } from 'rxjs';
-import { distinctUntilChanged, filter, map, pluck, shareReplay, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { CustomerPartial, SystemPreferences } from 'src/app/interfaces';
-import { SanitizeService } from 'src/app/library/services/sanitize.service';
-import { LoginService } from 'src/app/login';
-import { CustomersService, LayoutService, ProductsService } from 'src/app/services';
-import { CONFIG } from 'src/app/services/config.provider';
+import { DestroyService } from 'prd-cdk';
+import { Observable, Observer, of } from 'rxjs';
+import { concatMap, map, tap } from 'rxjs/operators';
 import { FileUploadMessage, Job } from '../../interfaces';
-import { JobService } from '../../services/job.service';
 import { JobFormGroup } from '../services/job-form-group';
-import { DestroyService, log } from 'prd-cdk';
 import { ReproJobService } from '../services/repro-job.service';
-import { MatSnackBar, MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { UploadRef } from '../services/upload-ref';
 
 
 @Component({
@@ -23,47 +16,64 @@ import { MatSnackBar, MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarConfig } from '@
   styleUrls: ['./repro-job-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    DestroyService,
     JobFormGroup,
   ]
 })
-export class ReproJobEditComponent implements OnInit {
+export class ReproJobEditComponent implements OnInit, OnDestroy {
 
-  job$: Observable<Job> = this.route.data.pipe(
-    pluck('job'),
-  );
+  job: Job;
 
+  fileUploadProgress$: Observable<FileUploadMessage[]>;
+
+  uploadRef: UploadRef | null = null;
+
+  saved = false;
+
+  private jobSaveObserver: Observer<Job> = {
+    next: (job) => this.snack.open(`Darbs ${job.jobId}-${job.name} saglabāts!`, 'OK'),
+    error: () => this.snack.open(`Neizdevās saglabāt darbu.`, 'OK'),
+    complete: () => { }
+  };
 
   constructor(
-    private route: ActivatedRoute,
-    private destroy$: DestroyService,
     public form: JobFormGroup,
+    private route: ActivatedRoute,
     private router: Router,
-    private reproJobServcie: ReproJobService,
+    private reproJobService: ReproJobService,
     private snack: MatSnackBar,
   ) { }
 
   ngOnInit(): void {
-    this.job$.subscribe(job => this.form.patchValue(job));
+    this.job = this.route.snapshot.data.job;
+    this.form.patchValue(this.job);
+
+    this.uploadRef = this.reproJobService.uploadRef;
+    this.fileUploadProgress$ = this.uploadRef?.onMessages() || of([]);
   }
 
-  onUpdate(jobUpdate: Partial<Job>) {
-    console.log(jobUpdate);
-    const jobId = this.form.value.jobId;
-    this.reproJobServcie.updateJob({ jobId, ...jobUpdate })
-      .subscribe({
-        next: (job) => {
-          this.snack.open(`Darbs ${job.jobId}-${job.name} saglabāts!`, 'OK');
-          this.router.navigate(['..'], { relativeTo: this.route });
-        },
-        error: () => this.snack.open(`Neizdevā saglabāt darbu.`, 'OK')
-      });
+  ngOnDestroy(): void {
+    this.reproJobService.uploadRef = null;
+  }
+
+  onUpdate() {
+    const jobId = this.job.jobId;
+    const jobUpdate: Partial<Job> = this.form.update;
+    this.reproJobService.updateJob({ jobId, ...jobUpdate }).pipe(
+      tap(() => this.saved = true),
+      tap(() => this.router.navigate(['..'], { relativeTo: this.route })),
+    )
+      .subscribe(this.jobSaveObserver);
 
   }
 
-  onCreate(job: Partial<Job>) {
-    console.log(job);
+  onCreate() {
+    const jobUpdate: Partial<Omit<Job, 'jobId'>> = this.form.update;
+    this.reproJobService.createJob(jobUpdate).pipe(
+      tap(() => this.saved = true),
+      tap(() => this.router.navigate(['..'], { relativeTo: this.route })),
+      concatMap(job => this.uploadRef ? this.uploadRef.addToJob(job.jobId).pipe(map(() => job)) : of(job)),
+    ).subscribe(this.jobSaveObserver);
   }
+
 
 }
-

@@ -5,6 +5,8 @@ import { ReproJobsComponent } from './repro-jobs/repro-jobs.component';
 import { JobListComponent } from './repro-jobs/job-list/job-list.component';
 import { ReproJobEditComponent } from './repro-jobs/repro-job-edit/repro-job-edit.component';
 import { ReproJobResolverService } from './repro-jobs/services/repro-job-resolver.service';
+import { NewReproJobResolver } from './repro-jobs/services/new-repro-job.resolver';
+import { ReproJobEditGuard } from './repro-jobs/repro-job-edit/repro-job-edit.guard';
 
 
 const routes: Routes = [
@@ -15,23 +17,18 @@ const routes: Routes = [
       {
         path: 'new',
         component: ReproJobEditComponent,
-        data: {
-          job: {
-            receivedDate: new Date(),
-            dueDate: new Date(),
-            jobStatus: {
-              generalStatus: 10,
-              timestamp: new Date(),
-            }
-          }
-        }
+        resolve: {
+          job: NewReproJobResolver,
+        },
+        canDeactivate: [ReproJobEditGuard]
       },
       {
         path: ':jobId',
         component: ReproJobEditComponent,
         resolve: {
           job: ReproJobResolverService,
-        }
+        },
+        canDeactivate: [ReproJobEditGuard]
       },
       {
         path: '',

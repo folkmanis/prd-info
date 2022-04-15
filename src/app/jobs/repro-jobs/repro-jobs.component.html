@@ -5,8 +5,6 @@
             <mat-card-header>Nomest jauna darba failus</mat-card-header>
         </mat-card>
 
-        <app-upload-progress *ngIf="progress$" [progress]="progress$ | async"></app-upload-progress>
-
         <app-products-summary [jobs]="jobs$ | async" (productHover)="highlited = $event">
         </app-products-summary>
 

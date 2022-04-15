@@ -1,4 +1,5 @@
-import { from, merge, Observable, OperatorFunction, pipe, Subject } from 'rxjs';
+import { log } from 'prd-cdk';
+import { concat, from, merge, Observable, OperatorFunction, pipe, Subject, timer } from 'rxjs';
 import { concatMap, filter, last, map, mergeMap, mergeMapTo, scan, shareReplay, takeUntil, tap, toArray } from 'rxjs/operators';
 import { FileUploadEventType, FileUploadMessage, UploadFinishMessage } from '../../interfaces/file-upload-message';
 
@@ -24,7 +25,11 @@ export class UploadRef {
     }
 
     onMessages(): Observable<FileUploadMessage[]> {
-        return this.cancelMessageWhen(this.messages$, this.cancel$);
+        return concat(
+            this.cancelMessageWhen(this.messages$, this.cancel$),
+            timer(5000)
+                .pipe(map(() => [])),
+        );
     }
 
 
@@ -43,7 +48,7 @@ export class UploadRef {
 
     onCancel(): Observable<string[]> {
         return this.cancel$.pipe(
-            mergeMapTo(this.fileNames$),
+            mergeMap(() => this.fileNames$),
         );
     }
 

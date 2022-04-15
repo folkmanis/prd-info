@@ -1,16 +1,15 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DestroyService, log } from 'prd-cdk';
-import { combineLatest, concat, EMPTY, from, merge, Observable, of, OperatorFunction, pipe, Subject, timer } from 'rxjs';
-import { concatMap, delay, filter, finalize, last, map, mapTo, mergeAll, mergeMap, pluck, scan, share, shareReplay, takeUntil, tap, toArray } from 'rxjs/operators';
-import { UploadFinishMessage, FileUploadEventType, FileUploadMessage, Job, JobQueryFilter } from '../interfaces';
+import { DestroyService } from 'prd-cdk';
+import { Observable } from 'rxjs';
 import { LayoutService } from 'src/app/services';
+import { FileUploadMessage, JobQueryFilter } from '../interfaces';
 import { JobService } from '../services/job.service';
 import { ReproJobDialogService } from './services/repro-job-dialog.service';
+import { ReproJobService } from './services/repro-job.service';
 import { UserFileUploadService } from './services/user-file-upload.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
-const MAX_JOB_NAME_LENGTH = 100; // TODO take from global config
 
 @Component({
   selector: 'app-repro-jobs',
@@ -26,19 +25,14 @@ export class ReproJobsComponent implements OnInit {
 
   jobs$ = this.jobService.jobs$;
 
-  progress$: Observable<FileUploadMessage[]> | null = null;
-
   highlited: string | null = null;
 
   constructor(
     private layoutService: LayoutService,
     private jobService: JobService,
-    private route: ActivatedRoute,
-    private editDialogService: ReproJobDialogService,
-    private destroy$: DestroyService,
     private router: Router,
     private userFileUpload: UserFileUploadService,
-    private snack: MatSnackBar,
+    private reproJobService: ReproJobService,
   ) { }
 
   ngOnInit(): void {
@@ -50,53 +44,21 @@ export class ReproJobsComponent implements OnInit {
 
   onFileDrop(fileList: FileList) {
 
-    const uploadRef = this.userFileUpload.userFileUploadRef(Array.from(fileList));
+    if (this.reproJobService.uploadRef) {
+      return;
+    }
 
-    this.progress$ = concat(
-      uploadRef.onMessages(),
-      timer(5000).pipe(mapTo([]))
+    const name = this.reproJobService.jobNameFromFiles(
+      Array.from(fileList).map(file => file.name)
     );
+    this.reproJobService.uploadRef = this.userFileUpload.userFileUploadRef(Array.from(fileList));
 
-
-    const job$: Observable<Partial<Job> | null> =
-      this.editDialogService.openJob(
-        this.jobDataFromFiles(fileList),
-        uploadRef.onMessages()
-      ).pipe(
-        share(),
-      );
-
-    job$.pipe(
-      filter(job => !job)
-    ).subscribe(() => uploadRef.cancel());
-
-    job$.pipe(
-      filter(job => !!job),
-      mergeMap(job => this.jobService.newJob(job)),
-      mergeMap(({ jobId }) => uploadRef.addToJob(jobId)),
-      tap(jobId => jobId && this.snack.open('Visi faili pievienoti darbam', 'OK', { duration: 3000 })),
-    ).subscribe();
+    this.router.navigate(['jobs', 'repro', 'new', { name }])
+      .then(navigated => {
+        if (!navigated) this.reproJobService.uploadRef = null;
+      });
 
   }
 
-  private jobDataFromFiles(fileList: FileList): Partial<Job> {
-
-    return {
-      name: Array.from(fileList)
-        .reduce((acc, curr) => [...acc, curr.name.replace(/\.[^/.]+$/, '')], [])
-        .reduce((acc, curr, _, names) => [...acc, curr.slice(0, MAX_JOB_NAME_LENGTH / names.length)], [])
-        .join('_'),
-      receivedDate: new Date(),
-      dueDate: new Date(),
-      production: {
-        category: 'repro',
-      },
-      jobStatus: {
-        generalStatus: 20,
-        timestamp: new Date(),
-      },
-    };
-
-  }
 
 }

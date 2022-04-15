@@ -1,16 +1,18 @@
 import { Injectable } from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { flatten } from 'lodash';
 import { forkJoin, Observable, of } from 'rxjs';
-import { concatMap, map, mapTo, pluck } from 'rxjs/operators';
+import { concatMap, map } from 'rxjs/operators';
 import { JobProductionStage } from 'src/app/interfaces';
 import { ProductsService } from 'src/app/services';
 import { Job, JobProduct } from '../../interfaces';
-import { FileUploadMessage } from '../../interfaces/file-upload-message';
 import { JobService } from '../../services/job.service';
+import { UploadRef } from './upload-ref';
+import { UserFileUploadService } from './user-file-upload.service';
 
 
 export type PartialJob = Pick<Job, 'jobId'> & Partial<Job>;
+
+const MAX_JOB_NAME_LENGTH = 100; // TODO take from global config
 
 
 @Injectable({
@@ -18,11 +20,14 @@ export type PartialJob = Pick<Job, 'jobId'> & Partial<Job>;
 })
 export class ReproJobService {
 
+  uploadRef: UploadRef | null = null;
+
   private readonly productionStagesFn = (productName: string) => this.productsService.productionStages(productName);
 
   constructor(
     private productsService: ProductsService,
     private jobService: JobService,
+    private userFileUpload: UserFileUploadService,
   ) { }
 
   updateJob(jobUpdate: PartialJob): Observable<Job> {
@@ -33,11 +38,19 @@ export class ReproJobService {
 
   }
 
-  createJob(jobUpdate: Omit<Job, 'jobId'>) {
+  createJob(jobUpdate: Omit<Partial<Job>, 'jobId'>) {
     return addProductionStages(jobUpdate, this.productionStagesFn).pipe(
       concatMap(job => this.jobService.newJob(job)),
     );
   }
+
+  jobNameFromFiles(fileNames: string[]): string {
+    return fileNames
+      .reduce((acc, curr) => [...acc, curr.replace(/\.[^/.]+$/, '')], [])
+      .reduce((acc, curr, _, names) => [...acc, curr.slice(0, MAX_JOB_NAME_LENGTH / names.length)], [])
+      .join('_');
+  }
+
 }
 
 
