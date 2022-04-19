@@ -1,16 +1,13 @@
 import { OverlayRef } from '@angular/cdk/overlay';
 import { Directive, HostListener, Input, Optional } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { last } from 'lodash';
-import { from, MonoTypeOperatorFunction, Observable, of } from 'rxjs';
-import { map, mapTo, mergeMap, mergeMapTo, pluck, switchMap, tap } from 'rxjs/operators';
-import { Job, JobsApiService, FileUploadMessage, FileUploadEventType } from '../../jobs';
-import { JobData, Message, MessageFtpUser } from './interfaces';
-import { MessagingService } from './services/messaging.service';
+import { map, mergeMap, pluck, switchMap, tap, from, MonoTypeOperatorFunction, Observable, of } from 'rxjs';
 import { ReproJobService } from 'src/app/jobs/repro-jobs/services/repro-job.service';
 import { UserFileUploadService } from 'src/app/jobs/repro-jobs/services/user-file-upload.service';
-import { log } from 'prd-cdk';
+import { JobsApiService } from '../../jobs';
+import { JobData, Message, MessageFtpUser } from './interfaces';
+import { MessagingService } from './services/messaging.service';
 
 export interface UserFile {
   name: string;
@@ -38,7 +35,6 @@ export class MessageJobDirective {
   constructor(
     private router: Router,
     private messaging: MessagingService,
-    private snack: MatSnackBar,
     private jobsApi: JobsApiService,
     @Optional() private overlayRef: OverlayRef,
     private reproJobService: ReproJobService,
@@ -66,11 +62,7 @@ export class MessageJobDirective {
           mergeMap(() => uploadRef.onAddedToJob()),
         )),
         this.setMessageRead(this.message),
-        log('uploadRef'),
-      ).subscribe({
-        next: jobId => this.snack.open(`Fails ${last(path)} pievienots darbam ${jobId}`, 'OK'),
-        error: err => this.snack.open(`Neizdevās saglabāt darbu. ${err}`, 'OK'),
-      });
+      ).subscribe();
 
     }
 
@@ -89,7 +81,7 @@ export class MessageJobDirective {
 
   private setMessageRead<T>(msg: Message): MonoTypeOperatorFunction<T> {
 
-    return switchMap(arg => msg.seen ? of(arg) : this.messaging.markOneRead(this.message._id).pipe(mapTo(arg)));
+    return switchMap(arg => msg.seen ? of(arg) : this.messaging.markOneRead(this.message._id).pipe(map(() => arg)));
 
   }
 

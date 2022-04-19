@@ -8,6 +8,7 @@ import { FileUploadMessage, Job } from '../../interfaces';
 import { JobFormGroup } from '../services/job-form-group';
 import { ReproJobService } from '../services/repro-job.service';
 import { UploadRef } from '../services/upload-ref';
+import { SnackbarMessageComponent } from '../snackbar-message/snackbar-message.component';
 
 
 @Component({
@@ -21,7 +22,7 @@ import { UploadRef } from '../services/upload-ref';
 })
 export class ReproJobEditComponent implements OnInit, OnDestroy {
 
-  job: Job;
+  job: Partial<Job>;
 
   fileUploadProgress$: Observable<FileUploadMessage[]>;
 
@@ -30,8 +31,8 @@ export class ReproJobEditComponent implements OnInit, OnDestroy {
   saved = false;
 
   private jobSaveObserver: Observer<Job> = {
-    next: (job) => this.snack.open(`Darbs ${job.jobId}-${job.name} saglabāts!`, 'OK'),
-    error: () => this.snack.open(`Neizdevās saglabāt darbu.`, 'OK'),
+    next: (job) => this.snack.openFromComponent(SnackbarMessageComponent, { data: { job, progress: this.fileUploadProgress$ } }),
+    error: () => this.snack.openFromComponent(SnackbarMessageComponent, { data: { progress: this.fileUploadProgress$ } }),
     complete: () => { }
   };
 
@@ -44,11 +45,17 @@ export class ReproJobEditComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.job = this.route.snapshot.data.job;
+    this.job = this.reproJobService.job || {};
+    this.job = {
+      ...this.job,
+      ...this.route.snapshot.data.job
+    };
     this.form.patchValue(this.job);
 
     this.uploadRef = this.reproJobService.uploadRef;
     this.fileUploadProgress$ = this.uploadRef?.onMessages() || of([]);
+
+    this.reproJobService.job = null;
   }
 
   ngOnDestroy(): void {
@@ -70,9 +77,10 @@ export class ReproJobEditComponent implements OnInit, OnDestroy {
     this.reproJobService.uploadRef = null;
     this.reproJobService.createJob(jobUpdate).pipe(
       tap(() => this.saved = true),
+      tap(job => this.snack.openFromComponent(SnackbarMessageComponent, { data: { job, progress: this.fileUploadProgress$ } })),
       tap(() => this.router.navigate(['..'], { relativeTo: this.route })),
       concatMap(job => this.uploadRef ? this.uploadRef.addToJob(job.jobId).pipe(map(() => job)) : of(job)),
-    ).subscribe(this.jobSaveObserver);
+    ).subscribe();
   }
 
 

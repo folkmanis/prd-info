@@ -68,6 +68,25 @@ export class UserFileUploadService {
 
   }
 
+  savedFileRef(fileNames: string[]): UploadRef {
+    const messages: FileUploadMessage[] = fileNames.map(name => ({
+      type: FileUploadEventType.UploadFinish,
+      id: name,
+      name,
+      size: 0,
+      fileNames: [name],
+    }));
+    const messages$: Observable<FileUploadMessage[]> = of(messages);
+
+    const uploadRef = new UploadRef(messages$, this.addUserFilesToJobFn());
+
+    uploadRef.onCancel().pipe(
+      concatMap(fileNames => this.deleteUploads(fileNames))
+    ).subscribe();
+
+    return uploadRef;
+  }
+
   private deleteUploads(fileNames: string[]): Observable<null> {
     return this.api.deleteUserFiles(fileNames).pipe(
       tap(count => {

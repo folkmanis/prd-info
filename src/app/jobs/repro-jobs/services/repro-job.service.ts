@@ -22,6 +22,8 @@ export class ReproJobService {
 
   uploadRef: UploadRef | null = null;
 
+  job: Partial<Job> | null = null;
+
   private readonly productionStagesFn = (productName: string) => this.productsService.productionStages(productName);
 
   constructor(

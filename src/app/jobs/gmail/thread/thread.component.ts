@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, from, Observable } from 'rxjs';
-import { concatMap, finalize, map, mergeMap, pluck, toArray, withLatestFrom } from 'rxjs/operators';
+import { concatMap, finalize, map, mergeMap, pluck, tap, toArray, withLatestFrom } from 'rxjs/operators';
 import { CustomersService } from 'src/app/services/customers.service';
 import { Job } from '../../interfaces';
 import { JobCreatorService } from '../../services/job-creator.service';
@@ -10,6 +10,9 @@ import { Attachment, Message, Thread } from '../interfaces';
 import { MessageComponent } from '../message/message.component';
 import { GmailService } from '../services/gmail.service';
 import { DomSanitizer } from '@angular/platform-browser';
+import { UserFileUploadService } from 'src/app/jobs/repro-jobs/services/user-file-upload.service';
+import { UploadRef } from 'src/app/jobs/repro-jobs/services/upload-ref';
+import { ReproJobService } from '../../repro-jobs/services/repro-job.service';
 
 
 @Component({
@@ -36,30 +39,28 @@ export class ThreadComponent implements OnInit {
     private route: ActivatedRoute,
     private gmail: GmailService,
     private snack: MatSnackBar,
-    private jobCreator: JobCreatorService,
     private customers: CustomersService,
     private sanitizer: DomSanitizer,
+    private router: Router,
+    private userFileUploadService: UserFileUploadService,
+    private reproJobService: ReproJobService,
   ) { }
 
   ngOnInit(): void { }
 
   onCreateFromThread(thread: Thread) {
 
-
-    const jobPreset: Partial<Job> = {
+    this.reproJobService.job = {
       comment: thread.plain,
-      name: thread.subject,
     };
 
     const selected = this.messageList.filter(item => !!item.attachmentsList?.selected.length);
 
     if (selected.length === 0) {
 
-      this.resolveCustomer(thread.from, jobPreset).pipe(
-        mergeMap(job => this.jobCreator.newJob(job)),
-      ).subscribe(job => {
-        this.snack.open(`Darbs ${job.jobId}-${job.name} izveidots!`, 'OK', { duration: 5000 });
-      });
+      const name = thread.subject;
+      this.resolveCustomer(thread.from).pipe(
+      ).subscribe(customer => this.router.navigate(['/', 'jobs', 'repro', 'new', { name, customer }]));
 
     } else {
 
@@ -69,17 +70,17 @@ export class ThreadComponent implements OnInit {
         .reduce((acc, curr) => [...acc, ...curr.attachmentsList.selected.map(item => ({ messageId: curr.message.id, attachment: item }))], []);
 
       from(attachments).pipe(
-        concatMap(att => this.gmail.saveAttachments(att.messageId, att.attachment).pipe(
-          map(name => ({ name, size: att.attachment.size })),
-        )),
+        concatMap(att => this.gmail.saveAttachments(att.messageId, att.attachment)),
         toArray(),
-        withLatestFrom(this.resolveCustomer(thread.from, jobPreset)),
-        mergeMap(([fileNames, job]) => this.jobCreator.fromUserFiles(fileNames, job)),
+        withLatestFrom(this.resolveCustomer(thread.from)),
+        // tap(([fileNames, customer])=> this.reproJobService.uploadRef=this.userFileUploadService.savedFileRef(fileNames)),
+        // mergeMap(([fileNames, customer]) => this.jobCreator.fromUserFiles(fileNames, job)),
         finalize(() => this.busy$.next(false)),
       )
-        .subscribe(job => {
-          this.snack.open(`Darbs ${job.jobId}-${job.name} izveidots!`, 'OK', { duration: 5000 });
-          selected.forEach(list => list.attachmentsList.deselectAll());
+        .subscribe(([fileNames, customer]) => {
+          const name = this.reproJobService.jobNameFromFiles(fileNames);
+          this.reproJobService.uploadRef = this.userFileUploadService.savedFileRef(fileNames);
+          this.router.navigate(['/', 'jobs', 'repro', 'new', { name, customer }]);
         });
 
     }
@@ -92,33 +93,31 @@ export class ThreadComponent implements OnInit {
     const message = component.message;
     const attachments = component.attachmentsList.selected;
 
-    const jobPreset: Partial<Job> = {
+    this.reproJobService.job = {
       comment: message.plain,
     };
 
     from(attachments).pipe(
-      concatMap(attachment => this.gmail.saveAttachments(message.id, attachment).pipe(
-        map(name => ({ name, size: attachment.size })),
-      )),
+      concatMap(attachment => this.gmail.saveAttachments(message.id, attachment)),
       toArray(),
-      withLatestFrom(this.resolveCustomer(message.from, jobPreset)),
-      mergeMap(([fileNames, job]) => this.jobCreator.fromUserFiles(fileNames, job)),
+      withLatestFrom(this.resolveCustomer(message.from)),
+      // mergeMap(([fileNames, job]) => this.jobCreator.fromUserFiles(fileNames, job)),
       finalize(() => component.busy$.next(false)),
     )
-      .subscribe(job => {
-        this.snack.open(`Darbs ${job.jobId}-${job.name} izveidots!`, 'OK', { duration: 5000 });
-        component.attachmentsList.deselectAll();
+      .subscribe(([fileNames, customer]) => {
+        const name = this.reproJobService.jobNameFromFiles(fileNames);
+        this.reproJobService.uploadRef = this.userFileUploadService.savedFileRef(fileNames);
+        this.router.navigate(['/', 'jobs', 'repro', 'new', { name, customer }]);
       });
 
   }
 
-  private resolveCustomer(from: string, job: Partial<Job>): Observable<Partial<Job>> {
+  private resolveCustomer(from: string): Observable<string | undefined> {
 
     const email = extractEmail(from);
 
     return this.customers.getCustomerList({ email }).pipe(
       map(customers => customers.length === 1 ? customers[0].CustomerName : undefined),
-      map(customer => ({ ...job, customer }))
     );
 
   }

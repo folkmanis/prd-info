@@ -25,11 +25,6 @@ import { ClassTransformer } from 'class-transformer';
 
 import { MatDateFnsModule } from '@angular/material-date-fns-adapter';
 import { LoginModule } from './login/login.module';
-import { MatSnackBarConfig, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
-
-const SNACK_OPTIONS: MatSnackBarConfig = {
-  duration: 3000,
-};
 
 
 
@@ -56,7 +51,6 @@ const SNACK_OPTIONS: MatSnackBarConfig = {
     httpInterceptorsProvider,
     { provide: APP_PARAMS, useValue: PRD_DEFAULTS },
     { provide: ClassTransformer },
-    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: SNACK_OPTIONS },
   ],
   bootstrap: [AppComponent]
 })

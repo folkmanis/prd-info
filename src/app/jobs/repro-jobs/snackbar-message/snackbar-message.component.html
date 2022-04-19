@@ -1,0 +1,15 @@
+<div *ngIf="job; else errorMessage;" class="container">
+    Darbs {{job.jobId}}-{{job.name}} saglabāts!
+    &nbsp;
+    <button mat-button color="accent" (click)="onClose()"> OK </button>
+</div>
+
+<ng-template #errorMessage>
+    <div class="container">
+        Neizdevās saglabāt darbu!
+        &nbsp;
+        <button mat-button color="warn" (click)="onClose()"> OK </button>
+    </div>
+</ng-template>
+
+<app-upload-progress [progress]="progress$ | async"></app-upload-progress>

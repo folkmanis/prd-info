@@ -18,6 +18,7 @@ import { JobFilterSummaryComponent } from './job-filter/job-filter-summary/job-f
 import { ProductsSummaryComponent } from './products-summary/products-summary.component';
 import { ReproProductComponent } from './repro-job-edit/repro-products-editor/repro-product/repro-product.component';
 import { JobFormComponent } from './repro-job-edit/job-form/job-form.component';
+import { SnackbarMessageComponent } from './snackbar-message/snackbar-message.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { JobFormComponent } from './repro-job-edit/job-form/job-form.component';
     ProductsSummaryComponent,
     ReproProductComponent,
     JobFormComponent,
+    SnackbarMessageComponent,
   ],
   imports: [
     CommonModule,
