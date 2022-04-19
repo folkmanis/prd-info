@@ -15,7 +15,7 @@ export const DEFAULT_REPRO_JOB: NewJob = {
     category: 'repro' as const,
   },
   jobStatus: {
-    generalStatus: 10,
+    generalStatus: 20,
     timestamp: new Date(),
   }
 };
@@ -26,15 +26,18 @@ export const DEFAULT_REPRO_JOB: NewJob = {
 })
 export class NewReproJobResolver implements Resolve<NewJob> {
 
-  constructor() { }
+  constructor(
+    private reproJobService: ReproJobService,
+  ) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): NewJob {
 
+    const serviceJob = this.reproJobService.job || {};
+
     const job = {
       ...DEFAULT_REPRO_JOB,
+      ...serviceJob,
     };
-
-    console.log(route.params);
 
     if (route.paramMap.get('name')) {
       job.name = route.paramMap.get('name');
@@ -43,6 +46,8 @@ export class NewReproJobResolver implements Resolve<NewJob> {
     if (route.paramMap.get('customer')) {
       job.customer = route.paramMap.get('customer');
     }
+
+    this.reproJobService.job = null;
 
     return job;
   }

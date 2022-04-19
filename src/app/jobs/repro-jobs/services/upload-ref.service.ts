@@ -18,7 +18,7 @@ const uploadId = (file: File): string => file.name;
 @Injectable({
   providedIn: 'root'
 })
-export class UserFileUploadService {
+export class UploadRefService {
 
   private isImportant = ({ type }: FileUploadMessage) =>
     type === FileUploadEventType.UploadFinish || type === FileUploadEventType.UploadStart;

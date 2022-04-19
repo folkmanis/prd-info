@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { last } from 'lodash';
 import { map, mergeMap, pluck, switchMap, tap, from, MonoTypeOperatorFunction, Observable, of } from 'rxjs';
 import { ReproJobService } from 'src/app/jobs/repro-jobs/services/repro-job.service';
-import { UserFileUploadService } from 'src/app/jobs/repro-jobs/services/user-file-upload.service';
+import { UploadRefService } from 'src/app/jobs/repro-jobs/services/upload-ref.service';
 import { JobsApiService } from '../../jobs';
 import { JobData, Message, MessageFtpUser } from './interfaces';
 import { MessagingService } from './services/messaging.service';
@@ -38,7 +38,7 @@ export class MessageJobDirective {
     private jobsApi: JobsApiService,
     @Optional() private overlayRef: OverlayRef,
     private reproJobService: ReproJobService,
-    private userFileUploadService: UserFileUploadService,
+    private userFileUploadService: UploadRefService,
   ) { }
 
   @HostListener('click')

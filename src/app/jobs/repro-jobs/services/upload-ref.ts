@@ -25,11 +25,7 @@ export class UploadRef {
     }
 
     onMessages(): Observable<FileUploadMessage[]> {
-        return concat(
-            this.cancelMessageWhen(this.messages$, this.cancel$),
-            timer(5000)
-                .pipe(map(() => [])),
-        );
+        return this.cancelMessageWhen(this.messages$, this.cancel$);
     }
 
     addToJob(jobId: number): Observable<number> {

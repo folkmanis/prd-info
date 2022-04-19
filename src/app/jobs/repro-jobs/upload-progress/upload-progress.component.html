@@ -1,5 +1,5 @@
 <ul>
-    <li *ngFor="let progr of progress; trackBy: trackByFn;" @collapseAnimation>
+    <li *ngFor="let progr of progress; trackBy: trackByFn; last as last;" @collapseAnimation>
 
         <div class="filename">
             {{progr.name}}
@@ -29,7 +29,7 @@
 
         </div>
 
-        <mat-divider></mat-divider>
+        <mat-divider *ngIf="!last"></mat-divider>
 
     </li>
 </ul>

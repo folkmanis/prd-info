@@ -1,9 +1,8 @@
-import { SelectionModel } from '@angular/cdk/collections';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { JobPartial } from 'src/app/jobs';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { ReproJobDialogService } from 'src/app/jobs/repro-jobs/services/repro-job-dialog.service';
+import { SelectionModel } from '@angular/cdk/collections';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { JobPartial } from 'src/app/jobs';
 
 const TABLE_COLUMNS = ['jobId', 'receivedDate', 'customer', 'name', 'productName', 'count', 'price', 'total'];
 
@@ -27,9 +26,7 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
   selector = new SelectionModel<number>(true, [], false);
   jobIdSet: Set<number> | undefined;
 
-  constructor(
-    private jobDialog: ReproJobDialogService,
-  ) { }
+  constructor() { }
 
   displayedColumns: string[] = this.columnsWithSelection();
   jobs$: BehaviorSubject<JobPartial[]> = new BehaviorSubject([]);

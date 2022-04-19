@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DestroyService } from 'prd-cdk';
 import { Observable, Observer, of } from 'rxjs';
 import { concatMap, map, tap } from 'rxjs/operators';
 import { FileUploadMessage, Job } from '../../interfaces';
@@ -45,20 +44,17 @@ export class ReproJobEditComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.job = this.reproJobService.job || {};
-    this.job = {
-      ...this.job,
-      ...this.route.snapshot.data.job
-    };
+
+    this.job = this.route.snapshot.data.job;
     this.form.patchValue(this.job);
 
     this.uploadRef = this.reproJobService.uploadRef;
     this.fileUploadProgress$ = this.uploadRef?.onMessages() || of([]);
 
-    this.reproJobService.job = null;
   }
 
   ngOnDestroy(): void {
+    this.reproJobService.uploadRef = null;
   }
 
   onUpdate() {

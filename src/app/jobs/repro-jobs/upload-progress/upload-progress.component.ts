@@ -12,11 +12,11 @@ import { FileUploadEventType, FileUploadMessage } from '../../interfaces/file-up
 
       transition(':enter', [
         style({ height: 0 }),
-        animate('500ms', style({ height: '*' }))
+        animate('200ms', style({ height: '*' }))
       ]),
 
       transition(':leave', [
-        animate('500ms', style({ height: 0 }))
+        animate('200ms', style({ height: 0 }))
       ]),
     ])
   ]

@@ -7,7 +7,7 @@ import { ProductsService } from 'src/app/services';
 import { Job, JobProduct } from '../../interfaces';
 import { JobService } from '../../services/job.service';
 import { UploadRef } from './upload-ref';
-import { UserFileUploadService } from './user-file-upload.service';
+import { UploadRefService } from './upload-ref.service';
 
 
 export type PartialJob = Pick<Job, 'jobId'> & Partial<Job>;
@@ -29,7 +29,7 @@ export class ReproJobService {
   constructor(
     private productsService: ProductsService,
     private jobService: JobService,
-    private userFileUpload: UserFileUploadService,
+    private uploadRefService: UploadRefService,
   ) { }
 
   updateJob(jobUpdate: PartialJob): Observable<Job> {

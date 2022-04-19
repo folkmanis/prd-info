@@ -1,7 +1,7 @@
-import { Component, OnInit, ChangeDetectionStrategy, Inject, Optional } from '@angular/core';
-import { Observable, of, delay, finalize } from 'rxjs';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { MatSnackBarRef, MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
+import { delay, finalize, Observable, of } from 'rxjs';
 import { FileUploadMessage, Job } from '../../interfaces';
-import { MAT_SNACK_BAR_DATA, MatSnackBarRef, MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarConfig } from '@angular/material/snack-bar';
 
 
 export interface SnackBarMessageData {

@@ -1,14 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { DestroyService } from 'prd-cdk';
-import { Observable } from 'rxjs';
 import { LayoutService } from 'src/app/services';
-import { FileUploadMessage, JobQueryFilter } from '../interfaces';
+import { JobQueryFilter } from '../interfaces';
 import { JobService } from '../services/job.service';
-import { ReproJobDialogService } from './services/repro-job-dialog.service';
 import { ReproJobService } from './services/repro-job.service';
-import { UserFileUploadService } from './services/user-file-upload.service';
+import { UploadRefService } from './services/upload-ref.service';
 
 
 @Component({
@@ -31,7 +28,7 @@ export class ReproJobsComponent implements OnInit {
     private layoutService: LayoutService,
     private jobService: JobService,
     private router: Router,
-    private userFileUpload: UserFileUploadService,
+    private userFileUpload: UploadRefService,
     private reproJobService: ReproJobService,
   ) { }
 
