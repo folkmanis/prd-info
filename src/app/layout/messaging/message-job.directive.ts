@@ -62,7 +62,9 @@ export class MessageJobDirective {
           mergeMap(() => uploadRef.onAddedToJob()),
         )),
         this.setMessageRead(this.message),
-      ).subscribe();
+      ).subscribe({
+        error: (err) => console.log('upload aborted', err)
+      });
 
     }
 

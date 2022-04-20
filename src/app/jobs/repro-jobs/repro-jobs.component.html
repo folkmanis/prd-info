@@ -1,10 +1,6 @@
 <mat-drawer-container>
     <mat-drawer button [small]="(large$ | async) === false">
 
-        <mat-card appFileDrop (filesEmitter)="onFileDrop($event)">
-            <mat-card-header>Nomest jauna darba failus</mat-card-header>
-        </mat-card>
-
         <app-products-summary [jobs]="jobs$ | async" (productHover)="highlited = $event">
         </app-products-summary>
 

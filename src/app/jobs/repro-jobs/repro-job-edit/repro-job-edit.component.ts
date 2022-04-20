@@ -1,13 +1,13 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Observer, of } from 'rxjs';
-import { concatMap, map, tap } from 'rxjs/operators';
 import { FileUploadMessage, Job } from '../../interfaces';
 import { JobFormGroup } from '../services/job-form-group';
 import { ReproJobService } from '../services/repro-job.service';
 import { UploadRef } from '../services/upload-ref';
 import { SnackbarMessageComponent } from '../snackbar-message/snackbar-message.component';
+import { JobFormComponent } from './job-form/job-form.component';
 
 
 @Component({
@@ -19,19 +19,26 @@ import { SnackbarMessageComponent } from '../snackbar-message/snackbar-message.c
     JobFormGroup,
   ]
 })
-export class ReproJobEditComponent implements OnInit, OnDestroy {
+export class ReproJobEditComponent implements OnInit, AfterViewInit, OnDestroy {
+
+  @ViewChild(JobFormComponent) jobFormComponent: JobFormComponent;
 
   job: Partial<Job>;
 
-  fileUploadProgress$: Observable<FileUploadMessage[]>;
+  fileUploadProgress$: Observable<FileUploadMessage[]> = of([]);
 
   uploadRef: UploadRef | null = null;
 
   saved = false;
 
   private jobSaveObserver: Observer<Job> = {
-    next: (job) => this.snack.openFromComponent(SnackbarMessageComponent, { data: { job, progress: this.fileUploadProgress$ } }),
-    error: () => this.snack.openFromComponent(SnackbarMessageComponent, { data: { progress: this.fileUploadProgress$ } }),
+    next: (job) => {
+      this.saved = true;
+      this.uploadRef?.addToJob(job.jobId);
+      this.snack.openFromComponent(SnackbarMessageComponent, { data: { job, progress: this.fileUploadProgress$ } });
+      this.router.navigate(['..'], { relativeTo: this.route });
+    },
+    error: (error) => this.snack.openFromComponent(SnackbarMessageComponent, { data: { progress: this.fileUploadProgress$, error } }),
     complete: () => { }
   };
 
@@ -48,9 +55,20 @@ export class ReproJobEditComponent implements OnInit, OnDestroy {
     this.job = this.route.snapshot.data.job;
     this.form.patchValue(this.job);
 
-    this.uploadRef = this.reproJobService.uploadRef;
-    this.fileUploadProgress$ = this.uploadRef?.onMessages() || of([]);
+    if (this.reproJobService.uploadRef) {
+      this.uploadRef = this.reproJobService.uploadRef;
+      this.fileUploadProgress$ = this.uploadRef.onMessages();
+      this.uploadRef.onAddedToJob().subscribe({
+        error: (error) => this.snack.openFromComponent(SnackbarMessageComponent, { data: { progress: this.fileUploadProgress$, error } }),
+      });
+    }
 
+  }
+
+  ngAfterViewInit(): void {
+    if (!this.job.customer) {
+      this.jobFormComponent.customerInput.focus();
+    }
   }
 
   ngOnDestroy(): void {
@@ -60,23 +78,15 @@ export class ReproJobEditComponent implements OnInit, OnDestroy {
   onUpdate() {
     const jobId = this.job.jobId;
     const jobUpdate: Partial<Job> = this.form.update;
-    this.reproJobService.updateJob({ jobId, ...jobUpdate }).pipe(
-      tap(() => this.saved = true),
-      tap(() => this.router.navigate(['..'], { relativeTo: this.route })),
-    )
+    this.reproJobService.updateJob({ jobId, ...jobUpdate })
       .subscribe(this.jobSaveObserver);
-
   }
 
   onCreate() {
     const jobUpdate: Partial<Omit<Job, 'jobId'>> = this.form.update;
     this.reproJobService.uploadRef = null;
-    this.reproJobService.createJob(jobUpdate).pipe(
-      tap(() => this.saved = true),
-      tap(job => this.snack.openFromComponent(SnackbarMessageComponent, { data: { job, progress: this.fileUploadProgress$ } })),
-      tap(() => this.router.navigate(['..'], { relativeTo: this.route })),
-      concatMap(job => this.uploadRef ? this.uploadRef.addToJob(job.jobId).pipe(map(() => job)) : of(job)),
-    ).subscribe();
+    this.reproJobService.createJob(jobUpdate)
+      .subscribe(this.jobSaveObserver);
   }
 
 

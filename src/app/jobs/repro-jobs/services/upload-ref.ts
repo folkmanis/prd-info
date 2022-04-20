@@ -28,15 +28,11 @@ export class UploadRef {
         return this.cancelMessageWhen(this.messages$, this.cancel$);
     }
 
-    addToJob(jobId: number): Observable<number> {
-        return this.fileNames$.pipe(
+    addToJob(jobId: number): void {
+        this.fileNames$.pipe(
             tap(() => this.cancel$.complete()),
             concatMap(files => this.addToJobFn(jobId, files)),
-            tap(jobId => {
-                this.addedToJob$.next(jobId);
-                this.addedToJob$.complete();
-            })
-        );
+        ).subscribe(this.addedToJob$);
     }
 
     onAddedToJob(): Observable<number> {
@@ -44,10 +40,10 @@ export class UploadRef {
     }
 
     cancel(): void {
+        this.addedToJob$.error(new Error('Upload cancelled'));
         this.cancel$.next();
         this.cancel$.complete();
-        this.addedToJob$.error(new Error('Upload cancelled'));
-        this.addedToJob$.complete();
+        // this.addedToJob$.complete();
     }
 
     onCancel(): Observable<string[]> {

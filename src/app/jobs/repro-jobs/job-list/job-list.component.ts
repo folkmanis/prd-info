@@ -1,11 +1,14 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import { DestroyService } from 'prd-cdk';
-import { ReplaySubject, Subject } from 'rxjs';
+import { from, ReplaySubject, Subject } from 'rxjs';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { LayoutService } from 'src/app/services';
 import { Job, JobPartial } from '../../interfaces';
 import { JobService } from '../../services/job.service';
+import { ReproJobService } from '../services/repro-job.service';
+import { UploadRefService } from '../services/upload-ref.service';
 
 
 @Component({
@@ -26,6 +29,9 @@ export class JobListComponent implements OnInit {
 
   constructor(
     private jobService: JobService,
+    private router: Router,
+    private userFileUpload: UploadRefService,
+    private reproJobService: ReproJobService,
     private clipboard: ClipboardService,
     private layout: LayoutService,
     private sanitize: SanitizeService,
@@ -56,6 +62,33 @@ export class JobListComponent implements OnInit {
   hasProduct(job: JobPartial, productName: string): boolean {
     return job.products?.some(product => product.name === productName);
   }
+
+  onFileSelected(event: any) {
+    if (event.target?.files instanceof FileList && event.target.files.length > 0) {
+      this.onFileDrop(event.target.files);
+    }
+  }
+
+  onFileDrop(fileList: FileList) {
+
+    if (this.reproJobService.uploadRef) {
+      return;
+    }
+
+    const name = this.reproJobService.jobNameFromFiles(
+      Array.from(fileList).map(file => file.name)
+    );
+    const sortedFiles = Array.from(fileList).sort((a, b) => a.size - b.size);
+
+    this.reproJobService.uploadRef = this.userFileUpload.userFileUploadRef(from(sortedFiles));
+
+    this.router.navigate(['jobs', 'repro', 'new', { name }])
+      .then(navigated => {
+        if (!navigated) this.reproJobService.uploadRef = null;
+      });
+
+  }
+
 
 
 }

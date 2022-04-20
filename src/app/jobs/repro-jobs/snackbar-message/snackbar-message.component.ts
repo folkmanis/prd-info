@@ -7,6 +7,7 @@ import { FileUploadMessage, Job } from '../../interfaces';
 export interface SnackBarMessageData {
   job?: Job,
   progress: Observable<FileUploadMessage[]>,
+  error?: Error,
 }
 
 @Component({
@@ -20,6 +21,8 @@ export class SnackbarMessageComponent implements OnInit {
   job: Job | undefined = this.data.job;
 
   progress$: Observable<FileUploadMessage[]> = this.data.progress || of([]);
+
+  err = this.data.error;
 
   constructor(
     @Inject(MAT_SNACK_BAR_DATA) private data: SnackBarMessageData,

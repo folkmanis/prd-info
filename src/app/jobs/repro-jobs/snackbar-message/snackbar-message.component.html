@@ -1,13 +1,20 @@
 <div *ngIf="job; else errorMessage;" class="container">
-    Darbs {{job.jobId}}-{{job.name}} saglabāts!
-    &nbsp;
+    <span>
+        <span>
+            Darbs {{job.jobId}}-{{job.name}} saglabāts!
+        </span>
+        <span *ngIf="err">
+            {{ err.message }}
+        </span>
+    </span>
     <button mat-button color="accent" (click)="onClose()"> OK </button>
 </div>
 
 <ng-template #errorMessage>
     <div class="container">
-        Neizdevās saglabāt darbu!
-        &nbsp;
+        <span>
+            Darbs nav saglabāts!
+        </span>
         <button mat-button color="warn" (click)="onClose()"> OK </button>
     </div>
 </ng-template>

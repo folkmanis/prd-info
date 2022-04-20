@@ -24,12 +24,12 @@
 <footer>
 
     <button *ngIf="job.jobId else createButton;" mat-raised-button color="primary" appKeyPress="ctrlEnter"
-        [disabled]="form.status !== 'VALID' || form.update == undefined" (click)="onUpdate()">
+        [disabled]="form.status !== 'VALID' || form.update == undefined || saved" (click)="onUpdate()">
         SAGLABĀT
     </button>
 
     <ng-template #createButton>
-        <button mat-raised-button color="primary" [disabled]="form.status !== 'VALID'" appKeyPress="ctrlEnter"
+        <button mat-raised-button color="primary" [disabled]="form.status !== 'VALID' || saved" appKeyPress="ctrlEnter"
             (click)="onCreate()">
             IZVEIDOT
         </button>

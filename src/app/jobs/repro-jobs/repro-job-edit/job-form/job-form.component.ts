@@ -1,4 +1,4 @@
-import { Input, Output, ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { Input, Output, ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { addDays, subDays } from 'date-fns';
 import { isEqual, pickBy } from 'lodash';
@@ -13,6 +13,7 @@ import { FileUploadMessage, Job } from '../../../interfaces';
 import { JobService } from '../../../services/job.service';
 import { JobFormGroup } from '../../services/job-form-group';
 import { log } from 'prd-cdk';
+import { CustomerInputComponent } from '../customer-input/customer-input.component';
 
 
 @Component({
@@ -22,6 +23,8 @@ import { log } from 'prd-cdk';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JobFormComponent implements OnInit {
+
+  @ViewChild(CustomerInputComponent) customerInput: CustomerInputComponent;
 
 
   private _fileUploadProgress: FileUploadMessage[] = [];

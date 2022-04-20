@@ -1,12 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { DestroyService } from 'prd-cdk';
-import { from } from 'rxjs';
 import { LayoutService } from 'src/app/services';
 import { JobQueryFilter } from '../interfaces';
 import { JobService } from '../services/job.service';
-import { ReproJobService } from './services/repro-job.service';
-import { UploadRefService } from './services/upload-ref.service';
 
 
 @Component({
@@ -28,9 +24,6 @@ export class ReproJobsComponent implements OnInit {
   constructor(
     private layoutService: LayoutService,
     private jobService: JobService,
-    private router: Router,
-    private userFileUpload: UploadRefService,
-    private reproJobService: ReproJobService,
   ) { }
 
   ngOnInit(): void {
@@ -38,26 +31,6 @@ export class ReproJobsComponent implements OnInit {
 
   onJobFilter(filter: JobQueryFilter) {
     this.jobService.setFilter(filter);
-  }
-
-  onFileDrop(fileList: FileList) {
-
-    if (this.reproJobService.uploadRef) {
-      return;
-    }
-
-    const name = this.reproJobService.jobNameFromFiles(
-      Array.from(fileList).map(file => file.name)
-    );
-    const sortedFiles = Array.from(fileList).sort((a, b) => a.size - b.size);
-
-    this.reproJobService.uploadRef = this.userFileUpload.userFileUploadRef(from(sortedFiles));
-
-    this.router.navigate(['jobs', 'repro', 'new', { name }])
-      .then(navigated => {
-        if (!navigated) this.reproJobService.uploadRef = null;
-      });
-
   }
 
 
