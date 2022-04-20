@@ -4,6 +4,10 @@
     left: 28px;
     height: 240px;
     width: calc(100% - 28px * 2);
+
+    &.app-file-drop {
+        background-color: rgba(0, 0, 0, 0.3);
+    }
 }
 
 .busy {
