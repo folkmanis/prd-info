@@ -27,7 +27,7 @@ export interface UploadFinishMessage extends UploadMessageBase {
     fileNames: string[];
 }
 
-interface UploadWaitingMessage extends UploadMessageBase {
+export interface UploadWaitingMessage extends UploadMessageBase {
     type: FileUploadEventType.UploadWaiting;
 }
 

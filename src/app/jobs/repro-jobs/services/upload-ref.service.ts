@@ -4,7 +4,7 @@ import { last } from 'lodash';
 import { from, merge, Observable, OperatorFunction, pipe, partition, of } from 'rxjs';
 import { concatMap, filter, map, mapTo, mergeMap, pluck, scan, share, tap, throttleTime } from 'rxjs/operators';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
-import { FileUploadEventType, FileUploadMessage, UploadMessageBase } from '../../interfaces/file-upload-message';
+import { FileUploadEventType, FileUploadMessage, UploadMessageBase, UploadWaitingMessage } from '../../interfaces/file-upload-message';
 import { JobService } from '../../services/job.service';
 import { JobsApiService } from '../../services/jobs-api.service';
 import { UploadRef } from './upload-ref';
@@ -29,15 +29,14 @@ export class UploadRefService {
     private jobService: JobService,
   ) { }
 
-  userFileUploadRef(files: File[]): UploadRef {
+  userFileUploadRef(file$: Observable<File>): UploadRef {
 
-    const sortedFiles = files.sort((a, b) => a.size - b.size);
-    const uploadMessages$ = from(sortedFiles).pipe(
+    const uploadMessages$ = file$.pipe(
       mergeMap(file => this.uploadFile(file), SIMULTANEOUS_UPLOADS),
     );
 
     const messages$ = merge(
-      this.waitingMessages(sortedFiles),
+      this.waitingMessages(file$),
       uploadMessages$
     ).pipe(
       this.uploadProgress(),
@@ -170,14 +169,15 @@ export class UploadRefService {
 
   }
 
-  private waitingMessages(files: File[]): Observable<FileUploadMessage> {
-    const waiting: FileUploadMessage[] = files.map(file => ({
-      type: FileUploadEventType.UploadWaiting,
-      id: uploadId(file),
-      name: this.sanitize.sanitizeFileName(file.name),
-      size: file.size,
-    }));
-    return from(waiting);
+  private waitingMessages(file$: Observable<File>): Observable<UploadWaitingMessage> {
+    return file$.pipe(
+      map(file => ({
+        type: FileUploadEventType.UploadWaiting,
+        id: uploadId(file),
+        name: this.sanitize.sanitizeFileName(file.name),
+        size: file.size,
+      }))
+    );
   }
 
   private addUserFilesToJobFn(): (jobId: number, fileNames: string[]) => Observable<number> {

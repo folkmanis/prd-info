@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DestroyService } from 'prd-cdk';
+import { from } from 'rxjs';
 import { LayoutService } from 'src/app/services';
 import { JobQueryFilter } from '../interfaces';
 import { JobService } from '../services/job.service';
@@ -48,7 +49,9 @@ export class ReproJobsComponent implements OnInit {
     const name = this.reproJobService.jobNameFromFiles(
       Array.from(fileList).map(file => file.name)
     );
-    this.reproJobService.uploadRef = this.userFileUpload.userFileUploadRef(Array.from(fileList));
+    const sortedFiles = Array.from(fileList).sort((a, b) => a.size - b.size);
+
+    this.reproJobService.uploadRef = this.userFileUpload.userFileUploadRef(from(sortedFiles));
 
     this.router.navigate(['jobs', 'repro', 'new', { name }])
       .then(navigated => {
