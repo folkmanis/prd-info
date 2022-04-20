@@ -19,6 +19,7 @@ import { ProductsSummaryComponent } from './products-summary/products-summary.co
 import { ReproProductComponent } from './repro-job-edit/repro-products-editor/repro-product/repro-product.component';
 import { JobFormComponent } from './repro-job-edit/job-form/job-form.component';
 import { SnackbarMessageComponent } from './snackbar-message/snackbar-message.component';
+import { NewJobButtonComponent } from './job-list/new-job-button/new-job-button.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { SnackbarMessageComponent } from './snackbar-message/snackbar-message.co
     ReproProductComponent,
     JobFormComponent,
     SnackbarMessageComponent,
+    NewJobButtonComponent,
   ],
   imports: [
     CommonModule,

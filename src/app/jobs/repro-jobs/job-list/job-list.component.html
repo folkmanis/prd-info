@@ -1,30 +1,5 @@
-<button appFileDrop #fileDrop="appFileDrop" mat-fab (filesEmitter)="onFileDrop($event)" [matMenuTriggerFor]="newJobMenu"
-    color="primary" class="plus-button mat-elevation-z8">
-    <mat-icon *ngIf="!fileDrop.dragOver">
-        add
-    </mat-icon>
-</button>
-
-<mat-menu #newJobMenu="matMenu">
-    <a mat-menu-item routerLink="/jobs/repro/new">
-        <mat-icon>
-            note_add
-        </mat-icon>
-        <span>
-            Jauns darbs
-        </span>
-    </a>
-    <button mat-menu-item (click)="uploadFile.click()">
-        <mat-icon>
-            upload_file
-        </mat-icon>
-        <span>
-            Augšuplādēt failu
-        </span>
-    </button>
-</mat-menu>
-
-<input type="file" hidden multiple #uploadFile (change)="onFileSelected($event)">
+<app-new-job-button (fileList)="onFileDrop($event)">
+</app-new-job-button>
 
 
 <cdk-virtual-scroll-viewport itemSize="32" class="container" scroll-to-top>

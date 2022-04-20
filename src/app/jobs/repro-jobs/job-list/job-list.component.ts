@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DestroyService } from 'prd-cdk';
-import { from, ReplaySubject, Subject } from 'rxjs';
+import { from } from 'rxjs';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { LayoutService } from 'src/app/services';
-import { Job, JobPartial } from '../../interfaces';
+import { JobPartial } from '../../interfaces';
 import { JobService } from '../../services/job.service';
 import { ReproJobService } from '../services/repro-job.service';
 import { UploadRefService } from '../services/upload-ref.service';
@@ -61,12 +61,6 @@ export class JobListComponent implements OnInit {
 
   hasProduct(job: JobPartial, productName: string): boolean {
     return job.products?.some(product => product.name === productName);
-  }
-
-  onFileSelected(event: any) {
-    if (event.target?.files instanceof FileList && event.target.files.length > 0) {
-      this.onFileDrop(event.target.files);
-    }
   }
 
   onFileDrop(fileList: FileList) {
