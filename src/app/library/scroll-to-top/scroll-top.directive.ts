@@ -1,8 +1,7 @@
 import { CdkScrollable } from '@angular/cdk/scrolling';
-import { ChangeDetectorRef, ComponentRef, Directive, Host, OnInit, Self, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, ComponentRef, Directive, Host, OnInit, Self, ViewContainerRef, Output } from '@angular/core';
 import { DestroyService } from 'prd-cdk';
-import { of } from 'rxjs';
-import { debounceTime, filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { Observable, of, shareReplay, debounceTime, filter, map, switchMap, takeUntil, tap } from 'rxjs';
 import { ScrollToTopComponent } from './scroll-to-top.component';
 
 const showScrollHeight = 300;
@@ -16,6 +15,18 @@ const SCROLL_AUDIT_TIME = 200;
 })
 export class ScrollTopDirective implements OnInit {
 
+  @Output('scrollToTopVisible') visible$: Observable<boolean> = of(false).pipe(
+    switchMap(showScroll => this.scrollable.elementScrolled().pipe(
+      debounceTime(SCROLL_AUDIT_TIME),
+      map(() => this.scrollable.measureScrollOffset('top')),
+      map(offset => !showScroll && offset > showScrollHeight || showScroll && offset > hideScrollHeight),
+      filter(show => show !== showScroll),
+      tap(show => showScroll = show),
+      shareReplay(1),
+    ))
+  );
+
+
   private componentRef: ComponentRef<ScrollToTopComponent> | null = null;
   private changeDetectorRef: ChangeDetectorRef;
 
@@ -28,15 +39,8 @@ export class ScrollTopDirective implements OnInit {
 
   ngOnInit(): void {
 
-    of(false).pipe(
-      switchMap(showScroll => this.scrollable.elementScrolled().pipe(
-        debounceTime(SCROLL_AUDIT_TIME),
-        map(() => this.scrollable.measureScrollOffset('top')),
-        map(offset => !showScroll && offset > showScrollHeight || showScroll && offset > hideScrollHeight),
-        filter(show => show !== showScroll),
-        tap(show => showScroll = show),
-        takeUntil(this.destroy$),
-      )),
+    this.visible$.pipe(
+      takeUntil(this.destroy$),
     ).subscribe(show => this.setVisible(show));
 
   }
