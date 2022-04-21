@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { flatten } from 'lodash';
-import { forkJoin, Observable, of } from 'rxjs';
+import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { concatMap, map } from 'rxjs/operators';
 import { JobProductionStage } from 'src/app/interfaces';
 import { ProductsService } from 'src/app/services';
 import { Job, JobProduct } from '../../interfaces';
 import { JobService } from '../../services/job.service';
 import { UploadRef } from './upload-ref';
-import { UploadRefService } from './upload-ref.service';
 
 
 export type PartialJob = Pick<Job, 'jobId'> & Partial<Job>;
@@ -24,12 +23,13 @@ export class ReproJobService {
 
   job: Partial<Job> | null = null;
 
+  private readonly _activeProduct = new BehaviorSubject<string | null>(null);
+
   private readonly productionStagesFn = (productName: string) => this.productsService.productionStages(productName);
 
   constructor(
     private productsService: ProductsService,
     private jobService: JobService,
-    private uploadRefService: UploadRefService,
   ) { }
 
   updateJob(jobUpdate: PartialJob): Observable<Job> {
@@ -52,6 +52,15 @@ export class ReproJobService {
       .reduce((acc, curr, _, names) => [...acc, curr.slice(0, MAX_JOB_NAME_LENGTH / names.length)], [])
       .join('_');
   }
+
+  setActiveProduct(product: string | null) {
+    this._activeProduct.next(product);
+  }
+
+  activeProducts(): Observable<string | null> {
+    return this._activeProduct.asObservable();
+  }
+
 
 }
 

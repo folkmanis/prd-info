@@ -3,6 +3,7 @@ import { DestroyService } from 'prd-cdk';
 import { LayoutService } from 'src/app/services';
 import { JobQueryFilter } from '../interfaces';
 import { JobService } from '../services/job.service';
+import { ReproJobService } from './services/repro-job.service';
 
 
 @Component({
@@ -24,6 +25,7 @@ export class ReproJobsComponent implements OnInit {
   constructor(
     private layoutService: LayoutService,
     private jobService: JobService,
+    private reproJobService: ReproJobService,
   ) { }
 
   ngOnInit(): void {
@@ -33,5 +35,8 @@ export class ReproJobsComponent implements OnInit {
     this.jobService.setFilter(filter);
   }
 
+  onProductHover(value: string | null) {
+    this.reproJobService.setActiveProduct(value);
+  }
 
 }

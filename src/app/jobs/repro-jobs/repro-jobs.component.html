@@ -1,7 +1,7 @@
 <mat-drawer-container>
     <mat-drawer button [small]="(large$ | async) === false">
 
-        <app-products-summary [jobs]="jobs$ | async" (productHover)="highlited = $event">
+        <app-products-summary [jobs]="jobs$ | async" (productHover)="onProductHover($event)">
         </app-products-summary>
 
     </mat-drawer>

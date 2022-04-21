@@ -2,7 +2,8 @@
 </app-new-job-button>
 
 
-<cdk-virtual-scroll-viewport itemSize="32" class="container" scroll-to-top #scroll="scrollToTop">
+<cdk-virtual-scroll-viewport itemSize="32" class="container" scroll-to-top #scroll="scrollToTop"
+    [(appActiveProduct)]="highlited">
 
 
     <table class="simple-form-table">
