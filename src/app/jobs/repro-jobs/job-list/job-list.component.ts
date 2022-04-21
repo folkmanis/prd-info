@@ -24,7 +24,6 @@ export class JobListComponent implements OnInit {
 
   dataSource$ = this.jobService.jobs$;
 
-
   @Input('highlitedProduct') highlited: string | null = null;
 
   constructor(

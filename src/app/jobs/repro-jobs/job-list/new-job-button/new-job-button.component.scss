@@ -1,11 +1,4 @@
-.plus-button {
-    z-index: 99;
-    position: absolute;
-    bottom: 20px;
-    left: 40px;
-
-    &.app-file-drop {
-        transform: translate(56px, -56px) scale(300%);
-        background-color: var(--accent-color);
-    }
+.plus-button.app-file-drop {
+    transform: translate(0px, -56px) scale(300%);
+    background-color: var(--accent-color);
 }

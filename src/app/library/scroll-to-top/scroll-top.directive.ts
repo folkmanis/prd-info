@@ -1,7 +1,7 @@
 import { CdkScrollable } from '@angular/cdk/scrolling';
-import { ChangeDetectorRef, ComponentRef, Directive, Host, OnInit, Self, ViewContainerRef, Output } from '@angular/core';
+import { ChangeDetectorRef, ComponentRef, Directive, Host, OnInit, Output, Self, ViewContainerRef } from '@angular/core';
 import { DestroyService } from 'prd-cdk';
-import { Observable, of, shareReplay, debounceTime, filter, map, switchMap, takeUntil, tap } from 'rxjs';
+import { debounceTime, filter, map, Observable, of, shareReplay, switchMap, takeUntil, tap } from 'rxjs';
 import { ScrollToTopComponent } from './scroll-to-top.component';
 
 const showScrollHeight = 300;
@@ -11,6 +11,7 @@ const SCROLL_AUDIT_TIME = 200;
 
 @Directive({
   selector: '[scroll-to-top]',
+  exportAs: 'scrollToTop',
   providers: [DestroyService],
 })
 export class ScrollTopDirective implements OnInit {
@@ -26,6 +27,7 @@ export class ScrollTopDirective implements OnInit {
     ))
   );
 
+  visible = false;
 
   private componentRef: ComponentRef<ScrollToTopComponent> | null = null;
   private changeDetectorRef: ChangeDetectorRef;
@@ -52,6 +54,7 @@ export class ScrollTopDirective implements OnInit {
       this.changeDetectorRef = this.componentRef.injector.get(ChangeDetectorRef);
     }
     this.componentRef.instance.visible = show;
+    this.visible = show;
     this.changeDetectorRef.detectChanges();
   }
 

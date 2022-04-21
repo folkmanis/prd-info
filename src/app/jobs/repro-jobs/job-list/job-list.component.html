@@ -1,8 +1,8 @@
-<app-new-job-button (fileList)="onFileDrop($event)">
+<app-new-job-button (fileList)="onFileDrop($event)" [class.rised]="scroll.visible">
 </app-new-job-button>
 
 
-<cdk-virtual-scroll-viewport itemSize="32" class="container" scroll-to-top>
+<cdk-virtual-scroll-viewport itemSize="32" class="container" scroll-to-top #scroll="scrollToTop">
 
 
     <table class="simple-form-table">
