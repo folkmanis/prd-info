@@ -21,6 +21,7 @@ export class FileDropDirective {
   @HostListener('dragover', ['$event']) onDragOver(event: any) {
     event.preventDefault();
     event.stopPropagation();
+    this.dragOver = true;
   }
 
   @HostListener('dragenter', ['$event']) onDragEnter(event: DragEvent) {
