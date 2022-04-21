@@ -2,7 +2,7 @@ import { OverlayRef } from '@angular/cdk/overlay';
 import { Directive, HostListener, Input, Optional } from '@angular/core';
 import { Router } from '@angular/router';
 import { last } from 'lodash';
-import { map, mergeMap, pluck, switchMap, tap, from, MonoTypeOperatorFunction, Observable, of } from 'rxjs';
+import { map, mergeMap, pluck, switchMap, tap, from, MonoTypeOperatorFunction, Observable, of, catchError, EMPTY } from 'rxjs';
 import { ReproJobService } from 'src/app/jobs/repro-jobs/services/repro-job.service';
 import { UploadRefService } from 'src/app/jobs/repro-jobs/services/upload-ref.service';
 import { JobsApiService } from '../../jobs';
@@ -62,9 +62,8 @@ export class MessageJobDirective {
           mergeMap(() => uploadRef.onAddedToJob()),
         )),
         this.setMessageRead(this.message),
-      ).subscribe({
-        error: (err) => console.log('upload aborted', err)
-      });
+        catchError(() => EMPTY)
+      ).subscribe();
 
     }
 
