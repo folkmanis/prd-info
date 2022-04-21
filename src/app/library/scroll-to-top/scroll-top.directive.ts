@@ -1,5 +1,5 @@
 import { CdkScrollable } from '@angular/cdk/scrolling';
-import { ChangeDetectorRef, ComponentFactoryResolver, ComponentRef, Directive, Host, OnInit, Self, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, ComponentRef, Directive, Host, OnInit, Self, ViewContainerRef } from '@angular/core';
 import { DestroyService } from 'prd-cdk';
 import { of } from 'rxjs';
 import { debounceTime, filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
@@ -16,13 +16,11 @@ const SCROLL_AUDIT_TIME = 200;
 })
 export class ScrollTopDirective implements OnInit {
 
-  private factory = this.resolver.resolveComponentFactory(ScrollToTopComponent);
   private componentRef: ComponentRef<ScrollToTopComponent> | null = null;
   private changeDetectorRef: ChangeDetectorRef;
 
 
   constructor(
-    private resolver: ComponentFactoryResolver,
     private container: ViewContainerRef,
     @Host() @Self() private scrollable: CdkScrollable,
     private destroy$: DestroyService,
@@ -45,7 +43,7 @@ export class ScrollTopDirective implements OnInit {
 
   private setVisible(show: boolean) {
     if (!this.componentRef) {
-      this.componentRef = this.container.createComponent(this.factory);
+      this.componentRef = this.container.createComponent(ScrollToTopComponent);
       this.componentRef.instance.scrollable = this.scrollable;
       this.changeDetectorRef = this.componentRef.injector.get(ChangeDetectorRef);
     }
