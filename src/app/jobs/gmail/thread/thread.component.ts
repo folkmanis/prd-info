@@ -64,7 +64,7 @@ export class ThreadComponent implements OnInit {
       const attachments: { messageId: string, attachment: Attachment; }[] = selected
         .reduce((acc, curr) => [...acc, ...curr.attachmentsList.selected.map(item => ({ messageId: curr.message.id, attachment: item }))], []);
 
-      this.createJobWithAttachments(attachments, thread).pipe(
+      this.createJobWithAttachments(attachments, thread, thread.subject).pipe(
         finalize(() => this.busy$.next(false)),
       ).subscribe();
 
@@ -89,6 +89,7 @@ export class ThreadComponent implements OnInit {
   private createJobWithAttachments(
     attachments: { messageId: string, attachment: Attachment; }[],
     messageOrThread: { from: string, plain: string; },
+    name?: string,
   ) {
 
     this.reproJobService.job = {
@@ -104,7 +105,7 @@ export class ThreadComponent implements OnInit {
       map(([fileNames, customer]) => ({
         fileNames,
         customer,
-        name: this.reproJobService.jobNameFromFiles(fileNames),
+        name: name || this.reproJobService.jobNameFromFiles(fileNames),
       })),
       tap(({ name, customer }) => this.router.navigate(['/', 'jobs', 'repro', 'new', { name, customer }])),
     );
