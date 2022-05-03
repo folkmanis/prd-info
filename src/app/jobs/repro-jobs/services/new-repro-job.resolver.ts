@@ -7,7 +7,7 @@ import { ReproJobService } from './repro-job.service';
 type NewJob = Partial<Omit<Job, 'jobId'>>;
 
 
-export const DEFAULT_REPRO_JOB: NewJob = {
+const defaultReproJob: () => NewJob = () => ({
   name: '',
   receivedDate: new Date(),
   dueDate: new Date(),
@@ -18,7 +18,7 @@ export const DEFAULT_REPRO_JOB: NewJob = {
     generalStatus: 20,
     timestamp: new Date(),
   }
-};
+});
 
 
 @Injectable({
@@ -35,7 +35,7 @@ export class NewReproJobResolver implements Resolve<NewJob> {
     const serviceJob = this.reproJobService.job || {};
 
     const job = {
-      ...DEFAULT_REPRO_JOB,
+      ...defaultReproJob(),
       ...serviceJob,
     };
 
