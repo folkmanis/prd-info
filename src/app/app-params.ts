@@ -1,6 +1,6 @@
 import { InjectionToken } from '@angular/core';
 import { USER_MODULES } from 'src/app/user-modules';
-import { version } from 'src/version';
+import { version } from '../version';
 import { AppParams } from './interfaces';
 
 export const APP_PARAMS = new InjectionToken<AppParams>('prd.defaults');
