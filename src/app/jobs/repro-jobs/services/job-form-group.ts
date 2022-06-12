@@ -10,7 +10,7 @@ import { Job } from '../../interfaces';
 export class JobFormGroup extends FormGroup {
 
     readonly value$: Observable<Job> = this.valueChanges.pipe(
-        startWith(this.value),
+        // startWith(this.value),
         shareReplay(1),
     );
 

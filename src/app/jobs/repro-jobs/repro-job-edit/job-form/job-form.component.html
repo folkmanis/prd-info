@@ -94,7 +94,8 @@
             <!-- Folderis -->
             <mat-card *ngIf="isNew === false">
                 <mat-card-content>
-                    <app-folder-path [path]="folderPath$ | async" (createFolder)="onCreateFolder()">
+                    <app-folder-path [path]="folderPath$ | async" (createFolder)="onCreateFolder()"
+                        [enabled]="updateFolderLocationEnabled$ | async">
                     </app-folder-path>
                 </mat-card-content>
             </mat-card>

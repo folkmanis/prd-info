@@ -14,6 +14,7 @@ import { JobService } from '../../../services/job.service';
 import { JobFormGroup } from '../../services/job-form-group';
 import { log } from 'prd-cdk';
 import { CustomerInputComponent } from '../customer-input/customer-input.component';
+import { FolderPathComponent } from '../folder-path/folder-path.component';
 
 
 @Component({
@@ -26,6 +27,7 @@ export class JobFormComponent implements OnInit {
 
   @ViewChild(CustomerInputComponent) customerInput: CustomerInputComponent;
 
+  @ViewChild(FolderPathComponent) folderPathComponent: FolderPathComponent;
 
   private _fileUploadProgress: FileUploadMessage[] = [];
   @Input()
@@ -55,6 +57,7 @@ export class JobFormComponent implements OnInit {
     pluck('jobs', 'jobStates'),
     map(states => states.filter(st => st.state < 50))
   );
+
   categories$ = this.config$.pipe(
     pluck('jobs', 'productCategories'),
   );
@@ -75,6 +78,14 @@ export class JobFormComponent implements OnInit {
   folderPath$ = this.form.value$.pipe(
     pluck('files'),
     map(files => files?.path?.join('/'))
+  );
+
+  get updateFolderLocation(): boolean {
+    return this.folderPathComponent.updatePath;
+  }
+
+  updateFolderLocationEnabled$: Observable<boolean> = this.form.update$.pipe(
+    map(upd => !!upd && (!!upd.customer || !!upd.name || !!upd.receivedDate)),
   );
 
   get nameControl() {
@@ -98,8 +109,6 @@ export class JobFormComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-
-
   }
 
   onCreateFolder() {

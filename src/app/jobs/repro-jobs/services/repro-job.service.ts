@@ -7,6 +7,7 @@ import { ProductsService } from 'src/app/services';
 import { Job, JobProduct } from '../../interfaces';
 import { JobService } from '../../services/job.service';
 import { UploadRef } from './upload-ref';
+import { JobFilesService } from '../../services/job-files.service';
 
 
 export type PartialJob = Pick<Job, 'jobId'> & Partial<Job>;
@@ -30,12 +31,16 @@ export class ReproJobService {
   constructor(
     private productsService: ProductsService,
     private jobService: JobService,
+    private jobFilesService: JobFilesService,
   ) { }
 
-  updateJob(jobUpdate: PartialJob): Observable<Job> {
+  updateJob(jobUpdate: PartialJob, params: { updatePath?: boolean; } = {}): Observable<Job> {
+
+    const { updatePath } = params;
 
     return addProductionStages(jobUpdate, this.productionStagesFn).pipe(
-      concatMap(job => this.jobService.updateJob(job.jobId, job))
+      concatMap(job => this.jobService.updateJob(job.jobId, job)),
+      concatMap(job => updatePath ? this.updateFilesLocation(job) : of(job))
     );
 
   }
@@ -61,6 +66,11 @@ export class ReproJobService {
     return this._activeProduct.asObservable();
   }
 
+  private updateFilesLocation(job: Job): Observable<Job> {
+    return this.jobFilesService.updateFolderLocation(job.jobId).pipe(
+      map(_ => job),
+    );
+  }
 
 }
 

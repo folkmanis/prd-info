@@ -1,4 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { map, BehaviorSubject, combineLatest } from 'rxjs';
+import { log } from 'prd-cdk';
+
 
 @Component({
   selector: 'app-folder-path',
@@ -15,6 +20,30 @@ export class FolderPathComponent implements OnInit {
     return this._path;
   }
   private _path = '';
+
+  updateJobFolderPathControl = new FormControl({ value: true, disabled: true });
+
+  @Input() set updatePath(value: boolean) {
+    value = coerceBooleanProperty(value);
+    this.updateJobFolderPathControl.setValue(value);
+  }
+  get updatePath(): boolean {
+    return this.enabled && this.updateJobFolderPathControl.value;
+  }
+
+
+  @Input() set enabled(value: any) {
+    console.log(value);
+    value = coerceBooleanProperty(value);
+    if (value === true) {
+      this.updateJobFolderPathControl.enable();
+    } else {
+      this.updateJobFolderPathControl.disable();
+    }
+  }
+  get enabled() {
+    return this.updateJobFolderPathControl.enabled;
+  }
 
   @Output() createFolder = new EventEmitter<void>();
 

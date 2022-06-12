@@ -1,11 +1,11 @@
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { last } from 'lodash';
-import { from, merge, Observable, OperatorFunction, pipe, partition, of } from 'rxjs';
+import { merge, Observable, of, OperatorFunction, partition, pipe } from 'rxjs';
 import { concatMap, filter, map, mapTo, mergeMap, pluck, scan, share, tap, throttleTime } from 'rxjs/operators';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { FileUploadEventType, FileUploadMessage, UploadMessageBase, UploadWaitingMessage } from '../../interfaces/file-upload-message';
-import { JobService } from '../../services/job.service';
+import { JobFilesService } from '../../services/job-files.service';
 import { JobsApiService } from '../../services/jobs-api.service';
 import { UploadRef } from './upload-ref';
 
@@ -26,7 +26,7 @@ export class UploadRefService {
   constructor(
     private api: JobsApiService,
     private sanitize: SanitizeService,
-    private jobService: JobService,
+    private jobFilesService: JobFilesService,
   ) { }
 
   userFileUploadRef(file$: Observable<File>): UploadRef {
@@ -181,13 +181,13 @@ export class UploadRefService {
   }
 
   private addUserFilesToJobFn(): (jobId: number, fileNames: string[]) => Observable<number> {
-    return (jobId, fileNames) => this.jobService.moveUserFilesToJob(jobId, fileNames).pipe(
+    return (jobId, fileNames) => this.jobFilesService.moveUserFilesToJob(jobId, fileNames).pipe(
       pluck('jobId'),
     );
   }
 
   private addFtpFilesToJobFn(basePath: string[]): (jobId: number, fileNames: string[]) => Observable<number> {
-    return (jobId, fileNames) => this.jobService.copyFtpFilesToJob(
+    return (jobId, fileNames) => this.jobFilesService.copyFtpFilesToJob(
       jobId,
       fileNames.map(name => [...basePath, name])
     ).pipe(

@@ -78,7 +78,7 @@ export class ReproJobEditComponent implements OnInit, AfterViewInit, OnDestroy {
   onUpdate() {
     const jobId = this.job.jobId;
     const jobUpdate: Partial<Job> = this.form.update;
-    this.reproJobService.updateJob({ jobId, ...jobUpdate })
+    this.reproJobService.updateJob({ jobId, ...jobUpdate }, { updatePath: this.jobFormComponent.updateFolderLocation })
       .subscribe(this.jobSaveObserver);
   }
 

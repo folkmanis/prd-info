@@ -93,6 +93,15 @@ export class JobsApiService extends ApiBase<Job> {
     );
   }
 
+  updateFilesLocation(jobId: number): Observable<string[]> {
+    return this.http.patch<{ path: string[]; }>(
+      this.path + 'files/' + jobId + '/update-files-location',
+      new HttpOptions()
+    ).pipe(
+      pluck('path'),
+    );
+  }
+
   getJobsProduction(query: JobsProductionQuery): Observable<JobsProduction[]> {
     const httpOptions = new HttpOptions(
       pickNotNull(query)

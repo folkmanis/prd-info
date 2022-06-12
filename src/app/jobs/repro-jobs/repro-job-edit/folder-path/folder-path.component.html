@@ -1,16 +1,26 @@
-<div *ngIf="path.length > 0; else create;">
+<ng-container *ngIf="path.length > 0; else create;">
 
-    <span>
-        <mat-icon>
-            folder_open
-        </mat-icon>
-    </span>
+    <p class="path">
 
-    <span class="path">
-        {{ path }}
-    </span>
+        <span>
+            <mat-icon>
+                folder_open
+            </mat-icon>
+        </span>
 
-</div>
+        <span>
+            {{ path }}
+        </span>
+
+    </p>
+
+    <p>
+        <mat-checkbox [formControl]="updateJobFolderPathControl">
+            Pārvietot folderi
+        </mat-checkbox>
+    </p>
+
+</ng-container>
 
 <ng-template #create>
     <button mat-raised-button (click)="createFolder.next()">
