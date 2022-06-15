@@ -1,5 +1,5 @@
 import { Directive } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 
 @Directive()
@@ -8,7 +8,7 @@ export abstract class PreferencesCardControl<T> {
 
     abstract stateChanges: Observable<void>;
 
-    abstract controls: FormGroup;
+    abstract controls: UntypedFormGroup;
 
     abstract value: Partial<T>;
 

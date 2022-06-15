@@ -1,6 +1,6 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Component, Input, OnDestroy, Output, TemplateRef, ViewChild, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
 import { IFormControl } from '@rxweb/types';
 import { ReplaySubject, Subject } from 'rxjs';
@@ -15,7 +15,7 @@ import { debounceTime } from 'rxjs/operators';
 export class SimpleListContainerComponent implements AfterViewInit, OnDestroy {
   @ViewChild('editor') private routerOutlet: RouterOutlet;
 
-  searchControl: IFormControl<string> = new FormControl('');
+  searchControl: IFormControl<string> = new UntypedFormControl('');
 
   filterTemplate: TemplateRef<any> | null = null;
 

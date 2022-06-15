@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, ChangeDetectionStrategy, EventEmitter, ChangeDetectorRef } from '@angular/core';
-import { FormGroup, FormArray } from '@angular/forms';
+import { FormGroup, UntypedFormArray } from '@angular/forms';
 import { merge, Observable } from 'rxjs';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { MaterialPrice } from 'src/app/interfaces';
@@ -14,7 +14,7 @@ import { MaterialPriceGroup } from '../../services/materials-form-source';
 })
 export class MaterialsPricesComponent implements OnInit {
 
-  @Input() pricesArray!: FormArray;
+  @Input() pricesArray!: UntypedFormArray;
 
   @Input() units: string = '';
 

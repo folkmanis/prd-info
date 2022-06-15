@@ -1,5 +1,5 @@
 import { Input, Output, ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { addDays, subDays } from 'date-fns';
 import { isEqual, pickBy } from 'lodash';
 import { Observable } from 'rxjs';
@@ -89,7 +89,7 @@ export class JobFormComponent implements OnInit {
   );
 
   get nameControl() {
-    return this.form.get('name') as FormControl;
+    return this.form.get('name') as UntypedFormControl;
   }
 
 

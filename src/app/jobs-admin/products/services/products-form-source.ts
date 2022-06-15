@@ -1,4 +1,4 @@
-import { AsyncValidatorFn, FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AsyncValidatorFn, UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { IFormArray, IFormControl, IFormGroup } from '@rxweb/types';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -13,7 +13,7 @@ import { Injectable } from '@angular/core';
 export class ProductsFormSource extends SimpleFormSource<Product> {
 
     constructor(
-        fb: FormBuilder,
+        fb: UntypedFormBuilder,
         private productService: ProductsService,
     ) {
         super(fb);
@@ -24,7 +24,7 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
     }
 
     get productionStages() {
-        return this.form.get('productionStages') as unknown as FormArray;
+        return this.form.get('productionStages') as unknown as UntypedFormArray;
     }
 
     get isNew(): boolean {
@@ -58,7 +58,7 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
                 { validators: [this.duplicateCustomersValidator] }
             ),
             paytraqId: [undefined],
-            productionStages: new FormArray([]),
+            productionStages: new UntypedFormArray([]),
         });
 
         return productForm;
@@ -174,34 +174,34 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
 
 }
 
-export class ProductionStageGroup extends FormGroup {
+export class ProductionStageGroup extends UntypedFormGroup {
 
     constructor(stage?: Partial<JobProductionStage>) {
-        const materials = new FormArray(
+        const materials = new UntypedFormArray(
             (stage?.materials || []).map(material => new MaterialGroup(material))
         );
         super({
-            productionStageId: new FormControl(stage?.productionStageId),
+            productionStageId: new UntypedFormControl(stage?.productionStageId),
             materials: materials,
-            amount: new FormControl(stage?.amount || 0),
-            fixedAmount: new FormControl(stage?.fixedAmount || 0),
+            amount: new UntypedFormControl(stage?.amount || 0),
+            fixedAmount: new UntypedFormControl(stage?.fixedAmount || 0),
         });
     }
 
 }
 
-export class MaterialGroup extends FormGroup {
+export class MaterialGroup extends UntypedFormGroup {
     constructor(material?: Partial<JobProductionStageMaterial>) {
         super({
-            materialId: new FormControl(
+            materialId: new UntypedFormControl(
                 material?.materialId,
                 [Validators.required],
             ),
-            amount: new FormControl(
+            amount: new UntypedFormControl(
                 material?.amount || 0,
                 [Validators.required, Validators.min(0)]
             ),
-            fixedAmount: new FormControl(
+            fixedAmount: new UntypedFormControl(
                 material?.fixedAmount || 0,
                 [Validators.required, Validators.min(0)]
             )

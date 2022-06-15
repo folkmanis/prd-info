@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { ValidDates } from '../../valid-dates.class';
 
@@ -11,7 +11,7 @@ import { ValidDates } from '../../valid-dates.class';
 })
 export class LogCalendarComponent {
 
-  dateControl = new FormControl(new Date());
+  dateControl = new UntypedFormControl(new Date());
 
   private _validDates = new ValidDates([]);
   @Input() set validDates(value: ValidDates) {

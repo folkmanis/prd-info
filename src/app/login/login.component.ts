@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, ActivatedRoute } from '@angular/router';
 import { filter, map, switchMap } from 'rxjs/operators';
@@ -16,9 +16,9 @@ export class LoginComponent implements OnInit {
 
   @ViewChild(FocusedDirective) username: FocusedDirective;
 
-  loginForm: FormGroup = new FormGroup({
-    username: new FormControl('', [Validators.required]),
-    password: new FormControl(),
+  loginForm: UntypedFormGroup = new UntypedFormGroup({
+    username: new UntypedFormControl('', [Validators.required]),
+    password: new UntypedFormControl(),
   });
 
 

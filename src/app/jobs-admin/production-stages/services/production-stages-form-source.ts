@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, FormBuilder, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, UntypedFormBuilder, Validators } from '@angular/forms';
 import { IFormGroup } from '@rxweb/types';
 import { pickBy } from 'lodash';
 import { Observable, of } from 'rxjs';
@@ -19,7 +19,7 @@ export class ProductionStagesFormSource extends SimpleFormSource<ProductionStage
     }
 
     constructor(
-        fb: FormBuilder,
+        fb: UntypedFormBuilder,
         private productionStagesService: ProductionStagesService,
     ) {
         super(fb);

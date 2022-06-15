@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import {
-  ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators
+  ControlValueAccessor, UntypedFormArray, UntypedFormControl, UntypedFormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators
 } from '@angular/forms';
 import { DestroyService } from 'prd-cdk';
 import { takeUntil } from 'rxjs/operators';
@@ -37,12 +37,12 @@ export class ReproProductsEditorComponent implements OnInit, ControlValueAccesso
 
   @Input() small = false;
 
-  form = new FormGroup({
-    products: new FormArray([]),
+  form = new UntypedFormGroup({
+    products: new UntypedFormArray([]),
   });
 
   get productsControl() {
-    return this.form.get('products') as FormArray;
+    return this.form.get('products') as UntypedFormArray;
   }
 
   onTouched: () => void = () => { };
@@ -64,7 +64,7 @@ export class ReproProductsEditorComponent implements OnInit, ControlValueAccesso
       return;
     }
     this.productsControl.clear();
-    obj.forEach(prod => this.productsControl.push(new FormControl(prod)), { emitEvent: false });
+    obj.forEach(prod => this.productsControl.push(new UntypedFormControl(prod)), { emitEvent: false });
     this.check();
   }
 
@@ -112,7 +112,7 @@ export class ReproProductsEditorComponent implements OnInit, ControlValueAccesso
   }
 
   onAddProduct() {
-    this.productsControl.push(new FormControl(
+    this.productsControl.push(new UntypedFormControl(
       null,
       [Validators.required]
     ));

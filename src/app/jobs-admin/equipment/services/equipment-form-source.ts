@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, FormBuilder, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, UntypedFormBuilder, Validators } from '@angular/forms';
 import { IFormGroup } from '@rxweb/types';
 import { Observable, of } from 'rxjs';
 import { map, pluck } from 'rxjs/operators';
@@ -18,7 +18,7 @@ export class EquipmentFormSource extends SimpleFormSource<Equipment> {
     }
 
     constructor(
-        fb: FormBuilder,
+        fb: UntypedFormBuilder,
         private equipmentService: EquipmentService,
     ) {
         super(fb);

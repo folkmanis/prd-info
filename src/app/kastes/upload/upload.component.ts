@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
@@ -22,7 +22,7 @@ export class UploadComponent implements OnInit, OnDestroy {
 
   adresesBox: AdresesBoxes | undefined;
 
-  orderIdControl = new FormControl(null, [Validators.required]);
+  orderIdControl = new UntypedFormControl(null, [Validators.required]);
 
   plannedTotals$: Observable<ColorTotals[]> = this.orderIdControl.valueChanges.pipe(
     switchMap((id: string) => this.pasutijumiService.getKastesJob(+id)),

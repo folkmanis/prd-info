@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { IFormControl } from '@rxweb/types';
@@ -32,7 +32,7 @@ export class UserEditComponent implements OnInit, CanComponentDeactivate {
   sessions: UserSession[] | null = null;
   currentSessionId$ = this.loginService.sessionId$;
 
-  form: FormGroup;
+  form: UntypedFormGroup;
 
   constructor(
     private snackBar: MatSnackBar,

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectionStrategy, Input } from '@angular/core';
-import { FormControl, NgControl, NgForm, Validators } from '@angular/forms';
+import { UntypedFormControl, NgControl, NgForm, Validators } from '@angular/forms';
 import { IFormArray, IFormGroup, IControlValueAccessor, IFormControl } from '@rxweb/types';
 import { Observable, Subject } from 'rxjs';
 import { Product } from 'src/app/interfaces';
@@ -29,7 +29,7 @@ export class PaytraqProductComponent implements OnInit, OnDestroy, IControlValue
   private onChanges: (obj: number | null) => void;
   private onTouched: () => void;
   disabled = false;
-  productSearch: IFormControl<string> = new FormControl(null);
+  productSearch: IFormControl<string> = new UntypedFormControl(null);
 
   constructor(
     private paytraqService: PaytraqProductsService,

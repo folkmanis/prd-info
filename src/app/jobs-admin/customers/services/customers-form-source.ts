@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, UntypedFormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { IFormGroup } from '@rxweb/types';
 import { defaults, pickBy } from 'lodash';
 import { Observable, of } from 'rxjs';
@@ -14,7 +14,7 @@ import { CustomersService } from 'src/app/services';
 export class CustomersFormSource extends SimpleFormSource<Customer> {
 
     constructor(
-        fb: FormBuilder,
+        fb: UntypedFormBuilder,
         private customersService: CustomersService,
     ) {
         super(fb);

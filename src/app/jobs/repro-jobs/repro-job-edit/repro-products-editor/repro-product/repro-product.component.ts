@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, Input, OnInit, Output, ViewChild, C
 import {
   AbstractControl,
   ControlValueAccessor,
-  FormControl,
+  UntypedFormControl,
   NG_VALIDATORS, NG_VALUE_ACCESSOR,
   ValidationErrors, Validator, ValidatorFn
 } from '@angular/forms';
@@ -83,9 +83,9 @@ export class ReproProductComponent implements OnInit, ControlValueAccessor, Vali
 
   @Output() remove = new Subject<void>();
 
-  get nameControl() { return this.form.get('name') as FormControl; }
-  get priceControl() { return this.form.get('price') as FormControl; }
-  get unitsControl() { return this.form.get('units') as FormControl; }
+  get nameControl() { return this.form.get('name') as UntypedFormControl; }
+  get priceControl() { return this.form.get('price') as UntypedFormControl; }
+  get unitsControl() { return this.form.get('units') as UntypedFormControl; }
 
 
   constructor(

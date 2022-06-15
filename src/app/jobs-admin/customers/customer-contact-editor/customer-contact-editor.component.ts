@@ -1,5 +1,5 @@
 import { AfterViewInit, Output, Component, OnInit, ChangeDetectionStrategy, ViewChild, ElementRef } from '@angular/core';
-import { FormGroup, NG_VALUE_ACCESSOR, NG_VALIDATORS, ControlValueAccessor, Validator, FormControl, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { UntypedFormGroup, NG_VALUE_ACCESSOR, NG_VALIDATORS, ControlValueAccessor, Validator, UntypedFormControl, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Subject } from 'rxjs';
 
 @Component({
@@ -24,8 +24,8 @@ export class CustomerContactEditorComponent<T> implements OnInit, AfterViewInit,
 
   @ViewChild('email') private emailInput: ElementRef<HTMLInputElement>;
 
-  controlGroup = new FormGroup({
-    email: new FormControl(null, {
+  controlGroup = new UntypedFormGroup({
+    email: new UntypedFormControl(null, {
       validators: [
         Validators.required, Validators.email,
       ]

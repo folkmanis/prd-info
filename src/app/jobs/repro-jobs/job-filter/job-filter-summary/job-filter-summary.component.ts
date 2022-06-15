@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { merge, Subscription } from 'rxjs';
 import { JobState } from 'src/app/interfaces';
 import { JobFilterFormProvider } from '../job-filter.component';
@@ -16,7 +16,7 @@ export class JobFilterSummaryComponent implements OnInit, OnDestroy, JobFilterFo
 
   @Input() jobStates: JobState[] = [];
 
-  filterForm: FormGroup;
+  filterForm: UntypedFormGroup;
 
   get jobStatusStr(): string {
     return (this.filterForm.get('jobStatus').value as number[])

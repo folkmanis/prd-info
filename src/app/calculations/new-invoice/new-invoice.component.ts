@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, merge, Observable } from 'rxjs';
 import { map, share, shareReplay, startWith, switchMap } from 'rxjs/operators';
@@ -31,7 +31,7 @@ export class NewInvoiceComponent implements OnInit {
 
   invoicesTotals$: Observable<InvoicesTotals>;
 
-  customerId = new FormControl('');
+  customerId = new UntypedFormControl('');
 
   constructor(
     private invoicesService: InvoicesService,

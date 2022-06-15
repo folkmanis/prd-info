@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 const MIN_LENGTH = 6;
@@ -17,7 +17,7 @@ export interface PasswordDialogData {
 })
 export class PasswordInputDialogComponent implements OnInit {
 
-  passwordForm: FormGroup;
+  passwordForm: UntypedFormGroup;
 
   hide = true;
 
@@ -36,12 +36,12 @@ export class PasswordInputDialogComponent implements OnInit {
       validators.push(this.data.validatorFn);
     }
 
-    this.passwordForm = new FormGroup({
-      password1: new FormControl(
+    this.passwordForm = new UntypedFormGroup({
+      password1: new UntypedFormControl(
         null,
         validators
       ),
-      password2: new FormControl(
+      password2: new UntypedFormControl(
         null,
       )
     },
@@ -55,7 +55,7 @@ export class PasswordInputDialogComponent implements OnInit {
 
 function equalityValidator(): ValidatorFn {
 
-  return (control: FormGroup) => {
+  return (control: UntypedFormGroup) => {
     const isEqual = control.value.password1 === control.value.password2;
     const error = !isEqual ? { notEqual: 'Parolēm jāsakrīt' } : null;
     control.controls.password2.setErrors(error);

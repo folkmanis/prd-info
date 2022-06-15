@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, FormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { debounceTime, filter, map, pluck, startWith, switchMap } from 'rxjs/operators';
 import { CustomerPartial, SystemPreferences } from 'src/app/interfaces';
@@ -17,7 +17,7 @@ const DEFAULT_FILTER: JobFilter = {
 };
 
 export abstract class JobFilterFormProvider {
-  abstract filterForm: FormGroup;
+  abstract filterForm: UntypedFormGroup;
 }
 
 @Component({
@@ -36,7 +36,7 @@ export class JobFilterComponent implements JobFilterFormProvider, OnInit {
   );
   customersFiltered$: Observable<CustomerPartial[]>;
 
-  filterForm: FormGroup = this.fb.group({
+  filterForm: UntypedFormGroup = this.fb.group({
     name: undefined,
     jobsId: [
       undefined,
@@ -55,7 +55,7 @@ export class JobFilterComponent implements JobFilterFormProvider, OnInit {
   large$ = this.layout.isLarge$;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private customersService: CustomersService,
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
     private layout: LayoutService,

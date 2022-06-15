@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormArray } from '@angular/forms';
+import { AbstractControl, UntypedFormArray } from '@angular/forms';
 import { MatExpansionPanel } from '@angular/material/expansion';
 import { IFormGroup } from '@rxweb/types';
 import { Observable } from 'rxjs';
@@ -43,7 +43,7 @@ export class ProductsEditorComponent implements OnInit, CanComponentDeactivate {
 
   get isNew(): boolean { return this.formSource.isNew; }
 
-  get pricesFormArray() { return this.form.get('prices') as AbstractControl as FormArray; }
+  get pricesFormArray() { return this.form.get('prices') as AbstractControl as UntypedFormArray; }
 
   constructor(
     private customersService: CustomersService,

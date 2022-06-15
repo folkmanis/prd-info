@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, Input, ChangeDetectionStrategy, Inject } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { debounceTime, map, pluck } from 'rxjs/operators';
 import { SystemPreferences } from 'src/app/interfaces';
@@ -24,13 +24,13 @@ export class MaterialsFilterComponent implements OnInit {
   categories$ = this.config$.pipe(pluck('jobs', 'productCategories'));
   large$ = this.layout.isLarge$;
 
-  filterGroup = new FormGroup({
-    name: new FormControl(''),
-    categories: new FormControl([])
+  filterGroup = new UntypedFormGroup({
+    name: new UntypedFormControl(''),
+    categories: new UntypedFormControl([])
   });
 
-  get nameControl(): FormControl { return this.filterGroup.get('name') as FormControl; }
-  get categoriesControl(): FormControl { return this.filterGroup.get('categories') as FormControl; }
+  get nameControl(): UntypedFormControl { return this.filterGroup.get('name') as UntypedFormControl; }
+  get categoriesControl(): UntypedFormControl { return this.filterGroup.get('categories') as UntypedFormControl; }
 
   @Output() filter: Observable<MaterialsFilter> = this.filterGroup.valueChanges.pipe(
     debounceTime(200),

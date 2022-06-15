@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormControl } from '@angular/forms';
+import { UntypedFormArray, UntypedFormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 import { JobProductionStageMaterial } from 'src/app/interfaces';
@@ -14,7 +14,7 @@ import { MaterialGroup } from '../../services/products-form-source';
 })
 export class ProductionStageMaterialComponent implements OnInit {
 
-  @Input() materialsControl: FormArray;
+  @Input() materialsControl: UntypedFormArray;
 
   materials$ = this.materialsService.materials$;
   jobProductionStageMaterials$: Observable<JobProductionStageMaterial[]>;
@@ -29,15 +29,15 @@ export class ProductionStageMaterialComponent implements OnInit {
   ) { }
 
   idControl(idx: number) {
-    return this.materialsControl.controls[idx].get('materialId') as FormControl;
+    return this.materialsControl.controls[idx].get('materialId') as UntypedFormControl;
   }
 
   amountControl(idx: number) {
-    return this.materialsControl.controls[idx].get('amount') as FormControl;
+    return this.materialsControl.controls[idx].get('amount') as UntypedFormControl;
   }
 
   fixedAmountControl(idx: number) {
-    return this.materialsControl.controls[idx].get('fixedAmount') as FormControl;
+    return this.materialsControl.controls[idx].get('fixedAmount') as UntypedFormControl;
   }
 
   ngOnInit(): void {

@@ -1,5 +1,5 @@
 import { OnDestroy, AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, ControlValueAccessor, UntypedFormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, ValidatorFn, Validators } from '@angular/forms';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { CustomerPartial } from 'src/app/interfaces';
@@ -35,7 +35,7 @@ export class CustomerInputComponent implements OnDestroy, AfterViewInit, Control
     return this.values$.value;
   }
 
-  control = new FormControl(
+  control = new UntypedFormControl(
     '',
     {
       validators: [

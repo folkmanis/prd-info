@@ -1,32 +1,32 @@
-import { FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { JobProduct } from 'src/app/jobs/interfaces';
 
 
 
-export class ProductFormGroup extends FormGroup {
+export class ProductFormGroup extends UntypedFormGroup {
 
     constructor(
         product: Partial<JobProduct> = {},
     ) {
         super({
-            name: new FormControl(product.name),
-            price: new FormControl(
+            name: new UntypedFormControl(product.name),
+            price: new UntypedFormControl(
                 product.price,
                 {
                     validators: [Validators.required, Validators.min(0)],
                 },
             ),
-            count: new FormControl(
+            count: new UntypedFormControl(
                 product.count,
                 {
                     validators: [Validators.required, Validators.min(0)],
                 },
             ),
-            units: new FormControl(
+            units: new UntypedFormControl(
                 product.units,
                 Validators.required,
             ),
-            comment: new FormControl(product.comment),
+            comment: new UntypedFormControl(product.comment),
         });
     }
 

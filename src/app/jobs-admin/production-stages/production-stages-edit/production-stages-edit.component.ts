@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { ProductionStage } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { SimpleFormSource } from 'src/app/library/simple-form';
@@ -20,7 +20,7 @@ export class ProductionStagesEditComponent implements OnInit, CanComponentDeacti
 
   equipment$ = this.equipmentService.equipment$;
 
-  get form(): FormGroup {
+  get form(): UntypedFormGroup {
     return this.formSource.form;
   }
 

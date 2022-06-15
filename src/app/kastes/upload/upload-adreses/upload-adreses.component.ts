@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay, startWith, tap } from 'rxjs/operators';
@@ -36,9 +36,9 @@ export class UploadAdresesComponent implements OnInit {
   fb: IFormBuilder;
   checkCols: IFormGroup<ColumnSelection>;
   chkColCount$: Observable<number>;
-  settingsControl = new FormGroup({
-    toPakas: new FormControl(true),
-    mergeAddress: new FormControl(false),
+  settingsControl = new UntypedFormGroup({
+    toPakas: new UntypedFormControl(true),
+    mergeAddress: new UntypedFormControl(false),
   });
   rowSelection = this.uploadService.rowSelection;
 
@@ -61,7 +61,7 @@ export class UploadAdresesComponent implements OnInit {
   constructor(
     private uploadService: UploadService,
     private chipsService: ChipsService,
-    fb: FormBuilder,
+    fb: UntypedFormBuilder,
   ) { this.fb = fb; }
 
   datasource$ = this.uploadService.adresesCsv$;

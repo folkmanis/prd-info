@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { PaytraqSettings, PaytraqConnectionParams } from 'src/app/interfaces';
 import { PreferencesCardControl } from '../../preferences-card-control';
 import { Observable, Subject } from 'rxjs';
-import { FormBuilder, ValidationErrors, Validators } from '@angular/forms';
+import { UntypedFormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { IFormBuilder, IFormControl, IFormGroup } from '@rxweb/types';
 import { map, takeUntil } from 'rxjs/operators';
 import { DestroyService } from 'prd-cdk';
@@ -34,7 +34,7 @@ export class PaytraqPreferencesComponent implements OnInit, OnDestroy, Preferenc
   paramsValid$: Observable<boolean>;
 
   constructor(
-    fb: FormBuilder,
+    fb: UntypedFormBuilder,
     private destroy$: DestroyService,
   ) {
     this.fb = fb;

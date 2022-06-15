@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder, Validators, AbstractControl, ValidationErrors, AsyncValidatorFn } from '@angular/forms';
+import { UntypedFormBuilder, Validators, AbstractControl, ValidationErrors, AsyncValidatorFn } from '@angular/forms';
 import { IFormGroup } from '@rxweb/types';
 import { SimpleFormSource } from 'src/app/library/simple-form';
 import { User, UserPreferences } from 'src/app/interfaces';
@@ -13,7 +13,7 @@ import { map, switchMap } from 'rxjs/operators';
 export class UserFormSource extends SimpleFormSource<User> {
 
     constructor(
-        fb: FormBuilder,
+        fb: UntypedFormBuilder,
         private usersService: UsersService,
     ) {
         super(fb);

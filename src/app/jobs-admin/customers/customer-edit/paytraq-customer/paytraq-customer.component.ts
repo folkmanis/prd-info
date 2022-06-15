@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, NgControl } from '@angular/forms';
+import { UntypedFormControl, NgControl } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { IControlValueAccessor, IFormControl } from '@rxweb/types';
 import { Subject } from 'rxjs';
@@ -32,7 +32,7 @@ export class PaytraqCustomerComponent implements OnInit, OnDestroy, IControlValu
 
   clients$ = new Subject<PaytraqClient[]>();
 
-  clientSearch: IFormControl<string> = new FormControl('');
+  clientSearch: IFormControl<string> = new UntypedFormControl('');
 
   get value(): CustomerFinancial { return this._value; }
   set value(value: CustomerFinancial) { this._value = value; }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { IFormGroup } from '@rxweb/types';
 import { defaults, isEqual, pickBy } from 'lodash';
 import { Observable, of } from 'rxjs';
@@ -23,13 +23,13 @@ export class MaterialsFormSource extends SimpleFormSource<Material> {
         return !this.form.value._id;
     }
 
-    get pricesCtrl(): FormArray {
-        return this.form.get('prices') as unknown as FormArray;
+    get pricesCtrl(): UntypedFormArray {
+        return this.form.get('prices') as unknown as UntypedFormArray;
     }
 
 
     constructor(
-        fb: FormBuilder,
+        fb: UntypedFormBuilder,
         private materialsService: MaterialsService,
     ) {
         super(fb);
@@ -127,7 +127,7 @@ export class MaterialsFormSource extends SimpleFormSource<Material> {
     }
 
     private duplicatePriceValidator(): ValidatorFn {
-        return (control: FormArray) => {
+        return (control: UntypedFormArray) => {
             const ctrls = control.controls as MaterialPriceGroup[];
             const duplicates = ctrls
                 .filter((el, idx, a) => a.findIndex(m => m.priceValue.min === el.priceValue.min) !== idx)
@@ -141,7 +141,7 @@ export class MaterialsFormSource extends SimpleFormSource<Material> {
 
 }
 
-export class MaterialPriceGroup extends FormGroup {
+export class MaterialPriceGroup extends UntypedFormGroup {
 
     get priceValue(): MaterialPrice {
         return this.value;
@@ -149,15 +149,15 @@ export class MaterialPriceGroup extends FormGroup {
 
     constructor(price: Partial<MaterialPrice> = {}) {
         super({
-            min: new FormControl(
+            min: new UntypedFormControl(
                 price.min,
                 [Validators.required, Validators.min(0)],
             ),
-            price: new FormControl(
+            price: new UntypedFormControl(
                 price.price,
                 [Validators.required, Validators.min(0)],
             ),
-            description: new FormControl(price.description),
+            description: new UntypedFormControl(price.description),
         });
     }
 }

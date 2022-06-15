@@ -1,5 +1,5 @@
 import { Directive, Input, OnInit, Self } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { DestroyService } from 'prd-cdk';
 import { combineLatest, Observable } from 'rxjs';
 import { debounceTime, filter, map, pluck, takeUntil } from 'rxjs/operators';
@@ -22,9 +22,9 @@ export class ProductControlDirective implements OnInit {
     this.customerProducts$.next(value);
   }
 
-  get unitsControl() { return this.control.get('units') as FormControl; }
-  get nameControl() { return this.control.get('name') as FormControl; }
-  get priceControl() { return this.control.get('price') as FormControl; }
+  get unitsControl() { return this.control.get('units') as UntypedFormControl; }
+  get nameControl() { return this.control.get('name') as UntypedFormControl; }
+  get priceControl() { return this.control.get('price') as UntypedFormControl; }
 
   selectedProduct$: Observable<CustomerProduct>;
 

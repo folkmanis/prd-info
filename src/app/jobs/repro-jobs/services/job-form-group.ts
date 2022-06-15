@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { isEqual, pickBy } from 'lodash';
 import { Observable } from 'rxjs';
 import { shareReplay, startWith, map } from 'rxjs/operators';
@@ -7,7 +7,7 @@ import { Job } from '../../interfaces';
 
 
 @Injectable()
-export class JobFormGroup extends FormGroup {
+export class JobFormGroup extends UntypedFormGroup {
 
     readonly value$: Observable<Job> = this.valueChanges.pipe(
         // startWith(this.value),
@@ -29,37 +29,37 @@ export class JobFormGroup extends FormGroup {
         const value: Partial<Job> = {};
         super(
             {
-                jobId: new FormControl(undefined),
-                customer: new FormControl(undefined),
-                name: new FormControl(
+                jobId: new UntypedFormControl(undefined),
+                customer: new UntypedFormControl(undefined),
+                name: new UntypedFormControl(
                     undefined,
                     {
                         validators: Validators.required,
                     },
 
                 ),
-                receivedDate: new FormControl(
+                receivedDate: new UntypedFormControl(
                     new Date(),
                     Validators.required,
                 ),
-                dueDate: new FormControl(
+                dueDate: new UntypedFormControl(
                     new Date(),
                     Validators.required,
                 ),
-                production: new FormGroup({
-                    category: new FormControl(
+                production: new UntypedFormGroup({
+                    category: new UntypedFormControl(
                         undefined,
                         Validators.required,
                     ),
                 }),
-                comment: new FormControl(null),
-                customerJobId: new FormControl(null),
-                jobStatus: new FormGroup({
-                    generalStatus: new FormControl(10),
-                    timestamp: new FormControl(new Date()),
+                comment: new UntypedFormControl(null),
+                customerJobId: new UntypedFormControl(null),
+                jobStatus: new UntypedFormGroup({
+                    generalStatus: new UntypedFormControl(10),
+                    timestamp: new UntypedFormControl(new Date()),
                 }),
-                products: new FormControl(undefined),
-                files: new FormControl(undefined),
+                products: new UntypedFormControl(undefined),
+                files: new UntypedFormControl(undefined),
             }
         );
 

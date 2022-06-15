@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -27,7 +27,7 @@ export class ModulePreferencesComponent implements OnInit, CanComponentDeactivat
     private systemPreferencesService: SystemPreferencesService,
     private cd: ChangeDetectorRef,
     private destroy$: DestroyService,
-    fb: FormBuilder,
+    fb: UntypedFormBuilder,
   ) {
     this.fb = fb;
     this.prefForm = this.fb.group<SystemPreferences>(

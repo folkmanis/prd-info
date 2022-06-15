@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { distinctUntilChanged, filter, map, Observable, OperatorFunction, pipe, pluck, tap } from 'rxjs';
 import { SystemPreferences } from 'src/app/interfaces';
 import { CONFIG } from 'src/app/services/config.provider';
@@ -22,7 +22,7 @@ const logLevelsFromPreferences = (): OperatorFunction<SystemPreferences, LogLeve
 })
 export class LogLevelComponent {
 
-  levelControl = new FormControl(0);
+  levelControl = new UntypedFormControl(0);
 
   logLevels$: Observable<LogLevel[]> = this.config$.pipe(
     logLevelsFromPreferences(),

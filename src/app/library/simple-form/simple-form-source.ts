@@ -1,4 +1,4 @@
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { Observable } from 'rxjs';
 import { isEqual, pickBy } from 'lodash';
@@ -27,7 +27,7 @@ export abstract class SimpleFormSource<T extends Object> {
     }
 
     constructor(
-        fb: FormBuilder
+        fb: UntypedFormBuilder
     ) {
         this.fb = fb;
     }

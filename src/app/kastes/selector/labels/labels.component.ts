@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { pluck } from 'rxjs/operators';
 import { VeikalsKaste, Colors } from 'src/app/kastes/interfaces';
@@ -41,8 +41,8 @@ export class LabelsComponent implements OnInit {
 
   @Output() code = new EventEmitter<number>();
 
-  inputForm = new FormGroup({
-    kods: new FormControl(
+  inputForm = new UntypedFormGroup({
+    kods: new UntypedFormControl(
       '',
       {
         validators: [Validators.required]

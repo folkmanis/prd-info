@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { FormControl, FormGroup, Validators, UntypedFormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { IFormGroup, IFormBuilder } from '@rxweb/types';
 import { ProductUnit } from 'src/app/interfaces';
@@ -15,7 +15,7 @@ export class UnitsDialogComponent implements OnInit {
   unitsForm: IFormGroup<ProductUnit>;
 
   constructor(
-    fb: FormBuilder,
+    fb: UntypedFormBuilder,
     @Inject(MAT_DIALOG_DATA) private data?: ProductUnit,
   ) {
     this.fb = fb;

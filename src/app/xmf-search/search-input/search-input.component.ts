@@ -1,5 +1,5 @@
 import { Component, Input, Output, ChangeDetectionStrategy } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, map, shareReplay, startWith } from 'rxjs/operators';
 
 @Component({
@@ -12,7 +12,7 @@ export class SearchInputComponent {
 
   @Input() count: number | undefined | null;
 
-  q: FormControl = new FormControl('');
+  q: UntypedFormControl = new UntypedFormControl('');
   @Output() searchString = this.q.valueChanges.pipe(
     startWith(''),
     debounceTime(300),

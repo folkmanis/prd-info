@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { SystemSettings } from 'src/app/interfaces';
 import { PreferencesCardControl } from '../../preferences-card-control';
@@ -21,12 +21,12 @@ export class SystemPreferencesComponent implements PreferencesCardControl<System
     return this.controls.value;
   }
 
-  controls: FormGroup;
+  controls: UntypedFormGroup;
 
   stateChanges = new Subject<void>();
 
   constructor(
-    fb: FormBuilder,
+    fb: UntypedFormBuilder,
   ) {
     this.controls = fb.group({
       menuExpandedByDefault: [true],

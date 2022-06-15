@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { Subject } from 'rxjs';
 import { JobsSettings } from 'src/app/interfaces';
@@ -36,7 +36,7 @@ export class JobsPreferencesComponent implements PreferencesCardControl<JobsSett
   private fb: IFormBuilder;
 
   constructor(
-    fb: FormBuilder,
+    fb: UntypedFormBuilder,
     private changeDetector: ChangeDetectorRef,
   ) {
     this.fb = fb;

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormArray, FormBuilder, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
+import { AbstractControl, ControlValueAccessor, UntypedFormArray, UntypedFormBuilder, UntypedFormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
 
 const DEFAULT_CONTACT = {
   email: '',
@@ -29,8 +29,8 @@ export class CustomerContactsComponent implements OnInit, ControlValueAccessor, 
     contacts: this.fb.array([])
   });
 
-  get contactsArray(): FormArray {
-    return this.controlGroup.get('contacts') as FormArray;
+  get contactsArray(): UntypedFormArray {
+    return this.controlGroup.get('contacts') as UntypedFormArray;
   }
 
   active: AbstractControl | null = null;
@@ -38,7 +38,7 @@ export class CustomerContactsComponent implements OnInit, ControlValueAccessor, 
   private onTouchFn: () => void = () => { };
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private changeDetector: ChangeDetectorRef,
   ) { }
 
@@ -103,7 +103,7 @@ export class CustomerContactsComponent implements OnInit, ControlValueAccessor, 
     }
     this.contactsArray.clear({ emitEvent: false });
     for (let idx = 0; idx < value.length; idx++) {
-      this.contactsArray.push(new FormControl(), { emitEvent: false });
+      this.contactsArray.push(new UntypedFormControl(), { emitEvent: false });
     }
 
     this.changeDetector.markForCheck();

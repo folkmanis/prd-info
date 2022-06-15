@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
-import { FormArray } from '@angular/forms';
+import { UntypedFormArray } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { IFormGroup } from '@rxweb/types';
 import { Observable } from 'rxjs';
@@ -38,8 +38,8 @@ export class MaterialsEditComponent implements OnInit, CanComponentDeactivate {
     return this.formSource.form;
   }
 
-  get pricesControl(): FormArray {
-    return this.form.get('prices') as unknown as FormArray;
+  get pricesControl(): UntypedFormArray {
+    return this.form.get('prices') as unknown as UntypedFormArray;
   }
 
   constructor(

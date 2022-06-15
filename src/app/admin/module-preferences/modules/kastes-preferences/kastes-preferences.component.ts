@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { Subject } from 'rxjs';
 import { Colors, COLORS, KastesSettings } from 'src/app/kastes/interfaces';
@@ -32,7 +32,7 @@ export class KastesPreferencesComponent implements PreferencesCardControl<Kastes
   private fb: IFormBuilder;
 
   constructor(
-    fb: FormBuilder,
+    fb: UntypedFormBuilder,
   ) {
     this.fb = fb;
     this.controls = this.fb.group<KastesSettingsPartial>({

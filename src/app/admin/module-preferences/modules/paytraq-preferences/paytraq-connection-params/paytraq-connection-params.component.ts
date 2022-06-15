@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, Output } from '@angular/core';
-import { NgControl, Validators, FormBuilder } from '@angular/forms';
+import { NgControl, Validators, UntypedFormBuilder } from '@angular/forms';
 import { IFormBuilder, IControlValueAccessor, IFormGroup } from '@rxweb/types';
 import { PaytraqSettings, PaytraqConnectionParams } from 'src/app/interfaces';
 import { Subscription } from 'rxjs';
@@ -30,7 +30,7 @@ export class PaytraqConnectionParamsComponent implements OnInit, OnDestroy, ICon
 
   constructor(
     private ngControl: NgControl,
-    fb: FormBuilder,
+    fb: UntypedFormBuilder,
   ) {
     this.ngControl.valueAccessor = this;
     this.fb = fb;

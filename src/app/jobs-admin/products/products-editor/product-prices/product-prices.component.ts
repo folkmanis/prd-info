@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, UntypedFormArray, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { DestroyService } from 'prd-cdk';
 import { merge } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -15,7 +15,7 @@ import { CustomerPartial } from 'src/app/interfaces';
 })
 export class ProductPricesComponent implements OnInit {
 
-  @Input() pricesFormArray: FormArray;
+  @Input() pricesFormArray: UntypedFormArray;
   @Input() customers: CustomerPartial[] = [];
 
   @Output() removePrice = new EventEmitter<number>();
@@ -25,14 +25,14 @@ export class ProductPricesComponent implements OnInit {
     private destroy$: DestroyService,
   ) { }
 
-  get pricesControls() { return this.pricesFormArray.controls as FormGroup[]; }
+  get pricesControls() { return this.pricesFormArray.controls as UntypedFormGroup[]; }
 
   customerNameControl(group: AbstractControl) {
-    return group.get('customerName') as FormControl;
+    return group.get('customerName') as UntypedFormControl;
   }
 
   priceControl(group: AbstractControl) {
-    return group.get('price') as FormControl;
+    return group.get('price') as UntypedFormControl;
   }
 
   ngOnInit(): void {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { formatISO, parseISO } from 'date-fns';
 import { interval, Observable } from 'rxjs';
 import { map, mergeMapTo, skip } from 'rxjs/operators';
@@ -20,7 +20,7 @@ export interface ProductsFormData {
 }
 
 @Injectable()
-export class FilterForm extends FormGroup {
+export class FilterForm extends UntypedFormGroup {
 
     filterQueryChanges: Observable<JobsProductionFilterQuery>;
 
@@ -35,10 +35,10 @@ export class FilterForm extends FormGroup {
         private dateUtils: DateUtilsService,
     ) {
         super({
-            jobStatus: new FormControl(),
-            category: new FormControl(),
-            fromDate: new FormControl(),
-            toDate: new FormControl(),
+            jobStatus: new UntypedFormControl(),
+            category: new UntypedFormControl(),
+            fromDate: new UntypedFormControl(),
+            toDate: new UntypedFormControl(),
         });
         this.filterQueryChanges = interval(500).pipe(
             mergeMapTo(this.valueChanges),

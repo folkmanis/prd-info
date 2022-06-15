@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
 import { DestroyService } from 'prd-cdk';
 import { merge } from 'rxjs';
@@ -16,17 +16,17 @@ import { ProductionStageGroup, ProductsFormSource } from '../../services/product
 })
 export class ProductProductionStagesComponent implements OnInit {
 
-  @ViewChild(MatTable) private table: MatTable<FormGroup>;
+  @ViewChild(MatTable) private table: MatTable<UntypedFormGroup>;
 
-  @Input() stagesArray: FormArray;
+  @Input() stagesArray: UntypedFormArray;
 
   displayedColumns = ['expand', 'productionStageId', 'amount', 'fixedAmount', 'actions'];
 
   stages$ = this.productionStagesService.productionStages$;
 
-  expanded: FormGroup | undefined;
+  expanded: UntypedFormGroup | undefined;
 
-  whenFn = (idx: number, rowData: FormGroup): boolean => rowData === this.expanded;
+  whenFn = (idx: number, rowData: UntypedFormGroup): boolean => rowData === this.expanded;
 
   constructor(
     private productionStagesService: ProductionStagesService,
@@ -51,7 +51,7 @@ export class ProductProductionStagesComponent implements OnInit {
     this.stagesArray.push(new ProductionStageGroup());
   }
 
-  onExpand(stage: FormGroup) {
+  onExpand(stage: UntypedFormGroup) {
     this.expanded = this.expanded === stage ? undefined : stage;
     this.table.renderRows();
   }

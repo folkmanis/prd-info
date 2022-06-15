@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, ControlValueAccessor, UntypedFormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, ValidatorFn, Validators } from '@angular/forms';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map, shareReplay, startWith } from 'rxjs/operators';
 import { CustomerProduct } from 'src/app/interfaces';
@@ -37,7 +37,7 @@ export class ProductAutocompleteComponent implements AfterViewInit, ControlValue
     return this.customerProducts$.value;
   }
 
-  control = new FormControl(
+  control = new UntypedFormControl(
     '',
     {
       validators: [

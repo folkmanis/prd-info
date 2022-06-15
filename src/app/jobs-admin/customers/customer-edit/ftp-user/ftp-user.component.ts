@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators } from '@angular/forms';
+import { ControlValueAccessor, UntypedFormBuilder, UntypedFormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators } from '@angular/forms';
 import { pluck } from 'rxjs/operators';
 import { FtpUserData } from 'src/app/interfaces';
 import { JobsApiService } from 'src/app/jobs';
@@ -44,12 +44,12 @@ export class FtpUserComponent implements ControlValueAccessor, Validator {
     password: [DEFAULT_DATA.password],
   });
 
-  get folderControl() { return this.form.get('folder') as FormControl; }
+  get folderControl() { return this.form.get('folder') as UntypedFormControl; }
 
   onTouchFn: () => void = () => { };
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private jobsApi: JobsApiService,
   ) { }
 
