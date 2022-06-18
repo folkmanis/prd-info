@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { UntypedFormBuilder } from '@angular/forms';
-import { IFormBuilder, IFormGroup } from '@rxweb/types';
+import { FormBuilder } from '@angular/forms';
+import { DestroyService } from 'prd-cdk';
 import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MODULES, SystemPreferences } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
-import { DestroyService } from 'prd-cdk';
 import { SystemPreferencesService } from 'src/app/services';
 
 @Component({
@@ -17,9 +16,12 @@ import { SystemPreferencesService } from 'src/app/services';
 })
 export class ModulePreferencesComponent implements OnInit, CanComponentDeactivate {
 
-  fb: IFormBuilder;
-
-  prefForm: IFormGroup<SystemPreferences>;
+  prefForm = this.fb.group<SystemPreferences>(
+    Object.assign(
+      {},
+      ...MODULES.map(mod => ({ [mod]: [{}] }))
+    )
+  );
 
   private initialValue: SystemPreferences | undefined;
 
@@ -27,16 +29,8 @@ export class ModulePreferencesComponent implements OnInit, CanComponentDeactivat
     private systemPreferencesService: SystemPreferencesService,
     private cd: ChangeDetectorRef,
     private destroy$: DestroyService,
-    fb: UntypedFormBuilder,
-  ) {
-    this.fb = fb;
-    this.prefForm = this.fb.group<SystemPreferences>(
-      Object.assign(
-        {},
-        ...MODULES.map(mod => ({ [mod]: [{}] }))
-      )
-    );
-  }
+    private fb: FormBuilder,
+  ) { }
 
   ngOnInit() {
     this.systemPreferencesService.preferences$.pipe(
@@ -55,7 +49,7 @@ export class ModulePreferencesComponent implements OnInit, CanComponentDeactivat
 
   onSaveAll() {
     this.systemPreferencesService.updatePreferences(
-      this.prefForm.value
+      this.prefForm.getRawValue()
     );
   }
 

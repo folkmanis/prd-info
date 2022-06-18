@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormBuilder } from '@angular/forms';
-import { IFormBuilder, IFormGroup } from '@rxweb/types';
+import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { JobsSettings } from 'src/app/interfaces';
+import { JobsSettings, ProductCategory, ProductUnit } from 'src/app/interfaces';
 import { PreferencesCardControl } from '../../preferences-card-control';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
 import { UnitsDialogComponent } from './units-dialog/units-dialog.component';
@@ -18,11 +17,15 @@ type JobsSettingsControls = Pick<JobsSettings, 'productCategories' | 'productUni
 })
 export class JobsPreferencesComponent implements PreferencesCardControl<JobsSettings>, OnInit, OnDestroy {
 
-  controls: IFormGroup<JobsSettingsControls>;
+  controls = new FormGroup({
+    productCategories: new FormControl<ProductCategory[]>([]),
+    productUnits: new FormControl<ProductUnit[]>([])
+  });
+
   stateChanges = new Subject<void>();
 
   get value(): JobsSettingsControls {
-    return this.controls.value;
+    return this.controls.getRawValue();
   }
   set value(obj: JobsSettingsControls) {
     this.controls.patchValue(obj);
@@ -33,22 +36,13 @@ export class JobsPreferencesComponent implements PreferencesCardControl<JobsSett
   categoryDialog = CategoryDialogComponent;
   unitsDialog = UnitsDialogComponent;
 
-  private fb: IFormBuilder;
-
   constructor(
-    fb: UntypedFormBuilder,
+    private fb: FormBuilder,
     private changeDetector: ChangeDetectorRef,
-  ) {
-    this.fb = fb;
-  }
+  ) { }
 
   ngOnInit() {
-    this.controls = this.fb.group<JobsSettingsControls>(
-      {
-        productCategories: [],
-        productUnits: [],
-      }
-    );
+    this.controls;
     this.stateChanges.subscribe(_ => this.changeDetector.markForCheck());
   }
 

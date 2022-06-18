@@ -1,8 +1,7 @@
-import { Component, OnDestroy, OnInit, Output } from '@angular/core';
-import { NgControl, Validators, UntypedFormBuilder } from '@angular/forms';
-import { IFormBuilder, IControlValueAccessor, IFormGroup } from '@rxweb/types';
-import { PaytraqSettings, PaytraqConnectionParams } from 'src/app/interfaces';
-import { Subscription } from 'rxjs';
+import { FocusMonitor } from '@angular/cdk/a11y';
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ControlValueAccessor, FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { PaytraqConnectionParams } from 'src/app/interfaces';
 
 const DEFAULT_VALUE: PaytraqConnectionParams = {
   connectUrl: null,
@@ -16,40 +15,43 @@ const DEFAULT_VALUE: PaytraqConnectionParams = {
 @Component({
   selector: 'app-paytraq-connection-params',
   templateUrl: './paytraq-connection-params.component.html',
-  styleUrls: ['./paytraq-connection-params.component.scss']
+  styleUrls: ['./paytraq-connection-params.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: PaytraqConnectionParamsComponent,
+      multi: true,
+    }
+  ]
 })
-export class PaytraqConnectionParamsComponent implements OnInit, OnDestroy, IControlValueAccessor<PaytraqConnectionParams> {
+export class PaytraqConnectionParamsComponent implements OnInit, ControlValueAccessor, AfterViewInit, OnDestroy {
 
-  private fb: IFormBuilder;
-  controls: IFormGroup<PaytraqConnectionParams>;
+  @ViewChild('container') private containerEl: HTMLDivElement;
 
-  private onChange: (obj: PaytraqConnectionParams) => void;
-  private onTouched: () => void;
+  controls = this.fb.group<PaytraqConnectionParams>({
+    connectUrl: undefined,
+    connectKey: undefined,
+    apiUrl: undefined,
+    apiKey: undefined,
+    apiToken: undefined,
+    invoiceUrl: undefined,
+  });
 
-  private readonly _subs = new Subscription();
+
+  private onTouched: () => void = () => { };
 
   constructor(
-    private ngControl: NgControl,
-    fb: UntypedFormBuilder,
-  ) {
-    this.ngControl.valueAccessor = this;
-    this.fb = fb;
-    this.controls = this.fb.group<PaytraqConnectionParams>({
-      connectUrl: [undefined],
-      connectKey: [undefined],
-      apiUrl: [undefined],
-      apiKey: [undefined],
-      apiToken: [undefined],
-      invoiceUrl: [undefined],
-    });
-  }
+    private fb: FormBuilder,
+    private focusMonitor: FocusMonitor,
+  ) { }
 
   writeValue(obj: PaytraqConnectionParams) {
-    this.controls.setValue({ ...DEFAULT_VALUE, ...obj });
+    this.controls.setValue({ ...DEFAULT_VALUE, ...obj }, { emitEvent: false });
   }
 
   registerOnChange(fn: (obj: PaytraqConnectionParams) => void) {
-    this.onChange = fn;
+    this.controls.valueChanges.subscribe(fn);
   }
 
   registerOnTouched(fn: () => void) {
@@ -65,13 +67,14 @@ export class PaytraqConnectionParamsComponent implements OnInit, OnDestroy, ICon
   }
 
   ngOnInit(): void {
-    this._subs.add(
-      this.controls.valueChanges.subscribe(this.onChange)
-    );
   }
 
-  ngOnDestroy() {
-    this._subs.unsubscribe();
+  ngAfterViewInit(): void {
+    this.focusMonitor.monitor(this.containerEl, true).subscribe(this.onTouched);
+  }
+
+  ngOnDestroy(): void {
+    this.focusMonitor.stopMonitoring(this.containerEl);
   }
 
 

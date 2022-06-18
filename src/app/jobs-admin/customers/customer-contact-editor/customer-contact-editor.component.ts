@@ -1,6 +1,7 @@
-import { AfterViewInit, Output, Component, OnInit, ChangeDetectionStrategy, ViewChild, ElementRef } from '@angular/core';
-import { UntypedFormGroup, NG_VALUE_ACCESSOR, NG_VALIDATORS, ControlValueAccessor, Validator, UntypedFormControl, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnInit, Output, ViewChild } from '@angular/core';
+import { ControlValueAccessor, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
+import { CustomerContact } from 'src/app/interfaces';
 
 @Component({
   selector: 'app-customer-contact-editor',
@@ -20,12 +21,12 @@ import { Subject } from 'rxjs';
     }
   ]
 })
-export class CustomerContactEditorComponent<T> implements OnInit, AfterViewInit, ControlValueAccessor, Validator {
+export class CustomerContactEditorComponent implements OnInit, AfterViewInit, ControlValueAccessor, Validator {
 
   @ViewChild('email') private emailInput: ElementRef<HTMLInputElement>;
 
-  controlGroup = new UntypedFormGroup({
-    email: new UntypedFormControl(null, {
+  controlGroup = new FormGroup({
+    email: new FormControl<string>(null, {
       validators: [
         Validators.required, Validators.email,
       ]
@@ -46,11 +47,11 @@ export class CustomerContactEditorComponent<T> implements OnInit, AfterViewInit,
     this.emailInput.nativeElement.focus();
   }
 
-  writeValue(obj: T): void {
+  writeValue(obj: CustomerContact): void {
     this.controlGroup.setValue(obj, { emitEvent: false });
   }
 
-  registerOnChange(fn: (value: T) => void): void {
+  registerOnChange(fn: (value: CustomerContact) => void): void {
     this.controlGroup.valueChanges.subscribe(fn);
   }
 

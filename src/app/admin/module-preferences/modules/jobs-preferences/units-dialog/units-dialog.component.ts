@@ -1,37 +1,31 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators, UntypedFormBuilder } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { IFormGroup, IFormBuilder } from '@rxweb/types';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ProductUnit } from 'src/app/interfaces';
 
 @Component({
   selector: 'app-units-dialog',
   templateUrl: './units-dialog.component.html',
-  styleUrls: ['./units-dialog.component.scss']
+  styleUrls: ['./units-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UnitsDialogComponent implements OnInit {
 
-  private fb: IFormBuilder;
-  unitsForm: IFormGroup<ProductUnit>;
+  unitsForm = new FormGroup({
+    shortName: new FormControl('', [Validators.required]),
+    description: new FormControl(''),
+    disabled: new FormControl(false),
+  });
 
   constructor(
-    fb: UntypedFormBuilder,
     @Inject(MAT_DIALOG_DATA) private data?: ProductUnit,
-  ) {
-    this.fb = fb;
-    this.unitsForm = this.fb.group<ProductUnit>({
-      shortName: [
-        { value: data?.shortName || '', disabled: !!this.data },
-        [Validators.required]
-      ],
-      description: [
-        data?.description || ''
-      ],
-      disabled: [data?.disabled || false],
-    });
-  }
+  ) { }
 
   ngOnInit(): void {
+    if (this.data) {
+      this.unitsForm.setValue(this.data);
+      this.unitsForm.controls.shortName.disable();
+    }
   }
 
 

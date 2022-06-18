@@ -10,7 +10,7 @@ export interface FtpUserData {
 }
 
 export interface CustomerContact {
-    email?: string;
+    email: string;
 }
 
 

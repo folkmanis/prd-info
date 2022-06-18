@@ -1,7 +1,12 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, UntypedFormArray, UntypedFormBuilder, UntypedFormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
+import {
+  ControlValueAccessor, FormBuilder, FormControl,
+  NG_VALIDATORS, NG_VALUE_ACCESSOR,
+  ValidationErrors, Validator
+} from '@angular/forms';
+import { CustomerContact } from 'src/app/interfaces';
 
-const DEFAULT_CONTACT = {
+const DEFAULT_CONTACT: CustomerContact = {
   email: '',
 };
 
@@ -26,32 +31,32 @@ const DEFAULT_CONTACT = {
 export class CustomerContactsComponent implements OnInit, ControlValueAccessor, Validator {
 
   controlGroup = this.fb.group({
-    contacts: this.fb.array([])
+    contacts: this.fb.array<CustomerContact>([])
   });
 
-  get contactsArray(): UntypedFormArray {
-    return this.controlGroup.get('contacts') as UntypedFormArray;
+  get contactsArray() {
+    return this.controlGroup.controls.contacts;
   }
 
-  active: AbstractControl | null = null;
+  active: FormControl<CustomerContact> | null = null;
 
   private onTouchFn: () => void = () => { };
 
   constructor(
-    private fb: UntypedFormBuilder,
+    private fb: FormBuilder,
     private changeDetector: ChangeDetectorRef,
   ) { }
 
   ngOnInit(): void {
   }
 
-  writeValue<T>(obj: T[]): void {
+  writeValue(obj: CustomerContact[]): void {
     obj = obj instanceof Array ? obj : [];
     this.setControlsArray(obj);
     this.contactsArray.setValue(obj, { emitEvent: true });
   }
 
-  registerOnChange<T>(fn: (val: T) => void): void {
+  registerOnChange(fn: (val: CustomerContact[]) => void): void {
     this.contactsArray.valueChanges.subscribe(fn);
   }
 
@@ -103,7 +108,7 @@ export class CustomerContactsComponent implements OnInit, ControlValueAccessor, 
     }
     this.contactsArray.clear({ emitEvent: false });
     for (let idx = 0; idx < value.length; idx++) {
-      this.contactsArray.push(new UntypedFormControl(), { emitEvent: false });
+      this.contactsArray.push(new FormControl(), { emitEvent: false });
     }
 
     this.changeDetector.markForCheck();

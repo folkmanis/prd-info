@@ -1,11 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormControl, NgControl } from '@angular/forms';
+import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
-import { IControlValueAccessor, IFormControl } from '@rxweb/types';
 import { Subject } from 'rxjs';
 import { Customer, CustomerFinancial } from 'src/app/interfaces';
 import { PaytraqClient } from 'src/app/interfaces/paytraq';
-import { DestroyService } from 'prd-cdk';
 import { PaytraqClientService } from '../../services/paytraq-client.service';
 
 const DEFAULT_VALUE: CustomerFinancial = {
@@ -17,10 +15,16 @@ const DEFAULT_VALUE: CustomerFinancial = {
   selector: 'app-paytraq-customer',
   templateUrl: './paytraq-customer.component.html',
   styleUrls: ['./paytraq-customer.component.scss'],
-  providers: [DestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: PaytraqCustomerComponent,
+      multi: true,
+    }
+  ],
 })
-export class PaytraqCustomerComponent implements OnInit, OnDestroy, IControlValueAccessor<CustomerFinancial> {
+export class PaytraqCustomerComponent implements OnInit, OnDestroy, ControlValueAccessor {
 
   @Input() set customer(customer: Customer) {
     this.clientSearch.setValue(
@@ -32,19 +36,15 @@ export class PaytraqCustomerComponent implements OnInit, OnDestroy, IControlValu
 
   clients$ = new Subject<PaytraqClient[]>();
 
-  clientSearch: IFormControl<string> = new UntypedFormControl('');
+  clientSearch = new FormControl<string>('');
 
   get value(): CustomerFinancial { return this._value; }
   set value(value: CustomerFinancial) { this._value = value; }
   private _value: CustomerFinancial;
 
   constructor(
-    private ngControl: NgControl,
-    private destroy$: DestroyService,
     private paytraqService: PaytraqClientService,
-  ) {
-    this.ngControl.valueAccessor = this;
-  }
+  ) { }
 
   writeValue(obj: CustomerFinancial) {
     this.clients$.next([]);
