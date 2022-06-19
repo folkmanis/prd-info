@@ -1,4 +1,4 @@
-<app-simple-form-container (dataChange)="onDataChange($event)">
+<app-simple-form-typed-container>
 
     <form [formGroup]="form">
 
@@ -55,7 +55,7 @@
                         (change)="onFtpUserState($event)">
                         FTP lietotājs
                     </mat-checkbox>
-                    <app-ftp-user [class.hidden]="form.get('ftpUserData').disabled" formControlName="ftpUserData">
+                    <app-ftp-user [class.hidden]="form.controls.ftpUserData.disabled" formControlName="ftpUserData">
                     </app-ftp-user>
                 </section>
                 <mat-divider></mat-divider>
@@ -103,4 +103,4 @@
 
     </form>
 
-</app-simple-form-container>
+</app-simple-form-typed-container>

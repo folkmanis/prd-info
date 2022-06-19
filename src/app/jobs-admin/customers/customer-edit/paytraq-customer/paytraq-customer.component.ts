@@ -26,7 +26,7 @@ const DEFAULT_VALUE: CustomerFinancial = {
 })
 export class PaytraqCustomerComponent implements OnInit, OnDestroy, ControlValueAccessor {
 
-  @Input() set customer(customer: Customer) {
+  @Input() set customer(customer: Partial<Pick<Customer, 'financial' | 'CustomerName'>>) {
     this.clientSearch.setValue(
       customer.financial?.paytraqId ? '' : customer.financial?.clientName || customer.CustomerName
     );

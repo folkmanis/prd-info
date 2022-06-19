@@ -12,6 +12,7 @@ import { FtpUserComponent } from './customer-edit/ftp-user/ftp-user.component';
 import { InputUppercaseDirective } from './customer-edit/input-uppercase.directive';
 import { CustomerContactsComponent } from './customer-contacts/customer-contacts.component';
 import { CustomerContactEditorComponent } from './customer-contact-editor/customer-contact-editor.component';
+import { SimpleFormTypedModule } from 'src/app/library/simple-form-typed';
 
 
 @NgModule({
@@ -29,7 +30,7 @@ import { CustomerContactEditorComponent } from './customer-contact-editor/custom
     CommonModule,
     LibraryModule,
     MaterialLibraryModule,
-    SimpleFormModule.forChildren({
+    SimpleFormTypedModule.forChildren({
       path: 'customers',
       editorComponent: CustomerEditComponent,
       listComponent: CustomersListComponent,
