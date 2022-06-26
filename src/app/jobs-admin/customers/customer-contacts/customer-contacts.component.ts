@@ -2,8 +2,11 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import {
   ControlValueAccessor, FormBuilder, FormControl,
   NG_VALIDATORS, NG_VALUE_ACCESSOR,
-  ValidationErrors, Validator
+  ValidationErrors, Validator, Validators
 } from '@angular/forms';
+import { plainToInstance } from 'class-transformer';
+import { log } from 'prd-cdk';
+import { map } from 'rxjs';
 import { CustomerContact } from 'src/app/interfaces';
 
 const DEFAULT_CONTACT: CustomerContact = {
@@ -53,11 +56,13 @@ export class CustomerContactsComponent implements OnInit, ControlValueAccessor, 
   writeValue(obj: CustomerContact[]): void {
     obj = obj instanceof Array ? obj : [];
     this.setControlsArray(obj);
-    this.contactsArray.setValue(obj, { emitEvent: true });
+    this.contactsArray.setValue(obj, { emitEvent: false });
   }
 
   registerOnChange(fn: (val: CustomerContact[]) => void): void {
-    this.contactsArray.valueChanges.subscribe(fn);
+    this.contactsArray.valueChanges.pipe(
+      map(value => plainToInstance(CustomerContact, value)),
+    ).subscribe(fn);
   }
 
   registerOnTouched(fn: any): void {
@@ -66,9 +71,9 @@ export class CustomerContactsComponent implements OnInit, ControlValueAccessor, 
 
   setDisabledState(isDisabled: boolean): void {
     if (isDisabled) {
-      this.controlGroup.disable();
+      this.controlGroup.disable({ emitEvent: false });
     } else {
-      this.controlGroup.enable();
+      this.controlGroup.enable({ emitEvent: false });
     }
   }
 

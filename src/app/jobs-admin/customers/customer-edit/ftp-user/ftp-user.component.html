@@ -1,4 +1,4 @@
-<div [formGroup]="form">
+<div [class.hidden]="form.disabled" [formGroup]="form">
     <mat-form-field>
         <mat-label> Lietotāja folderis </mat-label>
         <mat-select formControlName="folder" required>

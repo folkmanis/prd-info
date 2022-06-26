@@ -43,7 +43,7 @@ export class CustomerContactEditorComponent implements OnInit, AfterViewInit, Co
   }
 
   ngAfterViewInit(): void {
-    this.onTouchFn();
+    // this.onTouchFn();
     this.emailInput.nativeElement.focus();
   }
 
@@ -61,9 +61,9 @@ export class CustomerContactEditorComponent implements OnInit, AfterViewInit, Co
 
   setDisabledState(isDisabled: boolean): void {
     if (isDisabled) {
-      this.controlGroup.disable();
+      this.controlGroup.disable({ emitEvent: false });
     } else {
-      this.controlGroup.enable();
+      this.controlGroup.enable({ emitEvent: false });
     }
   }
 

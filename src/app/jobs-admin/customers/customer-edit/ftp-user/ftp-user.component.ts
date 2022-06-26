@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators } from '@angular/forms';
+import { ControlValueAccessor, FormGroup, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators } from '@angular/forms';
 import { defaults } from 'lodash';
-import { pluck } from 'rxjs/operators';
+import { map, pluck } from 'rxjs/operators';
 import { FtpUserData } from 'src/app/interfaces';
 import { JobsApiService } from 'src/app/jobs';
+import { plainToInstance } from 'class-transformer';
 
 const DEFAULT_DATA: FtpUserData = {
   folder: null,
@@ -33,13 +34,13 @@ export class FtpUserComponent implements ControlValueAccessor, Validator {
 
   readonly ftpFolders$ = this.jobsApi.readFtp().pipe(pluck('folders'));
 
-  form = this.fb.group({
-    folder: [
+  form = new FormGroup({
+    folder: new FormControl(
       DEFAULT_DATA.folder,
-      Validators.required
-    ],
-    username: DEFAULT_DATA.username,
-    password: DEFAULT_DATA.password,
+      [Validators.required],
+    ),
+    username: new FormControl(DEFAULT_DATA.username),
+    password: new FormControl(DEFAULT_DATA.password),
   });
 
   get folderControl() {
@@ -49,7 +50,6 @@ export class FtpUserComponent implements ControlValueAccessor, Validator {
   onTouchFn: () => void = () => { };
 
   constructor(
-    private fb: FormBuilder,
     private jobsApi: JobsApiService,
   ) { }
 
@@ -61,7 +61,9 @@ export class FtpUserComponent implements ControlValueAccessor, Validator {
   }
 
   registerOnChange(fn: (data: FtpUserData) => void): void {
-    this.form.valueChanges.subscribe(fn);
+    this.form.valueChanges.pipe(
+      map(value => plainToInstance(FtpUserData, value)),
+    ).subscribe(fn);
   }
 
   registerOnTouched(fn: any): void {
@@ -74,7 +76,6 @@ export class FtpUserComponent implements ControlValueAccessor, Validator {
     } else {
       this.form.enable({ emitEvent: false });
     }
-    this.form.updateValueAndValidity();
   }
 
   validate(): ValidationErrors {

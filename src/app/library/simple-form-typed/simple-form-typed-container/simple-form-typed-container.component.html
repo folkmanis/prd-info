@@ -1,12 +1,11 @@
 <div class="container" cdk-scrollable scroll-to-top>
 
     <mat-toolbar>
-        <span *ngIf="content">
+        <span>
             <button mat-raised-button (click)="onSave()" color="primary" [disabled]="!isSaveEnabled">
                 SAGLABĀT
             </button>
-            <button mat-raised-button (click)="onResetForm()"
-                [disabled]="content.form.pristine || content.isNew || isChanges === false">
+            <button mat-raised-button (click)="onResetForm()" [disabled]="!isResetEnabled">
                 ATIESTATĪT
             </button>
         </span>

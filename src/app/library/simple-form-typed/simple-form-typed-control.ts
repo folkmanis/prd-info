@@ -18,7 +18,7 @@ export abstract class SimpleFormTypedControl<T> {
 
     abstract onData(value: T): void;
 
-    abstract onSave(): Observable<T>;
+    abstract onUpdate(): Observable<T>;
 
     abstract onCreate(): Observable<string | number>;
 

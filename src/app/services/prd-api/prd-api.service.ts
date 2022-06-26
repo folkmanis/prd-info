@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Inject } from '@angular/core';
-import { CustomersApi } from './customers-api';
 import { InvoicesApi } from './invoices-api';
 import { ProductsApi } from './products-api';
 import { UsersApi } from './users-api';
@@ -19,7 +18,6 @@ export class PrdApiService {
 
   readonly apiPath = this.params.apiPath;
 
-  customers = new CustomersApi(this.http, this.apiPath + 'customers/');
   products = new ProductsApi(this.http, this.apiPath + 'products/');
   invoices = new InvoicesApi(this.http, this.apiPath + 'invoices/');
   users = new UsersApi(this.http, this.apiPath + 'users/');

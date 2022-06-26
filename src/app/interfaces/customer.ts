@@ -1,35 +1,75 @@
-export interface CustomerFinancial {
+import { Expose, Type } from 'class-transformer';
+
+export class CustomerFinancial {
+
+    @Expose()
     clientName: string;
+
+    @Expose()
     paytraqId?: number;
 }
 
-export interface FtpUserData {
-    folder: string;
-    username: string;
-    password: string;
+export class FtpUserData {
+
+    @Expose()
+    folder: string = '';
+
+    @Expose()
+    username: string = '';
+
+    @Expose()
+    password: string = '';
 }
 
-export interface CustomerContact {
+export class CustomerContact {
+
+    @Expose()
     email: string;
 }
 
 
-export interface Customer {
+export class Customer {
+
+    @Expose()
     _id: string;
+
+    @Expose()
     code: string;
+
+    @Expose()
     CustomerName: string;
-    disabled: boolean;
-    insertedFromXmf?: Date;
+
+    @Expose()
+    disabled: boolean = false;
+
+    @Expose()
+    @Type(() => Date)
+    insertedFromXmf: Date = null;
+
+    @Expose()
     description: string | undefined;
-    financial?: CustomerFinancial;
-    ftpUser: boolean;
-    ftpUserData?: FtpUserData;
-    contacts?: CustomerContact[];
+
+    @Expose()
+    @Type(() => CustomerFinancial)
+    financial: CustomerFinancial = null;
+
+    @Expose()
+    ftpUser: boolean = false;
+
+    @Expose()
+    @Type(() => FtpUserData)
+    ftpUserData: FtpUserData = null;
+
+    @Expose()
+    @Type(() => CustomerContact)
+    contacts: CustomerContact[] = [];
 }
 
 export type CustomerPartial = Pick<Customer, '_id' | 'CustomerName' | 'code' | 'disabled'>;
 
 export type NewCustomer = Pick<Customer, 'CustomerName' | 'disabled' | 'code' | 'description' | 'ftpUser' | 'contacts'>;
+
+export type CustomerUpdate = Pick<Customer, '_id'> & Partial<Customer>;
 
 export const DEFAULT_CUSTOMER: NewCustomer = {
     CustomerName: '',

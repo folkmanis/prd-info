@@ -1,8 +1,8 @@
-import { ContentChild, ChangeDetectionStrategy, Component, HostListener, OnInit, AfterContentInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
-import { SimpleFormTypedControl } from '../simple-form-typed-control';
-import { DestroyService } from 'prd-cdk';
-import { filter, last, map, merge, Observable, takeUntil } from 'rxjs';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DestroyService, log } from 'prd-cdk';
+import { filter, last, map, takeUntil } from 'rxjs';
+import { SimpleFormTypedControl } from '../simple-form-typed-control';
 
 @Component({
   selector: 'app-simple-form-typed-container',
@@ -13,18 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
     DestroyService,
   ]
 })
-export class SimpleFormTypedContainerComponent<T> implements OnInit, AfterViewInit, AfterContentInit {
-
-  private _content: SimpleFormTypedControl<T>;
-  @ContentChild(SimpleFormTypedControl) set content(value: SimpleFormTypedControl<T>) {
-    console.log(value);
-    this._content = value;
-  }
-  get content() {
-    return this._content;
-  }
-
-  data$: Observable<T>;
+export class SimpleFormTypedContainerComponent<T> implements OnInit, AfterViewInit {
 
   private routerData$ = this.route.data.pipe(
     map(data => data.value as T | undefined),
@@ -33,11 +22,15 @@ export class SimpleFormTypedContainerComponent<T> implements OnInit, AfterViewIn
 
   get isSaveEnabled(): boolean {
     const form = this.content.form;
-    return form.valid && !form.pristine && this.isChanges;
+    return form.valid && this.isChanges;
+  }
+
+  get isResetEnabled(): boolean {
+    return !this.content.isNew && this.isChanges;
   }
 
   get isChanges(): boolean {
-    return !!this.content.changes;
+    return this.content.form.dirty && !!this.content.changes;
   }
 
 
@@ -46,6 +39,7 @@ export class SimpleFormTypedContainerComponent<T> implements OnInit, AfterViewIn
     private destroy$: DestroyService,
     private router: Router,
     private route: ActivatedRoute,
+    @Inject(SimpleFormTypedControl) private content: SimpleFormTypedControl<T>,
   ) { }
 
   /** Ctrl-Enter triggers save */
@@ -59,18 +53,13 @@ export class SimpleFormTypedContainerComponent<T> implements OnInit, AfterViewIn
   }
 
   ngOnInit(): void {
-  }
-
-
-  ngAfterViewInit(): void {
-    this.routerData$.subscribe(value => this.content.onData(value));
-  }
-
-  ngAfterContentInit(): void {
-    console.log(this.content);
     this.content.stateChanges.pipe(
       takeUntil(this.destroy$),
     ).subscribe(() => this.changeDetector.markForCheck());
+  }
+
+  ngAfterViewInit(): void {
+    this.routerData$.subscribe(value => this.content.onData(value));
   }
 
   onSave({ leave }: { leave?: boolean; } = {}) {
@@ -85,7 +74,7 @@ export class SimpleFormTypedContainerComponent<T> implements OnInit, AfterViewIn
 
     } else {
 
-      this.content.onSave().pipe(
+      this.content.onUpdate().pipe(
         last(),
       ).subscribe(value => {
         this.content.onData(value);

@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, FormControl, ValidationErrors, Validators } from '@angular/forms';
-import { MatExpansionPanel } from '@angular/material/expansion';
-import { Observable, map, pluck, of } from 'rxjs';
-import { Customer, DEFAULT_CUSTOMER, CustomerContact, CustomerFinancial, FtpUserData, SystemPreferences, NewCustomer } from 'src/app/interfaces';
-import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
-import { CONFIG } from 'src/app/services/config.provider';
-import { CustomersFormSource } from '../services/customers-form-source';
+import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { MatExpansionPanel } from '@angular/material/expansion';
+import { plainToInstance } from 'class-transformer';
+import { isEqual, pickBy } from 'lodash';
+import { map, Observable, of, pluck } from 'rxjs';
+import { Customer, CustomerContact, CustomerFinancial, FtpUserData, NewCustomer, SystemPreferences } from 'src/app/interfaces';
+import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { SimpleFormTypedControl } from 'src/app/library/simple-form-typed';
-import { defaults, isEqual, pickBy } from 'lodash';
 import { CustomersService } from 'src/app/services';
+import { CONFIG } from 'src/app/services/config.provider';
 
 @Component({
   selector: 'app-customer-edit',
@@ -36,18 +36,20 @@ export class CustomerEditComponent implements OnInit, CanComponentDeactivate, Si
     CustomerName: new FormControl(
       '',
       [Validators.required, Validators.minLength(3)],
+      [this.validateName()]
     ),
     code: new FormControl(
       '',
       [Validators.required, Validators.minLength(2), Validators.maxLength(3)],
-      this.validateCode()
+      [this.validateCode()]
     ),
     disabled: new FormControl(false),
     description: new FormControl(''),
     financial: new FormControl<CustomerFinancial>(undefined),
-    ftpUser: new FormControl(false),
-    ftpUserData: new FormControl<FtpUserData>(undefined),
-    contacts: new FormControl<CustomerContact[]>([]),
+    ftpUser: new FormControl(null),
+    ftpUserData: new FormControl<FtpUserData>(null),
+    contacts: new FormControl<CustomerContact[]>(undefined),
+    insertedFromXmf: new FormControl<Date>(undefined),
   });
 
   stateChanges = this.form.statusChanges;
@@ -58,7 +60,7 @@ export class CustomerEditComponent implements OnInit, CanComponentDeactivate, Si
   }
 
   get value() {
-    return this.form.getRawValue();
+    return plainToInstance(Customer, this.form.value);
   }
 
   get changes(): Partial<Customer> | undefined {
@@ -77,22 +79,14 @@ export class CustomerEditComponent implements OnInit, CanComponentDeactivate, Si
   ) { }
 
   onData(customer: Customer) {
-    customer = defaults(customer, DEFAULT_CUSTOMER);
-    this.paytraqPanel?.close();
-    if (customer._id) {
-      this.form.controls.CustomerName.setAsyncValidators([]);
-    } else {
-      this.form.controls.CustomerName.setAsyncValidators([this.validateName()]);
-    }
-    this.setFtpUserDisabledState(customer.ftpUser, { emitEvent: false });
-
-    this.form.reset(customer);
-    this.initialValue = customer;
-
+    this.initialValue = { ...customer };
+    this.onReset();
   }
 
   onReset(): void {
     this.form.reset(this.initialValue);
+    this.paytraqPanel?.close();
+    this.setFtpUserDisabledState();
   }
 
   onCreate(): Observable<string | number> {
@@ -100,7 +94,7 @@ export class CustomerEditComponent implements OnInit, CanComponentDeactivate, Si
     return this.customersService.saveNewCustomer(customer);
   }
 
-  onSave(): Observable<Customer> {
+  onUpdate(): Observable<Customer> {
     const update = { ...this.changes, _id: this.value._id };
     return this.customersService.updateCustomer(update);
   }
@@ -113,15 +107,14 @@ export class CustomerEditComponent implements OnInit, CanComponentDeactivate, Si
   }
 
   onFtpUserState({ checked }: MatCheckboxChange) {
-    this.setFtpUserDisabledState(checked);
+    this.setFtpUserDisabledState();
   }
 
-  private setFtpUserDisabledState(state: boolean, options?: { emitEvent: boolean; }): void {
-    const control = this.form.controls.ftpUserData;
-    if (state) {
-      control.enable(options);
+  private setFtpUserDisabledState(): void {
+    if (this.form.value.ftpUser) {
+      this.form.controls.ftpUserData.enable();
     } else {
-      control.disable(options);
+      this.form.controls.ftpUserData.disable();
     }
   }
 
@@ -139,9 +132,13 @@ export class CustomerEditComponent implements OnInit, CanComponentDeactivate, Si
 
   private validateName(): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
-      return this.customersService.validator('CustomerName', control.value).pipe(
-        map(val => val ? null : { occupied: control.value })
-      );
+      if (this.initialValue?.CustomerName === control.value) {
+        return of(null);
+      } else {
+        return this.customersService.validator('CustomerName', control.value).pipe(
+          map(val => val ? null : { occupied: control.value })
+        );
+      }
     };
   };
 
