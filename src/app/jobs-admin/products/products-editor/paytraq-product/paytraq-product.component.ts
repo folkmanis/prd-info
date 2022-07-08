@@ -1,50 +1,60 @@
-import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectionStrategy, Input } from '@angular/core';
-import { UntypedFormControl, NgControl, NgForm, Validators } from '@angular/forms';
-import { IFormArray, IFormGroup, IControlValueAccessor, IFormControl } from '@rxweb/types';
-import { Observable, Subject } from 'rxjs';
-import { Product } from 'src/app/interfaces';
-import { PaytraqProductsService } from '../../services/paytraq-products.service';
-import { PaytraqProduct } from 'src/app/interfaces/paytraq';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
+import { Subject } from 'rxjs';
+import { Product } from 'src/app/interfaces';
+import { PaytraqProduct } from 'src/app/interfaces/paytraq';
+import { PaytraqProductsService } from '../../services/paytraq-products.service';
 
 @Component({
   selector: 'app-paytraq-product',
   templateUrl: './paytraq-product.component.html',
   styleUrls: ['./paytraq-product.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: PaytraqProductComponent,
+      multi: true,
+    }
+  ]
 })
-export class PaytraqProductComponent implements OnInit, OnDestroy, IControlValueAccessor<number> {
+export class PaytraqProductComponent implements OnInit, OnDestroy, ControlValueAccessor {
+
   @ViewChild(MatButton) private button: MatButton;
+
   @Input() set product(product: Product) {
     this.productSearch.setValue(
-      product && !this.value ? product.name : null
+      product && !this.value ? product.name : ''
     );
   }
-  set value(value: number | null) { this._value = value; }
-  get value(): number | null { return this._value; }
+
   private _value: number | null = null;
+  set value(value: number | null) {
+    this._value = value;
+  }
+  get value(): number | null {
+    return this._value;
+  }
+
+  productSearch = new FormControl<string>('');
+
+  disabled = false;
+  pristine = true;
 
   readonly products$ = new Subject<PaytraqProduct[]>();
 
   private onChanges: (obj: number | null) => void;
   private onTouched: () => void;
-  disabled = false;
-  productSearch: IFormControl<string> = new UntypedFormControl(null);
 
   constructor(
     private paytraqService: PaytraqProductsService,
-    private ngControl: NgControl,
-  ) {
-    this.ngControl.valueAccessor = this;
-  }
-
-  get pristine(): boolean {
-    return this.ngControl.pristine;
-  }
+  ) { }
 
   writeValue(obj: number) {
     this.products$.next([]);
     this.value = obj;
+    this.pristine = true;
   }
 
   registerOnChange(fn: (obj: number) => void) {
@@ -79,11 +89,13 @@ export class PaytraqProductComponent implements OnInit, OnDestroy, IControlValue
   onProductSelected(ev: PaytraqProduct) {
     this.value = ev.itemID;
     this.onChanges(this.value);
+    this.pristine = false;
   }
 
   onClearValue() {
     this.value = null;
     this.onChanges(this.value);
+    this.pristine = true;
   }
 
 }
