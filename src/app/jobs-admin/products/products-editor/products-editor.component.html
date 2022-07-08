@@ -92,13 +92,12 @@
 
                 <!-- Cenu tabula -->
                 <section>
-                    <app-product-prices [pricesFormArray]="pricesFormArray" [customers]="customers$ | async"
-                        (removePrice)="onDeletePrice($event)">
+                    <app-product-prices formControlName="prices" [customers]="customers$ | async" #prices>
                     </app-product-prices>
                 </section>
 
                 <mat-action-row>
-                    <button mat-mini-fab (click)="onAddPrice()" [disabled]="form.invalid" color="primary">
+                    <button mat-mini-fab (click)="prices.addPrice()" [disabled]="form.invalid" color="primary">
                         <mat-icon>
                             add
                         </mat-icon>

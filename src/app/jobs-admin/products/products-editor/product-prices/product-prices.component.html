@@ -10,7 +10,7 @@
             <!-- Klients ar labošanu -->
             <td class="customer-name">
                 <mat-form-field>
-                    <mat-select [formControl]="customerNameControl(control)">
+                    <mat-select [formControl]="control.controls.customerName">
                         <mat-option *ngFor="let customer of customers" [value]="customer.CustomerName"
                             [disabled]="customer.disabled">
                             {{customer.CustomerName}}
@@ -21,12 +21,12 @@
             <!-- Cena labojama -->
             <td class="price">
                 <mat-form-field>
-                    <input matInput [formControl]="priceControl(control)" type="number">
+                    <input matInput [formControl]="control.controls.price" type="number">
                 </mat-form-field>
             </td>
             <!-- Pogas -->
             <td class="buttons">
-                <button mat-icon-button (click)="removePrice.emit(idx)" color="warn">
+                <button mat-icon-button (click)="removePrice(idx)" color="warn">
                     <mat-icon>delete_outline</mat-icon>
                 </button>
             </td>

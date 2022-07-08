@@ -60,14 +60,6 @@ export class ProductsEditorComponent implements OnInit, CanComponentDeactivate {
   ngOnInit(): void {
   }
 
-  onAddPrice(): void {
-    this.formSource.addPrice();
-  }
-
-  onDeletePrice(idx: number): void {
-    this.formSource.removePrice(idx);
-  }
-
   canDeactivate(): Observable<boolean> | boolean {
     return this.form.pristine; // || this.productFormService.isNew();
   }

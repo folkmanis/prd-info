@@ -1,4 +1,4 @@
-import { AsyncValidatorFn, UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AsyncValidatorFn, FormControl, UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { IFormArray, IFormControl, IFormGroup } from '@rxweb/types';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -17,10 +17,6 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
         private productService: ProductsService,
     ) {
         super(fb);
-    }
-
-    private get formPrices(): IFormArray<ProductPrice> {
-        return this.form.controls.prices as IFormArray<ProductPrice>;
     }
 
     get productionStages() {
@@ -53,10 +49,7 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
                     validators: Validators.required,
                 }
             ],
-            prices: this.fb.array(
-                [],
-                { validators: [this.duplicateCustomersValidator] }
-            ),
+            prices: new FormControl<ProductPrice[]>([]),
             paytraqId: [undefined],
             productionStages: new UntypedFormArray([]),
         });
@@ -72,7 +65,6 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
         } else {
             this.removeNameValidators();
         }
-        this.setPrices(this.startValue.prices);
 
         this.setProductionStages(this.startValue.productionStages);
 
@@ -94,16 +86,6 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
         return this.productService.insertProduct(this.value);
     }
 
-    addPrice(price?: ProductPrice) {
-        this.formPrices.push(this.productPriceGroup(price));
-        this.form.markAsDirty();
-    }
-
-    removePrice(idx: number) {
-        this.formPrices.removeAt(idx);
-        this.form.markAsDirty();
-    }
-
     addProductionStage(prStage?: JobProductionStage) {
         this.productionStages.push(
             new ProductionStageGroup(prStage)
@@ -123,31 +105,6 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
         this.form.controls.name.clearAsyncValidators();
     }
 
-    private setPrices(prodPrices: ProductPrice[] | undefined) {
-        this.formPrices.clear();
-        for (const prodPrice of prodPrices || []) {
-            this.formPrices.push(
-                this.productPriceGroup(prodPrice)
-            );
-        }
-    }
-
-    private productPriceGroup(price: ProductPrice): IFormGroup<ProductPrice> {
-        return this.fb.group<ProductPrice>({
-            customerName: [
-                price?.customerName,
-                [Validators.required],
-            ],
-            price: [
-                price?.price,
-                [
-                    Validators.required,
-                    Validators.pattern(/[0-9]{1,}(((,|\.)[0-9]{0,2})?)/)
-                ]
-            ],
-        });
-    }
-
     private setProductionStages(stages: JobProductionStage[] | undefined) {
         this.productionStages.clear();
         for (const stage of stages || []) {
@@ -163,13 +120,6 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
             map(valid => valid ? null : { occupied: control.value })
         );
     }
-
-    private duplicateCustomersValidator(ctrl: IFormArray<ProductPrice>): ValidationErrors | null {
-        const customers: string[] = (ctrl.value as ProductPrice[]).map(pr => pr.customerName);
-        const duplicates: string[] = customers.filter((val, idx, self) => self.indexOf(val) !== idx);
-        return duplicates.length === 0 ? null : { duplicates: duplicates.join() };
-    }
-
 
 
 }

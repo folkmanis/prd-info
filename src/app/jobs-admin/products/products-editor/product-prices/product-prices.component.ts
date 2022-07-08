@@ -1,48 +1,128 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AbstractControl, UntypedFormArray, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { FormArray, AbstractControl, UntypedFormArray, UntypedFormControl, UntypedFormGroup, NG_VALUE_ACCESSOR, NG_VALIDATORS, Validator, ControlValueAccessor, FormControl, FormGroup, Validators, ValidationErrors } from '@angular/forms';
 import { DestroyService } from 'prd-cdk';
 import { merge } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CustomerPartial } from 'src/app/interfaces';
+import { Product, ProductPrice, JobProductionStage, ProductionStage, JobProductionStageMaterial } from 'src/app/interfaces';
 
+type PricesForm = ReturnType<typeof productPriceGroup>;
 
 @Component({
   selector: 'app-product-prices',
   templateUrl: './product-prices.component.html',
   styleUrls: ['./product-prices.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DestroyService],
+  providers: [
+    DestroyService,
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: ProductPricesComponent,
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: ProductPricesComponent,
+      multi: true,
+    }
+  ],
 })
-export class ProductPricesComponent implements OnInit {
+export class ProductPricesComponent implements OnInit, ControlValueAccessor, Validator {
 
-  @Input() pricesFormArray: UntypedFormArray;
   @Input() customers: CustomerPartial[] = [];
 
-  @Output() removePrice = new EventEmitter<number>();
+  pricesFormArray = new FormArray<PricesForm>(
+    [],
+    [this.duplicateCustomersValidator]
+  );
+
+  touchFn = () => { };
 
   constructor(
     private chDetector: ChangeDetectorRef,
     private destroy$: DestroyService,
   ) { }
 
-  get pricesControls() { return this.pricesFormArray.controls as UntypedFormGroup[]; }
-
-  customerNameControl(group: AbstractControl) {
-    return group.get('customerName') as UntypedFormControl;
+  writeValue(obj: ProductPrice[]): void {
+    obj = obj instanceof Array ? obj : [];
+    if (obj.length === this.pricesFormArray.length) {
+      this.pricesFormArray.setValue(obj, { emitEvent: false });
+    } else {
+      this.pricesFormArray.clear({ emitEvent: false });
+      for (const price of obj) {
+        this.pricesFormArray.push(
+          productPriceGroup(price),
+          { emitEvent: false }
+        );
+      }
+    }
+    this.chDetector.markForCheck();
   }
 
-  priceControl(group: AbstractControl) {
-    return group.get('price') as UntypedFormControl;
+  registerOnChange(fn: (p: ProductPrice[]) => void): void {
+    this.pricesFormArray.valueChanges.subscribe(fn);
+  }
+
+  registerOnTouched(fn: () => void): void {
+    this.touchFn = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    if (isDisabled) {
+      this.pricesFormArray.disable({ emitEvent: false });
+    } else {
+      this.pricesFormArray.enable({ emitEvent: false });
+    }
+  }
+
+  validate(control: AbstractControl<any, any>): ValidationErrors {
+    if (this.pricesFormArray.valid) {
+      return null;
+    }
+    return {
+      errors: this.pricesFormArray.controls.filter(ctrl => ctrl.invalid).map(ctr => ctr.errors)
+    };
   }
 
   ngOnInit(): void {
-    merge(
-      this.pricesFormArray.valueChanges,
-      this.pricesFormArray.statusChanges,
-    ).pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(() => this.chDetector.markForCheck());
+  }
+
+  removePrice(idx: number): void {
+    this.pricesFormArray.removeAt(idx);
+    this.chDetector.markForCheck();
+  }
+
+  addPrice(price?: ProductPrice) {
+    this.pricesFormArray.push(
+      productPriceGroup(price)
+    );
+    this.pricesFormArray.markAsDirty();
+    this.chDetector.markForCheck();
+  }
+
+  private duplicateCustomersValidator(ctrl: AbstractControl<ProductPrice[]>): ValidationErrors | null {
+    const customers: string[] = (ctrl.value).map(pr => pr.customerName);
+    const duplicates: string[] = customers.filter((val, idx, self) => self.indexOf(val) !== idx);
+    return duplicates.length === 0 ? null : { duplicates: duplicates.join() };
   }
 
 
 }
+
+function productPriceGroup(price: ProductPrice) {
+  return new FormGroup({
+    customerName: new FormControl(
+      price?.customerName,
+      [Validators.required],
+    ),
+    price: new FormControl(
+      price?.price,
+      [
+        Validators.required,
+        Validators.pattern(/[0-9]{1,}(((,|\.)[0-9]{0,2})?)/)
+      ]
+    ),
+  });
+}
+
+
