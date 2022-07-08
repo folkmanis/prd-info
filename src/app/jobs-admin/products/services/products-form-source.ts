@@ -127,34 +127,13 @@ export class ProductsFormSource extends SimpleFormSource<Product> {
 export class ProductionStageGroup extends UntypedFormGroup {
 
     constructor(stage?: Partial<JobProductionStage>) {
-        const materials = new UntypedFormArray(
-            (stage?.materials || []).map(material => new MaterialGroup(material))
-        );
+        console.log(stage);
         super({
             productionStageId: new UntypedFormControl(stage?.productionStageId),
-            materials: materials,
+            materials: new FormControl<JobProductionStageMaterial[]>(stage.materials || []),
             amount: new UntypedFormControl(stage?.amount || 0),
             fixedAmount: new UntypedFormControl(stage?.fixedAmount || 0),
         });
     }
 
-}
-
-export class MaterialGroup extends UntypedFormGroup {
-    constructor(material?: Partial<JobProductionStageMaterial>) {
-        super({
-            materialId: new UntypedFormControl(
-                material?.materialId,
-                [Validators.required],
-            ),
-            amount: new UntypedFormControl(
-                material?.amount || 0,
-                [Validators.required, Validators.min(0)]
-            ),
-            fixedAmount: new UntypedFormControl(
-                material?.fixedAmount || 0,
-                [Validators.required, Validators.min(0)]
-            )
-        });
-    }
 }

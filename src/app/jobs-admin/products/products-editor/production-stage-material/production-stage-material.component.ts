@@ -1,60 +1,118 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { UntypedFormArray, UntypedFormControl } from '@angular/forms';
+import { ViewChild, ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { FormArray, FormGroup, UntypedFormControl, Validators, ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, Validator, NG_VALIDATORS, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 import { JobProductionStageMaterial } from 'src/app/interfaces';
 import { MaterialsService } from 'src/app/jobs-admin/materials/services/materials.service';
-import { MaterialGroup } from '../../services/products-form-source';
+import { MatTable } from '@angular/material/table';
+// import { MaterialGroup } from '../../services/products-form-source';
+
+type MaterialGroup = ReturnType<typeof materialGroup>;
 
 @Component({
   selector: 'app-production-stage-material',
   templateUrl: './production-stage-material.component.html',
   styleUrls: ['./production-stage-material.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: ProductionStageMaterialComponent,
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: ProductionStageMaterialComponent,
+      multi: true,
+    }
+  ]
 })
-export class ProductionStageMaterialComponent implements OnInit {
+export class ProductionStageMaterialComponent implements OnInit, ControlValueAccessor, Validator {
 
-  @Input() materialsControl: UntypedFormArray;
+  @ViewChild(MatTable) private table: MatTable<MaterialGroup> | null;
+
+  materialsControl = new FormArray<MaterialGroup>([]);
 
   materials$ = this.materialsService.materials$;
-  jobProductionStageMaterials$: Observable<JobProductionStageMaterial[]>;
 
   displayedColumns = ['materialId', 'amount', 'fixedAmount', 'actions']; // 'units', 
 
   trackByFn = (idx: number) => this.materialsControl.controls[idx];
 
+  touchFn = () => { };
 
   constructor(
     private materialsService: MaterialsService,
   ) { }
 
-  idControl(idx: number) {
-    return this.materialsControl.controls[idx].get('materialId') as UntypedFormControl;
+  writeValue(obj: JobProductionStageMaterial[]): void {
+    obj = obj instanceof Array ? obj : [];
+    console.log(obj);
+    if (this.materialsControl.length === obj.length) {
+      this.materialsControl.setValue(obj, { emitEvent: false });
+    } else {
+      this.materialsControl.clear({ emitEvent: false });
+      obj.forEach(m => this.materialsControl.push(materialGroup(m), { emitEvent: false }));
+      console.log(this.materialsControl);
+      this.table?.renderRows();
+    }
   }
 
-  amountControl(idx: number) {
-    return this.materialsControl.controls[idx].get('amount') as UntypedFormControl;
+  registerOnChange(fn: (obj: JobProductionStageMaterial[]) => void): void {
+    this.materialsControl.valueChanges
+      .subscribe(fn);
   }
 
-  fixedAmountControl(idx: number) {
-    return this.materialsControl.controls[idx].get('fixedAmount') as UntypedFormControl;
+  registerOnTouched(fn: any): void {
+    this.touchFn = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    if (isDisabled) {
+      this.materialsControl.disable();
+    } else {
+      this.materialsControl.enable();
+    }
+  }
+
+  validate(control: AbstractControl<any, any>): ValidationErrors {
+    if (this.materialsControl.valid) {
+      return null;
+    } else {
+      return { materials: this.materialsControl.controls.filter(c => !c.valid).map(c => c.errors) };
+    }
   }
 
   ngOnInit(): void {
     this.materialsService.setFilter(null);
-    this.jobProductionStageMaterials$ = this.materialsControl.valueChanges.pipe(
-      startWith(this.materialsControl.value)
-    );
   }
 
   onNewMaterial() {
-    this.materialsControl.push(new MaterialGroup());
-    this.materialsControl.markAsDirty();
+    this.materialsControl.push(materialGroup());
+    this.table?.renderRows();
   }
 
   onDeleteMaterial(idx: number) {
     this.materialsControl.removeAt(idx);
-    this.materialsControl.markAsDirty();
+    this.table?.renderRows();
   }
 
 }
+
+function materialGroup(material?: JobProductionStageMaterial) {
+  return new FormGroup({
+    materialId: new FormControl<string>(
+      material?.materialId,
+      [Validators.required],
+    ),
+    amount: new FormControl<number>(
+      material?.amount || 0,
+      [Validators.required, Validators.min(0)]
+    ),
+    fixedAmount: new FormControl<number>(
+      material?.fixedAmount || 0,
+      [Validators.required, Validators.min(0)]
+    )
+  });
+}
+

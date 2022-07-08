@@ -1,4 +1,4 @@
-<mat-table [dataSource]="jobProductionStageMaterials$" [trackBy]="trackByFn">
+<mat-table [dataSource]="materialsControl.controls" [trackBy]="trackByFn">
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let material; columns: displayedColumns"></mat-row>
@@ -20,9 +20,9 @@
         </mat-header-cell>
         <mat-cell *matCellDef="let material; index as idx;">
             <mat-form-field>
-                <mat-select [formControl]="idControl(idx)">
-                    <mat-option *ngFor="let material of materials$ | async" [value]="material._id">
-                        {{ material.name }}
+                <mat-select [formControl]="material.controls.materialId">
+                    <mat-option *ngFor="let mat of materials$ | async" [value]="mat._id">
+                        {{ mat.name }}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
@@ -35,8 +35,8 @@
         </mat-header-cell>
         <mat-cell *matCellDef="let material; index as idx;">
             <mat-form-field>
-                <input matInput type="number" [formControl]="amountControl(idx)">
-                <span matSuffix *appMaterialUnits="let unit of materials$ | async; id: idControl(idx).value">
+                <input matInput type="number" [formControl]="material.controls.amount">
+                <span matSuffix *appMaterialUnits="let unit of materials$ | async; id: material.value.materialId">
                     {{ unit }}
                 </span>
             </mat-form-field>
@@ -49,8 +49,8 @@
         </mat-header-cell>
         <mat-cell *matCellDef="let material; index as idx;">
             <mat-form-field>
-                <input matInput type="number" [formControl]="fixedAmountControl(idx)">
-                <span matSuffix *appMaterialUnits="let unit of materials$ | async; id: idControl(idx).value">
+                <input matInput type="number" [formControl]="material.controls.fixedAmount">
+                <span matSuffix *appMaterialUnits="let unit of materials$ | async; id: material.value.materialId">
                     {{ unit }}
                 </span>
             </mat-form-field>

@@ -52,6 +52,7 @@ export class ProductProductionStagesComponent implements OnInit {
   }
 
   onExpand(stage: UntypedFormGroup) {
+    console.log(this.stagesArray);
     this.expanded = this.expanded === stage ? undefined : stage;
     this.table.renderRows();
   }
