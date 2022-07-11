@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { LibraryModule } from 'src/app/library/library.module';
-import { SimpleFormModule } from 'src/app/library/simple-form';
+import { SimpleFormTypedModule } from 'src/app/library/simple-form-typed';
 import { ProductPricesComponent } from './products-editor/product-prices/product-prices.component';
 import { ProductsEditorComponent } from './products-editor/products-editor.component';
 import { ProductsListComponent } from './products-list/products-list.component';
@@ -28,7 +28,7 @@ import { MaterialUnitsDirective } from './products-editor/production-stage-mater
     CommonModule,
     LibraryModule,
     MaterialLibraryModule,
-    SimpleFormModule.forChildren({
+    SimpleFormTypedModule.forChildren({
       path: 'products',
       listComponent: ProductsListComponent,
       editorComponent: ProductsEditorComponent,

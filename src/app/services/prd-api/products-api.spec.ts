@@ -1,7 +1,7 @@
-import { ProductsApi } from './products-api';
+import { ProductsApiService } from './products-api';
 
 describe('ProductsApi', () => {
   it('should create an instance', () => {
-    expect(new ProductsApi()).toBeTruthy();
+    expect(new ProductsApiService()).toBeTruthy();
   });
 });

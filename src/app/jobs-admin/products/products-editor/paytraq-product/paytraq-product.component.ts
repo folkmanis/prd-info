@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { Subject } from 'rxjs';
-import { Product } from 'src/app/interfaces';
 import { PaytraqProduct } from 'src/app/interfaces/paytraq';
 import { PaytraqProductsService } from '../../services/paytraq-products.service';
 
@@ -23,10 +22,8 @@ export class PaytraqProductComponent implements OnInit, OnDestroy, ControlValueA
 
   @ViewChild(MatButton) private button: MatButton;
 
-  @Input() set product(product: Product) {
-    this.productSearch.setValue(
-      product && !this.value ? product.name : ''
-    );
+  @Input() set productName(name: string) {
+    this.productSearch.setValue(name || '');
   }
 
   private _value: number | null = null;

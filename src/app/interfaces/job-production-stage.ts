@@ -1,16 +1,38 @@
-export interface JobProductionStageMaterial {
+import { Expose, Type } from 'class-transformer';
+
+export class JobProductionStageMaterial {
+
+    @Expose()
     materialId: string;
+    @Expose()
     name?: string;
+
+    @Expose()
     amount: number;
+
+    @Expose()
     fixedAmount: number;
 }
 
-export interface JobProductionStage {
+export class JobProductionStage {
+
+    @Expose()
     productionStageId: string;
+
+    @Expose()
     name?: string;
-    materials: JobProductionStageMaterial[];
+
+    @Expose()
+    @Type(() => JobProductionStageMaterial)
+    materials: JobProductionStageMaterial[] = [];
+
+    @Expose()
     amount: number;
+
+    @Expose()
     fixedAmount: number;
+
+    @Expose()
     productionStatus?: number;
 
 }

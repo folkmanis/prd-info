@@ -1,11 +1,9 @@
-import { ViewChild, ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormGroup, UntypedFormControl, Validators, ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, Validator, NG_VALIDATORS, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { startWith } from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators } from '@angular/forms';
+import { MatTable } from '@angular/material/table';
 import { JobProductionStageMaterial } from 'src/app/interfaces';
 import { MaterialsService } from 'src/app/jobs-admin/materials/services/materials.service';
-import { MatTable } from '@angular/material/table';
-// import { MaterialGroup } from '../../services/products-form-source';
+
 
 type MaterialGroup = ReturnType<typeof materialGroup>;
 
@@ -47,13 +45,11 @@ export class ProductionStageMaterialComponent implements OnInit, ControlValueAcc
 
   writeValue(obj: JobProductionStageMaterial[]): void {
     obj = obj instanceof Array ? obj : [];
-    console.log(obj);
     if (this.materialsControl.length === obj.length) {
       this.materialsControl.setValue(obj, { emitEvent: false });
     } else {
       this.materialsControl.clear({ emitEvent: false });
       obj.forEach(m => this.materialsControl.push(materialGroup(m), { emitEvent: false }));
-      console.log(this.materialsControl);
       this.table?.renderRows();
     }
   }

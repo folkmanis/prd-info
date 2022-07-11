@@ -69,6 +69,7 @@ export class SimpleFormTypedContainerComponent<T> implements OnInit, AfterViewIn
       this.content.onCreate().pipe(
         last(),
       ).subscribe(value => {
+        this.content.form.markAsPristine();
         leave ? this.close() : this.router.navigate(['..', value], { relativeTo: this.route });
       });
 

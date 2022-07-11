@@ -1,4 +1,4 @@
-<app-simple-form-container (dataChange)="onDataChange($event)">
+<app-simple-form-typed-container>
 
     <!-- Nosaukums nelabojams -->
     <span *ngIf="!isNew;" appSimpleFormLabel>
@@ -77,7 +77,7 @@
                     </mat-panel-description>
                 </mat-expansion-panel-header>
 
-                <app-paytraq-product formControlName="paytraqId" [product]="form.value">
+                <app-paytraq-product formControlName="paytraqId" [productName]="form.value.name">
                 </app-paytraq-product>
 
             </mat-expansion-panel>
@@ -115,7 +115,7 @@
 
                 <!-- Ražošanas procesu tabula -->
                 <section>
-                    <app-product-production-stages #prodStages [stagesArray]="productionStages">
+                    <app-product-production-stages #prodStages formControlName="productionStages">
                     </app-product-production-stages>
                 </section>
 
@@ -132,4 +132,4 @@
 
     </form>
 
-</app-simple-form-container>
+</app-simple-form-typed-container>

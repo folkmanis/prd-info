@@ -3,8 +3,8 @@ import { Observable, of, Subject } from 'rxjs';
 import { catchError, concatMap, map, mapTo, pluck, share, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { CustomerProduct, JobProductionStage, Product, ProductPartial, SystemPreferences } from 'src/app/interfaces';
 import { cacheWithUpdate } from 'prd-cdk';
-import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 import { CONFIG } from 'src/app/services/config.provider';
+import { ProductsApiService } from 'src/app/services/prd-api/products-api';
 
 
 @Injectable({
@@ -21,7 +21,7 @@ export class ProductsService {
   private readonly _updateOneProduct$: Subject<ProductPartial> = new Subject();
 
   constructor(
-    private prdApi: PrdApiService,
+    private api: ProductsApiService,
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
   ) { }
 
@@ -29,10 +29,10 @@ export class ProductsService {
     if (!this._products$) {
       this._products$ = this._updateProducts$.pipe(
         startWith({}),
-        switchMap(() => this.prdApi.products.get<ProductPartial>()),
+        switchMap(() => this.api.getAll()),
         cacheWithUpdate(
           this._updateOneProduct$,
-          (o1, o2) => o1.name === o2.name
+          (o1, o2) => o1._id === o2._id
         ),
         shareReplay(1),
       );
@@ -47,43 +47,43 @@ export class ProductsService {
   }
 
   getProduct(id: string): Observable<Product> {
-    return this.prdApi.products.get(id);
+    return this.api.getOne(id);
   }
 
-  updateProduct({ name, ...rest }: Product): Observable<Product> {
-    return this.prdApi.products.updateOne(name, rest).pipe(
+  updateProduct({ _id, ...rest }: Partial<Product>): Observable<Product> {
+    return this.api.updateOne(_id, rest).pipe(
       tap(resp => this._updateOneProduct$.next(resp)),
     );
   }
 
   deleteProduct(id: string): Observable<boolean> {
-    return this.prdApi.products.deleteOne(id).pipe(
+    return this.api.deleteOne(id).pipe(
       tap(() => this._updateProducts$.next()),
-      map(count => !!count),
+      map(_ => true),
     );
   }
 
   insertProduct(prod: Product): Observable<string> {
-    return this.prdApi.products.insertOne(prod).pipe(
+    return this.api.insertOne(prod).pipe(
       tap(_ => this._updateProducts$.next()),
-      map(id => id.name),
+      map(data => data._id),
     );
   }
 
   validate<K extends keyof Product>(key: K, value: Product[K]): Observable<boolean> {
-    return this.prdApi.products.validatorData(key).pipe(
+    return this.api.validatorData(key).pipe(
       map(values => !values.includes(value)),
     );
   }
 
   productsCustomer(customer: string): Observable<CustomerProduct[]> {
-    return this.prdApi.products.productsCustomer(customer).pipe(
+    return this.api.productsCustomer(customer).pipe(
       catchError(() => of([])),
     );
   }
 
   productionStages(product: string): Observable<JobProductionStage[]> {
-    return this.prdApi.products.productionStages(product);
+    return this.api.productionStages(product);
   }
 
 }

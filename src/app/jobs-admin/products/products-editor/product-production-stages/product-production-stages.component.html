@@ -1,4 +1,4 @@
-<mat-table [dataSource]="stagesArray.controls" fixedLayout multiTemplateDataRows>
+<mat-table [dataSource]="productionStages.controls" fixedLayout multiTemplateDataRows>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let stage; columns: displayedColumns" [class.expanded]="expanded === stage"> </mat-row>
@@ -28,9 +28,9 @@
         <mat-cell *matCellDef="let stage; dataIndex as idx;">
 
             <mat-form-field>
-                <mat-select [formControl]="stage.get('productionStageId')">
-                    <mat-option *ngFor="let stage of stages$ | async" [value]="stage._id">
-                        {{ stage.name }}
+                <mat-select [formControl]="stage.controls['productionStageId']">
+                    <mat-option *ngFor="let st of stagesAvailable$ | async" [value]="st._id">
+                        {{ st.name }}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
@@ -43,7 +43,7 @@
         <mat-cell *matCellDef="let stage; dataIndex as idx;">
 
             <mat-form-field>
-                <input matInput type="number" [formControl]="stage.get('amount')">
+                <input matInput type="number" [formControl]="stage.controls['amount']">
             </mat-form-field>
 
         </mat-cell>
@@ -54,7 +54,7 @@
         <mat-cell *matCellDef="let stage; dataIndex as idx;">
 
             <mat-form-field>
-                <input matInput type="number" [formControl]="stage.get('fixedAmount')">
+                <input matInput type="number" [formControl]="stage.controls['fixedAmount']">
             </mat-form-field>
 
         </mat-cell>
@@ -74,7 +74,7 @@
 
     <ng-container matColumnDef="materials">
         <mat-cell *matCellDef="let stage; dataIndex as idx;" [attr.colspan]="displayedColumns.length">
-            <app-production-stage-material [formControl]="stage.controls.materials"></app-production-stage-material>
+            <app-production-stage-material [formControl]="stage.controls['materials']"></app-production-stage-material>
         </mat-cell>
     </ng-container>
 

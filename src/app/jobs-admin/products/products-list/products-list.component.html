@@ -1,9 +1,9 @@
-<app-simple-list-container [large]="large$ | async" (filter)="onFilter($event)" plusButton filterInput>
+<app-simple-list-typed-container [large]="large$ | async" (filter)="onFilter($event)" plusButton filterInput>
 
     <table mat-table [dataSource]="products$">
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns;"></tr>
-        <tr mat-row *matRowDef="let prod; columns: displayedColumns" [routerLink]="[prod.name]"
+        <tr mat-row *matRowDef="let prod; columns: displayedColumns" [routerLink]="[prod._id]"
             routerLinkActive="selected" [class.disabled]="prod.inactive"></tr>
 
         <ng-container matColumnDef="name">
@@ -21,4 +21,4 @@
         </ng-container>
 
     </table>
-</app-simple-list-container>
+</app-simple-list-typed-container>
