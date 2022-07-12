@@ -20,9 +20,6 @@ export class JobProductionStage {
     productionStageId: string;
 
     @Expose()
-    name?: string;
-
-    @Expose()
     @Type(() => JobProductionStageMaterial)
     materials: JobProductionStageMaterial[] = [];
 
@@ -31,8 +28,5 @@ export class JobProductionStage {
 
     @Expose()
     fixedAmount: number;
-
-    @Expose()
-    productionStatus?: number;
 
 }

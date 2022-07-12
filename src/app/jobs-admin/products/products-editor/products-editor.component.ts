@@ -89,7 +89,7 @@ export class ProductsEditorComponent implements OnInit, CanComponentDeactivate, 
   }
 
   onUpdate(): Observable<Product> {
-    const update = { ...this.changes, name: this.value.name };
+    const update = { ...this.changes, _id: this.value._id };
     return this.productService.updateProduct(update);
 
   }
@@ -104,6 +104,7 @@ export class ProductsEditorComponent implements OnInit, CanComponentDeactivate, 
 
   private createForm() {
     return new FormGroup({
+      _id: new FormControl<string>(''),
       inactive: new FormControl(false),
       category: new FormControl<string>(
         undefined,
