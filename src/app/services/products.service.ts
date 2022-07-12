@@ -1,10 +1,10 @@
-import { Injectable, Inject } from '@angular/core';
-import { Observable, of, Subject } from 'rxjs';
-import { catchError, concatMap, map, mapTo, pluck, share, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
-import { CustomerProduct, JobProductionStage, Product, ProductPartial, SystemPreferences } from 'src/app/interfaces';
+import { Inject, Injectable } from '@angular/core';
 import { cacheWithUpdate } from 'prd-cdk';
+import { Observable, of, Subject } from 'rxjs';
+import { catchError, map, pluck, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
+import { CustomerProduct, JobProductionStage, Product, ProductPartial, SystemPreferences } from 'src/app/interfaces';
 import { CONFIG } from 'src/app/services/config.provider';
-import { ProductsApiService } from 'src/app/services/prd-api/products-api';
+import { ProductsApiService } from 'src/app/services/prd-api/products-api.service';
 
 
 @Injectable({
@@ -15,30 +15,25 @@ export class ProductsService {
   readonly categories$ = this.config$.pipe(
     pluck('jobs', 'productCategories'),
   );
-  private _products$: Observable<ProductPartial[]>;
 
   private readonly _updateProducts$: Subject<void> = new Subject();
   private readonly _updateOneProduct$: Subject<ProductPartial> = new Subject();
+
+  products$: Observable<ProductPartial[]> = this._updateProducts$.pipe(
+    startWith({}),
+    switchMap(() => this.api.getAll()),
+    cacheWithUpdate(
+      this._updateOneProduct$,
+      (o1, o2) => o1._id === o2._id
+    ),
+    shareReplay(1),
+  );
+
 
   constructor(
     private api: ProductsApiService,
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
   ) { }
-
-  get products$(): Observable<ProductPartial[]> {
-    if (!this._products$) {
-      this._products$ = this._updateProducts$.pipe(
-        startWith({}),
-        switchMap(() => this.api.getAll()),
-        cacheWithUpdate(
-          this._updateOneProduct$,
-          (o1, o2) => o1._id === o2._id
-        ),
-        shareReplay(1),
-      );
-    }
-    return this._products$;
-  }
 
   get activeProducts$(): Observable<ProductPartial[]> {
     return this.products$.pipe(
