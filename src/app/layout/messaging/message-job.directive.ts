@@ -71,9 +71,8 @@ export class MessageJobDirective {
 
   private fileExists(path: string[]): Observable<boolean> {
     const fileName = last(path);
-    return this.jobsApi.readFtp(path[0]).pipe(
-      pluck('files'),
-      map(filelist => filelist.includes(fileName)),
+    return this.jobsApi.readFtp(path.slice(0, -1)).pipe(
+      map(filelist => filelist.filter(val => !val.isFolder).map(val => val.name).includes(fileName)),
       tap(isFile => {
         if (!isFile) throw new FileMissingError(fileName);
       })

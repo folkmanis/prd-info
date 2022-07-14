@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ControlValueAccessor, FormGroup, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators } from '@angular/forms';
 import { defaults } from 'lodash';
-import { map, pluck } from 'rxjs/operators';
+import { map, pluck, from, toArray, Observable, switchMap, filter } from 'rxjs';
 import { FtpUserData } from 'src/app/interfaces';
 import { JobsApiService } from 'src/app/jobs';
 import { plainToInstance } from 'class-transformer';
@@ -32,7 +32,12 @@ const DEFAULT_DATA: FtpUserData = {
 })
 export class FtpUserComponent implements ControlValueAccessor, Validator {
 
-  readonly ftpFolders$ = this.jobsApi.readFtp().pipe(pluck('folders'));
+  readonly ftpFolders$: Observable<string[]> = this.jobsApi.readFtp().pipe(
+    switchMap(elements => from(elements)),
+    filter(element => element.isFolder),
+    pluck('name'),
+    toArray(),
+  );
 
   form = new FormGroup({
     folder: new FormControl(
