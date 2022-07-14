@@ -1,8 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { map, BehaviorSubject, combineLatest } from 'rxjs';
-import { log } from 'prd-cdk';
 
 
 @Component({
@@ -33,7 +31,6 @@ export class FolderPathComponent implements OnInit {
 
 
   @Input() set enabled(value: any) {
-    console.log(value);
     value = coerceBooleanProperty(value);
     if (value === true) {
       this.updateJobFolderPathControl.enable();
