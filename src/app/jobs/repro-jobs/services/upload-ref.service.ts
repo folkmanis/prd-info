@@ -44,7 +44,7 @@ export class UploadRefService {
     const uploadRef = new UploadRef(messages$, this.addUserFilesToJobFn());
 
     uploadRef.onCancel().pipe(
-      concatMap(fileNames => this.deleteUploads(fileNames))
+      concatMap(fileNames => this.jobFilesService.deleteUserUploads(fileNames))
     ).subscribe();
 
     return uploadRef;
@@ -79,37 +79,21 @@ export class UploadRefService {
     const uploadRef = new UploadRef(messages$, this.addUserFilesToJobFn());
 
     uploadRef.onCancel().pipe(
-      concatMap(fileNames => this.deleteUploads(fileNames))
+      concatMap(fileNames => this.jobFilesService.deleteUserUploads(fileNames))
     ).subscribe();
 
     return uploadRef;
   }
 
-  private deleteUploads(fileNames: string[]): Observable<null> {
-    return this.filesApi.deleteUserFiles(fileNames).pipe(
-      tap(count => {
-        if (count !== fileNames.length) {
-          throw new Error('Not all uploads deleted');
-        }
-      }),
-      mapTo(null),
-    );
-  }
-
   private uploadFile(file: File): Observable<FileUploadMessage> {
-
-    const formData = new FormData();
-    const name = this.sanitize.sanitizeFileName(file.name);
-
-    formData.append('fileUpload', file, name);
 
     const messageBase: UploadMessageBase = {
       id: uploadId(file),
-      name,
+      name: file.name,
       size: file.size,
     };
 
-    const upload$ = this.filesApi.userFileUpload(formData).pipe(
+    const upload$ = this.jobFilesService.uploadUserFile(file).pipe(
       map(event => this.progressMessage(event, messageBase)),
       filter(event => event !== null),
       share(),

@@ -1,11 +1,11 @@
-import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpEvent, HttpRequest } from '@angular/common/http';
+import { Inject, Injectable } from '@angular/core';
 import { ClassTransformer } from 'class-transformer';
+import { concatMap, from, map, Observable, pluck, reduce } from 'rxjs';
 import { APP_PARAMS } from 'src/app/app-params';
 import { AppParams } from 'src/app/interfaces';
+import { Job } from 'src/app/jobs';
 import { HttpOptions } from 'src/app/library/http';
-import { reduce, map, from, Observable, pluck, concatMap } from 'rxjs';
-import { Job, JobsProduction, JobsProductionQuery, JobsWithoutInvoicesTotals } from 'src/app/jobs';
 import { FileElement } from '../interfaces/file-element';
 
 
@@ -28,7 +28,6 @@ export class JobsFilesApiService {
     ).pipe(
       map(data => this.transformer.plainToInstance(FileElement, data, { exposeDefaultValues: true }))
     );
-
   }
 
   fileUpload(jobId: number, form: FormData): Observable<HttpEvent<Job>> {
