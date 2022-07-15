@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { JobsApiService } from './jobs-api.service';
-import { Job, JobPartial, JobQueryFilter, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
 import { catchError, Observable, of } from 'rxjs';
+import { JobsFilesApiService } from 'src/app/filesystem';
+import { Job } from '../../jobs';
+import { FileElement } from '../interfaces/file-element';
 
 @Injectable({
   providedIn: 'root'
@@ -9,28 +10,28 @@ import { catchError, Observable, of } from 'rxjs';
 export class JobFilesService {
 
   constructor(
-    private api: JobsApiService,
+    private filesApi: JobsFilesApiService,
   ) { }
 
   moveUserFilesToJob(jobId: number, fileNames: string[]): Observable<Job> {
-    return this.api.transferUserfilesToJob(jobId, fileNames).pipe(
-      // tap(() => this.reload()),
-    );
+    return this.filesApi.transferUserfilesToJob(jobId, fileNames);
   }
 
   copyFtpFilesToJob(jobId: number, files: string[][]): Observable<Job> {
-    return this.api.transferFtpFilesToJob(jobId, files).pipe(
-      // tap(() => this.reload()),
-    );
+    return this.filesApi.transferFtpFilesToJob(jobId, files);
   }
 
   updateFolderLocation(jobId: number) {
-    return this.api.updateFilesLocation(jobId).pipe(
+    return this.filesApi.updateFilesLocation(jobId).pipe(
       catchError(err => {
         console.error(err);
         return of(null);
       })
     );
+  }
+
+  jobFolder(jobId: number): Observable<FileElement[]> {
+    return this.filesApi.readJobFolder(jobId);
   }
 
 

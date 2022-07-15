@@ -8,6 +8,7 @@ import { UploadRefService } from 'src/app/jobs/repro-jobs/services/upload-ref.se
 import { JobsApiService } from '../../jobs';
 import { JobData, Message, MessageFtpUser } from './interfaces';
 import { MessagingService } from './services/messaging.service';
+import { JobsFilesApiService } from 'src/app/filesystem';
 
 export interface UserFile {
   name: string;
@@ -35,10 +36,10 @@ export class MessageJobDirective {
   constructor(
     private router: Router,
     private messaging: MessagingService,
-    private jobsApi: JobsApiService,
     @Optional() private overlayRef: OverlayRef,
     private reproJobService: ReproJobService,
     private userFileUploadService: UploadRefService,
+    private filesApi: JobsFilesApiService,
   ) { }
 
   @HostListener('click')
@@ -71,7 +72,7 @@ export class MessageJobDirective {
 
   private fileExists(path: string[]): Observable<boolean> {
     const fileName = last(path);
-    return this.jobsApi.readFtp(path.slice(0, -1)).pipe(
+    return this.filesApi.readFtp(path.slice(0, -1)).pipe(
       map(filelist => filelist.filter(val => !val.isFolder).map(val => val.name).includes(fileName)),
       tap(isFile => {
         if (!isFile) throw new FileMissingError(fileName);

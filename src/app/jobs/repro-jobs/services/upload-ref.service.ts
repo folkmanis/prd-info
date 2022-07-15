@@ -5,9 +5,8 @@ import { merge, Observable, of, OperatorFunction, partition, pipe } from 'rxjs';
 import { concatMap, filter, map, mapTo, mergeMap, pluck, scan, share, tap, throttleTime } from 'rxjs/operators';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { FileUploadEventType, FileUploadMessage, UploadMessageBase, UploadWaitingMessage } from '../../interfaces/file-upload-message';
-import { JobFilesService } from '../../services/job-files.service';
-import { JobsApiService } from '../../services/jobs-api.service';
 import { UploadRef } from './upload-ref';
+import { JobsFilesApiService, JobFilesService } from 'src/app/filesystem';
 
 const SIMULTANEOUS_UPLOADS = 2;
 const PERCENT_REPORT_INTERVAL = 500;
@@ -24,9 +23,9 @@ export class UploadRefService {
     type === FileUploadEventType.UploadFinish || type === FileUploadEventType.UploadStart;
 
   constructor(
-    private api: JobsApiService,
     private sanitize: SanitizeService,
     private jobFilesService: JobFilesService,
+    private filesApi: JobsFilesApiService,
   ) { }
 
   userFileUploadRef(file$: Observable<File>): UploadRef {
@@ -87,7 +86,7 @@ export class UploadRefService {
   }
 
   private deleteUploads(fileNames: string[]): Observable<null> {
-    return this.api.deleteUserFiles(fileNames).pipe(
+    return this.filesApi.deleteUserFiles(fileNames).pipe(
       tap(count => {
         if (count !== fileNames.length) {
           throw new Error('Not all uploads deleted');
@@ -110,7 +109,7 @@ export class UploadRefService {
       size: file.size,
     };
 
-    const upload$ = this.api.userFileUpload(formData).pipe(
+    const upload$ = this.filesApi.userFileUpload(formData).pipe(
       map(event => this.progressMessage(event, messageBase)),
       filter(event => event !== null),
       share(),

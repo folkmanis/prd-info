@@ -1,10 +1,9 @@
-import { HttpClient, HttpEvent, HttpRequest } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { ClassTransformer } from 'class-transformer';
 import { Dictionary, pickBy } from 'lodash';
-import { concatMap, from, map, Observable, pluck, reduce } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { APP_PARAMS } from 'src/app/app-params';
-import { FileElement } from 'src/app/filesystem/interfaces/file-element';
 import { AppParams } from 'src/app/interfaces';
 import { ApiBase, HttpOptions } from 'src/app/library/http';
 import { Job, JobsProduction, JobsProductionQuery, JobsWithoutInvoicesTotals } from '../interfaces';
@@ -29,76 +28,12 @@ export class JobsApiService extends ApiBase<Job> {
     super(http, params.apiPath + 'jobs/');
   }
 
-  jobsWithoutInvoicesTotals(): Observable<JobsWithoutInvoicesTotals[]> {
-    return this.http.get<JobsWithoutInvoicesTotals[]>(this.path + 'jobs-without-invoices-totals', new HttpOptions().cacheable());
-  }
-
   createFolder(jobId: number): Observable<Job> {
     return this.http.patch<Job>(this.path + jobId + '/createFolder', {}, new HttpOptions());
   }
 
-  fileUpload(jobId: number, form: FormData): Observable<HttpEvent<Job>> {
-    const request = new HttpRequest(
-      'PUT',
-      this.path + 'files/' + jobId + '/upload',
-      form,
-      { reportProgress: true, }
-    );
-    return this.http.request<Job>(request);
-  }
-
-  userFileUpload(form: FormData): Observable<HttpEvent<{ names: string[]; }>> {
-    const request = new HttpRequest(
-      'PUT',
-      this.path + 'files/user/upload',
-      form,
-      { reportProgress: true }
-    );
-    return this.http.request(request);
-  }
-
-  transferUserfilesToJob(jobId: number, fileNames: string[]): Observable<Job> {
-    return this.http.patch<Job>(
-      this.path + 'files/move/user/' + jobId,
-      {
-        fileNames
-      }
-    );
-  }
-
-  transferFtpFilesToJob(jobId: number, fileNames: string[][]): Observable<Job> {
-    return this.http.patch<Job>(
-      `${this.path}files/copy/ftp/${jobId}`,
-      {
-        files: fileNames
-      }
-    );
-  }
-
-  deleteUserFiles(fileNames: string[]) {
-    return from(fileNames).pipe(
-      concatMap(fileName => this.http.delete<{ deletedCount: number; }>(this.path + 'files/user/' + fileName)),
-      pluck('deletedCount'),
-      reduce((acc, value) => acc + value, 0),
-    );
-  }
-
-  readFtp(folder?: string[]): Observable<FileElement[]> {
-    return this.http.get<Record<string, any>[]>(
-      this.path + 'files/read/ftp',
-      new HttpOptions({ folder }).cacheable()
-    ).pipe(
-      map(data => this.transformer.plainToInstance(FileElement, data, { exposeDefaultValues: true }))
-    );
-  }
-
-  updateFilesLocation(jobId: number): Observable<string[]> {
-    return this.http.patch<{ path: string[]; }>(
-      this.path + 'files/' + jobId + '/update-files-location',
-      new HttpOptions()
-    ).pipe(
-      pluck('path'),
-    );
+  jobsWithoutInvoicesTotals(): Observable<JobsWithoutInvoicesTotals[]> {
+    return this.http.get<JobsWithoutInvoicesTotals[]>(this.path + 'jobs-without-invoices-totals', new HttpOptions().cacheable());
   }
 
   getJobsProduction(query: JobsProductionQuery): Observable<JobsProduction[]> {

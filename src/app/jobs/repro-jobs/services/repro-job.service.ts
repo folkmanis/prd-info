@@ -7,7 +7,7 @@ import { ProductsService } from 'src/app/services';
 import { Job, JobProduct } from '../../interfaces';
 import { JobService } from '../../services/job.service';
 import { UploadRef } from './upload-ref';
-import { JobFilesService } from '../../services/job-files.service';
+import { JobFilesService } from 'src/app/filesystem';
 
 
 export type PartialJob = Pick<Job, 'jobId'> & Partial<Job>;

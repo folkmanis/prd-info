@@ -3,8 +3,8 @@ import { ControlValueAccessor, FormGroup, FormControl, NG_VALIDATORS, NG_VALUE_A
 import { defaults } from 'lodash';
 import { map, pluck, from, toArray, Observable, switchMap, filter } from 'rxjs';
 import { FtpUserData } from 'src/app/interfaces';
-import { JobsApiService } from 'src/app/jobs';
 import { plainToInstance } from 'class-transformer';
+import { JobsFilesApiService } from 'src/app/filesystem';
 
 const DEFAULT_DATA: FtpUserData = {
   folder: null,
@@ -32,7 +32,7 @@ const DEFAULT_DATA: FtpUserData = {
 })
 export class FtpUserComponent implements ControlValueAccessor, Validator {
 
-  readonly ftpFolders$: Observable<string[]> = this.jobsApi.readFtp().pipe(
+  readonly ftpFolders$: Observable<string[]> = this.filesApi.readFtp().pipe(
     switchMap(elements => from(elements)),
     filter(element => element.isFolder),
     pluck('name'),
@@ -55,7 +55,7 @@ export class FtpUserComponent implements ControlValueAccessor, Validator {
   onTouchFn: () => void = () => { };
 
   constructor(
-    private jobsApi: JobsApiService,
+    private filesApi: JobsFilesApiService,
   ) { }
 
   writeValue(obj: FtpUserData): void {
