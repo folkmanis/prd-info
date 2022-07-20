@@ -34,8 +34,8 @@ export class JobFilesService {
     );
   }
 
-  listJobFolder(jobId: number): Observable<FileElement[]> {
-    return this.filesApi.readJobFolder(jobId);
+  listJobFolder(path: string[]): Observable<FileElement[]> {
+    return this.filesApi.readJobFolder(path);
   }
 
   uploadUserFile(file: File, name?: string): Observable<HttpEvent<{ names: string[]; }>> {

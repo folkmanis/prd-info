@@ -22,9 +22,12 @@ export class JobsFilesApiService {
     private transformer: ClassTransformer,
   ) { }
 
-  readJobFolder(jobId: number): Observable<FileElement[]> {
+  readJobFolder(path: string[]): Observable<FileElement[]> {
     return this.http.get<Record<string, any>[]>(
-      this.path + jobId
+      this.path + 'read/job/',
+      new HttpOptions({
+        path: path.join('/')
+      })
     ).pipe(
       map(data => this.transformer.plainToInstance(FileElement, data, { exposeDefaultValues: true }))
     );
@@ -76,10 +79,10 @@ export class JobsFilesApiService {
     );
   }
 
-  readFtp(folder?: string[]): Observable<FileElement[]> {
+  readFtp(path?: string[]): Observable<FileElement[]> {
     return this.http.get<Record<string, any>[]>(
       this.path + 'read/ftp',
-      new HttpOptions({ folder }).cacheable()
+      new HttpOptions({ path }).cacheable()
     ).pipe(
       map(data => this.transformer.plainToInstance(FileElement, data, { exposeDefaultValues: true }))
     );
