@@ -2,21 +2,20 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LibraryModule } from 'src/app/library/library.module';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
-import { FileExplorerComponent } from './file-explorer/file-explorer.component';
+import { JobFilesComponent } from './job-files.component';
+import { FilesystemModule } from 'src/app/filesystem/filesystem.module';
 
 
 
 @NgModule({
   declarations: [
-    FileExplorerComponent
+    JobFilesComponent
   ],
   imports: [
     CommonModule,
     LibraryModule,
     MaterialLibraryModule,
-  ],
-  exports: [
-    FileExplorerComponent,
+    FilesystemModule,
   ]
 })
-export class FilesystemModule { }
+export class JobFilesModule { }
