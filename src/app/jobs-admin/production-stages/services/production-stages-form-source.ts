@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, UntypedFormBuilder, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, UntypedFormBuilder, Validators, FormGroup, FormControl } from '@angular/forms';
 import { IFormGroup } from '@rxweb/types';
 import { pickBy } from 'lodash';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ProductionStage } from 'src/app/interfaces';
+import { ProductionStage, DropFolder } from 'src/app/interfaces';
 import { SimpleFormSource } from 'src/app/library/simple-form';
 import { ProductionStagesService } from 'src/app/services/production-stages.service';
+import { ClassTransformer } from 'class-transformer';
 
 
 @Injectable({
@@ -21,28 +22,32 @@ export class ProductionStagesFormSource extends SimpleFormSource<ProductionStage
     constructor(
         fb: UntypedFormBuilder,
         private productionStagesService: ProductionStagesService,
+        private transformer: ClassTransformer,
     ) {
         super(fb);
     }
 
-    createForm(): IFormGroup<ProductionStage> {
-        return this.fb.group<ProductionStage>({
-            _id: [undefined],
-            name: [
+    createForm() {
+        return new FormGroup({
+            _id: new FormControl<string>(undefined),
+            name: new FormControl<string>(
                 '',
-                [Validators.required],
-                [this.nameValidator()]
-            ],
-            description: [undefined],
-            equipmentIds: [
-                []
-            ]
+                {
+                    validators: [Validators.required],
+                    asyncValidators: [this.nameValidator()],
+                }
+            ),
+            description: new FormControl<string>(null),
+            equipmentIds: new FormControl<string[]>([]),
+            dropFolders: new FormControl<DropFolder[]>(null),
         });
     }
 
     createEntity(): Observable<string> {
-        const { _id, ...values } = pickBy<ProductionStage>(this.value, val => val !== null);
-        return this.productionStagesService.insertOne(values);
+        const { _id, ...values } = this.transformer.plainToInstance(ProductionStage, this.value);
+        return this.productionStagesService.insertOne(values).pipe(
+            map(value => value._id),
+        );
     }
 
     updateEntity(): Observable<ProductionStage> {
