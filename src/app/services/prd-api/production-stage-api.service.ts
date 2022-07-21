@@ -24,8 +24,6 @@ export class ProductionStageApiService {
     ) { }
 
     getAll(params: Record<string, any> = {}): Observable<ProductionStage[]> {
-        console.log(params);
-
         return this.http.get<Record<string, any>[]>(
             this.path,
             new HttpOptions(params).cacheable()
