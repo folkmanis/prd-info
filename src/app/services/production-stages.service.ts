@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { pluck, switchMap, tap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import { ProductionStage, CreateProductionStage, UpdateProductionStage } from 'src/app/interfaces';
-import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
+import { ProductionStageApiService } from './prd-api/production-stage-api.service';
 
 interface ProductionStagesFilter {
   name?: string;
@@ -13,50 +13,47 @@ interface ProductionStagesFilter {
 })
 export class ProductionStagesService {
 
-  private _filter$ = new BehaviorSubject<ProductionStagesFilter | null>(null);
+  private _filter$ = new BehaviorSubject<ProductionStagesFilter>({});
 
   productionStages$ = this._filter$.pipe(
     switchMap(filter => this.getList(filter)),
   );
 
   constructor(
-    private api: PrdApiService,
+    private api: ProductionStageApiService,
   ) { }
 
   reload() {
     this.setFilter(this._filter$.value);
   }
 
-  setFilter(filter: ProductionStagesFilter | null) {
+  setFilter(filter: ProductionStagesFilter) {
     this._filter$.next(filter);
   }
 
   getOne(id: string): Observable<ProductionStage> {
-    return this.api.productionStages.get(id);
+    return this.api.getOne(id);
   }
 
-  insertOne(equipment: CreateProductionStage): Observable<string> {
-    return (this.api.productionStages.insertOne(equipment)).pipe(
+  insertOne(stage: CreateProductionStage): Observable<ProductionStage> {
+    return (this.api.insertOne(stage)).pipe(
       tap(_ => this.reload()),
-      pluck('_id'),
     );
   }
 
-  updateOne(equipment: UpdateProductionStage): Observable<ProductionStage> {
-    const { _id, ...update } = equipment;
-    return this.api.productionStages.updateOne(_id, update).pipe(
+  updateOne(stage: UpdateProductionStage): Observable<ProductionStage> {
+    return this.api.updateOne(stage).pipe(
       tap(_ => this.reload()),
     );
   }
 
   names(): Observable<string[]> {
-    return this.api.productionStages.validatorData('name').pipe(
-      tap(_ => this.reload()),
-    );
+    return this.api.validatorData('name');
   }
 
 
   private getList(filter: ProductionStagesFilter | null): Observable<ProductionStage[]> {
-    return this.api.productionStages.get(filter);
+    return this.api.getAll(filter);
   }
+
 }

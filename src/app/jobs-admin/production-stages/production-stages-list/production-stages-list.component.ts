@@ -16,7 +16,7 @@ export class ProductionStagesListComponent implements OnInit {
 
   stages$ = combineLatest([
     this.productionStagesService.productionStages$,
-    this.equipmentService.equipment$,
+    this.equipmentService.getList(),
   ]).pipe(
     map(([prodS, equipments]) =>
       prodS.map(prod => ({
@@ -34,11 +34,10 @@ export class ProductionStagesListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.equipmentService.setFilter(null);
   }
 
   onSetNameFilter(name: string) {
-    const filter = name?.length > 0 ? { name } : null;
+    const filter = name?.length > 0 ? { name } : {};
     this.productionStagesService.setFilter(filter);
   }
 
