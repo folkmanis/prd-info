@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ControlValueAccessor, FormGroup, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators } from '@angular/forms';
 import { defaults } from 'lodash';
 import { map, pluck, from, toArray, Observable, switchMap, filter } from 'rxjs';
 import { FtpUserData } from 'src/app/interfaces';
 import { plainToInstance } from 'class-transformer';
 import { JobsFilesApiService } from 'src/app/filesystem';
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
 
 const DEFAULT_DATA: FtpUserData = {
   folder: null,
@@ -35,9 +36,18 @@ export class FtpUserComponent implements ControlValueAccessor, Validator {
   readonly ftpFolders$: Observable<string[]> = this.filesApi.readFtp().pipe(
     switchMap(elements => from(elements)),
     filter(element => element.isFolder),
-    pluck('name'),
+    map(el => el.name),
     toArray(),
   );
+
+  private _required = false;
+  @Input() set required(value: any) {
+    this._required = coerceBooleanProperty(value);
+    this._onChange();
+  }
+  get required(): boolean {
+    return this._required;
+  }
 
   form = new FormGroup({
     folder: new FormControl(
@@ -53,6 +63,7 @@ export class FtpUserComponent implements ControlValueAccessor, Validator {
   }
 
   onTouchFn: () => void = () => { };
+  private _onChange: () => void = () => { };
 
   constructor(
     private filesApi: JobsFilesApiService,
@@ -84,7 +95,11 @@ export class FtpUserComponent implements ControlValueAccessor, Validator {
   }
 
   validate(): ValidationErrors {
-    return this.folderControl.errors;
+    return this.required ? this.folderControl.errors : null;
+  }
+
+  registerOnValidatorChange(fn: () => void): void {
+    this._onChange = fn;
   }
 
 }

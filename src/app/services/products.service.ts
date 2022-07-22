@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { cacheWithUpdate } from 'prd-cdk';
 import { Observable, of, Subject } from 'rxjs';
 import { catchError, map, pluck, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
-import { CustomerProduct, JobProductionStage, Product, ProductPartial, SystemPreferences } from 'src/app/interfaces';
+import { CustomerProduct, JobProductionStage, NewProduct, Product, ProductPartial, SystemPreferences } from 'src/app/interfaces';
 import { CONFIG } from 'src/app/services/config.provider';
 import { ProductsApiService } from 'src/app/services/prd-api/products-api.service';
 
@@ -58,10 +58,9 @@ export class ProductsService {
     );
   }
 
-  insertProduct(prod: Product): Observable<string> {
+  insertProduct(prod: NewProduct): Observable<Product> {
     return this.api.insertOne(prod).pipe(
       tap(_ => this._updateProducts$.next()),
-      map(data => data._id),
     );
   }
 

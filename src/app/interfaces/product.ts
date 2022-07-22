@@ -42,10 +42,10 @@ export class Product {
     units: string;
 
     @Expose()
-    paytraqId?: number;
+    paytraqId?: number = null;
 
     @Expose()
-    description?: string;
+    description?: string = null;
 
     @Expose()
     @Type(() => ProductPrice)
@@ -71,3 +71,5 @@ export interface PriceChange {
     customerName: string;
     price: number | undefined;
 }
+
+export type NewProduct = Omit<Product, '_id'>;

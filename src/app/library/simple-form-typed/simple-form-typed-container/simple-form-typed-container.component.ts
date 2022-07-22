@@ -1,97 +1,56 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, Inject, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DestroyService, log } from 'prd-cdk';
-import { filter, last, map, takeUntil } from 'rxjs';
-import { SimpleFormTypedControl } from '../simple-form-typed-control';
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { ChangeDetectionStrategy, Component, HostListener, Input, Output } from '@angular/core';
+import { FormControlStatus } from '@angular/forms';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-simple-form-typed-container',
   templateUrl: './simple-form-typed-container.component.html',
   styleUrls: ['./simple-form-typed-container.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    DestroyService,
-  ]
 })
-export class SimpleFormTypedContainerComponent<T> implements OnInit, AfterViewInit {
+export class SimpleFormTypedContainerComponent {
 
-  private routerData$ = this.route.data.pipe(
-    map(data => data.value as T | undefined),
-    filter(value => !!value),
-  );
+  private _status: FormControlStatus = 'PENDING';
+  @Input() set status(value: FormControlStatus) {
+    this._status = value || 'PENDING';
+  }
+  get status(): FormControlStatus {
+    return this._status;
+  }
+
+  private _isChanges = false;
+  @Input() set isChanges(value: any) {
+    this._isChanges = coerceBooleanProperty(value);
+  }
+  get isChanges(): boolean {
+    return this._isChanges;
+  }
+
+  @Output('save') save$ = new Subject<void>();
+
+  @Output('reset') reset$ = new Subject<void>();
 
   get isSaveEnabled(): boolean {
-    const form = this.content.form;
-    return form.valid && this.isChanges;
+    return this.status === 'VALID' && !!this.isChanges;
   }
 
-  get isResetEnabled(): boolean {
-    return !this.content.isNew && this.isChanges;
-  }
-
-  get isChanges(): boolean {
-    return this.content.form.dirty && !!this.content.changes;
-  }
-
-
-  constructor(
-    private changeDetector: ChangeDetectorRef,
-    private destroy$: DestroyService,
-    private router: Router,
-    private route: ActivatedRoute,
-    @Inject(SimpleFormTypedControl) private content: SimpleFormTypedControl<T>,
-  ) { }
 
   /** Ctrl-Enter triggers save */
   @HostListener('window:keyup', ['$event']) keyEvent(event: KeyboardEvent) {
     if (event.key === 'Enter' && event.ctrlKey && this.isSaveEnabled) {
-      const leave = event.shiftKey; // +Shift closes
       event.stopPropagation();
       event.preventDefault();
-      this.onSave({ leave });
+      this.save$.next();
     }
   }
 
-  ngOnInit(): void {
-    this.content.stateChanges.pipe(
-      takeUntil(this.destroy$),
-    ).subscribe(() => this.changeDetector.markForCheck());
+  onSave() {
+    this.save$.next();
   }
 
-  ngAfterViewInit(): void {
-    this.routerData$.subscribe(value => this.content.onData(value));
+  onReset(): void {
+    this.reset$.next();
   }
-
-  onSave({ leave }: { leave?: boolean; } = {}) {
-
-    if (this.content.isNew) {
-
-      this.content.onCreate().pipe(
-        last(),
-      ).subscribe(value => {
-        this.content.form.markAsPristine();
-        leave ? this.close() : this.router.navigate(['..', value], { relativeTo: this.route });
-      });
-
-    } else {
-
-      this.content.onUpdate().pipe(
-        last(),
-      ).subscribe(value => {
-        this.content.onData(value);
-        leave && this.close();
-      });
-
-    }
-  }
-
-  close() {
-    this.router.navigate(['..'], { relativeTo: this.route });
-  }
-
-  onResetForm(): void {
-    this.content.onReset();
-  }
-
 
 }

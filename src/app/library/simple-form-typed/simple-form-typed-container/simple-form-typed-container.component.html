@@ -2,10 +2,11 @@
 
     <mat-toolbar>
         <span>
-            <button mat-raised-button (click)="onSave()" color="primary" [disabled]="!isSaveEnabled">
+            <button mat-raised-button (click)="onSave()" color="primary"
+                [disabled]="this.status !== 'VALID' || this.isChanges === false">
                 SAGLABĀT
             </button>
-            <button mat-raised-button (click)="onResetForm()" [disabled]="!isResetEnabled">
+            <button mat-raised-button (click)="onReset()" [disabled]="this.isChanges === false">
                 ATIESTATĪT
             </button>
         </span>
@@ -15,11 +16,11 @@
 
         <span class="spacer"></span>
         <span>
-            <button mat-mini-fab color="primary" (click)="close()">
+            <a mat-mini-fab color="primary" routerLink="..">
                 <mat-icon>
                     close
                 </mat-icon>
-            </button>
+            </a>
         </span>
     </mat-toolbar>
 

@@ -4,8 +4,6 @@ export class JobProductionStageMaterial {
 
     @Expose()
     materialId: string;
-    @Expose()
-    name?: string;
 
     @Expose()
     amount: number;

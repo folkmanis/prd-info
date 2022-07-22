@@ -1,8 +1,8 @@
-<app-simple-form-typed-container>
+<app-simple-form-typed-container [status]="form.status" [isChanges]="changes" (save)="onSave()" (reset)="onReset()">
 
     <form [formGroup]="form">
 
-        <h2 *ngIf="isNew; else existing">
+        <h2 *ngIf="this.form.value._id == null; else existing">
             <mat-form-field>
                 <mat-label>Klienta nosaukums</mat-label>
                 <input matInput formControlName="CustomerName" placeholder="Nosaukums" autocomplete="off" required>
@@ -51,11 +51,11 @@
                 <mat-divider></mat-divider>
                 <!-- ftp folderis -->
                 <section>
-                    <mat-checkbox class="input-element" formControlName="ftpUser" #ftpUser
-                        (change)="onFtpUserState($event)">
+                    <mat-checkbox class="input-element" formControlName="ftpUser" #ftpUser>
                         FTP lietotājs
                     </mat-checkbox>
-                    <app-ftp-user formControlName="ftpUserData">
+                    <app-ftp-user [class.hidden]="!ftpUser.checked" formControlName="ftpUserData"
+                        [required]="ftpUser.checked">
                     </app-ftp-user>
                 </section>
                 <mat-divider></mat-divider>

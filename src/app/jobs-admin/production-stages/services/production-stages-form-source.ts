@@ -40,7 +40,7 @@ export class ProductionStagesFormSource extends SimpleFormSource<ProductionStage
             description: new FormControl<string>(null),
             equipmentIds: new FormControl<string[]>([]),
             dropFolders: new FormControl<DropFolder[]>(null),
-        });
+        }) as IFormGroup<ProductionStage>;
     }
 
     createEntity(): Observable<string> {

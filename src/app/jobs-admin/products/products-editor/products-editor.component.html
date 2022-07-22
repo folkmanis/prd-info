@@ -1,13 +1,15 @@
-<app-simple-form-typed-container>
+<app-simple-form-typed-container [status]="form.status" [isChanges]="changes" (save)="onSave()" (reset)="onReset()">
 
     <!-- Nosaukums nelabojams -->
-    <span *ngIf="!isNew;" appSimpleFormTypedLabel>
-        {{form.controls.name.value}}
-    </span>
+    <ng-template #existing>
+        <h2>
+            {{form.controls.name.value}}
+        </h2>
+    </ng-template>
 
     <form [formGroup]="form">
         <!-- Nosaukums labojams -->
-        <h2 *ngIf="isNew;">
+        <h2 *ngIf="form.value._id == null; else existing">
             <mat-form-field>
                 <mat-label>Nosaukums</mat-label>
                 <input matInput formControlName="name" required>
