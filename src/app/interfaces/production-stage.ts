@@ -10,7 +10,7 @@ export class DropFolder {
     path: string[];
 
     @Expose()
-    customer: string;
+    customers: string[];
 
 }
 
@@ -23,7 +23,7 @@ export class ProductionStage {
     name: string;
 
     @Expose()
-    description?: string;
+    description?: string = null;
 
     @Expose()
     equipmentIds: string[] = [];

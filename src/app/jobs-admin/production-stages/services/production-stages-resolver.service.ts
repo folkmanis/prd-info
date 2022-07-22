@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { Router } from '@angular/router';
-import { RetrieveFn, SimpleFormResolverService } from 'src/app/library/simple-form';
+import { RetrieveFn, SimpleFormResolverService } from 'src/app/library/simple-form-typed';
 import { EMPTY } from 'rxjs';
 import { ProductionStage } from 'src/app/interfaces';
 import { ProductionStagesService } from 'src/app/services/production-stages.service';

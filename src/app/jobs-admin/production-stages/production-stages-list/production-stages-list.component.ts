@@ -1,5 +1,4 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { log } from 'prd-cdk';
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { EquipmentService } from '../../equipment/services/equipment.service';
