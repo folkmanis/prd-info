@@ -60,6 +60,13 @@ export class JobFilesService {
     );
   }
 
+  ftpFolders(path?: string[]): Observable<FileElement[]> {
+    return this.filesApi.readFtp(path?.join('/'));
+  }
+
+  dropFolders(path?: string[]): Observable<FileElement[]> {
+    return this.filesApi.readDropFolders(path?.join('/'));
+  }
 
 
 }

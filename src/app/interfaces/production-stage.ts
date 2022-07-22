@@ -4,9 +4,6 @@ import { Transform, Type, Expose } from 'class-transformer';
 export class DropFolder {
 
     @Expose()
-    description?: string;
-
-    @Expose()
     path: string[];
 
     @Expose()

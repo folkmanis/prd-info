@@ -38,6 +38,26 @@
 
         </mat-card>
 
+
+        <mat-card>
+
+            <mat-card-title>
+                Dropfolderi
+            </mat-card-title>
+
+            <mat-card-content>
+                <app-drop-folders #dropControl formControlName="dropFolders"></app-drop-folders>
+
+            </mat-card-content>
+
+            <mat-card-actions>
+                <button mat-button (click)="dropControl.append()" [disabled]="form.valid == false">
+                    PIEVIENOT
+                </button>
+            </mat-card-actions>
+
+        </mat-card>
+
     </form>
 
 </app-simple-form-typed-container>

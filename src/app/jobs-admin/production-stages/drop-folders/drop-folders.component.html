@@ -1,0 +1,25 @@
+<div *ngFor="let control of form.controls; index as idx">
+
+    <button mat-icon-button color="warn" (click)="delete(idx); $event.stopPropagation();">
+        <mat-icon>
+            delete_outline
+        </mat-icon>
+    </button>
+
+    <mat-form-field>
+        <mat-select [formControl]="control.controls.path" required [compareWith]="pathCompare">
+            <mat-option *ngFor="let folder of dropFolders$ | async" [value]="folder.value">
+                {{ folder.name }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-select [formControl]="control.controls.customers" multiple>
+            <mat-option *ngFor="let customer of customers$ | async" [value]="customer._id">
+                {{ customer.CustomerName }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+</div>

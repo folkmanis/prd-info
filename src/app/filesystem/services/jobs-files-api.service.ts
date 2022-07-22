@@ -79,9 +79,18 @@ export class JobsFilesApiService {
     );
   }
 
-  readFtp(path?: string[]): Observable<FileElement[]> {
+  readFtp(path?: string): Observable<FileElement[]> {
     return this.http.get<Record<string, any>[]>(
       this.path + 'read/ftp',
+      new HttpOptions({ path }).cacheable()
+    ).pipe(
+      map(data => this.transformer.plainToInstance(FileElement, data, { exposeDefaultValues: true }))
+    );
+  }
+
+  readDropFolders(path?: string): Observable<FileElement[]> {
+    return this.http.get<Record<string, any>[]>(
+      this.path + 'read/drop-folder',
       new HttpOptions({ path }).cacheable()
     ).pipe(
       map(data => this.transformer.plainToInstance(FileElement, data, { exposeDefaultValues: true }))

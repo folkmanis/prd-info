@@ -9,11 +9,13 @@ import { ProductionStagesEditComponent } from './production-stages-edit/producti
 
 import { ProductionStagesResolverService } from './services/production-stages-resolver.service';
 import { SimpleFormTypedModule } from 'src/app/library/simple-form-typed';
+import { DropFoldersComponent } from './drop-folders/drop-folders.component';
 
 @NgModule({
   declarations: [
     ProductionStagesListComponent,
-    ProductionStagesEditComponent
+    ProductionStagesEditComponent,
+    DropFoldersComponent
   ],
   imports: [
     CommonModule,
