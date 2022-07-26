@@ -1,65 +1,75 @@
-import { CdkScrollable } from '@angular/cdk/scrolling';
-import { ChangeDetectorRef, ComponentRef, Directive, Host, OnInit, Output, Self, ViewContainerRef } from '@angular/core';
+import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/scrolling';
+import { AfterViewInit, ChangeDetectorRef, ComponentRef, Directive, ElementRef, NgZone, Output, Input, ViewContainerRef } from '@angular/core';
 import { DestroyService } from 'prd-cdk';
-import { debounceTime, filter, map, Observable, of, shareReplay, switchMap, takeUntil, tap } from 'rxjs';
+import { filter, map, Observable, shareReplay, takeUntil, tap } from 'rxjs';
 import { ScrollToTopComponent } from './scroll-to-top.component';
 
-const showScrollHeight = 300;
-const hideScrollHeight = 10;
-
-const SCROLL_AUDIT_TIME = 200;
 
 @Directive({
   selector: '[scroll-to-top]',
   exportAs: 'scrollToTop',
   providers: [DestroyService],
 })
-export class ScrollTopDirective implements OnInit {
+export class ScrollTopDirective implements AfterViewInit {
 
-  @Output('scrollToTopVisible') visible$: Observable<boolean> = of(false).pipe(
-    switchMap(showScroll => this.scrollable.elementScrolled().pipe(
-      debounceTime(SCROLL_AUDIT_TIME),
-      map(() => this.scrollable.measureScrollOffset('top')),
-      map(offset => !showScroll && offset > showScrollHeight || showScroll && offset > hideScrollHeight),
-      filter(show => show !== showScroll),
-      tap(show => showScroll = show),
-      shareReplay(1),
-    ))
-  );
+  @Input() showScrollHeight = 300;
+
+  @Input() hideScrollHeight = 10;
+
+  @Input() scrollAuditTime = 200;
+
+
+  @Output('scrollToTopVisible') visible$: Observable<boolean>;
 
   visible = false;
 
   private componentRef: ComponentRef<ScrollToTopComponent> | null = null;
-  private changeDetectorRef: ChangeDetectorRef;
+  private buttonChangeDetectorRef: ChangeDetectorRef;
 
+  private scrollable: CdkScrollable | void;
 
   constructor(
+    private dispatcher: ScrollDispatcher,
     private container: ViewContainerRef,
-    @Host() @Self() private scrollable: CdkScrollable,
     private destroy$: DestroyService,
+    private elementRef: ElementRef,
+    private ngZone: NgZone,
   ) { }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
+
+    this.visible$ = this.dispatcher.ancestorScrolled(this.elementRef, this.scrollAuditTime).pipe(
+      filter(scrollable => scrollable instanceof CdkScrollable),
+      tap(scr => this.scrollable = scr),
+      map(scr => scr && scr.measureScrollOffset('top')),
+      map(offset => !this.visible && offset > this.showScrollHeight || this.visible && offset > this.hideScrollHeight),
+      filter(show => show !== this.visible),
+      tap(show => this.visible = show),
+      shareReplay(1),
+    );
 
     this.visible$.pipe(
       takeUntil(this.destroy$),
-    ).subscribe(show => this.setVisible(show));
+    ).subscribe(show => this.setVisibility(show));
 
-  }
-
-  private setVisible(show: boolean) {
-    if (!this.componentRef) {
-      this.componentRef = this.container.createComponent(ScrollToTopComponent);
-      this.componentRef.instance.scrollable = this.scrollable;
-      this.changeDetectorRef = this.componentRef.injector.get(ChangeDetectorRef);
-    }
-    this.componentRef.instance.visible = show;
-    this.visible = show;
-    this.changeDetectorRef.detectChanges();
   }
 
   scrollToTop() {
-    this.scrollable.scrollTo({ top: 0, behavior: 'smooth' });
+    if (this.scrollable) {
+      this.scrollable.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  private setVisibility(show: boolean) {
+    if (!this.componentRef && this.scrollable) {
+      this.componentRef = this.container.createComponent(ScrollToTopComponent);
+      this.componentRef.instance.scrollable = this.scrollable;
+      this.buttonChangeDetectorRef = this.componentRef.injector.get(ChangeDetectorRef);
+    }
+    this.componentRef.instance.visible = show;
+    this.ngZone.run(() => {
+      this.buttonChangeDetectorRef.markForCheck();
+    });
   }
 
 }

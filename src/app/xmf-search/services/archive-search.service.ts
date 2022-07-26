@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { deepCopy } from 'prd-cdk';
-import { concat, MonoTypeOperatorFunction, Observable, of, OperatorFunction, pipe, ReplaySubject } from 'rxjs';
+import { Observable, OperatorFunction, pipe, ReplaySubject } from 'rxjs';
 import { filter, map, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { ArchiveFacet, ArchiveRecord, SearchQuery } from '../interfaces';
 import { PagedCache } from './paged-cache';
@@ -13,7 +13,7 @@ export class ArchiveSearchService {
   private readonly query$ = new ReplaySubject<SearchQuery>(1);
 
   count$: Observable<number | undefined> = this.query$.pipe(
-    switchMap(query => concat(of(undefined), this.api.getCount(query))),
+    switchMap(query => this.api.getCount(query)),
     shareReplay(1),
   );
 

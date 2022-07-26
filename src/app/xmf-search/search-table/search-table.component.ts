@@ -1,8 +1,7 @@
-import { CdkScrollable } from '@angular/cdk/scrolling';
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild, Input } from '@angular/core';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { DestroyService } from 'prd-cdk';
 import { takeUntil } from 'rxjs/operators';
-import { SearchQuery } from '../interfaces';
 import { ArchiveSearchService } from '../services/archive-search.service';
 
 
@@ -15,7 +14,8 @@ import { ArchiveSearchService } from '../services/archive-search.service';
 })
 export class SearchTableComponent implements OnInit {
 
-  @ViewChild(CdkScrollable) content: CdkScrollable;
+  @ViewChild(CdkVirtualScrollViewport)
+  content: CdkVirtualScrollViewport;
 
   @Input() search: string | undefined;
 
@@ -32,7 +32,11 @@ export class SearchTableComponent implements OnInit {
     this.service.count$.pipe(
       takeUntil(this.destroy$)
     )
-      .subscribe(() => this.content?.scrollTo({ top: 0 }));
+      .subscribe(() => this.scrollToTop());
+  }
+
+  private scrollToTop() {
+    this.content?.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
 }
