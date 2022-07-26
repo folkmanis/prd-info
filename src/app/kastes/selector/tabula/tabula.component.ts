@@ -1,13 +1,13 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild, ViewChildren, QueryList, ElementRef } from '@angular/core';
+import { Component, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MAT_CHECKBOX_DEFAULT_OPTIONS } from '@angular/material/checkbox';
-import { EMPTY, Observable, Observer, of, Subscriber } from 'rxjs';
-import { switchMap, tap, concatMap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
+import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
+import { VeikalsKaste } from '../../interfaces';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
 import { KastesTabulaService } from '../services/kastes-tabula.service';
-import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
 import { RowIdDirective } from './row-id.directive';
-import { VeikalsKaste } from '../../interfaces';
 
 
 const COLUMNS = ['label', 'kods', 'adrese', 'yellow', 'rose', 'white', 'gatavs'];
