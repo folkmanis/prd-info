@@ -39,7 +39,7 @@
         <ng-template *ngFor="let bt of tabula.buttons" [cdkPortalOutlet]="bt"></ng-template>
     </section>
     <!-- Tabula -->
-    <section class="adreses" cdk-scrollable scroll-to-top>
+    <section class="adreses" scroll-to-top>
         <app-upload-adreses #tabula [data]="inputData$ | async" (adresesBox)="adresesBox = $event">
         </app-upload-adreses>
     </section>

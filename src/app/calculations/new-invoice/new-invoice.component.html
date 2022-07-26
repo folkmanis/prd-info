@@ -33,8 +33,7 @@
             </div>
             <div class="jobs">
                 <!-- Darbu atlase -->
-                <app-job-selection-table [jobs]="jobs$ | async" (selected)="onJobSelected($event)" cdk-scrollable
-                    scroll-to-top>
+                <app-job-selection-table [jobs]="jobs$ | async" (selected)="onJobSelected($event)" scroll-to-top>
                 </app-job-selection-table>
             </div>
         </div>
