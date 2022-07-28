@@ -19,9 +19,9 @@ export class ReproJobEditGuard implements CanDeactivate<ReproJobEditComponent> {
     currentState: RouterStateSnapshot,
     nextState?: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
-    const { saved, form: { pristine }, uploadRef } = component;
+    const { saved$, form: { pristine }, uploadRef } = component;
 
-    if (saved || pristine && !uploadRef) return true;
+    if (saved$.value || pristine && !uploadRef) return true;
 
     return this.dialog.discardChanges().pipe(
       tap(resp => resp && uploadRef?.cancel()),

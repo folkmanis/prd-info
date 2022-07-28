@@ -1,5 +1,6 @@
 import { KastesProduction, PrintProduction, Production, ReproProduction } from './job-categories';
 import { JobProduct } from './job-product';
+import { JobProductionStage } from 'src/app/interfaces';
 
 
 export interface JobStatus {
@@ -28,7 +29,9 @@ export interface Job {
     jobStatus: JobStatus;
     files?: Files;
 
-    production?: ReproProduction | KastesProduction | PrintProduction;
+    production: Production;
+
+    productionStages?: JobProductionStage[];
 
 }
 

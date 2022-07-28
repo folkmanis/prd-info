@@ -1,13 +1,14 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Observer, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable, Observer, of, startWith } from 'rxjs';
 import { FileUploadMessage, Job } from '../../interfaces';
-import { JobFormGroup } from '../services/job-form-group';
+import { JobFormService } from '../services/job-form.service';
 import { ReproJobService } from '../services/repro-job.service';
 import { UploadRef } from '../services/upload-ref';
 import { SnackbarMessageComponent } from '../snackbar-message/snackbar-message.component';
 import { JobFormComponent } from './job-form/job-form.component';
+import { log } from 'prd-cdk';
 
 
 @Component({
@@ -16,24 +17,33 @@ import { JobFormComponent } from './job-form/job-form.component';
   styleUrls: ['./repro-job-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    JobFormGroup,
+    JobFormService,
   ]
 })
 export class ReproJobEditComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild(JobFormComponent) jobFormComponent: JobFormComponent;
 
-  job: Partial<Job>;
+  form = this.formService.form;
 
   fileUploadProgress$: Observable<FileUploadMessage[]> = of([]);
 
   uploadRef: UploadRef | null = null;
 
-  saved = false;
+  saved$ = new BehaviorSubject(false);
+
+  saveDisabled$ = combineLatest({
+    update: this.formService.update$,
+    status: this.formService.form.statusChanges,
+    saved: this.saved$,
+  }).pipe(
+    map(({ update, status, saved }) => status !== 'VALID' || update == undefined || saved),
+    startWith(true),
+  );
+
 
   private jobSaveObserver: Observer<Job> = {
     next: (job) => {
-      this.saved = true;
       this.uploadRef?.addToJob(job.jobId);
       this.snack.openFromComponent(SnackbarMessageComponent, { data: { job, progress: this.fileUploadProgress$ } });
       this.router.navigate(['..'], { relativeTo: this.route });
@@ -43,17 +53,16 @@ export class ReproJobEditComponent implements OnInit, AfterViewInit, OnDestroy {
   };
 
   constructor(
-    public form: JobFormGroup,
     private route: ActivatedRoute,
     private router: Router,
     private reproJobService: ReproJobService,
     private snack: MatSnackBar,
+    private formService: JobFormService,
   ) { }
 
   ngOnInit(): void {
 
-    this.job = this.route.snapshot.data.job;
-    this.form.patchValue(this.job);
+    this.formService.setValue(this.route.snapshot.data.job);
 
     if (this.reproJobService.uploadRef) {
       this.uploadRef = this.reproJobService.uploadRef;
@@ -66,7 +75,7 @@ export class ReproJobEditComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    if (!this.job.customer) {
+    if (!this.formService.value.customer) {
       this.jobFormComponent.customerInput.focus();
     }
   }
@@ -76,14 +85,16 @@ export class ReproJobEditComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onUpdate() {
-    const jobId = this.job.jobId;
-    const jobUpdate: Partial<Job> = this.form.update;
+    this.saved$.next(true);
+    const jobId = this.formService.value.jobId;
+    const jobUpdate: Partial<Job> = this.formService.update;
     this.reproJobService.updateJob({ jobId, ...jobUpdate }, { updatePath: this.jobFormComponent.updateFolderLocation })
       .subscribe(this.jobSaveObserver);
   }
 
   onCreate() {
-    const jobUpdate: Partial<Omit<Job, 'jobId'>> = this.form.update;
+    this.saved$.next(true);
+    const jobUpdate: Partial<Omit<Job, 'jobId'>> = this.formService.update;
     this.reproJobService.uploadRef = null;
     this.reproJobService.createJob(jobUpdate)
       .subscribe(this.jobSaveObserver);

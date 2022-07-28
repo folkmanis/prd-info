@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { flatten } from 'lodash';
-import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
-import { concatMap, map } from 'rxjs/operators';
+import { concatMap, map, BehaviorSubject, forkJoin, from, Observable, of, toArray } from 'rxjs';
 import { JobProductionStage } from 'src/app/interfaces';
 import { ProductsService } from 'src/app/services';
 import { Job, JobProduct } from '../../interfaces';
@@ -26,8 +25,6 @@ export class ReproJobService {
 
   private readonly _activeProduct = new BehaviorSubject<string | null>(null);
 
-  private readonly productionStagesFn = (productName: string) => this.productsService.productionStages(productName);
-
   constructor(
     private productsService: ProductsService,
     private jobService: JobService,
@@ -38,7 +35,7 @@ export class ReproJobService {
 
     const { updatePath } = params;
 
-    return addProductionStages(jobUpdate, this.productionStagesFn).pipe(
+    return this.addProductionStages(jobUpdate).pipe(
       concatMap(job => this.jobService.updateJob(job.jobId, job)),
       concatMap(job => updatePath ? this.updateFilesLocation(job) : of(job))
     );
@@ -46,7 +43,7 @@ export class ReproJobService {
   }
 
   createJob(jobUpdate: Omit<Partial<Job>, 'jobId'>) {
-    return addProductionStages(jobUpdate, this.productionStagesFn).pipe(
+    return this.addProductionStages(jobUpdate).pipe(
       concatMap(job => this.jobService.newJob(job)),
     );
   }
@@ -66,35 +63,43 @@ export class ReproJobService {
     return this._activeProduct.asObservable();
   }
 
+  productionStages(products: JobProduct[]): Observable<JobProductionStage[]> {
+
+    return from(products).pipe(
+      concatMap(prod => this.productsService.productionStages(prod.name).pipe(
+        concatMap(stages => from(stages)),
+        map(stage => ({
+          ...stage,
+          fixedAmount: stage.fixedAmount || 0,
+          amount: stage.amount * prod.count + stage.fixedAmount,
+          productionStatus: 10,
+        })),
+      )),
+      toArray(),
+    );
+
+  }
+
   private updateFilesLocation(job: Job): Observable<Job> {
     return this.jobFilesService.updateFolderLocation(job.jobId).pipe(
       map(_ => job),
     );
   }
 
-}
-
-
-function addProductionStages<T extends Partial<Job>>(job: T, getStageFn: (productName: string) => Observable<JobProductionStage[]>): Observable<T> {
-  if (job?.products instanceof Array && job.products.length > 0) {
-    return forkJoin(jobStages(job.products, getStageFn)).pipe(
-      map(allStages => ({
-        ...job,
-        productionStages: flatten(allStages),
-      })),
-    );
+  private addProductionStages<T extends Partial<Job>>(job: T): Observable<T> {
+    if (job?.products instanceof Array && job.products.length > 0) {
+      return this.productionStages(job.products).pipe(
+        map(productionStages => ({
+          ...job,
+          productionStages,
+        })),
+      );
+    } else {
+      return of(job);
+    }
   }
-  return of(job);
+
+
 }
 
-function jobStages(products: JobProduct[], getStageFn: (productName: string) => Observable<JobProductionStage[]>): Observable<JobProductionStage[]>[] {
-  return products.map(prod => getStageFn(prod.name).pipe(
-    map(stages => stages.map(stage => ({
-      ...stage,
-      fixedAmount: stage.fixedAmount || 0,
-      amount: stage.amount * prod.count + stage.fixedAmount,
-      productionStatus: 10,
-    }))),
-  ));
-}
 

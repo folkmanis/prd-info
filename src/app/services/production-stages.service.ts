@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, from, Observable } from 'rxjs';
+import { filter, map, switchMap, tap, toArray } from 'rxjs/operators';
 import { ProductionStage, CreateProductionStage, UpdateProductionStage } from 'src/app/interfaces';
 import { ProductionStageApiService } from './prd-api/production-stage-api.service';
 
@@ -51,7 +51,15 @@ export class ProductionStagesService {
     return this.api.validatorData('name');
   }
 
-
+  /*   getDropFolder(id: string, customerName: string): Observable<string[]> {
+      return this.getOne(id).pipe(
+        switchMap(stage => from(stage.dropFolders)),
+        filter(folder => folder.customers.includes(customerName)),
+        map(folder => folder.path.join('/')),
+        toArray(),
+      );
+    }
+   */
   private getList(filter: ProductionStagesFilter | null): Observable<ProductionStage[]> {
     return this.api.getAll(filter);
   }

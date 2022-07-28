@@ -5,8 +5,8 @@
     </a>
 
     <h4>
-        <span *ngIf="job.jobId">
-            {{ job.jobId }}&nbsp;-&nbsp;
+        <span *ngIf="form.value.jobId as jobId;">
+            {{ jobId }}&nbsp;-&nbsp;
         </span>
         {{ form.value.name }}
     </h4>
@@ -23,13 +23,13 @@
 
 <footer>
 
-    <button *ngIf="job.jobId else createButton;" mat-raised-button color="primary" appKeyPress="ctrlEnter"
-        [disabled]="form.status !== 'VALID' || form.update == undefined || saved" (click)="onUpdate()">
+    <button *ngIf="form.value.jobId else createButton;" mat-raised-button color="primary" appKeyPress="ctrlEnter"
+        [disabled]="saveDisabled$ | async" (click)="onUpdate()">
         SAGLABĀT
     </button>
 
     <ng-template #createButton>
-        <button mat-raised-button color="primary" [disabled]="form.status !== 'VALID' || saved" appKeyPress="ctrlEnter"
+        <button mat-raised-button color="primary" [disabled]="saveDisabled$ | async" appKeyPress="ctrlEnter"
             (click)="onCreate()">
             IZVEIDOT
         </button>

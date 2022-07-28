@@ -16,7 +16,7 @@
 
     <mat-form-field>
         <mat-select [formControl]="control.controls.customers" multiple>
-            <mat-option *ngFor="let customer of customers$ | async" [value]="customer._id">
+            <mat-option *ngFor="let customer of customers$ | async" [value]="customer.CustomerName">
                 {{ customer.CustomerName }}
             </mat-option>
         </mat-select>

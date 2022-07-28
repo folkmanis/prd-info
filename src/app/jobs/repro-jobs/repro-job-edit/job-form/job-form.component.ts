@@ -11,7 +11,7 @@ import { CustomersService, LayoutService, ProductsService } from 'src/app/servic
 import { CONFIG } from 'src/app/services/config.provider';
 import { FileUploadMessage, Job } from '../../../interfaces';
 import { JobService } from '../../../services/job.service';
-import { JobFormGroup } from '../../services/job-form-group';
+import { JobFormService } from '../../services/job-form.service';
 import { log } from 'prd-cdk';
 import { CustomerInputComponent } from '../customer-input/customer-input.component';
 import { FolderPathComponent } from '../folder-path/folder-path.component';
@@ -40,6 +40,8 @@ export class JobFormComponent implements OnInit {
     }
   }
 
+  form = this.formService.form;
+
 
   isLarge$: Observable<boolean> = this.layoutService.isLarge$;
   isSmall$ = this.layoutService.isSmall$;
@@ -62,11 +64,11 @@ export class JobFormComponent implements OnInit {
     pluck('jobs', 'productCategories'),
   );
 
-  jobIdAndName$ = this.form.value$.pipe(
+  jobIdAndName$ = this.formService.value$.pipe(
     map(job => this.jobIdAndName(job)),
   );
 
-  customerProducts$ = this.form.value$.pipe(
+  customerProducts$ = this.formService.value$.pipe(
     pluck('customer'),
     filter(customer => !!customer),
     distinctUntilChanged(),
@@ -75,7 +77,7 @@ export class JobFormComponent implements OnInit {
 
   showPrices$: Observable<boolean> = this.loginService.isModule('calculations');
 
-  folderPath$ = this.form.value$.pipe(
+  folderPath$ = this.formService.value$.pipe(
     pluck('files'),
     map(files => files?.path?.join('/'))
   );
@@ -84,17 +86,17 @@ export class JobFormComponent implements OnInit {
     return this.folderPathComponent.updatePath;
   }
 
-  updateFolderLocationEnabled$: Observable<boolean> = this.form.update$.pipe(
+  updateFolderLocationEnabled$: Observable<boolean> = this.formService.update$.pipe(
     map(upd => !!upd && (!!upd.customer || !!upd.name || !!upd.receivedDate)),
   );
 
   get nameControl() {
-    return this.form.get('name') as UntypedFormControl;
+    return this.formService.form.controls.name;
   }
 
 
   get isNew(): boolean {
-    return !this.form.value.jobId;
+    return !this.formService.value.jobId;
   }
 
   constructor(
@@ -105,22 +107,22 @@ export class JobFormComponent implements OnInit {
     private sanitize: SanitizeService,
     private loginService: LoginService,
     private jobsService: JobService,
-    public form: JobFormGroup,
+    private formService: JobFormService,
   ) { }
 
   ngOnInit(): void {
   }
 
   onCreateFolder() {
-    const jobId = this.form.value.jobId as number;
+    const jobId = this.formService.value.jobId;
     this.jobsService.createFolder(jobId).pipe(
-      pluck('files'),
+      map(job => job.files),
     )
-      .subscribe(files => this.form.controls.files.setValue(files));
+      .subscribe(files => this.formService.form.controls.files.setValue(files));
   }
 
 
-  private jobIdAndName(job: Job) {
+  private jobIdAndName(job: Partial<Job>) {
     const name = this.sanitize.sanitizeFileName(job.name);
     return `${job.jobId}-${name}`;
   }

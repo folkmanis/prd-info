@@ -122,6 +122,12 @@ function productPriceGroup(price: ProductPrice) {
         Validators.pattern(/[0-9]{1,}(((,|\.)[0-9]{0,2})?)/)
       ]
     ),
+    lastUsed: new FormControl<Date>(
+      {
+        value: null,
+        disabled: true
+      },
+    )
   });
 }
 

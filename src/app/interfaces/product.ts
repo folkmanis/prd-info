@@ -65,6 +65,11 @@ export class ProductPrice {
 
     @Expose()
     price: number;
+
+    @Type(() => Date)
+    @Transform(({ value }) => new Date(value))
+    lastUsed: Date = null;
+
 }
 
 export interface PriceChange {

@@ -25,10 +25,6 @@ export class ProductionStage {
     @Expose()
     equipmentIds: string[] = [];
 
-    @Expose()
-    @Type(() => DropFolder)
-    dropFolders: DropFolder[] = [];
-
 }
 
 export type CreateProductionStage = Omit<ProductionStage, '_id'>;
