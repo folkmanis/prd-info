@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { JobProductionStage } from 'src/app/interfaces';
-import { JobProduct, Files } from '../../interfaces';
-import { Job, JobStatus, JobCategories } from '../../interfaces';
-import { Observable, shareReplay, map } from 'rxjs';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { isEqual, pickBy } from 'lodash';
+import { combineLatest, concat, concatMap, debounceTime, distinctUntilChanged, filter, from, map, Observable, of, reduce, shareReplay, switchMap, throttleTime } from 'rxjs';
+import { DropFolder, JobProductionStage } from 'src/app/interfaces';
+import { ProductionStagesService } from 'src/app/services/production-stages.service';
+import { Files, Job, JobCategories, JobProduct } from '../../interfaces';
+import { ReproJobService } from './repro-job.service';
 
 @Injectable()
 export class JobFormService {
@@ -23,6 +24,11 @@ export class JobFormService {
 
   initialValue: Partial<Job>;
 
+  productionStages$ = this.form.controls.products.valueChanges.pipe(
+    debounceTime(300),
+    switchMap(products => this.jobService.productionStages(products)),
+  );
+
 
   get value(): Job {
     return this.form.getRawValue() as Job;
@@ -33,7 +39,10 @@ export class JobFormService {
   }
 
 
-  constructor() { }
+  constructor(
+    private jobService: ReproJobService,
+    private stagesService: ProductionStagesService,
+  ) { }
 
 
   patchValue(value: Partial<Job>, options?: { onlySelf?: boolean; emitEvent?: boolean; }): void {
@@ -44,7 +53,7 @@ export class JobFormService {
     this.form.patchValue(value, options);
     this.updateDisabledState(value);
     this.form.markAsPristine();
-  }
+  };
 
   setValue(value: Job, options?: { onlySelf?: boolean; emitEvent?: boolean; }): void {
     this.initialValue = value;
@@ -52,6 +61,27 @@ export class JobFormService {
     this.form.patchValue(value, options);
     this.updateDisabledState(value);
   }
+
+  dropFolders$: Observable<DropFolder[]> = combineLatest({
+    status: this.form.statusChanges,
+    value: concat(
+      of(this.form.value),
+      this.form.valueChanges,
+    )
+  }).pipe(
+    filter(({ status }) => status === 'VALID'),
+    map(({ value }) => value),
+    distinctUntilChanged((j1, j2) => j1.customer === j2.customer && isEqual(j1.products, j2.products)),
+    throttleTime(200),
+    switchMap(job => this.jobService.productionStages(job.products).pipe(
+      switchMap(stages => from(stages).pipe(
+        concatMap(stage => this.stagesService.getDropFolder(stage.productionStageId, job.customer)),
+        reduce((acc, value) => [...acc, ...value], [])
+      ))
+    )),
+  );
+
+
 
   private updateDisabledState(value: Partial<Job>) {
     if (value.invoiceId) {

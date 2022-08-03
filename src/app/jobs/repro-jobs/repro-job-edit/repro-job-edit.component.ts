@@ -1,14 +1,14 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, map, Observable, Observer, of, startWith } from 'rxjs';
+import { BehaviorSubject, combineLatest, concatMap, map, Observable, Observer, of, startWith } from 'rxjs';
+import { DropFolder } from 'src/app/interfaces';
 import { FileUploadMessage, Job } from '../../interfaces';
 import { JobFormService } from '../services/job-form.service';
 import { ReproJobService } from '../services/repro-job.service';
 import { UploadRef } from '../services/upload-ref';
 import { SnackbarMessageComponent } from '../snackbar-message/snackbar-message.component';
 import { JobFormComponent } from './job-form/job-form.component';
-import { log } from 'prd-cdk';
 
 
 @Component({
@@ -22,7 +22,7 @@ import { log } from 'prd-cdk';
 })
 export class ReproJobEditComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  @ViewChild(JobFormComponent) jobFormComponent: JobFormComponent;
+  @ViewChild(JobFormComponent) private jobFormComponent: JobFormComponent;
 
   form = this.formService.form;
 
@@ -32,19 +32,29 @@ export class ReproJobEditComponent implements OnInit, AfterViewInit, OnDestroy {
 
   saved$ = new BehaviorSubject(false);
 
+  private dropFolder$ = new BehaviorSubject<DropFolder | null>(null);
+
   saveDisabled$ = combineLatest({
     update: this.formService.update$,
     status: this.formService.form.statusChanges,
     saved: this.saved$,
+    dropFolder: this.dropFolder$,
   }).pipe(
-    map(({ update, status, saved }) => status !== 'VALID' || update == undefined || saved),
+    map(({ update, status, saved, dropFolder }) => status !== 'VALID' || (update == undefined && dropFolder == null) || saved),
     startWith(true),
   );
+
+  dropFolders$: Observable<DropFolder[]> = this.formService.dropFolders$;
+
+  get isUpload(): boolean {
+    return !!this.uploadRef;
+  }
 
 
   private jobSaveObserver: Observer<Job> = {
     next: (job) => {
       this.uploadRef?.addToJob(job.jobId);
+      this.copyToDropfolder(job);
       this.snack.openFromComponent(SnackbarMessageComponent, { data: { job, progress: this.fileUploadProgress$ } });
       this.router.navigate(['..'], { relativeTo: this.route });
     },
@@ -96,8 +106,30 @@ export class ReproJobEditComponent implements OnInit, AfterViewInit, OnDestroy {
     this.saved$.next(true);
     const jobUpdate: Partial<Omit<Job, 'jobId'>> = this.formService.update;
     this.reproJobService.uploadRef = null;
+
     this.reproJobService.createJob(jobUpdate)
       .subscribe(this.jobSaveObserver);
+  }
+
+  onDropFolder(folder: DropFolder | null) {
+    this.dropFolder$.next(folder);
+  }
+
+  private copyToDropfolder({ files }: Pick<Job, 'files'>) {
+
+    const dropFolder = this.dropFolder$.value;
+
+    if (!dropFolder) {
+      return;
+    }
+
+    if (this.uploadRef) {
+      this.uploadRef.onAddedToJob().pipe(
+        concatMap(job => job.files && this.reproJobService.copyToDropFolder(job.files.path, dropFolder.path))
+      ).subscribe();
+    } else {
+      this.reproJobService.copyToDropFolder(files.path, dropFolder.path).subscribe();
+    }
   }
 
 

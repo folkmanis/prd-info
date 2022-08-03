@@ -5,6 +5,7 @@ import { JobsFilesApiService } from 'src/app/filesystem';
 import { Job } from '../../jobs';
 import { FileElement } from '../interfaces/file-element';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
+import { FileLocationTypes } from '../interfaces/file-location-types';
 
 
 @Injectable({
@@ -66,6 +67,15 @@ export class JobFilesService {
 
   dropFolders(path?: string[]): Observable<FileElement[]> {
     return this.filesApi.readDropFolders(path?.join('/'));
+  }
+
+  copyJobFolderToDropFolder(path: string[], dropFolder: string[]): Observable<number> {
+    return this.filesApi.copyFile(
+      FileLocationTypes.JOB,
+      FileLocationTypes.DROPFOLDER,
+      path.join('/'),
+      dropFolder.join('/'),
+    );
   }
 
 

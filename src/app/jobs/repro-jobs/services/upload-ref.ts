@@ -1,5 +1,6 @@
 import { concat, from, merge, Observable, OperatorFunction, pipe, Subject, timer } from 'rxjs';
 import { concatMap, filter, last, map, mergeMap, mergeMapTo, scan, shareReplay, takeUntil, tap, toArray } from 'rxjs/operators';
+import { Job } from '../../interfaces';
 import { FileUploadEventType, FileUploadMessage, UploadFinishMessage } from '../../interfaces/file-upload-message';
 
 
@@ -8,11 +9,11 @@ export class UploadRef {
     private readonly cancel$ = new Subject<void>();
     private readonly messages$: Observable<FileUploadMessage[]>;
     private readonly fileNames$: Observable<string[]>;
-    private readonly addedToJob$ = new Subject<number>();
+    private readonly addedToJob$ = new Subject<Job>();
 
     constructor(
         messages$: Observable<FileUploadMessage[]>,
-        private addToJobFn: (jobId: number, files: string[]) => Observable<number>,
+        private addToJobFn: (jobId: number, files: string[]) => Observable<Job>,
     ) {
         this.messages$ = messages$.pipe(
             takeUntil(this.cancel$),
@@ -35,7 +36,7 @@ export class UploadRef {
         ).subscribe(this.addedToJob$);
     }
 
-    onAddedToJob(): Observable<number> {
+    onAddedToJob(): Observable<Job> {
         return this.addedToJob$.asObservable();
     }
 
@@ -43,7 +44,6 @@ export class UploadRef {
         this.addedToJob$.error(new Error('Upload cancelled'));
         this.cancel$.next();
         this.cancel$.complete();
-        // this.addedToJob$.complete();
     }
 
     onCancel(): Observable<string[]> {

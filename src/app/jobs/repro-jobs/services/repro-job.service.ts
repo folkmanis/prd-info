@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { flatten } from 'lodash';
-import { concatMap, map, BehaviorSubject, forkJoin, from, Observable, of, toArray } from 'rxjs';
+import { concatMap, map, BehaviorSubject, forkJoin, from, Observable, of, toArray, filter } from 'rxjs';
 import { JobProductionStage } from 'src/app/interfaces';
 import { ProductsService } from 'src/app/services';
 import { Job, JobProduct } from '../../interfaces';
@@ -66,18 +66,30 @@ export class ReproJobService {
   productionStages(products: JobProduct[]): Observable<JobProductionStage[]> {
 
     return from(products).pipe(
+      filter(prod => !!prod?.name),
       concatMap(prod => this.productsService.productionStages(prod.name).pipe(
         concatMap(stages => from(stages)),
         map(stage => ({
-          ...stage,
+          productionStageId: stage.productionStageId,
           fixedAmount: stage.fixedAmount || 0,
           amount: stage.amount * prod.count + stage.fixedAmount,
           productionStatus: 10,
+          materials: stage.materials.map(material => ({
+            materialId: material.materialId,
+            amount: material.amount * stage.amount * prod.count + material.fixedAmount,
+            fixedAmount: material.fixedAmount
+          }))
         })),
       )),
       toArray(),
     );
 
+  }
+
+  copyToDropFolder(jobFilesPath: string[], dropFolder: string[]): Observable<boolean> {
+    return this.jobFilesService.copyJobFolderToDropFolder(jobFilesPath, dropFolder).pipe(
+      map(() => true),
+    );
   }
 
   private updateFilesLocation(job: Job): Observable<Job> {

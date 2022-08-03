@@ -1,0 +1,11 @@
+<mat-checkbox [formControl]="folderActive">
+    Kopēt mapi uz&nbsp;
+</mat-checkbox>
+
+<mat-form-field>
+    <mat-select [formControl]="folderControl" [compareWith]="compareFn">
+        <mat-option *ngFor="let folder of folders;" [value]="folder">
+            {{ folder.path.join('/') }}
+        </mat-option>
+    </mat-select>
+</mat-form-field>

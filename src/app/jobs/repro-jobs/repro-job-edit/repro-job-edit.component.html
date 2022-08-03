@@ -19,6 +19,10 @@
     <app-job-form [fileUploadProgress]="fileUploadProgress$ | async"></app-job-form>
 </div>
 
+<app-drop-folder [folders]="dropFolders$ | async" [defaultEnabled]="isUpload" (folderChanges)="onDropFolder($event)"
+    [disabled]="isUpload == false && form.value.files == null">
+</app-drop-folder>
+
 <mat-divider></mat-divider>
 
 <footer>

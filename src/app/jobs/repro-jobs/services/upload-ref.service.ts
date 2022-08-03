@@ -2,11 +2,12 @@ import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { last } from 'lodash';
 import { merge, Observable, of, OperatorFunction, partition, pipe } from 'rxjs';
-import { concatMap, filter, map, mapTo, mergeMap, pluck, scan, share, tap, throttleTime } from 'rxjs/operators';
+import { concatMap, filter, map, mergeMap, scan, share, throttleTime } from 'rxjs/operators';
+import { JobFilesService } from 'src/app/filesystem';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
+import { Job } from '../../interfaces';
 import { FileUploadEventType, FileUploadMessage, UploadMessageBase, UploadWaitingMessage } from '../../interfaces/file-upload-message';
 import { UploadRef } from './upload-ref';
-import { JobsFilesApiService, JobFilesService } from 'src/app/filesystem';
 
 const SIMULTANEOUS_UPLOADS = 2;
 const PERCENT_REPORT_INTERVAL = 500;
@@ -25,7 +26,6 @@ export class UploadRefService {
   constructor(
     private sanitize: SanitizeService,
     private jobFilesService: JobFilesService,
-    private filesApi: JobsFilesApiService,
   ) { }
 
   userFileUploadRef(file$: Observable<File>): UploadRef {
@@ -163,18 +163,14 @@ export class UploadRefService {
     );
   }
 
-  private addUserFilesToJobFn(): (jobId: number, fileNames: string[]) => Observable<number> {
-    return (jobId, fileNames) => this.jobFilesService.moveUserFilesToJob(jobId, fileNames).pipe(
-      pluck('jobId'),
-    );
+  private addUserFilesToJobFn(): (jobId: number, fileNames: string[]) => Observable<Job> {
+    return (jobId, fileNames) => this.jobFilesService.moveUserFilesToJob(jobId, fileNames);
   }
 
-  private addFtpFilesToJobFn(basePath: string[]): (jobId: number, fileNames: string[]) => Observable<number> {
+  private addFtpFilesToJobFn(basePath: string[]): (jobId: number, fileNames: string[]) => Observable<Job> {
     return (jobId, fileNames) => this.jobFilesService.copyFtpFilesToJob(
       jobId,
       fileNames.map(name => [...basePath, name])
-    ).pipe(
-      pluck('jobId'),
     );
   }
 

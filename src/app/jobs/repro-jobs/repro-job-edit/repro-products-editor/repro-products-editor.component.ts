@@ -116,6 +116,7 @@ export class ReproProductsEditorComponent implements OnInit, ControlValueAccesso
       null,
       [Validators.required]
     ));
+    this.onValidationChange();
     setTimeout(() => this.focusLatest(), 0);
   }
 

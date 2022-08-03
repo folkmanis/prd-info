@@ -1,12 +1,13 @@
 import { HttpClient, HttpEvent, HttpRequest } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { ClassTransformer } from 'class-transformer';
-import { concatMap, from, map, Observable, pluck, reduce } from 'rxjs';
+import { concatMap, from, map, Observable, reduce } from 'rxjs';
 import { APP_PARAMS } from 'src/app/app-params';
 import { AppParams } from 'src/app/interfaces';
 import { Job } from 'src/app/jobs';
 import { HttpOptions } from 'src/app/library/http';
 import { FileElement } from '../interfaces/file-element';
+import { FileLocationTypes } from '../interfaces/file-location-types';
 
 
 @Injectable({
@@ -74,7 +75,7 @@ export class JobsFilesApiService {
   deleteUserFiles(fileNames: string[]) {
     return from(fileNames).pipe(
       concatMap(fileName => this.http.delete<{ deletedCount: number; }>(this.path + 'user/' + fileName)),
-      pluck('deletedCount'),
+      map(resp => resp.deletedCount),
       reduce((acc, value) => acc + value, 0),
     );
   }
@@ -102,10 +103,22 @@ export class JobsFilesApiService {
       this.path + jobId + '/update-files-location',
       new HttpOptions()
     ).pipe(
-      pluck('path'),
+      map(resp => resp.path),
     );
   }
 
+  copyFile(srcType: FileLocationTypes, dstType: FileLocationTypes, srcPath: string, dstPath: string): Observable<number> {
+    return this.http.patch<{ copied: number; }>(
+      this.path + `copy/${srcType}/${dstType}`,
+      {
+        ['source-path']: srcPath,
+        ['destination-path']: dstPath,
+      },
+      new HttpOptions(),
+    ).pipe(
+      map(resp => resp?.copied)
+    );
+  }
 
 
 }
