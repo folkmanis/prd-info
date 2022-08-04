@@ -1,3 +1,4 @@
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Directive, Input, Host, Self } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
 
@@ -9,10 +10,15 @@ import { MatDrawer } from '@angular/material/sidenav';
 })
 export class DrawerSmallDirective {
 
+  private _small = false;
   /** @input small: boolean sets small screen mode */
-  @Input() set small(_input: boolean) {
-    this.drawer.opened = !_input;
-    this.drawer.mode = _input ? 'over' : 'side';
+  @Input() set small(value: any) {
+    this._small = coerceBooleanProperty(value);
+    this.drawer.opened = !this.small;
+    this.drawer.mode = this.small ? 'over' : 'side';
+  }
+  get small(): boolean {
+    return this._small;
   }
 
   constructor(

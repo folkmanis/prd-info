@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, ComponentFactoryResolver, Directive, Host, OnInit, Self, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Directive, Host, OnInit, Self, ViewContainerRef } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
 import { DestroyService } from 'prd-cdk';
 import { takeUntil } from 'rxjs/operators';
@@ -13,16 +13,13 @@ export class DrawerButtonDirective implements OnInit {
 
   constructor(
     private viewContainerRef: ViewContainerRef,
-    private resolver: ComponentFactoryResolver,
     @Host() @Self() private drawer: MatDrawer,
     private destroy$: DestroyService,
   ) { }
 
 
   ngOnInit(): void {
-    const buttonRef = this.viewContainerRef.createComponent(
-      this.resolver.resolveComponentFactory(SideButtonComponent)
-    );
+    const buttonRef = this.viewContainerRef.createComponent(SideButtonComponent);
     const chDetector = buttonRef.injector.get(ChangeDetectorRef);
 
     /** assumes drawer position 'end' */
@@ -34,7 +31,7 @@ export class DrawerButtonDirective implements OnInit {
       takeUntil(this.destroy$),
     ).subscribe(st => {
       buttonRef.instance.opened = st;
-      chDetector.detectChanges();
+      chDetector.markForCheck();
     });
   }
 
