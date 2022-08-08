@@ -22,7 +22,7 @@ const COLUMNS = ['label', 'kods', 'adrese', 'yellow', 'rose', 'white', 'gatavs']
 })
 export class TabulaComponent {
 
-  @ViewChild('container', { read: ScrollTopDirective }) private _scrollable: ScrollTopDirective;
+  @ViewChild('scrollContainer', { read: ScrollTopDirective }) private _scrollable: ScrollTopDirective;
   @ViewChildren(RowIdDirective) private _tableRows: QueryList<RowIdDirective>;
 
   selectedKaste: VeikalsKaste | undefined;

@@ -6,7 +6,7 @@
     <app-kopskaiti [colorCodes]="preferences.colors" [totals]="totals$ | async"></app-kopskaiti>
   </div>
 
-  <div #container scroll-to-top>
+  <div #scrollContainer scroll-to-top>
     <!-- Sākas tabula -->
     <table mat-table [dataSource]="dataSource$" [trackBy]="trackByFn" class="mat-elevation-z4" aria-label="Kastes">
 

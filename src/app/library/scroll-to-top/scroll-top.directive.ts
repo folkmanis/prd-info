@@ -9,7 +9,10 @@ import { ScrollToTopComponent } from './scroll-to-top.component';
 @Directive({
   selector: '[scroll-to-top]',
   exportAs: 'scrollToTop',
-  providers: [DestroyService],
+  providers: [
+    DestroyService,
+    { provide: CdkScrollable, useExisting: ScrollTopDirective }
+  ],
 })
 export class ScrollTopDirective extends CdkScrollable implements OnInit, AfterViewInit, OnDestroy {
 
