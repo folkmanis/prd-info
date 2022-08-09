@@ -9,6 +9,14 @@ export class DropFolder {
     @Expose()
     customers: string[];
 
+    isDefault(): boolean {
+        return this.customers.includes('**');
+    }
+
+    includesCustomer(customerName: string): boolean {
+        return this.customers.includes(customerName);
+    }
+
 }
 
 export class ProductionStage {

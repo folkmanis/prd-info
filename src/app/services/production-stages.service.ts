@@ -54,7 +54,7 @@ export class ProductionStagesService {
   getDropFolder(id: string, customerName: string): Observable<DropFolder[]> {
     return this.getOne(id).pipe(
       switchMap(stage => from(stage.dropFolders)),
-      filter(folder => folder.customers.includes(customerName)),
+      filter(stage => stage.isDefault() || stage.includesCustomer(customerName)),
       toArray(),
     );
   }

@@ -1,11 +1,12 @@
-import { ChangeDetectorRef, ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { FormControl, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormArray, ControlValueAccessor, FormGroup, Validator, AbstractControl, ValidationErrors, Validators } from '@angular/forms';
-import { ProductionStage, DropFolder, Customer, CustomerPartial } from 'src/app/interfaces';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, ValidatorFn, Validators } from '@angular/forms';
+import { MatSelectChange } from '@angular/material/select';
 import { ClassTransformer } from 'class-transformer';
-import { switchMap, from, map, Observable, shareReplay } from 'rxjs';
-import { FileElement, JobFilesService } from 'src/app/filesystem';
-import { CustomersService } from 'src/app/services/customers.service';
 import { isEqual } from 'lodash';
+import { map, Observable, shareReplay } from 'rxjs';
+import { FileElement, JobFilesService } from 'src/app/filesystem';
+import { CustomerPartial, DropFolder } from 'src/app/interfaces';
+import { CustomersService } from 'src/app/services/customers.service';
 
 type DropFolderForm = FormGroup<{
   path: FormControl<string[]>;
@@ -33,7 +34,12 @@ type DropFolderForm = FormGroup<{
 })
 export class DropFoldersComponent implements OnInit, ControlValueAccessor, Validator {
 
-  form = new FormArray<DropFolderForm>([]);
+  form = new FormArray<DropFolderForm>(
+    [],
+    {
+      validators: [this.duplicateDefaultValidator()]
+    }
+  );
 
   dropFolders$: Observable<{ value: string[], name: string; }[]> = this.filesService.dropFolders().pipe(
     map(dropFolderNames),
@@ -90,6 +96,12 @@ export class DropFoldersComponent implements OnInit, ControlValueAccessor, Valid
 
   }
 
+  onCustomerSelection({ value, source }: MatSelectChange): void {
+    if (Array.isArray(value) && value.includes('**')) {
+      source.value = ['**'];
+    }
+  }
+
   append() {
     this.form.push(this.dropFolderForm(new DropFolder()));
     this.chDetector.markForCheck();
@@ -113,12 +125,19 @@ export class DropFoldersComponent implements OnInit, ControlValueAccessor, Valid
         }
       ),
       customers: new FormControl<string[]>(
-        value.customers,
+        value.customers || [],
         {
           validators: [Validators.required],
         }
       ),
     });
+  }
+
+  private duplicateDefaultValidator(): ValidatorFn {
+    return (control: FormArray<DropFolderForm>) => {
+      const defaults = control.value?.filter(val => val.customers?.includes('**'));
+      return defaults.length > 1 ? { duplicateDefaults: defaults } : null;
+    };
   }
 
 }

@@ -1,4 +1,4 @@
-<div *ngFor="let control of form.controls; index as idx">
+<div *ngFor="let control of form.controls; index as idx" class="container">
 
     <button mat-icon-button color="warn" (click)="delete(idx); $event.stopPropagation();">
         <mat-icon>
@@ -15,11 +15,20 @@
     </mat-form-field>
 
     <mat-form-field>
-        <mat-select [formControl]="control.controls.customers" multiple>
-            <mat-option *ngFor="let customer of customers$ | async" [value]="customer.CustomerName">
+        <mat-select [formControl]="control.controls.customers" multiple #customerSelection
+            (selectionChange)="onCustomerSelection($event)">
+            <mat-option value="**">
+                Noklusējuma
+            </mat-option>
+            <mat-option *ngFor="let customer of customers$ | async" [value]="customer.CustomerName"
+                [disabled]="customerSelection.value[0]==='**'">
                 {{ customer.CustomerName }}
             </mat-option>
         </mat-select>
     </mat-form-field>
 
+</div>
+
+<div *ngIf="form.hasError('duplicateDefaults')" class="mat-error">
+    Var būt tikai viena noklusējuma vērtība.
 </div>
