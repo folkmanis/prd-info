@@ -6,7 +6,6 @@ import { DropFolder, JobProductionStage } from 'src/app/interfaces';
 import { ProductionStagesService } from 'src/app/services/production-stages.service';
 import { Files, Job, JobCategories, JobProduct } from '../../interfaces';
 import { ReproJobService } from './repro-job.service';
-import { log } from 'prd-cdk';
 
 @Injectable()
 export class JobFormService {
@@ -81,7 +80,6 @@ export class JobFormService {
       ))
     )),
     map(folders => folders.sort(dropFolderSortFn())),
-    log('drop  folders'),
   );
 
 
@@ -159,7 +157,6 @@ export class JobFormService {
 
 function dropFolderSortFn(): (a: DropFolder, b: DropFolder) => number {
   return function (a, b) {
-    console.log(a.isDefault(), b.isDefault());
     if (a.isDefault()) {
       return 1;
     }
