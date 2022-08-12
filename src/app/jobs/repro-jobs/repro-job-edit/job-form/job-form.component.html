@@ -89,21 +89,10 @@
             </mat-form-field>
         </mat-card>
 
-        <div>
+        <mat-card>
+            <ng-content></ng-content>
+        </mat-card>
 
-            <!-- Folderis -->
-            <mat-card *ngIf="isNew === false">
-                <mat-card-content>
-                    <app-folder-path [path]="folderPath$ | async" (createFolder)="onCreateFolder()"
-                        [enabled]="updateFolderLocationEnabled$ | async">
-                    </app-folder-path>
-                </mat-card-content>
-            </mat-card>
-
-            <app-upload-progress [progress]="fileUploadProgress">
-            </app-upload-progress>
-
-        </div>
 
     </div>
 

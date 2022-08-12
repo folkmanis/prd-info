@@ -92,6 +92,10 @@ export class ReproJobService {
     );
   }
 
+  createFolder(jobId: number) {
+    return this.jobService.createFolder(jobId);
+  }
+
   private updateFilesLocation(job: Job): Observable<Job> {
     return this.jobFilesService.updateFolderLocation(job.jobId).pipe(
       map(_ => job),

@@ -1,18 +1,14 @@
-import { Input, Output, ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { addDays, subDays } from 'date-fns';
-import { isEqual, pickBy } from 'lodash';
 import { Observable } from 'rxjs';
-import { distinctUntilChanged, filter, map, pluck, shareReplay, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, pluck, switchMap } from 'rxjs/operators';
 import { CustomerPartial, SystemPreferences } from 'src/app/interfaces';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { LoginService } from 'src/app/login';
 import { CustomersService, LayoutService, ProductsService } from 'src/app/services';
 import { CONFIG } from 'src/app/services/config.provider';
-import { FileUploadMessage, Job } from '../../../interfaces';
-import { JobService } from '../../../services/job.service';
+import { Job } from '../../../interfaces';
 import { JobFormService } from '../../services/job-form.service';
-import { log } from 'prd-cdk';
 import { CustomerInputComponent } from '../customer-input/customer-input.component';
 import { FolderPathComponent } from '../folder-path/folder-path.component';
 
@@ -28,17 +24,6 @@ export class JobFormComponent implements OnInit {
   @ViewChild(CustomerInputComponent) customerInput: CustomerInputComponent;
 
   @ViewChild(FolderPathComponent) folderPathComponent: FolderPathComponent;
-
-  private _fileUploadProgress: FileUploadMessage[] = [];
-  @Input()
-  get fileUploadProgress() {
-    return this._fileUploadProgress;
-  }
-  set fileUploadProgress(value: FileUploadMessage[]) {
-    if (value instanceof Array) {
-      this._fileUploadProgress = value;
-    }
-  }
 
   form = this.formService.form;
 
@@ -77,18 +62,9 @@ export class JobFormComponent implements OnInit {
 
   showPrices$: Observable<boolean> = this.loginService.isModule('calculations');
 
-  folderPath$ = this.formService.value$.pipe(
-    pluck('files'),
-    map(files => files?.path?.join('/'))
-  );
-
   get updateFolderLocation(): boolean {
     return this.folderPathComponent.updatePath;
   }
-
-  updateFolderLocationEnabled$: Observable<boolean> = this.formService.update$.pipe(
-    map(upd => !!upd && (!!upd.customer || !!upd.name || !!upd.receivedDate)),
-  );
 
   get nameControl() {
     return this.formService.form.controls.name;
@@ -106,19 +82,10 @@ export class JobFormComponent implements OnInit {
     private customersService: CustomersService,
     private sanitize: SanitizeService,
     private loginService: LoginService,
-    private jobsService: JobService,
     private formService: JobFormService,
   ) { }
 
   ngOnInit(): void {
-  }
-
-  onCreateFolder() {
-    const jobId = this.formService.value.jobId;
-    this.jobsService.createFolder(jobId).pipe(
-      map(job => job.files),
-    )
-      .subscribe(files => this.formService.form.controls.files.setValue(files));
   }
 
 

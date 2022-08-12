@@ -32,6 +32,15 @@ export class ReproJobEditComponent implements OnInit, AfterViewInit, OnDestroy {
 
   saved$ = new BehaviorSubject(false);
 
+  folderPath$ = this.formService.value$.pipe(
+    map(job => job.files?.path),
+    map(path => path?.join('/') || '')
+  );
+
+  updateFolderLocationEnabled$: Observable<boolean> = this.formService.update$.pipe(
+    map(upd => !!upd && (!!upd.customer || !!upd.name || !!upd.receivedDate)),
+  );
+
   private dropFolder$ = new BehaviorSubject<DropFolder | null>(null);
 
   saveDisabled$ = combineLatest({
@@ -109,6 +118,14 @@ export class ReproJobEditComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.reproJobService.createJob(jobUpdate)
       .subscribe(this.jobSaveObserver);
+  }
+
+  onCreateFolder() {
+    const jobId = this.formService.value.jobId;
+    this.reproJobService.createFolder(jobId).pipe(
+      map(job => job.files),
+    )
+      .subscribe(files => this.formService.form.controls.files.setValue(files));
   }
 
   onDropFolder(folder: DropFolder | null) {
