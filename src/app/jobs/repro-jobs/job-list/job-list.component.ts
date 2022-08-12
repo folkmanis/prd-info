@@ -4,7 +4,6 @@ import { DestroyService } from 'prd-cdk';
 import { from } from 'rxjs';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
-import { LayoutService } from 'src/app/services';
 import { JobPartial } from '../../interfaces';
 import { JobService } from '../../services/job.service';
 import { ReproJobService } from '../services/repro-job.service';
@@ -20,7 +19,7 @@ import { UploadRefService } from '../services/upload-ref.service';
 })
 export class JobListComponent implements OnInit {
 
-  isLarge$ = this.layout.isLarge$;
+  isLarge = false;
 
   dataSource$ = this.jobService.jobs$;
 
@@ -32,7 +31,6 @@ export class JobListComponent implements OnInit {
     private userFileUpload: UploadRefService,
     private reproJobService: ReproJobService,
     private clipboard: ClipboardService,
-    private layout: LayoutService,
     private sanitize: SanitizeService,
   ) { }
 
@@ -40,9 +38,8 @@ export class JobListComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  copyJobIdAndName({ name, jobId }: Pick<JobPartial, 'jobId' | 'name'>, event: MouseEvent) {
+  copyJobIdAndName({ name, jobId }: Pick<JobPartial, 'jobId' | 'name'>) {
     this.clipboard.copy(`${jobId}-${this.sanitize.sanitizeFileName(name)}`);
-    event.stopPropagation();
   }
 
   onSetJobStatus(jobId: number, status: number) {

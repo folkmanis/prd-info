@@ -22,6 +22,7 @@ import { SnackbarMessageComponent } from './snackbar-message/snackbar-message.co
 import { NewJobButtonComponent } from './job-list/new-job-button/new-job-button.component';
 import { ActiveProductDirective } from './job-list/active-product.directive';
 import { DropFolderComponent } from './repro-job-edit/drop-folder/drop-folder.component';
+import { ViewSizeDirective } from './job-list/view-size.directive';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { DropFolderComponent } from './repro-job-edit/drop-folder/drop-folder.co
     NewJobButtonComponent,
     ActiveProductDirective,
     DropFolderComponent,
+    ViewSizeDirective,
   ],
   imports: [
     CommonModule,
