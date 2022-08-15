@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CustomersService } from 'src/app/services';
-import { LayoutService } from 'src/app/services';
 import { combineLatest, BehaviorSubject } from 'rxjs';
 import { map, debounceTime } from 'rxjs/operators';
 
@@ -11,11 +10,8 @@ import { map, debounceTime } from 'rxjs/operators';
 })
 export class CustomersListComponent implements OnInit, OnDestroy {
 
-  constructor(
-    private customersService: CustomersService,
-    private layOutService: LayoutService,
-  ) { }
   readonly filter$ = new BehaviorSubject<string>('');
+
 
   customers$ = combineLatest([
     this.filter$.pipe(
@@ -26,8 +22,13 @@ export class CustomersListComponent implements OnInit, OnDestroy {
   ]).pipe(
     map(([fltr, cust]) => cust.filter(c => c.CustomerName.toUpperCase().includes(fltr)))
   );
-  large$ = this.layOutService.isLarge$;
   displayedColumns = ['CustomerName'];
+
+
+  constructor(
+    private customersService: CustomersService,
+  ) { }
+
 
   ngOnInit(): void {
   }

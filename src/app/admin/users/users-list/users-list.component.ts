@@ -1,28 +1,23 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { UsersService } from '../../services/users.service';
 import { User } from 'src/app/interfaces';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
-import { LayoutService } from 'src/app/services';
+
 
 @Component({
   selector: 'app-users-list',
   templateUrl: './users-list.component.html',
-  styleUrls: ['./users-list.component.scss']
+  styleUrls: ['./users-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsersListComponent implements OnInit, OnDestroy {
-
-  constructor(
-    private usersService: UsersService,
-    private layOutService: LayoutService,
-  ) { }
 
   displayedColumns = [
     'username',
     'name',
     'last_login',
   ];
-  large$ = this.layOutService.isLarge$;
 
   filter$ = new BehaviorSubject<string>('');
 
@@ -36,15 +31,19 @@ export class UsersListComponent implements OnInit, OnDestroy {
     map(this.userFilter)
   );
 
-  private userFilter([users, filter]: [Partial<User>[], string]): Partial<User>[] {
-    return users.filter(u => u.name.toUpperCase().includes(filter) || u.username.toUpperCase().includes(filter));
-  }
+  constructor(
+    private usersService: UsersService,
+  ) { }
 
   ngOnInit(): void {
   }
 
   ngOnDestroy(): void {
     this.filter$.complete();
+  }
+
+  private userFilter([users, filter]: [Partial<User>[], string]): Partial<User>[] {
+    return users.filter(u => u.name.toUpperCase().includes(filter) || u.username.toUpperCase().includes(filter));
   }
 
 }

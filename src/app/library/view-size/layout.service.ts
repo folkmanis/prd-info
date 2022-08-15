@@ -2,8 +2,8 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
-import { APP_PARAMS } from '../app-params';
-import { AppParams } from '../interfaces';
+import { APP_PARAMS } from 'src/app/app-params';
+import { AppParams } from 'src/app/interfaces';
 
 
 @Injectable({

@@ -7,7 +7,6 @@ import { filter, map } from 'rxjs/operators';
 import { Material, ProductUnit, SystemPreferences } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { SimpleFormSource } from 'src/app/library/simple-form';
-import { LayoutService } from 'src/app/services';
 import { CONFIG } from 'src/app/services/config.provider';
 import { MaterialPriceGroup, MaterialsFormSource } from '../services/materials-form-source';
 import { DialogData, MaterialsPriceDialogComponent } from './materials-price-dialog/materials-price-dialog.component';
@@ -32,8 +31,6 @@ export class MaterialsEditComponent implements OnInit, CanComponentDeactivate {
     map(conf => conf.jobs.productCategories),
   );
 
-  large$ = this.layout.isLarge$;
-
   get form(): IFormGroup<Material> {
     return this.formSource.form;
   }
@@ -43,7 +40,6 @@ export class MaterialsEditComponent implements OnInit, CanComponentDeactivate {
   }
 
   constructor(
-    private layout: LayoutService,
     private dialogService: MatDialog,
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
     private formSource: MaterialsFormSource,

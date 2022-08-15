@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit, Output } from '@angular/core';
-import { UntypedFormBuilder, FormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { debounceTime, filter, map, pluck, startWith, switchMap } from 'rxjs/operators';
 import { CustomerPartial, SystemPreferences } from 'src/app/interfaces';
-import { CustomersService, SystemPreferencesService } from 'src/app/services';
+import { CustomersService } from 'src/app/services';
 import { CONFIG } from 'src/app/services/config.provider';
-import { JobQueryFilter, JobFilter } from '../../interfaces';
-import { LayoutService } from 'src/app/services';
+import { JobFilter, JobQueryFilter } from '../../interfaces';
 
 
 const DEFAULT_FILTER: JobFilter = {
@@ -52,13 +51,10 @@ export class JobFilterComponent implements JobFilterFormProvider, OnInit {
     map(normalizeFilter),
   );
 
-  large$ = this.layout.isLarge$;
-
   constructor(
     private fb: UntypedFormBuilder,
     private customersService: CustomersService,
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
-    private layout: LayoutService,
   ) { }
 
 

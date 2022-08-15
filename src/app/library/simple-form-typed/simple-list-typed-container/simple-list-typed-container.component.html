@@ -1,4 +1,4 @@
-<div class="container" [class.large]="large" [class.active]="editor.isActivated">
+<div class="container" appViewSize [class.active]="editor.isActivated" #viewSize="viewSize">
     <div class="list">
 
         <mat-toolbar>
@@ -17,7 +17,7 @@
         </div>
     </div>
 
-    <div class="editor" [style.flex]="large ? '0 0 ' + editorWidth : null">
+    <div class="editor" [style.flex]="viewSize.isLarge ? '0 0 ' + editorWidth : null">
         <router-outlet #editor="outlet" (activate)="onActivate()" (deactivate)="onActivate()"></router-outlet>
     </div>
 

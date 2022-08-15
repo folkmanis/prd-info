@@ -1,5 +1,5 @@
 <div class="container" scroll-to-top>
-    <table mat-table [dataSource]="jobs$" [trackBy]="trackByFn" class="app-table" [class.large]="isLarge$ | async">
+    <table mat-table [dataSource]="jobs$" [trackBy]="trackByFn" class="app-table" appViewSize #viewSize="viewSize">
 
         <!-- Selection -->
         <ng-container matColumnDef="selection">
@@ -104,8 +104,8 @@
             </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns$ | async"></tr>
-        <tr mat-row *matRowDef="let job; columns: displayedColumns$ | async"
+        <tr mat-header-row *matHeaderRowDef="viewSize.isSmall ? colSmall : col"></tr>
+        <tr mat-row *matRowDef="let job; columns: viewSize.isSmall ? colSmall : col"
             [class.price-update]="job['products.priceUpdate'] !== undefined" [class.no-price]="!job['products.price']">
         </tr>
 

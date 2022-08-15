@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
-import { LayoutService } from 'src/app/services';
 import { ProductsService } from 'src/app/services';
 
 @Component({
@@ -12,12 +11,6 @@ import { ProductsService } from 'src/app/services';
 })
 export class ProductsListComponent implements OnInit {
 
-
-  constructor(
-    private productsService: ProductsService,
-    private layout: LayoutService,
-  ) { }
-  large$ = this.layout.isLarge$;
 
   displayedColumns = ['name', 'category'];
 
@@ -32,6 +25,12 @@ export class ProductsListComponent implements OnInit {
   ]).pipe(
     map(([str, prod]) => prod.filter(pr => pr.name.toUpperCase().includes(str))),
   );
+
+
+  constructor(
+    private productsService: ProductsService,
+  ) { }
+
 
   ngOnInit(): void {
   }

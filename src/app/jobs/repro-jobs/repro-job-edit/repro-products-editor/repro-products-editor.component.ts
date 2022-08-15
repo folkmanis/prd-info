@@ -35,8 +35,6 @@ export class ReproProductsEditorComponent implements OnInit, ControlValueAccesso
 
   @Input() showPrices: boolean;
 
-  @Input() small = false;
-
   form = new UntypedFormGroup({
     products: new UntypedFormArray([]),
   });

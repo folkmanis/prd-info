@@ -11,13 +11,12 @@ import { ReplaySubject, debounceTime } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SimpleListTypedContainerComponent implements AfterViewInit, OnDestroy {
+
   @ViewChild('editor') private routerOutlet: RouterOutlet;
 
   searchControl = new FormControl<string>('');
 
   filterTemplate: TemplateRef<any> | null = null;
-
-  @Input() large = true;
 
   @Input() editorWidth = '50%';
 

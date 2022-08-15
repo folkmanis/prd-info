@@ -1,10 +1,9 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, Input, EventEmitter } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, from, Observable, Subject } from 'rxjs';
-import { pluck, filter, switchMap, map, toArray, startWith, takeUntil, withLatestFrom } from 'rxjs/operators';
-import { log, DestroyService } from 'prd-cdk';
-import { Filter, JobPricesService, COLUMNS, COLUMNS_SMALL, JobData } from '../job-prices.service';
-import { LayoutService } from 'src/app/services';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { DestroyService } from 'prd-cdk';
+import { combineLatest, map, Observable, Subject, takeUntil, withLatestFrom } from 'rxjs';
+import { COLUMNS, COLUMNS_SMALL, JobData, JobPricesService } from '../job-prices.service';
+
 
 @Component({
   selector: 'app-job-prices-table',
@@ -17,11 +16,9 @@ import { LayoutService } from 'src/app/services';
 })
 export class JobPricesTableComponent implements OnInit, OnDestroy {
 
-  isLarge$: Observable<boolean> = this.layout.isLarge$;
 
-  displayedColumns$: Observable<string[]> = this.layout.isSmall$.pipe(
-    map(small => small ? COLUMNS_SMALL : COLUMNS),
-  );
+  col = COLUMNS;
+  colSmall = COLUMNS_SMALL;
 
   jobs$: Observable<JobData[]> = this.jobPricesService.jobs$;
 
@@ -49,7 +46,6 @@ export class JobPricesTableComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private jobPricesService: JobPricesService,
     private destroy$: DestroyService,
-    private layout: LayoutService,
   ) { }
 
   ngOnInit(): void {

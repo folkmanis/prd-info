@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject, Input, OnInit, Output } from '@angular/core';
 import { Observable, pluck } from 'rxjs';
 import { SystemPreferences } from 'src/app/interfaces';
-import { LayoutService } from 'src/app/services';
 import { CONFIG } from 'src/app/services/config.provider';
 import { JobsProductionFilterQuery } from '../../interfaces';
 import { FilterForm, ProductsFormData } from './filter-form';
@@ -46,12 +45,9 @@ export class FilterComponent implements OnInit {
     pluck('jobs', 'productCategories')
   );
 
-  large$ = this.layout.isLarge$;
-
   constructor(
     public form: FilterForm,
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
-    private layout: LayoutService,
   ) { }
 
   ngOnInit(): void {

@@ -1,4 +1,4 @@
-<app-simple-list-container [large]="large$ | async" (filter)="filter$.next($event)" plusButton filterInput>
+<app-simple-list-container (filter)="filter$.next($event)" plusButton filterInput>
 
     <table mat-table [dataSource]="users$">
 

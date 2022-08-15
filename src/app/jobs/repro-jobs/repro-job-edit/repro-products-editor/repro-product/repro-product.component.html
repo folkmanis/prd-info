@@ -1,9 +1,9 @@
-<div [formGroup]="form" class="container" [class.small]="small">
+<div [formGroup]="form" class="container" appViewSize #viewSize="viewSize">
 
     <div class="name">
 
         <!-- Prece -->
-        <button *ngIf="small === false" mat-icon-button (click)="remove.next()" [disabled]="form.disabled">
+        <button *ngIf="viewSize.isSmall === false" mat-icon-button (click)="remove.next()" [disabled]="form.disabled">
             <mat-icon>delete</mat-icon>
         </button>
 
@@ -55,7 +55,7 @@
         </mat-form-field>
     </div>
 
-    <div *ngIf="small">
+    <div *ngIf="viewSize.isSmall">
         <button mat-button (click)="remove.next()" [disabled]="form.disabled">
             DZĒST
         </button>

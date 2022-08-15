@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { LayoutService } from 'src/app/services';
 import { KastesJobPartial } from '../../interfaces/kastes-job-partial';
 import { KastesPasutijumiService } from '../../services/kastes-pasutijumi.service';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
@@ -32,12 +31,9 @@ export class PasutijumiTabulaComponent implements OnInit {
     ),
   );
 
-  large$ = this.layOutService.isLarge$;
-
   constructor(
     private kastesJobsService: KastesPasutijumiService,
     private preferencesService: KastesPreferencesService,
-    private layOutService: LayoutService,
   ) { }
 
   ngOnInit(): void {

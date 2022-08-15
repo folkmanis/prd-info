@@ -1,4 +1,4 @@
-<form [formGroup]="form" [class.large]="isLarge$ | async">
+<form [formGroup]="form" appViewSize>
 
     <div class="container-multi">
 
@@ -75,8 +75,7 @@
 
     <!-- Preces apakšforma -->
     <app-repro-products-editor *ngIf="customerProducts$ | async as customerProducts"
-        [customerProducts]="customerProducts" formControlName="products" [showPrices]="showPrices$ | async"
-        [small]="isSmall$ | async">
+        [customerProducts]="customerProducts" formControlName="products" [showPrices]="showPrices$ | async">
     </app-repro-products-editor>
 
     <div class="container-multi">

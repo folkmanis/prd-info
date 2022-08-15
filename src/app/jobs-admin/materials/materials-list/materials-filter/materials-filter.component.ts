@@ -3,7 +3,7 @@ import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { debounceTime, map, pluck } from 'rxjs/operators';
 import { SystemPreferences } from 'src/app/interfaces';
-import { LayoutService } from 'src/app/services';
+import { LayoutService } from 'src/app/library';
 import { CONFIG } from 'src/app/services/config.provider';
 
 import { MaterialsFilter } from '../../services/materials.service';

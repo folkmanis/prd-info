@@ -15,7 +15,7 @@
 
     </mat-drawer-content>
 
-    <mat-drawer button [small]="isSmall$ | async">
+    <mat-drawer button>
         <div *ngIf="kastesJob$ | async as kastesJob">
             <h4>
                 {{kastesJob.jobId}} - {{kastesJob.name}}

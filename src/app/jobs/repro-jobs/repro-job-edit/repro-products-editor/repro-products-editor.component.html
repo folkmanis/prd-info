@@ -8,7 +8,7 @@
 
         <app-repro-product *ngFor="let control of productsControl.controls; index as idx;"
             (remove)="onRemoveProduct(idx)" [customerProducts]="customerProducts" appProductControl
-            [formControlName]="idx" [showPrices]="showPrices" [small]="small">
+            [formControlName]="idx" [showPrices]="showPrices">
         </app-repro-product>
 
     </mat-card-content>

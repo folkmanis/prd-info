@@ -11,7 +11,6 @@ import { DestroyService } from 'prd-cdk';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { CustomerProduct } from 'src/app/interfaces';
 import { JobProduct } from 'src/app/jobs';
-import { LayoutService } from 'src/app/services/layout.service';
 import { ProductAutocompleteComponent } from '../product-autocomplete/product-autocomplete.component';
 import { ProductFormGroup } from './product-form-group';
 
@@ -67,15 +66,6 @@ export class ReproProductComponent implements OnInit, ControlValueAccessor, Vali
   }
   get showPrices() {
     return this._showPrices;
-  }
-
-  private _small = false;
-  @Input()
-  set small(value: any) {
-    this._small = coerceBooleanProperty(value);
-  }
-  get small() {
-    return this._small;
   }
 
   onTouched: () => void = () => { };

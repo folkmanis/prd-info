@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { addDays, subDays } from 'date-fns';
-import { Observable } from 'rxjs';
-import { distinctUntilChanged, filter, map, pluck, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, Observable, switchMap } from 'rxjs';
 import { CustomerPartial, SystemPreferences } from 'src/app/interfaces';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { LoginService } from 'src/app/login';
-import { CustomersService, LayoutService, ProductsService } from 'src/app/services';
+import { CustomersService, ProductsService } from 'src/app/services';
 import { CONFIG } from 'src/app/services/config.provider';
 import { Job } from '../../../interfaces';
 import { JobFormService } from '../../services/job-form.service';
@@ -27,10 +26,6 @@ export class JobFormComponent implements OnInit {
 
   form = this.formService.form;
 
-
-  isLarge$: Observable<boolean> = this.layoutService.isLarge$;
-  isSmall$ = this.layoutService.isSmall$;
-
   customers$: Observable<CustomerPartial[]> = this.customersService.customers$.pipe(
     map(customers => customers.filter(customer => !customer.disabled)),
   );
@@ -41,12 +36,12 @@ export class JobFormComponent implements OnInit {
   };
 
   jobStates$ = this.config$.pipe(
-    pluck('jobs', 'jobStates'),
+    map(config => config.jobs.jobStates),
     map(states => states.filter(st => st.state < 50))
   );
 
   categories$ = this.config$.pipe(
-    pluck('jobs', 'productCategories'),
+    map(config => config.jobs.productCategories),
   );
 
   jobIdAndName$ = this.formService.value$.pipe(
@@ -54,7 +49,7 @@ export class JobFormComponent implements OnInit {
   );
 
   customerProducts$ = this.formService.value$.pipe(
-    pluck('customer'),
+    map(value => value.customer),
     filter(customer => !!customer),
     distinctUntilChanged(),
     switchMap(customer => this.productsService.productsCustomer(customer)),
@@ -77,7 +72,6 @@ export class JobFormComponent implements OnInit {
 
   constructor(
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
-    private layoutService: LayoutService,
     private productsService: ProductsService,
     private customersService: CustomersService,
     private sanitize: SanitizeService,

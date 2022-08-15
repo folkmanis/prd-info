@@ -5,7 +5,8 @@ import { filter, mergeMap, pluck, share, take, takeUntil, throttleTime } from 'r
 import { APP_PARAMS } from 'src/app/app-params';
 import { AppParams, SystemNotification, SystemOperations, User, UserModule } from 'src/app/interfaces';
 import { LoginService } from 'src/app/login';
-import { LayoutService, NotificationsService } from 'src/app/services';
+import { NotificationsService } from 'src/app/services';
+import { LayoutService } from 'src/app/library';
 import { MessagingService } from '../messaging/services/messaging.service';
 
 const INITIAL_DELAY = 3000;

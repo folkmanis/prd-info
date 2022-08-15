@@ -19,8 +19,6 @@ export class SimpleListContainerComponent implements AfterViewInit, OnDestroy {
 
   filterTemplate: TemplateRef<any> | null = null;
 
-  @Input() large = true;
-
   @Input() editorWidth = '50%';
 
   @Input()

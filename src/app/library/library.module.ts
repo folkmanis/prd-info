@@ -18,6 +18,7 @@ import { PrdCdkModule } from 'prd-cdk';
 import { DateServicesModule } from './date-services';
 import { InputTrimDirective } from './directives/input-trim.directive';
 import { PasswordInputModule } from './password-input/password-input.module';
+import { ViewSizeModule } from './view-size/view-size.module';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { PasswordInputModule } from './password-input/password-input.module';
     PrdCdkModule,
     DateServicesModule,
     PasswordInputModule,
+    ViewSizeModule,
   ],
   exports: [
     FormsModule,
@@ -61,6 +63,7 @@ import { PasswordInputModule } from './password-input/password-input.module';
     PrdCdkModule,
     DateServicesModule,
     PasswordInputModule,
+    ViewSizeModule,
   ],
 })
 export class LibraryModule { }

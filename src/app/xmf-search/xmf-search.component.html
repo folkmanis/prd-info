@@ -1,5 +1,5 @@
 <mat-drawer-container>
-    <mat-drawer button [small]="isSmall$ | async">
+    <mat-drawer button>
         <app-facet [facet]="facet$ | async" (filter)="onFacet($event)"></app-facet>
     </mat-drawer>
 

@@ -4,13 +4,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SideButtonComponent } from './side-button.component';
 import { DrawerButtonDirective } from './drawer-button.directive';
-import { DrawerSmallDirective } from './drawer-small.directive';
 
 @NgModule({
   declarations: [
     SideButtonComponent,
     DrawerButtonDirective,
-    DrawerSmallDirective,
   ],
   imports: [
     CommonModule,
@@ -19,7 +17,6 @@ import { DrawerSmallDirective } from './drawer-small.directive';
   ],
   exports: [
     DrawerButtonDirective,
-    DrawerSmallDirective,
   ]
 })
 export class SideButtonModule { }

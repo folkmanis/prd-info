@@ -1,13 +1,12 @@
-import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectionStrategy } from '@angular/core';
-import { KastesPreferencesService } from '../services/kastes-preferences.service';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { Observable, pipe, Subscription, Subject } from 'rxjs';
-import { map, tap, filter, switchMap, distinctUntilChanged, takeUntil, pluck } from 'rxjs/operators';
-import { KastesTabulaService } from './services/kastes-tabula.service';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DestroyService } from 'prd-cdk';
+import { Observable, Subject } from 'rxjs';
+import { filter, map, pluck, switchMap, takeUntil } from 'rxjs/operators';
 import { KastesPasutijumiService } from '../services/kastes-pasutijumi.service';
-import { LayoutService } from 'src/app/services';
+import { KastesPreferencesService } from '../services/kastes-preferences.service';
 import { Status as LabelStatuss } from './labels/labels.component';
+import { KastesTabulaService } from './services/kastes-tabula.service';
 import { TabulaComponent } from './tabula/tabula.component';
 
 @Component({
@@ -27,10 +26,8 @@ export class SelectorComponent implements OnInit {
     private tabulaService: KastesTabulaService,
     private destroy$: DestroyService,
     private pasutijumiService: KastesPasutijumiService,
-    private layoutService: LayoutService
   ) { }
 
-  isSmall$ = this.layoutService.isSmall$;
 
   pasutijumsId$ = this.kastesPreferencesService.pasutijumsId$;
   colors$ = this.kastesPreferencesService.preferences$.pipe(

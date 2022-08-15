@@ -1,5 +1,5 @@
 <mat-drawer-container>
-    <mat-drawer button [small]="(large$ | async) === false">
+    <mat-drawer button>
 
         <app-products-summary [jobs]="jobs$ | async" (productHover)="onProductHover($event)">
         </app-products-summary>

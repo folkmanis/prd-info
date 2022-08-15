@@ -5,7 +5,6 @@ import { BehaviorSubject, combineLatest, merge, Observable } from 'rxjs';
 import { map, share, shareReplay, startWith, switchMap } from 'rxjs/operators';
 import { InvoiceForReport, ProductTotals } from 'src/app/interfaces';
 import { JobUnwindedPartial } from 'src/app/jobs';
-import { LayoutService } from 'src/app/services';
 import { InvoicesTotals } from '../interfaces';
 import { InvoicesService } from '../services/invoices.service';
 
@@ -17,8 +16,6 @@ import { InvoicesService } from '../services/invoices.service';
 })
 export class NewInvoiceComponent implements OnInit {
 
-
-  isSmall$ = this.layoutService.isSmall$;
 
   noInvoices$ = this.invoicesService.jobsWithoutInvoicesTotals$.pipe(
     shareReplay(1),
@@ -35,7 +32,6 @@ export class NewInvoiceComponent implements OnInit {
 
   constructor(
     private invoicesService: InvoicesService,
-    private layoutService: LayoutService,
     private router: Router,
   ) { }
 

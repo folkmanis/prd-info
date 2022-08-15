@@ -1,10 +1,8 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { combineLatest, Observable, filter, map, withLatestFrom } from 'rxjs';
-import { LayoutService, SystemPreferencesService } from 'src/app/services';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { combineLatest, map, Observable } from 'rxjs';
 import { LoginService } from 'src/app/login';
-import { NotificationsService } from 'src/app/services/notifications.service';
-import { SystemNotification, SystemOperations } from 'src/app/interfaces';
-import { log } from 'prd-cdk';
+import { SystemPreferencesService } from 'src/app/services';
+import { LayoutService } from 'src/app/library';
 
 
 @Component({
@@ -13,7 +11,7 @@ import { log } from 'prd-cdk';
   styleUrls: ['./app-container.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppContainerComponent implements OnInit {
+export class AppContainerComponent {
 
   isLarge$ = this.layoutService.isLarge$;
 
@@ -33,7 +31,5 @@ export class AppContainerComponent implements OnInit {
     private layoutService: LayoutService,
   ) { }
 
-  ngOnInit(): void {
-  }
 
 }
