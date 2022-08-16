@@ -1,15 +1,17 @@
-import { Directive, Host, OnInit, Self } from '@angular/core';
-import { MatDrawer } from '@angular/material/sidenav';
+import { Optional, Directive, Host, OnInit, Self } from '@angular/core';
+import { MatDrawer, MatSidenav } from '@angular/material/sidenav';
 import { DestroyService } from 'prd-cdk';
 import { takeUntil } from 'rxjs';
 import { LayoutService } from './layout.service';
 
 
 @Directive({
-  selector: 'mat-drawer',
+  selector: 'mat-drawer,mat-sidenav',
   providers: [DestroyService],
 })
 export class DrawerSmallDirective implements OnInit {
+
+  private drawer: MatDrawer;
 
   private _large = false;
   set large(value: boolean) {
@@ -22,10 +24,13 @@ export class DrawerSmallDirective implements OnInit {
   }
 
   constructor(
-    @Host() @Self() private drawer: MatDrawer,
+    @Optional() @Host() @Self() drawer: MatDrawer,
+    @Optional() @Host() @Self() sidenav: MatSidenav,
     private layoutService: LayoutService,
     private destroy$: DestroyService,
-  ) { }
+  ) {
+    this.drawer = drawer || sidenav;
+  }
 
   ngOnInit(): void {
     this.layoutService.isLarge$.pipe(

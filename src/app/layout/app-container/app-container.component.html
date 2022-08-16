@@ -7,8 +7,7 @@
     <!-- Galvenais konteineris -->
     <mat-sidenav-container class="main-container-sidenav-container">
         <!-- Kreisais (galvenais) menu -->
-        <mat-sidenav #drawer class="mat-elevation-z4" [attr.role]="(isLarge$ | async) ? 'dialog' : 'navigation'"
-            [mode]="(isLarge$ | async) ? 'side' : 'over'" [opened]="opened$ | async">
+        <mat-sidenav #drawer class="mat-elevation-z4">
             <app-side-menu></app-side-menu>
         </mat-sidenav>
 
