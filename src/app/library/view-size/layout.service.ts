@@ -7,7 +7,7 @@ import { AppParams } from 'src/app/interfaces';
 
 export const BREAKPOINTS = ['small', 'medium', 'large', 'handset'] as const;
 
-export type Breakpoints = typeof BREAKPOINTS[number];
+export type AppBreakpoints = typeof BREAKPOINTS[number];
 
 
 
@@ -16,7 +16,7 @@ export type Breakpoints = typeof BREAKPOINTS[number];
 })
 export class LayoutService {
 
-  private readonly breakpoints: { [key in Breakpoints]: string | string[] } = {
+  private readonly breakpoints: { [key in AppBreakpoints]: string | string[] } = {
     small: `(max-width: ${this.params.mediaBreakpoints.small})`,
     medium: [
       `(max-width: ${this.params.mediaBreakpoints.medium})`,
@@ -44,7 +44,7 @@ export class LayoutService {
     private breakpointObserver: BreakpointObserver,
   ) { }
 
-  matches(matcher: Breakpoints): Observable<boolean> {
+  matches(matcher: AppBreakpoints): Observable<boolean> {
     return this.breakpointObserver
       .observe(this.breakpoints[matcher])
       .pipe(

@@ -1,6 +1,6 @@
 <ng-container [formGroup]="filterGroup">
 
-    <ng-container *ngIf="large$ | async">
+    <ng-container *appIfViewSize="'large'">
 
         <mat-form-field>
             <input matInput type="search" formControlName="name">

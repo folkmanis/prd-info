@@ -22,7 +22,7 @@
   <span class="spacer"></span>
 
   <!-- Ziņojumi -->
-  <span *ngIf="small$ | async; else large">
+  <span *appIfViewSize="'small'; else large">
     <a mat-icon-button [disabled]="(messagesCount$ | async) === 0" routerLink="/messages">
       <mat-icon [matBadge]="unreadMessagesCount$ | async" [matBadgeHidden]="(unreadMessagesCount$ | async) === 0"
         matBadgeColor="accent">

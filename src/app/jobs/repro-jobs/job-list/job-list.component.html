@@ -1,8 +1,8 @@
 <app-new-job-button (fileList)="onFileDrop($event)" [class.rised]="scroll.visible">
 </app-new-job-button>
 
-<cdk-virtual-scroll-viewport appViewSize (appViewIsLarge)="isLarge = $event" itemSize="32" class="container"
-    scroll-to-top #scroll="scrollToTop" [(appActiveProduct)]="highlited">
+<cdk-virtual-scroll-viewport itemSize="32" class="container" scroll-to-top #scroll="scrollToTop"
+    [(appActiveProduct)]="highlited">
 
 
     <table class="simple-form-table">
@@ -11,9 +11,9 @@
                 <th class="column-state"></th>
                 <th class="column-jobId">ID</th>
                 <th class="column-customer">Kl.</th>
-                <th class="column-date" *ngIf="isLarge">Datums</th>
+                <th class="column-date" *appIfViewSize="'large'">Datums</th>
                 <th class="column-name">Nosaukums</th>
-                <ng-container *ngIf="isLarge">
+                <ng-container *appIfViewSize="'large'">
                     <th class="column-productsObj-name">Izstrādājums</th>
                     <th class="column-productsObj-count">Skaits</th>
                     <th class="column-productsObj-units"></th>
@@ -40,7 +40,7 @@
                 </td>
 
                 <!-- 'receivedDate' -->
-                <td class="column-date" *ngIf="isLarge">
+                <td class="column-date" *appIfViewSize="'large'">
                     {{job.dueDate | date:'dd.MM.yyyy'}}
                 </td>
 
@@ -50,7 +50,7 @@
                         <span class="name">
                             {{job.name}}
                         </span>
-                        <span *ngIf="isLarge; else smallMenu;" class="buttons">
+                        <span *appIfViewSize="'large'; else smallMenu;" class="buttons">
                             <button mat-icon-button (click)="$event.stopPropagation(); copyJobIdAndName(job);"
                                 matTooltip="Kopēt nosaukumu">
                                 <mat-icon>filter_none</mat-icon>
@@ -75,7 +75,7 @@
                     </div>
                 </td>
 
-                <ng-container *ngIf="isLarge">
+                <ng-container *appIfViewSize="'large'">
                     <!-- Izstrādājums -->
                     <td class="column-productsObj-name" [colSpan]="job.products?.length === 1 ? 0 : 3">
                         <span *ngFor="let product of job.products; last as last;"

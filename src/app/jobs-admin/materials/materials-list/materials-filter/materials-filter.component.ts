@@ -3,7 +3,6 @@ import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { debounceTime, map, pluck } from 'rxjs/operators';
 import { SystemPreferences } from 'src/app/interfaces';
-import { LayoutService } from 'src/app/library';
 import { CONFIG } from 'src/app/services/config.provider';
 
 import { MaterialsFilter } from '../../services/materials.service';
@@ -22,7 +21,6 @@ const NO_FILTER: MaterialsFilter = {
 export class MaterialsFilterComponent implements OnInit {
 
   categories$ = this.config$.pipe(pluck('jobs', 'productCategories'));
-  large$ = this.layout.isLarge$;
 
   filterGroup = new UntypedFormGroup({
     name: new UntypedFormControl(''),
@@ -39,7 +37,6 @@ export class MaterialsFilterComponent implements OnInit {
 
   constructor(
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
-    private layout: LayoutService,
   ) { }
 
   ngOnInit(): void {
