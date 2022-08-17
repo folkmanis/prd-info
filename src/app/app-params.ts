@@ -7,14 +7,6 @@ export const APP_PARAMS = new InjectionToken<AppParams>('prd.defaults');
 export const PRD_DEFAULTS: AppParams = {
     apiPath: '/data/',
     wsPath: '/ws-notifications',
-    toolbarHeight: {
-        desktop: 64,
-        mobile: 56,
-    },
-    mediaBreakpoints: {
-        small: '700px',
-        medium: '1000px',
-    },
     version,
     passwordMinimumLenght: 3,
     userModules: USER_MODULES,

@@ -8,15 +8,7 @@ export interface AppParams {
         appBuild: number;
     };
     defaultSystemPreferences: SystemPreferences;
-    toolbarHeight: {
-        desktop: number;
-        mobile: number;
-    };
     userModules: UserModule[];
-    mediaBreakpoints: {
-        small: string;
-        medium: string;
-    };
     passwordMinimumLenght: number;
     messagesReadDelay: number;
     gmailScope: string;
