@@ -11,9 +11,9 @@
                 <th class="column-state"></th>
                 <th class="column-jobId">ID</th>
                 <th class="column-customer">Kl.</th>
-                <th class="column-date" *appIfViewSize="'large'">Datums</th>
+                <th class="column-date" *appViewLarge>Datums</th>
                 <th class="column-name">Nosaukums</th>
-                <ng-container *appIfViewSize="'large'">
+                <ng-container *appViewLarge>
                     <th class="column-productsObj-name">Izstrādājums</th>
                     <th class="column-productsObj-count">Skaits</th>
                     <th class="column-productsObj-units"></th>
@@ -40,7 +40,7 @@
                 </td>
 
                 <!-- 'receivedDate' -->
-                <td class="column-date" *appIfViewSize="'large'">
+                <td class="column-date" *appViewLarge>
                     {{job.dueDate | date:'dd.MM.yyyy'}}
                 </td>
 
@@ -50,7 +50,7 @@
                         <span class="name">
                             {{job.name}}
                         </span>
-                        <span *appIfViewSize="'large'; else smallMenu;" class="buttons">
+                        <span *appViewLarge class="buttons">
                             <button mat-icon-button (click)="$event.stopPropagation(); copyJobIdAndName(job);"
                                 matTooltip="Kopēt nosaukumu">
                                 <mat-icon>filter_none</mat-icon>
@@ -66,16 +66,14 @@
                                 <mat-icon>label_important</mat-icon>
                             </button>
                         </span>
-                        <ng-template #smallMenu>
-                            <button mat-icon-button [matMenuTriggerFor]="jobMenu" (click)="$event.stopPropagation();"
-                                [matMenuTriggerData]="{ job }">
-                                <mat-icon> more_vert </mat-icon>
-                            </button>
-                        </ng-template>
+                        <button *appViewNotLarge mat-icon-button [matMenuTriggerFor]="jobMenu"
+                            (click)="$event.stopPropagation();" [matMenuTriggerData]="{ job }">
+                            <mat-icon> more_vert </mat-icon>
+                        </button>
                     </div>
                 </td>
 
-                <ng-container *appIfViewSize="'large'">
+                <ng-container *appViewLarge>
                     <!-- Izstrādājums -->
                     <td class="column-productsObj-name" [colSpan]="job.products?.length === 1 ? 0 : 3">
                         <span *ngFor="let product of job.products; last as last;"

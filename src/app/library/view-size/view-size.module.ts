@@ -1,8 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ViewSizeDirective } from './view-size.directive';
+import { ViewSizeDirective } from './directives/view-size.directive';
 import { DrawerSmallDirective } from './drawer-small.directive';
-import { IfViewSizeDirective } from './if-view-size.directive';
+import { IfViewSizeDirective } from './directives/if-view-size.directive';
+import { ViewLargeDirective } from './directives/view-large.directive';
+import { ViewNotLargeDirective } from './directives/view-not-large.directive';
+import { ViewSmallDirective } from './directives/view-small.directive';
+import { ViewNotSmallDirective } from './directives/view-not-small.directive';
 
 
 
@@ -11,6 +15,10 @@ import { IfViewSizeDirective } from './if-view-size.directive';
     ViewSizeDirective,
     DrawerSmallDirective,
     IfViewSizeDirective,
+    ViewLargeDirective,
+    ViewNotLargeDirective,
+    ViewSmallDirective,
+    ViewNotSmallDirective,
   ],
   imports: [
     CommonModule
@@ -19,6 +27,10 @@ import { IfViewSizeDirective } from './if-view-size.directive';
     ViewSizeDirective,
     DrawerSmallDirective,
     IfViewSizeDirective,
+    ViewLargeDirective,
+    ViewNotLargeDirective,
+    ViewSmallDirective,
+    ViewNotSmallDirective,
   ]
 })
 export class ViewSizeModule { }

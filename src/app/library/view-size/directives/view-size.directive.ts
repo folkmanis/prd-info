@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Directive, HostBinding, OnInit, Output } from '@angular/core';
 import { DestroyService } from 'prd-cdk';
 import { takeUntil } from 'rxjs';
-import { LayoutService } from './layout.service';
+import { LayoutService } from '../layout.service';
 
 
 @Directive({
