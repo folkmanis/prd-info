@@ -9,7 +9,6 @@ import { CONFIG } from 'src/app/services/config.provider';
 import { Job } from '../../../interfaces';
 import { JobFormService } from '../../services/job-form.service';
 import { CustomerInputComponent } from '../customer-input/customer-input.component';
-import { FolderPathComponent } from '../folder-path/folder-path.component';
 
 
 @Component({
@@ -22,7 +21,6 @@ export class JobFormComponent implements OnInit {
 
   @ViewChild(CustomerInputComponent) customerInput: CustomerInputComponent;
 
-  @ViewChild(FolderPathComponent) folderPathComponent: FolderPathComponent;
 
   form = this.formService.form;
 
@@ -56,10 +54,6 @@ export class JobFormComponent implements OnInit {
   );
 
   showPrices$: Observable<boolean> = this.loginService.isModule('calculations');
-
-  get updateFolderLocation(): boolean {
-    return this.folderPathComponent.updatePath;
-  }
 
   get nameControl() {
     return this.formService.form.controls.name;

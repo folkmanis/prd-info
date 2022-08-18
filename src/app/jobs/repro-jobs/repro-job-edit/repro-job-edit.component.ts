@@ -9,6 +9,7 @@ import { ReproJobService } from '../services/repro-job.service';
 import { UploadRef } from '../services/upload-ref';
 import { SnackbarMessageComponent } from '../snackbar-message/snackbar-message.component';
 import { JobFormComponent } from './job-form/job-form.component';
+import { FolderPathComponent } from './folder-path/folder-path.component';
 
 
 @Component({
@@ -23,6 +24,7 @@ import { JobFormComponent } from './job-form/job-form.component';
 export class ReproJobEditComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild(JobFormComponent) private jobFormComponent: JobFormComponent;
+  @ViewChild(FolderPathComponent) private folderPathComponent: FolderPathComponent;
 
   form = this.formService.form;
 
@@ -107,7 +109,7 @@ export class ReproJobEditComponent implements OnInit, AfterViewInit, OnDestroy {
     this.saved$.next(true);
     const jobId = this.formService.value.jobId;
     const jobUpdate: Partial<Job> = this.formService.update;
-    this.reproJobService.updateJob({ jobId, ...jobUpdate }, { updatePath: this.jobFormComponent.updateFolderLocation })
+    this.reproJobService.updateJob({ jobId, ...jobUpdate }, { updatePath: this.folderPathComponent.updatePath })
       .subscribe(this.jobSaveObserver);
   }
 
