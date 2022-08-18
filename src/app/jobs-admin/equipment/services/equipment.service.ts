@@ -9,7 +9,7 @@ interface EquipmentFilter {
 }
 
 @Injectable({
-  providedIn: 'any'
+  providedIn: 'root'
 })
 export class EquipmentService {
 
