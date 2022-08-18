@@ -1,17 +1,14 @@
+import { CdkPortal } from '@angular/cdk/portal';
 import { ChangeDetectionStrategy, Component, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { IFormBuilder, IFormGroup } from '@rxweb/types';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay, startWith, tap } from 'rxjs/operators';
 import { AdresesBoxes, AdresesBoxPreferences } from '../services/adrese-box';
 import { ChipsService, ColumnNames } from '../services/chips.service';
 import { DragData } from '../services/drag-drop.directive';
 import { UploadService } from '../services/upload.service';
-import { CdkPortal } from '@angular/cdk/portal';
 
-interface ColumnSelection {
-  columns: boolean[];
-}
+
 
 @Component({
   selector: 'app-upload-adreses',
@@ -33,13 +30,21 @@ export class UploadAdresesComponent implements OnInit {
     shareReplay(1),
   );
 
-  fb: IFormBuilder;
-  checkCols: IFormGroup<ColumnSelection>;
-  chkColCount$: Observable<number>;
-  settingsControl = new UntypedFormGroup({
-    toPakas: new UntypedFormControl(true),
-    mergeAddress: new UntypedFormControl(false),
+  checkCols = new FormGroup({
+    columns: new FormArray<FormControl<boolean>>([])
   });
+
+  chkColCount$ = this.checkCols.valueChanges.pipe(
+    map(frmVal => frmVal.columns),
+    map(cols => cols.reduce((acc, curr) => acc + (+curr), 0)),
+  );
+
+
+  settingsControl = new FormGroup({
+    toPakas: new FormControl<boolean>(true),
+    mergeAddress: new FormControl<boolean>(false),
+  });
+
   rowSelection = this.uploadService.rowSelection;
 
   @Output() adresesBox: Observable<AdresesBoxes | null> = combineLatest([
@@ -61,8 +66,7 @@ export class UploadAdresesComponent implements OnInit {
   constructor(
     private uploadService: UploadService,
     private chipsService: ChipsService,
-    fb: UntypedFormBuilder,
-  ) { this.fb = fb; }
+  ) { }
 
   datasource$ = this.uploadService.adresesCsv$;
 
@@ -79,13 +83,6 @@ export class UploadAdresesComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.checkCols = this.fb.group<ColumnSelection>({
-      columns: this.fb.array<boolean>([]),
-    });
-    this.chkColCount$ = this.checkCols.valueChanges.pipe(
-      map(frmVal => frmVal.columns),
-      map(cols => cols.reduce((acc, curr) => acc + (+curr), 0)),
-    );
   }
 
   onDeleteColumns(cols: boolean[]) {
@@ -115,7 +112,7 @@ export class UploadAdresesComponent implements OnInit {
   columnsWithSelected = (cols: string[]) => (['selected', ...cols]);
 
   private toCheckGroup(cols: string[]) {
-    const checksArr = this.fb.array<boolean>(cols.map(_ => false));
+    const checksArr = new FormArray<FormControl<boolean>>(cols.map(_ => new FormControl(false)));
     this.checkCols.setControl('columns', checksArr);
   }
 
