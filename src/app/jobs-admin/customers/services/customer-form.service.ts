@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
-import { isEqual, pickBy } from 'lodash';
+import { isEqual, pickBy } from 'lodash-es';
 import { map, Observable, of, tap } from 'rxjs';
 import { Customer, CustomerContact, CustomerFinancial, FtpUserData, NewCustomer, SystemPreferences } from 'src/app/interfaces';
 import { CustomersService } from 'src/app/services';

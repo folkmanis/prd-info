@@ -1,6 +1,6 @@
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { last } from 'lodash';
+import { last } from 'lodash-es';
 import { merge, Observable, of, OperatorFunction, partition, pipe } from 'rxjs';
 import { concatMap, filter, map, mergeMap, scan, share, throttleTime } from 'rxjs/operators';
 import { JobFilesService } from 'src/app/filesystem';

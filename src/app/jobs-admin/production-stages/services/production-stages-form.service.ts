@@ -4,7 +4,7 @@ import { ClassTransformer } from 'class-transformer';
 import { of, map, Observable, tap } from 'rxjs';
 import { ProductionStagesService } from 'src/app/services/production-stages.service';
 import { CreateProductionStage, ProductionStage, DropFolder } from 'src/app/interfaces';
-import { isEqual, pickBy } from 'lodash';
+import { isEqual, pickBy } from 'lodash-es';
 
 
 @Injectable()

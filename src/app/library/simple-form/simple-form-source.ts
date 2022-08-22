@@ -1,7 +1,7 @@
 import { UntypedFormBuilder } from '@angular/forms';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { Observable } from 'rxjs';
-import { isEqual, pickBy } from 'lodash';
+import { isEqual, pickBy } from 'lodash-es';
 
 export abstract class SimpleFormSource<T extends Object> {
 

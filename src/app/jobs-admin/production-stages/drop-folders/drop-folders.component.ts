@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, ValidatorFn, Validators } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { ClassTransformer } from 'class-transformer';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { map, Observable, shareReplay } from 'rxjs';
 import { FileElement, JobFilesService } from 'src/app/filesystem';
 import { CustomerPartial, DropFolder } from 'src/app/interfaces';

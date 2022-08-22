@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ControlValueAccessor, FormGroup, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators } from '@angular/forms';
-import { defaults } from 'lodash';
+import { defaults } from 'lodash-es';
 import { map, pluck, from, toArray, Observable, switchMap, filter } from 'rxjs';
 import { FtpUserData } from 'src/app/interfaces';
 import { plainToInstance } from 'class-transformer';

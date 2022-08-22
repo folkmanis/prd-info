@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
-import { isEqual, pickBy } from 'lodash';
+import { isEqual, pickBy } from 'lodash-es';
 import { tap, map, Observable, of } from 'rxjs';
 import { JobProductionStage, Product, NewProduct, ProductPrice } from 'src/app/interfaces';
 import { ProductsService } from 'src/app/services';

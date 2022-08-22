@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { isEqual, pickBy } from 'lodash';
+import { isEqual, pickBy } from 'lodash-es';
 import { combineLatest, concat, concatMap, debounceTime, distinctUntilChanged, filter, from, map, Observable, of, reduce, shareReplay, switchMap, throttleTime } from 'rxjs';
 import { DropFolder, JobProductionStage } from 'src/app/interfaces';
 import { ProductionStagesService } from 'src/app/services/production-stages.service';

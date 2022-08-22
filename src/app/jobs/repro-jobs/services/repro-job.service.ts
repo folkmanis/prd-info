@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { flatten } from 'lodash';
+import { flatten } from 'lodash-es';
 import { concatMap, map, BehaviorSubject, forkJoin, from, Observable, of, toArray, filter } from 'rxjs';
 import { JobProductionStage } from 'src/app/interfaces';
 import { ProductsService } from 'src/app/services';

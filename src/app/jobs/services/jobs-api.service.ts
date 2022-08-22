@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { ClassTransformer } from 'class-transformer';
-import { Dictionary, pickBy } from 'lodash';
+import { pickBy } from 'lodash-es';
 import { map, Observable } from 'rxjs';
 import { APP_PARAMS } from 'src/app/app-params';
 import { AppParams } from 'src/app/interfaces';
@@ -10,7 +10,7 @@ import { Job, JobsProduction, JobsProductionQuery, JobsWithoutInvoicesTotals } f
 import { JobsUserPreferences } from '../interfaces/jobs-user-preferences';
 
 
-export function pickNotNull<T>(obj: Dictionary<T>): Dictionary<T> {
+export function pickNotNull<T extends object>(obj: T): Partial<T> {
   return pickBy(obj, val => val !== undefined && val !== null);
 }
 

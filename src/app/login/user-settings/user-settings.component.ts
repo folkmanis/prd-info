@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { DestroyService } from 'prd-cdk';
 import { takeUntil } from 'rxjs';
 import { User } from 'src/app/interfaces';

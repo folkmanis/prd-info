@@ -1,7 +1,7 @@
 import { OverlayRef } from '@angular/cdk/overlay';
 import { Directive, HostListener, Input, Optional } from '@angular/core';
 import { Router } from '@angular/router';
-import { last } from 'lodash';
+import { last } from 'lodash-es';
 import { map, mergeMap, pluck, switchMap, tap, from, MonoTypeOperatorFunction, Observable, of, catchError, EMPTY } from 'rxjs';
 import { ReproJobService } from 'src/app/jobs/repro-jobs/services/repro-job.service';
 import { UploadRefService } from 'src/app/jobs/repro-jobs/services/upload-ref.service';
