@@ -5,7 +5,6 @@ import { UsersApi } from './users-api';
 import { AppParams } from 'src/app/interfaces';
 import { APP_PARAMS } from 'src/app/app-params';
 import { PaytraqApi } from './paytraq-api';
-import { MaterialsApi } from './materials-api';
 import { EquipmentApi } from './equipment-api';
 
 
@@ -19,7 +18,6 @@ export class PrdApiService {
   invoices = new InvoicesApi(this.http, this.apiPath + 'invoices/');
   users = new UsersApi(this.http, this.apiPath + 'users/');
   paytraq = new PaytraqApi(this.http, this.apiPath + 'paytraq/');
-  materials = new MaterialsApi(this.http, this.apiPath + 'materials/');
   equipment = new EquipmentApi(this.http, this.apiPath + 'equipment/');
 
   constructor(

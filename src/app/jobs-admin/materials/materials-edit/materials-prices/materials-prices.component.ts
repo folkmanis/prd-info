@@ -1,32 +1,36 @@
-import { Component, OnInit, Input, Output, ChangeDetectionStrategy, EventEmitter, ChangeDetectorRef } from '@angular/core';
-import { FormGroup, UntypedFormArray } from '@angular/forms';
-import { merge, Observable } from 'rxjs';
-import { startWith, takeUntil } from 'rxjs/operators';
+import { ViewChild, Component, OnInit, Input, Output, ChangeDetectionStrategy, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { FormGroup, UntypedFormArray, NG_VALUE_ACCESSOR, NG_VALIDATORS, Validator, ControlValueAccessor, ValidatorFn, ValidationErrors, AbstractControl } from '@angular/forms';
+import { filter, takeUntil, merge, Observable, map } from 'rxjs';
 import { MaterialPrice } from 'src/app/interfaces';
 import { log, DestroyService } from 'prd-cdk';
-import { MaterialPriceGroup } from '../../services/materials-form-source';
+import { MatTable } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogData, MaterialsPriceDialogComponent } from '../materials-price-dialog/materials-price-dialog.component';
+import { MaterialsPricesDataSource } from './materials-prices-data-source';
+import { ClassTransformer } from 'class-transformer';
+
 
 @Component({
   selector: 'app-materials-prices',
   templateUrl: './materials-prices.component.html',
   styleUrls: ['./materials-prices.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: MaterialsPricesComponent,
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: MaterialsPricesComponent,
+      multi: true,
+    }
+  ]
 })
-export class MaterialsPricesComponent implements OnInit {
+export class MaterialsPricesComponent implements OnInit, ControlValueAccessor, Validator {
 
-  @Input() pricesArray!: UntypedFormArray;
-
-  @Input() units: string = '';
-
-  @Output() deletePrice = new EventEmitter<number>();
-  @Output() editPrice = new EventEmitter<number>();
-
-  data$: Observable<MaterialPrice[]>;
-  trackBy = (idx: number): any => this.pricesArray.controls[idx];
-
-  isDuplicate = (idx: number): boolean => {
-    return this.pricesArray.hasError('duplicates') && (this.pricesArray.getError('duplicates') as MaterialPriceGroup[]).includes(this.pricesArray.at(idx) as MaterialPriceGroup);
-  };
+  dataSource = new MaterialsPricesDataSource();
 
   displayedColumns = [
     'min',
@@ -35,21 +39,84 @@ export class MaterialsPricesComponent implements OnInit {
     'actions',
   ];
 
-  constructor() { }
+  @ViewChild(MatTable) private table: MatTable<MaterialPrice>;
+
+  disabled = false;
+
+  @Input() units: string = '';
+
+  onTouchFn: () => void = () => { };
+
+  isDuplicate = (price: number): boolean => {
+    const dup: number[] | undefined = this.dataSource.errors?.duplicates;
+    return dup && dup.includes(price);
+  };
+
+  constructor(
+    private dialogService: MatDialog,
+    private chDetector: ChangeDetectorRef,
+    private transformer: ClassTransformer,
+  ) { }
+
+  writeValue(obj: MaterialPrice[]): void {
+    this.dataSource.setValue(obj);
+  }
+
+  registerOnChange(fn: any): void {
+    this.dataSource.valueChanges.subscribe(fn);
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouchFn = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
+
+  validate(): ValidationErrors {
+    return this.dataSource.errors;
+  }
 
   ngOnInit(): void {
-    this.data$ = this.pricesArray.valueChanges.pipe(
-      startWith(this.pricesArray.value),
-    );
   }
 
-  onEditPrice(idx: number) {
-    this.editPrice.next(idx);
+  onAddPrice() {
+    this.onTouchFn();
+    this.openEditor(new MaterialPrice())
+      .subscribe(data => {
+        this.dataSource.addPrice(data);
+      });
   }
 
-  onDeletePrice(idx: number) {
-    this.deletePrice.next(idx);
+  onEditPrice(value: MaterialPrice, idx: number) {
+    this.onTouchFn();
+    this.openEditor(value)
+      .subscribe(data => this.dataSource.updatePrice(data, idx));
   }
+
+
+  onDeletePrice(index: number) {
+    this.onTouchFn();
+    this.dataSource.deletePrice(index);
+  }
+
+  private openEditor(price: MaterialPrice): Observable<MaterialPrice> {
+    const data: DialogData = {
+      value: price,
+      units: this.units,
+    };
+    return this.dialogService.open<MaterialsPriceDialogComponent, DialogData, Record<string, any>>(
+      MaterialsPriceDialogComponent,
+      { data }
+    )
+      .afterClosed()
+      .pipe(
+        filter(data => !!data),
+        map(data => this.transformer.plainToInstance(MaterialPrice, data))
+      );
+  }
+
 
 
 }

@@ -76,15 +76,14 @@
                 </section>
 
                 <section>
-                    <app-materials-prices [pricesArray]="pricesControl" (deletePrice)="onRemovePrice($event)"
-                        (editPrice)="onEditPrice($event)" [units]="form.value.units">
+                    <app-materials-prices #prices formControlName="prices" [units]="form.value.units">
                     </app-materials-prices>
                 </section>
 
             </mat-card-content>
 
             <mat-card-actions>
-                <button mat-raised-button (click)="onAddPrice()" [disabled]="!form.valid">
+                <button mat-raised-button (click)="prices.onAddPrice()" [disabled]="!form.valid">
                     PIEVIENOT
                 </button>
             </mat-card-actions>

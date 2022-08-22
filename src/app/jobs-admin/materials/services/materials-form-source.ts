@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, UntypedFormBuilder, Validators } from '@angular/forms';
 import { IFormGroup } from '@rxweb/types';
-import { defaults, isEqual, pickBy } from 'lodash';
+import { defaults, isEqual, pickBy } from 'lodash-es';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Material, MaterialPrice } from 'src/app/interfaces';
+import { Material } from 'src/app/interfaces';
 import { SimpleFormSource } from 'src/app/library/simple-form';
 import { MaterialsService } from './materials.service';
 
@@ -14,19 +14,12 @@ const DEFAULT_MATERIAL: Partial<Material> = {
     fixedPrice: 0,
 };
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class MaterialsFormSource extends SimpleFormSource<Material> {
 
     get isNew(): boolean {
         return !this.form.value._id;
     }
-
-    get pricesCtrl(): UntypedFormArray {
-        return this.form.get('prices') as unknown as UntypedFormArray;
-    }
-
 
     constructor(
         fb: UntypedFormBuilder,
@@ -53,10 +46,7 @@ export class MaterialsFormSource extends SimpleFormSource<Material> {
                 [Validators.required],
             ],
             inactive: [false],
-            prices: this.fb.array<MaterialPrice>(
-                [],
-                [this.duplicatePriceValidator()],
-            ),
+            prices: [undefined],
             fixedPrice: [undefined],
         });
     }
@@ -69,49 +59,22 @@ export class MaterialsFormSource extends SimpleFormSource<Material> {
 
     createEntity(): Observable<string> {
         this.trimName();
-        return this.materialsService.insertMaterial(this.value);
+        return this.materialsService.insertMaterial(this.value).pipe(
+            map(mat => mat._id),
+        );
     }
 
     initValue(val: Partial<Material>, params?: { emitEvent: boolean; }) {
-        this.pricesCtrl.clear({ emitEvent: false });
-        for (const price of val.prices || []) {
-            this.pricesCtrl.push(
-                new MaterialPriceGroup(),
-                { emitEvent: false },
-            );
-        }
         super.initValue(
             defaults(val, DEFAULT_MATERIAL),
             params
         );
     }
 
-    deletePrice(idx: number) {
-        this.pricesCtrl.removeAt(idx);
-        this.pricesCtrl.markAsDirty();
-    }
-
     private trimName() {
         this.value.name = this.value.name.trim();
     }
 
-    updatePriceControl(control: MaterialPriceGroup, idx?: number) {
-
-        if (idx !== undefined) {
-            this.pricesCtrl.removeAt(idx, { emitEvent: false });
-        }
-
-        const controls = this.pricesCtrl.controls as MaterialPriceGroup[];
-        const newMin = control.priceValue.min;
-        let newPos = 0;
-        while (newPos < this.pricesCtrl.length && newMin > controls[newPos].priceValue.min) {
-            newPos++;
-        }
-
-        this.pricesCtrl.insert(newPos, control);
-        this.pricesCtrl.updateValueAndValidity();
-        this.pricesCtrl.markAsDirty();
-    }
 
     private nameValidator(): AsyncValidatorFn {
         return (control: AbstractControl) => {
@@ -126,38 +89,6 @@ export class MaterialsFormSource extends SimpleFormSource<Material> {
         };
     }
 
-    private duplicatePriceValidator(): ValidatorFn {
-        return (control: UntypedFormArray) => {
-            const ctrls = control.controls as MaterialPriceGroup[];
-            const duplicates = ctrls
-                .filter((el, idx, a) => a.findIndex(m => m.priceValue.min === el.priceValue.min) !== idx)
-                .map(ctrl => ctrl.priceValue.min);
-            if (duplicates.length === 0) {
-                return null;
-            }
-            return { duplicates: ctrls.filter(ctrl => duplicates.includes(ctrl.priceValue.min)) };
-        };
-    }
 
 }
 
-export class MaterialPriceGroup extends UntypedFormGroup {
-
-    get priceValue(): MaterialPrice {
-        return this.value;
-    }
-
-    constructor(price: Partial<MaterialPrice> = {}) {
-        super({
-            min: new UntypedFormControl(
-                price.min,
-                [Validators.required, Validators.min(0)],
-            ),
-            price: new UntypedFormControl(
-                price.price,
-                [Validators.required, Validators.min(0)],
-            ),
-            description: new UntypedFormControl(price.description),
-        });
-    }
-}

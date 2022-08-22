@@ -3,7 +3,7 @@
     <section>
         <mat-form-field>
             <span matPrefix>No &nbsp;</span>
-            <input type="number" matInput formControlName="min">
+            <input type="number" matInput formControlName="min" required>
             <span matSuffix> {{ units }} </span>
         </mat-form-field>
     </section>
@@ -11,7 +11,7 @@
     <section>
         <mat-form-field>
             <mat-label> Cena </mat-label>
-            <input type="number" matInput formControlName="price">
+            <input type="number" matInput formControlName="price" required>
             <span matSuffix>&nbsp; &euro;/{{ units }}</span>
         </mat-form-field>
     </section>
@@ -27,7 +27,7 @@
 
 <mat-dialog-actions>
     <button mat-raised-button color="primary" [disabled]="!priceControl.valid || priceControl.pristine"
-        [mat-dialog-close]="priceControl">
+        [mat-dialog-close]="priceControl.value">
         SAGLABĀT
     </button>
     <button mat-raised-button mat-dialog-close>

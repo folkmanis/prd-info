@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, EMPTY, Observable, Subject } from 'rxjs';
-import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
+import { MaterialsApiService } from 'src/app/services/prd-api/materials-api.service';
 import { Material, ProductCategory, SystemPreferences } from 'src/app/interfaces';
-import { map, mapTo, pluck, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { CONFIG } from 'src/app/services/config.provider';
 import { combineLatest } from 'rxjs';
 
@@ -16,26 +16,26 @@ export interface MaterialsFilter {
 }
 
 @Injectable({
-  providedIn: 'any'
+  providedIn: 'root'
 })
 export class MaterialsService {
 
-  private filter$ = new BehaviorSubject<MaterialsFilter | null>(null);
+  private filter$ = new BehaviorSubject<MaterialsFilter>({});
 
   materials$ = combineLatest([
-    this.filter$.pipe(switchMap(filter => this.api.materials.get(filter))),
-    this.config$.pipe(pluck('jobs', 'productCategories')),
+    this.filter$.pipe(switchMap(filter => this.api.getAll({}))),
+    this.config$.pipe(map(conf => conf.jobs.productCategories)),
   ]).pipe(
     map(this.addCategoriesDescription)
   );
 
   constructor(
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
-    private api: PrdApiService,
+    private api: MaterialsApiService,
   ) { }
 
   setFilter(filter: MaterialsFilter | null = null) {
-    this.filter$.next(filter);
+    this.filter$.next(filter || {});
   }
 
   reload() {
@@ -43,15 +43,15 @@ export class MaterialsService {
   }
 
   getMaterials(): Observable<Material[]> {
-    return this.api.materials.get();
+    return this.api.getAll();
   }
 
   getMaterial(id: string): Observable<Material> {
-    return this.api.materials.get(id);
+    return this.api.getOne(id);
   }
 
   getNamesForValidation(): Observable<string[]> {
-    return this.api.materials.validatorData('name');
+    return this.api.validatorData('name');
   }
 
   updateMaterial(material: Partial<Material>): Observable<Material> {
@@ -59,16 +59,15 @@ export class MaterialsService {
     if (!id) {
       return EMPTY;
     }
-    return this.api.materials.updateOne(id, upd).pipe(
+    return this.api.updateOne(id, upd).pipe(
       tap(_ => this.reload()),
     );
   }
 
-  insertMaterial(material: Partial<Material>): Observable<string> {
+  insertMaterial(material: Partial<Material>): Observable<Material> {
     delete material._id;
-    return this.api.materials.insertOne(material).pipe(
+    return this.api.insertOne(material).pipe(
       tap(_ => this.reload()),
-      pluck('_id'),
     );
   }
 

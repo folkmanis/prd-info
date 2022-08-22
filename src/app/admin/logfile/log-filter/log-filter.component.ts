@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
 import { distinctUntilChanged, map, withLatestFrom } from 'rxjs/operators';
 import { combineReload } from 'src/app/library/rxjs';

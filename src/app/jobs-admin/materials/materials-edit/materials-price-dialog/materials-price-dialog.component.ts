@@ -1,10 +1,10 @@
-import { Inject, Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MaterialsFormSource, MaterialPriceGroup } from '../../services/materials-form-source';
+import { MaterialPrice } from 'src/app/interfaces';
 
 export interface DialogData {
-  control: MaterialPriceGroup;
+  value: MaterialPrice;
   units: string;
 }
 
@@ -16,15 +16,27 @@ export interface DialogData {
 })
 export class MaterialsPriceDialogComponent implements OnInit {
 
-  priceControl = this.data.control;
+  priceControl = new FormGroup({
+    min: new FormControl<number>(
+      0,
+      [Validators.required, Validators.min(0)],
+    ),
+    price: new FormControl<number>(
+      0,
+      [Validators.required, Validators.min(0)],
+    ),
+    description: new FormControl<string>(null),
+  });
+
   units = this.data.units;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: DialogData,
-    private dialogRef: MatDialogRef<MaterialsPriceDialogComponent>,
   ) { }
 
+
   ngOnInit(): void {
+    this.priceControl.reset(this.data.value, { emitEvent: false });
   }
 
 }
