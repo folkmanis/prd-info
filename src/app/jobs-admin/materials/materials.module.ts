@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LibraryModule } from 'src/app/library/library.module';
-import { SimpleFormModule } from 'src/app/library/simple-form';
+import { SimpleFormTypedModule } from 'src/app/library/simple-form-typed';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 
 import { MaterialsListComponent } from './materials-list/materials-list.component';
@@ -25,7 +25,7 @@ import { MaterialsFilterComponent } from './materials-list/materials-filter/mate
     CommonModule,
     LibraryModule,
     MaterialLibraryModule,
-    SimpleFormModule.forChildren({
+    SimpleFormTypedModule.forChildren({
       path: 'materials',
       listComponent: MaterialsListComponent,
       editorComponent: MaterialsEditComponent,

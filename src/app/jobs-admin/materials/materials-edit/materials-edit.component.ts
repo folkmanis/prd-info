@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
-import { IFormGroup } from '@rxweb/types';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Observable, map, takeUntil, merge } from 'rxjs';
 import { Material, ProductUnit, SystemPreferences } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
-import { SimpleFormSource } from 'src/app/library/simple-form';
 import { CONFIG } from 'src/app/services/config.provider';
-import { MaterialsFormSource } from '../services/materials-form-source';
+import { MaterialsFormService } from '../services/materials-form.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { DestroyService } from 'prd-cdk';
+
 
 @Component({
   selector: 'app-materials-edit',
@@ -14,7 +14,8 @@ import { MaterialsFormSource } from '../services/materials-form-source';
   styleUrls: ['./materials-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    { provide: SimpleFormSource, useClass: MaterialsFormSource }
+    MaterialsFormService,
+    DestroyService,
   ]
 })
 export class MaterialsEditComponent implements OnInit, CanComponentDeactivate {
@@ -28,20 +29,40 @@ export class MaterialsEditComponent implements OnInit, CanComponentDeactivate {
     map(conf => conf.jobs.productCategories),
   );
 
-  get form(): IFormGroup<Material> {
-    return this.formSource.form;
+  form = this.formService.form;
+
+  get changes() {
+    return this.formService.changes;
   }
 
   constructor(
     @Inject(CONFIG) private config$: Observable<SystemPreferences>,
-    private formSource: SimpleFormSource<Material>,
+    private formService: MaterialsFormService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private destroy$: DestroyService,
+    private changeDetector: ChangeDetectorRef,
   ) { }
 
   ngOnInit(): void {
+    this.route.data.pipe(
+      map(data => data.value as Material),
+      takeUntil(this.destroy$),
+    ).subscribe(value => this.formService.setInitial(value));
+
+    merge(this.form.valueChanges, this.form.statusChanges).pipe(
+      takeUntil(this.destroy$),
+    ).subscribe(() => this.changeDetector.markForCheck());
+
   }
 
-  onDataChange(material: Material) {
-    this.formSource.initValue(material);
+  onReset() {
+    this.formService.reset();
+  }
+
+  onSave() {
+    this.formService.save()
+      .subscribe(c => this.router.navigate(['..', c._id], { relativeTo: this.route }));
   }
 
   canDeactivate(): boolean {

@@ -19,26 +19,26 @@ export class Material {
     _id: string;
 
     @Expose()
-    name: string;
+    name: string = '';
 
     @Expose()
     units: string;
 
     @Expose()
-    category: string;
+    category: string = '';
 
     @Expose()
     inactive: boolean = false;
 
     @Expose()
     @Type(() => MaterialPrice)
-    prices: MaterialPrice[];
+    prices: MaterialPrice[] = [];
 
     @Expose()
-    fixedPrice?: number;
+    fixedPrice: number = 0;
 
     @Expose()
-    description?: string;
+    description?: string = null;
 
 }
 
