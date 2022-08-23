@@ -32,6 +32,7 @@ const routes: Routes = [
       },
       {
         path: 'xmf-search',
+        title: 'XMF arhīvs',
         canLoad: [LoginGuard],
         loadChildren: () => import('./xmf-search/xmf-search.module').then(m => m.XmfSearchModule),
         canActivate: [LoginGuard],
@@ -56,6 +57,7 @@ const routes: Routes = [
       },
       {
         path: 'jobs',
+        title: 'Repro darbi',
         canLoad: [LoginGuard],
         loadChildren: () => import('./jobs/jobs.module').then(m => m.JobsModule),
         canActivate: [LoginGuard],
