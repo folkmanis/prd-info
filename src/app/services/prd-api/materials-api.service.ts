@@ -21,16 +21,16 @@ export class MaterialsApiService {
 
     getOne(id: string): Observable<Material> {
         return this.http.get<Record<string, any>>(this.path + id, new HttpOptions()).pipe(
-            map(data => this.transformer.plainToInstance(Material, data))
+            map(data => this.toClass(data))
         );
     }
 
-    getAll(params?: Record<string, any>): Observable<Material[]> {
+    getAll(params: Record<string, any> = {}): Observable<Material[]> {
         return this.http.get<Record<string, any>[]>(
             this.path,
             new HttpOptions(params)
         ).pipe(
-            map(data => this.transformer.plainToInstance(Material, data)),
+            map(data => this.toClass(data)),
         );
     }
 
@@ -40,7 +40,7 @@ export class MaterialsApiService {
             data,
             new HttpOptions(params)
         ).pipe(
-            map(data => this.transformer.plainToInstance(Material, data)),
+            map(data => this.toClass(data)),
         );
     }
 
@@ -50,8 +50,14 @@ export class MaterialsApiService {
             data,
             new HttpOptions(params)
         ).pipe(
-            map(data => this.transformer.plainToInstance(Material, data)),
+            map(data => this.toClass(data)),
         );
+    }
+
+    private toClass<T extends Record<string, any>>(data: T[]): Material[];
+    private toClass<T extends Record<string, any>>(data: T): Material;
+    private toClass<T extends Record<string, any>>(data: T | T[]): Material | Material[] {
+        return this.transformer.plainToInstance(Material, data, { exposeDefaultValues: true });
     }
 
     validatorData<K extends keyof Material & string>(key: K): Observable<Material[K][]> {

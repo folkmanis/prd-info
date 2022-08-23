@@ -23,10 +23,10 @@ export class MaterialsService {
   private filter$ = new BehaviorSubject<MaterialsFilter>({});
 
   materials$ = combineLatest([
-    this.filter$.pipe(switchMap(filter => this.api.getAll({}))),
+    this.filter$.pipe(switchMap(filter => this.api.getAll(filter))),
     this.config$.pipe(map(conf => conf.jobs.productCategories)),
   ]).pipe(
-    map(this.addCategoriesDescription)
+    this.addCategoriesDescription()
   );
 
   constructor(
@@ -34,16 +34,16 @@ export class MaterialsService {
     private api: MaterialsApiService,
   ) { }
 
-  setFilter(filter: MaterialsFilter | null = null) {
-    this.filter$.next(filter || {});
+  setFilter(filter: MaterialsFilter = {}) {
+    this.filter$.next(filter);
   }
 
   reload() {
     this.filter$.next(this.filter$.value);
   }
 
-  getMaterials(): Observable<Material[]> {
-    return this.api.getAll();
+  getMaterials(filter: MaterialsFilter = {}): Observable<Material[]> {
+    return this.api.getAll(filter);
   }
 
   getMaterial(id: string): Observable<Material> {
@@ -71,13 +71,13 @@ export class MaterialsService {
     );
   }
 
-  private addCategoriesDescription([materials, categories]: [Material[], ProductCategory[]]): MaterialWithDescription[] {
-    return materials.map(
+  private addCategoriesDescription() { // : MaterialWithDescription[]
+    return map(([materials, categories]: [Material[], ProductCategory[]]) => materials.map(
       material => ({
         ...material,
         catDes: categories.find(cat => cat.category === material.category)?.description || ''
       })
-    );
+    ));
   }
 
 
