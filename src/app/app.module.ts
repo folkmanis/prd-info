@@ -22,6 +22,7 @@ import { lv } from 'date-fns/locale';
 import { httpInterceptorsProvider } from './library/http/http-interceptors-provider';
 
 import { ClassTransformer } from 'class-transformer';
+import { AppClassTransformerService } from './library/class-transformer/app-class-transformer.service';
 
 import { MatDateFnsModule } from '@angular/material-date-fns-adapter';
 import { LoginModule } from './login/login.module';
@@ -50,7 +51,7 @@ import { LoginModule } from './login/login.module';
     { provide: ErrorHandler, useClass: ErrorsService, },
     httpInterceptorsProvider,
     { provide: APP_PARAMS, useValue: PRD_DEFAULTS },
-    { provide: ClassTransformer },
+    { provide: ClassTransformer, useExisting: AppClassTransformerService },
   ],
   bootstrap: [AppComponent]
 })
