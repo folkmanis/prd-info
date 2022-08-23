@@ -1,31 +1,31 @@
-export interface User {
-    username: string;
-    name: string;
-    password: string;
-    admin: boolean;
-    last_login: Date;
-    userDisabled: boolean;
-    preferences: UserPreferences;
-    sessions: UserSession[];
-    eMail: string;
-    google?: GoogleUser;
-}
+import { Expose, Type } from 'class-transformer';
 
-export interface UserPreferences {
+export class UserPreferences {
+
     customers: string[];
+
     modules: string[];
 }
 
-export interface UserSession {
+export class LastSeen {
+
+    @Type(() => Date)
+    date: Date;
+
+    ip: string;
+};
+
+
+export class UserSession {
+
     _id: string;
-    lastSeen: {
-        date: Date;
-        ip: string;
-    };
+
+    @Type(() => LastSeen)
+    lastSeen: LastSeen;
 }
 
 
-export interface GoogleUser {
+export class GoogleUser {
     id: string;
     email: string;
     verified_email: boolean;
@@ -38,3 +38,30 @@ export interface GoogleUser {
     locale: string;
     hd: string;
 }
+
+export class User {
+
+    username: string;
+
+    name: string;
+
+    password: string;
+
+    admin: boolean;
+
+    @Type(() => Date)
+    last_login: Date;
+    userDisabled: boolean;
+
+    @Type(() => UserPreferences)
+    preferences: UserPreferences;
+
+    @Type(() => UserSession)
+    sessions: UserSession[];
+
+    eMail: string;
+
+    @Type(() => GoogleUser)
+    google?: GoogleUser;
+}
+
