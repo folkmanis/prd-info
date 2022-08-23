@@ -1,20 +1,21 @@
 import { Injectable } from '@angular/core';
-import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
+import { PaytraqApiService } from 'src/app/services/prd-api/paytraq-api.service';
 import { Observable } from 'rxjs';
-import { map, pluck } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import * as Pt from 'src/app/interfaces/paytraq';
 
-@Injectable({ providedIn: 'any' })
+@Injectable({
+  providedIn: 'root'
+})
 export class PaytraqClientService {
 
   constructor(
-    private api: PrdApiService,
+    private api: PaytraqApiService,
   ) { }
 
   getClients(query: Pt.RequestOptions = {}): Observable<Pt.PaytraqClient[]> {
-    return this.api.paytraq.getClients(query).pipe(
-      pluck('client'),
-      map(cl => cl || [])
+    return this.api.getClients(query).pipe(
+      map(cl => cl?.client || [])
     );
   }
 

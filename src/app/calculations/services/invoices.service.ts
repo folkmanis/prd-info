@@ -1,20 +1,24 @@
 import { Injectable } from '@angular/core';
 import { pick } from 'prd-cdk';
 import { EMPTY, Observable, of, Subject } from 'rxjs';
-import { map, pluck, startWith, switchMap, tap } from 'rxjs/operators';
-import { Invoice, InvoicesFilter, InvoiceTable, InvoiceUpdate, INVOICE_UPDATE_FIELDS, InvoiceForReport } from 'src/app/interfaces';
-import { JobPartial, JobQueryFilter, JobsWithoutInvoicesTotals, JobUnwindedPartial, JobService } from 'src/app/jobs';
+import { map, startWith, switchMap, tap } from 'rxjs/operators';
+import { Invoice, InvoiceForReport, InvoicesFilter, InvoiceTable, InvoiceUpdate, INVOICE_UPDATE_FIELDS } from 'src/app/interfaces';
 import { PaytraqInvoice } from 'src/app/interfaces/paytraq';
 import { Sale } from 'src/app/interfaces/paytraq/invoice';
+import { JobQueryFilter, JobService, JobsWithoutInvoicesTotals, JobUnwindedPartial } from 'src/app/jobs';
 import { PrdApiService } from 'src/app/services';
-import { } from 'src/app/jobs/services/job.service';
+import { PaytraqApiService } from 'src/app/services/prd-api/paytraq-api.service';
 
-@Injectable({ providedIn: 'any' })
+
+@Injectable({
+  providedIn: 'root'
+})
 export class InvoicesService {
 
   constructor(
     private prdApi: PrdApiService,
     private jobService: JobService,
+    private paytraqApi: PaytraqApiService,
   ) { }
 
   private reloadJobsWithoutInvoicesTotals$ = new Subject();
@@ -61,15 +65,15 @@ export class InvoicesService {
   }
 
   getPaytraqInvoiceRef(id: number): Observable<string> {
-    return this.prdApi.paytraq.getSale(id).pipe(
-      pluck('sale', 'header', 'document', 'documentRef'),
+    return this.paytraqApi.getSale(id).pipe(
+      map(data => data.sale?.header?.document?.documentRef),
     );
   }
 
   postPaytraqInvoice(invoice: Invoice): Observable<number> {
     const ptInvoice = new PaytraqInvoiceClass(invoice);
-    return this.prdApi.paytraq.postSale(ptInvoice).pipe(
-      pluck('response', 'documentID')
+    return this.paytraqApi.postSale(ptInvoice).pipe(
+      map(data => data.response.documentID)
     );
   }
 

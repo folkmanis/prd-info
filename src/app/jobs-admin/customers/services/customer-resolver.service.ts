@@ -6,7 +6,7 @@ import { Customer } from 'src/app/interfaces';
 import { CustomersService } from 'src/app/services/customers.service';
 
 @Injectable({
-  providedIn: 'any'
+  providedIn: 'root'
 })
 export class CustomerResolverService extends SimpleFormResolverService<Customer> {
 

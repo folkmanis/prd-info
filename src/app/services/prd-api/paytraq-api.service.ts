@@ -1,20 +1,37 @@
 import { ApiBase, HttpOptions } from 'src/app/library/http';
 import * as Pt from 'src/app/interfaces/paytraq';
 import { Observable } from 'rxjs';
-import { map, pluck, tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable } from '@angular/core';
+import { APP_PARAMS } from 'src/app/app-params';
+import { ClassTransformer } from 'class-transformer';
+import { AppParams } from 'src/app/interfaces';
 
 
 
-export class PaytraqApi extends ApiBase<Pt.PaytraqData> {
+@Injectable({
+    providedIn: 'root'
+})
+export class PaytraqApiService {
+
+    readonly path = this.params.apiPath + 'paytraq/';
+
+
+    constructor(
+        private http: HttpClient,
+        @Inject(APP_PARAMS) private params: AppParams,
+        private transformer: ClassTransformer,
+    ) { }
+
 
     getClients(query: Pt.RequestOptions): Observable<Pt.PaytraqClients> {
         return this.http.get<{ clients: Pt.PaytraqClients; }>(
             this.path + 'clients',
             new HttpOptions(query).cacheable()
-        )
-            .pipe(
-                pluck('clients'),
-            );
+        ).pipe(
+            map(data => data.clients),
+        );
     }
 
     getProducts(query: Pt.RequestOptions): Observable<Pt.PaytraqProducts> {
@@ -22,7 +39,7 @@ export class PaytraqApi extends ApiBase<Pt.PaytraqData> {
             this.path + 'products',
             new HttpOptions(query).cacheable()
         ).pipe(
-            pluck('products'),
+            map(data => data.products),
         );
     }
 

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
 import { Observable } from 'rxjs';
-import { pluck, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import * as Pt from 'src/app/interfaces/paytraq';
+import { PaytraqApiService } from 'src/app/services/prd-api/paytraq-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,13 +10,12 @@ import * as Pt from 'src/app/interfaces/paytraq';
 export class PaytraqProductsService {
 
   constructor(
-    private api: PrdApiService,
+    private api: PaytraqApiService,
   ) { }
 
   getProducts(query: Pt.RequestOptions = {}): Observable<Pt.PaytraqProduct[]> {
-    return this.api.paytraq.getProducts(query).pipe(
-      pluck('product'),
-      map(pr => pr || [])
+    return this.api.getProducts(query).pipe(
+      map(pr => pr?.product || [])
     );
   }
 }
