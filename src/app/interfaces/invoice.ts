@@ -1,16 +1,47 @@
+import { Type, Expose } from 'class-transformer';
 import { Customer } from './customer';
 import { JobPartial } from 'src/app/jobs';
 
-export interface Invoice {
-    invoiceId: string;
-    customer: string;
-    createdDate: Date;
-    jobsId: number[];
-    jobs?: JobPartial[];
-    products: InvoiceProduct[];
-    total?: number;
+export class InvoiceProduct {
+    _id: string;
+    name: string;
+    total: number;
+    jobsCount: number;
+    count: number;
+    price?: number;
     comment?: string;
+    paytraqId?: number;
+}
+
+export class PaytraqInvoice {
+    paytraqId: number;
+    documentRef?: string;
+}
+
+export class Invoice {
+
+    invoiceId: string;
+
+    customer: string;
+
+    @Type(() => Date)
+    createdDate: Date;
+
+    jobsId: number[];
+
+    jobs?: JobPartial[];
+
+    @Type(() => InvoiceProduct)
+    products: InvoiceProduct[];
+
+    total?: number;
+
+    comment?: string;
+
+    @Type(() => Customer)
     customerInfo?: Customer;
+
+    @Type(() => PaytraqInvoice)
     paytraq?: PaytraqInvoice;
 }
 
@@ -27,26 +58,12 @@ export type InvoiceTable = Pick<Invoice, 'invoiceId' | 'customer' | 'createdDate
     };
 };
 
-export interface PaytraqInvoice {
-    paytraqId: number;
-    documentRef?: string;
-}
-
 export interface InvoicesFilter {
     customer?: string;
 }
 
-export interface InvoiceProduct {
-    _id: string;
-    total: number;
-    jobsCount: number;
-    count: number;
-    price?: number;
-    comment?: string;
-    paytraqId?: number;
-}
 
-export interface ProductTotals {
+export class ProductTotals {
     _id: string;
     count: number;
     total: number;

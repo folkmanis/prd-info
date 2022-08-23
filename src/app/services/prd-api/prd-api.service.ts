@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Inject } from '@angular/core';
-import { InvoicesApi } from './invoices-api';
 import { AppParams } from 'src/app/interfaces';
 import { APP_PARAMS } from 'src/app/app-params';
 import { EquipmentApi } from './equipment-api';
@@ -13,7 +12,6 @@ export class PrdApiService {
 
   readonly apiPath = this.params.apiPath;
 
-  invoices = new InvoicesApi(this.http, this.apiPath + 'invoices/');
   equipment = new EquipmentApi(this.http, this.apiPath + 'equipment/');
 
   constructor(

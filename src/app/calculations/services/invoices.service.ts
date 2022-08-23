@@ -6,8 +6,8 @@ import { Invoice, InvoiceForReport, InvoicesFilter, InvoiceTable, InvoiceUpdate,
 import { PaytraqInvoice } from 'src/app/interfaces/paytraq';
 import { Sale } from 'src/app/interfaces/paytraq/invoice';
 import { JobQueryFilter, JobService, JobsWithoutInvoicesTotals, JobUnwindedPartial } from 'src/app/jobs';
-import { PrdApiService } from 'src/app/services';
 import { PaytraqApiService } from 'src/app/services/prd-api/paytraq-api.service';
+import { InvoicesApiService } from 'src/app/services/prd-api/invoices-api.service';
 
 
 @Injectable({
@@ -16,9 +16,9 @@ import { PaytraqApiService } from 'src/app/services/prd-api/paytraq-api.service'
 export class InvoicesService {
 
   constructor(
-    private prdApi: PrdApiService,
     private jobService: JobService,
     private paytraqApi: PaytraqApiService,
+    private api: InvoicesApiService,
   ) { }
 
   private reloadJobsWithoutInvoicesTotals$ = new Subject();
@@ -40,28 +40,28 @@ export class InvoicesService {
   }
 
   createInvoice(params: { jobIds: number[]; customerId: string; }): Observable<Invoice> {
-    return this.prdApi.invoices.createInvoice(params).pipe(
+    return this.api.createInvoice(params).pipe(
       tap(() => this.reloadJobsWithoutInvoicesTotals$.next(null)),
     );
   }
 
   getInvoice(invoiceId: string): Observable<Invoice> {
-    return this.prdApi.invoices.get(invoiceId);
+    return this.api.getOne(invoiceId);
   }
 
   getReport(data: InvoiceForReport) {
-    return this.prdApi.invoices.getReport(data);
+    return this.api.getReport(data);
   }
 
   updateInvoice(id: string, update: InvoiceUpdate): Observable<any> {
     update = pick(update, ...INVOICE_UPDATE_FIELDS);
-    return this.prdApi.invoices.updateOne(id, update).pipe(
+    return this.api.updateOne(id, update).pipe(
       switchMap(resp => resp ? of(resp) : EMPTY),
     );
   }
 
   getInvoicesHttp(params: InvoicesFilter): Observable<InvoiceTable[]> {
-    return this.prdApi.invoices.get<InvoiceTable>(params);
+    return this.api.getAll(params);
   }
 
   getPaytraqInvoiceRef(id: number): Observable<string> {
@@ -78,7 +78,7 @@ export class InvoicesService {
   }
 
   deleteInvoice(invoiceId: string): Observable<number> {
-    return this.prdApi.invoices.deleteOne(invoiceId);
+    return this.api.deleteOne(invoiceId);
   }
 
 }
