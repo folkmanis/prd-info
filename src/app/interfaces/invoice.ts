@@ -4,7 +4,6 @@ import { JobPartial } from 'src/app/jobs';
 
 export class InvoiceProduct {
     _id: string;
-    name: string;
     total: number;
     jobsCount: number;
     count: number;
