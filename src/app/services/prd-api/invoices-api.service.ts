@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { APP_PARAMS } from 'src/app/app-params';
 import { AppParams, Invoice, InvoiceForReport, InvoiceTable, ProductTotals } from 'src/app/interfaces';
-import { ApiBase, HttpOptions } from 'src/app/library/http';
+import { HttpOptions } from 'src/app/library/http';
 import { AppClassTransformerService } from 'src/app/library';
 
 
