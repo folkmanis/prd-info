@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { LibraryModule } from 'src/app/library/library.module';
-import { SimpleFormModule } from 'src/app/library/simple-form';
+import { SimpleFormTypedModule } from 'src/app/library/simple-form-typed';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 
 import { EquipmentListComponent } from './equipment-list/equipment-list.component';
@@ -19,7 +19,7 @@ import { EquipmentResolverService } from './services/equipment-resolver.service'
     CommonModule,
     LibraryModule,
     MaterialLibraryModule,
-    SimpleFormModule.forChildren({
+    SimpleFormTypedModule.forChildren({
       listComponent: EquipmentListComponent,
       editorComponent: EquipmentEditComponent,
       resolver: EquipmentResolverService,

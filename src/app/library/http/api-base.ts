@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map, pluck } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { HttpOptions } from 'src/app/library/http/http-options';
 
 interface Params {
@@ -31,7 +31,7 @@ export abstract class ApiBase<T> {
 
     deleteOne(id: string | number): Observable<number> {
         return this.http.delete<{ deletedCount: number; }>(this.path + id, new HttpOptions()).pipe(
-            pluck('deletedCount'),
+            map(data => data.deletedCount),
         );
     }
 

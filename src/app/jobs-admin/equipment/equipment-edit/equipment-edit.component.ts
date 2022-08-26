@@ -1,9 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { ChangeDetectorRef, ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Equipment } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
-import { SimpleFormSource } from 'src/app/library/simple-form';
-import { EquipmentFormSource } from '../services/equipment-form-source';
+import { EquipmentFormService } from '../services/equipment-form.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { DestroyService } from 'prd-cdk';
+import { debounceTime, map, merge, takeUntil } from 'rxjs';
+
 
 
 @Component({
@@ -12,26 +14,49 @@ import { EquipmentFormSource } from '../services/equipment-form-source';
   styleUrls: ['./equipment-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    { provide: SimpleFormSource, useExisting: EquipmentFormSource }
+    EquipmentFormService,
+    DestroyService,
   ]
 })
 export class EquipmentEditComponent implements OnInit, CanComponentDeactivate {
 
 
-  get form(): UntypedFormGroup {
-    return this.formSource.form;
+  form = this.formService.form;
+
+  get changes() {
+    return this.formService.changes;
   }
 
   constructor(
-    private formSource: EquipmentFormSource,
+    private formService: EquipmentFormService,
+    private destroy$: DestroyService,
+    private chDetector: ChangeDetectorRef,
+    private router: Router,
+    private route: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
+
+    this.route.data.pipe(
+      map(data => data.value as Equipment),
+      takeUntil(this.destroy$),
+    ).subscribe(equipment => this.formService.setValue(equipment));
+
+    merge(this.form.valueChanges, this.form.statusChanges).pipe(
+      takeUntil(this.destroy$),
+    ).subscribe(() => this.chDetector.markForCheck());
+
   }
 
-  onDataChange(value: Equipment) {
-    this.formSource.initValue(value);
+  onReset() {
+    this.formService.reset();
   }
+
+  onSave() {
+    this.formService.save()
+      .subscribe(c => this.router.navigate(['..', c._id], { relativeTo: this.route }));
+  }
+
 
   canDeactivate(): boolean {
     return this.form.pristine;

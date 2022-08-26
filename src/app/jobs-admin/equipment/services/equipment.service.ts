@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { Equipment, EquipmentPartial } from 'src/app/interfaces';
-import { PrdApiService } from 'src/app/services/prd-api/prd-api.service';
+import { EquipmentApiService } from 'src/app/services/prd-api/equipment-api.service';
 
 interface EquipmentFilter {
   name?: string;
@@ -13,50 +13,48 @@ interface EquipmentFilter {
 })
 export class EquipmentService {
 
-  private _filter = new BehaviorSubject<EquipmentFilter | null>(null);
+  private _filter = new BehaviorSubject<EquipmentFilter>({});
 
   equipment$: Observable<EquipmentPartial[]> = this._filter.pipe(
-    switchMap(filter => this.api.equipment.get<EquipmentPartial>(filter)),
+    switchMap(filter => this.getList(filter)),
     shareReplay(1),
   );
 
   constructor(
-    private api: PrdApiService,
+    private api: EquipmentApiService,
   ) { }
 
   reload() {
     this._filter.next(this._filter.value);
   }
 
-  setFilter(filter: EquipmentFilter | null) {
+  setFilter(filter: EquipmentFilter = {}) {
     this._filter.next(filter);
   }
 
-  getList(): Observable<EquipmentPartial[]> {
-    return this.api.equipment.get();
+  getList(filter: EquipmentFilter = {}): Observable<EquipmentPartial[]> {
+    return this.api.getAll(filter);
   }
 
   getOne(id: string): Observable<Equipment> {
-    return this.api.equipment.get(id);
+    return this.api.getOne(id);
   }
 
-  insertOne(equipment: Equipment): Observable<Equipment> {
-    return this.api.equipment.insertOne(equipment).pipe(
+  insertOne(equipment: Omit<Equipment, '_id'>): Observable<Equipment> {
+    return this.api.insertOne(equipment).pipe(
       tap(_ => this.reload()),
     );
   }
 
-  updateOne(equipment: Equipment): Observable<Equipment> {
+  updateOne(equipment: Pick<Equipment, '_id'> & Partial<Equipment>): Observable<Equipment> {
     const { _id, ...update } = equipment;
-    return this.api.equipment.updateOne(_id, update).pipe(
+    return this.api.updateOne(_id, update).pipe(
       tap(_ => this.reload()),
     );
   }
 
   names(): Observable<string[]> {
-    return this.api.equipment.validatorData('name').pipe(
-      tap(_ => this.reload()),
-    );
+    return this.api.validatorData('name');
   }
 
 }
