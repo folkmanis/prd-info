@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, ActivatedRoute } from '@angular/router';
 import { filter, map, switchMap } from 'rxjs/operators';
@@ -16,9 +16,9 @@ export class LoginComponent implements OnInit {
 
   @ViewChild(FocusedDirective) username: FocusedDirective;
 
-  loginForm: UntypedFormGroup = new UntypedFormGroup({
-    username: new UntypedFormControl('', [Validators.required]),
-    password: new UntypedFormControl(),
+  loginForm: FormGroup = new FormGroup({
+    username: new FormControl<string>('', [Validators.required]),
+    password: new FormControl<string>(''),
   });
 
 
@@ -44,7 +44,9 @@ export class LoginComponent implements OnInit {
   onLogin() {
     this.loginService.logIn(this.loginForm.value)
       .subscribe({
-        next: () => this.router.navigate(['/']),
+        next: () => {
+          this.router.navigate(['/']);
+        },
         error: () => {
           this.snack.open('Nepareiza parole vai lietotājs', 'OK', { duration: 5000 });
           this.loginForm.reset();
