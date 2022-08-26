@@ -42,7 +42,6 @@ export class UserFormService {
             return pickBy(this.value, value => value !== null);
         } else {
             const diff = pickBy(this.value, (value, key) => !isEqual(value, this.initialValue[key]));
-            console.log(diff);
             return Object.keys(diff).length ? diff : undefined;
         }
     }
