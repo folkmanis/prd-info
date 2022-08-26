@@ -1,4 +1,4 @@
-<app-simple-list-container (filter)="filter$.next($event)" plusButton filterInput>
+<app-simple-list-typed-container (filter)="filter$.next($event)" plusButton filterInput>
 
     <table mat-table [dataSource]="users$">
 
@@ -29,4 +29,4 @@
 
     </table>
 
-</app-simple-list-container>
+</app-simple-list-typed-container>

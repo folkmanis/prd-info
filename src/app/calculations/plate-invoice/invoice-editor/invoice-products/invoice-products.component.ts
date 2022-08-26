@@ -1,7 +1,6 @@
-import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy } from '@angular/core';
-import { Invoice, InvoiceProduct } from 'src/app/interfaces';
-import { Subject, ReplaySubject, from, Observable } from 'rxjs';
-import { map, pluck, switchMap } from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { map, Observable, ReplaySubject } from 'rxjs';
+import { InvoiceProduct } from 'src/app/interfaces';
 import { LoginService } from 'src/app/login';
 
 @Component({
@@ -30,8 +29,7 @@ export class InvoiceProductsComponent implements OnInit, OnDestroy {
   readonly products$ = new ReplaySubject<InvoiceProduct[]>(1);
 
   isJobsAdmin$: Observable<boolean> = this.loginService.user$.pipe(
-    pluck('preferences', 'modules'),
-    map(modules => modules.includes('jobs-admin'))
+    map(usr => usr.preferences.modules.includes('jobs-admin')),
   );
 
   constructor(

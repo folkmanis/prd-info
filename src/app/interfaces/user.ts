@@ -2,17 +2,17 @@ import { Expose, Type } from 'class-transformer';
 
 export class UserPreferences {
 
-    customers: string[];
+    customers: string[] = [];
 
-    modules: string[];
+    modules: string[] = [];
 }
 
 export class LastSeen {
 
     @Type(() => Date)
-    date: Date;
+    date: Date = new Date();
 
-    ip: string;
+    ip: string = '';
 };
 
 
@@ -51,10 +51,11 @@ export class User {
 
     @Type(() => Date)
     last_login: Date;
-    userDisabled: boolean;
+
+    userDisabled: boolean = false;
 
     @Type(() => UserPreferences)
-    preferences: UserPreferences;
+    preferences: UserPreferences = new UserPreferences();
 
     @Type(() => UserSession)
     sessions: UserSession[];
@@ -63,5 +64,9 @@ export class User {
 
     @Type(() => GoogleUser)
     google?: GoogleUser;
+
+    hasModule(module: string): boolean {
+        return this.preferences.modules.includes(module);
+    }
 }
 

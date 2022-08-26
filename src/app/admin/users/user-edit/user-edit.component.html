@@ -1,24 +1,25 @@
-<app-simple-form-container (dataChange)="onDataChange($event)" [formGroup]="form">
+<app-simple-form-typed-container [status]="form.status" [isChanges]="changes" (save)="onSave()" (reset)="onReset()"
+    [formGroup]="form">
 
     <!-- Lietotājvārds -->
     <h2 *ngIf="isNew; else existing">
         <mat-form-field>
             <input formControlName="username" matInput placeholder="Lietotājvārds" autocomplete="off" required>
-            <mat-error *ngIf="username.hasError('minlength') && !username.hasError('symbol')">
-                Jābūt vismaz {{username.errors.minlength.requiredLength}} simboliem
+            <mat-error *ngIf="unameCtrl.hasError('minlength') && !unameCtrl.hasError('symbol')">
+                Jābūt vismaz {{unameCtrl.errors.minlength.requiredLength}} simboliem
             </mat-error>
-            <mat-error *ngIf="username.hasError('symbol')">
-                {{username.errors.symbol}}
+            <mat-error *ngIf="unameCtrl.hasError('symbol')">
+                {{unameCtrl.errors.symbol}}
             </mat-error>
-            <mat-error *ngIf="username.hasError('existing')">
-                {{username.errors.existing}}
+            <mat-error *ngIf="unameCtrl.hasError('existing')">
+                {{unameCtrl.errors.existing}}
             </mat-error>
         </mat-form-field>
     </h2>
 
     <ng-template #existing>
         <h2>
-            {{username.value}}
+            {{unameCtrl.value}}
         </h2>
     </ng-template>
 
@@ -40,7 +41,7 @@
             <ng-template #changePassword>
                 <section>
                     <button mat-raised-button appPasswordInput
-                        (appPasswordChange)="onPasswordChange($event, username.value)" color="primary">
+                        (appPasswordChange)="onPasswordChange($event, unameCtrl.value)" color="primary">
                         MAINĪT PAROLI
                     </button>
                 </section>
@@ -115,4 +116,4 @@
     </mat-accordion>
 
 
-</app-simple-form-container>
+</app-simple-form-typed-container>

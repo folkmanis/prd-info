@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { LibraryModule } from 'src/app/library/library.module';
-import { SimpleFormModule } from 'src/app/library/simple-form/simple-form.module';
+import { SimpleFormTypedModule } from 'src/app/library/simple-form-typed/simple-form-typed.module';
 import { UserResolverService } from './services/user-resolver.service';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { UsersListComponent } from './users-list/users-list.component';
@@ -19,7 +19,7 @@ import { SessionsComponent } from './user-edit/sessions/sessions.component';
     CommonModule,
     LibraryModule,
     MaterialLibraryModule,
-    SimpleFormModule.forChildren({
+    SimpleFormTypedModule.forChildren({
       path: 'users',
       editorComponent: UserEditComponent,
       listComponent: UsersListComponent,

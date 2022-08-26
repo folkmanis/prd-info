@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { merge, Observable, of, Subject } from 'rxjs';
-import { map, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators';
+import { catchError, map, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators';
 import { User } from 'src/app/interfaces';
 import { LoginApiService } from './login-api.service';
 import { Login } from '../login.interface';
@@ -17,13 +17,13 @@ export class LoginService {
 
   private reload$ = new Subject<void>();
 
-  user$ = merge(
-    this.reload$.pipe(
-      startWith({}),
+  user$: Observable<User> = merge(
+    combineReload(of({}), this.reload$).pipe(
       switchMap(() => this.api.getLogin()),
     ),
     this._updateLogin$,
   ).pipe(
+    catchError(() => of(null)),
     shareReplay(1),
   );
 
@@ -53,15 +53,15 @@ export class LoginService {
     this.reload$.next();
   }
 
-  logOut(): Observable<boolean> {
+  logOut(): Observable<unknown> {
     return this.api.logout().pipe(
-      tap(resp => !resp || this._updateLogin$.next(null)),
+      tap(() => this._updateLogin$.next(null)),
     );
   }
 
   isModule(mod: string): Observable<boolean> {
     return this.user$.pipe(
-      map(usr => usr && !!usr.preferences.modules.find(m => m === mod)),
+      map(usr => usr.hasModule(mod)),
     );
   }
 
