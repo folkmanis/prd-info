@@ -2,7 +2,6 @@ import { coerceNumberProperty } from '@angular/cdk/coercion';
 import { Input, ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormGroup, NG_VALUE_ACCESSOR, NG_VALIDATORS, ControlValueAccessor, Validator, Validators, ValidatorFn, FormControl, ValidationErrors } from '@angular/forms';
 import { map } from 'rxjs';
-import { FocusMonitor } from '@angular/cdk/a11y';
 
 const MIN_LENGTH = 6;
 
