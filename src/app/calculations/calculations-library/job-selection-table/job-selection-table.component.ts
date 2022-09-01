@@ -4,7 +4,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnI
 import { BehaviorSubject } from 'rxjs';
 import { JobPartial } from 'src/app/jobs';
 
-const TABLE_COLUMNS = ['jobId', 'receivedDate', 'customer', 'name', 'productName', 'count', 'price', 'total'];
+const TABLE_COLUMNS = ['selected', 'jobId', 'receivedDate', 'customer', 'name', 'productName', 'count', 'price', 'total'];
 
 @Component({
   selector: 'app-job-selection-table',
@@ -12,27 +12,34 @@ const TABLE_COLUMNS = ['jobId', 'receivedDate', 'customer', 'name', 'productName
   styleUrls: ['./job-selection-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class JobSelectionTableComponent implements OnInit, OnDestroy {
+export class JobSelectionTableComponent implements OnDestroy {
+
   @Input('jobs') set _jobs(jobs: JobPartial[]) {
     if (jobs !== null) {
       this.setNewJobList(jobs);
     }
   }
-  @Input('disabled') set _disabled(disabled: any) {
-    this.displayedColumns = !coerceBooleanProperty(disabled) ? this.columnsWithSelection() : TABLE_COLUMNS;
+
+  private _disabled = false;
+  @Input() set disabled(value: any) {
+    this._disabled = coerceBooleanProperty(value);
   }
+  get disabled() {
+    return this._disabled;
+  }
+
   @Output() selected = new EventEmitter<number[]>();
 
   selector = new SelectionModel<number>(true, [], false);
   jobIdSet: Set<number> | undefined;
+  jobs$: BehaviorSubject<JobPartial[]> = new BehaviorSubject([]);
+
+  get displayedColumns(): string[] {
+    return this._disabled ? TABLE_COLUMNS.filter(col => col !== 'selected') : TABLE_COLUMNS;
+  }
 
   constructor() { }
 
-  displayedColumns: string[] = this.columnsWithSelection();
-  jobs$: BehaviorSubject<JobPartial[]> = new BehaviorSubject([]);
-
-  ngOnInit(): void {
-  }
 
   ngOnDestroy() {
     this.selected.complete();
@@ -67,10 +74,6 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
     this.jobs$.next(jobs);
     this.jobIdSet = new Set(jobs.map(job => job.jobId));
     this.selectAll(...this.jobIdSet);
-  }
-
-  private columnsWithSelection(): string[] {
-    return ['selected'].concat(TABLE_COLUMNS);
   }
 
 }
