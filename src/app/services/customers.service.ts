@@ -43,14 +43,6 @@ export class CustomersService {
     return this.api.getOne(name);
   }
 
-  deleteCustomer(id: string): Observable<boolean> {
-
-    this.isValidId(id);
-    return this.api.deleteOne(id).pipe(
-      tap(() => this.reloadCustomers$.next()),
-    );
-  }
-
   saveNewCustomer(customer: NewCustomer): Observable<Customer> {
     return this.api.insertOne(customer).pipe(
       tap(_ => this.reloadCustomers$.next()),

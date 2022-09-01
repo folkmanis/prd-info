@@ -1,12 +1,11 @@
-import { ApiBase, HttpOptions } from 'src/app/library/http';
-import * as Pt from 'src/app/interfaces/paytraq';
-import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { APP_PARAMS } from 'src/app/app-params';
-import { ClassTransformer } from 'class-transformer';
 import { AppParams } from 'src/app/interfaces';
+import * as Pt from 'src/app/interfaces/paytraq';
+import { HttpOptions } from 'src/app/library/http';
 
 
 
@@ -21,7 +20,6 @@ export class PaytraqApiService {
     constructor(
         private http: HttpClient,
         @Inject(APP_PARAMS) private params: AppParams,
-        private transformer: ClassTransformer,
     ) { }
 
 

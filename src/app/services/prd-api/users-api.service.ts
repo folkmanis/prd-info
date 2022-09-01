@@ -1,10 +1,10 @@
-import { HttpOptions } from 'src/app/library/http';
-import { AppParams, User } from 'src/app/interfaces';
-import { Observable, map, OperatorFunction } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
+import { map, Observable } from 'rxjs';
 import { APP_PARAMS } from 'src/app/app-params';
-import { ClassTransformer } from 'class-transformer';
+import { AppParams, User } from 'src/app/interfaces';
+import { AppClassTransformerService } from 'src/app/library';
+import { HttpOptions } from 'src/app/library/http';
 
 type Params = Record<string, any>;
 
@@ -18,32 +18,32 @@ export class UsersApiService {
     constructor(
         private http: HttpClient,
         @Inject(APP_PARAMS) private params: AppParams,
-        private transformer: ClassTransformer,
+        private transformer: AppClassTransformerService,
     ) { }
 
 
     getOne(name: string): Observable<User> {
         return this.http.get(this.path + name, new HttpOptions().cacheable()).pipe(
-            this.toClass<Record<string, any>>()
+            this.transformer.toClass(User)
         );
     }
 
     getAll(params: Params): Observable<User[]> {
         return this.http.get(this.path, new HttpOptions(params).cacheable()).pipe(
-            this.toClass()
+            this.transformer.toClass(User)
         );
     }
 
 
     updateOne(id: string | number, data: Partial<User>, params?: Params): Observable<User> {
         return this.http.patch(this.path + id, data, new HttpOptions(params)).pipe(
-            this.toClass<Record<string, any>>()
+            this.transformer.toClass(User)
         );
     }
 
     insertOne(data: Partial<User>, params?: Params): Observable<User> {
         return this.http.put(this.path, data, new HttpOptions(params)).pipe(
-            this.toClass<Record<string, any>>(),
+            this.transformer.toClass(User)
         );
     }
 
@@ -63,7 +63,7 @@ export class UsersApiService {
 
     passwordUpdate(username: string, password: string): Observable<User> {
         return this.http.patch(this.path + username + '/password', { password }).pipe(
-            this.toClass<Record<string, any>>()
+            this.transformer.toClass(User)
         );
     }
 
@@ -73,10 +73,5 @@ export class UsersApiService {
         );
     }
 
-    private toClass<T extends Record<string, any>[]>(): OperatorFunction<T, User[]>;
-    private toClass<T extends Record<string, any>>(): OperatorFunction<T, User>;
-    private toClass<T extends Record<string, any>>(): OperatorFunction<T, User> | OperatorFunction<T[], User[]> {
-        return map(data => this.transformer.plainToInstance(User, data, { exposeDefaultValues: true }));
-    }
 
 }

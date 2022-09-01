@@ -1,7 +1,7 @@
+import { AppClassTransformerService } from 'src/app/library';
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
-import { ClassTransformer } from 'class-transformer';
-import { map, Observable, pluck } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { APP_PARAMS } from 'src/app/app-params';
 import { AppParams, Customer, NewCustomer } from 'src/app/interfaces';
 import { HttpOptions } from 'src/app/library/http/http-options';
@@ -16,19 +16,19 @@ export class CustomersApiService {
 
     constructor(
         private http: HttpClient,
-        private transformer: ClassTransformer,
+        private transformer: AppClassTransformerService,
         @Inject(APP_PARAMS) private params: AppParams,
     ) { }
 
     getAll(params?: Record<string, any>): Observable<Customer[]> {
         return this.http.get<Record<string, any>[]>(this.path, new HttpOptions(params).cacheable()).pipe(
-            map((data) => this.transformer.plainToInstance(Customer, data)),
+            this.transformer.toClass(Customer, { exposeDefaultValues: false }),
         );
     }
 
     getOne(idOrName: string, params?: Record<string, any>): Observable<Customer> {
         return this.http.get<Record<string, any>>(this.path + idOrName, new HttpOptions(params).cacheable()).pipe(
-            map((data) => this.transformer.plainToInstance(Customer, data, { exposeDefaultValues: true })),
+            this.transformer.toClass(Customer),
         );
     }
 
@@ -38,7 +38,7 @@ export class CustomersApiService {
             this.transformer.instanceToPlain(data),
             new HttpOptions()
         ).pipe(
-            map((data) => this.transformer.plainToInstance(Customer, data, { exposeDefaultValues: true })),
+            this.transformer.toClass(Customer),
         );
     }
 
@@ -48,20 +48,13 @@ export class CustomersApiService {
             this.transformer.instanceToPlain(customer),
             new HttpOptions(params)
         ).pipe(
-            map((data) => this.transformer.plainToInstance(Customer, data)),
+            this.transformer.toClass(Customer),
         );
     }
 
-    deleteOne(id: string, params?: Record<string, any>): Observable<boolean> {
+    deleteOne(id: string, params?: Record<string, any>): Observable<number> {
         return this.http.delete<{ deletedCount: number; }>(this.path + id, new HttpOptions(params)).pipe(
-            pluck('deletedCount'),
-            map(count => {
-                if (count === 1) {
-                    return true;
-                } else {
-                    throw new Error(`Customer ${id} not deleted`);
-                }
-            }),
+            map(data => data.deletedCount),
         );
     }
 

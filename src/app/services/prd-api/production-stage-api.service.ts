@@ -1,10 +1,10 @@
-import { AppParams, ProductionStage, CreateProductionStage, UpdateProductionStage } from 'src/app/interfaces';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
-import { HttpOptions } from 'src/app/library/http/http-options';
-import { ClassTransformer } from 'class-transformer';
 import { Inject, Injectable } from '@angular/core';
+import { map, Observable } from 'rxjs';
 import { APP_PARAMS } from 'src/app/app-params';
+import { AppParams, CreateProductionStage, ProductionStage, UpdateProductionStage } from 'src/app/interfaces';
+import { AppClassTransformerService } from 'src/app/library';
+import { HttpOptions } from 'src/app/library/http/http-options';
 
 
 @Injectable({
@@ -14,12 +14,10 @@ export class ProductionStageApiService {
 
     private path = this.params.apiPath + 'production-stages/';
 
-    private toArray = () => map((data: Record<string, any>[]) => this.transformer.plainToInstance(ProductionStage, data, { exposeDefaultValues: true }));
-    private toClass = () => map((data: Record<string, any>) => this.transformer.plainToInstance(ProductionStage, data, { exposeDefaultValues: true }));
 
     constructor(
         private http: HttpClient,
-        private transformer: ClassTransformer,
+        private transformer: AppClassTransformerService,
         @Inject(APP_PARAMS) private params: AppParams,
     ) { }
 
@@ -27,14 +25,18 @@ export class ProductionStageApiService {
         return this.http.get<Record<string, any>[]>(
             this.path,
             new HttpOptions(params).cacheable()
-        ).pipe(this.toArray());
+        ).pipe(
+            this.transformer.toClass(ProductionStage),
+        );
     }
 
     getOne(id: string): Observable<ProductionStage> {
         return this.http.get<Record<string, any>>(
             this.path + id,
             new HttpOptions().cacheable(),
-        ).pipe(this.toClass());
+        ).pipe(
+            this.transformer.toClass(ProductionStage),
+        );
     }
 
     updateOne({ _id, ...data }: UpdateProductionStage): Observable<ProductionStage> {
@@ -42,7 +44,9 @@ export class ProductionStageApiService {
             this.path + _id,
             data,
             new HttpOptions()
-        ).pipe(this.toClass());
+        ).pipe(
+            this.transformer.toClass(ProductionStage),
+        );
     }
 
     insertOne(data: CreateProductionStage): Observable<ProductionStage> {
@@ -50,7 +54,9 @@ export class ProductionStageApiService {
             this.path,
             data,
             new HttpOptions()
-        ).pipe(this.toClass());
+        ).pipe(
+            this.transformer.toClass(ProductionStage),
+        );
     }
 
     deleteOne(id: string): Observable<number> {

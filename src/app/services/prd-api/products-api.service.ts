@@ -1,12 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, Inject } from '@angular/core';
-import { AppParams, ProductPartial } from 'src/app/interfaces';
+import { Inject, Injectable } from '@angular/core';
+import { map, Observable } from 'rxjs';
 import { APP_PARAMS } from 'src/app/app-params';
-import { Observable, of } from 'rxjs';
-import { map, pluck } from 'rxjs/operators';
-import { CustomerProduct, JobProductionStage, Product } from 'src/app/interfaces';
+import { AppParams, CustomerProduct, JobProductionStage, Product, ProductPartial } from 'src/app/interfaces';
+import { AppClassTransformerService } from 'src/app/library';
 import { HttpOptions } from 'src/app/library/http';
-import { ClassTransformer } from 'class-transformer';
 
 
 @Injectable({
@@ -16,42 +14,39 @@ export class ProductsApiService {
 
     readonly path = this.params.apiPath + 'products/';
 
-    private toArray = () => map((data: Record<string, any>[]) => this.transformer.plainToInstance(Product, data, { exposeDefaultValues: true }));
-    private toClass = () => map((data: Record<string, any>) => this.transformer.plainToInstance(Product, data, { exposeDefaultValues: true }));
-
     constructor(
         private http: HttpClient,
-        private transformer: ClassTransformer,
+        private transformer: AppClassTransformerService,
         @Inject(APP_PARAMS) private params: AppParams,
     ) { }
 
     getAll(): Observable<ProductPartial[]> {
         return this.http.get<Record<string, any>[]>(this.path, new HttpOptions().cacheable()).pipe(
-            this.toArray()
+            this.transformer.toClass(Product, { exposeDefaultValues: false }),
         );
     }
 
     getOne(id: string): Observable<Product> {
         return this.http.get<Record<string, any>>(this.path + id, new HttpOptions().cacheable()).pipe(
-            this.toClass(),
+            this.transformer.toClass(Product),
         );
     }
 
     deleteOne(id: string) {
         return this.http.delete<{ deletedCount: number; }>(this.path + id, new HttpOptions()).pipe(
-            pluck('deletedCount'),
+            map(data => data.deletedCount),
         );
     }
 
     updateOne(id: string, data: Partial<Product>): Observable<Product> {
         return this.http.patch<Record<string, any>>(this.path + id, data, new HttpOptions()).pipe(
-            this.toClass(),
+            this.transformer.toClass(Product),
         );
     }
 
     insertOne(data: Partial<Product>): Observable<Product> {
         return this.http.put<Record<string, any>>(this.path, data, new HttpOptions()).pipe(
-            this.toClass(),
+            this.transformer.toClass(Product),
         );
     }
 
