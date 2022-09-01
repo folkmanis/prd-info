@@ -9,8 +9,8 @@ export * from 'class-transformer';
 })
 export class AppClassTransformerService extends ClassTransformer {
 
-  plainToInstance<T extends Record<string, any>, V extends any[]>(cls: ClassConstructor<T>, plain: V, options: ClassTransformOptions): T[];
-  plainToInstance<T extends Record<string, any>, V>(cls: ClassConstructor<T>, plain: V, options: ClassTransformOptions): T;
+  plainToInstance<T extends Record<string, any>, V extends any[]>(cls: ClassConstructor<T>, plain: V, options?: ClassTransformOptions): T[];
+  plainToInstance<T extends Record<string, any>, V>(cls: ClassConstructor<T>, plain: V, options?: ClassTransformOptions): T;
   plainToInstance<T extends Record<string, any>>(cls: ClassConstructor<T>, plain: unknown, options: ClassTransformOptions = {}): T | T[] {
     options = {
       exposeDefaultValues: true,
