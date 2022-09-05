@@ -1,8 +1,39 @@
-<p>
-    <strong>
-        Kopā | {{ invoicesTotals?.grandTotal | currency }}
-    </strong>
-</p>
-<p *ngFor="let total of invoicesTotals?.totals">
-    {{total._id}} | {{total.count}} | {{total.total | currency}}
-</p>
+<h3>
+    Atlase
+</h3>
+
+<mat-list dense>
+
+    <mat-list-item *ngFor="let total of invoicesTotals?.totals">
+        <div class="list-item">
+
+            <span>
+                {{total._id}}
+            </span>
+
+            <span class="spacer"></span>
+
+            <span>
+                {{total.count}}
+                {{total.units}}
+                <strong> {{total.total | currency}} </strong>
+            </span>
+
+        </div>
+    </mat-list-item>
+
+    <mat-list-item>
+        <div class="total list-item">
+            <span>
+                Kopā
+            </span>
+
+            <span class="spacer"></span>
+
+            <span>
+                {{ invoicesTotals?.grandTotal | currency }}
+            </span>
+        </div>
+    </mat-list-item>
+
+</mat-list>

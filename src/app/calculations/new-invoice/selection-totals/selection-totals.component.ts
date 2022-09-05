@@ -9,6 +9,7 @@ import { InvoicesTotals } from '../../interfaces';
 })
 export class SelectionTotalsComponent {
 
-  @Input() invoicesTotals: InvoicesTotals = { totals: [], grandTotal: 0 };
+  @Input()
+  invoicesTotals: InvoicesTotals = { totals: [], grandTotal: 0 };
 
 }

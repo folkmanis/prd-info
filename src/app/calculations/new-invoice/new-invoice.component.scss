@@ -11,41 +11,18 @@
     width: 280px;
 }
 
-.container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+.mat-card {
+    margin: 16px;
 }
 
-.jobs {
-    flex: 1;
+
+.mat-drawer-content {
+    display: flex;
+    flex-direction: column;
     height: 100%;
     overflow: auto;
 }
 
-.top-panel {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 16px 0;
-}
-
-.top-panel mat-form-field,
-.top-panel button {
-    margin: 8px;
-}
-
-.top-panel section {
-    padding: 16px;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-
-.top-panel .list {
-    flex: 4;
-    min-width: 300px;
-    height: 202px;
-}
-
-.top-panel .selection {
-    flex: 1 1 300px;
+.mat-card>* {
+    margin-right: 16px;
 }

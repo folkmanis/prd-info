@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef, inject, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, merge, Observable } from 'rxjs';
-import { map, share, shareReplay, startWith, switchMap } from 'rxjs/operators';
+import { Router, ActivatedRoute } from '@angular/router';
+import { map, BehaviorSubject, combineLatest, merge, Observable, tap } from 'rxjs';
 import { InvoiceForReport, ProductTotals } from 'src/app/interfaces';
-import { JobUnwindedPartial } from 'src/app/jobs';
+import { JobPartial, JobUnwindedPartial } from 'src/app/jobs';
 import { InvoicesTotals } from '../interfaces';
 import { InvoicesService } from '../services/invoices.service';
+import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
 
 @Component({
   selector: 'app-new-invoice',
@@ -16,61 +16,55 @@ import { InvoicesService } from '../services/invoices.service';
 })
 export class NewInvoiceComponent implements OnInit {
 
+  @ViewChild(ScrollTopDirective) private scroll: ScrollTopDirective;
 
-  noInvoices$ = this.invoicesService.jobsWithoutInvoicesTotals$.pipe(
-    shareReplay(1),
-  );
 
-  jobs$: Observable<JobUnwindedPartial[]>;
-  selectedJobs$: Observable<JobUnwindedPartial[]>;
-
-  selection$ = new BehaviorSubject<number[]>([]);
-
-  invoicesTotals$: Observable<InvoicesTotals>;
+  private invoicesService = inject(InvoicesService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private chDetector = inject(ChangeDetectorRef);
 
   customerId = new FormControl<string>('');
 
-  constructor(
-    private invoicesService: InvoicesService,
-    private router: Router,
-  ) { }
+  noInvoices$ = this.invoicesService.jobsWithoutInvoicesTotals$;
+
+  jobs$: Observable<JobUnwindedPartial[]> = this.route.data.pipe(
+    map(data => data.jobs || []),
+    tap(() => this.scroll?.scrollToTop()),
+  );
+
+
+  selectedJobs: JobUnwindedPartial[] = [];
+
+
+  get selection(): number[] {
+    return this.selectedJobs.map(job => job.jobId);
+  }
+
+  get invoicesTotals(): InvoicesTotals {
+    return jobTotalsFromJob(this.selectedJobs);
+  }
 
   ngOnInit(): void {
 
-    this.jobs$ = this.customerId.valueChanges.pipe(
-      startWith(''),
-      switchMap(customer => this.invoicesService.getJobsUnwinded({ customer, invoice: 0, limit: 1000 })),
-      share(),
-    );
+    this.customerId.setValue(this.route.snapshot.queryParamMap.get('customer') || '');
 
-    this.selectedJobs$ = combineLatest([
-      this.jobs$,
-      this.selection$,
-    ]).pipe(
-      map(filterSelectedJobs)
-    );
-
-    this.invoicesTotals$ = merge(
-      this.jobs$,
-      this.selectedJobs$,
-    ).pipe(
-      map(jobTotalsFromJob),
-      share(),
-    );
+    this.customerId.valueChanges
+      .subscribe(customer => this.router.navigate(['.'], { relativeTo: this.route, queryParams: { customer } }));
 
   }
 
   onCreateInvoice() {
-    this.invoicesService.createInvoice({ jobIds: this.selection$.value, customerId: this.customerId.value })
+    this.invoicesService.createInvoice({ jobIds: this.selection, customerId: this.customerId.value })
       .subscribe(({ invoiceId }) => this.router.navigate(['calculations', 'plate-invoice', invoiceId]));
   }
 
-  onPrintList(jobs: JobUnwindedPartial[]) {
-    const { totals, grandTotal } = jobTotalsFromJob(jobs);
+  onPrintList() {
+    const { totals, grandTotal } = this.invoicesTotals;
     const invoice: InvoiceForReport = {
       customer: this.customerId.value,
       createdDate: new Date(),
-      jobs,
+      jobs: this.selectedJobs,
       products: totals.map(tot => ({ ...tot, price: tot.total / tot.count, jobsCount: 0 })),
       total: grandTotal,
       invoiceId: '',
@@ -80,9 +74,11 @@ export class NewInvoiceComponent implements OnInit {
     });
   }
 
-  onJobSelected(selectedJobs: number[]) {
-    this.selection$.next(selectedJobs);
+  onJobSelected(selectedJobs: JobUnwindedPartial[]) {
+    this.selectedJobs = selectedJobs;
+    this.chDetector.detectChanges();
   }
+
 
 }
 
@@ -90,11 +86,12 @@ function jobTotalsFromJob(jobs: JobUnwindedPartial[]): InvoicesTotals {
   const totM = new Map<string, ProductTotals>();
   for (const { products } of jobs) {
     if (!products) { continue; }
-    const { name, price, count } = products;
+    const { name, price, count, units } = products;
     totM.set(
       name,
       {
         _id: name,
+        units,
         count: (totM.get(name)?.count || 0) + count,
         total: (totM.get(name)?.total || 0) + price * count
       }
@@ -107,6 +104,3 @@ function jobTotalsFromJob(jobs: JobUnwindedPartial[]): InvoicesTotals {
   };
 }
 
-function filterSelectedJobs([jobs, sel]: [JobUnwindedPartial[], number[]]): JobUnwindedPartial[] {
-  return jobs.filter(job => sel.some(num => num === job.jobId));
-}

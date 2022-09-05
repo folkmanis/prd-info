@@ -1,8 +1,8 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { JobPartial } from 'src/app/jobs';
+import { BehaviorSubject, combineLatest, map } from 'rxjs';
+import { JobPartial, JobUnwindedPartial } from 'src/app/jobs';
 
 const TABLE_COLUMNS = ['selected', 'jobId', 'receivedDate', 'customer', 'name', 'productName', 'count', 'price', 'total'];
 
@@ -14,7 +14,7 @@ const TABLE_COLUMNS = ['selected', 'jobId', 'receivedDate', 'customer', 'name', 
 })
 export class JobSelectionTableComponent implements OnDestroy {
 
-  @Input('jobs') set _jobs(jobs: JobPartial[]) {
+  @Input('jobs') set _jobs(jobs: JobUnwindedPartial[]) {
     if (jobs !== null) {
       this.setNewJobList(jobs);
     }
@@ -28,11 +28,12 @@ export class JobSelectionTableComponent implements OnDestroy {
     return this._disabled;
   }
 
-  @Output() selected = new EventEmitter<number[]>();
-
   selector = new SelectionModel<number>(true, [], false);
   jobIdSet: Set<number> | undefined;
-  jobs$: BehaviorSubject<JobPartial[]> = new BehaviorSubject([]);
+  jobs$: BehaviorSubject<JobUnwindedPartial[]> = new BehaviorSubject([]);
+
+  @Output() selectedJobs = new EventEmitter<JobUnwindedPartial[]>();
+
 
   get displayedColumns(): string[] {
     return this._disabled ? TABLE_COLUMNS.filter(col => col !== 'selected') : TABLE_COLUMNS;
@@ -42,7 +43,7 @@ export class JobSelectionTableComponent implements OnDestroy {
 
 
   ngOnDestroy() {
-    this.selected.complete();
+    this.selectedJobs.complete();
     this.jobs$.complete();
   }
 
@@ -52,7 +53,7 @@ export class JobSelectionTableComponent implements OnDestroy {
 
   toggle(jobId: number) {
     this.selector.toggle(jobId);
-    this.selected.next(this.selector.selected);
+    this.selectedJobs.next(this.getSelectedJobs());
   }
 
   toggleAll() {
@@ -61,19 +62,25 @@ export class JobSelectionTableComponent implements OnDestroy {
 
   selectAll(...jobs: number[]): void {
     this.selector.select(...jobs);
-    this.selected.next(this.selector.selected);
+    this.selectedJobs.next(this.getSelectedJobs());
   }
 
   deselectAll(): void {
     this.selector.clear();
-    this.selected.next(this.selector.selected);
+    this.selectedJobs.next(this.getSelectedJobs());
   }
 
-  private setNewJobList(jobs: JobPartial[]): void {
+  private setNewJobList(jobs: JobUnwindedPartial[]): void {
     this.selector.clear();
     this.jobs$.next(jobs);
     this.jobIdSet = new Set(jobs.map(job => job.jobId));
     this.selectAll(...this.jobIdSet);
+  }
+
+  private getSelectedJobs(): JobUnwindedPartial[] {
+    const jobs = this.jobs$.value;
+    const sel = this.selector.selected;
+    return jobs.filter(job => sel.some(num => num === job.jobId));
   }
 
 }

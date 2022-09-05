@@ -1,6 +1,6 @@
 import { Type, Expose } from 'class-transformer';
 import { Customer } from './customer';
-import { JobPartial } from 'src/app/jobs';
+import { JobPartial, JobUnwindedPartial } from 'src/app/jobs';
 
 export class InvoiceProduct {
     _id: string;
@@ -28,7 +28,7 @@ export class Invoice {
 
     jobsId: number[];
 
-    jobs?: JobPartial[];
+    jobs?: JobUnwindedPartial[];
 
     @Type(() => InvoiceProduct)
     products: InvoiceProduct[];
@@ -66,4 +66,5 @@ export class ProductTotals {
     _id: string;
     count: number;
     total: number;
+    units: string;
 }

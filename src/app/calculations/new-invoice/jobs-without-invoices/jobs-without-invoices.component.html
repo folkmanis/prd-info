@@ -1,8 +1,21 @@
-<h4>
+<h3>
     Nav izrakstīts
-</h4>
-<mat-list *ngFor="let cust of noInvoices" dense>
-    <mat-list-item>
-        {{cust._id}} - {{cust.totals | currency}}
+</h3>
+
+<mat-list dense>
+    <mat-list-item *ngFor="let cust of noInvoices">
+        <div class="list-item">
+
+            <span>
+                {{cust._id}}
+            </span>
+
+            <span class="spacer"></span>
+
+            <span>
+                <strong> {{cust.totals | currency}} </strong>
+            </span>
+
+        </div>
     </mat-list-item>
 </mat-list>
