@@ -65,7 +65,7 @@ export class ReproJobService {
 
   productionStages(products: JobProduct[]): Observable<JobProductionStage[]> {
 
-    return from(products).pipe(
+    return from(products || []).pipe(
       filter(prod => !!prod?.name),
       concatMap(prod => this.productsService.productionStages(prod.name).pipe(
         concatMap(stages => from(stages)),
