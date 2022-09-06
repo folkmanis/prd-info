@@ -1,20 +1,29 @@
-import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ApiBase } from 'src/app/library/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { getAppParams } from 'src/app/app-params';
 import { PreferencesDbModule } from 'src/app/interfaces';
-import { APP_PARAMS } from 'src/app/app-params';
-import { AppParams } from 'src/app/interfaces';
+import { HttpOptions } from 'src/app/library/http';
 
 @Injectable({
     providedIn: 'root'
 })
-export class SystemPreferencesApiService extends ApiBase<PreferencesDbModule> {
+export class SystemPreferencesApiService {
+
+    private readonly path = getAppParams('apiPath') + 'preferences/';
 
     constructor(
-        @Inject(APP_PARAMS) params: AppParams,
-        http: HttpClient,
-    ) {
-        super(http, params.apiPath + 'preferences/');
+        private http: HttpClient,
+    ) { }
+
+    getAll(): Observable<PreferencesDbModule[]> {
+        return this.http.get<PreferencesDbModule[]>(this.path, new HttpOptions().cacheable());
     }
+
+
+    updateMany(data: Partial<PreferencesDbModule>[]): Observable<number> {
+        return this.http.patch<number>(this.path, data, new HttpOptions());
+    }
+
 
 }

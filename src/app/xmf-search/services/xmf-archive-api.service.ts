@@ -1,33 +1,32 @@
-import { Injectable, Inject } from '@angular/core';
-import { ApiBase } from 'src/app/library/http/api-base';
-import { ArchiveRecord, SearchQuery, ArchiveFacet } from '../interfaces';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { ClassTransformer } from 'class-transformer';
 import { Observable } from 'rxjs';
 import { map, pluck } from 'rxjs/operators';
+import { getAppParams } from 'src/app/app-params';
 import { HttpOptions } from 'src/app/library/http/http-options';
-import { APP_PARAMS } from 'src/app/app-params';
-import { AppParams } from 'src/app/interfaces';
-import { HttpClient } from '@angular/common/http';
-import { ClassTransformer } from 'class-transformer';
+import { ArchiveFacet, ArchiveRecord, SearchQuery } from '../interfaces';
 
 @Injectable({
     providedIn: 'root'
 })
-export class XmfArchiveApiService extends ApiBase<ArchiveRecord> {
+export class XmfArchiveApiService {
 
-    constructor(
-        @Inject(APP_PARAMS) params: AppParams,
-        http: HttpClient,
-        private transformer: ClassTransformer,
-    ) {
-        super(http, params.apiPath + 'xmf-search/');
-    }
-
+    private readonly path = getAppParams('apiPath') + 'xmf-search/';
 
     private queryStr = (query: SearchQuery, start?: number, limit?: number) => ({
         query: query.searialize(),
         start,
         limit,
     });
+
+
+    constructor(
+        private http: HttpClient,
+        private transformer: ClassTransformer,
+    ) {
+    }
+
 
     getXmfCustomer(): Observable<string[]> {
         return this.http.get<string[]>(this.path + 'customers');

@@ -1,11 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, Inject } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { APP_PARAMS } from 'src/app/app-params';
-import { AppParams, Invoice, InvoiceForReport, InvoiceTable, ProductTotals } from 'src/app/interfaces';
-import { HttpOptions } from 'src/app/library/http';
+import { Injectable } from '@angular/core';
+import { map, Observable } from 'rxjs';
+import { getAppParams } from 'src/app/app-params';
+import { Invoice, InvoiceForReport, InvoiceTable, ProductTotals } from 'src/app/interfaces';
 import { AppClassTransformerService } from 'src/app/library';
+import { HttpOptions } from 'src/app/library/http';
 
 
 @Injectable({
@@ -13,11 +12,10 @@ import { AppClassTransformerService } from 'src/app/library';
 })
 export class InvoicesApiService {
 
-    readonly path = this.params.apiPath + 'invoices/';
+    readonly path = getAppParams('apiPath') + 'invoices/';
 
     constructor(
         private http: HttpClient,
-        @Inject(APP_PARAMS) private params: AppParams,
         private transformer: AppClassTransformerService,
     ) { }
 

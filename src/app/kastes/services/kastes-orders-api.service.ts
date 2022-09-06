@@ -1,20 +1,27 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
-import { APP_PARAMS } from 'src/app/app-params';
-import { AppParams } from 'src/app/interfaces';
+import { Injectable } from '@angular/core';
+import { getAppParams } from 'src/app/app-params';
 import { KastesJob } from 'src/app/jobs';
-import { ApiBase } from 'src/app/library/http';
+import { HttpOptions } from 'src/app/library/http';
+import { KastesJobPartial } from '../interfaces';
 
 @Injectable({
     providedIn: 'root'
 })
-export class KastesOrdersApiService extends ApiBase<KastesJob> {
+export class KastesOrdersApiService {
+
+    private readonly path = getAppParams('apiPath') + + 'kastes/jobs/';
 
     constructor(
-        @Inject(APP_PARAMS) params: AppParams,
-        http: HttpClient,
-    ) {
-        super(http, params.apiPath + 'kastes/jobs/');
+        private http: HttpClient,
+    ) { }
+
+    getAll(filter: Record<string, any>) {
+        return this.http.get<KastesJobPartial[]>(this.path, new HttpOptions().cacheable());
+    }
+
+    getOne(jobId: number) {
+        return this.http.get<KastesJob>(this.path + jobId, new HttpOptions().cacheable());
     }
 
 

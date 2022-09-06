@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { MatExpansionPanel } from '@angular/material/expansion';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DestroyService } from 'prd-cdk';
-import { map, merge, Observable, takeUntil } from 'rxjs';
-import { Customer, SystemPreferences } from 'src/app/interfaces';
+import { map, merge, takeUntil } from 'rxjs';
+import { Customer } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
-import { CONFIG } from 'src/app/services/config.provider';
+import { getConfig } from 'src/app/services/config.provider';
 import { CustomerFormService } from '../services/customer-form.service';
 
 @Component({
@@ -22,9 +22,7 @@ export class CustomerEditComponent implements OnInit, CanComponentDeactivate {
 
   @ViewChild('paytraqPanel') paytraqPanel: MatExpansionPanel;
 
-  readonly paytraqDisabled$ = this.config$.pipe(
-    map(config => !config.paytraq.enabled),
-  );
+  readonly paytraqDisabled$ = getConfig('paytraq', 'enabled');
 
   form = this.formService.form;
 
@@ -33,7 +31,6 @@ export class CustomerEditComponent implements OnInit, CanComponentDeactivate {
   }
 
   constructor(
-    @Inject(CONFIG) private config$: Observable<SystemPreferences>,
     private formService: CustomerFormService,
     private route: ActivatedRoute,
     private router: Router,

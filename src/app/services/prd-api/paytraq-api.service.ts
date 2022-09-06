@@ -1,9 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { APP_PARAMS } from 'src/app/app-params';
-import { AppParams } from 'src/app/interfaces';
+import { getAppParams } from 'src/app/app-params';
 import * as Pt from 'src/app/interfaces/paytraq';
 import { HttpOptions } from 'src/app/library/http';
 
@@ -14,12 +13,11 @@ import { HttpOptions } from 'src/app/library/http';
 })
 export class PaytraqApiService {
 
-    readonly path = this.params.apiPath + 'paytraq/';
+    readonly path = getAppParams('apiPath') + 'paytraq/';
 
 
     constructor(
         private http: HttpClient,
-        @Inject(APP_PARAMS) private params: AppParams,
     ) { }
 
 

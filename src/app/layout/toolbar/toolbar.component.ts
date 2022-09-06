@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DestroyService } from 'prd-cdk';
 import { Observable, timer } from 'rxjs';
-import { filter, mergeMap, share, take, takeUntil, throttleTime, map } from 'rxjs/operators';
-import { APP_PARAMS } from 'src/app/app-params';
-import { AppParams, SystemNotification, SystemOperations, User, UserModule } from 'src/app/interfaces';
+import { filter, map, mergeMap, share, take, takeUntil, throttleTime } from 'rxjs/operators';
+import { getAppParams } from 'src/app/app-params';
+import { SystemNotification, SystemOperations, User, UserModule } from 'src/app/interfaces';
 import { LoginService } from 'src/app/login';
 import { NotificationsService } from 'src/app/services';
 import { MessagingService } from '../messaging/services/messaging.service';
@@ -26,7 +26,7 @@ export class ToolbarComponent implements OnInit {
 
   @Output() sideMenuToggle = new EventEmitter<void>();
 
-  version = this.params.version.appBuild;
+  version = getAppParams('version', 'appBuild');
 
   messagesCount$: Observable<number> = this.messagingService.messagesCount$;
   unreadMessagesCount$: Observable<number> = this.messagingService.unreadCount$;
@@ -40,7 +40,6 @@ export class ToolbarComponent implements OnInit {
   );
 
   constructor(
-    @Inject(APP_PARAMS) private params: AppParams,
     private messagingService: MessagingService,
     private notifications: NotificationsService,
     private destroy$: DestroyService,

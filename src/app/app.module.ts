@@ -15,7 +15,6 @@ import { registerLocaleData } from '@angular/common';
 import localeLv from '@angular/common/locales/lv';
 registerLocaleData(localeLv);
 import { MAT_DATE_LOCALE } from '@angular/material/core';
-import { APP_PARAMS, PRD_DEFAULTS } from './app-params';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { DATE_FNS_LOCALE } from './library/date-services';
 import { lv } from 'date-fns/locale';
@@ -50,7 +49,6 @@ import { LoginModule } from './login/login.module';
     { provide: DEFAULT_CURRENCY_CODE, useValue: 'EUR' },
     { provide: ErrorHandler, useClass: ErrorsService, },
     httpInterceptorsProvider,
-    { provide: APP_PARAMS, useValue: PRD_DEFAULTS },
     { provide: ClassTransformer, useExisting: AppClassTransformerService },
   ],
   bootstrap: [AppComponent]

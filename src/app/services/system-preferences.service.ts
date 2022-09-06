@@ -1,10 +1,10 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs';
 import { concatMap, filter, map, retry, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { LoginService } from 'src/app/login';
-import { APP_PARAMS } from '../app-params';
-import { AppParams, MODULES, PreferencesDbModule, SystemPreferences, UserModule } from '../interfaces';
+import { getAppParams } from '../app-params';
+import { MODULES, PreferencesDbModule, SystemPreferences, UserModule } from '../interfaces';
 import { SystemPreferencesApiService } from './system-preferences-api';
 
 @Injectable({
@@ -22,12 +22,12 @@ export class SystemPreferencesService {
     startWith(this.router.routerState.snapshot.url),
   );
 
-  preferencesSnapshot: SystemPreferences = this.params.defaultSystemPreferences;
+  defaultPreferences: SystemPreferences = getAppParams('defaultSystemPreferences');
 
   preferences$: Observable<SystemPreferences> = merge(
-    of(this.params.defaultSystemPreferences),
+    of(this.defaultPreferences),
     this.loginService.user$.pipe( // mainoties user, ielādē no servera
-      switchMap(usr => usr ? this._systemPreferences() : of(this.params.defaultSystemPreferences)),
+      switchMap(usr => usr ? this._systemPreferences() : of(this.defaultPreferences)),
     ),
     this._reloadFromServer$.pipe(
       switchMap(_ => this._systemPreferences()),
@@ -38,12 +38,14 @@ export class SystemPreferencesService {
       switchMap(_ => this._systemPreferences()),
     )
   ).pipe(
-    tap(pref => this.preferencesSnapshot = pref),
+    tap(pref => this.defaultPreferences = pref),
     shareReplay(1),
   );
 
+  private readonly userModules = getAppParams('userModules');
+
   modules$ = this.loginService.user$.pipe(
-    switchMap(usr => of(this.params.userModules.filter(mod => usr && usr.preferences.modules.includes(mod.route))).pipe(
+    switchMap(usr => of(this.userModules.filter(mod => usr && usr.preferences.modules.includes(mod.route))).pipe(
       map(modules => usr.google ? modules : removeGmail(modules)),
     ))
   );
@@ -61,7 +63,6 @@ export class SystemPreferencesService {
   );
 
   constructor(
-    @Inject(APP_PARAMS) private params: AppParams,
     private router: Router,
     private loginService: LoginService,
     private api: SystemPreferencesApiService,
@@ -78,7 +79,7 @@ export class SystemPreferencesService {
   }
 
   private _systemPreferences(): Observable<SystemPreferences> {
-    return this.api.get().pipe(
+    return this.api.getAll().pipe(
       map(dbpref => Object.assign({}, ...dbpref.map(mod => ({ [mod.module]: mod.settings }))))
     );
   }

@@ -1,9 +1,8 @@
 import { HttpClient, HttpEvent, HttpRequest } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { ClassTransformer } from 'class-transformer';
 import { concatMap, from, map, Observable, reduce } from 'rxjs';
-import { APP_PARAMS } from 'src/app/app-params';
-import { AppParams } from 'src/app/interfaces';
+import { getAppParams } from 'src/app/app-params';
 import { Job } from 'src/app/jobs';
 import { HttpOptions } from 'src/app/library/http';
 import { FileElement } from '../interfaces/file-element';
@@ -15,10 +14,9 @@ import { FileLocationTypes } from '../interfaces/file-location-types';
 })
 export class JobsFilesApiService {
 
-  private path = this.params.apiPath + 'jobs/files/';
+  private path = getAppParams('apiPath') + 'jobs/files/';
 
   constructor(
-    @Inject(APP_PARAMS) private params: AppParams,
     private http: HttpClient,
     private transformer: ClassTransformer,
   ) { }

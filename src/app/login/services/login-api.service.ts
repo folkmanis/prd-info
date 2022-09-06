@@ -1,9 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { APP_PARAMS } from 'src/app/app-params';
-import { AppParams, User } from 'src/app/interfaces';
+import { Injectable } from '@angular/core';
+import { map, Observable } from 'rxjs';
+import { getAppParams } from 'src/app/app-params';
+import { User } from 'src/app/interfaces';
 import { AppClassTransformerService } from 'src/app/library';
 import { HttpOptions } from 'src/app/library/http';
 import { Login } from '../login.interface';
@@ -14,10 +13,9 @@ import { Login } from '../login.interface';
 })
 export class LoginApiService {
 
-    private path = this.params.apiPath + 'login/';
+    private path = getAppParams('apiPath') + 'login/';
 
     constructor(
-        @Inject(APP_PARAMS) private params: AppParams,
         private http: HttpClient,
         private transformer: AppClassTransformerService,
     ) { }

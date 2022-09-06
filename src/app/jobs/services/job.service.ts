@@ -7,11 +7,7 @@ import { HttpCacheService } from 'src/app/library/http';
 import { combineReload } from 'src/app/library/rxjs';
 import { NotificationsService } from '../../services';
 import { Job, JobPartial, JobQueryFilter, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
-import { JobsApiService } from './jobs-api.service';
-
-interface JobUpdateParams {
-  createFolder?: boolean;
-}
+import { JobsApiService, JobUpdateParams } from './jobs-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -49,13 +45,13 @@ export class JobService {
     this.forceReload$.next();
   }
 
-  newJob(job: Partial<Job>, params?: JobUpdateParams): Observable<Job> {
+  newJob(job: Partial<Job>, params: JobUpdateParams = {}): Observable<Job> {
     return this.api.insertOne(job, params).pipe(
       tap(() => this.reload()),
     );
   }
 
-  updateJob(jobId: number, job: Partial<Job>, params?: JobUpdateParams): Observable<Job> {
+  updateJob(jobId: number, job: Partial<Job>, params: JobUpdateParams = {}): Observable<Job> {
     if (job.dueDate) {
       job.dueDate = endOfDay(new Date(job.dueDate));
     }
@@ -92,17 +88,15 @@ export class JobService {
   }
 
   getJob(jobId: number): Observable<Job> {
-    return this.api.get(jobId);
+    return this.api.getOne(jobId);
   }
 
   getJobList(filter: JobQueryFilter = {}): Observable<JobPartial[]> {
-    filter.unwindProducts = 0;
-    return this.api.get(filter);
+    return this.api.getAll(filter, false);
   }
 
   getJobListUnwinded(filter: JobQueryFilter = {}): Observable<JobUnwindedPartial[]> {
-    filter.unwindProducts = 1;
-    return this.api.get(filter);
+    return this.api.getAll(filter, true);
   }
 
   getJobsWithoutInvoicesTotals(): Observable<JobsWithoutInvoicesTotals[]> {

@@ -1,9 +1,7 @@
-import { Inject, Injectable } from '@angular/core';
-import { combineLatest, merge, Observable, Subject } from 'rxjs';
-import { catchError, map, pluck, shareReplay, tap } from 'rxjs/operators';
-import { SystemPreferences } from 'src/app/interfaces';
+import { Injectable } from '@angular/core';
+import { catchError, map, shareReplay, tap, combineLatest, merge, Observable, Subject } from 'rxjs';
 import { KastesUserPreferences } from 'src/app/kastes/interfaces';
-import { CONFIG } from 'src/app/services/config.provider';
+import { getConfig } from 'src/app/services/config.provider';
 import { KastesApiService } from './kastes-api.service';
 
 const DEFAULT_USER_PREFERENCES: KastesUserPreferences = {
@@ -15,7 +13,7 @@ const DEFAULT_USER_PREFERENCES: KastesUserPreferences = {
 })
 export class KastesPreferencesService {
 
-  kastesSystemPreferences$ = this.config$.pipe(pluck('kastes'));
+  kastesSystemPreferences$ = getConfig('kastes');
 
   private _reload$ = new Subject<KastesUserPreferences>();
 
@@ -29,8 +27,7 @@ export class KastesPreferencesService {
 
   preferences$ = combineLatest([
     this.kastesSystemPreferences$,
-    this.kastesUserPreferences$.pipe(
-    ),
+    this.kastesUserPreferences$,
   ]).pipe(
     map(([sys, usr]) => ({ ...sys, ...usr })),
   );
@@ -40,7 +37,6 @@ export class KastesPreferencesService {
   );
 
   constructor(
-    @Inject(CONFIG) private config$: Observable<SystemPreferences>,
     private api: KastesApiService,
   ) { }
 

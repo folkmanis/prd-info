@@ -1,21 +1,20 @@
-import { AppParams, Material } from 'src/app/interfaces';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
-import { HttpOptions } from 'src/app/library/http/http-options';
-import { Injectable, Inject } from '@angular/core';
-import { APP_PARAMS } from 'src/app/app-params';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { getAppParams } from 'src/app/app-params';
+import { Material } from 'src/app/interfaces';
 import { AppClassTransformerService } from 'src/app/library';
+import { HttpOptions } from 'src/app/library/http/http-options';
 
 @Injectable({
     providedIn: 'root'
 })
 export class MaterialsApiService {
 
-    private path = this.params.apiPath + 'materials/';
+    private path = getAppParams('apiPath') + 'materials/';
 
     constructor(
         private http: HttpClient,
-        @Inject(APP_PARAMS) private params: AppParams,
         private transformer: AppClassTransformerService,
     ) { }
 

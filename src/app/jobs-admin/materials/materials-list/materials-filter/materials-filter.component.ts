@@ -1,15 +1,17 @@
-import { Component, OnInit, Output, Input, ChangeDetectionStrategy, Inject } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { debounceTime, map, pluck } from 'rxjs/operators';
-import { SystemPreferences } from 'src/app/interfaces';
-import { CONFIG } from 'src/app/services/config.provider';
+import { ChangeDetectionStrategy, Component, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { Observable, debounceTime, map } from 'rxjs';
+import { getConfig } from 'src/app/services/config.provider';
 
 import { MaterialsFilter } from '../../services/materials.service';
 
 const NO_FILTER: MaterialsFilter = {
   name: '',
   categories: [],
+};
+
+type MaterialsFilterType = {
+  [K in keyof MaterialsFilter]: FormControl<MaterialsFilter[K]>
 };
 
 @Component({
@@ -20,24 +22,19 @@ const NO_FILTER: MaterialsFilter = {
 })
 export class MaterialsFilterComponent implements OnInit {
 
-  categories$ = this.config$.pipe(pluck('jobs', 'productCategories'));
+  categories$ = getConfig('jobs', 'productCategories');
 
-  filterGroup = new UntypedFormGroup({
-    name: new UntypedFormControl(''),
-    categories: new UntypedFormControl([])
+  filterGroup = new FormGroup<MaterialsFilterType>({
+    name: new FormControl(''),
+    categories: new FormControl([]),
   });
 
-  get nameControl(): UntypedFormControl { return this.filterGroup.get('name') as UntypedFormControl; }
-  get categoriesControl(): UntypedFormControl { return this.filterGroup.get('categories') as UntypedFormControl; }
 
   @Output() filter: Observable<MaterialsFilter> = this.filterGroup.valueChanges.pipe(
     debounceTime(200),
     map(fltr => this.processFilter(fltr)),
   );
 
-  constructor(
-    @Inject(CONFIG) private config$: Observable<SystemPreferences>,
-  ) { }
 
   ngOnInit(): void {
   }

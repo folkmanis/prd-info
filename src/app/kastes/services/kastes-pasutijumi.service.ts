@@ -32,11 +32,11 @@ export class KastesPasutijumiService {
   }
 
   getKastesJobs(filter: KastesJobFilter): Observable<KastesJobPartial[]> {
-    return this.ordersApi.get(filter);
+    return this.ordersApi.getAll(filter);
   }
 
   getKastesJob(id: number): Observable<KastesJob> {
-    return this.ordersApi.get(id);
+    return this.ordersApi.getOne(id);
   }
 
   getVeikali(jobId: number): Observable<Veikals[]> {

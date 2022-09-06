@@ -1,13 +1,16 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { ClassTransformer } from 'class-transformer';
 import { pickBy } from 'lodash-es';
 import { map, Observable } from 'rxjs';
-import { APP_PARAMS } from 'src/app/app-params';
-import { AppParams } from 'src/app/interfaces';
-import { ApiBase, HttpOptions } from 'src/app/library/http';
-import { Job, JobsProduction, JobsProductionQuery, JobsWithoutInvoicesTotals } from '../interfaces';
+import { getAppParams } from 'src/app/app-params';
+import { HttpOptions } from 'src/app/library/http';
+import { Job, JobPartial, JobQueryFilter, JobsProduction, JobsProductionQuery, JobsWithoutInvoicesTotals, JobUnwinded, JobUnwindedPartial } from '../interfaces';
 import { JobsUserPreferences } from '../interfaces/jobs-user-preferences';
+
+export interface JobUpdateParams {
+  createFolder?: boolean;
+}
 
 
 export function pickNotNull<T extends object>(obj: T): Partial<T> {
@@ -18,14 +21,42 @@ export function pickNotNull<T extends object>(obj: T): Partial<T> {
 @Injectable({
   providedIn: 'root'
 })
-export class JobsApiService extends ApiBase<Job> {
+export class JobsApiService {
+
+  private path = getAppParams('apiPath') + 'jobs/';
 
   constructor(
-    @Inject(APP_PARAMS) params: AppParams,
-    http: HttpClient,
+    private http: HttpClient,
     private transformer: ClassTransformer,
-  ) {
-    super(http, params.apiPath + 'jobs/');
+  ) { }
+
+  getAll(filter: JobQueryFilter, unwind: true): Observable<JobUnwindedPartial[]>;
+  getAll(filter: JobQueryFilter, unwind: false): Observable<JobPartial[]>;
+  getAll(filter: JobQueryFilter, unwind: boolean = false) {
+    filter.unwindProducts = unwind ? 1 : 0;
+    return this.http.get(
+      this.path,
+      new HttpOptions(filter).cacheable()
+    );
+  }
+
+  updateMany(jobs: Partial<Job>[], params?: JobUpdateParams) {
+    return this.http.patch<number>(this.path, jobs, new HttpOptions(params));
+  }
+
+  getOne(jobId: number) {
+    return this.http.get<Job>(
+      this.path + jobId,
+      new HttpOptions()
+    );
+  }
+
+  insertOne(job: Partial<Job>, params: JobUpdateParams) {
+    return this.http.put<Job>(this.path, job, new HttpOptions(params));
+  }
+
+  updateOne(jobId: number, job: Partial<Job>, params: JobUpdateParams) {
+    return this.http.patch<Job>(this.path + jobId, job, new HttpOptions(params));
   }
 
   createFolder(jobId: number): Observable<Job> {

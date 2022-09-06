@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { addDays, subDays } from 'date-fns';
 import { distinctUntilChanged, filter, map, Observable, switchMap } from 'rxjs';
-import { CustomerPartial, SystemPreferences } from 'src/app/interfaces';
+import { CustomerPartial } from 'src/app/interfaces';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { LoginService } from 'src/app/login';
 import { CustomersService, ProductsService } from 'src/app/services';
-import { CONFIG } from 'src/app/services/config.provider';
+import { getConfig } from 'src/app/services/config.provider';
 import { Job } from '../../../interfaces';
 import { JobFormService } from '../../services/job-form.service';
 import { CustomerInputComponent } from '../customer-input/customer-input.component';
@@ -33,14 +33,11 @@ export class JobFormComponent implements OnInit {
     max: addDays(Date.now(), 3),
   };
 
-  jobStates$ = this.config$.pipe(
-    map(config => config.jobs.jobStates),
+  jobStates$ = getConfig('jobs', 'jobStates').pipe(
     map(states => states.filter(st => st.state < 50))
   );
 
-  categories$ = this.config$.pipe(
-    map(config => config.jobs.productCategories),
-  );
+  categories$ = getConfig('jobs', 'productCategories');
 
   jobIdAndName$ = this.formService.value$.pipe(
     map(job => this.jobIdAndName(job)),
@@ -65,7 +62,6 @@ export class JobFormComponent implements OnInit {
   }
 
   constructor(
-    @Inject(CONFIG) private config$: Observable<SystemPreferences>,
     private productsService: ProductsService,
     private customersService: CustomersService,
     private sanitize: SanitizeService,

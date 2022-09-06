@@ -1,11 +1,10 @@
 import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
-import { delay, retryWhen, take } from 'rxjs/operators';
-import { AppParams, ModulesWithNotifications, Notification } from 'src/app/interfaces';
+import { delay, ReplaySubject, retry, timer } from 'rxjs';
+import { ModulesWithNotifications, Notification } from 'src/app/interfaces';
 import { MultiplexConfig, WsAuthSubject } from 'src/app/library/ws-token/ws-auth-subject';
-import { APP_PARAMS } from '../app-params';
 import { LoginService } from 'src/app/login';
+import { getAppParams } from '../app-params';
 
 interface WsEvent {
   event?: 'auth',
@@ -21,6 +20,8 @@ interface WsEvent {
 })
 export class NotificationsService {
 
+  private readonly wsPath = getAppParams('wsPath');
+
   openObserver$: ReplaySubject<Event> = new ReplaySubject(1);
 
   wsNotifications = new WsAuthSubject<Notification | WsEvent>({
@@ -29,7 +30,6 @@ export class NotificationsService {
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
-    @Inject(APP_PARAMS) private params: AppParams,
     private loginService: LoginService,
   ) { }
 
@@ -52,18 +52,20 @@ export class NotificationsService {
     };
 
 
-    return this.wsNotifications.multiplexAuth(multiplexConfig).pipe(
-      retryWhen(error => error.pipe(
-        take(10),
-        delay(5000),
-      )),
-    );
+    return this.wsNotifications.multiplexAuth(multiplexConfig)
+      .pipe(
+        retry({
+          count: 10,
+          delay: () => timer(5000),
+          resetOnSuccess: true,
+        }),
+      );
 
   }
 
   private wsUrl(): string {
     const { protocol, host } = this.document.location;
-    return protocol.replace(/^http/, 'ws') + '//' + host + this.params.wsPath;
+    return protocol.replace(/^http/, 'ws') + '//' + host + this.wsPath;
   }
 
 

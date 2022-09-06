@@ -1,9 +1,8 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { cacheWithUpdate } from 'prd-cdk';
-import { Observable, of, Subject } from 'rxjs';
-import { catchError, map, pluck, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
-import { CustomerProduct, JobProductionStage, NewProduct, Product, ProductPartial, SystemPreferences } from 'src/app/interfaces';
-import { CONFIG } from 'src/app/services/config.provider';
+import { catchError, map, Observable, of, shareReplay, startWith, Subject, switchMap, tap } from 'rxjs';
+import { CustomerProduct, JobProductionStage, NewProduct, Product, ProductPartial } from 'src/app/interfaces';
+import { getConfig } from 'src/app/services/config.provider';
 import { ProductsApiService } from 'src/app/services/prd-api/products-api.service';
 
 
@@ -12,9 +11,7 @@ import { ProductsApiService } from 'src/app/services/prd-api/products-api.servic
 })
 export class ProductsService {
 
-  readonly categories$ = this.config$.pipe(
-    pluck('jobs', 'productCategories'),
-  );
+  readonly categories$ = getConfig('jobs', 'productCategories');
 
   private readonly _updateProducts$: Subject<void> = new Subject();
   private readonly _updateOneProduct$: Subject<ProductPartial> = new Subject();
@@ -32,7 +29,6 @@ export class ProductsService {
 
   constructor(
     private api: ProductsApiService,
-    @Inject(CONFIG) private config$: Observable<SystemPreferences>,
   ) { }
 
   get activeProducts$(): Observable<ProductPartial[]> {

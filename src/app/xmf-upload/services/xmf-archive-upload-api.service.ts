@@ -1,12 +1,11 @@
 import { HttpClient, HttpEvent, HttpRequest } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { XmfUploadProgress } from '../interfaces/xmf-upload-progress';
-import { ApiBase } from 'src/app/library/http/api-base';
-import { Inject, Injectable } from '@angular/core';
-import { APP_PARAMS } from 'src/app/app-params';
-import { AppParams } from 'src/app/interfaces';
+import { Injectable } from '@angular/core';
 import { ClassTransformer } from 'class-transformer';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { getAppParams } from 'src/app/app-params';
+import { HttpOptions } from 'src/app/library';
+import { XmfUploadProgress } from '../interfaces/xmf-upload-progress';
 
 interface Params {
     start?: number;
@@ -16,18 +15,17 @@ interface Params {
 @Injectable({
     providedIn: 'root'
 })
-export class XmfArchiveUploadApiService extends ApiBase<XmfUploadProgress> {
+export class XmfArchiveUploadApiService {
+
+    private readonly path = getAppParams('apiPath') + 'xmf-upload/';
 
     constructor(
-        @Inject(APP_PARAMS) params: AppParams,
-        http: HttpClient,
+        private http: HttpClient,
         private transformer: ClassTransformer,
-    ) {
-        super(http, params.apiPath + 'xmf-upload/');
-    }
+    ) { }
 
     getHistory(params: Params = {}): Observable<XmfUploadProgress[]> {
-        return super.get<Record<string, any>[]>(params).pipe(
+        return this.http.get<Record<string, any>[]>(this.path, new HttpOptions(params).cacheable()).pipe(
             map(data => this.transformer.plainToInstance(XmfUploadProgress, data))
         );
     }

@@ -1,10 +1,8 @@
-import { Inject, Injectable } from '@angular/core';
-import { BehaviorSubject, EMPTY, Observable, Subject } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, combineLatest, EMPTY, map, Observable, switchMap, tap } from 'rxjs';
+import { Material, ProductCategory } from 'src/app/interfaces';
+import { getConfig } from 'src/app/services/config.provider';
 import { MaterialsApiService } from 'src/app/services/prd-api/materials-api.service';
-import { Material, ProductCategory, SystemPreferences } from 'src/app/interfaces';
-import { map, switchMap, tap } from 'rxjs/operators';
-import { CONFIG } from 'src/app/services/config.provider';
-import { combineLatest } from 'rxjs';
 
 type MaterialWithDescription = Material & {
   catDes: string;
@@ -22,15 +20,16 @@ export class MaterialsService {
 
   private filter$ = new BehaviorSubject<MaterialsFilter>({});
 
+  private productCategories$ = getConfig('jobs', 'productCategories');
+
   materials$ = combineLatest([
     this.filter$.pipe(switchMap(filter => this.api.getAll(filter))),
-    this.config$.pipe(map(conf => conf.jobs.productCategories)),
+    this.productCategories$,
   ]).pipe(
     this.addCategoriesDescription()
   );
 
   constructor(
-    @Inject(CONFIG) private config$: Observable<SystemPreferences>,
     private api: MaterialsApiService,
   ) { }
 

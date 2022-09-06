@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable, Subject } from 'rxjs';
-import { mergeMap, pluck } from 'rxjs/operators';
-import { Invoice, InvoiceProduct, SystemPreferences } from 'src/app/interfaces';
-import { CONFIG } from 'src/app/services/config.provider';
+import { mergeMap, Observable, Subject } from 'rxjs';
+import { Invoice, InvoiceProduct } from 'src/app/interfaces';
+import { getConfig } from 'src/app/services/config.provider';
 import { InvoicesService } from '../../../services/invoices.service';
 
 const PAYTRAQ_SAVED_MESSAGE = 'Izveidota pavadzīme Paytraq sistēmā';
@@ -28,9 +27,7 @@ export class InvoicePaytraqComponent implements OnInit, OnDestroy {
 
   @Output() paytraqUpdate = new Subject<string>();
 
-  paytraqUrl$: Observable<string> = this.config$.pipe(
-    pluck('paytraq', 'connectionParams', 'invoiceUrl')
-  );
+  paytraqUrl$: Observable<string> = getConfig('paytraq', 'connectionParams', 'invoiceUrl');
 
   readonly paytraqBusy$ = new Subject<boolean>();
 
@@ -38,7 +35,6 @@ export class InvoicePaytraqComponent implements OnInit, OnDestroy {
 
   constructor(
     private invoicesService: InvoicesService,
-    @Inject(CONFIG) private config$: Observable<SystemPreferences>,
     private snack: MatSnackBar,
   ) { }
 

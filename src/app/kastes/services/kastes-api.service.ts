@@ -1,22 +1,20 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { catchError, map, mapTo, pluck } from 'rxjs/operators';
-import { APP_PARAMS } from 'src/app/app-params';
-import { AppParams } from 'src/app/interfaces';
-import { Kaste, KastesUserPreferences, Veikals, VeikalsKaste, VeikalsUpload } from 'src/app/kastes/interfaces';
-import { ApiBase, HttpOptions } from 'src/app/library/http';
+import { Injectable } from '@angular/core';
+import { map, Observable } from 'rxjs';
+import { getAppParams } from 'src/app/app-params';
+import { KastesUserPreferences, Veikals, VeikalsKaste, VeikalsUpload } from 'src/app/kastes/interfaces';
+import { HttpOptions } from 'src/app/library/http';
 
 @Injectable({
     providedIn: 'root'
 })
-export class KastesApiService extends ApiBase<Kaste> {
+export class KastesApiService {
+
+    private readonly path = getAppParams('apiPath') + 'kastes/';
 
     constructor(
-        @Inject(APP_PARAMS) params: AppParams,
-        http: HttpClient,
+        private http: HttpClient,
     ) {
-        super(http, params.apiPath + 'kastes/');
     }
 
     getKastes(jobId: number): Observable<VeikalsKaste[]> {
@@ -57,7 +55,7 @@ export class KastesApiService extends ApiBase<Kaste> {
 
     putTable(veikali: VeikalsUpload[]): Observable<number> {
         return this.http.put<{ modifiedCount: number; }>(this.path, veikali, new HttpOptions()).pipe(
-            pluck('modifiedCount')
+            map(data => data.modifiedCount)
         );
     }
 
@@ -68,7 +66,7 @@ export class KastesApiService extends ApiBase<Kaste> {
     deleteVeikali(pasutijumsId: number): Observable<number> {
         return this.http.delete<{ deletedCount: number; }>(this.path + pasutijumsId, new HttpOptions()
         ).pipe(
-            pluck('deletedCount'),
+            map(data => data.deletedCount),
         );
     }
 

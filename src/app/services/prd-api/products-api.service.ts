@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { APP_PARAMS } from 'src/app/app-params';
-import { AppParams, CustomerProduct, JobProductionStage, Product, ProductPartial } from 'src/app/interfaces';
+import { getAppParams } from 'src/app/app-params';
+import { CustomerProduct, JobProductionStage, Product, ProductPartial } from 'src/app/interfaces';
 import { AppClassTransformerService } from 'src/app/library';
 import { HttpOptions } from 'src/app/library/http';
 
@@ -12,12 +12,11 @@ import { HttpOptions } from 'src/app/library/http';
 })
 export class ProductsApiService {
 
-    readonly path = this.params.apiPath + 'products/';
+    readonly path = getAppParams('apiPath') + 'products/';
 
     constructor(
         private http: HttpClient,
         private transformer: AppClassTransformerService,
-        @Inject(APP_PARAMS) private params: AppParams,
     ) { }
 
     getAll(): Observable<ProductPartial[]> {

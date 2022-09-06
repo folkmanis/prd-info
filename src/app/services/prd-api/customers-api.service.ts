@@ -1,9 +1,9 @@
-import { AppClassTransformerService } from 'src/app/library';
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { APP_PARAMS } from 'src/app/app-params';
-import { AppParams, Customer, NewCustomer } from 'src/app/interfaces';
+import { getAppParams } from 'src/app/app-params';
+import { Customer, NewCustomer } from 'src/app/interfaces';
+import { AppClassTransformerService } from 'src/app/library';
 import { HttpOptions } from 'src/app/library/http/http-options';
 
 
@@ -12,12 +12,11 @@ import { HttpOptions } from 'src/app/library/http/http-options';
 })
 export class CustomersApiService {
 
-    private path = this.params.apiPath + 'customers/';
+    private path = getAppParams('apiPath') + 'customers/';
 
     constructor(
         private http: HttpClient,
         private transformer: AppClassTransformerService,
-        @Inject(APP_PARAMS) private params: AppParams,
     ) { }
 
     getAll(params?: Record<string, any>): Observable<Customer[]> {

@@ -1,7 +1,5 @@
-import { ChangeDetectionStrategy, Component, Inject, Input, OnInit, Output } from '@angular/core';
-import { Observable, pluck } from 'rxjs';
-import { SystemPreferences } from 'src/app/interfaces';
-import { CONFIG } from 'src/app/services/config.provider';
+import { ChangeDetectionStrategy, Component, Input, OnInit, Output } from '@angular/core';
+import { getConfig } from 'src/app/services/config.provider';
 import { JobsProductionFilterQuery } from '../../interfaces';
 import { FilterForm, ProductsFormData } from './filter-form';
 
@@ -37,17 +35,12 @@ export class FilterComponent implements OnInit {
 
   @Output() filterChanges = this.form.filterQueryChanges;
 
-  jobStates$ = this.config$.pipe(
-    pluck('jobs', 'jobStates')
-  );
+  jobStates$ = getConfig('jobs', 'jobStates');
 
-  categories$ = this.config$.pipe(
-    pluck('jobs', 'productCategories')
-  );
+  categories$ = getConfig('jobs', 'productCategories');
 
   constructor(
     public form: FilterForm,
-    @Inject(CONFIG) private config$: Observable<SystemPreferences>,
   ) { }
 
   ngOnInit(): void {

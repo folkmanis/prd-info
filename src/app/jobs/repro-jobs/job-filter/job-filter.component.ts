@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit, Output } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { debounceTime, filter, map, pluck, startWith, switchMap } from 'rxjs/operators';
-import { CustomerPartial, SystemPreferences } from 'src/app/interfaces';
+import { debounceTime, filter, map, startWith, switchMap } from 'rxjs/operators';
+import { CustomerPartial } from 'src/app/interfaces';
 import { CustomersService } from 'src/app/services';
-import { CONFIG } from 'src/app/services/config.provider';
+import { getConfig } from 'src/app/services/config.provider';
 import { JobFilter, JobQueryFilter } from '../../interfaces';
 
 
@@ -15,8 +15,12 @@ const DEFAULT_FILTER: JobFilter = {
   jobStatus: [10, 20]
 };
 
+export type FilterFormType = {
+  [k in keyof JobFilter]: FormControl<JobFilter[k]>
+};
+
 export abstract class JobFilterFormProvider {
-  abstract filterForm: UntypedFormGroup;
+  abstract filterForm: FormGroup<FilterFormType>;
 }
 
 @Component({
@@ -30,19 +34,15 @@ export abstract class JobFilterFormProvider {
 })
 export class JobFilterComponent implements JobFilterFormProvider, OnInit {
 
-  jobStates$ = this.config$.pipe(
-    pluck('jobs', 'jobStates')
-  );
+  jobStates$ = getConfig('jobs', 'jobStates');
+
   customersFiltered$: Observable<CustomerPartial[]>;
 
-  filterForm: UntypedFormGroup = this.fb.group({
-    name: undefined,
-    jobsId: [
-      undefined,
-      { validators: [Validators.pattern(/^[0-9]+$/)] }
-    ],
-    customer: undefined,
-    jobStatus: [],
+  filterForm: FormGroup<FilterFormType> = new FormGroup({
+    name: new FormControl(''),
+    jobsId: new FormControl('', { validators: [Validators.pattern(/^[0-9]+$/)] }),
+    customer: new FormControl(''),
+    jobStatus: new FormControl([]),
   });;
 
   @Output('jobFilter') jobFilter$: Observable<JobQueryFilter> = this.filterForm.valueChanges.pipe(
@@ -52,9 +52,7 @@ export class JobFilterComponent implements JobFilterFormProvider, OnInit {
   );
 
   constructor(
-    private fb: UntypedFormBuilder,
     private customersService: CustomersService,
-    @Inject(CONFIG) private config$: Observable<SystemPreferences>,
   ) { }
 
 

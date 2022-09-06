@@ -1,16 +1,16 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { EMPTY, Observable, of, map, mergeMap, switchMap, tap, takeUntil, merge } from 'rxjs';
-import { APP_PARAMS } from 'src/app/app-params';
-import { AppParams, User, UserSession } from 'src/app/interfaces';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DestroyService } from 'prd-cdk';
+import { EMPTY, map, merge, mergeMap, Observable, of, switchMap, takeUntil, tap } from 'rxjs';
+import { getAppParams } from 'src/app/app-params';
+import { User, UserSession } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { LoginService } from 'src/app/login';
 import { XmfCustomer } from 'src/app/xmf-search/interfaces';
 import { UsersService } from '../../services/users.service';
 import { UserFormService } from '../services/user-form.service';
-import { DestroyService } from 'prd-cdk';
-import { Router, ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -26,7 +26,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 export class UserEditComponent implements OnInit, CanComponentDeactivate {
 
   customers$: Observable<XmfCustomer[]> = this.usersService.xmfCustomers$;
-  userModules = this.params.userModules;
+  userModules = getAppParams('userModules');
   sessions: UserSession[] | null = null;
   currentSessionId$ = this.loginService.sessionId$;
 
@@ -50,7 +50,6 @@ export class UserEditComponent implements OnInit, CanComponentDeactivate {
     private formService: UserFormService,
     private confirmationDialog: ConfirmationDialogService,
     private loginService: LoginService,
-    @Inject(APP_PARAMS) private params: AppParams,
     private router: Router,
     private route: ActivatedRoute,
     private destroy$: DestroyService,

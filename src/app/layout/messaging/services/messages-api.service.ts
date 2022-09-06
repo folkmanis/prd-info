@@ -1,11 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { ClassTransformer } from 'class-transformer';
-import { Observable } from 'rxjs';
-import { map, pluck } from 'rxjs/operators';
-import { APP_PARAMS } from 'src/app/app-params';
-import { AppParams } from 'src/app/interfaces';
-import { ApiBase, HttpOptions } from 'src/app/library/http';
+import { map, Observable } from 'rxjs';
+import { getAppParams } from 'src/app/app-params';
+import { HttpOptions } from 'src/app/library/http';
 import { Message } from '../interfaces';
 
 function addDataType(message: Record<string, any>) {
@@ -22,14 +20,14 @@ function addDataType(message: Record<string, any>) {
 @Injectable({
     providedIn: 'root'
 })
-export class MessagesApiService extends ApiBase<Message> {
+export class MessagesApiService {
+
+    private readonly path = getAppParams('apiPath') + 'messages/';
 
     constructor(
-        @Inject(APP_PARAMS) params: AppParams,
-        http: HttpClient,
+        private http: HttpClient,
         private transformer: ClassTransformer,
     ) {
-        super(http, params.apiPath + 'messages/');
     }
 
     messages(): Observable<Message[]> {
@@ -50,7 +48,7 @@ export class MessagesApiService extends ApiBase<Message> {
 
     setAllMessagesRead(): Observable<number> {
         return this.http.patch<{ modifiedCount: number; }>(this.path + 'read', new HttpOptions()).pipe(
-            pluck('modifiedCount'),
+            map(data => data.modifiedCount),
         );
     }
 
@@ -59,7 +57,7 @@ export class MessagesApiService extends ApiBase<Message> {
             this.path + id,
             new HttpOptions()
         ).pipe(
-            pluck('deletedCount')
+            map(data => data.deletedCount)
         );
     }
 

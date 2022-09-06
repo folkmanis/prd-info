@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { APP_PARAMS } from 'src/app/app-params';
-import { AppParams, User } from 'src/app/interfaces';
+import { getAppParams } from 'src/app/app-params';
+import { User } from 'src/app/interfaces';
 import { AppClassTransformerService } from 'src/app/library';
 import { HttpOptions } from 'src/app/library/http';
 
@@ -13,11 +13,10 @@ type Params = Record<string, any>;
 })
 export class UsersApiService {
 
-    readonly path = this.params.apiPath + 'users/';
+    readonly path = getAppParams('apiPath') + 'users/';
 
     constructor(
         private http: HttpClient,
-        @Inject(APP_PARAMS) private params: AppParams,
         private transformer: AppClassTransformerService,
     ) { }
 

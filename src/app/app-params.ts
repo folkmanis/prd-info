@@ -4,7 +4,14 @@ import { version } from '../version';
 import { AppParams } from './interfaces';
 import { get } from 'lodash-es';
 
-export const APP_PARAMS = new InjectionToken<AppParams>('prd.defaults');
+export const APP_PARAMS = new InjectionToken<AppParams>(
+    'prd.defaults',
+    {
+        providedIn: 'root',
+        factory: () => PRD_DEFAULTS,
+    }
+);
+
 export const PRD_DEFAULTS: AppParams = {
     apiPath: '/data/',
     wsPath: '/ws-notifications',

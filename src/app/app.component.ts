@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { filter } from 'rxjs/operators';
-import { AppParams } from 'src/app/interfaces';
 import { ApiVersionService } from 'src/app/library/http/api-version.service';
-import { APP_PARAMS } from './app-params';
+import { getAppParams } from './app-params';
 
 @Component({
   selector: 'app-root',
@@ -12,14 +11,16 @@ import { APP_PARAMS } from './app-params';
 })
 export class AppComponent implements OnInit {
 
+  private readonly appBuild = getAppParams('version', 'appBuild');
+
   constructor(
-    @Inject(APP_PARAMS) private params: AppParams,
     private apiVersion: ApiVersionService,
   ) { }
 
+
   ngOnInit() {
     this.apiVersion.version$.pipe(
-      filter(ver => ver.appBuild > this.params.version.appBuild),
+      filter(ver => ver.appBuild > this.appBuild),
     ).subscribe(() => location.reload());
 
   }

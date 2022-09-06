@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { APP_PARAMS } from 'src/app/app-params';
-import { AppParams, Equipment } from 'src/app/interfaces';
+import { getAppParams } from 'src/app/app-params';
+import { Equipment } from 'src/app/interfaces';
 import { AppClassTransformerService } from 'src/app/library';
 import { HttpOptions } from 'src/app/library/http';
 
@@ -11,11 +11,10 @@ import { HttpOptions } from 'src/app/library/http';
 })
 export class EquipmentApiService {
 
-    readonly path = this.params.apiPath + 'equipment/';
+    readonly path = getAppParams('apiPath') + 'equipment/';
 
     constructor(
         private http: HttpClient,
-        @Inject(APP_PARAMS) private params: AppParams,
         private transformer: AppClassTransformerService,
     ) { }
 
