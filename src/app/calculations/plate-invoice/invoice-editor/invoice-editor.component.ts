@@ -3,10 +3,10 @@ import { ActivatedRoute } from '@angular/router';
 import { Locale } from 'date-fns';
 import { saveAs } from 'file-saver';
 import { merge, Observable, Subject } from 'rxjs';
-import { map, pluck, share, switchMap } from 'rxjs/operators';
-import { Invoice, SystemPreferences } from 'src/app/interfaces';
+import { map, share, switchMap } from 'rxjs/operators';
+import { Invoice } from 'src/app/interfaces';
 import { DATE_FNS_LOCALE } from 'src/app/library/date-services';
-import { CONFIG } from 'src/app/services/config.provider';
+import { getConfig } from 'src/app/services/config.provider';
 import { InvoiceResolverService } from '../../services/invoice-resolver.service';
 import { InvoiceCsv } from './invoice-csv';
 
@@ -32,13 +32,10 @@ export class InvoiceEditorComponent implements OnInit, OnDestroy {
     share(),
   );
 
-  pyatraqEnabled$: Observable<boolean> = this.config$.pipe(
-    pluck('paytraq', 'enabled'),
-  );
+  pyatraqEnabled$: Observable<boolean> = getConfig('paytraq', 'enabled');
 
   constructor(
     private route: ActivatedRoute,
-    @Inject(CONFIG) private config$: Observable<SystemPreferences>,
     private invoiceResolver: InvoiceResolverService,
     @Optional() @Inject(DATE_FNS_LOCALE) private locale?: Locale,
   ) { }

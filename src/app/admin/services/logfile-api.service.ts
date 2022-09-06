@@ -1,44 +1,35 @@
-import { Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ApiBase, HttpOptions } from 'src/app/library/http';
-import { LogRecordHttp, LogQueryFilter, LogRecord } from 'src/app/admin/services/logfile-record';
-import { Observable, OperatorFunction, pipe } from 'rxjs';
-import { map, pluck, withLatestFrom } from 'rxjs/operators';
-import { APP_PARAMS } from 'src/app/app-params';
-import { AppParams, SystemPreferences } from 'src/app/interfaces';
-import { CONFIG } from 'src/app/services/config.provider';
+import { Injectable } from '@angular/core';
 import { parse } from 'date-fns';
+import { map, Observable, withLatestFrom } from 'rxjs';
+import { LogQueryFilter, LogRecord, LogRecordHttp } from 'src/app/admin/services/logfile-record';
+import { getAppParams } from 'src/app/app-params';
+import { HttpOptions } from 'src/app/library/http';
+import { getConfig } from 'src/app/services/config.provider';
 
-function addLevelName(config: Observable<SystemPreferences>): OperatorFunction<LogRecordHttp[], LogRecord[]> {
-    const levelMap: Observable<Map<number, string>> = config.pipe(
-        pluck('system', 'logLevels'),
-        map(levels => new Map<number, string>(levels)),
-    );
-    return pipe(
-        withLatestFrom(levelMap),
-        map(([logs, levelMap]) => logs.map(rec => ({
-            ...rec,
-            levelVerb: levelMap.get(rec.level) || rec.level.toString(),
-        }))),
-    );
-}
 
 @Injectable({
     providedIn: 'root'
 })
-export class LogfileApiService extends ApiBase<LogRecordHttp> {
+export class LogfileApiService {
+
+    private levelMap$ = getConfig('system', 'logLevels').pipe(
+        map(levels => new Map<number, string>(levels)),
+    );
+
+    private path = getAppParams().apiPath + 'logging/';
 
     constructor(
-        @Inject(APP_PARAMS) params: AppParams,
-        @Inject(CONFIG) private config$: Observable<SystemPreferences>,
-        http: HttpClient,
-    ) {
-        super(http, params.apiPath + 'logging/');
-    }
+        private http: HttpClient,
+    ) { }
 
     getLog(filter: LogQueryFilter): Observable<LogRecord[]> {
-        return super.get(filter).pipe(
-            addLevelName(this.config$),
+        return this.http.get<LogRecordHttp[]>(this.path, new HttpOptions(filter).cacheable()).pipe(
+            withLatestFrom(this.levelMap$),
+            map(([logs, levelMap]) => logs.map(rec => ({
+                ...rec,
+                levelVerb: levelMap.get(rec.level) || rec.level.toString(),
+            }))),
         );
     }
 
@@ -47,7 +38,7 @@ export class LogfileApiService extends ApiBase<LogRecordHttp> {
             this.path + 'count',
             new HttpOptions(filter).cacheable()
         ).pipe(
-            pluck('count')
+            map(data => data.count)
         );
     }
 
