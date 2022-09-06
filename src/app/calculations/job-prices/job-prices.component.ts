@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DestroyService, omit } from 'prd-cdk';
+import { DestroyService } from 'prd-cdk';
 import { merge, Observable, of } from 'rxjs';
 import { map, mergeMap, pluck, take, takeUntil } from 'rxjs/operators';
 import { JobsWithoutInvoicesTotals } from 'src/app/jobs';
 import { Filter, JobPricesService } from './job-prices.service';
+import { omit } from 'lodash';
 
 const updateMessage = (n: number) => `Izmainīti ${n} ieraksti.`;
 

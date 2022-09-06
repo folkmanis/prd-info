@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { pick } from 'prd-cdk';
 import { EMPTY, Observable, of, Subject } from 'rxjs';
 import { map, startWith, switchMap, tap } from 'rxjs/operators';
 import { Invoice, InvoiceForReport, InvoicesFilter, InvoiceTable, InvoiceUpdate, INVOICE_UPDATE_FIELDS } from 'src/app/interfaces';
@@ -8,6 +7,7 @@ import { Sale } from 'src/app/interfaces/paytraq/invoice';
 import { JobQueryFilter, JobService, JobsWithoutInvoicesTotals, JobUnwindedPartial } from 'src/app/jobs';
 import { PaytraqApiService } from 'src/app/services/prd-api/paytraq-api.service';
 import { InvoicesApiService } from 'src/app/services/prd-api/invoices-api.service';
+import { pick } from 'lodash-es';
 
 
 @Injectable({

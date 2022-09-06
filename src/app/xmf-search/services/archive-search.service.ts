@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { deepCopy } from 'prd-cdk';
 import { Observable, OperatorFunction, pipe, ReplaySubject } from 'rxjs';
 import { filter, map, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { ArchiveFacet, ArchiveRecord, SearchQuery } from '../interfaces';
+import { cloneDeep } from 'lodash-es';
 import { PagedCache } from './paged-cache';
 import { SearchData } from './search-data';
 import { XmfArchiveApiService } from './xmf-archive-api.service';
@@ -54,10 +54,10 @@ function facetCache(fetchFn: (query: SearchQuery) => Observable<ArchiveFacet>): 
     map(newFacet => {
       if (!facetData) { // ja prasa pirmo reizi
         facetData = newFacet; // tad izmanto visu ierakstu
-        return deepCopy(facetData);
+        return cloneDeep(facetData);
       }
       // ja elementi jau ir, tad izmantos tikai skaitus
-      const facetFiltered: ArchiveFacet = deepCopy(facetData);
+      const facetFiltered: ArchiveFacet = cloneDeep(facetData);
       for (const key of Object.keys(facetFiltered)) { // pa grupām
         facetFiltered[key] = facetFiltered[key].map(val => newFacet[key].find(nVal => nVal._id === val._id) || { ...val, count: 0 });
       }
