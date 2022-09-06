@@ -8,7 +8,7 @@
 
     </mat-drawer>
 
-    <mat-drawer-content>
+    <mat-drawer-content appViewSize #viewSize="viewSize">
 
         <mat-card>
 
@@ -36,7 +36,8 @@
 
 
         <!-- Darbu atlase -->
-        <app-job-selection-table [jobs]="jobs$ | async" (selectedJobs)="onJobSelected($event)" scroll-to-top>
+        <app-job-selection-table [jobs]="jobs$ | async" [large]="viewSize.isLarge" [(selected)]="selectedJobs"
+            scroll-to-top>
         </app-job-selection-table>
 
     </mat-drawer-content>

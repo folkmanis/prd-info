@@ -47,7 +47,7 @@
     </mat-toolbar>
 
 
-    <div class="container">
+    <div class="container" appViewSize #viewSize="viewSize">
 
         <p> {{invoice.createdDate | date}} </p>
 
@@ -90,7 +90,8 @@
                     </mat-panel-title>
                 </mat-expansion-panel-header>
 
-                <app-job-selection-table [jobs]="invoice.jobs" disabled></app-job-selection-table>
+                <app-job-selection-table [jobs]="invoice.jobs" disabled [large]="viewSize.isLarge">
+                </app-job-selection-table>
 
             </mat-expansion-panel>
 

@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef, inject, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { map, BehaviorSubject, combineLatest, merge, Observable, tap } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { map, Observable, tap } from 'rxjs';
 import { InvoiceForReport, ProductTotals } from 'src/app/interfaces';
-import { JobPartial, JobUnwindedPartial } from 'src/app/jobs';
+import { JobUnwindedPartial } from 'src/app/jobs';
+import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
 import { InvoicesTotals } from '../interfaces';
 import { InvoicesService } from '../services/invoices.service';
-import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
 
 @Component({
   selector: 'app-new-invoice',
@@ -18,32 +18,32 @@ export class NewInvoiceComponent implements OnInit {
 
   @ViewChild(ScrollTopDirective) private scroll: ScrollTopDirective;
 
-
-  private invoicesService = inject(InvoicesService);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
-  private chDetector = inject(ChangeDetectorRef);
-
   customerId = new FormControl<string>('');
 
   noInvoices$ = this.invoicesService.jobsWithoutInvoicesTotals$;
 
   jobs$: Observable<JobUnwindedPartial[]> = this.route.data.pipe(
     map(data => data.jobs || []),
+    tap(jobs => this.selectedJobs = this.jobsWithPrice(jobs)),
     tap(() => this.scroll?.scrollToTop()),
   );
 
 
   selectedJobs: JobUnwindedPartial[] = [];
 
-
   get selection(): number[] {
     return this.selectedJobs.map(job => job.jobId);
   }
 
   get invoicesTotals(): InvoicesTotals {
-    return jobTotalsFromJob(this.selectedJobs);
+    return this.jobTotalsFromJob(this.selectedJobs);
   }
+
+  constructor(
+    private invoicesService: InvoicesService,
+    private router: Router,
+    private route: ActivatedRoute,
+  ) { }
 
   ngOnInit(): void {
 
@@ -74,33 +74,38 @@ export class NewInvoiceComponent implements OnInit {
     });
   }
 
-  onJobSelected(selectedJobs: JobUnwindedPartial[]) {
-    this.selectedJobs = selectedJobs;
-    this.chDetector.detectChanges();
+  private jobTotalsFromJob(jobs: JobUnwindedPartial[]): InvoicesTotals {
+    const totalsMap = new Map<string, ProductTotals>();
+    jobs
+      .map(job => job.products)
+      .filter(prod => !!prod)
+      .forEach(products => {
+        const { name: _id, price, count, units } = products;
+        const total = totalsMap.get(_id) || {
+          _id,
+          units,
+          count: 0,
+          total: 0,
+        };
+        total.count += count;
+        total.total += price * count;
+        totalsMap.set(_id, total);
+      });
+    const totals = [...totalsMap.values()].sort((a, b) => a._id > b._id ? 1 : -1);
+    return {
+      totals,
+      grandTotal: totals.reduce((acc, curr) => acc + curr.total, 0),
+    };
+  }
+
+  private jobsWithPrice(jobs: JobUnwindedPartial[]): JobUnwindedPartial[] {
+    const jobSet = new Set<number>();
+    jobs.forEach(({ products, jobId }) => {
+      if (products?.count && products.price) jobSet.add(jobId);
+    });
+    return jobs.filter(({ jobId }) => jobSet.has(jobId));
   }
 
 
-}
-
-function jobTotalsFromJob(jobs: JobUnwindedPartial[]): InvoicesTotals {
-  const totM = new Map<string, ProductTotals>();
-  for (const { products } of jobs) {
-    if (!products) { continue; }
-    const { name, price, count, units } = products;
-    totM.set(
-      name,
-      {
-        _id: name,
-        units,
-        count: (totM.get(name)?.count || 0) + count,
-        total: (totM.get(name)?.total || 0) + price * count
-      }
-    );
-  }
-  const totals = [...totM.values()].sort((a, b) => a._id > b._id ? 1 : -1);
-  return {
-    totals,
-    grandTotal: totals.reduce((acc, curr) => acc + curr.total, 0),
-  };
 }
 
