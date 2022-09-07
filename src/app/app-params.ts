@@ -48,9 +48,18 @@ export const PRD_DEFAULTS: AppParams = {
 
 type P = AppParams;
 export function getAppParams(): P;
-export function getAppParams<K1 extends keyof P>(k1: K1): P[K1];
-export function getAppParams<K1 extends keyof P, K2 extends keyof P[K1]>(k1: K1, k2: K2): P[K1][K2];
-export function getAppParams<K1 extends keyof P, K2 extends keyof P[K1], K3 extends keyof P[K1][K2]>(k1: K1, k2: K2, k3: K3): P[K1][K2][K3];
+export function getAppParams
+    <K1 extends keyof P>
+    (k1: K1): P[K1];
+export function getAppParams
+    <K1 extends keyof P, K2 extends keyof P[K1]>
+    (k1: K1, k2: K2): P[K1][K2];
+export function getAppParams
+    <K1 extends keyof P, K2 extends keyof P[K1], K3 extends keyof P[K1][K2]>
+    (k1: K1, k2: K2, k3: K3): P[K1][K2][K3];
+export function getAppParams
+    <K1 extends keyof P, K2 extends keyof P[K1], K3 extends keyof P[K1][K2], K4 extends keyof P[K1][K2][K3]>
+    (k1: K1, k2: K2, k3: K3, k4: K4): P[K1][K2][K3][K4];
 export function getAppParams(...path: string[]) {
     const params = inject(APP_PARAMS);
     return path.length ? get(params, path) || PRD_DEFAULTS : params;

@@ -4,13 +4,6 @@ import { SystemPreferences } from '../interfaces';
 import { SystemPreferencesService } from './system-preferences.service';
 import { get } from 'lodash-es';
 
-export const CONFIG = new InjectionToken<Observable<SystemPreferences>>(
-    'System configuration',
-    {
-        providedIn: 'root',
-        factory: () => inject(SystemPreferencesService).preferences$
-    }
-);
 
 type S = SystemPreferences;
 export function getConfig(): Observable<S>;
