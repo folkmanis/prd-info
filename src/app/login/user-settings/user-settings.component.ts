@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { isEqual } from 'lodash-es';
@@ -20,7 +20,17 @@ type UserUpdate = Pick<User, 'name' | 'eMail'>;
 })
 export class UserSettingsComponent implements OnInit, CanComponentDeactivate {
 
-  userForm: UntypedFormGroup;
+  userForm = new FormGroup({
+    name: new FormControl(
+      '',
+      [Validators.required]
+    ),
+    eMail: new FormControl(
+      '',
+      [Validators.email]
+    )
+  });
+
 
   user$ = this.loginService.user$;
 
@@ -35,7 +45,6 @@ export class UserSettingsComponent implements OnInit, CanComponentDeactivate {
 
   constructor(
     private loginService: LoginService,
-    private fb: UntypedFormBuilder,
     private snackService: MatSnackBar,
     private route: ActivatedRoute,
     private destroy$: DestroyService,
@@ -46,17 +55,6 @@ export class UserSettingsComponent implements OnInit, CanComponentDeactivate {
   }
 
   ngOnInit(): void {
-
-    this.userForm = this.fb.group({
-      name: [
-        undefined,
-        [Validators.required]
-      ],
-      eMail: [
-        undefined,
-        [Validators.email]
-      ]
-    });
 
     this.user$.pipe(
       takeUntil(this.destroy$),

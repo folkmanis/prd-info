@@ -1,10 +1,10 @@
-import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
-import { FormControl, FormGroup, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router, ActivatedRoute } from '@angular/router';
-import { filter, map, switchMap } from 'rxjs/operators';
-import { LoginService } from './services/login.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { filter, switchMap } from 'rxjs/operators';
 import { FocusedDirective } from 'src/app/library/directives/focused.directive';
+import { LoginService } from './services/login.service';
 
 @Component({
   selector: 'app-login',

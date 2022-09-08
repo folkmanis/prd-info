@@ -45,7 +45,7 @@
         <mat-divider inset></mat-divider>
 
         <mat-card-actions>
-            <button mat-button (click)="onSave(userForm.value)"
+            <button mat-button (click)="onSave(userForm.getRawValue())"
                 [disabled]="!userForm.valid || !isChanged || userForm.disabled" color="primary">
                 SAGLABĀT
             </button>

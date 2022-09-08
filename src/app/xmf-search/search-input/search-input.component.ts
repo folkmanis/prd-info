@@ -1,5 +1,5 @@
-import { Component, Input, Output, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, map, shareReplay, startWith } from 'rxjs/operators';
 
 @Component({
@@ -12,15 +12,15 @@ export class SearchInputComponent {
 
   @Input() count: number | undefined | null;
 
-  q: UntypedFormControl = new UntypedFormControl('');
+  q = new FormControl('');
+
   @Output() searchString = this.q.valueChanges.pipe(
     startWith(''),
     debounceTime(300),
-    map((q: string) => q.trim()),
+    map(q => q.trim()),
     distinctUntilChanged(),
     shareReplay(1),
   );
 
-  constructor() { }
 
 }
