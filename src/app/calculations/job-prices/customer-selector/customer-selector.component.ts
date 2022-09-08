@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
-import { IFormControl } from '@rxweb/types';
+import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { JobsWithoutInvoicesTotals } from 'src/app/jobs';
@@ -25,7 +24,7 @@ export class CustomerSelectorComponent {
     this.customerControl.setValue(value, { emitEvent: false });
   }
 
-  customerControl: IFormControl<string> = new UntypedFormControl(undefined);
+  customerControl = new FormControl<string>('');
 
   allTotals: number | undefined;
 

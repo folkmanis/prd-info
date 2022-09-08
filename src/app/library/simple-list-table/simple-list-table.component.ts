@@ -1,23 +1,29 @@
 import { ComponentType } from '@angular/cdk/portal';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { NgControl } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { IControlValueAccessor } from '@rxweb/types';
 import { BehaviorSubject, EMPTY, merge, Observable, of, Subject } from 'rxjs';
 import { map, mergeAll, mergeMap, shareReplay, skip, takeUntil, tap } from 'rxjs/operators';
 import { DestroyService } from 'prd-cdk';
 
 enum Action { ADD, REMOVE, UPDATE }
-interface UpdateAction<T> { type: Action; data?: T; idx?: number }
+interface UpdateAction<T> { type: Action; data?: T; idx?: number; }
 
 @Component({
   selector: 'app-simple-list-table',
   templateUrl: './simple-list-table.component.html',
   styleUrls: ['./simple-list-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DestroyService],
+  providers: [
+    DestroyService,
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: SimpleListTableComponent,
+      multi: true,
+    }
+  ],
 })
-export class SimpleListTableComponent<T, K extends keyof T & string>  implements OnInit, OnDestroy, IControlValueAccessor<T[]> {
+export class SimpleListTableComponent<T, K extends keyof T & string> implements OnInit, OnDestroy, ControlValueAccessor {
   @Input() set columns(columns: K[]) {
     this._columns = columns;
     this.displayedColumns = ['button', ...columns];
@@ -31,8 +37,8 @@ export class SimpleListTableComponent<T, K extends keyof T & string>  implements
   get disabled(): boolean { return this._disabled; }
   private _disabled = false;
 
-  private updateFn: (obj: T[]) => void;
-  private touchedFn: () => void;
+  private updateFn: (obj: T[]) => void = () => { };
+  private touchedFn: () => void = () => { };
 
   displayedColumns: (keyof T | 'button')[] = [];
 
@@ -52,13 +58,10 @@ export class SimpleListTableComponent<T, K extends keyof T & string>  implements
   );
 
   constructor(
-    control: NgControl,
     private destroy$: DestroyService,
     private dialog: MatDialog,
     private changeDetector: ChangeDetectorRef,
-  ) {
-    control.valueAccessor = this;
-  }
+  ) { }
 
   writeValue(obj: T[]) {
     this._initialData$.next(obj || []);
