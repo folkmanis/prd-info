@@ -16,6 +16,7 @@ import {
   PaytraqConnectionParamsComponent
 } from './modules/paytraq-preferences/paytraq-connection-params/paytraq-connection-params.component';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
+import { KastesColorsComponent } from './modules/kastes-preferences/kastes-colors/kastes-colors.component';
 
 
 
@@ -33,6 +34,7 @@ import { MaterialLibraryModule } from 'src/app/library/material-library.module';
     UnitsDialogComponent,
     PaytraqPreferencesComponent,
     PaytraqConnectionParamsComponent,
+    KastesColorsComponent,
   ],
   imports: [
     CommonModule,

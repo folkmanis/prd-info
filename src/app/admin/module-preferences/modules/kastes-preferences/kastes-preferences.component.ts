@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { Colors, COLORS, KastesSettings } from 'src/app/kastes/interfaces';
-import { PreferencesCardControl } from '../../preferences-card-control';
+import { KastesSettings } from 'src/app/kastes/interfaces';
+import { FormGroupType, PreferencesCardControl } from '../../preferences-card-control';
 
 type KastesSettingsPartial = Partial<KastesSettings>;
 
@@ -15,7 +15,6 @@ type KastesSettingsPartial = Partial<KastesSettings>;
 })
 export class KastesPreferencesComponent implements PreferencesCardControl<KastesSettings>, OnDestroy {
 
-  readonly colors = [...COLORS];
 
   set value(obj: KastesSettingsPartial) {
     this.controls.patchValue(obj);
@@ -24,17 +23,12 @@ export class KastesPreferencesComponent implements PreferencesCardControl<Kastes
     return this.controls.getRawValue();
   }
 
-  controls = this.fb.group({
-    colors: this.fb.group<{ [key in Colors]: string; }>(
-      Object.assign({}, ...COLORS.map(col => ({ [col]: '' })))
-    )
+  controls = new FormGroup<FormGroupType<KastesSettings>>({
+    colors: new FormControl<KastesSettings['colors']>(null)
   });
 
   stateChanges = new Subject<void>();
 
-  constructor(
-    private fb: FormBuilder,
-  ) { }
 
   ngOnDestroy() {
     this.stateChanges.complete();

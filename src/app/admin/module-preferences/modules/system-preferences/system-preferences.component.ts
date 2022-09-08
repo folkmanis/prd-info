@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { SystemSettings } from 'src/app/interfaces';
-import { PreferencesCardControl } from '../../preferences-card-control';
+import { PreferencesCardControl, FormGroupType } from '../../preferences-card-control';
+
+type SettingsToChange = Pick<SystemSettings, 'menuExpandedByDefault' | 'hostname'>;
 
 @Component({
   selector: 'app-system-preferences',
@@ -11,33 +13,23 @@ import { PreferencesCardControl } from '../../preferences-card-control';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{ provide: PreferencesCardControl, useExisting: SystemPreferencesComponent }]
 })
-export class SystemPreferencesComponent implements PreferencesCardControl<SystemSettings>, OnDestroy {
+export class SystemPreferencesComponent implements PreferencesCardControl<SettingsToChange>, OnDestroy {
 
-  set value(obj: Partial<SystemSettings>) {
+  set value(obj: Partial<SettingsToChange>) {
     this.controls.patchValue(obj);
     this.stateChanges.next();
   }
-  get value(): Partial<SystemSettings> {
+  get value(): Partial<SettingsToChange> {
     return this.controls.value;
   }
 
-  controls: UntypedFormGroup;
+  controls = new FormGroup<FormGroupType<SettingsToChange>>({
+    menuExpandedByDefault: new FormControl(true),
+    hostname: new FormControl('', Validators.required),
+  });
 
   stateChanges = new Subject<void>();
 
-  constructor(
-    fb: UntypedFormBuilder,
-  ) {
-    this.controls = fb.group({
-      menuExpandedByDefault: [true],
-      hostname: [
-        null,
-        {
-          validators: [Validators.required]
-        }
-      ]
-    });
-  }
 
   ngOnDestroy() {
     this.stateChanges.complete();

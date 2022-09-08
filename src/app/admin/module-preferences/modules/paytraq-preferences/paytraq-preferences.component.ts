@@ -16,7 +16,7 @@ import { PreferencesCardControl } from '../../preferences-card-control';
     DestroyService,
   ]
 })
-export class PaytraqPreferencesComponent implements OnInit, OnDestroy, PreferencesCardControl<PaytraqSettings> {
+export class PaytraqPreferencesComponent implements OnInit, OnDestroy, PreferencesCardControl<Required<PaytraqSettings>> {
 
   set value(value: PaytraqSettings) {
     this.controls.reset(value);

@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormControl } from '@angular/forms';
 
 
 @Component({
@@ -19,7 +19,7 @@ export class FolderPathComponent implements OnInit {
   }
   private _path = '';
 
-  updateJobFolderPathControl = new UntypedFormControl({ value: true, disabled: true });
+  updateJobFolderPathControl = new FormControl({ value: true, disabled: true });
 
   @Input() set updatePath(value: boolean) {
     value = coerceBooleanProperty(value);

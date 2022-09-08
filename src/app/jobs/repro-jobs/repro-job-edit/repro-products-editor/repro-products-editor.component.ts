@@ -1,7 +1,5 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
-import {
-  ControlValueAccessor, UntypedFormArray, UntypedFormControl, UntypedFormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators
-} from '@angular/forms';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { ControlValueAccessor, FormArray, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators } from '@angular/forms';
 import { DestroyService } from 'prd-cdk';
 import { takeUntil } from 'rxjs/operators';
 import { CustomerProduct } from 'src/app/interfaces';
@@ -35,13 +33,7 @@ export class ReproProductsEditorComponent implements OnInit, ControlValueAccesso
 
   @Input() showPrices: boolean;
 
-  form = new UntypedFormGroup({
-    products: new UntypedFormArray([]),
-  });
-
-  get productsControl() {
-    return this.form.get('products') as UntypedFormArray;
-  }
+  productsControl = new FormArray<FormControl<JobProduct>>([]);
 
   onTouched: () => void = () => { };
   onValidationChange: () => void = () => { };
@@ -62,7 +54,7 @@ export class ReproProductsEditorComponent implements OnInit, ControlValueAccesso
       return;
     }
     this.productsControl.clear();
-    obj.forEach(prod => this.productsControl.push(new UntypedFormControl(prod)), { emitEvent: false });
+    obj.forEach(prod => this.productsControl.push(new FormControl(prod)), { emitEvent: false });
     this.check();
   }
 
@@ -79,9 +71,9 @@ export class ReproProductsEditorComponent implements OnInit, ControlValueAccesso
 
   setDisabledState(isDisabled: boolean): void {
     if (isDisabled) {
-      this.form.disable();
+      this.productsControl.disable();
     } else {
-      this.form.enable();
+      this.productsControl.enable();
     }
   }
 
@@ -98,7 +90,7 @@ export class ReproProductsEditorComponent implements OnInit, ControlValueAccesso
   }
 
   ngOnInit(): void {
-    this.form.statusChanges.subscribe(_ => this.check());
+    this.productsControl.statusChanges.subscribe(_ => this.check());
   }
 
   focusLatest() {
@@ -110,7 +102,7 @@ export class ReproProductsEditorComponent implements OnInit, ControlValueAccesso
   }
 
   onAddProduct() {
-    this.productsControl.push(new UntypedFormControl(
+    this.productsControl.push(new FormControl<JobProduct>(
       null,
       [Validators.required]
     ));

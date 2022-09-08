@@ -1,4 +1,9 @@
-import { isSameDay, min, max, format, addDays, Interval, startOfDay, endOfDay, isWithinInterval } from 'date-fns';
+import { isSameDay, min, max, format, addDays, startOfDay, endOfDay, isWithinInterval } from 'date-fns';
+
+interface Interval {
+    start: Date,
+    end: Date,
+}
 
 export class ValidDates {
 

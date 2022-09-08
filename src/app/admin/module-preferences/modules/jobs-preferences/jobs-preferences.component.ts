@@ -15,7 +15,7 @@ type JobsSettingsControls = Pick<JobsSettings, 'productCategories' | 'productUni
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{ provide: PreferencesCardControl, useExisting: JobsPreferencesComponent }]
 })
-export class JobsPreferencesComponent implements PreferencesCardControl<JobsSettings>, OnInit, OnDestroy {
+export class JobsPreferencesComponent implements PreferencesCardControl<JobsSettingsControls>, OnInit, OnDestroy {
 
   controls = new FormGroup({
     productCategories: new FormControl<ProductCategory[]>([]),

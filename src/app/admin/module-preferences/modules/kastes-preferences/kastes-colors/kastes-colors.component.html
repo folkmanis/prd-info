@@ -1,0 +1,3 @@
+<div *ngFor="let color of colors">
+    <app-color-slider [formControl]="colorGroup.controls[color]" [label]="color | titlecase"></app-color-slider>
+</div>
