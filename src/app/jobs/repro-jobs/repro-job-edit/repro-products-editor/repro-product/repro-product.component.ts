@@ -1,18 +1,12 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { ChangeDetectionStrategy, Component, Input, OnInit, Output, ViewChild, ChangeDetectorRef } from '@angular/core';
-import {
-  AbstractControl,
-  ControlValueAccessor,
-  UntypedFormControl,
-  NG_VALIDATORS, NG_VALUE_ACCESSOR,
-  ValidationErrors, Validator, ValidatorFn
-} from '@angular/forms';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { ControlValueAccessor, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators } from '@angular/forms';
 import { DestroyService } from 'prd-cdk';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { CustomerProduct } from 'src/app/interfaces';
 import { JobProduct } from 'src/app/jobs';
 import { ProductAutocompleteComponent } from '../product-autocomplete/product-autocomplete.component';
-import { ProductFormGroup } from './product-form-group';
+
 
 const DEFAULT_PRODUCT: JobProduct = {
   name: '',
@@ -48,12 +42,12 @@ export class ReproProductComponent implements OnInit, ControlValueAccessor, Vali
 
   customerProducts$ = new BehaviorSubject<CustomerProduct[]>([]);
 
-  form: ProductFormGroup = new ProductFormGroup(DEFAULT_PRODUCT);
+  form = ReproProductComponent.createForm(DEFAULT_PRODUCT);
 
   @Input('customerProducts')
   set customerProducts(value: CustomerProduct[]) {
     this.customerProducts$.next(value || []);
-    this.nameControl.updateValueAndValidity();
+    this.form.controls.name.updateValueAndValidity();
     this.onValidationChange();
   }
   get customerProducts() {
@@ -72,10 +66,6 @@ export class ReproProductComponent implements OnInit, ControlValueAccessor, Vali
   onValidationChange: () => void = () => { };
 
   @Output() remove = new Subject<void>();
-
-  get nameControl() { return this.form.get('name') as UntypedFormControl; }
-  get priceControl() { return this.form.get('price') as UntypedFormControl; }
-  get unitsControl() { return this.form.get('units') as UntypedFormControl; }
 
 
   constructor(
@@ -145,6 +135,30 @@ export class ReproProductComponent implements OnInit, ControlValueAccessor, Vali
   check() {
     this.changedetector.markForCheck();
   }
+
+  static createForm(product: Partial<JobProduct> = {}) {
+    return new FormGroup({
+      name: new FormControl(product.name),
+      price: new FormControl(
+        product.price,
+        {
+          validators: [Validators.required, Validators.min(0)],
+        },
+      ),
+      count: new FormControl(
+        product.count,
+        {
+          validators: [Validators.required, Validators.min(0)],
+        },
+      ),
+      units: new FormControl(
+        product.units,
+        Validators.required,
+      ),
+      comment: new FormControl(product.comment),
+    });
+  }
+
 
   private addControlErrors(allErrors: Record<string, any>, controlName: string): Record<string, any> {
 

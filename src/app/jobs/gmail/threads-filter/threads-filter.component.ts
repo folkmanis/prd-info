@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { map, Observable } from 'rxjs';
 import { LabelListItem, ThreadsFilterQuery } from '../interfaces';
 
@@ -14,13 +14,13 @@ type FilterOutput = Pick<ThreadsFilterQuery, 'labelIds'>;
 export class ThreadsFilterComponent {
 
   @Input() set initialCategory(value: string) {
-    this.filterForm.get('label').setValue(value);
+    this.filterForm.controls.label.setValue(value);
   }
 
   @Input() labels: LabelListItem[] = [];
 
-  filterForm = new UntypedFormGroup({
-    label: new UntypedFormControl()
+  filterForm = new FormGroup({
+    label: new FormControl<string>('')
   });
 
   @Output() valueChanges: Observable<FilterOutput> = this.filterForm.valueChanges.pipe(

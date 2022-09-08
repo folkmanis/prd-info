@@ -1,10 +1,8 @@
 import { Directive, Input, OnInit, Self } from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
 import { DestroyService } from 'prd-cdk';
 import { combineLatest, Observable } from 'rxjs';
-import { debounceTime, filter, map, pluck, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, map, takeUntil } from 'rxjs/operators';
 import { CustomerProduct } from 'src/app/interfaces';
-import { ProductFormGroup } from './product-form-group';
 import { ReproProductComponent } from './repro-product.component';
 
 @Directive({
@@ -13,18 +11,13 @@ import { ReproProductComponent } from './repro-product.component';
 })
 export class ProductControlDirective implements OnInit {
 
-  control: ProductFormGroup = this.component.form;
+  control = this.component.form;
 
   customerProducts$ = this.component.customerProducts$;
 
   @Input() set customerProducts(value: CustomerProduct[]) {
-    if (!value) { return; }
-    this.customerProducts$.next(value);
+    this.customerProducts$.next(value || []);
   }
-
-  get unitsControl() { return this.control.get('units') as UntypedFormControl; }
-  get nameControl() { return this.control.get('name') as UntypedFormControl; }
-  get priceControl() { return this.control.get('price') as UntypedFormControl; }
 
   selectedProduct$: Observable<CustomerProduct>;
 
@@ -36,7 +29,7 @@ export class ProductControlDirective implements OnInit {
   ngOnInit(): void {
 
     this.selectedProduct$ = combineLatest([
-      this.nameControl.valueChanges,
+      this.control.controls.name.valueChanges,
       this.customerProducts$,
     ]).pipe(
       debounceTime(300),
@@ -45,16 +38,16 @@ export class ProductControlDirective implements OnInit {
     );
 
     this.selectedProduct$.pipe(
-      pluck('units'),
       takeUntil(this.destroy$),
-    ).subscribe(units => this.unitsControl.setValue(units));
+    ).subscribe(({ units }) => this.control.controls.units.setValue(units));
 
     this.selectedProduct$.pipe(
-      pluck('price'),
+      map(product => product.price),
       map(price => price || 0),
       takeUntil(this.destroy$),
-    ).subscribe(price => this.priceControl.setValue(price));
+    ).subscribe(price => this.control.controls.price.setValue(price));
 
   }
+
 
 }
