@@ -1,11 +1,6 @@
-import {
-  AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef,
-  Component, Input,
-  OnInit, Self, ViewChild
-} from '@angular/core';
-import { NgControl } from '@angular/forms';
-import { MatSlider, MatSliderChange } from '@angular/material/slider';
-import { IControlValueAccessor } from '@rxweb/types';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewChild } from '@angular/core';
+import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { MatSlider } from '@angular/material/slider';
 import { HslColor } from './hsl-color';
 
 @Component({
@@ -13,8 +8,16 @@ import { HslColor } from './hsl-color';
   templateUrl: './color-slider.component.html',
   styleUrls: ['./color-slider.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: ColorSliderComponent,
+      multi: true,
+    }
+  ]
 })
-export class ColorSliderComponent implements OnInit, IControlValueAccessor<string>, AfterViewInit {
+export class ColorSliderComponent implements ControlValueAccessor, AfterViewInit {
+
   @Input() label = '';
 
   @ViewChild(MatSlider) private slide: MatSlider;
@@ -23,44 +26,42 @@ export class ColorSliderComponent implements OnInit, IControlValueAccessor<strin
   onTouchedFn: () => void;
 
   hslColor = new HslColor();
-  disabled = false;
+
+  colorForm = new FormControl<number>(0);
 
   constructor(
     private cd: ChangeDetectorRef,
-    @Self() private ngControl: NgControl
-  ) {
-    this.ngControl.valueAccessor = this;
-  }
+  ) { }
 
   writeValue(obj: string) {
     this.hslColor = HslColor.fromString(obj);
+    this.colorForm.setValue(this.hslColor.lightness);
     this.cd.markForCheck();
   }
 
   registerOnChange(fn: (obj: string) => void) {
-    this.onChangeFn = fn;
+    this.colorForm.valueChanges.subscribe(value => {
+      this.hslColor.lightness = value;
+      fn(this.hslColor.toString());
+      this.cd.markForCheck();
+    });
   }
 
   registerOnTouched(fn: () => void) {
     this.onTouchedFn = fn;
   }
 
-  setDisabledState(state: boolean) {
-    this.disabled = state;
-    this.cd.markForCheck();
-  }
-
-  ngOnInit(): void {
-  }
-
-  onSlideChanges(change: MatSliderChange): void {
-    this.hslColor.lightness = change.value;
-    this.onChangeFn(this.hslColor.toString());
+  setDisabledState(disabled: boolean) {
+    if (disabled) {
+      this.colorForm.disable();
+    } else {
+      this.colorForm.enable();
+    }
     this.cd.markForCheck();
   }
 
   ngAfterViewInit() {
-    this.slide.onTouched = this.onTouchedFn;
+    this.slide.registerOnTouched(this.onTouchedFn);
   }
 
 }
