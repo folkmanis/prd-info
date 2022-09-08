@@ -1,7 +1,5 @@
-import { Component, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { IFormArray, IFormBuilder, IFormGroup } from '@rxweb/types';
-import { ControlConfig } from '@rxweb/types/reactive-form/control-config';
+import { ChangeDetectionStrategy, Component, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { AbstractControl, FormArray, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { DestroyService } from 'prd-cdk';
 import { combineLatest, Observable, ReplaySubject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
@@ -10,11 +8,16 @@ import { getKastesPreferences } from '../../../services/kastes-preferences.servi
 import { VeikalsValidationErrors } from '../../services/veikals-validation-errors';
 import { ActiveVeikalsDirective } from '../active-veikals.directive';
 
+type KasteGroup = {
+  [key in keyof Kaste]: FormControl<Kaste[key]>
+};
+
 @Component({
   selector: 'app-veikals-edit',
   templateUrl: './veikals-edit.component.html',
   styleUrls: ['./veikals-edit.component.scss'],
   providers: [DestroyService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VeikalsEditComponent implements OnInit, OnDestroy {
 
@@ -33,43 +36,38 @@ export class VeikalsEditComponent implements OnInit, OnDestroy {
   }
   private _veikals: Veikals;
 
-  @Output() valueChanges: Observable<Veikals>;
-  @Output() errors: Observable<null | VeikalsValidationErrors>;
 
-  get valid(): boolean {
-    return this.veikalsFormArray.valid;
-  }
-
-  fb: IFormBuilder;
-  veikalsForm: UntypedFormGroup;
-  veikalsFormArray: IFormArray<Kaste>;
+  veikalsFormArray = new FormArray<FormGroup<KasteGroup>>(
+    [],
+    {
+      validators: this.totalsValidator()
+    }
+  );
 
   private _veikals$ = new ReplaySubject<Veikals>(1);
-  private _veikalsKastesChanges$: Observable<Kaste[]>;
+
+  _veikalsKastesChanges$ = this.veikalsFormArray.valueChanges.pipe(
+    filter(_ => this.veikalsFormArray.valid),
+    map(_ => this.recalculateTotals(this.veikalsFormArray.getRawValue())),
+  );
+
+  @Output()
+  errors: Observable<null | VeikalsValidationErrors> = this.veikalsFormArray.valueChanges.pipe(
+    map(_ => this.veikalsFormArray.valid ? null : this.veikalsFormArray.errors || {}),
+  );
+
+  @Output()
+  valueChanges: Observable<Veikals> = combineLatest([
+    this._veikalsKastesChanges$, this._veikals$,
+  ]).pipe(
+    map(([kastes, veikals]) => ({ ...veikals, kastes })),
+  );
+
 
   constructor(
-    fb: UntypedFormBuilder,
     @Inject(ActiveVeikalsDirective) private activeVeikals: ActiveVeikalsDirective,
     private destroy$: DestroyService,
-  ) {
-    this.fb = fb;
-    this.veikalsFormArray = this.fb.array<Kaste>([], { validators: this.totalsValidator() });
-    this.veikalsForm = new UntypedFormGroup({
-      boxs: this.veikalsFormArray,
-    });
-    this._veikalsKastesChanges$ = this.veikalsFormArray.valueChanges.pipe(
-      filter(_ => this.veikalsFormArray.valid),
-      map(_ => this.recalculateTotals(this.veikalsFormArray.getRawValue())),
-    );
-    this.errors = this.veikalsFormArray.valueChanges.pipe(
-      map(_ => this.veikalsFormArray.valid ? null : this.veikalsFormArray.errors || {}),
-    );
-    this.valueChanges = combineLatest([
-      this._veikalsKastesChanges$, this._veikals$,
-    ]).pipe(
-      map(([kastes, veikals]) => ({ ...veikals, kastes })),
-    );
-  }
+  ) { }
 
   ngOnInit(): void {
     this.valueChanges.pipe(
@@ -108,12 +106,12 @@ export class VeikalsEditComponent implements OnInit, OnDestroy {
   private initForm(boxs: Kaste[]) {
     this.veikalsFormArray.clear();
     for (const box of boxs) {
-      const boxForm = this.fb.group<Kaste>(
+      const boxForm = new FormGroup<KasteGroup>(
         {
           ...this.colorsControlsArray(box),
-          total: [box.total],
-          gatavs: [box.gatavs],
-          uzlime: [box.uzlime],
+          total: new FormControl(box.total, { nonNullable: true }),
+          gatavs: new FormControl(box.gatavs, { nonNullable: true }),
+          uzlime: new FormControl(box.uzlime, { nonNullable: true }),
         },
         { validators: [this.maxItemsValidator(MAX_ITEMS_BOX)] }
       );
@@ -122,30 +120,32 @@ export class VeikalsEditComponent implements OnInit, OnDestroy {
     }
   }
 
-  private colorsControlsArray(box: Kaste): { [key in Colors]: ControlConfig<number> } {
+  private colorsControlsArray(box: Kaste): { [key in Colors]: FormControl<number> } {
     return Object.assign(
       {},
       ...COLORS.map(col => ({
-        [col]:
-          [
-            box[col],
-            [Validators.required, Validators.min(0), Validators.max(MAX_ITEMS_BOX)]
-          ]
+        [col]: new FormControl(
+          box[col],
+          {
+            nonNullable: true,
+            validators: [Validators.required, Validators.min(0), Validators.max(MAX_ITEMS_BOX)],
+          }
+        )
       }))
     );
   }
 
   private maxItemsValidator(maxItemsBox: number): ValidatorFn {
-    return (control: IFormGroup<Kaste>): ValidationErrors => {
-      const items = this.boxTotals(control.value);
+    return (control: AbstractControl<Kaste>): ValidationErrors => {
+      const items = this.boxTotals(control.getRawValue());
       return items > maxItemsBox ? { maxItemsBox, items } : null;
     };
   }
 
   private totalsValidator(): ValidatorFn {
-    return (control: IFormArray<Kaste>): ValidationErrors => {
+    return (control: FormArray<FormGroup<KasteGroup>>): ValidationErrors => {
       if (!this.veikals || control.value.length === 0) { return null; }
-      const totals = this.colorTotals(control.value);
+      const totals = this.colorTotals(control.getRawValue());
       const initTotals = this.colorTotals(this.veikals.kastes.filter(k => !k.gatavs));
       const diff = Object.assign({},
         ...Object.keys(totals).map(col => ({ [col]: totals[col] - initTotals[col] })),
