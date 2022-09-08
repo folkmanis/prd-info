@@ -1,8 +1,7 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { pluck } from 'rxjs/operators';
-import { VeikalsKaste, Colors } from 'src/app/kastes/interfaces';
+import { Colors, VeikalsKaste } from 'src/app/kastes/interfaces';
 
 export interface Status {
   type: 'empty' | 'kaste' | 'none';
@@ -17,20 +16,22 @@ export class NoopErrorStateMatcher implements ErrorStateMatcher {
   selector: 'app-labels',
   templateUrl: './labels.component.html',
   styleUrls: ['./labels.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     { provide: ErrorStateMatcher, useClass: NoopErrorStateMatcher },
   ]
 })
-export class LabelsComponent implements OnInit {
+export class LabelsComponent {
+
   @ViewChild('kodsInput') kodsInput: ElementRef<HTMLInputElement>;
 
   @Input() set status(status: Status) {
     if (!status) { return; }
     this._status = status;
-    this.inputForm.enable();
+    this.kodsControl.enable();
     this.kodsInput?.nativeElement.focus();
     this.kodsInput?.nativeElement.select();
-    if (status.type === 'none') { this.inputForm.reset(undefined, { emitEvent: false }); }
+    if (status.type === 'none') { this.kodsControl.reset(undefined, { emitEvent: false }); }
   }
   get status(): Status {
     return this._status;
@@ -41,23 +42,17 @@ export class LabelsComponent implements OnInit {
 
   @Output() code = new EventEmitter<number>();
 
-  inputForm = new UntypedFormGroup({
-    kods: new UntypedFormControl(
-      '',
-      {
-        validators: [Validators.required]
-      }
-    ),
-  });
+  kodsControl = new FormControl(
+    '',
+    {
+      validators: [Validators.required]
+    }
+  );
 
-  constructor() { }
 
-  ngOnInit() {
-  }
-
-  onLabelSubmit({ kods }: { kods: number; }): void {
-    this.inputForm.disable();
-    this.code.emit(kods);
+  onLabelSubmit(): void {
+    this.kodsControl.disable();
+    this.code.next(+this.kodsControl.value);
   }
 
 }

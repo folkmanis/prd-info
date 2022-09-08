@@ -1,10 +1,6 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormArray, AbstractControl, UntypedFormArray, UntypedFormControl, UntypedFormGroup, NG_VALUE_ACCESSOR, NG_VALIDATORS, Validator, ControlValueAccessor, FormControl, FormGroup, Validators, ValidationErrors } from '@angular/forms';
-import { DestroyService } from 'prd-cdk';
-import { merge } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { CustomerPartial } from 'src/app/interfaces';
-import { Product, ProductPrice, JobProductionStage, ProductionStage, JobProductionStageMaterial } from 'src/app/interfaces';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators } from '@angular/forms';
+import { CustomerPartial, ProductPrice } from 'src/app/interfaces';
 
 type PricesForm = ReturnType<typeof productPriceGroup>;
 
@@ -14,7 +10,6 @@ type PricesForm = ReturnType<typeof productPriceGroup>;
   styleUrls: ['./product-prices.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    DestroyService,
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: ProductPricesComponent,
@@ -40,7 +35,6 @@ export class ProductPricesComponent implements OnInit, ControlValueAccessor, Val
 
   constructor(
     private chDetector: ChangeDetectorRef,
-    private destroy$: DestroyService,
   ) { }
 
   writeValue(obj: ProductPrice[]): void {

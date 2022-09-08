@@ -1,13 +1,12 @@
-import { ViewChild, Component, OnInit, Input, Output, ChangeDetectionStrategy, EventEmitter, ChangeDetectorRef } from '@angular/core';
-import { FormGroup, UntypedFormArray, NG_VALUE_ACCESSOR, NG_VALIDATORS, Validator, ControlValueAccessor, ValidatorFn, ValidationErrors, AbstractControl } from '@angular/forms';
-import { filter, takeUntil, merge, Observable, map } from 'rxjs';
-import { MaterialPrice } from 'src/app/interfaces';
-import { log, DestroyService } from 'prd-cdk';
-import { MatTable } from '@angular/material/table';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatTable } from '@angular/material/table';
+import { ClassTransformer } from 'class-transformer';
+import { filter, map, Observable } from 'rxjs';
+import { MaterialPrice } from 'src/app/interfaces';
 import { DialogData, MaterialsPriceDialogComponent } from '../materials-price-dialog/materials-price-dialog.component';
 import { MaterialsPricesDataSource } from './materials-prices-data-source';
-import { ClassTransformer } from 'class-transformer';
 
 
 @Component({

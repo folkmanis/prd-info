@@ -1,11 +1,12 @@
-<form [formGroup]="inputForm" (submit)="onLabelSubmit(inputForm.value)">
+<form (submit)="onLabelSubmit()">
     <p>
         <mat-form-field>
-            <input matInput formControlName="kods" type="text" placeholder="Adreses kods" autocomplete="off" #kodsInput>
+            <input matInput [formControl]="kodsControl" type="text" placeholder="Adreses kods" autocomplete="off"
+                #kodsInput>
         </mat-form-field>
     </p>
     <p>
-        <button mat-raised-button type="submit" #submitButton [disabled]="!inputForm.valid">Apstiprināt</button>
+        <button mat-raised-button type="submit" #submitButton [disabled]="!kodsControl.valid">Apstiprināt</button>
     </p>
 </form>
 
