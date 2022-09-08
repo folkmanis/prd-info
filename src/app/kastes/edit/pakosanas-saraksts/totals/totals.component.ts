@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { map } from 'rxjs/operators';
 import { ColorTotals, Veikals } from 'src/app/kastes/interfaces';
-import { KastesPreferencesService } from 'src/app/kastes/services/kastes-preferences.service';
+import { getKastesPreferences } from 'src/app/kastes/services/kastes-preferences.service';
 import { colorTotalsFromVeikalsBoxs } from '../../../common';
 import { VeikalsValidationErrors } from '../../services/veikals-validation-errors';
 
@@ -11,6 +10,10 @@ import { VeikalsValidationErrors } from '../../services/veikals-validation-error
   styleUrls: ['./totals.component.scss']
 })
 export class TotalsComponent {
+
+  colors$ = getKastesPreferences('colors');
+
+  veikalsTotal = 0;
 
   @Input() get veikals(): Veikals {
     return this._veikals;
@@ -32,14 +35,5 @@ export class TotalsComponent {
   }
   private _errors: VeikalsValidationErrors | null;
 
-  constructor(
-    private prefsServices: KastesPreferencesService,
-  ) { }
-
-  veikalsTotal = 0;
-
-  colors$ = this.prefsServices.preferences$.pipe(
-    map(pref => pref.colors),
-  );
 
 }

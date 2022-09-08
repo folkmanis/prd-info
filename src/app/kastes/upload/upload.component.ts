@@ -8,9 +8,10 @@ import { jobProductsToColorTotals } from '../common';
 import { ColorTotals } from '../interfaces';
 import { KastesJobPartial } from '../interfaces/kastes-job-partial';
 import { KastesPasutijumiService } from '../services/kastes-pasutijumi.service';
-import { KastesPreferencesService } from '../services/kastes-preferences.service';
+import { getKastesPreferences, KastesPreferencesService } from '../services/kastes-preferences.service';
 import { EndDialogComponent } from './end-dialog/end-dialog.component';
 import { AdresesBoxes } from './services/adrese-box';
+
 
 @Component({
   selector: 'app-upload',
@@ -34,9 +35,7 @@ export class UploadComponent implements OnInit, OnDestroy {
 
   orders$: Observable<KastesJobPartial[]> = this.pasutijumiService.getKastesJobs({});
 
-  colors$ = this.preferences.kastesSystemPreferences$.pipe(
-    map(pref => pref.colors),
-  );
+  colors$ = getKastesPreferences('colors');
 
   constructor(
     private pasutijumiService: KastesPasutijumiService,

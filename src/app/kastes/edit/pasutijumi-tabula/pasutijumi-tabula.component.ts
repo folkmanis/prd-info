@@ -3,7 +3,7 @@ import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { KastesJobPartial } from '../../interfaces/kastes-job-partial';
 import { KastesPasutijumiService } from '../../services/kastes-pasutijumi.service';
-import { KastesPreferencesService } from '../../services/kastes-preferences.service';
+import { getKastesPreferences } from '../../services/kastes-preferences.service';
 
 export interface KastesJobTable extends KastesJobPartial {
   active: boolean;
@@ -20,7 +20,7 @@ export class PasutijumiTabulaComponent implements OnInit {
   readonly columns = ['active', 'jobId', 'name', 'receivedDate', 'dueDate'];
   readonly columnsActive = ['active', 'jobId', 'name'];
 
-  private activeJob$ = this.preferencesService.pasutijumsId$;
+  private activeJob$ = getKastesPreferences('pasutijums');
 
   datasource$: Observable<KastesJobTable[]> = combineLatest([
     this.kastesJobsService.kastesJobs$,
@@ -33,7 +33,6 @@ export class PasutijumiTabulaComponent implements OnInit {
 
   constructor(
     private kastesJobsService: KastesPasutijumiService,
-    private preferencesService: KastesPreferencesService,
   ) { }
 
   ngOnInit(): void {

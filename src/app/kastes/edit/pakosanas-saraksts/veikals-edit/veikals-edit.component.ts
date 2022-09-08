@@ -1,14 +1,14 @@
-import { Component, OnInit, Input, Output, EventEmitter, Inject, OnDestroy } from '@angular/core';
+import { Component, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { IFormBuilder, IFormGroup, IFormArray } from '@rxweb/types';
-import { Kaste, Colors, COLORS, MAX_ITEMS_BOX, Veikals } from 'src/app/kastes/interfaces';
-import { KastesPreferencesService } from '../../../services/kastes-preferences.service';
-import { filter, map, takeUntil, tap } from 'rxjs/operators';
+import { IFormArray, IFormBuilder, IFormGroup } from '@rxweb/types';
 import { ControlConfig } from '@rxweb/types/reactive-form/control-config';
-import { Observable, ReplaySubject, combineLatest } from 'rxjs';
-import { ActiveVeikalsDirective } from '../active-veikals.directive';
-import { VeikalsValidationErrors } from '../../services/veikals-validation-errors';
 import { DestroyService } from 'prd-cdk';
+import { combineLatest, Observable, ReplaySubject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
+import { Colors, COLORS, Kaste, MAX_ITEMS_BOX, Veikals } from 'src/app/kastes/interfaces';
+import { getKastesPreferences } from '../../../services/kastes-preferences.service';
+import { VeikalsValidationErrors } from '../../services/veikals-validation-errors';
+import { ActiveVeikalsDirective } from '../active-veikals.directive';
 
 @Component({
   selector: 'app-veikals-edit',
@@ -17,6 +17,10 @@ import { DestroyService } from 'prd-cdk';
   providers: [DestroyService],
 })
 export class VeikalsEditComponent implements OnInit, OnDestroy {
+
+  colors$ = getKastesPreferences('colors');
+  readonly colorNames = COLORS;
+
   @Input() get veikals(): Veikals {
     return this._veikals;
   }
@@ -45,7 +49,6 @@ export class VeikalsEditComponent implements OnInit, OnDestroy {
 
   constructor(
     fb: UntypedFormBuilder,
-    private prefService: KastesPreferencesService,
     @Inject(ActiveVeikalsDirective) private activeVeikals: ActiveVeikalsDirective,
     private destroy$: DestroyService,
   ) {
@@ -67,11 +70,6 @@ export class VeikalsEditComponent implements OnInit, OnDestroy {
       map(([kastes, veikals]) => ({ ...veikals, kastes })),
     );
   }
-
-  colors$ = this.prefService.preferences$.pipe(
-    map(pref => pref.colors),
-  );
-  readonly colorNames = COLORS;
 
   ngOnInit(): void {
     this.valueChanges.pipe(

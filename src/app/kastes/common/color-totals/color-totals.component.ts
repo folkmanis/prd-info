@@ -1,7 +1,6 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { map } from 'rxjs/operators';
-import { Colors, ColorTotals } from 'src/app/kastes/interfaces';
-import { KastesPreferencesService } from '../../services/kastes-preferences.service';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ColorTotals } from 'src/app/kastes/interfaces';
+import { getKastesPreferences } from '../../services/kastes-preferences.service';
 
 @Component({
   selector: 'app-color-totals',
@@ -9,18 +8,11 @@ import { KastesPreferencesService } from '../../services/kastes-preferences.serv
   styleUrls: ['./color-totals.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ColorTotalsComponent implements OnInit {
+export class ColorTotalsComponent {
+
+  colors$ = getKastesPreferences('colors');
+
   @Input() colorTotals: ColorTotals[] = [];
 
-  constructor(
-    private preferences: KastesPreferencesService,
-  ) { }
-
-  colors$ = this.preferences.preferences$.pipe(
-    map(pref => pref.colors),
-  );
-
-  ngOnInit(): void {
-  }
 
 }

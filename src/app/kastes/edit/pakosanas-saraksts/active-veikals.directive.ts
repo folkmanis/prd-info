@@ -7,22 +7,26 @@ import { VeikalsValidationErrors } from '../services/veikals-validation-errors';
   exportAs: 'appActiveVeikals',
 })
 export class ActiveVeikalsDirective {
-  @Input('appActiveVeikals') set edited(edited: Veikals | undefined) {
+
+  private _edited: Veikals | null = null;
+  @Input('appActiveVeikals')
+  set edited(edited: Veikals | null) {
     this._edited = edited;
     this.reset();
   }
-  get edited(): Veikals | undefined { return this._edited; }
-  private _edited: Veikals | undefined;
+  get edited() {
+    return this._edited;
+  }
 
   validationErrors: VeikalsValidationErrors | null;
 
-  veikalsUpdate: Veikals | undefined;
+  veikalsUpdate: Veikals | null;
 
   constructor() { }
 
   private reset(): void {
     this.validationErrors = null;
-    this.veikalsUpdate = undefined;
+    this.veikalsUpdate = null;
   }
 
 }

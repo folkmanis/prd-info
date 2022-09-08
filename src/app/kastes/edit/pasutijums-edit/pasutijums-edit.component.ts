@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { cacheWithUpdate } from 'prd-cdk';
-import { map, mergeMap, shareReplay, switchMap, tap, EMPTY, merge, Observable, Subject } from 'rxjs';
+import { EMPTY, map, merge, mergeMap, Observable, shareReplay, Subject, switchMap, tap } from 'rxjs';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { KastesJob, Veikals } from '../../interfaces';
 import { KastesPasutijumiService } from '../../services/kastes-pasutijumi.service';

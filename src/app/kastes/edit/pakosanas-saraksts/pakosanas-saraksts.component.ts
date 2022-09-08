@@ -1,38 +1,19 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Subject, ReplaySubject, Observable, BehaviorSubject } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { KastesJob, Veikals, COLORS, Colors, ColorTotals } from '../../interfaces';
-import { KastesPreferencesService } from '../../services/kastes-preferences.service';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { BehaviorSubject, Observable, map } from 'rxjs';
 import { kastesTotalsFromVeikali } from '../../common';
+import { COLORS, Veikals } from '../../interfaces';
+import { getKastesPreferences } from '../../services/kastes-preferences.service';
 
 @Component({
   selector: 'app-pakosanas-saraksts',
   templateUrl: './pakosanas-saraksts.component.html',
-  styleUrls: ['./pakosanas-saraksts.component.scss']
+  styleUrls: ['./pakosanas-saraksts.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PakosanasSarakstsComponent implements OnInit {
-  @Input() set veikali(veikali: Veikals[]) {
-    this.edited = undefined;
-    if (!veikali) { return; }
-    this.dataSource$.next(veikali);
-  }
 
-  @Input() set disabled(disabled: any) {
-    this._disabled = coerceBooleanProperty(disabled);
-  }
-  get disabled(): any { return this._disabled; }
-  private _disabled = false;
-
-  @Output() veikalsChange = new EventEmitter<Veikals>();
-
-  readonly colors = COLORS;
-
-  constructor(
-    private prefsServices: KastesPreferencesService,
-  ) { }
-
-  prefs$ = this.prefsServices.preferences$;
+  colors$ = getKastesPreferences('colors');
 
   dataSource$ = new BehaviorSubject<Veikals[]>([]);
 
@@ -43,7 +24,26 @@ export class PakosanasSarakstsComponent implements OnInit {
   displayedColumnsTop = ['kods', 'adrese', 'pakas'];
   displayedColumnsBottom = ['spacer', 'buttons', 'editor'];
 
-  edited: Veikals | undefined;
+  edited: Veikals | null = null;
+
+  @Input() set veikali(veikali: Veikals[]) {
+    this.edited = null;
+    this.dataSource$.next(veikali || []);
+  }
+
+  private _disabled = false;
+  @Input()
+  set disabled(disabled: any) {
+    this._disabled = coerceBooleanProperty(disabled);
+  }
+  get disabled() {
+    return this._disabled;
+  }
+
+  @Output() veikalsChange = new EventEmitter<Veikals>();
+
+  readonly colors = COLORS;
+
 
   ngOnInit(): void {
   }

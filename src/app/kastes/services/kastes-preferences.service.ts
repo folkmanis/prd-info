@@ -1,12 +1,24 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { catchError, map, shareReplay, tap, combineLatest, merge, Observable, Subject } from 'rxjs';
 import { KastesUserPreferences } from 'src/app/kastes/interfaces';
 import { getConfig } from 'src/app/services/config.provider';
 import { KastesApiService } from './kastes-api.service';
+import { get } from 'lodash-es';
 
 const DEFAULT_USER_PREFERENCES: KastesUserPreferences = {
   pasutijums: null
 };
+
+type P = KastesPreferencesService['preferences$'] extends Observable<infer K> ? K : never;
+
+export function getKastesPreferences(): Observable<P>;
+export function getKastesPreferences<K1 extends keyof P>(k1: K1): Observable<P[K1]>;
+export function getKastesPreferences<K1 extends keyof P, K2 extends keyof P[K1]>(k1: K1, k2: K2): Observable<P[K1][K2]>;
+export function getKastesPreferences(...path: string[]): Observable<any> {
+  return inject(KastesPreferencesService).preferences$.pipe(
+    map(pr => get(pr, path, pr))
+  );
+}
 
 @Injectable({
   providedIn: 'root'

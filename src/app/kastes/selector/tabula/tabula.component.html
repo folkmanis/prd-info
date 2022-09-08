@@ -1,9 +1,9 @@
-<div *ngIf="preferences$ | async as preferences;" class="container">
+<div *ngIf="colorCodes$ | async as colorCodes;" class="container">
 
   <!-- Kopējie skaiti un refresh poga -->
   <div class="kopskaiti">
     <app-refresh-table (reload)="onReload()"></app-refresh-table>
-    <app-kopskaiti [colorCodes]="preferences.colors" [totals]="totals$ | async"></app-kopskaiti>
+    <app-kopskaiti [colorCodes]="colorCodes" [totals]="totals$ | async"></app-kopskaiti>
   </div>
 
   <div #scrollContainer scroll-to-top>
@@ -31,24 +31,24 @@
 
       <!-- Dzeltenā sleja -->
       <ng-container matColumnDef="yellow">
-        <th mat-header-cell *matHeaderCellDef [style.color]="preferences.colors.yellow">Y</th>
-        <td mat-cell *matCellDef="let row;" [style.color]="preferences.colors.yellow">
+        <th mat-header-cell *matHeaderCellDef [style.color]="colorCodes.yellow">Y</th>
+        <td mat-cell *matCellDef="let row;" [style.color]="colorCodes.yellow">
           {{row.kastes.yellow | hideZero}}
         </td>
       </ng-container>
 
       <!-- Rozā sleja -->
       <ng-container matColumnDef="rose">
-        <th mat-header-cell *matHeaderCellDef [style.color]="preferences.colors.rose">R</th>
-        <td mat-cell *matCellDef="let row;" [style.color]="preferences.colors.rose">
+        <th mat-header-cell *matHeaderCellDef [style.color]="colorCodes.rose">R</th>
+        <td mat-cell *matCellDef="let row;" [style.color]="colorCodes.rose">
           {{row.kastes.rose | hideZero}}
         </td>
       </ng-container>
 
       <!-- Baltas sleja -->
       <ng-container matColumnDef="white">
-        <th mat-header-cell *matHeaderCellDef [style.color]="preferences.colors.white">W</th>
-        <td mat-cell *matCellDef="let row;" [style.color]="preferences.colors.white">
+        <th mat-header-cell *matHeaderCellDef [style.color]="colorCodes.white">W</th>
+        <td mat-cell *matCellDef="let row;" [style.color]="colorCodes.white">
           {{row.kastes.white | hideZero}}</td>
       </ng-container>
       <!-- Gatavs -->

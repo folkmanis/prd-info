@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
-import { cacheWithUpdate, log } from 'prd-cdk';
-import { BehaviorSubject, combineLatest, merge, Observable, Subject } from 'rxjs';
-import { map, mergeMap, scan, share, shareReplay, startWith, switchMap, switchScan, take } from 'rxjs/operators';
+import { cacheWithUpdate } from 'prd-cdk';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { map, mergeMap, share, shareReplay, switchMap, take } from 'rxjs/operators';
 import { Colors, COLORS, Totals, VeikalsKaste } from 'src/app/kastes/interfaces';
 import { combineReload } from 'src/app/library/rxjs';
 import { KastesApiService } from '../../services/kastes-api.service';
-import { KastesPreferencesService } from '../../services/kastes-preferences.service';
+import { getKastesPreferences } from '../../services/kastes-preferences.service';
 
 @Injectable()
 export class KastesTabulaService {
 
-  private _pasutijumsId$ = this.prefService.pasutijumsId$;
+  private _pasutijumsId$ = getKastesPreferences('pasutijums');
 
   private readonly _apjoms$ = new BehaviorSubject(0);
   private readonly _reloadKastes$ = new Subject<void>();
@@ -44,7 +44,6 @@ export class KastesTabulaService {
 
   constructor(
     private api: KastesApiService,
-    private prefService: KastesPreferencesService,
   ) { }
 
   setApjoms(apjoms: number) {

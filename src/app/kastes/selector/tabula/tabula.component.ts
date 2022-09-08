@@ -5,7 +5,7 @@ import { switchMap } from 'rxjs/operators';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
 import { VeikalsKaste } from '../../interfaces';
-import { KastesPreferencesService } from '../../services/kastes-preferences.service';
+import { getKastesPreferences } from '../../services/kastes-preferences.service';
 import { KastesTabulaService } from '../services/kastes-tabula.service';
 import { RowIdDirective } from './row-id.directive';
 
@@ -27,14 +27,13 @@ export class TabulaComponent {
 
   selectedKaste: VeikalsKaste | undefined;
 
-  preferences$ = this.preferencesService.preferences$;
+  colorCodes$ = getKastesPreferences('colors');
   displayedColumns: string[] = COLUMNS;
   dataSource$: Observable<VeikalsKaste[]> = this.tabulaService.kastesApjoms$;
   totals$ = this.tabulaService.totals$;
 
   constructor(
     private dialogService: ConfirmationDialogService,
-    private preferencesService: KastesPreferencesService,
     private tabulaService: KastesTabulaService,
   ) { }
 
