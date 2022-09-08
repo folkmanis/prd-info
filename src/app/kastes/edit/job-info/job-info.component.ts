@@ -1,11 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ColorTotals, KastesJob, Veikals } from 'src/app/kastes/interfaces';
-import { colorTotalsFromVeikali, kastesTotalsFromVeikali, sortColorTotals, jobProductsToColorTotals } from '../../common';
+import { colorTotalsFromVeikali, jobProductsToColorTotals, kastesTotalsFromVeikali } from '../../common';
 
 @Component({
   selector: 'app-job-info',
   templateUrl: './job-info.component.html',
-  styleUrls: ['./job-info.component.scss']
+  styleUrls: ['./job-info.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JobInfoComponent implements OnInit {
 
