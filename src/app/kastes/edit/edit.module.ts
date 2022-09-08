@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { LibraryModule } from 'src/app/library/library.module';
-import { SimpleFormModule } from 'src/app/library/simple-form';
+import { MaterialLibraryModule } from 'src/app/library/material-library.module';
+import { SimpleFormTypedModule } from 'src/app/library/simple-form-typed';
 import { KastesCommonModule } from '../common/kastes-common.module';
 import { JobInfoComponent } from './job-info/job-info.component';
 import { ActiveVeikalsDirective } from './pakosanas-saraksts/active-veikals.directive';
@@ -12,7 +13,6 @@ import { PasutijumiTabulaComponent } from './pasutijumi-tabula/pasutijumi-tabula
 import { PasutijumsEditComponent } from './pasutijums-edit/pasutijums-edit.component';
 import { KastesJobResolverService } from './services/kastes-job-resolver.service';
 import { PlusSignPipe } from './services/plus-sign.pipe';
-import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 
 
 @NgModule({
@@ -31,7 +31,7 @@ import { MaterialLibraryModule } from 'src/app/library/material-library.module';
     MaterialLibraryModule,
     LibraryModule,
     KastesCommonModule,
-    SimpleFormModule.forChildren({
+    SimpleFormTypedModule.forChildren({
       path: '',
       listComponent: PasutijumiTabulaComponent,
       editorComponent: PasutijumsEditComponent,

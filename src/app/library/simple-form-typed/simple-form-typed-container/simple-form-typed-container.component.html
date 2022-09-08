@@ -1,7 +1,7 @@
 <div class="container" scroll-to-top>
 
     <mat-toolbar>
-        <span>
+        <span *ngIf="buttons">
             <button mat-raised-button (click)="onSave()" color="primary"
                 [disabled]="this.status !== 'VALID' || this.isChanges === false">
                 SAGLABĀT

@@ -1,5 +1,5 @@
-<app-simple-form-typed-container [status]="form.status" [isChanges]="changes" (save)="onSave()" (reset)="onReset()"
-    [formGroup]="form">
+<app-simple-form-typed-container buttons [status]="form.status" [isChanges]="changes" (save)="onSave()"
+    (reset)="onReset()" [formGroup]="form">
 
     <!-- Lietotājvārds -->
     <h2 *ngIf="isNew; else existing">

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { EMPTY } from 'rxjs';
 import { KastesJob } from 'src/app/jobs';
-import { RetrieveFn, SimpleFormResolverService } from 'src/app/library/simple-form';
+import { RetrieveFn, SimpleFormResolverService } from 'src/app/library/simple-form-typed';
 import { KastesPasutijumiService } from '../../services/kastes-pasutijumi.service';
 
 @Injectable({

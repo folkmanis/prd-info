@@ -10,14 +10,14 @@ import { KastesJobPartial } from '../interfaces';
 })
 export class KastesOrdersApiService {
 
-    private readonly path = getAppParams('apiPath') + + 'kastes/jobs/';
+    private readonly path = getAppParams('apiPath') + 'kastes/jobs/';
 
     constructor(
         private http: HttpClient,
     ) { }
 
     getAll(filter: Record<string, any>) {
-        return this.http.get<KastesJobPartial[]>(this.path, new HttpOptions().cacheable());
+        return this.http.get<KastesJobPartial[]>(this.path, new HttpOptions(filter).cacheable());
     }
 
     getOne(jobId: number) {

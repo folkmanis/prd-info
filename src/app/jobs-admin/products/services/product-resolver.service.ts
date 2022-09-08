@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { EMPTY } from 'rxjs';
 import { Product } from 'src/app/interfaces';
-import { RetrieveFn, SimpleFormResolverService } from 'src/app/library/simple-form';
+import { RetrieveFn, SimpleFormResolverService } from 'src/app/library/simple-form-typed';
 import { ProductsService } from 'src/app/services/products.service';
 
 @Injectable({

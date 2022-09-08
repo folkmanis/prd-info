@@ -18,22 +18,21 @@ export class JobInfoComponent implements OnInit {
       return;
     }
     this._job = value;
-    this.plannedTotals = jobProductsToColorTotals(value.products);
+    this.plannedTotals = jobProductsToColorTotals(value.products || []);
   }
 
   private _veikali: Veikals[] = [];
   @Input() set veikali(value: Veikals[]) {
-    if (!value) {
-      this._veikali = [];
-      return;
-    }
+    value = value || [];
     this._veikali = value;
-    this.colorTotals = colorTotalsFromVeikali(value || []);
-    this.kastesTotals = kastesTotalsFromVeikali(value || []);
+    this.colorTotals = colorTotalsFromVeikali(value);
+    this.kastesTotals = kastesTotalsFromVeikali(value);
   }
   get veikali() {
     return this._veikali;
   }
+
+  @Input() activeJobId: number | null = null;
 
   colorTotals: ColorTotals[] = [];
   plannedTotals: ColorTotals[] = [];

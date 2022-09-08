@@ -1,9 +1,13 @@
-<app-simple-form-container (dataChange)="setJob($event)" [data]="dataUpdate$ | async">
+<app-simple-form-typed-container *ngIf="job$ | async as job;">
 
-    <mat-tab-group *ngIf="job$ | async as job" [selectedIndex]="0">
+    <h2 appSimpleFormTypedLabel>
+        {{job?.jobId}} / {{job?.name}}
+    </h2>
+
+    <mat-tab-group [selectedIndex]="0">
         <mat-tab label="Informācija">
-            <app-job-info [job]="job" [veikali]="veikali$ | async" (activeJob)="onSetAsActive($event)"
-                (deleteVeikali)="onDeleteVeikali()">
+            <app-job-info [job]="job" [veikali]="veikali$ | async" [activeJobId]="activeJobId$ | async"
+                (activeJob)="onSetAsActive($event)" (deleteVeikali)="onDeleteVeikali(job.jobId)">
             </app-job-info>
         </mat-tab>
 
@@ -16,8 +20,4 @@
         </mat-tab>
     </mat-tab-group>
 
-    <h2 *ngIf="job$ | async as job;" appSimpleFormLabel>
-        {{job.jobId}} / {{job.name}}
-    </h2>
-
-</app-simple-form-container>
+</app-simple-form-typed-container>

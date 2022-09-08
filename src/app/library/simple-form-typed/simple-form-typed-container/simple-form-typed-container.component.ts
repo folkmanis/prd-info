@@ -27,6 +27,15 @@ export class SimpleFormTypedContainerComponent {
     return this._isChanges;
   }
 
+  private _buttons = false;
+  @Input()
+  set buttons(value: any) {
+    this._buttons = coerceBooleanProperty(value);
+  }
+  get buttons() {
+    return this._buttons;
+  }
+
   @Output('save') save$ = new Subject<void>();
 
   @Output('reset') reset$ = new Subject<void>();
