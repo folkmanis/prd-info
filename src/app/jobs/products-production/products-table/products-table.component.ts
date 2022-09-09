@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
 import { ReplaySubject, Subject } from 'rxjs';
-import { map, share, shareReplay, take } from 'rxjs/operators';
+import { map, shareReplay } from 'rxjs/operators';
 import { LoginService } from 'src/app/login';
 import { JobsProduction } from '../../interfaces';
+import { Totals } from '../services/totals';
 
 
 const COLUMNS = ['name', 'category', 'units', 'count', 'sum'];
@@ -26,6 +27,9 @@ export class ProductsTableComponent {
 
   @Input()
   initialSort: string;
+
+  @Input()
+  totals: Totals = new Totals();
 
   @Output('sortChange')
   readonly sort$ = new Subject<string>();

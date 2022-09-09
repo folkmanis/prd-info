@@ -4,7 +4,8 @@
 
     </app-filter>
 
-    <app-products-table [data]="data$ | async" [initialSort]="savedSort$ | async" (sortChange)="onSort($event)">
+    <app-products-table [data]="data$ | async" [initialSort]="savedSort$ | async" (sortChange)="onSort($event)"
+        [totals]="totals$ | async">
     </app-products-table>
 
 </div>

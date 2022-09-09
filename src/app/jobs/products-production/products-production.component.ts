@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { DestroyService } from 'prd-cdk';
-import { combineLatest, concat, debounceTime, map, mapTo, merge, Observable, of, pluck, Subject, switchMap, take, takeUntil } from 'rxjs';
+import { combineLatest, concat, debounceTime, map, merge, Observable, of, share, Subject, switchMap, take, takeUntil } from 'rxjs';
 import { combineReload } from 'src/app/library/rxjs';
 import { NotificationsService } from 'src/app/services/notifications.service';
-import { JobsProductionFilterQuery } from '../interfaces';
+import { JobsProduction, JobsProductionFilterQuery } from '../interfaces';
 import { JobsApiService } from '../services/jobs-api.service';
 import { JobsUserPreferencesService } from '../services/jobs-user-preferences.service';
 import { ProductsProductionPreferencesUpdaterService } from './services/products-production-preferences-updater.service';
+import { Totals } from './services/totals';
 
 
 @Component({
@@ -23,7 +24,7 @@ export class ProductsProductionComponent implements OnInit {
   readonly sortChange$ = new Subject<string>();
   readonly savedSort$ = this.prefService.userPreferences$.pipe(
     take(1),
-    pluck('jobsProductionQuery', 'sort'),
+    map(data => data.jobsProductionQuery.sort),
     map(sort => sort || 'name,1'),
   );
   readonly sort$ = concat(
@@ -34,7 +35,7 @@ export class ProductsProductionComponent implements OnInit {
   readonly filterChange$ = new Subject<JobsProductionFilterQuery>();
   readonly savedFilter$ = this.prefService.userPreferences$.pipe(
     take(1),
-    pluck('jobsProductionQuery'),
+    map(data => data.jobsProductionQuery),
   );
   readonly filter$: Observable<JobsProductionFilterQuery> = concat(
     this.savedFilter$,
@@ -54,9 +55,14 @@ export class ProductsProductionComponent implements OnInit {
 
   data$ = combineReload(
     this.query$,
-    this.notifications.wsMultiplex('jobs').pipe(mapTo(undefined))
+    this.notifications.wsMultiplex('jobs').pipe(map(() => undefined))
   ).pipe(
-    switchMap(query => this.api.getJobsProduction(query))
+    switchMap(query => this.api.getJobsProduction(query)),
+    share(),
+  );
+
+  totals$ = this.data$.pipe(
+    map(products => products.reduce((acc, curr) => acc.add(curr), new Totals())),
   );
 
 
