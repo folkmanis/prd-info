@@ -50,9 +50,9 @@
     </ng-container>
 
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns$ | async"></tr>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns$ | async;  sticky: true"></tr>
     <tr mat-row *matRowDef="let product; columns: displayedColumns$ | async;"
         [routerLink]="['/jobs-admin/products',product.name]"></tr>
-    <tr mat-footer-row *matFooterRowDef="displayedColumns$ | async"></tr>
+    <tr mat-footer-row *matFooterRowDef="displayedColumns$ | async; sticky: true"></tr>
 
 </table>

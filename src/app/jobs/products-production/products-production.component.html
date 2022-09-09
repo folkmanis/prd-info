@@ -1,11 +1,11 @@
-<div class="container" scroll-to-top>
+<div class="container">
 
     <app-filter [filter]="savedFilter$ | async" (filterChanges)="onFilter($event)">
 
     </app-filter>
 
     <app-products-table [data]="data$ | async" [initialSort]="savedSort$ | async" (sortChange)="onSort($event)"
-        [totals]="totals$ | async">
+        [totals]="totals$ | async" scroll-to-top>
     </app-products-table>
 
 </div>
