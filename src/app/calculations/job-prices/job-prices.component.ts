@@ -6,7 +6,7 @@ import { merge, Observable, of } from 'rxjs';
 import { map, mergeMap, pluck, take, takeUntil } from 'rxjs/operators';
 import { JobsWithoutInvoicesTotals } from 'src/app/jobs';
 import { Filter, JobPricesService } from './job-prices.service';
-import { omit } from 'lodash';
+import { omit } from 'lodash-es';
 
 const updateMessage = (n: number) => `Izmainīti ${n} ieraksti.`;
 
