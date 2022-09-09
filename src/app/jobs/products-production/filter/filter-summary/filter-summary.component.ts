@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { JobState, ProductCategory } from 'src/app/interfaces';
 import { DateUtilsService } from 'src/app/library/date-services';
-import { JobsProductionFilterQuery } from '../../../interfaces';
-import { ProductsFormData } from '../filter-form';
+import { ProductsFormData } from '../filter-form.service';
 
 @Component({
   selector: 'app-filter-summary',

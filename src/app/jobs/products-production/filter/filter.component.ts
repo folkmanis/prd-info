@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, Output } from '@angular/core';
+import { interval, map, Observable, switchMap } from 'rxjs';
 import { getConfig } from 'src/app/services/config.provider';
 import { JobsProductionFilterQuery } from '../../interfaces';
-import { FilterForm, ProductsFormData } from './filter-form';
+import { FilterFormService, ProductsFormData } from './filter-form.service';
 
 export const REPRO_DEFAULTS: ProductsFormData = {
   jobStatus: [10, 20],
@@ -16,31 +17,44 @@ export const REPRO_DEFAULTS: ProductsFormData = {
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    FilterForm,
-  ]
 })
 export class FilterComponent implements OnInit {
+
+  form = this.formService.createForm();
+
+  thisWeek = this.formService.thisWeekFn(this.form);
+  thisYear = this.formService.thisYearFn(this.form);
+  thisMonth = this.formService.thisMonthFn(this.form);
+  pastYear = this.formService.pastYearFn(this.form);
+
+
+  @Output() filterChanges: Observable<JobsProductionFilterQuery> = interval(500).pipe(
+    switchMap(() => this.form.valueChanges),
+    map(value => this.formService.formToFilterQuery(value)),
+  );
+
 
   @Input('filter')
   set filter(value: JobsProductionFilterQuery) {
     if (!value) {
       return;
     }
-    this.form.setValueFromQuery(value, { emitEvent: false });
+    this.form.setValue(
+      this.formService.filterQueryToForm(value),
+      { emitEvent: false }
+    );
   }
   get filter(): JobsProductionFilterQuery {
-    return this.form.filterValue;
+    return this.formService.formToFilterQuery(this.form.value);
   }
 
-  @Output() filterChanges = this.form.filterQueryChanges;
 
   jobStates$ = getConfig('jobs', 'jobStates');
 
   categories$ = getConfig('jobs', 'productCategories');
 
   constructor(
-    public form: FilterForm,
+    private formService: FilterFormService,
   ) { }
 
   ngOnInit(): void {
@@ -49,5 +63,10 @@ export class FilterComponent implements OnInit {
   setRepro() {
     this.form.setValue(REPRO_DEFAULTS);
   }
+
+  onReSetInterval() {
+    this.formService.setInterval(this.form);
+  }
+
 
 }

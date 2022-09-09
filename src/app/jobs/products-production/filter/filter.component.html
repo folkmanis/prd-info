@@ -4,7 +4,8 @@
             Atlase
         </mat-panel-title>
         <mat-panel-description [class.invisible]="panel.expanded">
-            <app-filter-summary [states]="jobStates$ | async" [categories]="categories$ | async" [query]="form.value">
+            <app-filter-summary [states]="jobStates$ | async" [categories]="categories$ | async"
+                [query]="form.getRawValue()">
             </app-filter-summary>
         </mat-panel-description>
     </mat-expansion-panel-header>
@@ -40,7 +41,7 @@
             <input matEndDate formControlName="toDate">
         </mat-date-range-input>
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <button mat-icon-button matSuffix (click)="form.setInterval()">
+        <button mat-icon-button matSuffix (click)="onReSetInterval()">
             <mat-icon> cancel </mat-icon>
         </button>
         <button mat-icon-button matSuffix [matMenuTriggerFor]="intervalMenu">
@@ -50,10 +51,10 @@
         <mat-date-range-picker #picker></mat-date-range-picker>
 
         <mat-menu #intervalMenu="matMenu">
-            <button mat-menu-item (click)="form.thisWeek()"> Nedēļa </button>
-            <button mat-menu-item (click)="form.thisMonth()"> Mēnesis </button>
-            <button mat-menu-item (click)="form.thisYear()"> Gads </button>
-            <button mat-menu-item (click)="form.pastYear()"> Iepriekšējais gads </button>
+            <button mat-menu-item (click)="thisWeek()"> Nedēļa </button>
+            <button mat-menu-item (click)="thisMonth()"> Mēnesis </button>
+            <button mat-menu-item (click)="thisYear()"> Gads </button>
+            <button mat-menu-item (click)="pastYear()"> Iepriekšējais gads </button>
         </mat-menu>
     </mat-form-field>
 

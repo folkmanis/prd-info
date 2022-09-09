@@ -1,5 +1,5 @@
 import { Type, Transform, Expose } from 'class-transformer';
-import { ProductsFormData } from '../products-production/filter/filter-form';
+
 
 export class SavedJobsProductionQuery {
 
