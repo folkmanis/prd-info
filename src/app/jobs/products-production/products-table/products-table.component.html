@@ -1,6 +1,20 @@
 <table mat-table [dataSource]="data$" appProductsSort (sortStringChange)="onSortChange($event)"
     [activeSortString]="initialSort" matSortDisableClear class="app-table">
 
+    <ng-container matColumnDef="selection">
+        <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox [checked]="selector.hasValue() && isAllSelected()"
+                [indeterminate]="selector.hasValue() && !isAllSelected()" (change)="$event ? toggleAll() : null"
+                [disabled]="data.length == 0">
+            </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let product">
+            <mat-checkbox [checked]="selector.isSelected(product)" (change)="selector.toggle(product)">
+            </mat-checkbox>
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
     <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Izstrādājums </th>
         <td mat-cell *matCellDef="let product">
@@ -51,8 +65,7 @@
 
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns$ | async;  sticky: true"></tr>
-    <tr mat-row *matRowDef="let product; columns: displayedColumns$ | async;"
-        [routerLink]="['/jobs-admin/products',product.name]"></tr>
+    <tr mat-row *matRowDef="let product; columns: displayedColumns$ | async;"></tr>
     <tr mat-footer-row *matFooterRowDef="displayedColumns$ | async; sticky: true"></tr>
 
 </table>

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { DestroyService } from 'prd-cdk';
-import { combineLatest, concat, debounceTime, map, merge, Observable, of, share, Subject, switchMap, take, takeUntil } from 'rxjs';
+import { combineLatest, concat, debounceTime, map, merge, Observable, of, share, Subject, switchMap, take, takeUntil, tap } from 'rxjs';
 import { combineReload } from 'src/app/library/rxjs';
 import { NotificationsService } from 'src/app/services/notifications.service';
 import { JobsProduction, JobsProductionFilterQuery } from '../interfaces';
@@ -58,12 +58,20 @@ export class ProductsProductionComponent implements OnInit {
     this.notifications.wsMultiplex('jobs').pipe(map(() => undefined))
   ).pipe(
     switchMap(query => this.api.getJobsProduction(query)),
+    tap(products => this.selection = products),
     share(),
   );
 
-  totals$ = this.data$.pipe(
-    map(products => products.reduce((acc, curr) => acc.add(curr), new Totals())),
-  );
+  totals = new Totals();
+
+  private _selection: JobsProduction[] = [];
+  set selection(value: JobsProduction[]) {
+    this._selection = value || [];
+    this.totals = this.selection.reduce((acc, curr) => acc.add(curr), new Totals());
+  }
+  get selection() {
+    return this._selection;
+  }
 
 
   constructor(

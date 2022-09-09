@@ -1,12 +1,13 @@
+import { SelectionModel } from '@angular/cdk/collections';
 import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
-import { ReplaySubject, Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { LoginService } from 'src/app/login';
 import { JobsProduction } from '../../interfaces';
 import { Totals } from '../services/totals';
 
 
-const COLUMNS = ['name', 'category', 'units', 'count', 'sum'];
+const COLUMNS = ['selection', 'name', 'category', 'units', 'count', 'sum'];
 const ADMIN_COLUMNS = [...COLUMNS, 'total'];
 
 @Component({
@@ -17,12 +18,17 @@ const ADMIN_COLUMNS = [...COLUMNS, 'total'];
 })
 export class ProductsTableComponent {
 
-  readonly data$ = new ReplaySubject<JobsProduction[]>(1);
+  selector = new SelectionModel<JobsProduction>(true);
+
+  readonly data$ = new BehaviorSubject<JobsProduction[]>([]);
 
   @Input() set data(value: JobsProduction[]) {
     if (value instanceof Array) {
       this.data$.next(value);
     }
+  }
+  get data() {
+    return this.data$.value;
   }
 
   @Input()
@@ -33,6 +39,15 @@ export class ProductsTableComponent {
 
   @Output('sortChange')
   readonly sort$ = new Subject<string>();
+
+  @Input() set selection(value: JobsProduction[]) {
+    value = value || [];
+    this.selector.setSelection(...value);
+  }
+
+  @Output() selectionChange = this.selector.changed.pipe(
+    map(change => change.source.selected),
+  );
 
   displayedColumns$ = this.loginService.isModule('jobs-admin').pipe(
     map(isAdmin => isAdmin ? ADMIN_COLUMNS : COLUMNS),
@@ -47,6 +62,13 @@ export class ProductsTableComponent {
     this.sort$.next(value);
   }
 
+  isAllSelected() {
+    return this.data.length > 0 && this.selector.selected.length === this.data.length;
+  }
+
+  toggleAll() {
+    return this.isAllSelected() ? this.selector.clear() : this.selector.setSelection(...this.data);
+  }
 
 
 }
