@@ -1,6 +1,8 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { AfterViewInit, ChangeDetectionStrategy, Component, Input, Output, ViewChild } from '@angular/core';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import { Subject } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { LoginService } from 'src/app/login';
 import { JobsProduction } from '../../interfaces';
@@ -16,19 +18,21 @@ const ADMIN_COLUMNS = [...COLUMNS, 'total'];
   styleUrls: ['./products-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProductsTableComponent {
+export class ProductsTableComponent implements AfterViewInit {
+
+  @ViewChild(MatSort) private sort: MatSort;
 
   selector = new SelectionModel<JobsProduction>(true);
 
-  readonly data$ = new BehaviorSubject<JobsProduction[]>([]);
+  readonly dataSource = new MatTableDataSource<JobsProduction>();
 
   @Input() set data(value: JobsProduction[]) {
-    if (value instanceof Array) {
-      this.data$.next(value);
+    if (Array.isArray(value)) {
+      this.dataSource.data = value;
     }
   }
   get data() {
-    return this.data$.value;
+    return this.dataSource.filteredData;
   }
 
   @Input()
@@ -57,6 +61,10 @@ export class ProductsTableComponent {
   constructor(
     private loginService: LoginService,
   ) { }
+
+  ngAfterViewInit(): void {
+    this.dataSource.sort = this.sort;
+  }
 
   onSortChange(value: string) {
     this.sort$.next(value);

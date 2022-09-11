@@ -1,4 +1,4 @@
-<table mat-table [dataSource]="data$" appProductsSort (sortStringChange)="onSortChange($event)"
+<table mat-table [dataSource]="dataSource" appProductsSort (sortStringChange)="onSortChange($event)"
     [activeSortString]="initialSort" matSortDisableClear class="app-table">
 
     <ng-container matColumnDef="selection">

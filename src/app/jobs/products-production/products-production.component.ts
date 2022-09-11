@@ -27,10 +27,6 @@ export class ProductsProductionComponent implements OnInit {
     map(data => data.jobsProductionQuery.sort),
     map(sort => sort || 'name,1'),
   );
-  readonly sort$ = concat(
-    this.savedSort$,
-    this.sortChange$
-  );
 
   readonly filterChange$ = new Subject<JobsProductionFilterQuery>();
   readonly savedFilter$ = this.prefService.userPreferences$.pipe(
@@ -42,11 +38,11 @@ export class ProductsProductionComponent implements OnInit {
     this.filterChange$
   );
 
-  private readonly offset$ = of({ start: 0, limit: 100 });
+  private readonly offset$ = of({ start: 0, limit: 1000 });
 
   private readonly query$ = combineLatest({
     filter: this.filter$,
-    sort: this.sort$,
+    sort: of('name,1'),
     start: this.offset$,
   }).pipe(
     debounceTime(300),
