@@ -64,8 +64,8 @@
     </ng-container>
 
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns$ | async;  sticky: true"></tr>
-    <tr mat-row *matRowDef="let product; columns: displayedColumns$ | async;"></tr>
-    <tr mat-footer-row *matFooterRowDef="displayedColumns$ | async; sticky: true"></tr>
+    <tr mat-header-row *matHeaderRowDef="isAdmin ? adminColumns : columns;  sticky: true"></tr>
+    <tr mat-row *matRowDef="let product; columns: isAdmin ? adminColumns : columns;"></tr>
+    <tr mat-footer-row *matFooterRowDef="isAdmin ? adminColumns : columns; sticky: true"></tr>
 
 </table>

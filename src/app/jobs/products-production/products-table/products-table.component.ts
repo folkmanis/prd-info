@@ -3,14 +3,11 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, Input, Output, ViewC
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subject } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
-import { LoginService } from 'src/app/login';
+import { map } from 'rxjs/operators';
 import { JobsProduction } from '../../interfaces';
 import { Totals } from '../services/totals';
 
 
-const COLUMNS = ['selection', 'name', 'category', 'units', 'count', 'sum'];
-const ADMIN_COLUMNS = [...COLUMNS, 'total'];
 
 @Component({
   selector: 'app-products-table',
@@ -24,6 +21,10 @@ export class ProductsTableComponent implements AfterViewInit {
 
   selector = new SelectionModel<JobsProduction>(true);
 
+  columns = ['selection', 'name', 'category', 'units', 'count', 'sum'];
+  adminColumns = [...this.columns, 'total'];
+
+
   readonly dataSource = new MatTableDataSource<JobsProduction>();
 
   @Input() set data(value: JobsProduction[]) {
@@ -34,6 +35,8 @@ export class ProductsTableComponent implements AfterViewInit {
   get data() {
     return this.dataSource.filteredData;
   }
+
+  @Input() isAdmin = false;
 
   @Input()
   initialSort: string;
@@ -53,14 +56,7 @@ export class ProductsTableComponent implements AfterViewInit {
     map(change => change.source.selected),
   );
 
-  displayedColumns$ = this.loginService.isModule('jobs-admin').pipe(
-    map(isAdmin => isAdmin ? ADMIN_COLUMNS : COLUMNS),
-    shareReplay(1),
-  );
 
-  constructor(
-    private loginService: LoginService,
-  ) { }
 
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;

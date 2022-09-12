@@ -1,3 +1,4 @@
+import { LoginService } from 'src/app/login';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { DestroyService } from 'prd-cdk';
 import { combineLatest, concat, debounceTime, map, merge, Observable, of, share, Subject, switchMap, take, takeUntil, tap } from 'rxjs';
@@ -60,6 +61,8 @@ export class ProductsProductionComponent implements OnInit {
 
   totals = new Totals();
 
+  isAdmin$ = this.loginService.isModule('jobs-admin');
+
   private _selection: JobsProduction[] = [];
   set selection(value: JobsProduction[]) {
     this._selection = value || [];
@@ -76,6 +79,7 @@ export class ProductsProductionComponent implements OnInit {
     private notifications: NotificationsService,
     private prefStorage: ProductsProductionPreferencesUpdaterService,
     private destroy$: DestroyService,
+    private loginService: LoginService,
   ) { }
 
   ngOnInit(): void {

@@ -5,7 +5,7 @@
     </app-filter>
 
     <app-products-table [data]="data$ | async" [initialSort]="savedSort$ | async" (sortChange)="onSort($event)"
-        [totals]="totals" [(selection)]="selection" scroll-to-top>
+        [totals]="totals" [(selection)]="selection" scroll-to-top [isAdmin]="isAdmin$ | async">
     </app-products-table>
 
 </div>
