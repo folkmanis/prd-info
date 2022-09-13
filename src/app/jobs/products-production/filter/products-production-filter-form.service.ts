@@ -25,7 +25,7 @@ type ProductFormControl = {
 @Injectable({
     providedIn: 'root',
 })
-export class FilterFormService {
+export class ProductsProductionFilterFormService {
 
 
     constructor(

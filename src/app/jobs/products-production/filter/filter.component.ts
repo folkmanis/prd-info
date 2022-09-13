@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnInit, Output } from '@angu
 import { interval, map, Observable, switchMap } from 'rxjs';
 import { getConfig } from 'src/app/services/config.provider';
 import { JobsProductionFilterQuery } from '../../interfaces';
-import { FilterFormService, ProductsFormData } from './filter-form.service';
+import { ProductsProductionFilterFormService, ProductsFormData } from './products-production-filter-form.service';
 
 export const REPRO_DEFAULTS: ProductsFormData = {
   jobStatus: [10, 20],
@@ -54,7 +54,7 @@ export class FilterComponent implements OnInit {
   categories$ = getConfig('jobs', 'productCategories');
 
   constructor(
-    private formService: FilterFormService,
+    private formService: ProductsProductionFilterFormService,
   ) { }
 
   ngOnInit(): void {
