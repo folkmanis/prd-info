@@ -39,7 +39,7 @@ export class ProductsTableComponent implements AfterViewInit {
   @Input() isAdmin = false;
 
   @Input()
-  initialSort: string;
+  initialSort: string = 'name,1';
 
   @Input()
   totals: Totals = new Totals();

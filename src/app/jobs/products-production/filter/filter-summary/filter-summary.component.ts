@@ -11,7 +11,7 @@ import { ProductsFormData } from '../filter-form.service';
 })
 export class FilterSummaryComponent implements OnChanges {
 
-  @Input() query: ProductsFormData | null;
+  @Input() query: ProductsFormData | null = null;
 
   @Input() states: JobState[] = [];
 
