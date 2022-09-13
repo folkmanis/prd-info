@@ -46,9 +46,9 @@ export class TabulaComponent {
   }
 
   scrollToId(kaste: VeikalsKaste) {
-    const element = this._tableRows.find(el => el.kaste._id === kaste._id && el.kaste.kaste === kaste.kaste);
-    if (!element) { return; }
-    element.scrollIn();
+    this._tableRows
+      .find(el => el.kaste._id === kaste._id && el.kaste.kaste === kaste.kaste)
+      ?.scrollIn();
   }
 
   onReload() {
