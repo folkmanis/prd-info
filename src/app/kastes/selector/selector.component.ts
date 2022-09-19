@@ -6,8 +6,10 @@ import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import { KastesPasutijumiService } from '../services/kastes-pasutijumi.service';
 import { getKastesPreferences } from '../services/kastes-preferences.service';
 import { Status as LabelStatuss } from './labels/labels.component';
+import { KastesLocalStorageService } from './services/kastes-local-storage.service';
 import { KastesTabulaService } from './services/kastes-tabula.service';
 import { TabulaComponent } from './tabula/tabula.component';
+
 
 @Component({
   selector: 'app-selector',
@@ -36,6 +38,8 @@ export class SelectorComponent implements OnInit {
     switchMap(id => this.pasutijumiService.getKastesJob(+id)),
   );
 
+  pendingCount$ = this.localStorage.pendingCount$;
+
 
   @ViewChild(TabulaComponent) private _tabula: TabulaComponent;
 
@@ -45,6 +49,7 @@ export class SelectorComponent implements OnInit {
     private tabulaService: KastesTabulaService,
     private destroy$: DestroyService,
     private pasutijumiService: KastesPasutijumiService,
+    private localStorage: KastesLocalStorageService,
   ) { }
 
 
@@ -68,6 +73,7 @@ export class SelectorComponent implements OnInit {
         this._tabula?.scrollToTop();
       }
     );
+
   }
 
   onSetLabel(kods: number) {

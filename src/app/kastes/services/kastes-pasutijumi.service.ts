@@ -4,14 +4,13 @@ import { map, switchMap, throttleTime } from 'rxjs/operators';
 import { KastesJob, Veikals, VeikalsUpload } from '../interfaces';
 import { KastesJobPartial } from '../interfaces/kastes-job-partial';
 import { KastesApiService } from './kastes-api.service';
-import { KastesOrdersApiService } from './kastes-orders-api.service';
 
 export interface KastesJobFilter {
   name?: string;
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'any',
 })
 export class KastesPasutijumiService {
 
@@ -24,7 +23,6 @@ export class KastesPasutijumiService {
 
   constructor(
     private api: KastesApiService,
-    private ordersApi: KastesOrdersApiService,
   ) { }
 
   setFilter(filter: KastesJobFilter) {
@@ -32,11 +30,11 @@ export class KastesPasutijumiService {
   }
 
   getKastesJobs(filter: KastesJobFilter): Observable<KastesJobPartial[]> {
-    return this.ordersApi.getAll(filter);
+    return this.api.getAllKastesJobs(filter);
   }
 
   getKastesJob(id: number): Observable<KastesJob> {
-    return this.ordersApi.getOne(id);
+    return this.api.getOneKastesJob(id);
   }
 
   getVeikali(jobId: number): Observable<Veikals[]> {
