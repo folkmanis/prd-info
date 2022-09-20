@@ -73,10 +73,10 @@ export class TabulaComponent {
     if (kaste.kastes.gatavs) {
       this.dialogService.confirm('Tiešām?').pipe(
         switchMap(resp => resp ? this.tabulaService.setGatavs(kaste, false) : of(kaste)),
-      ).subscribe(resp => this.tabulaService.setPartialState(resp));
+      ).subscribe();
     } else {
       this.tabulaService.setGatavs(kaste, true)
-        .subscribe(resp => this.tabulaService.setPartialState(resp));
+        .subscribe();
     }
   }
 
