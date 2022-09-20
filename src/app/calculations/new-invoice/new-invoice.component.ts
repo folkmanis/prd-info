@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map, Observable, tap } from 'rxjs';
@@ -8,13 +8,21 @@ import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.dir
 import { InvoicesTotals } from '../interfaces';
 import { InvoicesService } from '../services/invoices.service';
 
+export abstract class InvoiceCustomerSelector {
+  abstract setCustomer(id: string): void;
+}
+
 @Component({
   selector: 'app-new-invoice',
   templateUrl: './new-invoice.component.html',
   styleUrls: ['./new-invoice.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [{
+    provide: InvoiceCustomerSelector,
+    useExisting: NewInvoiceComponent,
+  }]
 })
-export class NewInvoiceComponent implements OnInit {
+export class NewInvoiceComponent implements OnInit, InvoiceCustomerSelector {
 
   @ViewChild(ScrollTopDirective) private scroll: ScrollTopDirective;
 
@@ -24,7 +32,7 @@ export class NewInvoiceComponent implements OnInit {
 
   jobs$: Observable<JobUnwindedPartial[]> = this.route.data.pipe(
     map(data => data.jobs || []),
-    tap(jobs => this.selectedJobs = this.jobsWithPrice(jobs)),
+    tap(jobs => this.selectedJobs = jobs),
     tap(() => this.scroll?.scrollToTop()),
   );
 
@@ -44,6 +52,10 @@ export class NewInvoiceComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
   ) { }
+
+  setCustomer(id: string): void {
+    this.customerId.setValue(id);
+  }
 
   ngOnInit(): void {
 
@@ -96,14 +108,6 @@ export class NewInvoiceComponent implements OnInit {
       totals,
       grandTotal: totals.reduce((acc, curr) => acc + curr.total, 0),
     };
-  }
-
-  private jobsWithPrice(jobs: JobUnwindedPartial[]): JobUnwindedPartial[] {
-    const jobSet = new Set<number>();
-    jobs.forEach(({ products, jobId }) => {
-      if (products?.count && products.price) jobSet.add(jobId);
-    });
-    return jobs.filter(({ jobId }) => jobSet.has(jobId));
   }
 
 

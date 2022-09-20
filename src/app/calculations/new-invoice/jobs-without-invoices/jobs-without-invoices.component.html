@@ -3,7 +3,7 @@
 </h3>
 
 <mat-list dense>
-    <mat-list-item *ngFor="let cust of noInvoices">
+    <mat-list-item *ngFor="let cust of noInvoices" (click)="onSetCustomer(cust._id)">
         <div class="list-item">
 
             <span>

@@ -24,7 +24,7 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
     value = value || [];
     this.jobs$.next(value);
     this.selector.clear();
-    this.jobIdSet = new Set(value.filter(job => job.products?.count && job.products.price).map(job => job.jobId));
+    this.jobIdSet = new Set(value.map(job => job.jobId));
   }
 
   private _disabled = false;
@@ -92,7 +92,7 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
   }
 
   private setDisplayedColumns() {
-    const cols = this._disabled ? TABLE_COLUMNS.filter(col => col !== 'selected') : TABLE_COLUMNS;
+    const cols = this.disabled ? TABLE_COLUMNS.filter(col => col !== 'selected') : TABLE_COLUMNS;
     this.displayedColumns = this.large ? cols : cols.filter(col => ['selected', 'jobId', 'customer', 'name', 'total'].includes(col));
   }
 }
