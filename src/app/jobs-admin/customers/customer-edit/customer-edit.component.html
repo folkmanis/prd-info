@@ -85,7 +85,7 @@
             </mat-expansion-panel>
 
             <!-- Paytraq panelis -->
-            <mat-expansion-panel #paytraqPanel [disabled]="paytraqDisabled$ | async">
+            <mat-expansion-panel #paytraqPanel [disabled]="(paytraqEnabled$ | async) == false">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
                         Sasaiste ar Paytraq

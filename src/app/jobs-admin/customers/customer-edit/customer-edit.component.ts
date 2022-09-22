@@ -22,7 +22,7 @@ export class CustomerEditComponent implements OnInit, CanComponentDeactivate {
 
   @ViewChild('paytraqPanel') paytraqPanel: MatExpansionPanel;
 
-  readonly paytraqDisabled$ = getConfig('paytraq', 'enabled');
+  readonly paytraqEnabled$ = getConfig('paytraq', 'enabled');
 
   form = this.formService.form;
 
