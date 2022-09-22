@@ -4,16 +4,16 @@ import { switchMap } from 'rxjs/operators';
 import { InvoicesFilter, InvoiceTable } from 'src/app/interfaces';
 import { InvoicesService } from '../../services/invoices.service';
 
-export class InvoicesListDatasource extends DataSource<InvoiceTable> {
+export class InvoicesListDatasource implements DataSource<InvoiceTable> {
+
+    filter$: Observable<InvoicesFilter> | undefined;
 
     constructor(
         private service: InvoicesService
-    ) {
-        super();
-    }
-    filter$: Observable<InvoicesFilter> | undefined;
+    ) { }
 
     connect(): Observable<InvoiceTable[]> {
+
         if (this.filter$) {
             return this.filter$.pipe(
                 switchMap(f => this.service.getInvoicesHttp(f)),
@@ -22,6 +22,7 @@ export class InvoicesListDatasource extends DataSource<InvoiceTable> {
             return this.service.getInvoicesHttp({}).pipe(
             );
         }
+
     }
 
     disconnect(): void { }
