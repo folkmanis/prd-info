@@ -2,25 +2,24 @@
 
     <div>
 
-        <button mat-mini-fab color="primary" (click)="onReload()">
+        <button mat-mini-fab color="primary" (click)="datasource.reload()">
             <mat-icon>
                 refresh
             </mat-icon>
         </button>
 
-        <app-threads-filter [initialCategory]="defaultLabel" [labels]="labels$ | async"
+        <!--         <app-threads-filter [initialCategory]="defaultLabel" [labels]="labels$ | async"
             (valueChanges)="setFilter($event)"></app-threads-filter>
-
+ -->
     </div>
 
 </mat-card>
 
-<mat-paginator [disabled]="!(messagesTotal$ | async)" [length]="messagesTotal$ | async" [pageSize]="10"
-    [pageSizeOptions]="[10,20,100]" (threadPage)="setPaginator($event)" appThreadsPaginator>
+<mat-paginator [pageSize]="20" [pageSizeOptions]="[10,20,100]" appThreadsPaginator>
 
 </mat-paginator>
 
-<mat-table [dataSource]="threads$" class="app-table">
+<mat-table [dataSource]="datasource" class="app-table">
 
     <ng-container matColumnDef="snippet">
         <mat-header-cell *matHeaderCellDef></mat-header-cell>
@@ -28,7 +27,7 @@
 
             <div>
 
-                <div [innerHTML]="thread.html" class="snippet-text">
+                <div [innerHTML]="sanitize(thread.snippet)" class="snippet-text">
                 </div>
 
                 <div class="progress-container">

@@ -8,6 +8,14 @@ export class ThreadsPaginatorDirective {
 
   @Output() threadPage = this.matPaginator.page;
 
+  set length(value: number) {
+    this.matPaginator.length = value || 0;
+    this.matPaginator.disabled = !value;
+  }
+  get length() {
+    return this.matPaginator.length;
+  }
+
   constructor(
     @Host() private matPaginator: MatPaginator,
   ) { }

@@ -20,10 +20,21 @@ export class SavedJobsProductionQuery {
 
 }
 
+export class GmailUserSettings {
+
+    @Expose()
+    activeLabelId: string = 'CATEGORY_PERSONAL';
+
+}
+
 
 export class JobsUserPreferences {
 
     @Expose()
     @Type(() => SavedJobsProductionQuery)
     jobsProductionQuery: SavedJobsProductionQuery = new SavedJobsProductionQuery();
+
+    @Expose()
+    @Type(() => GmailUserSettings)
+    gmail: GmailUserSettings = new GmailUserSettings();
 }

@@ -42,7 +42,6 @@ export class UserSettingsComponent implements OnInit, CanComponentDeactivate {
 
   private snack = (msg: string) => this.snackService.open(msg, 'OK', { duration: 3000 });
 
-
   constructor(
     private loginService: LoginService,
     private snackService: MatSnackBar,

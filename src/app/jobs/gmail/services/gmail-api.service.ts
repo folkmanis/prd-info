@@ -3,15 +3,16 @@ import { HttpOptions } from 'src/app/library/http';
 import { HttpClient } from '@angular/common/http';
 import { ClassTransformer } from 'class-transformer';
 import { Observable } from 'rxjs';
-import { map, pluck, tap } from 'rxjs/operators';
+import { map,  tap } from 'rxjs/operators';
 import { Attachment, Message, ThreadsFilterQuery, Thread, Threads, Label, LabelListItem } from '../interfaces';
+import { getAppParams } from 'src/app/app-params';
 
 @Injectable({
   providedIn: 'any'
 })
 export class GmailApiService {
 
-  private readonly path = 'data/google/gmail/';
+  private readonly path = getAppParams('apiPath') + 'google/gmail/';
 
   private toClass = this.transformer.plainToInstance;
 
@@ -43,8 +44,7 @@ export class GmailApiService {
 
   getLabels(): Observable<LabelListItem[]> {
     return this.http.get<Record<string, any>>(this.path + 'labels', new HttpOptions().cacheable()).pipe(
-      pluck('labels'),
-      map(data => this.toClass(Label, data)),
+      map(data => this.toClass(Label, data.labels)),
     );
   }
 

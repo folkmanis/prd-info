@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { combineLatest, EMPTY, from, Observable, of, ReplaySubject, Subject } from 'rxjs';
+import { combineLatest, EMPTY, from, Observable, of, ReplaySubject, Subject, reduce } from 'rxjs';
 import { catchError, concatMap, map, pluck, shareReplay, single, startWith, switchMap, tap, toArray } from 'rxjs/operators';
 import { combineReload } from 'src/app/library/rxjs/combine-reload';
 import { Attachment, Threads, ThreadsFilterQuery } from '../interfaces';
@@ -71,6 +71,19 @@ export class GmailService {
     private api: GmailApiService,
     @Inject(DOCUMENT) private document: Document,
   ) { }
+
+  getThreads(): (filter: ThreadsFilterQuery) => Observable<Threads> {
+    return (filter) => this.api.getThreads(filter);
+  }
+
+  getThreadsCount(): (filter: ThreadsFilterQuery) => Observable<number> {
+    return filter => from(filter.labelIds || []).pipe(
+      concatMap(id => this.api.getLabel(id)),
+      map(label => label.threadsTotal),
+      reduce((acc, curr) => acc + curr, 0),
+    );
+    ;
+  }
 
   setThreadsFilter(filter: ThreadsFilterQuery) {
     this.threadsFilter$.next(filter);
