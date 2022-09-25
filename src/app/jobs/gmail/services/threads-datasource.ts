@@ -18,7 +18,7 @@ export class ThreadsDatasource implements DataSource<ThreadsListItem> {
     set threadsPaginator(value: ThreadsPaginatorDirective | null) {
         this.paginatorSubs?.unsubscribe();
         this._threadsPaginator = value;
-        this.paginatorSubs = this.threadsPaginator.threadPage
+        this.paginatorSubs = this.threadsPaginator?.threadPage
             .subscribe(event => this.setPage(event));
 
     }
@@ -71,17 +71,11 @@ export class ThreadsDatasource implements DataSource<ThreadsListItem> {
         this.paginatorSubs?.unsubscribe();
     }
 
-
-    private setThreadsFilter(filter: ThreadsFilterQuery) {
-        this.threadsFilter$.next(filter);
-    }
-
-    private setThreadsPage(idx: number) {
-        this.page$.next(idx);
-    }
-
     reload() {
         this.reload$.next();
+        if (this.threadsPaginator) {
+            this.threadsPaginator.matPaginator.pageIndex = 0;
+        }
     }
 
 
@@ -94,7 +88,7 @@ export class ThreadsDatasource implements DataSource<ThreadsListItem> {
         if (this.threadsPaginator) {
             this.threadsPaginator.firstPage();
         } else {
-            this.setThreadsFilter(this.filter);
+            this.threadsFilter$.next(this.filter);
         }
     }
 
@@ -109,11 +103,11 @@ export class ThreadsDatasource implements DataSource<ThreadsListItem> {
         }
 
         if (event.pageIndex === 0) {
-            this.setThreadsFilter(this.filter);
+            this.threadsFilter$.next(this.filter);
             return;
         }
 
-        this.setThreadsPage(event.pageIndex);
+        this.page$.next(event.pageIndex);
     }
 
 }

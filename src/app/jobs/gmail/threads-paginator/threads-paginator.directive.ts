@@ -17,7 +17,7 @@ export class ThreadsPaginatorDirective {
   }
 
   constructor(
-    @Host() private matPaginator: MatPaginator,
+    @Host() public matPaginator: MatPaginator,
   ) { }
 
   firstPage() {

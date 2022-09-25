@@ -69,7 +69,6 @@ export class GmailService {
 
   constructor(
     private api: GmailApiService,
-    @Inject(DOCUMENT) private document: Document,
   ) { }
 
   getThreads(): (filter: ThreadsFilterQuery) => Observable<Threads> {
@@ -77,12 +76,11 @@ export class GmailService {
   }
 
   getThreadsCount(): (filter: ThreadsFilterQuery) => Observable<number> {
-    return filter => from(filter.labelIds || []).pipe(
+    return (filter) => from(filter.labelIds || []).pipe(
       concatMap(id => this.api.getLabel(id)),
       map(label => label.threadsTotal),
       reduce((acc, curr) => acc + curr, 0),
     );
-    ;
   }
 
   setThreadsFilter(filter: ThreadsFilterQuery) {

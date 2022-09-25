@@ -24,30 +24,24 @@ import { DestroyService } from 'prd-cdk';
 })
 export class GmailComponent implements OnInit, AfterViewInit {
 
-  readonly initialPageSize = 100;
-  readonly defaultLabel = 'CATEGORY_PERSONAL';
-
   datasource = new ThreadsDatasource(
     this.gmail.getThreads(),
     this.gmail.getThreadsCount(),
   );
 
-  @ViewChild(ThreadsPaginatorDirective) private set threadsPaginator(value: ThreadsPaginatorDirective) {
+  @ViewChild(ThreadsPaginatorDirective)
+  set threadsPaginator(value: ThreadsPaginatorDirective) {
     this.datasource.threadsPaginator = value;
   }
-
-  private filter: ThreadsFilterQuery = {
-    maxResults: this.initialPageSize,
-    labelIds: [this.defaultLabel],
-  };
+  get threadsPaginator() {
+    return this.datasource.threadsPaginator;
+  }
 
   labels$ = this.gmail.labels();
 
-  messagesTotal$ = this.gmail.label$.pipe(
-    map(labels => labels.length === 1 ? labels[0].threadsTotal : undefined),
-  );
-
   loading: Thread | null;
+
+  sanitize = (snippet: string) => this.sanitizer.bypassSecurityTrustHtml(snippet);
 
   constructor(
     private gmail: GmailService,
@@ -57,10 +51,8 @@ export class GmailComponent implements OnInit, AfterViewInit {
   ) { }
 
 
-  sanitize = (snippet: string) => this.sanitizer.bypassSecurityTrustHtml(snippet);
 
   ngOnInit(): void {
-
     this.prefServ.userPreferences$.pipe(
       map(pref => ({ labelIds: [pref.gmail.activeLabelId] })),
       takeUntil(this.destroy$),
@@ -68,41 +60,12 @@ export class GmailComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // this.setFilter({});
   }
 
   setFilter(filter: Partial<ThreadsFilterQuery>) {
     this.datasource.setFilter(filter);
-    return;
-    this.filter = {
-      ...this.filter,
-      ...filter,
-    };
-    if (this.threadsPaginator) {
-      this.threadsPaginator.firstPage();
-    } else {
-      this.gmail.setThreadsFilter(this.filter);
-    }
   }
 
-  // setPaginator(event: PageEvent) {
-  //   this.datasource.setPage(event);
-  //   return;
-  //   if (event.pageSize !== this.filter.maxResults) {
-  //     this.filter.maxResults = event.pageSize;
-  //     this.threadsPaginator.firstPage();
-  //     return;
-  //   }
-  //   if (event.pageIndex === 0) {
-  //     this.gmail.setThreadsFilter(this.filter);
-  //     return;
-  //   }
-  //   this.gmail.setThreadsPage(event.pageIndex);
-  // }
-
-  private replaceBr(str: string) {
-    return this.sanitizer.bypassSecurityTrustHtml(str?.replace(/\r\n/g, '<br />'));
-  }
 
 
 }
