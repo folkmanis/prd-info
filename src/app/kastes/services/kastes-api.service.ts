@@ -1,12 +1,17 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContextToken } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
-import { KastesUserPreferences, Veikals, VeikalsKaste, VeikalsUpload } from 'src/app/kastes/interfaces';
+import { KastesJob, KastesUserPreferences, Veikals, VeikalsKaste, VeikalsUpload } from 'src/app/kastes/interfaces';
 import { HttpOptions } from 'src/app/library/http';
+import { KastesJobPartial } from '../interfaces';
+import { USE_KASTES_STORAGE } from '../selector/services/kastes-local-storage.service';
+
+
+
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'any'
 })
 export class KastesApiService {
 
@@ -18,7 +23,8 @@ export class KastesApiService {
     }
 
     getKastes(jobId: number): Observable<VeikalsKaste[]> {
-        return this.http.get<VeikalsKaste[]>(this.path + jobId, new HttpOptions());
+        const options = new HttpOptions();
+        return this.http.get<VeikalsKaste[]>(this.path + jobId, options);
     }
 
     getVeikali(jobId: number): Observable<Veikals[]> {
@@ -44,7 +50,11 @@ export class KastesApiService {
     setGatavs({ _id, kaste }: Pick<VeikalsKaste, '_id' | 'kaste'>, yesno: boolean): Observable<VeikalsKaste> {
         // `192.168.8.73:4030/data/kastes/60f9214bf0b8622f7cedccaa/0/gatavs/false`
         const path = `${this.path}${_id}/${kaste}/gatavs/${yesno}`;
-        return this.http.patch<VeikalsKaste>(path, {}, new HttpOptions());
+        return this.http.patch<VeikalsKaste>(path, {}, new HttpOptions().setContext(USE_KASTES_STORAGE, {
+            yesno,
+            veikalsId: _id,
+            kaste,
+        }));
     }
 
     setLabel({ pasutijums, kods }: Pick<VeikalsKaste, 'pasutijums' | 'kods'>): Observable<VeikalsKaste> {
@@ -73,4 +83,14 @@ export class KastesApiService {
     parseXlsx(form: FormData): Observable<any[][]> {
         return this.http.post<any[][]>(this.path + 'parseXlsx', form);
     }
+
+    getAllKastesJobs(filter: Record<string, any>) {
+        return this.http.get<KastesJobPartial[]>(this.path + 'jobs/', new HttpOptions(filter));
+    }
+
+    getOneKastesJob(jobId: number) {
+        return this.http.get<KastesJob>(this.path + 'jobs/' + jobId, new HttpOptions());
+    }
+
+
 }

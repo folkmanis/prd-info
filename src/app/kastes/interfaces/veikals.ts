@@ -13,6 +13,7 @@ export type VeikalsKaste = Veikals & {
     kastes: Kaste;
     kaste: number;
     loading?: boolean;
+    pending?: boolean;
 };
 
 export type Kaste = { [key in Colors]: number; } & {

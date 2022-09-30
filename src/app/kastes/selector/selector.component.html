@@ -10,7 +10,7 @@
         </nav>
 
         <div class="main-content">
-            <app-tabula></app-tabula>
+            <app-tabula [pendingCount]="pendingCount$ | async"></app-tabula>
         </div>
 
     </mat-drawer-content>

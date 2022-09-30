@@ -12,6 +12,8 @@ import { RefreshTableComponent } from './tabula/refresh-table/refresh-table.comp
 import { RowIdDirective } from './tabula/row-id.directive';
 import { OrderTotalsComponent } from './order-totals/order-totals.component';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
+import { KastesLocalStorageInterceptor } from './services/kastes-local-storage.interceptor';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 
 @NgModule({
@@ -30,6 +32,13 @@ import { MaterialLibraryModule } from 'src/app/library/material-library.module';
     LibraryModule,
     MaterialLibraryModule,
     SelectorRoutingModule
+  ],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: KastesLocalStorageInterceptor,
+      multi: true,
+    }
   ]
 })
 export class SelectorModule { }

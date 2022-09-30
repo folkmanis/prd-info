@@ -1,4 +1,4 @@
-import { Component, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Component, QueryList, ViewChild, ViewChildren, ChangeDetectionStrategy, Input } from '@angular/core';
 import { MAT_CHECKBOX_DEFAULT_OPTIONS } from '@angular/material/checkbox';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -16,6 +16,7 @@ const COLUMNS = ['label', 'kods', 'adrese', 'yellow', 'rose', 'white', 'gatavs']
   selector: 'app-tabula',
   templateUrl: './tabula.component.html',
   styleUrls: ['./tabula.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     { provide: MAT_CHECKBOX_DEFAULT_OPTIONS, useValue: { clickAction: 'noop' } }
   ]
@@ -24,6 +25,8 @@ export class TabulaComponent {
 
   @ViewChild('scrollContainer', { read: ScrollTopDirective }) private _scrollable: ScrollTopDirective;
   @ViewChildren(RowIdDirective) private _tableRows: QueryList<RowIdDirective>;
+
+  @Input() pendingCount = 0;
 
   selectedKaste: VeikalsKaste | undefined;
 
@@ -70,10 +73,10 @@ export class TabulaComponent {
     if (kaste.kastes.gatavs) {
       this.dialogService.confirm('Tiešām?').pipe(
         switchMap(resp => resp ? this.tabulaService.setGatavs(kaste, false) : of(kaste)),
-      ).subscribe(resp => this.tabulaService.setPartialState(resp));
+      ).subscribe();
     } else {
       this.tabulaService.setGatavs(kaste, true)
-        .subscribe(resp => this.tabulaService.setPartialState(resp));
+        .subscribe();
     }
   }
 

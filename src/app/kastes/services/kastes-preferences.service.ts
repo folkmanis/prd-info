@@ -21,7 +21,7 @@ export function getKastesPreferences(...path: string[]): Observable<any> {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'any'
 })
 export class KastesPreferencesService {
 
