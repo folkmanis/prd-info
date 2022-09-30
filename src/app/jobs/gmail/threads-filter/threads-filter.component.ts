@@ -1,9 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { map, Observable } from 'rxjs';
-import { LabelListItem, ThreadsFilterQuery } from '../interfaces';
+import { ChangeDetectionStrategy, Component, Input, OnInit, Output } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
+import { Label, LabelListItem, getLabelDisplayName } from '../interfaces';
 
-type FilterOutput = Pick<ThreadsFilterQuery, 'labelIds'>;
+export interface ThreadsFilterData {
+  activeLabels: Label[];
+  availableLabels: Observable<LabelListItem[]>;
+}
 
 @Component({
   selector: 'app-threads-filter',
@@ -13,18 +15,22 @@ type FilterOutput = Pick<ThreadsFilterQuery, 'labelIds'>;
 })
 export class ThreadsFilterComponent {
 
-  @Input() set initialCategory(value: string) {
-    this.filterForm.controls.label.setValue(value);
+  @Input() labelIds: string[] | null = null;
+
+  @Input() labelItems: Observable<LabelListItem[]>;
+
+  @Output() labelIdsChange = new Subject<string[]>();
+
+  isLabelActive = (label: LabelListItem) => this.labelIds?.includes(label.id);
+
+  get activeLabelsText() {
+    return this.labelIds?.map(l => getLabelDisplayName(l)).join(', ') || '';
   }
 
-  @Input() labels: LabelListItem[] = [];
 
-  filterForm = new FormGroup({
-    label: new FormControl<string>('')
-  });
+  onActivateLabel(label: LabelListItem) {
+    this.labelIdsChange.next([label.id]);
+  }
 
-  @Output() valueChanges: Observable<FilterOutput> = this.filterForm.valueChanges.pipe(
-    map(value => ({ labelIds: [value.label] })),
-  );
 
 }

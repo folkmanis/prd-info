@@ -23,7 +23,7 @@ export class SavedJobsProductionQuery {
 export class GmailUserSettings {
 
     @Expose()
-    activeLabelId: string = 'CATEGORY_PERSONAL';
+    activeLabelId: string[] = ['CATEGORY_PERSONAL'];
 
 }
 

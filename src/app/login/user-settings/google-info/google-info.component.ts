@@ -26,10 +26,6 @@ const FIELDS_FOR_DISPLAY: (keyof GoogleUser)[] = [
 })
 export class GoogleInfoComponent implements OnInit {
 
-  gmailControl = new FormGroup({
-    activeLabelId: new FormControl('', [Validators.required])
-  });
-
   values: [string, string][] = [];
 
   @Input() set googleInfo(value: GoogleUser) {
@@ -40,24 +36,6 @@ export class GoogleInfoComponent implements OnInit {
 
   @Output('valueClicked') clickEvent = new EventEmitter<[string, string]>();
 
-  private _preferences: JobsUserPreferences;
-  set preferences(value: JobsUserPreferences) {
-    if (value instanceof JobsUserPreferences) {
-      this._preferences = value;
-      this.gmailControl.patchValue(value.gmail, { emitEvent: false });
-    }
-  }
-  get preferences() {
-    return {
-      ...this._preferences,
-      gmail: {
-        ...this._preferences.gmail,
-        ...this.gmailControl.value
-      }
-    };
-  }
-
-  labels$: Observable<LabelListItem[]>;
 
 
   constructor(
@@ -66,18 +44,8 @@ export class GoogleInfoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.labels$ = this.gmail.labels();
-    this.userPreferences.userPreferences$.pipe(
-      take(1),
-    ).subscribe(pref => this.preferences = pref);
   }
 
-  onSave() {
-    if (!this.gmailControl.valid || this.preferences == null) {
-      return;
-    }
-    this.userPreferences.setUserPreferences(this.preferences).subscribe();
-  }
 
 
 }

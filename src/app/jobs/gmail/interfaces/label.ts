@@ -7,8 +7,13 @@ const labelMap: Map<string, string> = new Map([
     ['CATEGORY_PERSONAL', 'Personīgi'],
 ]);
 
+export function getLabelDisplayName(id: string) {
+    return labelMap.get(id) || id;
+}
 
 export class Label {
+
+
     id: string;
     name: string;
     messageListVisibility: 'show' | 'hide';
@@ -25,7 +30,7 @@ export class Label {
 
 
     get displayName(): string {
-        return labelMap.get(this.name) || this.name;
+        return getLabelDisplayName(this.name);
     }
 
 

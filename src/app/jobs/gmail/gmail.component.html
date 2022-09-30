@@ -1,25 +1,34 @@
-<mat-card>
+<div class="paginator-container">
 
-    <div>
-
-        <button mat-mini-fab color="primary" (click)="datasource.reload()">
+    <div class="left-container">
+        <button mat-icon-button color="primary" (click)="paginator.firstPage()">
             <mat-icon>
                 refresh
             </mat-icon>
         </button>
 
-        <!--         <app-threads-filter [initialCategory]="defaultLabel" [labels]="labels$ | async"
-            (valueChanges)="setFilter($event)"></app-threads-filter>
- -->
+        <app-threads-filter [labelIds]="(threadsFilter$ | async)?.labelIds" [labelItems]="labelItems$"
+            (labelIdsChange)="scroll.scrollToTop(); onSetFilter($event)"></app-threads-filter>
     </div>
 
-</mat-card>
+    <div class="right-container">
+        <app-gmail-paginator #paginator [activePage]="pageIdx$ | async"
+            (indexChanges)="scroll.scrollToTop(); onSetPageIdx($event)" [loadedCount]="loadedCount$ | async"
+            [pageSize]="(threadsFilter$ | async)?.maxResults" [lastPage]="lastPage$ | async">
+        </app-gmail-paginator>
+    </div>
 
-<mat-paginator [pageSize]="20" [pageSizeOptions]="[10,20,100]" appThreadsPaginator>
+</div>
 
-</mat-paginator>
+<div class="progress-container">
 
-<mat-table [dataSource]="datasource" class="app-table">
+    <mat-progress-bar *ngIf="loading$ | async" mode="indeterminate"></mat-progress-bar>
+
+</div>
+
+
+<mat-table [dataSource]="datasource$" class="app-table" scroll-to-top #scroll="scrollToTop"
+    (contentChanged)="loading$.next(false)">
 
     <ng-container matColumnDef="snippet">
         <mat-header-cell *matHeaderCellDef></mat-header-cell>
@@ -31,7 +40,7 @@
                 </div>
 
                 <div class="progress-container">
-                    <mat-progress-bar *ngIf="thread === loading" mode="indeterminate"></mat-progress-bar>
+                    <mat-progress-bar *ngIf="thread === loadingThread" mode="indeterminate"></mat-progress-bar>
                 </div>
 
 
@@ -40,7 +49,12 @@
         </mat-cell>
     </ng-container>
 
-    <mat-row *matRowDef="let thread; columns: ['snippet']" [routerLink]="[thread.id]" (click)="loading=thread;">
+    <mat-row *matRowDef="let thread; columns: ['snippet']" [routerLink]="thread.id" (click)="loadingThread=thread;">
     </mat-row>
+    <div *matNoDataRow class="mat-row">
+        <div class="mat-cell">
+            Atbilstošu e-pastu nav
+        </div>
+    </div>
 
 </mat-table>

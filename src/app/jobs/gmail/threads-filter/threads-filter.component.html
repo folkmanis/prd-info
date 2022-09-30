@@ -1,12 +1,21 @@
-<div [formGroup]="filterForm">
+<button mat-button [matMenuTriggerFor]="labelsMenu">
+    <mat-icon>
+        label
+    </mat-icon>
+    &nbsp;{{ activeLabelsText }}
+</button>
 
-    <mat-form-field>
-        <mat-label>Iezīmes</mat-label>
-        <mat-select formControlName="label">
-            <mat-option *ngFor="let label of labels" [value]="label.id">
-                {{ label.displayName }}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
 
-</div>
+<mat-menu #labelsMenu="matMenu">
+    <ng-template matMenuContent>
+        <ng-container *ngIf="labelItems | async as labelItems; else loading;">
+            <button *ngFor="let item of labelItems" mat-menu-item (click)="onActivateLabel(item)">
+                <mat-icon *ngIf="isLabelActive(item)">check</mat-icon>
+                <span> {{ item.displayName }} </span>
+            </button>
+        </ng-container>
+        <ng-template #loading>
+            <mat-spinner class="loading" [diameter]="150"> </mat-spinner>
+        </ng-template>
+    </ng-template>
+</mat-menu>

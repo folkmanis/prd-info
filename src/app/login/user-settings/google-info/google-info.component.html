@@ -7,16 +7,5 @@
         </span>
     </mat-list-item>
 
-    <form [formGroup]="gmailControl">
-        <mat-form-field>
-            <mat-label>Aktīvā iezīme</mat-label>
-            <mat-select formControlName="activeLabelId">
-                <mat-option *ngFor="let label of labels$ | async" [value]="label.id">
-                    {{ label.displayName }}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-    </form>
-
 
 </mat-list>

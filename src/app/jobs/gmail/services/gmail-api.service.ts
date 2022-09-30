@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
-import { HttpOptions } from 'src/app/library/http';
 import { HttpClient } from '@angular/common/http';
-import { ClassTransformer } from 'class-transformer';
-import { Observable } from 'rxjs';
-import { map,  tap } from 'rxjs/operators';
-import { Attachment, Message, ThreadsFilterQuery, Thread, Threads, Label, LabelListItem } from '../interfaces';
+import { Injectable } from '@angular/core';
+import { map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
+import { AppClassTransformerService } from 'src/app/library/class-transformer/app-class-transformer.service';
+import { HttpOptions } from 'src/app/library/http';
+import { Attachment, Label, LabelListItem, Message, Thread, Threads, ThreadsFilterQuery } from '../interfaces';
+
 
 @Injectable({
   providedIn: 'any'
@@ -14,11 +14,9 @@ export class GmailApiService {
 
   private readonly path = getAppParams('apiPath') + 'google/gmail/';
 
-  private toClass = this.transformer.plainToInstance;
-
   constructor(
     private http: HttpClient,
-    private transformer: ClassTransformer,
+    private transf: AppClassTransformerService,
   ) { }
 
   getMessage(id: string): Observable<Message> {
@@ -26,31 +24,32 @@ export class GmailApiService {
       this.path + 'message/' + id,
       new HttpOptions().cacheable(),
     ).pipe(
-      map(data => this.toClass(Message, data)),
+      this.transf.toClass(Message),
     );
   }
 
   getThreads(query: ThreadsFilterQuery): Observable<Threads> {
     return this.http.get<Record<string, any>>(this.path + 'threads', new HttpOptions(query)).pipe(
-      map(data => this.toClass(Threads, data)),
+      this.transf.toClass(Threads),
     );
   }
 
   getThread(id: string): Observable<Thread> {
     return this.http.get<Record<string, any>>(this.path + 'thread/' + id, new HttpOptions()).pipe(
-      map(data => this.toClass(Thread, data)),
+      this.transf.toClass(Thread),
     );
   }
 
   getLabels(): Observable<LabelListItem[]> {
     return this.http.get<Record<string, any>>(this.path + 'labels', new HttpOptions().cacheable()).pipe(
-      map(data => this.toClass(Label, data.labels)),
+      map(data => data['labels']),
+      this.transf.toClass(Label),
     );
   }
 
   getLabel(id: string): Observable<Label> {
     return this.http.get<Record<string, any>>(this.path + 'label/' + id, new HttpOptions()).pipe(
-      map(data => this.toClass(Label, data)),
+      this.transf.toClass(Label),
     );
   }
 

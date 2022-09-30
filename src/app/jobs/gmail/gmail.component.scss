@@ -1,17 +1,38 @@
-.mat-card {
-    margin: 16px;
+:host {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    height: 100%;
 }
 
-.mat-card>div {
+.paginator-container {
     display: flex;
-    gap: 8px;
+    color: rgba($color: #000000, $alpha: 0.54);
+    background: white;
+    font-size: 12px;
+}
+
+.paginator-container>div:first-of-type {
+    padding-left: 8px;
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+}
+
+.right-container {
+    justify-content: flex-end;
+    padding: 0 8px;
+    flex-wrap: wrap-reverse;
+    margin-left: auto;
+}
+
+.mat-table {
+    overflow: auto;
 }
 
 .mat-column-snippet>div {
-
     overflow: hidden;
     width: 100%;
-
 }
 
 .mat-column-snippet .snippet-text {
@@ -21,6 +42,6 @@
     text-overflow: ellipsis;
 }
 
-.mat-column-snippet .progress-container {
+.progress-container {
     height: 4px;
 }

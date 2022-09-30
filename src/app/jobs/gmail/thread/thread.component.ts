@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, from, Observable } from 'rxjs';
-import { concatMap, finalize, map, pluck, tap, toArray, withLatestFrom } from 'rxjs/operators';
+import { BehaviorSubject, finalize, map, Observable, tap, withLatestFrom } from 'rxjs';
+import { ReproJobService } from 'src/app/jobs/repro-jobs/services/repro-job.service';
 import { UploadRefService } from 'src/app/jobs/repro-jobs/services/upload-ref.service';
 import { CustomersService } from 'src/app/services/customers.service';
-import { ReproJobService } from 'src/app/jobs/repro-jobs/services/repro-job.service';
 import { Attachment, Message, Thread } from '../interfaces';
 import { MessageComponent } from '../message/message.component';
 import { GmailService } from '../services/gmail.service';
@@ -22,7 +21,7 @@ export class ThreadComponent implements OnInit {
   @ViewChildren(MessageComponent) messageList: QueryList<MessageComponent>;
 
   thread$: Observable<Thread> = this.route.data.pipe(
-    pluck('thread'),
+    map(data => data['thread']),
   );
 
   busy$ = new BehaviorSubject<boolean>(false);
@@ -97,9 +96,7 @@ export class ThreadComponent implements OnInit {
     };
 
 
-    return from(attachments).pipe(
-      concatMap(att => this.gmail.saveAttachments(att.messageId, att.attachment)),
-      toArray(),
+    return this.gmail.saveAttachments(attachments).pipe(
       tap(fileNames => this.reproJobService.uploadRef = this.userFileUploadService.savedFileRef(fileNames)),
       withLatestFrom(this.resolveCustomer(messageOrThread.from)),
       map(([fileNames, customer]) => ({

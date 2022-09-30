@@ -10,8 +10,8 @@ import { MessageComponent } from './message/message.component';
 import { AttachmentsComponent } from './attachments/attachments.component';
 import { ThreadComponent } from './thread/thread.component';
 import { ThreadsFilterComponent } from './threads-filter/threads-filter.component';
-import { ThreadsPaginatorDirective } from './threads-paginator/threads-paginator.directive';
 import { GmailLoginInterceptor } from './services/gmail-login.interceptor';
+import { GmailPaginatorComponent } from './gmail-paginator/gmail-paginator.component';
 
 
 @NgModule({
@@ -21,7 +21,7 @@ import { GmailLoginInterceptor } from './services/gmail-login.interceptor';
     AttachmentsComponent,
     ThreadComponent,
     ThreadsFilterComponent,
-    ThreadsPaginatorDirective
+    GmailPaginatorComponent
   ],
   imports: [
     CommonModule,
