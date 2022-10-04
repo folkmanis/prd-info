@@ -3,7 +3,7 @@ div.container {
   display: flex;
   flex-direction: column;
 
-  & > div:nth-child(2) {
+  &>div:nth-child(2) {
     overflow: auto;
   }
 }
@@ -28,6 +28,7 @@ table {
 .mat-column-label:first-of-type {
   width: 5px;
   padding-left: 0;
+
   &.label {
     background-color: green;
     transition: background-color 1s 500ms;
@@ -35,17 +36,21 @@ table {
 }
 
 @keyframes blink {
+
   //TODO global styling
   0% {
     background-color: none;
   }
+
   50% {
     background-color: rgba($color: green, $alpha: 0.2);
   }
+
   100% {
     background-color: none;
   }
 }
+
 tr.activated {
   animation: blink 500ms 3;
 }
@@ -57,6 +62,7 @@ tr.activated {
   width: 16px;
   padding: 0 8px;
   text-align: left;
+
   font: {
     weight: bold;
     size: 125%;
@@ -70,5 +76,10 @@ div.blank {
 .kopskaiti {
   display: flex;
   margin: 8px;
-  height: 42px;
+  min-height: 42px;
+  align-items: center;
+}
+
+.kopskaiti .mat-slide-toggle {
+  margin-left: auto;
 }

@@ -1,7 +1,7 @@
 import { Component, QueryList, ViewChild, ViewChildren, ChangeDetectionStrategy, Input } from '@angular/core';
 import { MAT_CHECKBOX_DEFAULT_OPTIONS } from '@angular/material/checkbox';
-import { Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { FormControl } from '@angular/forms';
+import { merge, combineLatest, Observable, of, map, switchMap } from 'rxjs';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
 import { VeikalsKaste } from '../../interfaces';
@@ -32,8 +32,18 @@ export class TabulaComponent {
 
   colorCodes$ = getKastesPreferences('colors');
   displayedColumns: string[] = COLUMNS;
-  dataSource$: Observable<VeikalsKaste[]> = this.tabulaService.kastesApjoms$;
   totals$ = this.tabulaService.totals$;
+
+  showCompleted = new FormControl<boolean>(true);
+  private showCompleted$ = merge(of(this.showCompleted.value), this.showCompleted.valueChanges);
+
+  dataSource$: Observable<VeikalsKaste[]> = combineLatest([
+    this.tabulaService.kastesApjoms$,
+    this.showCompleted$,
+  ])
+    .pipe(
+      map(([data, shCompl]) => data.filter(k => shCompl || !k.kastes.gatavs))
+    );
 
   constructor(
     private dialogService: ConfirmationDialogService,

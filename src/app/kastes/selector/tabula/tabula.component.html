@@ -4,6 +4,8 @@
   <div class="kopskaiti">
     <app-refresh-table (reload)="onReload()"></app-refresh-table>
     <app-kopskaiti [colorCodes]="colorCodes" [totals]="totals$ | async" [pendingCount]="pendingCount"></app-kopskaiti>
+    <mat-slide-toggle [formControl]="showCompleted" matTooltip="Rādīt arī gatavos iepakojumus"> Gatavie
+    </mat-slide-toggle>
   </div>
 
   <div #scrollContainer scroll-to-top>

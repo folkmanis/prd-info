@@ -32,6 +32,7 @@ import { PortalModule } from '@angular/cdk/portal';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatSortModule } from '@angular/material/sort';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 
 @NgModule({
@@ -70,6 +71,7 @@ import { MatSortModule } from '@angular/material/sort';
     ScrollingModule,
     PortalModule,
     MatSortModule,
+    MatSlideToggleModule,
   ],
   exports: [
     MatInputModule,
@@ -105,6 +107,7 @@ import { MatSortModule } from '@angular/material/sort';
     PortalModule,
     MatBadgeModule,
     MatSortModule,
+    MatSlideToggleModule,
   ]
 })
 export class MaterialLibraryModule { }
