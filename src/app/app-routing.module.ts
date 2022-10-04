@@ -6,6 +6,7 @@ import { MessagesListComponent } from './layout/messaging/messages-list/messages
 import { AppContainerComponent } from './layout/app-container/app-container.component';
 import { UserSettingsComponent } from './login/user-settings/user-settings.component';
 import { CanDeactivateGuard } from 'src/app/library/guards/can-deactivate.guard';
+import { USER_MODULES } from './user-modules';
 
 const routes: Routes = [
   {
@@ -32,7 +33,6 @@ const routes: Routes = [
       },
       {
         path: 'xmf-search',
-        title: 'XMF arhīvs',
         canLoad: [LoginGuard],
         loadChildren: () => import('./xmf-search/xmf-search.module').then(m => m.XmfSearchModule),
         canActivate: [LoginGuard],
@@ -57,7 +57,6 @@ const routes: Routes = [
       },
       {
         path: 'jobs',
-        title: 'Repro darbi',
         canLoad: [LoginGuard],
         loadChildren: () => import('./jobs/jobs.module').then(m => m.JobsModule),
         canActivate: [LoginGuard],
@@ -81,6 +80,8 @@ const routes: Routes = [
     redirectTo: '',
   },
 ];
+
+routes.find(r => r.path === '')?.children.forEach(c => c.title = USER_MODULES.find(m => m.route === c.path)?.name);
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)], // , { enableTracing: true }, , { relativeLinkResolution: 'legacy' }

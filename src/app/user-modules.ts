@@ -4,7 +4,7 @@ export const USER_MODULES: UserModule[] = [
     { name: 'XMF arhīvs', description: 'Meklētājs XMF arhīva datubāzē', route: 'xmf-search' },
     { name: 'Pievienot XMF arhīvu', description: 'XFM arhīva jaunināšana', route: 'xmf-upload' },
     {
-        name: 'Darbi', description: 'Ražošanas darbi', route: 'jobs', childMenu: [
+        name: 'Repro darbi', description: 'Ražošanas darbi', route: 'jobs', childMenu: [
             { name: 'Repro darbi', route: 'repro', description: 'Repro darbu saraksts' },
             { name: 'Kopsavilkums', route: 'products-production', description: 'Izstrādājumi ražošanā' },
             { name: 'gmail', route: 'gmail', description: 'Darba izveidošana no Gmail e-pasta' },
