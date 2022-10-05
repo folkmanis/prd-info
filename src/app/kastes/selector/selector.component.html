@@ -3,14 +3,26 @@
     <mat-drawer-content>
 
         <nav mat-tab-nav-bar>
+            <a mat-tab-link routerLink="../../selector/0" [active]="(apjoms$ | async) === 0">
+                Visi
+            </a>
             <a mat-tab-link *ngFor="let kaste of apjomi$ | async" [routerLink]="['../../selector', kaste]"
                 [active]="kaste === (apjoms$ | async)">
                 {{kaste}}
             </a>
         </nav>
 
+        <!-- Kopējie skaiti un refresh poga -->
+        <div class="kopskaiti">
+            <app-refresh-table (reload)="onReload()"></app-refresh-table>
+            <app-kopskaiti [colorCodes]="colors$ | async" [totals]="totals$ | async"
+                [pendingCount]="pendingCount$ | async"></app-kopskaiti>
+            <mat-slide-toggle [formControl]="showCompleted" matTooltip="Rādīt arī gatavos iepakojumus"> Gatavie
+            </mat-slide-toggle>
+        </div>
+
         <div class="main-content">
-            <app-tabula [pendingCount]="pendingCount$ | async"></app-tabula>
+            <app-tabula [veikalsKastes]="dataSource$ | async" (gatavs)="onGatavs($event)"></app-tabula>
         </div>
 
     </mat-drawer-content>

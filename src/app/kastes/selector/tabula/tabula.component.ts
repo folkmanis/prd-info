@@ -1,8 +1,7 @@
-import { Component, QueryList, ViewChild, ViewChildren, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, QueryList, ViewChild, ViewChildren, ChangeDetectionStrategy, Input, Output } from '@angular/core';
 import { MAT_CHECKBOX_DEFAULT_OPTIONS } from '@angular/material/checkbox';
 import { FormControl } from '@angular/forms';
-import { merge, combineLatest, Observable, of, map, switchMap } from 'rxjs';
-import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
+import { merge, combineLatest, Observable, of, map, switchMap, BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
 import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
 import { VeikalsKaste } from '../../interfaces';
 import { getKastesPreferences } from '../../services/kastes-preferences.service';
@@ -11,6 +10,8 @@ import { RowIdDirective } from './row-id.directive';
 
 
 const COLUMNS = ['label', 'kods', 'adrese', 'yellow', 'rose', 'white', 'gatavs'];
+
+type VeikalsKasteId = Pick<VeikalsKaste, '_id' | 'kaste'>;
 
 @Component({
   selector: 'app-tabula',
@@ -26,31 +27,24 @@ export class TabulaComponent {
   @ViewChild('scrollContainer', { read: ScrollTopDirective }) private _scrollable: ScrollTopDirective;
   @ViewChildren(RowIdDirective) private _tableRows: QueryList<RowIdDirective>;
 
-  @Input() pendingCount = 0;
+  @Input() set veikalsKastes(value: VeikalsKaste[]) {
+    value = Array.isArray(value) ? value : [];
+    this.dataSource$.next(value);
+  }
+
+  @Output() gatavs = new Subject<VeikalsKaste>();
+
+  dataSource$ = new ReplaySubject<VeikalsKaste[]>(1);
 
   selectedKaste: VeikalsKaste | undefined;
 
   colorCodes$ = getKastesPreferences('colors');
   displayedColumns: string[] = COLUMNS;
-  totals$ = this.tabulaService.totals$;
-
-  showCompleted = new FormControl<boolean>(true);
-  private showCompleted$ = merge(of(this.showCompleted.value), this.showCompleted.valueChanges);
-
-  dataSource$: Observable<VeikalsKaste[]> = combineLatest([
-    this.tabulaService.kastesApjoms$,
-    this.showCompleted$,
-  ])
-    .pipe(
-      map(([data, shCompl]) => data.filter(k => shCompl || !k.kastes.gatavs))
-    );
 
   constructor(
-    private dialogService: ConfirmationDialogService,
-    private tabulaService: KastesTabulaService,
   ) { }
 
-  trackByFn(_: number, item: VeikalsKaste): string {
+  trackByFn(_: number, item: VeikalsKasteId): string {
     return item._id + item.kaste;
   }
 
@@ -58,37 +52,14 @@ export class TabulaComponent {
     this._scrollable?.scrollToTop();
   }
 
-  scrollToId(kaste: VeikalsKaste) {
+  scrollToId(kaste: VeikalsKasteId) {
     this._tableRows
       .find(el => el.kaste._id === kaste._id && el.kaste.kaste === kaste.kaste)
       ?.scrollIn();
   }
 
-  onReload() {
-    this.tabulaService.reloadState();
-    this.scrollToTop();
-  }
-
   onGatavs(kaste: VeikalsKaste): void {
-
-    if (kaste.loading) {
-      return;
-    }
-
-    this.tabulaService.setPartialState({
-      ...kaste,
-      loading: true,
-    });
-
-    if (kaste.kastes.gatavs) {
-      this.dialogService.confirm('Tiešām?').pipe(
-        switchMap(resp => resp ? this.tabulaService.setGatavs(kaste, false) : of(kaste)),
-      ).subscribe();
-    } else {
-      this.tabulaService.setGatavs(kaste, true)
-        .subscribe();
-    }
+    this.gatavs.next(kaste);
   }
-
 
 }

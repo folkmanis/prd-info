@@ -1,8 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
+import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DestroyService } from 'prd-cdk';
-import { Observable, Subject } from 'rxjs';
+import { combineLatest, merge, Observable, of, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
+import { VeikalsKaste } from '../interfaces';
 import { KastesPasutijumiService } from '../services/kastes-pasutijumi.service';
 import { getKastesPreferences } from '../services/kastes-preferences.service';
 import { Status as LabelStatuss } from './labels/labels.component';
@@ -20,12 +23,19 @@ import { TabulaComponent } from './tabula/tabula.component';
 })
 export class SelectorComponent implements OnInit {
 
+
+  @ViewChild(TabulaComponent) private _tabula: TabulaComponent;
+
+
   pasutijumsId$ = getKastesPreferences('pasutijums');
   colors$ = getKastesPreferences('colors');
 
-  apjomi$: Observable<number[]> = this.tabulaService.apjomi$.pipe(
-    map(apj => [0, ...apj]),
-  );
+  showCompleted = new FormControl<boolean>(true);
+  private showCompleted$ = merge(of(this.showCompleted.value), this.showCompleted.valueChanges);
+
+
+
+  apjomi$: Observable<number[]> = this.tabulaService.apjomi$;
   // aktīvais apjoms
   apjoms$ = this.tabulaService.apjoms$;
 
@@ -38,10 +48,17 @@ export class SelectorComponent implements OnInit {
     switchMap(id => this.pasutijumiService.getKastesJob(+id)),
   );
 
+  totals$ = this.tabulaService.totals$;
+
   pendingCount$ = this.localStorage.pendingCount$;
 
+  dataSource$: Observable<VeikalsKaste[]> = combineLatest([
+    this.tabulaService.kastesApjoms$,
+    this.showCompleted$,
+  ]).pipe(
+    map(([data, shCompl]) => data.filter(k => shCompl || !k.kastes.gatavs))
+  );
 
-  @ViewChild(TabulaComponent) private _tabula: TabulaComponent;
 
   constructor(
     private route: ActivatedRoute,
@@ -50,6 +67,7 @@ export class SelectorComponent implements OnInit {
     private destroy$: DestroyService,
     private pasutijumiService: KastesPasutijumiService,
     private localStorage: KastesLocalStorageService,
+    private dialogService: ConfirmationDialogService,
   ) { }
 
 
@@ -87,6 +105,34 @@ export class SelectorComponent implements OnInit {
         error: () => this.labelStatuss$.next({ type: 'empty' }),
       });
   }
+
+  onGatavs(kaste: VeikalsKaste): void {
+
+    if (kaste.loading) {
+      return;
+    }
+
+    this.tabulaService.setPartialState({
+      ...kaste,
+      loading: true,
+    });
+
+    if (kaste.kastes.gatavs) {
+      this.dialogService.confirm('Tiešām?').pipe(
+        switchMap(resp => resp ? this.tabulaService.setGatavs(kaste, false) : of(kaste)),
+      ).subscribe();
+    } else {
+      this.tabulaService.setGatavs(kaste, true)
+        .subscribe();
+    }
+  }
+
+  onReload() {
+    this.tabulaService.reloadState();
+    this._tabula.scrollToTop();
+  }
+
+
 
 
 }
