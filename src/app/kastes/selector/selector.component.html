@@ -14,7 +14,11 @@
 
         <!-- Kopējie skaiti un refresh poga -->
         <div class="kopskaiti">
-            <app-refresh-table (reload)="onReload()"></app-refresh-table>
+            <button mat-icon-button (click)="onReload()">
+                <mat-icon>
+                    refresh
+                </mat-icon>
+            </button>
             <app-kopskaiti [colorCodes]="colors$ | async" [totals]="totals$ | async"
                 [pendingCount]="pendingCount$ | async"></app-kopskaiti>
             <mat-slide-toggle [formControl]="showCompleted" matTooltip="Rādīt arī gatavos iepakojumus"> Gatavie
