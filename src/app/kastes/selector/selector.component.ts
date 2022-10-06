@@ -1,17 +1,18 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DestroyService } from 'prd-cdk';
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
-import { VeikalsKaste } from '../interfaces';
+import { Colors, VeikalsKaste } from '../interfaces';
 import { KastesPasutijumiService } from '../services/kastes-pasutijumi.service';
 import { getKastesPreferences } from '../services/kastes-preferences.service';
 import { Status as LabelStatuss } from './labels/labels.component';
 import { KastesLocalStorageService } from './services/kastes-local-storage.service';
 import { KastesTabulaService } from './services/kastes-tabula.service';
 import { TabulaComponent } from './tabula/tabula.component';
+import { KasteDialogService } from './services/kaste-dialog.service';
 
 
 @Component({
@@ -21,15 +22,14 @@ import { TabulaComponent } from './tabula/tabula.component';
   providers: [DestroyService, KastesTabulaService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SelectorComponent implements OnInit {
+export class SelectorComponent implements OnInit, AfterViewInit {
 
 
   @ViewChild(TabulaComponent) private _tabula: TabulaComponent;
 
 
   pasutijumsId$ = getKastesPreferences('pasutijums');
-  colors$ = getKastesPreferences('colors');
-
+  colorCodes$ = getKastesPreferences('colors');
   showCompleted = new FormControl<boolean>(true);
   private showCompleted$ = merge(of(this.showCompleted.value), this.showCompleted.valueChanges);
 
@@ -68,11 +68,17 @@ export class SelectorComponent implements OnInit {
     private pasutijumiService: KastesPasutijumiService,
     private localStorage: KastesLocalStorageService,
     private dialogService: ConfirmationDialogService,
+    private kasteDialog: KasteDialogService,
   ) { }
 
 
   ngOnInit() {
 
+
+
+  }
+
+  ngAfterViewInit(): void {
     this.route.paramMap.pipe(
       map(params => +params.get('apjoms')),
       takeUntil(this.destroy$),
@@ -81,16 +87,6 @@ export class SelectorComponent implements OnInit {
         this.tabulaService.setApjoms(apjoms);
         this._tabula?.scrollToTop();
       });
-
-    this.pasutijumsId$.pipe(
-      takeUntil(this.destroy$),
-    ).subscribe(
-      () => {
-        this.labelStatuss$.next({ type: 'none' });
-        this.router.navigate(['../0'], { relativeTo: this.route });
-        this._tabula?.scrollToTop();
-      }
-    );
 
   }
 
@@ -125,6 +121,10 @@ export class SelectorComponent implements OnInit {
       this.tabulaService.setGatavs(kaste, true)
         .subscribe();
     }
+  }
+
+  onSelection(kaste: VeikalsKaste, colorCodes: Record<Colors, string>) {
+    this.kasteDialog.openDialog(kaste, colorCodes).subscribe();
   }
 
   onReload() {

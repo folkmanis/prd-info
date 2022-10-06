@@ -1,54 +1,59 @@
-<mat-drawer-container *ngIf="pasutijumsId$ | async; else noActive;">
+<ng-container *ngIf="colorCodes$ | async as colorCodes;">
 
-    <mat-drawer-content>
+    <mat-drawer-container *ngIf="pasutijumsId$ | async; else noActive;">
 
-        <nav mat-tab-nav-bar>
-            <a mat-tab-link routerLink="../../selector/0" [active]="(apjoms$ | async) === 0">
-                Visi
-            </a>
-            <a mat-tab-link *ngFor="let kaste of apjomi$ | async" [routerLink]="['../../selector', kaste]"
-                [active]="kaste === (apjoms$ | async)">
-                {{kaste}}
-            </a>
-        </nav>
+        <mat-drawer-content>
 
-        <!-- Kopējie skaiti un refresh poga -->
-        <div class="kopskaiti">
-            <button mat-icon-button (click)="onReload()">
-                <mat-icon>
-                    refresh
-                </mat-icon>
-            </button>
-            <app-kopskaiti [colorCodes]="colors$ | async" [totals]="totals$ | async"
-                [pendingCount]="pendingCount$ | async"></app-kopskaiti>
-            <mat-slide-toggle [formControl]="showCompleted" matTooltip="Rādīt arī gatavos iepakojumus"> Gatavie
-            </mat-slide-toggle>
-        </div>
+            <nav mat-tab-nav-bar>
+                <a mat-tab-link routerLink="../../selector/0" [active]="(apjoms$ | async) === 0">
+                    Visi
+                </a>
+                <a mat-tab-link *ngFor="let kaste of apjomi$ | async" [routerLink]="['../../selector', kaste]"
+                    [active]="kaste === (apjoms$ | async)">
+                    {{kaste}}
+                </a>
+            </nav>
 
-        <div class="main-content">
-            <app-tabula [veikalsKastes]="dataSource$ | async" (gatavs)="onGatavs($event)"></app-tabula>
-        </div>
-
-    </mat-drawer-content>
-
-    <mat-drawer button>
-        <div *ngIf="kastesJob$ | async as kastesJob">
-            <h4>
-                {{kastesJob.jobId}} - {{kastesJob.name}}
-            </h4>
-            <div *ngIf="(apjoms$ | async) === 0">
-                <mat-divider></mat-divider>
-                <app-labels [status]="labelStatuss$ | async" (code)="onSetLabel($event)" [colors]="colors$ | async">
-                </app-labels>
+            <!-- Kopējie skaiti un refresh poga -->
+            <div class="kopskaiti">
+                <button mat-icon-button (click)="onReload()">
+                    <mat-icon>
+                        refresh
+                    </mat-icon>
+                </button>
+                <app-kopskaiti [colorCodes]="colorCodes" [totals]="totals$ | async"
+                    [pendingCount]="pendingCount$ | async"></app-kopskaiti>
+                <mat-slide-toggle [formControl]="showCompleted" matTooltip="Rādīt arī gatavos iepakojumus"> Gatavie
+                </mat-slide-toggle>
             </div>
-            <div>
-                <mat-divider></mat-divider>
-                <app-order-totals [veikali]="kastesAll$ | async" [colors]="colors$ | async"></app-order-totals>
-            </div>
-        </div>
-    </mat-drawer>
 
-</mat-drawer-container>
+            <div class="main-content">
+                <app-tabula [veikalsKastes]="dataSource$ | async" (kasteSelection)="onSelection($event, colorCodes)"
+                    (gatavs)="onGatavs($event)"></app-tabula>
+            </div>
+
+        </mat-drawer-content>
+
+        <mat-drawer button>
+            <div *ngIf="kastesJob$ | async as kastesJob">
+                <h4>
+                    {{kastesJob.jobId}} - {{kastesJob.name}}
+                </h4>
+                <div *ngIf="(apjoms$ | async) === 0">
+                    <mat-divider></mat-divider>
+                    <app-labels [status]="labelStatuss$ | async" (code)="onSetLabel($event)" [colors]="colorCodes">
+                    </app-labels>
+                </div>
+                <div>
+                    <mat-divider></mat-divider>
+                    <app-order-totals [veikali]="kastesAll$ | async" [colors]="colorCodes"></app-order-totals>
+                </div>
+            </div>
+        </mat-drawer>
+
+    </mat-drawer-container>
+
+</ng-container>
 
 <ng-template #noActive>
     <div class="no-active">

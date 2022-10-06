@@ -13,6 +13,7 @@ import { OrderTotalsComponent } from './order-totals/order-totals.component';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { KastesLocalStorageInterceptor } from './services/kastes-local-storage.interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { KasteDialogComponent } from './kaste-dialog/kaste-dialog.component';
 
 
 @NgModule({
@@ -24,6 +25,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
     KopskaitiComponent,
     RowIdDirective,
     OrderTotalsComponent,
+    KasteDialogComponent,
   ],
   imports: [
     CommonModule,

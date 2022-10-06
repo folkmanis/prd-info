@@ -34,6 +34,8 @@ export class TabulaComponent {
 
   @Output() gatavs = new Subject<VeikalsKaste>();
 
+  @Output() kasteSelection = new Subject<VeikalsKaste>();
+
   dataSource$ = new ReplaySubject<VeikalsKaste[]>(1);
 
   selectedKaste: VeikalsKaste | undefined;
@@ -60,6 +62,11 @@ export class TabulaComponent {
 
   onGatavs(kaste: VeikalsKaste): void {
     this.gatavs.next(kaste);
+  }
+
+  onSelected(kaste: VeikalsKaste) {
+    this.kasteSelection.next(kaste);
+    this.selectedKaste = kaste;
   }
 
 }

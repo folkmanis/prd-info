@@ -1,0 +1,36 @@
+<div mat-dialog-title>
+
+    <div>
+        <button mat-icon-button matDialogClose>
+            <mat-icon>
+                close
+            </mat-icon>
+        </button>
+    </div>
+
+    <div class="kods">
+        <span>
+            {{ veikalsKaste.kods }}
+        </span>
+    </div>
+    <h1>
+        {{ veikalsKaste.adrese }}
+    </h1>
+
+</div>
+
+<mat-dialog-content>
+
+    <div *ngFor="let color of colors;" [style.color]="colorCodes[color]" class="colors">
+        {{ veikalsKaste.kastes[color] }}
+    </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button mat-fab color="primary">
+        <mat-icon>
+            done
+        </mat-icon>
+    </button>
+</mat-dialog-actions>
