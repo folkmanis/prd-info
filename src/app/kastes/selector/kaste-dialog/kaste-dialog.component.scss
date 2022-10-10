@@ -7,14 +7,14 @@ mat-dialog-actions>button {
 }
 
 .mat-dialog-content {
-    min-height: 200px;
+    text-align: center;
+}
+
+.mat-dialog-content .colors {
+    min-height: 180px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-}
-
-.colors {
-    text-align: center;
     font-size: 50px;
     line-height: 60px;
     font-weight: 800;
@@ -24,9 +24,29 @@ mat-dialog-actions>button {
     font-size: 40px;
     font-weight: 800;
     height: 48px;
-    background-color: var(--accent-color);
+    background-color: var(--warn-color);
     color: var(--primary-darker-contrast);
-    border-radius: 8px;
+    border-radius: 4px;
     margin: 8px 0;
     line-height: 48px;
+}
+
+.kods.gatavs {
+    background-color: var(--primary-color);
+}
+
+.kods .subs {
+    font-size: 33%;
+}
+
+.summary {
+    margin: 8px;
+}
+
+.summary .kaste.gatavs {
+    font-style: italic;
+}
+
+.summary .kaste.current {
+    font-weight: 800;
 }

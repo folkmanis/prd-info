@@ -14,14 +14,11 @@ export class KasteDialogService {
     private dialog: MatDialog,
   ) { }
 
-  openDialog(kaste: VeikalsKaste, colorCodes: Record<Colors, string>): Observable<KasteDialogResponse> {
+  openDialog(data: KasteDialogData): Observable<KasteDialogResponse> {
     const config: MatDialogConfig<KasteDialogData> = {
-      data: {
-        kaste,
-        colorCodes,
-      },
+      data,
       minWidth: '300px',
-      minHeight: '400px',
+      minHeight: '500px',
     };
     const dialogRef = this.dialog.open(KasteDialogComponent, config);
     return dialogRef.afterClosed();

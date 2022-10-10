@@ -1,8 +1,11 @@
 <div mat-dialog-title>
 
-    <div class="kods">
+    <div class="kods" [class.gatavs]="veikalsKaste.kastes.gatavs === true">
         <span>
             {{ veikalsKaste.kods }}
+        </span>
+        <span class="subs">
+            {{ veikalsKaste.kaste + 1 }}
         </span>
     </div>
     <h1>
@@ -13,9 +16,27 @@
 
 <mat-dialog-content>
 
-    <div *ngFor="let color of colors;" [style.color]="colorCodes[color]" class="colors">
-        {{ veikalsKaste.kastes[color] }}
+    <div class="colors">
+        <div *ngFor="let color of colors;" [style.color]="colorCodes[color]">
+            {{ veikalsKaste.kastes[color] }}
+        </div>
     </div>
+
+    <div class="summary">
+        <div *ngFor="let kaste of kastes; index as idx;" class="kaste" [class.gatavs]="kaste.kastes.gatavs"
+            [class.current]="idx === veikalsKaste.kaste">
+            <span>
+                {{ idx + 1 }}:&nbsp;
+            </span>
+            <span *ngFor="let color of allColors;" [style.color]="colorCodes[color]">
+                {{ kaste.kastes[color] }}&nbsp;
+            </span>
+            <span>
+                /{{ kaste.kastes.total }}
+            </span>
+        </div>
+    </div>
+
 
 </mat-dialog-content>
 

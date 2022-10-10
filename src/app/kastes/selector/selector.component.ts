@@ -31,6 +31,8 @@ export class SelectorComponent {
   private readonly _reload$ = new Subject<void>();
   private readonly _updateKaste$ = new Subject<VeikalsKaste>();
 
+  private allKastes: VeikalsKaste[] = [];
+
 
   apjomi$: Observable<number[]> = this.pasutijumsId$.pipe(
     switchMap(pasutijumsId => this.tabulaService.getApjomi(pasutijumsId)),
@@ -51,7 +53,7 @@ export class SelectorComponent {
     this.pasutijumsId$,
     this._reload$,
     this._updateKaste$
-  );
+  ).pipe(tap(vk => this.allKastes = vk));
 
   kastesApjoms$: Observable<VeikalsKaste[]> = combineLatest([
     this.kastesAll$,
@@ -105,7 +107,7 @@ export class SelectorComponent {
 
     this._updateKaste$.next({ ...kaste, loading: true, });
 
-    this.kasteDialog.openDialog(kaste, colorCodes).pipe(
+    this.kasteDialog.openDialog({ kaste, colorCodes, allKastes: this.allKastes }).pipe(
       mergeMap(resp => resp ? this.tabulaService.setGatavs(kaste, resp.setGatavs) : of({ ...kaste, loading: false })),
       tap(kaste => this._updateKaste$.next(kaste)),
     ).subscribe();
