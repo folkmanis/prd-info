@@ -1,28 +1,24 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
+import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DestroyService } from 'prd-cdk';
-import { combineLatest, merge, Observable, of, Subject } from 'rxjs';
-import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
+import { combineLatest, map, merge, mergeMap, Observable, of, share, Subject, switchMap, tap } from 'rxjs';
 import { Colors, VeikalsKaste } from '../interfaces';
 import { KastesPasutijumiService } from '../services/kastes-pasutijumi.service';
 import { getKastesPreferences } from '../services/kastes-preferences.service';
-import { Status as LabelStatuss } from './labels/labels.component';
+import { Status as LabelStatus } from './labels/labels.component';
+import { KasteDialogService } from './services/kaste-dialog.service';
 import { KastesLocalStorageService } from './services/kastes-local-storage.service';
 import { KastesTabulaService } from './services/kastes-tabula.service';
 import { TabulaComponent } from './tabula/tabula.component';
-import { KasteDialogService } from './services/kaste-dialog.service';
 
 
 @Component({
   selector: 'app-selector',
   templateUrl: './selector.component.html',
   styleUrls: ['./selector.component.scss'],
-  providers: [DestroyService, KastesTabulaService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SelectorComponent implements OnInit, AfterViewInit {
+export class SelectorComponent {
 
 
   @ViewChild(TabulaComponent) private _tabula: TabulaComponent;
@@ -31,30 +27,50 @@ export class SelectorComponent implements OnInit, AfterViewInit {
   pasutijumsId$ = getKastesPreferences('pasutijums');
   colorCodes$ = getKastesPreferences('colors');
   showCompleted = new FormControl<boolean>(true);
-  private showCompleted$ = merge(of(this.showCompleted.value), this.showCompleted.valueChanges);
+
+  private readonly _reload$ = new Subject<void>();
+  private readonly _updateKaste$ = new Subject<VeikalsKaste>();
 
 
-
-  apjomi$: Observable<number[]> = this.tabulaService.apjomi$;
-  // aktīvais apjoms
-  apjoms$ = this.tabulaService.apjoms$;
-
-  labelStatuss$ = new Subject<LabelStatuss>();
-
-  kastesAll$ = this.tabulaService.kastesAll$;
-
-  kastesJob$ = this.pasutijumsId$.pipe(
-    filter(id => !isNaN(+id)),
-    switchMap(id => this.pasutijumiService.getKastesJob(+id)),
+  apjomi$: Observable<number[]> = this.pasutijumsId$.pipe(
+    switchMap(pasutijumsId => this.tabulaService.getApjomi(pasutijumsId)),
   );
 
-  totals$ = this.tabulaService.totals$;
+  kastesJob$ = this.pasutijumsId$.pipe(
+    switchMap(id => this.pasutijumiService.getKastesJob(id)),
+  );
 
   pendingCount$ = this.localStorage.pendingCount$;
 
+  apjoms$ = this.route.paramMap.pipe(
+    map(params => +params.get('apjoms')),
+    tap(() => this._tabula?.scrollToTop()),
+  );
+
+  kastesAll$: Observable<VeikalsKaste[]> = this.tabulaService.kastesAll(
+    this.pasutijumsId$,
+    this._reload$,
+    this._updateKaste$
+  );
+
+  kastesApjoms$: Observable<VeikalsKaste[]> = combineLatest([
+    this.kastesAll$,
+    this.apjoms$,
+  ]).pipe(
+    map(([kastes, apj]) => kastes.filter(k => !apj || k.kastes.total === apj)),
+    share(),
+  );
+
+  totals$ = this.kastesApjoms$.pipe(
+    map(kastes => this.tabulaService.calcTotals(kastes)),
+  );
+
+
+  labelStatuss$ = new Subject<LabelStatus>();
+
   dataSource$: Observable<VeikalsKaste[]> = combineLatest([
-    this.tabulaService.kastesApjoms$,
-    this.showCompleted$,
+    this.kastesApjoms$,
+    merge(of(this.showCompleted.value), this.showCompleted.valueChanges),
   ]).pipe(
     map(([data, shCompl]) => data.filter(k => shCompl || !k.kastes.gatavs))
   );
@@ -62,74 +78,42 @@ export class SelectorComponent implements OnInit, AfterViewInit {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
     private tabulaService: KastesTabulaService,
-    private destroy$: DestroyService,
     private pasutijumiService: KastesPasutijumiService,
     private localStorage: KastesLocalStorageService,
-    private dialogService: ConfirmationDialogService,
     private kasteDialog: KasteDialogService,
   ) { }
 
 
-  ngOnInit() {
-
-
-
-  }
-
-  ngAfterViewInit(): void {
-    this.route.paramMap.pipe(
-      map(params => +params.get('apjoms')),
-      takeUntil(this.destroy$),
-    )
-      .subscribe(apjoms => {
-        this.tabulaService.setApjoms(apjoms);
-        this._tabula?.scrollToTop();
-      });
-
-  }
-
-  onSetLabel(kods: number) {
-    this.tabulaService.setLabel(kods)
+  onSetLabel(kods: number, pasutijumsId: number) {
+    this.tabulaService.setLabel(kods, pasutijumsId)
       .subscribe({
         next: kaste => {
           this.labelStatuss$.next({ type: 'kaste', kaste });
-          this.tabulaService.setPartialState(kaste);
+          this._updateKaste$.next(kaste);
           this._tabula.scrollToId(kaste);
         },
         error: () => this.labelStatuss$.next({ type: 'empty' }),
       });
   }
 
-  onGatavs(kaste: VeikalsKaste): void {
+  onSelection(kaste: VeikalsKaste, colorCodes: Record<Colors, string>) {
 
     if (kaste.loading) {
       return;
     }
 
-    this.tabulaService.setPartialState({
-      ...kaste,
-      loading: true,
-    });
+    this._updateKaste$.next({ ...kaste, loading: true, });
 
-    if (kaste.kastes.gatavs) {
-      this.dialogService.confirm('Tiešām?').pipe(
-        switchMap(resp => resp ? this.tabulaService.setGatavs(kaste, false) : of(kaste)),
-      ).subscribe();
-    } else {
-      this.tabulaService.setGatavs(kaste, true)
-        .subscribe();
-    }
-  }
-
-  onSelection(kaste: VeikalsKaste, colorCodes: Record<Colors, string>) {
-    this.kasteDialog.openDialog(kaste, colorCodes).subscribe();
+    this.kasteDialog.openDialog(kaste, colorCodes).pipe(
+      mergeMap(resp => resp ? this.tabulaService.setGatavs(kaste, resp.setGatavs) : of({ ...kaste, loading: false })),
+      tap(kaste => this._updateKaste$.next(kaste)),
+    ).subscribe();
   }
 
   onReload() {
-    this.tabulaService.reloadState();
-    this._tabula.scrollToTop();
+    this._tabula.selected = undefined;
+    this._reload$.next();
   }
 
 

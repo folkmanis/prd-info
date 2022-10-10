@@ -11,13 +11,10 @@ table {
   cursor: default;
 }
 
-.mat-column-gatavs {
-  width: 40px;
-  text-align: center;
-}
-
-.selected {
+.selected .mat-cell {
   background-color: rgba(0, 0, 0, 0.1);
+  border-bottom-color: var(--primary-color);
+  transition: all 100ms;
 }
 
 .mat-column-label:first-of-type {
@@ -25,7 +22,7 @@ table {
   padding-left: 0;
 
   &.label {
-    background-color: green;
+    background-color: var(--primary-color);
     transition: background-color 1s 500ms;
   }
 }
@@ -38,16 +35,12 @@ table {
   }
 
   50% {
-    background-color: rgba($color: green, $alpha: 0.2);
+    background-color: rgba($color: var(--primary-color), $alpha: 0.2);
   }
 
   100% {
     background-color: none;
   }
-}
-
-tr.activated {
-  animation: blink 500ms 3;
 }
 
 .mat-column-yellow,
@@ -66,4 +59,9 @@ tr.activated {
 
 div.blank {
   height: 64px;
+}
+
+.gatavs .mat-cell {
+  // background-color: var(--primary-lighter);
+  opacity: 50%;
 }

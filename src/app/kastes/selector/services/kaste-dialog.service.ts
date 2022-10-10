@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Colors, VeikalsKaste } from '../../interfaces';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { KasteDialogData } from './kaste-dialog-data';
 import { Observable } from 'rxjs';
+import { Colors, VeikalsKaste } from '../../interfaces';
 import { KasteDialogComponent } from '../kaste-dialog/kaste-dialog.component';
-import { getKastesPreferences } from '../../services/kastes-preferences.service';
+import { KasteDialogData, KasteDialogResponse } from './kaste-dialog-data';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +14,7 @@ export class KasteDialogService {
     private dialog: MatDialog,
   ) { }
 
-  openDialog(kaste: VeikalsKaste, colorCodes: Record<Colors, string>): Observable<unknown> {
+  openDialog(kaste: VeikalsKaste, colorCodes: Record<Colors, string>): Observable<KasteDialogResponse> {
     const config: MatDialogConfig<KasteDialogData> = {
       data: {
         kaste,

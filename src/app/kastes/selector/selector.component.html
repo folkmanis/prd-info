@@ -1,6 +1,6 @@
 <ng-container *ngIf="colorCodes$ | async as colorCodes;">
 
-    <mat-drawer-container *ngIf="pasutijumsId$ | async; else noActive;">
+    <mat-drawer-container *ngIf="pasutijumsId$ | async as pasutijumsId; else noActive;">
 
         <mat-drawer-content>
 
@@ -28,8 +28,8 @@
             </div>
 
             <div class="main-content">
-                <app-tabula [veikalsKastes]="dataSource$ | async" (kasteSelection)="onSelection($event, colorCodes)"
-                    (gatavs)="onGatavs($event)"></app-tabula>
+                <app-tabula [veikalsKastes]="dataSource$ | async" (selectedChange)="onSelection($event, colorCodes)">
+                </app-tabula>
             </div>
 
         </mat-drawer-content>
@@ -41,7 +41,8 @@
                 </h4>
                 <div *ngIf="(apjoms$ | async) === 0">
                     <mat-divider></mat-divider>
-                    <app-labels [status]="labelStatuss$ | async" (code)="onSetLabel($event)" [colors]="colorCodes">
+                    <app-labels [status]="labelStatuss$ | async" (code)="onSetLabel($event, pasutijumsId)"
+                        [colors]="colorCodes">
                     </app-labels>
                 </div>
                 <div>

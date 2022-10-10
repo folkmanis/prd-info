@@ -1,20 +1,12 @@
 <div mat-dialog-title>
 
-    <div>
-        <button mat-icon-button matDialogClose>
-            <mat-icon>
-                close
-            </mat-icon>
-        </button>
-    </div>
-
     <div class="kods">
         <span>
             {{ veikalsKaste.kods }}
         </span>
     </div>
     <h1>
-        {{ veikalsKaste.adrese }}
+        {{ veikalsKaste.adrese | titlecase }}
     </h1>
 
 </div>
@@ -28,9 +20,26 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-    <button mat-fab color="primary">
+    <button *ngIf="veikalsKaste.kastes.gatavs === false; else unsetButton;" mat-fab color="primary"
+        (click)="onGatavs(true)">
         <mat-icon>
             done
         </mat-icon>
     </button>
+
+    <button mat-fab matDialogClose>
+        <mat-icon>
+            close
+        </mat-icon>
+    </button>
+
+
+    <ng-template #unsetButton>
+        <button mat-fab color="warn" (click)="onGatavs(false)">
+            <mat-icon>
+                remove_done
+            </mat-icon>
+        </button>
+    </ng-template>
+
 </mat-dialog-actions>

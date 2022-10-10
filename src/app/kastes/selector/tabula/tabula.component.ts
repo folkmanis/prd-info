@@ -1,15 +1,12 @@
-import { Component, QueryList, ViewChild, ViewChildren, ChangeDetectionStrategy, Input, Output } from '@angular/core';
-import { MAT_CHECKBOX_DEFAULT_OPTIONS } from '@angular/material/checkbox';
-import { FormControl } from '@angular/forms';
-import { merge, combineLatest, Observable, of, map, switchMap, BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { ChangeDetectionStrategy, Component, Input, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { ReplaySubject, Subject } from 'rxjs';
 import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
-import { VeikalsKaste } from '../../interfaces';
+import { COLORS, VeikalsKaste } from '../../interfaces';
 import { getKastesPreferences } from '../../services/kastes-preferences.service';
-import { KastesTabulaService } from '../services/kastes-tabula.service';
 import { RowIdDirective } from './row-id.directive';
 
 
-const COLUMNS = ['label', 'kods', 'adrese', 'yellow', 'rose', 'white', 'gatavs'];
+const COLUMNS = ['label', 'kods', 'adrese'];
 
 type VeikalsKasteId = Pick<VeikalsKaste, '_id' | 'kaste'>;
 
@@ -18,9 +15,6 @@ type VeikalsKasteId = Pick<VeikalsKaste, '_id' | 'kaste'>;
   templateUrl: './tabula.component.html',
   styleUrls: ['./tabula.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    { provide: MAT_CHECKBOX_DEFAULT_OPTIONS, useValue: { clickAction: 'noop' } }
-  ]
 })
 export class TabulaComponent {
 
@@ -34,14 +28,18 @@ export class TabulaComponent {
 
   @Output() gatavs = new Subject<VeikalsKaste>();
 
-  @Output() kasteSelection = new Subject<VeikalsKaste>();
 
   dataSource$ = new ReplaySubject<VeikalsKaste[]>(1);
 
-  selectedKaste: VeikalsKaste | undefined;
+  @Input() selected: VeikalsKaste | undefined;
+
+  @Output() selectedChange = new Subject<VeikalsKaste>();
+
 
   colorCodes$ = getKastesPreferences('colors');
-  displayedColumns: string[] = COLUMNS;
+  displayedColumns: string[] = [...COLUMNS, ...COLORS];
+
+  colors = COLORS;
 
   constructor(
   ) { }
@@ -65,8 +63,8 @@ export class TabulaComponent {
   }
 
   onSelected(kaste: VeikalsKaste) {
-    this.kasteSelection.next(kaste);
-    this.selectedKaste = kaste;
+    this.selectedChange.next(kaste);
+    this.selected = kaste;
   }
 
 }

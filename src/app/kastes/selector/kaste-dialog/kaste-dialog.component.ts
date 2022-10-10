@@ -1,9 +1,7 @@
-import { Inject, ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { KasteDialogData } from '../services/kaste-dialog-data';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { VeikalsKaste } from '../../interfaces';
-import { getKastesPreferences } from '../../services/kastes-preferences.service';
-import { COLORS, Colors } from '../../interfaces';
+import { COLORS, VeikalsKaste } from '../../interfaces';
+import { KasteDialogData, KasteDialogResponse } from '../services/kaste-dialog-data';
 
 @Component({
   selector: 'app-kaste-dialog',
@@ -21,10 +19,16 @@ export class KasteDialogComponent implements OnInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: KasteDialogData,
+    private dialogRef: MatDialogRef<KasteDialogComponent, KasteDialogResponse>,
   ) { }
 
   ngOnInit(): void {
-    console.log(this.data);
   }
+
+  onGatavs(setGatavs: boolean) {
+    this.dialogRef.close({ setGatavs });
+  }
+
+
 
 }
