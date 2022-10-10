@@ -1,7 +1,7 @@
-import { HttpContextToken, HttpEvent, HttpEventType, HttpHandler, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpContextToken } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { concat, EMPTY, Observable, of, retry, tap, BehaviorSubject, Subject, ReplaySubject, merge } from 'rxjs';
-import { KastesUserPreferences, VeikalsKaste } from '../../interfaces';
+import { merge, Observable, of, ReplaySubject } from 'rxjs';
+import { VeikalsKaste } from '../../interfaces';
 
 export class KastesLocalStorageToken {
   veikalsId: string = '';
@@ -18,7 +18,7 @@ export const USE_KASTES_STORAGE = new HttpContextToken<KastesLocalStorageToken>(
 })
 export class KastesLocalStorageService {
 
-  private storage = window.localStorage;
+  private storage: VeikalsKaste[] | null = null;
 
   private updatePendingCount$ = new ReplaySubject<number>(1);
 
@@ -30,7 +30,7 @@ export class KastesLocalStorageService {
   constructor() { }
 
   storeVeikalsKastes(kastes: VeikalsKaste[]) {
-    this.storage.setItem('veikalsKastes', JSON.stringify(kastes));
+    this.storage = [...kastes];
     this.updatePendingCount$.next(this.kastesPendingCount());
   }
 
@@ -48,7 +48,7 @@ export class KastesLocalStorageService {
   }
 
   getKastes(): VeikalsKaste[] {
-    const kastes = JSON.parse(this.storage.getItem('veikalsKastes'));
+    const kastes = this.storage;
     if (Array.isArray(kastes)) {
       return kastes;
     } else {
