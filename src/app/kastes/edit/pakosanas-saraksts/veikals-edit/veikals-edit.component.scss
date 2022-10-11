@@ -1,6 +1,7 @@
 div.container {
     display: flex;
-    &>div{
+
+    &>div {
         flex: 1;
         height: 24px;
     }
@@ -11,6 +12,7 @@ input[type=number] {
     margin-right: 3px;
 }
 
-.invalid {
-    color: red;
+.invalid,
+.ng-invalid {
+    color: var(--warn-color);
 }

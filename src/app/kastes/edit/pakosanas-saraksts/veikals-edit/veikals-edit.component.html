@@ -2,8 +2,7 @@
     <div *ngFor="let control of veikalsFormArray.controls;" [formGroup]="control" class="container">
         <div *ngFor="let colorName of colorNames">
             <input type="number" matInput [formControlName]="colorName"
-                [style.color]="control.get(colorName).valid ? colors[colorName] : undefined"
-                [class.invalid]="control.get(colorName).invalid">
+                [style.color]="control.get(colorName).valid ? colors[colorName] : undefined">
         </div>
         <div [class.invalid]="control.invalid">
             {{boxTotals(control.getRawValue())}}
