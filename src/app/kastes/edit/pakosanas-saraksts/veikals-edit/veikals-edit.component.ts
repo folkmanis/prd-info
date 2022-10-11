@@ -46,7 +46,7 @@ export class VeikalsEditComponent implements OnInit, OnDestroy {
 
   private _veikals$ = new ReplaySubject<Veikals>(1);
 
-  _veikalsKastesChanges$ = this.veikalsFormArray.valueChanges.pipe(
+  private _veikalsKastesChanges$ = this.veikalsFormArray.valueChanges.pipe(
     filter(_ => this.veikalsFormArray.valid),
     map(_ => this.recalculateTotals(this.veikalsFormArray.getRawValue())),
   );
@@ -146,7 +146,7 @@ export class VeikalsEditComponent implements OnInit, OnDestroy {
     return (control: FormArray<FormGroup<KasteGroup>>): ValidationErrors => {
       if (!this.veikals || control.value.length === 0) { return null; }
       const totals = this.colorTotals(control.getRawValue());
-      const initTotals = this.colorTotals(this.veikals.kastes.filter(k => !k.gatavs));
+      const initTotals = this.colorTotals(this.veikals.kastes);
       const diff = Object.assign({},
         ...Object.keys(totals).map(col => ({ [col]: totals[col] - initTotals[col] })),
       );
