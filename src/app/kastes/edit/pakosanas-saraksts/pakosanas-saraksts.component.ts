@@ -52,4 +52,8 @@ export class PakosanasSarakstsComponent implements OnInit {
     this.veikalsChange.next(veikals);
   }
 
+  isDisabled(veikals: Veikals): boolean {
+    return this.disabled || veikals.kastes.every(k => k.gatavs);
+  }
+
 }
