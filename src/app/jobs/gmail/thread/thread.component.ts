@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, finalize, map, Observable, tap, withLatestFrom } from 'rxjs';
+import { BehaviorSubject, finalize, map, mergeMap, Observable, tap, withLatestFrom } from 'rxjs';
 import { ReproJobService } from 'src/app/jobs/repro-jobs/services/repro-job.service';
 import { UploadRefService } from 'src/app/jobs/repro-jobs/services/upload-ref.service';
 import { CustomersService } from 'src/app/services/customers.service';
@@ -79,6 +79,8 @@ export class ThreadComponent implements OnInit {
       .map(attachment => ({ messageId: message.id, attachment }));
 
     this.createJobWithAttachments(attachments, message).pipe(
+      mergeMap(({ uploadRef }) => uploadRef.onAddedToJob()),
+      mergeMap(() => this.gmail.markAsRead(message)),
       finalize(() => component.busy$.next(false)),
     ).subscribe();
 
@@ -97,13 +99,14 @@ export class ThreadComponent implements OnInit {
 
 
     return this.gmail.saveAttachments(attachments).pipe(
-      tap(fileNames => this.reproJobService.uploadRef = this.userFileUploadService.savedFileRef(fileNames)),
       withLatestFrom(this.resolveCustomer(messageOrThread.from)),
       map(([fileNames, customer]) => ({
         fileNames,
         customer,
         name: name || this.reproJobService.jobNameFromFiles(fileNames),
+        uploadRef: this.userFileUploadService.savedFileRef(fileNames),
       })),
+      tap(({ uploadRef }) => this.reproJobService.uploadRef = uploadRef),
       tap(({ name, customer }) => this.router.navigate(['/', 'jobs', 'repro', 'new', { name, customer }])),
     );
 

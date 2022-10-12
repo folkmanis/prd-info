@@ -26,3 +26,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.mat-expansion-panel-header-description {
+    flex-grow: 0;
+}
