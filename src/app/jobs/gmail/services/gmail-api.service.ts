@@ -4,7 +4,7 @@ import { map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { AppClassTransformerService } from 'src/app/library/class-transformer/app-class-transformer.service';
 import { HttpOptions } from 'src/app/library/http';
-import { Attachment, Label, LabelListItem, Message, Thread, Threads, ThreadsFilterQuery } from '../interfaces';
+import { Attachment, Label, LabelListItem, Message, MessageModifyDto, Thread, Threads, ThreadsFilterQuery } from '../interfaces';
 
 
 @Injectable({
@@ -23,6 +23,16 @@ export class GmailApiService {
     return this.http.get<Record<string, any>>(
       this.path + 'message/' + id,
       new HttpOptions().cacheable(),
+    ).pipe(
+      this.transf.toClass(Message),
+    );
+  }
+
+  modifyMessage(id: string, messageModify: MessageModifyDto): Observable<Message> {
+    return this.http.patch<Record<string, any>>(
+      this.path + 'message/' + id,
+      messageModify,
+      new HttpOptions(),
     ).pipe(
       this.transf.toClass(Message),
     );

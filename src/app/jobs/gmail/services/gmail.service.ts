@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { concatMap, from, map, Observable, toArray } from 'rxjs';
-import { Attachment, Threads, ThreadsFilterQuery } from '../interfaces';
+import { concatMap, from, map, Observable, of, toArray } from 'rxjs';
+import { Attachment, Message, Threads, ThreadsFilterQuery } from '../interfaces';
 import { GmailApiService } from './gmail-api.service';
 
 
@@ -33,6 +33,14 @@ export class GmailService {
 
   label(id: string) {
     return this.api.getLabel(id);
+  }
+
+  markAsRead(message: Message): Observable<Message> {
+    if (message.hasLabel('UNREAD')) {
+      return this.api.modifyMessage(message.id, { removeLabelIds: ['UNREAD'] });
+    } else {
+      return of(message);
+    }
   }
 
   saveAttachments(attachments: { messageId: string, attachment: Attachment; }[]): Observable<string[]> {

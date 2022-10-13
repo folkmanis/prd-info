@@ -52,5 +52,9 @@ export class Message {
         return this.payload.getHeader('Subject');
     }
 
+    hasLabel(label: string): boolean {
+        return this.labelIds.includes(label);
+    }
+
 
 }
