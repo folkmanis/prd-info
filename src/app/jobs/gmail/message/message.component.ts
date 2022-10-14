@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, Output, ViewChild, OnDestroy } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { AttachmentsComponent } from '../attachments/attachments.component';
@@ -11,7 +11,7 @@ import { Attachment, Message } from '../interfaces';
   styleUrls: ['./message.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MessageComponent implements OnInit {
+export class MessageComponent implements OnDestroy {
 
   @ViewChild(AttachmentsComponent) attachmentsList: AttachmentsComponent;
 
@@ -30,11 +30,14 @@ export class MessageComponent implements OnInit {
 
   busy$ = new BehaviorSubject<boolean>(false);
 
+  markAsRead = true;
+
   constructor(
     private sanitizer: DomSanitizer,
   ) { }
 
-  ngOnInit(): void {
+  ngOnDestroy(): void {
+    this.busy$.complete();
   }
 
   replaceBr(str: string) {

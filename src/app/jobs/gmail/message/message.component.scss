@@ -3,14 +3,18 @@
     display: flex;
 }
 
-.message > span:nth-of-type(2) {
+.message>span:nth-of-type(2) {
     margin-left: auto;
 }
 
-.snippet > span:nth-of-type(1) {
+.snippet>span:nth-of-type(1) {
     flex: 1;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     cursor: pointer;
+}
+
+.mat-action-row {
+    align-items: center;
 }

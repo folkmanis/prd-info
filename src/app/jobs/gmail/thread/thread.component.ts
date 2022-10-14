@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, finalize, map, mergeMap, Observable, tap, withLatestFrom } from 'rxjs';
+import { BehaviorSubject, EMPTY, finalize, map, mergeMap, Observable, tap, withLatestFrom } from 'rxjs';
 import { ReproJobService } from 'src/app/jobs/repro-jobs/services/repro-job.service';
 import { UploadRefService } from 'src/app/jobs/repro-jobs/services/upload-ref.service';
 import { CustomersService } from 'src/app/services/customers.service';
@@ -80,7 +80,7 @@ export class ThreadComponent implements OnInit {
 
     this.createJobWithAttachments(attachments, message).pipe(
       mergeMap(({ uploadRef }) => uploadRef.onAddedToJob()),
-      mergeMap(() => this.gmail.markAsRead(message)),
+      mergeMap(() => component.markAsRead ? this.gmail.markAsRead(message) : EMPTY),
       finalize(() => component.busy$.next(false)),
     ).subscribe();
 

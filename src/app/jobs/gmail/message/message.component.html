@@ -5,10 +5,35 @@
 </app-attachments>
 
 <mat-action-row *ngIf="message.hasAttachment">
-    <button mat-button (click)="onCreateJob(attachmentList.selected)"
-        [disabled]="!attachmentList.selected?.length || (busy$ | async)">
-        SAGLABĀT
+
+    <button mat-button (click)="markAsRead=true; onCreateJob(attachmentList.selected)"
+        [disabled]="!attachmentList.selected?.length || (busy$ | async)" color="primary">
+        <mat-icon>
+            drafts
+        </mat-icon>
+        <span>
+            UZ DARBU
+        </span>
     </button>
+
+    <button mat-icon-button [matMenuTriggerFor]="saveMenu"
+        [disabled]="!attachmentList.selected?.length || (busy$ | async)">
+        <mat-icon>
+            more_vert
+        </mat-icon>
+    </button>
+
+    <mat-menu #saveMenu>
+        <button mat-menu-item (click)="markAsRead=false; onCreateJob(attachmentList.selected)">
+            <mat-icon>
+                mark_as_unread
+            </mat-icon>
+            <span>
+                UZ DARBU, atstāt kā nelasītu
+            </span>
+        </button>
+    </mat-menu>
+
 </mat-action-row>
 
 <mat-card-footer *ngIf="busy$ | async">
