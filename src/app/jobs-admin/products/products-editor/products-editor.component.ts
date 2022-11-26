@@ -7,6 +7,7 @@ import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.gu
 import { CustomersService, ProductsService } from 'src/app/services';
 import { SystemPreferencesService } from 'src/app/services/system-preferences.service';
 import { ProductsFormService } from '../services/products-form.service';
+import { MaterialsService } from '../../materials/services/materials.service';
 
 @Component({
   selector: 'app-products-editor',
@@ -29,6 +30,8 @@ export class ProductsEditorComponent implements OnInit, CanComponentDeactivate {
     map(conf => conf.jobs.productUnits.filter(u => !u.disabled)),
   );
 
+  materials$ = this.materialsService.getMaterials();
+
   get changes(): Partial<Product> | null {
     return this.formService.changes;
   }
@@ -43,6 +46,7 @@ export class ProductsEditorComponent implements OnInit, CanComponentDeactivate {
     private route: ActivatedRoute,
     private destroy$: DestroyService,
     private changeDetector: ChangeDetectorRef,
+    private materialsService: MaterialsService,
   ) { }
 
   onSave() {

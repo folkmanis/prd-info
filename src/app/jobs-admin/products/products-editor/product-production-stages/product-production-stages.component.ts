@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
 import { JobProductionStage, JobProductionStageMaterial } from 'src/app/interfaces';
 import { ProductionStagesService } from 'src/app/services/production-stages.service';
+import { Material } from 'src/app/interfaces';
 
 type ProductionStageGroup = ReturnType<typeof productionStage>;
 
@@ -36,6 +37,8 @@ export class ProductProductionStagesComponent implements OnInit, ControlValueAcc
   stagesAvailable$ = this.productionStagesService.productionStages$;
 
   expanded: ProductionStageGroup | null = null;
+
+  @Input() materials: Material[] | null = null;
 
   whenFn = (idx: number, rowData: ProductionStageGroup): boolean => rowData === this.expanded;
 

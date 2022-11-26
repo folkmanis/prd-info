@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild, Input } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
-import { JobProductionStageMaterial } from 'src/app/interfaces';
+import { JobProductionStageMaterial, Material } from 'src/app/interfaces';
 import { MaterialsService } from 'src/app/jobs-admin/materials/services/materials.service';
 
 
@@ -31,7 +31,15 @@ export class ProductionStageMaterialComponent implements OnInit, ControlValueAcc
 
   materialsControl = new FormArray<MaterialGroup>([]);
 
-  materials$ = this.materialsService.materials$;
+  private _materials: Material[] = [];
+  @Input() set materials(value: Material[]) {
+    if (Array.isArray(value)) {
+      this._materials = value;
+    }
+  }
+  get materials() {
+    return this._materials;
+  }
 
   displayedColumns = ['materialId', 'amount', 'fixedAmount', 'actions']; // 'units', 
 
@@ -40,7 +48,6 @@ export class ProductionStageMaterialComponent implements OnInit, ControlValueAcc
   touchFn = () => { };
 
   constructor(
-    private materialsService: MaterialsService,
   ) { }
 
   writeValue(obj: JobProductionStageMaterial[]): void {
@@ -80,7 +87,6 @@ export class ProductionStageMaterialComponent implements OnInit, ControlValueAcc
   }
 
   ngOnInit(): void {
-    this.materialsService.setFilter(null);
   }
 
   onNewMaterial() {

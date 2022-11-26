@@ -109,7 +109,7 @@
 
             </mat-expansion-panel>
 
-            <mat-expansion-panel expanded>
+            <mat-expansion-panel expanded *ngIf="materials$ | async as materials;">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
                         Ražošanas procesi
@@ -118,7 +118,8 @@
 
                 <!-- Ražošanas procesu tabula -->
                 <section>
-                    <app-product-production-stages #prodStages formControlName="productionStages">
+                    <app-product-production-stages #prodStages formControlName="productionStages"
+                        [materials]="materials">
                     </app-product-production-stages>
                 </section>
 

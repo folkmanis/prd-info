@@ -74,7 +74,8 @@
 
     <ng-container matColumnDef="materials">
         <mat-cell *matCellDef="let stage; dataIndex as idx;" [attr.colspan]="displayedColumns.length">
-            <app-production-stage-material [formControl]="stage.controls['materials']"></app-production-stage-material>
+            <app-production-stage-material [formControl]="stage.controls['materials']" [materials]="materials">
+            </app-production-stage-material>
         </mat-cell>
     </ng-container>
 

@@ -17,7 +17,7 @@ import { ProductionStagesFormService } from '../services/production-stages-form.
 })
 export class ProductionStagesEditComponent implements OnInit, CanComponentDeactivate {
 
-  equipment$ = this.equipmentService.equipment$;
+  equipment$ = this.equipmentService.getList();
 
   form = this.formService.form;
 
@@ -55,7 +55,6 @@ export class ProductionStagesEditComponent implements OnInit, CanComponentDeacti
       takeUntil(this.destroy$),
     ).subscribe(() => this.changeDetector.markForCheck());
 
-    this.equipmentService.setFilter(null);
   }
 
   canDeactivate(): boolean {

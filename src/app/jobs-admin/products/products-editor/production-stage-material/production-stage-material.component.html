@@ -21,7 +21,7 @@
         <mat-cell *matCellDef="let material; index as idx;">
             <mat-form-field>
                 <mat-select [formControl]="material.controls.materialId">
-                    <mat-option *ngFor="let mat of materials$ | async" [value]="mat._id">
+                    <mat-option *ngFor="let mat of materials" [value]="mat._id">
                         {{ mat.name }}
                     </mat-option>
                 </mat-select>
@@ -36,7 +36,7 @@
         <mat-cell *matCellDef="let material; index as idx;">
             <mat-form-field>
                 <input matInput type="number" [formControl]="material.controls.amount">
-                <span matSuffix *appMaterialUnits="let unit of materials$ | async; id: material.value.materialId">
+                <span matSuffix *appMaterialUnits="let unit of materials; id: material.value.materialId">
                     {{ unit }}
                 </span>
             </mat-form-field>
@@ -50,7 +50,7 @@
         <mat-cell *matCellDef="let material; index as idx;">
             <mat-form-field>
                 <input matInput type="number" [formControl]="material.controls.fixedAmount">
-                <span matSuffix *appMaterialUnits="let unit of materials$ | async; id: material.value.materialId">
+                <span matSuffix *appMaterialUnits="let unit of materials; id: material.value.materialId">
                     {{ unit }}
                 </span>
             </mat-form-field>
