@@ -1,7 +1,7 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Observable } from 'rxjs';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { BehaviorSubject, Observable, switchMap, debounceTime } from 'rxjs';
 import { EquipmentPartial } from 'src/app/interfaces';
-import { EquipmentService } from '../services/equipment.service';
+import { EquipmentFilter, EquipmentService } from '../services/equipment.service';
 
 @Component({
   selector: 'app-equipment-list',
@@ -9,9 +9,15 @@ import { EquipmentService } from '../services/equipment.service';
   styleUrls: ['./equipment-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EquipmentListComponent implements OnInit {
+export class EquipmentListComponent {
 
-  equipment$: Observable<EquipmentPartial[]> = this.equipmentService.equipment$;
+  private filter = new BehaviorSubject<EquipmentFilter>({});
+
+  equipment$: Observable<EquipmentPartial[]> = this.filter.pipe(
+    debounceTime(300),
+    switchMap(filter => this.equipmentService.getList(filter)),
+  );
+
 
   displayedColumns = ['name'];
 
@@ -19,14 +25,12 @@ export class EquipmentListComponent implements OnInit {
     private equipmentService: EquipmentService,
   ) { }
 
-  ngOnInit(): void {
-  }
 
   onSetFilter(name: string) {
     if (typeof name === 'string' && name.trim().length > 0) {
-      this.equipmentService.setFilter({ name });
+      this.filter.next({ name: name.trim() });
     } else {
-      this.equipmentService.setFilter(null);
+      this.filter.next({});
     }
   }
 
