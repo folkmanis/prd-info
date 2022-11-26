@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, EMPTY, map, Observable, switchMap, tap } from 'rxjs';
+import { withLatestFrom, BehaviorSubject, combineLatest, EMPTY, map, Observable, switchMap, tap, OperatorFunction, Subject } from 'rxjs';
 import { Material, ProductCategory } from 'src/app/interfaces';
-import { getConfig } from 'src/app/services/config.provider';
 import { MaterialsApiService } from 'src/app/services/prd-api/materials-api.service';
+import { getConfig } from 'src/app/services/config.provider';
+
 
 type MaterialWithDescription = Material & {
   catDes: string;
@@ -18,28 +19,15 @@ export interface MaterialsFilter {
 })
 export class MaterialsService {
 
-  private filter$ = new BehaviorSubject<MaterialsFilter>({});
 
   private productCategories$ = getConfig('jobs', 'productCategories');
 
-  materials$ = combineLatest([
-    this.filter$.pipe(switchMap(filter => this.api.getAll(filter))),
-    this.productCategories$,
-  ]).pipe(
-    this.addCategoriesDescription()
-  );
+  reload$ = new Subject<void>();
+
 
   constructor(
     private api: MaterialsApiService,
   ) { }
-
-  setFilter(filter: MaterialsFilter = {}) {
-    this.filter$.next(filter);
-  }
-
-  reload() {
-    this.filter$.next(this.filter$.value);
-  }
 
   getMaterials(filter: MaterialsFilter = {}): Observable<Material[]> {
     return this.api.getAll(filter);
@@ -59,24 +47,27 @@ export class MaterialsService {
       return EMPTY;
     }
     return this.api.updateOne(id, upd).pipe(
-      tap(_ => this.reload()),
+      tap(_ => this.reload$.next()),
     );
   }
 
   insertMaterial(material: Partial<Material>): Observable<Material> {
     delete material._id;
     return this.api.insertOne(material).pipe(
-      tap(_ => this.reload()),
+      tap(_ => this.reload$.next()),
     );
   }
 
-  private addCategoriesDescription() { // : MaterialWithDescription[]
-    return map(([materials, categories]: [Material[], ProductCategory[]]) => materials.map(
-      material => ({
-        ...material,
-        catDes: categories.find(cat => cat.category === material.category)?.description || ''
-      })
-    ));
+  materialsWithDescriptions(filter: MaterialsFilter = {}): Observable<MaterialWithDescription[]> { // : MaterialWithDescription[]
+    return this.getMaterials(filter).pipe(
+      withLatestFrom(this.productCategories$),
+      map(([materials, categories]: [Material[], ProductCategory[]]) => materials.map(
+        material => ({
+          ...material,
+          catDes: categories.find(cat => cat.category === material.category)?.description || ''
+        })
+      )),
+    );
   }
 
 

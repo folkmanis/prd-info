@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { BehaviorSubject, Observable, switchMap, debounceTime } from 'rxjs';
 import { EquipmentPartial } from 'src/app/interfaces';
 import { EquipmentFilter, EquipmentService } from '../services/equipment.service';
+import { combineReload } from 'src/app/library/rxjs';
+
 
 @Component({
   selector: 'app-equipment-list',
@@ -13,7 +15,7 @@ export class EquipmentListComponent {
 
   private filter = new BehaviorSubject<EquipmentFilter>({});
 
-  equipment$: Observable<EquipmentPartial[]> = this.filter.pipe(
+  equipment$: Observable<EquipmentPartial[]> = combineReload(this.filter, this.equipmentService.reload$).pipe(
     debounceTime(300),
     switchMap(filter => this.equipmentService.getList(filter)),
   );

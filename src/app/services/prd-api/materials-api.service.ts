@@ -25,6 +25,7 @@ export class MaterialsApiService {
     }
 
     getAll(params: Record<string, any> = {}): Observable<Material[]> {
+        console.log(params);
         return this.http.get<Record<string, any>[]>(
             this.path,
             new HttpOptions(params)

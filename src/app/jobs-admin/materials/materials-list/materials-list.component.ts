@@ -1,6 +1,8 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { BehaviorSubject, debounceTime, switchMap } from 'rxjs';
+import { combineReload } from 'src/app/library/rxjs';
 import { MaterialsFilter, MaterialsService } from '../services/materials.service';
-import { MaterialsFilterComponent } from './materials-filter/materials-filter.component';
+
 
 @Component({
   selector: 'app-materials-list',
@@ -8,31 +10,24 @@ import { MaterialsFilterComponent } from './materials-filter/materials-filter.co
   styleUrls: ['./materials-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MaterialsListComponent implements OnInit, AfterViewInit {
+export class MaterialsListComponent {
 
-  @ViewChild(MaterialsFilterComponent) private filter: MaterialsFilterComponent;
+  private filter$ = new BehaviorSubject<MaterialsFilter>({});
+
+  materials$ = combineReload(this.filter$, this.materialsService.reload$).pipe(
+    debounceTime(300),
+    switchMap(filter => this.materialsService.materialsWithDescriptions(filter)),
+  );
 
   displayedColumns = ['name', 'category',];
-
-  materials$ = this.materialsService.materials$;
 
   constructor(
     private materialsService: MaterialsService,
   ) { }
 
-  ngOnInit(): void {
-  }
-
-  ngAfterViewInit() {
-    if (this.filter) {
-      this.filter?.clear();
-    } else {
-      this.materialsService.setFilter();
-    }
-  }
 
   onSetFilter(filter: MaterialsFilter) {
-    this.materialsService.setFilter(filter);
+    this.filter$.next(filter);
   }
 
 }
