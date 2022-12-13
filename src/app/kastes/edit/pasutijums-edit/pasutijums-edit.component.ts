@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { cacheWithUpdate } from 'prd-cdk';
 import { EMPTY, map, merge, mergeMap, Observable, shareReplay, Subject, switchMap, tap } from 'rxjs';

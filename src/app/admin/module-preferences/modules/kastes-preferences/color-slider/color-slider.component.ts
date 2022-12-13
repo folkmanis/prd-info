@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewChild } from '@angular/core';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { MatSlider } from '@angular/material/slider';
+import { MatLegacySlider as MatSlider } from '@angular/material/legacy-slider';
 import { HslColor } from './hsl-color';
 
 @Component({
