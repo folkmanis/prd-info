@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { combineLatest, map, merge, mergeMap, Observable, of, share, Subject, switchMap, tap } from 'rxjs';
+import { combineLatest, map, merge, mergeMap, Observable, of, share, shareReplay, Subject, switchMap, tap } from 'rxjs';
 import { Colors, VeikalsKaste } from '../interfaces';
 import { KastesPasutijumiService } from '../services/kastes-pasutijumi.service';
 import { getKastesPreferences } from '../services/kastes-preferences.service';
@@ -53,14 +53,17 @@ export class SelectorComponent {
     this.pasutijumsId$,
     this._reload$,
     this._updateKaste$
-  ).pipe(tap(vk => this.allKastes = vk));
+  ).pipe(
+    tap(vk => this.allKastes = vk),
+    shareReplay(1),
+  );
 
   kastesApjoms$: Observable<VeikalsKaste[]> = combineLatest([
     this.kastesAll$,
     this.apjoms$,
   ]).pipe(
     map(([kastes, apj]) => kastes.filter(k => !apj || k.kastes.total === apj)),
-    share(),
+    shareReplay(1),
   );
 
   totals$ = this.kastesApjoms$.pipe(

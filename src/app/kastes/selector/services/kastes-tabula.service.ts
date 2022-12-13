@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { cacheWithUpdate } from 'prd-cdk';
 import { Observable } from 'rxjs';
-import { share, switchMap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { Colors, COLORS, Totals, VeikalsKaste } from 'src/app/kastes/interfaces';
 import { combineReload } from 'src/app/library/rxjs';
 import { KastesApiService } from '../../services/kastes-api.service';
@@ -27,7 +27,6 @@ export class KastesTabulaService {
     ).pipe(
       switchMap(id => this.api.getKastes(id)),
       cacheWithUpdate(update, (o1, o2) => o1._id === o2._id && o1.kaste === o2.kaste),
-      share(),
     );
   }
 
