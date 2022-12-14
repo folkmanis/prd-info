@@ -21,8 +21,7 @@
                         refresh
                     </mat-icon>
                 </button>
-                <app-kopskaiti [colorCodes]="colorCodes" [totals]="totals$ | async"
-                    [pendingCount]="pendingCount$ | async"></app-kopskaiti>
+                <app-kopskaiti [colorCodes]="colorCodes" [totals]="totals$ | async"></app-kopskaiti>
                 <mat-slide-toggle [formControl]="showCompleted" matTooltip="Rādīt arī gatavos iepakojumus"> Gatavie
                 </mat-slide-toggle>
             </div>

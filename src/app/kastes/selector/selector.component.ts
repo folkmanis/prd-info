@@ -1,13 +1,12 @@
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { combineLatest, map, merge, mergeMap, Observable, of, share, shareReplay, Subject, switchMap, tap } from 'rxjs';
+import { combineLatest, map, merge, mergeMap, Observable, of, shareReplay, Subject, switchMap, tap } from 'rxjs';
 import { Colors, VeikalsKaste } from '../interfaces';
 import { KastesPasutijumiService } from '../services/kastes-pasutijumi.service';
 import { getKastesPreferences } from '../services/kastes-preferences.service';
 import { Status as LabelStatus } from './labels/labels.component';
 import { KasteDialogService } from './services/kaste-dialog.service';
-import { KastesLocalStorageService } from './services/kastes-local-storage.service';
 import { KastesTabulaService } from './services/kastes-tabula.service';
 import { TabulaComponent } from './tabula/tabula.component';
 
@@ -41,8 +40,6 @@ export class SelectorComponent {
   kastesJob$ = this.pasutijumsId$.pipe(
     switchMap(id => this.pasutijumiService.getKastesJob(id)),
   );
-
-  pendingCount$ = this.localStorage.pendingCount$;
 
   apjoms$ = this.route.paramMap.pipe(
     map(params => +params.get('apjoms')),
@@ -85,7 +82,6 @@ export class SelectorComponent {
     private route: ActivatedRoute,
     private tabulaService: KastesTabulaService,
     private pasutijumiService: KastesPasutijumiService,
-    private localStorage: KastesLocalStorageService,
     private kasteDialog: KasteDialogService,
   ) { }
 

@@ -5,8 +5,6 @@ import { getAppParams } from 'src/app/app-params';
 import { KastesJob, KastesUserPreferences, Veikals, VeikalsKaste, VeikalsUpload } from 'src/app/kastes/interfaces';
 import { HttpOptions } from 'src/app/library/http';
 import { KastesJobPartial } from '../interfaces';
-import { USE_KASTES_STORAGE } from '../selector/services/kastes-local-storage.service';
-
 
 
 
@@ -50,11 +48,7 @@ export class KastesApiService {
     setGatavs({ _id, kaste }: Pick<VeikalsKaste, '_id' | 'kaste'>, yesno: boolean): Observable<VeikalsKaste> {
         // `192.168.8.73:4030/data/kastes/60f9214bf0b8622f7cedccaa/0/gatavs/false`
         const path = `${this.path}${_id}/${kaste}/gatavs/${yesno}`;
-        return this.http.patch<VeikalsKaste>(path, {}, new HttpOptions().setContext(USE_KASTES_STORAGE, {
-            yesno,
-            veikalsId: _id,
-            kaste,
-        }));
+        return this.http.patch<VeikalsKaste>(path, {}, new HttpOptions());
     }
 
     setLabel({ pasutijums, kods }: Pick<VeikalsKaste, 'pasutijums' | 'kods'>): Observable<VeikalsKaste> {

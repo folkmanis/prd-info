@@ -11,8 +11,6 @@ import { KopskaitiComponent } from './kopskaiti/kopskaiti.component';
 import { RowIdDirective } from './tabula/row-id.directive';
 import { OrderTotalsComponent } from './order-totals/order-totals.component';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
-import { KastesLocalStorageInterceptor } from './services/kastes-local-storage.interceptor';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { KasteDialogComponent } from './kaste-dialog/kaste-dialog.component';
 
 
@@ -33,12 +31,5 @@ import { KasteDialogComponent } from './kaste-dialog/kaste-dialog.component';
     MaterialLibraryModule,
     SelectorRoutingModule
   ],
-  providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: KastesLocalStorageInterceptor,
-      multi: true,
-    }
-  ]
 })
 export class SelectorModule { }

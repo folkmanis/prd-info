@@ -11,8 +11,6 @@ export class KopskaitiComponent {
   @Input() colorCodes: { [key in Colors]: string; };
   @Input() totals: Totals;
 
-  @Input() pendingCount = 0;
-
   constructor(
   ) { }
 
