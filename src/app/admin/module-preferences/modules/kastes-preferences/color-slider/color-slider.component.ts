@@ -1,7 +1,8 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, ViewChild, OnDestroy } from '@angular/core';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { MatLegacySlider as MatSlider } from '@angular/material/legacy-slider';
+import { MatSlider } from '@angular/material/slider';
 import { HslColor } from './hsl-color';
+import { FocusMonitor } from '@angular/cdk/a11y';
 
 @Component({
   selector: 'app-color-slider',
@@ -16,11 +17,11 @@ import { HslColor } from './hsl-color';
     }
   ]
 })
-export class ColorSliderComponent implements ControlValueAccessor, AfterViewInit {
+export class ColorSliderComponent implements ControlValueAccessor, AfterViewInit, OnDestroy {
 
   @Input() label = '';
 
-  @ViewChild(MatSlider) private slide: MatSlider;
+  @ViewChild(MatSlider, { read: ElementRef }) private slide: ElementRef;
 
   onChangeFn: (obj: string) => void;
   onTouchedFn: () => void;
@@ -31,6 +32,7 @@ export class ColorSliderComponent implements ControlValueAccessor, AfterViewInit
 
   constructor(
     private cd: ChangeDetectorRef,
+    private focusMonitor: FocusMonitor,
   ) { }
 
   writeValue(obj: string) {
@@ -61,7 +63,11 @@ export class ColorSliderComponent implements ControlValueAccessor, AfterViewInit
   }
 
   ngAfterViewInit() {
-    this.slide.registerOnTouched(this.onTouchedFn);
+    this.focusMonitor.monitor(this.slide.nativeElement, true).subscribe(this.onTouchedFn);
+  }
+
+  ngOnDestroy(): void {
+    this.focusMonitor.stopMonitoring(this.slide.nativeElement);
   }
 
 }

@@ -3,6 +3,7 @@
 @use "./app/library/simple-form-typed/simple-form.styles.scss" as simple-form;
 @use "./app/layout/messaging/messages-pane.scss" as message-pane;
 @use "./app/library/table/table-theme.scss" as table;
+@use "./app/library/dense-list/dense-list.theme";
 
 // Plus imports for other components in your app.
 
@@ -17,26 +18,32 @@
 //  If you don't need the default component typographies but still want the hierarchy styles,
 //  you can delete this line and instead use:
 //    `@include mat.legacy-typography-hierarchy(mat.define-legacy-typography-config());`
-@include mat.all-legacy-component-typographies();
-@include mat.legacy-core();
+// @include mat.all-legacy-component-typographies();
+// @include mat.legacy-core();
+@include mat.core();
+// @include mat.all-component-typographies();
 
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
 
-$theme: app-styles.$theme;
 // @import "./zmg-styles.scss";
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include mat.all-legacy-component-themes($theme);
+// @include mat.all-legacy-component-themes($theme);
+
+$theme: app-styles.$theme;
+@include mat.all-component-themes($theme);
 
 @include simple-form.theme($theme);
 
 @include message-pane.theme($theme);
 
 @include table.theme($theme);
+
+@include dense-list.theme($theme);
 
 $primary: map-get($theme, primary);
 $accent: map-get($theme, accent);

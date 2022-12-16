@@ -1,6 +1,6 @@
 import { Directive, Input, HostListener } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { InvoicesService } from '../../services/invoices.service';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { filter, map, mergeMap, switchMap } from 'rxjs/operators';

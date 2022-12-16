@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { MatLegacySelectionList as MatSelectionList, MatLegacySelectionListChange as MatSelectionListChange } from '@angular/material/legacy-list';
+import { MatSelectionList, MatSelectionListChange } from '@angular/material/list';
 import { FacetCount } from '../../interfaces';
 
 @Component({

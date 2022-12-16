@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { MatLegacyTable as MatTable } from '@angular/material/legacy-table';
+import { MatDialog } from '@angular/material/dialog';
+import { MatTable } from '@angular/material/table';
 import { ClassTransformer } from 'class-transformer';
 import { filter, map, Observable } from 'rxjs';
 import { MaterialPrice } from 'src/app/interfaces';

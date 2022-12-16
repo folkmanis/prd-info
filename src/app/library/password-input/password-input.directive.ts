@@ -1,6 +1,6 @@
 import { Directive, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { ValidatorFn } from '@angular/forms';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig } from '@angular/material/legacy-dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { filter } from 'rxjs';
 import { PasswordDialogData, PasswordInputDialogComponent } from './password-input-dialog/password-input-dialog.component';
 

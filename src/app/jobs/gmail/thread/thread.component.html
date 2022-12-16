@@ -2,34 +2,26 @@
 
     <mat-card>
 
-        <mat-card-title>
+        <mat-card-header>
 
-            <a mat-mini-fab routerLink=".." color="primary">
-                <mat-icon>
-                    chevron_left
-                </mat-icon>
+            <mat-card-title>
+                {{ thread.from }}
+            </mat-card-title>
+
+            <mat-card-subtitle>
+                {{ thread.subject }}
+            </mat-card-subtitle>
+
+        </mat-card-header>
+
+        <mat-card-actions>
+            <a mat-button routerLink=".." color="primary">
+                ATPAKAĻ
             </a>
-
-            <div class="header">
-                <h3>
-                    {{ thread.from }}
-                </h3>
-                <h4>
-                    <span>
-                        {{ thread.subject }}
-                    </span>
-                    <button mat-button (click)="onCreateFromThread(thread)">
-                        <mat-icon>
-                            arrow_circle_right
-                        </mat-icon>
-                        <span>
-                            UZ DARBU
-                        </span>
-                    </button>
-                </h4>
-            </div>
-
-        </mat-card-title>
+            <button mat-button (click)="onCreateFromThread(thread)">
+                UZ DARBU
+            </button>
+        </mat-card-actions>
 
         <mat-card-footer *ngIf="busy$ | async">
             <mat-progress-bar mode="indeterminate"></mat-progress-bar>

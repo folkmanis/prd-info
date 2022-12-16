@@ -7,10 +7,10 @@
         </mat-tree-node>
         <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild;">
             <mat-list-item [class.active]="node.routeStr === activeRoute">
-                <a [routerLink]="node.route" (click)="treeControl.expand(node)">
+                <a matListItemTitle [routerLink]="node.route" (click)="treeControl.expand(node)">
                     {{node.name}}
                 </a>
-                <button mat-icon-button matTreeNodeToggle>
+                <button matListItemMeta mat-icon-button matTreeNodeToggle>
                     <mat-icon class="mat-icon-rtl-mirror">
                         {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
                     </mat-icon>

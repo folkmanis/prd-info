@@ -2,7 +2,8 @@
 
     <span class="label" [style.color]="hslColor.toString()">{{label}}:</span>
 
-    <mat-slider [formControl]="colorForm" min="0" max="100" step="1" thumbLabel>
+    <mat-slider [min]="0" [max]="100" [step]="1">
+        <input matSliderThumb [formControl]="colorForm">
     </mat-slider>
 
     <span [style.color]="hslColor.toString()">{{hslColor.lightness}}%</span>

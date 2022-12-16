@@ -3,26 +3,26 @@
     height: 100%;
 }
 
-.mat-drawer-container {
+mat-drawer-container {
     height: 100%;
 }
 
-.mat-drawer {
+mat-drawer {
     width: 280px;
 }
 
-.mat-card {
+.mat-mdc-card {
     margin: 16px;
 }
 
 
-.mat-drawer-content {
+mat-drawer-content {
     display: flex;
     flex-direction: column;
     height: 100%;
     overflow: auto;
 }
 
-.mat-card>* {
+.mat-mdc-card>* {
     margin-right: 16px;
 }

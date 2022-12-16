@@ -1,8 +1,9 @@
-.mat-drawer {
+mat-drawer {
   width: 300px;
+  padding: 8px;
 }
 
-.mat-drawer-container {
+mat-drawer-container {
   height: 100%;
 }
 
@@ -10,13 +11,9 @@
   overflow: auto;
 }
 
-.mat-drawer-content {
+mat-drawer-content {
   display: flex;
   flex-direction: column;
-}
-
-.mat-drawer {
-  padding: 8px;
 }
 
 .no-active>p {

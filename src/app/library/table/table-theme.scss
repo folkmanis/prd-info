@@ -1,20 +1,19 @@
 @use "@angular/material" as mat;
 
-@mixin app-table-color($config-or-theme) {
-  // Extract the color configuration in case a theme has been passed.
-  // This allows consumers to either pass a theme object or a color configuration.
-  $config: mat.get-color-config($config-or-theme);
-  // Extract the palettes you need from the theme definition.
+@mixin app-table-color($config) {
+
   $primary: map-get($config, primary);
   $accent: map-get($config, accent);
 
-  // Define any styles affected by the theme.
+
   .app-table tbody tr,
-  .app-table .mat-row {
+  .app-table .mat-mdc-row,
+  .app-table.mat-mdc-table .mat-mdc-row {
     &:hover {
       background-color: mat.get-color-from-palette($primary, "lighter");
       border-bottom-color: mat.get-color-from-palette($primary, "darker");
     }
+
     &.selected {
       background-color: mat.get-color-from-palette($primary, 50);
     }
@@ -22,11 +21,11 @@
 }
 
 @mixin app-table-typography($config-or-theme) {
-  // Extract the typography configuration in case a theme has been passed.
+
   $config: mat.get-typography-config($config-or-theme);
 
   .app-table tbody tr,
-  .app-table .mat-row {
+  .app-table .mat-mdc-row {
     &:hover {
       font-weight: 800;
       // font-weight: mat.font-weight($config, body+3);
@@ -35,8 +34,9 @@
 }
 
 @mixin app-table() {
+
   table.app-table,
-  .mat-table.app-table {
+  .mat-mdc-table.app-table {
     width: 100%;
     cursor: pointer;
   }
@@ -49,10 +49,11 @@
 
   // Do not generate styles if configurations for individual theming
   // systems have been explicitly set to `null`.
-  @if $color != null {
+  @if $color !=null {
     @include app-table-color($color);
   }
-  @if $typography != null {
+
+  @if $typography !=null {
     @include app-table-typography($typography);
   }
 

@@ -12,12 +12,12 @@
     </span>
 
     <div class="chips-bar">
-        <mat-chip-list>
+        <mat-chip-set>
             <mat-chip *ngFor="let col of chipsAvailable$ | async" color="primary" [appDragable]="col"
                 dragSource="primary">
                 {{col}}
             </mat-chip>
-        </mat-chip-list>
+        </mat-chip-set>
     </div>
 
     <table mat-table class="app-table" *ngIf="columns$ | async as columns;" [dataSource]="datasource$"
@@ -34,13 +34,13 @@
             <th mat-header-cell *matHeaderCellDef>
                 <div *ngIf="chipsAssignement$ | async as assignement;">
                     <div class="drop-target" appDragDrop (dropEmitter)="onDrop($event, col)">
-                        <mat-chip-list>
+                        <mat-chip-set>
                             <mat-chip *ngIf="isChipAssigned(assignement, col) as chipName;" color="primary"
                                 [appDragable]="chipName" removable [dragSource]="col" (removed)="onChipRemove(col)">
                                 {{chipName}}
                                 <mat-icon matChipRemove>cancel</mat-icon>
                             </mat-chip>
-                        </mat-chip-list>
+                        </mat-chip-set>
                     </div>
                     <div class="column-check">
                         <mat-checkbox [formControlName]="colIdx"></mat-checkbox>

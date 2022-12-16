@@ -1,7 +1,7 @@
 import { ComponentType } from '@angular/cdk/portal';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, EMPTY, merge, Observable, of, Subject } from 'rxjs';
 import { map, mergeAll, mergeMap, shareReplay, skip, takeUntil, tap } from 'rxjs/operators';
 import { DestroyService } from 'prd-cdk';

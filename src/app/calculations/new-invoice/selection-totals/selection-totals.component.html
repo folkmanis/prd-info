@@ -1,17 +1,15 @@
-<h3>
+<h4>
     Atlase
-</h3>
+</h4>
 
-<mat-list dense>
+<mat-list>
 
-    <mat-list-item *ngFor="let total of invoicesTotals?.totals">
-        <div class="list-item">
+    <mat-list-item appDenseList appDenseListHeight="32px" *ngFor="let total of invoicesTotals?.totals">
+        <span matListItemLine>
 
             <span>
                 {{total._id}}
             </span>
-
-            <span class="spacer"></span>
 
             <span>
                 {{total.count}}
@@ -19,16 +17,14 @@
                 <strong> {{total.total | currency}} </strong>
             </span>
 
-        </div>
+        </span>
     </mat-list-item>
 
-    <mat-list-item>
-        <div class="total list-item">
+    <mat-list-item appDenseList appDenseListHeight="32px">
+        <div matListItemLine appDenseListTotal>
             <span>
                 Kopā
             </span>
-
-            <span class="spacer"></span>
 
             <span>
                 {{ invoicesTotals?.grandTotal | currency }}

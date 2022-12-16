@@ -1,4 +1,4 @@
-.mat-nav-list {
+.mat-mdc-nav-list {
   width: 250px;
 }
 
@@ -6,12 +6,12 @@
   display: none;
 }
 
-.tree-indent a {
+.tree-indent {
   padding-left: 16px;
 }
 
-.mat-list-item,
-.mat-tree-node {
+mat-list-item,
+mat-tree-node {
   &.active {
     background-color: var(--primary-lighter);
     color: var(--primary-contrast);
@@ -23,6 +23,6 @@
   }
 }
 
-.active > a:hover {
+.active>a:hover {
   color: var(--primary-darker-contrast);
 }

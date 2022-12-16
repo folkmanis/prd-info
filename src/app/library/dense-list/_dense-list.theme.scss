@@ -1,0 +1,50 @@
+@use "@angular/material" as mat;
+
+@mixin app-dense-list-color($color) {
+
+    $primary: map-get($color, primary);
+
+    mat-list-item[appDenseList]:hover {
+
+        background-color: mat.get-color-from-palette($primary, "lighter");
+
+    }
+}
+
+@mixin app-dense-list() {
+
+    mat-list-item[appDenseList] {
+
+        &.mdc-list-item.mdc-list-item--with-one-line {
+            cursor: default;
+        }
+
+
+        span[matListItemLine] {
+            display: flex;
+            width: 100%;
+
+            >:nth-child(2) {
+                margin-left: auto;
+            }
+        }
+
+        [appDenseListTotal] {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+    }
+
+}
+
+@mixin theme($theme) {
+
+    $color: mat.get-color-config($theme);
+
+    @if $color !=null {
+        @include app-dense-list-color($color);
+    }
+
+    @include app-dense-list();
+}

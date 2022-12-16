@@ -1,15 +1,17 @@
-.spacer {
-    flex: 1;
-}
-
 .count {
-    font-weight: 500;
+    font-weight: 800;
+    margin-left: auto;
 }
 
-.mat-list-item {
+.mat-mdc-list-item {
     cursor: default;
+    height: 40px;
 }
 
-.mat-list-item:hover {
+.mat-mdc-list-item:hover {
     background-color: rgba($color: #000000, $alpha: 0.04);
+}
+
+.mat-mdc-list-item-line {
+    display: flex;
 }

@@ -3,26 +3,7 @@
     margin-bottom: 16px;
 }
 
-h3 {
+h4 {
     margin: 8px 0 0;
     padding: 0 16px;
-}
-
-.mat-list-base[dense] .mat-list-item,
-.mat-list-base[dense] .mat-list-option {
-    height: 20px;
-    cursor: pointer;
-}
-
-.mat-list-item .list-item {
-    display: flex;
-    width: 100%;
-}
-
-.mat-list-item:hover {
-    background-color: var(--primary-lighter);
-}
-
-.spacer {
-    flex: 1 1 auto;
 }

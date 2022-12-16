@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { MatLegacyButton as MatButton } from '@angular/material/legacy-button';
+import { MatButton } from '@angular/material/button';
 import { Subject } from 'rxjs';
 import { Customer, CustomerFinancial } from 'src/app/interfaces';
 import { PaytraqClient } from 'src/app/interfaces/paytraq';

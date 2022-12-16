@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { mergeMap, Observable, Subject } from 'rxjs';
 import { Invoice, InvoiceProduct } from 'src/app/interfaces';
 import { getConfig } from 'src/app/services/config.provider';

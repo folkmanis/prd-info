@@ -1,15 +1,20 @@
-<mat-list dense>
+<mat-list>
+
     <mat-list-item *ngFor="let product of productSums" (mouseenter)="onMouseEnter(product.name)"
         (mouseleave)="onMouseLeave(product.name)">
-        <span>
-            {{ product.name }}
+
+        <span matListItemLine>
+            <span>
+                {{ product.name }}
+            </span>
+            <span class="count">
+                {{ product.count }}
+            </span>
+            <span>
+                &nbsp;{{ product.units }}
+            </span>
         </span>
-        <span class="spacer"></span>
-        <span class="count">
-            {{ product.count }}
-        </span>
-        <span>
-            &nbsp;{{ product.units }}
-        </span>
+
     </mat-list-item>
+
 </mat-list>

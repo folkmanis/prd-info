@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators } from '@angular/forms';
-import { MatLegacyTable as MatTable } from '@angular/material/legacy-table';
+import { MatTable } from '@angular/material/table';
 import { JobProductionStage, JobProductionStageMaterial } from 'src/app/interfaces';
 import { ProductionStagesService } from 'src/app/services/production-stages.service';
 import { Material } from 'src/app/interfaces';

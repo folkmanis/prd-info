@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
-import { MatLegacySelectionList as MatSelectionList } from '@angular/material/legacy-list';
+import { MatSelectionList } from '@angular/material/list';
 import { isEqual } from 'lodash-es';
 import { Attachment } from '../interfaces';
 

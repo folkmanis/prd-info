@@ -1,4 +1,4 @@
-.mat-card.container {
+.mat-mdc-card.container {
     max-width: 480px;
     margin: 16px;
 }
@@ -18,5 +18,5 @@ section.buttons {
 
 .avatar {
     background-size: cover;
-    background-image:url("/data/login/avatar")
+    background-image: url("/data/login/avatar")
 }

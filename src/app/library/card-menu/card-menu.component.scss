@@ -9,14 +9,15 @@
     margin: 20px;
     vertical-align: top;
     width: 300px;
+    cursor: pointer;
 }
 
 .card-text {
-    text-decoration: none;
+    // text-decoration: none;
     min-height: 100px;
 }
 
 a:any-link {
     cursor: pointer;
-    text-decoration: none;
+    // text-decoration: none;
 }

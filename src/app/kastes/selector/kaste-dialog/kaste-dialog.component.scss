@@ -2,15 +2,16 @@
     text-align: center;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of dialog that may no longer apply for the MDC version. */
 mat-dialog-actions>button {
     margin: auto;
 }
 
-.mat-dialog-content {
+.mat-mdc-dialog-content {
     text-align: center;
 }
 
-.mat-dialog-content .colors {
+.mat-mdc-dialog-content .colors {
     min-height: 180px;
     display: flex;
     flex-direction: column;

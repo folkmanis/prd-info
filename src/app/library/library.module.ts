@@ -19,6 +19,7 @@ import { DateServicesModule } from './date-services';
 import { InputTrimDirective } from './directives/input-trim.directive';
 import { PasswordInputModule } from './password-input/password-input.module';
 import { ViewSizeModule } from './view-size/view-size.module';
+import { DenseListDirective } from './dense-list/dense-list.directive';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { ViewSizeModule } from './view-size/view-size.module';
     FocusedDirective,
     BackButtonDirective,
     InputTrimDirective,
+    DenseListDirective,
   ],
   imports: [
     CommonModule,
@@ -64,6 +66,7 @@ import { ViewSizeModule } from './view-size/view-size.module';
     DateServicesModule,
     PasswordInputModule,
     ViewSizeModule,
+    DenseListDirective,
   ],
 })
 export class LibraryModule { }

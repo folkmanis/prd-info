@@ -1,4 +1,4 @@
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
+import { MatTableDataSource } from '@angular/material/table';
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { MaterialPrice } from 'src/app/interfaces';
 import { filter, takeUntil, merge, Observable, BehaviorSubject, Subject } from 'rxjs';
