@@ -1,8 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ClassTransformer } from 'class-transformer';
-import { Observable } from 'rxjs';
-import { map, pluck } from 'rxjs/operators';
+import { Observable, map } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { HttpOptions } from 'src/app/library/http/http-options';
 import { ArchiveFacet, ArchiveRecord, SearchQuery } from '../interfaces';
@@ -46,7 +45,7 @@ export class XmfArchiveApiService {
             this.path + 'count',
             new HttpOptions(this.queryStr(query)),
         ).pipe(
-            pluck('count'),
+            map(data => data['count']),
         );
     }
 

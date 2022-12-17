@@ -4,13 +4,19 @@
     </mat-drawer>
 
     <mat-drawer-content>
-        <div>
-            <app-search-input [count]="count$ | async" (searchString)="onSearch($event);">
+
+        <div class="search-box mat-elevation-z4">
+
+            <app-search-input (searchString)="onSearch($event);">
             </app-search-input>
+
+            <app-status-count [count]="count$ | async">
+            </app-status-count>
+
         </div>
 
         <div class="main">
-            <app-search-table [search]="query.q"></app-search-table>
+            <app-search-table [search]="query$ | async" [data]="data$ | async"></app-search-table>
         </div>
     </mat-drawer-content>
 </mat-drawer-container>

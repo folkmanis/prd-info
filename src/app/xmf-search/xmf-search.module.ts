@@ -10,8 +10,8 @@ import { SearchTableComponent } from './search-table/search-table.component';
 import { FacetComponent } from './facet/facet.component';
 import { FacetCheckerComponent } from './facet/facet-checker/facet-checker.component';
 import { SearchInputComponent } from './search-input/search-input.component';
-import { StatusComponent } from './search-input/status.component';
 import { FacetPipe } from './facet/facet-checker/facet.pipe';
+import { StatusCountComponent } from './status-count/status-count.component';
 
 
 @NgModule({
@@ -21,8 +21,8 @@ import { FacetPipe } from './facet/facet-checker/facet.pipe';
     FacetComponent,
     FacetCheckerComponent,
     SearchInputComponent,
-    StatusComponent,
     FacetPipe,
+    StatusCountComponent,
   ],
   imports: [
     CommonModule,

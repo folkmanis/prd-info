@@ -1,26 +1,9 @@
-.search-box {
-    display: flex;
-    align-items: flex-end;
+:host {
+    display: block;
+    margin: 16px 16px 0 16px;
 }
 
-span {
-    flex: 1 1 auto;
-}
-
-.search-input {
-    margin: 0 16px;
-    min-width: 8em;
-    max-width: 16em;
-    width: 100%;
+mat-form-field {
     font-size: 150%;
-}
-
-.count {
-    flex: 0 auto;
-    margin-right: 16px;
-}
-
-.spinner {
-    flex: 0;
-    margin: 16px;
+    font-weight: 500;
 }

@@ -12,6 +12,15 @@ mat-drawer-content {
     flex-direction: column;
 }
 
+.search-box {
+
+    display: flex;
+
+    >*:last-child {
+        margin-left: auto;
+    }
+}
+
 .main {
     flex: 1;
     height: 100%;

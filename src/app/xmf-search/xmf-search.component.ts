@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { FacetComponent } from './facet/facet.component';
 import { FacetFilter, SearchQuery } from './interfaces';
 import { ArchiveSearchService } from './services/archive-search.service';
@@ -7,35 +8,31 @@ import { ArchiveSearchService } from './services/archive-search.service';
   selector: 'app-xmf-search',
   templateUrl: './xmf-search.component.html',
   styleUrls: ['./xmf-search.component.scss'],
-  providers: [ArchiveSearchService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class XmfSearchComponent implements OnInit {
+export class XmfSearchComponent {
 
-  @ViewChild(FacetComponent) facetComponent: FacetComponent;
+  @ViewChild(FacetComponent) private facetComponent: FacetComponent;
 
-  count$ = this.service.count$;
-  facet$ = this.service.facet$;
+  readonly query$ = new BehaviorSubject<SearchQuery>(new SearchQuery());
 
-  query: SearchQuery;
+
+  count$ = this.service.getCount(this.query$);
+  facet$ = this.service.getFacet(this.query$);
+
+  data$ = this.service.getData(this.query$, this.count$);
 
   constructor(
     private service: ArchiveSearchService,
   ) { }
 
-  ngOnInit() {
-    this.query = new SearchQuery();
-  }
-
   onSearch(search: string) {
-    this.query = new SearchQuery(search);
     this.facetComponent.onDeselectAll();
-    this.service.setQuery(this.query);
+    this.query$.next(new SearchQuery(search));
   }
 
   onFacet(facet: FacetFilter) {
-    this.query.setFacet(facet);
-    this.service.setQuery(this.query);
+    this.query$.next(this.query$.value.setFacet(facet));
   }
 
 }

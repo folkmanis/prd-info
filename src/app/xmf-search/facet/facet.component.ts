@@ -9,7 +9,7 @@ import { FacetCheckerComponent } from './facet-checker/facet-checker.component';
   styleUrls: ['./facet.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FacetComponent implements OnInit, OnDestroy {
+export class FacetComponent {
 
   @Input() facet: ArchiveFacet;
   @Output() filter = new EventEmitter<FacetFilter>();
@@ -23,12 +23,6 @@ export class FacetComponent implements OnInit, OnDestroy {
   onDeselectAll() {
     this.facetFilter = new FacetFilter();
     this.blocks.forEach(bl => bl.deselect());
-  }
-
-  ngOnInit() {
-  }
-
-  ngOnDestroy() {
   }
 
   onSelect(selected: (string | number)[], key: keyof FacetFilter) {

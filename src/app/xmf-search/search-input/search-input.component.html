@@ -1,22 +1,15 @@
-<div class="search-box mat-elevation-z4">
-    <span>
-        <mat-form-field class="search-input">
-            <input matInput [formControl]="q" type="search" appFocused>
-            <button *ngIf="q.value.length === 0" mat-button matSuffix mat-icon-button disabled>
-                <mat-icon>search</mat-icon>
-            </button>
-            <button *ngIf="q.value.length !== 0" mat-button matSuffix mat-icon-button (click)="q.setValue('')">
-                <mat-icon>close</mat-icon>
-            </button>
-        </mat-form-field>
-    </span>
-    <span></span>
-    <span *ngIf="count === undefined || count === null; else ready;" class="spinner">
-        <mat-spinner color="primary" [diameter]="32"></mat-spinner>
-    </span>
-    <ng-template #ready>
-        <h3 class="count">
-            <app-status [count]="count"></app-status>
-        </h3>
+<mat-form-field>
+
+    <input matInput [formControl]="searchControl" appFocused>
+
+    <button mat-icon-button *ngIf="searchControl.value.length === 0; else resetButton" matSuffix disabled>
+        <mat-icon>search</mat-icon>
+    </button>
+
+    <ng-template #resetButton>
+        <button mat-icon-button matSuffix (click)="searchControl.setValue('')">
+            <mat-icon>close</mat-icon>
+        </button>
     </ng-template>
-</div>
+
+</mat-form-field>

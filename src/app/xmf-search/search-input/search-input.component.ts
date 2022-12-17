@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, map, shareReplay, startWith } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, shareReplay, merge, of } from 'rxjs';
 
 @Component({
   selector: 'app-search-input',
@@ -10,16 +10,16 @@ import { debounceTime, distinctUntilChanged, map, shareReplay, startWith } from 
 })
 export class SearchInputComponent {
 
-  @Input() count: number | undefined | null;
+  searchControl = new FormControl('');
 
-  q = new FormControl('');
-
-  @Output() searchString = this.q.valueChanges.pipe(
-    startWith(''),
+  @Output() searchString = merge(
+    // of(''),
+    this.searchControl.valueChanges
+  ).pipe(
     debounceTime(300),
     map(q => q.trim()),
     distinctUntilChanged(),
-    shareReplay(1),
+    // shareReplay(1),
   );
 
 

@@ -8,8 +8,9 @@ export class SearchQuery {
         public q: string = '',
     ) { }
 
-    setFacet(facet: FacetFilter) {
+    setFacet(facet: FacetFilter): SearchQuery {
         this.facet = facet;
+        return this;
     }
 
     searialize(): string {

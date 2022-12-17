@@ -17,8 +17,8 @@ interface Chunk {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaggedStringComponent {
-  @Input() set text(text: string) {
-    this._text = text;
+  @Input() set text(text: string | null) {
+    this._text = text || '';
     this.parseValues();
   }
   get text(): string { return this._text; }
@@ -31,13 +31,13 @@ export class TaggedStringComponent {
   get search(): string | undefined { return this._search; }
   private _search: string | undefined;
 
-  @Input() set style(style: { [key: string]: string }) {
+  @Input() set style(style: { [key: string]: string; }) {
     this._style = style;
   }
-  get style(): { [key: string]: string } {
+  get style(): { [key: string]: string; } {
     return this._style;
   }
-  private _style: { [key: string]: string } = {
+  private _style: { [key: string]: string; } = {
     'font-weight': 'bold',
     color: 'red',
   };

@@ -1,41 +1,42 @@
 import { Injectable } from '@angular/core';
-import { Observable, OperatorFunction, pipe, ReplaySubject } from 'rxjs';
-import { filter, map, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators';
-import { ArchiveFacet, ArchiveRecord, SearchQuery } from '../interfaces';
 import { cloneDeep } from 'lodash-es';
+import { Observable, OperatorFunction, pipe } from 'rxjs';
+import { map, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { ArchiveFacet, ArchiveRecord, SearchQuery } from '../interfaces';
 import { PagedCache } from './paged-cache';
 import { SearchData } from './search-data';
 import { XmfArchiveApiService } from './xmf-archive-api.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class ArchiveSearchService {
 
-  private readonly query$ = new ReplaySubject<SearchQuery>(1);
-
-  count$: Observable<number | undefined> = this.query$.pipe(
-    switchMap(query => this.api.getCount(query)),
-    shareReplay(1),
-  );
-
-  archive$: Observable<SearchData> = this.count$.pipe(
-    filter(count => count !== undefined),
-    withLatestFrom(this.query$),
-    map(([count, q]) => new PagedCache<ArchiveRecord>(count, this.fetchRecords(q))),
-    map(cache => new SearchData(cache))
-  );
-
-  facet$: Observable<ArchiveFacet> = this.query$.pipe(
-    facetCache(query => this.api.getFacet(query)),
-  );
 
   constructor(
     private api: XmfArchiveApiService,
   ) { }
 
-  setQuery(query: SearchQuery) {
-    this.query$.next(query);
+  getCount(query: Observable<SearchQuery>): Observable<number> {
+    return query.pipe(
+      switchMap(query => this.api.getCount(query)),
+      shareReplay(1),
+    );
   }
 
+  getFacet(query: Observable<SearchQuery>): Observable<ArchiveFacet> {
+    return query.pipe(
+      facetCache(query => this.api.getFacet(query)),
+    );
+  }
+
+  getData(query$: Observable<SearchQuery>, count$: Observable<number>): Observable<SearchData> {
+    return count$.pipe(
+      withLatestFrom(query$),
+      map(([count, query]) => new PagedCache<ArchiveRecord>(count, this.fetchRecords(query))),
+      map(cache => new SearchData(cache)),
+    );
+  }
 
   private fetchRecords(query: SearchQuery): (start: number, limit: number) => Observable<ArchiveRecord[]> {
     return (start, limit) => this.api.getArchive(query, start, limit);
