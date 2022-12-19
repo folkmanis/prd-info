@@ -1,5 +1,5 @@
 import { CdkScrollable } from '@angular/cdk/scrolling';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding } from '@angular/core';
 
 
 @Component({
@@ -12,6 +12,10 @@ export class ScrollToTopComponent {
   visible = false;
 
   scrollable: CdkScrollable | undefined;
+
+  bottom?: string;
+
+  right?: string;
 
   scrollToTop() {
     this.scrollable?.scrollTo({ top: 0, behavior: 'smooth' });

@@ -22,6 +22,9 @@ export class ScrollTopDirective extends CdkScrollable implements OnInit, AfterVi
 
   @Input() scrollAuditTime = 200;
 
+  @Input('scrollToTopBottom') bottom = '20px';
+  @Input('scrollToTopRight') right = '80px';
+
   @Output() scrollToTopVisible = new Subject<boolean>();
 
   set visible(value: boolean) {
@@ -83,6 +86,8 @@ export class ScrollTopDirective extends CdkScrollable implements OnInit, AfterVi
   private createButtonComponent() {
     this.componentRef = this.container.createComponent(ScrollToTopComponent);
     this.componentRef.instance.scrollable = this;
+    this.componentRef.instance.bottom = this.bottom;
+    this.componentRef.instance.right = this.right;
     this.buttonChangeDetectorRef = this.componentRef.injector.get(ChangeDetectorRef);
   }
 
