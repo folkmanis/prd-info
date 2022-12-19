@@ -3,8 +3,10 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { JobUnwindedPartial } from 'src/app/jobs';
+import { InvoicesTotals } from '../../interfaces';
 
-const TABLE_COLUMNS = ['selected', 'jobId', 'receivedDate', 'customer', 'name', 'productName', 'count', 'price', 'total'];
+
+const TABLE_COLUMNS = ['selected', 'jobId', 'receivedDate', 'custCode', 'name', 'productName', 'count', 'price', 'total'];
 
 @Component({
   selector: 'app-job-selection-table',
@@ -55,6 +57,8 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
     const sel = this.selector.selected;
     return jobs.filter(job => sel.some(num => num === job.jobId));
   }
+
+  @Input() totals: InvoicesTotals | null = null;
 
   @Output() selectedChange = new EventEmitter<JobUnwindedPartial[]>();
 

@@ -43,7 +43,7 @@
 
         <!-- Darbu atlase -->
         <app-job-selection-table [jobs]="jobs$ | async" [large]="viewSize.isLarge" [(selected)]="selectedJobs"
-            scroll-to-top>
+            [totals]="invoicesTotals" scroll-to-top scrollToTopRight="140px">
         </app-job-selection-table>
 
     </mat-drawer-content>

@@ -7,15 +7,27 @@ table {
     width: 100%;
 }
 
+.mat-mdc-cell,
+.mat-mdc-header-cell,
+.mat-mdc-footer-cell {
+    padding: 0 4px 0 4px;
+
+    &:last-of-type {
+        padding-right: 16px;
+    }
+}
+
 .mat-column-price,
-.mat-column-total,
-.right-align {
+.mat-column-total {
     text-align: right;
+
+    &.mat-mdc-footer-cell {
+        color: var(--primary-color);
+        font-weight: 700;
+    }
 }
 
 .mat-column-name {
     max-width: 300px;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }

@@ -2,9 +2,9 @@
     Atlase
 </h4>
 
-<mat-list>
+<mat-list *ngIf="invoicesTotals">
 
-    <mat-list-item appDenseList appDenseListHeight="32px" *ngFor="let total of invoicesTotals?.totals">
+    <mat-list-item appDenseList appDenseListHeight="32px" *ngFor="let total of invoicesTotals.totals">
         <span matListItemLine>
 
             <span>
@@ -18,18 +18,6 @@
             </span>
 
         </span>
-    </mat-list-item>
-
-    <mat-list-item appDenseList appDenseListHeight="32px">
-        <div matListItemLine appDenseListTotal>
-            <span>
-                Kopā
-            </span>
-
-            <span>
-                {{ invoicesTotals?.grandTotal | currency }}
-            </span>
-        </div>
     </mat-list-item>
 
 </mat-list>
