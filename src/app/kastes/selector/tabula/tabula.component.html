@@ -1,7 +1,7 @@
 <div *ngIf="colorCodes$ | async as colorCodes;" class="container" #scrollContainer scroll-to-top>
 
   <!-- Sākas tabula -->
-  <table mat-table [dataSource]="dataSource$" [trackBy]="trackByFn" class="mat-elevation-z4" aria-label="Kastes">
+  <table mat-table [dataSource]="dataSource$" [trackBy]="trackByFn" class="app-table">
 
     <!-- Sleja ar atzīmi par uzlīmes esamību -->
     <ng-container matColumnDef="label">

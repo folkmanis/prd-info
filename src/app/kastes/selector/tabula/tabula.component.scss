@@ -1,14 +1,10 @@
+:host {
+  display: block;
+}
+
 div.container {
   height: 100%;
   overflow: auto;
-}
-
-table {
-  width: 100%;
-}
-
-.mat-row {
-  cursor: default;
 }
 
 .selected .mat-cell {
@@ -17,9 +13,10 @@ table {
   transition: all 100ms;
 }
 
-.mat-column-label:first-of-type {
-  width: 5px;
-  padding-left: 0;
+.mat-column-label {
+
+  width: 4px;
+  padding: 0;
 
   &.label {
     background-color: var(--primary-color);
@@ -61,7 +58,6 @@ div.blank {
   height: 64px;
 }
 
-.gatavs .mat-cell {
-  // background-color: var(--primary-lighter);
+.gatavs .mat-mdc-cell:not(.mat-column-label) {
   opacity: 50%;
 }

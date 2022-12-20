@@ -7,27 +7,37 @@ mat-drawer-container {
   height: 100%;
 }
 
-.main-content {
-  overflow: auto;
-}
-
 mat-drawer-content {
   display: flex;
   flex-direction: column;
 }
 
+mat-tab-nav-panel {
+  height: 100%;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+
+  >:nth-child(1) {
+
+    height: 42px;
+    display: flex;
+    margin: 8px;
+    align-items: center;
+
+    mat-slide-toggle {
+      margin-left: auto;
+
+    }
+
+  }
+
+  >:nth-child(2) {
+    overflow: auto;
+  }
+}
+
 .no-active>p {
   margin-left: 24px;
   margin-right: 24px;
-}
-
-.kopskaiti {
-  display: flex;
-  margin: 8px;
-  min-height: 42px;
-  align-items: center;
-}
-
-.kopskaiti .mat-slide-toggle {
-  margin-left: auto;
 }

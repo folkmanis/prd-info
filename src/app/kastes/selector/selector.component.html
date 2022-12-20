@@ -4,7 +4,7 @@
 
         <mat-drawer-content>
 
-            <nav mat-tab-nav-bar>
+            <nav mat-tab-nav-bar [tabPanel]="tabPanel">
                 <a mat-tab-link routerLink="../../selector/0" [active]="(apjoms$ | async) === 0">
                     Visi
                 </a>
@@ -14,22 +14,25 @@
                 </a>
             </nav>
 
-            <!-- Kopējie skaiti un refresh poga -->
-            <div class="kopskaiti">
-                <button mat-icon-button (click)="onReload()">
-                    <mat-icon>
-                        refresh
-                    </mat-icon>
-                </button>
-                <app-kopskaiti [colorCodes]="colorCodes" [totals]="totals$ | async"></app-kopskaiti>
-                <mat-slide-toggle [formControl]="showCompleted" matTooltip="Rādīt arī gatavos iepakojumus"> Gatavie
-                </mat-slide-toggle>
-            </div>
+            <mat-tab-nav-panel #tabPanel>
 
-            <div class="main-content">
+                <!-- Kopējie skaiti un refresh poga -->
+                <div class="kopskaiti">
+                    <button mat-icon-button (click)="onReload()">
+                        <mat-icon>
+                            refresh
+                        </mat-icon>
+                    </button>
+                    <app-kopskaiti [colorCodes]="colorCodes" [totals]="totals$ | async"></app-kopskaiti>
+                    <mat-slide-toggle [formControl]="showCompleted" matTooltip="Rādīt arī gatavos iepakojumus">
+                        Gatavie
+                    </mat-slide-toggle>
+                </div>
+
                 <app-tabula [veikalsKastes]="dataSource$ | async" (selectedChange)="onSelection($event, colorCodes)">
                 </app-tabula>
-            </div>
+
+            </mat-tab-nav-panel>
 
         </mat-drawer-content>
 
