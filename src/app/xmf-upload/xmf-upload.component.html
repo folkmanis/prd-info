@@ -22,7 +22,7 @@
             ATVĒRT
         </button>
         <input hidden (change)="onFileSelected($event)" #fileInput type="file" accept=".dbd">
-        <button mat-raised-button (click)="onUpload()" [disabled]="file === null || (busy$ | async)">
+        <button mat-raised-button (click)="onUpload()" [disabled]="file === null || (busy$ | async)" color="primary">
             APSTRĀDĀT!
         </button>
     </mat-card-actions>
