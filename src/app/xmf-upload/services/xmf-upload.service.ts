@@ -18,35 +18,14 @@ export class XmfUploadService {
     return this.api.getHistory();
   }
 
-  postFile(formData: FormData, progress$: Subject<number>): Observable<XmfUploadProgress> {
-    progress$.next(0);
-    return this.api.uploadArchive(formData).pipe(
-      map(this.reportUploadProgress(progress$)),
-      last(),
-    );
+  postFile(formData: FormData): Observable<XmfUploadProgress> {
+    return this.api.uploadArchive(formData);
   }
 
   validateFile(fl: File): boolean {
     const ext = fl.name.slice((Math.max(0, fl.name.lastIndexOf('.')) || Infinity) + 1);
     return ext === 'dbd';
   }
-
-  private reportUploadProgress(progress$: Subject<number>) {
-    return (event: HttpEvent<XmfUploadProgress>): XmfUploadProgress | null => {
-      switch (event.type) {
-        case HttpEventType.UploadProgress:
-          progress$.next(Math.round(event.loaded / event.total * 100));
-          return null;
-        case HttpEventType.Response:
-          progress$.next(100);
-          return event.body;
-        default:
-          return null;
-      }
-    };
-
-  }
-
 
 
 }

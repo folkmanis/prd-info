@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { finalize, map, switchMap, tap, BehaviorSubject, merge, Observable, Subject } from 'rxjs';
 import { XmfUploadProgress } from './interfaces/xmf-upload-progress';
 import { XmfUploadService } from './services/xmf-upload.service';
 
@@ -10,33 +9,24 @@ import { XmfUploadService } from './services/xmf-upload.service';
   styleUrls: ['./xmf-upload.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class XmfUploadComponent implements OnInit, OnDestroy {
+export class XmfUploadComponent implements OnDestroy {
 
-  progress$ = new BehaviorSubject<number>(0);
+  private historyUpdate$ = new Subject<XmfUploadProgress>();
 
-  busy$ = new Subject<boolean>();
+  busy$ = new BehaviorSubject<boolean>(false);
 
-  file: File | null = null;
-
-  private reloadHistory$ = new Subject<XmfUploadProgress>();
-
-  history$: Observable<XmfUploadProgress[]> = merge(
-    this.reloadHistory$.pipe(
-      switchMap(_ => this.uploadService.getHistory()),
-    ),
+  history$: Observable<XmfUploadProgress[]> = this.historyCache(
     this.uploadService.getHistory(),
+    this.historyUpdate$,
   );
 
+  file: File | null = null;
 
   constructor(
     private uploadService: XmfUploadService,
   ) { }
 
-  ngOnInit(): void {
-  }
-
   ngOnDestroy() {
-    this.progress$.complete();
     this.busy$.complete();
   }
 
@@ -49,24 +39,48 @@ export class XmfUploadComponent implements OnInit, OnDestroy {
   }
 
   onUpload(): void {
+
     this.busy$.next(true);
     const formData: FormData = new FormData();
     formData.append('archive', this.file, this.file.name);
-    this.file = null;
-    this.uploadService.postFile(formData, this.progress$)
-      .subscribe(record => {
-        this.file = null;
-        this.reloadHistory$.next(record);
+
+    this.uploadService.postFile(formData).pipe(
+      finalize(() => {
         this.busy$.next(false);
-      });
+        this.file = null;
+      })
+    ).subscribe(record => {
+      this.historyUpdate$.next(record);
+    });
   }
 
   private setFile(file: File): void {
-    if (!this.uploadService.validateFile(file)) {
-      return;
+    if (this.uploadService.validateFile(file)) {
+      this.file = file;
     }
-    this.file = file;
-    this.progress$.next(0);
+  }
+
+  private historyCache(
+    history$: Observable<XmfUploadProgress[]>,
+    update$: Observable<XmfUploadProgress>
+  ): Observable<XmfUploadProgress[]> {
+    let cache: XmfUploadProgress[] = [];
+    return merge(
+      history$.pipe(
+        tap(h => cache = h),
+      ),
+      update$.pipe(
+        map(upd => {
+          const idx = cache.findIndex(prog => prog._id === upd._id);
+          if (idx > -1) {
+            cache = [...cache.slice(0, idx), upd, ...cache.slice(idx + 1)];
+          } else {
+            cache = [upd, ...cache];
+          }
+          return cache;
+        })
+      )
+    );
   }
 
 

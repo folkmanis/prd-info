@@ -30,9 +30,10 @@ export class XmfArchiveUploadApiService {
         );
     }
 
-    uploadArchive(formData: FormData): Observable<HttpEvent<XmfUploadProgress>> {
-        const req = new HttpRequest('POST', this.path, formData, { reportProgress: true });
-        return this.http.request<XmfUploadProgress>(req);
+    uploadArchive(formData: FormData): Observable<XmfUploadProgress> {
+        return this.http.post<Record<string, any>>(this.path, formData).pipe(
+            map(data => this.transformer.plainToInstance(XmfUploadProgress, data))
+        );
     }
 
 }

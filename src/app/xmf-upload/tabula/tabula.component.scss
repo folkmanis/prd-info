@@ -1,3 +1,20 @@
-.full-width {
+:host {
+    display: block;
+    padding: 0 16px;
+    overflow: auto;
+}
+
+table {
     width: 100%;
+    margin-bottom: 64px;
+}
+
+.mat-mdc-cell,
+.mat-mdc-header-cell,
+.mat-mdc-footer-cell {
+    padding: 0 4px;
+
+    &:first-of-type {
+        padding-left: 16px;
+    }
 }

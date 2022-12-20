@@ -13,13 +13,13 @@ export class TabulaComponent {
   dataSource$ = new ReplaySubject<XmfUploadProgress[]>(1);
 
   @Input() set history(value: XmfUploadProgress[]) {
-    if (value instanceof Array) {
+    if (Array.isArray(value)) {
       this.dataSource$.next(value);
     }
   }
 
   displayedColumns = [
-    'finished',
+    'started',
     'fileName',
     'fileSize',
     'count.processed',

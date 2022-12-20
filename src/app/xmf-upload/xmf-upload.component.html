@@ -1,35 +1,36 @@
-<div *ngIf="!(busy$ | async); else ifBusy" class="upload mat-elevation-z4">
-    <div class=drop-zone appFileDrop (filesEmitter)="onFileDropped($event)"></div>
-    <div class="spacer-v"></div>
-    <div class="flex-v">
-        <button mat-raised-button (click)="fileInput.click()">
-            Izvēlēties failu
+<mat-card appFileDrop (filesEmitter)="onFileDropped($event)">
+
+    <mat-card-header>
+        <mat-card-title>
+            Arhīva fails
+        </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+        <div>
+            Nomest šeit!
+        </div>
+        <div>
+            <span *ngIf="file">
+                {{ file.name }} // {{ file.size | filesize }}
+            </span>
+        </div>
+    </mat-card-content>
+
+    <mat-card-actions>
+        <button mat-button (click)="fileInput.click()" [disabled]="busy$ | async">
+            ATVĒRT
         </button>
-        <button mat-raised-button (click)="onUpload()" [disabled]="file === null">
-            Apstrādāt
+        <input hidden (change)="onFileSelected($event)" #fileInput type="file" accept=".dbd">
+        <button mat-raised-button (click)="onUpload()" [disabled]="file === null || (busy$ | async)">
+            APSTRĀDĀT!
         </button>
-    </div>
+    </mat-card-actions>
 
-    <div class="flex-v">
-        <p *ngIf="file">
-            {{ file.name }} // {{ file.size | filesize }}
-        </p>
-    </div>
-    <input hidden (change)="onFileSelected($event)" #fileInput type="file" accept=".dbd">
+    <mat-card-footer>
+        <mat-progress-bar [mode]="(busy$ | async) ? 'indeterminate' : 'determinate'"></mat-progress-bar>
+    </mat-card-footer>
 
-    <div class="spacer-v"></div>
-</div>
+</mat-card>
 
-<ng-template #ifBusy>
-    <div class="upload mat-elevation-z4">
-        <mat-spinner [diameter]="100"></mat-spinner>
-    </div>
-</ng-template>
-
-<div class="progress">
-    <mat-progress-bar mode="determinate" [value]="progress$ | async"></mat-progress-bar>
-</div>
-
-<div>
-    <app-tabula [history]="history$ | async"></app-tabula>
-</div>
+<app-tabula [history]="history$ | async" scroll-to-top></app-tabula>
