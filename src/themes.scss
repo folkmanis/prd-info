@@ -21,7 +21,7 @@
 // @include mat.all-legacy-component-typographies();
 // @include mat.legacy-core();
 @include mat.core();
-// @include mat.all-component-typographies();
+@include mat.all-component-typographies();
 
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
