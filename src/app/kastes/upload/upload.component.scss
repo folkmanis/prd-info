@@ -1,4 +1,4 @@
-.container {
+:host {
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -12,18 +12,13 @@ section.file-selection {
     flex: 0 0;
     display: flex;
 
-    & .mat-form-field {
-        flex: 0 0 180px;
+    mat-form-field {
         margin-right: 16px;
     }
 
-    &>div {
+    >mat-card {
         flex: 1 1 auto;
         height: 72px;
-        border: 1px solid rgba($color: #000000, $alpha: 0.87);
-        border-radius: 4px;
-
-        display: flex;
         justify-content: center;
         align-items: center;
 

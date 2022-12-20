@@ -1,14 +1,16 @@
-import { Component, Inject } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-end-dialog',
   templateUrl: './end-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EndDialogComponent {
+
+  count: number = this.data;
+
   constructor(
-    public dialogRef: MatDialogRef<EndDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: number,
+    @Inject(MAT_DIALOG_DATA) private data: number,
   ) { }
 
 }
