@@ -8,20 +8,19 @@ div.list {
     display: flex;
     flex-direction: column;
     position: relative;
+
     .active:not(.large) & {
         display: none;
     }
 
-    & > div {
+    &>div {
         flex: 1;
-        // height: 100%;
         overflow: auto;
     }
 }
 
 .simple-form-table {
     height: 100%;
-    // position: relative;
     overflow: auto;
 }
 
@@ -31,18 +30,15 @@ div.list {
     position: relative;
     overflow: auto;
     height: 100%;
+
     .active & {
         display: initial;
     }
 }
 
-.mat-toolbar {
-    // position: sticky;
-    // top: 0px;
-    // z-index: 100;
-    & div.search {
-        width: 100%;
-        display: flex;
-        justify-content: flex-end;
+mat-toolbar {
+
+    div.search {
+        margin-left: auto;
     }
 }

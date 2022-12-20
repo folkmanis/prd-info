@@ -24,12 +24,12 @@
 </div>
 
 <ng-template #defaultFilterTemplate>
-    <mat-form-field>
-        <input matInput type="search" [formControl]='searchControl'>
-        <button mat-icon-button matSuffix disabled *ngIf="!searchControl.value.length">
+    <mat-form-field subscriptSizing="dynamic">
+        <input matInput [formControl]='searchControl'>
+        <button mat-icon-button matIconSuffix disabled *ngIf="!searchControl.value.length">
             <mat-icon>search</mat-icon>
         </button>
-        <button mat-icon-button matSuffix *ngIf="searchControl.value.length" (click)="searchControl.reset('')">
+        <button mat-icon-button matIconSuffix *ngIf="searchControl.value.length" (click)="searchControl.reset('')">
             <mat-icon>clear</mat-icon>
         </button>
     </mat-form-field>
