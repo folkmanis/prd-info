@@ -47,7 +47,7 @@ export class MessagePart {
     }
 
     get plain(): string[] {
-        return this.mimeTypeContents('text/plain');
+        return this.mimeTypeContents('text/plain').map(part => part.trim());
     }
 
     get html(): string[] {
