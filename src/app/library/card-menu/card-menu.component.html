@@ -1,14 +1,10 @@
-<div class="menu-layout">
-    <div *ngFor="let item of modules" class="menu-card">
-        <mat-card class="card-text" [routerLink]="item.route">
-            <mat-card-header>
-                <h3>
-                    {{item.name}}
-                </h3>
-            </mat-card-header>
-            <mat-card-content class="mat-body-2">
-                {{item.description}}
-            </mat-card-content>
-        </mat-card>
-    </div>
-</div>
+<mat-card *ngFor="let item of modules" class="card-text" [routerLink]="item.route">
+    <mat-card-header>
+        <h2>
+            {{item.name}}
+        </h2>
+    </mat-card-header>
+    <mat-card-content class="mat-body-2">
+        {{item.description}}
+    </mat-card-content>
+</mat-card>

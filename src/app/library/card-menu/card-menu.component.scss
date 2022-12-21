@@ -1,23 +1,13 @@
-.menu-layout {
+:host {
     display: flex;
     flex-wrap: wrap;
     padding: 20px;
+    gap: 20px;
 }
 
-.menu-card {
-    display: inline-block;
-    margin: 20px;
-    vertical-align: top;
+mat-card {
     width: 300px;
     cursor: pointer;
-}
+    min-height: 120px;
 
-.card-text {
-    // text-decoration: none;
-    min-height: 100px;
-}
-
-a:any-link {
-    cursor: pointer;
-    // text-decoration: none;
 }
