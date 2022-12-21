@@ -24,6 +24,7 @@ import { ClassTransformer } from 'class-transformer';
 import { AppClassTransformerService } from './library/class-transformer/app-class-transformer.service';
 
 import { MatDateFnsModule } from '@angular/material-date-fns-adapter';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { LoginModule } from './login/login.module';
 
 
@@ -47,6 +48,7 @@ import { LoginModule } from './login/login.module';
     { provide: DATE_FNS_LOCALE, useValue: lv },
     { provide: MAT_DATE_LOCALE, useExisting: DATE_FNS_LOCALE },
     { provide: DEFAULT_CURRENCY_CODE, useValue: 'EUR' },
+    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline', } },
     { provide: ErrorHandler, useClass: ErrorsService, },
     httpInterceptorsProvider,
     { provide: ClassTransformer, useExisting: AppClassTransformerService },
