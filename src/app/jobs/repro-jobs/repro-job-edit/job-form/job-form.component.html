@@ -12,7 +12,7 @@
             <mat-label>Izveidošanas datums</mat-label>
             <input matInput formControlName="receivedDate" [matDatepicker]="datePicker" required
                 [min]="receivedDate.min" [max]="receivedDate.max">
-            <mat-datepicker-toggle matSuffix [for]="datePicker" tabindex="-1"></mat-datepicker-toggle>
+            <mat-datepicker-toggle matIconSuffix [for]="datePicker" tabindex="-1"></mat-datepicker-toggle>
             <mat-datepicker #datePicker></mat-datepicker>
         </mat-form-field>
 
@@ -20,7 +20,7 @@
         <mat-form-field>
             <mat-label>Nodošanas datums</mat-label>
             <input matInput required [matDatepicker]="dueDatePicker" formControlName="dueDate">
-            <mat-datepicker-toggle matSuffix [for]="dueDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker-toggle matIconSuffix [for]="dueDatePicker"></mat-datepicker-toggle>
             <mat-datepicker #dueDatePicker></mat-datepicker>
         </mat-form-field>
 
@@ -35,7 +35,7 @@
             <mat-error *ngIf="nameControl.hasError('required')">
                 Jānorāda obligāti
             </mat-error>
-            <button mat-icon-button [appCopyClipboard]="jobIdAndName$ | async" matSuffix tabindex="-1">
+            <button mat-icon-button [appCopyClipboard]="jobIdAndName$ | async" matIconSuffix tabindex="-1">
                 <mat-icon>filter_none</mat-icon>
             </button>
         </mat-form-field>
@@ -56,14 +56,16 @@
             </mat-form-field>
         </ng-container>
         <!-- Statuss -->
-        <mat-form-field formGroupName="jobStatus">
-            <mat-label>Stadija</mat-label>
-            <mat-select formControlName="generalStatus">
-                <mat-option *ngFor="let state of jobStates$ | async" [value]="state.state">
-                    {{state.description}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
+        <ng-container formGroupName="jobStatus">
+            <mat-form-field>
+                <mat-label>Stadija</mat-label>
+                <mat-select formControlName="generalStatus">
+                    <mat-option *ngFor="let state of jobStates$ | async" [value]="state.state">
+                        {{state.description}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </ng-container>
 
         <!-- Klienta darba numurs -->
         <mat-form-field>
@@ -82,14 +84,19 @@
 
         <!-- Papildus apraksts -->
         <mat-card>
-            <mat-form-field class="full-width">
-                <mat-label>Piezīmes</mat-label>
-                <textarea matInput formControlName="comment"></textarea>
-            </mat-form-field>
+            <mat-card-content>
+                <mat-form-field class="full-width">
+                    <mat-label>Piezīmes</mat-label>
+                    <textarea matInput formControlName="comment" cdkTextareaAutosize
+                        [cdkAutosizeMaxRows]="12"></textarea>
+                </mat-form-field>
+            </mat-card-content>
         </mat-card>
 
         <mat-card>
-            <ng-content></ng-content>
+            <mat-card-content>
+                <ng-content></ng-content>
+            </mat-card-content>
         </mat-card>
 
 

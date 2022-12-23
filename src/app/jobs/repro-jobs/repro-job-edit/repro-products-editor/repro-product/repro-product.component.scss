@@ -4,34 +4,32 @@
     gap: 8px;
 }
 
-.container > * {
-    font-size: 14px;
-    color: rgba($color: #000000, $alpha: 0.87);
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    overflow: hidden;
-    word-wrap: break-word;
-}
-
 .container.small {
     flex-direction: column;
     gap: 0;
 }
 
 .numbers {
-    & > .count,
-    & > .price {
-        width: 8em;
+
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    overflow: hidden;
+    word-wrap: break-word;
+
+    mat-form-field.count,
+    mat-form-field.price {
+        flex: 1 1 8em;
     }
-    & > .total {
-        min-width: 4em;
+
+    .total {
+        flex: 1 0 4em;
         text-align: right;
     }
 }
 
-.name {
-    flex: 2 1 auto;
+app-product-autocomplete {
+    flex: 3 1 24em;
 }
 
 .numbers {
@@ -56,8 +54,4 @@ input[type="number"] {
 
 app-product-autocomplete {
     min-width: 18em;
-}
-
-button[mat-raised-button] {
-    margin-bottom: 16px;
 }
