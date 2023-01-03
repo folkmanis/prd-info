@@ -4,7 +4,7 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
 import { Invoice, InvoiceForReport, InvoicesFilter, InvoiceTable, InvoiceUpdate, INVOICE_UPDATE_FIELDS } from 'src/app/interfaces';
 import { PaytraqInvoice } from 'src/app/interfaces/paytraq';
 import { Sale } from 'src/app/interfaces/paytraq/invoice';
-import { JobQueryFilter, JobService, JobsWithoutInvoicesTotals, JobUnwindedPartial } from 'src/app/jobs';
+import { JobQueryFilter, JobQueryFilterOptions, JobService, JobsWithoutInvoicesTotals, JobUnwindedPartial } from 'src/app/jobs';
 import { PaytraqApiService } from 'src/app/services/prd-api/paytraq-api.service';
 import { InvoicesApiService } from 'src/app/services/prd-api/invoices-api.service';
 import { pick } from 'lodash-es';
@@ -31,7 +31,7 @@ export class InvoicesService {
     return this.jobService.getJobsWithoutInvoicesTotals();
   }
 
-  getJobsUnwinded(filter: JobQueryFilter): Observable<JobUnwindedPartial[]> {
+  getJobsUnwinded(filter: Partial<JobQueryFilterOptions>): Observable<JobUnwindedPartial[]> {
     return this.jobService.getJobListUnwinded(filter);
   }
 

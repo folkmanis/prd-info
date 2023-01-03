@@ -2,6 +2,21 @@
     height: 100%;
 }
 
+mat-drawer-container {
+    height: 100%;
+}
+
+mat-drawer-content {
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+mat-drawer {
+    width: 240px;
+}
+
 .container {
     height: 100%;
     overflow: auto;

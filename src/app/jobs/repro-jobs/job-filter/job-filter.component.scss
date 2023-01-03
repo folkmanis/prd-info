@@ -7,11 +7,17 @@ div.container.large {
     display: flex;
 }
 
-div.container.large > :first-child {
+div.container.large> :first-child {
     margin-right: 16px;
     margin-top: 8px;
 }
 
 span.spacer {
     margin: 8px;
+}
+
+mat-panel-description>span:not(:first-of-type) {
+    padding-left: 4px;
+    margin-left: 4px;
+    border-left: 2px solid;
 }

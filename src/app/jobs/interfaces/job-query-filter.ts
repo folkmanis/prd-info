@@ -1,4 +1,5 @@
 import { JobCategories } from './job-categories';
+import { Type, Transform } from 'class-transformer';
 
 export interface JobQueryFilterOptions {
 
@@ -23,7 +24,35 @@ export interface JobQueryFilterOptions {
 
 }
 
-export type JobQueryFilter = Partial<JobQueryFilterOptions>;
+export class JobQueryFilter {
+
+    start?: number;
+
+    limit?: number;
+
+    @Type(() => Date)
+    fromDate?: Date;
+
+    @Transform(({ value }) => value || undefined)
+    customer?: string;
+
+    @Transform(({ value }) => value || undefined)
+    name?: string;
+
+    invoice?: 0 | 1;
+
+    @Type(() => Number)
+    unwindProducts: 0 | 1 = 0;
+
+    @Transform(({ value }) => (Array.isArray(value) ? value : [value]).map(n => +n))
+    jobStatus: number[] = [10, 20];
+
+    @Transform(({ value }) => value ? (Array.isArray(value) ? value : [value]).map(n => +n) : undefined)
+    jobsId?: number[];
+
+    category: JobCategories;
+
+}
 
 export type JobFilterKeys = 'customer' | 'jobsId' | 'name' | 'jobStatus';
 

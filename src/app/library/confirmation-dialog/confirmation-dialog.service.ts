@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { EMPTY, Observable } from 'rxjs';
-import { mergeMapTo } from 'rxjs/operators';
+import { EMPTY, Observable, mergeMap } from 'rxjs';
 import { ConfirmationDialogComponent } from './confirmation-dialog.component';
 
 @Injectable({
@@ -54,7 +53,7 @@ export class ConfirmationDialogService {
         }
       }
     ).pipe(
-      mergeMapTo(EMPTY),
+      mergeMap(() => EMPTY),
     );
   }
 

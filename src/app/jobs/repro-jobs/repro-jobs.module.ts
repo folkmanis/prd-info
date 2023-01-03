@@ -11,10 +11,8 @@ import { ReproJobEditComponent } from './repro-job-edit/repro-job-edit.component
 import { ProductAutocompleteComponent } from './repro-job-edit/repro-products-editor/product-autocomplete/product-autocomplete.component';
 import { ProductControlDirective } from './repro-job-edit/repro-products-editor/repro-product/product-control.directive';
 import { ReproProductsEditorComponent } from './repro-job-edit/repro-products-editor/repro-products-editor.component';
-import { ReproJobsComponent } from './repro-jobs.component';
 import { JobFilterComponent } from './job-filter/job-filter.component';
 import { UploadProgressComponent } from './upload-progress/upload-progress.component';
-import { JobFilterSummaryComponent } from './job-filter/job-filter-summary/job-filter-summary.component';
 import { ProductsSummaryComponent } from './products-summary/products-summary.component';
 import { ReproProductComponent } from './repro-job-edit/repro-products-editor/repro-product/repro-product.component';
 import { JobFormComponent } from './repro-job-edit/job-form/job-form.component';
@@ -26,7 +24,6 @@ import { DropFolderComponent } from './repro-job-edit/drop-folder/drop-folder.co
 
 @NgModule({
   declarations: [
-    ReproJobsComponent,
     JobFilterComponent,
     ReproJobEditComponent,
     UploadProgressComponent,
@@ -37,7 +34,6 @@ import { DropFolderComponent } from './repro-job-edit/drop-folder/drop-folder.co
     ProductAutocompleteComponent,
     ProductControlDirective,
     KeyPressDirective,
-    JobFilterSummaryComponent,
     ProductsSummaryComponent,
     ReproProductComponent,
     JobFormComponent,

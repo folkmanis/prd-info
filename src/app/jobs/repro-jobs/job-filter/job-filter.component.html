@@ -6,7 +6,18 @@
         </mat-panel-title>
 
         <mat-panel-description *ngIf="filterForm.valid">
-            <app-job-filter-summary [jobStates]="jobStates$ | async"></app-job-filter-summary>
+            <span *ngIf="filterForm.get('jobsId').value as jobsId;">
+                {{ jobsId }}
+            </span>
+            <span *ngIf="filterForm.get('name').value as name;">
+                {{ name }}
+            </span>
+            <span *ngIf="filterForm.get('customer').value as customer;">
+                {{ customer }}
+            </span>
+            <span>
+                {{ statesSelect.triggerValue }}
+            </span>
         </mat-panel-description>
 
     </mat-expansion-panel-header>
@@ -56,7 +67,7 @@
                 <mat-label>
                     Statuss
                 </mat-label>
-                <mat-select formControlName="jobStatus" multiple>
+                <mat-select formControlName="jobStatus" multiple #statesSelect>
                     <mat-option *ngFor="let status of jobStates$ | async" [value]="status.state">
                         {{status.description}}
                     </mat-option>

@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { JobsComponent } from './jobs.component';
-import { ReproJobsComponent } from './repro-jobs/repro-jobs.component';
 import { JobListComponent } from './repro-jobs/job-list/job-list.component';
 import { ReproJobEditComponent } from './repro-jobs/repro-job-edit/repro-job-edit.component';
 import { ReproJobResolverService } from './repro-jobs/services/repro-job-resolver.service';
@@ -12,7 +11,7 @@ import { ReproJobEditGuard } from './repro-jobs/repro-job-edit/repro-job-edit.gu
 const routes: Routes = [
   {
     path: 'repro',
-    component: ReproJobsComponent,
+    // component: ReproJobsComponent,
     children: [
       {
         path: 'new',
@@ -33,6 +32,7 @@ const routes: Routes = [
       {
         path: '',
         component: JobListComponent,
+        runGuardsAndResolvers: 'paramsOrQueryParamsChange',
       },
     ]
   },

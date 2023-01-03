@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { DestroyService } from 'prd-cdk';
-import { from } from 'rxjs';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { from, map, Subject } from 'rxjs';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
-import { JobPartial } from '../../interfaces';
+import { JobPartial, JobQueryFilter } from '../../interfaces';
 import { JobService } from '../../services/job.service';
 import { ReproJobService } from '../services/repro-job.service';
 import { UploadRefService } from '../services/upload-ref.service';
@@ -15,15 +14,20 @@ import { UploadRefService } from '../services/upload-ref.service';
   templateUrl: './job-list.component.html',
   styleUrls: ['./job-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DestroyService],
 })
 export class JobListComponent implements OnInit {
 
   isLarge = false;
 
-  dataSource$ = this.jobService.jobs$;
+  filter$ = this.route.queryParams.pipe(
+    map(query => this.jobService.normalizeFilter(query)),
+  );
 
-  @Input('highlitedProduct') highlited: string | null = null;
+  reload$ = new Subject<void>();
+
+  jobs$ = this.jobService.getJobsObserver(this.filter$, this.reload$);
+
+  highlited: string | null = null;
 
   constructor(
     private jobService: JobService,
@@ -32,6 +36,7 @@ export class JobListComponent implements OnInit {
     private reproJobService: ReproJobService,
     private clipboard: ClipboardService,
     private sanitize: SanitizeService,
+    private route: ActivatedRoute,
   ) { }
 
 
@@ -40,6 +45,10 @@ export class JobListComponent implements OnInit {
 
   copyJobIdAndName({ name, jobId }: Pick<JobPartial, 'jobId' | 'name'>) {
     this.clipboard.copy(`${jobId}-${this.sanitize.sanitizeFileName(name)}`);
+  }
+
+  onJobFilter(filter: JobQueryFilter) {
+    this.router.navigate(['.'], { queryParams: filter, relativeTo: this.route });
   }
 
   onSetJobStatus(jobId: number, status: number) {
@@ -52,7 +61,7 @@ export class JobListComponent implements OnInit {
           timestamp: new Date(),
         }
       }
-    ).subscribe();
+    ).subscribe(() => this.reload$.next());
   }
 
   hasProduct(job: JobPartial, productName: string): boolean {

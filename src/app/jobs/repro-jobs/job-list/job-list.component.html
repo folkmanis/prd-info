@@ -1,102 +1,117 @@
-<app-new-job-button (fileList)="onFileDrop($event)" [class.rised]="scroll.visible">
-</app-new-job-button>
+<mat-drawer-container *ngIf="jobs$ | async as jobs;">
+    <mat-drawer button>
 
-<cdk-virtual-scroll-viewport itemSize="32" class="container" scroll-to-top #scroll="scrollToTop"
-    [(appActiveProduct)]="highlited">
+        <app-products-summary [jobs]="jobs" (productHover)="highlited = $event">
+        </app-products-summary>
+
+    </mat-drawer>
+
+    <mat-drawer-content>
+
+        <app-new-job-button (fileList)="onFileDrop($event)" [class.rised]="scroll.visible">
+        </app-new-job-button>
+
+        <app-job-filter [filter]="filter$ | async" (filterChanges)="onJobFilter($event)"></app-job-filter>
+
+        <cdk-virtual-scroll-viewport itemSize="32" class="container" scroll-to-top #scroll="scrollToTop"
+            [(appActiveProduct)]="highlited">
 
 
-    <table class="simple-form-table">
-        <thead>
-            <tr>
-                <th class="column-state"></th>
-                <th class="column-jobId">ID</th>
-                <th class="column-customer">Kl.</th>
-                <th class="column-date" *appViewLarge>Datums</th>
-                <th class="column-name">Nosaukums</th>
-                <ng-container *appViewLarge>
-                    <th class="column-productsObj-name">Izstrādājums</th>
-                    <th class="column-productsObj-count">Skaits</th>
-                    <th class="column-productsObj-units"></th>
-                </ng-container>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *cdkVirtualFor="let job of dataSource$; let idx=index;" [class.job-completed]="job.invoiceId"
-                [routerLink]="[job.jobId]" [class.highlited]="hasProduct(job, highlited)">
-                <!-- statusa indikators -->
-                <td class="column-state">
-                    <mat-icon *ngIf="job.jobStatus.generalStatus === 20" color="primary">
-                        label_important
-                    </mat-icon>
-                </td>
-                <!-- jobId -->
-                <td class="column-jobId">
-                    {{job.jobId}}
-                </td>
+            <table class="simple-form-table">
+                <thead>
+                    <tr>
+                        <th class="column-state"></th>
+                        <th class="column-jobId">ID</th>
+                        <th class="column-customer">Kl.</th>
+                        <th class="column-date" *appViewLarge>Datums</th>
+                        <th class="column-name">Nosaukums</th>
+                        <ng-container *appViewLarge>
+                            <th class="column-productsObj-name">Izstrādājums</th>
+                            <th class="column-productsObj-count">Skaits</th>
+                            <th class="column-productsObj-units"></th>
+                        </ng-container>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *cdkVirtualFor="let job of jobs; let idx=index;" [class.job-completed]="job.invoiceId"
+                        [routerLink]="[job.jobId]" [class.highlited]="hasProduct(job, highlited)">
+                        <!-- statusa indikators -->
+                        <td class="column-state">
+                            <mat-icon *ngIf="job.jobStatus.generalStatus === 20" color="primary">
+                                label_important
+                            </mat-icon>
+                        </td>
+                        <!-- jobId -->
+                        <td class="column-jobId">
+                            {{job.jobId}}
+                        </td>
 
-                <!-- customer -->
-                <td class="column-customer">
-                    {{job.custCode}}
-                </td>
+                        <!-- customer -->
+                        <td class="column-customer">
+                            {{job.custCode}}
+                        </td>
 
-                <!-- 'receivedDate' -->
-                <td class="column-date" *appViewLarge>
-                    {{job.dueDate | date:'dd.MM.yyyy'}}
-                </td>
+                        <!-- 'receivedDate' -->
+                        <td class="column-date" *appViewLarge>
+                            {{job.dueDate | date:'dd.MM.yyyy'}}
+                        </td>
 
-                <!-- 'name' -->
-                <td class="column-name">
-                    <div>
-                        <span class="name">
-                            {{job.name}}
-                        </span>
-                        <span *appViewLarge class="buttons">
-                            <button mat-icon-button (click)="$event.stopPropagation(); copyJobIdAndName(job);"
-                                matTooltip="Kopēt nosaukumu">
-                                <mat-icon>filter_none</mat-icon>
-                            </button>
-                            <button *ngIf="job.jobStatus.generalStatus === 20" mat-icon-button
-                                matToolTip="Atzīmēt pabeigtu"
-                                (click)="$event.stopPropagation(); onSetJobStatus(job.jobId, 30)">
-                                <mat-icon>check</mat-icon>
-                            </button>
-                            <button *ngIf="job.jobStatus.generalStatus === 10" mat-icon-button color="primary"
-                                matToolTip="Darbs aktīvs"
-                                (click)="$event.stopPropagation(); onSetJobStatus(job.jobId, 20)">
-                                <mat-icon>label_important</mat-icon>
-                            </button>
-                        </span>
-                        <button *appViewNotLarge mat-icon-button [matMenuTriggerFor]="jobMenu"
-                            (click)="$event.stopPropagation();" [matMenuTriggerData]="{ job }">
-                            <mat-icon> more_vert </mat-icon>
-                        </button>
-                    </div>
-                </td>
+                        <!-- 'name' -->
+                        <td class="column-name">
+                            <div>
+                                <span class="name">
+                                    {{job.name}}
+                                </span>
+                                <span *appViewLarge class="buttons">
+                                    <button mat-icon-button (click)="$event.stopPropagation(); copyJobIdAndName(job);"
+                                        matTooltip="Kopēt nosaukumu">
+                                        <mat-icon>filter_none</mat-icon>
+                                    </button>
+                                    <button *ngIf="job.jobStatus.generalStatus === 20" mat-icon-button
+                                        matToolTip="Atzīmēt pabeigtu"
+                                        (click)="$event.stopPropagation(); onSetJobStatus(job.jobId, 30)">
+                                        <mat-icon>check</mat-icon>
+                                    </button>
+                                    <button *ngIf="job.jobStatus.generalStatus === 10" mat-icon-button color="primary"
+                                        matToolTip="Darbs aktīvs"
+                                        (click)="$event.stopPropagation(); onSetJobStatus(job.jobId, 20)">
+                                        <mat-icon>label_important</mat-icon>
+                                    </button>
+                                </span>
+                                <button *appViewNotLarge mat-icon-button [matMenuTriggerFor]="jobMenu"
+                                    (click)="$event.stopPropagation();" [matMenuTriggerData]="{ job }">
+                                    <mat-icon> more_vert </mat-icon>
+                                </button>
+                            </div>
+                        </td>
 
-                <ng-container *appViewLarge>
-                    <!-- Izstrādājums -->
-                    <td class="column-productsObj-name" [colSpan]="job.products?.length === 1 ? 0 : 3">
-                        <span *ngFor="let product of job.products; last as last;"
-                            [class.highlited-product]="product.name === highlited">
-                            {{ product.name }}{{last? '' : ','}}
-                        </span>
-                        <!-- {{job.productsObj?.name}} -->
-                    </td>
-                    <!-- Skaits -->
-                    <td *ngIf="job.products?.length === 1" class="column-productsObj-count">
-                        {{job.products[0].count}}
-                    </td>
-                    <!-- Mērvienības! -->
-                    <td *ngIf="job.products?.length === 1" class="column-productsObj-units">
-                        {{ job.products[0].units }}
-                    </td>
-                </ng-container>
+                        <ng-container *appViewLarge>
+                            <!-- Izstrādājums -->
+                            <td class="column-productsObj-name" [colSpan]="job.products?.length === 1 ? 0 : 3">
+                                <span *ngFor="let product of job.products; last as last;"
+                                    [class.highlited-product]="product.name === highlited">
+                                    {{ product.name }}{{last? '' : ','}}
+                                </span>
+                                <!-- {{job.productsObj?.name}} -->
+                            </td>
+                            <!-- Skaits -->
+                            <td *ngIf="job.products?.length === 1" class="column-productsObj-count">
+                                {{job.products[0].count}}
+                            </td>
+                            <!-- Mērvienības! -->
+                            <td *ngIf="job.products?.length === 1" class="column-productsObj-units">
+                                {{ job.products[0].units }}
+                            </td>
+                        </ng-container>
 
-            </tr>
-        </tbody>
+                    </tr>
+                </tbody>
 
-    </table>
-</cdk-virtual-scroll-viewport>
+            </table>
+        </cdk-virtual-scroll-viewport>
+
+    </mat-drawer-content>
+</mat-drawer-container>
 
 
 <mat-menu #jobMenu="matMenu">
