@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { BehaviorSubject, finalize, map, merge, MonoTypeOperatorFunction, Observable, Subject, tap } from 'rxjs';
 import { XmfUploadProgress } from './interfaces/xmf-upload-progress';
 import { XmfUploadService } from './services/xmf-upload.service';
+import { cacheWithUpdate } from 'prd-cdk';
 
 @Component({
   selector: 'app-xmf-upload',
@@ -16,7 +17,7 @@ export class XmfUploadComponent implements OnDestroy {
   busy$ = new BehaviorSubject<boolean>(false);
 
   history$: Observable<XmfUploadProgress[]> = this.uploadService.getHistory().pipe(
-    this.historyCache(this.historyUpdate$, (o1, o2) => o1._id === o2._id),
+    cacheWithUpdate(this.historyUpdate$, (o1, o2) => o1._id === o2._id),
   );
 
   file: File | null = null;
@@ -57,30 +58,6 @@ export class XmfUploadComponent implements OnDestroy {
     if (this.uploadService.validateFile(file)) {
       this.file = file;
     }
-  }
-
-  private historyCache<T>(update$: Observable<T>, compareFn: (o1: T, o2: T) => boolean): MonoTypeOperatorFunction<T[]> {
-
-    let cache: T[] = [];
-
-    return data$ => {
-      return merge(
-        data$.pipe(
-          tap(data => cache = data),
-        ),
-        update$.pipe(
-          map(upd => {
-            const idx = cache.findIndex(c => compareFn(c, upd));
-            if (idx > -1) {
-              cache = [...cache.slice(0, idx), upd, ...cache.slice(idx + 1)];
-            } else {
-              cache = [upd, ...cache];
-            }
-            return cache;
-          })
-        )
-      );
-    };
   }
 
 
