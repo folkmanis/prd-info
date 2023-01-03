@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
-import { BehaviorSubject, finalize, map, merge, MonoTypeOperatorFunction, Observable, Subject, tap } from 'rxjs';
+import { cacheWithUpdate } from 'prd-cdk';
+import { BehaviorSubject, finalize, Observable, Subject } from 'rxjs';
 import { XmfUploadProgress } from './interfaces/xmf-upload-progress';
 import { XmfUploadService } from './services/xmf-upload.service';
-import { cacheWithUpdate } from 'prd-cdk';
 
 @Component({
   selector: 'app-xmf-upload',
