@@ -23,7 +23,6 @@ export class ReproJobService {
 
   job: Partial<Job> | null = null;
 
-  private readonly _activeProduct = new BehaviorSubject<string | null>(null);
 
   constructor(
     private productsService: ProductsService,
@@ -53,14 +52,6 @@ export class ReproJobService {
       .reduce((acc, curr) => [...acc, curr.replace(/\.[^/.]+$/, '')], [])
       .reduce((acc, curr, _, names) => [...acc, curr.slice(0, MAX_JOB_NAME_LENGTH / names.length)], [])
       .join('_');
-  }
-
-  setActiveProduct(product: string | null) {
-    this._activeProduct.next(product);
-  }
-
-  activeProducts(): Observable<string | null> {
-    return this._activeProduct.asObservable();
   }
 
   productionStages(products: JobProduct[]): Observable<JobProductionStage[]> {

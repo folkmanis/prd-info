@@ -18,7 +18,6 @@ import { ReproProductComponent } from './repro-job-edit/repro-products-editor/re
 import { JobFormComponent } from './repro-job-edit/job-form/job-form.component';
 import { SnackbarMessageComponent } from './snackbar-message/snackbar-message.component';
 import { NewJobButtonComponent } from './job-list/new-job-button/new-job-button.component';
-import { ActiveProductDirective } from './job-list/active-product.directive';
 import { DropFolderComponent } from './repro-job-edit/drop-folder/drop-folder.component';
 
 
@@ -39,7 +38,6 @@ import { DropFolderComponent } from './repro-job-edit/drop-folder/drop-folder.co
     JobFormComponent,
     SnackbarMessageComponent,
     NewJobButtonComponent,
-    ActiveProductDirective,
     DropFolderComponent,
   ],
   imports: [
