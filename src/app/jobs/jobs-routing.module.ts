@@ -11,7 +11,6 @@ import { ReproJobEditGuard } from './repro-jobs/repro-job-edit/repro-job-edit.gu
 const routes: Routes = [
   {
     path: 'repro',
-    // component: ReproJobsComponent,
     children: [
       {
         path: 'new',
@@ -36,12 +35,12 @@ const routes: Routes = [
       },
     ]
   },
+  { path: 'products-production', loadChildren: () => import('./products-production/products-production.module').then(m => m.ProductsProductionModule) },
+  { path: 'gmail', loadChildren: () => import('./gmail/gmail.module').then(m => m.GmailModule) },
   {
     path: '',
     component: JobsComponent,
   },
-  { path: 'products-production', loadChildren: () => import('./products-production/products-production.module').then(m => m.ProductsProductionModule) },
-  { path: 'gmail', loadChildren: () => import('./gmail/gmail.module').then(m => m.GmailModule) },
 ];
 
 @NgModule({

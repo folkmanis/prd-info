@@ -15,7 +15,7 @@ import { UploadRefService } from '../services/upload-ref.service';
   styleUrls: ['./job-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class JobListComponent implements OnInit {
+export class JobListComponent {
 
   isLarge = false;
 
@@ -39,9 +39,6 @@ export class JobListComponent implements OnInit {
     private route: ActivatedRoute,
   ) { }
 
-
-  ngOnInit(): void {
-  }
 
   copyJobIdAndName({ name, jobId }: Pick<JobPartial, 'jobId' | 'name'>) {
     this.clipboard.copy(`${jobId}-${this.sanitize.sanitizeFileName(name)}`);

@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ClassTransformer } from 'class-transformer';
 import { endOfDay } from 'date-fns';
-import { catchError, map, switchMap, tap, timeout, EMPTY, Observable } from 'rxjs';
+import { catchError, EMPTY, map, Observable, switchMap } from 'rxjs';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
-import { HttpCacheService } from 'src/app/library/http';
 import { combineReload } from 'src/app/library/rxjs';
 import { NotificationsService } from '../../services';
 import { Job, JobPartial, JobQueryFilter, JobQueryFilterOptions, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
@@ -17,7 +16,6 @@ export class JobService {
 
   constructor(
     private notificatinsService: NotificationsService,
-    private cacheService: HttpCacheService,
     private confirmationDialogService: ConfirmationDialogService,
     private api: JobsApiService,
     private transformer: ClassTransformer,
@@ -30,7 +28,6 @@ export class JobService {
       reload$,
       this.notificatinsService.wsMultiplex('jobs').pipe(map(() => undefined))
     ).pipe(
-      tap(() => this.cacheService.clear()),
       switchMap(filter => this.getJobList(filter)),
     );
   }

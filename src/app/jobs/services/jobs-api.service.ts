@@ -36,7 +36,7 @@ export class JobsApiService {
     filter.unwindProducts = unwind ? 1 : 0;
     return this.http.get(
       this.path,
-      new HttpOptions(filter).cacheable()
+      new HttpOptions(filter)
     );
   }
 

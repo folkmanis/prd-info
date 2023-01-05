@@ -1,4 +1,4 @@
-import { EventEmitter, Component, OnInit, ChangeDetectionStrategy, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
 
 
 @Component({
@@ -7,14 +7,9 @@ import { EventEmitter, Component, OnInit, ChangeDetectionStrategy, Output } from
   styleUrls: ['./new-job-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NewJobButtonComponent implements OnInit {
+export class NewJobButtonComponent {
 
   @Output() fileList = new EventEmitter<FileList>();
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
 
   onFileSelected(event: any) {
     if (event.target?.files instanceof FileList && event.target.files.length > 0) {
