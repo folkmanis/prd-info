@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { debounceTime, filter, map, startWith, switchMap } from 'rxjs/operators';
+import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { Observable, debounceTime, filter, map, startWith, switchMap } from 'rxjs';
 import { CustomerPartial } from 'src/app/interfaces';
 import { CustomersService } from 'src/app/services';
 import { getConfig } from 'src/app/services/config.provider';
@@ -27,18 +26,26 @@ export type FilterFormType = {
   styleUrls: ['./job-filter.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class JobFilterComponent implements OnInit {
+export class JobFilterComponent {
 
   jobStates$ = getConfig('jobs', 'jobStates');
 
-  customersFiltered$: Observable<CustomerPartial[]>;
 
-  filterForm: FormGroup<FilterFormType> = new FormGroup({
-    name: new FormControl(''),
-    jobsId: new FormControl('', { validators: [Validators.pattern(/^[0-9]+$/)] }),
-    customer: new FormControl(''),
-    jobStatus: new FormControl([]),
-  });;
+  filterForm: FormGroup<FilterFormType> = this.fb.group({
+    name: [DEFAULT_FILTER.name],
+    jobsId: [DEFAULT_FILTER.jobsId, [Validators.pattern(/^[0-9]+$/)]],
+    customer: [DEFAULT_FILTER.customer],
+    jobStatus: [DEFAULT_FILTER.jobStatus],
+  });
+
+  customersFiltered$: Observable<CustomerPartial[]> = this.filterForm.controls.customer.valueChanges.pipe(
+    debounceTime(200),
+    startWith(''),
+    map(val => val.toUpperCase()),
+    switchMap(val => this.customersService.customers$.pipe(
+      map(cust => cust.filter(c => c.CustomerName.toUpperCase().includes(val)))
+    )),
+  );
 
   @Input()
   set filter(value: JobQueryFilter) {
@@ -63,27 +70,15 @@ export class JobFilterComponent implements OnInit {
   constructor(
     private customersService: CustomersService,
     private jobService: JobService,
+    private fb: FormBuilder,
   ) { }
 
 
-  ngOnInit(): void {
-
-    this.customersFiltered$ = this.filterForm.controls.customer.valueChanges.pipe(
-      debounceTime(200),
-      startWith(''),
-      map(val => val.toUpperCase()),
-      switchMap(val => this.customersService.customers$.pipe(
-        map(cust => cust.filter(c => c.CustomerName.toUpperCase().includes(val)))
-      )),
-    );
-
-  }
-
   onReset<T extends keyof JobFilter>(key?: T) {
     if (key) {
-      this.filterForm.controls[key].setValue(DEFAULT_FILTER[key]);
+      this.filterForm.controls[key].reset(DEFAULT_FILTER[key]);
     } else {
-      this.filterForm.setValue(DEFAULT_FILTER);
+      this.filterForm.reset(DEFAULT_FILTER);
     }
   }
 
