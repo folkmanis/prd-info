@@ -11,7 +11,8 @@
         <app-new-job-button (fileList)="onFileDrop($event)" [class.rised]="scroll.visible">
         </app-new-job-button>
 
-        <app-job-filter [filter]="filter$ | async" (filterChanges)="onJobFilter($event)"></app-job-filter>
+        <app-job-filter [filter]="filter$ | async" (filterChanges)="onJobFilter($event)"
+            [products]="products$ | async"></app-job-filter>
 
         <cdk-virtual-scroll-viewport itemSize="32" class="container" scroll-to-top #scroll="scrollToTop">
 

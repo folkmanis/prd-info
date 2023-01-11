@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Observable, debounceTime, filter, map, startWith, switchMap } from 'rxjs';
-import { CustomerPartial } from 'src/app/interfaces';
+import { CustomerPartial, ProductPartial } from 'src/app/interfaces';
 import { CustomersService } from 'src/app/services';
 import { getConfig } from 'src/app/services/config.provider';
 import { JobFilter, JobQueryFilter } from '../../interfaces';
@@ -12,7 +12,8 @@ const DEFAULT_FILTER: JobFilter = {
   jobsId: null,
   name: '',
   customer: '',
-  jobStatus: [10, 20]
+  jobStatus: [10, 20],
+  productsName: '',
 };
 
 export type FilterFormType = {
@@ -36,6 +37,7 @@ export class JobFilterComponent {
     jobsId: [DEFAULT_FILTER.jobsId, [Validators.pattern(/^[0-9]+$/)]],
     customer: [DEFAULT_FILTER.customer],
     jobStatus: [DEFAULT_FILTER.jobStatus],
+    productsName: [DEFAULT_FILTER.productsName],
   });
 
   customersFiltered$: Observable<CustomerPartial[]> = this.filterForm.controls.customer.valueChanges.pipe(
@@ -54,12 +56,15 @@ export class JobFilterComponent {
       jobsId: Array.isArray(value.jobsId) ? value.jobsId[0].toString() : DEFAULT_FILTER.jobsId,
       customer: value.customer || DEFAULT_FILTER.customer,
       jobStatus: value.jobStatus || DEFAULT_FILTER.jobStatus,
+      productsName: value.productsName || DEFAULT_FILTER.productsName,
     };
     this.filterForm.setValue(filter, { emitEvent: false });
   }
   get filter() {
     return this.jobService.normalizeFilter(this.filterForm.value);
   }
+
+  @Input() products: ProductPartial[] | null = null;
 
   @Output() filterChanges: Observable<JobQueryFilter> = this.filterForm.valueChanges.pipe(
     filter(_ => this.filterForm.valid),

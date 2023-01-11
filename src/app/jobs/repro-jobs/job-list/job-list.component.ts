@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { from, map, Subject } from 'rxjs';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
@@ -7,6 +7,7 @@ import { JobPartial, JobQueryFilter } from '../../interfaces';
 import { JobService } from '../../services/job.service';
 import { ReproJobService } from '../services/repro-job.service';
 import { UploadRefService } from '../services/upload-ref.service';
+import { ProductsService } from 'src/app/services/products.service';
 
 
 @Component({
@@ -27,6 +28,8 @@ export class JobListComponent {
 
   jobs$ = this.jobService.getJobsObserver(this.filter$, this.reload$);
 
+  products$ = this.productsService.activeProducts$;
+
   highlited: string | null = null;
 
   constructor(
@@ -37,6 +40,7 @@ export class JobListComponent {
     private clipboard: ClipboardService,
     private sanitize: SanitizeService,
     private route: ActivatedRoute,
+    private productsService: ProductsService,
   ) { }
 
 

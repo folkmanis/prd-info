@@ -50,6 +50,9 @@ export class JobQueryFilter {
     @Transform(({ value }) => value ? (Array.isArray(value) ? value : [value]).map(n => +n) : undefined)
     jobsId?: number[];
 
+    @Transform(({ value }) => value || undefined)
+    productsName?: string;
+
     category: JobCategories;
 
 }
@@ -60,5 +63,6 @@ export interface JobFilter {
     customer: string;
     jobsId: string;
     name: string;
+    productsName: string;
     jobStatus: number[];
 }

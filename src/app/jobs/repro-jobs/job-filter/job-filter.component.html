@@ -15,6 +15,9 @@
             <span *ngIf="filterForm.get('customer').value as customer;">
                 {{ customer }}
             </span>
+            <span *ngIf="filterForm.get('productsName').value as productsName;">
+                {{ productsName }}
+            </span>
             <span>
                 {{ statesSelect.triggerValue }}
             </span>
@@ -74,6 +77,20 @@
                 </mat-select>
             </mat-form-field>
             <span class="spacer"></span>
+            <!-- Produkta Nosaukums -->
+            <mat-form-field>
+                <mat-label>
+                    Prece
+                </mat-label>
+                <mat-select formControlName="productsName">
+                    <mat-option [value]="null">
+                        Visi
+                    </mat-option>
+                    <mat-option *ngFor="let product of products" [value]="product.name">
+                        {{ product.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
 
         </div>
 
