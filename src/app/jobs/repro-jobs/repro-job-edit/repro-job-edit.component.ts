@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -8,9 +9,8 @@ import { JobFormService } from '../services/job-form.service';
 import { ReproJobService } from '../services/repro-job.service';
 import { UploadRef } from '../services/upload-ref';
 import { SnackbarMessageComponent } from '../snackbar-message/snackbar-message.component';
-import { JobFormComponent } from './job-form/job-form.component';
 import { FolderPathComponent } from './folder-path/folder-path.component';
-import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { JobFormComponent } from './job-form/job-form.component';
 
 
 @Component({
@@ -58,6 +58,8 @@ export class ReproJobEditComponent implements OnInit, AfterViewInit, OnDestroy {
 
   dropFolders$: Observable<DropFolder[]> = this.formService.dropFolders$;
 
+  history = window.history;
+
   get isUpload(): boolean {
     return !!this.uploadRef;
   }
@@ -80,6 +82,7 @@ export class ReproJobEditComponent implements OnInit, AfterViewInit, OnDestroy {
     private reproJobService: ReproJobService,
     private snack: MatSnackBar,
     private formService: JobFormService,
+    private location: Location,
   ) { }
 
   ngOnInit(): void {
@@ -133,6 +136,10 @@ export class ReproJobEditComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onDropFolder(folder: DropFolder | null) {
     this.dropFolder$.next(folder);
+  }
+
+  onBack() {
+    this.location.back();
   }
 
   private copyToDropfolder({ files }: Pick<Job, 'files'>) {

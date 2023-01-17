@@ -1,8 +1,13 @@
 <header>
 
-    <a mat-icon-button appKeyPress="escape" tabindex="-1" routerLink="..">
+    <button *ngIf="history.length > 2; else goUp" mat-icon-button appKeyPress="escape" tabindex="-1" (click)="onBack()">
         <mat-icon> arrow_back </mat-icon>
-    </a>
+    </button>
+    <ng-template #goUp>
+        <a mat-icon-button routerLink="..">
+            <mat-icon> arrow_upward </mat-icon>
+        </a>
+    </ng-template>
 
     <h4>
         <span *ngIf="form.value.jobId as jobId;">
