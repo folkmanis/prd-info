@@ -4,17 +4,9 @@ import { Observable, debounceTime, filter, map, startWith, switchMap } from 'rxj
 import { CustomerPartial, ProductPartial } from 'src/app/interfaces';
 import { CustomersService } from 'src/app/services';
 import { getConfig } from 'src/app/services/config.provider';
-import { JobFilter, JobQueryFilter } from '../../interfaces';
+import { DEFAULT_FILTER, JobFilter, JobQueryFilter } from '../../interfaces';
 import { JobService } from '../../services/job.service';
 
-
-const DEFAULT_FILTER: JobFilter = {
-  jobsId: null,
-  name: '',
-  customer: '',
-  jobStatus: [10, 20],
-  productsName: '',
-};
 
 export type FilterFormType = {
   [k in keyof JobFilter]: FormControl<JobFilter[k]>
@@ -33,11 +25,11 @@ export class JobFilterComponent {
 
 
   filterForm: FormGroup<FilterFormType> = this.fb.group({
-    name: [DEFAULT_FILTER.name],
-    jobsId: [DEFAULT_FILTER.jobsId, [Validators.pattern(/^[0-9]+$/)]],
-    customer: [DEFAULT_FILTER.customer],
-    jobStatus: [DEFAULT_FILTER.jobStatus],
-    productsName: [DEFAULT_FILTER.productsName],
+    name: [null],
+    jobsId: ['', [Validators.pattern(/^[0-9]+$/)]],
+    customer: [''],
+    jobStatus: [[] as number[]],
+    productsName: [null],
   });
 
   customersFiltered$: Observable<CustomerPartial[]> = this.filterForm.controls.customer.valueChanges.pipe(
@@ -51,14 +43,11 @@ export class JobFilterComponent {
 
   @Input()
   set filter(value: JobQueryFilter) {
-    const filter = {
-      name: value.name || DEFAULT_FILTER.name,
-      jobsId: Array.isArray(value.jobsId) ? value.jobsId[0].toString() : DEFAULT_FILTER.jobsId,
-      customer: value.customer || DEFAULT_FILTER.customer,
-      jobStatus: value.jobStatus || DEFAULT_FILTER.jobStatus,
-      productsName: value.productsName || DEFAULT_FILTER.productsName,
-    };
-    this.filterForm.setValue(filter, { emitEvent: false });
+
+    this.filterForm.reset(undefined, { emitEvent: false });
+    if (value instanceof JobQueryFilter) {
+      this.filterForm.patchValue(value.jobListFilter(), { emitEvent: false });
+    }
   }
   get filter() {
     return this.jobService.normalizeFilter(this.filterForm.value);

@@ -6,6 +6,7 @@ import { ReproJobEditComponent } from './repro-jobs/repro-job-edit/repro-job-edi
 import { ReproJobResolverService } from './repro-jobs/services/repro-job-resolver.service';
 import { NewReproJobResolver } from './repro-jobs/services/new-repro-job.resolver';
 import { ReproJobEditGuard } from './repro-jobs/repro-job-edit/repro-job-edit.guard';
+import { JobListGuard } from './repro-jobs/services/job-list.guard';
 
 
 const routes: Routes = [
@@ -32,6 +33,7 @@ const routes: Routes = [
         path: '',
         component: JobListComponent,
         runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+        canActivate: [JobListGuard],
       },
     ]
   },
