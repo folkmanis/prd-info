@@ -40,7 +40,7 @@
             <!-- Paroles maiņa -->
             <ng-template #changePassword>
                 <section>
-                    <button mat-raised-button appPasswordInput
+                    <button mat-raised-button appPasswordInput [passwordMinimumLength]="6"
                         (appPasswordChange)="onPasswordChange($event, unameCtrl.value)" color="primary">
                         MAINĪT PAROLI
                     </button>

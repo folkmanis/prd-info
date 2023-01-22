@@ -5,12 +5,17 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { filter, switchMap } from 'rxjs/operators';
 import { FocusedDirective } from 'src/app/library/directives/focused.directive';
 import { LoginService } from './services/login.service';
+import { CommonModule } from '@angular/common';
+import { LibraryModule } from 'src/app/library/library.module';
+import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [CommonModule, LibraryModule, MaterialLibraryModule],
 })
 export class LoginComponent implements OnInit {
 

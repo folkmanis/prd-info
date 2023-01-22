@@ -7,7 +7,8 @@ import { DestroyService } from 'prd-cdk';
 import { takeUntil } from 'rxjs';
 import { User } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
-import { LoginService } from '../services/login.service';
+import { LoginService } from 'src/app/login';
+
 
 type UserUpdate = Pick<User, 'name' | 'eMail'>;
 
@@ -16,7 +17,7 @@ type UserUpdate = Pick<User, 'name' | 'eMail'>;
   templateUrl: './user-settings.component.html',
   styleUrls: ['./user-settings.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DestroyService]
+  providers: [DestroyService],
 })
 export class UserSettingsComponent implements OnInit, CanComponentDeactivate {
 
@@ -81,10 +82,11 @@ export class UserSettingsComponent implements OnInit, CanComponentDeactivate {
   }
 
   onPasswordChange(password: string) {
-    this.loginService.updateUser({ password }).subscribe({
-      next: () => this.snack('Parole nomainīta!'),
-      error: () => this.snack('Neizdevās nomainīt paroli!'),
-    });
+    this.loginService.updateUser({ password })
+      .subscribe({
+        next: () => this.snack('Parole nomainīta!'),
+        error: () => this.snack('Neizdevās nomainīt paroli!'),
+      });
   }
 
   onDeleteGoogle() {

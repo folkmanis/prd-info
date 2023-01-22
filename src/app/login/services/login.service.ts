@@ -61,7 +61,8 @@ export class LoginService {
 
   isModule(mod: string): Observable<boolean> {
     return this.user$.pipe(
-      map(usr => usr.hasModule(mod)),
+      map(usr => usr?.hasModule(mod)),
+      take(1),
     );
   }
 

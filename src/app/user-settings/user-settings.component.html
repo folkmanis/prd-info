@@ -1,6 +1,6 @@
 <div *ngIf="user$ | async as user;">
 
-    <mat-card class="container">
+    <mat-card>
 
         <mat-card-header>
 
@@ -42,7 +42,7 @@
 
         </mat-card-content>
 
-        <mat-divider inset></mat-divider>
+        <mat-divider></mat-divider>
 
         <mat-card-actions>
             <button mat-button (click)="onSave(userForm.getRawValue())"
@@ -53,24 +53,26 @@
                 [disabled]="userForm.pristine || userForm.disabled || !isChanged">
                 ATIESTATĪT
             </button>
-            <button mat-button appPasswordInput (appPasswordChange)="onPasswordChange($event)"
-                [passwordMinimumLength]="5">
+            <button mat-button appPasswordInput [passwordMinimumLength]="6"
+                (appPasswordChange)="onPasswordChange($event)" color="primary">
                 MAINĪT PAROLI
             </button>
         </mat-card-actions>
 
     </mat-card>
 
-    <mat-card class="container">
+    <mat-card>
 
-        <mat-card-title-group>
-            <mat-card-title> Google savienojums </mat-card-title>
+        <mat-card-header>
+            <mat-card-title-group>
+                <mat-card-title> Google savienojums </mat-card-title>
 
-            <mat-card-subtitle> {{ user.google?.id }} </mat-card-subtitle>
+                <mat-card-subtitle> {{ user.google?.id }} </mat-card-subtitle>
 
-            <img *ngIf="user.google as googleInfo;" mat-card-sm-image [src]="googleInfo.picture">
+                <img *ngIf="user.google as googleInfo;" mat-card-sm-image [src]="googleInfo.picture">
 
-        </mat-card-title-group>
+            </mat-card-title-group>
+        </mat-card-header>
 
         <mat-card-content>
 
@@ -81,7 +83,7 @@
         </mat-card-content>
 
 
-        <mat-divider inset></mat-divider>
+        <mat-divider></mat-divider>
 
         <mat-card-actions>
 

@@ -1,77 +1,73 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { MainMenuComponent } from './layout/main-menu/main-menu.component';
-import { LoginGuard } from './login/login.guard';
-import { MessagesListComponent } from './layout/messaging/messages-list/messages-list.component';
-import { AppContainerComponent } from './layout/app-container/app-container.component';
-import { UserSettingsComponent } from './login/user-settings/user-settings.component';
+import { RouterModule, Routes } from '@angular/router';
 import { CanDeactivateGuard } from 'src/app/library/guards/can-deactivate.guard';
+import { AppContainerComponent } from './layout/app-container/app-container.component';
+import { MainMenuComponent } from './layout/main-menu/main-menu.component';
+import { MessagesListComponent } from './layout/messaging/messages-list/messages-list.component';
+import { LoginGuard } from './login/login.guard';
+import { ModuleGuard } from './login/module.guard';
 import { USER_MODULES } from './user-modules';
+
 
 const routes: Routes = [
   {
+    path: 'login',
+    loadComponent: () => import('./login/login.component').then(m => m.LoginComponent),
+  },
+  {
     path: '',
     component: AppContainerComponent,
+    canActivate: [LoginGuard],
     children: [
       {
-        path: '',
-        component: MainMenuComponent,
-        pathMatch: 'full',
-        canActivate: [LoginGuard],
-      },
-      {
         path: 'user-settings',
-        component: UserSettingsComponent,
-        canActivate: [LoginGuard],
-        canDeactivate: [CanDeactivateGuard],
+        loadChildren: () => import('./user-settings/user-settings.module').then(m => m.UserSettingsModule),
       },
       {
         path: 'messages',
         component: MessagesListComponent,
         pathMatch: 'full',
-        canActivate: [LoginGuard],
       },
       {
         path: 'xmf-search',
-        canLoad: [LoginGuard],
+        canMatch: [ModuleGuard],
         loadChildren: () => import('./xmf-search/xmf-search.module').then(m => m.XmfSearchModule),
-        canActivate: [LoginGuard],
+
       },
       {
         path: 'xmf-upload',
-        canLoad: [LoginGuard],
+        canMatch: [ModuleGuard],
         loadChildren: () => import('./xmf-upload/xmf-upload.module').then(m => m.XmfUploadModule),
-        canActivate: [LoginGuard],
       },
       {
         path: 'kastes',
-        canLoad: [LoginGuard],
+        canMatch: [ModuleGuard],
         loadChildren: () => import('./kastes/kastes.module').then(m => m.KastesModule),
-        canActivate: [LoginGuard],
       },
       {
         path: 'admin',
-        canLoad: [LoginGuard],
+        canMatch: [ModuleGuard],
         loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule),
-        canActivate: [LoginGuard],
       },
       {
         path: 'jobs',
-        canLoad: [LoginGuard],
+        canMatch: [ModuleGuard],
         loadChildren: () => import('./jobs/jobs.module').then(m => m.JobsModule),
-        canActivate: [LoginGuard],
       },
       {
         path: 'jobs-admin',
-        canLoad: [LoginGuard],
+        canMatch: [ModuleGuard],
         loadChildren: () => import('./jobs-admin/jobs-admin.module').then(m => m.JobsAdminModule),
-        canActivate: [LoginGuard],
       },
       {
         path: 'calculations',
-        canLoad: [LoginGuard],
+        canMatch: [ModuleGuard],
         loadChildren: () => import('./calculations/calculations.module').then(m => m.CalculationsModule),
-        canActivate: [LoginGuard],
+      },
+      {
+        path: '',
+        component: MainMenuComponent,
+        pathMatch: 'full',
       },
     ]
   },

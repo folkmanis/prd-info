@@ -25,8 +25,6 @@ import { AppClassTransformerService } from './library/class-transformer/app-clas
 
 import { MatDateFnsModule } from '@angular/material-date-fns-adapter';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
-import { LoginModule } from './login/login.module';
-
 
 
 @NgModule({
@@ -39,7 +37,6 @@ import { LoginModule } from './login/login.module';
     MaterialLibraryModule,
     LibraryModule,
     LayoutModule,
-    LoginModule,
     AppRoutingModule,
     MatDateFnsModule,
   ],
