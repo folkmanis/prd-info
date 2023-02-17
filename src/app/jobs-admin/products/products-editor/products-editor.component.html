@@ -86,7 +86,7 @@
             </mat-expansion-panel>
 
             <!-- <mat-expansion-panel expanded> -->
-            <mat-expansion-panel>
+            <mat-expansion-panel *ngIf="customers$ | async as customers;">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
                         Pārdošanas cenas
@@ -95,7 +95,7 @@
 
                 <!-- Cenu tabula -->
                 <section>
-                    <app-product-prices formControlName="prices" [customers]="customers$ | async" #prices>
+                    <app-product-prices formControlName="prices" [customers]="customers" #prices>
                     </app-product-prices>
                 </section>
 

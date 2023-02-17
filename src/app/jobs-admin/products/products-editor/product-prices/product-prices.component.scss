@@ -23,11 +23,17 @@ th {
     &:first-of-type {
         padding-left: 8px;
     }
+
     &.buttons {
-        width: 48px;
+        width: 32px;
     }
+
     &.price {
-        width: 100px;
+        width: 80px;
+
+        input {
+            width: 80px;
+        }
     }
 }
 

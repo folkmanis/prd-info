@@ -9,20 +9,20 @@
         <tr *ngFor="let control of pricesFormArray.controls; index as idx;">
             <!-- Klients ar labošanu -->
             <td class="customer-name">
-                <mat-form-field>
-                    <mat-select [formControl]="control.controls.customerName">
-                        <mat-option *ngFor="let customer of customers" [value]="customer.CustomerName"
-                            [disabled]="customer.disabled">
-                            {{customer.CustomerName}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
+                <!-- <mat-form-field> -->
+                <mat-select [formControl]="control.controls.customerName">
+                    <mat-option *ngFor="let customer of customers" [value]="customer.CustomerName"
+                        [disabled]="customer.disabled">
+                        {{customer.CustomerName}}
+                    </mat-option>
+                </mat-select>
+                <!-- </mat-form-field> -->
             </td>
             <!-- Cena labojama -->
             <td class="price">
-                <mat-form-field>
-                    <input matInput [formControl]="control.controls.price" type="number">
-                </mat-form-field>
+                <!-- <mat-form-field> -->
+                <input [formControl]="control.controls.price" type="number" appInput>
+                <!-- </mat-form-field> -->
             </td>
             <!-- Pogas -->
             <td class="buttons">
@@ -34,10 +34,12 @@
     </tbody>
 
     <tfoot>
-        <td colspan="2">
-            <span *ngIf="pricesFormArray.hasError('duplicates')" class="error">
-                Atkārtoti norādīts klients {{ pricesFormArray.getError('duplicates') }}
-            </span>
-        </td>
+        <tr>
+            <td colspan="3">
+                <span *ngIf="pricesFormArray.hasError('duplicates')" class="error">
+                    Atkārtoti norādīts klients {{ pricesFormArray.getError('duplicates') }}
+                </span>
+            </td>
+        </tr>
     </tfoot>
 </table>
