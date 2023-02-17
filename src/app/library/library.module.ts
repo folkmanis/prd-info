@@ -20,6 +20,7 @@ import { InputTrimDirective } from './directives/input-trim.directive';
 import { PasswordInputModule } from './password-input/password-input.module';
 import { ViewSizeModule } from './view-size/view-size.module';
 import { DenseListDirective } from './dense-list/dense-list.directive';
+import { InputDirective } from './directives/input.directive';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { DenseListDirective } from './dense-list/dense-list.directive';
     BackButtonDirective,
     InputTrimDirective,
     DenseListDirective,
+    InputDirective,
   ],
   imports: [
     CommonModule,
@@ -67,6 +69,7 @@ import { DenseListDirective } from './dense-list/dense-list.directive';
     PasswordInputModule,
     ViewSizeModule,
     DenseListDirective,
+    InputDirective,
   ],
 })
 export class LibraryModule { }

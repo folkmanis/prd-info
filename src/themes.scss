@@ -4,6 +4,7 @@
 @use "./app/layout/messaging/messages-pane.scss" as message-pane;
 @use "./app/library/table/table-theme.scss" as table;
 @use "./app/library/dense-list/dense-list.theme";
+@use "./app/library/directives/input-theme" as input;
 
 // Plus imports for other components in your app.
 
@@ -44,6 +45,8 @@ $theme: app-styles.$theme;
 @include table.theme($theme);
 
 @include dense-list.theme($theme);
+
+@include input.theme($theme);
 
 $primary: map-get($theme, primary);
 $accent: map-get($theme, accent);
