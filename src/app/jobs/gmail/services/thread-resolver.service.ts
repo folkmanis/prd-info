@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
+import { Router, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
 import { GmailService } from './gmail.service';
 import { Observable, of } from 'rxjs';
 import { mergeMap, catchError } from 'rxjs/operators';
@@ -11,7 +11,7 @@ const NOT_FOUND_MESSAGE = 'Ieraksts nav atrasts';
 @Injectable({
   providedIn: 'any'
 })
-export class ThreadResolverService implements Resolve<Thread> {
+export class ThreadResolverService  {
 
   constructor(
     private readonly gmail: GmailService,

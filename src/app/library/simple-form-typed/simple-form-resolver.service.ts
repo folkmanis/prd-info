@@ -1,4 +1,4 @@
-import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { EMPTY, Observable, of } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 
@@ -9,7 +9,7 @@ interface SavedState {
   state: RouterStateSnapshot;
 }
 
-export abstract class SimpleFormResolverService<T> implements Resolve<T> {
+export abstract class SimpleFormResolverService<T>  {
 
   constructor(
     private router: Router,

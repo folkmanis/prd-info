@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
 import { JobUnwindedPartial } from 'src/app/jobs';
 import { InvoicesService } from '../../services/invoices.service';
@@ -7,7 +7,7 @@ import { InvoicesService } from '../../services/invoices.service';
 @Injectable({
   providedIn: 'root'
 })
-export class NewInvoiceJobsResolverService implements Resolve<JobUnwindedPartial[]> {
+export class NewInvoiceJobsResolverService  {
 
   constructor(
     private invoicesService: InvoicesService,

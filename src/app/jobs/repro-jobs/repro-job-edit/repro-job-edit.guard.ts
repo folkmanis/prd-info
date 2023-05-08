@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanDeactivate, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { ReproJobEditComponent } from './repro-job-edit.component';
@@ -7,7 +7,7 @@ import { ReproJobEditComponent } from './repro-job-edit.component';
 @Injectable({
   providedIn: 'root'
 })
-export class ReproJobEditGuard implements CanDeactivate<ReproJobEditComponent> {
+export class ReproJobEditGuard  {
 
   constructor(
     private dialog: ConfirmationDialogService,

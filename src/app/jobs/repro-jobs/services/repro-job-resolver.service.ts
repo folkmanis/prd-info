@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Router, ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
+import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { catchError, Observable } from 'rxjs';
 import { Job } from 'src/app/jobs/interfaces';
 import { JobService } from '../../services/job.service';
@@ -12,7 +12,7 @@ const notFoundMessage = (id: number, err: Error) => `Darbs nr. ${id} nav atrasts
 @Injectable({
   providedIn: 'root'
 })
-export class ReproJobResolverService implements Resolve<Job> {
+export class ReproJobResolverService  {
 
   constructor(
     private jobService: JobService,

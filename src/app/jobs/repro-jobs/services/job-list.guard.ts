@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, createUrlTreeFromSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, createUrlTreeFromSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
 import { DEFAULT_FILTER } from '../../interfaces';
 
@@ -7,7 +7,7 @@ import { DEFAULT_FILTER } from '../../interfaces';
 @Injectable({
   providedIn: 'root'
 })
-export class JobListGuard implements CanActivate {
+export class JobListGuard  {
 
 
   canActivate(

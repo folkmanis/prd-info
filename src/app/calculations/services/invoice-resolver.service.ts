@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Router, Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { InvoicesService } from './invoices.service';
 import { Invoice, InvoiceProduct, SystemPreferences } from 'src/app/interfaces';
 import { EMPTY, Observable, of } from 'rxjs';
@@ -13,7 +13,7 @@ interface SavedState {
 @Injectable({
   providedIn: 'any'
 })
-export class InvoiceResolverService implements Resolve<Invoice> {
+export class InvoiceResolverService  {
 
   private savedState: SavedState | undefined;
 

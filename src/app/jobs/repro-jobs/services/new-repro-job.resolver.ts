@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Job } from 'src/app/jobs/interfaces';
 import { ReproJobService } from './repro-job.service';
 
@@ -24,7 +24,7 @@ const defaultReproJob: () => NewJob = () => ({
 @Injectable({
   providedIn: 'root'
 })
-export class NewReproJobResolver implements Resolve<NewJob> {
+export class NewReproJobResolver  {
 
   constructor(
     private reproJobService: ReproJobService,
