@@ -1,3 +1,3 @@
 export const version = {
-    appBuild: 363
+    appBuild: 364
 };
