@@ -3,10 +3,10 @@ import { RouterModule, Routes } from '@angular/router';
 import { JobsComponent } from './jobs.component';
 import { JobListComponent } from './repro-jobs/job-list/job-list.component';
 import { ReproJobEditComponent } from './repro-jobs/repro-job-edit/repro-job-edit.component';
-import { ReproJobResolverService } from './repro-jobs/services/repro-job-resolver.service';
-import { NewReproJobResolver } from './repro-jobs/services/new-repro-job.resolver';
-import { ReproJobEditGuard } from './repro-jobs/repro-job-edit/repro-job-edit.guard';
-import { JobListGuard } from './repro-jobs/services/job-list.guard';
+import { resolveReproJob } from './repro-jobs/services/repro-job-resolver';
+import { newReproJob } from './repro-jobs/services/new-repro-job.resolver';
+import { canJobDeactivate } from './repro-jobs/repro-job-edit/can-job-deactivate.guard';
+import { appendJobStatus } from './repro-jobs/services/job-list.guard';
 
 
 const routes: Routes = [
@@ -17,23 +17,23 @@ const routes: Routes = [
         path: 'new',
         component: ReproJobEditComponent,
         resolve: {
-          job: NewReproJobResolver,
+          job: newReproJob,
         },
-        canDeactivate: [ReproJobEditGuard]
+        canDeactivate: [canJobDeactivate]
       },
       {
         path: ':jobId',
         component: ReproJobEditComponent,
         resolve: {
-          job: ReproJobResolverService,
+          job: resolveReproJob,
         },
-        canDeactivate: [ReproJobEditGuard]
+        canDeactivate: [canJobDeactivate]
       },
       {
         path: '',
         component: JobListComponent,
         runGuardsAndResolvers: 'paramsOrQueryParamsChange',
-        canActivate: [JobListGuard],
+        canActivate: [appendJobStatus],
       },
     ]
   },

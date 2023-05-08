@@ -2,14 +2,14 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AdminMainMenuComponent } from './admin-main-menu/admin-main-menu.component';
 import { ModulePreferencesComponent } from './module-preferences/module-preferences.component';
-import { CanDeactivateGuard } from '../library/guards/can-deactivate.guard';
+import { canComponentDeactivate } from '../library/guards/can-deactivate.guard';
 import { LogfileComponent } from './logfile/logfile.component';
 
 const routes: Routes = [
   {
     path: 'module-preferences',
     component: ModulePreferencesComponent,
-    canDeactivate: [CanDeactivateGuard],
+    canDeactivate: [canComponentDeactivate],
   },
   {
     path: 'logfile',

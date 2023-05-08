@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { inject } from '@angular/core';
+import { ResolveFn } from '@angular/router';
 import { Job } from 'src/app/jobs/interfaces';
 import { ReproJobService } from './repro-job.service';
 
@@ -20,37 +20,29 @@ const defaultReproJob: () => NewJob = () => ({
   }
 });
 
+export const newReproJob: ResolveFn<NewJob> = (route) => {
 
-@Injectable({
-  providedIn: 'root'
-})
-export class NewReproJobResolver  {
+  const reproJobService = inject(ReproJobService);
 
-  constructor(
-    private reproJobService: ReproJobService,
-  ) { }
+  const serviceJob = reproJobService.job || {};
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): NewJob {
+  const job = {
+    ...defaultReproJob(),
+    ...serviceJob,
+  };
 
-    const serviceJob = this.reproJobService.job || {};
-
-    const job = {
-      ...defaultReproJob(),
-      ...serviceJob,
-    };
-
-    if (route.paramMap.get('name')) {
-      job.name = route.paramMap.get('name');
-    }
-
-    if (route.paramMap.get('customer')) {
-      job.customer = route.paramMap.get('customer');
-    }
-
-    this.reproJobService.job = null;
-
-    return job;
+  if (route.paramMap.get('name')) {
+    job.name = route.paramMap.get('name');
   }
+
+  if (route.paramMap.get('customer')) {
+    job.customer = route.paramMap.get('customer');
+  }
+
+  reproJobService.job = null;
+
+  return job;
 
 
 }
+
