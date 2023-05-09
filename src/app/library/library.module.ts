@@ -4,7 +4,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { CardMenuComponent } from './card-menu/card-menu.component';
-import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { BackButtonDirective } from './directives/back-button.directive';
 import { CopyClipboardDirective } from './directives/copy-clipboard.directive';
 import { FileDropDirective } from './directives/file-drop.directive';
@@ -27,7 +26,6 @@ import { InputDirective } from './directives/input.directive';
     CopyClipboardDirective,
     TaggedStringComponent,
     FileDropDirective,
-    ConfirmationDialogComponent,
     CardMenuComponent,
     FocusedDirective,
     BackButtonDirective,
