@@ -4,7 +4,8 @@ import { ControlValueAccessor, NgControl } from '@angular/forms';
 // https://netbasal.com/how-to-trim-the-value-of-angulars-form-control-87660941e6cb
 
 @Directive({
-  selector: 'input[appInputUppercase]'
+  selector: 'input[appInputUppercase]',
+  standalone: true,
 })
 export class InputUppercaseDirective {
 

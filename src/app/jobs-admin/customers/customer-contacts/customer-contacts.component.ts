@@ -1,13 +1,16 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import {
   ControlValueAccessor, FormBuilder, FormControl,
   NG_VALIDATORS, NG_VALUE_ACCESSOR,
-  ValidationErrors, Validator, Validators
+  ReactiveFormsModule,
+  ValidationErrors, Validator
 } from '@angular/forms';
 import { plainToInstance } from 'class-transformer';
-import { log } from 'prd-cdk';
 import { map } from 'rxjs';
 import { CustomerContact } from 'src/app/interfaces';
+import { MaterialLibraryModule } from 'src/app/library/material-library.module';
+import { CustomerContactEditorComponent } from '../customer-contact-editor/customer-contact-editor.component';
 
 const DEFAULT_CONTACT: CustomerContact = {
   email: '',
@@ -15,6 +18,7 @@ const DEFAULT_CONTACT: CustomerContact = {
 
 @Component({
   selector: 'app-customer-contacts',
+  standalone: true,
   templateUrl: './customer-contacts.component.html',
   styleUrls: ['./customer-contacts.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,6 +33,12 @@ const DEFAULT_CONTACT: CustomerContact = {
       multi: true,
       useExisting: CustomerContactsComponent,
     }
+  ],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    CustomerContactEditorComponent,
+    MaterialLibraryModule,
   ]
 })
 export class CustomerContactsComponent implements OnInit, ControlValueAccessor, Validator {

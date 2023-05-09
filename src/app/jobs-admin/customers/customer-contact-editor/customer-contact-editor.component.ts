@@ -1,10 +1,12 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnInit, Output, ViewChild } from '@angular/core';
-import { ControlValueAccessor, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators } from '@angular/forms';
+import { ControlValueAccessor, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { CustomerContact } from 'src/app/interfaces';
+import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 
 @Component({
   selector: 'app-customer-contact-editor',
+  standalone: true,
   templateUrl: './customer-contact-editor.component.html',
   styleUrls: ['./customer-contact-editor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,6 +21,10 @@ import { CustomerContact } from 'src/app/interfaces';
       multi: true,
       useExisting: CustomerContactEditorComponent,
     }
+  ],
+  imports: [
+    ReactiveFormsModule,
+    MaterialLibraryModule,
   ]
 })
 export class CustomerContactEditorComponent implements OnInit, AfterViewInit, ControlValueAccessor, Validator {

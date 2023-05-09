@@ -1,11 +1,15 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { ControlValueAccessor, FormGroup, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators } from '@angular/forms';
+import { ControlValueAccessor, FormGroup, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators, ReactiveFormsModule } from '@angular/forms';
 import { defaults } from 'lodash-es';
 import { map, pluck, from, toArray, Observable, switchMap, filter } from 'rxjs';
 import { FtpUserData } from 'src/app/interfaces';
 import { plainToInstance } from 'class-transformer';
 import { JobsFilesApiService } from 'src/app/filesystem';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { CommonModule } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 
 const DEFAULT_DATA: FtpUserData = {
   folder: null,
@@ -15,6 +19,7 @@ const DEFAULT_DATA: FtpUserData = {
 
 @Component({
   selector: 'app-ftp-user',
+  standalone: true,
   templateUrl: './ftp-user.component.html',
   styleUrls: ['./ftp-user.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,6 +34,11 @@ const DEFAULT_DATA: FtpUserData = {
       multi: true,
       useExisting: FtpUserComponent,
     }
+  ],
+  imports: [
+    CommonModule,
+    MaterialLibraryModule,
+    ReactiveFormsModule,
   ]
 })
 export class FtpUserComponent implements ControlValueAccessor, Validator {

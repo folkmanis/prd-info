@@ -1,4 +1,4 @@
-<app-simple-list-typed-container (filter)="filter$.next($event)" plusButton filterInput>
+<app-simple-list-container (filter)="filter$.next($event)" plusButton filterInput>
 
     <table mat-table [dataSource]="customers$" class="simple-form-table">
 
@@ -14,4 +14,4 @@
         </ng-container>
 
     </table>
-</app-simple-list-typed-container>
+</app-simple-list-container>

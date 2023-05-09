@@ -4,11 +4,16 @@ import { Routes, RouterModule } from '@angular/router';
 import { JobsAdminComponent } from './jobs-admin.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 
+
 const routes: Routes = [
   {
     path: '',
     component: JobsAdminComponent,
     children: [
+      {
+        path: 'customers',
+        loadChildren: () => import('./customers/customers-routes'),
+      },
       {
         path: '',
         component: MainMenuComponent,

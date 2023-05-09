@@ -43,6 +43,7 @@ export class CustomerFormService {
   ) { }
 
   setInitial(value: Customer | null) {
+    console.log(value);
     if (value._id) {
       this.initialValue = value;
     } else {

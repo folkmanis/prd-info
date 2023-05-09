@@ -7,7 +7,6 @@ import { JobsAdminRoutingModule } from './jobs-admin-routing.module';
 import { JobsAdminComponent } from './jobs-admin.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import { ProductsModule } from './products/products.module';
-import { CustomersModule } from './customers/customers.module';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { MaterialsModule } from './materials/materials.module';
 import { EquipmentModule } from './equipment/equipment.module';
@@ -23,7 +22,6 @@ import { ProductionStagesModule } from './production-stages/production-stages.mo
     LibraryModule,
     MaterialLibraryModule,
     ProductsModule,
-    CustomersModule,
     MaterialsModule,
     EquipmentModule,
     ProductionStagesModule,

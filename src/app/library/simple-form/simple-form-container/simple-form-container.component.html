@@ -1,0 +1,31 @@
+<div class="container" scroll-to-top>
+
+    <mat-toolbar>
+        <span *ngIf="buttons">
+            <button mat-raised-button (click)="onSave()" color="primary"
+                [disabled]="this.status !== 'VALID' || this.isChanges === false">
+                SAGLABĀT
+            </button>
+            <button mat-raised-button (click)="onReset()" [disabled]="this.isChanges === false">
+                ATIESTATĪT
+            </button>
+        </span>
+        <span class="spacer"></span>
+
+        <ng-content select="[appSimpleFormTypedLabel]"></ng-content>
+
+        <span class="spacer"></span>
+        <span>
+            <a mat-mini-fab color="primary" routerLink="..">
+                <mat-icon>
+                    close
+                </mat-icon>
+            </a>
+        </span>
+    </mat-toolbar>
+
+    <div class="wrapper">
+        <ng-content></ng-content>
+    </div>
+
+</div>
