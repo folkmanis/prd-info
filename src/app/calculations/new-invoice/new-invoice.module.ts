@@ -9,6 +9,7 @@ import { NewInvoiceRoutingModule } from './new-invoice-routing.module';
 import { NewInvoiceComponent } from './new-invoice.component';
 import { SelectionTotalsComponent } from './selection-totals/selection-totals.component';
 import { JobsWithoutInvoicesComponent } from './jobs-without-invoices/jobs-without-invoices.component';
+import { DrawerButtonDirective } from 'src/app/library/side-button/drawer-button.directive';
 
 
 @NgModule({
@@ -23,6 +24,7 @@ import { JobsWithoutInvoicesComponent } from './jobs-without-invoices/jobs-witho
     MaterialLibraryModule,
     CalculationsLibraryModule,
     NewInvoiceRoutingModule,
+    DrawerButtonDirective,
   ]
 })
 export class NewInvoiceModule { }

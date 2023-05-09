@@ -12,6 +12,7 @@ import { FacetCheckerComponent } from './facet/facet-checker/facet-checker.compo
 import { SearchInputComponent } from './search-input/search-input.component';
 import { FacetPipe } from './facet/facet-checker/facet.pipe';
 import { StatusCountComponent } from './status-count/status-count.component';
+import { DrawerButtonDirective } from '../library/side-button/drawer-button.directive';
 
 
 @NgModule({
@@ -29,6 +30,7 @@ import { StatusCountComponent } from './status-count/status-count.component';
     MaterialLibraryModule,
     XmfSearchRoutingModule,
     LibraryModule,
+    DrawerButtonDirective,
   ],
 })
 export class XmfSearchModule { }

@@ -7,6 +7,7 @@ import { SideButtonComponent } from './side-button.component';
 /** adds close/open button to mat-drawer */
 @Directive({
   selector: 'mat-drawer[button]',
+  standalone: true,
   providers: [DestroyService]
 })
 export class DrawerButtonDirective implements OnInit {

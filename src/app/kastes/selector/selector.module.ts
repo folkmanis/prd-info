@@ -12,6 +12,7 @@ import { RowIdDirective } from './tabula/row-id.directive';
 import { OrderTotalsComponent } from './order-totals/order-totals.component';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { KasteDialogComponent } from './kaste-dialog/kaste-dialog.component';
+import { DrawerButtonDirective } from 'src/app/library/side-button/drawer-button.directive';
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { KasteDialogComponent } from './kaste-dialog/kaste-dialog.component';
     CommonModule,
     LibraryModule,
     MaterialLibraryModule,
-    SelectorRoutingModule
+    SelectorRoutingModule,
+    DrawerButtonDirective,
   ],
 })
 export class SelectorModule { }

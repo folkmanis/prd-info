@@ -19,6 +19,7 @@ import { JobFormComponent } from './repro-job-edit/job-form/job-form.component';
 import { SnackbarMessageComponent } from './snackbar-message/snackbar-message.component';
 import { NewJobButtonComponent } from './job-list/new-job-button/new-job-button.component';
 import { DropFolderComponent } from './repro-job-edit/drop-folder/drop-folder.component';
+import { DrawerButtonDirective } from 'src/app/library/side-button/drawer-button.directive';
 
 
 @NgModule({
@@ -45,6 +46,7 @@ import { DropFolderComponent } from './repro-job-edit/drop-folder/drop-folder.co
     MaterialLibraryModule,
     LibraryModule,
     RouterModule,
+    DrawerButtonDirective,
   ]
 })
 export class ReproJobsModule { }

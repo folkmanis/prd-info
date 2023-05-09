@@ -3,23 +3,22 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { PrdCdkModule } from 'prd-cdk';
 import { CardMenuComponent } from './card-menu/card-menu.component';
+import { DateServicesModule } from './date-services';
+import { DenseListDirective } from './dense-list/dense-list.directive';
 import { BackButtonDirective } from './directives/back-button.directive';
 import { CopyClipboardDirective } from './directives/copy-clipboard.directive';
 import { FileDropDirective } from './directives/file-drop.directive';
 import { FocusedDirective } from './directives/focused.directive';
-import { SideButtonModule } from './side-button/side-button.module';
+import { InputTrimDirective } from './directives/input-trim.directive';
+import { InputDirective } from './directives/input.directive';
+import { MaterialLibraryModule } from './material-library.module';
+import { PasswordInputModule } from './password-input/password-input.module';
+import { ScrollTopDirective } from './scroll-to-top/scroll-top.directive';
 import { SimpleListTableModule } from './simple-list-table/simple-list-table.module';
 import { TaggedStringComponent } from './tagged-string/tagged-string.component';
-import { MaterialLibraryModule } from './material-library.module';
-import { PrdCdkModule } from 'prd-cdk';
-import { DateServicesModule } from './date-services';
-import { InputTrimDirective } from './directives/input-trim.directive';
-import { PasswordInputModule } from './password-input/password-input.module';
 import { ViewSizeModule } from './view-size/view-size.module';
-import { DenseListDirective } from './dense-list/dense-list.directive';
-import { InputDirective } from './directives/input.directive';
-import { ScrollTopDirective } from './scroll-to-top/scroll-top.directive';
 
 @NgModule({
   declarations: [
@@ -39,7 +38,6 @@ import { ScrollTopDirective } from './scroll-to-top/scroll-top.directive';
     ReactiveFormsModule,
     RouterModule,
     HttpClientModule,
-    SideButtonModule,
     SimpleListTableModule,
     MaterialLibraryModule,
     PrdCdkModule,
@@ -57,7 +55,6 @@ import { ScrollTopDirective } from './scroll-to-top/scroll-top.directive';
     CardMenuComponent,
     FileDropDirective,
     FocusedDirective,
-    SideButtonModule,
     BackButtonDirective,
     InputTrimDirective,
     SimpleListTableModule,
