@@ -8,7 +8,6 @@ import { BackButtonDirective } from './directives/back-button.directive';
 import { CopyClipboardDirective } from './directives/copy-clipboard.directive';
 import { FileDropDirective } from './directives/file-drop.directive';
 import { FocusedDirective } from './directives/focused.directive';
-import { ScrollToTopModule } from './scroll-to-top/scroll-to-top.module';
 import { SideButtonModule } from './side-button/side-button.module';
 import { SimpleListTableModule } from './simple-list-table/simple-list-table.module';
 import { TaggedStringComponent } from './tagged-string/tagged-string.component';
@@ -20,6 +19,7 @@ import { PasswordInputModule } from './password-input/password-input.module';
 import { ViewSizeModule } from './view-size/view-size.module';
 import { DenseListDirective } from './dense-list/dense-list.directive';
 import { InputDirective } from './directives/input.directive';
+import { ScrollTopDirective } from './scroll-to-top/scroll-top.directive';
 
 @NgModule({
   declarations: [
@@ -39,7 +39,6 @@ import { InputDirective } from './directives/input.directive';
     ReactiveFormsModule,
     RouterModule,
     HttpClientModule,
-    ScrollToTopModule,
     SideButtonModule,
     SimpleListTableModule,
     MaterialLibraryModule,
@@ -47,6 +46,7 @@ import { InputDirective } from './directives/input.directive';
     DateServicesModule,
     PasswordInputModule,
     ViewSizeModule,
+    ScrollTopDirective,
   ],
   exports: [
     FormsModule,
@@ -58,7 +58,6 @@ import { InputDirective } from './directives/input.directive';
     FileDropDirective,
     FocusedDirective,
     SideButtonModule,
-    ScrollToTopModule,
     BackButtonDirective,
     InputTrimDirective,
     SimpleListTableModule,
@@ -68,6 +67,7 @@ import { InputDirective } from './directives/input.directive';
     ViewSizeModule,
     DenseListDirective,
     InputDirective,
+    ScrollTopDirective,
   ],
 })
 export class LibraryModule { }

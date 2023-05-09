@@ -8,6 +8,7 @@ import { ScrollToTopComponent } from './scroll-to-top.component';
 
 @Directive({
   selector: '[scroll-to-top]',
+  standalone: true,
   exportAs: 'scrollToTop',
   providers: [
     DestroyService,

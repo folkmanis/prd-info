@@ -2,11 +2,11 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { ReplaySubject, debounceTime } from 'rxjs';
 import { MaterialLibraryModule } from '../../material-library.module';
-import { ScrollToTopModule } from '../../scroll-to-top/scroll-to-top.module';
 import { ViewSizeModule } from '../../view-size/view-size.module';
+import { ScrollTopDirective } from '../../scroll-to-top/scroll-top.directive';
 
 @Component({
   selector: 'app-simple-list-container',
@@ -20,7 +20,8 @@ import { ViewSizeModule } from '../../view-size/view-size.module';
     ViewSizeModule,
     RouterOutlet,
     ReactiveFormsModule,
-    ScrollToTopModule,
+    ScrollTopDirective,
+    RouterLink,
   ],
 })
 export class SimpleListContainerComponent {

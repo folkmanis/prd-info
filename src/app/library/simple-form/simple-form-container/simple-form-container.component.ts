@@ -1,15 +1,12 @@
-import { ChangeDetectionStrategy, Component, HostListener, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatIconModule } from '@angular/material/icon';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { FormControlStatus, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Subject } from 'rxjs';
-import { ScrollToTopModule } from '../../scroll-to-top/scroll-to-top.module';
-import { MatButtonModule } from '@angular/material/button';
-import { RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, HostListener, Input, Output } from '@angular/core';
+import { FormControlStatus } from '@angular/forms';
 import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
+import { RouterLink } from '@angular/router';
+import { Subject } from 'rxjs';
 import { MaterialLibraryModule } from '../../material-library.module';
+import { ScrollTopDirective } from '../../scroll-to-top/scroll-top.directive';
 
 @Component({
   selector: 'app-simple-form-container',
@@ -20,8 +17,8 @@ import { MaterialLibraryModule } from '../../material-library.module';
   imports: [
     CommonModule,
     MaterialLibraryModule,
-    ScrollToTopModule,
     RouterLink,
+    ScrollTopDirective,
   ],
   providers: [
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },

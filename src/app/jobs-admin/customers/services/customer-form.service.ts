@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
-import { isEqual, pickBy } from 'lodash-es';
-import { map, Observable, of, tap } from 'rxjs';
-import { Customer, CustomerContact, CustomerFinancial, FtpUserData, NewCustomer, SystemPreferences } from 'src/app/interfaces';
-import { CustomersService } from 'src/app/services';
 import { ClassTransformer } from 'class-transformer';
+import { isEqual, pickBy } from 'lodash-es';
+import { Observable, map, of, tap } from 'rxjs';
+import { Customer, CustomerContact, CustomerFinancial, FtpUserData, NewCustomer } from 'src/app/interfaces';
+import { CustomersService } from 'src/app/services';
 
 
 @Injectable()
@@ -43,7 +43,6 @@ export class CustomerFormService {
   ) { }
 
   setInitial(value: Customer | null) {
-    console.log(value);
     if (value._id) {
       this.initialValue = value;
     } else {

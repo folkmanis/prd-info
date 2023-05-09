@@ -4,7 +4,7 @@ import { SimpleListTypedContainerComponent } from './simple-list-typed-container
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { LibraryModule } from 'src/app/library/library.module';
 import { canComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
-import { provideRouter, provideRoutes, RouterModule, Routes } from '@angular/router';
+import { provideRouter, RouterModule, Routes } from '@angular/router';
 import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 import { SimpleFormModuleConfiguration } from './simple-form-module-configuration';
 import { SimpleFormTypedContainerComponent } from './simple-form-typed-container/simple-form-typed-container.component';
