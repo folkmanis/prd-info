@@ -1,6 +1,6 @@
-<app-simple-list-container (filter)="filter$.next($event)" plusButton filterInput editorWidth="60%">
+<app-simple-list-container (filter)="nameFilterStr.set($event)" plusButton filterInput editorWidth="60%">
 
-    <table mat-table [dataSource]="customers$" class="simple-form-table">
+    <table mat-table [dataSource]="customersFiltered()" class="simple-form-table">
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let customer; columns: displayedColumns" [routerLink]="customer._id"
