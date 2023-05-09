@@ -4,7 +4,7 @@ import { combineLatest, BehaviorSubject } from 'rxjs';
 import { map, debounceTime } from 'rxjs/operators';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
-import { SimpleListContainerComponent } from 'src/app/library/simple-form/simple-list-container/simple-list-container.component';
+import { SimpleListContainerComponent } from 'src/app/library/simple-form';
 
 @Component({
   standalone: true,

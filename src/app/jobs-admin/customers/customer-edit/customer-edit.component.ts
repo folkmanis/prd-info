@@ -8,7 +8,7 @@ import { map, merge, takeUntil } from 'rxjs';
 import { Customer } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
-import { SimpleFormContainerComponent } from 'src/app/library/simple-form/simple-form-container/simple-form-container.component';
+import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { getConfig } from 'src/app/services/config.provider';
 import { CustomerContactsComponent } from '../customer-contacts/customer-contacts.component';
 import { CustomerFormService } from '../services/customer-form.service';
