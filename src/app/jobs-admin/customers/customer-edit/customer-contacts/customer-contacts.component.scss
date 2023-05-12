@@ -9,3 +9,8 @@
 .invalid .email {
   color: var(--warn-color);
 }
+
+div.email-row {
+  display: flex;
+  align-items: baseline;
+}

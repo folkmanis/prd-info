@@ -1,0 +1,27 @@
+<span>
+
+    <mat-form-field>
+        <mat-label>
+            Meklēt paytraq
+        </mat-label>
+        <input matInput [formControl]="searchControl">
+        <button matIconSuffix mat-icon-button (click)="searchControl.reset()">
+            <mat-icon>
+                clear
+            </mat-icon>
+        </button>
+        <button matIconSuffix mat-icon-button [disabled]="!searchControl.value || disabled" #searchButton
+            (click)="search.next(searchControl.value)">
+            <mat-icon>
+                search
+            </mat-icon>
+        </button>
+    </mat-form-field>
+
+</span>
+
+<span>
+
+    <ng-content select="button"></ng-content>
+
+</span>

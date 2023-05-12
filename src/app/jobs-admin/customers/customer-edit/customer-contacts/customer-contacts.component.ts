@@ -10,7 +10,7 @@ import { plainToInstance } from 'class-transformer';
 import { map } from 'rxjs';
 import { CustomerContact } from 'src/app/interfaces';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
-import { CustomerContactEditorComponent } from '../customer-contact-editor/customer-contact-editor.component';
+import { CustomerContactEditorComponent } from './customer-contact-editor/customer-contact-editor.component';
 
 const DEFAULT_CONTACT: CustomerContact = {
   email: '',

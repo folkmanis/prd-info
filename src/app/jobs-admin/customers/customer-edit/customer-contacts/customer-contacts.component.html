@@ -1,0 +1,36 @@
+<div [formGroup]="controlGroup">
+    <mat-list formArrayName="contacts">
+        <mat-list-item *ngFor="let contact of contactsArray.controls; index as idx;" [class.invalid]="contact.invalid">
+
+            <div class="email-row">
+
+                <button mat-icon-button (click)="contactsArray.removeAt(idx)">
+                    <mat-icon>
+                        delete
+                    </mat-icon>
+                </button>
+
+                <app-customer-contact-editor *ngIf="active === contact; else inactive;" [formControlName]="idx"
+                    (complete)="onFinishEditing(idx)">
+                </app-customer-contact-editor>
+
+                <ng-template #inactive>
+                    <span (click)="active = contact" class="email">
+                        {{ contact.value.email }}
+                    </span>
+                </ng-template>
+
+            </div>
+
+        </mat-list-item>
+
+        <mat-list-item>
+            <button mat-icon-button [disabled]="contactsArray.valid === false" (click)="addContact()">
+                <mat-icon>
+                    add
+                </mat-icon>
+            </button>
+        </mat-list-item>
+
+    </mat-list>
+</div>

@@ -27,7 +27,7 @@ import { MaterialLibraryModule } from 'src/app/library/material-library.module';
     MaterialLibraryModule,
   ]
 })
-export class CustomerContactEditorComponent implements OnInit, AfterViewInit, ControlValueAccessor, Validator {
+export class CustomerContactEditorComponent implements AfterViewInit, ControlValueAccessor, Validator {
 
   @ViewChild('email') private emailInput: ElementRef<HTMLInputElement>;
 
@@ -42,11 +42,6 @@ export class CustomerContactEditorComponent implements OnInit, AfterViewInit, Co
   @Output() complete = new Subject<void>();
 
   private onTouchFn: () => void = () => { };
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
 
   ngAfterViewInit(): void {
     // this.onTouchFn();

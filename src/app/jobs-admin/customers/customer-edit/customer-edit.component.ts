@@ -10,7 +10,7 @@ import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.gu
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { getConfig } from 'src/app/services/config.provider';
-import { CustomerContactsComponent } from '../customer-contacts/customer-contacts.component';
+import { CustomerContactsComponent } from './customer-contacts/customer-contacts.component';
 import { CustomerFormService } from '../services/customer-form.service';
 import { FtpUserComponent } from './ftp-user/ftp-user.component';
 import { InputUppercaseDirective } from './input-uppercase.directive';
