@@ -1,16 +1,12 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, signal } from '@angular/core';
-import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
-import { MatButton, MatButtonModule } from '@angular/material/button';
-import { Subject } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input, signal } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { Customer, CustomerFinancial } from 'src/app/interfaces';
 import { PaytraqClient } from 'src/app/interfaces/paytraq';
+import { PaytraqSearchHeaderComponent } from 'src/app/jobs-admin/paytraq-search-header/paytraq-search-header.component';
+import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { PaytraqClientService } from '../../services/paytraq-client.service';
 import { PaytraqCustomerTableComponent } from './paytraq-customer-table/paytraq-customer-table.component';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { CommonModule } from '@angular/common';
-import { MaterialLibraryModule } from 'src/app/library/material-library.module';
-import { PaytraqSearchHeaderComponent } from 'src/app/jobs-admin/paytraq-search-header/paytraq-search-header.component';
 
 const DEFAULT_VALUE: CustomerFinancial = {
   clientName: '',
