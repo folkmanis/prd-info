@@ -34,7 +34,8 @@ export class CustomerContactEditorComponent implements AfterViewInit, ControlVal
   controlGroup = new FormGroup({
     email: new FormControl<string>(null, {
       validators: [
-        Validators.required, Validators.email,
+        Validators.required,
+        Validators.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/),
       ]
     })
   });
