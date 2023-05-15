@@ -15,6 +15,10 @@ const routes: Routes = [
         loadChildren: () => import('./customers/customers-routes'),
       },
       {
+        path: 'products',
+        loadChildren: () => import('./products/products-routes'),
+      },
+      {
         path: '',
         component: MainMenuComponent,
       }

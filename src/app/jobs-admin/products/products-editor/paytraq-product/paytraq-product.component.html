@@ -1,29 +1,14 @@
-<div>
-    <mat-form-field>
-        <mat-label>
-            Meklēt Paytraq
-        </mat-label>
-        <input matInput [formControl]="productSearch">
-        <button matSuffix mat-icon-button (click)="productSearch.reset()">
-            <mat-icon>
-                clear
-            </mat-icon>
-        </button>
-    </mat-form-field>
+<app-paytraq-search-header [initial]="initialSearch()" (search)="onSearchProducts($event)"
+    [disabled]="searchDisabled()">
 
-    <button mat-icon-button [disabled]="!productSearch.value" (click)="onSearchProducts(productSearch.value)">
-        <mat-icon>
-            search
-        </mat-icon>
-    </button>
-    <!-- Atvienot -->
-    <button mat-button (click)="onClearValue()" [disabled]="!value || !pristine">
+    <button mat-button (click)="onClearValue()" [disabled]="!value">
         ATVIENOT
     </button>
-</div>
+
+</app-paytraq-search-header>
 
 <div>
-    <app-paytraq-product-table [products]="products$ | async" (productSelected)="onProductSelected($event)">
-
+    <app-paytraq-product-table *ngIf="products() as productsArray;" [products]="productsArray"
+        (productSelected)="onProductSelected($event)">
     </app-paytraq-product-table>
 </div>

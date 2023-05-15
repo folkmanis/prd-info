@@ -1,15 +1,24 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { MatButton } from '@angular/material/button';
-import { Subject } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input, signal } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { PaytraqProduct } from 'src/app/interfaces/paytraq';
+import { PaytraqSearchHeaderComponent } from 'src/app/jobs-admin/paytraq-search-header/paytraq-search-header.component';
+import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { PaytraqProductsService } from '../../services/paytraq-products.service';
+import { PaytraqProductTableComponent } from './paytraq-product-table/paytraq-product-table.component';
 
 @Component({
   selector: 'app-paytraq-product',
+  standalone: true,
   templateUrl: './paytraq-product.component.html',
   styleUrls: ['./paytraq-product.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    MaterialLibraryModule,
+    PaytraqProductTableComponent,
+    PaytraqSearchHeaderComponent,
+  ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -18,12 +27,10 @@ import { PaytraqProductsService } from '../../services/paytraq-products.service'
     }
   ]
 })
-export class PaytraqProductComponent implements OnInit, OnDestroy, ControlValueAccessor {
-
-  @ViewChild(MatButton) private button: MatButton;
+export class PaytraqProductComponent implements ControlValueAccessor {
 
   @Input() set productName(name: string) {
-    this.productSearch.setValue(name || '');
+    this.initialSearch.set(name || '');
   }
 
   private _value: number | null = null;
@@ -34,12 +41,10 @@ export class PaytraqProductComponent implements OnInit, OnDestroy, ControlValueA
     return this._value;
   }
 
-  productSearch = new FormControl<string>('');
+  products = signal<PaytraqProduct[] | null>(null);
 
-  disabled = false;
-  pristine = true;
-
-  readonly products$ = new Subject<PaytraqProduct[]>();
+  initialSearch = signal('');
+  searchDisabled = signal(false);
 
   private onChanges: (obj: number | null) => void;
   private onTouched: () => void;
@@ -49,9 +54,8 @@ export class PaytraqProductComponent implements OnInit, OnDestroy, ControlValueA
   ) { }
 
   writeValue(obj: number) {
-    this.products$.next([]);
+    this.products.set(null);
     this.value = obj;
-    this.pristine = true;
   }
 
   registerOnChange(fn: (obj: number) => void) {
@@ -63,36 +67,27 @@ export class PaytraqProductComponent implements OnInit, OnDestroy, ControlValueA
   }
 
   setDisabledState(isDisabled: boolean) {
-    this.disabled = isDisabled;
-  }
-
-  ngOnInit(): void {
-  }
-
-  ngOnDestroy() {
-    this.products$.complete();
+    this.searchDisabled.set(isDisabled);
   }
 
   onSearchProducts(ev: string) {
-    this.button.disabled = true;
+    this.searchDisabled.set(true);
     this.onTouched();
-    this.paytraqService.getProducts({ query: ev })
+    this.paytraqService.getProducts({ query: ev.trim() })
       .subscribe(products => {
-        this.products$.next(products);
-        this.button.disabled = false;
+        this.products.set(products);
+        this.searchDisabled.set(false);
       });
   }
 
   onProductSelected(ev: PaytraqProduct) {
     this.value = ev.itemID;
     this.onChanges(this.value);
-    this.pristine = false;
   }
 
   onClearValue() {
     this.value = null;
     this.onChanges(this.value);
-    this.pristine = true;
   }
 
 }

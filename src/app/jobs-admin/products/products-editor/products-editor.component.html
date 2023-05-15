@@ -1,5 +1,4 @@
-<app-simple-form-typed-container buttons [status]="form.status" [isChanges]="changes" (save)="onSave()"
-    (reset)="onReset()">
+<app-simple-form-container buttons [status]="form.status" [isChanges]="changes" (save)="onSave()" (reset)="onReset()">
 
     <!-- Nosaukums nelabojams -->
     <ng-template #existing>
@@ -136,4 +135,4 @@
 
     </form>
 
-</app-simple-form-typed-container>
+</app-simple-form-container>

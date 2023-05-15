@@ -1,17 +1,26 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
-import { ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators } from '@angular/forms';
+import { ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator, Validators } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
-import { JobProductionStage, JobProductionStageMaterial } from 'src/app/interfaces';
+import { JobProductionStage, JobProductionStageMaterial, Material } from 'src/app/interfaces';
+import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { ProductionStagesService } from 'src/app/services/production-stages.service';
-import { Material } from 'src/app/interfaces';
+import { ProductionStageMaterialComponent } from '../production-stage-material/production-stage-material.component';
 
 type ProductionStageGroup = ReturnType<typeof productionStage>;
 
 @Component({
   selector: 'app-product-production-stages',
+  standalone: true,
   templateUrl: './product-production-stages.component.html',
   styleUrls: ['./product-production-stages.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MaterialLibraryModule,
+    ProductionStageMaterialComponent,
+  ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

@@ -12,7 +12,8 @@ class UnitsDirectiveContext {
 }
 
 @Directive({
-  selector: '[appMaterialUnits][appMaterialUnitsOf]'
+  selector: '[appMaterialUnits][appMaterialUnitsOf]',
+  standalone: true,
 })
 export class MaterialUnitsDirective {
 

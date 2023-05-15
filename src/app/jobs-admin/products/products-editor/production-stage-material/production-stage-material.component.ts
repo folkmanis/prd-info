@@ -1,17 +1,26 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild, Input } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator, Validators } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
 import { JobProductionStageMaterial, Material } from 'src/app/interfaces';
-import { MaterialsService } from 'src/app/jobs-admin/materials/services/materials.service';
+import { MaterialLibraryModule } from 'src/app/library/material-library.module';
+import { MaterialUnitsDirective } from './material-units.directive';
 
 
 type MaterialGroup = ReturnType<typeof materialGroup>;
 
 @Component({
   selector: 'app-production-stage-material',
+  standalone: true,
   templateUrl: './production-stage-material.component.html',
   styleUrls: ['./production-stage-material.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    MaterialLibraryModule,
+    ReactiveFormsModule,
+    MaterialUnitsDirective,
+  ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

@@ -1,14 +1,22 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators } from '@angular/forms';
+import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator, Validators } from '@angular/forms';
 import { CustomerPartial, ProductPrice } from 'src/app/interfaces';
+import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 
 type PricesForm = ReturnType<typeof productPriceGroup>;
 
 @Component({
   selector: 'app-product-prices',
+  standalone: true,
   templateUrl: './product-prices.component.html',
   styleUrls: ['./product-prices.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MaterialLibraryModule,
+  ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
