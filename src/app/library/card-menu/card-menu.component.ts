@@ -1,21 +1,23 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
+import { RouterLink } from '@angular/router';
 import { UserModule } from 'src/app/interfaces';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-card-menu',
+  standalone: true,
   templateUrl: './card-menu.component.html',
-  styleUrls: ['./card-menu.component.scss']
+  styleUrls: ['./card-menu.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    RouterLink,
+    MatCardModule,
+  ]
 })
-export class CardMenuComponent implements OnInit {
-  /**
-   * saraksts ar moduļiem
-   */
-  @Input() modules: UserModule[];
+export class CardMenuComponent {
 
-  constructor() { }
-
-  ngOnInit() {
-  }
+  @Input({ required: true }) modules: UserModule[] | null;
 
 }

@@ -25,7 +25,6 @@ import { ViewSizeModule } from './view-size/view-size.module';
     CopyClipboardDirective,
     TaggedStringComponent,
     FileDropDirective,
-    CardMenuComponent,
     FocusedDirective,
     BackButtonDirective,
     InputTrimDirective,
@@ -45,6 +44,7 @@ import { ViewSizeModule } from './view-size/view-size.module';
     PasswordInputModule,
     ViewSizeModule,
     ScrollTopDirective,
+    CardMenuComponent,
   ],
   exports: [
     FormsModule,
