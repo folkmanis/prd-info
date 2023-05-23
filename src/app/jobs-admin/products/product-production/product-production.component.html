@@ -9,34 +9,37 @@
 
     <div class="stages">
 
-        <div class="stage-container" *ngFor="let control of form.controls; index as idx;" [formGroup]="control">
+        <mat-card *ngFor="let control of form.controls; index as idx;" [formGroup]="control">
 
-            <div class="stage">
+            <mat-card-content>
 
-                <select formControlName="productionStageId" appSelect>
-                    <option *ngFor="let stage of productionStages()" [value]="stage._id">
-                        {{ stage.name }}
-                    </option>
-                </select>
+                <div class="stage">
 
-                <input type="number" formControlName="amount" appInput>
+                    <select formControlName="productionStageId" appSelect>
+                        <option *ngFor="let stage of productionStages()" [value]="stage._id">
+                            {{ stage.name }}
+                        </option>
+                    </select>
 
-                <input type="number" formControlName="fixedAmount" appInput>
+                    <input type="number" formControlName="amount" appInput>
 
-                <button mat-icon-button color="warn" (click)="onDeleteStage(idx)">
-                    <mat-icon>
-                        delete_outline
-                    </mat-icon>
-                </button>
+                    <input type="number" formControlName="fixedAmount" appInput>
 
-            </div>
+                    <button mat-icon-button color="warn" (click)="onDeleteStage(idx)">
+                        <mat-icon>
+                            delete_outline
+                        </mat-icon>
+                    </button>
 
-            <app-production-material [formControl]="control.controls.materials" [materials]="materials()">
-            </app-production-material>
+                </div>
 
-            <mat-divider></mat-divider>
+                <mat-divider></mat-divider>
 
-        </div>
+                <app-production-material [formControl]="control.controls.materials" [materials]="materials()">
+                </app-production-material>
+
+            </mat-card-content>
+        </mat-card>
 
 
     </div>

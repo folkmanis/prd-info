@@ -4,6 +4,10 @@ h2 {
 
 .stages {
     margin: 16px 0;
+
+    mat-card {
+        margin-bottom: 16px;
+    }
 }
 
 .stage-container {
@@ -13,7 +17,7 @@ h2 {
 
 .stage {
     display: flex;
-    min-height: 56px;
+    align-items: center;
 
     &>* {
         margin: 0px 8px;
