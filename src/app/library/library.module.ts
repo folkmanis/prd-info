@@ -29,7 +29,6 @@ import { ViewSizeModule } from './view-size/view-size.module';
     BackButtonDirective,
     InputTrimDirective,
     DenseListDirective,
-    InputDirective,
   ],
   imports: [
     CommonModule,
@@ -45,6 +44,7 @@ import { ViewSizeModule } from './view-size/view-size.module';
     ViewSizeModule,
     ScrollTopDirective,
     CardMenuComponent,
+    InputDirective,
   ],
   exports: [
     FormsModule,

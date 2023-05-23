@@ -3,28 +3,28 @@ import { Expose, Type } from 'class-transformer';
 export class JobProductionStageMaterial {
 
     @Expose()
-    materialId: string;
+    materialId: string = '';
 
     @Expose()
-    amount: number;
+    amount: number = 0;
 
     @Expose()
-    fixedAmount: number;
+    fixedAmount: number = 0;
 }
 
 export class JobProductionStage {
 
     @Expose()
-    productionStageId: string;
+    productionStageId: string = '';
 
     @Expose()
     @Type(() => JobProductionStageMaterial)
     materials: JobProductionStageMaterial[] = [];
 
     @Expose()
-    amount: number;
+    amount: number = 0;
 
     @Expose()
-    fixedAmount: number;
+    fixedAmount: number = 0;
 
 }

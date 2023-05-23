@@ -108,31 +108,18 @@
 
             </mat-expansion-panel>
 
-            <mat-expansion-panel expanded *ngIf="materials$ | async as materials;">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        Ražošanas procesi
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-
-                <!-- Ražošanas procesu tabula -->
-                <section>
-                    <app-product-production-stages #prodStages formControlName="productionStages"
-                        [materials]="materials">
-                    </app-product-production-stages>
-                </section>
-
-                <mat-action-row>
-                    <button mat-mini-fab color="primary" (click)="prodStages.onNewProductionStage();">
-                        <mat-icon> add </mat-icon>
-                    </button>
-                </mat-action-row>
-
-            </mat-expansion-panel>
 
         </mat-accordion>
 
 
     </form>
+
+    <div class="actions">
+
+        <a mat-raised-button routerLink="production">
+            RAŽOŠANAS PROCESI
+        </a>
+
+    </div>
 
 </app-simple-form-container>

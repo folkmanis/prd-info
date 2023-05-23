@@ -1,0 +1,29 @@
+:host {
+    display: block;
+}
+
+
+.material {
+    display: flex;
+    align-items: center;
+    min-height: 56px;
+
+    &>* {
+        margin: 0px 8px;
+    }
+
+    & select[formControlName="materialId"] {
+        flex: 2;
+    }
+
+    .number-input {
+
+        flex: 0 1 9em;
+        display: flex;
+
+        input[type="number"] {
+            max-width: 4em;
+        }
+    }
+
+}

@@ -1,0 +1,33 @@
+h2 {
+    margin: 8px;
+}
+
+.stages {
+    margin: 16px 0;
+}
+
+.stage-container {
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+}
+
+.stage {
+    display: flex;
+    min-height: 56px;
+
+    &>* {
+        margin: 0px 8px;
+    }
+
+    & select[formControlName="productionStageId"] {
+        flex: 1;
+    }
+}
+
+input[type="number"] {
+    max-width: 4em;
+}
+
+app-production-material {
+    margin: 8px 16px 8px 36px;
+}

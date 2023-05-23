@@ -16,7 +16,7 @@ export class ProductionStagesService {
   private _filter$ = new BehaviorSubject<ProductionStagesFilter>({});
 
   productionStages$ = this._filter$.pipe(
-    switchMap(filter => this.getList(filter)),
+    switchMap(filter => this.getProductionStages(filter)),
   );
 
   constructor(
@@ -59,7 +59,7 @@ export class ProductionStagesService {
     );
   }
 
-  private getList(filter: ProductionStagesFilter | null): Observable<ProductionStage[]> {
+  getProductionStages(filter?: ProductionStagesFilter): Observable<ProductionStage[]> {
     return this.api.getAll(filter);
   }
 

@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, map, merge, takeUntil } from 'rxjs';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Observable, map } from 'rxjs';
 import { Product } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
@@ -14,7 +14,6 @@ import { MaterialsService } from '../../materials/services/materials.service';
 import { ProductsFormService } from '../services/products-form.service';
 import { PaytraqProductComponent } from './paytraq-product/paytraq-product.component';
 import { ProductPricesComponent } from './product-prices/product-prices.component';
-import { ProductProductionStagesComponent } from './product-production-stages/product-production-stages.component';
 
 @Component({
   selector: 'app-products-editor',
@@ -30,7 +29,7 @@ import { ProductProductionStagesComponent } from './product-production-stages/pr
     MaterialLibraryModule,
     PaytraqProductComponent,
     ProductPricesComponent,
-    ProductProductionStagesComponent,
+    RouterLink,
   ]
 })
 export class ProductsEditorComponent implements OnInit, CanComponentDeactivate {
@@ -43,7 +42,6 @@ export class ProductsEditorComponent implements OnInit, CanComponentDeactivate {
     takeUntilDestroyed(),
   );
 
-
   paytraqDisabled$ = this.systemPreferences.preferences$.pipe(
     map(conf => !conf.paytraq.enabled),
   );
@@ -53,7 +51,6 @@ export class ProductsEditorComponent implements OnInit, CanComponentDeactivate {
     map(conf => conf.jobs.productUnits.filter(u => !u.disabled)),
   );
 
-  materials$ = this.materialsService.getMaterials();
 
   get changes(): Partial<Product> | null {
     return this.formService.changes;
@@ -67,8 +64,6 @@ export class ProductsEditorComponent implements OnInit, CanComponentDeactivate {
     private formService: ProductsFormService,
     private router: Router,
     private route: ActivatedRoute,
-    // private changeDetector: ChangeDetectorRef,
-    private materialsService: MaterialsService,
   ) { }
 
   onSave() {
@@ -82,17 +77,11 @@ export class ProductsEditorComponent implements OnInit, CanComponentDeactivate {
 
   ngOnInit(): void {
     this.product$.subscribe(customer => this.formService.setInitial(customer));
-
-    // merge(this.form.valueChanges, this.form.statusChanges).pipe(
-    //   takeUntil(this.destroy$),
-    // ).subscribe(() => this.changeDetector.markForCheck());
   }
 
   canDeactivate(): Observable<boolean> | boolean {
     return this.form.pristine; // || this.productFormService.isNew();
   }
-
-
 
 
 }

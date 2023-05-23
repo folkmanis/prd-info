@@ -5,6 +5,7 @@
 @use "./app/library/table/table-theme.scss" as table;
 @use "./app/library/dense-list/dense-list.theme";
 @use "./app/library/directives/input-theme" as input;
+@use "./app/library/directives/select-theme" as select;
 
 // Plus imports for other components in your app.
 
@@ -47,6 +48,8 @@ $theme: app-styles.$theme;
 @include dense-list.theme($theme);
 
 @include input.theme($theme);
+
+@include select.theme($theme);
 
 $primary: map-get($theme, primary);
 $accent: map-get($theme, accent);

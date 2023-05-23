@@ -1,0 +1,49 @@
+<app-simple-form-container buttons [status]="form.status" [isChanges]="isChanged()" (save)="onSave()"
+    (reset)="onReset()">
+
+    <h2>
+        {{ name() }} - ražošanas procesi
+    </h2>
+
+    <mat-divider></mat-divider>
+
+    <div class="stages">
+
+        <div class="stage-container" *ngFor="let control of form.controls; index as idx;" [formGroup]="control">
+
+            <div class="stage">
+
+                <select formControlName="productionStageId" appSelect>
+                    <option *ngFor="let stage of productionStages()" [value]="stage._id">
+                        {{ stage.name }}
+                    </option>
+                </select>
+
+                <input type="number" formControlName="amount" appInput>
+
+                <input type="number" formControlName="fixedAmount" appInput>
+
+                <button mat-icon-button color="warn" (click)="onDeleteStage(idx)">
+                    <mat-icon>
+                        delete_outline
+                    </mat-icon>
+                </button>
+
+            </div>
+
+            <app-production-material [formControl]="control.controls.materials" [materials]="materials()">
+            </app-production-material>
+
+            <mat-divider></mat-divider>
+
+        </div>
+
+
+    </div>
+
+    <button mat-mini-fab color="primary" (click)="onNewProductionStage();" [disabled]="!form.valid">
+        <mat-icon> add </mat-icon>
+    </button>
+
+
+</app-simple-form-container>

@@ -17,9 +17,9 @@ class UnitsDirectiveContext {
 })
 export class MaterialUnitsDirective {
 
-  private _units: DataWithUnits[];
+  private _units: DataWithUnits[] = [];
   @Input('appMaterialUnitsOf') set units(value: DataWithUnits[]) {
-    this._units = value;
+    this._units = Array.isArray(value) ? value : [];
     this.createView();
   }
   get units() {
@@ -53,7 +53,8 @@ export class MaterialUnitsDirective {
   }
 
   private unit(): string {
-    return this.units?.find(un => un._id === this.id)?.units || '';
+    const material = this.units.find(un => un._id === this.id);
+    return material?.units || '';
   }
 
   static ngTemplateContextGuard(dir: MaterialUnitsDirective, ctx: unknown): ctx is UnitsDirectiveContext {

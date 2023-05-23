@@ -1,0 +1,41 @@
+<div class="materials-container">
+
+    <div class="material" *ngFor="let control of controls(); index as idx; trackBy: trackByFn" [formGroup]="control">
+
+        <select formControlName="materialId" appSelect>
+            <option *ngFor="let mat of materials" [value]="mat._id">
+                {{ mat.name }}
+            </option>
+        </select>
+
+        <div class="number-input">
+            <input type="number" appInput formControlName="amount">
+            <span *appMaterialUnits="let unit of materials; id: control.value.materialId">
+                {{ unit }}
+            </span>
+        </div>
+
+        <div class="number-input">
+            <input type="number" appInput formControlName="fixedAmount">
+            <span *appMaterialUnits="let unit of materials; id: control.value.materialId">
+                {{ unit }}
+            </span>
+        </div>
+
+        <button mat-icon-button color="warn" (click)="onDeleteMaterial(idx)">
+            <mat-icon>
+                delete_outline
+            </mat-icon>
+        </button>
+
+    </div>
+
+</div>
+
+<div>
+    <button mat-icon-button color="primary" (click)="onNewMaterial()" [disabled]="!materialsControl.valid">
+        <mat-icon>
+            add
+        </mat-icon>
+    </button>
+</div>

@@ -6,9 +6,9 @@
     $primary-palette: map.get($color-config, 'primary');
     $warn-palette: map.get($color-config, 'warn');
 
-    input[appInput] {
+    select[appSelect] {
 
-        caret-color: mat.get-color-from-palette($primary-palette, 500);
+        // caret-color: mat.get-color-from-palette($primary-palette, 500);
         border: none;
 
         border-bottom: {
@@ -32,7 +32,7 @@
 
 @mixin appearance() {
 
-    input[appInput] {
+    select[appSelect] {
         color: inherit;
         background-color: inherit;
         font-size: 16px;
@@ -41,11 +41,6 @@
         &:focus {
             outline: none;
         }
-    }
-
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-        display: none;
     }
 
 }
