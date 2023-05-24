@@ -8,7 +8,6 @@ import { JobsAdminComponent } from './jobs-admin.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { MaterialsModule } from './materials/materials.module';
-import { EquipmentModule } from './equipment/equipment.module';
 
 @NgModule({
   declarations: [
@@ -19,7 +18,6 @@ import { EquipmentModule } from './equipment/equipment.module';
     LibraryModule,
     MaterialLibraryModule,
     MaterialsModule,
-    EquipmentModule,
     JobsAdminRoutingModule,
     MainMenuComponent,
   ],

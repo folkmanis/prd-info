@@ -23,6 +23,10 @@ const routes: Routes = [
         loadChildren: () => import('./production-stages/production-stages-routes'),
       },
       {
+        path: 'equipment',
+        loadChildren: () => import('./equipment/equipment-routes'),
+      },
+      {
         path: '',
         component: MainMenuComponent,
       }

@@ -1,6 +1,6 @@
-<app-simple-list-typed-container plusButton filterInput (filter)="onSetFilter($event)">
+<app-simple-list-container plusButton filterInput (filter)="onSetFilter($event)">
 
-    <table mat-table [dataSource]="equipment$" class="app-table">
+    <table mat-table [dataSource]="equipment$">
 
         <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef> Nosaukums </th>
@@ -15,4 +15,4 @@
 
     </table>
 
-</app-simple-list-typed-container>
+</app-simple-list-container>
