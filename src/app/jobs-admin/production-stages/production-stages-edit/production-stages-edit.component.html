@@ -1,12 +1,12 @@
-<app-simple-form-typed-container buttons [status]="form.status" [isChanges]="changes" (save)="onSave()"
+<app-simple-form-container buttons [status]="formStatus()" [isChanges]="changes()" (save)="onSave()"
     (reset)="onReset()">
 
     <form [formGroup]="form">
 
         <h2>
             <mat-form-field class="full-width">
-                <mat-label></mat-label>
-                <input matInput formControlName="name" placeholder="Nosaukums">
+                <mat-label>Nosaukums</mat-label>
+                <input matInput formControlName="name">
                 <mat-error *ngIf="form.controls.name.hasError('occupied')">
                     Nosaukums jau tiek izmantots
                 </mat-error>
@@ -21,7 +21,7 @@
                     <mat-form-field class="full-width">
                         <mat-label> Iekārtas </mat-label>
                         <mat-select multiple formControlName="equipmentIds">
-                            <mat-option *ngFor="let option of equipment$ | async" [value]="option._id">
+                            <mat-option *ngFor="let option of equipment()" [value]="option._id">
                                 {{ option.name }}
                             </mat-option>
                         </mat-select>
@@ -42,13 +42,15 @@
 
         <mat-card>
 
-            <mat-card-title>
-                Dropfolderi
-            </mat-card-title>
+            <mat-card-header>
+                <mat-card-title>
+                    Dropfolderi
+                </mat-card-title>
+            </mat-card-header>
 
             <mat-card-content>
-                <app-drop-folders #dropControl formControlName="dropFolders"></app-drop-folders>
-
+                <app-drop-folders #dropControl formControlName="dropFolders" [dropFolders]="dropFolders()"
+                    [customers]="customers()"></app-drop-folders>
             </mat-card-content>
 
             <mat-card-actions>
@@ -61,4 +63,4 @@
 
     </form>
 
-</app-simple-form-typed-container>
+</app-simple-form-container>

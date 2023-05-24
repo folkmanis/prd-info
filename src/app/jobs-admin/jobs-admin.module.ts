@@ -9,7 +9,6 @@ import { MainMenuComponent } from './main-menu/main-menu.component';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { MaterialsModule } from './materials/materials.module';
 import { EquipmentModule } from './equipment/equipment.module';
-import { ProductionStagesModule } from './production-stages/production-stages.module';
 
 @NgModule({
   declarations: [
@@ -21,7 +20,6 @@ import { ProductionStagesModule } from './production-stages/production-stages.mo
     MaterialLibraryModule,
     MaterialsModule,
     EquipmentModule,
-    ProductionStagesModule,
     JobsAdminRoutingModule,
     MainMenuComponent,
   ],

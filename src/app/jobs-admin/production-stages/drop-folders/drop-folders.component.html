@@ -8,7 +8,7 @@
 
     <mat-form-field>
         <mat-select [formControl]="control.controls.path" required [compareWith]="pathCompare">
-            <mat-option *ngFor="let folder of dropFolders$ | async" [value]="folder.value">
+            <mat-option *ngFor="let folder of dropFolders" [value]="folder.value">
                 {{ folder.name }}
             </mat-option>
         </mat-select>
@@ -20,7 +20,7 @@
             <mat-option value="**">
                 Noklusējuma
             </mat-option>
-            <mat-option *ngFor="let customer of customers$ | async" [value]="customer.CustomerName"
+            <mat-option *ngFor="let customer of customers" [value]="customer.CustomerName"
                 [disabled]="customerSelection.value[0]==='**'">
                 {{ customer.CustomerName }}
             </mat-option>

@@ -22,10 +22,10 @@ export class DropFolder {
 export class ProductionStage {
 
     @Expose()
-    _id: string;
+    _id: string = '';
 
     @Expose()
-    name: string;
+    name: string = '';
 
     @Expose()
     description?: string = null;

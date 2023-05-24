@@ -1,11 +1,13 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, ValidatorFn, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator, ValidatorFn, Validators } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { ClassTransformer } from 'class-transformer';
 import { isEqual } from 'lodash-es';
 import { map, Observable, shareReplay } from 'rxjs';
 import { FileElement, JobFilesService } from 'src/app/filesystem';
 import { CustomerPartial, DropFolder } from 'src/app/interfaces';
+import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { CustomersService } from 'src/app/services/customers.service';
 
 type DropFolderForm = FormGroup<{
@@ -16,9 +18,15 @@ type DropFolderForm = FormGroup<{
 
 @Component({
   selector: 'app-drop-folders',
+  standalone: true,
   templateUrl: './drop-folders.component.html',
   styleUrls: ['./drop-folders.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    MaterialLibraryModule,
+    ReactiveFormsModule,
+  ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -34,19 +42,16 @@ type DropFolderForm = FormGroup<{
 })
 export class DropFoldersComponent implements OnInit, ControlValueAccessor, Validator {
 
+  @Input({ required: true }) dropFolders: { value: string[], name: string; }[] = [];
+
+  @Input({ required: true }) customers: CustomerPartial[] = [];
+
   form = new FormArray<DropFolderForm>(
     [],
     {
       validators: [this.duplicateDefaultValidator()]
     }
   );
-
-  dropFolders$: Observable<{ value: string[], name: string; }[]> = this.filesService.dropFolders().pipe(
-    map(dropFolderNames),
-    shareReplay(1),
-  );
-
-  customers$: Observable<CustomerPartial[]> = this.customersService.customers$;
 
   touchFn: () => void = () => { };
 
@@ -55,8 +60,6 @@ export class DropFoldersComponent implements OnInit, ControlValueAccessor, Valid
   constructor(
     private transformer: ClassTransformer,
     private chDetector: ChangeDetectorRef,
-    private filesService: JobFilesService,
-    private customersService: CustomersService,
   ) { }
 
   writeValue(obj: DropFolder[]): void {
@@ -140,13 +143,4 @@ export class DropFoldersComponent implements OnInit, ControlValueAccessor, Valid
     };
   }
 
-}
-
-function dropFolderNames(elements: FileElement[]): { value: string[], name: string; }[] {
-  return elements
-    .filter(el => el.isFolder)
-    .map(el => ({
-      value: [...el.parent, el.name],
-      name: [...el.parent, el.name].join('/'),
-    }));
 }
