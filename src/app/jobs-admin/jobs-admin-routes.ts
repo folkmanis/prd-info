@@ -1,14 +1,17 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { Route } from '@angular/router';
 import { JobsAdminComponent } from './jobs-admin.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
+import { CacheInterceptorService } from 'src/app/library/http';
 
 
-const routes: Routes = [
+export default [
   {
     path: '',
     component: JobsAdminComponent,
+    providers: [
+      { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptorService, multi: true, },
+    ],
     children: [
       {
         path: 'customers',
@@ -40,10 +43,4 @@ const routes: Routes = [
     path: '**',
     component: JobsAdminComponent,
   }
-];
-
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
-})
-export class JobsAdminRoutingModule { }
+] as Route[];

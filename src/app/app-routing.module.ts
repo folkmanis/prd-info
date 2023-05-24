@@ -56,7 +56,7 @@ const routes: Routes = [
       {
         path: 'jobs-admin',
         canMatch: [isModuleAllowed],
-        loadChildren: () => import('./jobs-admin/jobs-admin.module').then(m => m.JobsAdminModule),
+        loadChildren: () => import('./jobs-admin/jobs-admin-routes'),
       },
       {
         path: 'calculations',
