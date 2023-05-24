@@ -2,9 +2,10 @@
 
     <section>
         <mat-form-field>
-            <span matPrefix>No &nbsp;</span>
+            <mat-label> Skaits </mat-label>
+            <span matTextPrefix>No &nbsp;</span>
             <input type="number" matInput formControlName="min" required>
-            <span matSuffix> {{ units }} </span>
+            <span matTextSuffix> {{ units }} </span>
         </mat-form-field>
     </section>
 
@@ -12,7 +13,7 @@
         <mat-form-field>
             <mat-label> Cena </mat-label>
             <input type="number" matInput formControlName="price" required>
-            <span matSuffix>&nbsp; &euro;/{{ units }}</span>
+            <span matTextSuffix>&nbsp; &euro;/{{ units }}</span>
         </mat-form-field>
     </section>
 

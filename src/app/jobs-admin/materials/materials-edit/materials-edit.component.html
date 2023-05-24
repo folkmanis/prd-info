@@ -1,4 +1,4 @@
-<app-simple-form-typed-container buttons appViewSize [status]="form.status" [isChanges]="changes" (save)="onSave()"
+<app-simple-form-container buttons appViewSize [status]="formStatus()" [isChanges]="changes()" (save)="onSave()"
     (reset)="onReset()">
 
     <form [formGroup]="form">
@@ -59,12 +59,12 @@
 
         </mat-card>
 
-        <div class="w-spacer"></div>
-
         <mat-card>
-            <mat-card-title>
-                Cenas
-            </mat-card-title>
+            <mat-card-header>
+                <mat-card-title>
+                    Cenas
+                </mat-card-title>
+            </mat-card-header>
 
             <mat-card-content>
 
@@ -72,7 +72,7 @@
                     <mat-form-field>
                         <mat-label> Fiksētā cena </mat-label>
                         <input matInput type="number" formControlName="fixedPrice">
-                        <span matSuffix>&nbsp;&euro;</span>
+                        <span matTextSuffix>&nbsp;&euro;</span>
                     </mat-form-field>
                 </section>
 
@@ -92,4 +92,4 @@
 
     </form>
 
-</app-simple-form-typed-container>
+</app-simple-form-container>

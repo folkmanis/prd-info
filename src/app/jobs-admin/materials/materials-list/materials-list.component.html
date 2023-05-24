@@ -1,4 +1,11 @@
-<app-simple-list-typed-container plusButton editorWidth="50%" [filterInput]="filter">
+<app-simple-list-container plusButton editorWidth="50%">
+
+    <mat-card>
+        <mat-card-content>
+            <app-materials-filter (filter)="onSetFilter($event)"></app-materials-filter>
+        </mat-card-content>
+    </mat-card>
+
     <table mat-table [dataSource]="materials$">
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns;"></tr>
@@ -20,8 +27,4 @@
         </ng-container>
 
     </table>
-</app-simple-list-typed-container>
-
-<ng-template #filter>
-    <app-materials-filter (filter)="onSetFilter($event)"></app-materials-filter>
-</ng-template>
+</app-simple-list-container>

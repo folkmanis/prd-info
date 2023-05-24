@@ -7,7 +7,6 @@ import { JobsAdminRoutingModule } from './jobs-admin-routing.module';
 import { JobsAdminComponent } from './jobs-admin.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
-import { MaterialsModule } from './materials/materials.module';
 
 @NgModule({
   declarations: [
@@ -17,7 +16,6 @@ import { MaterialsModule } from './materials/materials.module';
     CommonModule,
     LibraryModule,
     MaterialLibraryModule,
-    MaterialsModule,
     JobsAdminRoutingModule,
     MainMenuComponent,
   ],

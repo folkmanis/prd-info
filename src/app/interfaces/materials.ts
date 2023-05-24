@@ -16,13 +16,13 @@ export class MaterialPrice {
 export class Material {
 
     @Expose()
-    _id: string;
+    _id: string = '';
 
     @Expose()
     name: string = '';
 
     @Expose()
-    units: string;
+    units: string = '';
 
     @Expose()
     category: string = '';
@@ -38,7 +38,7 @@ export class Material {
     fixedPrice: number = 0;
 
     @Expose()
-    description?: string = null;
+    description: string | null = null;
 
 }
 

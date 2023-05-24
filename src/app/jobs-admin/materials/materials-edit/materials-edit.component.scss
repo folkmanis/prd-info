@@ -2,7 +2,12 @@ section {
     margin: 8px 0;
 }
 
-.mat-form-field.full-width {
+
+mat-card:not(:first-of-type) {
+    margin-top: 16px;
+}
+
+mat-form-field.full-width {
     width: 100%;
 }
 
@@ -10,14 +15,10 @@ section {
     display: flex;
 }
 
-.input-container > .mat-form-field {
+.input-container>.mat-form-field {
     flex: 1;
 }
 
 .spacer {
     width: 16px;
-}
-
-.w-spacer {
-    height: 16px;
 }

@@ -27,6 +27,10 @@ const routes: Routes = [
         loadChildren: () => import('./equipment/equipment-routes'),
       },
       {
+        path: 'materials',
+        loadChildren: () => import('./materials/materials-routes')
+      },
+      {
         path: '',
         component: MainMenuComponent,
       }

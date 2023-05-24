@@ -1,19 +1,29 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { MatTable } from '@angular/material/table';
+import { MatTable, MatTableModule } from '@angular/material/table';
 import { ClassTransformer } from 'class-transformer';
 import { filter, map, Observable } from 'rxjs';
 import { MaterialPrice } from 'src/app/interfaces';
 import { DialogData, MaterialsPriceDialogComponent } from '../materials-price-dialog/materials-price-dialog.component';
 import { MaterialsPricesDataSource } from './materials-prices-data-source';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @Component({
   selector: 'app-materials-prices',
+  standalone: true,
   templateUrl: './materials-prices.component.html',
   styleUrls: ['./materials-prices.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    MatTableModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -38,8 +48,6 @@ export class MaterialsPricesComponent implements OnInit, ControlValueAccessor, V
     'actions',
   ];
 
-  @ViewChild(MatTable) private table: MatTable<MaterialPrice>;
-
   disabled = false;
 
   @Input() units: string = '';
@@ -53,7 +61,6 @@ export class MaterialsPricesComponent implements OnInit, ControlValueAccessor, V
 
   constructor(
     private dialogService: MatDialog,
-    private chDetector: ChangeDetectorRef,
     private transformer: ClassTransformer,
   ) { }
 

@@ -1,7 +1,6 @@
-import { MatTableDataSource } from '@angular/material/table';
-import { CollectionViewer, DataSource } from '@angular/cdk/collections';
+import { DataSource } from '@angular/cdk/collections';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { MaterialPrice } from 'src/app/interfaces';
-import { filter, takeUntil, merge, Observable, BehaviorSubject, Subject } from 'rxjs';
 
 
 
@@ -11,11 +10,11 @@ export class MaterialsPricesDataSource implements DataSource<MaterialPrice> {
 
     readonly valueChanges = new Subject<MaterialPrice[]>();
 
-    connect(collectionViewer: CollectionViewer): Observable<readonly MaterialPrice[]> {
+    connect(): Observable<readonly MaterialPrice[]> {
         return this.data.asObservable();
     }
 
-    disconnect(collectionViewer: CollectionViewer): void {
+    disconnect(): void {
         this.data.complete();
         this.valueChanges.complete();
     }

@@ -1,9 +1,13 @@
 :host {
     font-size: 0.75em;
-    align-items: baseline;
+    align-items: center;
     display: flex;
 }
 
-.spacer {
-    width: 16px;
+.name {
+    max-width: 200px;
+}
+
+.categories {
+    margin-left: 16px;
 }
