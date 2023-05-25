@@ -1,7 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatTableModule } from '@angular/material/table';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CustomerPartial } from 'src/app/interfaces';
 import { SimpleListContainerComponent } from 'src/app/library/simple-form';
 import { CustomersService } from 'src/app/services';
@@ -14,6 +14,7 @@ import { CustomersService } from 'src/app/services';
   imports: [
     MatTableModule,
     RouterLink,
+    RouterLinkActive,
     SimpleListContainerComponent,
   ]
 })
