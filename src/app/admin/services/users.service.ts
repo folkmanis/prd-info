@@ -18,16 +18,17 @@ export class UsersService {
     switchMap(() => this.api.getAll({})),
   );
 
-  xmfCustomers$: Observable<XmfCustomer[]> = this.xmfApi.getXmfCustomer().pipe(
-    map(customer => customer.map(cust => ({ name: cust || 'Nenoteikts', value: cust })))
-  );
-
 
   constructor(
     private api: UsersApiService,
     private xmfApi: XmfArchiveApiService,
   ) { }
 
+  getXmfCustomers(): Observable<XmfCustomer[]> {
+    return this.xmfApi.getXmfCustomer().pipe(
+      map(customer => customer.map(cust => ({ name: cust || 'Nenoteikts', value: cust })))
+    );
+  }
 
   getUser(username: string): Observable<User> {
     return this.api.getOne(username);

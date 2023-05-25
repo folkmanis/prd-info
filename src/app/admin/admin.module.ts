@@ -8,7 +8,6 @@ import { AdminMainMenuComponent } from './admin-main-menu/admin-main-menu.compon
 import { LogfileComponent } from './logfile/logfile.component';
 import { LogfileTableComponent } from './logfile/logfile-table/logfile-table.component';
 import { LogFilterComponent } from './logfile/log-filter/log-filter.component';
-import { UsersModule } from './users/users.module';
 import { ModulePreferencesModule } from './module-preferences/module-preferences.module';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { LogCalendarComponent } from './logfile/log-filter/log-calendar/log-calendar.component';
@@ -27,7 +26,6 @@ import { LogLevelComponent } from './logfile/log-filter/log-level/log-level.comp
     CommonModule,
     LibraryModule,
     MaterialLibraryModule,
-    UsersModule,
     AdminRoutingModule,
     ModulePreferencesModule,
   ],

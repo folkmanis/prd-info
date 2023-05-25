@@ -14,7 +14,6 @@ import { FocusedDirective } from './directives/focused.directive';
 import { InputTrimDirective } from './directives/input-trim.directive';
 import { InputDirective } from './directives/input.directive';
 import { MaterialLibraryModule } from './material-library.module';
-import { PasswordInputModule } from './password-input/password-input.module';
 import { ScrollTopDirective } from './scroll-to-top/scroll-top.directive';
 import { SimpleListTableModule } from './simple-list-table/simple-list-table.module';
 import { TaggedStringComponent } from './tagged-string/tagged-string.component';
@@ -40,7 +39,6 @@ import { ViewSizeModule } from './view-size/view-size.module';
     MaterialLibraryModule,
     PrdCdkModule,
     DateServicesModule,
-    PasswordInputModule,
     ViewSizeModule,
     ScrollTopDirective,
     CardMenuComponent,
@@ -60,7 +58,6 @@ import { ViewSizeModule } from './view-size/view-size.module';
     SimpleListTableModule,
     PrdCdkModule,
     DateServicesModule,
-    PasswordInputModule,
     ViewSizeModule,
     DenseListDirective,
     InputDirective,

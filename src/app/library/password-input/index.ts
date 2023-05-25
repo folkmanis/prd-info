@@ -1,1 +1,1 @@
-export * from './password-input.service';
+export * from './password-input.directive';

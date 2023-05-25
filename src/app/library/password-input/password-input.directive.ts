@@ -5,7 +5,8 @@ import { filter } from 'rxjs';
 import { PasswordDialogData, PasswordInputDialogComponent } from './password-input-dialog/password-input-dialog.component';
 
 @Directive({
-  selector: 'button[appPasswordInput]'
+  selector: 'button[appPasswordInput]',
+  standalone: true,
 })
 export class PasswordInputDirective {
 

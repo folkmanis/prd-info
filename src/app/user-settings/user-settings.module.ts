@@ -5,6 +5,7 @@ import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { UserSettingsComponent } from './user-settings.component';
 import { GoogleInfoComponent } from './google-info/google-info.component';
 import { UserSettingsRoutingModule } from './user-settings-routing.module';
+import { PasswordInputDirective } from '../library/password-input';
 
 
 
@@ -18,6 +19,7 @@ import { UserSettingsRoutingModule } from './user-settings-routing.module';
     LibraryModule,
     MaterialLibraryModule,
     UserSettingsRoutingModule,
+    PasswordInputDirective,
   ]
 })
 export class UserSettingsModule { }

@@ -1,10 +1,11 @@
-<app-simple-form-typed-container buttons [status]="form.status" [isChanges]="changes" (save)="onSave()"
-    (reset)="onReset()" [formGroup]="form">
+<app-simple-form-container buttons [status]="formStatus()" [isChanges]="changes()" (save)="onSave()" (reset)="onReset()"
+    [formGroup]="form">
 
     <!-- Lietotājvārds -->
     <h2 *ngIf="isNew; else existing">
         <mat-form-field>
-            <input formControlName="username" matInput placeholder="Lietotājvārds" autocomplete="off" required>
+            <mat-label> Lietotājvārds </mat-label>
+            <input formControlName="username" matInput autocomplete="off" required>
             <mat-error *ngIf="unameCtrl.hasError('minlength') && !unameCtrl.hasError('symbol')">
                 Jābūt vismaz {{unameCtrl.errors.minlength.requiredLength}} simboliem
             </mat-error>
@@ -23,32 +24,51 @@
         </h2>
     </ng-template>
 
-    <mat-accordion [multi]="true">
+    <!-- Pilns vārds -->
+    <mat-card>
 
-        <mat-form-field>
-            <input formControlName="name" matInput placeholder="Pilns vārds" autocomplete="off">
-        </mat-form-field>
+        <mat-card-content>
+            <mat-form-field>
+                <mat-label> Pilns vārds </mat-label>
+                <input formControlName="name" matInput autocomplete="off">
+            </mat-form-field>
+        </mat-card-content>
 
-        <mat-expansion-panel hideToggle [expanded]="true">
-            <!-- Parole jaunam lietotājam -->
-            <section *ngIf="isNew; else changePassword;">
-                <h4>
-                    Parole
-                </h4>
-                <app-password-input-group formControlName="password"></app-password-input-group>
-            </section>
-            <!-- Paroles maiņa -->
-            <ng-template #changePassword>
-                <section>
-                    <button mat-raised-button appPasswordInput [passwordMinimumLength]="6"
-                        (appPasswordChange)="onPasswordChange($event, unameCtrl.value)" color="primary">
-                        MAINĪT PAROLI
-                    </button>
-                </section>
-            </ng-template>
-        </mat-expansion-panel>
+    </mat-card>
 
-        <mat-expansion-panel hideToggle [expanded]="true">
+    <!-- Parole jaunam lietotājam -->
+    <mat-card *ngIf="isNew; else changePassword;">
+        <mat-card-header>
+            <mat-card-title>
+                Parole
+            </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <app-password-input-group formControlName="password"></app-password-input-group>
+        </mat-card-content>
+    </mat-card>
+
+    <!-- Paroles maiņa -->
+    <ng-template #changePassword>
+        <mat-card>
+            <mat-card-content>
+                <button mat-raised-button appPasswordInput [passwordMinimumLength]="6"
+                    (appPasswordChange)="onPasswordChange($event, unameCtrl.value)" color="primary">
+                    MAINĪT PAROLI
+                </button>
+            </mat-card-content>
+        </mat-card>
+    </ng-template>
+
+    <!-- Iestatījumi -->
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>
+                Lietotāja iestatījumi
+            </mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
             <!-- Neaktīvs -->
             <section>
                 <mat-checkbox formControlName="userDisabled">Neaktīvs</mat-checkbox>
@@ -63,16 +83,6 @@
                     </mat-label>
                 </mat-form-field>
             </section>
-
-        </mat-expansion-panel>
-
-        <mat-expansion-panel hideToggle [expanded]="true">
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    Lietotāja iestatījumi
-                </mat-panel-title>
-            </mat-expansion-panel-header>
-
 
             <div formGroupName="preferences">
                 <!-- Pieejamie moduļi -->
@@ -99,21 +109,24 @@
                     </mat-form-field>
                 </section>
             </div>
-        </mat-expansion-panel>
 
-        <mat-expansion-panel *ngIf="sessions !== null" [expanded]="true">
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    Aktīvās sesijas
-                </mat-panel-title>
-            </mat-expansion-panel-header>
+        </mat-card-content>
+    </mat-card>
 
-            <app-sessions [sessions]="sessions" [currentSession]="currentSessionId$ | async"
+    <mat-card *ngIf="sessions() as sess;">
+
+        <mat-card-header>
+            <mat-card-title>
+                Aktīvās sesijas
+            </mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+            <app-sessions [sessions]="sess" [currentSession]="currentSessionId$ | async"
                 (deleteSession)="onDeleteSessions($event)"></app-sessions>
+        </mat-card-content>
 
-        </mat-expansion-panel>
-
-    </mat-accordion>
+    </mat-card>
 
 
-</app-simple-form-typed-container>
+</app-simple-form-container>

@@ -1,15 +1,25 @@
+import { A11yModule } from '@angular/cdk/a11y';
 import { coerceNumberProperty } from '@angular/cdk/coercion';
-import { Input, ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { FormGroup, NG_VALUE_ACCESSOR, NG_VALIDATORS, ControlValueAccessor, Validator, Validators, ValidatorFn, FormControl, ValidationErrors } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ControlValueAccessor, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator, ValidatorFn, Validators } from '@angular/forms';
 import { map } from 'rxjs';
+import { MaterialLibraryModule } from '../../material-library.module';
 
 const MIN_LENGTH = 6;
 
 @Component({
   selector: 'app-password-input-group',
+  standalone: true,
   templateUrl: './password-input-group.component.html',
   styleUrls: ['./password-input-group.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MaterialLibraryModule,
+    A11yModule,
+  ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

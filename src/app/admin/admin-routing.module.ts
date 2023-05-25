@@ -16,6 +16,10 @@ const routes: Routes = [
     component: LogfileComponent,
   },
   {
+    path: 'users',
+    loadChildren: () => import('./users/user-route'),
+  },
+  {
     path: '',
     component: AdminMainMenuComponent,
     pathMatch: 'full',

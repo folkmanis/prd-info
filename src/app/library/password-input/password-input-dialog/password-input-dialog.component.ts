@@ -1,7 +1,9 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
-import { FormControl, ValidatorFn } from '@angular/forms';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-
+import { FormControl, ReactiveFormsModule, ValidatorFn } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { PasswordInputGroupComponent } from '../password-input-group/password-input-group.component';
+import { MatButtonModule } from '@angular/material/button';
 
 export interface PasswordDialogData {
   minLength?: number,
@@ -10,9 +12,17 @@ export interface PasswordDialogData {
 
 @Component({
   selector: 'app-password-input-dialog',
+  standalone: true,
   templateUrl: './password-input-dialog.component.html',
   styleUrls: ['./password-input-dialog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatButtonModule,
+    PasswordInputGroupComponent,
+  ]
 })
 export class PasswordInputDialogComponent implements OnInit {
 

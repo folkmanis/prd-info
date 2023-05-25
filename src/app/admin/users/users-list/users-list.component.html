@@ -1,6 +1,6 @@
-<app-simple-list-typed-container (filter)="filter$.next($event)" plusButton filterInput>
+<app-simple-list-container (filter)="filter.set($event)" plusButton filterInput>
 
-    <table mat-table [dataSource]="users$">
+    <table mat-table [dataSource]="usersFiltered()">
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let user; columns: displayedColumns;" [routerLink]="user.username"
@@ -29,4 +29,4 @@
 
     </table>
 
-</app-simple-list-typed-container>
+</app-simple-list-container>
