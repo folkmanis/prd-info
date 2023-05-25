@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { AbstractControl, FormArray, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { DestroyService } from 'prd-cdk';
 import { combineLatest, Observable, ReplaySubject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
@@ -7,6 +7,8 @@ import { Colors, COLORS, Kaste, MAX_ITEMS_BOX, Veikals } from 'src/app/kastes/in
 import { getKastesPreferences } from '../../../services/kastes-preferences.service';
 import { VeikalsValidationErrors } from '../../services/veikals-validation-errors';
 import { ActiveVeikalsDirective } from '../active-veikals.directive';
+import { CommonModule } from '@angular/common';
+import { InputDirective } from 'src/app/library/directives/input.directive';
 
 type KasteGroup = {
   [key in keyof Kaste]: FormControl<Kaste[key]>
@@ -14,10 +16,16 @@ type KasteGroup = {
 
 @Component({
   selector: 'app-veikals-edit',
+  standalone: true,
   templateUrl: './veikals-edit.component.html',
   styleUrls: ['./veikals-edit.component.scss'],
   providers: [DestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    InputDirective,
+  ]
 })
 export class VeikalsEditComponent implements OnInit, OnDestroy {
 

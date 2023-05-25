@@ -1,4 +1,4 @@
-<app-simple-list-typed-container #container filterInput (filter)="onFilter($event)" editorWidth="70%">
+<app-simple-list-container #container filterInput (filter)="onFilter($event)" editorWidth="70%">
     <table mat-table [dataSource]="datasource$" class="simple-form-table">
 
         <tr mat-header-row *matHeaderRowDef="container.isActivated ? columnsActive : columns"></tr>
@@ -37,4 +37,4 @@
         </ng-container>
 
     </table>
-</app-simple-list-typed-container>
+</app-simple-list-container>

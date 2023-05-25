@@ -4,6 +4,11 @@ import { map } from 'rxjs/operators';
 import { KastesJobPartial } from '../../interfaces/kastes-job-partial';
 import { KastesPasutijumiService } from '../../services/kastes-pasutijumi.service';
 import { getKastesPreferences } from '../../services/kastes-preferences.service';
+import { CommonModule } from '@angular/common';
+import { MatTableModule } from '@angular/material/table';
+import { SimpleListContainerComponent } from 'src/app/library/simple-form';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 export interface KastesJobTable extends KastesJobPartial {
   active: boolean;
@@ -11,9 +16,18 @@ export interface KastesJobTable extends KastesJobPartial {
 
 @Component({
   selector: 'app-pasutijumi-tabula',
+  standalone: true,
   templateUrl: './pasutijumi-tabula.component.html',
   styleUrls: ['./pasutijumi-tabula.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    MatTableModule,
+    MatIconModule,
+    SimpleListContainerComponent,
+    RouterLink,
+    RouterLinkActive,
+  ]
 })
 export class PasutijumiTabulaComponent implements OnInit {
 

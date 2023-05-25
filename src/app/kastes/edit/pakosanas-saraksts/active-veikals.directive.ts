@@ -5,6 +5,7 @@ import { VeikalsValidationErrors } from '../services/veikals-validation-errors';
 @Directive({
   selector: '[appActiveVeikals]',
   exportAs: 'appActiveVeikals',
+  standalone: true,
 })
 export class ActiveVeikalsDirective {
 
@@ -21,8 +22,6 @@ export class ActiveVeikalsDirective {
   validationErrors: VeikalsValidationErrors | null;
 
   veikalsUpdate: Veikals | null;
-
-  constructor() { }
 
   private reset(): void {
     this.validationErrors = null;

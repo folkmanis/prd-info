@@ -1,14 +1,25 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { RouterLink } from '@angular/router';
 import { ColorTotals, KastesJob, Veikals } from 'src/app/kastes/interfaces';
-import { colorTotalsFromVeikali, jobProductsToColorTotals, kastesTotalsFromVeikali } from '../../common';
+import { ColorTotalsComponent, KastesTotalsComponent, colorTotalsFromVeikali, jobProductsToColorTotals, kastesTotalsFromVeikali } from '../../common';
 
 @Component({
   selector: 'app-job-info',
+  standalone: true,
   templateUrl: './job-info.component.html',
   styleUrls: ['./job-info.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    ColorTotalsComponent,
+    MatButtonModule,
+    RouterLink,
+    KastesTotalsComponent,
+  ]
 })
-export class JobInfoComponent implements OnInit {
+export class JobInfoComponent {
 
   private _job: KastesJob | undefined;
   @Input() get job(): KastesJob | undefined {
@@ -42,11 +53,6 @@ export class JobInfoComponent implements OnInit {
   @Output() activeJob = new EventEmitter<number>();
 
   @Output() deleteVeikali = new EventEmitter<number>();
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
 
 
 }

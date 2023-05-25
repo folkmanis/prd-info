@@ -1,13 +1,21 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ColorTotals, Veikals } from 'src/app/kastes/interfaces';
 import { getKastesPreferences } from 'src/app/kastes/services/kastes-preferences.service';
 import { colorTotalsFromVeikalsBoxs } from '../../../common';
 import { VeikalsValidationErrors } from '../../services/veikals-validation-errors';
+import { CommonModule } from '@angular/common';
+import { PlusSignPipe } from '../../services/plus-sign.pipe';
 
 @Component({
   selector: 'app-totals',
+  standalone: true,
   templateUrl: './totals.component.html',
-  styleUrls: ['./totals.component.scss']
+  styleUrls: ['./totals.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    PlusSignPipe,
+  ]
 })
 export class TotalsComponent {
 

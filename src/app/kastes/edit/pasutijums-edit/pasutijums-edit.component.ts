@@ -7,16 +7,28 @@ import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/c
 import { KastesJob, Veikals } from '../../interfaces';
 import { KastesPasutijumiService } from '../../services/kastes-pasutijumi.service';
 import { KastesPreferencesService } from '../../services/kastes-preferences.service';
-import { KastesJobResolverService } from '../services/kastes-job-resolver.service';
+import { CommonModule } from '@angular/common';
+import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
+import { JobInfoComponent } from '../job-info/job-info.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { PakosanasSarakstsComponent } from '../pakosanas-saraksts/pakosanas-saraksts.component';
 
 const VEIKALI_DELETED_MESSAGE = 'Pakošanas saraksts izdzēsts';
 
 
 @Component({
   selector: 'app-pasutijums-edit',
+  standalone: true,
   templateUrl: './pasutijums-edit.component.html',
   styleUrls: ['./pasutijums-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    SimpleFormContainerComponent,
+    JobInfoComponent,
+    MatTabsModule,
+    PakosanasSarakstsComponent,
+  ]
 })
 export class PasutijumsEditComponent implements OnInit, OnDestroy {
 
@@ -24,7 +36,7 @@ export class PasutijumsEditComponent implements OnInit, OnDestroy {
   private veikalsUpdate$ = new Subject<Veikals>();
 
   job$: Observable<KastesJob> = merge(
-    this.route.data.pipe(map(data => data.value)),
+    this.route.data.pipe(map(data => data.kastesJob)),
     this.jobUpdate$,
   );
 
@@ -46,7 +58,6 @@ export class PasutijumsEditComponent implements OnInit, OnDestroy {
     private prefService: KastesPreferencesService,
     private confirmationDialog: ConfirmationDialogService,
     private snack: MatSnackBar,
-    private resolver: KastesJobResolverService,
     private route: ActivatedRoute,
   ) { }
 
@@ -74,7 +85,7 @@ export class PasutijumsEditComponent implements OnInit, OnDestroy {
     this.confirmationDialog.confirmDelete().pipe(
       mergeMap(resp => resp ? this.pasService.deleteKastes(jobId) : EMPTY),
       tap(_ => this.snack.open(VEIKALI_DELETED_MESSAGE, 'OK', { duration: 3000 })),
-      switchMap(_ => this.resolver.reload()),
+      switchMap(_ => this.pasService.getKastesJob(jobId)),
     ).subscribe(job => this.jobUpdate$.next(job));
   }
 

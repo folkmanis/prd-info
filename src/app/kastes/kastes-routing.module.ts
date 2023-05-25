@@ -1,5 +1,5 @@
-import { NgModule, Component } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 import { KastesMainMenuComponent } from './kastes-main-menu/kastes-main-menu.component';
 
 const routes: Routes = [
@@ -14,7 +14,7 @@ const routes: Routes = [
   },
   {
     path: 'edit',
-    loadChildren: () => import('./edit/edit.module').then(m => m.EditModule)
+    loadChildren: () => import('./edit/kastes-edit-route')
   },
   { path: '**', redirectTo: '' },
 ];

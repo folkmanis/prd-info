@@ -1,7 +1,7 @@
 <div *ngIf="colors$ | async as colors;">
     <div *ngFor="let control of veikalsFormArray.controls;" [formGroup]="control" class="container">
         <div *ngFor="let colorName of colorNames">
-            <input type="number" matInput [formControlName]="colorName"
+            <input appInput type="number" [formControlName]="colorName"
                 [style.color]="control.get(colorName).valid ? colors[colorName] : undefined">
         </div>
         <div [class.invalid]="control.invalid">
