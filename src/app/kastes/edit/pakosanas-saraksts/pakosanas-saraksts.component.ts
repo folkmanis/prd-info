@@ -1,16 +1,16 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, effect, signal } from '@angular/core';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 import { KastesTotalsComponent, kastesTotalsFromVeikali } from '../../common';
 import { COLORS, Veikals } from '../../interfaces';
 import { getKastesPreferences } from '../../services/kastes-preferences.service';
 import { CommonModule } from '@angular/common';
-import { ActiveVeikalsDirective } from './active-veikals.directive';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { TotalsComponent } from './totals/totals.component';
 import { VeikalsEditComponent } from './veikals-edit/veikals-edit.component';
 import { MatButtonModule } from '@angular/material/button';
+import { VeikalsValidationErrors } from '../services/veikals-validation-errors';
 
 @Component({
   selector: 'app-pakosanas-saraksts',
@@ -20,7 +20,6 @@ import { MatButtonModule } from '@angular/material/button';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
-    ActiveVeikalsDirective,
     MatTableModule,
     KastesTotalsComponent,
     MatIconModule,
@@ -29,7 +28,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatButtonModule,
   ]
 })
-export class PakosanasSarakstsComponent implements OnInit {
+export class PakosanasSarakstsComponent {
 
   colors$ = getKastesPreferences('colors');
 
@@ -43,6 +42,10 @@ export class PakosanasSarakstsComponent implements OnInit {
   displayedColumnsBottom = ['spacer', 'buttons', 'editor'];
 
   edited: Veikals | null = null;
+
+  errors = signal<VeikalsValidationErrors | null>(null);
+
+  veikalsUpdate: Veikals | null = null;
 
   @Input() set veikali(veikali: Veikals[]) {
     this.edited = null;
@@ -62,12 +65,11 @@ export class PakosanasSarakstsComponent implements OnInit {
 
   readonly colors = COLORS;
 
-
-  ngOnInit(): void {
-  }
-
-  onSaveVeikals(veikals: Veikals) {
-    this.veikalsChange.next(veikals);
+  onSaveVeikals() {
+    if (this.veikalsUpdate && !this.errors()) {
+      this.veikalsChange.next(this.veikalsUpdate);
+      this.veikalsUpdate = null;
+    }
   }
 
   isDisabled(veikals: Veikals): boolean {

@@ -16,7 +16,9 @@ export type VeikalsKaste = Veikals & {
     pending?: boolean;
 };
 
-export type Kaste = { [key in Colors]: number; } & {
+export type KasteColors = { [key in Colors]: number; };
+
+export type Kaste = KasteColors & {
     total: number;
     gatavs: boolean;
     uzlime: boolean;

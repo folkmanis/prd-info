@@ -6,8 +6,7 @@
     </div>
 
     <div>
-        <table mat-table [dataSource]="dataSource$" multiTemplateDataRows [appActiveVeikals]="edited"
-            #active="appActiveVeikals">
+        <table mat-table [dataSource]="dataSource$" multiTemplateDataRows>
             <ng-container matColumnDef="kods">
                 <th mat-header-cell *matHeaderCellDef="let row;">Kods</th>
                 <td mat-cell *matCellDef="let row;">{{row.kods}}</td>
@@ -27,11 +26,10 @@
                     </div>
                     <ng-template #buttonsActive>
                         <div>
-                            <button mat-icon-button (click)="edited = undefined">
+                            <button mat-icon-button (click)="edited = null; errors.set(null)">
                                 <mat-icon>clear</mat-icon>
                             </button>
-                            <button mat-icon-button [disabled]="!!active.validationErrors"
-                                (click)="onSaveVeikals(active.veikalsUpdate)">
+                            <button mat-icon-button [disabled]="!!errors()" (click)="onSaveVeikals()">
                                 <mat-icon>save_alt</mat-icon>
                             </button>
                         </div>
@@ -51,7 +49,7 @@
                     </div>
                 </th>
                 <td mat-cell *matCellDef="let row;">
-                    <app-totals [veikals]="row" [errors]="edited === row ? active.validationErrors : null"></app-totals>
+                    <app-totals [veikals]="row" [errors]="edited === row ? errors() : null"></app-totals>
                 </td>
             </ng-container>
             <!-- Labošanas rinda -->
@@ -63,7 +61,8 @@
             <ng-container matColumnDef="editor">
                 <td mat-cell *matCellDef="let row;">
                     <ng-container *ngIf="edited === row; else totals;">
-                        <app-veikals-edit [veikals]="row"></app-veikals-edit>
+                        <app-veikals-edit [veikals]="row" (errors)="errors.set($event)"
+                            (valueChanges)="veikalsUpdate=$event"></app-veikals-edit>
                     </ng-container>
                     <ng-template #totals>
                         <div *ngFor="let kaste of row.kastes">

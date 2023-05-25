@@ -30,7 +30,7 @@ const VEIKALI_DELETED_MESSAGE = 'Pakošanas saraksts izdzēsts';
     PakosanasSarakstsComponent,
   ]
 })
-export class PasutijumsEditComponent implements OnInit, OnDestroy {
+export class PasutijumsEditComponent implements OnDestroy {
 
   private jobUpdate$ = new Subject<KastesJob>();
   private veikalsUpdate$ = new Subject<Veikals>();
@@ -62,9 +62,6 @@ export class PasutijumsEditComponent implements OnInit, OnDestroy {
   ) { }
 
 
-
-  ngOnInit(): void {
-  }
 
   ngOnDestroy(): void {
     this.veikalsUpdate$.complete();
