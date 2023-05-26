@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -8,6 +8,7 @@ import { LoginService } from './services/login.service';
 import { CommonModule } from '@angular/common';
 import { LibraryModule } from 'src/app/library/library.module';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
+import { DEMO_MODE } from '../services/app-mode.provider';
 
 @Component({
   selector: 'app-login',
@@ -26,6 +27,7 @@ export class LoginComponent implements OnInit {
     password: new FormControl<string>(''),
   });
 
+  isDemo = inject(DEMO_MODE);
 
   constructor(
     private router: Router,

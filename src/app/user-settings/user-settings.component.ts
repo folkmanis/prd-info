@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,6 +15,7 @@ import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.gu
 import { LoginService } from 'src/app/login';
 import { PasswordInputDirective } from '../library/password-input';
 import { GoogleInfoComponent } from './google-info/google-info.component';
+import { DEMO_MODE } from '../services/app-mode.provider';
 
 
 type UserUpdate = Pick<User, 'name' | 'eMail'>;
@@ -52,6 +53,7 @@ export class UserSettingsComponent implements CanComponentDeactivate {
     )
   });
 
+  isDemo = inject(DEMO_MODE);
 
   user = toSignal(this.loginService.user$);
 
