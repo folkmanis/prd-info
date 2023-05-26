@@ -1,4 +1,4 @@
-<div *ngIf="user$ | async as user;">
+<div *ngIf="user();">
 
     <mat-card>
 
@@ -11,7 +11,7 @@
             </mat-card-title>
 
             <mat-card-subtitle>
-                {{ user.username }}
+                {{ user().username }}
             </mat-card-subtitle>
 
         </mat-card-header>
@@ -49,8 +49,7 @@
                 [disabled]="!userForm.valid || !isChanged || userForm.disabled" color="primary">
                 SAGLABĀT
             </button>
-            <button mat-button (click)="onSetInitial()"
-                [disabled]="userForm.pristine || userForm.disabled || !isChanged">
+            <button mat-button (click)="onReset()" [disabled]="userForm.pristine || userForm.disabled || !isChanged">
                 ATIESTATĪT
             </button>
             <button mat-button appPasswordInput [passwordMinimumLength]="6"
@@ -67,16 +66,16 @@
             <mat-card-title-group>
                 <mat-card-title> Google savienojums </mat-card-title>
 
-                <mat-card-subtitle> {{ user.google?.id }} </mat-card-subtitle>
+                <mat-card-subtitle> {{ user().google?.id }} </mat-card-subtitle>
 
-                <img *ngIf="user.google as googleInfo;" mat-card-sm-image [src]="googleInfo.picture">
+                <img *ngIf="user().google?.picture as googlePicture;" mat-card-sm-image [src]="googlePicture">
 
             </mat-card-title-group>
         </mat-card-header>
 
         <mat-card-content>
 
-            <app-google-info *ngIf="user.google as googleInfo;" [googleInfo]="googleInfo"
+            <app-google-info *ngIf="user().google as googleInfo;" [googleInfo]="googleInfo"
                 (valueClicked)="onGoogleValueClicked($event)">
             </app-google-info>
 
@@ -91,7 +90,7 @@
                 SAVIENOT
             </a>
 
-            <button mat-button (click)="onDeleteGoogle()" [disabled]="!user.google">
+            <button mat-button (click)="onDeleteGoogle()" [disabled]="!user().google">
                 ATVIENOT
             </button>
 

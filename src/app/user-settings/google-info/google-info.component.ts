@@ -1,4 +1,6 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatListModule } from '@angular/material/list';
 import { GoogleUser } from 'src/app/interfaces';
 
 
@@ -14,9 +16,14 @@ const FIELDS_FOR_DISPLAY: (keyof GoogleUser)[] = [
 
 @Component({
   selector: 'app-google-info',
+  standalone: true,
   templateUrl: './google-info.component.html',
   styleUrls: ['./google-info.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    MatListModule,
+  ]
 })
 export class GoogleInfoComponent {
 

@@ -1,25 +1,45 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, effect } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { isEqual } from 'lodash-es';
-import { DestroyService } from 'prd-cdk';
-import { takeUntil } from 'rxjs';
+import { isEqual, pick } from 'lodash-es';
 import { User } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { LoginService } from 'src/app/login';
+import { PasswordInputDirective } from '../library/password-input';
+import { GoogleInfoComponent } from './google-info/google-info.component';
 
 
 type UserUpdate = Pick<User, 'name' | 'eMail'>;
 
+const NO_USER: UserUpdate = { name: '', eMail: '' };
+
 @Component({
   selector: 'app-user-settings',
+  standalone: true,
   templateUrl: './user-settings.component.html',
   styleUrls: ['./user-settings.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DestroyService],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    GoogleInfoComponent,
+    MatDividerModule,
+    MatButtonModule,
+    PasswordInputDirective,
+  ]
 })
-export class UserSettingsComponent implements OnInit, CanComponentDeactivate {
+export class UserSettingsComponent implements CanComponentDeactivate {
 
   userForm = new FormGroup({
     name: new FormControl(
@@ -33,13 +53,20 @@ export class UserSettingsComponent implements OnInit, CanComponentDeactivate {
   });
 
 
-  user$ = this.loginService.user$;
+  user = toSignal(this.loginService.user$);
 
-  initialUser: UserUpdate;
+  private _initialUser: UserUpdate = NO_USER;
+  get initialUser() {
+    return this._initialUser;
+  }
+  set initialUser(value: UserUpdate) {
+    this._initialUser = value;
+    this.userForm.reset(this.initialUser);
+  }
 
   returnPath = this.route.snapshot.url.join('%2F');
 
-  canDeactivate = () => !this.isChanged;
+  canDeactivate = () => !this.isChanged || this.userForm.pristine;
 
   private snack = (msg: string) => this.snackService.open(msg, 'OK', { duration: 3000 });
 
@@ -47,25 +74,12 @@ export class UserSettingsComponent implements OnInit, CanComponentDeactivate {
     private loginService: LoginService,
     private snackService: MatSnackBar,
     private route: ActivatedRoute,
-    private destroy$: DestroyService,
-  ) { }
+  ) {
+    effect(() => this.initialUser = pick(this.user() || NO_USER, 'name', 'eMail'));
+  }
 
   get isChanged(): boolean {
     return !isEqual(this.userForm.value, this.initialUser);
-  }
-
-  ngOnInit(): void {
-
-    this.user$.pipe(
-      takeUntil(this.destroy$),
-    ).subscribe(user => {
-      this.initialUser = {
-        name: user.name,
-        eMail: user.eMail,
-      };
-      this.onSetInitial();
-    });
-
   }
 
   onSave(userFormValue: UserUpdate) {
@@ -76,9 +90,8 @@ export class UserSettingsComponent implements OnInit, CanComponentDeactivate {
       });
   }
 
-  onSetInitial() {
-    this.userForm.setValue(this.initialUser);
-    this.userForm.markAsPristine();
+  onReset() {
+    this.userForm.reset(this.initialUser);
   }
 
   onPasswordChange(password: string) {

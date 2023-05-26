@@ -6,6 +6,7 @@ import { MessagesListComponent } from './layout/messaging/messages-list/messages
 import { isLoggedIn } from './login/login.guard';
 import { isModuleAllowed } from './login/module.guard';
 import { USER_MODULES } from './user-modules';
+import { canComponentDeactivate } from './library/guards/can-deactivate.guard';
 
 
 const routes: Routes = [
@@ -20,7 +21,8 @@ const routes: Routes = [
     children: [
       {
         path: 'user-settings',
-        loadChildren: () => import('./user-settings/user-settings.module').then(m => m.UserSettingsModule),
+        loadComponent: () => import('./user-settings/user-settings.component').then(c => c.UserSettingsComponent),
+        canDeactivate: [canComponentDeactivate]
       },
       {
         path: 'messages',
