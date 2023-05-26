@@ -1,5 +1,5 @@
-import { COLORS, Colors, ColorTotals, Veikals, VeikalsKaste, Kaste } from '../interfaces';
 import { JobProduct } from 'src/app/jobs';
+import { COLORS, ColorTotals, Colors, Kaste, Veikals } from '../interfaces';
 
 
 export const colorTotalsFromVeikali = (veikali: Veikals[]): ColorTotals[] =>

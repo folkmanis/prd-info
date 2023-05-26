@@ -8,10 +8,6 @@ import { InputDirective } from 'src/app/library/directives/input.directive';
 import { getKastesPreferences } from '../../../services/kastes-preferences.service';
 import { VeikalsValidationErrors } from '../../services/veikals-validation-errors';
 
-type KasteGroup = FormGroup<{
-  [key in keyof Kaste]: FormControl<Kaste[key]>
-}>;
-
 type ColorsGroup = FormGroup<{
   [color in keyof KasteColors]: FormControl<KasteColors[color]>
 }>;
@@ -126,7 +122,7 @@ function colorTotals(kastes: KasteColors[]): KasteColors {
 
 
 function totalsValidator(kastes: KasteColors[]): ValidatorFn {
-  return (control: FormArray<KasteGroup>): ValidationErrors => {
+  return (control: FormArray<ColorsGroup>): ValidationErrors => {
 
     if (control.value.length === 0) { return null; }
 

@@ -5,8 +5,6 @@ import { KastesTotalsComponent } from './kastes-totals/kastes-totals.component';
 
 
 @NgModule({
-  declarations: [
-  ],
   imports: [
     KastesTotalsComponent,
     ColorTotalsComponent,
