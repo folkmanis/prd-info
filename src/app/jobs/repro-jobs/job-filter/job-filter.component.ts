@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { Observable, debounceTime, filter, map, startWith, switchMap } from 'rxjs';
-import { CustomerPartial, ProductPartial } from 'src/app/interfaces';
+import { ChangeDetectionStrategy, Component, Input, Output, computed, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Observable, debounceTime, filter, map } from 'rxjs';
+import { ProductPartial } from 'src/app/interfaces';
 import { CustomersService } from 'src/app/services';
 import { getConfig } from 'src/app/services/config.provider';
 import { DEFAULT_FILTER, JobFilter, JobQueryFilter } from '../../interfaces';
@@ -32,18 +33,15 @@ export class JobFilterComponent {
     productsName: [null],
   });
 
-  customersFiltered$: Observable<CustomerPartial[]> = this.filterForm.controls.customer.valueChanges.pipe(
-    debounceTime(200),
-    startWith(''),
-    map(val => val.toUpperCase()),
-    switchMap(val => this.customersService.customers$.pipe(
-      map(cust => cust.filter(c => c.CustomerName.toUpperCase().includes(val)))
-    )),
-  );
+  private customers = toSignal(inject(CustomersService).getCustomerList(), { initialValue: [] });
+  private customerControlValue = toSignal(this.filterForm.controls.customer.valueChanges);
+  customersFiltered = computed(() => {
+    const input = this.customerControlValue()?.toUpperCase() || '';
+    return this.customers().filter(c => c.CustomerName.toUpperCase().includes(input));
+  });
 
   @Input()
   set filter(value: JobQueryFilter) {
-
     this.filterForm.reset(undefined, { emitEvent: false });
     if (value instanceof JobQueryFilter) {
       this.filterForm.patchValue(value.jobListFilter(), { emitEvent: false });
@@ -62,7 +60,6 @@ export class JobFilterComponent {
   );
 
   constructor(
-    private customersService: CustomersService,
     private jobService: JobService,
     private fb: FormBuilder,
   ) { }
