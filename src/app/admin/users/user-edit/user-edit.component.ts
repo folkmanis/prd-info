@@ -111,7 +111,6 @@ export class UserEditComponent implements CanComponentDeactivate {
       () => this.initialValue = this.routerData().user || new User(),
       { allowSignalWrites: true }
     );
-    effect(() => console.log(this.changes()));
   }
 
 
