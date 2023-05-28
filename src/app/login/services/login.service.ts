@@ -4,7 +4,6 @@ import { catchError, map, shareReplay, startWith, switchMap, take, tap } from 'r
 import { User } from 'src/app/interfaces';
 import { LoginApiService } from './login-api.service';
 import { Login } from '../login.interface';
-import { combineReload } from 'src/app/library/rxjs';
 
 type UserUpdate = Partial<User>;
 
