@@ -18,6 +18,7 @@ import { XmfCustomer } from 'src/app/xmf-search/interfaces';
 import { UsersService } from '../../services/users.service';
 import { SessionsComponent } from './sessions/sessions.component';
 import { AppClassTransformerService } from 'src/app/library/class-transformer/app-class-transformer.service';
+import { DEMO_MODE } from 'src/app/services/app-mode.provider';
 
 
 @Component({
@@ -123,7 +124,6 @@ export class UserEditComponent implements CanComponentDeactivate {
   }
 
   onSave() {
-
     if (this.isNew) {
       return this.usersService.addUser(this.form.getRawValue())
         .subscribe(user => {

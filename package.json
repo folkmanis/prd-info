@@ -5,6 +5,7 @@
     "ng": "ng",
     "serve": "ng serve",
     "build": "ng build --configuration production",
+    "serve-demo": "ng serve --configuration demo",
     "stats": "ng build --stats-json --configuration production",
     "test": "ng test",
     "analyzer": "webpack-bundle-analyzer dist/stats.json"

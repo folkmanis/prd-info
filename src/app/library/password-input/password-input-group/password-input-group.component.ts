@@ -98,7 +98,7 @@ export class PasswordInputGroupComponent implements OnInit, ControlValueAccessor
   }
 
   validate(): ValidationErrors {
-    return this.passwordForm.controls.password1.errors;
+    return this.passwordForm.errors;
   }
 
   ngOnInit(): void {

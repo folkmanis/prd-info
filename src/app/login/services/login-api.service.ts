@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { User } from 'src/app/interfaces';
 import { AppClassTransformerService } from 'src/app/library';
 import { HttpOptions } from 'src/app/library/http';
 import { Login } from '../login.interface';
+import { DEMO_MODE } from 'src/app/services/app-mode.provider';
 
 
 @Injectable({
@@ -14,6 +15,8 @@ import { Login } from '../login.interface';
 export class LoginApiService {
 
     private path = getAppParams('apiPath') + 'login/';
+
+    private isDemo = inject(DEMO_MODE);
 
     constructor(
         private http: HttpClient,
@@ -52,9 +55,16 @@ export class LoginApiService {
     }
 
     patchUser({ username, ...update }: Partial<User>): Observable<User> {
+        this.checkDemoMode();
         return this.http.patch<Record<string, any>>(this.path, update, new HttpOptions()).pipe(
             this.transformer.toClass(User),
         );
+    }
+
+    private checkDemoMode(): void | never {
+        if (this.isDemo) {
+            throw new Error('restricted in demo mode');
+        }
     }
 
 }
