@@ -24,12 +24,12 @@ import { ViewSizeModule } from './view-size/view-size.module';
     CopyClipboardDirective,
     TaggedStringComponent,
     FileDropDirective,
-    FocusedDirective,
     BackButtonDirective,
     InputTrimDirective,
     DenseListDirective,
   ],
   imports: [
+    FocusedDirective,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
