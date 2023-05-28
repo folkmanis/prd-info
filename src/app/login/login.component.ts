@@ -1,17 +1,15 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { filter, switchMap } from 'rxjs/operators';
 import { FocusedDirective } from 'src/app/library/directives/focused.directive';
-import { LoginService } from './services/login.service';
-import { CommonModule } from '@angular/common';
-import { LibraryModule } from 'src/app/library/library.module';
-import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { DEMO_MODE } from '../services/app-mode.provider';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { LoginService } from './services/login.service';
 
 @Component({
   selector: 'app-login',

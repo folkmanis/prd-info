@@ -34,7 +34,6 @@ export class LoginApiService {
         return this.http
             .get<Record<string, any>>(
                 this.path,
-                // new HttpOptions().cacheable()
             ).pipe(
                 this.transformer.toClass(User),
             );
