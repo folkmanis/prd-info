@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewChild, inject } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { filter, switchMap } from 'rxjs/operators';
@@ -9,6 +9,9 @@ import { CommonModule } from '@angular/common';
 import { LibraryModule } from 'src/app/library/library.module';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { DEMO_MODE } from '../services/app-mode.provider';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-login',
@@ -16,15 +19,26 @@ import { DEMO_MODE } from '../services/app-mode.provider';
   styleUrls: ['./login.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [CommonModule, LibraryModule, MaterialLibraryModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    FocusedDirective,
+  ],
 })
 export class LoginComponent implements OnInit {
 
   @ViewChild(FocusedDirective) username: FocusedDirective;
 
-  loginForm: FormGroup = new FormGroup({
-    username: new FormControl<string>('', [Validators.required]),
-    password: new FormControl<string>(''),
+  loginForm = new FormGroup({
+    username: new FormControl('',
+      {
+        validators: [Validators.required],
+        nonNullable: true,
+      }),
+    password: new FormControl('', { nonNullable: true }),
   });
 
   isDemo = inject(DEMO_MODE);
@@ -49,14 +63,14 @@ export class LoginComponent implements OnInit {
   }
 
   onLogin() {
-    this.loginService.logIn(this.loginForm.value)
+    this.loginService.logIn(this.loginForm.getRawValue())
       .subscribe({
         next: () => {
-          this.router.navigate(['/']);
+          this.router.navigateByUrl('/');
         },
         error: () => {
           this.snack.open('Nepareiza parole vai lietotājs', 'OK', { duration: 5000 });
-          this.loginForm.reset();
+          this.loginForm.controls.password.reset();
           this.username.focus();
         }
       });

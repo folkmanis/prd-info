@@ -31,9 +31,13 @@ export class LoginApiService {
     }
 
     getLogin(): Observable<User> {
-        return this.http.get<Record<string, any>>(this.path).pipe(
-            this.transformer.toClass(User),
-        );
+        return this.http
+            .get<Record<string, any>>(
+                this.path,
+                // new HttpOptions().cacheable()
+            ).pipe(
+                this.transformer.toClass(User),
+            );
     }
 
     getSessionToken(): Observable<string> {

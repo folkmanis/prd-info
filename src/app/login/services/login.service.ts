@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { merge, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, merge, Observable, of, Subject } from 'rxjs';
 import { catchError, map, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators';
 import { User } from 'src/app/interfaces';
 import { LoginApiService } from './login-api.service';
@@ -13,22 +13,14 @@ type UserUpdate = Partial<User>;
 })
 export class LoginService {
 
-  private readonly _updateLogin$ = new Subject<User | null>();
+  private loginUpdate$ = new Subject<User | null>();
 
-  private reload$ = new Subject<void>();
+  private reload$ = new BehaviorSubject<void>(null);
 
   user$: Observable<User> = merge(
-    combineReload(of({}), this.reload$).pipe(
-      switchMap(() => this.api.getLogin()),
-    ),
-    this._updateLogin$,
+    this.reload$.pipe(switchMap(() => this.getLogin())),
+    this.loginUpdate$,
   ).pipe(
-    catchError(() => of(null)),
-    shareReplay(1),
-  );
-
-  sessionId$ = this.user$.pipe(
-    switchMap(_ => this.api.getSessionId()),
     shareReplay(1),
   );
 
@@ -45,7 +37,7 @@ export class LoginService {
 
   logIn(login: Login): Observable<User> {
     return this.api.login(login).pipe(
-      tap(usr => this._updateLogin$.next(usr)),
+      tap(usr => this.loginUpdate$.next(usr)),
     );
   }
 
@@ -55,7 +47,7 @@ export class LoginService {
 
   logOut(): Observable<unknown> {
     return this.api.logout().pipe(
-      tap(() => this._updateLogin$.next(null)),
+      tap(() => this.loginUpdate$.next(null)),
     );
   }
 
@@ -72,7 +64,17 @@ export class LoginService {
 
   updateUser(update: UserUpdate) {
     return this.api.patchUser(update).pipe(
-      tap(resp => this._updateLogin$.next(resp)),
+      tap(resp => this.loginUpdate$.next(resp)),
+    );
+  }
+
+  getSessionId(): Observable<string> {
+    return this.api.getSessionId();
+  }
+
+  private getLogin(): Observable<User | null> {
+    return this.api.getLogin().pipe(
+      catchError(() => of(null))
     );
   }
 

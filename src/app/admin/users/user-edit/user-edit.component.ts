@@ -43,7 +43,7 @@ export class UserEditComponent implements CanComponentDeactivate {
 
   sessions = signal<UserSession[] | null>(null);
 
-  currentSessionId$ = inject(LoginService).sessionId$;
+  currentSessionId$ = inject(LoginService).getSessionId();
 
   form = new FormGroup({
     username: new FormControl(

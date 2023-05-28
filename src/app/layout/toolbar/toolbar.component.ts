@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { DestroyService } from 'prd-cdk';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable, timer } from 'rxjs';
-import { filter, map, mergeMap, share, take, takeUntil, throttleTime } from 'rxjs/operators';
+import { filter, map, mergeMap, share, take, throttleTime } from 'rxjs/operators';
 import { getAppParams } from 'src/app/app-params';
 import { SystemNotification, SystemOperations, User, UserModule } from 'src/app/interfaces';
 import { LoginService } from 'src/app/login';
@@ -15,7 +15,6 @@ const INITIAL_DELAY = 3000;
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DestroyService],
 })
 export class ToolbarComponent implements OnInit {
 
@@ -35,14 +34,13 @@ export class ToolbarComponent implements OnInit {
     take(1),
     mergeMap(_ => this.notifications.wsMultiplex('system') as Observable<SystemNotification>),
     throttleTime(500),
-    takeUntil(this.destroy$),
+    takeUntilDestroyed(),
     share(),
   );
 
   constructor(
     private messagingService: MessagingService,
     private notifications: NotificationsService,
-    private destroy$: DestroyService,
     private loginService: LoginService,
   ) { }
 
