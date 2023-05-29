@@ -1,27 +1,19 @@
 # PrdInfo
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.2.1.
+Self-learning project with the aim of improving knowledge in Javascript and explore Typescript and Angular while making something useful.
 
-## Development server
+This is the front-end part that requires access to REST API https://github.com/folkmanis/prd-info-node
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## A Demo
 
-## Code scaffolding
+There is a demo server running at [https://demo.folkmanis.id.lv/](https://demo.folkmanis.id.lv/), user: demo, password: demo
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## A Learning Project
 
-## Build
+This is my first attempt to make useful web-application by learning Javascript, Typescript, full-stack development etc.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+As a complete noob in modern programming, I had no knowledge about test-driven approach at start. So, sorry, there is no tests written for this project. It's mainly because the whole project structure must be changed and re-written from scratch to write proper tests.
 
-## Running unit tests
+## In Production
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+I'm using this app by myself for everyday jobs accounting, invoicing and some other functions like managing some old archive database and retriewing attachments from gmail.
