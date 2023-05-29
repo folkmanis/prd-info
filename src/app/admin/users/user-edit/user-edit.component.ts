@@ -18,7 +18,7 @@ import { XmfCustomer } from 'src/app/xmf-search/interfaces';
 import { UsersService } from '../../services/users.service';
 import { SessionsComponent } from './sessions/sessions.component';
 import { AppClassTransformerService } from 'src/app/library/class-transformer/app-class-transformer.service';
-import { DEMO_MODE } from 'src/app/services/app-mode.provider';
+import { PasswordInputGroupComponent } from 'src/app/library/password-input/password-input-group/password-input-group.component';
 
 
 @Component({
@@ -34,6 +34,7 @@ import { DEMO_MODE } from 'src/app/services/app-mode.provider';
     SessionsComponent,
     PasswordInputDirective,
     SimpleFormContainerComponent,
+    PasswordInputGroupComponent,
   ]
 })
 export class UserEditComponent implements CanComponentDeactivate {
@@ -77,7 +78,9 @@ export class UserEditComponent implements CanComponentDeactivate {
     this._initialValue = this.transformer.instanceToPlain(value) as User;
     this.sessions.set(this.initialValue.sessions);
     this.form.reset(this.initialValue);
-    this.form.controls.password.disable();
+    if (!this.isNew) {
+      this.form.controls.password.disable();
+    }
   }
 
   private routerData = toSignal(this.route.data);
@@ -125,14 +128,15 @@ export class UserEditComponent implements CanComponentDeactivate {
 
   onSave() {
     if (this.isNew) {
-      return this.usersService.addUser(this.form.getRawValue())
+      const newUser = pickBy(this.form.getRawValue(), val => val !== null);
+      this.usersService.addUser(newUser)
         .subscribe(user => {
           this.form.markAsPristine();
           this.router.navigate(['..', user.username], { relativeTo: this.route });
         });
     } else {
       const update = { ...this.changes(), username: this.initialValue.username };
-      return this.usersService.updateUser(update)
+      this.usersService.updateUser(update)
         .subscribe(user => this.initialValue = user);
     }
 

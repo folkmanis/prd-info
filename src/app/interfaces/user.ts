@@ -41,26 +41,26 @@ export class GoogleUser {
 
 export class User {
 
-    username: string;
+    username: string = '';
 
-    name: string;
+    name: string = '';
 
-    password: string;
+    password: string = '';
 
-    admin: boolean;
-
-    @Type(() => Date)
-    last_login: Date;
+    admin: boolean = false;
 
     userDisabled: boolean = false;
+
+    eMail: string = '';
+
+    @Type(() => Date)
+    last_login?: Date;
 
     @Type(() => UserPreferences)
     preferences: UserPreferences = new UserPreferences();
 
     @Type(() => UserSession)
     sessions: UserSession[];
-
-    eMail: string;
 
     @Type(() => GoogleUser)
     google?: GoogleUser;
