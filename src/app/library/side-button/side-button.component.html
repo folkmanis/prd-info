@@ -1,7 +1,7 @@
-<div class="right-button" [class.opened]="opened">
+<div class="right-button" [class.opened]="opened()">
     <button mat-mini-fab color="primary" (click)="onClick()">
         <mat-icon>
-            {{ opened ? 'chevron_right' : 'chevron_left' }}
+            {{ opened() ? 'chevron_right' : 'chevron_left' }}
         </mat-icon>
     </button>
 </div>

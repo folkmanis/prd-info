@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Signal, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDrawer } from '@angular/material/sidenav';
@@ -17,8 +17,8 @@ import { MatDrawer } from '@angular/material/sidenav';
 })
 export class SideButtonComponent {
 
-  opened = false;
-  drawer: MatDrawer;
+  opened: Signal<boolean> = signal(false);
+  drawer?: MatDrawer;
 
   onClick() {
     this.drawer?.toggle();
