@@ -34,10 +34,10 @@ export class Customer {
     _id: string;
 
     @Expose()
-    code: string;
+    code: string = '';
 
     @Expose()
-    CustomerName: string;
+    CustomerName: string = '';
 
     @Expose()
     disabled: boolean = false;
@@ -47,11 +47,11 @@ export class Customer {
     insertedFromXmf: Date = null;
 
     @Expose()
-    description: string | undefined;
+    description?: string = null;
 
     @Expose()
     @Type(() => CustomerFinancial)
-    financial: CustomerFinancial = null;
+    financial?: CustomerFinancial = null;
 
     @Expose()
     ftpUser: boolean = false;
@@ -70,13 +70,4 @@ export type CustomerPartial = Pick<Customer, '_id' | 'CustomerName' | 'code' | '
 export type NewCustomer = Pick<Customer, 'CustomerName' | 'disabled' | 'code' | 'description' | 'ftpUser' | 'contacts'>;
 
 export type CustomerUpdate = Pick<Customer, '_id'> & Partial<Customer>;
-
-export const DEFAULT_CUSTOMER: NewCustomer = {
-    CustomerName: '',
-    disabled: false,
-    code: '',
-    description: undefined,
-    ftpUser: false,
-    contacts: undefined,
-};
 

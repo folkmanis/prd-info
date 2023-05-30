@@ -3,6 +3,7 @@ import { CustomersListComponent } from './customers-list/customers-list.componen
 import { CustomerEditComponent } from './customer-edit/customer-edit.component';
 import { canComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { resolveCustomer } from './services/customer-resolver';
+import { Customer } from 'src/app/interfaces';
 
 export default [
     {
@@ -14,7 +15,7 @@ export default [
                 component: CustomerEditComponent,
                 canDeactivate: [canComponentDeactivate],
                 data: {
-                    customer: {},
+                    customer: new Customer(),
                 }
             },
             {
@@ -23,7 +24,8 @@ export default [
                 canDeactivate: [canComponentDeactivate],
                 resolve: {
                     customer: resolveCustomer,
-                }
+                },
+                runGuardsAndResolvers: 'always',
             },
         ]
     }

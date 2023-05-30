@@ -1,107 +1,100 @@
-<app-simple-form-container buttons [status]="form.status" [isChanges]="changes" (save)="onSave()" (reset)="onReset()">
+<app-simple-form-container buttons [status]="form.status" [isChanges]="changes()" (save)="onSave()" (reset)="onReset()"
+    [formGroup]="form">
 
-    <form [formGroup]="form">
+    <mat-form-field class="customer-name full-width" *ngIf="initialValue._id == null; else existing">
+        <mat-label>Klienta nosaukums</mat-label>
+        <input matInput formControlName="CustomerName" placeholder="Nosaukums" autocomplete="off" required>
+        <mat-error *ngIf="form.controls.CustomerName.hasError('required')">
+            Nosaukums jāievada obligāti!
+        </mat-error>
+        <mat-error *ngIf="form.controls.CustomerName.hasError('occupied')">
+            Nosaukums jau tiek izmantots
+        </mat-error>
+    </mat-form-field>
 
-        <h2 *ngIf="this.form.value._id == null; else existing">
-            <mat-form-field>
-                <mat-label>Klienta nosaukums</mat-label>
-                <input matInput formControlName="CustomerName" placeholder="Nosaukums" autocomplete="off" required>
-                <mat-error *ngIf="form.controls.CustomerName.hasError('required')">
-                    Nosaukums jāievada obligāti!
-                </mat-error>
-                <mat-error *ngIf="form.controls.CustomerName.hasError('occupied')">
-                    Nosaukums jau tiek izmantots
-                </mat-error>
-            </mat-form-field>
+    <ng-template #existing>
+        <h2>
+            {{formValue().CustomerName}}
         </h2>
+    </ng-template>
 
-        <ng-template #existing>
-            <h2>
-                {{form.controls.CustomerName.value}}
-            </h2>
-        </ng-template>
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>
+                Pamatinformācija
+            </mat-card-title>
+        </mat-card-header>
 
-        <mat-accordion multi>
-            <mat-expansion-panel expanded [hideToggle]="true">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        Pamatinformācija
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
+        <mat-card-content>
+            <!-- Kods -->
+            <section>
+                <mat-form-field>
+                    <mat-label>Klienta kods</mat-label>
+                    <input matInput appInputUppercase formControlName="code" placeholder="Kods" autocomplete="off">
+                    <mat-error *ngIf="form.controls.code.hasError('required')">
+                        Kodu jāievada obligāti!
+                    </mat-error>
+                    <mat-error *ngIf="form.controls.code.hasError('occupied')">
+                        Kods jau tiek izmantots
+                    </mat-error>
+                </mat-form-field>
+            </section>
+            <!-- apraksts -->
+            <section>
+                <mat-form-field class="full-width">
+                    <mat-label>Apraksts</mat-label>
+                    <input matInput formControlName="description" placeholder="Apraksts" autocomplete="off">
+                </mat-form-field>
+            </section>
+            <mat-divider></mat-divider>
+            <!-- ftp folderis -->
+            <section>
+                <mat-checkbox class="input-element" formControlName="ftpUser" #ftpUser>
+                    FTP lietotājs
+                </mat-checkbox>
+                <app-ftp-user [class.hidden]="!ftpUser.checked" formControlName="ftpUserData"
+                    [required]="ftpUser.checked">
+                </app-ftp-user>
+            </section>
+            <mat-divider></mat-divider>
+            <!-- Neaktīvs -->
+            <section>
+                <mat-checkbox class="input-element" formControlName="disabled">
+                    Neaktīvs
+                </mat-checkbox>
+            </section>
+        </mat-card-content>
+    </mat-card>
 
-                <!-- Kods -->
-                <section>
-                    <mat-form-field>
-                        <mat-label>Klienta kods</mat-label>
-                        <input matInput appInputUppercase formControlName="code" placeholder="Kods" autocomplete="off">
-                        <mat-error *ngIf="form.controls.code.hasError('required')">
-                            Kodu jāievada obligāti!
-                        </mat-error>
-                        <mat-error *ngIf="form.controls.code.hasError('occupied')">
-                            Kods jau tiek izmantots
-                        </mat-error>
-                    </mat-form-field>
-                </section>
-                <!-- apraksts -->
-                <section>
-                    <mat-form-field class="full-width">
-                        <mat-label>Apraksts</mat-label>
-                        <input matInput formControlName="description" placeholder="Apraksts" autocomplete="off">
-                    </mat-form-field>
-                </section>
-                <mat-divider></mat-divider>
-                <!-- ftp folderis -->
-                <section>
-                    <mat-checkbox class="input-element" formControlName="ftpUser" #ftpUser>
-                        FTP lietotājs
-                    </mat-checkbox>
-                    <app-ftp-user [class.hidden]="!ftpUser.checked" formControlName="ftpUserData"
-                        [required]="ftpUser.checked">
-                    </app-ftp-user>
-                </section>
-                <mat-divider></mat-divider>
-                <!-- Neaktīvs -->
-                <section>
-                    <mat-checkbox class="input-element" formControlName="disabled">
-                        Neaktīvs
-                    </mat-checkbox>
-                </section>
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>
+                Kontaktinformācija
+            </mat-card-title>
+            <mat-card-subtitle>
+                Klienta e-pasti
+            </mat-card-subtitle>
+        </mat-card-header>
 
-            </mat-expansion-panel>
+        <mat-card-content>
+            <app-customer-contacts formControlName="contacts"></app-customer-contacts>
+        </mat-card-content>
+    </mat-card>
 
-            <mat-expansion-panel expanded [hideToggle]="true">
+    <mat-card *ngIf="paytraqEnabled()">
+        <mat-card-header>
+            <mat-card-title>
+                Sasaiste ar Paytraq
+            </mat-card-title>
+            <mat-card-subtitle *ngIf="formValue().financial?.paytraqId">
+                {{formValue().financial.paytraqId}} /
+                {{formValue().financial.clientName}}
+            </mat-card-subtitle>
+        </mat-card-header>
 
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        Kontaktinformācija
-                    </mat-panel-title>
-                    <mat-panel-description>
-                        Klienta e-pasti
-                    </mat-panel-description>
-                </mat-expansion-panel-header>
-
-                <app-customer-contacts formControlName="contacts"></app-customer-contacts>
-
-            </mat-expansion-panel>
-
-            <!-- Paytraq panelis -->
-            <mat-expansion-panel #paytraqPanel [disabled]="(paytraqEnabled$ | async) == false">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        Sasaiste ar Paytraq
-                    </mat-panel-title>
-                    <mat-panel-description *ngIf="form.value.financial?.paytraqId">
-                        {{form.value.financial.paytraqId}} /
-                        {{form.value.financial.clientName}}
-                    </mat-panel-description>
-                </mat-expansion-panel-header>
-
-                <app-paytraq-customer formControlName="financial" [customer]="form.value"></app-paytraq-customer>
-
-            </mat-expansion-panel>
-
-        </mat-accordion>
-
-    </form>
+        <mat-card-content>
+            <app-paytraq-customer formControlName="financial" [customer]="formValue()"></app-paytraq-customer>
+        </mat-card-content>
+    </mat-card>
 
 </app-simple-form-container>

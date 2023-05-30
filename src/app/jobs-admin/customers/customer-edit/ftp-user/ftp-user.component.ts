@@ -1,14 +1,12 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { ControlValueAccessor, FormGroup, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators, ReactiveFormsModule } from '@angular/forms';
-import { defaults } from 'lodash-es';
-import { map, pluck, from, toArray, Observable, switchMap, filter } from 'rxjs';
-import { FtpUserData } from 'src/app/interfaces';
-import { plainToInstance } from 'class-transformer';
-import { JobsFilesApiService } from 'src/app/filesystem';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { CommonModule } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ControlValueAccessor, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator, Validators } from '@angular/forms';
+import { plainToInstance } from 'class-transformer';
+import { defaults } from 'lodash-es';
+import { Observable, filter, from, map, switchMap, toArray } from 'rxjs';
+import { JobsFilesApiService } from 'src/app/filesystem';
+import { FtpUserData } from 'src/app/interfaces';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 
 const DEFAULT_DATA: FtpUserData = {
