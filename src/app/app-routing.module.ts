@@ -63,7 +63,7 @@ const routes: Routes = [
       {
         path: 'calculations',
         canMatch: [isModuleAllowed],
-        loadChildren: () => import('./calculations/calculations.module').then(m => m.CalculationsModule),
+        loadChildren: () => import('./calculations/calculations-routes'),
       },
       {
         path: '',

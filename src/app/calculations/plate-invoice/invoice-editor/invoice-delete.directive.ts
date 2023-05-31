@@ -1,13 +1,14 @@
-import { Directive, Input, HostListener } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Directive, HostListener, Input } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { InvoicesService } from '../../services/invoices.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { EMPTY } from 'rxjs';
+import { filter, mergeMap } from 'rxjs/operators';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
-import { filter, map, mergeMap, switchMap } from 'rxjs/operators';
-import { EMPTY, of } from 'rxjs';
+import { InvoicesService } from '../../services/invoices.service';
 
 @Directive({
-  selector: 'button[appInvoiceDelete]'
+  selector: 'button[appInvoiceDelete]',
+  standalone: true,
 })
 export class InvoiceDeleteDirective {
 

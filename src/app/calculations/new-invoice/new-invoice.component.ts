@@ -1,82 +1,107 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, OnInit, Signal, ViewChild, computed, effect, signal } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map, Observable, tap } from 'rxjs';
+import { map, Observable, switchMap, tap } from 'rxjs';
 import { InvoiceForReport, ProductTotals } from 'src/app/interfaces';
 import { JobUnwindedPartial } from 'src/app/jobs';
 import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
 import { InvoicesTotals } from '../interfaces';
 import { InvoicesService } from '../services/invoices.service';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { DrawerButtonDirective } from 'src/app/library/side-button/drawer-button.directive';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { CommonModule } from '@angular/common';
+import { SelectionTotalsComponent } from './selection-totals/selection-totals.component';
+import { JobsWithoutInvoicesComponent } from './jobs-without-invoices/jobs-without-invoices.component';
+import { ViewSizeModule } from 'src/app/library/view-size/view-size.module';
+import { JobSelectionTableComponent } from '../job-selection-table/job-selection-table.component';
+import { CustomerSelectorComponent } from './customer-selector/customer-selector.component';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { MatButtonModule } from '@angular/material/button';
 
-export abstract class InvoiceCustomerSelector {
-  abstract setCustomer(id: string): void;
-}
 
 @Component({
   selector: 'app-new-invoice',
+  standalone: true,
   templateUrl: './new-invoice.component.html',
   styleUrls: ['./new-invoice.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [{
-    provide: InvoiceCustomerSelector,
-    useExisting: NewInvoiceComponent,
-  }]
+  imports: [
+    CustomerSelectorComponent,
+    MatSidenavModule,
+    DrawerButtonDirective,
+    MatDividerModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    CommonModule,
+    SelectionTotalsComponent,
+    JobsWithoutInvoicesComponent,
+    ViewSizeModule,
+    ReactiveFormsModule,
+    JobSelectionTableComponent,
+    ScrollTopDirective,
+    MatButtonModule,
+  ]
 })
-export class NewInvoiceComponent implements OnInit, InvoiceCustomerSelector {
+export class NewInvoiceComponent {
 
   @ViewChild(ScrollTopDirective) private scroll: ScrollTopDirective;
 
-  customerId = new FormControl<string>('');
 
   noInvoices$ = this.invoicesService.jobsWithoutInvoicesTotals$;
 
-  jobs$: Observable<JobUnwindedPartial[]> = this.route.data.pipe(
-    map(data => data.jobs || []),
-    tap(jobs => this.selectedJobs = jobs),
-    tap(() => this.scroll?.scrollToTop()),
-  );
+  // jobs$: Observable<JobUnwindedPartial[]> = this.route.data.pipe(
+  //   map(data => data.jobs || []),
+  //   tap(jobs => this.selectedJobs = jobs),
+  //   tap(() => this.scroll?.scrollToTop()),
+  // );
 
+  customerId: Signal<string>;
 
-  selectedJobs: JobUnwindedPartial[] = [];
+  jobs: Signal<JobUnwindedPartial[]>;
 
-  get selection(): number[] {
-    return this.selectedJobs.map(job => job.jobId);
-  }
+  selectedJobs = signal<JobUnwindedPartial[]>([]);
 
-  get invoicesTotals(): InvoicesTotals {
-    return this.jobTotalsFromJob(this.selectedJobs);
-  }
+  selection = computed(() => this.selectedJobs().map(job => job.jobId));
+
+  invoicesTotals = computed(() => this.jobTotalsFromJob(this.selectedJobs()));
+  grandTotal = computed(() => this.invoicesTotals().grandTotal);
 
   constructor(
     private invoicesService: InvoicesService,
     private router: Router,
     private route: ActivatedRoute,
-  ) { }
+  ) {
+    const customerId$ = this.route.queryParamMap.pipe(
+      map(params => params.get('customer') || '')
+    );
+    this.customerId = toSignal(customerId$, { initialValue: '' });
+    const jobs$ = customerId$.pipe(
+      switchMap(customer => invoicesService.getJobsUnwinded({ customer, invoice: 0, limit: 1000 }))
+    );
+    this.jobs = toSignal(jobs$, { initialValue: [] });
 
-  setCustomer(id: string): void {
-    this.customerId.setValue(id);
-  }
-
-  ngOnInit(): void {
-
-    this.customerId.setValue(this.route.snapshot.queryParamMap.get('customer') || '');
-
-    this.customerId.valueChanges
-      .subscribe(customer => this.router.navigate(['.'], { relativeTo: this.route, queryParams: { customer } }));
-
+    effect(() => this.jobs() && this.scroll?.scrollToTop());
+    effect(() => this.selectedJobs.set(this.jobs()), { allowSignalWrites: true });
   }
 
   onCreateInvoice() {
-    this.invoicesService.createInvoice({ jobIds: this.selection, customerId: this.customerId.value })
+    this.invoicesService.createInvoice({ jobIds: this.selection(), customerId: this.customerId() })
       .subscribe(({ invoiceId }) => this.router.navigate(['calculations', 'plate-invoice', invoiceId]));
   }
 
   onPrintList() {
-    const { totals, grandTotal } = this.invoicesTotals;
+    const { totals, grandTotal } = this.invoicesTotals();
     const invoice: InvoiceForReport = {
-      customer: this.customerId.value,
+      customer: this.customerId(),
       createdDate: new Date(),
-      jobs: this.selectedJobs,
+      jobs: this.selectedJobs(),
       products: totals.map(tot => ({ ...tot, price: tot.total / tot.count, jobsCount: 0 })),
       total: grandTotal,
       invoiceId: '',

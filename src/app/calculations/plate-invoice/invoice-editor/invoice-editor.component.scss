@@ -12,6 +12,10 @@
     flex: 1 1 auto;
 }
 
-.distancer {
-    width: 16px;
+mat-card:not(:first-child) {
+    margin-top: 16px;
+}
+
+mat-toolbar>span:first-child {
+    margin-right: 16px;
 }

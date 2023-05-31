@@ -4,15 +4,23 @@ import { mergeMap, Observable, Subject } from 'rxjs';
 import { Invoice, InvoiceProduct } from 'src/app/interfaces';
 import { getConfig } from 'src/app/services/config.provider';
 import { InvoicesService } from '../../../services/invoices.service';
+import { AsyncPipe, NgIf } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
 
 const PAYTRAQ_SAVED_MESSAGE = 'Izveidota pavadzīme Paytraq sistēmā';
 const PAYTRAQ_UNLINK_MESSAGE = 'Paytraq savienojums dzēsts';
 
 @Component({
   selector: 'app-invoice-paytraq',
+  standalone: true,
   templateUrl: './invoice-paytraq.component.html',
   styleUrls: ['./invoice-paytraq.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    NgIf,
+    AsyncPipe,
+    MatButtonModule,
+  ],
 })
 export class InvoicePaytraqComponent implements OnInit, OnDestroy {
 

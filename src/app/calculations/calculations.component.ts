@@ -1,20 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { CardMenuComponent } from '../library/card-menu/card-menu.component';
 import { SystemPreferencesService } from '../services/system-preferences.service';
 
 @Component({
   selector: 'app-calculations',
-  templateUrl: './calculations.component.html',
-  styleUrls: ['./calculations.component.scss']
+  template: `<app-card-menu [modules]='modules$ | async'></app-card-menu>`,
+  standalone: true,
+  imports: [
+    CardMenuComponent,
+    AsyncPipe,
+  ]
 })
-export class CalculationsComponent implements OnInit {
+export class CalculationsComponent {
 
-  modules$ = this.systemPreferencesService.childMenu$;
-
-  constructor(
-    private systemPreferencesService: SystemPreferencesService,
-  ) { }
-
-  ngOnInit(): void {
-  }
+  modules$ = inject(SystemPreferencesService).childMenu$;
 
 }

@@ -3,24 +3,36 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { JobUnwindedPartial } from 'src/app/jobs';
-import { InvoicesTotals } from '../../interfaces';
+import { InvoicesTotals } from '../interfaces';
+import { MatTableModule } from '@angular/material/table';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { CurrencyPipe, DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 
 const TABLE_COLUMNS = ['selected', 'jobId', 'receivedDate', 'custCode', 'name', 'productName', 'count', 'price', 'total'];
 
 @Component({
   selector: 'app-job-selection-table',
+  standalone: true,
   templateUrl: './job-selection-table.component.html',
   styleUrls: ['./job-selection-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    MatTableModule,
+    MatCheckboxModule,
+    DatePipe,
+    RouterLink,
+    CurrencyPipe,
+  ],
 })
 export class JobSelectionTableComponent implements OnInit, OnDestroy {
 
-  jobs$: BehaviorSubject<JobUnwindedPartial[]> = new BehaviorSubject([]);
+  jobs$ = new BehaviorSubject<JobUnwindedPartial[]>([]);
 
   selector = new SelectionModel<number>(true, [], false);
-  jobIdSet: Set<number> = new Set();
-  displayedColumns: string[] = TABLE_COLUMNS;
+  jobIdSet = new Set<number>();
+  displayedColumns = TABLE_COLUMNS;
 
   @Input() set jobs(value: JobUnwindedPartial[]) {
     value = value || [];
@@ -58,7 +70,7 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
     return jobs.filter(job => sel.some(num => num === job.jobId));
   }
 
-  @Input() totals: InvoicesTotals | null = null;
+  @Input() total?: number;
 
   @Output() selectedChange = new EventEmitter<JobUnwindedPartial[]>();
 

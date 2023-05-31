@@ -85,7 +85,7 @@
             {{(job.products?.price * job.products?.count) | currency}}
         </td>
         <td mat-footer-cell *matFooterCellDef [attr.colspan]="displayedColumns.length">
-            Kopā: {{ totals?.grandTotal | currency }}
+            Kopā: {{ total | currency }}
         </td>
     </ng-container>
 

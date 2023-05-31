@@ -1,23 +1,37 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { DestroyService } from 'prd-cdk';
 import { merge, Observable, of } from 'rxjs';
 import { map, mergeMap, pluck, take, takeUntil } from 'rxjs/operators';
 import { JobsWithoutInvoicesTotals } from 'src/app/jobs';
 import { Filter, JobPricesService } from './job-prices.service';
 import { omit } from 'lodash-es';
+import { CustomerSelectorComponent } from './customer-selector/customer-selector.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatBadgeModule } from '@angular/material/badge';
+import { AsyncPipe } from '@angular/common';
 
 const updateMessage = (n: number) => `Izmainīti ${n} ieraksti.`;
 
 @Component({
   selector: 'app-job-prices',
+  standalone: true,
   templateUrl: './job-prices.component.html',
   styleUrls: ['./job-prices.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     JobPricesService,
     DestroyService,
+  ],
+  imports: [
+    CustomerSelectorComponent,
+    MatToolbarModule,
+    RouterOutlet,
+    MatButtonModule,
+    MatBadgeModule,
+    AsyncPipe,
   ]
 })
 export class JobPricesComponent implements OnInit {

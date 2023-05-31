@@ -4,7 +4,7 @@
 
         <mat-divider></mat-divider>
 
-        <app-selection-totals [invoicesTotals]="invoicesTotals"></app-selection-totals>
+        <app-selection-totals [invoicesTotals]="invoicesTotals()"></app-selection-totals>
 
     </mat-drawer>
 
@@ -13,26 +13,16 @@
         <mat-card>
 
             <mat-card-content>
-
-                <mat-form-field>
-                    <mat-label>Klients</mat-label>
-                    <mat-select [formControl]="customerId">
-                        <mat-option value="">Visi</mat-option>
-                        <mat-option *ngFor="let customer of noInvoices$ | async" [value]="customer._id">
-                            {{customer._id}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-
+                <app-customer-selector [customers]="noInvoices$ | async"></app-customer-selector>
             </mat-card-content>
 
             <mat-card-actions>
 
                 <button mat-raised-button (click)="onCreateInvoice()" color="primary"
-                    [disabled]="selectedJobs.length == 0 || customerId.value ===''">
+                    [disabled]="selectedJobs().length == 0 || customerId() ===''">
                     APRĒĶINS
                 </button>
-                <button mat-button (click)="onPrintList()" [disabled]="selectedJobs.length == 0">
+                <button mat-button (click)="onPrintList()" [disabled]="selectedJobs().length == 0">
                     IZDRUKĀT
                 </button>
 
@@ -42,8 +32,8 @@
 
 
         <!-- Darbu atlase -->
-        <app-job-selection-table [jobs]="jobs$ | async" [large]="viewSize.isLarge" [(selected)]="selectedJobs"
-            [totals]="invoicesTotals" scroll-to-top scrollToTopRight="140px">
+        <app-job-selection-table [jobs]="jobs()" [large]="viewSize.isLarge" [selected]="selectedJobs()"
+            (selectedChange)="selectedJobs.set($event)" [total]="grandTotal()" scroll-to-top scrollToTopRight="140px">
         </app-job-selection-table>
 
     </mat-drawer-content>

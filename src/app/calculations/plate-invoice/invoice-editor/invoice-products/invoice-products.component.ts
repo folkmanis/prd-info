@@ -1,13 +1,23 @@
+import { AsyncPipe, CurrencyPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { MatTableModule } from '@angular/material/table';
+import { RouterLink } from '@angular/router';
 import { map, Observable, ReplaySubject } from 'rxjs';
 import { InvoiceProduct } from 'src/app/interfaces';
 import { LoginService } from 'src/app/login';
 
 @Component({
   selector: 'app-invoice-products',
+  standalone: true,
   templateUrl: './invoice-products.component.html',
   styleUrls: ['./invoice-products.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    MatTableModule,
+    RouterLink,
+    AsyncPipe,
+    CurrencyPipe,
+  ],
 })
 export class InvoiceProductsComponent implements OnInit, OnDestroy {
 
