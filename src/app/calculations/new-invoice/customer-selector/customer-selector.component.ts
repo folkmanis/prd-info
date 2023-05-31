@@ -1,12 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { MatOptionModule } from '@angular/material/core';
-import { InvoiceCustomerSelector } from './invoice-customer-selector.class';
-import { MatButtonModule } from '@angular/material/button';
+import { ActivatedRoute, Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-customer-selector',
@@ -21,12 +20,8 @@ import { MatButtonModule } from '@angular/material/button';
     MatSelectModule,
     MatOptionModule,
   ],
-  providers: [{
-    provide: InvoiceCustomerSelector,
-    useExisting: CustomerSelectorComponent,
-  }],
 })
-export class CustomerSelectorComponent implements OnInit, InvoiceCustomerSelector {
+export class CustomerSelectorComponent implements OnInit {
 
   @Input({ required: true }) customers: { _id: string; }[] = [];
 

@@ -1,6 +1,7 @@
 <mat-drawer-container>
     <mat-drawer button class="mat-elevation-z4">
-        <app-jobs-without-invoices [noInvoices]="noInvoices$ | async"></app-jobs-without-invoices>
+        <app-jobs-without-invoices [noInvoices]="noInvoices$ | async"
+            (customerChanges)="onSelectCustomer($event)"></app-jobs-without-invoices>
 
         <mat-divider></mat-divider>
 

@@ -6,7 +6,7 @@ import { JobUnwindedPartial } from 'src/app/jobs';
 import { InvoicesTotals } from '../interfaces';
 import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 
@@ -24,6 +24,7 @@ const TABLE_COLUMNS = ['selected', 'jobId', 'receivedDate', 'custCode', 'name', 
     DatePipe,
     RouterLink,
     CurrencyPipe,
+    NgIf,
   ],
 })
 export class JobSelectionTableComponent implements OnInit, OnDestroy {
@@ -33,6 +34,8 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
   selector = new SelectionModel<number>(true, [], false);
   jobIdSet = new Set<number>();
   displayedColumns = TABLE_COLUMNS;
+
+  isNumber = (value: any) => !isNaN(value);
 
   @Input() set jobs(value: JobUnwindedPartial[]) {
     value = value || [];

@@ -3,31 +3,54 @@
     overflow: auto;
 }
 
-table {
-    width: 100%;
-}
+// table {
+//     width: 100%;
+// }
 
 .mat-mdc-cell,
 .mat-mdc-header-cell,
 .mat-mdc-footer-cell {
     padding: 0 4px 0 4px;
+    flex: 1;
 
     &:last-of-type {
         padding-right: 16px;
     }
 }
 
+.mat-column-selected {
+    max-width: 48px;
+}
+
+.mat-column-jobId {
+    flex: 0 0 56px;
+}
+
+.mat-column-receivedDate {
+    flex: 0 0 86px;
+}
+
+.mat-column-custCode {
+    flex: 0 0 40px;
+
+}
+
+.mat-column-name {
+    flex-grow: 5;
+}
+
 .mat-column-price,
 .mat-column-total {
-    text-align: right;
+    justify-content: end;
 
     &.mat-mdc-footer-cell {
         color: var(--primary-color);
         font-weight: 700;
+        margin-left: auto;
+        flex: 0 0 auto;
     }
 }
 
-.mat-column-name {
-    max-width: 300px;
-    white-space: nowrap;
+.mat-column-productName {
+    flex-grow: 3;
 }

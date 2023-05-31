@@ -53,14 +53,9 @@ export class NewInvoiceComponent {
 
   @ViewChild(ScrollTopDirective) private scroll: ScrollTopDirective;
 
+  @ViewChild(CustomerSelectorComponent) private customerSelector?: CustomerSelectorComponent;
 
   noInvoices$ = this.invoicesService.jobsWithoutInvoicesTotals$;
-
-  // jobs$: Observable<JobUnwindedPartial[]> = this.route.data.pipe(
-  //   map(data => data.jobs || []),
-  //   tap(jobs => this.selectedJobs = jobs),
-  //   tap(() => this.scroll?.scrollToTop()),
-  // );
 
   customerId: Signal<string>;
 
@@ -109,6 +104,10 @@ export class NewInvoiceComponent {
     this.invoicesService.getReport(invoice).subscribe(data => {
       window.open(URL.createObjectURL(data), 'new');
     });
+  }
+
+  onSelectCustomer(id: string) {
+    this.customerSelector?.setCustomer(id);
   }
 
   private jobTotalsFromJob(jobs: JobUnwindedPartial[]): InvoicesTotals {

@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component, Input, Optional, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Optional, Output, inject } from '@angular/core';
 import { JobsWithoutInvoicesTotals } from 'src/app/jobs';
 import { MatListModule } from '@angular/material/list';
 import { CurrencyPipe, NgFor } from '@angular/common';
-import { InvoiceCustomerSelector } from '../customer-selector/invoice-customer-selector.class';
 
 @Component({
   selector: 'app-jobs-without-invoices',
@@ -20,10 +19,10 @@ export class JobsWithoutInvoicesComponent {
 
   @Input() noInvoices: JobsWithoutInvoicesTotals[] = [];
 
-  private selector = inject(InvoiceCustomerSelector, { optional: true });
+  @Output() customerChanges = new EventEmitter<string>();
 
   onSetCustomer(id: string) {
-    this.selector?.setCustomer(id);
+    this.customerChanges.next(id);
   }
 
 
