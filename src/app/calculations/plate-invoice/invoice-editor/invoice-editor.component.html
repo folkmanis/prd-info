@@ -9,8 +9,7 @@
             <mat-icon>file_download</mat-icon>
             <span> CSV SARAKSTS </span>
         </button>
-        <button mat-menu-item [appInvoiceDelete]="invoice.invoiceId"
-            appAfterDeleteMessage="Aprēķins {{invoice.invoiceId}} izdzēsts">
+        <button mat-menu-item (click)="onDelete(invoice.invoiceId)">
             <mat-icon>delete_forever</mat-icon>
             <span> DZĒST </span>
         </button>

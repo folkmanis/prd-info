@@ -1,27 +1,27 @@
-import { ChangeDetectionStrategy, Component, OnInit, Signal, ViewChild, computed, effect, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Signal, ViewChild, computed, effect, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatOptionModule } from '@angular/material/core';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map, Observable, switchMap, tap } from 'rxjs';
+import { map, switchMap } from 'rxjs';
 import { InvoiceForReport, ProductTotals } from 'src/app/interfaces';
 import { JobUnwindedPartial } from 'src/app/jobs';
 import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
-import { InvoicesTotals } from '../interfaces';
-import { InvoicesService } from '../services/invoices.service';
-import { MatSidenavModule } from '@angular/material/sidenav';
 import { DrawerButtonDirective } from 'src/app/library/side-button/drawer-button.directive';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatOptionModule } from '@angular/material/core';
-import { CommonModule } from '@angular/common';
-import { SelectionTotalsComponent } from './selection-totals/selection-totals.component';
-import { JobsWithoutInvoicesComponent } from './jobs-without-invoices/jobs-without-invoices.component';
 import { ViewSizeModule } from 'src/app/library/view-size/view-size.module';
+import { InvoicesTotals } from '../interfaces';
 import { JobSelectionTableComponent } from '../job-selection-table/job-selection-table.component';
+import { InvoicesService } from '../services/invoices.service';
 import { CustomerSelectorComponent } from './customer-selector/customer-selector.component';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { MatButtonModule } from '@angular/material/button';
+import { JobsWithoutInvoicesComponent } from './jobs-without-invoices/jobs-without-invoices.component';
+import { SelectionTotalsComponent } from './selection-totals/selection-totals.component';
 
 
 @Component({
@@ -55,7 +55,7 @@ export class NewInvoiceComponent {
 
   @ViewChild(CustomerSelectorComponent) private customerSelector?: CustomerSelectorComponent;
 
-  noInvoices$ = this.invoicesService.jobsWithoutInvoicesTotals$;
+  noInvoices$ = this.invoicesService.getJobsWithoutInvoicesTotals();
 
   customerId: Signal<string>;
 
@@ -65,7 +65,7 @@ export class NewInvoiceComponent {
 
   selection = computed(() => this.selectedJobs().map(job => job.jobId));
 
-  invoicesTotals = computed(() => this.jobTotalsFromJob(this.selectedJobs()));
+  invoicesTotals = computed(() => this.jobTotalsFromJobs(this.selectedJobs()));
   grandTotal = computed(() => this.invoicesTotals().grandTotal);
 
   constructor(
@@ -110,7 +110,7 @@ export class NewInvoiceComponent {
     this.customerSelector?.setCustomer(id);
   }
 
-  private jobTotalsFromJob(jobs: JobUnwindedPartial[]): InvoicesTotals {
+  private jobTotalsFromJobs(jobs: JobUnwindedPartial[]): InvoicesTotals {
     const totalsMap = new Map<string, ProductTotals>();
     jobs
       .map(job => job.products)

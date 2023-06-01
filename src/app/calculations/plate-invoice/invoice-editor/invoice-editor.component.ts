@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Inject, Optional } from '@angular/core';
-import { MatExpansionModule } from '@angular/material/expansion';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Locale } from 'date-fns';
@@ -14,13 +16,14 @@ import { DATE_FNS_LOCALE } from 'src/app/library/date-services';
 import { ViewSizeModule } from 'src/app/library/view-size/view-size.module';
 import { getConfig } from 'src/app/services/config.provider';
 import { JobSelectionTableComponent } from '../../job-selection-table/job-selection-table.component';
+import { InvoicesService } from '../../services/invoices.service';
 import { InvoiceCsv } from './invoice-csv';
-import { InvoiceDeleteDirective } from './invoice-delete.directive';
 import { InvoicePaytraqComponent } from './invoice-paytraq/invoice-paytraq.component';
 import { InvoiceProductsComponent } from './invoice-products/invoice-products.component';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 
+
+const deleteSuccessMessage = (id: string) => `Aprēķins ${id} izdzēsts`;
+const deleteFailMessage = (err: Error) => `Radās kļūda: ${err.message}`;
 
 @Component({
   selector: 'app-invoice-editor',
@@ -33,7 +36,6 @@ import { MatCardModule } from '@angular/material/card';
     MatMenuModule,
     MatIconModule,
     MatToolbarModule,
-    InvoiceDeleteDirective,
     ViewSizeModule,
     InvoicePaytraqComponent,
     InvoiceProductsComponent,
@@ -54,6 +56,8 @@ export class InvoiceEditorComponent {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private snack: MatSnackBar,
+    private invoicesService: InvoicesService,
     @Optional() @Inject(DATE_FNS_LOCALE) private locale?: Locale,
   ) { }
 
@@ -70,8 +74,20 @@ export class InvoiceEditorComponent {
     );
   }
 
+  onDelete(id: string): void {
+    this.invoicesService.deleteInvoice(id)
+      .subscribe({
+        next: () => {
+          this.snack.open(deleteSuccessMessage(id), 'OK', { duration: 5000 });
+          this.router.navigate(['..'], { relativeTo: this.route });
+        },
+        error: (err) => this.snack.open(deleteFailMessage(err), 'OK', { duration: 5000 }),
+        complete: () => { }
+      });
+  }
+
   onReload(invoiceId: string) {
-    this.router.navigate(['..', invoiceId], { queryParams: { upd: Date.now() } });
+    this.router.navigate(['..', invoiceId], { relativeTo: this.route, queryParams: { upd: Date.now() } });
   }
 
 }

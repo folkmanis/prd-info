@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, Output, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { mergeMap, Observable, Subject } from 'rxjs';
 import { Invoice, InvoiceProduct } from 'src/app/interfaces';
@@ -22,39 +22,29 @@ const PAYTRAQ_UNLINK_MESSAGE = 'Paytraq savienojums dzēsts';
     MatButtonModule,
   ],
 })
-export class InvoicePaytraqComponent implements OnInit, OnDestroy {
+export class InvoicePaytraqComponent {
 
-  private _invoice: Invoice;
-  @Input() set invoice(value: Invoice) {
-    this._invoice = value;
-    this.paytraqOk = value && !value.paytraq && allProductsWithPaytraq(value.products);
-  }
-  get invoice(): Invoice {
-    return this._invoice;
-  }
+  @Input() invoice: Invoice;
 
   @Output() paytraqUpdate = new Subject<string>();
 
   paytraqUrl$: Observable<string> = getConfig('paytraq', 'connectionParams', 'invoiceUrl');
 
-  readonly paytraqBusy$ = new Subject<boolean>();
+  paytraqBusy = signal(false);
 
-  paytraqOk: boolean = false;
+  get paytraqOk(): boolean {
+    return !!this.invoice?.customerInfo?.financial?.paytraqId
+      && !this.invoice.paytraq
+      && allProductsWithPaytraq(this.invoice.products);
+  }
 
   constructor(
     private invoicesService: InvoicesService,
     private snack: MatSnackBar,
   ) { }
 
-  ngOnInit(): void {
-  }
-
-  ngOnDestroy() {
-    this.paytraqBusy$.complete();
-  }
-
   onPaytraq(): void {
-    this.paytraqBusy$.next(true);
+    this.paytraqBusy.set(true);
 
     this.invoicesService.postPaytraqInvoice(this.invoice).pipe(
       mergeMap(paytraqId => this.invoicesService.getPaytraqInvoiceRef(paytraqId).pipe(
@@ -65,7 +55,7 @@ export class InvoicePaytraqComponent implements OnInit, OnDestroy {
       ))
     ).subscribe(_ => {
       this.paytraqUpdate.next(this.invoice.invoiceId);
-      this.paytraqBusy$.next(false);
+      this.paytraqBusy.set(false);
       this.snack.open(PAYTRAQ_SAVED_MESSAGE, 'OK', { duration: 5000 });
     });
   }

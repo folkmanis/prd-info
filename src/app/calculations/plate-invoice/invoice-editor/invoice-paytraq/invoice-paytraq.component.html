@@ -8,8 +8,8 @@
 </div>
 
 <ng-template #newPaytraqInvoice>
-    <button mat-raised-button [disabled]="paytraqOk  === false || (paytraqBusy$ | async)" (click)="onPaytraq()">
-        <span *ngIf="paytraqBusy$ | async; else notBusy"> SAGLABĀ... </span>
+    <button mat-raised-button [disabled]="paytraqOk  === false || paytraqBusy()" (click)="onPaytraq()">
+        <span *ngIf="paytraqBusy(); else notBusy"> SAGLABĀ... </span>
         <ng-template #notBusy>
             <span> UZ PAYTRAQ </span>
         </ng-template>

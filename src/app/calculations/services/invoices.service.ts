@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { EMPTY, Observable, of, Subject } from 'rxjs';
-import { map, startWith, switchMap, tap } from 'rxjs/operators';
-import { Invoice, InvoiceForReport, InvoicesFilter, InvoiceTable, InvoiceUpdate, INVOICE_UPDATE_FIELDS } from 'src/app/interfaces';
+import { pick } from 'lodash-es';
+import { tap, EMPTY, Observable, map, mergeMap } from 'rxjs';
+import { Invoice, INVOICE_UPDATE_FIELDS, InvoiceForReport, InvoicesFilter, InvoiceTable, InvoiceUpdate } from 'src/app/interfaces';
 import { PaytraqInvoice } from 'src/app/interfaces/paytraq';
 import { Sale } from 'src/app/interfaces/paytraq/invoice';
-import { JobQueryFilter, JobQueryFilterOptions, JobService, JobsWithoutInvoicesTotals, JobUnwindedPartial } from 'src/app/jobs';
-import { PaytraqApiService } from 'src/app/services/prd-api/paytraq-api.service';
+import { JobQueryFilterOptions, JobService, JobsWithoutInvoicesTotals, JobUnwindedPartial } from 'src/app/jobs';
+import { ConfirmationDialogService } from 'src/app/library';
 import { InvoicesApiService } from 'src/app/services/prd-api/invoices-api.service';
-import { pick } from 'lodash-es';
+import { PaytraqApiService } from 'src/app/services/prd-api/paytraq-api.service';
 
 
 @Injectable({
@@ -19,13 +19,8 @@ export class InvoicesService {
     private jobService: JobService,
     private paytraqApi: PaytraqApiService,
     private api: InvoicesApiService,
+    private confirmation: ConfirmationDialogService,
   ) { }
-
-  private reloadJobsWithoutInvoicesTotals$ = new Subject();
-  jobsWithoutInvoicesTotals$: Observable<JobsWithoutInvoicesTotals[]> = this.reloadJobsWithoutInvoicesTotals$.pipe(
-    startWith({}),
-    switchMap(() => this.getJobsWithoutInvoicesTotals()),
-  );
 
   getJobsWithoutInvoicesTotals(): Observable<JobsWithoutInvoicesTotals[]> {
     return this.jobService.getJobsWithoutInvoicesTotals();
@@ -35,14 +30,8 @@ export class InvoicesService {
     return this.jobService.getJobListUnwinded(filter);
   }
 
-  reloadJobsWithoutInvoicesTotals() {
-    this.reloadJobsWithoutInvoicesTotals$.next(null);
-  }
-
   createInvoice(params: { jobIds: number[]; customerId: string; }): Observable<Invoice> {
-    return this.api.createInvoice(params).pipe(
-      tap(() => this.reloadJobsWithoutInvoicesTotals$.next(null)),
-    );
+    return this.api.createInvoice(params);
   }
 
   getInvoice(invoiceId: string): Observable<Invoice> {
@@ -53,11 +42,9 @@ export class InvoicesService {
     return this.api.getReport(data);
   }
 
-  updateInvoice(id: string, update: InvoiceUpdate): Observable<any> {
+  updateInvoice(id: string, update: InvoiceUpdate): Observable<Invoice> {
     update = pick(update, ...INVOICE_UPDATE_FIELDS);
-    return this.api.updateOne(id, update).pipe(
-      switchMap(resp => resp ? of(resp) : EMPTY),
-    );
+    return this.api.updateOne(id, update);
   }
 
   getInvoicesHttp(params: InvoicesFilter): Observable<InvoiceTable[]> {
@@ -72,13 +59,16 @@ export class InvoicesService {
 
   postPaytraqInvoice(invoice: Invoice): Observable<number> {
     const ptInvoice = new PaytraqInvoiceClass(invoice);
+    console.log(ptInvoice);
     return this.paytraqApi.postSale(ptInvoice).pipe(
       map(data => data.response.documentID)
     );
   }
 
   deleteInvoice(invoiceId: string): Observable<number> {
-    return this.api.deleteOne(invoiceId);
+    return this.confirmation.confirmDelete().pipe(
+      mergeMap(resp => resp ? this.api.deleteOne(invoiceId) : EMPTY),
+    );
   }
 
 }

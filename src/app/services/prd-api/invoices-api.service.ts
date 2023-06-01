@@ -38,7 +38,12 @@ export class InvoicesApiService {
 
     deleteOne(id: string): Observable<number> {
         return this.http.delete<{ deletedCount: number; }>(this.path + id, new HttpOptions()).pipe(
-            map(data => data.deletedCount),
+            map(data => {
+                if (!data.deletedCount) {
+                    throw new Error('Not deleted');
+                }
+                return data.deletedCount;
+            }),
         );
     }
 
