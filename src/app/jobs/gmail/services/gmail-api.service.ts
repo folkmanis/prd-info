@@ -8,7 +8,7 @@ import { Attachment, Label, LabelListItem, Message, MessageModifyDto, Thread, Th
 
 
 @Injectable({
-  providedIn: 'any'
+  providedIn: 'root'
 })
 export class GmailApiService {
 

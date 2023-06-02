@@ -17,6 +17,7 @@ export class GmailLoginInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
 
+
     if (!request.url.includes('gmail')) {
       return next.handle(request);
     }

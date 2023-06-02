@@ -6,7 +6,7 @@ import { GmailApiService } from './gmail-api.service';
 
 
 @Injectable({
-  providedIn: 'any'
+  providedIn: 'root'
 })
 export class GmailService {
 
