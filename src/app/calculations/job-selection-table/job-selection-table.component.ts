@@ -3,7 +3,6 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { JobUnwindedPartial } from 'src/app/jobs';
-import { InvoicesTotals } from '../interfaces';
 import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CurrencyPipe, DatePipe, NgIf } from '@angular/common';
