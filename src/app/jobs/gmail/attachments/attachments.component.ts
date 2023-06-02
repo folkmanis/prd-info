@@ -1,13 +1,21 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
-import { MatSelectionList } from '@angular/material/list';
+import { MatSelectionList, MatListModule } from '@angular/material/list';
 import { isEqual } from 'lodash-es';
 import { Attachment } from '../interfaces';
+import { PrdCdkModule } from 'prd-cdk';
+import { NgFor } from '@angular/common';
 
 @Component({
-  selector: 'app-attachments',
-  templateUrl: './attachments.component.html',
-  styleUrls: ['./attachments.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-attachments',
+    templateUrl: './attachments.component.html',
+    styleUrls: ['./attachments.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        MatListModule,
+        NgFor,
+        PrdCdkModule,
+    ],
 })
 export class AttachmentsComponent implements OnInit {
 

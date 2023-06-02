@@ -3,13 +3,32 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { AttachmentsComponent } from '../attachments/attachments.component';
 import { Attachment, Message } from '../interfaces';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatCardModule } from '@angular/material/card';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { NgIf, AsyncPipe } from '@angular/common';
 
 
 @Component({
-  selector: 'app-message',
-  templateUrl: './message.component.html',
-  styleUrls: ['./message.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-message',
+    templateUrl: './message.component.html',
+    styleUrls: ['./message.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        AttachmentsComponent,
+        NgIf,
+        MatExpansionModule,
+        MatButtonModule,
+        MatIconModule,
+        MatMenuModule,
+        MatCardModule,
+        MatProgressBarModule,
+        AsyncPipe,
+    ],
 })
 export class MessageComponent implements OnDestroy {
 

@@ -1,13 +1,18 @@
 import { coerceNumberProperty, NumberInput } from '@angular/cdk/coercion';
 import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
 import { Subject } from 'rxjs';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
 
 
 @Component({
-  selector: 'app-gmail-paginator',
-  templateUrl: './gmail-paginator.component.html',
-  styleUrls: ['./gmail-paginator.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-gmail-paginator',
+    templateUrl: './gmail-paginator.component.html',
+    styleUrls: ['./gmail-paginator.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [MatButtonModule, MatMenuModule, MatIconModule]
 })
 export class GmailPaginatorComponent {
 

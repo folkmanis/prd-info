@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { BehaviorSubject, EMPTY, finalize, map, mergeMap, Observable, tap, withLatestFrom } from 'rxjs';
 import { ReproJobService } from 'src/app/jobs/repro-jobs/services/repro-job.service';
 import { UploadRefService } from 'src/app/jobs/repro-jobs/services/upload-ref.service';
@@ -8,13 +8,32 @@ import { CustomersService } from 'src/app/services/customers.service';
 import { Attachment, Message, Thread } from '../interfaces';
 import { MessageComponent } from '../message/message.component';
 import { GmailService } from '../services/gmail.service';
+import { MatIconModule } from '@angular/material/icon';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 
 
 @Component({
-  selector: 'app-thread',
-  templateUrl: './thread.component.html',
-  styleUrls: ['./thread.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-thread',
+    templateUrl: './thread.component.html',
+    styleUrls: ['./thread.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        NgIf,
+        MatCardModule,
+        MatButtonModule,
+        RouterLink,
+        MatProgressBarModule,
+        MatExpansionModule,
+        NgFor,
+        MatIconModule,
+        MessageComponent,
+        AsyncPipe,
+    ],
 })
 export class ThreadComponent implements OnInit {
 

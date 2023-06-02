@@ -1,6 +1,11 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, Output } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { Label, LabelListItem, getLabelDisplayName } from '../interfaces';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
 
 export interface ThreadsFilterData {
   activeLabels: Label[];
@@ -8,10 +13,20 @@ export interface ThreadsFilterData {
 }
 
 @Component({
-  selector: 'app-threads-filter',
-  templateUrl: './threads-filter.component.html',
-  styleUrls: ['./threads-filter.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-threads-filter',
+    templateUrl: './threads-filter.component.html',
+    styleUrls: ['./threads-filter.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        MatButtonModule,
+        MatMenuModule,
+        MatIconModule,
+        NgIf,
+        NgFor,
+        MatProgressSpinnerModule,
+        AsyncPipe,
+    ],
 })
 export class ThreadsFilterComponent {
 

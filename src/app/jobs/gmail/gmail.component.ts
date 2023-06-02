@@ -4,6 +4,15 @@ import { BehaviorSubject, combineLatest, concatMap, EMPTY, map, mergeMap, Observ
 import { JobsUserPreferencesService } from '../services/jobs-user-preferences.service';
 import { Thread, Threads, ThreadsFilterQuery } from './interfaces';
 import { GmailService } from './services/gmail.service';
+import { RouterLink } from '@angular/router';
+import { ScrollTopDirective } from '../../library/scroll-to-top/scroll-top.directive';
+import { MatTableModule } from '@angular/material/table';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { GmailPaginatorComponent } from './gmail-paginator/gmail-paginator.component';
+import { ThreadsFilterComponent } from './threads-filter/threads-filter.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 
 export type ThreadsListItem = Pick<Thread, 'id' | 'historyId' | 'snippet'>;
@@ -15,10 +24,23 @@ const DEFAULT_FILTER: ThreadsFilterQuery = {
 
 
 @Component({
-  selector: 'app-gmail',
-  templateUrl: './gmail.component.html',
-  styleUrls: ['./gmail.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-gmail',
+    templateUrl: './gmail.component.html',
+    styleUrls: ['./gmail.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        ThreadsFilterComponent,
+        GmailPaginatorComponent,
+        NgIf,
+        MatProgressBarModule,
+        MatTableModule,
+        ScrollTopDirective,
+        RouterLink,
+        AsyncPipe,
+    ],
 })
 export class GmailComponent {
 
