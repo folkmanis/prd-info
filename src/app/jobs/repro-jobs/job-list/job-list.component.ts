@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { from, map, Subject } from 'rxjs';
 import { ClipboardService } from 'src/app/library/services/clipboard.service';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
@@ -8,13 +8,48 @@ import { JobService } from '../../services/job.service';
 import { ReproJobService } from '../services/repro-job.service';
 import { UploadRefService } from '../services/upload-ref.service';
 import { ProductsService } from 'src/app/services/products.service';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { ScrollTopDirective } from '../../../library/scroll-to-top/scroll-top.directive';
+import { CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf } from '@angular/cdk/scrolling';
+import { JobFilterComponent } from '../job-filter/job-filter.component';
+import { NewJobButtonComponent } from './new-job-button/new-job-button.component';
+import { ProductsSummaryComponent } from '../products-summary/products-summary.component';
+import { DrawerButtonDirective } from '../../../library/side-button/drawer-button.directive';
+import { ViewSizeModule } from '../../../library/view-size/view-size.module';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common';
 
 
 @Component({
-  selector: 'app-job-list',
-  templateUrl: './job-list.component.html',
-  styleUrls: ['./job-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-job-list',
+    templateUrl: './job-list.component.html',
+    styleUrls: ['./job-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        NgIf,
+        MatSidenavModule,
+        ViewSizeModule,
+        DrawerButtonDirective,
+        ProductsSummaryComponent,
+        NewJobButtonComponent,
+        JobFilterComponent,
+        CdkVirtualScrollViewport,
+        CdkFixedSizeVirtualScroll,
+        ScrollTopDirective,
+        CdkVirtualForOf,
+        RouterLink,
+        MatIconModule,
+        MatButtonModule,
+        MatTooltipModule,
+        MatMenuModule,
+        NgFor,
+        AsyncPipe,
+        DatePipe,
+    ],
 })
 export class JobListComponent {
 

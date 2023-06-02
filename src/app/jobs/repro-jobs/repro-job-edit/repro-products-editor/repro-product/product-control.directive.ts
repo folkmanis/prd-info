@@ -6,8 +6,9 @@ import { CustomerProduct } from 'src/app/interfaces';
 import { ReproProductComponent } from './repro-product.component';
 
 @Directive({
-  selector: 'app-repro-product[appProductControl]',
-  providers: [DestroyService],
+    selector: 'app-repro-product[appProductControl]',
+    providers: [DestroyService],
+    standalone: true,
 })
 export class ProductControlDirective implements OnInit {
 

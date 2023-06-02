@@ -1,11 +1,18 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { ControlValueAccessor, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators } from '@angular/forms';
+import { ControlValueAccessor, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DestroyService } from 'prd-cdk';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { CustomerProduct } from 'src/app/interfaces';
 import { JobProduct } from 'src/app/jobs';
 import { ProductAutocompleteComponent } from '../product-autocomplete/product-autocomplete.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { NgIf, CurrencyPipe } from '@angular/common';
+import { ViewSizeModule } from '../../../../../library/view-size/view-size.module';
 
 
 const DEFAULT_PRODUCT: JobProduct = {
@@ -17,23 +24,37 @@ const DEFAULT_PRODUCT: JobProduct = {
 };
 
 @Component({
-  selector: 'app-repro-product',
-  templateUrl: './repro-product.component.html',
-  styleUrls: ['./repro-product.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    DestroyService,
-    {
-      provide: NG_VALUE_ACCESSOR,
-      multi: true,
-      useExisting: ReproProductComponent,
-    },
-    {
-      provide: NG_VALIDATORS,
-      multi: true,
-      useExisting: ReproProductComponent,
-    },
-  ],
+    selector: 'app-repro-product',
+    templateUrl: './repro-product.component.html',
+    styleUrls: ['./repro-product.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        DestroyService,
+        {
+            provide: NG_VALUE_ACCESSOR,
+            multi: true,
+            useExisting: ReproProductComponent,
+        },
+        {
+            provide: NG_VALIDATORS,
+            multi: true,
+            useExisting: ReproProductComponent,
+        },
+    ],
+    standalone: true,
+    imports: [
+        ViewSizeModule,
+        FormsModule,
+        ReactiveFormsModule,
+        NgIf,
+        MatButtonModule,
+        MatIconModule,
+        ProductAutocompleteComponent,
+        MatFormFieldModule,
+        MatInputModule,
+        MatTooltipModule,
+        CurrencyPipe,
+    ],
 })
 export class ReproProductComponent implements OnInit, ControlValueAccessor, Validator {
 

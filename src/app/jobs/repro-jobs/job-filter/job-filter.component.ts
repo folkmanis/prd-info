@@ -1,12 +1,23 @@
 import { ChangeDetectionStrategy, Component, Input, Output, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Observable, debounceTime, filter, map } from 'rxjs';
 import { ProductPartial } from 'src/app/interfaces';
 import { CustomersService } from 'src/app/services';
 import { getConfig } from 'src/app/services/config.provider';
 import { DEFAULT_FILTER, JobFilter, JobQueryFilter } from '../../interfaces';
 import { JobService } from '../../services/job.service';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonModule } from '@angular/material/button';
+import { ViewSizeModule } from '../../../library/view-size/view-size.module';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 
 export type FilterFormType = {
@@ -15,10 +26,28 @@ export type FilterFormType = {
 
 
 @Component({
-  selector: 'app-job-filter',
-  templateUrl: './job-filter.component.html',
-  styleUrls: ['./job-filter.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-job-filter',
+    templateUrl: './job-filter.component.html',
+    styleUrls: ['./job-filter.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        MatExpansionModule,
+        NgIf,
+        ViewSizeModule,
+        MatButtonModule,
+        MatTooltipModule,
+        MatIconModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatAutocompleteModule,
+        MatSelectModule,
+        NgFor,
+        MatOptionModule,
+        AsyncPipe,
+    ],
 })
 export class JobFilterComponent {
 

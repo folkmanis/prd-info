@@ -52,7 +52,7 @@ const routes: Routes = [
       {
         path: 'jobs',
         canMatch: [isModuleAllowed],
-        loadChildren: () => import('./jobs/jobs.module').then(m => m.JobsModule),
+        loadChildren: () => import('./jobs/jobs-routes'),
       },
       {
         path: 'jobs-admin',

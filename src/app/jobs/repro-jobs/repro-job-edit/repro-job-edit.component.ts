@@ -1,7 +1,7 @@
-import { Location } from '@angular/common';
+import { Location, NgIf, AsyncPipe } from '@angular/common';
 import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { BehaviorSubject, combineLatest, concatMap, map, Observable, Observer, of, startWith } from 'rxjs';
 import { DropFolder } from 'src/app/interfaces';
 import { FileUploadMessage, Job } from '../../interfaces';
@@ -11,16 +11,24 @@ import { UploadRef } from '../services/upload-ref';
 import { SnackbarMessageComponent } from '../snackbar-message/snackbar-message.component';
 import { FolderPathComponent } from './folder-path/folder-path.component';
 import { JobFormComponent } from './job-form/job-form.component';
+import { DropFolderComponent } from './drop-folder/drop-folder.component';
+import { UploadProgressComponent } from '../upload-progress/upload-progress.component';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { KeyPressDirective } from './key-press.directive';
+import { MatButtonModule } from '@angular/material/button';
 
 
 @Component({
-  selector: 'app-repro-job-edit',
-  templateUrl: './repro-job-edit.component.html',
-  styleUrls: ['./repro-job-edit.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    JobFormService,
-  ]
+    selector: 'app-repro-job-edit',
+    templateUrl: './repro-job-edit.component.html',
+    styleUrls: ['./repro-job-edit.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        JobFormService,
+    ],
+    standalone: true,
+    imports: [NgIf, MatButtonModule, KeyPressDirective, MatIconModule, RouterLink, JobFormComponent, MatCardModule, FolderPathComponent, UploadProgressComponent, DropFolderComponent, AsyncPipe]
 })
 export class ReproJobEditComponent implements OnInit, AfterViewInit, OnDestroy {
 

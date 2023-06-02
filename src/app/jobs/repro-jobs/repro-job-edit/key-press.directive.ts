@@ -9,7 +9,8 @@ const KEYS = new Map<Events, Partial<KeyboardEvent>>([
 ]);
 
 @Directive({
-  selector: 'button[appKeyPress],a[appKeyPress]',
+    selector: 'button[appKeyPress],a[appKeyPress]',
+    standalone: true,
 })
 export class KeyPressDirective {
   @Input() set appKeyPress(value: Events) {

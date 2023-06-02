@@ -8,8 +8,8 @@ describe('FolderPathComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FolderPathComponent ]
-    })
+    imports: [FolderPathComponent]
+})
     .compileComponents();
   });
 

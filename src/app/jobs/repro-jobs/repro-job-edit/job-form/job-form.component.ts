@@ -9,13 +9,48 @@ import { getConfig } from 'src/app/services/config.provider';
 import { Job } from '../../../interfaces';
 import { JobFormService } from '../../services/job-form.service';
 import { CustomerInputComponent } from '../customer-input/customer-input.component';
+import { TextFieldModule } from '@angular/cdk/text-field';
+import { MatCardModule } from '@angular/material/card';
+import { ReproProductsEditorComponent } from '../repro-products-editor/repro-products-editor.component';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
+import { LibraryModule } from '../../../../library/library.module';
+import { MatButtonModule } from '@angular/material/button';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { ViewSizeModule } from '../../../../library/view-size/view-size.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @Component({
-  selector: 'app-job-form',
-  templateUrl: './job-form.component.html',
-  styleUrls: ['./job-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-job-form',
+    templateUrl: './job-form.component.html',
+    styleUrls: ['./job-form.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        FormsModule,
+        ViewSizeModule,
+        ReactiveFormsModule,
+        CustomerInputComponent,
+        MatFormFieldModule,
+        MatInputModule,
+        MatDatepickerModule,
+        NgIf,
+        MatButtonModule,
+        LibraryModule,
+        MatIconModule,
+        MatSelectModule,
+        NgFor,
+        MatOptionModule,
+        ReproProductsEditorComponent,
+        MatCardModule,
+        TextFieldModule,
+        AsyncPipe,
+    ],
 })
 export class JobFormComponent implements OnInit {
 

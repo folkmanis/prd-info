@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, Output, Input } from '@angular/core
 import { JobPartial } from '../../interfaces';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { NgFor } from '@angular/common';
+import { MatListModule } from '@angular/material/list';
 
 interface ProductSum {
   name: string;
@@ -10,10 +12,12 @@ interface ProductSum {
 }
 
 @Component({
-  selector: 'app-products-summary',
-  templateUrl: './products-summary.component.html',
-  styleUrls: ['./products-summary.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-products-summary',
+    templateUrl: './products-summary.component.html',
+    styleUrls: ['./products-summary.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [MatListModule, NgFor],
 })
 export class ProductsSummaryComponent {
 

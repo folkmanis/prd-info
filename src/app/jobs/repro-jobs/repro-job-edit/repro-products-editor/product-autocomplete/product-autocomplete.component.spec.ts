@@ -8,8 +8,8 @@ describe('ProductAutocompleteComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProductAutocompleteComponent ]
-    })
+    imports: [ProductAutocompleteComponent]
+})
     .compileComponents();
   }));
 

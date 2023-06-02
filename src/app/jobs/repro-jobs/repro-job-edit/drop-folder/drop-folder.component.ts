@@ -1,14 +1,21 @@
 import { Output, ChangeDetectionStrategy, Component, OnInit, Input } from '@angular/core';
 import { DropFolder } from 'src/app/interfaces';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { map, merge } from 'rxjs';
+import { MatOptionModule } from '@angular/material/core';
+import { NgFor } from '@angular/common';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
-  selector: 'app-drop-folder',
-  templateUrl: './drop-folder.component.html',
-  styleUrls: ['./drop-folder.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-drop-folder',
+    templateUrl: './drop-folder.component.html',
+    styleUrls: ['./drop-folder.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [MatCheckboxModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, NgFor, MatOptionModule]
 })
 export class DropFolderComponent implements OnInit {
 

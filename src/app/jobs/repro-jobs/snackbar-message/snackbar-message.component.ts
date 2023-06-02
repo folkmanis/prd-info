@@ -2,6 +2,9 @@ import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/cor
 import { MatSnackBarRef, MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
 import { delay, finalize, Observable, of } from 'rxjs';
 import { FileUploadMessage, Job } from '../../interfaces';
+import { UploadProgressComponent } from '../upload-progress/upload-progress.component';
+import { MatButtonModule } from '@angular/material/button';
+import { NgIf, AsyncPipe } from '@angular/common';
 
 
 export interface SnackBarMessageData {
@@ -11,10 +14,17 @@ export interface SnackBarMessageData {
 }
 
 @Component({
-  selector: 'app-snackbar-message',
-  templateUrl: './snackbar-message.component.html',
-  styleUrls: ['./snackbar-message.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-snackbar-message',
+    templateUrl: './snackbar-message.component.html',
+    styleUrls: ['./snackbar-message.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        NgIf,
+        MatButtonModule,
+        UploadProgressComponent,
+        AsyncPipe,
+    ],
 })
 export class SnackbarMessageComponent implements OnInit {
 

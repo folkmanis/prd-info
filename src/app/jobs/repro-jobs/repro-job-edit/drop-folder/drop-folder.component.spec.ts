@@ -8,8 +8,8 @@ describe('DropFolderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DropFolderComponent ]
-    })
+    imports: [DropFolderComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(DropFolderComponent);

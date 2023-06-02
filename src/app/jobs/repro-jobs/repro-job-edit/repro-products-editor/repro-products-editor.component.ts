@@ -1,29 +1,38 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { ControlValueAccessor, FormArray, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators } from '@angular/forms';
+import { ControlValueAccessor, FormArray, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DestroyService } from 'prd-cdk';
 import { takeUntil } from 'rxjs/operators';
 import { CustomerProduct } from 'src/app/interfaces';
 import { JobProduct } from 'src/app/jobs';
 import { ReproProductComponent } from './repro-product/repro-product.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { KeyPressDirective } from '../key-press.directive';
+import { MatButtonModule } from '@angular/material/button';
+import { ProductControlDirective } from './repro-product/product-control.directive';
+import { NgFor } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
-  selector: 'app-repro-products-editor',
-  templateUrl: './repro-products-editor.component.html',
-  styleUrls: ['./repro-products-editor.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    DestroyService,
-    {
-      provide: NG_VALUE_ACCESSOR,
-      multi: true,
-      useExisting: ReproProductsEditorComponent,
-    },
-    {
-      provide: NG_VALIDATORS,
-      multi: true,
-      useExisting: ReproProductsEditorComponent,
-    }
-  ]
+    selector: 'app-repro-products-editor',
+    templateUrl: './repro-products-editor.component.html',
+    styleUrls: ['./repro-products-editor.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        DestroyService,
+        {
+            provide: NG_VALUE_ACCESSOR,
+            multi: true,
+            useExisting: ReproProductsEditorComponent,
+        },
+        {
+            provide: NG_VALIDATORS,
+            multi: true,
+            useExisting: ReproProductsEditorComponent,
+        }
+    ],
+    standalone: true,
+    imports: [MatCardModule, NgFor, ReproProductComponent, ProductControlDirective, FormsModule, ReactiveFormsModule, MatButtonModule, KeyPressDirective, MatTooltipModule, MatIconModule]
 })
 export class ReproProductsEditorComponent implements OnInit, ControlValueAccessor, Validator {
 

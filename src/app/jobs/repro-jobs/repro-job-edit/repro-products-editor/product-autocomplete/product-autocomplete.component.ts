@@ -1,26 +1,35 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, ValidatorFn, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map, shareReplay, startWith } from 'rxjs/operators';
 import { CustomerProduct } from 'src/app/interfaces';
+import { MatOptionModule } from '@angular/material/core';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-  selector: 'app-product-autocomplete',
-  templateUrl: './product-autocomplete.component.html',
-  styleUrls: ['./product-autocomplete.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      multi: true,
-      useExisting: ProductAutocompleteComponent,
-    },
-    {
-      provide: NG_VALIDATORS,
-      multi: true,
-      useExisting: ProductAutocompleteComponent,
-    },
-  ]
+    selector: 'app-product-autocomplete',
+    templateUrl: './product-autocomplete.component.html',
+    styleUrls: ['./product-autocomplete.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            multi: true,
+            useExisting: ProductAutocompleteComponent,
+        },
+        {
+            provide: NG_VALIDATORS,
+            multi: true,
+            useExisting: ProductAutocompleteComponent,
+        },
+    ],
+    standalone: true,
+    imports: [MatFormFieldModule, MatInputModule, FormsModule, MatAutocompleteModule, ReactiveFormsModule, MatButtonModule, MatIconModule, NgIf, MatOptionModule, NgFor, AsyncPipe]
 })
 export class ProductAutocompleteComponent implements AfterViewInit, ControlValueAccessor, Validator {
 

@@ -8,8 +8,8 @@ describe('ReproJobEditComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ReproJobEditComponent ]
-    })
+    imports: [ReproJobEditComponent]
+})
     .compileComponents();
   });
 
