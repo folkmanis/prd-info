@@ -37,8 +37,14 @@ const routes: Routes = [
       },
     ]
   },
-  { path: 'products-production', loadChildren: () => import('./products-production/products-production.module').then(m => m.ProductsProductionModule) },
-  { path: 'gmail', loadChildren: () => import('./gmail/gmail-routes') },
+  {
+    path: 'products-production',
+    loadComponent: () => import('./products-production/products-production.component').then(c => c.ProductsProductionComponent)
+  },
+  {
+    path: 'gmail',
+    loadChildren: () => import('./gmail/gmail-routes')
+  },
   {
     path: '',
     component: JobsComponent,

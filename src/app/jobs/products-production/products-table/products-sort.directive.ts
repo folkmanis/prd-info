@@ -4,8 +4,9 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Directive({
-  selector: '[appProductsSort]',
-  providers: [{ provide: MatSort, useExisting: ProductsSortDirective }]
+    selector: '[appProductsSort]',
+    providers: [{ provide: MatSort, useExisting: ProductsSortDirective }],
+    standalone: true
 })
 export class ProductsSortDirective extends MatSort {
 

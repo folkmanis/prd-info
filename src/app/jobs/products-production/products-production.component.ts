@@ -9,16 +9,27 @@ import { JobsApiService } from '../services/jobs-api.service';
 import { JobsUserPreferencesService } from '../services/jobs-user-preferences.service';
 import { ProductsProductionPreferencesUpdaterService } from './services/products-production-preferences-updater.service';
 import { Totals } from './services/totals';
+import { AsyncPipe } from '@angular/common';
+import { ScrollTopDirective } from '../../library/scroll-to-top/scroll-top.directive';
+import { ProductsTableComponent } from './products-table/products-table.component';
+import { FilterComponent } from './filter/filter.component';
 
 
 @Component({
-  selector: 'app-products-production',
-  templateUrl: './products-production.component.html',
-  styleUrls: ['./products-production.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    DestroyService,
-  ],
+    selector: 'app-products-production',
+    templateUrl: './products-production.component.html',
+    styleUrls: ['./products-production.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        DestroyService,
+    ],
+    standalone: true,
+    imports: [
+        FilterComponent,
+        ProductsTableComponent,
+        ScrollTopDirective,
+        AsyncPipe,
+    ],
 })
 export class ProductsProductionComponent implements OnInit {
 

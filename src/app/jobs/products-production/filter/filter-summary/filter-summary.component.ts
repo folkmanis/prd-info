@@ -2,12 +2,15 @@ import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } f
 import { JobState, ProductCategory } from 'src/app/interfaces';
 import { DateUtilsService } from 'src/app/library/date-services';
 import { ProductsFormData } from '../products-production-filter-form.service';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-filter-summary',
-  templateUrl: './filter-summary.component.html',
-  styleUrls: ['./filter-summary.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-filter-summary',
+    templateUrl: './filter-summary.component.html',
+    styleUrls: ['./filter-summary.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [NgIf],
 })
 export class FilterSummaryComponent implements OnChanges {
 

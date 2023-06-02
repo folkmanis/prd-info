@@ -1,19 +1,31 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { AfterViewInit, ChangeDetectionStrategy, Component, Input, Output, ViewChild } from '@angular/core';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { JobsProduction } from '../../interfaces';
 import { Totals } from '../services/totals';
+import { DecimalPipe, CurrencyPipe } from '@angular/common';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ProductsSortDirective } from './products-sort.directive';
 
 
 
 @Component({
-  selector: 'app-products-table',
-  templateUrl: './products-table.component.html',
-  styleUrls: ['./products-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-products-table',
+    templateUrl: './products-table.component.html',
+    styleUrls: ['./products-table.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        MatTableModule,
+        ProductsSortDirective,
+        MatCheckboxModule,
+        MatSortModule,
+        DecimalPipe,
+        CurrencyPipe,
+    ],
 })
 export class ProductsTableComponent implements AfterViewInit {
 
