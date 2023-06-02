@@ -1,15 +1,16 @@
-import { AsyncPipe, CurrencyPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { SelectionModel } from '@angular/cdk/collections';
+import { AsyncPipe, CurrencyPipe, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { DestroyService } from 'prd-cdk';
-import { Observable, Subject, combineLatest, map, takeUntil, withLatestFrom } from 'rxjs';
+import { RouterLink } from '@angular/router';
+import { map } from 'rxjs';
 import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
 import { ViewSizeModule } from 'src/app/library/view-size/view-size.module';
-import { COLUMNS, COLUMNS_SMALL, JobData, JobPricesService } from '../job-prices.service';
+import { COLUMNS, COLUMNS_SMALL, JobData, JobWithUpdate } from '../interfaces';
+import { Job } from 'src/app/jobs';
 
 
 @Component({
@@ -18,9 +19,6 @@ import { COLUMNS, COLUMNS_SMALL, JobData, JobPricesService } from '../job-prices
   templateUrl: './job-prices-table.component.html',
   styleUrls: ['./job-prices-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    DestroyService,
-  ],
   imports: [
     MatTableModule,
     ScrollTopDirective,
@@ -31,66 +29,44 @@ import { COLUMNS, COLUMNS_SMALL, JobData, JobPricesService } from '../job-prices
     CurrencyPipe,
     AsyncPipe,
     ViewSizeModule,
+    NgIf,
   ]
 })
-export class JobPricesTableComponent implements OnInit, OnDestroy {
+export class JobPricesTableComponent {
+
+
+  private _jobs: JobData[] = [];
+  @Input()
+  set jobs(value: JobData[]) {
+    this._jobs = value;
+    this.selection.clear();
+  }
+  get jobs() {
+    return this._jobs;
+  }
+
+  selection = new SelectionModel<JobData>(true, [], true);
+
+  @Output() jobChanges = this.selection.changed.pipe(
+    map(changes => changes.source.selected),
+    map(selected => this.jobUpdateFields(selected))
+  );
+
+  trackByFn = (_: number, item: JobData) => `${item.jobId}-${item.productsIdx}`;
 
 
   col = COLUMNS;
   colSmall = COLUMNS_SMALL;
 
-  jobs$: Observable<JobData[]> = this.jobPricesService.jobs$;
 
-  selection = this.jobPricesService.selection;
 
-  checkAll$ = new Subject<boolean>();
-
-  allSelected$: Observable<boolean> = combineLatest([
-    this.jobPricesService.jobUpdatesSelected$,
-    this.jobPricesService.jobsUpdated$,
-  ]).pipe(map(([selected, updated]) => selected.length > 0 && selected.length === updated.length));
-
-  partSelected$: Observable<boolean> = combineLatest([
-    this.jobPricesService.jobUpdatesSelected$,
-    this.jobPricesService.jobsUpdated$,
-  ]).pipe(
-    map(([selected, updated]) => selected.length > 0 && selected.length !== updated.length)
-  );
-
-  updatedCount$: Observable<number> = this.jobPricesService.jobsUpdated$.pipe(
-    map(jobs => jobs.length)
-  );
-
-  constructor(
-    private route: ActivatedRoute,
-    private jobPricesService: JobPricesService,
-    private destroy$: DestroyService,
-  ) { }
-
-  ngOnInit(): void {
-    this.route.paramMap.subscribe(params => this.jobPricesService.loadJobs({
-      name: params.get('customer') || 'all',
+  private jobUpdateFields(jobs: Pick<JobWithUpdate, 'jobId' | 'productsIdx' | 'products.priceUpdate'>[]): Partial<Job>[] {
+    return jobs.map(job => ({
+      jobId: job.jobId,
+      [`products.${job.productsIdx}.price`]: job['products.priceUpdate'],
     }));
-
-    this.jobPricesService.jobs$.pipe(
-      takeUntil(this.destroy$),
-    ).subscribe(_ => this.selection.clear());
-
-    this.checkAll$.pipe(
-      withLatestFrom(this.jobPricesService.jobsUpdated$),
-      takeUntil(this.destroy$),
-    ).subscribe(([checked, jobs]) => checked ? this.selection.select(...jobs) : this.selection.clear());
-
   }
 
-  ngOnDestroy() {
-    this.checkAll$.complete();
-  }
-
-  trackByFn(_: number, item: JobData) {
-    const id = `${item.jobId}-${item.productsIdx}`;
-    return id;
-  }
 
 
 }

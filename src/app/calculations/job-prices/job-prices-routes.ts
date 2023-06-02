@@ -1,21 +1,16 @@
 import { Route } from '@angular/router';
 import { JobPricesComponent } from './job-prices.component';
-import { JobPricesTableComponent } from './job-prices-table/job-prices-table.component';
+import { resolveJobData } from './jobs-resolver';
+import { resolveCustomers } from './customers-resolver';
 
 export default [
     {
-        path: 'job-prices',
+        path: '',
         component: JobPricesComponent,
-        children: [
-            {
-                path: ':customer',
-                component: JobPricesTableComponent,
-            },
-            {
-                path: '',
-                redirectTo: 'all',
-                pathMatch: 'full',
-            }
-        ]
+        resolve: {
+            jobs: resolveJobData,
+            customers: resolveCustomers,
+        },
+        runGuardsAndResolvers: 'always',
     },
 ] as Route[];

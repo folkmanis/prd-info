@@ -5,7 +5,6 @@ import { MainMenuComponent } from './layout/main-menu/main-menu.component';
 import { MessagesListComponent } from './layout/messaging/messages-list/messages-list.component';
 import { isLoggedIn } from './login/login.guard';
 import { isModuleAllowed } from './login/module.guard';
-import { USER_MODULES } from './user-modules';
 import { canComponentDeactivate } from './library/guards/can-deactivate.guard';
 
 
@@ -78,10 +77,8 @@ const routes: Routes = [
   },
 ];
 
-routes.find(r => r.path === '')?.children.forEach(c => c.title = USER_MODULES.find(m => m.route === c.path)?.name);
-
 @NgModule({
-  imports: [RouterModule.forRoot(routes)], // , { enableTracing: true }, , { relativeLinkResolution: 'legacy' }
+  imports: [RouterModule.forRoot(routes, { bindToComponentInputs: true })], // , { enableTracing: true }, , { relativeLinkResolution: 'legacy' }
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

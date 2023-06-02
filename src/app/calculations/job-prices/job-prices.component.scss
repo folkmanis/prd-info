@@ -5,18 +5,16 @@
     flex-direction: column;
 }
 
-.customer {
-    min-width: 180px;
-    max-width: 400px;
-    flex: 1;
+mat-card {
+
+    mat-card-content>button {
+        margin-left: 16px;
+    }
 }
 
-div.table {
+
+.table-container {
     flex: 1;
     overflow: auto;
     height: 100%;
-}
-
-.mat-toolbar > section:not(:first-of-type) {
-    padding-left: 16px;
 }

@@ -1,9 +1,9 @@
 <mat-form-field>
 
     <mat-select [formControl]="customerControl">
-        <mat-option [value]="'all'">
+        <mat-option [value]="''">
             Visi
-            <span *ngIf="allTotals !== undefined"> ({{ allTotals }}) </span>
+            <span *ngIf="allTotals"> ({{ allTotals }}) </span>
         </mat-option>
 
         <mat-option *ngFor="let option of customers" [value]="option._id">

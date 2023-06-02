@@ -1,16 +1,16 @@
-<mat-toolbar>
-    <section class="customer">
-        <app-customer-selector [customers]="customers$ | async" (customerChanges)="onCustomerSelect($event)"
-            [customer]="initialCustomer$ | async"></app-customer-selector>
-    </section>
-    <section>
-        <button mat-raised-button [matBadge]="selectedCount$ | async" [matBadgeHidden]="(saveEnabled$ | async) === false"
-            (click)="onSavePrices()" [disabled]="(saveEnabled$ | async) === false">
+<mat-card>
+    <mat-card-content>
+
+        <app-customer-selector [customers]="customers" (customerChanges)="onCustomerSelected($event)"
+            [customer]="customer"></app-customer-selector>
+
+        <button mat-raised-button [matBadge]="jobUpdate().length" [matBadgeHidden]="saveEnabled() === false"
+            (click)="onSavePrices()" [disabled]="saveEnabled() === false">
             SAGLABĀT
         </button>
-    </section>
-</mat-toolbar>
 
-<div class="table">
-    <router-outlet></router-outlet>
-</div>
+    </mat-card-content>
+</mat-card>
+
+<app-job-prices-table class="table-container" [jobs]="jobs"
+    (jobChanges)="onJobsSelected($event)"></app-job-prices-table>

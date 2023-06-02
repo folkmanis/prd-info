@@ -1,17 +1,13 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { DestroyService } from 'prd-cdk';
-import { merge, Observable, of } from 'rxjs';
-import { map, mergeMap, pluck, take, takeUntil } from 'rxjs/operators';
-import { JobsWithoutInvoicesTotals } from 'src/app/jobs';
-import { Filter, JobPricesService } from './job-prices.service';
-import { omit } from 'lodash-es';
-import { CustomerSelectorComponent } from './customer-selector/customer-selector.component';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
+import { ChangeDetectionStrategy, Component, Input, computed, signal } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
-import { AsyncPipe } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Job, JobService, JobsWithoutInvoicesTotals } from 'src/app/jobs';
+import { CustomerSelectorComponent } from './customer-selector/customer-selector.component';
+import { JobPricesTableComponent } from './job-prices-table/job-prices-table.component';
+import { JobData } from './interfaces';
 
 const updateMessage = (n: number) => `Izmainīti ${n} ieraksti.`;
 
@@ -21,74 +17,49 @@ const updateMessage = (n: number) => `Izmainīti ${n} ieraksti.`;
   templateUrl: './job-prices.component.html',
   styleUrls: ['./job-prices.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    JobPricesService,
-    DestroyService,
-  ],
   imports: [
     CustomerSelectorComponent,
-    MatToolbarModule,
-    RouterOutlet,
     MatButtonModule,
     MatBadgeModule,
-    AsyncPipe,
+    MatCardModule,
+    JobPricesTableComponent,
   ]
 })
-export class JobPricesComponent implements OnInit {
+export class JobPricesComponent {
 
-  filter: Filter = {
-    name: '',
-  };
+  @Input()
+  customer: string;
 
-  customers$: Observable<JobsWithoutInvoicesTotals[]> = this.jobPricesService.customers$;
+  @Input()
+  jobs: JobData[] = [];
 
-  initialCustomer$: Observable<string> = this.jobPricesService.filter$.pipe(
-    pluck('name'),
-  );
+  @Input()
+  customers: JobsWithoutInvoicesTotals[] = [];
 
-  saveEnabled$: Observable<boolean> = merge(
-    of(false),
-    this.jobPricesService.jobUpdatesSelected$.pipe(
-      map(upd => upd.length > 0)
-    )
-  );
+  jobUpdate = signal<Partial<Job>[]>([]);
 
-  selectedCount$: Observable<number> = merge(
-    of(0),
-    this.jobPricesService.jobUpdatesSelected$.pipe(
-      map(upd => upd.length)
-    )
-  );
+  saveEnabled = computed(() => this.jobUpdate().length > 0);
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private jobPricesService: JobPricesService,
-    private destroy$: DestroyService,
     private snack: MatSnackBar,
+    private jobService: JobService,
   ) { }
 
-  ngOnInit(): void {
-
-    this.jobPricesService.filter$.pipe(
-      takeUntil(this.destroy$),
-    ).subscribe(fltr => this.filter = fltr);
+  onCustomerSelected(value: string | undefined) {
+    this.router.navigate([], { queryParams: { customer: value }, relativeTo: this.route });
   }
 
-  onCustomerSelect(value: string | undefined) {
-    this.filter.name = value ? value : 'all';
-    this.navigate();
+  onJobsSelected(value: Partial<Job>[]) {
+    this.jobUpdate.set(value);
   }
 
   onSavePrices() {
-    this.jobPricesService.jobUpdatesSelected$.pipe(
-      take(1),
-      mergeMap(jobs => jobs.length === 0 ? of(0) : this.jobPricesService.updateJobPrices(jobs)),
-    ).subscribe(updates => this.snack.open(updateMessage(updates), 'OK', { duration: 3000 }));
-  }
-
-  private navigate() {
-    this.router.navigate([this.filter.name, omit(this.filter, 'name')], { relativeTo: this.route });
+    this.jobService.updateJobs(this.jobUpdate()).subscribe(updatedCount => {
+      this.snack.open(updateMessage(updatedCount), 'OK', { duration: 3000 });
+      this.router.navigate([], { queryParams: { customer: this.customer, upd: Date.now() }, relativeTo: this.route });
+    });
   }
 
 

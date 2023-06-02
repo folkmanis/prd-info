@@ -14,33 +14,40 @@ table {
   table-layout: fixed;
 }
 
+.mat-mdc-cell,
+.mat-mdc-header-cell {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
 .mat-column-selection {
-  width: 28px;
+  width: 48px;
 }
 
 .mat-column-jobId {
-  width: 3.5em;
+  width: 4em;
 }
 
 .mat-column-custCode {
   width: 2.5em;
-  padding-left: $padd;
 }
 
 .mat-column-name {
-  padding-left: $padd;
-  & > div {
+
+  &>div {
     display: flex;
-    align-items: baseline;
+    align-items: center;
+
     & span.name {
       flex: 1 1 600px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
+
     & span.buttons {
       display: none;
-      flex: 0 0 40px;
+      flex: 0 0 44px;
     }
   }
 }
@@ -54,6 +61,7 @@ tr:hover .mat-column-name span.buttons {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+
   .large & {
     width: 11em;
   }
@@ -68,6 +76,7 @@ tr:hover .mat-column-name span.buttons {
 }
 
 .price-update {
+
   & .mat-column-products-price,
   & .mat-column-products-total {
     color: red;

@@ -77,7 +77,6 @@ export class JobService {
   }
 
   getJobListUnwinded(filter: Partial<JobQueryFilterOptions> = {}): Observable<JobUnwindedPartial[]> {
-
     return this.api.getAll(this.normalizeFilter(filter), true);
   }
 
