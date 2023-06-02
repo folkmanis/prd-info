@@ -9,9 +9,9 @@ import { ReproJobsModule } from './repro-jobs/repro-jobs.module';
 
 @NgModule({
   declarations: [
-    JobsComponent,
   ],
   imports: [
+    JobsComponent,
     CommonModule,
     LibraryModule,
     MaterialLibraryModule,

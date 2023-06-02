@@ -6,6 +6,7 @@ import { LoginService } from 'src/app/login';
 import { getAppParams } from '../app-params';
 import { MODULES, PreferencesDbModule, SystemPreferences, UserModule } from '../interfaces';
 import { SystemPreferencesApiService } from './system-preferences-api';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root'
@@ -61,6 +62,7 @@ export class SystemPreferencesService {
   childMenu$: Observable<UserModule[]> = this.activeModules$.pipe(
     map(modules => modules[0]?.childMenu || []),
   );
+  childMenu = toSignal(this.childMenu$, { initialValue: [] });
 
   constructor(
     private router: Router,
