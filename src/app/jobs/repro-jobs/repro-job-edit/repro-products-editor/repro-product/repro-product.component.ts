@@ -1,196 +1,69 @@
-import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { ControlValueAccessor, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DestroyService } from 'prd-cdk';
-import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
-import { CustomerProduct } from 'src/app/interfaces';
-import { JobProduct } from 'src/app/jobs';
-import { ProductAutocompleteComponent } from '../product-autocomplete/product-autocomplete.component';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatInputModule } from '@angular/material/input';
+import { CurrencyPipe, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input, Output, ViewChild, signal } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { NgIf, CurrencyPipe } from '@angular/common';
+import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { Subject } from 'rxjs';
+import { CustomerProduct } from 'src/app/interfaces';
 import { ViewSizeModule } from '../../../../../library/view-size/view-size.module';
+import { ProductAutocompleteComponent } from '../product-autocomplete/product-autocomplete.component';
+import { JobProductForm } from './job-product-form.interface';
 
-
-const DEFAULT_PRODUCT: JobProduct = {
-  name: '',
-  price: 0,
-  units: 'gab.',
-  count: 0,
-  comment: null,
-};
 
 @Component({
-    selector: 'app-repro-product',
-    templateUrl: './repro-product.component.html',
-    styleUrls: ['./repro-product.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        DestroyService,
-        {
-            provide: NG_VALUE_ACCESSOR,
-            multi: true,
-            useExisting: ReproProductComponent,
-        },
-        {
-            provide: NG_VALIDATORS,
-            multi: true,
-            useExisting: ReproProductComponent,
-        },
-    ],
-    standalone: true,
-    imports: [
-        ViewSizeModule,
-        FormsModule,
-        ReactiveFormsModule,
-        NgIf,
-        MatButtonModule,
-        MatIconModule,
-        ProductAutocompleteComponent,
-        MatFormFieldModule,
-        MatInputModule,
-        MatTooltipModule,
-        CurrencyPipe,
-    ],
+  selector: 'app-repro-product',
+  templateUrl: './repro-product.component.html',
+  styleUrls: ['./repro-product.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    ViewSizeModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgIf,
+    MatButtonModule,
+    MatIconModule,
+    ProductAutocompleteComponent,
+    MatFormFieldModule,
+    MatInputModule,
+    MatTooltipModule,
+    CurrencyPipe,
+  ],
 })
-export class ReproProductComponent implements OnInit, ControlValueAccessor, Validator {
+export class ReproProductComponent {
 
   @ViewChild(ProductAutocompleteComponent)
   productNameControl: ProductAutocompleteComponent;
 
-  customerProducts$ = new BehaviorSubject<CustomerProduct[]>([]);
+  productsAvailable = signal<CustomerProduct[]>([]);
 
-  form = ReproProductComponent.createForm(DEFAULT_PRODUCT);
 
-  @Input('customerProducts')
+  @Input({ required: true }) productForm: JobProductForm;
+
+  @Input()
   set customerProducts(value: CustomerProduct[]) {
-    this.customerProducts$.next(value || []);
-    this.form.controls.name.updateValueAndValidity();
-    this.onValidationChange();
-  }
-  get customerProducts() {
-    return this.customerProducts$.value;
+    this.productsAvailable.set(value || []);
   }
 
-  private _showPrices = false;
-  @Input() set showPrices(value: any) {
-    this._showPrices = coerceBooleanProperty(value);
-  }
-  get showPrices() {
-    return this._showPrices;
-  }
-
-  onTouched: () => void = () => { };
-  onValidationChange: () => void = () => { };
+  @Input() showPrices: boolean = false;
 
   @Output() remove = new Subject<void>();
 
-
-  constructor(
-    private changedetector: ChangeDetectorRef,
-    private destroy$: DestroyService,
-  ) { }
-
-  writeValue(obj: JobProduct): void {
-    this.form.patchValue(obj || DEFAULT_PRODUCT, { emitEvent: false });
-  }
-
-  registerOnTouched(fn: () => void): void {
-    this.onTouched = fn;
-  }
-
-  registerOnChange(fn: any): void {
-    this.form.valueChanges.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(fn);
-  }
-
-  setDisabledState(isDisabled: boolean): void {
-    if (isDisabled) {
-      this.form.disable();
-    } else {
-      this.form.enable();
-    }
-  }
-
-  validate(): ValidationErrors {
-    if (this.form.valid) {
-      return null;
-    }
-
-    let errors: Record<string, any> = {};
-    errors = this.addControlErrors(errors, 'name');
-    errors = this.addControlErrors(errors, 'price');
-    errors = this.addControlErrors(errors, 'count');
-    errors = this.addControlErrors(errors, 'units');
-
-    return errors;
-
-  }
-
-  registerOnValidatorChange(fn: () => void): void {
-    this.onValidationChange = fn;
-  }
-
-  ngOnInit(): void {
-    this.form.valueChanges.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(() => this.check());
-  }
 
   focus() {
     this.productNameControl.focus();
   }
 
-  onAddPrice() {
-    const price = this.customerProducts.find(prod => prod.productName === this.form.value.name)?.price;
+  onSetPrice() {
+    const price = this.productsAvailable().find(prod => prod.productName === this.productForm.value.name)?.price;
     if (price) {
-      this.form.patchValue({ price });
-      this.form.get('price').markAsDirty();
+      this.productForm.controls.price.setValue(price);
     }
   }
 
-  check() {
-    this.changedetector.markForCheck();
-  }
 
-  static createForm(product: Partial<JobProduct> = {}) {
-    return new FormGroup({
-      name: new FormControl(product.name),
-      price: new FormControl(
-        product.price,
-        {
-          validators: [Validators.required, Validators.min(0)],
-        },
-      ),
-      count: new FormControl(
-        product.count,
-        {
-          validators: [Validators.required, Validators.min(0)],
-        },
-      ),
-      units: new FormControl(
-        product.units,
-        Validators.required,
-      ),
-      comment: new FormControl(product.comment),
-    });
-  }
-
-
-  private addControlErrors(allErrors: Record<string, any>, controlName: string): Record<string, any> {
-
-    const errors = { ...allErrors };
-    const control = this.form.get(controlName);
-
-    if (control.errors) {
-      errors[controlName] = control.errors;
-    }
-
-    return errors;
-  }
 
 }

@@ -1,124 +1,57 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, ValidatorFn, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map, shareReplay, startWith } from 'rxjs/operators';
-import { CustomerProduct } from 'src/app/interfaces';
-import { MatOptionModule } from '@angular/material/core';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
+import { NgFor, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, ElementRef, Injector, Input, OnInit, Signal, ViewChild, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { CustomerProduct } from 'src/app/interfaces';
 
 @Component({
-    selector: 'app-product-autocomplete',
-    templateUrl: './product-autocomplete.component.html',
-    styleUrls: ['./product-autocomplete.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            multi: true,
-            useExisting: ProductAutocompleteComponent,
-        },
-        {
-            provide: NG_VALIDATORS,
-            multi: true,
-            useExisting: ProductAutocompleteComponent,
-        },
-    ],
-    standalone: true,
-    imports: [MatFormFieldModule, MatInputModule, FormsModule, MatAutocompleteModule, ReactiveFormsModule, MatButtonModule, MatIconModule, NgIf, MatOptionModule, NgFor, AsyncPipe]
+  selector: 'app-product-autocomplete',
+  templateUrl: './product-autocomplete.component.html',
+  styleUrls: ['./product-autocomplete.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [MatFormFieldModule, MatInputModule, FormsModule, MatAutocompleteModule, ReactiveFormsModule, MatButtonModule, MatIconModule, NgIf, MatOptionModule, NgFor],
 })
-export class ProductAutocompleteComponent implements AfterViewInit, ControlValueAccessor, Validator {
+export class ProductAutocompleteComponent implements OnInit {
 
-  @ViewChild('name') private inputElement: ElementRef;
+  @ViewChild('name') private inputElement: ElementRef<HTMLInputElement>;
 
-  private customerProducts$ = new BehaviorSubject<CustomerProduct[]>([]);
+  @Input({ required: true }) control: FormControl<string>;
+
+
+  productsAvailable = signal<CustomerProduct[]>([]);
   @Input()
-  set customerProducts(val: CustomerProduct[]) {
-    this.customerProducts$.next(val || []);
-    this.control.updateValueAndValidity();
-    this.onValidationChange();
-  }
-  get customerProducts() {
-    return this.customerProducts$.value;
+  set customerProducts(value: CustomerProduct[]) {
+    this.productsAvailable.set(value);
   }
 
-  control = new FormControl(
-    '',
-    {
-      validators: [
-        Validators.required,
-        this.productNameValidatorFn()
-      ]
-    }
-  );
+  firstProducts: Signal<CustomerProduct[]>;
+  restProducts: Signal<CustomerProduct[]>;
 
-  private filteredProducts$: Observable<CustomerProduct[]> = combineLatest([
-    this.control.valueChanges.pipe(startWith('')),
-    this.customerProducts$,
-  ]).pipe(
-    map(this.filterProducts),
-    shareReplay(1),
-  );
-  firstProducts$: Observable<CustomerProduct[]> = this.filteredProducts$.pipe(
-    map(prod => prod.filter(pr => pr.price !== undefined))
-  );
-  restProducts$: Observable<CustomerProduct[]> = this.filteredProducts$.pipe(
-    map(prod => prod.filter(pr => pr.price === undefined))
-  );
+  private injector = inject(Injector);
 
-  onTouched: () => void = () => { };
-  onValidationChange: () => void = () => { };
-
-  writeValue(obj: any): void {
-    this.control.setValue(obj, { emitEvent: false });
-  }
-
-  registerOnChange(fn: any): void {
-    this.control.valueChanges.subscribe(fn);
-  }
-
-  registerOnTouched(fn: any): void {
-    this.onTouched = fn;
-  }
-
-  setDisabledState(isDisabled: boolean): void {
-    if (isDisabled) {
-      this.control.disable();
-    } else {
-      this.control.enable();
-    }
-  }
-
-  validate(): ValidationErrors {
-    return this.control.errors;
-  }
-
-  registerOnValidatorChange(fn: () => void): void {
-    this.onValidationChange = fn;
-  }
-
-  ngAfterViewInit(): void {
-    (this.inputElement.nativeElement as HTMLInputElement).onfocus = this.onTouched;
+  ngOnInit(): void {
+    const value = toSignal(this.control.valueChanges, { injector: this.injector, initialValue: '' });
+    const filtered = computed(() => this.filterProducts(value(), this.productsAvailable()));
+    this.firstProducts = computed(() => filtered().filter(pr => pr.price !== undefined));
+    this.restProducts = computed(() => filtered().filter(pr => pr.price == undefined));
   }
 
   focus(): void {
     (this.inputElement.nativeElement as HTMLInputElement).focus();
   }
 
-  private filterProducts([controlValue, products]: [string, CustomerProduct[]]): CustomerProduct[] {
-    const name = controlValue.toUpperCase();
+
+  private filterProducts(controlValue: string, products: CustomerProduct[]): CustomerProduct[] {
+    const name = controlValue?.toUpperCase();
     return products.filter(pr => pr.productName.toUpperCase().includes(name));
   }
 
-  private productNameValidatorFn(): ValidatorFn {
-    return (control: AbstractControl) => {
-      const err = { invalidProduct: 'Prece nav atrasta katalogā' };
-      return this.customerProducts.some(prod => prod.productName === control.value) ? null : err;
-    };
-  };
 
 }

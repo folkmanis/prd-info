@@ -1,70 +1,77 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { ControlValueAccessor, FormArray, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DestroyService } from 'prd-cdk';
-import { takeUntil } from 'rxjs/operators';
-import { CustomerProduct } from 'src/app/interfaces';
-import { JobProduct } from 'src/app/jobs';
-import { ReproProductComponent } from './repro-product/repro-product.component';
+import { NgFor } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input, QueryList, ViewChildren } from '@angular/core';
+import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, FormsModule, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator, ValidatorFn, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { DestroyService } from 'prd-cdk';
+import { CustomerProduct } from 'src/app/interfaces';
+import { JobProduct } from 'src/app/jobs';
 import { KeyPressDirective } from '../key-press.directive';
-import { MatButtonModule } from '@angular/material/button';
+import { JobProductForm } from './repro-product/job-product-form.interface';
 import { ProductControlDirective } from './repro-product/product-control.directive';
-import { NgFor } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
+import { ReproProductComponent } from './repro-product/repro-product.component';
+
+
+const DEFAULT_PRODUCT: JobProduct = {
+  name: '',
+  price: 0,
+  units: 'gab.',
+  count: 0,
+  comment: null,
+};
+
 
 @Component({
-    selector: 'app-repro-products-editor',
-    templateUrl: './repro-products-editor.component.html',
-    styleUrls: ['./repro-products-editor.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        DestroyService,
-        {
-            provide: NG_VALUE_ACCESSOR,
-            multi: true,
-            useExisting: ReproProductsEditorComponent,
-        },
-        {
-            provide: NG_VALIDATORS,
-            multi: true,
-            useExisting: ReproProductsEditorComponent,
-        }
-    ],
-    standalone: true,
-    imports: [MatCardModule, NgFor, ReproProductComponent, ProductControlDirective, FormsModule, ReactiveFormsModule, MatButtonModule, KeyPressDirective, MatTooltipModule, MatIconModule]
+  selector: 'app-repro-products-editor',
+  templateUrl: './repro-products-editor.component.html',
+  styleUrls: ['./repro-products-editor.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    DestroyService,
+    {
+      provide: NG_VALUE_ACCESSOR,
+      multi: true,
+      useExisting: ReproProductsEditorComponent,
+    },
+    {
+      provide: NG_VALIDATORS,
+      multi: true,
+      useExisting: ReproProductsEditorComponent,
+    }
+  ],
+  standalone: true,
+  imports: [
+    MatCardModule,
+    NgFor,
+    ReproProductComponent,
+    ProductControlDirective,
+    FormsModule,
+    ReactiveFormsModule, MatButtonModule,
+    KeyPressDirective, MatTooltipModule, MatIconModule
+  ]
 })
-export class ReproProductsEditorComponent implements OnInit, ControlValueAccessor, Validator {
+export class ReproProductsEditorComponent implements ControlValueAccessor, Validator {
 
-  @ViewChildren(ReproProductComponent) productComponents: QueryList<ReproProductComponent>;
+  @ViewChildren(ReproProductComponent)
+  productComponents: QueryList<ReproProductComponent>;
 
-  @Input() customerProducts: CustomerProduct[] = [];
+  @Input()
+  customerProducts: CustomerProduct[] = [];
 
-  @Input() showPrices: boolean;
+  @Input()
+  showPrices: boolean;
 
-  productsControl = new FormArray<FormControl<JobProduct>>([]);
+  productsControl = new FormArray<JobProductForm>([]);
 
   onTouched: () => void = () => { };
-  onValidationChange: () => void = () => { };
-
-  constructor(
-    private changeDetector: ChangeDetectorRef,
-    private destroy$: DestroyService,
-  ) { }
 
   writeValue(obj: JobProduct[] | null): void {
-    if (!(obj instanceof Array)) {
-      this.productsControl.clear({ emitEvent: false });
-      this.check();
-      return;
+    this.productsControl.clear({ emitEvent: false });
+    if (Array.isArray(obj)) {
+      obj.forEach(prod => this.productsControl.push(this.createForm(prod)), { emitEvent: false });
     }
-    if (obj.length === this.productsControl.length) {
-      this.productsControl.setValue(obj, { emitEvent: false });
-      return;
-    }
-    this.productsControl.clear();
-    obj.forEach(prod => this.productsControl.push(new FormControl(prod)), { emitEvent: false });
-    this.check();
   }
 
   registerOnTouched(fn: () => void): void {
@@ -72,11 +79,8 @@ export class ReproProductsEditorComponent implements OnInit, ControlValueAccesso
   }
 
   registerOnChange(fn: any): void {
-    this.productsControl.valueChanges.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(fn);
+    this.productsControl.valueChanges.subscribe(fn);
   }
-
 
   setDisabledState(isDisabled: boolean): void {
     if (isDisabled) {
@@ -90,16 +94,9 @@ export class ReproProductsEditorComponent implements OnInit, ControlValueAccesso
 
     if (this.productsControl.valid) return null;
 
-    return this.productsControl.controls.map(({ errors }) => errors);
+    return this.productsControl.controls
+      .reduce((acc, curr, idx) => ({ ...acc, [idx]: curr.errors }), {});
 
-  }
-
-  registerOnValidatorChange(fn: () => void): void {
-    this.onValidationChange = fn;
-  }
-
-  ngOnInit(): void {
-    this.productsControl.statusChanges.subscribe(_ => this.check());
   }
 
   focusLatest() {
@@ -111,16 +108,39 @@ export class ReproProductsEditorComponent implements OnInit, ControlValueAccesso
   }
 
   onAddProduct() {
-    this.productsControl.push(new FormControl<JobProduct>(
-      null,
-      [Validators.required]
-    ));
-    this.onValidationChange();
+    this.productsControl.push(this.createForm(DEFAULT_PRODUCT));
     setTimeout(() => this.focusLatest(), 0);
   }
 
-  private check() {
-    this.changeDetector.markForCheck();
+
+  private createForm(product: JobProduct): JobProductForm {
+    return new FormGroup({
+      name: new FormControl(
+        product.name,
+        [this.productNameValidatorFn()]
+      ),
+      price: new FormControl<number>(
+        product.price,
+        [Validators.required, Validators.min(0)],
+      ),
+      count: new FormControl<number>(
+        product.count,
+        [Validators.required, Validators.min(0)],
+      ),
+      units: new FormControl(
+        product.units,
+        Validators.required,
+      ),
+      comment: new FormControl(product.comment),
+    });
   }
+
+  private productNameValidatorFn(): ValidatorFn {
+    const err = { invalidProduct: 'Prece nav atrasta katalogā' };
+    return (control: AbstractControl<string>) => {
+      return this.customerProducts.some(prod => prod.productName === control.value) ? null : err;
+    };
+
+  };
 
 }

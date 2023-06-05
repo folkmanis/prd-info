@@ -1,23 +1,23 @@
-import { Output, ChangeDetectionStrategy, Component, OnInit, Input } from '@angular/core';
-import { DropFolder } from 'src/app/interfaces';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { map, merge } from 'rxjs';
-import { MatOptionModule } from '@angular/material/core';
 import { NgFor } from '@angular/common';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatOptionModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { map, merge } from 'rxjs';
+import { DropFolder } from 'src/app/interfaces';
 
 @Component({
-    selector: 'app-drop-folder',
-    templateUrl: './drop-folder.component.html',
-    styleUrls: ['./drop-folder.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [MatCheckboxModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, NgFor, MatOptionModule]
+  selector: 'app-drop-folder',
+  templateUrl: './drop-folder.component.html',
+  styleUrls: ['./drop-folder.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [MatCheckboxModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, NgFor, MatOptionModule]
 })
-export class DropFolderComponent implements OnInit {
+export class DropFolderComponent {
 
   folderControl = new FormControl<DropFolder>(null);
 
@@ -63,11 +63,6 @@ export class DropFolderComponent implements OnInit {
   );
 
   compareFn: (o1: DropFolder, o2: DropFolder) => boolean = (o1, o2) => o1?.path.join('/') === o2?.path.join('/');
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
 
   private setActive() {
     this.folderActive.setValue(this._folders.length > 0 && this.defaultEnabled && !this.disabled);

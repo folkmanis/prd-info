@@ -20,15 +20,15 @@ import { MatButtonModule } from '@angular/material/button';
 
 
 @Component({
-    selector: 'app-repro-job-edit',
-    templateUrl: './repro-job-edit.component.html',
-    styleUrls: ['./repro-job-edit.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        JobFormService,
-    ],
-    standalone: true,
-    imports: [NgIf, MatButtonModule, KeyPressDirective, MatIconModule, RouterLink, JobFormComponent, MatCardModule, FolderPathComponent, UploadProgressComponent, DropFolderComponent, AsyncPipe]
+  selector: 'app-repro-job-edit',
+  templateUrl: './repro-job-edit.component.html',
+  styleUrls: ['./repro-job-edit.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    JobFormService,
+  ],
+  standalone: true,
+  imports: [NgIf, MatButtonModule, KeyPressDirective, MatIconModule, RouterLink, JobFormComponent, MatCardModule, FolderPathComponent, UploadProgressComponent, DropFolderComponent, AsyncPipe]
 })
 export class ReproJobEditComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -60,7 +60,11 @@ export class ReproJobEditComponent implements OnInit, AfterViewInit, OnDestroy {
     saved: this.saved$,
     dropFolder: this.dropFolder$,
   }).pipe(
-    map(({ update, status, saved, dropFolder }) => status !== 'VALID' || (update == undefined && dropFolder == null) || saved),
+    map(({ update, status, saved, dropFolder }) =>
+      status !== 'VALID' ||
+      (update == undefined && dropFolder == null) ||
+      saved
+    ),
     startWith(true),
   );
 

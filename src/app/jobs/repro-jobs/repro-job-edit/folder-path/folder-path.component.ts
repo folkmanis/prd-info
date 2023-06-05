@@ -1,28 +1,28 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
-import { NgIf } from '@angular/common';
 
 
 @Component({
-    selector: 'app-folder-path',
-    templateUrl: './folder-path.component.html',
-    styleUrls: ['./folder-path.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        NgIf,
-        MatIconModule,
-        MatCheckboxModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatButtonModule,
-    ],
+  selector: 'app-folder-path',
+  templateUrl: './folder-path.component.html',
+  styleUrls: ['./folder-path.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    NgIf,
+    MatIconModule,
+    MatCheckboxModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+  ],
 })
-export class FolderPathComponent implements OnInit {
+export class FolderPathComponent {
 
   @Input() set path(path: string) {
     this._path = path || '';
@@ -56,10 +56,5 @@ export class FolderPathComponent implements OnInit {
   }
 
   @Output() createFolder = new EventEmitter<void>();
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }
