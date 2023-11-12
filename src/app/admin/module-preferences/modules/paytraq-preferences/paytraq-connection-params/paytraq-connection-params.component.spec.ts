@@ -8,8 +8,8 @@ describe('PaytraqConnectionParamsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PaytraqConnectionParamsComponent ]
-    })
+    imports: [PaytraqConnectionParamsComponent]
+})
     .compileComponents();
   });
 

@@ -1,21 +1,23 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, ViewChild, OnDestroy } from '@angular/core';
-import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { MatSlider } from '@angular/material/slider';
+import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatSlider, MatSliderModule } from '@angular/material/slider';
 import { HslColor } from './hsl-color';
 import { FocusMonitor } from '@angular/cdk/a11y';
 
 @Component({
-  selector: 'app-color-slider',
-  templateUrl: './color-slider.component.html',
-  styleUrls: ['./color-slider.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: ColorSliderComponent,
-      multi: true,
-    }
-  ]
+    selector: 'app-color-slider',
+    templateUrl: './color-slider.component.html',
+    styleUrls: ['./color-slider.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: ColorSliderComponent,
+            multi: true,
+        }
+    ],
+    standalone: true,
+    imports: [MatSliderModule, FormsModule, ReactiveFormsModule]
 })
 export class ColorSliderComponent implements ControlValueAccessor, AfterViewInit, OnDestroy {
 

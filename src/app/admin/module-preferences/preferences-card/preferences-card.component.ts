@@ -3,24 +3,27 @@ import { AfterContentInit, ChangeDetectionStrategy, ChangeDetectorRef, Component
 import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { PreferencesCardControl } from '../preferences-card-control';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
-  selector: 'app-preferences-card',
-  templateUrl: './preferences-card.component.html',
-  styleUrls: ['./preferences-card.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: PreferencesCardComponent,
-      multi: true,
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: PreferencesCardComponent,
-      multi: true,
-    }
-  ]
+    selector: 'app-preferences-card',
+    templateUrl: './preferences-card.component.html',
+    styleUrls: ['./preferences-card.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: PreferencesCardComponent,
+            multi: true,
+        },
+        {
+            provide: NG_VALIDATORS,
+            useExisting: PreferencesCardComponent,
+            multi: true,
+        }
+    ],
+    standalone: true,
+    imports: [MatCardModule]
 })
 export class PreferencesCardComponent<T> implements ControlValueAccessor, Validator, OnInit, OnDestroy, AfterContentInit {
 

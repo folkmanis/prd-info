@@ -8,8 +8,8 @@ describe('AdminMainMenuComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ AdminMainMenuComponent ]
-    })
+    imports: [AdminMainMenuComponent]
+})
     .compileComponents();
   }));
 

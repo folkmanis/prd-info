@@ -1,19 +1,22 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { JobsSettings, ProductCategory, ProductUnit } from 'src/app/interfaces';
 import { PreferencesCardControl } from '../../preferences-card-control';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
 import { UnitsDialogComponent } from './units-dialog/units-dialog.component';
+import { SimpleListTableModule } from '../../../../library/simple-list-table/simple-list-table.module';
 
 type JobsSettingsControls = Pick<JobsSettings, 'productCategories' | 'productUnits'>;
 
 @Component({
-  selector: 'app-jobs-preferences',
-  templateUrl: './jobs-preferences.component.html',
-  styleUrls: ['./jobs-preferences.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [{ provide: PreferencesCardControl, useExisting: JobsPreferencesComponent }]
+    selector: 'app-jobs-preferences',
+    templateUrl: './jobs-preferences.component.html',
+    styleUrls: ['./jobs-preferences.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [{ provide: PreferencesCardControl, useExisting: JobsPreferencesComponent }],
+    standalone: true,
+    imports: [FormsModule, ReactiveFormsModule, SimpleListTableModule]
 })
 export class JobsPreferencesComponent implements PreferencesCardControl<JobsSettingsControls>, OnInit, OnDestroy {
 

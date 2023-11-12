@@ -4,13 +4,19 @@ import {
   Component,
   OnInit,
 } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DestroyService } from 'src/app/library/rxjs';
-import { Observable } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Observable, takeUntil } from 'rxjs';
 import { MODULES, SystemPreferences } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { SystemPreferencesService } from 'src/app/services';
+import { PaytraqPreferencesComponent } from './modules/paytraq-preferences/paytraq-preferences.component';
+import { JobsPreferencesComponent } from './modules/jobs-preferences/jobs-preferences.component';
+import { KastesPreferencesComponent } from './modules/kastes-preferences/kastes-preferences.component';
+import { SystemPreferencesComponent } from './modules/system-preferences/system-preferences.component';
+import { CardTitleDirective } from './card-title.directive';
+import { PreferencesCardComponent } from './preferences-card/preferences-card.component';
+import { ModuleGroupComponent } from './module-group/module-group.component';
 
 @Component({
   selector: 'app-module-preferences',
@@ -18,6 +24,18 @@ import { SystemPreferencesService } from 'src/app/services';
   styleUrls: ['./module-preferences.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DestroyService],
+  standalone: true,
+  imports: [
+    ModuleGroupComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    PreferencesCardComponent,
+    CardTitleDirective,
+    SystemPreferencesComponent,
+    KastesPreferencesComponent,
+    JobsPreferencesComponent,
+    PaytraqPreferencesComponent,
+  ],
 })
 export class ModulePreferencesComponent
   implements OnInit, CanComponentDeactivate

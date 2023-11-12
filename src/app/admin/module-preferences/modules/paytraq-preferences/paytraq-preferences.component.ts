@@ -4,30 +4,36 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  ValidationErrors,
-} from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DestroyService } from 'src/app/library/rxjs';
 import { Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { PaytraqConnectionParams, PaytraqSettings } from 'src/app/interfaces';
 import { PreferencesCardControl } from '../../preferences-card-control';
+import { PaytraqConnectionParamsComponent } from './paytraq-connection-params/paytraq-connection-params.component';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
-  selector: 'app-paytraq-preferences',
-  templateUrl: './paytraq-preferences.component.html',
-  styleUrls: ['./paytraq-preferences.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: PreferencesCardControl,
-      useExisting: PaytraqPreferencesComponent,
-    },
-    DestroyService,
-  ],
+    selector: 'app-paytraq-preferences',
+    templateUrl: './paytraq-preferences.component.html',
+    styleUrls: ['./paytraq-preferences.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        {
+            provide: PreferencesCardControl,
+            useExisting: PaytraqPreferencesComponent,
+        },
+        DestroyService,
+    ],
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatCheckboxModule,
+        MatDividerModule,
+        PaytraqConnectionParamsComponent,
+    ],
 })
 export class PaytraqPreferencesComponent
   implements

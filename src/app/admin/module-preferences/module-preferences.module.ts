@@ -21,25 +21,23 @@ import { KastesColorsComponent } from './modules/kastes-preferences/kastes-color
 
 
 @NgModule({
-  declarations: [
-    PreferencesCardComponent,
-    JobsPreferencesComponent,
-    CategoryDialogComponent,
-    ModuleGroupComponent,
-    ModulePreferencesComponent,
-    KastesPreferencesComponent,
-    SystemPreferencesComponent,
-    ColorSliderComponent,
-    CardTitleDirective,
-    UnitsDialogComponent,
-    PaytraqPreferencesComponent,
-    PaytraqConnectionParamsComponent,
-    KastesColorsComponent,
-  ],
-  imports: [
-    CommonModule,
-    LibraryModule,
-    MaterialLibraryModule,
-  ]
+    imports: [
+        CommonModule,
+        LibraryModule,
+        MaterialLibraryModule,
+        PreferencesCardComponent,
+        JobsPreferencesComponent,
+        CategoryDialogComponent,
+        ModuleGroupComponent,
+        ModulePreferencesComponent,
+        KastesPreferencesComponent,
+        SystemPreferencesComponent,
+        ColorSliderComponent,
+        CardTitleDirective,
+        UnitsDialogComponent,
+        PaytraqPreferencesComponent,
+        PaytraqConnectionParamsComponent,
+        KastesColorsComponent,
+    ]
 })
 export class ModulePreferencesModule { }

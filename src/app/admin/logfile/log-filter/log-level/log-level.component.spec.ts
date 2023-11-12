@@ -8,8 +8,8 @@ describe('LogLevelComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LogLevelComponent ]
-    })
+    imports: [LogLevelComponent]
+})
     .compileComponents();
   });
 

@@ -8,8 +8,8 @@ describe('KastesPreferencesComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ KastesPreferencesComponent ]
-    })
+    imports: [KastesPreferencesComponent]
+})
     .compileComponents();
   }));
 

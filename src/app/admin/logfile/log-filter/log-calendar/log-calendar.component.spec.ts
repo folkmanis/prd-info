@@ -8,8 +8,8 @@ describe('LogCalendarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LogCalendarComponent ]
-    })
+    imports: [LogCalendarComponent]
+})
     .compileComponents();
   });
 

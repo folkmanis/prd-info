@@ -5,13 +5,26 @@ import { distinctUntilChanged, map, withLatestFrom } from 'rxjs/operators';
 import { combineReload } from 'src/app/library/rxjs';
 import { LogQueryFilter } from '../../services/logfile-record';
 import { ValidDates } from '../valid-dates.class';
+import { LogCalendarComponent } from './log-calendar/log-calendar.component';
+import { LogLevelComponent } from './log-level/log-level.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonModule } from '@angular/material/button';
 
 
 @Component({
-  selector: 'app-log-filter',
-  templateUrl: './log-filter.component.html',
-  styleUrls: ['./log-filter.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-log-filter',
+    templateUrl: './log-filter.component.html',
+    styleUrls: ['./log-filter.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        MatButtonModule,
+        MatTooltipModule,
+        MatIconModule,
+        LogLevelComponent,
+        LogCalendarComponent,
+    ],
 })
 export class LogFilterComponent {
 

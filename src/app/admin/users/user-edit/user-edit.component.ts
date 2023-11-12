@@ -1,7 +1,22 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  AsyncValidatorFn,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { isEqual, pickBy } from 'lodash-es';
@@ -20,7 +35,6 @@ import { SessionsComponent } from './sessions/sessions.component';
 import { AppClassTransformerService } from 'src/app/library/class-transformer/app-class-transformer.service';
 import { PasswordInputGroupComponent } from 'src/app/library/password-input/password-input-group/password-input-group.component';
 
-
 @Component({
   selector: 'app-user-edit',
   standalone: true,
@@ -28,17 +42,16 @@ import { PasswordInputGroupComponent } from 'src/app/library/password-input/pass
   styleUrls: ['./user-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
     MaterialLibraryModule,
     ReactiveFormsModule,
     SessionsComponent,
     PasswordInputDirective,
     SimpleFormContainerComponent,
     PasswordInputGroupComponent,
-  ]
+    AsyncPipe,
+  ],
 })
 export class UserEditComponent implements CanComponentDeactivate {
-
   customers$: Observable<XmfCustomer[]> = this.usersService.getXmfCustomers();
 
   userModules = getAppParams('userModules');
@@ -53,14 +66,8 @@ export class UserEditComponent implements CanComponentDeactivate {
       [Validators.required, usernamePatternValidator],
       [this.existingUsernameValidator()]
     ),
-    name: new FormControl(
-      '',
-      [Validators.required],
-    ),
-    password: new FormControl(
-      '',
-      [Validators.required],
-    ),
+    name: new FormControl('', [Validators.required]),
+    password: new FormControl('', [Validators.required]),
     last_login: new FormControl<Date>({ value: new Date(), disabled: true }),
     userDisabled: new FormControl(false),
     eMail: new FormControl(''),
@@ -85,9 +92,13 @@ export class UserEditComponent implements CanComponentDeactivate {
 
   private routerData = toSignal(this.route.data);
 
-  private formValue = toSignal(this.form.valueChanges, { initialValue: this.form.value });
+  private formValue = toSignal(this.form.valueChanges, {
+    initialValue: this.form.value,
+  });
 
-  formStatus = toSignal(this.form.statusChanges, { initialValue: this.form.status });
+  formStatus = toSignal(this.form.statusChanges, {
+    initialValue: this.form.status,
+  });
 
   changes = computed(() => {
     const value = this.formValue();
@@ -109,14 +120,12 @@ export class UserEditComponent implements CanComponentDeactivate {
     private confirmationDialog: ConfirmationDialogService,
     private router: Router,
     private route: ActivatedRoute,
-    private transformer: AppClassTransformerService,
+    private transformer: AppClassTransformerService
   ) {
-    effect(
-      () => this.initialValue = this.routerData().user || new User(),
-      { allowSignalWrites: true }
-    );
+    effect(() => (this.initialValue = this.routerData().user || new User()), {
+      allowSignalWrites: true,
+    });
   }
-
 
   canDeactivate(): boolean {
     return this.form.pristine || !this.changes();
@@ -128,39 +137,55 @@ export class UserEditComponent implements CanComponentDeactivate {
 
   onSave() {
     if (this.isNew) {
-      const newUser = pickBy(this.form.getRawValue(), val => val !== null);
-      this.usersService.addUser(newUser)
-        .subscribe(user => {
-          this.form.markAsPristine();
-          this.router.navigate(['..', user.username], { relativeTo: this.route });
-        });
+      const newUser = pickBy(this.form.getRawValue(), (val) => val !== null);
+      this.usersService.addUser(newUser).subscribe((user) => {
+        this.form.markAsPristine();
+        this.router.navigate(['..', user.username], { relativeTo: this.route });
+      });
     } else {
-      const update = { ...this.changes(), username: this.initialValue.username };
-      this.usersService.updateUser(update)
-        .subscribe(user => this.initialValue = user);
+      const update = {
+        ...this.changes(),
+        username: this.initialValue.username,
+      };
+      this.usersService
+        .updateUser(update)
+        .subscribe((user) => (this.initialValue = user));
     }
-
   }
 
   onPasswordChange(password: string, username: string) {
     this.usersService.updatePassword(username, password).subscribe({
-      next: (user) => this.snackBar.open(`Lietotāja ${user.username} parole nomainita!`, 'OK', { duration: 3000 }),
-      error: () => this.snackBar.open(`Paroli nomainīt neizdevās`, 'OK', { duration: 5000 }),
+      next: (user) =>
+        this.snackBar.open(
+          `Lietotāja ${user.username} parole nomainita!`,
+          'OK',
+          { duration: 3000 }
+        ),
+      error: () =>
+        this.snackBar.open(`Paroli nomainīt neizdevās`, 'OK', {
+          duration: 5000,
+        }),
     });
   }
 
   onDeleteSessions(sessionIds: string[]) {
     const uname = this.form.value.username;
-    this.confirmationDialog.confirmDelete().pipe(
-      mergeMap(resp => resp ? of(sessionIds) : EMPTY),
-      mergeMap(ids => this.usersService.deleteSessions(uname, ids)),
-      switchMap(count => this.usersService.getUser(uname).pipe(
-        tap(u => this.sessions.set(u.sessions)),
-        map(() => count),
-      )),
-    )
-      .subscribe(resp => {
-        this.snackBar.open(`Deleted ${resp} sessions`, 'OK', { duration: 5000 });
+    this.confirmationDialog
+      .confirmDelete()
+      .pipe(
+        mergeMap((resp) => (resp ? of(sessionIds) : EMPTY)),
+        mergeMap((ids) => this.usersService.deleteSessions(uname, ids)),
+        switchMap((count) =>
+          this.usersService.getUser(uname).pipe(
+            tap((u) => this.sessions.set(u.sessions)),
+            map(() => count)
+          )
+        )
+      )
+      .subscribe((resp) => {
+        this.snackBar.open(`Deleted ${resp} sessions`, 'OK', {
+          duration: 5000,
+        });
       });
   }
 
@@ -169,14 +194,14 @@ export class UserEditComponent implements CanComponentDeactivate {
       if (control.value === this.initialValue?.username) {
         return of(null);
       } else {
-        return this.usersService.validateUsername(control.value).pipe(
-          map(valid => valid ? null : { existing: 'Esošs lietotājvārds' })
-        );
+        return this.usersService
+          .validateUsername(control.value)
+          .pipe(
+            map((valid) => (valid ? null : { existing: 'Esošs lietotājvārds' }))
+          );
       }
     };
   }
-
-
 }
 
 function usernamePatternValidator(control: AbstractControl): ValidationErrors {
@@ -186,4 +211,3 @@ function usernamePatternValidator(control: AbstractControl): ValidationErrors {
   }
   return null;
 }
-

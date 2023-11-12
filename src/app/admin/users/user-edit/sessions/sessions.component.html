@@ -1,5 +1,6 @@
 <mat-list dense>
-    <mat-list-item *ngFor="let session of sessions">
+    @for (session of sessions; track $index) {
+    <mat-list-item>
         <button mat-icon-button (click)="deleteSession.next([session._id])" [disabled]="session._id === currentSession">
             <mat-icon>
                 delete
@@ -7,6 +8,7 @@
         </button>
         {{ session.lastSeen.date | date:'full'}} - {{ session.lastSeen.ip}}
     </mat-list-item>
+    }
 </mat-list>
 
 <mat-action-row>

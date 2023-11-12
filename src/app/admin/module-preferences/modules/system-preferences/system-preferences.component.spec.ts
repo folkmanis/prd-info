@@ -8,8 +8,8 @@ describe('SystemPreferencesComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ SystemPreferencesComponent ]
-    })
+    imports: [SystemPreferencesComponent]
+})
     .compileComponents();
   }));
 

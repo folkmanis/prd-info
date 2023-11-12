@@ -5,13 +5,22 @@ import { HttpCacheService } from 'src/app/library/http/http-cache.service';
 import { LogfileApiService } from '../services/logfile-api.service';
 import { LogQueryFilter, LogRecord } from '../services/logfile-record';
 import { ValidDates } from './valid-dates.class';
+import { AsyncPipe } from '@angular/common';
+import { LogfileTableComponent } from './logfile-table/logfile-table.component';
+import { LogFilterComponent } from './log-filter/log-filter.component';
 
 
 @Component({
-  selector: 'app-logfile',
-  templateUrl: './logfile.component.html',
-  styleUrls: ['./logfile.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-logfile',
+    templateUrl: './logfile.component.html',
+    styleUrls: ['./logfile.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        LogFilterComponent,
+        LogfileTableComponent,
+        AsyncPipe,
+    ],
 })
 export class LogfileComponent {
 

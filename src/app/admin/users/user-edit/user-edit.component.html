@@ -2,27 +2,31 @@
     [formGroup]="form">
 
     <!-- Lietotājvārds -->
-    <h2 *ngIf="isNew; else existing">
+    <h2>
+        @if (isNew) {
         <mat-form-field>
             <mat-label> Lietotājvārds </mat-label>
             <input formControlName="username" matInput autocomplete="off" required>
-            <mat-error *ngIf="unameCtrl.hasError('minlength') && !unameCtrl.hasError('symbol')">
+            @if (unameCtrl.hasError('minlength') && !unameCtrl.hasError('symbol')) {
+            <mat-error>
                 Jābūt vismaz {{unameCtrl.errors.minlength.requiredLength}} simboliem
             </mat-error>
-            <mat-error *ngIf="unameCtrl.hasError('symbol')">
+            }
+            @if (unameCtrl.hasError('symbol')) {
+            <mat-error>
                 {{unameCtrl.errors.symbol}}
             </mat-error>
-            <mat-error *ngIf="unameCtrl.hasError('existing')">
+            }
+            @if (unameCtrl.hasError('existing')) {
+            <mat-error>
                 {{unameCtrl.errors.existing}}
             </mat-error>
+            }
         </mat-form-field>
+        } @else {
+        {{unameCtrl.value}}
+        }
     </h2>
-
-    <ng-template #existing>
-        <h2>
-            {{unameCtrl.value}}
-        </h2>
-    </ng-template>
 
     <!-- Pilns vārds -->
     <mat-card>
@@ -36,8 +40,9 @@
 
     </mat-card>
 
-    <!-- Parole jaunam lietotājam -->
-    <mat-card *ngIf="isNew; else changePassword;">
+    <mat-card>
+        <!-- Parole jaunam lietotājam -->
+        @if (isNew) {
         <mat-card-header>
             <mat-card-title>
                 Parole
@@ -46,19 +51,16 @@
         <mat-card-content>
             <app-password-input-group formControlName="password" [passwordMinimumLength]="3"></app-password-input-group>
         </mat-card-content>
+        } @else {
+        <!-- Paroles maiņa -->
+        <mat-card-content>
+            <button mat-raised-button appPasswordInput [passwordMinimumLength]="6"
+                (appPasswordChange)="onPasswordChange($event, unameCtrl.value)" color="primary">
+                MAINĪT PAROLI
+            </button>
+        </mat-card-content>
+        }
     </mat-card>
-
-    <!-- Paroles maiņa -->
-    <ng-template #changePassword>
-        <mat-card>
-            <mat-card-content>
-                <button mat-raised-button appPasswordInput [passwordMinimumLength]="6"
-                    (appPasswordChange)="onPasswordChange($event, unameCtrl.value)" color="primary">
-                    MAINĪT PAROLI
-                </button>
-            </mat-card-content>
-        </mat-card>
-    </ng-template>
 
     <!-- Iestatījumi -->
     <mat-card>
@@ -90,9 +92,11 @@
                     <mat-form-field>
                         <mat-label>Pieejamie moduļi</mat-label>
                         <mat-select formControlName="modules" multiple>
-                            <mat-option *ngFor="let mod of userModules" [value]="mod.route">
-                                {{mod.name}}
+                            @for (module of userModules; track $index) {
+                            <mat-option [value]="module.route">
+                                {{module.name}}
                             </mat-option>
+                            }
                         </mat-select>
                     </mat-form-field>
                 </section>
@@ -102,9 +106,11 @@
                     <mat-form-field>
                         <mat-label>Pieejamie XMF klienti</mat-label>
                         <mat-select formControlName="customers" multiple>
-                            <mat-option *ngFor="let customer of (customers$ | async)" [value]="customer.value">
+                            @for (customer of customers$ | async; track $index) {
+                            <mat-option [value]="customer.value">
                                 {{customer.name}}
                             </mat-option>
+                            }
                         </mat-select>
                     </mat-form-field>
                 </section>
@@ -113,7 +119,8 @@
         </mat-card-content>
     </mat-card>
 
-    <mat-card *ngIf="sessions() as sess;">
+    @if (sessions()) {
+    <mat-card>
 
         <mat-card-header>
             <mat-card-title>
@@ -122,11 +129,12 @@
         </mat-card-header>
 
         <mat-card-content>
-            <app-sessions [sessions]="sess" [currentSession]="currentSessionId$ | async"
-                (deleteSession)="onDeleteSessions($event)"></app-sessions>
+            <app-sessions [sessions]="sessions()" [currentSession]="currentSessionId$ | async"
+                (deleteSession)="onDeleteSessions($event)" />
         </mat-card-content>
 
     </mat-card>
+    }
 
 
 </app-simple-form-container>

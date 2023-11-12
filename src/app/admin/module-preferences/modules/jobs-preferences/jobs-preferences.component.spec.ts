@@ -8,8 +8,8 @@ describe('JobsPreferencesComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ JobsPreferencesComponent ]
-    })
+    imports: [JobsPreferencesComponent]
+})
     .compileComponents();
   }));
 

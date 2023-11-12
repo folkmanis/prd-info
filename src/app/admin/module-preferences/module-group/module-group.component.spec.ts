@@ -8,8 +8,8 @@ describe('ModuleGroupComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ModuleGroupComponent ]
-    })
+    imports: [ModuleGroupComponent]
+})
     .compileComponents();
   });
 

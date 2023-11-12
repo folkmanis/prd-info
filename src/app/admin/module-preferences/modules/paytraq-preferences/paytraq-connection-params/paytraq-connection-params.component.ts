@@ -1,7 +1,9 @@
 import { FocusMonitor } from '@angular/cdk/a11y';
 import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, FormBuilder, NG_VALUE_ACCESSOR, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PaytraqConnectionParams } from 'src/app/interfaces';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 const DEFAULT_VALUE: PaytraqConnectionParams = {
   connectUrl: null,
@@ -13,17 +15,19 @@ const DEFAULT_VALUE: PaytraqConnectionParams = {
 };
 
 @Component({
-  selector: 'app-paytraq-connection-params',
-  templateUrl: './paytraq-connection-params.component.html',
-  styleUrls: ['./paytraq-connection-params.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: PaytraqConnectionParamsComponent,
-      multi: true,
-    }
-  ]
+    selector: 'app-paytraq-connection-params',
+    templateUrl: './paytraq-connection-params.component.html',
+    styleUrls: ['./paytraq-connection-params.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: PaytraqConnectionParamsComponent,
+            multi: true,
+        }
+    ],
+    standalone: true,
+    imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule]
 })
 export class PaytraqConnectionParamsComponent implements OnInit, ControlValueAccessor, AfterViewInit, OnDestroy {
 

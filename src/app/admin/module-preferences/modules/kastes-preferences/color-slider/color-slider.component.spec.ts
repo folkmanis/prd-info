@@ -8,8 +8,8 @@ describe('ColorSliderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ColorSliderComponent ]
-    })
+    imports: [ColorSliderComponent]
+})
     .compileComponents();
   });
 

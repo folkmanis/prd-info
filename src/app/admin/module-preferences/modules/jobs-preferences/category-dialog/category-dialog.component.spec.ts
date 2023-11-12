@@ -8,8 +8,8 @@ describe('CategoryDialogComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ CategoryDialogComponent ]
-    })
+    imports: [CategoryDialogComponent]
+})
     .compileComponents();
   }));
 

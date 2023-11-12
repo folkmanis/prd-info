@@ -7,11 +7,11 @@ import { isLoggedIn } from './login/login.guard';
 import { isModuleAllowed } from './login/module.guard';
 import { canComponentDeactivate } from './library/guards/can-deactivate.guard';
 
-
 const routes: Routes = [
   {
     path: 'login',
-    loadComponent: () => import('./login/login.component').then(m => m.LoginComponent),
+    loadComponent: () =>
+      import('./login/login.component').then((m) => m.LoginComponent),
   },
   {
     path: '',
@@ -20,8 +20,11 @@ const routes: Routes = [
     children: [
       {
         path: 'user-settings',
-        loadComponent: () => import('./user-settings/user-settings.component').then(c => c.UserSettingsComponent),
-        canDeactivate: [canComponentDeactivate]
+        loadComponent: () =>
+          import('./user-settings/user-settings.component').then(
+            (c) => c.UserSettingsComponent
+          ),
+        canDeactivate: [canComponentDeactivate],
       },
       {
         path: 'messages',
@@ -31,23 +34,29 @@ const routes: Routes = [
       {
         path: 'xmf-search',
         canMatch: [isModuleAllowed],
-        loadChildren: () => import('./xmf-search/xmf-search.module').then(m => m.XmfSearchModule),
-
+        loadChildren: () =>
+          import('./xmf-search/xmf-search.module').then(
+            (m) => m.XmfSearchModule
+          ),
       },
       {
         path: 'xmf-upload',
         canMatch: [isModuleAllowed],
-        loadChildren: () => import('./xmf-upload/xmf-upload.module').then(m => m.XmfUploadModule),
+        loadChildren: () =>
+          import('./xmf-upload/xmf-upload.module').then(
+            (m) => m.XmfUploadModule
+          ),
       },
       {
         path: 'kastes',
         canMatch: [isModuleAllowed],
-        loadChildren: () => import('./kastes/kastes.module').then(m => m.KastesModule),
+        loadChildren: () =>
+          import('./kastes/kastes.module').then((m) => m.KastesModule),
       },
       {
         path: 'admin',
         canMatch: [isModuleAllowed],
-        loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule),
+        loadChildren: () => import('./admin/admin-route'),
       },
       {
         path: 'jobs',
@@ -69,7 +78,7 @@ const routes: Routes = [
         component: MainMenuComponent,
         pathMatch: 'full',
       },
-    ]
+    ],
   },
   {
     path: '**',
@@ -79,6 +88,6 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, { bindToComponentInputs: true })], // , { enableTracing: true }, , { relativeLinkResolution: 'legacy' }
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
