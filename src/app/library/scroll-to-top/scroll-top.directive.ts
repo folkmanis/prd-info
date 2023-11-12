@@ -1,10 +1,22 @@
 import { Directionality } from '@angular/cdk/bidi';
 import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/scrolling';
-import { AfterViewInit, ChangeDetectorRef, ComponentRef, Directive, ElementRef, Input, NgZone, OnDestroy, OnInit, Optional, Output, ViewContainerRef } from '@angular/core';
-import { DestroyService } from 'prd-cdk';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  ComponentRef,
+  Directive,
+  ElementRef,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  Optional,
+  Output,
+  ViewContainerRef,
+} from '@angular/core';
+import { DestroyService } from 'src/app/library/rxjs';
 import { filter, map, Subject, takeUntil, tap } from 'rxjs';
 import { ScrollToTopComponent } from './scroll-to-top.component';
-
 
 @Directive({
   selector: '[scroll-to-top]',
@@ -12,11 +24,13 @@ import { ScrollToTopComponent } from './scroll-to-top.component';
   exportAs: 'scrollToTop',
   providers: [
     DestroyService,
-    { provide: CdkScrollable, useExisting: ScrollTopDirective }
+    { provide: CdkScrollable, useExisting: ScrollTopDirective },
   ],
 })
-export class ScrollTopDirective extends CdkScrollable implements OnInit, AfterViewInit, OnDestroy {
-
+export class ScrollTopDirective
+  extends CdkScrollable
+  implements OnInit, AfterViewInit, OnDestroy
+{
   @Input() showScrollHeight = 300;
 
   @Input() hideScrollHeight = 10;
@@ -29,7 +43,6 @@ export class ScrollTopDirective extends CdkScrollable implements OnInit, AfterVi
   @Output() scrollToTopVisible = new Subject<boolean>();
 
   set visible(value: boolean) {
-
     if (!this.componentRef) {
       this.createButtonComponent();
     }
@@ -40,7 +53,6 @@ export class ScrollTopDirective extends CdkScrollable implements OnInit, AfterVi
       this.scrollToTopVisible.next(value);
       this.buttonChangeDetectorRef.markForCheck();
     });
-
   }
   get visible(): boolean {
     return this.componentRef?.instance.visible || false;
@@ -55,7 +67,7 @@ export class ScrollTopDirective extends CdkScrollable implements OnInit, AfterVi
     private destroy$: DestroyService,
     elementRef: ElementRef,
     ngZone: NgZone,
-    @Optional() dir: Directionality,
+    @Optional() dir: Directionality
   ) {
     super(elementRef, dispatcher, ngZone, dir);
   }
@@ -65,14 +77,19 @@ export class ScrollTopDirective extends CdkScrollable implements OnInit, AfterVi
   }
 
   ngAfterViewInit(): void {
-
-    this.dispatcher.ancestorScrolled(this.elementRef, this.scrollAuditTime).pipe(
-      map(() => this.measureScrollOffset('top')),
-      map(offset => !this.visible && offset > this.showScrollHeight || this.visible && offset > this.hideScrollHeight),
-      filter(show => show !== this.visible),
-      tap(show => this.visible = show),
-      takeUntil(this.destroy$),
-    )
+    this.dispatcher
+      .ancestorScrolled(this.elementRef, this.scrollAuditTime)
+      .pipe(
+        map(() => this.measureScrollOffset('top')),
+        map(
+          (offset) =>
+            (!this.visible && offset > this.showScrollHeight) ||
+            (this.visible && offset > this.hideScrollHeight)
+        ),
+        filter((show) => show !== this.visible),
+        tap((show) => (this.visible = show)),
+        takeUntil(this.destroy$)
+      )
       .subscribe(this.scrollToTopVisible);
   }
 
@@ -89,7 +106,7 @@ export class ScrollTopDirective extends CdkScrollable implements OnInit, AfterVi
     this.componentRef.instance.scrollable = this;
     this.componentRef.instance.bottom = this.bottom;
     this.componentRef.instance.right = this.right;
-    this.buttonChangeDetectorRef = this.componentRef.injector.get(ChangeDetectorRef);
+    this.buttonChangeDetectorRef =
+      this.componentRef.injector.get(ChangeDetectorRef);
   }
-
 }

@@ -1,6 +1,11 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+} from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { DestroyService } from 'prd-cdk';
+import { DestroyService } from 'src/app/library/rxjs';
 import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MODULES, SystemPreferences } from 'src/app/interfaces';
@@ -12,15 +17,13 @@ import { SystemPreferencesService } from 'src/app/services';
   templateUrl: './module-preferences.component.html',
   styleUrls: ['./module-preferences.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DestroyService]
+  providers: [DestroyService],
 })
-export class ModulePreferencesComponent implements OnInit, CanComponentDeactivate {
-
+export class ModulePreferencesComponent
+  implements OnInit, CanComponentDeactivate
+{
   prefForm = this.fb.group<SystemPreferences>(
-    Object.assign(
-      {},
-      ...MODULES.map(mod => ({ [mod]: [{}] }))
-    )
+    Object.assign({}, ...MODULES.map((mod) => ({ [mod]: [{}] })))
   );
 
   private initialValue: SystemPreferences | undefined;
@@ -29,18 +32,18 @@ export class ModulePreferencesComponent implements OnInit, CanComponentDeactivat
     private systemPreferencesService: SystemPreferencesService,
     private cd: ChangeDetectorRef,
     private destroy$: DestroyService,
-    private fb: FormBuilder,
-  ) { }
+    private fb: FormBuilder
+  ) {}
 
   ngOnInit() {
-    this.systemPreferencesService.preferences$.pipe(
-      takeUntil(this.destroy$),
-    ).subscribe(prefs => {
-      this.prefForm.reset(prefs);
-      this.prefForm.markAsPristine();
-      this.initialValue = prefs;
-      this.cd.markForCheck();
-    });
+    this.systemPreferencesService.preferences$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((prefs) => {
+        this.prefForm.reset(prefs);
+        this.prefForm.markAsPristine();
+        this.initialValue = prefs;
+        this.cd.markForCheck();
+      });
   }
 
   canDeactivate(): boolean | Observable<boolean> {
@@ -57,5 +60,4 @@ export class ModulePreferencesComponent implements OnInit, CanComponentDeactivat
     this.prefForm.reset(this.initialValue);
     this.prefForm.markAsPristine();
   }
-
 }

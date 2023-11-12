@@ -1,5 +1,9 @@
-import { ChangeDetectionStrategy, Component, TrackByFunction } from '@angular/core';
-import { DestroyService } from 'prd-cdk';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  TrackByFunction,
+} from '@angular/core';
+import { DestroyService } from 'src/app/library/rxjs';
 import { JobData, Message, MessageFtpUser } from '../interfaces';
 import { MessagingService } from '../services/messaging.service';
 
@@ -11,30 +15,26 @@ import { MessagingService } from '../services/messaging.service';
   providers: [DestroyService],
 })
 export class MessagesListComponent {
-
   readonly messages$ = this.messaging.messages$;
 
   selected: Message | null = null;
 
   trackByFn: TrackByFunction<Message> = (_, msg) => msg._id;
 
-  constructor(
-    private messaging: MessagingService,
-  ) { }
+  constructor(private messaging: MessagingService) {}
 
   ftpUsers({ data }: Message): MessageFtpUser[] {
-    return data instanceof JobData && data.operation === 'add' && data.ftpUsers || [];
+    return (
+      (data instanceof JobData && data.operation === 'add' && data.ftpUsers) ||
+      []
+    );
   }
 
   onDelete(id: string) {
-    this.messaging.deleteMessage(id)
-      .subscribe();
+    this.messaging.deleteMessage(id).subscribe();
   }
 
   onMarkAsRead(id: string) {
-    this.messaging.markOneRead(id)
-      .subscribe();
+    this.messaging.markOneRead(id).subscribe();
   }
-
-
 }

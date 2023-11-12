@@ -1,24 +1,25 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { MatSelectionList, MatListModule } from '@angular/material/list';
 import { isEqual } from 'lodash-es';
 import { Attachment } from '../interfaces';
-import { PrdCdkModule } from 'prd-cdk';
 import { NgFor } from '@angular/common';
+import { FilesizePipe } from 'src/app/library/common';
 
 @Component({
-    selector: 'app-attachments',
-    templateUrl: './attachments.component.html',
-    styleUrls: ['./attachments.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        MatListModule,
-        NgFor,
-        PrdCdkModule,
-    ],
+  selector: 'app-attachments',
+  templateUrl: './attachments.component.html',
+  styleUrls: ['./attachments.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [MatListModule, NgFor, FilesizePipe],
 })
 export class AttachmentsComponent implements OnInit {
-
   @ViewChild(MatSelectionList) private list: MatSelectionList;
 
   private _attachments: Attachment[] = [];
@@ -31,27 +32,24 @@ export class AttachmentsComponent implements OnInit {
   }
 
   get selected(): Attachment[] | undefined {
-    return this.list?.selectedOptions.selected.map(opt => opt.value);
+    return this.list?.selectedOptions.selected.map((opt) => opt.value);
   }
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   deselect(attachments: Attachment[]) {
     for (const attachment of attachments) {
-      this.list.options.forEach(option => {
+      this.list.options.forEach((option) => {
         if (option.value === attachment) {
           option.selected = false;
         }
       });
-
     }
   }
 
   deselectAll() {
     this.list.deselectAll();
   }
-
 }

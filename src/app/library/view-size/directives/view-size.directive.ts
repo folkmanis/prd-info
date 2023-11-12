@@ -1,8 +1,13 @@
-import { ChangeDetectorRef, Directive, HostBinding, OnInit, Output } from '@angular/core';
-import { DestroyService } from 'prd-cdk';
+import {
+  ChangeDetectorRef,
+  Directive,
+  HostBinding,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { DestroyService } from 'src/app/library/rxjs';
 import { takeUntil } from 'rxjs';
 import { LayoutService } from '../layout.service';
-
 
 @Directive({
   selector: '[appViewSize]',
@@ -10,7 +15,6 @@ import { LayoutService } from '../layout.service';
   exportAs: 'viewSize',
 })
 export class ViewSizeDirective implements OnInit {
-
   @Output('appViewIsLarge')
   isLarge$ = this.layoutService.isLarge$;
 
@@ -29,25 +33,22 @@ export class ViewSizeDirective implements OnInit {
   constructor(
     private layoutService: LayoutService,
     private chDetector: ChangeDetectorRef,
-    private destroy$: DestroyService,
-  ) { }
+    private destroy$: DestroyService
+  ) {}
 
   ngOnInit(): void {
+    this.isLarge$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((large) => this.setLarge(large));
 
-    this.isLarge$.pipe(
-      takeUntil(this.destroy$),
-    ).subscribe(large => this.setLarge(large));
+    this.isMedium$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((medium) => this.setMedium(medium));
 
-    this.isMedium$.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(medium => this.setMedium(medium));
-
-    this.isSmall$.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(small => this.setSmall(small));
-
+    this.isSmall$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((small) => this.setSmall(small));
   }
-
 
   private setLarge(large: boolean) {
     this.isLarge = large;
@@ -63,5 +64,4 @@ export class ViewSizeDirective implements OnInit {
     this.isSmall = small;
     this.chDetector.markForCheck();
   }
-
 }

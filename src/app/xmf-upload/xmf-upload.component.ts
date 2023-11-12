@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
-import { cacheWithUpdate } from 'prd-cdk';
+import { cacheWithUpdate } from 'src/app/library/rxjs';
 import { BehaviorSubject, finalize, Observable, Subject } from 'rxjs';
 import { XmfUploadProgress } from './interfaces/xmf-upload-progress';
 import { XmfUploadService } from './services/xmf-upload.service';
@@ -11,20 +11,17 @@ import { XmfUploadService } from './services/xmf-upload.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class XmfUploadComponent implements OnDestroy {
-
   private historyUpdate$ = new Subject<XmfUploadProgress>();
 
   busy$ = new BehaviorSubject<boolean>(false);
 
-  history$: Observable<XmfUploadProgress[]> = this.uploadService.getHistory().pipe(
-    cacheWithUpdate(this.historyUpdate$, (o1, o2) => o1._id === o2._id),
-  );
+  history$: Observable<XmfUploadProgress[]> = this.uploadService
+    .getHistory()
+    .pipe(cacheWithUpdate(this.historyUpdate$, (o1, o2) => o1._id === o2._id));
 
   file: File | null = null;
 
-  constructor(
-    private uploadService: XmfUploadService,
-  ) { }
+  constructor(private uploadService: XmfUploadService) {}
 
   ngOnDestroy() {
     this.busy$.complete();
@@ -39,19 +36,21 @@ export class XmfUploadComponent implements OnDestroy {
   }
 
   onUpload(): void {
-
     this.busy$.next(true);
     const formData: FormData = new FormData();
     formData.append('archive', this.file, this.file.name);
 
-    this.uploadService.postFile(formData).pipe(
-      finalize(() => {
-        this.busy$.next(false);
-        this.file = null;
-      })
-    ).subscribe(record => {
-      this.historyUpdate$.next(record);
-    });
+    this.uploadService
+      .postFile(formData)
+      .pipe(
+        finalize(() => {
+          this.busy$.next(false);
+          this.file = null;
+        })
+      )
+      .subscribe((record) => {
+        this.historyUpdate$.next(record);
+      });
   }
 
   private setFile(file: File): void {
@@ -59,6 +58,4 @@ export class XmfUploadComponent implements OnDestroy {
       this.file = file;
     }
   }
-
-
 }

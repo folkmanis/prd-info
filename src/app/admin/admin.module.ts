@@ -1,7 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LibraryModule } from '../library/library.module';
-import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
+import {
+  ErrorStateMatcher,
+  ShowOnDirtyErrorStateMatcher,
+} from '@angular/material/core';
+import { ShortenTextPipe } from 'src/app/library/common';
 
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminMainMenuComponent } from './admin-main-menu/admin-main-menu.component';
@@ -28,9 +32,10 @@ import { LogLevelComponent } from './logfile/log-filter/log-level/log-level.comp
     MaterialLibraryModule,
     AdminRoutingModule,
     ModulePreferencesModule,
+    ShortenTextPipe,
   ],
   providers: [
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
   ],
 })
-export class AdminModule { }
+export class AdminModule {}

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LibraryModule } from 'src/app/library/library.module';
+import { HideZeroPipe } from 'src/app/library/common';
 
 import { SelectorRoutingModule } from './selector-routing.module';
 import { SelectorComponent } from './selector.component';
@@ -13,7 +14,6 @@ import { OrderTotalsComponent } from './order-totals/order-totals.component';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { KasteDialogComponent } from './kaste-dialog/kaste-dialog.component';
 import { DrawerButtonDirective } from 'src/app/library/side-button/drawer-button.directive';
-
 
 @NgModule({
   declarations: [
@@ -32,6 +32,7 @@ import { DrawerButtonDirective } from 'src/app/library/side-button/drawer-button
     MaterialLibraryModule,
     SelectorRoutingModule,
     DrawerButtonDirective,
+    HideZeroPipe,
   ],
 })
-export class SelectorModule { }
+export class SelectorModule {}

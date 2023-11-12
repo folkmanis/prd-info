@@ -3,7 +3,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { PrdCdkModule } from 'prd-cdk';
 import { CardMenuComponent } from './card-menu/card-menu.component';
 import { DateServicesModule } from './date-services';
 import { DenseListDirective } from './dense-list/dense-list.directive';
@@ -37,7 +36,6 @@ import { ViewSizeModule } from './view-size/view-size.module';
     HttpClientModule,
     SimpleListTableModule,
     MaterialLibraryModule,
-    PrdCdkModule,
     DateServicesModule,
     ViewSizeModule,
     ScrollTopDirective,
@@ -56,7 +54,6 @@ import { ViewSizeModule } from './view-size/view-size.module';
     BackButtonDirective,
     InputTrimDirective,
     SimpleListTableModule,
-    PrdCdkModule,
     DateServicesModule,
     ViewSizeModule,
     DenseListDirective,
@@ -64,4 +61,4 @@ import { ViewSizeModule } from './view-size/view-size.module';
     ScrollTopDirective,
   ],
 })
-export class LibraryModule { }
+export class LibraryModule {}
