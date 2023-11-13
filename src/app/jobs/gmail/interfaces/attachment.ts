@@ -1,13 +1,12 @@
 export class Attachment {
+  get isPdf(): boolean {
+    const extension = this.filename.slice(this.filename.lastIndexOf('.'));
+    return extension.toLowerCase() === '.pdf';
+  }
 
-    get isPdf(): boolean {
-        return this.filename.slice(this.filename.lastIndexOf('.')) === '.pdf';
-    }
-
-    constructor(
-        public filename: string = 'unnamed',
-        public attachmentId: string,
-        public size: number,
-    ) { }
-
+  constructor(
+    public filename: string = 'unnamed',
+    public attachmentId: string,
+    public size: number
+  ) {}
 }
