@@ -1,4 +1,4 @@
-<div *ngIf="job">
+<div>
     <p>
         Saņemts {{job.receivedDate | date:'mediumDate'}}
     </p>
@@ -6,17 +6,17 @@
         Jānodod {{job.dueDate | date:'mediumDate'}}
     </p>
     <p>
-        <app-color-totals [colorTotals]="plannedTotals">
+        <app-color-totals [colorTotals]="plannedTotals()">
             Paredzētie skaiti
         </app-color-totals>
     </p>
     <p>
-        <app-color-totals [colorTotals]="colorTotals">
+        <app-color-totals [colorTotals]="colorTotals()">
             Skaiti pēc saraksta
         </app-color-totals>
     </p>
     <p>
-        <app-kastes-totals [totals]="kastesTotals">
+        <app-kastes-totals [totals]="kastesTotals()">
             Sadalījums pa kastēm
         </app-kastes-totals>
     </p>

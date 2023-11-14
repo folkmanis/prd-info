@@ -1,5 +1,6 @@
 <ul>
-    <li *ngFor="let progr of progress; trackBy: trackByFn; last as last;" @collapseAnimation>
+    @for (progr of progress; track progr.id) {
+    <li @collapseAnimation>
 
         <div class="filename">
             {{progr.name}}
@@ -9,27 +10,32 @@
             [color]="progr.type === types.UploadAbort ? 'warn' : 'primary'">
         </mat-progress-bar>
 
-        <div [ngSwitch]="progr.type">
+        <div>
+            @switch (progr.type) {
+            @case (types.UploadWaiting) {
+            Gaida augšupielādi...
+            }
 
-            <ng-container *ngSwitchCase="types.UploadWaiting">
-                Gaida augšupielādi...
-            </ng-container>
+            @case (types.UploadProgress) {
+            {{progressPercent(progr)}}%
+            }
 
-            <ng-container *ngSwitchCase="types.UploadProgress">
-                {{progressPercent(progr)}}%
-            </ng-container>
+            @case (types.UploadFinish) {
+            100% Augšupielāde pabeigta!
+            }
 
-            <ng-container *ngSwitchCase="types.UploadFinish">
-                100% Augšupielāde pabeigta!
-            </ng-container>
-
-            <ng-container *ngSwitchCase="types.UploadAbort">
-                Augšupielāde atcelta!
-            </ng-container>
-
+            @case (types.UploadAbort) {
+            Augšupielāde atcelta!
+            }
+            }
         </div>
 
-        <mat-divider *ngIf="!last"></mat-divider>
+        @if (!$last) {
+        <mat-divider />
+        }
 
     </li>
+
+    }
+
 </ul>

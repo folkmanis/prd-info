@@ -2,16 +2,13 @@ import { Directive } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
 @Directive({
-  selector: 'input[appInputTrim]'
+  selector: 'input[appInputTrim]',
+  standalone: true,
 })
 export class InputTrimDirective {
-
-  constructor(
-    ngControl: NgControl,
-  ) {
+  constructor(ngControl: NgControl) {
     trimValueAccessor(ngControl.valueAccessor);
   }
-
 }
 
 function trimValueAccessor(valueAccessor: ControlValueAccessor) {

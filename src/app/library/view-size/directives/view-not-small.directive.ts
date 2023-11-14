@@ -4,6 +4,7 @@ import { ViewSizeBase } from './view-size-base.directive';
 
 @Directive({
     selector: '[appViewNotSmall]',
+    standalone: true,
 })
 export class ViewNotSmallDirective extends ViewSizeBase {
 

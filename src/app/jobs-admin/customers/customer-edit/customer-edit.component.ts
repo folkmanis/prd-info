@@ -1,7 +1,19 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ViewChild, computed, effect } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ViewChild,
+  computed,
+  effect,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AsyncValidatorFn, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AsyncValidatorFn,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatExpansionPanel } from '@angular/material/expansion';
 import { ActivatedRoute, Router } from '@angular/router';
 import { isEqual, pickBy } from 'lodash-es';
@@ -14,12 +26,12 @@ import { CustomersService } from 'src/app/services';
 import { getConfig } from 'src/app/services/config.provider';
 import { CustomerContactsComponent } from './customer-contacts/customer-contacts.component';
 import { FtpUserComponent } from './ftp-user/ftp-user.component';
-import { InputUppercaseDirective } from './input-uppercase.directive';
+import { InputUppercaseDirective } from 'src/app/library/directives/input-uppercase.directive';
 import { PaytraqCustomerComponent } from './paytraq-customer/paytraq-customer.component';
 
 type CustomerEditable = Omit<Customer, '_id'>;
 type CustomerEditGroup = FormGroup<{
-  [key in keyof CustomerEditable]-?: FormControl<CustomerEditable[key]>
+  [key in keyof CustomerEditable]-?: FormControl<CustomerEditable[key]>;
 }>;
 
 @Component({
@@ -29,7 +41,6 @@ type CustomerEditGroup = FormGroup<{
   styleUrls: ['./customer-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
     MaterialLibraryModule,
     ReactiveFormsModule,
     SimpleFormContainerComponent,
@@ -37,10 +48,9 @@ type CustomerEditGroup = FormGroup<{
     InputUppercaseDirective,
     FtpUserComponent,
     CustomerContactsComponent,
-  ]
+  ],
 })
 export class CustomerEditComponent implements CanComponentDeactivate {
-
   @ViewChild('paytraqPanel') paytraqPanel: MatExpansionPanel;
 
   paytraqEnabled = toSignal(getConfig('paytraq', 'enabled'));
@@ -56,11 +66,16 @@ export class CustomerEditComponent implements CanComponentDeactivate {
     return this._initialValue;
   }
 
-  formValue = toSignal(this.form.valueChanges, { initialValue: this.initialValue });
+  formValue = toSignal(this.form.valueChanges, {
+    initialValue: this.initialValue,
+  });
 
   changes = computed(() => {
     const value = this.formValue();
-    const diff = pickBy(value, (val, key) => !isEqual(val, this.initialValue[key]));
+    const diff = pickBy(
+      value,
+      (val, key) => !isEqual(val, this.initialValue[key])
+    );
     return Object.keys(diff).length ? diff : undefined;
   });
 
@@ -70,11 +85,14 @@ export class CustomerEditComponent implements CanComponentDeactivate {
     private route: ActivatedRoute,
     private router: Router,
     private customersService: CustomersService,
-    private fb: FormBuilder,
+    private fb: FormBuilder
   ) {
-    effect(() => {
-      this.initialValue = this.routeData().customer as Customer;
-    }, { allowSignalWrites: true });
+    effect(
+      () => {
+        this.initialValue = this.routeData().customer as Customer;
+      },
+      { allowSignalWrites: true }
+    );
   }
 
   onReset(): void {
@@ -88,11 +106,13 @@ export class CustomerEditComponent implements CanComponentDeactivate {
       const obs = this.customersService.updateCustomer(update);
       this.saveAndNavigate(obs);
     } else {
-      const customer = pickBy(this.formValue(), val => val !== null) as NewCustomer;
+      const customer = pickBy(
+        this.formValue(),
+        (val) => val !== null
+      ) as NewCustomer;
       const obs = this.customersService.saveNewCustomer(customer);
       this.saveAndNavigate(obs);
     }
-
   }
 
   canDeactivate(): boolean {
@@ -100,24 +120,26 @@ export class CustomerEditComponent implements CanComponentDeactivate {
   }
 
   private saveAndNavigate(obs: Observable<Customer>): Subscription {
-    return obs.subscribe(customer => {
+    return obs.subscribe((customer) => {
       this.form.markAsPristine();
-      this.router.navigate(['..', customer._id], { relativeTo: this.route, queryParams: { upd: Date.now() } });
+      this.router.navigate(['..', customer._id], {
+        relativeTo: this.route,
+        queryParams: { upd: Date.now() },
+      });
     });
   }
 
   private createForm(): CustomerEditGroup {
-
     return this.fb.group({
       CustomerName: [
         '',
         [Validators.required, Validators.minLength(3)],
-        [this.validateName()]
+        [this.validateName()],
       ],
       code: [
         '',
         [Validators.required, Validators.minLength(2), Validators.maxLength(3)],
-        [this.validateCode()]
+        [this.validateCode()],
       ],
       disabled: [false],
       description: [''],
@@ -127,7 +149,6 @@ export class CustomerEditComponent implements CanComponentDeactivate {
       contacts: [],
       insertedFromXmf: [null],
     });
-
   }
 
   private validateCode(): AsyncValidatorFn {
@@ -135,9 +156,9 @@ export class CustomerEditComponent implements CanComponentDeactivate {
       if (this.initialValue?.code === control.value) {
         return of(null);
       } else {
-        return this.customersService.validator('code', control.value).pipe(
-          map(val => val ? null : { occupied: control.value })
-        );
+        return this.customersService
+          .validator('code', control.value)
+          .pipe(map((val) => (val ? null : { occupied: control.value })));
       }
     };
   }
@@ -147,14 +168,10 @@ export class CustomerEditComponent implements CanComponentDeactivate {
       if (this.initialValue?.CustomerName === control.value) {
         return of(null);
       } else {
-        return this.customersService.validator('CustomerName', control.value).pipe(
-          map(val => val ? null : { occupied: control.value })
-        );
+        return this.customersService
+          .validator('CustomerName', control.value)
+          .pipe(map((val) => (val ? null : { occupied: control.value })));
       }
     };
-  };
-
-
-
-
+  }
 }

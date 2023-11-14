@@ -1,63 +1,61 @@
-<div class="container" *ngIf="thread$ | async as thread">
+<mat-card>
 
-    <mat-card>
+    <mat-card-header>
 
-        <mat-card-header>
+        <mat-card-title>
+            {{ thread.from }}
+        </mat-card-title>
 
-            <mat-card-title>
-                {{ thread.from }}
-            </mat-card-title>
+        <mat-card-subtitle>
+            {{ thread.subject }}
+        </mat-card-subtitle>
 
-            <mat-card-subtitle>
-                {{ thread.subject }}
-            </mat-card-subtitle>
+    </mat-card-header>
 
-        </mat-card-header>
+    <mat-card-actions>
+        <a mat-button routerLink=".." color="primary">
+            ATPAKAĻ
+        </a>
+        <button mat-button (click)="onCreateFromThread(thread)">
+            UZ DARBU
+        </button>
+    </mat-card-actions>
 
-        <mat-card-actions>
-            <a mat-button routerLink=".." color="primary">
-                ATPAKAĻ
-            </a>
-            <button mat-button (click)="onCreateFromThread(thread)">
-                UZ DARBU
-            </button>
-        </mat-card-actions>
+    <mat-card-footer>
+        @if (busy()) {
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        }
+    </mat-card-footer>
 
-        <mat-card-footer *ngIf="busy$ | async">
-            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-        </mat-card-footer>
+</mat-card>
 
-    </mat-card>
+<mat-accordion multi displayMode="flat">
 
-    <mat-accordion multi displayMode="flat">
+    @for (message of thread.messages; track $index) {
+    <mat-expansion-panel [expanded]="isExpanded(message)">
 
-        <mat-expansion-panel *ngFor="let message of thread.messages" [expanded]="isExpanded(message)">
+        <mat-expansion-panel-header>
+            <mat-panel-title class="snippet">
+                <div [innerHTML]="message.snippet"></div>
+            </mat-panel-title>
 
-            <mat-expansion-panel-header>
-                <mat-panel-title class="snippet">
-                    <div [innerHTML]="message.snippet"></div>
-                </mat-panel-title>
+            <mat-panel-description>
+                @if (message.hasAttachment) {
+                <mat-icon> attachment </mat-icon>
+                }
+            </mat-panel-description>
 
-                <mat-panel-description>
-                    <mat-icon *ngIf="message.hasAttachment">
-                        attachment
-                    </mat-icon>
-                </mat-panel-description>
+        </mat-expansion-panel-header>
 
-            </mat-expansion-panel-header>
+        <ng-template matExpansionPanelContent>
 
-            <ng-template matExpansionPanelContent>
+            <app-message #messageComponent [message]="message"
+                (attachmentsConfirm)="onCreateFromMessage(messageComponent)">
+            </app-message>
 
-                <app-message #messageComponent [message]="message"
-                    (attachmentsConfirm)="onCreateFromMessage(messageComponent)">
-                </app-message>
+        </ng-template>
 
-            </ng-template>
+    </mat-expansion-panel>
+    }
 
-        </mat-expansion-panel>
-
-    </mat-accordion>
-
-
-
-</div>
+</mat-accordion>

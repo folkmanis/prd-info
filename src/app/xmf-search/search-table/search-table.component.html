@@ -1,6 +1,7 @@
 <cdk-virtual-scroll-viewport itemSize="137" class="scroll-container" templateCacheSize="0" scroll-to-top>
     <div *cdkVirtualFor="let dataItem of data; let lastItem = last; let idx = index;" class="item">
-        <div *ngIf="dataItem; else waiting;">
+        @if (dataItem) {
+        <div>
             <div [style.fontWeight]="dataItem.jdfJobId === search ? 'bold' : undefined " class="jobId">
                 {{dataItem.jdfJobId}}
             </div>
@@ -8,7 +9,8 @@
                 <app-tagged-string [text]="dataItem.descriptiveName" [search]="search?.q"></app-tagged-string>
             </div>
             <div class="search-table">
-                <div *ngFor="let row of dataItem.archives">
+                @for (row of dataItem.archives; track $index) {
+                <div>
                     <div class="table-element table-location" [appCopyClipboard]="row.location">
                         {{row.location}}
                     </div>
@@ -18,13 +20,16 @@
                         <div style="flex: 5 1 170px;" class="table-element">{{dataItem.customerName}}</div>
                     </div>
                 </div>
+                }
             </div>
         </div>
-        <ng-template #waiting>
-            <div class="empty-item">
-                <mat-spinner></mat-spinner>
-            </div>
-        </ng-template>
-        <mat-divider *ngIf="!lastItem"></mat-divider>
+        } @else {
+        <div class="empty-item">
+            <mat-spinner></mat-spinner>
+        </div>
+        }
+        @if (!lastItem) {
+        <mat-divider></mat-divider>
+        }
     </div>
 </cdk-virtual-scroll-viewport>

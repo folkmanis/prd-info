@@ -1,11 +1,17 @@
+import { AsyncPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   TrackByFunction,
 } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { DestroyService } from 'src/app/library/rxjs';
 import { JobData, Message, MessageFtpUser } from '../interfaces';
+import { MessageJobDirective } from '../message-job.directive';
 import { MessagingService } from '../services/messaging.service';
+import { RelativeDatePipe } from 'src/app/library/date-services';
 
 @Component({
   selector: 'app-messages-list',
@@ -13,6 +19,15 @@ import { MessagingService } from '../services/messaging.service';
   styleUrls: ['./messages-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DestroyService],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    MatMenuModule,
+    MatIconModule,
+    MessageJobDirective,
+    AsyncPipe,
+    RelativeDatePipe,
+  ],
 })
 export class MessagesListComponent {
   readonly messages$ = this.messaging.messages$;

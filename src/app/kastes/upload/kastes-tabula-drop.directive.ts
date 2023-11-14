@@ -10,8 +10,9 @@ const enum StatusText {
 }
 
 @Directive({
-  selector: '[appKastesTabulaDrop]',
-  exportAs: 'appKastesTabulaDrop',
+    selector: '[appKastesTabulaDrop]',
+    exportAs: 'appKastesTabulaDrop',
+    standalone: true,
 })
 export class KastesTabulaDropDirective extends FileDropDirective {
 

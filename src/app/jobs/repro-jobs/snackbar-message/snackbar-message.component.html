@@ -1,22 +1,22 @@
-<div *ngIf="job; else errorMessage;" class="container">
+<div class="container">
+    @if (job) {
     <span>
         <span>
             Darbs {{job.jobId}}-{{job.name}} saglabāts!
         </span>
-        <span *ngIf="err">
+        @if (err) {
+        <span>
             {{ err.message }}
         </span>
+        }
     </span>
     <button mat-button color="accent" (click)="onClose()"> OK </button>
+    } @else {
+    <span>
+        Darbs nav saglabāts!
+    </span>
+    <button mat-button color="warn" (click)="onClose()"> OK </button>
+    }
 </div>
 
-<ng-template #errorMessage>
-    <div class="container">
-        <span>
-            Darbs nav saglabāts!
-        </span>
-        <button mat-button color="warn" (click)="onClose()"> OK </button>
-    </div>
-</ng-template>
-
-<app-upload-progress [progress]="progress$ | async"></app-upload-progress>
+<app-upload-progress [progress]="progress$ | async" />

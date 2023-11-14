@@ -1,5 +1,16 @@
-import { NgFor, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ElementRef, Injector, Input, OnInit, Signal, ViewChild, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  Injector,
+  Input,
+  OnInit,
+  Signal,
+  ViewChild,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -16,14 +27,21 @@ import { CustomerProduct } from 'src/app/interfaces';
   styleUrls: ['./product-autocomplete.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [MatFormFieldModule, MatInputModule, FormsModule, MatAutocompleteModule, ReactiveFormsModule, MatButtonModule, MatIconModule, NgIf, MatOptionModule, NgFor],
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    MatAutocompleteModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatOptionModule,
+  ],
 })
 export class ProductAutocompleteComponent implements OnInit {
-
   @ViewChild('name') private inputElement: ElementRef<HTMLInputElement>;
 
   @Input({ required: true }) control: FormControl<string>;
-
 
   productsAvailable = signal<CustomerProduct[]>([]);
   @Input()
@@ -37,21 +55,30 @@ export class ProductAutocompleteComponent implements OnInit {
   private injector = inject(Injector);
 
   ngOnInit(): void {
-    const value = toSignal(this.control.valueChanges, { injector: this.injector, initialValue: '' });
-    const filtered = computed(() => this.filterProducts(value(), this.productsAvailable()));
-    this.firstProducts = computed(() => filtered().filter(pr => pr.price !== undefined));
-    this.restProducts = computed(() => filtered().filter(pr => pr.price == undefined));
+    const value = toSignal(this.control.valueChanges, {
+      injector: this.injector,
+      initialValue: '',
+    });
+    const filtered = computed(() =>
+      this.filterProducts(value(), this.productsAvailable())
+    );
+    this.firstProducts = computed(() =>
+      filtered().filter((pr) => pr.price !== undefined)
+    );
+    this.restProducts = computed(() =>
+      filtered().filter((pr) => pr.price == undefined)
+    );
   }
 
   focus(): void {
     (this.inputElement.nativeElement as HTMLInputElement).focus();
   }
 
-
-  private filterProducts(controlValue: string, products: CustomerProduct[]): CustomerProduct[] {
+  private filterProducts(
+    controlValue: string,
+    products: CustomerProduct[]
+  ): CustomerProduct[] {
     const name = controlValue?.toUpperCase();
-    return products.filter(pr => pr.productName.toUpperCase().includes(name));
+    return products.filter((pr) => pr.productName.toUpperCase().includes(name));
   }
-
-
 }

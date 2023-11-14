@@ -1,4 +1,5 @@
-<mat-drawer-container *ngIf="jobs$ | async as jobs;">
+@if (jobs$ | async; as jobs) {
+<mat-drawer-container>
     <mat-drawer button>
 
         <app-products-summary [jobs]="jobs" (productHover)="highlited = $event">
@@ -37,9 +38,11 @@
                         [routerLink]="[job.jobId]" [class.highlited]="hasProduct(job, highlited)">
                         <!-- statusa indikators -->
                         <td class="column-state">
-                            <mat-icon *ngIf="job.jobStatus.generalStatus === 20" color="primary">
+                            @if (job.jobStatus.generalStatus === 20) {
+                            <mat-icon color="primary">
                                 label_important
                             </mat-icon>
+                            }
                         </td>
                         <!-- jobId -->
                         <td class="column-jobId">
@@ -67,16 +70,20 @@
                                         matTooltip="Kopēt nosaukumu">
                                         <mat-icon>filter_none</mat-icon>
                                     </button>
-                                    <button *ngIf="job.jobStatus.generalStatus === 20" mat-icon-button
-                                        matToolTip="Atzīmēt pabeigtu"
+                                    @switch (job.jobStatus.generalStatus) {
+                                    @case (20) {
+                                    <button mat-icon-button matToolTip="Atzīmēt pabeigtu"
                                         (click)="$event.stopPropagation(); onSetJobStatus(job.jobId, 30)">
                                         <mat-icon>check</mat-icon>
                                     </button>
-                                    <button *ngIf="job.jobStatus.generalStatus === 10" mat-icon-button color="primary"
-                                        matToolTip="Darbs aktīvs"
+                                    }
+                                    @case (10) {
+                                    <button mat-icon-button color="primary" matToolTip="Darbs aktīvs"
                                         (click)="$event.stopPropagation(); onSetJobStatus(job.jobId, 20)">
                                         <mat-icon>label_important</mat-icon>
                                     </button>
+                                    }
+                                    }
                                 </span>
                                 <button *appViewNotLarge mat-icon-button [matMenuTriggerFor]="jobMenu"
                                     (click)="$event.stopPropagation();" [matMenuTriggerData]="{ job }">
@@ -88,20 +95,22 @@
                         <ng-container *appViewLarge>
                             <!-- Izstrādājums -->
                             <td class="column-productsObj-name" [colSpan]="job.products?.length === 1 ? 0 : 3">
-                                <span *ngFor="let product of job.products; last as last;"
-                                    [class.highlited-product]="product.name === highlited">
-                                    {{ product.name }}{{last? '' : ','}}
+                                @for (product of job.products; track $index) {
+                                <span [class.highlited-product]="product.name === highlited">
+                                    {{ product.name }}{{$last? '' : ','}}
                                 </span>
-                                <!-- {{job.productsObj?.name}} -->
+                                }
                             </td>
+                            @if (job.products?.length === 1) {
                             <!-- Skaits -->
-                            <td *ngIf="job.products?.length === 1" class="column-productsObj-count">
+                            <td class="column-productsObj-count">
                                 {{job.products[0].count}}
                             </td>
                             <!-- Mērvienības! -->
-                            <td *ngIf="job.products?.length === 1" class="column-productsObj-units">
+                            <td class="column-productsObj-units">
                                 {{ job.products[0].units }}
                             </td>
+                            }
                         </ng-container>
 
                     </tr>
@@ -112,6 +121,7 @@
 
     </mat-drawer-content>
 </mat-drawer-container>
+}
 
 
 <mat-menu #jobMenu="matMenu">
@@ -120,13 +130,17 @@
             <mat-icon>filter_none</mat-icon>
             <span>Kopēt nosaukumu</span>
         </button>
-        <button *ngIf="job.jobStatus.generalStatus === 20" mat-menu-item (click)="onSetJobStatus(job.jobId, 30)">
+        @if (job.jobStatus.generalStatus === 20) {
+        <button mat-menu-item (click)="onSetJobStatus(job.jobId, 30)">
             <mat-icon>check</mat-icon>
             <span>Gatavs!</span>
         </button>
-        <button *ngIf="job.jobStatus.generalStatus === 10" mat-menu-item (click)="onSetJobStatus(job.jobId, 20)">
+        }
+        @if (job.jobStatus.generalStatus === 10) {
+        <button mat-menu-item (click)="onSetJobStatus(job.jobId, 20)">
             <mat-icon>label_important</mat-icon>
             <span>Ražošanā!</span>
         </button>
+        }
     </ng-template>
 </mat-menu>

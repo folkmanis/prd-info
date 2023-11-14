@@ -2,14 +2,14 @@
 
     <input matInput [formControl]="searchControl" appFocused>
 
-    <button mat-icon-button *ngIf="searchControl.value.length === 0; else resetButton" matSuffix disabled>
+    @if (searchControl.value.length === 0) {
+    <button mat-icon-button matSuffix disabled>
         <mat-icon>search</mat-icon>
     </button>
-
-    <ng-template #resetButton>
-        <button mat-icon-button matSuffix (click)="searchControl.setValue('')">
-            <mat-icon>close</mat-icon>
-        </button>
-    </ng-template>
+    } @else {
+    <button mat-icon-button matSuffix (click)="searchControl.setValue('')">
+        <mat-icon>close</mat-icon>
+    </button>
+    }
 
 </mat-form-field>

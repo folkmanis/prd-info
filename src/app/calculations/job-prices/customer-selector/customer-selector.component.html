@@ -3,13 +3,19 @@
     <mat-select [formControl]="customerControl">
         <mat-option [value]="''">
             Visi
-            <span *ngIf="allTotals"> ({{ allTotals }}) </span>
+            @if (allTotals) {
+            <span> ({{ allTotals }}) </span>
+            }
         </mat-option>
 
-        <mat-option *ngFor="let option of customers" [value]="option._id">
-            {{ option._id }}
-            <span *ngIf="option.noPrice > 0"> ({{ option.noPrice }}) </span>
+        @for (customer of customers; track customer._id) {
+        <mat-option [value]="customer._id">
+            {{ customer._id }}
+            @if (customer.noPrice > 0) {
+            <span> ({{ customer.noPrice }}) </span>
+            }
         </mat-option>
+        }
     </mat-select>
 
 </mat-form-field>

@@ -6,16 +6,22 @@
     <button matIconSuffix mat-icon-button (click)="control.reset()" [disabled]="control.disabled">
         <mat-icon> clear </mat-icon>
     </button>
-    <mat-error *ngIf="control.hasError('required')">
+    @if (control.hasError('required')) {
+    <mat-error>
         Jānorāda obligāti
     </mat-error>
-    <mat-error *ngIf="control.hasError('notFound')">
+    }
+    @if (control.hasError('notFound')) {
+    <mat-error>
         Klients {{ control.getError('notFound') }} nav atrasts
     </mat-error>
+    }
 </mat-form-field>
 
 <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
-    <mat-option *ngFor="let customer of filtered$ | async" [value]="customer.CustomerName">
+    @for (customer of filtered$ | async; track customer.CustomerName) {
+    <mat-option [value]="customer.CustomerName">
         {{ customer.CustomerName }}
     </mat-option>
+    }
 </mat-autocomplete>

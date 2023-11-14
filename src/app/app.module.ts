@@ -1,10 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule, ErrorHandler, LOCALE_ID, DEFAULT_CURRENCY_CODE } from '@angular/core';
-
-import { LibraryModule } from './library/library.module';
-
-import { LayoutModule } from './layout/layout.module';
+import {
+  NgModule,
+  ErrorHandler,
+  LOCALE_ID,
+  DEFAULT_CURRENCY_CODE,
+} from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -26,17 +27,12 @@ import { AppClassTransformerService } from './library/class-transformer/app-clas
 import { MatDateFnsModule } from '@angular/material-date-fns-adapter';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 
-
 @NgModule({
-  declarations: [
-    AppComponent,
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     MaterialLibraryModule,
-    LibraryModule,
-    LayoutModule,
     AppRoutingModule,
     MatDateFnsModule,
   ],
@@ -45,11 +41,14 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
     { provide: DATE_FNS_LOCALE, useValue: lv },
     { provide: MAT_DATE_LOCALE, useExisting: DATE_FNS_LOCALE },
     { provide: DEFAULT_CURRENCY_CODE, useValue: 'EUR' },
-    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline', } },
-    { provide: ErrorHandler, useClass: ErrorsService, },
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: { appearance: 'outline' },
+    },
+    { provide: ErrorHandler, useClass: ErrorsService },
     httpInterceptorsProvider,
     { provide: ClassTransformer, useExisting: AppClassTransformerService },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

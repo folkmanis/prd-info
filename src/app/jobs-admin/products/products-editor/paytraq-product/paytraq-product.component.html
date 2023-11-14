@@ -8,7 +8,7 @@
 </app-paytraq-search-header>
 
 <div>
-    <app-paytraq-product-table *ngIf="products() as productsArray;" [products]="productsArray"
-        (productSelected)="onProductSelected($event)">
-    </app-paytraq-product-table>
+    @if (products(); as productsArray) {
+    <app-paytraq-product-table [products]="productsArray" (productSelected)="onProductSelected($event)" />
+    }
 </div>

@@ -1,19 +1,36 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { Observable, Subject, finalize } from 'rxjs';
 import { cacheWithUpdate } from 'src/app/library/rxjs';
-import { BehaviorSubject, finalize, Observable, Subject } from 'rxjs';
+import { FilesizePipe } from '../library/common';
+import { FileDropDirective } from '../library/directives/file-drop.directive';
 import { XmfUploadProgress } from './interfaces/xmf-upload-progress';
 import { XmfUploadService } from './services/xmf-upload.service';
+import { TabulaComponent } from './tabula/tabula.component';
 
 @Component({
   selector: 'app-xmf-upload',
   templateUrl: './xmf-upload.component.html',
   styleUrls: ['./xmf-upload.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    MatCardModule,
+    FilesizePipe,
+    AsyncPipe,
+    MatProgressBarModule,
+    FileDropDirective,
+    TabulaComponent,
+    MatButtonModule,
+  ],
 })
-export class XmfUploadComponent implements OnDestroy {
+export class XmfUploadComponent {
   private historyUpdate$ = new Subject<XmfUploadProgress>();
 
-  busy$ = new BehaviorSubject<boolean>(false);
+  busy = signal(false);
 
   history$: Observable<XmfUploadProgress[]> = this.uploadService
     .getHistory()
@@ -22,10 +39,6 @@ export class XmfUploadComponent implements OnDestroy {
   file: File | null = null;
 
   constructor(private uploadService: XmfUploadService) {}
-
-  ngOnDestroy() {
-    this.busy$.complete();
-  }
 
   onFileSelected(ev: any): void {
     this.setFile(ev.target.files[0]);
@@ -36,7 +49,7 @@ export class XmfUploadComponent implements OnDestroy {
   }
 
   onUpload(): void {
-    this.busy$.next(true);
+    this.busy.set(true);
     const formData: FormData = new FormData();
     formData.append('archive', this.file, this.file.name);
 
@@ -44,7 +57,7 @@ export class XmfUploadComponent implements OnDestroy {
       .postFile(formData)
       .pipe(
         finalize(() => {
-          this.busy$.next(false);
+          this.busy.set(false);
           this.file = null;
         })
       )

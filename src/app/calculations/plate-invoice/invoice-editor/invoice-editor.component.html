@@ -1,97 +1,100 @@
-<ng-container *ngIf="invoice$ | async as invoice;">
+@if (invoice$ | async; as invoice) {
 
-    <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="onCsvInvoice(invoice)">
-            <mat-icon>file_download</mat-icon>
-            <span> CSV PAVADZĪMEI </span>
-        </button>
-        <button mat-menu-item (click)="onCsvReport(invoice)">
-            <mat-icon>file_download</mat-icon>
-            <span> CSV SARAKSTS </span>
-        </button>
-        <button mat-menu-item (click)="onDelete(invoice.invoiceId)">
-            <mat-icon>delete_forever</mat-icon>
-            <span> DZĒST </span>
-        </button>
-    </mat-menu>
+<mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="onCsvInvoice(invoice)">
+        <mat-icon>file_download</mat-icon>
+        <span> CSV PAVADZĪMEI </span>
+    </button>
+    <button mat-menu-item (click)="onCsvReport(invoice)">
+        <mat-icon>file_download</mat-icon>
+        <span> CSV SARAKSTS </span>
+    </button>
+    <button mat-menu-item (click)="onDelete(invoice.invoiceId)">
+        <mat-icon>delete_forever</mat-icon>
+        <span> DZĒST </span>
+    </button>
+</mat-menu>
 
-    <mat-toolbar>
-        <span>
-            <a mat-icon-button routerLink="..">
-                <mat-icon>
-                    arrow_back
-                </mat-icon>
-            </a>
-        </span>
-
-        <span class="distancer"></span>
-
-        <span>
-            {{invoice.invoiceId}} {{invoice.customerInfo.CustomerName}}
-        </span>
-
-        <span class="spacer"></span>
-
-        <a mat-icon-button href="/data/invoices/report_{{invoice.invoiceId}}.pdf" target="new" matTooltip="Atvērt PDF">
+<mat-toolbar>
+    <span>
+        <a mat-icon-button routerLink="..">
             <mat-icon>
-                picture_as_pdf
+                arrow_back
             </mat-icon>
         </a>
-        <button mat-icon-button [matMenuTriggerFor]="menu">
-            <mat-icon>
-                more_vert
-            </mat-icon>
-        </button>
+    </span>
 
-    </mat-toolbar>
+    <span class="distancer"></span>
+
+    <span>
+        {{invoice.invoiceId}} {{invoice.customerInfo.CustomerName}}
+    </span>
+
+    <span class="spacer"></span>
+
+    <a mat-icon-button href="/data/invoices/report_{{invoice.invoiceId}}.pdf" target="new" matTooltip="Atvērt PDF">
+        <mat-icon>
+            picture_as_pdf
+        </mat-icon>
+    </a>
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>
+            more_vert
+        </mat-icon>
+    </button>
+
+</mat-toolbar>
 
 
-    <div class="container" appViewSize #viewSize="viewSize">
+<div class="container" appViewSize #viewSize="viewSize">
 
-        <h4> {{invoice.createdDate | date}} </h4>
+    <h4> {{invoice.createdDate | date}} </h4>
 
-        <!-- Paytraq -->
-        <mat-card *ngIf="pyatraqEnabled$ | async">
-            <mat-card-header>
-                <mat-card-title>
-                    Paytraq pavadzīme
-                </mat-card-title>
-                <mat-card-subtitle *ngIf="invoice.customerInfo.financial?.clientName">
-                    ({{invoice.customerInfo.financial.clientName}})
-                </mat-card-subtitle>
-            </mat-card-header>
-            <mat-card-content>
-                <app-invoice-paytraq [invoice]="invoice"
-                    (paytraqUpdate)="onReload(invoice.invoiceId)"></app-invoice-paytraq>
-            </mat-card-content>
-        </mat-card>
+    <!-- Paytraq -->
+    @if (pyatraqEnabled$ | async) {
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>
+                Paytraq pavadzīme
+            </mat-card-title>
+            @if (invoice.customerInfo.financial?.clientName) {
+            <mat-card-subtitle>
+                ({{invoice.customerInfo.financial.clientName}})
+            </mat-card-subtitle>
+            }
+        </mat-card-header>
+        <mat-card-content>
+            <app-invoice-paytraq [invoice]="invoice"
+                (paytraqUpdate)="onReload(invoice.invoiceId)"></app-invoice-paytraq>
+        </mat-card-content>
+    </mat-card>
+    }
 
-        <!-- Preces -->
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title>
-                    Preces
-                </mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-                <app-invoice-products [products]="invoice.products" [total]="invoice.total"></app-invoice-products>
-            </mat-card-content>
-        </mat-card>
+    <!-- Preces -->
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>
+                Preces
+            </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <app-invoice-products [products]="invoice.products" [total]="invoice.total"></app-invoice-products>
+        </mat-card-content>
+    </mat-card>
 
-        <!-- Darbi -->
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title>
-                    Darbi
-                </mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-                <app-job-selection-table [jobs]="invoice.jobs" disabled [large]="viewSize.isLarge"
-                    [total]="invoice.total">
-                </app-job-selection-table>
-            </mat-card-content>
-        </mat-card>
+    <!-- Darbi -->
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>
+                Darbi
+            </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <app-job-selection-table [jobs]="invoice.jobs" disabled [large]="viewSize.isLarge" [total]="invoice.total">
+            </app-job-selection-table>
+        </mat-card-content>
+    </mat-card>
 
-    </div>
+</div>
 
-</ng-container>
+}

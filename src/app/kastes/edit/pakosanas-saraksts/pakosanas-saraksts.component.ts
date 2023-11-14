@@ -1,16 +1,23 @@
-import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, effect, signal } from '@angular/core';
+import { AsyncPipe, TitleCasePipe } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  booleanAttribute,
+  signal,
+} from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 import { KastesTotalsComponent, kastesTotalsFromVeikali } from '../../common';
 import { COLORS, Veikals } from '../../interfaces';
 import { getKastesPreferences } from '../../services/kastes-preferences.service';
-import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
-import { MatIconModule } from '@angular/material/icon';
+import { VeikalsValidationErrors } from '../services/veikals-validation-errors';
 import { TotalsComponent } from './totals/totals.component';
 import { VeikalsEditComponent } from './veikals-edit/veikals-edit.component';
-import { MatButtonModule } from '@angular/material/button';
-import { VeikalsValidationErrors } from '../services/veikals-validation-errors';
 
 @Component({
   selector: 'app-pakosanas-saraksts',
@@ -19,23 +26,23 @@ import { VeikalsValidationErrors } from '../services/veikals-validation-errors';
   styleUrls: ['./pakosanas-saraksts.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
     MatTableModule,
     KastesTotalsComponent,
     MatIconModule,
     TotalsComponent,
     VeikalsEditComponent,
     MatButtonModule,
-  ]
+    TitleCasePipe,
+    AsyncPipe,
+  ],
 })
 export class PakosanasSarakstsComponent {
-
   colors$ = getKastesPreferences('colors');
 
   dataSource$ = new BehaviorSubject<Veikals[]>([]);
 
   kastesTotals$: Observable<[number, number][]> = this.dataSource$.pipe(
-    map(veikali => kastesTotalsFromVeikali(veikali)),
+    map((veikali) => kastesTotalsFromVeikali(veikali))
   );
 
   displayedColumnsTop = ['kods', 'adrese', 'pakas'];
@@ -52,14 +59,7 @@ export class PakosanasSarakstsComponent {
     this.dataSource$.next(veikali || []);
   }
 
-  private _disabled = false;
-  @Input()
-  set disabled(disabled: any) {
-    this._disabled = coerceBooleanProperty(disabled);
-  }
-  get disabled() {
-    return this._disabled;
-  }
+  @Input({ transform: booleanAttribute }) disabled: boolean = false;
 
   @Output() veikalsChange = new EventEmitter<Veikals>();
 
@@ -73,7 +73,6 @@ export class PakosanasSarakstsComponent {
   }
 
   isDisabled(veikals: Veikals): boolean {
-    return this.disabled || veikals.kastes.every(k => k.gatavs);
+    return this.disabled || veikals.kastes.every((k) => k.gatavs);
   }
-
 }

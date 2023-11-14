@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 /**
  * Meklē fragmentu steksta rindā un izceļ ar stiliem
  *
@@ -13,44 +13,52 @@ interface Chunk {
 
 @Component({
   selector: 'app-tagged-string',
-  template: `<span *ngFor="let chunk of chunks" [style]="chunk.styled ? style : undefined">{{chunk.text}}</span>`,
+  template: `@for(chunk of chunks; track $index) {<span
+      [style]="chunk.styled ? style : undefined"
+      >{{ chunk.text }}</span
+    >}`,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
 })
 export class TaggedStringComponent {
   @Input() set text(text: string | null) {
     this._text = text || '';
     this.parseValues();
   }
-  get text(): string { return this._text; }
+  get text(): string {
+    return this._text;
+  }
   private _text = '';
 
   @Input() set search(search: string) {
     this._search = search;
     this.parseValues();
   }
-  get search(): string | undefined { return this._search; }
+  get search(): string | undefined {
+    return this._search;
+  }
   private _search: string | undefined;
 
-  @Input() set style(style: { [key: string]: string; }) {
+  @Input() set style(style: { [key: string]: string }) {
     this._style = style;
   }
-  get style(): { [key: string]: string; } {
+  get style(): { [key: string]: string } {
     return this._style;
   }
-  private _style: { [key: string]: string; } = {
+  private _style: { [key: string]: string } = {
     'font-weight': 'bold',
     color: 'red',
   };
 
   chunks: Chunk[] = [];
 
-  constructor() { }
+  constructor() {}
 
   parseValues() {
     this.chunks = [];
 
     if (!this.text) {
-      return;  // Ja nav teksta, tad nav nekā
+      return; // Ja nav teksta, tad nav nekā
     }
 
     if (!this.search) {
@@ -62,7 +70,6 @@ export class TaggedStringComponent {
     while (remainder.length > 0) {
       remainder = this.splitStr(remainder);
     }
-
   }
   /**
    * Meklē rindu this.search rindā str.
@@ -73,10 +80,10 @@ export class TaggedStringComponent {
    * @param str teksta rinda apstrādei
    */
   private splitStr(str: string): string {
-
     const idx = str.toUpperCase().indexOf(this.search.toUpperCase());
 
-    if (idx === -1) { // nav atrasts
+    if (idx === -1) {
+      // nav atrasts
       this.chunks.push({ text: str, styled: false });
       return ''; // atlikumā tukša rinda
     }
@@ -90,5 +97,4 @@ export class TaggedStringComponent {
     }
     return '';
   }
-
 }

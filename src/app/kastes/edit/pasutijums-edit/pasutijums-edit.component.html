@@ -1,7 +1,9 @@
-<app-simple-form-container *ngIf="job$ | async as job;">
+<app-simple-form-container>
+
+    @if(job$ | async; as job) {
 
     <h2 appSimpleFormTypedLabel>
-        {{job?.jobId}} / {{job?.name}}
+        {{job.jobId}} / {{job.name}}
     </h2>
 
     <mat-tab-group [selectedIndex]="0">
@@ -19,5 +21,5 @@
             </ng-template>
         </mat-tab>
     </mat-tab-group>
-
+    }
 </app-simple-form-container>

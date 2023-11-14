@@ -7,9 +7,11 @@
             <mat-form-field class="full-width">
                 <mat-label>Nosaukums</mat-label>
                 <input matInput formControlName="name">
-                <mat-error *ngIf="form.controls.name.hasError('occupied')">
+                @if (form.controls.name.hasError('occupied')) {
+                <mat-error>
                     Nosaukums jau tiek izmantots
                 </mat-error>
+                }
             </mat-form-field>
         </h2>
 
@@ -21,9 +23,11 @@
                     <mat-form-field class="full-width">
                         <mat-label> Iekārtas </mat-label>
                         <mat-select multiple formControlName="equipmentIds">
-                            <mat-option *ngFor="let option of equipment()" [value]="option._id">
+                            @for (option of equipment(); track option._id) {
+                            <mat-option [value]="option._id">
                                 {{ option.name }}
                             </mat-option>
+                            }
                         </mat-select>
                     </mat-form-field>
                 </div>

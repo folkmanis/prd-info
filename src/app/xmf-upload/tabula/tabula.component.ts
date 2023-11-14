@@ -1,15 +1,19 @@
 import { Input, Component, ChangeDetectionStrategy } from '@angular/core';
 import { XmfUploadProgress } from '../interfaces/xmf-upload-progress';
 import { ReplaySubject } from 'rxjs';
+import { MatTableModule } from '@angular/material/table';
+import { FilesizePipe } from 'src/app/library/common';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-tabula',
   templateUrl: './tabula.component.html',
   styleUrls: ['./tabula.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [MatTableModule, FilesizePipe, DatePipe],
 })
 export class TabulaComponent {
-
   dataSource$ = new ReplaySubject<XmfUploadProgress[]>(1);
 
   @Input() set history(value: XmfUploadProgress[]) {
@@ -26,9 +30,4 @@ export class TabulaComponent {
     'count.upserted',
     'count.modified',
   ];
-
-  constructor(
-  ) { }
-
-
 }

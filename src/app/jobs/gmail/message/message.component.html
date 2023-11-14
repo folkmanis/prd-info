@@ -4,10 +4,11 @@
 <app-attachments [attachments]="message.attachments" #attachmentList>
 </app-attachments>
 
-<mat-action-row *ngIf="message.hasAttachment">
+@if (message.hasAttachment) {
+<mat-action-row>
 
     <button mat-button (click)="markAsRead=true; onCreateJob(attachmentList.selected)"
-        [disabled]="!attachmentList.selected?.length || (busy$ | async)" color="primary">
+        [disabled]="!attachmentList.selected?.length || busy()" color="primary">
         <mat-icon>
             drafts
         </mat-icon>
@@ -16,8 +17,7 @@
         </span>
     </button>
 
-    <button mat-icon-button [matMenuTriggerFor]="saveMenu"
-        [disabled]="!attachmentList.selected?.length || (busy$ | async)">
+    <button mat-icon-button [matMenuTriggerFor]="saveMenu" [disabled]="!attachmentList.selected?.length || busy()">
         <mat-icon>
             more_vert
         </mat-icon>
@@ -35,7 +35,10 @@
     </mat-menu>
 
 </mat-action-row>
+}
 
-<mat-card-footer *ngIf="busy$ | async">
+<mat-card-footer>
+    @if (busy()) {
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    }
 </mat-card-footer>

@@ -1,9 +1,13 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  signal,
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { PaytraqProduct } from 'src/app/interfaces/paytraq';
 import { PaytraqSearchHeaderComponent } from 'src/app/jobs-admin/paytraq-search-header/paytraq-search-header.component';
-import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { PaytraqProductsService } from '../../services/paytraq-products.service';
 import { PaytraqProductTableComponent } from './paytraq-product-table/paytraq-product-table.component';
 
@@ -14,21 +18,19 @@ import { PaytraqProductTableComponent } from './paytraq-product-table/paytraq-pr
   styleUrls: ['./paytraq-product.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
-    MaterialLibraryModule,
     PaytraqProductTableComponent,
     PaytraqSearchHeaderComponent,
+    MatButtonModule,
   ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: PaytraqProductComponent,
       multi: true,
-    }
-  ]
+    },
+  ],
 })
 export class PaytraqProductComponent implements ControlValueAccessor {
-
   @Input() set productName(name: string) {
     this.initialSearch.set(name || '');
   }
@@ -49,9 +51,7 @@ export class PaytraqProductComponent implements ControlValueAccessor {
   private onChanges: (obj: number | null) => void;
   private onTouched: () => void;
 
-  constructor(
-    private paytraqService: PaytraqProductsService,
-  ) { }
+  constructor(private paytraqService: PaytraqProductsService) {}
 
   writeValue(obj: number) {
     this.products.set(null);
@@ -73,8 +73,9 @@ export class PaytraqProductComponent implements ControlValueAccessor {
   onSearchProducts(ev: string) {
     this.searchDisabled.set(true);
     this.onTouched();
-    this.paytraqService.getProducts({ query: ev.trim() })
-      .subscribe(products => {
+    this.paytraqService
+      .getProducts({ query: ev.trim() })
+      .subscribe((products) => {
         this.products.set(products);
         this.searchDisabled.set(false);
       });
@@ -89,5 +90,4 @@ export class PaytraqProductComponent implements ControlValueAccessor {
     this.value = null;
     this.onChanges(this.value);
   }
-
 }

@@ -7,12 +7,16 @@
             <mat-form-field class="full-width">
                 <mat-label>Nosaukums</mat-label>
                 <input matInput formControlName="name" autocomplete="off" required>
-                <mat-error *ngIf="form.controls.name.hasError('required')">
+                @if (form.controls.name.hasError('required')) {
+                <mat-error>
                     Nosaukums jāievada obligāti!
                 </mat-error>
-                <mat-error *ngIf="form.controls.name.hasError('occupied')">
+                }
+                @if (form.controls.name.hasError('occupied')) {
+                <mat-error>
                     Nosaukums jau tiek izmantots
                 </mat-error>
+                }
             </mat-form-field>
         </h2>
 
@@ -23,9 +27,11 @@
                     <mat-form-field class="full-width">
                         <mat-label> Grupa </mat-label>
                         <mat-select formControlName="category" required>
-                            <mat-option *ngFor="let category of categories$ | async" [value]="category.category">
+                            @for (category of categories$ | async; track category.category) {
+                            <mat-option [value]="category.category">
                                 {{ category.description }}
                             </mat-option>
+                            }
                         </mat-select>
                     </mat-form-field>
 
@@ -35,9 +41,11 @@
                     <mat-form-field class="full-width">
                         <mat-label> Mērvienības </mat-label>
                         <mat-select formControlName="units" required>
-                            <mat-option *ngFor="let unit of units$ | async;" [value]="unit.shortName">
+                            @for (unit of units$ | async; track unit.shortName) {
+                            <mat-option [value]="unit.shortName">
                                 {{unit.description}}
                             </mat-option>
+                            }
                         </mat-select>
                     </mat-form-field>
                 </section>

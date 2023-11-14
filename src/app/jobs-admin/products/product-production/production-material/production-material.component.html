@@ -1,6 +1,7 @@
 <div class="materials-container">
 
-    <div class="material" *ngFor="let control of controls(); index as idx; trackBy: trackByFn" [formGroup]="control">
+    @for (control of controls(); track $index) {
+    <div class="material" [formGroup]="control">
 
         <select formControlName="materialId" appSelect>
             <option *ngFor="let mat of materials" [value]="mat._id">
@@ -22,13 +23,14 @@
             </span>
         </div>
 
-        <button mat-icon-button color="warn" (click)="onDeleteMaterial(idx)">
+        <button mat-icon-button color="warn" (click)="onDeleteMaterial($index)">
             <mat-icon>
                 delete_outline
             </mat-icon>
         </button>
 
     </div>
+    }
 
 </div>
 

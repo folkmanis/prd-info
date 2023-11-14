@@ -1,22 +1,18 @@
-<div class="inner-container">
+<button mat-button [matMenuTriggerFor]="rangeMenu">
+    {{ start }} – {{ end }}
+</button>
+<mat-menu #rangeMenu>
+    <button mat-menu-item [disabled]="activePage === 0" (click)="firstPage()">Uz sākumu</button>
+</mat-menu>
 
-    <button mat-button [matMenuTriggerFor]="rangeMenu">
-        {{ start }} – {{ end }}
-    </button>
-    <mat-menu #rangeMenu>
-        <button mat-menu-item [disabled]="activePage === 0" (click)="firstPage()">Uz sākumu</button>
-    </mat-menu>
+<button mat-icon-button (click)="previousPage()" [disabled]="activePage === 0">
+    <mat-icon>
+        chevron_left
+    </mat-icon>
+</button>
 
-    <button mat-icon-button (click)="previousPage()" [disabled]="activePage === 0">
-        <mat-icon>
-            chevron_left
-        </mat-icon>
-    </button>
-
-    <button mat-icon-button (click)="nextPage()" [disabled]="lastPage">
-        <mat-icon>
-            chevron_right
-        </mat-icon>
-    </button>
-
-</div>
+<button mat-icon-button (click)="nextPage()" [disabled]="lastPage">
+    <mat-icon>
+        chevron_right
+    </mat-icon>
+</button>

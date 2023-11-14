@@ -1,10 +1,11 @@
 <div [formGroup]="productForm" class="container" appViewSize #viewSize="viewSize">
 
     <!-- Prece -->
-    <button *ngIf="viewSize.isSmall === false" mat-icon-button (click)="remove.next()"
-        [disabled]="productForm.disabled">
+    @if (viewSize.isSmall === false) {
+    <button mat-icon-button (click)="remove.next()" [disabled]="productForm.disabled">
         <mat-icon>delete</mat-icon>
     </button>
+    }
 
     <app-product-autocomplete [customerProducts]="productsAvailable()" [control]="productForm.controls.name">
     </app-product-autocomplete>
@@ -20,8 +21,9 @@
         </mat-form-field>
 
 
+        @if (showPrices) {
         <!-- Cena -->
-        <mat-form-field *ngIf="showPrices" class="price">
+        <mat-form-field class="price">
             <input matInput type="number" formControlName="price">
             <span matTextSuffix [class.disabled]="productForm.disabled">
                 &nbsp;&euro;
@@ -35,19 +37,20 @@
         </mat-form-field>
 
         <!-- Summa -->
-
-        <div *ngIf="showPrices" class="total" [class.disabled]="productForm.disabled">
+        <div class="total" [class.disabled]="productForm.disabled">
             {{productForm.value.count * productForm.value.price | currency}}
         </div>
-
+        }
 
     </div>
 
-    <div *ngIf="viewSize.isSmall">
+    @if (viewSize.isSmall) {
+    <div>
         <button mat-button (click)="remove.next()" [disabled]="productForm.disabled">
             DZĒST
         </button>
     </div>
+    }
 
 
 </div>

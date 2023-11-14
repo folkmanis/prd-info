@@ -8,14 +8,15 @@
 
 <mat-menu #labelsMenu="matMenu">
     <ng-template matMenuContent>
-        <ng-container *ngIf="labelItems | async as labelItems; else loading;">
-            <button *ngFor="let item of labelItems" mat-menu-item (click)="onActivateLabel(item)">
-                <mat-icon *ngIf="isLabelActive(item)">check</mat-icon>
-                <span> {{ item.displayName }} </span>
-            </button>
-        </ng-container>
-        <ng-template #loading>
-            <mat-spinner class="loading" [diameter]="150"> </mat-spinner>
-        </ng-template>
+        @for (item of labelItems$ | async; track $index) {
+        <button mat-menu-item (click)="onActivateLabel(item)">
+            @if (isLabelActive(item)) {
+            <mat-icon>check</mat-icon>
+            }
+            <span> {{ item.displayName }} </span>
+        </button>
+        } @empty {
+        <mat-spinner class="loading" [diameter]="150" />
+        }
     </ng-template>
 </mat-menu>

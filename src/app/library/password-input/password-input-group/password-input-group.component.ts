@@ -1,10 +1,29 @@
 import { A11yModule } from '@angular/cdk/a11y';
 import { coerceNumberProperty } from '@angular/cdk/coercion';
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { ControlValueAccessor, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator, ValidatorFn, Validators } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
+} from '@angular/core';
+import {
+  ControlValueAccessor,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validator,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { map } from 'rxjs';
-import { MaterialLibraryModule } from '../../material-library.module';
 
 const MIN_LENGTH = 6;
 
@@ -15,10 +34,13 @@ const MIN_LENGTH = 6;
   styleUrls: ['./password-input-group.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
-    MaterialLibraryModule,
+    FormsModule,
     A11yModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatButtonModule,
+    MatInputModule,
   ],
   providers: [
     {
@@ -30,11 +52,12 @@ const MIN_LENGTH = 6;
       provide: NG_VALIDATORS,
       useExisting: PasswordInputGroupComponent,
       multi: true,
-    }
-  ]
+    },
+  ],
 })
-export class PasswordInputGroupComponent implements OnInit, ControlValueAccessor, Validator {
-
+export class PasswordInputGroupComponent
+  implements OnInit, ControlValueAccessor, Validator
+{
   hide = true;
 
   passwordForm = new FormGroup(
@@ -43,11 +66,11 @@ export class PasswordInputGroupComponent implements OnInit, ControlValueAccessor
       password2: new FormControl<string>(null),
     },
     {
-      validators: equalityValidator()
+      validators: equalityValidator(),
     }
   );
 
-  onTouchFn: () => void = () => { };
+  onTouchFn: () => void = () => {};
 
   private _validatorFn: ValidatorFn | null;
   @Input('passwordValidatorFn') set validatorFn(value: ValidatorFn) {
@@ -71,18 +94,16 @@ export class PasswordInputGroupComponent implements OnInit, ControlValueAccessor
     return this._minLength;
   }
 
-
-  constructor(
-  ) { }
+  constructor() {}
 
   writeValue(): void {
     this.passwordForm.reset();
   }
 
   registerOnChange(fn: any): void {
-    this.passwordForm.valueChanges.pipe(
-      map(val => val.password1),
-    ).subscribe(fn);
+    this.passwordForm.valueChanges
+      .pipe(map((val) => val.password1))
+      .subscribe(fn);
   }
 
   registerOnTouched(fn: any): void {
@@ -106,7 +127,6 @@ export class PasswordInputGroupComponent implements OnInit, ControlValueAccessor
   }
 
   private setValidators() {
-
     const validators: ValidatorFn[] = [
       Validators.required,
       Validators.minLength(this.minLength),
@@ -116,13 +136,10 @@ export class PasswordInputGroupComponent implements OnInit, ControlValueAccessor
       validators.push(this.validatorFn);
     }
     this.passwordForm.controls.password1.setValidators(validators);
-
   }
-
 }
 
 function equalityValidator(): ValidatorFn {
-
   return (control: FormGroup) => {
     const isEqual = control.value.password1 === control.value.password2;
     const error = !isEqual ? { notEqual: 'Parolēm jāsakrīt' } : null;
@@ -130,4 +147,3 @@ function equalityValidator(): ValidatorFn {
     return error;
   };
 }
-

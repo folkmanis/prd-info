@@ -5,9 +5,11 @@
         <mat-form-field class="full-width">
             <mat-label> Nosaukums </mat-label>
             <input matInput required formControlName="name">
-            <mat-error *ngIf="form.controls.name.hasError('occupied')">
+            @if (form.controls.name.hasError('occupied')) {
+            <mat-error>
                 Iekārta ar šādu nosaukumu ir jau saglabāta
             </mat-error>
+            }
         </mat-form-field>
     </h2>
 

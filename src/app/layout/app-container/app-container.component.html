@@ -1,9 +1,9 @@
 <div class="main-container main-container-absolute">
 
     <!-- Lielais toolbar -->
-    <app-toolbar *ngIf="user$ | async as user;" [user]="user" [activeModule]="activeModule$ | async"
-        (sideMenuToggle)="drawer.toggle()">
-    </app-toolbar>
+    @if (user$ | async; as user) {
+    <app-toolbar [user]="user" [activeModule]="activeModule$ | async" (sideMenuToggle)="drawer.toggle()" />
+    }
     <!-- Galvenais konteineris -->
     <mat-sidenav-container class="main-container-sidenav-container">
         <!-- Kreisais (galvenais) menu -->

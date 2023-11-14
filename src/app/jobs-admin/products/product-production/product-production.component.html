@@ -9,23 +9,26 @@
 
     <div class="stages">
 
-        <mat-card *ngFor="let control of form.controls; index as idx;" [formGroup]="control">
+        @for (control of form.controls; track $index) {
+        <mat-card [formGroup]="control">
 
             <mat-card-content>
 
                 <div class="stage">
 
                     <select formControlName="productionStageId" appSelect>
-                        <option *ngFor="let stage of productionStages()" [value]="stage._id">
+                        @for (stage of productionStages(); track $index) {
+                        <option [value]="stage._id">
                             {{ stage.name }}
                         </option>
+                        }
                     </select>
 
                     <input type="number" formControlName="amount" appInput>
 
                     <input type="number" formControlName="fixedAmount" appInput>
 
-                    <button mat-icon-button color="warn" (click)="onDeleteStage(idx)">
+                    <button mat-icon-button color="warn" (click)="onDeleteStage($index)">
                         <mat-icon>
                             delete_outline
                         </mat-icon>
@@ -35,12 +38,12 @@
 
                 <mat-divider></mat-divider>
 
-                <app-production-material [formControl]="control.controls.materials" [materials]="materials()">
-                </app-production-material>
+                <app-production-material [formControl]="control.controls.materials" [materials]="materials()" />
 
             </mat-card-content>
         </mat-card>
 
+        }
 
     </div>
 

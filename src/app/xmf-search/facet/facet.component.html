@@ -1,17 +1,13 @@
-<div *ngIf="facet" class="facet">
+@if(facet) {
 
-    <app-facet-checker title="Gads" [data]="facet.year" (filterValue)="onSelect($event, 'year')">
-    </app-facet-checker>
+<app-facet-checker title="Gads" [data]="facet.year" (filterValue)="onSelect($event, 'year')" />
 
-    <mat-divider></mat-divider>
+<mat-divider></mat-divider>
 
-    <app-facet-checker title="Mēnesis" [data]="facet.month" (filterValue)="onSelect($event, 'month')">
-    </app-facet-checker>
+<app-facet-checker title="Mēnesis" [data]="facet.month" (filterValue)="onSelect($event, 'month')" />
 
-    <mat-divider></mat-divider>
+<mat-divider></mat-divider>
 
-    <app-facet-checker title="Klients" [data]="facet.customerName"
-        (filterValue)="onSelect($event, 'customerName')">
-    </app-facet-checker>
+<app-facet-checker title="Klients" [data]="facet.customerName" (filterValue)="onSelect($event, 'customerName')" />
 
-</div>
+}

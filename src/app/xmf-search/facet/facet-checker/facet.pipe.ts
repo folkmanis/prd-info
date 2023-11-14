@@ -1,16 +1,26 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'xmfFacet'
+  name: 'xmfFacet',
+  standalone: true,
 })
 export class FacetPipe implements PipeTransform {
-
   names = [
-    'Janvāris', 'Februāris', 'Marts', 'Aprīlis', 'Maijs', 'Jūnijs',
-    'Jūlijs', 'Augusts', 'Septembris', 'Oktobris', 'Novembris', 'Decembris',
+    'Janvāris',
+    'Februāris',
+    'Marts',
+    'Aprīlis',
+    'Maijs',
+    'Jūnijs',
+    'Jūlijs',
+    'Augusts',
+    'Septembris',
+    'Oktobris',
+    'Novembris',
+    'Decembris',
   ];
 
-  transform(value: number | string, ...args: any[]): any {
+  transform(value: number | string): any {
     if (!value) {
       return '--';
     }
@@ -19,5 +29,4 @@ export class FacetPipe implements PipeTransform {
     }
     return value;
   }
-
 }

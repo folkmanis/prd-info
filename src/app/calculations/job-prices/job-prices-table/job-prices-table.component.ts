@@ -1,17 +1,21 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { AsyncPipe, CurrencyPipe, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
+import { AsyncPipe, CurrencyPipe } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  Output,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
 import { map } from 'rxjs';
+import { Job } from 'src/app/jobs';
 import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
 import { ViewSizeModule } from 'src/app/library/view-size/view-size.module';
 import { COLUMNS, COLUMNS_SMALL, JobData, JobWithUpdate } from '../interfaces';
-import { Job } from 'src/app/jobs';
-
 
 @Component({
   selector: 'app-job-prices-table',
@@ -29,12 +33,9 @@ import { Job } from 'src/app/jobs';
     CurrencyPipe,
     AsyncPipe,
     ViewSizeModule,
-    NgIf,
-  ]
+  ],
 })
 export class JobPricesTableComponent {
-
-
   private _jobs: JobData[] = [];
   @Input()
   set jobs(value: JobData[]) {
@@ -48,25 +49,24 @@ export class JobPricesTableComponent {
   selection = new SelectionModel<JobData>(true, [], true);
 
   @Output() jobChanges = this.selection.changed.pipe(
-    map(changes => changes.source.selected),
-    map(selected => this.jobUpdateFields(selected))
+    map((changes) => changes.source.selected),
+    map((selected) => this.jobUpdateFields(selected))
   );
 
   trackByFn = (_: number, item: JobData) => `${item.jobId}-${item.productsIdx}`;
 
-
   col = COLUMNS;
   colSmall = COLUMNS_SMALL;
 
-
-
-  private jobUpdateFields(jobs: Pick<JobWithUpdate, 'jobId' | 'productsIdx' | 'products.priceUpdate'>[]): Partial<Job>[] {
-    return jobs.map(job => ({
+  private jobUpdateFields(
+    jobs: Pick<
+      JobWithUpdate,
+      'jobId' | 'productsIdx' | 'products.priceUpdate'
+    >[]
+  ): Partial<Job>[] {
+    return jobs.map((job) => ({
       jobId: job.jobId,
       [`products.${job.productsIdx}.price`]: job['products.priceUpdate'],
     }));
   }
-
-
-
 }

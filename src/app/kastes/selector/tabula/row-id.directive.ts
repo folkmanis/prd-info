@@ -5,7 +5,8 @@ import { VeikalsKaste } from 'src/app/kastes/interfaces';
 const DELAY_TIME = 5000;
 
 @Directive({
-  selector: 'tr[appRowId]'
+    selector: 'tr[appRowId]',
+    standalone: true
 })
 export class RowIdDirective {
   // eslint-disable-next-line @angular-eslint/no-input-rename

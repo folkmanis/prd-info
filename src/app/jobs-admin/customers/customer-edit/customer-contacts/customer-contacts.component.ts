@@ -1,10 +1,17 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import {
-  ControlValueAccessor, FormBuilder, FormControl,
-  NG_VALIDATORS, NG_VALUE_ACCESSOR,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+} from '@angular/core';
+import {
+  ControlValueAccessor,
+  FormBuilder,
+  FormControl,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
   ReactiveFormsModule,
-  ValidationErrors, Validator
+  ValidationErrors,
+  Validator,
 } from '@angular/forms';
 import { plainToInstance } from 'class-transformer';
 import { map } from 'rxjs';
@@ -32,19 +39,19 @@ const DEFAULT_CONTACT: CustomerContact = {
       provide: NG_VALIDATORS,
       multi: true,
       useExisting: CustomerContactsComponent,
-    }
+    },
   ],
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     CustomerContactEditorComponent,
     MaterialLibraryModule,
-  ]
+  ],
 })
-export class CustomerContactsComponent implements OnInit, ControlValueAccessor, Validator {
-
+export class CustomerContactsComponent
+  implements ControlValueAccessor, Validator
+{
   controlGroup = this.fb.group({
-    contacts: this.fb.array<CustomerContact>([])
+    contacts: this.fb.array<CustomerContact>([]),
   });
 
   get contactsArray() {
@@ -53,15 +60,12 @@ export class CustomerContactsComponent implements OnInit, ControlValueAccessor, 
 
   active: FormControl<CustomerContact> | null = null;
 
-  private onTouchFn: () => void = () => { };
+  private onTouchFn: () => void = () => {};
 
   constructor(
     private fb: FormBuilder,
-    private changeDetector: ChangeDetectorRef,
-  ) { }
-
-  ngOnInit(): void {
-  }
+    private changeDetector: ChangeDetectorRef
+  ) {}
 
   writeValue(obj: CustomerContact[]): void {
     obj = obj instanceof Array ? obj : [];
@@ -70,9 +74,9 @@ export class CustomerContactsComponent implements OnInit, ControlValueAccessor, 
   }
 
   registerOnChange(fn: (val: CustomerContact[]) => void): void {
-    this.contactsArray.valueChanges.pipe(
-      map(value => plainToInstance(CustomerContact, value)),
-    ).subscribe(fn);
+    this.contactsArray.valueChanges
+      .pipe(map((value) => plainToInstance(CustomerContact, value)))
+      .subscribe(fn);
   }
 
   registerOnTouched(fn: any): void {
@@ -91,7 +95,10 @@ export class CustomerContactsComponent implements OnInit, ControlValueAccessor, 
     if (this.contactsArray.valid) {
       return null;
     } else {
-      return this.contactsArray.controls.reduce((acc, curr) => ({ ...acc, ...curr.errors }), {});
+      return this.contactsArray.controls.reduce(
+        (acc, curr) => ({ ...acc, ...curr.errors }),
+        {}
+      );
     }
   }
 
@@ -101,10 +108,7 @@ export class CustomerContactsComponent implements OnInit, ControlValueAccessor, 
 
   addContact() {
     const newContact = this.fb.control(DEFAULT_CONTACT);
-    this.contactsArray.push(
-      newContact,
-      { emitEvent: false }
-    );
+    this.contactsArray.push(newContact, { emitEvent: false });
     newContact.setErrors({ required: true }, { emitEvent: false });
     this.active = newContact;
   }
@@ -117,7 +121,6 @@ export class CustomerContactsComponent implements OnInit, ControlValueAccessor, 
   }
 
   private setControlsArray<T>(value: T[]) {
-
     if (value.length === this.contactsArray.length) {
       return;
     }
@@ -128,5 +131,4 @@ export class CustomerContactsComponent implements OnInit, ControlValueAccessor, 
 
     this.changeDetector.markForCheck();
   }
-
 }

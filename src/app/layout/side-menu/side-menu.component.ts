@@ -11,13 +11,26 @@ import { distinctUntilChanged, pluck, takeUntil } from 'rxjs/operators';
 import { UserModule } from 'src/app/interfaces';
 import { SystemPreferencesService } from 'src/app/services';
 import { MenuDataSource, SideMenuData } from './menu-datasource';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { RouterLink } from '@angular/router';
+import { MatTreeModule } from '@angular/material/tree';
+import { MatListModule } from '@angular/material/list';
 
 @Component({
-  selector: 'app-side-menu',
-  templateUrl: './side-menu.component.html',
-  styleUrls: ['./side-menu.component.scss'],
-  providers: [DestroyService],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-side-menu',
+    templateUrl: './side-menu.component.html',
+    styleUrls: ['./side-menu.component.scss'],
+    providers: [DestroyService],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        MatListModule,
+        MatTreeModule,
+        RouterLink,
+        MatButtonModule,
+        MatIconModule,
+    ],
 })
 export class SideMenuComponent implements OnInit {
   treeControl = new NestedTreeControl<SideMenuData>((node) => node.childMenu);

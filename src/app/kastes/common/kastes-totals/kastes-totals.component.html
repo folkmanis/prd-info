@@ -1,7 +1,11 @@
 <div>
     <ng-content></ng-content>
-    <span *ngFor="let tot of totals; last as last">
+    @for (tot of totals; track $index) {
+    <span>
         {{tot[0]}} - {{tot[1]}}
-        <b *ngIf="!last"> | </b>
+        @if (!$last) {
+        <b> | </b>
+        }
     </span>
+    }
 </div>

@@ -8,8 +8,8 @@ describe('EndDialogComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ EndDialogComponent ]
-    })
+    imports: [EndDialogComponent]
+})
     .compileComponents();
   }));
 

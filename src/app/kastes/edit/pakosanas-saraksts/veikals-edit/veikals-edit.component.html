@@ -1,11 +1,15 @@
-<div *ngIf="colors$ | async as colors;">
-    <div *ngFor="let control of form.controls;" [formGroup]="control" class="container">
-        <div *ngFor="let colorName of colorNames">
-            <input appInput type="number" [formControlName]="colorName"
-                [style.color]="control.get(colorName).valid ? colors[colorName] : undefined">
-        </div>
-        <div [class.invalid]="control.invalid">
-            {{boxTotals(control.getRawValue())}}
-        </div>
+@if (colors$ | async; as colors) {
+@for (control of form.controls; track $index) {
+<div [formGroup]="control" class="container">
+    @for (colorName of colorNames; track $index) {
+    <div>
+        <input appInput type="number" [formControlName]="colorName"
+            [style.color]="control.get(colorName).valid ? colors[colorName] : undefined">
+    </div>
+    }
+    <div [class.invalid]="control.invalid">
+        {{boxTotals(control.getRawValue())}}
     </div>
 </div>
+}
+}

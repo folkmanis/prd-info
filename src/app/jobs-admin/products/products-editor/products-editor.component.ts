@@ -1,7 +1,7 @@
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable, map } from 'rxjs';
 import { Product } from 'src/app/interfaces';
@@ -14,6 +14,13 @@ import { MaterialsService } from '../../materials/services/materials.service';
 import { ProductsFormService } from '../services/products-form.service';
 import { PaytraqProductComponent } from './paytraq-product/paytraq-product.component';
 import { ProductPricesComponent } from './product-prices/product-prices.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatOptionModule } from '@angular/material/core';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-products-editor',
@@ -23,39 +30,42 @@ import { ProductPricesComponent } from './product-prices/product-prices.componen
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [ProductsFormService],
   imports: [
-    CommonModule,
     SimpleFormContainerComponent,
     ReactiveFormsModule,
-    MaterialLibraryModule,
     PaytraqProductComponent,
     ProductPricesComponent,
     RouterLink,
-  ]
+    AsyncPipe,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatExpansionModule,
+    MatOptionModule,
+    MatCheckboxModule,
+    MatIconModule,
+    MatButtonModule,
+  ],
 })
 export class ProductsEditorComponent implements OnInit, CanComponentDeactivate {
-
-
   form = this.formService.form;
 
   product$ = this.route.data.pipe(
-    map(data => data.product as Product),
-    takeUntilDestroyed(),
+    map((data) => data.product as Product),
+    takeUntilDestroyed()
   );
 
   paytraqDisabled$ = this.systemPreferences.preferences$.pipe(
-    map(conf => !conf.paytraq.enabled),
+    map((conf) => !conf.paytraq.enabled)
   );
   readonly categories$ = this.productService.categories$;
   readonly customers$ = this.customersService.customers$;
   readonly units$ = this.systemPreferences.preferences$.pipe(
-    map(conf => conf.jobs.productUnits.filter(u => !u.disabled)),
+    map((conf) => conf.jobs.productUnits.filter((u) => !u.disabled))
   );
-
 
   get changes(): Partial<Product> | null {
     return this.formService.changes;
   }
-
 
   constructor(
     private customersService: CustomersService,
@@ -63,12 +73,15 @@ export class ProductsEditorComponent implements OnInit, CanComponentDeactivate {
     private systemPreferences: SystemPreferencesService,
     private formService: ProductsFormService,
     private router: Router,
-    private route: ActivatedRoute,
-  ) { }
+    private route: ActivatedRoute
+  ) {}
 
   onSave() {
-    this.formService.save()
-      .subscribe(c => this.router.navigate(['..', c._id], { relativeTo: this.route }));
+    this.formService
+      .save()
+      .subscribe((c) =>
+        this.router.navigate(['..', c._id], { relativeTo: this.route })
+      );
   }
 
   onReset(): void {
@@ -76,12 +89,12 @@ export class ProductsEditorComponent implements OnInit, CanComponentDeactivate {
   }
 
   ngOnInit(): void {
-    this.product$.subscribe(customer => this.formService.setInitial(customer));
+    this.product$.subscribe((customer) =>
+      this.formService.setInitial(customer)
+    );
   }
 
   canDeactivate(): Observable<boolean> | boolean {
     return this.form.pristine; // || this.productFormService.isNew();
   }
-
-
 }

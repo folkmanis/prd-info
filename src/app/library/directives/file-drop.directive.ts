@@ -1,11 +1,17 @@
-import { Directive, EventEmitter, HostBinding, HostListener, Output } from '@angular/core';
+import {
+  Directive,
+  EventEmitter,
+  HostBinding,
+  HostListener,
+  Output,
+} from '@angular/core';
 
 @Directive({
   selector: '[appFileDrop]',
   exportAs: 'appFileDrop',
+  standalone: true,
 })
 export class FileDropDirective {
-
   private _dragOver = false;
 
   @Output() filesEmitter = new EventEmitter<FileList>();
@@ -43,5 +49,4 @@ export class FileDropDirective {
       this.filesEmitter.emit(files);
     }
   }
-
 }

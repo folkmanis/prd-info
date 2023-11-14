@@ -10,9 +10,10 @@ import { takeUntil } from 'rxjs';
 import { LayoutService } from '../layout.service';
 
 @Directive({
-  selector: '[appViewSize]',
-  providers: [DestroyService],
-  exportAs: 'viewSize',
+    selector: '[appViewSize]',
+    providers: [DestroyService],
+    exportAs: 'viewSize',
+    standalone: true,
 })
 export class ViewSizeDirective implements OnInit {
   @Output('appViewIsLarge')

@@ -3,7 +3,8 @@ import { ViewSizeBase } from './view-size-base.directive';
 
 
 @Directive({
-  selector: '[appViewLarge]',
+    selector: '[appViewLarge]',
+    standalone: true,
 })
 export class ViewLargeDirective extends ViewSizeBase {
 

@@ -11,7 +11,7 @@ const routes: Routes = [
   {
     path: 'login',
     loadComponent: () =>
-      import('./login/login.component').then((m) => m.LoginComponent),
+      import('./login/login.component').then((c) => c.LoginComponent),
   },
   {
     path: '',
@@ -34,24 +34,23 @@ const routes: Routes = [
       {
         path: 'xmf-search',
         canMatch: [isModuleAllowed],
-        loadChildren: () =>
-          import('./xmf-search/xmf-search.module').then(
-            (m) => m.XmfSearchModule
+        loadComponent: () =>
+          import('./xmf-search/xmf-search.component').then(
+            (c) => c.XmfSearchComponent
           ),
       },
       {
         path: 'xmf-upload',
         canMatch: [isModuleAllowed],
-        loadChildren: () =>
-          import('./xmf-upload/xmf-upload.module').then(
-            (m) => m.XmfUploadModule
+        loadComponent: () =>
+          import('./xmf-upload/xmf-upload.component').then(
+            (c) => c.XmfUploadComponent
           ),
       },
       {
         path: 'kastes',
         canMatch: [isModuleAllowed],
-        loadChildren: () =>
-          import('./kastes/kastes.module').then((m) => m.KastesModule),
+        loadChildren: () => import('./kastes/kastes-routes'),
       },
       {
         path: 'admin',

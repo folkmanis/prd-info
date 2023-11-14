@@ -1,39 +1,43 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { filter, map } from 'rxjs';
+import { TitleCasePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogActions,
+  MatDialogClose,
+  MatDialogContent,
+  MatDialogTitle,
+} from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { COLORS, VeikalsKaste } from '../../interfaces';
-import { KasteDialogData, KasteDialogResponse } from '../services/kaste-dialog-data';
+import { KasteDialogData } from '../services/kaste-dialog-data';
 
 @Component({
   selector: 'app-kaste-dialog',
   templateUrl: './kaste-dialog.component.html',
   styleUrls: ['./kaste-dialog.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogActions,
+    MatButtonModule,
+    MatIconModule,
+    MatDialogClose,
+    TitleCasePipe,
+  ],
 })
-export class KasteDialogComponent implements OnInit {
+export class KasteDialogComponent {
+  private data: KasteDialogData = inject(MAT_DIALOG_DATA);
 
   veikalsKaste: VeikalsKaste = this.data.kaste;
 
   colorCodes = this.data.colorCodes;
 
-  allColors = COLORS;
+  readonly allColors = COLORS;
 
-  colors = COLORS.filter(c => this.veikalsKaste.kastes[c] > 0);
+  colors = COLORS.filter((c) => this.veikalsKaste.kastes[c] > 0);
 
-  kastes = this.data.allKastes.filter(k => k.kods === this.data.kaste.kods);
-
-  constructor(
-    @Inject(MAT_DIALOG_DATA) private data: KasteDialogData,
-    private dialogRef: MatDialogRef<KasteDialogComponent, KasteDialogResponse>,
-  ) { }
-
-  ngOnInit(): void {
-  }
-
-  onGatavs(setGatavs: boolean) {
-    this.dialogRef.close({ setGatavs });
-  }
-
-
-
+  kastes = this.data.allKastes.filter((k) => k.kods === this.data.kaste.kods);
 }

@@ -1,6 +1,14 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, signal } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  signal,
+} from '@angular/core';
+import {
+  ControlValueAccessor,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { Customer, CustomerFinancial } from 'src/app/interfaces';
 import { PaytraqClient } from 'src/app/interfaces/paytraq';
 import { PaytraqSearchHeaderComponent } from 'src/app/jobs-admin/paytraq-search-header/paytraq-search-header.component';
@@ -24,21 +32,23 @@ const DEFAULT_VALUE: CustomerFinancial = {
       provide: NG_VALUE_ACCESSOR,
       useExisting: PaytraqCustomerComponent,
       multi: true,
-    }
+    },
   ],
   imports: [
     PaytraqCustomerTableComponent,
-    CommonModule,
     ReactiveFormsModule,
     MaterialLibraryModule,
     PaytraqSearchHeaderComponent,
-  ]
+  ],
 })
 export class PaytraqCustomerComponent implements ControlValueAccessor {
-
-  @Input() set customer(customer: Partial<Pick<Customer, 'financial' | 'CustomerName'>>) {
+  @Input() set customer(
+    customer: Partial<Pick<Customer, 'financial' | 'CustomerName'>>
+  ) {
     this.initialSearch.set(
-      customer.financial?.paytraqId ? '' : customer.financial?.clientName || customer.CustomerName
+      customer.financial?.paytraqId
+        ? ''
+        : customer.financial?.clientName || customer.CustomerName
     );
   }
   private onChanges: (obj: CustomerFinancial | null) => void;
@@ -49,14 +59,15 @@ export class PaytraqCustomerComponent implements ControlValueAccessor {
 
   clients = signal<PaytraqClient[] | null>(null);
 
-
-  get value(): CustomerFinancial { return this._value; }
-  set value(value: CustomerFinancial) { this._value = value; }
+  get value(): CustomerFinancial {
+    return this._value;
+  }
+  set value(value: CustomerFinancial) {
+    this._value = value;
+  }
   private _value: CustomerFinancial;
 
-  constructor(
-    private paytraqService: PaytraqClientService,
-  ) { }
+  constructor(private paytraqService: PaytraqClientService) {}
 
   writeValue(obj: CustomerFinancial) {
     this.clients.set(null);
@@ -78,11 +89,10 @@ export class PaytraqCustomerComponent implements ControlValueAccessor {
   onSearchClient(ev: string) {
     this.onTouched();
     this.searchDisabled.set(true);
-    this.paytraqService.getClients({ query: ev })
-      .subscribe(clients => {
-        this.clients.set(clients);
-        this.searchDisabled.set(false);
-      });
+    this.paytraqService.getClients({ query: ev }).subscribe((clients) => {
+      this.clients.set(clients);
+      this.searchDisabled.set(false);
+    });
   }
 
   onClientSelected(ev: PaytraqClient) {
@@ -97,5 +107,4 @@ export class PaytraqCustomerComponent implements ControlValueAccessor {
     this.value = null;
     this.onChanges(this.value);
   }
-
 }

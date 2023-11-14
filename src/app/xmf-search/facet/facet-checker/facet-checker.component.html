@@ -9,13 +9,15 @@
         </button>
     </div>
     <mat-selection-list #selection (selectionChange)="onSelectionChange()" dense>
-        <mat-list-option *ngFor="let item of data" checkboxPosition="before" [value]="item._id" [style.height.px]="24">
+        @for (item of data; track $index) {
+        <mat-list-option checkboxPosition="before" [value]="item._id" [style.height.px]="24">
             <div class="option-small">
                 {{item._id | xmfFacet}}
-                <span *ngIf="item.count > 0">
-                    ({{item.count}})
-                </span>
+                @if (item.count > 0) {
+                ({{ item.count }})
+                }
             </div>
         </mat-list-option>
+        }
     </mat-selection-list>
 </div>

@@ -2,9 +2,11 @@
     Atlase
 </h4>
 
-<mat-list *ngIf="invoicesTotals">
+@if(invoicesTotals) {
+<mat-list>
 
-    <mat-list-item appDenseList appDenseListHeight="32px" *ngFor="let total of invoicesTotals.totals">
+    @for (total of invoicesTotals.totals; track total._id) {
+    <mat-list-item appDenseList appDenseListHeight="32px">
         <span matListItemLine>
 
             <span>
@@ -19,5 +21,7 @@
 
         </span>
     </mat-list-item>
+    }
 
 </mat-list>
+}

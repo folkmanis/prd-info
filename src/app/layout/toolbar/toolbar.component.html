@@ -12,11 +12,13 @@
     </a>
   </span>
 
-  <span *ngIf="activeModule as mod;">
+  @if (activeModule; as mod) {
+  <span>
     <a mat-button [routerLink]="mod.route">
       {{mod.name}}
     </a>
   </span>
+  }
 
   <!-- Starpotājs -->
   <span class="spacer"></span>
@@ -45,11 +47,14 @@
   <span>
 
     <button mat-button [matMenuTriggerFor]='userMenu'>
-      <span *ngIf="user.google?.picture; else genericUser" class="avatar">
+      @if (user.google?.picture) {
+      <span class="avatar">
       </span>
-      <ng-template #genericUser>
-        <mat-icon>account_circle</mat-icon>
-      </ng-template>
+      } @else {
+      <mat-icon>
+        account_circle
+      </mat-icon>
+      }
 
       <mat-icon>
         arrow_drop_down

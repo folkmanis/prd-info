@@ -1,7 +1,11 @@
-<span *ngFor="let totalColorName of totalColorNames; last as isLast;">
-        {{totalColorName.name}}: 
+@for (totalColorName of totalColorNames(); track $index) {
+<span>
+    {{totalColorName.name}}:
     <span [style.color]="totalColorName.code" class="cipars">
         {{totalColorName.count}}
     </span>
-    <span *ngIf="!isLast"> || </span>
+    @if (!$last) {
+    <span> || </span>
+    }
 </span>
+}

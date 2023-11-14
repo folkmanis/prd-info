@@ -1,5 +1,12 @@
-import { CurrencyPipe, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, Output, ViewChild, signal } from '@angular/core';
+import { CurrencyPipe } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  Output,
+  ViewChild,
+  signal,
+} from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -12,7 +19,6 @@ import { ViewSizeModule } from '../../../../../library/view-size/view-size.modul
 import { ProductAutocompleteComponent } from '../product-autocomplete/product-autocomplete.component';
 import { JobProductForm } from './job-product-form.interface';
 
-
 @Component({
   selector: 'app-repro-product',
   templateUrl: './repro-product.component.html',
@@ -23,7 +29,6 @@ import { JobProductForm } from './job-product-form.interface';
     ViewSizeModule,
     FormsModule,
     ReactiveFormsModule,
-    NgIf,
     MatButtonModule,
     MatIconModule,
     ProductAutocompleteComponent,
@@ -34,12 +39,10 @@ import { JobProductForm } from './job-product-form.interface';
   ],
 })
 export class ReproProductComponent {
-
   @ViewChild(ProductAutocompleteComponent)
   productNameControl: ProductAutocompleteComponent;
 
   productsAvailable = signal<CustomerProduct[]>([]);
-
 
   @Input({ required: true }) productForm: JobProductForm;
 
@@ -52,18 +55,16 @@ export class ReproProductComponent {
 
   @Output() remove = new Subject<void>();
 
-
   focus() {
     this.productNameControl.focus();
   }
 
   onSetPrice() {
-    const price = this.productsAvailable().find(prod => prod.productName === this.productForm.value.name)?.price;
+    const price = this.productsAvailable().find(
+      (prod) => prod.productName === this.productForm.value.name
+    )?.price;
     if (price) {
       this.productForm.controls.price.setValue(price);
     }
   }
-
-
-
 }

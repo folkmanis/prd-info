@@ -1,4 +1,5 @@
-<mat-card *ngFor="let item of modules" class="card-text" [routerLink]="item.route">
+@for (item of modules; track $index) {
+<mat-card class="card-text" [routerLink]="item.route">
     <mat-card-header>
         <h2>
             {{item.name}}
@@ -8,3 +9,4 @@
         {{item.description}}
     </mat-card-content>
 </mat-card>
+}

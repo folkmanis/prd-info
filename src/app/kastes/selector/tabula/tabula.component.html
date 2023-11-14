@@ -1,6 +1,7 @@
-<div *ngIf="colorCodes$ | async as colorCodes;" class="container" #scrollContainer scroll-to-top>
+<div class="container" #scrollContainer scroll-to-top>
 
-  <!-- Sākas tabula -->
+  @if (colorCodes$ | async; as colorCodes) {
+
   <table mat-table [dataSource]="dataSource$" [trackBy]="trackByFn" class="app-table">
 
     <!-- Sleja ar atzīmi par uzlīmes esamību -->
@@ -24,7 +25,8 @@
     </ng-container>
 
     <!-- Krāsu slejas -->
-    <ng-container *ngFor="let color of colors" [matColumnDef]="color">
+    @for (color of colors; track $index) {
+    <ng-container [matColumnDef]="color">
       <th mat-header-cell *matHeaderCellDef [style.color]="colorCodes[color]">
         {{ color[0] | uppercase }}
       </th>
@@ -32,12 +34,16 @@
         {{row.kastes[color] | hideZero}}
       </td>
     </ng-container>
+    }
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns;"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onSelected(row)"
       [class.selected]="row._id === selected?._id && row.kaste === selected.kaste" [appRowId]="row"
       [class.gatavs]="row.kastes.gatavs" [class.pending]="row.pending"></tr>
   </table>
+
+  }
+
   <div class="blank"></div>
 
 </div>

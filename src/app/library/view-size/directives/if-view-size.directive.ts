@@ -3,7 +3,8 @@ import { ViewSizeBase } from './view-size-base.directive';
 import { AppBreakpoints } from '../layout.service';
 
 @Directive({
-  selector: '[appIfViewSize]',
+    selector: '[appIfViewSize]',
+    standalone: true,
 })
 export class IfViewSizeDirective extends ViewSizeBase {
 

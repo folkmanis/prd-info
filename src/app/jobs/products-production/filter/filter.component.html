@@ -15,9 +15,11 @@
     <mat-form-field>
         <mat-label> Ražošanas stadija </mat-label>
         <mat-select formControlName="jobStatus" multiple>
-            <mat-option *ngFor="let state of jobStates$ | async" [value]="state.state">
+            @for (state of jobStates$ | async; track state.state) {
+            <mat-option [value]="state.state">
                 {{ state.description }}
             </mat-option>
+            }
         </mat-select>
     </mat-form-field>
 
@@ -26,9 +28,11 @@
     <mat-form-field>
         <mat-label> Materiālu grupa </mat-label>
         <mat-select formControlName="category" multiple>
-            <mat-option *ngFor="let category of categories$ | async" [value]="category.category">
+            @for ( category of categories$ | async; track category.category) {
+            <mat-option [value]="category.category">
                 {{ category.description }}
             </mat-option>
+            }
         </mat-select>
     </mat-form-field>
 

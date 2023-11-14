@@ -10,9 +10,11 @@
     <mat-form-field class="categories" subscriptSizing="dynamic">
         <mat-label> Materiālu grupas </mat-label>
         <mat-select formControlName="categories" multiple>
-            <mat-option *ngFor="let category of categories$ | async" [value]="category.category">
+            @for (category of categories$ | async; track $index) {
+            <mat-option [value]="category.category">
                 {{category.description}}
             </mat-option>
+            }
         </mat-select>
     </mat-form-field>
 

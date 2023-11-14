@@ -4,8 +4,8 @@
 
 <mat-list>
 
-    <mat-list-item appDenseList appDenseListHeight="32px" *ngFor="let cust of noInvoices"
-        (click)="onSetCustomer(cust._id)">
+    @for (cust of noInvoices; track $index) {
+    <mat-list-item appDenseList appDenseListHeight="32px" (click)="onSetCustomer(cust._id)">
 
         <span matListItemLine>
 
@@ -20,5 +20,6 @@
         </span>
 
     </mat-list-item>
+    }
 
 </mat-list>

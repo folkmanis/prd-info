@@ -2,13 +2,17 @@
     <mat-form-field>
         <mat-label> Lietotāja folderis </mat-label>
         <mat-select formControlName="folder" required>
-            <mat-option *ngFor="let folder of ftpFolders$ | async" [value]="folder">
+            @for (folder of ftpFolders$ | async; track $index) {
+            <mat-option [value]="folder">
                 {{ folder }}
             </mat-option>
+            }
         </mat-select>
-        <mat-error *ngIf="folderControl.hasError('required')">
+        @if (folderControl.hasError('required')) {
+        <mat-error>
             Jānorāda obligāti
         </mat-error>
+        }
     </mat-form-field>
 
     <mat-form-field>
