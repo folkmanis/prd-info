@@ -1,12 +1,14 @@
 @for (item of modules; track $index) {
-<mat-card class="card-text" [routerLink]="item.route">
-    <mat-card-header>
-        <h2>
-            {{item.name}}
-        </h2>
-    </mat-card-header>
-    <mat-card-content class="mat-body-2">
-        {{item.description}}
-    </mat-card-content>
-</mat-card>
+<a [routerLink]="item.route">
+    <mat-card class="card-text">
+        <mat-card-header>
+            <h2>
+                {{item.name}}
+            </h2>
+        </mat-card-header>
+        <mat-card-content class="mat-body-2">
+            {{item.description}}
+        </mat-card-content>
+    </mat-card>
+</a>
 }

@@ -1,26 +1,25 @@
-import { AsyncPipe, CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatOptionModule } from '@angular/material/core';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable, map } from 'rxjs';
 import { Product } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
-import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { CustomersService, ProductsService } from 'src/app/services';
 import { SystemPreferencesService } from 'src/app/services/system-preferences.service';
-import { MaterialsService } from '../../materials/services/materials.service';
 import { ProductsFormService } from '../services/products-form.service';
 import { PaytraqProductComponent } from './paytraq-product/paytraq-product.component';
 import { ProductPricesComponent } from './product-prices/product-prices.component';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatOptionModule } from '@angular/material/core';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-products-editor',
@@ -31,12 +30,12 @@ import { MatButtonModule } from '@angular/material/button';
   providers: [ProductsFormService],
   imports: [
     SimpleFormContainerComponent,
+    FormsModule,
     ReactiveFormsModule,
     PaytraqProductComponent,
     ProductPricesComponent,
     RouterLink,
     AsyncPipe,
-    FormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatExpansionModule,
@@ -44,6 +43,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatCheckboxModule,
     MatIconModule,
     MatButtonModule,
+    MatSelectModule,
   ],
 })
 export class ProductsEditorComponent implements OnInit, CanComponentDeactivate {

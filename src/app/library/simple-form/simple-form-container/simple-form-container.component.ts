@@ -1,10 +1,10 @@
-import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import {
   ChangeDetectionStrategy,
   Component,
   HostListener,
   Input,
   Output,
+  booleanAttribute,
 } from '@angular/core';
 import { FormControlStatus } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -44,22 +44,11 @@ export class SimpleFormContainerComponent {
     return this._status;
   }
 
-  private _isChanges = false;
-  @Input() set isChanges(value: any) {
-    this._isChanges = coerceBooleanProperty(value);
-  }
-  get isChanges(): boolean {
-    return this._isChanges;
-  }
+  @Input({ transform: booleanAttribute })
+  isChanges = false;
 
-  private _buttons = false;
-  @Input()
-  set buttons(value: any) {
-    this._buttons = coerceBooleanProperty(value);
-  }
-  get buttons() {
-    return this._buttons;
-  }
+  @Input({ transform: booleanAttribute })
+  buttons = false;
 
   @Output('save') save$ = new Subject<void>();
 

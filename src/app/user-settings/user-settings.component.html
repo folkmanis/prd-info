@@ -79,9 +79,9 @@
 
     <mat-card-content>
 
-        <app-google-info *ngIf="user().google as googleInfo;" [googleInfo]="googleInfo"
-            (valueClicked)="onGoogleValueClicked($event)">
-        </app-google-info>
+        @if (user().google; as googleInfo) {
+        <app-google-info [googleInfo]="googleInfo" (valueClicked)="onGoogleValueClicked($event)" />
+        }
 
     </mat-card-content>
 

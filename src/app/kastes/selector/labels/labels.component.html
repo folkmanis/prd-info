@@ -10,8 +10,10 @@
     </p>
 </form>
 
-<p [ngSwitch]="status.type">
-    <span *ngSwitchCase="'kaste'">
+<p>
+    @switch (status.type) {
+    @case ('kaste') {
+    <span>
         <div class="item" [style.color]="colors?.yellow">{{status.kaste.kastes?.yellow | hideZero}}</div>
         <div class="item" [style.color]="colors?.rose">{{status.kaste.kastes?.rose | hideZero}}</div>
         <div class="item" [style.color]="colors?.white">{{status.kaste.kastes?.white | hideZero}}</div>
@@ -19,9 +21,14 @@
             {{status.kaste.kods}}-{{status.kaste.adrese}}
         </div>
     </span>
-    <span *ngSwitchCase="'empty'" class="warn">
+    }
+    @case ('empty') {
+    <span class="warn">
         Nav atrasts!
     </span>
-    <span *ngSwitchDefault>
-    </span>
+    }
+    @default {
+    <span> </span>
+    }
+    }
 </p>

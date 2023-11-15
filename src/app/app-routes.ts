@@ -1,13 +1,12 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Route } from '@angular/router';
 import { AppContainerComponent } from './layout/app-container/app-container.component';
 import { MainMenuComponent } from './layout/main-menu/main-menu.component';
 import { MessagesListComponent } from './layout/messaging/messages-list/messages-list.component';
+import { canComponentDeactivate } from './library/guards/can-deactivate.guard';
 import { isLoggedIn } from './login/login.guard';
 import { isModuleAllowed } from './login/module.guard';
-import { canComponentDeactivate } from './library/guards/can-deactivate.guard';
 
-const routes: Routes = [
+export const APP_ROUTES: Route[] = [
   {
     path: 'login',
     loadComponent: () =>
@@ -84,9 +83,3 @@ const routes: Routes = [
     redirectTo: '',
   },
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes, { bindToComponentInputs: true })], // , { enableTracing: true }, , { relativeLinkResolution: 'legacy' }
-  exports: [RouterModule],
-})
-export class AppRoutingModule {}

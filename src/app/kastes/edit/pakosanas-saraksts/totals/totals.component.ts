@@ -23,21 +23,15 @@ import { VeikalsValidationErrors } from '../../services/veikals-validation-error
 export class TotalsComponent {
   colors$ = getKastesPreferences('colors');
 
-  veikalsSignal = signal<Veikals | null>(null);
+  @Input() veikals: Veikals | null;
 
   @Input() errors: VeikalsValidationErrors | null;
 
-  @Input() set veikals(value: Veikals) {
-    this.veikalsSignal.set(value);
+  totals() {
+    return this.veikals ? colorTotalsFromVeikalsBoxs(this.veikals.kastes) : [];
   }
 
-  totals = computed(() =>
-    this.veikalsSignal()
-      ? colorTotalsFromVeikalsBoxs(this.veikalsSignal().kastes)
-      : []
-  );
-
-  veikalsTotal = computed(() =>
-    this.totals().reduce((acc, curr) => acc + curr.total, 0)
-  );
+  veikalsTotal() {
+    return this.totals().reduce((acc, curr) => acc + curr.total, 0);
+  }
 }

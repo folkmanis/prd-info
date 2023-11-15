@@ -8,6 +8,10 @@ export default [
     pathMatch: 'full',
   },
   {
+    path: 'selector',
+    loadChildren: () => import('./selector/selector-routes'),
+  },
+  {
     path: 'upload',
     loadComponent: () =>
       import('./upload/upload.component').then((c) => c.UploadComponent),

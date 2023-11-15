@@ -4,13 +4,15 @@ import { JobsAdminComponent } from './jobs-admin.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import { CacheInterceptorService } from 'src/app/library/http';
 
-
 export default [
   {
     path: '',
-    component: JobsAdminComponent,
     providers: [
-      { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptorService, multi: true, },
+      {
+        provide: HTTP_INTERCEPTORS,
+        useClass: CacheInterceptorService,
+        multi: true,
+      },
     ],
     children: [
       {
@@ -23,7 +25,8 @@ export default [
       },
       {
         path: 'production-stages',
-        loadChildren: () => import('./production-stages/production-stages-routes'),
+        loadChildren: () =>
+          import('./production-stages/production-stages-routes'),
       },
       {
         path: 'equipment',
@@ -31,16 +34,17 @@ export default [
       },
       {
         path: 'materials',
-        loadChildren: () => import('./materials/materials-routes')
+        loadChildren: () => import('./materials/materials-routes'),
       },
       {
         path: '',
+        pathMatch: 'full',
         component: MainMenuComponent,
-      }
-    ]
+      },
+      {
+        path: '**',
+        redirectTo: '',
+      },
+    ],
   },
-  {
-    path: '**',
-    component: JobsAdminComponent,
-  }
 ] as Route[];

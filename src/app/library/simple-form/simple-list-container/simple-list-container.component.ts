@@ -1,4 +1,5 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -36,6 +37,7 @@ import { ViewSizeDirective } from 'src/app/library/view-size';
     MatInputModule,
     MatToolbarModule,
     ViewSizeDirective,
+    NgTemplateOutlet,
   ],
 })
 export class SimpleListContainerComponent {

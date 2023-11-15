@@ -3,11 +3,12 @@ import { SelectorComponent } from './selector.component';
 
 export default [
   {
-    path: 'selector/:apjoms',
+    path: ':apjoms',
     component: SelectorComponent,
   },
   {
-    path: 'selector',
-    redirectTo: 'selector/0',
+    path: '',
+    redirectTo: '0',
+    pathMatch: 'full',
   },
 ] as Route[];

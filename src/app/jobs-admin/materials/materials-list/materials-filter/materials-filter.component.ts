@@ -20,6 +20,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ViewSizeModule } from 'src/app/library/view-size/view-size.module';
 import { MaterialsFilter } from '../../services/materials.service';
+import { IfViewSizeDirective, ViewSizeDirective } from 'src/app/library';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
 
 const NO_FILTER: MaterialsFilter = {
   name: '',
@@ -41,10 +44,12 @@ type MaterialsFilterType = {
     FormsModule,
     MatFormFieldModule,
     MatIconModule,
-    ViewSizeModule,
     AsyncPipe,
     MatOptionModule,
     MatInputModule,
+    IfViewSizeDirective,
+    MatSelectModule,
+    MatButtonModule,
   ],
 })
 export class MaterialsFilterComponent implements OnInit {

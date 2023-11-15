@@ -30,6 +30,8 @@ import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { getConfig } from 'src/app/services/config.provider';
 import { MaterialsService } from '../services/materials.service';
 import { MaterialsPricesComponent } from './materials-prices/materials-prices.component';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 type MaterialForm = {
   [k in keyof Material]-?: FormControl<Material[k]>;
@@ -52,6 +54,8 @@ type MaterialForm = {
     MatCardModule,
     MatOptionModule,
     MatButtonModule,
+    MatSelectModule,
+    MatCheckboxModule,
   ],
 })
 export class MaterialsEditComponent implements CanComponentDeactivate {

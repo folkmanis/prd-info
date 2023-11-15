@@ -24,6 +24,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { CustomerPartial, ProductPrice } from 'src/app/interfaces';
+import { InputDirective } from 'src/app/library/directives/input.directive';
 
 type PricesForm = ReturnType<typeof productPriceGroup>;
 
@@ -40,6 +41,7 @@ type PricesForm = ReturnType<typeof productPriceGroup>;
     MatOptionModule,
     MatIconModule,
     MatButtonModule,
+    InputDirective,
   ],
   providers: [
     {

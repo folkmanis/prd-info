@@ -5,7 +5,7 @@ import { SystemPreferencesService } from 'src/app/services';
 
 @Component({
   selector: 'app-kastes-main-menu',
-  template: `<app-card-menu [modules]="modules$ | async"></app-card-menu>`,
+  template: `<app-card-menu [modules]="modules$ | async" />`,
   standalone: true,
   imports: [AsyncPipe, CardMenuComponent],
 })
