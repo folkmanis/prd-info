@@ -1,27 +1,26 @@
 @if (messages$ | async; as messages) {
-<div class="messages-container">
+@for (message of messages; track message._id) {
+<div class="message" [class.unread]="!message.seen" [class.selected]="message === selected">
 
-    @for (message of messages; track message._id) {
-    <div class="message" [class.unread]="!message.seen" [class.selected]="message === selected">
+    <div class="signal">
+    </div>
 
-        <div class="signal">
-        </div>
+    <div class="message-text">
 
-        <div class="message-text">
+        <span>
+            <small>
+                {{ message.timestamp | relativeDate:'strict' }} {{ message.data.toAction() }}
+            </small>
+        </span>
+        <span>
+            {{message.data.toDescription()}}
+        </span>
 
-            <span>
-                <small>
-                    {{ message.timestamp | relativeDate:'strict' }} {{ message.data.toAction() }}
-                </small>
-            </span>
-            <span>
-                {{message.data.toDescription()}}
-            </span>
+    </div>
 
-        </div>
-
+    <div class="message-menu">
         @if (ftpUsers(message).length > 0) {
-        <button mat-icon-button class="message-menu" [matMenuTriggerFor]="ftpSave"
+        <button mat-icon-button [matMenuTriggerFor]="ftpSave"
             [matMenuTriggerData]="{ users: ftpUsers(message), message }" (menuOpened)="selected = message"
             (menuClosed)="selected = null">
             <mat-icon>
@@ -31,14 +30,14 @@
         }
 
         @if (!message.seen) {
-        <button mat-icon-button class="message-menu" (click)="onMarkAsRead(message._id)">
+        <button mat-icon-button (click)="onMarkAsRead(message._id)">
             <mat-icon>
                 done
             </mat-icon>
         </button>
         }
 
-        <button mat-icon-button class="message-menu" (click)="onDelete(message._id)">
+        <button mat-icon-button (click)="onDelete(message._id)">
             <mat-icon>
                 delete
             </mat-icon>
@@ -46,13 +45,17 @@
 
     </div>
 
-    }
+
 
 </div>
 
+}
+
 } @else {
 <div class="message">
-    Ziņojumu nav
+    <div class="message-text">
+        Ziņojumu nav
+    </div>
 </div>
 }
 
