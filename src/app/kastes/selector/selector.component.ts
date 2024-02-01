@@ -139,7 +139,7 @@ export class SelectorComponent {
     this._updateKaste$.next({ ...kaste, loading: true, });
 
     this.kasteDialog.openDialog({ kaste, colorCodes, allKastes: this.allKastes }).pipe(
-      mergeMap(resp => resp ? this.tabulaService.setGatavs(kaste, resp.setGatavs) : of({ ...kaste, loading: false })),
+      mergeMap(resp => typeof resp === 'boolean' ? this.tabulaService.setGatavs(kaste, resp) : of({ ...kaste, loading: false })),
       tap(kaste => this._updateKaste$.next(kaste)),
     ).subscribe();
   }
