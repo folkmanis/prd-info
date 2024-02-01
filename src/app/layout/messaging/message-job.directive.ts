@@ -25,7 +25,8 @@ class FileMissingError extends Error {
 
 
 @Directive({
-  selector: '[appMessageJob]'
+    selector: '[appMessageJob]',
+    standalone: true
 })
 export class MessageJobDirective {
 

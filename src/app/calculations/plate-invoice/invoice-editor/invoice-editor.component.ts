@@ -1,5 +1,10 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Inject, Optional } from '@angular/core';
+import { AsyncPipe, CommonModule, DatePipe } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  Optional,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,7 +26,6 @@ import { InvoiceCsv } from './invoice-csv';
 import { InvoicePaytraqComponent } from './invoice-paytraq/invoice-paytraq.component';
 import { InvoiceProductsComponent } from './invoice-products/invoice-products.component';
 
-
 const deleteSuccessMessage = (id: string) => `Aprēķins ${id} izdzēsts`;
 const deleteFailMessage = (err: Error) => `Radās kļūda: ${err.message}`;
 
@@ -32,7 +36,6 @@ const deleteFailMessage = (err: Error) => `Radās kļūda: ${err.message}`;
   styleUrls: ['./invoice-editor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
     MatMenuModule,
     MatIconModule,
     MatToolbarModule,
@@ -43,12 +46,13 @@ const deleteFailMessage = (err: Error) => `Radās kļūda: ${err.message}`;
     MatButtonModule,
     RouterLink,
     MatCardModule,
-  ]
+    DatePipe,
+    AsyncPipe,
+  ],
 })
 export class InvoiceEditorComponent {
-
   invoice$: Observable<Invoice> = this.route.data.pipe(
-    map(data => data.invoice),
+    map((data) => data.invoice)
   );
 
   pyatraqEnabled$: Observable<boolean> = getConfig('paytraq', 'enabled');
@@ -58,37 +62,52 @@ export class InvoiceEditorComponent {
     private router: Router,
     private snack: MatSnackBar,
     private invoicesService: InvoicesService,
-    @Optional() @Inject(DATE_FNS_LOCALE) private locale?: Locale,
-  ) { }
+    @Optional() @Inject(DATE_FNS_LOCALE) private locale?: Locale
+  ) {}
 
   onCsvInvoice(invoice: Invoice): void {
-    const csv = new InvoiceCsv(invoice, { separator: ',', locale: this.locale });
-    const file = new File([csv.toCsvInvoice()], `Invoice ${invoice.invoiceId}.csv`, { type: 'text/csv' });
+    const csv = new InvoiceCsv(invoice, {
+      separator: ',',
+      locale: this.locale,
+    });
+    const file = new File(
+      [csv.toCsvInvoice()],
+      `Invoice ${invoice.invoiceId}.csv`,
+      { type: 'text/csv' }
+    );
     saveAs(file);
   }
 
   onCsvReport(invoice: Invoice): void {
-    const csv = new InvoiceCsv(invoice, { separator: ',', locale: this.locale });
+    const csv = new InvoiceCsv(invoice, {
+      separator: ',',
+      locale: this.locale,
+    });
     saveAs(
-      new File([csv.toCsvReport()], `${invoice.customer}-${invoice.invoiceId}.csv`, { type: 'text/csv' })
+      new File(
+        [csv.toCsvReport()],
+        `${invoice.customer}-${invoice.invoiceId}.csv`,
+        { type: 'text/csv' }
+      )
     );
   }
 
   onDelete(id: string): void {
-    this.invoicesService.deleteInvoice(id)
-      .subscribe({
-        next: () => {
-          this.snack.open(deleteSuccessMessage(id), 'OK', { duration: 5000 });
-          this.router.navigate(['..'], { relativeTo: this.route });
-        },
-        error: (err) => this.snack.open(deleteFailMessage(err), 'OK', { duration: 5000 }),
-        complete: () => { }
-      });
+    this.invoicesService.deleteInvoice(id).subscribe({
+      next: () => {
+        this.snack.open(deleteSuccessMessage(id), 'OK', { duration: 5000 });
+        this.router.navigate(['..'], { relativeTo: this.route });
+      },
+      error: (err) =>
+        this.snack.open(deleteFailMessage(err), 'OK', { duration: 5000 }),
+      complete: () => {},
+    });
   }
 
   onReload(invoiceId: string) {
-    this.router.navigate(['..', invoiceId], { relativeTo: this.route, queryParams: { upd: Date.now() } });
+    this.router.navigate(['..', invoiceId], {
+      relativeTo: this.route,
+      queryParams: { upd: Date.now() },
+    });
   }
-
 }
-

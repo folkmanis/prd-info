@@ -5,10 +5,14 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-    <button *ngIf="data.yes as yes" mat-raised-button color="primary" [mat-dialog-close]="true">
+    @if (data.yes; as yes) {
+    <button mat-raised-button color="primary" [mat-dialog-close]="true">
         {{ yes }}
     </button>
-    <button *ngIf="data.no as no" mat-raised-button [mat-dialog-close]="false">
+    }
+    @if (data.no; as no) {
+    <button mat-button [mat-dialog-close]="false">
         {{ no }}
     </button>
+    }
 </mat-dialog-actions>

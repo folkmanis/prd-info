@@ -1,70 +1,75 @@
-<ng-container *ngIf="colorCodes$ | async as colorCodes;">
+@if (colorCodes$ | async; as colorCodes) {
 
-    <mat-drawer-container *ngIf="pasutijumsId$ | async as pasutijumsId; else noActive;">
+@if (pasutijumsId$ | async; as pasutijumsId) {
+<mat-drawer-container>
 
-        <mat-drawer-content>
+    <mat-drawer-content>
 
-            <nav mat-tab-nav-bar [tabPanel]="tabPanel">
-                <a mat-tab-link routerLink="../../selector/0" [active]="(apjoms$ | async) === 0">
-                    Visi
-                </a>
-                <a mat-tab-link *ngFor="let kaste of apjomi$ | async" [routerLink]="['../../selector', kaste]"
-                    [active]="kaste === (apjoms$ | async)">
-                    {{kaste}}
-                </a>
-            </nav>
+        <nav mat-tab-nav-bar [tabPanel]="tabPanel">
+            <a mat-tab-link routerLink="../../selector/0" [active]="(apjoms$ | async) === 0">
+                Visi
+            </a>
+            @for (kaste of apjomi$ | async; track $index) {
+            <a mat-tab-link [routerLink]="['../../selector', kaste]" [active]="kaste === (apjoms$ | async)">
+                {{kaste}}
+            </a>
+            }
+        </nav>
 
-            <mat-tab-nav-panel #tabPanel>
+        <mat-tab-nav-panel #tabPanel>
 
-                <!-- Kopējie skaiti un refresh poga -->
-                <div class="kopskaiti">
-                    <button mat-icon-button (click)="onReload()">
-                        <mat-icon>
-                            refresh
-                        </mat-icon>
-                    </button>
-                    <app-kopskaiti [colorCodes]="colorCodes" [totals]="totals$ | async"></app-kopskaiti>
-                    <mat-slide-toggle [formControl]="showCompleted" matTooltip="Rādīt arī gatavos iepakojumus">
-                        Gatavie
-                    </mat-slide-toggle>
-                </div>
-
-                <app-tabula [veikalsKastes]="dataSource$ | async" (selectedChange)="onSelection($event, colorCodes)">
-                </app-tabula>
-
-            </mat-tab-nav-panel>
-
-        </mat-drawer-content>
-
-        <mat-drawer button>
-            <div *ngIf="kastesJob$ | async as kastesJob">
-                <h4>
-                    {{kastesJob.jobId}} - {{kastesJob.name}}
-                </h4>
-                <div *ngIf="(apjoms$ | async) === 0">
-                    <mat-divider></mat-divider>
-                    <app-labels [status]="labelStatuss$ | async" (code)="onSetLabel($event, pasutijumsId)"
-                        [colors]="colorCodes">
-                    </app-labels>
-                </div>
-                <div>
-                    <mat-divider></mat-divider>
-                    <app-order-totals [veikali]="kastesAll$ | async" [colors]="colorCodes"></app-order-totals>
-                </div>
+            <!-- Kopējie skaiti un refresh poga -->
+            <div class="kopskaiti">
+                <button mat-icon-button (click)="onReload()">
+                    <mat-icon>
+                        refresh
+                    </mat-icon>
+                </button>
+                <app-kopskaiti [colorCodes]="colorCodes" [totals]="totals$ | async"></app-kopskaiti>
+                <mat-slide-toggle [formControl]="showCompleted" matTooltip="Rādīt arī gatavos iepakojumus">
+                    Gatavie
+                </mat-slide-toggle>
             </div>
-        </mat-drawer>
 
-    </mat-drawer-container>
+            <app-tabula [veikalsKastes]="dataSource$ | async" (selectedChange)="onSelection($event, colorCodes)">
+            </app-tabula>
 
-</ng-container>
+        </mat-tab-nav-panel>
 
-<ng-template #noActive>
-    <div class="no-active">
-        <p>
-            Nav izvēlēts aktīvais pakošanas saraksts.
-        </p>
-        <p>
-            <a mat-raised-button routerLink="../../edit">IZVĒLĒTIES</a>
-        </p>
-    </div>
-</ng-template>
+    </mat-drawer-content>
+
+    <mat-drawer button>
+        @if (kastesJob$ | async; as kastesJob) {
+        <div>
+            <h4>
+                {{kastesJob.jobId}} - {{kastesJob.name}}
+            </h4>
+            @if ((apjoms$ | async) === 0) {
+            <div>
+                <mat-divider></mat-divider>
+                <app-labels [status]="labelStatuss$ | async" (code)="onSetLabel($event, pasutijumsId)"
+                    [colors]="colorCodes">
+                </app-labels>
+            </div>
+            }
+            <div>
+                <mat-divider></mat-divider>
+                <app-order-totals [veikali]="kastesAll$ | async" [colors]="colorCodes"></app-order-totals>
+            </div>
+        </div>
+        }
+    </mat-drawer>
+
+</mat-drawer-container>
+
+} @else {
+<div class="no-active">
+    <p>
+        Nav izvēlēts aktīvais pakošanas saraksts.
+    </p>
+    <p>
+        <a mat-raised-button routerLink="../../edit">IZVĒLĒTIES</a>
+    </p>
+</div>
+}
+}

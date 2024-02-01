@@ -1,4 +1,5 @@
-<div *ngIf="colors$ | async as colorCodes;" class="container">
+@if (colors$ | async; as colorCodes) {
+<div class="container">
     <div>
         <app-kastes-totals [totals]="kastesTotals$ | async">
             Sadalījums pa kastēm:
@@ -19,30 +20,31 @@
             <ng-container matColumnDef="buttons">
                 <!-- <th mat-header-cell *matHeaderCellDef="let row;"></th> -->
                 <td mat-cell *matCellDef="let row;">
-                    <div *ngIf="edited !== row; else buttonsActive">
+                    <div>
+                        @if (edited !== row) {
                         <button mat-icon-button [disabled]="isDisabled(row)" (click)="edited = row">
                             <mat-icon>lock_open</mat-icon>
                         </button>
+                        } @else {
+                        <button mat-icon-button (click)="edited = null; errors.set(null)">
+                            <mat-icon>clear</mat-icon>
+                        </button>
+                        <button mat-icon-button [disabled]="!!errors()" (click)="onSaveVeikals()">
+                            <mat-icon>save_alt</mat-icon>
+                        </button>
+                        }
                     </div>
-                    <ng-template #buttonsActive>
-                        <div>
-                            <button mat-icon-button (click)="edited = null; errors.set(null)">
-                                <mat-icon>clear</mat-icon>
-                            </button>
-                            <button mat-icon-button [disabled]="!!errors()" (click)="onSaveVeikals()">
-                                <mat-icon>save_alt</mat-icon>
-                            </button>
-                        </div>
-                    </ng-template>
                 </td>
             </ng-container>
             <!-- Sleja ar skaitiem -->
             <ng-container matColumnDef="pakas">
                 <th mat-header-cell *matHeaderCellDef="let row;">
                     <div>
-                        <div *ngFor="let col of colors;" [style.color]="colorCodes[col]">
+                        @for (col of colors; track $index) {
+                        <div [style.color]="colorCodes[col]">
                             {{col | titlecase}}
                         </div>
+                        }
                         <div>
                             Kopā
                         </div>
@@ -60,20 +62,23 @@
             <!-- Labošanas modulis -->
             <ng-container matColumnDef="editor">
                 <td mat-cell *matCellDef="let row;">
-                    <ng-container *ngIf="edited === row; else totals;">
-                        <app-veikals-edit [veikals]="row" (errors)="errors.set($event)"
-                            (valueChanges)="veikalsUpdate=$event"></app-veikals-edit>
-                    </ng-container>
-                    <ng-template #totals>
-                        <div *ngFor="let kaste of row.kastes">
-                            <div *ngFor="let col of colors;" [style.color]="colorCodes[col]" class="numb">
-                                {{kaste[col]}}
-                            </div>
-                            <div>
-                                {{kaste.total}}
-                            </div>
+                    @if (edited === row) {
+                    <app-veikals-edit [veikals]="row" (errors)="errors.set($event)"
+                        (valueChanges)="veikalsUpdate=$event" />
+                    } @else {
+                    @for (kaste of row.kastes; track $index) {
+                    <div>
+                        @for (col of colors; track $index) {
+                        <div [style.color]="colorCodes[col]" class="numb">
+                            {{kaste[col]}}
                         </div>
-                    </ng-template>
+                        }
+                        <div>
+                            {{kaste.total}}
+                        </div>
+                    </div>
+                    }
+                    }
                 </td>
             </ng-container>
 
@@ -86,3 +91,4 @@
     </div>
 
 </div>
+}

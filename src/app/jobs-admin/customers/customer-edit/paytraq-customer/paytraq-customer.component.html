@@ -8,8 +8,7 @@
 </app-paytraq-search-header>
 
 <div>
-    <app-paytraq-customer-table *ngIf="clients() as clientsArray;" [clients]="clientsArray"
-        (clientSelected)="onClientSelected($event)">
-
-    </app-paytraq-customer-table>
+    @if (clients(); as clientsArray) {
+    <app-paytraq-customer-table [clients]="clientsArray" (clientSelected)="onClientSelected($event)" />
+    }
 </div>

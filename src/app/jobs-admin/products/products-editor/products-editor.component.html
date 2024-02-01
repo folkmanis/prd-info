@@ -1,25 +1,27 @@
 <app-simple-form-container buttons [status]="form.status" [isChanges]="changes" (save)="onSave()" (reset)="onReset()">
 
-    <!-- Nosaukums nelabojams -->
-    <ng-template #existing>
-        <h2>
-            {{form.controls.name.value}}
-        </h2>
-    </ng-template>
-
     <form [formGroup]="form">
-        <!-- Nosaukums labojams -->
-        <h2 *ngIf="form.value._id == null; else existing">
+        <h2>
+            @if (form.value._id == null) {
+            <!-- Nosaukums labojams -->
             <mat-form-field>
                 <mat-label>Nosaukums</mat-label>
                 <input matInput formControlName="name" required>
-                <mat-error *ngIf="form.controls.name.hasError('required')">
+                @if (form.controls.name.hasError('required')) {
+                <mat-error>
                     Jānorāda obligāti
                 </mat-error>
-                <mat-error *ngIf="form.controls.name.hasError('occupied')">
+                }
+                @if (form.controls.name.hasError('occupied')) {
+                <mat-error>
                     Nosaukums {{form.controls.name.getError('occupied')}} jau aizņemts!
                 </mat-error>
+                }
             </mat-form-field>
+            } @else {
+            <!-- Nosaukums nelabojams -->
+            {{form.controls.name.value}}
+            }
         </h2>
 
         <mat-accordion multi>
@@ -36,9 +38,11 @@
                     <mat-form-field>
                         <mat-label>Kategorija</mat-label>
                         <mat-select formControlName="category" required>
-                            <mat-option *ngFor="let category of categories$ | async" [value]="category.category">
+                            @for (category of categories$ | async; track category.category) {
+                            <mat-option [value]="category.category">
                                 {{category.description}}
                             </mat-option>
+                            }
                         </mat-select>
                     </mat-form-field>
                 </section>
@@ -47,9 +51,11 @@
                     <mat-form-field>
                         <mat-label>Mērvienības</mat-label>
                         <mat-select formControlName="units" required>
-                            <mat-option *ngFor="let unit of units$ | async" [value]="unit.shortName">
+                            @for (unit of units$ | async; track unit.shortName) {
+                            <mat-option [value]="unit.shortName">
                                 {{unit.shortName}} ({{unit.description}})
                             </mat-option>
+                            }
                         </mat-select>
                     </mat-form-field>
                 </section>
@@ -74,9 +80,11 @@
                     <mat-panel-title>
                         Paytraq savienojums
                     </mat-panel-title>
-                    <mat-panel-description *ngIf="form.value.paytraqId as id;">
+                    @if (form.value.paytraqId; as id) {
+                    <mat-panel-description>
                         {{ id }}
                     </mat-panel-description>
+                    }
                 </mat-expansion-panel-header>
 
                 <app-paytraq-product formControlName="paytraqId" [productName]="form.value.name">
@@ -85,7 +93,8 @@
             </mat-expansion-panel>
 
             <!-- <mat-expansion-panel expanded> -->
-            <mat-expansion-panel *ngIf="customers$ | async as customers;">
+            @if (customers$ | async; as customers) {
+            <mat-expansion-panel>
                 <mat-expansion-panel-header>
                     <mat-panel-title>
                         Pārdošanas cenas
@@ -107,7 +116,7 @@
                 </mat-action-row>
 
             </mat-expansion-panel>
-
+            }
 
         </mat-accordion>
 

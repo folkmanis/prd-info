@@ -1,7 +1,8 @@
 import { Directive, Input, ElementRef, HostListener } from '@angular/core';
 
 @Directive({
-  selector: '[appDragable]'
+    selector: '[appDragable]',
+    standalone: true
 })
 export class DragableDirective {
   @Input('appDragable') itemContent: string;

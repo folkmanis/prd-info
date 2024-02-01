@@ -3,16 +3,13 @@ import { Location } from '@angular/common';
 
 /** Adds location.back() to button */
 @Directive({
-  selector: 'button[appBackButton]'
+  selector: 'button[appBackButton]',
+  standalone: true,
 })
 export class BackButtonDirective {
-
-  constructor(
-    private location: Location,
-  ) { }
+  constructor(private location: Location) {}
 
   @HostListener('click') onClick() {
     this.location.back();
   }
-
 }

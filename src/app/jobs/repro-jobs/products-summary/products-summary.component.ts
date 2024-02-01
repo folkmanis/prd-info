@@ -1,9 +1,13 @@
-import { ChangeDetectionStrategy, Component, Output, Input } from '@angular/core';
-import { JobPartial } from '../../interfaces';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  Output,
+} from '@angular/core';
+import { MatListModule } from '@angular/material/list';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { NgFor } from '@angular/common';
-import { MatListModule } from '@angular/material/list';
+import { JobPartial } from '../../interfaces';
 
 interface ProductSum {
   name: string;
@@ -12,15 +16,14 @@ interface ProductSum {
 }
 
 @Component({
-    selector: 'app-products-summary',
-    templateUrl: './products-summary.component.html',
-    styleUrls: ['./products-summary.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [MatListModule, NgFor],
+  selector: 'app-products-summary',
+  templateUrl: './products-summary.component.html',
+  styleUrls: ['./products-summary.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [MatListModule],
 })
 export class ProductsSummaryComponent {
-
   productSums: ProductSum[] = [];
 
   @Input() set jobs(value: JobPartial[]) {
@@ -28,9 +31,7 @@ export class ProductsSummaryComponent {
   }
 
   private readonly hover = new Subject<string | null>();
-  @Output() productHover = this.hover.pipe(
-    debounceTime(100)
-  );
+  @Output() productHover = this.hover.pipe(debounceTime(100));
 
   onMouseEnter(name: string) {
     this.hover.next(name);
@@ -40,31 +41,23 @@ export class ProductsSummaryComponent {
     this.hover.next(null);
   }
 
-
   private productsSummary(jobs: JobPartial[] | undefined): ProductSum[] {
-
-    const products = jobs
-      ?.filter(job => job.products instanceof Array)
-      .reduce((acc, curr) => [...acc, ...curr.products], []) || [];
+    const products =
+      jobs
+        ?.filter((job) => job.products instanceof Array)
+        .reduce((acc, curr) => [...acc, ...curr.products], []) || [];
     const productMap = new Map<string, ProductSum>();
 
     for (const product of products) {
       const { name, units, count } = product;
       const oldCount = productMap.get(name)?.count || 0;
-      productMap.set(
+      productMap.set(name, {
         name,
-        {
-          name,
-          units,
-          count: oldCount + count,
-        }
-      );
+        units,
+        count: oldCount + count,
+      });
     }
 
-    return [...productMap.values()]
-      .sort((a, b) => a.name > b.name ? 1 : -1);
-
+    return [...productMap.values()].sort((a, b) => (a.name > b.name ? 1 : -1));
   }
-
-
 }

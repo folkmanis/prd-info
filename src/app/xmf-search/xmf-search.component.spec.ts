@@ -8,8 +8,8 @@ describe('XmfSearchComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ XmfSearchComponent ]
-    })
+    imports: [XmfSearchComponent]
+})
     .compileComponents();
   }));
 

@@ -5,8 +5,9 @@ import { takeUntil } from 'rxjs';
 import { LayoutService } from './layout.service';
 
 @Directive({
-  selector: 'mat-drawer,mat-sidenav',
-  providers: [DestroyService],
+    selector: 'mat-drawer,mat-sidenav',
+    providers: [DestroyService],
+    standalone: true,
 })
 export class DrawerSmallDirective implements OnInit {
   private drawer: MatDrawer;

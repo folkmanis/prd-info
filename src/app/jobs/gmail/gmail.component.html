@@ -7,7 +7,7 @@
             </mat-icon>
         </button>
 
-        <app-threads-filter [labelIds]="(threadsFilter$ | async)?.labelIds" [labelItems]="labelItems$"
+        <app-threads-filter [labelIds]="(threadsFilter$ | async)?.labelIds"
             (labelIdsChange)="scroll.scrollToTop(); onSetFilter($event)"></app-threads-filter>
     </div>
 
@@ -22,13 +22,15 @@
 
 <div class="progress-container">
 
-    <mat-progress-bar *ngIf="loading$ | async" mode="indeterminate"></mat-progress-bar>
+    @if (loading()) {
+    <mat-progress-bar mode="indeterminate" />
+    }
 
 </div>
 
 
 <mat-table [dataSource]="datasource$" class="app-table" scroll-to-top #scroll="scrollToTop"
-    (contentChanged)="loading$.next(false)">
+    (contentChanged)="loading.set(false)">
 
     <ng-container matColumnDef="snippet">
         <mat-header-cell *matHeaderCellDef></mat-header-cell>
@@ -40,7 +42,9 @@
                 </div>
 
                 <div class="progress-container">
-                    <mat-progress-bar *ngIf="thread === loadingThread" mode="indeterminate"></mat-progress-bar>
+                    @if (thread === loadingThread) {
+                    <mat-progress-bar mode="indeterminate" />
+                    }
                 </div>
 
 

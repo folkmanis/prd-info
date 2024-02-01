@@ -1,7 +1,8 @@
 <div class="container" scroll-to-top>
 
     <mat-toolbar>
-        <span *ngIf="buttons">
+        @if (buttons) {
+        <span>
             <button mat-raised-button (click)="onSave()" color="primary"
                 [disabled]="this.status !== 'VALID' || this.isChanges === false">
                 SAGLABĀT
@@ -10,6 +11,7 @@
                 ATIESTATĪT
             </button>
         </span>
+        }
         <span class="spacer"></span>
 
         <ng-content select="[appSimpleFormTypedLabel]"></ng-content>

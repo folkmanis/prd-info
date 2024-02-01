@@ -1,15 +1,32 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { SelectionModel } from '@angular/cdk/collections';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { CurrencyPipe, DatePipe } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTableModule } from '@angular/material/table';
+import { RouterLink } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { JobUnwindedPartial } from 'src/app/jobs';
-import { MatTableModule } from '@angular/material/table';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { CurrencyPipe, DatePipe, NgIf } from '@angular/common';
-import { RouterLink } from '@angular/router';
 
-
-const TABLE_COLUMNS = ['selected', 'jobId', 'receivedDate', 'custCode', 'name', 'productName', 'count', 'price', 'total'];
+const TABLE_COLUMNS = [
+  'selected',
+  'jobId',
+  'receivedDate',
+  'custCode',
+  'name',
+  'productName',
+  'count',
+  'price',
+  'total',
+];
 
 @Component({
   selector: 'app-job-selection-table',
@@ -23,11 +40,9 @@ const TABLE_COLUMNS = ['selected', 'jobId', 'receivedDate', 'custCode', 'name', 
     DatePipe,
     RouterLink,
     CurrencyPipe,
-    NgIf,
   ],
 })
 export class JobSelectionTableComponent implements OnInit, OnDestroy {
-
   jobs$ = new BehaviorSubject<JobUnwindedPartial[]>([]);
 
   selector = new SelectionModel<number>(true, [], false);
@@ -40,7 +55,7 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
     value = value || [];
     this.jobs$.next(value);
     this.selector.clear();
-    this.jobIdSet = new Set(value.map(job => job.jobId));
+    this.jobIdSet = new Set(value.map((job) => job.jobId));
   }
 
   private _disabled = false;
@@ -61,21 +76,19 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
     return this._large;
   }
 
-
   @Input() set selected(value: JobUnwindedPartial[]) {
     value = value || [];
-    this.selector.select(...value.map(job => job.jobId));
+    this.selector.select(...value.map((job) => job.jobId));
   }
   get selected() {
     const jobs = this.jobs$.value;
     const sel = this.selector.selected;
-    return jobs.filter(job => sel.some(num => num === job.jobId));
+    return jobs.filter((job) => sel.some((num) => num === job.jobId));
   }
 
   @Input() total?: number;
 
   @Output() selectedChange = new EventEmitter<JobUnwindedPartial[]>();
-
 
   ngOnInit(): void {
     this.setDisplayedColumns();
@@ -87,7 +100,10 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
   }
 
   isAllSelected(): boolean {
-    return this.jobIdSet?.size > 0 && this.selector.selected.length === this.jobIdSet.size;
+    return (
+      this.jobIdSet?.size > 0 &&
+      this.selector.selected.length === this.jobIdSet.size
+    );
   }
 
   toggle(jobId: number) {
@@ -110,7 +126,13 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
   }
 
   private setDisplayedColumns() {
-    const cols = this.disabled ? TABLE_COLUMNS.filter(col => col !== 'selected') : TABLE_COLUMNS;
-    this.displayedColumns = this.large ? cols : cols.filter(col => ['selected', 'jobId', 'customer', 'name', 'total'].includes(col));
+    const cols = this.disabled
+      ? TABLE_COLUMNS.filter((col) => col !== 'selected')
+      : TABLE_COLUMNS;
+    this.displayedColumns = this.large
+      ? cols
+      : cols.filter((col) =>
+          ['selected', 'jobId', 'customer', 'name', 'total'].includes(col)
+        );
   }
 }

@@ -1,14 +1,13 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { combineLatest, Observable, map } from 'rxjs';
 import { KastesJobPartial } from '../../interfaces/kastes-job-partial';
 import { KastesPasutijumiService } from '../../services/kastes-pasutijumi.service';
 import { getKastesPreferences } from '../../services/kastes-preferences.service';
-import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { SimpleListContainerComponent } from 'src/app/library/simple-form';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { DatePipe } from '@angular/common';
 
 export interface KastesJobTable extends KastesJobPartial {
   active: boolean;
@@ -21,16 +20,15 @@ export interface KastesJobTable extends KastesJobPartial {
   styleUrls: ['./pasutijumi-tabula.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
     MatTableModule,
     MatIconModule,
     SimpleListContainerComponent,
     RouterLink,
     RouterLinkActive,
-  ]
+    DatePipe,
+  ],
 })
 export class PasutijumiTabulaComponent implements OnInit {
-
   readonly columns = ['active', 'jobId', 'name', 'receivedDate', 'dueDate'];
   readonly columnsActive = ['active', 'jobId', 'name'];
 
@@ -40,14 +38,12 @@ export class PasutijumiTabulaComponent implements OnInit {
     this.kastesJobsService.kastesJobs$,
     this.activeJob$,
   ]).pipe(
-    map(
-      ([jobs, act]) => jobs.map(job => ({ ...job, active: job.jobId === act }))
-    ),
+    map(([jobs, act]) =>
+      jobs.map((job) => ({ ...job, active: job.jobId === act }))
+    )
   );
 
-  constructor(
-    private kastesJobsService: KastesPasutijumiService,
-  ) { }
+  constructor(private kastesJobsService: KastesPasutijumiService) {}
 
   ngOnInit(): void {
     this.kastesJobsService.setFilter({});
@@ -57,5 +53,4 @@ export class PasutijumiTabulaComponent implements OnInit {
     const filter = name.length > 0 ? { name } : {};
     this.kastesJobsService.setFilter(filter);
   }
-
 }

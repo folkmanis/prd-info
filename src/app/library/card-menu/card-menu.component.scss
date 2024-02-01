@@ -5,9 +5,12 @@
     gap: 20px;
 }
 
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
 mat-card {
     width: 300px;
-    cursor: pointer;
     min-height: 120px;
-
 }

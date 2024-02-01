@@ -4,8 +4,10 @@
 
 <mat-form-field>
     <mat-select [formControl]="folderControl" [compareWith]="compareFn">
-        <mat-option *ngFor="let folder of folders;" [value]="folder">
+        @for (folder of folders; track $index) {
+        <mat-option [value]="folder">
             {{ folder.path.join('/') }}
         </mat-option>
+        }
     </mat-select>
 </mat-form-field>

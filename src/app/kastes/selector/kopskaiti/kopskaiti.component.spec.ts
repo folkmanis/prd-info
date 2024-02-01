@@ -8,8 +8,8 @@ describe('KopskaitiComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ KopskaitiComponent ]
-    })
+    imports: [KopskaitiComponent]
+})
     .compileComponents();
   }));
 

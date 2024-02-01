@@ -2,8 +2,10 @@
     <mat-label>Klients</mat-label>
     <mat-select [formControl]="customerId">
         <mat-option value="">Visi</mat-option>
-        <mat-option *ngFor="let customer of customers" [value]="customer._id">
+        @for ( customer of customers; track customer._id) {
+        <mat-option [value]="customer._id">
             {{customer._id}}
         </mat-option>
+        }
     </mat-select>
 </mat-form-field>

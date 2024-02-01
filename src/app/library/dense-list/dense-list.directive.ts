@@ -1,16 +1,11 @@
 import { Directive, Input, HostBinding } from '@angular/core';
 
 @Directive({
-  selector: '[appDenseList]'
+  selector: '[appDenseList]',
+  standalone: true,
 })
 export class DenseListDirective {
-
-  @Input('appDenseListHeight') set height(value: string | undefined) {
-    this.styleHeight = value;
-  }
-
-  @HostBinding('style.height') styleHeight: string | undefined;
-
-  constructor() { }
-
+  @Input('appDenseListHeight')
+  @HostBinding('style.height')
+  height: string | undefined;
 }

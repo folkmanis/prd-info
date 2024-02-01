@@ -1,8 +1,30 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator, Validators } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnInit,
+} from '@angular/core';
+import {
+  AbstractControl,
+  ControlValueAccessor,
+  FormArray,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validator,
+  Validators,
+} from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
 import { CustomerPartial, ProductPrice } from 'src/app/interfaces';
-import { MaterialLibraryModule } from 'src/app/library/material-library.module';
+import { InputDirective } from 'src/app/library/directives/input.directive';
 
 type PricesForm = ReturnType<typeof productPriceGroup>;
 
@@ -13,9 +35,13 @@ type PricesForm = ReturnType<typeof productPriceGroup>;
   styleUrls: ['./product-prices.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
-    MaterialLibraryModule,
+    FormsModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatIconModule,
+    MatButtonModule,
+    InputDirective,
   ],
   providers: [
     {
@@ -27,11 +53,12 @@ type PricesForm = ReturnType<typeof productPriceGroup>;
       provide: NG_VALIDATORS,
       useExisting: ProductPricesComponent,
       multi: true,
-    }
+    },
   ],
 })
-export class ProductPricesComponent implements OnInit, ControlValueAccessor, Validator {
-
+export class ProductPricesComponent
+  implements OnInit, ControlValueAccessor, Validator
+{
   @Input() customers: CustomerPartial[] = [];
 
   pricesFormArray = new FormArray<PricesForm>(
@@ -39,11 +66,9 @@ export class ProductPricesComponent implements OnInit, ControlValueAccessor, Val
     [this.duplicateCustomersValidator]
   );
 
-  touchFn = () => { };
+  touchFn = () => {};
 
-  constructor(
-    private chDetector: ChangeDetectorRef,
-  ) { }
+  constructor(private chDetector: ChangeDetectorRef) {}
 
   writeValue(obj: ProductPrice[]): void {
     obj = obj instanceof Array ? obj : [];
@@ -52,10 +77,9 @@ export class ProductPricesComponent implements OnInit, ControlValueAccessor, Val
     } else {
       this.pricesFormArray.clear({ emitEvent: false });
       for (const price of obj) {
-        this.pricesFormArray.push(
-          productPriceGroup(price),
-          { emitEvent: false }
-        );
+        this.pricesFormArray.push(productPriceGroup(price), {
+          emitEvent: false,
+        });
       }
     }
     this.chDetector.markForCheck();
@@ -82,12 +106,13 @@ export class ProductPricesComponent implements OnInit, ControlValueAccessor, Val
       return null;
     }
     return {
-      errors: this.pricesFormArray.controls.filter(ctrl => ctrl.invalid).map(ctr => ctr.errors)
+      errors: this.pricesFormArray.controls
+        .filter((ctrl) => ctrl.invalid)
+        .map((ctr) => ctr.errors),
     };
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   removePrice(idx: number): void {
     this.pricesFormArray.removeAt(idx);
@@ -95,42 +120,32 @@ export class ProductPricesComponent implements OnInit, ControlValueAccessor, Val
   }
 
   addPrice(price?: ProductPrice) {
-    this.pricesFormArray.push(
-      productPriceGroup(price)
-    );
+    this.pricesFormArray.push(productPriceGroup(price));
     this.pricesFormArray.markAsDirty();
     this.chDetector.markForCheck();
   }
 
-  private duplicateCustomersValidator(ctrl: AbstractControl<ProductPrice[]>): ValidationErrors | null {
-    const customers: string[] = (ctrl.value).map(pr => pr.customerName);
-    const duplicates: string[] = customers.filter((val, idx, self) => self.indexOf(val) !== idx);
+  private duplicateCustomersValidator(
+    ctrl: AbstractControl<ProductPrice[]>
+  ): ValidationErrors | null {
+    const customers: string[] = ctrl.value.map((pr) => pr.customerName);
+    const duplicates: string[] = customers.filter(
+      (val, idx, self) => self.indexOf(val) !== idx
+    );
     return duplicates.length === 0 ? null : { duplicates: duplicates.join() };
   }
-
-
 }
 
 function productPriceGroup(price: ProductPrice) {
   return new FormGroup({
-    customerName: new FormControl(
-      price?.customerName,
-      [Validators.required],
-    ),
-    price: new FormControl(
-      price?.price,
-      [
-        Validators.required,
-        Validators.pattern(/[0-9]{1,}(((,|\.)[0-9]{0,2})?)/)
-      ]
-    ),
-    lastUsed: new FormControl<Date>(
-      {
-        value: null,
-        disabled: true
-      },
-    )
+    customerName: new FormControl(price?.customerName, [Validators.required]),
+    price: new FormControl(price?.price, [
+      Validators.required,
+      Validators.pattern(/[0-9]{1,}(((,|\.)[0-9]{0,2})?)/),
+    ]),
+    lastUsed: new FormControl<Date>({
+      value: null,
+      disabled: true,
+    }),
   });
 }
-
-

@@ -24,9 +24,11 @@
     <td mat-cell *matCellDef="let record;" [attr.colspan]="displayedColumns.length">
       <div [@detailExpand]="record === expandedRecord ? 'expanded':'collapsed'" class="record-detail">
         <!-- Izvērstā skata apraksts -->
-        <div *ngIf="record === expandedRecord" class="json-display">
+        @if (record === expandedRecord) {
+        <div class="json-display">
           {{record.metadata | json}}
         </div>
+        }
       </div>
     </td>
   </ng-container>

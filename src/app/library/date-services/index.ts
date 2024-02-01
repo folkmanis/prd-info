@@ -1,2 +1,2 @@
-export * from './date-services.module';
 export * from './date-utils.service';
+export * from './relative-date.pipe';

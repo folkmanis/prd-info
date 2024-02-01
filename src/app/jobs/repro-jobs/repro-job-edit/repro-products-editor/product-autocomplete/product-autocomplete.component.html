@@ -5,21 +5,27 @@
             clear
         </mat-icon>
     </button>
-    <mat-error *ngIf="this.control.hasError('invalidProduct');">
+    @if (this.control.hasError('invalidProduct')) {
+    <mat-error>
         {{ this.control.getError('invalidProduct') }}
     </mat-error>
+    }
 </mat-form-field>
 
 
 <mat-autocomplete #auto="matAutocomplete" [autoActiveFirstOption]="true">
     <mat-optgroup label="KLIENTA">
-        <mat-option *ngFor="let product of firstProducts()" [value]="product.productName">
+        @for (product of firstProducts(); track product.productName) {
+        <mat-option [value]="product.productName">
             {{product.productName}}
         </mat-option>
+        }
     </mat-optgroup>
     <mat-optgroup label="VISI">
-        <mat-option *ngFor="let product of restProducts()" [value]="product.productName">
+        @for (product of restProducts(); track product.productName) {
+        <mat-option [value]="product.productName">
             {{product.productName}}
         </mat-option>
+        }
     </mat-optgroup>
 </mat-autocomplete>

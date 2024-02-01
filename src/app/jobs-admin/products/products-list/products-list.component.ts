@@ -16,14 +16,11 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   imports: [
     SimpleListContainerComponent,
     MatTableModule,
-    CommonModule,
     RouterLink,
     RouterLinkActive,
-  ]
+  ],
 })
 export class ProductsListComponent implements OnInit {
-
-
   displayedColumns = ['name', 'category'];
 
   private filter = new BehaviorSubject('');
@@ -31,24 +28,20 @@ export class ProductsListComponent implements OnInit {
   products$ = combineLatest([
     this.filter.pipe(
       debounceTime(200),
-      map(str => str.toUpperCase()),
+      map((str) => str.toUpperCase())
     ),
-    this.productsService.products$
+    this.productsService.products$,
   ]).pipe(
-    map(([str, prod]) => prod.filter(pr => pr.name.toUpperCase().includes(str))),
+    map(([str, prod]) =>
+      prod.filter((pr) => pr.name.toUpperCase().includes(str))
+    )
   );
 
+  constructor(private productsService: ProductsService) {}
 
-  constructor(
-    private productsService: ProductsService,
-  ) { }
-
-
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   onFilter(value: string) {
     this.filter.next(value);
   }
-
 }

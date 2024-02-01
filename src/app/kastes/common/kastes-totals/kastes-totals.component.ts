@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
@@ -7,12 +6,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   templateUrl: './kastes-totals.component.html',
   styleUrls: ['./kastes-totals.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    CommonModule,
-  ]
 })
 export class KastesTotalsComponent {
-
   @Input() totals: [number, number][] = [];
-
 }

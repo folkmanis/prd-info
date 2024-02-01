@@ -1,17 +1,16 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Route } from '@angular/router';
 import { AppContainerComponent } from './layout/app-container/app-container.component';
 import { MainMenuComponent } from './layout/main-menu/main-menu.component';
 import { MessagesListComponent } from './layout/messaging/messages-list/messages-list.component';
+import { canComponentDeactivate } from './library/guards/can-deactivate.guard';
 import { isLoggedIn } from './login/login.guard';
 import { isModuleAllowed } from './login/module.guard';
-import { canComponentDeactivate } from './library/guards/can-deactivate.guard';
 
-const routes: Routes = [
+export const APP_ROUTES: Route[] = [
   {
     path: 'login',
     loadComponent: () =>
-      import('./login/login.component').then((m) => m.LoginComponent),
+      import('./login/login.component').then((c) => c.LoginComponent),
   },
   {
     path: '',
@@ -34,24 +33,23 @@ const routes: Routes = [
       {
         path: 'xmf-search',
         canMatch: [isModuleAllowed],
-        loadChildren: () =>
-          import('./xmf-search/xmf-search.module').then(
-            (m) => m.XmfSearchModule
+        loadComponent: () =>
+          import('./xmf-search/xmf-search.component').then(
+            (c) => c.XmfSearchComponent
           ),
       },
       {
         path: 'xmf-upload',
         canMatch: [isModuleAllowed],
-        loadChildren: () =>
-          import('./xmf-upload/xmf-upload.module').then(
-            (m) => m.XmfUploadModule
+        loadComponent: () =>
+          import('./xmf-upload/xmf-upload.component').then(
+            (c) => c.XmfUploadComponent
           ),
       },
       {
         path: 'kastes',
         canMatch: [isModuleAllowed],
-        loadChildren: () =>
-          import('./kastes/kastes.module').then((m) => m.KastesModule),
+        loadChildren: () => import('./kastes/kastes-routes'),
       },
       {
         path: 'admin',
@@ -85,9 +83,3 @@ const routes: Routes = [
     redirectTo: '',
   },
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes, { bindToComponentInputs: true })], // , { enableTracing: true }, , { relativeLinkResolution: 'legacy' }
-  exports: [RouterModule],
-})
-export class AppRoutingModule {}

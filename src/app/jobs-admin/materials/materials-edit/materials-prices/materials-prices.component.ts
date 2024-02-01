@@ -1,16 +1,29 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
-import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { MatTable, MatTableModule } from '@angular/material/table';
-import { ClassTransformer } from 'class-transformer';
-import { filter, map, Observable } from 'rxjs';
-import { MaterialPrice } from 'src/app/interfaces';
-import { DialogData, MaterialsPriceDialogComponent } from '../materials-price-dialog/materials-price-dialog.component';
-import { MaterialsPricesDataSource } from './materials-prices-data-source';
-import { CommonModule } from '@angular/common';
+import { CurrencyPipe } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
+} from '@angular/core';
+import {
+  ControlValueAccessor,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ValidationErrors,
+  Validator,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-
+import { MatTableModule } from '@angular/material/table';
+import { ClassTransformer } from 'class-transformer';
+import { Observable, filter, map } from 'rxjs';
+import { MaterialPrice } from 'src/app/interfaces';
+import {
+  DialogData,
+  MaterialsPriceDialogComponent,
+} from '../materials-price-dialog/materials-price-dialog.component';
+import { MaterialsPricesDataSource } from './materials-prices-data-source';
 
 @Component({
   selector: 'app-materials-prices',
@@ -18,12 +31,7 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './materials-prices.component.html',
   styleUrls: ['./materials-prices.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatButtonModule,
-    MatIconModule,
-  ],
+  imports: [MatTableModule, MatButtonModule, MatIconModule, CurrencyPipe],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -34,25 +42,21 @@ import { MatIconModule } from '@angular/material/icon';
       provide: NG_VALIDATORS,
       useExisting: MaterialsPricesComponent,
       multi: true,
-    }
-  ]
+    },
+  ],
 })
-export class MaterialsPricesComponent implements OnInit, ControlValueAccessor, Validator {
-
+export class MaterialsPricesComponent
+  implements OnInit, ControlValueAccessor, Validator
+{
   dataSource = new MaterialsPricesDataSource();
 
-  displayedColumns = [
-    'min',
-    'price',
-    'description',
-    'actions',
-  ];
+  displayedColumns = ['min', 'price', 'description', 'actions'];
 
   disabled = false;
 
   @Input() units: string = '';
 
-  onTouchFn: () => void = () => { };
+  onTouchFn: () => void = () => {};
 
   isDuplicate = (price: number): boolean => {
     const dup: number[] | undefined = this.dataSource.errors?.duplicates;
@@ -61,8 +65,8 @@ export class MaterialsPricesComponent implements OnInit, ControlValueAccessor, V
 
   constructor(
     private dialogService: MatDialog,
-    private transformer: ClassTransformer,
-  ) { }
+    private transformer: ClassTransformer
+  ) {}
 
   writeValue(obj: MaterialPrice[]): void {
     this.dataSource.setValue(obj);
@@ -84,23 +88,21 @@ export class MaterialsPricesComponent implements OnInit, ControlValueAccessor, V
     return this.dataSource.errors;
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   onAddPrice() {
     this.onTouchFn();
-    this.openEditor(new MaterialPrice())
-      .subscribe(data => {
-        this.dataSource.addPrice(data);
-      });
+    this.openEditor(new MaterialPrice()).subscribe((data) => {
+      this.dataSource.addPrice(data);
+    });
   }
 
   onEditPrice(value: MaterialPrice, idx: number) {
     this.onTouchFn();
-    this.openEditor(value)
-      .subscribe(data => this.dataSource.updatePrice(data, idx));
+    this.openEditor(value).subscribe((data) =>
+      this.dataSource.updatePrice(data, idx)
+    );
   }
-
 
   onDeletePrice(index: number) {
     this.onTouchFn();
@@ -112,17 +114,15 @@ export class MaterialsPricesComponent implements OnInit, ControlValueAccessor, V
       value: price,
       units: this.units,
     };
-    return this.dialogService.open<MaterialsPriceDialogComponent, DialogData, Record<string, any>>(
-      MaterialsPriceDialogComponent,
-      { data }
-    )
+    return this.dialogService
+      .open<MaterialsPriceDialogComponent, DialogData, Record<string, any>>(
+        MaterialsPriceDialogComponent,
+        { data }
+      )
       .afterClosed()
       .pipe(
-        filter(data => !!data),
-        map(data => this.transformer.plainToInstance(MaterialPrice, data))
+        filter((data) => !!data),
+        map((data) => this.transformer.plainToInstance(MaterialPrice, data))
       );
   }
-
-
-
 }

@@ -5,22 +5,24 @@
             Filtrs
         </mat-panel-title>
 
-        <mat-panel-description *ngIf="filterForm.valid">
-            <span *ngIf="filterForm.get('jobsId').value as jobsId;">
-                {{ jobsId }}
+        <mat-panel-description>
+            @if (filterForm.valid) {
+            <span>
+                {{ filterForm.value.jobsId}}
             </span>
-            <span *ngIf="filterForm.get('name').value as name;">
-                {{ name }}
+            <span>
+                {{ filterForm.value.name }}
             </span>
-            <span *ngIf="filterForm.get('customer').value as customer;">
-                {{ customer }}
+            <span>
+                {{ filterForm.value.customer }}
             </span>
-            <span *ngIf="filterForm.get('productsName').value as productsName;">
-                {{ productsName }}
+            <span>
+                {{ filterForm.value.productsName }}
             </span>
             <span>
                 {{ statesSelect.triggerValue }}
             </span>
+            }
         </mat-panel-description>
 
     </mat-expansion-panel-header>
@@ -71,9 +73,11 @@
                     Statuss
                 </mat-label>
                 <mat-select formControlName="jobStatus" multiple #statesSelect>
-                    <mat-option *ngFor="let status of jobStates$ | async" [value]="status.state">
+                    @for (status of jobStates$ | async; track $index) {
+                    <mat-option [value]="status.state">
                         {{status.description}}
                     </mat-option>
+                    }
                 </mat-select>
             </mat-form-field>
             <span class="spacer"></span>
@@ -86,9 +90,11 @@
                     <mat-option [value]="null">
                         Visi
                     </mat-option>
-                    <mat-option *ngFor="let product of products" [value]="product.name">
+                    @for (product of products; track product.name) {
+                    <mat-option [value]="product.name">
                         {{ product.name }}
                     </mat-option>
+                    }
                 </mat-select>
             </mat-form-field>
 
@@ -97,9 +103,11 @@
     </div>
 
     <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
-        <mat-option *ngFor="let customer of customersFiltered()" [value]="customer.CustomerName">
+        @for (customer of customersFiltered(); track customer.CustomerName) {
+        <mat-option [value]="customer.CustomerName">
             {{customer.CustomerName}}
         </mat-option>
+        }
     </mat-autocomplete>
 
 </mat-expansion-panel>

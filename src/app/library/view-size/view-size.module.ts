@@ -8,10 +8,9 @@ import { ViewNotLargeDirective } from './directives/view-not-large.directive';
 import { ViewSmallDirective } from './directives/view-small.directive';
 import { ViewNotSmallDirective } from './directives/view-not-small.directive';
 
-
-
 @NgModule({
-  declarations: [
+  declarations: [],
+  imports: [
     ViewSizeDirective,
     DrawerSmallDirective,
     IfViewSizeDirective,
@@ -19,9 +18,7 @@ import { ViewNotSmallDirective } from './directives/view-not-small.directive';
     ViewNotLargeDirective,
     ViewSmallDirective,
     ViewNotSmallDirective,
-  ],
-  imports: [
-    CommonModule
+    CommonModule,
   ],
   exports: [
     ViewSizeDirective,
@@ -31,6 +28,6 @@ import { ViewNotSmallDirective } from './directives/view-not-small.directive';
     ViewNotLargeDirective,
     ViewSmallDirective,
     ViewNotSmallDirective,
-  ]
+  ],
 })
-export class ViewSizeModule { }
+export class ViewSizeModule {}

@@ -1,17 +1,28 @@
-import { ChangeDetectionStrategy, Component, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  Output,
+} from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { Observable, debounceTime, map } from 'rxjs';
 import { getConfig } from 'src/app/services/config.provider';
 
-import { MaterialsFilter } from '../../services/materials.service';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
+import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInput, MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { ViewSizeModule } from 'src/app/library/view-size/view-size.module';
+import { MaterialsFilter } from '../../services/materials.service';
+import { IfViewSizeDirective, ViewSizeDirective } from 'src/app/library';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule } from '@angular/material/core';
-import { MaterialLibraryModule } from 'src/app/library/material-library.module';
-import { ViewSizeModule } from 'src/app/library/view-size/view-size.module';
 
 const NO_FILTER: MaterialsFilter = {
   name: '',
@@ -19,7 +30,7 @@ const NO_FILTER: MaterialsFilter = {
 };
 
 type MaterialsFilterType = {
-  [K in keyof MaterialsFilter]: FormControl<MaterialsFilter[K]>
+  [K in keyof MaterialsFilter]: FormControl<MaterialsFilter[K]>;
 };
 
 @Component({
@@ -29,14 +40,19 @@ type MaterialsFilterType = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
-    MaterialLibraryModule,
-    ViewSizeModule,
-  ]
+    FormsModule,
+    MatFormFieldModule,
+    MatIconModule,
+    AsyncPipe,
+    MatOptionModule,
+    MatInputModule,
+    IfViewSizeDirective,
+    MatSelectModule,
+    MatButtonModule,
+  ],
 })
 export class MaterialsFilterComponent implements OnInit {
-
   categories$ = getConfig('jobs', 'productCategories');
 
   filterGroup = new FormGroup<MaterialsFilterType>({
@@ -44,26 +60,25 @@ export class MaterialsFilterComponent implements OnInit {
     categories: new FormControl([]),
   });
 
+  @Output() filter: Observable<MaterialsFilter> =
+    this.filterGroup.valueChanges.pipe(
+      debounceTime(200),
+      map((fltr) => this.processFilter(fltr))
+    );
 
-  @Output() filter: Observable<MaterialsFilter> = this.filterGroup.valueChanges.pipe(
-    debounceTime(200),
-    map(fltr => this.processFilter(fltr)),
-  );
-
-
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   clear() {
     this.filterGroup.setValue(NO_FILTER);
   }
 
-  private processFilter({ name, categories }: MaterialsFilter): MaterialsFilter {
+  private processFilter({
+    name,
+    categories,
+  }: MaterialsFilter): MaterialsFilter {
     return {
       name: name?.trim() || undefined,
       categories: categories?.length > 0 ? categories : undefined,
     };
   }
-
-
 }

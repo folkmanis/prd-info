@@ -1,21 +1,53 @@
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { combineLatest, map, merge, mergeMap, Observable, of, shareReplay, Subject, switchMap, tap } from 'rxjs';
 import { Colors, VeikalsKaste } from '../interfaces';
 import { KastesPasutijumiService } from '../services/kastes-pasutijumi.service';
 import { getKastesPreferences } from '../services/kastes-preferences.service';
-import { Status as LabelStatus } from './labels/labels.component';
+import { Status as LabelStatus, LabelsComponent } from './labels/labels.component';
 import { KasteDialogService } from './services/kaste-dialog.service';
 import { KastesTabulaService } from './services/kastes-tabula.service';
 import { TabulaComponent } from './tabula/tabula.component';
+import { AsyncPipe } from '@angular/common';
+import { OrderTotalsComponent } from './order-totals/order-totals.component';
+import { MatDividerModule } from '@angular/material/divider';
+import { DrawerButtonDirective } from '../../library/side-button/drawer-button.directive';
+import { ViewSizeModule } from '../../library/view-size/view-size.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { KopskaitiComponent } from './kopskaiti/kopskaiti.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 
 @Component({
-  selector: 'app-selector',
-  templateUrl: './selector.component.html',
-  styleUrls: ['./selector.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-selector',
+    templateUrl: './selector.component.html',
+    styleUrls: ['./selector.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        MatSidenavModule,
+        MatTabsModule,
+        RouterLink,
+        MatButtonModule,
+        MatIconModule,
+        KopskaitiComponent,
+        MatSlideToggleModule,
+        MatTooltipModule,
+        FormsModule,
+        ReactiveFormsModule,
+        TabulaComponent,
+        ViewSizeModule,
+        DrawerButtonDirective,
+        MatDividerModule,
+        LabelsComponent,
+        OrderTotalsComponent,
+        AsyncPipe,
+    ],
 })
 export class SelectorComponent {
 

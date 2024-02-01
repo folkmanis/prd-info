@@ -1,6 +1,7 @@
-<div *ngFor="let control of form.controls; index as idx" class="container">
+@for (control of form.controls; track $index) {
+<div class="container">
 
-    <button mat-icon-button color="warn" (click)="delete(idx); $event.stopPropagation();">
+    <button mat-icon-button color="warn" (click)="delete($index); $event.stopPropagation();">
         <mat-icon>
             delete_outline
         </mat-icon>
@@ -8,9 +9,11 @@
 
     <mat-form-field>
         <mat-select [formControl]="control.controls.path" required [compareWith]="pathCompare">
-            <mat-option *ngFor="let folder of dropFolders" [value]="folder.value">
+            @for (folder of dropFolders; track $index) {
+            <mat-option [value]="folder.value">
                 {{ folder.name }}
             </mat-option>
+            }
         </mat-select>
     </mat-form-field>
 
@@ -20,15 +23,20 @@
             <mat-option value="**">
                 Noklusējuma
             </mat-option>
-            <mat-option *ngFor="let customer of customers" [value]="customer.CustomerName"
-                [disabled]="customerSelection.value[0]==='**'">
+            @for (customer of customers; track $index) {
+            <mat-option [value]="customer.CustomerName" [disabled]="customerSelection.value[0]==='**'">
                 {{ customer.CustomerName }}
             </mat-option>
+            }
         </mat-select>
     </mat-form-field>
 
 </div>
+}
 
-<div *ngIf="form.hasError('duplicateDefaults')" class="mat-error">
+
+@if (form.hasError('duplicateDefaults')) {
+<div class="mat-error">
     Var būt tikai viena noklusējuma vērtība.
 </div>
+}

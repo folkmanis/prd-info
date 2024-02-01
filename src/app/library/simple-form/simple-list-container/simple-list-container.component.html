@@ -2,14 +2,18 @@
     <div class="list">
 
         <mat-toolbar>
-            <div *ngIf="plusButton">
+            @if (plusButton) {
+            <div>
                 <button mat-mini-fab color="primary" routerLink="new">
                     <mat-icon>add</mat-icon>
                 </button>
             </div>
-            <div *ngIf="filterInput" class="search">
+            }
+            @if (filterInput) {
+            <div class="search">
                 <ng-container *ngTemplateOutlet="filterTemplate || defaultFilterTemplate"></ng-container>
             </div>
+            }
         </mat-toolbar>
 
         <div class="simple-form-table" scroll-to-top>
@@ -26,11 +30,15 @@
 <ng-template #defaultFilterTemplate>
     <mat-form-field subscriptSizing="dynamic">
         <input matInput [formControl]='searchControl'>
-        <button mat-icon-button matIconSuffix disabled *ngIf="!searchControl.value.length">
+        @if (!searchControl.value.length) {
+        <button mat-icon-button matIconSuffix disabled>
             <mat-icon>search</mat-icon>
         </button>
-        <button mat-icon-button matIconSuffix *ngIf="searchControl.value.length" (click)="searchControl.reset('')">
+        }
+        @if (searchControl.value.length) {
+        <button mat-icon-button matIconSuffix (click)="searchControl.reset('')">
             <mat-icon>clear</mat-icon>
         </button>
+        }
     </mat-form-field>
 </ng-template>

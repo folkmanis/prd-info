@@ -1,18 +1,21 @@
 <header>
 
-    <button *ngIf="history.length > 2; else goUp" mat-icon-button appKeyPress="escape" tabindex="-1" (click)="onBack()">
+    @if (history.length > 2) {
+    <button mat-icon-button appKeyPress="escape" tabindex="-1" (click)="onBack()">
         <mat-icon> arrow_back </mat-icon>
     </button>
-    <ng-template #goUp>
-        <a mat-icon-button routerLink="..">
-            <mat-icon> arrow_upward </mat-icon>
-        </a>
-    </ng-template>
+    } @else {
+    <a mat-icon-button routerLink="..">
+        <mat-icon> arrow_upward </mat-icon>
+    </a>
+    }
 
     <h4>
-        <span *ngIf="form.value.jobId as jobId;">
-            {{ jobId }}&nbsp;-&nbsp;
+        @if (form.value.jobId) {
+        <span>
+            {{ form.value.jobId }}&nbsp;-&nbsp;
         </span>
+        }
         {{ form.value.name }}
     </h4>
 
@@ -25,9 +28,11 @@
         <!-- Folderis -->
         <mat-card-content>
 
-            <app-folder-path *ngIf="form.value.jobId" [path]="folderPath$ | async" (createFolder)="onCreateFolder()"
+            @if (form.value.jobId) {
+            <app-folder-path [path]="folderPath$ | async" (createFolder)="onCreateFolder()"
                 [enabled]="updateFolderLocationEnabled$ | async">
             </app-folder-path>
+            }
 
             <app-upload-progress [progress]="fileUploadProgress$ | async">
             </app-upload-progress>
@@ -45,16 +50,16 @@
 
 <footer>
 
-    <button *ngIf="form.value.jobId else createButton;" mat-raised-button color="primary" appKeyPress="ctrlEnter"
-        [disabled]="saveDisabled$ | async" (click)="onUpdate()">
+    @if (form.value.jobId) {
+    <button mat-raised-button color="primary" appKeyPress="ctrlEnter" [disabled]="saveDisabled$ | async"
+        (click)="onUpdate()">
         SAGLABĀT
     </button>
-
-    <ng-template #createButton>
-        <button mat-raised-button color="primary" [disabled]="saveDisabled$ | async" appKeyPress="ctrlEnter"
-            (click)="onCreate()">
-            IZVEIDOT
-        </button>
-    </ng-template>
+    } @else {
+    <button mat-raised-button color="primary" [disabled]="saveDisabled$ | async" appKeyPress="ctrlEnter"
+        (click)="onCreate()">
+        IZVEIDOT
+    </button>
+    }
 
 </footer>

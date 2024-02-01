@@ -1,7 +1,7 @@
+import { CurrencyPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { InvoicesTotals } from '../../interfaces';
 import { MatListModule } from '@angular/material/list';
-import { CurrencyPipe, NgFor, NgIf } from '@angular/common';
+import { InvoicesTotals } from '../../interfaces';
 
 @Component({
   selector: 'app-selection-totals',
@@ -9,16 +9,9 @@ import { CurrencyPipe, NgFor, NgIf } from '@angular/common';
   templateUrl: './selection-totals.component.html',
   styleUrls: ['./selection-totals.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    MatListModule,
-    NgIf,
-    NgFor,
-    CurrencyPipe,
-  ]
+  imports: [MatListModule, CurrencyPipe],
 })
 export class SelectionTotalsComponent {
-
   @Input()
   invoicesTotals: InvoicesTotals | null = null;
-
 }

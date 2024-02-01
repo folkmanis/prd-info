@@ -1,5 +1,11 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, computed, signal } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  computed,
+  signal,
+} from '@angular/core';
 import { Veikals } from 'src/app/kastes/interfaces';
 import { getKastesPreferences } from 'src/app/kastes/services/kastes-preferences.service';
 import { colorTotalsFromVeikalsBoxs } from '../../../common';
@@ -12,26 +18,20 @@ import { VeikalsValidationErrors } from '../../services/veikals-validation-error
   templateUrl: './totals.component.html',
   styleUrls: ['./totals.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    CommonModule,
-    PlusSignPipe,
-  ]
+  imports: [PlusSignPipe, AsyncPipe],
 })
 export class TotalsComponent {
-
   colors$ = getKastesPreferences('colors');
 
-  veikalsSignal = signal<Veikals | null>(null);
+  @Input() veikals: Veikals | null;
 
   @Input() errors: VeikalsValidationErrors | null;
 
-  @Input() set veikals(value: Veikals) {
-    this.veikalsSignal.set(value);
+  totals() {
+    return this.veikals ? colorTotalsFromVeikalsBoxs(this.veikals.kastes) : [];
   }
 
-  totals = computed(() => this.veikalsSignal() ? colorTotalsFromVeikalsBoxs(this.veikalsSignal().kastes) : []);
-
-  veikalsTotal = computed(() => this.totals().reduce((acc, curr) => acc + curr.total, 0));
-
-
+  veikalsTotal() {
+    return this.totals().reduce((acc, curr) => acc + curr.total, 0);
+  }
 }

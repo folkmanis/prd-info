@@ -1,19 +1,31 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AsyncValidatorFn, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AsyncValidatorFn,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router } from '@angular/router';
 import { isEqual, pickBy } from 'lodash-es';
 import { map, of } from 'rxjs';
 import { Equipment } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
-import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { EquipmentService } from '../services/equipment.service';
 
-
 type EquipmentForm = FormGroup<{
-  [key in keyof Equipment]: FormControl<Equipment[key]>
+  [key in keyof Equipment]: FormControl<Equipment[key]>;
 }>;
 
 @Component({
@@ -23,14 +35,14 @@ type EquipmentForm = FormGroup<{
   styleUrls: ['./equipment-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
-    MaterialLibraryModule,
     ReactiveFormsModule,
     SimpleFormContainerComponent,
-  ]
+    MatFormFieldModule,
+    MatInputModule,
+    MatCardModule,
+  ],
 })
 export class EquipmentEditComponent implements CanComponentDeactivate {
-
   form: EquipmentForm = this.fb.group({
     _id: [null],
     name: [
@@ -38,9 +50,9 @@ export class EquipmentEditComponent implements CanComponentDeactivate {
       {
         validators: [Validators.required],
         asyncValidators: [this.nameValidator()],
-      }
+      },
     ],
-    description: ['']
+    description: [''],
   });
 
   private _initialValue = new Equipment();
@@ -58,29 +70,36 @@ export class EquipmentEditComponent implements CanComponentDeactivate {
 
   private routerData = toSignal(this.route.data);
 
-  private value = toSignal(this.form.valueChanges, { initialValue: this.form.value });
+  private value = toSignal(this.form.valueChanges, {
+    initialValue: this.form.value,
+  });
 
-  formStatus = toSignal(this.form.statusChanges, { initialValue: this.form.status });
+  formStatus = toSignal(this.form.statusChanges, {
+    initialValue: this.form.status,
+  });
 
   changes = computed(() => {
     const value = this.value();
     if (this.isNew) {
       return value;
     } else {
-      const diff = pickBy(value, (v, key) => !isEqual(v, this.initialValue[key]));
+      const diff = pickBy(
+        value,
+        (v, key) => !isEqual(v, this.initialValue[key])
+      );
       return Object.keys(diff).length ? diff : undefined;
     }
   });
-
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private equipmentService: EquipmentService,
-    private fb: FormBuilder,
+    private fb: FormBuilder
   ) {
     effect(
-      () => this.initialValue = this.routerData().equipment || new Equipment(),
+      () =>
+        (this.initialValue = this.routerData().equipment || new Equipment()),
       { allowSignalWrites: true }
     );
   }
@@ -90,19 +109,21 @@ export class EquipmentEditComponent implements CanComponentDeactivate {
   }
 
   onSave() {
-
     if (this.isNew) {
-      return this.equipmentService.insertOne(this.form.getRawValue())
-        .subscribe(equipment => {
+      return this.equipmentService
+        .insertOne(this.form.getRawValue())
+        .subscribe((equipment) => {
           this.form.markAsPristine();
-          this.router.navigate(['..', equipment._id], { relativeTo: this.route });
+          this.router.navigate(['..', equipment._id], {
+            relativeTo: this.route,
+          });
         });
     } else {
       const update = { ...this.changes(), _id: this.initialValue._id };
-      return this.equipmentService.updateOne(update)
-        .subscribe(equipment => this.initialValue = equipment);
+      return this.equipmentService
+        .updateOne(update)
+        .subscribe((equipment) => (this.initialValue = equipment));
     }
-
   }
 
   canDeactivate(): boolean {
@@ -116,10 +137,9 @@ export class EquipmentEditComponent implements CanComponentDeactivate {
         return of(null);
       }
       return this.equipmentService.names().pipe(
-        map(names => names.map(n => n.toUpperCase()).includes(name)),
-        map(invalid => invalid ? { occupied: name } : null)
+        map((names) => names.map((n) => n.toUpperCase()).includes(name)),
+        map((invalid) => (invalid ? { occupied: name } : null))
       );
     };
   }
-
 }

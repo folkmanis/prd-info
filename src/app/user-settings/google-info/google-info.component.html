@@ -1,11 +1,13 @@
 <mat-list>
 
-    <mat-list-item *ngFor="let value of values;">
+    @for (value of values; track $index) {
+    <mat-list-item>
         {{ value[0] | titlecase }}:&nbsp;
         <span class="value" (click)="clickEvent.next(value)">
             {{ value[1] }}
         </span>
     </mat-list-item>
+    }
 
 
 </mat-list>

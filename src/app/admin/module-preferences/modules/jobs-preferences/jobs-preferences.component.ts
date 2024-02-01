@@ -1,28 +1,46 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  FormControl,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { Subject } from 'rxjs';
 import { JobsSettings, ProductCategory, ProductUnit } from 'src/app/interfaces';
 import { PreferencesCardControl } from '../../preferences-card-control';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
 import { UnitsDialogComponent } from './units-dialog/units-dialog.component';
-import { SimpleListTableModule } from '../../../../library/simple-list-table/simple-list-table.module';
+import { SimpleListTableComponent } from 'src/app/library/simple-list-table/simple-list-table.component';
 
-type JobsSettingsControls = Pick<JobsSettings, 'productCategories' | 'productUnits'>;
+type JobsSettingsControls = Pick<
+  JobsSettings,
+  'productCategories' | 'productUnits'
+>;
 
 @Component({
-    selector: 'app-jobs-preferences',
-    templateUrl: './jobs-preferences.component.html',
-    styleUrls: ['./jobs-preferences.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [{ provide: PreferencesCardControl, useExisting: JobsPreferencesComponent }],
-    standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, SimpleListTableModule]
+  selector: 'app-jobs-preferences',
+  templateUrl: './jobs-preferences.component.html',
+  styleUrls: ['./jobs-preferences.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    { provide: PreferencesCardControl, useExisting: JobsPreferencesComponent },
+  ],
+  standalone: true,
+  imports: [FormsModule, ReactiveFormsModule, SimpleListTableComponent],
 })
-export class JobsPreferencesComponent implements PreferencesCardControl<JobsSettingsControls>, OnInit, OnDestroy {
-
+export class JobsPreferencesComponent
+  implements PreferencesCardControl<JobsSettingsControls>, OnInit, OnDestroy
+{
   controls = new FormGroup({
     productCategories: new FormControl<ProductCategory[]>([]),
-    productUnits: new FormControl<ProductUnit[]>([])
+    productUnits: new FormControl<ProductUnit[]>([]),
   });
 
   stateChanges = new Subject<void>();
@@ -35,22 +53,20 @@ export class JobsPreferencesComponent implements PreferencesCardControl<JobsSett
     this.stateChanges.next();
   }
 
-
   categoryDialog = CategoryDialogComponent;
   unitsDialog = UnitsDialogComponent;
 
   constructor(
     private fb: FormBuilder,
-    private changeDetector: ChangeDetectorRef,
-  ) { }
+    private changeDetector: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this.controls;
-    this.stateChanges.subscribe(_ => this.changeDetector.markForCheck());
+    this.stateChanges.subscribe((_) => this.changeDetector.markForCheck());
   }
 
   ngOnDestroy() {
     this.stateChanges.complete();
   }
-
 }

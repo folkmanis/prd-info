@@ -19,8 +19,9 @@ import { takeUntil } from 'rxjs/operators';
 import { MessagesListComponent } from './messages-list/messages-list.component';
 
 @Directive({
-  selector: 'button[appMessagesTrigger]',
-  providers: [DestroyService],
+    selector: 'button[appMessagesTrigger]',
+    providers: [DestroyService],
+    standalone: true,
 })
 export class MessagesTriggerDirective
   extends CdkOverlayOrigin

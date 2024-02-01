@@ -1,13 +1,26 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { ControlValueAccessor, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator, Validators } from '@angular/forms';
+import {
+  ControlValueAccessor,
+  FormControl,
+  FormGroup,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validator,
+  Validators,
+} from '@angular/forms';
+import { MatOptionModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { plainToInstance } from 'class-transformer';
 import { defaults } from 'lodash-es';
 import { Observable, filter, from, map, switchMap, toArray } from 'rxjs';
 import { JobsFilesApiService } from 'src/app/filesystem';
 import { FtpUserData } from 'src/app/interfaces';
-import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 
 const DEFAULT_DATA: FtpUserData = {
   folder: null,
@@ -31,21 +44,23 @@ const DEFAULT_DATA: FtpUserData = {
       provide: NG_VALIDATORS,
       multi: true,
       useExisting: FtpUserComponent,
-    }
+    },
   ],
   imports: [
-    CommonModule,
-    MaterialLibraryModule,
     ReactiveFormsModule,
-  ]
+    AsyncPipe,
+    MatFormFieldModule,
+    MatOptionModule,
+    MatSelectModule,
+    MatInputModule,
+  ],
 })
 export class FtpUserComponent implements ControlValueAccessor, Validator {
-
   readonly ftpFolders$: Observable<string[]> = this.filesApi.readFtp().pipe(
-    switchMap(elements => from(elements)),
-    filter(element => element.isFolder),
-    map(el => el.name),
-    toArray(),
+    switchMap((elements) => from(elements)),
+    filter((element) => element.isFolder),
+    map((el) => el.name),
+    toArray()
   );
 
   private _required = false;
@@ -58,10 +73,7 @@ export class FtpUserComponent implements ControlValueAccessor, Validator {
   }
 
   form = new FormGroup({
-    folder: new FormControl(
-      DEFAULT_DATA.folder,
-      [Validators.required],
-    ),
+    folder: new FormControl(DEFAULT_DATA.folder, [Validators.required]),
     username: new FormControl(DEFAULT_DATA.username),
     password: new FormControl(DEFAULT_DATA.password),
   });
@@ -70,24 +82,19 @@ export class FtpUserComponent implements ControlValueAccessor, Validator {
     return this.form.controls.folder;
   }
 
-  onTouchFn: () => void = () => { };
-  private _onChange: () => void = () => { };
+  onTouchFn: () => void = () => {};
+  private _onChange: () => void = () => {};
 
-  constructor(
-    private filesApi: JobsFilesApiService,
-  ) { }
+  constructor(private filesApi: JobsFilesApiService) {}
 
   writeValue(obj: FtpUserData): void {
-    this.form.setValue(
-      defaults(obj, DEFAULT_DATA),
-      { emitEvent: false }
-    );
+    this.form.setValue(defaults(obj, DEFAULT_DATA), { emitEvent: false });
   }
 
   registerOnChange(fn: (data: FtpUserData) => void): void {
-    this.form.valueChanges.pipe(
-      map(value => plainToInstance(FtpUserData, value)),
-    ).subscribe(fn);
+    this.form.valueChanges
+      .pipe(map((value) => plainToInstance(FtpUserData, value)))
+      .subscribe(fn);
   }
 
   registerOnTouched(fn: any): void {
@@ -109,5 +116,4 @@ export class FtpUserComponent implements ControlValueAccessor, Validator {
   registerOnValidatorChange(fn: () => void): void {
     this._onChange = fn;
   }
-
 }

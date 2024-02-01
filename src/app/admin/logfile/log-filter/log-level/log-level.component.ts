@@ -1,12 +1,12 @@
+import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Output } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { distinctUntilChanged, filter, map, Observable, tap } from 'rxjs';
+import { MatOptionModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { Observable, distinctUntilChanged, filter, map, tap } from 'rxjs';
 import { getConfig } from 'src/app/services/config.provider';
 import { LogLevel } from '../../log-level.interface';
-import { MatOptionModule } from '@angular/material/core';
-import { NgFor, AsyncPipe } from '@angular/common';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
 
 const maxLevel = (levels: LogLevel[]) =>
   Math.max(...levels.map(({ key }) => key));
@@ -22,7 +22,6 @@ const maxLevel = (levels: LogLevel[]) =>
     MatSelectModule,
     FormsModule,
     ReactiveFormsModule,
-    NgFor,
     MatOptionModule,
     AsyncPipe,
   ],

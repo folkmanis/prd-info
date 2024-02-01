@@ -4,48 +4,47 @@
     font-size: 14px;
 }
 
-.messages-container {
-    padding: 8px 0;
-}
-
 .message {
     height: 48px;
-    padding: 0px 8px;
+    padding: 0;
     display: flex;
     align-items: center;
     cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    overflow: hidden;
 
     &:not(:last-of-type) {
         border-bottom: 1px solid rgba(0, 0, 0, 0.12);
     }
+
+    &:hover,
+    &.selected {
+        background-color: rgba(0, 0, 0, 0.12);
+    }
+
 }
 
 .signal {
     flex: 0 0 8px;
     height: 100%;
-    margin-left: -8px;
-    margin-right: 8px;
-    visibility: hidden;
+    opacity: 0;
     background-color: var(--accent-color);
     transition: all 0.2s ease-in-out;
+
+    .unread & {
+        opacity: 1;
+    }
 }
 
-.unread .signal {
-    visibility: visible;
-}
-
-.message:hover,
-.message.selected {
-    background-color: rgba(0, 0, 0, 0.12);
-    transition: all 0.2s ease-in-out;
-}
 
 .message-text {
+    padding: 0 8px;
     display: flex;
     flex-direction: column;
     height: 100%;
     justify-content: center;
     overflow: hidden;
+    transition: width 1.2s ease-in-out;
 
     span {
         overflow: hidden;
@@ -59,17 +58,15 @@
 }
 
 .message-menu {
-    visibility: hidden;
-    width: 0;
+    display: none;
+    width: auto;
+    opacity: 0;
     transition: all 0.2s ease-in-out;
-}
-
-.message-menu:first-of-type {
     margin-left: auto;
-}
 
-.message:hover .message-menu,
-.selected .message-menu {
-    visibility: visible;
-    width: 40px;
+    .message:hover &,
+    .selected & {
+        display: flex;
+        opacity: 1;
+    }
 }

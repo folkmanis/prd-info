@@ -1,7 +1,7 @@
+import { AsyncPipe, TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ColorTotals } from 'src/app/kastes/interfaces';
 import { getKastesPreferences } from '../../services/kastes-preferences.service';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-color-totals',
@@ -9,15 +9,10 @@ import { CommonModule } from '@angular/common';
   templateUrl: './color-totals.component.html',
   styleUrls: ['./color-totals.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    CommonModule,
-  ]
+  imports: [TitleCasePipe, AsyncPipe],
 })
 export class ColorTotalsComponent {
-
   colors$ = getKastesPreferences('colors');
 
   @Input() colorTotals: ColorTotals[] = [];
-
-
 }

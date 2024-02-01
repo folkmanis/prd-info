@@ -1,6 +1,16 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild, inject } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  ViewChild,
+  inject,
+} from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -18,7 +28,6 @@ import { LoginService } from './services/login.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatButtonModule,
     MatFormFieldModule,
@@ -27,15 +36,13 @@ import { LoginService } from './services/login.service';
   ],
 })
 export class LoginComponent implements OnInit {
-
   @ViewChild(FocusedDirective) username: FocusedDirective;
 
   loginForm = new FormGroup({
-    username: new FormControl('',
-      {
-        validators: [Validators.required],
-        nonNullable: true,
-      }),
+    username: new FormControl('', {
+      validators: [Validators.required],
+      nonNullable: true,
+    }),
     password: new FormControl('', { nonNullable: true }),
   });
 
@@ -45,14 +52,17 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private snack: MatSnackBar,
-    private loginService: LoginService,
-  ) { }
+    private loginService: LoginService
+  ) {}
 
   ngOnInit() {
-    this.loginService.isLogin().pipe(
-      filter(login => login),
-      switchMap(_ => this.loginService.logOut()),
-    ).subscribe();
+    this.loginService
+      .isLogin()
+      .pipe(
+        filter((login) => login),
+        switchMap((_) => this.loginService.logOut())
+      )
+      .subscribe();
 
     const err = this.route.snapshot.queryParamMap.get('error');
     if (typeof err === 'string') {
@@ -61,17 +71,17 @@ export class LoginComponent implements OnInit {
   }
 
   onLogin() {
-    this.loginService.logIn(this.loginForm.getRawValue())
-      .subscribe({
-        next: () => {
-          this.router.navigateByUrl('/');
-        },
-        error: () => {
-          this.snack.open('Nepareiza parole vai lietotājs', 'OK', { duration: 5000 });
-          this.loginForm.controls.password.reset();
-          this.username.focus();
-        }
-      });
+    this.loginService.logIn(this.loginForm.getRawValue()).subscribe({
+      next: () => {
+        this.router.navigateByUrl('/');
+      },
+      error: () => {
+        this.snack.open('Nepareiza parole vai lietotājs', 'OK', {
+          duration: 5000,
+        });
+        this.loginForm.controls.password.reset();
+        this.username.focus();
+      },
+    });
   }
-
 }

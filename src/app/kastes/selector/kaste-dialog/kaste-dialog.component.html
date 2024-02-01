@@ -17,50 +17,53 @@
 <mat-dialog-content>
 
     <div class="colors">
-        <div *ngFor="let color of colors;" [style.color]="colorCodes[color]">
+        @for (color of colors; track $index) {
+        <div [style.color]="colorCodes[color]">
             {{ veikalsKaste.kastes[color] }}
         </div>
+        }
     </div>
 
     <div class="summary">
-        <div *ngFor="let kaste of kastes; index as idx;" class="kaste" [class.gatavs]="kaste.kastes.gatavs"
-            [class.current]="idx === veikalsKaste.kaste">
+        @for (kaste of kastes; track $index) {
+        <div class="kaste" [class.gatavs]="kaste.kastes.gatavs" [class.current]="$index === veikalsKaste.kaste">
             <span>
-                {{ idx + 1 }}:&nbsp;
+                {{ $index + 1 }}:&nbsp;
             </span>
-            <span *ngFor="let color of allColors;" [style.color]="colorCodes[color]">
+            @for (color of allColors; track color) {
+            <span [style.color]="colorCodes[color]">
                 {{ kaste.kastes[color] }}&nbsp;
             </span>
+            }
             <span>
                 /{{ kaste.kastes.total }}
             </span>
         </div>
+        }
     </div>
 
 
 </mat-dialog-content>
 
 <mat-dialog-actions>
-    <button *ngIf="veikalsKaste.kastes.gatavs === false; else unsetButton;" mat-fab color="primary"
-        (click)="onGatavs(true)">
+    @if (veikalsKaste.kastes.gatavs === false) {
+    <button mat-fab color="primary" [mat-dialog-close]="true">
         <mat-icon>
             done
         </mat-icon>
     </button>
+    } @else {
+    <button mat-fab color="warn" [mat-dialog-close]="false">
+        <mat-icon>
+            remove_done
+        </mat-icon>
+    </button>
+    }
 
     <button mat-fab matDialogClose>
         <mat-icon>
             close
         </mat-icon>
     </button>
-
-
-    <ng-template #unsetButton>
-        <button mat-fab color="warn" (click)="onGatavs(false)">
-            <mat-icon>
-                remove_done
-            </mat-icon>
-        </button>
-    </ng-template>
 
 </mat-dialog-actions>

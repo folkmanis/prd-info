@@ -8,8 +8,12 @@ import {
   OnInit,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject, EMPTY, merge, Observable, of, Subject } from 'rxjs';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { BehaviorSubject, EMPTY, Observable, Subject, merge, of } from 'rxjs';
 import {
   map,
   mergeAll,
@@ -45,6 +49,8 @@ interface UpdateAction<T> {
       multi: true,
     },
   ],
+  standalone: true,
+  imports: [MatTableModule, MatButtonModule, MatTooltipModule, MatIconModule],
 })
 export class SimpleListTableComponent<T, K extends keyof T & string>
   implements OnInit, OnDestroy, ControlValueAccessor

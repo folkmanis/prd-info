@@ -1,7 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
@@ -17,7 +27,6 @@ import { PasswordInputDirective } from '../library/password-input';
 import { GoogleInfoComponent } from './google-info/google-info.component';
 import { DEMO_MODE } from '../services/app-mode.provider';
 
-
 type UserUpdate = Pick<User, 'name' | 'eMail'>;
 
 const NO_USER: UserUpdate = { name: '', eMail: '' };
@@ -29,7 +38,6 @@ const NO_USER: UserUpdate = { name: '', eMail: '' };
   styleUrls: ['./user-settings.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatCardModule,
     MatFormFieldModule,
@@ -38,19 +46,12 @@ const NO_USER: UserUpdate = { name: '', eMail: '' };
     MatDividerModule,
     MatButtonModule,
     PasswordInputDirective,
-  ]
+  ],
 })
 export class UserSettingsComponent implements CanComponentDeactivate {
-
   userForm = new FormGroup({
-    name: new FormControl(
-      '',
-      [Validators.required]
-    ),
-    eMail: new FormControl(
-      '',
-      [Validators.email]
-    )
+    name: new FormControl('', [Validators.required]),
+    eMail: new FormControl('', [Validators.email]),
   });
 
   isDemo = inject(DEMO_MODE);
@@ -70,14 +71,17 @@ export class UserSettingsComponent implements CanComponentDeactivate {
 
   canDeactivate = () => !this.isChanged || this.userForm.pristine;
 
-  private snack = (msg: string) => this.snackService.open(msg, 'OK', { duration: 3000 });
+  private snack = (msg: string) =>
+    this.snackService.open(msg, 'OK', { duration: 3000 });
 
   constructor(
     private loginService: LoginService,
     private snackService: MatSnackBar,
-    private route: ActivatedRoute,
+    private route: ActivatedRoute
   ) {
-    effect(() => this.initialUser = pick(this.user() || NO_USER, 'name', 'eMail'));
+    effect(
+      () => (this.initialUser = pick(this.user() || NO_USER, 'name', 'eMail'))
+    );
   }
 
   get isChanged(): boolean {
@@ -85,11 +89,10 @@ export class UserSettingsComponent implements CanComponentDeactivate {
   }
 
   onSave(userFormValue: UserUpdate) {
-    this.loginService.updateUser(userFormValue)
-      .subscribe({
-        next: () => this.snack('Dati saglabāti'),
-        error: () => this.snack('Neizdevās saglabāt'),
-      });
+    this.loginService.updateUser(userFormValue).subscribe({
+      next: () => this.snack('Dati saglabāti'),
+      error: () => this.snack('Neizdevās saglabāt'),
+    });
   }
 
   onReset() {
@@ -97,11 +100,10 @@ export class UserSettingsComponent implements CanComponentDeactivate {
   }
 
   onPasswordChange(password: string) {
-    this.loginService.updateUser({ password })
-      .subscribe({
-        next: () => this.snack('Parole nomainīta!'),
-        error: () => this.snack('Neizdevās nomainīt paroli!'),
-      });
+    this.loginService.updateUser({ password }).subscribe({
+      next: () => this.snack('Parole nomainīta!'),
+      error: () => this.snack('Neizdevās nomainīt paroli!'),
+    });
   }
 
   onDeleteGoogle() {
@@ -123,6 +125,4 @@ export class UserSettingsComponent implements CanComponentDeactivate {
     }
     this.userForm.markAsDirty();
   }
-
-
 }

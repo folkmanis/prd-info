@@ -1,11 +1,17 @@
-<div *ngIf="colors$ | async as colors;" class="container">
-    <div *ngFor="let total of totals(); index as idx;" [style.color]="colors[total.color]">
+@if (colors$ | async; as colors) {
+<div class="container">
+    @for (total of totals(); track $index) {
+    <div [style.color]="colors[total.color]">
         {{total.total}}
-        <span *ngIf="errors?.diff && errors.diff[total.color]" style="color:red">
+        @if (errors?.diff && errors.diff[total.color]) {
+        <span style="color:red">
             ({{ errors.diff[total.color] | plusSign }})
         </span>
+        }
     </div>
+    }
     <div>
         {{veikalsTotal()}}
     </div>
 </div>
+}

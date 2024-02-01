@@ -11,26 +11,28 @@
             Nomest šeit!
         </div>
         <div>
-            <span *ngIf="file">
+            @if (file) {
+            <span>
                 {{ file.name }} // {{ file.size | filesize }}
             </span>
+            }
         </div>
     </mat-card-content>
 
     <mat-card-actions>
-        <button mat-button (click)="fileInput.click()" [disabled]="busy$ | async">
+        <button mat-button (click)="fileInput.click()" [disabled]="busy()">
             ATVĒRT
         </button>
         <input hidden (change)="onFileSelected($event)" #fileInput type="file" accept=".dbd">
-        <button mat-raised-button (click)="onUpload()" [disabled]="file === null || (busy$ | async)" color="primary">
+        <button mat-raised-button (click)="onUpload()" [disabled]="file === null || busy()" color="primary">
             APSTRĀDĀT!
         </button>
     </mat-card-actions>
 
     <mat-card-footer>
-        <mat-progress-bar [mode]="(busy$ | async) ? 'indeterminate' : 'determinate'"></mat-progress-bar>
+        <mat-progress-bar [mode]="busy() ? 'indeterminate' : 'determinate'" />
     </mat-card-footer>
 
 </mat-card>
 
-<app-tabula [history]="history$ | async" scroll-to-top></app-tabula>
+<app-tabula [history]="history$ | async" scroll-to-top />

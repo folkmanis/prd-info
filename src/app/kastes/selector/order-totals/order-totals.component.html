@@ -3,9 +3,11 @@
         Kopējie skaiti
     </h4>
     <ul>
-        <li *ngFor="let colorTotal of colorTotals;" [style.color]="colors && colors[colorTotal.color]">
+        @for (colorTotal of colorTotals; track $index) {
+        <li [style.color]="colors && colors[colorTotal.color]">
             {{colorTotal.total}}
         </li>
+        }
     </ul>
 </section>
 <section>
@@ -13,8 +15,10 @@
         Apjomi
     </h4>
     <ul>
-        <li *ngFor="let apjoms of apjomiTotals;">
+        @for (apjoms of apjomiTotals; track $index) {
+        <li>
             {{apjoms[0]}}-{{apjoms[1]}}
         </li>
+        }
     </ul>
 </section>

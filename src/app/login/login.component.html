@@ -24,8 +24,10 @@
 
     <hr>
 
-    <a *ngIf="isDemo === false" mat-raised-button href="/data/login/google">
+    @if (isDemo === false) {
+    <a mat-raised-button href="/data/login/google">
         PIEVIENOTIES AR GOOGLE
     </a>
+    }
 
 </div>

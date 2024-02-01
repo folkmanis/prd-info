@@ -1,5 +1,4 @@
-import { NgIf } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 
@@ -7,24 +6,16 @@ import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
   selector: 'app-confirmation-dialog',
   templateUrl: './confirmation-dialog.component.html',
   standalone: true,
-  imports: [
-    MatDialogModule,
-    NgIf,
-    MatButtonModule,
-  ]
+  imports: [MatDialogModule, MatButtonModule],
 })
-export class ConfirmationDialogComponent implements OnInit {
-
+export class ConfirmationDialogComponent {
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: {
+    @Inject(MAT_DIALOG_DATA)
+    public data: {
       prompt: string;
       title?: string;
       yes?: string;
       no?: string;
-    },
-  ) { }
-
-  ngOnInit() {
-  }
-
+    }
+  ) {}
 }

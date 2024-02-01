@@ -8,10 +8,10 @@
 
     <mat-card-content>
 
-        <app-repro-product *ngFor="let control of productsControl.controls; index as idx;"
-            (remove)="onRemoveProduct(idx)" [customerProducts]="customerProducts" appProductControl
-            [showPrices]="showPrices" [productForm]="productsControl.controls[idx]">
-        </app-repro-product>
+        @for (control of productsControl.controls; track $index) {
+        <app-repro-product (remove)="onRemoveProduct($index)" [customerProducts]="customerProducts" appProductControl
+            [showPrices]="showPrices" [productForm]="productsControl.controls[$index]" />
+        }
 
     </mat-card-content>
 

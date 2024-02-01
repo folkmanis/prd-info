@@ -1,11 +1,17 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, Output, signal } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  Output,
+  signal,
+} from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { mergeMap, Observable, Subject } from 'rxjs';
+import { Observable, Subject, mergeMap } from 'rxjs';
 import { Invoice, InvoiceProduct } from 'src/app/interfaces';
 import { getConfig } from 'src/app/services/config.provider';
 import { InvoicesService } from '../../../services/invoices.service';
-import { AsyncPipe, NgIf } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
 
 const PAYTRAQ_SAVED_MESSAGE = 'Izveidota pavadzīme Paytraq sistēmā';
 const PAYTRAQ_UNLINK_MESSAGE = 'Paytraq savienojums dzēsts';
@@ -16,61 +22,64 @@ const PAYTRAQ_UNLINK_MESSAGE = 'Paytraq savienojums dzēsts';
   templateUrl: './invoice-paytraq.component.html',
   styleUrls: ['./invoice-paytraq.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    NgIf,
-    AsyncPipe,
-    MatButtonModule,
-  ],
+  imports: [AsyncPipe, MatButtonModule],
 })
 export class InvoicePaytraqComponent {
-
   @Input() invoice: Invoice;
 
   @Output() paytraqUpdate = new Subject<string>();
 
-  paytraqUrl$: Observable<string> = getConfig('paytraq', 'connectionParams', 'invoiceUrl');
+  paytraqUrl$: Observable<string> = getConfig(
+    'paytraq',
+    'connectionParams',
+    'invoiceUrl'
+  );
 
   paytraqBusy = signal(false);
 
   get paytraqOk(): boolean {
-    return !!this.invoice?.customerInfo?.financial?.paytraqId
-      && !this.invoice.paytraq
-      && allProductsWithPaytraq(this.invoice.products);
+    return (
+      !!this.invoice?.customerInfo?.financial?.paytraqId &&
+      !this.invoice.paytraq &&
+      allProductsWithPaytraq(this.invoice.products)
+    );
   }
 
   constructor(
     private invoicesService: InvoicesService,
-    private snack: MatSnackBar,
-  ) { }
+    private snack: MatSnackBar
+  ) {}
 
   onPaytraq(): void {
     this.paytraqBusy.set(true);
 
-    this.invoicesService.postPaytraqInvoice(this.invoice).pipe(
-      mergeMap(paytraqId => this.invoicesService.getPaytraqInvoiceRef(paytraqId).pipe(
-        mergeMap(documentRef => this.invoicesService.updateInvoice(
-          this.invoice.invoiceId,
-          { paytraq: { paytraqId, documentRef } })
-        ),
-      ))
-    ).subscribe(_ => {
-      this.paytraqUpdate.next(this.invoice.invoiceId);
-      this.paytraqBusy.set(false);
-      this.snack.open(PAYTRAQ_SAVED_MESSAGE, 'OK', { duration: 5000 });
-    });
+    this.invoicesService
+      .postPaytraqInvoice(this.invoice)
+      .pipe(
+        mergeMap((paytraqId) =>
+          this.invoicesService.getPaytraqInvoiceRef(paytraqId).pipe(
+            mergeMap((documentRef) =>
+              this.invoicesService.updateInvoice(this.invoice.invoiceId, {
+                paytraq: { paytraqId, documentRef },
+              })
+            )
+          )
+        )
+      )
+      .subscribe(() => {
+        this.paytraqUpdate.next(this.invoice.invoiceId);
+        this.paytraqBusy.set(false);
+        this.snack.open(PAYTRAQ_SAVED_MESSAGE, 'OK', { duration: 5000 });
+      });
   }
 
   onUnlinkPaytraq(): void {
     const id = this.invoice.invoiceId;
-    this.invoicesService.updateInvoice(
-      id,
-      { paytraq: null }
-    ).subscribe(_ => {
+    this.invoicesService.updateInvoice(id, { paytraq: null }).subscribe((_) => {
       this.paytraqUpdate.next(id);
       this.snack.open(PAYTRAQ_UNLINK_MESSAGE, 'OK', { duration: 5000 });
     });
   }
-
 }
 
 function allProductsWithPaytraq(products?: InvoiceProduct[]): boolean {
@@ -78,7 +87,9 @@ function allProductsWithPaytraq(products?: InvoiceProduct[]): boolean {
     return false;
   }
   for (const prod of products) {
-    if (!prod.paytraqId) { return false; }
+    if (!prod.paytraqId) {
+      return false;
+    }
   }
   return true;
 }

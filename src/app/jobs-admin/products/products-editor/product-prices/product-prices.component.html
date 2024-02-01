@@ -6,15 +6,17 @@
     </thead>
 
     <tbody>
-        <tr *ngFor="let control of pricesFormArray.controls; index as idx;">
+        @for (control of pricesFormArray.controls; track $index) {
+        <tr>
             <!-- Klients ar labošanu -->
             <td class="customer-name">
                 <!-- <mat-form-field> -->
                 <mat-select [formControl]="control.controls.customerName">
-                    <mat-option *ngFor="let customer of customers" [value]="customer.CustomerName"
-                        [disabled]="customer.disabled">
+                    @for (customer of customers; track customer.CustomerName) {
+                    <mat-option [value]="customer.CustomerName" [disabled]="customer.disabled">
                         {{customer.CustomerName}}
                     </mat-option>
+                    }
                 </mat-select>
                 <!-- </mat-form-field> -->
             </td>
@@ -26,19 +28,22 @@
             </td>
             <!-- Pogas -->
             <td class="buttons">
-                <button mat-icon-button (click)="removePrice(idx)" color="warn">
+                <button mat-icon-button (click)="removePrice($index)" color="warn">
                     <mat-icon>delete_outline</mat-icon>
                 </button>
             </td>
         </tr>
+        }
     </tbody>
 
     <tfoot>
         <tr>
             <td colspan="3">
-                <span *ngIf="pricesFormArray.hasError('duplicates')" class="error">
+                @if (pricesFormArray.hasError('duplicates')) {
+                <span class="error">
                     Atkārtoti norādīts klients {{ pricesFormArray.getError('duplicates') }}
                 </span>
+                }
             </td>
         </tr>
     </tfoot>

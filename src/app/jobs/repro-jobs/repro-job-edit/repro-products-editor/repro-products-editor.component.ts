@@ -1,4 +1,3 @@
-import { NgFor } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -62,7 +61,6 @@ const DEFAULT_PRODUCT: JobProduct = {
   standalone: true,
   imports: [
     MatCardModule,
-    NgFor,
     ReproProductComponent,
     ProductControlDirective,
     FormsModule,

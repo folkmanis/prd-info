@@ -1,22 +1,26 @@
 <app-simple-form-container buttons [status]="form.status" [isChanges]="changes()" (save)="onSave()" (reset)="onReset()"
     [formGroup]="form">
 
-    <mat-form-field class="customer-name full-width" *ngIf="initialValue._id == null; else existing">
+    @if (initialValue._id == null) {
+    <mat-form-field class="customer-name full-width">
         <mat-label>Klienta nosaukums</mat-label>
         <input matInput formControlName="CustomerName" placeholder="Nosaukums" autocomplete="off" required>
-        <mat-error *ngIf="form.controls.CustomerName.hasError('required')">
+        @if (form.controls.CustomerName.hasError('required')) {
+        <mat-error>
             Nosaukums jāievada obligāti!
         </mat-error>
-        <mat-error *ngIf="form.controls.CustomerName.hasError('occupied')">
+        }
+        @if (form.controls.CustomerName.hasError('occupied')) {
+        <mat-error>
             Nosaukums jau tiek izmantots
         </mat-error>
+        }
     </mat-form-field>
-
-    <ng-template #existing>
-        <h2>
-            {{formValue().CustomerName}}
-        </h2>
-    </ng-template>
+    } @else {
+    <h2>
+        {{formValue().CustomerName}}
+    </h2>
+    }
 
     <mat-card>
         <mat-card-header>
@@ -31,12 +35,16 @@
                 <mat-form-field>
                     <mat-label>Klienta kods</mat-label>
                     <input matInput appInputUppercase formControlName="code" placeholder="Kods" autocomplete="off">
-                    <mat-error *ngIf="form.controls.code.hasError('required')">
+                    @if (form.controls.code.hasError('required')) {
+                    <mat-error>
                         Kodu jāievada obligāti!
                     </mat-error>
-                    <mat-error *ngIf="form.controls.code.hasError('occupied')">
+                    }
+                    @if (form.controls.code.hasError('occupied')) {
+                    <mat-error>
                         Kods jau tiek izmantots
                     </mat-error>
+                    }
                 </mat-form-field>
             </section>
             <!-- apraksts -->
@@ -81,20 +89,24 @@
         </mat-card-content>
     </mat-card>
 
-    <mat-card *ngIf="paytraqEnabled()">
+    @if (paytraqEnabled()) {
+    <mat-card>
         <mat-card-header>
             <mat-card-title>
                 Sasaiste ar Paytraq
             </mat-card-title>
-            <mat-card-subtitle *ngIf="formValue().financial?.paytraqId">
+            @if (formValue().financial?.paytraqId) {
+            <mat-card-subtitle>
                 {{formValue().financial.paytraqId}} /
                 {{formValue().financial.clientName}}
             </mat-card-subtitle>
+            }
         </mat-card-header>
 
         <mat-card-content>
             <app-paytraq-customer formControlName="financial" [customer]="formValue()"></app-paytraq-customer>
         </mat-card-content>
     </mat-card>
+    }
 
 </app-simple-form-container>

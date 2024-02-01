@@ -25,9 +25,11 @@
     <ng-container matColumnDef="price">
         <td mat-cell *matCellDef="let price">
             {{ price.price | currency }}
-            <span *ngIf="units">
+            @if (units) {
+            <span>
                 /{{ units }}
             </span>
+            }
         </td>
     </ng-container>
 

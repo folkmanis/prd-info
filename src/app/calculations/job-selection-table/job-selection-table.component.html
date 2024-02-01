@@ -85,9 +85,9 @@
             {{(job.products?.price * job.products?.count) | currency}}
         </mat-cell>
         <mat-footer-cell *matFooterCellDef>
-            <ng-container *ngIf="isNumber(total)">
-                Kopā: {{ total | currency }}
-            </ng-container>
+            @if (isNumber(total)) {
+            Kopā: {{ total | currency }}
+            }
         </mat-footer-cell>
     </ng-container>
 

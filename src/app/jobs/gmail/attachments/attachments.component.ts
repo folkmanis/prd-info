@@ -17,9 +17,9 @@ import { FilesizePipe } from 'src/app/library/common';
   styleUrls: ['./attachments.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [MatListModule, NgFor, FilesizePipe],
+  imports: [MatListModule, FilesizePipe],
 })
-export class AttachmentsComponent implements OnInit {
+export class AttachmentsComponent {
   @ViewChild(MatSelectionList) private list: MatSelectionList;
 
   private _attachments: Attachment[] = [];
@@ -33,23 +33,5 @@ export class AttachmentsComponent implements OnInit {
 
   get selected(): Attachment[] | undefined {
     return this.list?.selectedOptions.selected.map((opt) => opt.value);
-  }
-
-  constructor() {}
-
-  ngOnInit(): void {}
-
-  deselect(attachments: Attachment[]) {
-    for (const attachment of attachments) {
-      this.list.options.forEach((option) => {
-        if (option.value === attachment) {
-          option.selected = false;
-        }
-      });
-    }
-  }
-
-  deselectAll() {
-    this.list.deselectAll();
   }
 }

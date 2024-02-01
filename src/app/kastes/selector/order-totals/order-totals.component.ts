@@ -1,15 +1,15 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { colorTotalsFromVeikali, kastesTotalsFromVeikali } from '../../common';
-import { Colors, ColorTotals, VeikalsKaste } from '../../interfaces';
+import { ColorTotals, Colors, VeikalsKaste } from '../../interfaces';
 
 @Component({
   selector: 'app-order-totals',
   templateUrl: './order-totals.component.html',
   styleUrls: ['./order-totals.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
 })
-export class OrderTotalsComponent implements OnInit {
-
+export class OrderTotalsComponent {
   @Input()
   set veikali(value: VeikalsKaste[]) {
     if (value) {
@@ -21,10 +21,4 @@ export class OrderTotalsComponent implements OnInit {
 
   colorTotals: ColorTotals[] = [];
   apjomiTotals: [number, number][] = [];
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
 }

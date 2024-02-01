@@ -32,9 +32,11 @@
         <mat-form-field class="full-width">
             <mat-label>Darba nosaukums</mat-label>
             <input type="text" matInput formControlName="name" required>
-            <mat-error *ngIf="nameControl.hasError('required')">
+            @if(nameControl.hasError('required')) {
+            <mat-error>
                 Jānorāda obligāti
             </mat-error>
+            }
             <button mat-icon-button [appCopyClipboard]="jobIdAndName$ | async" matIconSuffix tabindex="-1">
                 <mat-icon>filter_none</mat-icon>
             </button>
@@ -49,9 +51,11 @@
             <mat-form-field>
                 <mat-label>Kategorija</mat-label>
                 <mat-select formControlName="category" required>
-                    <mat-option *ngFor="let cat of categories$ | async" [value]="cat.category">
-                        {{cat.description}}
+                    @for (category of categories$ | async; track category.category) {
+                    <mat-option [value]="category.category">
+                        {{category.description}}
                     </mat-option>
+                    }
                 </mat-select>
             </mat-form-field>
         </ng-container>
@@ -60,9 +64,11 @@
             <mat-form-field>
                 <mat-label>Stadija</mat-label>
                 <mat-select formControlName="generalStatus">
-                    <mat-option *ngFor="let state of jobStates$ | async" [value]="state.state">
+                    @for (state of jobStates$ | async; track $index) {
+                    <mat-option [value]="state.state">
                         {{state.description}}
                     </mat-option>
+                    }
                 </mat-select>
             </mat-form-field>
         </ng-container>
@@ -76,9 +82,11 @@
     </div>
 
     <!-- Preces apakšforma -->
-    <app-repro-products-editor *ngIf="customerProducts$ | async as customerProducts"
-        [customerProducts]="customerProducts" formControlName="products" [showPrices]="showPrices$ | async">
+    @if (customerProducts$ | async; as customerProducts) {
+    <app-repro-products-editor [customerProducts]="customerProducts" formControlName="products"
+        [showPrices]="showPrices$ | async">
     </app-repro-products-editor>
+    }
 
     <div class="container-multi">
 

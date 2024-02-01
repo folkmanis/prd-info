@@ -1,41 +1,50 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TitleCasePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import {
+  ControlValueAccessor,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { COLORS, KastesSettings } from 'src/app/kastes/interfaces';
 import { ColorSliderComponent } from '../color-slider/color-slider.component';
-import { NgFor, TitleCasePipe } from '@angular/common';
-
-
 
 type ColorSettings = KastesSettings['colors'];
 
 type ColorsGroup = {
-  [key in keyof ColorSettings]: FormControl<ColorSettings[key]>
+  [key in keyof ColorSettings]: FormControl<ColorSettings[key]>;
 };
 
 @Component({
-    selector: 'app-kastes-colors',
-    templateUrl: './kastes-colors.component.html',
-    styleUrls: ['./kastes-colors.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: KastesColorsComponent,
-            multi: true,
-        }
-    ],
-    standalone: true,
-    imports: [NgFor, ColorSliderComponent, FormsModule, ReactiveFormsModule, TitleCasePipe]
+  selector: 'app-kastes-colors',
+  templateUrl: './kastes-colors.component.html',
+  styleUrls: ['./kastes-colors.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: KastesColorsComponent,
+      multi: true,
+    },
+  ],
+  standalone: true,
+  imports: [
+    ColorSliderComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    TitleCasePipe,
+  ],
 })
 export class KastesColorsComponent implements ControlValueAccessor {
-
   readonly colors = [...COLORS];
 
   colorGroup = new FormGroup<ColorsGroup>(
-    Object.assign({}, ...COLORS.map(col => ({ [col]: new FormControl('') })))
+    Object.assign({}, ...COLORS.map((col) => ({ [col]: new FormControl('') })))
   );
 
-  onTouchFn: () => void = () => { };
+  onTouchFn: () => void = () => {};
 
   writeValue(obj: ColorSettings): void {
     this.colorGroup.setValue(obj, { emitEvent: false });
@@ -56,7 +65,4 @@ export class KastesColorsComponent implements ControlValueAccessor {
       this.colorGroup.enable();
     }
   }
-
-
-
 }
