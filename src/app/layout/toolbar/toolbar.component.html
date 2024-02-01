@@ -46,7 +46,7 @@
   <!-- Mazais lietotāja menu -->
   <span>
 
-    <button mat-button [matMenuTriggerFor]='userMenu'>
+    <button mat-icon-button [matMenuTriggerFor]='userMenu'>
       @if (user.google?.picture) {
       <span class="avatar">
       </span>
@@ -56,9 +56,6 @@
       </mat-icon>
       }
 
-      <mat-icon>
-        arrow_drop_down
-      </mat-icon>
     </button>
 
   </span>
