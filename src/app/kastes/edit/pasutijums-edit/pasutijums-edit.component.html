@@ -1,6 +1,5 @@
+@if(jobInfo$ | async; as jobInfo) {
 <app-simple-form-container>
-
-    @if(jobInfo$ | async; as jobInfo) {
 
     <h2 appSimpleFormTypedLabel>
         {{jobInfo.job.jobId}} / {{jobInfo.job.name}}
@@ -20,5 +19,5 @@
             </ng-template>
         </mat-tab>
     </mat-tab-group>
-    }
 </app-simple-form-container>
+}
