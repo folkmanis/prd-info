@@ -42,6 +42,10 @@ export class JobInfoComponent {
 
   @Output() deleteVeikali = new EventEmitter<number>();
 
+  @Output() copyToFirebase = new EventEmitter<void>();
+
+  @Output() copyFromFirebase = new EventEmitter<void>();
+
   plannedTotals(): ColorTotals[] {
     return jobProductsToColorTotals(this.job.products || []);
   }

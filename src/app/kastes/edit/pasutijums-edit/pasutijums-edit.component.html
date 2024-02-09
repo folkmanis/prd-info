@@ -8,8 +8,9 @@
     <mat-tab-group [selectedIndex]="0">
         <mat-tab label="Informācija">
             <app-job-info [job]="jobInfo.job" [veikali]="jobInfo.veikali" [activeJobId]="jobInfo.activeJobId"
-                (activeJob)="onSetAsActive($event)" (deleteVeikali)="onDeleteVeikali(jobInfo.job.jobId)">
-            </app-job-info>
+                (activeJob)="onSetAsActive($event)" (deleteVeikali)="onDeleteVeikali(jobInfo.job.jobId)"
+                (copyToFirebase)="onCopyToFirebase(jobInfo.job.jobId)"
+                (copyFromFirebase)="onCopyFromFirebase(jobInfo.job.jobId)" />
         </mat-tab>
 
         <mat-tab label="Pakošanas saraksts" [disabled]="jobInfo.veikali.length == 0">

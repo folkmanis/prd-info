@@ -25,6 +25,13 @@ import { AsyncPipe } from '@angular/common';
 
 const VEIKALI_DELETED_MESSAGE = 'Pakošanas saraksts izdzēsts';
 
+const FIREBASE_COPY_TO_CONFIRMATION = 'Kopēt visus ierakstus uz lietotni?';
+const FIREBASE_COPY_FROM_CONFIRMATION = 'Kopēt datus no lietotnes?';
+const firebaseCopyToResultMessage = (count: number) =>
+  `Uzkopēti ${count} ieraksti.`;
+const firebaseCopyFromResultMessage = (count: number) =>
+  `Saņemti ${count} ieraksti no lietotnes.`;
+
 @Component({
   selector: 'app-pasutijums-edit',
   standalone: true,
@@ -97,5 +104,41 @@ export class PasutijumsEditComponent implements OnDestroy {
         switchMap(() => this.pasService.getKastesJob(jobId))
       )
       .subscribe((job) => this.jobUpdate$.next(job));
+  }
+
+  onCopyToFirebase(jobId: number) {
+    this.confirmationDialog
+      .confirm(FIREBASE_COPY_TO_CONFIRMATION)
+      .pipe(
+        mergeMap((resp) =>
+          resp ? this.pasService.copyToFirestore(jobId) : EMPTY
+        ),
+        tap((result) =>
+          this.snack.open(
+            firebaseCopyToResultMessage(result.recordsUpdated),
+            'OK',
+            { duration: 3000 }
+          )
+        )
+      )
+      .subscribe();
+  }
+
+  onCopyFromFirebase(jobId: number) {
+    this.confirmationDialog
+      .confirm(FIREBASE_COPY_FROM_CONFIRMATION)
+      .pipe(
+        mergeMap((resp) =>
+          resp ? this.pasService.copyFromFirestore(jobId) : EMPTY
+        ),
+        tap((result) =>
+          this.snack.open(
+            firebaseCopyFromResultMessage(result.modifiedCount),
+            'OK',
+            { duration: 3000 }
+          )
+        )
+      )
+      .subscribe();
   }
 }

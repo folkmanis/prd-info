@@ -31,6 +31,13 @@
         <a mat-raised-button [routerLink]="['/', 'jobs', 'repro', job.jobId]">
             ATVĒRT DARBU
         </a>
-
+    </p>
+    <p>
+        <button mat-raised-button (click)="copyToFirebase.next()">
+            KOPĒT UZ LIETOTNI
+        </button>
+        <button mat-raised-button (click)="copyFromFirebase.next()">
+            KOPĒT NO LIETOTNES
+        </button>
     </p>
 </div>

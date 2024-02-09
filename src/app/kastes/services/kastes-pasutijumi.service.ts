@@ -13,17 +13,14 @@ export interface KastesJobFilter {
   providedIn: 'any',
 })
 export class KastesPasutijumiService {
-
   private readonly _filter$ = new BehaviorSubject<KastesJobFilter>({});
 
   kastesJobs$: Observable<KastesJobPartial[]> = this._filter$.pipe(
     throttleTime(300),
-    switchMap(filter => this.getKastesJobs(filter))
+    switchMap((filter) => this.getKastesJobs(filter))
   );
 
-  constructor(
-    private api: KastesApiService,
-  ) { }
+  constructor(private api: KastesApiService) {}
 
   setFilter(filter: KastesJobFilter) {
     this._filter$.next(filter);
@@ -53,20 +50,31 @@ export class KastesPasutijumiService {
     return this.api.deleteVeikali(pasutijumsId);
   }
 
+  copyToFirestore(pasutijumsId: number) {
+    return this.api.postFirestoreUpload(pasutijumsId);
+  }
+
+  copyFromFirestore(pasutijumsId: number) {
+    return this.api.postFirestoreDownload(pasutijumsId);
+  }
+
   parseXlsx(file: File | undefined): Observable<(string | number)[][]> {
     if (!file) {
       return of([]);
     }
-    const form = new FormData;
+    const form = new FormData();
     form.append('table', file, file.name);
-    return this.api.parseXlsx(form).pipe(
-      map(data => this.normalizeTable(data))
-    );
+    return this.api
+      .parseXlsx(form)
+      .pipe(map((data) => this.normalizeTable(data)));
   }
 
   private normalizeTable(data: any[][]): Array<string | number>[] {
-    const width = data.reduce((acc, row) => row.length > acc ? row.length : acc, 0);
-    const ndata = data.map(row => {
+    const width = data.reduce(
+      (acc, row) => (row.length > acc ? row.length : acc),
+      0
+    );
+    const ndata = data.map((row) => {
       const nrow = new Array(width);
       for (let idx = 0; idx < width; idx++) {
         nrow[idx] = row[idx] || '';
@@ -75,7 +83,4 @@ export class KastesPasutijumiService {
     });
     return ndata;
   }
-
 }
-
-
