@@ -168,15 +168,14 @@ export class UserEditComponent implements CanComponentDeactivate {
     });
   }
 
-  onDeleteSessions(sessionIds: string[]) {
-    const uname = this.form.value.username;
+  onDeleteSessions(sessionIds: string[], username: string) {
     this.confirmationDialog
       .confirmDelete()
       .pipe(
         mergeMap((resp) => (resp ? of(sessionIds) : EMPTY)),
-        mergeMap((ids) => this.usersService.deleteSessions(uname, ids)),
+        mergeMap((ids) => this.usersService.deleteSessions(username, ids)),
         switchMap((count) =>
-          this.usersService.getUser(uname).pipe(
+          this.usersService.getUser(username).pipe(
             tap((u) => this.sessions.set(u.sessions)),
             map(() => count)
           )
@@ -187,6 +186,15 @@ export class UserEditComponent implements CanComponentDeactivate {
           duration: 5000,
         });
       });
+  }
+
+  onUploadToFirestore(username: string) {
+    this.usersService.uploadToFirestore(username).subscribe({
+      next: (_) =>
+        this.snackBar.open('Dati saglabāti lietotnē', 'OK', { duration: 5000 }),
+      error: (err) =>
+        this.snackBar.open(`Neizdevās saglabāt. Kļūda ${err?.message}`, 'OK'),
+    });
   }
 
   private existingUsernameValidator(): AsyncValidatorFn {
