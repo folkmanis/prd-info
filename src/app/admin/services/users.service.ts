@@ -7,27 +7,29 @@ import { XmfCustomer } from 'src/app/xmf-search/interfaces';
 import { XmfArchiveApiService } from 'src/app/xmf-search/services/xmf-archive-api.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UsersService {
-
   private reload$ = new Subject<void>();
 
   users$ = this.reload$.pipe(
     startWith({}),
-    switchMap(() => this.api.getAll({})),
+    switchMap(() => this.api.getAll({}))
   );
-
 
   constructor(
     private api: UsersApiService,
-    private xmfApi: XmfArchiveApiService,
-  ) { }
+    private xmfApi: XmfArchiveApiService
+  ) {}
 
   getXmfCustomers(): Observable<XmfCustomer[]> {
-    return this.xmfApi.getXmfCustomer().pipe(
-      map(customer => customer.map(cust => ({ name: cust || 'Nenoteikts', value: cust })))
-    );
+    return this.xmfApi
+      .getXmfCustomer()
+      .pipe(
+        map((customer) =>
+          customer.map((cust) => ({ name: cust || 'Nenoteikts', value: cust }))
+        )
+      );
   }
 
   getUser(username: string): Observable<User> {
@@ -35,9 +37,9 @@ export class UsersService {
   }
 
   updateUser({ username, ...update }: Partial<User>): Observable<User> {
-    return this.api.updateOne(username, update).pipe(
-      tap(_ => this.reload$.next()),
-    );
+    return this.api
+      .updateOne(username, update)
+      .pipe(tap((_) => this.reload$.next()));
   }
 
   updatePassword(username: string, password: string): Observable<User> {
@@ -45,15 +47,13 @@ export class UsersService {
   }
 
   addUser(data: Partial<User>): Observable<User> {
-    return this.api.insertOne(data).pipe(
-      tap(_ => this.reload$.next()),
-    );
+    return this.api.insertOne(data).pipe(tap((_) => this.reload$.next()));
   }
 
   deleteUser(username: string): Observable<boolean> {
     return this.api.deleteOne(username).pipe(
-      map(resp => resp > 0),
-      tap(resp => resp && this.reload$.next()),
+      map((resp) => resp > 0),
+      tap((resp) => resp && this.reload$.next())
     );
   }
 
@@ -61,10 +61,13 @@ export class UsersService {
     return this.api.deleteSessions(username, sessionIds);
   }
 
-  validateUsername(username: string): Observable<boolean> {
-    return this.api.validatorData('username').pipe(
-      map(names => !names.includes(username)),
-    );
+  uploadToFirestore(username: string) {
+    return this.api.uploadToFirestore(username);
   }
 
+  validateUsername(username: string): Observable<boolean> {
+    return this.api
+      .validatorData('username')
+      .pipe(map((names) => !names.includes(username)));
+  }
 }

@@ -119,6 +119,16 @@
         </mat-card-content>
     </mat-card>
 
+    @if(!isNew) {
+    <mat-card>
+        <mat-card-content>
+            <button mat-raised-button (click)="onUploadToFirestore(unameCtrl.value)" [disabled]="changes() != null">
+                SAGLABĀT LIETOTNĒ
+            </button>
+        </mat-card-content>
+    </mat-card>
+    }
+
     @if (sessions()) {
     <mat-card>
 
@@ -130,7 +140,7 @@
 
         <mat-card-content>
             <app-sessions [sessions]="sessions()" [currentSession]="currentSessionId$ | async"
-                (deleteSession)="onDeleteSessions($event)" />
+                (deleteSession)="onDeleteSessions($event, unameCtrl.value)" />
         </mat-card-content>
 
     </mat-card>
