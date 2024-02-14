@@ -20,7 +20,7 @@ export class UsersApiService {
   constructor(
     private http: HttpClient,
     private transformer: AppClassTransformerService
-  ) {}
+  ) { }
 
   getOne(name: string): Observable<User> {
     return this.http
@@ -55,7 +55,7 @@ export class UsersApiService {
   deleteOne(id: string): Observable<number> {
     this.checkDemoMode();
     return this.http
-      .delete<{ deletedCount: number }>(this.path + id, new HttpOptions())
+      .delete<{ deletedCount: number; }>(this.path + id, new HttpOptions())
       .pipe(map((data) => data.deletedCount));
   }
 
@@ -69,7 +69,7 @@ export class UsersApiService {
   uploadToFirestore(id: string): Observable<number> {
     this.checkDemoMode();
     return this.http
-      .patch<{ updatedCount: number }>(
+      .post<{ updatedCount: number; }>(
         this.path + id + '/firestore/upload',
         new HttpOptions()
       )
@@ -86,7 +86,7 @@ export class UsersApiService {
   deleteSessions(username: string, sessionIds: string[]): Observable<number> {
     this.checkDemoMode();
     return this.http
-      .delete<{ deletedCount: number }>(
+      .delete<{ deletedCount: number; }>(
         this.path + username + '/session',
         new HttpOptions({ ids: sessionIds })
       )
