@@ -52,12 +52,18 @@
             <app-password-input-group formControlName="password" [passwordMinimumLength]="3"></app-password-input-group>
         </mat-card-content>
         } @else {
-        <!-- Paroles maiņa -->
         <mat-card-content>
-            <button mat-raised-button appPasswordInput [passwordMinimumLength]="6"
-                (appPasswordChange)="onPasswordChange($event, unameCtrl.value)" color="primary">
-                MAINĪT PAROLI
-            </button>
+            <div class="button-row">
+                <!-- Paroles maiņa -->
+                <button mat-raised-button appPasswordInput [passwordMinimumLength]="6"
+                    (appPasswordChange)="onPasswordChange($event, unameCtrl.value)" color="primary">
+                    MAINĪT PAROLI
+                </button>
+                <!-- Dzēšana -->
+                <button mat-raised-button color="warn" (click)="onDeleteUser(unameCtrl.value)">
+                    DZĒST
+                </button>
+            </div>
         </mat-card-content>
         }
     </mat-card>

@@ -20,7 +20,7 @@ export class UsersService {
   constructor(
     private api: UsersApiService,
     private xmfApi: XmfArchiveApiService
-  ) {}
+  ) { }
 
   getXmfCustomers(): Observable<XmfCustomer[]> {
     return this.xmfApi
@@ -52,7 +52,9 @@ export class UsersService {
 
   deleteUser(username: string): Observable<boolean> {
     return this.api.deleteOne(username).pipe(
-      map((resp) => resp > 0),
+      tap((resp) => {
+        if (!resp) throw new Error('User delete failed');
+      }),
       tap((resp) => resp && this.reload$.next())
     );
   }

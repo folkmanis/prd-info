@@ -9,3 +9,10 @@ mat-card {
 section {
     margin: 16px 0;
 }
+
+mat-card-content {
+    .button-row {
+        display: flex;
+        gap: 16px;
+    }
+}

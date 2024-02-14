@@ -52,11 +52,11 @@ export class UsersApiService {
       .pipe(this.transformer.toClass(User));
   }
 
-  deleteOne(id: string): Observable<number> {
+  deleteOne(id: string): Observable<boolean> {
     this.checkDemoMode();
     return this.http
       .delete<{ deletedCount: number; }>(this.path + id, new HttpOptions())
-      .pipe(map((data) => data.deletedCount));
+      .pipe(map((data) => data.deletedCount > 0));
   }
 
   validatorData<K extends keyof User & string>(key: K): Observable<User[K][]> {

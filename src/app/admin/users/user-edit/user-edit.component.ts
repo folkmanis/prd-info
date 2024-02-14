@@ -168,6 +168,26 @@ export class UserEditComponent implements CanComponentDeactivate {
     });
   }
 
+  onDeleteUser(username: string) {
+    this.confirmationDialog
+      .confirmDelete()
+      .pipe(
+        mergeMap(resp => resp ? this.usersService.deleteUser(username) : EMPTY),
+      ).subscribe({
+        next: () => {
+          this.snackBar.open(`Lietotājs izdzēsts`, 'OK', {
+            duration: 5000,
+          });
+          this.form.markAsPristine();
+          this.router.navigate(['..'], { relativeTo: this.route });
+        },
+        error: () => this.snackBar.open(`Neizdevās izdzēst`, 'OK', {
+          duration: 5000,
+        }),
+      });
+
+  }
+
   onDeleteSessions(sessionIds: string[], username: string) {
     this.confirmationDialog
       .confirmDelete()
