@@ -2,15 +2,16 @@ import { FacetFilter } from './facet-filter';
 
 export class SearchQuery {
 
-    private facet = new FacetFilter();
 
     constructor(
         public q: string = '',
+        private facet = new FacetFilter(),
     ) { }
 
     setFacet(facet: FacetFilter): SearchQuery {
-        this.facet = facet;
-        return this;
+        return new SearchQuery(
+            this.q, facet
+        );
     }
 
     searialize(): string {

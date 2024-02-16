@@ -3,9 +3,9 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnInit,
   Output,
-  ViewChild,
+  input,
+  viewChild
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,21 +21,17 @@ import { FacetPipe } from './facet.pipe';
   standalone: true,
   imports: [MatButtonModule, MatIconModule, MatListModule, FacetPipe],
 })
-export class FacetCheckerComponent implements OnInit {
-  @ViewChild(MatSelectionList) selection: MatSelectionList;
+export class FacetCheckerComponent {
+  selection = viewChild.required(MatSelectionList);
 
-  @Input() title = '';
-  @Input() data: FacetCount[] = [];
+  title = input('');
+  data = input.required<FacetCount[]>();
 
   @Output() filterValue: EventEmitter<Array<number | string>> =
     new EventEmitter();
 
-  constructor() {}
-
-  ngOnInit(): void {}
-
   deselect() {
-    this.selection.deselectAll();
+    this.selection().deselectAll();
   }
 
   onDeselectAll() {
@@ -44,9 +40,9 @@ export class FacetCheckerComponent implements OnInit {
   }
 
   onSelectionChange(): void {
-    const { selected } = this.selection.selectedOptions; // event.source.selectedOptions.selected;
+    const { selected } = this.selection().selectedOptions; // event.source.selectedOptions.selected;
     const filter = selected.length
-      ? selected.map((e) => e.value as number | string)
+      ? selected.map((element) => element.value as number | string)
       : undefined; // Ja nekas nav atzīmēts, tad vispār nav
     this.filterValue.emit(filter);
   }

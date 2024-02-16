@@ -1,30 +1,26 @@
-.container {
+:host {
     margin: 8px;
 }
 
 .head {
     display: flex;
     align-items: center;
-}
 
-.head:hover {
-    background-color: rgba(0, 0, 0, 0.08);
-}
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.08);
+    }
 
-.head .spacer {
-    flex: 1;
-}
+    h4 {
+        margin: 0px;
+    }
 
-h4 {
-    margin: 0px;
-    padding-left: 16px;
-}
+    :last-child {
+        margin-right: 16px;
+        margin-left: auto;
+    }
 
-.head button {
-    margin-right: 32px;
-    flex: 0;
-}
+    :first-child {
+        margin-left: 16px;
+    }
 
-.option-small {
-    line-height: 14px;
 }

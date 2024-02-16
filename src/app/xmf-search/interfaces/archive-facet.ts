@@ -4,8 +4,8 @@ export interface FacetCount {
     selected: boolean;
 }
 
-export interface ArchiveFacet {
-    customerName: FacetCount[];
-    year: FacetCount[];
-    month: FacetCount[];
+export class ArchiveFacet {
+    customerName: FacetCount[] = [];
+    year: FacetCount[] = [];
+    month: FacetCount[] = [];
 }

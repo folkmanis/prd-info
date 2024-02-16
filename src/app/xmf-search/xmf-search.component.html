@@ -1,6 +1,6 @@
 <mat-drawer-container>
     <mat-drawer button>
-        <app-facet [facet]="facet$ | async" (filter)="onFacet($event)"></app-facet>
+        <app-facet [facet]="facet()" (filter)="onFacet($event)"></app-facet>
     </mat-drawer>
 
     <mat-drawer-content>
@@ -16,7 +16,7 @@
         </div>
 
         <div class="main">
-            <app-search-table [search]="query$ | async" [data]="data$ | async"></app-search-table>
+            <app-search-table [search]="query()" [data]="data$ | async"></app-search-table>
         </div>
     </mat-drawer-content>
 </mat-drawer-container>
