@@ -1,10 +1,10 @@
 <div class="materials-container">
 
-    @for (control of controls(); track $index) {
+    @for (control of form.controls; track $index) {
     <div class="material" [formGroup]="control">
 
         <select formControlName="materialId" appSelect>
-            @for (mat of materials; track mat._id) {
+            @for (mat of materials(); track mat._id) {
             <option [value]="mat._id">
                 {{ mat.name }}
             </option>
@@ -13,14 +13,14 @@
 
         <div class="number-input">
             <input type="number" appInput formControlName="amount">
-            <span *appMaterialUnits="let unit of materials; id: control.value.materialId">
+            <span *appMaterialUnits="let unit of materials(); id: control.value.materialId">
                 {{ unit }}
             </span>
         </div>
 
         <div class="number-input">
             <input type="number" appInput formControlName="fixedAmount">
-            <span *appMaterialUnits="let unit of materials; id: control.value.materialId">
+            <span *appMaterialUnits="let unit of materials(); id: control.value.materialId">
                 {{ unit }}
             </span>
         </div>
@@ -37,7 +37,7 @@
 </div>
 
 <div>
-    <button mat-icon-button color="primary" (click)="onNewMaterial()" [disabled]="!materialsControl.valid">
+    <button mat-icon-button color="primary" (click)="onNewMaterial()" [disabled]="form.valid == false">
         <mat-icon>
             add
         </mat-icon>

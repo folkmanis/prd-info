@@ -2,19 +2,15 @@ import { AsyncPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  Input,
-  Output,
-  signal,
+  computed,
+  inject,
+  input
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable, Subject, mergeMap } from 'rxjs';
 import { Invoice, InvoiceProduct } from 'src/app/interfaces';
-import { getConfig } from 'src/app/services/config.provider';
-import { InvoicesService } from '../../../services/invoices.service';
+import { configuration } from 'src/app/services/config.provider';
+import { InvoiceEditor } from '../invoice-editor.component';
 
-const PAYTRAQ_SAVED_MESSAGE = 'Izveidota pavadzīme Paytraq sistēmā';
-const PAYTRAQ_UNLINK_MESSAGE = 'Paytraq savienojums dzēsts';
 
 @Component({
   selector: 'app-invoice-paytraq',
@@ -22,63 +18,35 @@ const PAYTRAQ_UNLINK_MESSAGE = 'Paytraq savienojums dzēsts';
   templateUrl: './invoice-paytraq.component.html',
   styleUrls: ['./invoice-paytraq.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AsyncPipe, MatButtonModule],
+  imports: [MatButtonModule],
 })
 export class InvoicePaytraqComponent {
-  @Input() invoice: Invoice;
+  invoice = input.required<Invoice>();
+  busy = input(false);
 
-  @Output() paytraqUpdate = new Subject<string>();
-
-  paytraqUrl$: Observable<string> = getConfig(
+  paytraqUrl = configuration(
     'paytraq',
     'connectionParams',
     'invoiceUrl'
   );
 
-  paytraqBusy = signal(false);
-
-  get paytraqOk(): boolean {
+  canCreatePaytraq = computed(() => {
+    const { customerInfo, paytraq, products } = this.invoice();
     return (
-      !!this.invoice?.customerInfo?.financial?.paytraqId &&
-      !this.invoice.paytraq &&
-      allProductsWithPaytraq(this.invoice.products)
+      !!customerInfo?.financial?.paytraqId &&
+      !paytraq &&
+      allProductsWithPaytraq(products)
     );
-  }
+  });
 
-  constructor(
-    private invoicesService: InvoicesService,
-    private snack: MatSnackBar
-  ) {}
+  private invoiceEditor = inject(InvoiceEditor);
 
   onPaytraq(): void {
-    this.paytraqBusy.set(true);
-
-    this.invoicesService
-      .postPaytraqInvoice(this.invoice)
-      .pipe(
-        mergeMap((paytraqId) =>
-          this.invoicesService.getPaytraqInvoiceRef(paytraqId).pipe(
-            mergeMap((documentRef) =>
-              this.invoicesService.updateInvoice(this.invoice.invoiceId, {
-                paytraq: { paytraqId, documentRef },
-              })
-            )
-          )
-        )
-      )
-      .subscribe(() => {
-        this.paytraqUpdate.next(this.invoice.invoiceId);
-        this.paytraqBusy.set(false);
-        this.snack.open(PAYTRAQ_SAVED_MESSAGE, 'OK', { duration: 5000 });
-      });
+    this.invoiceEditor.onSaveToPaytraq();
   }
 
   onUnlinkPaytraq(): void {
-    const id = this.invoice.invoiceId;
-    this.invoicesService.updateInvoice(id, { paytraq: null }).subscribe((_) => {
-      this.paytraqUpdate.next(id);
-      this.snack.open(PAYTRAQ_UNLINK_MESSAGE, 'OK', { duration: 5000 });
-    });
+    this.invoiceEditor.onUnlinkPaytraq();
   }
 }
 

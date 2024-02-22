@@ -1,8 +1,9 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
-  Input,
-  signal,
+  inject,
+  input
 } from '@angular/core';
 import {
   ControlValueAccessor,
@@ -53,35 +54,25 @@ type MaterialGroup = FormGroup<{
     },
   ],
 })
-export class ProductionMaterialComponent
-  implements ControlValueAccessor, Validator
-{
-  materialsControl = new FormArray<MaterialGroup>([]);
+export class ProductionMaterialComponent implements ControlValueAccessor, Validator {
+  form = new FormArray<MaterialGroup>([]);
+  private fb = new FormBuilder().nonNullable;
 
-  controls = signal(this.materialsControl.controls);
+  private chDetector = inject(ChangeDetectorRef);
 
-  private _materials: Material[] = [];
-  @Input() set materials(value: Material[]) {
-    if (Array.isArray(value)) {
-      this._materials = value;
-    }
-  }
-  get materials() {
-    return this._materials;
-  }
+  materials = input<Material[]>([]);
 
-  trackByFn = (idx: number) => this.materialsControl.controls[idx];
+  trackByFn = (idx: number) => this.form.controls[idx];
 
-  touchFn = () => {};
-
-  constructor(private fb: FormBuilder) {}
+  touchFn = () => { };
 
   writeValue(obj: JobProductionStageMaterial[]): void {
     this.initControl(obj);
+    this.chDetector.markForCheck();
   }
 
   registerOnChange(fn: (obj: JobProductionStageMaterial[]) => void): void {
-    this.materialsControl.valueChanges.subscribe(fn);
+    this.form.valueChanges.subscribe(fn);
   }
 
   registerOnTouched(fn: any): void {
@@ -90,18 +81,18 @@ export class ProductionMaterialComponent
 
   setDisabledState(isDisabled: boolean): void {
     if (isDisabled) {
-      this.materialsControl.disable();
+      this.form.disable();
     } else {
-      this.materialsControl.enable();
+      this.form.enable();
     }
   }
 
   validate(): ValidationErrors {
-    if (this.materialsControl.valid) {
+    if (this.form.valid) {
       return null;
     } else {
       return {
-        materials: this.materialsControl.controls
+        materials: this.form.controls
           .filter((c) => !c.valid)
           .map((c) => c.errors),
       };
@@ -109,24 +100,23 @@ export class ProductionMaterialComponent
   }
 
   onNewMaterial() {
-    this.materialsControl.push(this.materialGroup());
-    this.controls.set(this.materialsControl.controls);
+    this.form.push(this.materialGroup());
+    this.chDetector.markForCheck();
   }
 
   onDeleteMaterial(idx: number) {
-    this.materialsControl.removeAt(idx);
-    this.controls.set(this.materialsControl.controls);
+    this.form.removeAt(idx);
+    this.chDetector.markForCheck();
   }
 
   private initControl(materials: JobProductionStageMaterial[]) {
-    if (this.materialsControl.length === materials.length) {
-      this.materialsControl.setValue(materials, { emitEvent: false });
+    if (this.form.length === materials.length) {
+      this.form.setValue(materials, { emitEvent: false });
     } else {
-      this.materialsControl.clear({ emitEvent: false });
+      this.form.clear({ emitEvent: false });
       materials.forEach((m) =>
-        this.materialsControl.push(this.materialGroup(m), { emitEvent: false })
+        this.form.push(this.materialGroup(m), { emitEvent: false })
       );
-      this.controls.set(this.materialsControl.controls);
     }
   }
 

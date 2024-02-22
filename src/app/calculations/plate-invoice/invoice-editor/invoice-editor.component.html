@@ -1,15 +1,13 @@
-@if (invoice$ | async; as invoice) {
-
 <mat-menu #menu="matMenu">
-    <button mat-menu-item (click)="onCsvInvoice(invoice)">
+    <button mat-menu-item (click)="onCsvInvoice()">
         <mat-icon>file_download</mat-icon>
         <span> CSV PAVADZĪMEI </span>
     </button>
-    <button mat-menu-item (click)="onCsvReport(invoice)">
+    <button mat-menu-item (click)="onCsvReport()">
         <mat-icon>file_download</mat-icon>
         <span> CSV SARAKSTS </span>
     </button>
-    <button mat-menu-item (click)="onDelete(invoice.invoiceId)">
+    <button mat-menu-item (click)="onDelete()">
         <mat-icon>delete_forever</mat-icon>
         <span> DZĒST </span>
     </button>
@@ -27,12 +25,12 @@
     <span class="distancer"></span>
 
     <span>
-        {{invoice.invoiceId}} {{invoice.customerInfo.CustomerName}}
+        {{invoice().invoiceId}} {{invoice().customerInfo.CustomerName}}
     </span>
 
     <span class="spacer"></span>
 
-    <a mat-icon-button href="/data/invoices/report_{{invoice.invoiceId}}.pdf" target="new" matTooltip="Atvērt PDF">
+    <a mat-icon-button href="/data/invoices/report_{{invoice().invoiceId}}.pdf" target="new" matTooltip="Atvērt PDF">
         <mat-icon>
             picture_as_pdf
         </mat-icon>
@@ -48,24 +46,23 @@
 
 <div class="container" appViewSize #viewSize="viewSize">
 
-    <h4> {{invoice.createdDate | date}} </h4>
+    <h4> {{invoice().createdDate | date}} </h4>
 
     <!-- Paytraq -->
-    @if (pyatraqEnabled$ | async) {
+    @if (pyatraqEnabled()) {
     <mat-card>
         <mat-card-header>
             <mat-card-title>
                 Paytraq pavadzīme
             </mat-card-title>
-            @if (invoice.customerInfo.financial?.clientName) {
+            @if (invoice().customerInfo.financial?.clientName) {
             <mat-card-subtitle>
-                ({{invoice.customerInfo.financial.clientName}})
+                ({{invoice().customerInfo.financial.clientName}})
             </mat-card-subtitle>
             }
         </mat-card-header>
         <mat-card-content>
-            <app-invoice-paytraq [invoice]="invoice"
-                (paytraqUpdate)="onReload(invoice.invoiceId)"></app-invoice-paytraq>
+            <app-invoice-paytraq [invoice]="invoice()" [busy]="busy()" />
         </mat-card-content>
     </mat-card>
     }
@@ -78,7 +75,8 @@
             </mat-card-title>
         </mat-card-header>
         <mat-card-content>
-            <app-invoice-products [products]="invoice.products" [total]="invoice.total"></app-invoice-products>
+            <app-invoice-products [invoice]="invoice()" [pyatraqEnabled]="pyatraqEnabled()"
+                [isJobsAdmin]="isJobsAdmin()" />
         </mat-card-content>
     </mat-card>
 
@@ -90,11 +88,9 @@
             </mat-card-title>
         </mat-card-header>
         <mat-card-content>
-            <app-job-selection-table [jobs]="invoice.jobs" disabled [large]="viewSize.isLarge" [total]="invoice.total">
-            </app-job-selection-table>
+            <app-job-selection-table [jobs]="invoice().jobs" disabled [large]="viewSize.isLarge"
+                [total]="invoice().total" />
         </mat-card-content>
     </mat-card>
 
 </div>
-
-}

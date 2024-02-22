@@ -47,6 +47,7 @@ export class ProductsFormService {
       this.initialValue = new Product();
     }
     this.form.reset(this.initialValue);
+    this.form.markAsPristine();
   }
 
   save(): Observable<Product> {

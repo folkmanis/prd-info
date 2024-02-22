@@ -32,6 +32,7 @@ import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.gu
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { ProductionStagesService } from 'src/app/services/production-stages.service';
 import { DropFoldersComponent } from '../drop-folders/drop-folders.component';
+import { MatSelectModule } from '@angular/material/select';
 
 type ProductionStageControl = {
   [key in keyof Required<ProductionStage>]: FormControl<ProductionStage[key]>;
@@ -53,6 +54,7 @@ type ProductionStageControl = {
     MatInputModule,
     MatButtonModule,
     MatOptionModule,
+    MatSelectModule,
   ],
 })
 export class ProductionStagesEditComponent implements CanComponentDeactivate {
@@ -74,7 +76,7 @@ export class ProductionStagesEditComponent implements CanComponentDeactivate {
 
   equipment = computed(() => this.data().equipment as EquipmentPartial[]);
   dropFolders = computed(
-    () => this.data().dropFolders as { value: string[]; name: string }[]
+    () => this.data().dropFolders as { value: string[]; name: string; }[]
   );
   customers = computed(() => this.data().customers as CustomerPartial[]);
 

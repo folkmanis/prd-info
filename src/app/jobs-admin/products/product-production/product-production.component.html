@@ -1,55 +1,43 @@
-<app-simple-form-container buttons [status]="form.status" [isChanges]="isChanged()" (save)="onSave()"
-    (reset)="onReset()">
+<div class="stages">
 
-    <h2>
-        {{ name() }} - ražošanas procesi
-    </h2>
+    @for (control of form.controls; track $index) {
+    <mat-card [formGroup]="control">
 
-    <mat-divider></mat-divider>
+        <mat-card-content>
 
-    <div class="stages">
+            <div class="stage">
 
-        @for (control of form.controls; track $index) {
-        <mat-card [formGroup]="control">
+                <select formControlName="productionStageId" appSelect>
+                    @for (stage of productionStages(); track $index) {
+                    <option [value]="stage._id">
+                        {{ stage.name }}
+                    </option>
+                    }
+                </select>
 
-            <mat-card-content>
+                <input type="number" formControlName="amount" appInput>
 
-                <div class="stage">
+                <input type="number" formControlName="fixedAmount" appInput>
 
-                    <select formControlName="productionStageId" appSelect>
-                        @for (stage of productionStages(); track $index) {
-                        <option [value]="stage._id">
-                            {{ stage.name }}
-                        </option>
-                        }
-                    </select>
+                <button mat-icon-button color="warn" (click)="onDeleteStage($index)">
+                    <mat-icon>
+                        delete_outline
+                    </mat-icon>
+                </button>
 
-                    <input type="number" formControlName="amount" appInput>
+            </div>
 
-                    <input type="number" formControlName="fixedAmount" appInput>
+            <mat-divider></mat-divider>
 
-                    <button mat-icon-button color="warn" (click)="onDeleteStage($index)">
-                        <mat-icon>
-                            delete_outline
-                        </mat-icon>
-                    </button>
+            <app-production-material [formControl]="control.controls.materials" [materials]="materials()" />
 
-                </div>
+        </mat-card-content>
+    </mat-card>
 
-                <mat-divider></mat-divider>
+    }
 
-                <app-production-material [formControl]="control.controls.materials" [materials]="materials()" />
+</div>
 
-            </mat-card-content>
-        </mat-card>
-
-        }
-
-    </div>
-
-    <button mat-mini-fab color="primary" (click)="onNewProductionStage();" [disabled]="!form.valid">
-        <mat-icon> add </mat-icon>
-    </button>
-
-
-</app-simple-form-container>
+<button mat-mini-fab color="primary" (click)="onNewProductionStage();" [disabled]="!form.valid">
+    <mat-icon> add </mat-icon>
+</button>

@@ -31,6 +31,15 @@ export class ProductsApiService {
         );
     }
 
+    getOneByName(name: string): Observable<Product> {
+        return this.http.get<Record<string, any>>(
+            this.path + 'name/' + name,
+            new HttpOptions()
+        ).pipe(
+            this.transformer.toClass(Product),
+        );
+    }
+
     deleteOne(id: string) {
         return this.http.delete<{ deletedCount: number; }>(this.path + id, new HttpOptions()).pipe(
             map(data => data.deletedCount),

@@ -1,39 +1,34 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
-  Signal,
-  computed,
-  effect,
   inject,
-  signal,
+  input
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import {
+  ControlValueAccessor,
   FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
   ReactiveFormsModule,
+  ValidationErrors,
+  Validator,
   Validators,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
-import { ActivatedRoute } from '@angular/router';
-import { isEqual } from 'lodash-es';
-import { Observable } from 'rxjs';
 import {
   JobProductionStage,
   Material,
-  Product,
-  ProductionStage,
+  ProductionStage
 } from 'src/app/interfaces';
-import { AppClassTransformerService } from 'src/app/library';
 import { SelectDirective } from 'src/app/library/directives/select.directive';
-import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
-import { ProductsService } from 'src/app/services';
 import { ProductionMaterialComponent } from './production-material/production-material.component';
 
 type JobProductionStageControlType = FormGroup<{
@@ -56,81 +51,73 @@ type JobProductionStageControlType = FormGroup<{
     MatIconModule,
     MatButtonModule,
   ],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: ProductProductionComponent,
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: ProductProductionComponent,
+      multi: true,
+    }
+  ]
 })
-export class ProductProductionComponent implements CanComponentDeactivate {
+export class ProductProductionComponent implements ControlValueAccessor, Validator {
+
+  private chDetector = inject(ChangeDetectorRef);
+
+  private fb = new FormBuilder();
+
   form = new FormArray<JobProductionStageControlType>([]);
 
-  private update = signal<Product | null>(null);
+  materials = input<Material[]>([]);
+  productionStages = input<ProductionStage[]>([]);
 
-  private routeData = toSignal(inject(ActivatedRoute).data);
+  onTouched: () => void = () => { };
 
-  productionStages = computed<ProductionStage[]>(
-    () => this.routeData().productionStages
-  );
-  materials = computed<Material[]>(() => this.routeData().materials);
-
-  initialProduct = computed(
-    () => this.update() || (this.routeData().product as Product)
-  );
-
-  initialValue = computed(
-    () =>
-      this.transformer.instanceToPlain(
-        this.initialProduct().productionStages
-      ) as JobProductionStage[]
-  );
-
-  name: Signal<string> = computed(() => this.initialProduct().name);
-
-  private formValue = toSignal(
-    this.form.valueChanges as Observable<JobProductionStage[]>,
-    { initialValue: this.form.value as JobProductionStage[] }
-  );
-
-  isChanged: Signal<boolean> = computed(
-    () => !isEqual(this.formValue(), this.initialValue())
-  );
-
-  constructor(
-    private transformer: AppClassTransformerService,
-    private fb: FormBuilder,
-    private productService: ProductsService
-  ) {
-    effect(
-      () => {
-        const value = this.initialValue();
-        this.setProductionStages(value);
-      },
-      { allowSignalWrites: true }
-    );
+  writeValue(obj: JobProductionStage[]): void {
+    this.setProductionStages(obj);
   }
 
-  onSave() {
-    if (this.form.valid) {
-      const update: Partial<Product> = {
-        productionStages: this.formValue(),
-        _id: this.initialProduct()._id,
-      };
-      this.productService
-        .updateProduct(update)
-        .subscribe((value) => this.update.set(value));
+  registerOnChange(fn: (value: Partial<JobProductionStage>[]) => void): void {
+    this.form.valueChanges.subscribe(fn);
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    if (isDisabled) {
+      this.form.disable();
+    } else {
+      this.form.enable();
     }
   }
 
-  onReset(): void {
-    this.setProductionStages(this.initialValue());
+  validate(): ValidationErrors {
+    if (this.form.valid) {
+      return null;
+    } else {
+      return {
+        materials: this.form.controls
+          .filter((control) => !control.valid)
+          .map((controls) => controls.errors),
+      };
+    }
   }
+
 
   onDeleteStage(idx: number) {
     this.form.removeAt(idx);
+    this.chDetector.markForCheck();
   }
 
   onNewProductionStage(): void {
     this.form.push(this.stageControl());
-  }
-
-  canDeactivate(): boolean {
-    return !this.isChanged();
+    this.chDetector.markForCheck();
   }
 
   private setProductionStages(stages?: JobProductionStage[]): void {
@@ -143,7 +130,7 @@ export class ProductProductionComponent implements CanComponentDeactivate {
       stages.forEach((st) =>
         this.form.push(this.stageControl(st), { emitEvent: false })
       );
-      this.form.updateValueAndValidity();
+      this.chDetector.markForCheck();
     }
   }
 

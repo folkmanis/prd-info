@@ -47,9 +47,8 @@ export class MaterialUnitsDirective {
       return;
     }
     if (!this.view) {
-      this.view = this.containerRef.createEmbeddedView(this.templateRef);
+      this.view = this.containerRef.createEmbeddedView(this.templateRef, new UnitsDirectiveContext(this.unit()));
     }
-    this.view.context = new UnitsDirectiveContext(this.unit());
   }
 
   private unit(): string {

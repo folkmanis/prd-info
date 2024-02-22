@@ -1,6 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -9,17 +8,20 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Product } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { CustomersService, ProductsService } from 'src/app/services';
-import { SystemPreferencesService } from 'src/app/services/system-preferences.service';
+import { configuration } from 'src/app/services/config.provider';
+import { ProductionStagesService } from 'src/app/services/production-stages.service';
+import { MaterialsService } from '../../materials/services/materials.service';
+import { ProductProductionComponent } from '../product-production/product-production.component';
 import { ProductsFormService } from '../services/products-form.service';
 import { PaytraqProductComponent } from './paytraq-product/paytraq-product.component';
 import { ProductPricesComponent } from './product-prices/product-prices.component';
-import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-products-editor',
@@ -34,6 +36,7 @@ import { MatSelectModule } from '@angular/material/select';
     ReactiveFormsModule,
     PaytraqProductComponent,
     ProductPricesComponent,
+    ProductProductionComponent,
     RouterLink,
     AsyncPipe,
     MatFormFieldModule,
@@ -46,41 +49,39 @@ import { MatSelectModule } from '@angular/material/select';
     MatSelectModule,
   ],
 })
-export class ProductsEditorComponent implements OnInit, CanComponentDeactivate {
+export class ProductsEditorComponent implements CanComponentDeactivate {
   form = this.formService.form;
 
-  product$ = this.route.data.pipe(
-    map((data) => data.product as Product),
-    takeUntilDestroyed()
-  );
+  product = input.required<Product>();
 
-  paytraqDisabled$ = this.systemPreferences.preferences$.pipe(
-    map((conf) => !conf.paytraq.enabled)
-  );
-  readonly categories$ = this.productService.categories$;
-  readonly customers$ = this.customersService.customers$;
-  readonly units$ = this.systemPreferences.preferences$.pipe(
-    map((conf) => conf.jobs.productUnits.filter((u) => !u.disabled))
-  );
+  paytraqEnabled = configuration('paytraq', 'enabled');
+  units = configuration('jobs', 'productUnits');
+
+  categories$ = inject(ProductsService).categories$;
+  customers$ = inject(CustomersService).customers$;
+  materials$ = inject(MaterialsService).getMaterials();
+
+  productionStages$ = inject(ProductionStagesService).getProductionStages();
 
   get changes(): Partial<Product> | null {
     return this.formService.changes;
   }
 
   constructor(
-    private customersService: CustomersService,
-    private productService: ProductsService,
-    private systemPreferences: SystemPreferencesService,
     private formService: ProductsFormService,
     private router: Router,
     private route: ActivatedRoute
-  ) {}
+  ) {
+    effect(() => {
+      this.formService.setInitial(this.product());
+    }, { allowSignalWrites: true });
+  }
 
   onSave() {
     this.formService
       .save()
-      .subscribe((c) =>
-        this.router.navigate(['..', c._id], { relativeTo: this.route })
+      .subscribe((product) =>
+        this.router.navigate(['..', product._id], { relativeTo: this.route })
       );
   }
 
@@ -88,13 +89,7 @@ export class ProductsEditorComponent implements OnInit, CanComponentDeactivate {
     this.formService.reset();
   }
 
-  ngOnInit(): void {
-    this.product$.subscribe((customer) =>
-      this.formService.setInitial(customer)
-    );
-  }
-
   canDeactivate(): Observable<boolean> | boolean {
-    return this.form.pristine; // || this.productFormService.isNew();
+    return !this.changes; // || this.productFormService.isNew();
   }
 }

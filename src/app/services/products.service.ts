@@ -37,7 +37,7 @@ export class ProductsService {
     shareReplay(1)
   );
 
-  constructor(private api: ProductsApiService) {}
+  constructor(private api: ProductsApiService) { }
 
   get activeProducts$(): Observable<ProductPartial[]> {
     return this.products$.pipe(
@@ -47,6 +47,10 @@ export class ProductsService {
 
   getProduct(id: string): Observable<Product> {
     return this.api.getOne(id);
+  }
+
+  getProductByName(name: string): Observable<Product> {
+    return this.api.getOneByName(name);
   }
 
   updateProduct({ _id, ...rest }: Partial<Product>): Observable<Product> {
