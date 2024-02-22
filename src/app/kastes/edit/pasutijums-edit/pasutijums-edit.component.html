@@ -1,22 +1,19 @@
-@if(jobInfo$ | async; as jobInfo) {
+@if(job$ | async; as job) {
 <app-simple-form-container>
 
     <h2 appSimpleFormTypedLabel>
-        {{jobInfo.job.jobId}} / {{jobInfo.job.name}}
+        {{job.jobId}} / {{job.name}}
     </h2>
 
     <mat-tab-group [selectedIndex]="0">
         <mat-tab label="Informācija">
-            <app-job-info [job]="jobInfo.job" [veikali]="jobInfo.veikali" [activeJobId]="jobInfo.activeJobId"
-                (activeJob)="onSetAsActive($event)" (deleteVeikali)="onDeleteVeikali(jobInfo.job.jobId)"
-                (copyToFirebase)="onCopyToFirebase(jobInfo.job.jobId)"
-                (copyFromFirebase)="onCopyFromFirebase(jobInfo.job.jobId)" />
+            <app-job-info [job]="job" [veikali]="veikali()" [activeJobId]="activeJobId()" />
         </mat-tab>
 
-        <mat-tab label="Pakošanas saraksts" [disabled]="jobInfo.veikali.length == 0">
+        <mat-tab label="Pakošanas saraksts" [disabled]="veikali().length == 0">
             <ng-template matTabContent>
-                <app-pakosanas-saraksts [veikali]="jobInfo.veikali"
-                    [disabled]="jobInfo.job.jobStatus.generalStatus >= 30" (veikalsChange)="onUpdateVeikals($event)" />
+                <app-pakosanas-saraksts [veikali]="veikali()" [disabled]="job.jobStatus.generalStatus >= 30"
+                    (veikalsChange)="onUpdateVeikals($event)" />
             </ng-template>
         </mat-tab>
     </mat-tab-group>

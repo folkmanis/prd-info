@@ -2,13 +2,13 @@ import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
-  Input,
-  Output,
+  computed,
+  inject,
+  input
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
-import { ColorTotals, KastesJob, Veikals } from 'src/app/kastes/interfaces';
+import { KastesJob, Veikals } from 'src/app/kastes/interfaces';
 import {
   ColorTotalsComponent,
   KastesTotalsComponent,
@@ -16,6 +16,7 @@ import {
   jobProductsToColorTotals,
   kastesTotalsFromVeikali,
 } from '../../common';
+import { PasutijumsEditComponent } from '../pasutijums-edit/pasutijums-edit.component';
 
 @Component({
   selector: 'app-job-info',
@@ -32,29 +33,35 @@ import {
   ],
 })
 export class JobInfoComponent {
-  @Input() job!: KastesJob;
 
-  @Input() veikali: Veikals[] | null = null;
+  private pasutijumsEdit = inject(PasutijumsEditComponent);
 
-  @Input() activeJobId: number | null = null;
+  job = input.required<KastesJob>();
 
-  @Output() activeJob = new EventEmitter<number>();
+  veikali = input.required<Veikals[]>();
 
-  @Output() deleteVeikali = new EventEmitter<number>();
+  activeJobId = input.required<number>();
 
-  @Output() copyToFirebase = new EventEmitter<void>();
+  plannedTotals = computed(() => jobProductsToColorTotals(this.job().products || []));
 
-  @Output() copyFromFirebase = new EventEmitter<void>();
+  colorTotals = computed(() => colorTotalsFromVeikali(this.veikali()));
 
-  plannedTotals(): ColorTotals[] {
-    return jobProductsToColorTotals(this.job.products || []);
+  kastesTotals = computed(() => kastesTotalsFromVeikali(this.veikali()));
+
+  onSetAsActive() {
+    this.pasutijumsEdit.setAsActive();
   }
 
-  colorTotals(): ColorTotals[] {
-    return colorTotalsFromVeikali(this.veikali || []);
+  onDeleteVeikali() {
+    this.pasutijumsEdit.deleteVeikali();
   }
 
-  kastesTotals(): [number, number][] {
-    return kastesTotalsFromVeikali(this.veikali || []);
+  onCopyToFirebase() {
+    this.pasutijumsEdit.copyToFirebase();
   }
+
+  onCopyFromFirebase() {
+    this.pasutijumsEdit.copyFromFirebase();
+  }
+
 }

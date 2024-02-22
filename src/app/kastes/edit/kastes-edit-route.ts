@@ -1,7 +1,6 @@
 import { Route } from '@angular/router';
 import { PasutijumiTabulaComponent } from './pasutijumi-tabula/pasutijumi-tabula.component';
 import { PasutijumsEditComponent } from './pasutijums-edit/pasutijums-edit.component';
-import { resolveKastesJob } from './services/kastes-job-resolver';
 
 export default [
     {
@@ -9,11 +8,8 @@ export default [
         component: PasutijumiTabulaComponent,
         children: [
             {
-                path: ':id',
+                path: ':jobId',
                 component: PasutijumsEditComponent,
-                resolve: {
-                    kastesJob: resolveKastesJob
-                }
             }
         ]
     }

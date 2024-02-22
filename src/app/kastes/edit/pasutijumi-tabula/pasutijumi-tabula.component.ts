@@ -1,17 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { combineLatest, Observable, map } from 'rxjs';
-import { KastesJobPartial } from '../../interfaces/kastes-job-partial';
-import { KastesPasutijumiService } from '../../services/kastes-pasutijumi.service';
-import { getKastesPreferences } from '../../services/kastes-preferences.service';
-import { MatTableModule } from '@angular/material/table';
-import { SimpleListContainerComponent } from 'src/app/library/simple-form';
-import { MatIconModule } from '@angular/material/icon';
-import { RouterLink, RouterLinkActive } from '@angular/router';
 import { DatePipe } from '@angular/common';
-
-export interface KastesJobTable extends KastesJobPartial {
-  active: boolean;
-}
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { SimpleListContainerComponent } from 'src/app/library/simple-form';
+import { KastesPasutijumiService } from '../../services/kastes-pasutijumi.service';
+import { kastesPreferences } from '../../services/kastes-preferences.service';
 
 @Component({
   selector: 'app-pasutijumi-tabula',
@@ -29,28 +23,23 @@ export interface KastesJobTable extends KastesJobPartial {
   ],
 })
 export class PasutijumiTabulaComponent implements OnInit {
+
+  private kastesPasutijumiService = inject(KastesPasutijumiService);
+
   readonly columns = ['active', 'jobId', 'name', 'receivedDate', 'dueDate'];
   readonly columnsActive = ['active', 'jobId', 'name'];
 
-  private activeJob$ = getKastesPreferences('pasutijums');
+  activeJob = kastesPreferences('pasutijums');
 
-  datasource$: Observable<KastesJobTable[]> = combineLatest([
-    this.kastesJobsService.kastesJobs$,
-    this.activeJob$,
-  ]).pipe(
-    map(([jobs, act]) =>
-      jobs.map((job) => ({ ...job, active: job.jobId === act }))
-    )
-  );
+  datasource$ = this.kastesPasutijumiService.kastesJobs$;
 
-  constructor(private kastesJobsService: KastesPasutijumiService) {}
 
   ngOnInit(): void {
-    this.kastesJobsService.setFilter({});
+    this.kastesPasutijumiService.setFilter({});
   }
 
   onFilter(name: string): void {
     const filter = name.length > 0 ? { name } : {};
-    this.kastesJobsService.setFilter(filter);
+    this.kastesPasutijumiService.setFilter(filter);
   }
 }

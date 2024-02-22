@@ -1,27 +1,25 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, input, numberAttribute } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
-import { ActivatedRoute } from '@angular/router';
 import {
   EMPTY,
-  Observable,
   Subject,
-  combineLatest,
-  map,
   merge,
   mergeMap,
+  shareReplay,
   switchMap,
-  tap,
+  tap
 } from 'rxjs';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { cacheWithUpdate } from 'src/app/library/rxjs';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { KastesJob, Veikals } from '../../interfaces';
 import { KastesPasutijumiService } from '../../services/kastes-pasutijumi.service';
-import { KastesPreferencesService } from '../../services/kastes-preferences.service';
+import { KastesPreferencesService, kastesPreferences } from '../../services/kastes-preferences.service';
 import { JobInfoComponent } from '../job-info/job-info.component';
 import { PakosanasSarakstsComponent } from '../pakosanas-saraksts/pakosanas-saraksts.component';
-import { AsyncPipe } from '@angular/common';
 
 const VEIKALI_DELETED_MESSAGE = 'Pakošanas saraksts izdzēsts';
 
@@ -46,72 +44,71 @@ const firebaseCopyFromResultMessage = (count: number) =>
     AsyncPipe,
   ],
 })
-export class PasutijumsEditComponent implements OnDestroy {
+export class PasutijumsEditComponent {
+
+  private pasutijumiService = inject(KastesPasutijumiService);
+  private preferencesService = inject(KastesPreferencesService);
+  private confirmationDialog = inject(ConfirmationDialogService);
+  private snack = inject(MatSnackBar);
+
   private jobUpdate$ = new Subject<KastesJob>();
   private veikalsUpdate$ = new Subject<Veikals>();
 
-  private job$: Observable<KastesJob> = merge(
-    this.route.data.pipe(map((data) => data.kastesJob)),
-    this.jobUpdate$
+  jobId = input.required({ transform: numberAttribute });
+
+  activeJobId = kastesPreferences('pasutijums');
+
+  job$ = merge(
+    toObservable(this.jobId)
+      .pipe(
+        mergeMap(id => this.pasutijumiService.getKastesJob(id)),
+        shareReplay(1),
+      ),
+    this.jobUpdate$,
   );
 
-  private veikali$: Observable<Veikals[]> = this.job$.pipe(
-    switchMap((job) => this.pasService.getVeikali(job.jobId)),
-    cacheWithUpdate(this.veikalsUpdate$, (o1, o2) => o1._id === o2._id)
+  veikali = toSignal(
+    this.job$.pipe(
+      switchMap((job) => this.pasutijumiService.getVeikali(job.jobId)),
+      cacheWithUpdate(this.veikalsUpdate$, (o1, o2) => o1._id === o2._id)
+    ),
+    { initialValue: [] }
   );
-
-  private activeJobId$ = this.prefService.pasutijumsId$;
-
-  jobInfo$ = combineLatest({
-    job: this.job$,
-    veikali: this.veikali$,
-    activeJobId: this.activeJobId$,
-  });
-
-  constructor(
-    private pasService: KastesPasutijumiService,
-    private prefService: KastesPreferencesService,
-    private confirmationDialog: ConfirmationDialogService,
-    private snack: MatSnackBar,
-    private route: ActivatedRoute
-  ) {}
-
-  ngOnDestroy(): void {
-    this.veikalsUpdate$.complete();
-    this.jobUpdate$.complete();
-  }
 
   onUpdateVeikals(veikals: Veikals) {
-    this.pasService
+    this.pasutijumiService
       .updateOrderVeikals(veikals)
       .subscribe((veik) => this.veikalsUpdate$.next(veik));
   }
 
-  onSetAsActive(pasutijums: number) {
-    this.prefService.updateUserPreferences({ pasutijums }).subscribe();
+  setAsActive() {
+    const pasutijums = this.jobId();
+    this.preferencesService.updateUserPreferences({ pasutijums }).subscribe();
   }
 
-  onDeleteVeikali(jobId: number) {
+  deleteVeikali() {
+    const jobId = this.jobId();
     this.confirmationDialog
       .confirmDelete()
       .pipe(
         mergeMap((resp) =>
-          resp ? this.pasService.deleteKastes(jobId) : EMPTY
+          resp ? this.pasutijumiService.deleteKastes(jobId) : EMPTY
         ),
         tap(() =>
           this.snack.open(VEIKALI_DELETED_MESSAGE, 'OK', { duration: 3000 })
         ),
-        switchMap(() => this.pasService.getKastesJob(jobId))
+        switchMap(() => this.pasutijumiService.getKastesJob(jobId))
       )
       .subscribe((job) => this.jobUpdate$.next(job));
   }
 
-  onCopyToFirebase(jobId: number) {
+  copyToFirebase() {
+    const jobId = this.jobId();
     this.confirmationDialog
       .confirm(FIREBASE_COPY_TO_CONFIRMATION)
       .pipe(
         mergeMap((resp) =>
-          resp ? this.pasService.copyToFirestore(jobId) : EMPTY
+          resp ? this.pasutijumiService.copyToFirestore(jobId) : EMPTY
         ),
         tap((result) =>
           this.snack.open(
@@ -124,12 +121,13 @@ export class PasutijumsEditComponent implements OnDestroy {
       .subscribe();
   }
 
-  onCopyFromFirebase(jobId: number) {
+  copyFromFirebase() {
+    const jobId = this.jobId();
     this.confirmationDialog
       .confirm(FIREBASE_COPY_FROM_CONFIRMATION)
       .pipe(
         mergeMap((resp) =>
-          resp ? this.pasService.copyFromFirestore(jobId) : EMPTY
+          resp ? this.pasutijumiService.copyFromFirestore(jobId) : EMPTY
         ),
         tap((result) =>
           this.snack.open(

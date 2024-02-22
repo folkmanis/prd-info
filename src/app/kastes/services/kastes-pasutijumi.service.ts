@@ -10,17 +10,18 @@ export interface KastesJobFilter {
 }
 
 @Injectable({
-  providedIn: 'any',
+  providedIn: 'root',
 })
 export class KastesPasutijumiService {
   private readonly _filter$ = new BehaviorSubject<KastesJobFilter>({});
 
-  kastesJobs$: Observable<KastesJobPartial[]> = this._filter$.pipe(
-    throttleTime(300),
-    switchMap((filter) => this.getKastesJobs(filter))
-  );
-
-  constructor(private api: KastesApiService) {}
+  get kastesJobs$(): Observable<KastesJobPartial[]> {
+    return this._filter$.pipe(
+      throttleTime(300),
+      switchMap((filter) => this.getKastesJobs(filter))
+    );
+  }
+  constructor(private api: KastesApiService) { }
 
   setFilter(filter: KastesJobFilter) {
     this._filter$.next(filter);
