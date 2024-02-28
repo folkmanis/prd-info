@@ -1,38 +1,48 @@
-.mat-table {
-  width: 100%;
-}
-
-th.mat-header-cell {
-  height: 64px;
-}
-
-th.mat-header-cell>div {
-  height: 100%;
+:host {
+  overflow: auto;
   display: flex;
   flex-direction: column;
+  height: 100%;
+}
+
+.buttons-bar {
+  display: flex;
+  gap: 8px;
+}
+
+.chips-bar {
+  min-height: 30px;
+}
+
+.chips-bar,
+.buttons-bar {
+  padding: 8px 16px;
+}
+
+.mat-column-selected {
+  flex: 0 0 64px;
+}
+
+mat-table {
+  overflow: auto;
+}
+
+[appDragDrop] {
+  height: 36px;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
 }
 
 .column-check {
   height: 24px;
 }
 
-.drop-target {
-  height: 40px;
-}
-
-th .drop-target div.mat-chip-list-wrapper {
-  margin: inherit;
-}
-
-.mat-cell {
+mat-cell,
+mat-header-cell {
   padding: 0 8px;
 }
 
-.button-row {
-  margin-left: 16px;
-}
-
-.chips-bar {
-  padding: 16px;
-  height: 40px;
+mat-footer-row.spacer {
+  min-height: 104px;
 }

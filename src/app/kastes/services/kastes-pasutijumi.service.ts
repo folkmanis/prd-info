@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, switchMap, throttleTime } from 'rxjs/operators';
 import { KastesJob, Veikals, VeikalsUpload } from '../interfaces';
@@ -13,6 +13,9 @@ export interface KastesJobFilter {
   providedIn: 'root',
 })
 export class KastesPasutijumiService {
+
+  private api = inject(KastesApiService);
+
   private readonly _filter$ = new BehaviorSubject<KastesJobFilter>({});
 
   get kastesJobs$(): Observable<KastesJobPartial[]> {
@@ -21,7 +24,6 @@ export class KastesPasutijumiService {
       switchMap((filter) => this.getKastesJobs(filter))
     );
   }
-  constructor(private api: KastesApiService) { }
 
   setFilter(filter: KastesJobFilter) {
     this._filter$.next(filter);
@@ -75,13 +77,14 @@ export class KastesPasutijumiService {
       (acc, row) => (row.length > acc ? row.length : acc),
       0
     );
-    const ndata = data.map((row) => {
-      const nrow = new Array(width);
-      for (let idx = 0; idx < width; idx++) {
-        nrow[idx] = row[idx] || '';
-      }
-      return nrow;
-    });
-    return ndata;
+    return data
+      .filter(row => row.length > 0)
+      .map((row) => {
+        const nrow = new Array(width);
+        for (let idx = 0; idx < width; idx++) {
+          nrow[idx] = row[idx] || '';
+        }
+        return nrow;
+      });
   }
 }

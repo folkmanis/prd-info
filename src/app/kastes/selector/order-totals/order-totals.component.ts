@@ -1,6 +1,12 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { colorTotalsFromVeikali, kastesTotalsFromVeikali } from '../../common';
-import { ColorTotals, Colors, VeikalsKaste } from '../../interfaces';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { COLORS, Colors } from '../../interfaces';
+import { totalsByColor, totalsBySize } from '../../services/item-packing.utilities';
+import { kastesPreferences } from '../../services/kastes-preferences.service';
+
+type OrderTotalsInput = Record<Colors, number> & {
+  total: number;
+};
+
 
 @Component({
   selector: 'app-order-totals',
@@ -10,15 +16,15 @@ import { ColorTotals, Colors, VeikalsKaste } from '../../interfaces';
   standalone: true,
 })
 export class OrderTotalsComponent {
-  @Input()
-  set veikali(value: VeikalsKaste[]) {
-    if (value) {
-      this.colorTotals = colorTotalsFromVeikali(value);
-      this.apjomiTotals = kastesTotalsFromVeikali(value);
-    }
-  }
-  @Input() colors: { [key in Colors]: string };
 
-  colorTotals: ColorTotals[] = [];
-  apjomiTotals: [number, number][] = [];
+  colors = COLORS;
+
+  colorCodes = kastesPreferences('colors');
+
+  packages = input.required<OrderTotalsInput[]>();
+
+  totalsBySize = computed(() => totalsBySize(this.packages()));
+
+  colorTotals = computed(() => totalsByColor(this.packages()));
+
 }

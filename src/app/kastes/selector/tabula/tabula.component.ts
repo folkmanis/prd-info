@@ -1,31 +1,28 @@
 import {
+  AsyncPipe,
+  TitleCasePipe,
+  UpperCasePipe,
+} from '@angular/common';
+import {
   ChangeDetectionStrategy,
   Component,
-  Input,
+  EventEmitter,
   Output,
-  QueryList,
-  ViewChild,
-  ViewChildren,
+  input,
+  model,
+  viewChild,
+  viewChildren
 } from '@angular/core';
-import { ReplaySubject, Subject } from 'rxjs';
-import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
-import { COLORS, VeikalsKaste } from '../../interfaces';
-import { getKastesPreferences } from '../../services/kastes-preferences.service';
-import { RowIdDirective } from './row-id.directive';
-import { HideZeroPipe } from '../../../library/common/hide-zero.pipe';
 import { MatTableModule } from '@angular/material/table';
-import { ScrollTopDirective as ScrollTopDirective_1 } from '../../../library/scroll-to-top/scroll-top.directive';
-import {
-  NgIf,
-  NgFor,
-  AsyncPipe,
-  UpperCasePipe,
-  TitleCasePipe,
-} from '@angular/common';
+import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
+import { HideZeroPipe } from '../../../library/common/hide-zero.pipe';
+import { COLORS } from '../../interfaces';
+import { AddressPackage } from '../../interfaces/address-package';
+import { kastesPreferences } from '../../services/kastes-preferences.service';
+import { RowIdDirective } from './row-id.directive';
+
 
 const COLUMNS = ['label', 'kods', 'adrese'];
-
-type VeikalsKasteId = Pick<VeikalsKaste, '_id' | 'kaste'>;
 
 @Component({
   selector: 'app-tabula',
@@ -34,7 +31,7 @@ type VeikalsKasteId = Pick<VeikalsKaste, '_id' | 'kaste'>;
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    ScrollTopDirective_1,
+    ScrollTopDirective,
     MatTableModule,
     RowIdDirective,
     AsyncPipe,
@@ -44,50 +41,46 @@ type VeikalsKasteId = Pick<VeikalsKaste, '_id' | 'kaste'>;
   ],
 })
 export class TabulaComponent {
-  @ViewChild('scrollContainer', { read: ScrollTopDirective })
-  private _scrollable: ScrollTopDirective;
-  @ViewChildren(RowIdDirective) private _tableRows: QueryList<RowIdDirective>;
 
-  @Input() set veikalsKastes(value: VeikalsKaste[]) {
-    value = Array.isArray(value) ? value : [];
-    this.dataSource$.next(value);
-  }
+  private scrollable = viewChild.required('scrollContainer', { read: ScrollTopDirective });
 
-  @Output() gatavs = new Subject<VeikalsKaste>();
+  private tableRows = viewChildren(RowIdDirective);
 
-  dataSource$ = new ReplaySubject<VeikalsKaste[]>(1);
+  addressPackages = input.required<AddressPackage[]>();
 
-  @Input() selected: VeikalsKaste | undefined;
+  completed = model<AddressPackage>();
 
-  @Output() selectedChange = new Subject<VeikalsKaste>();
+  @Output()
+  selectedChange = new EventEmitter<AddressPackage | undefined>();
 
-  colorCodes$ = getKastesPreferences('colors');
-  displayedColumns: string[] = [...COLUMNS, ...COLORS];
+  colorCodes = kastesPreferences('colors');
+
+  displayedColumns: string[] = [...COLUMNS, ...COLORS.map(color => 'item-' + color)];
 
   colors = COLORS;
 
-  trackByFn(_: number, item: VeikalsKasteId): string {
-    return item._id + item.kaste;
-  }
+  trackByFn = (_: number, item: AddressPackage) => item.addressId + item.boxSequence;
 
   scrollToTop() {
-    this._scrollable?.scrollToTop();
+    this.scrollable().scrollToTop();
   }
 
-  scrollToId(kaste: VeikalsKasteId) {
-    this._tableRows
-      .find(
-        (el) => el.kaste._id === kaste._id && el.kaste.kaste === kaste.kaste
-      )
-      ?.scrollIn();
+  scrollToId(documentId: string, boxSequence: number) {
+    const row = this.tableRows()
+      .find((element) =>
+        element.addressPackage.documentId === documentId
+        && element.addressPackage.boxSequence === boxSequence
+      );
+    if (row) {
+      row.scrollIn();
+    }
   }
 
-  onGatavs(kaste: VeikalsKaste): void {
-    this.gatavs.next(kaste);
+  onGatavs(addressPackage: AddressPackage): void {
+    this.completed.set(addressPackage);
   }
 
-  onSelected(kaste: VeikalsKaste) {
-    this.selectedChange.next(kaste);
-    this.selected = kaste;
+  onSelected(addressPackage: AddressPackage) {
+    this.selectedChange.next(addressPackage);
   }
 }

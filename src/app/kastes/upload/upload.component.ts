@@ -1,43 +1,30 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  OnDestroy,
-  OnInit,
   computed,
-  signal,
+  effect,
+  model,
+  signal
 } from '@angular/core';
-import {
-  FormControl,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
-import { filter, map, shareReplay, switchMap } from 'rxjs/operators';
-import { jobProductsToColorTotals } from '../common';
-import { ColorTotals } from '../interfaces';
-import { KastesJobPartial } from '../interfaces/kastes-job-partial';
-import { KastesPasutijumiService } from '../services/kastes-pasutijumi.service';
-import {
-  getKastesPreferences,
-  KastesPreferencesService,
-} from '../services/kastes-preferences.service';
-import { EndDialogComponent } from './end-dialog/end-dialog.component';
-import { AdresesBoxes } from './services/adrese-box';
-import { UploadAdresesComponent } from './upload-adreses/upload-adreses.component';
-import { ScrollTopDirective } from '../../library/scroll-to-top/scroll-top.directive';
-import { PortalModule } from '@angular/cdk/portal';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { ColorTotalsComponent } from '../common/color-totals/color-totals.component';
-import { KastesTabulaDropDirective } from './kastes-tabula-drop.directive';
 import { MatCardModule } from '@angular/material/card';
 import { MatOptionModule } from '@angular/material/core';
-import { NgFor, AsyncPipe } from '@angular/common';
-import { MatSelectModule } from '@angular/material/select';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { MatSelectModule } from '@angular/material/select';
+import { firstValueFrom } from 'rxjs';
+import { navigateRelative } from 'src/app/library/common';
+import { jobProductsToColorTotals } from '../common/color-totals-from-veikali';
+import { ColorTotalsComponent } from '../common/color-totals/color-totals.component';
+import { COLORS, Colors } from '../interfaces';
+import { AddressWithPackages, addOrderId, totalsFromAddresesWithPackages } from '../services/item-packing.utilities';
+import { KastesPasutijumiService } from '../services/kastes-pasutijumi.service';
+import { KastesPreferencesService } from '../services/kastes-preferences.service';
+import { EndDialogComponent } from './end-dialog/end-dialog.component';
+import { KastesTabulaDropDirective } from './kastes-tabula-drop.directive';
+import { UploadAdresesComponent } from './upload-adreses/upload-adreses.component';
 
 @Component({
   selector: 'app-upload',
@@ -46,70 +33,77 @@ import { toSignal } from '@angular/core/rxjs-interop';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
+    FormsModule,
     MatFormFieldModule,
     MatSelectModule,
-    FormsModule,
-    ReactiveFormsModule,
     MatOptionModule,
     MatCardModule,
+    MatButtonModule,
     KastesTabulaDropDirective,
     ColorTotalsComponent,
-    MatButtonModule,
-    PortalModule,
-    ScrollTopDirective,
     UploadAdresesComponent,
-    AsyncPipe,
   ],
 })
 export class UploadComponent {
-  adresesBox: AdresesBoxes | undefined;
+  private navigate = navigateRelative();
 
-  orderIdControl = new FormControl<number>(null, [Validators.required]);
+  colors = COLORS;
 
-  plannedTotals$: Observable<ColorTotals[]> =
-    this.orderIdControl.valueChanges.pipe(
-      filter((id) => id != null),
-      switchMap((id) => this.pasutijumiService.getKastesJob(+id)),
-      map((job) => jobProductsToColorTotals(job.products))
-    );
+  adresesBox = signal<AddressWithPackages[] | null>(null);
+
+  orderId = model<number | null>(null);
+  plannedTotals = signal<Record<Colors, number> | null>(null);
 
   inputData = signal<Array<string | number>[]>([]);
 
-  orders$: Observable<KastesJobPartial[]> =
-    this.pasutijumiService.getKastesJobs({});
+  orders = toSignal(
+    this.pasutijumiService.getKastesJobs({}),
+    { initialValue: [] }
+  );
 
-  colors$ = getKastesPreferences('colors');
+  totals = computed(() =>
+    this.adresesBox()
+    && totalsFromAddresesWithPackages(this.adresesBox()));
 
   constructor(
     private pasutijumiService: KastesPasutijumiService,
     private preferences: KastesPreferencesService,
     private matDialog: MatDialog,
-    private router: Router
-  ) {}
-
-  onXlsDrop(file: File | undefined) {
-    this.pasutijumiService
-      .parseXlsx(file)
-      .subscribe((data) => this.inputData.set(data));
+  ) {
+    effect(async () => {
+      const id = this.orderId();
+      if (typeof id !== 'number') {
+        this.plannedTotals.set(null);
+        return;
+      }
+      const { products } = await firstValueFrom(this.pasutijumiService.getKastesJob(id));
+      this.plannedTotals.set(jobProductsToColorTotals(products || []));
+    }, { allowSignalWrites: true });
   }
 
-  onSave(adrBox: AdresesBoxes) {
-    const orderId = this.orderIdControl.value;
-    if (!orderId) {
+  async onXlsDrop(file: File | undefined) {
+    const data = await firstValueFrom(
+      this.pasutijumiService.parseXlsx(file)
+    );
+    this.inputData.set(data);
+  }
+
+  async onSave() {
+    const orderId = this.orderId();
+    if (!orderId || !this.adresesBox()) {
       return;
     }
-    this.pasutijumiService
-      .addKastes(adrBox.uploadRows(orderId))
-      .pipe(
-        switchMap((affectedRows) =>
-          this.matDialog
-            .open(EndDialogComponent, { data: affectedRows })
-            .afterClosed()
-        ),
-        switchMap(() =>
-          this.preferences.updateUserPreferences({ pasutijums: orderId })
-        )
-      )
-      .subscribe(() => this.router.navigate(['kastes', 'edit', orderId]));
+    const uploadData = addOrderId(this.adresesBox(), orderId);
+    const affectedRows = await firstValueFrom(
+      this.pasutijumiService.addKastes(uploadData));
+
+    await firstValueFrom(
+      this.preferences.updateUserPreferences({ pasutijums: orderId })
+    );
+
+    this.matDialog.open(EndDialogComponent, { data: affectedRows });
+
+    this.navigate(['/', 'kastes', 'edit', orderId]);
+
   }
 }

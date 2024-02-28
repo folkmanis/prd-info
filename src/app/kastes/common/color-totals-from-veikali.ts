@@ -2,11 +2,6 @@ import { JobProduct } from 'src/app/jobs';
 import { COLORS, ColorTotals, Colors, Kaste, Veikals } from '../interfaces';
 
 
-export const colorTotalsFromVeikali = (veikali: Veikals[]): ColorTotals[] =>
-    colorTotalsFromVeikalsBoxs(
-        [].concat(...veikali.map(veik => veik.kastes))
-    );
-
 export const colorTotalsFromVeikalsBoxs = (kastes: Kaste[]): ColorTotals[] => {
     const tot = new Map<Colors, number>(COLORS.map(col => [col, 0]));
     for (const k of kastes) {
@@ -24,20 +19,17 @@ export const kastesTotalsFromVeikali = (veikali: Veikals[]): [number, number][] 
     return [...tot.entries()].sort((a, b) => a[0] - b[0]);
 };
 
-export const sortColorTotals = (totals: ColorTotals[]): ColorTotals[] => {
-    const totMap = new Map<Colors, number>(COLORS.map(color => [color, 0]));
-    totals.forEach(total => totMap.set(total.color, total.total));
-    return [...totMap.entries()].map(([color, total]) => ({ color, total }));
-};
+export const jobProductsToColorTotals = (products: JobProduct[]): Record<Colors, number> => {
+    const totals: Record<Colors, number> =
+        COLORS
+            .reduce((acc, curr) => (acc[curr] = 0, acc), {} as Record<Colors, number>);
 
-export const jobProductsToColorTotals = (products: JobProduct[]): ColorTotals[] => {
-    const tot = new Map<string, number>(COLORS.map(col => [col, 0]));
-    for (const prod of products) {
-        const count = tot.get(prod.name);
-        if (count === undefined) {
-            continue;
+    products.forEach(product => {
+        if (COLORS.includes(product.name as Colors)) {
+            totals[product.name] += product.count;
         }
-        tot.set(prod.name, count + prod.count);
-    }
-    return [...tot.entries()].map(([color, total]) => ({ color, total: total * 2 })) as ColorTotals[];
+    });
+
+    return totals;
+
 };

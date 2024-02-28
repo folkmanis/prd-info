@@ -5,7 +5,7 @@
 }
 
 section {
-    padding: 16px;
+    margin: 8px 16px;
 }
 
 section.file-selection {
@@ -30,17 +30,11 @@ section.file-selection {
 
 }
 
-section.button-bar>button:not(:first) {
-    margin-left: 16px;
-}
-
 section.totals {
+    display: flex;
+    gap: 8px;
+
     & p {
         margin: 8px 0;
     }
-}
-
-section.adreses {
-    overflow: auto;
-    padding: 0;
 }

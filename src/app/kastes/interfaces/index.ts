@@ -1,4 +1,4 @@
-export * from './kaste';
+export * from './kaste-user-preferences';
 export * from './kastes-colors';
 export * from './kastes-job-partial';
 export * from './kastes-totals';

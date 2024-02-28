@@ -9,8 +9,15 @@ import {
   MatDialogTitle,
 } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { COLORS, VeikalsKaste } from '../../interfaces';
-import { KasteDialogData } from '../services/kaste-dialog-data';
+import { COLORS } from '../../interfaces';
+import { AddressPackage } from '../../interfaces/address-package';
+import { kastesPreferences } from '../../services/kastes-preferences.service';
+
+
+export interface KasteDialogData {
+  addressPackage: AddressPackage;
+  allAddressPackages: AddressPackage[];
+}
 
 @Component({
   selector: 'app-kaste-dialog',
@@ -29,15 +36,12 @@ import { KasteDialogData } from '../services/kaste-dialog-data';
   ],
 })
 export class KasteDialogComponent {
-  private data: KasteDialogData = inject(MAT_DIALOG_DATA);
 
-  veikalsKaste: VeikalsKaste = this.data.kaste;
+  addressPackage = inject<KasteDialogData>(MAT_DIALOG_DATA).addressPackage;
+  allAddressPackages = inject<KasteDialogData>(MAT_DIALOG_DATA).allAddressPackages;
 
-  colorCodes = this.data.colorCodes;
+  colors = COLORS;
 
-  readonly allColors = COLORS;
+  colorCodes = kastesPreferences('colors');
 
-  colors = COLORS.filter((c) => this.veikalsKaste.kastes[c] > 0);
-
-  kastes = this.data.allKastes.filter((k) => k.kods === this.data.kaste.kods);
 }

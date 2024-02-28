@@ -1,38 +1,25 @@
-import { CdkPortal, PortalModule } from '@angular/cdk/portal';
-import { AsyncPipe } from '@angular/common';
+import { SelectionModel } from '@angular/cdk/collections';
 import {
   ChangeDetectionStrategy,
   Component,
-  Input,
   Output,
-  QueryList,
-  ViewChildren,
+  computed,
+  effect,
+  model,
+  signal
 } from '@angular/core';
-import {
-  FormArray,
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-import { Observable, combineLatest } from 'rxjs';
-import {
-  distinctUntilChanged,
-  map,
-  shareReplay,
-  startWith,
-  tap,
-} from 'rxjs/operators';
-import { AdresesBoxPreferences, AdresesBoxes } from '../services/adrese-box';
-import { ChipsService, ColumnNames } from '../services/chips.service';
-import { DragData, DragDropDirective } from '../services/drag-drop.directive';
-import { DragableDirective } from '../services/dragable.directive';
-import { UploadService } from '../services/upload.service';
+import { map } from 'rxjs';
+import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
+import { ColumnNames, TABLE_COLUMNS } from '../../services/column-names';
+import { rawArrayToAddressWithPackage } from '../../services/item-packing.utilities';
+import { DragDropDirective } from './drag-drop.directive';
+import { DragableDirective } from './dragable.directive';
 
 @Component({
   selector: 'app-upload-adreses',
@@ -41,9 +28,6 @@ import { UploadService } from '../services/upload.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    PortalModule,
     MatButtonModule,
     MatCheckboxModule,
     MatChipsModule,
@@ -51,112 +35,148 @@ import { UploadService } from '../services/upload.service';
     MatTableModule,
     DragDropDirective,
     MatIconModule,
-    AsyncPipe,
+    ScrollTopDirective,
   ],
 })
 export class UploadAdresesComponent {
-  @ViewChildren(CdkPortal) buttons: QueryList<CdkPortal>;
 
-  @Input('data') set data(data: Array<string | number>[]) {
-    this.uploadService.loadData(data || []);
-    this.chipsService.resetChips();
-  }
+  rowSelection = new SelectionModel<number>(true);
+  columnSelection = new SelectionModel<number>(true);
 
-  columns$ = this.uploadService.columns$.pipe(
-    tap((cols) => this.toCheckGroup(cols)),
-    shareReplay(1)
-  );
-
-  checkCols = new FormGroup({
-    columns: new FormArray<FormControl<boolean>>([]),
-  });
-
-  chkColCount$ = this.checkCols.valueChanges.pipe(
-    map((frmVal) => frmVal.columns),
-    map((cols) => cols.reduce((acc, curr) => acc + +curr, 0))
-  );
-
-  settingsControl = new FormGroup({
-    toPakas: new FormControl<boolean>(true),
-    mergeAddress: new FormControl<boolean>(false),
-  });
-
-  rowSelection = this.uploadService.rowSelection;
-
-  @Output() adresesBox: Observable<AdresesBoxes | null> = combineLatest([
-    this.chipsService.chips$,
-    this.uploadService.adresesCsv$,
+  private selectedRows = toSignal(
     this.rowSelection.changed.pipe(
-      map((model) => model.source),
-      startWith(this.rowSelection)
+      map(change => change.source)
     ),
-    this.settingsControl.valueChanges.pipe(
-      startWith(this.settingsControl.value)
-    ) as Observable<AdresesBoxPreferences>,
-  ]).pipe(
-    map(([chips, adreses, selection, settings]) =>
-      chips.available.length || !selection.selected.length
-        ? null
-        : new AdresesBoxes(
-            adreses.filter((_, idx) => selection.isSelected(idx)),
-            chips.assignement,
-            settings
-          )
-    ),
-    distinctUntilChanged()
+    { initialValue: this.rowSelection }
   );
 
-  constructor(
-    private uploadService: UploadService,
-    private chipsService: ChipsService
-  ) {}
+  adreses = model<Array<number | string>[]>([], { alias: 'data' });
 
-  datasource$ = this.uploadService.adresesCsv$;
+  assignedChips = signal<[number, ColumnNames][]>([]);
 
-  chipsAvailable$: Observable<ColumnNames[]> = this.chipsService.chips$.pipe(
-    map((chips) => chips.available)
+  availableChips = computed(
+    () => {
+      const assignedNames = this.assignedChips().map(([, name]) => name);
+      return TABLE_COLUMNS
+        .filter(name => assignedNames.includes(name) === false);
+    });
+
+  columns = computed(() => {
+    const hasData = this.adreses()[0]?.length > 0;
+    return hasData ? this.adreses()[0].map((_, idx) => idx) : [];
+  });
+
+  displayColumns = computed(() => {
+    if (this.columns().length > 0) {
+      return ['selected', ...this.columns().map(column => column.toString())];
+    } else {
+      return [];
+    }
+  });
+  displayCheckboxColumns = computed(() => this.displayColumns()
+    .map(column => 'checkBox-' + column)
   );
 
-  chipsAssignement$: Observable<[string, ColumnNames][]> =
-    this.chipsService.chips$.pipe(map((chips) => chips.assignement));
+  constructor() {
+    effect(() => {
 
-  isChipAssigned(
-    chips: [string, ColumnNames][],
-    col: string
-  ): string | undefined {
-    return chips.find(([column]) => column === col)?.[1];
+      this.columnSelection.clear();
+      this.selectAllRows();
+
+      this.resetChips();
+
+    }, { allowSignalWrites: true });
   }
 
-  onDeleteColumns(cols: boolean[]) {
-    this.chipsService.resetChips();
-    this.uploadService.deleteAdresesCsvColumns(cols);
-    this.checkCols.controls.columns.reset();
+  assignedChipName = (column: number) => this.assignedChips()
+    .find(([idx]) => idx === column)?.[1];
+
+  adresesPackages = computed(() => {
+    const selectedRows = this.selectedRows();
+    if (
+      this.assignedChips().length < TABLE_COLUMNS.length ||
+      this.selectedRows().isEmpty()
+    ) {
+      return null;
+    }
+    const rows = this.adreses().filter((_, idx) => selectedRows.isSelected(idx));
+    return rawArrayToAddressWithPackage(rows, this.assignedChips());
+  });
+
+  @Output() adresesBox = toObservable(this.adresesPackages);
+
+  deleteColumns() {
+
+    this.resetChips();
+
+    const updated = this.adreses()
+      .map(row => row.filter((_, column) => !this.columnSelection.isSelected(column)));
+    this.adreses.set(updated);
+
+    this.columnSelection.clear();
   }
 
-  onJoinColumns(cols: boolean[]) {
-    this.chipsService.resetChips();
-    this.uploadService.joinAdresesCsvColumns(cols);
-    this.checkCols.controls.columns.reset();
+  joinColumns() {
+
+    this.resetChips();
+
+    this.columnSelection.sort();
+    const selected = this.columnSelection.selected;
+    const updated = [];
+
+    this.adreses().forEach((row) => {
+
+      const joinedCell = selected
+        .map(idx => row[idx])
+        .join(' ');
+      const joinedIdx = selected[0];
+
+      const updatedRow = row.filter((_, idx) => !this.columnSelection.isSelected(idx) || idx === joinedIdx);
+      updatedRow[joinedIdx] = joinedCell;
+
+      updated.push(updatedRow);
+
+    });
+    this.adreses.set(updated);
+
+    this.columnSelection.clear();
   }
 
-  onAddEmptyColumn() {
-    this.uploadService.addEmptyColumn();
-  }
-
-  onDrop(data: DragData, col: string) {
-    this.chipsService.moveChip(data.text, col);
-  }
-
-  onChipRemove(col: string) {
-    this.chipsService.removeChip(col);
-  }
-
-  columnsWithSelected = (cols: string[]) => ['selected', ...cols];
-
-  private toCheckGroup(cols: string[]) {
-    const checksArr = new FormArray<FormControl<boolean>>(
-      cols.map((_) => new FormControl(false))
+  addEmptyColumn() {
+    this.adreses.set(
+      this.adreses().map(row => [...row, 0])
     );
-    this.checkCols.setControl('columns', checksArr);
   }
+
+  onDrop(chipName: ColumnNames, targetColumn: number) {
+
+    const update = removeChipByName(this.assignedChips(), chipName);
+    this.assignedChips.set(
+      [...removeChipByColumn(update, targetColumn), [targetColumn, chipName]]
+    );
+
+  }
+
+  onChipRemove(column: number) {
+    const chips = this.assignedChips();
+    this.assignedChips.set(removeChipByColumn(chips, column));
+  }
+
+
+  private selectAllRows() {
+    this.rowSelection.setSelection(...this.adreses().map((_, idx) => idx));
+  }
+
+  private resetChips() {
+    this.assignedChips.set([]);
+  }
+
+}
+
+function removeChipByName(chips: [number, ColumnNames][], chipName: ColumnNames) {
+  return chips.filter(([_, name]) => name !== chipName);
+}
+
+function removeChipByColumn(chips: [number, ColumnNames][], column: number) {
+  return chips.filter(([idx]) => idx !== column);
 }

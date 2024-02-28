@@ -3,10 +3,10 @@
 
     <mat-form-field>
         <mat-label>Pasūtījums</mat-label>
-        <mat-select [formControl]="orderIdControl">
-            @for (ordr of orders$ | async; track $index) {
-            <mat-option [value]="ordr.jobId">
-                {{ordr.name}}
+        <mat-select [(ngModel)]="orderId" name="orderId" required>
+            @for (order of orders(); track $index) {
+            <mat-option [value]="order.jobId">
+                {{order.name}}
             </mat-option>
             }
         </mat-select>
@@ -21,37 +21,32 @@
 </section>
 
 <!-- Kopējie daudzumi -->
-@if (colors$ | async; as colors) {
 <section class="totals">
-    <p>
-        <app-color-totals [colorTotals]="plannedTotals$ | async">
-            Plānotie apjomi (paciņas):
-        </app-color-totals>
-    </p>
-    <p>
-        <app-color-totals [colorTotals]="adresesBox?.totals.colorTotals">
-            Apjomi sarakstā (paciņas):
-        </app-color-totals>
-    </p>
-    <p>
-        Adreses: {{adresesBox?.totals.adrCount}} |
-        Kastes: {{adresesBox?.totals.boxCount}}
-    </p>
-</section>
-}
-
-<!-- Pogas -->
-<section class="button-bar">
-    <button mat-raised-button color="primary" (click)="onSave(adresesBox)"
-        [disabled]="!orderIdControl.valid || !adresesBox">
-        SAGLABĀT
-    </button>
-    @for (bt of tabula.buttons; track $index) {
-    <ng-template [cdkPortalOutlet]="bt"></ng-template>
-    }
+    <div>
+        <button mat-raised-button color="primary" (click)="onSave()"
+            [disabled]="orderId() == null || adresesBox()==null">
+            SAGLABĀT
+        </button>
+    </div>
+    <div>
+        @if (totals()) {
+        <p>
+            <app-color-totals [colorTotals]="plannedTotals()">
+                Plānotie apjomi (paciņas):
+            </app-color-totals>
+        </p>
+        <p>
+            <app-color-totals [colorTotals]="totals()">
+                Apjomi sarakstā (paciņas):
+            </app-color-totals>
+        </p>
+        <p>
+            Adreses: {{ totals().addresses }} |
+            Kastes: {{ totals().packages }}
+        </p>
+        }
+    </div>
 </section>
 
 <!-- Tabula -->
-<section class="adreses" scroll-to-top>
-    <app-upload-adreses #tabula [data]="inputData()" (adresesBox)="adresesBox = $event" />
-</section>
+<app-upload-adreses #tabula [data]="inputData()" (adresesBox)="adresesBox.set( $event)" />

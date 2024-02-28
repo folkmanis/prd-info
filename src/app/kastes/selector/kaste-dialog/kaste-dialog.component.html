@@ -1,15 +1,15 @@
 <div mat-dialog-title>
 
-    <div class="kods" [class.gatavs]="veikalsKaste.kastes.gatavs === true">
+    <div class="kods" [class.gatavs]="addressPackage.completed === true">
         <span>
-            {{ veikalsKaste.kods }}
+            {{ addressPackage.addressId }}
         </span>
         <span class="subs">
-            /{{ veikalsKaste.kaste + 1 }}
+            /{{ addressPackage.boxSequence + 1 }}
         </span>
     </div>
     <h1>
-        {{ veikalsKaste.adrese | titlecase }}
+        {{ addressPackage.address| titlecase }}
     </h1>
 
 </div>
@@ -18,25 +18,27 @@
 
     <div class="colors">
         @for (color of colors; track $index) {
-        <div [style.color]="colorCodes[color]">
-            {{ veikalsKaste.kastes[color] }}
+        @if (addressPackage[color] > 0) {
+        <div [style.color]="colorCodes()[color]">
+            {{ addressPackage[color] }}
         </div>
+        }
         }
     </div>
 
     <div class="summary">
-        @for (kaste of kastes; track $index) {
-        <div class="kaste" [class.gatavs]="kaste.kastes.gatavs" [class.current]="$index === veikalsKaste.kaste">
+        @for (pack of allAddressPackages; track $index) {
+        <div class="kaste" [class.gatavs]="pack.completed" [class.current]="$index === pack.boxSequence">
             <span>
                 {{ $index + 1 }}:&nbsp;
             </span>
-            @for (color of allColors; track color) {
+            @for (color of colors; track color) {
             <span [style.color]="colorCodes[color]">
-                {{ kaste.kastes[color] }}&nbsp;
+                {{ pack[color] }}&nbsp;
             </span>
             }
             <span>
-                /{{ kaste.kastes.total }}
+                /{{ pack.total }}
             </span>
         </div>
         }
@@ -46,7 +48,7 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-    @if (veikalsKaste.kastes.gatavs === false) {
+    @if (addressPackage.completed === false) {
     <button mat-fab color="primary" [mat-dialog-close]="true">
         <mat-icon>
             done

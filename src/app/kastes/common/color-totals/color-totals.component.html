@@ -1,8 +1,14 @@
 <ng-content></ng-content>
-@if (colors$ | async; as colors) {
-@for (colorTotal of colorTotals; track $index) {
-<span [style.color]="colors[colorTotal.color]">
-    {{colorTotal.color | titlecase}} {{colorTotal.total}} |
+@if(colorTotals()) {
+
+@for(color of colors; track color; let last = $last) {
+<span [style.color]="colorStyles()[color]">
+    {{ color | titlecase }} {{ colorTotals()[color] }}
 </span>
+@if (!last) {
+<span>|</span>
 }
+
+}
+
 }

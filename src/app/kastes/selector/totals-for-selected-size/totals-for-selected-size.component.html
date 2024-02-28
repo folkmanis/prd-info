@@ -1,0 +1,19 @@
+<div>
+    Pavisam sūtījumu: <strong>{{ totalPackagesCount() }}</strong>
+    Nav nosūtīti: <strong>{{ notCompletedCount() }}</strong>
+    Nav uzlīmes: <strong>{{ notLabelledCount() }}</strong>
+</div>
+
+<div>
+    @for (color of colors; track $index; let last = $last) {
+    <span>
+        {{ color | titlecase }}:
+        <span [style.color]="colorCodes()[color]" class="cipars">
+            {{ colorTotals()[color] }}
+        </span>
+        @if (!last) {
+        <span> || </span>
+        }
+    </span>
+    }
+</div>

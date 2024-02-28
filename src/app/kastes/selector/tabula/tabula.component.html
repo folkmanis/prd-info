@@ -1,49 +1,53 @@
-<div class="container" #scrollContainer scroll-to-top>
+<mat-table [dataSource]="addressPackages()" [trackBy]="trackByFn" class="app-table container" #scrollContainer
+  scroll-to-top>
 
-  @if (colorCodes$ | async; as colorCodes) {
+  <!-- Sleja ar atzīmi par uzlīmes esamību -->
+  <ng-container matColumnDef="label">
+    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+    <mat-cell *matCellDef="let addressPackage;"></mat-cell>
+  </ng-container>
 
-  <table mat-table [dataSource]="dataSource$" [trackBy]="trackByFn" class="app-table">
+  <!-- Id Column -->
+  <ng-container matColumnDef="kods">
+    <mat-header-cell *matHeaderCellDef>Nr</mat-header-cell>
+    <mat-cell *matCellDef="let addressPackage;">{{ addressPackage.addressId }}</mat-cell>
+  </ng-container>
 
-    <!-- Sleja ar atzīmi par uzlīmes esamību -->
-    <ng-container matColumnDef="label">
-      <th mat-header-cell *matHeaderCellDef></th>
-      <td mat-cell *matCellDef="let row;" [class.label]="row.kastes.uzlime"></td>
-    </ng-container>
+  <!-- Adrese sleja -->
+  <ng-container matColumnDef="adrese">
+    <mat-header-cell *matHeaderCellDef mat>Adrese</mat-header-cell>
+    <mat-cell *matCellDef="let addressPackage;">
+      {{ addressPackage.address | titlecase }} ({{ addressPackage.total }})
+    </mat-cell>
+  </ng-container>
 
-    <!-- Id Column -->
-    <ng-container matColumnDef="kods">
-      <th mat-header-cell *matHeaderCellDef>Nr</th>
-      <td mat-cell *matCellDef="let row;">{{row.kods}}</td>
-    </ng-container>
-
-    <!-- Adrese sleja -->
-    <ng-container matColumnDef="adrese">
-      <th mat-header-cell *matHeaderCellDef mat>Adrese</th>
-      <td mat-cell *matCellDef="let row;">
-        {{row.adrese | titlecase}} ({{row.kastes.total}})
-      </td>
-    </ng-container>
-
-    <!-- Krāsu slejas -->
-    @for (color of colors; track $index) {
-    <ng-container [matColumnDef]="color">
-      <th mat-header-cell *matHeaderCellDef [style.color]="colorCodes[color]">
+  <!-- Krāsu slejas -->
+  @for (color of colors; track $index) {
+  <ng-container [matColumnDef]="'item-'+color">
+    <mat-header-cell *matHeaderCellDef [style.color]="colorCodes()[color]" class="digit-column">
+      <span>
         {{ color[0] | uppercase }}
-      </th>
-      <td mat-cell *matCellDef="let row;" [style.color]="colorCodes[color]">
-        {{row.kastes[color] | hideZero}}
-      </td>
-    </ng-container>
-    }
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns;"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onSelected(row)"
-      [class.selected]="row._id === selected?._id && row.kaste === selected.kaste" [appRowId]="row"
-      [class.gatavs]="row.kastes.gatavs" [class.pending]="row.pending"></tr>
-  </table>
-
+      </span>
+    </mat-header-cell>
+    <mat-cell *matCellDef="let addressPackage;" [style.color]="colorCodes()[color]" class="digit-column">
+      <span>
+        {{ addressPackage[color] | hideZero }}
+      </span>
+    </mat-cell>
+  </ng-container>
   }
 
-  <div class="blank"></div>
+  <ng-container matColumnDef="blank">
+    <mat-footer-cell *matFooterCellDef>
+    </mat-footer-cell>
+  </ng-container>
 
-</div>
+  <mat-header-row *matHeaderRowDef="displayedColumns;"></mat-header-row>
+  <mat-row *matRowDef="let addressPackage; columns: displayedColumns;" (click)="onSelected(addressPackage)"
+    [appRowId]="addressPackage" [class.gatavs]="addressPackage.completed"
+    [class.has-label]="addressPackage.hasLabel"></mat-row>
+  <mat-footer-row *matFooterRowDef="['blank'];"></mat-footer-row>
+</mat-table>
+
+
+<div class="blank"></div>

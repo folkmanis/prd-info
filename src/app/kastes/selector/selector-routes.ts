@@ -3,7 +3,7 @@ import { SelectorComponent } from './selector.component';
 
 export default [
   {
-    path: ':apjoms',
+    path: ':activeBoxSize',
     component: SelectorComponent,
   },
   {

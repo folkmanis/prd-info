@@ -11,12 +11,12 @@
         </app-color-totals>
     </p>
     <p>
-        <app-color-totals [colorTotals]="colorTotals()">
+        <app-color-totals [colorTotals]="totals()">
             Skaiti pēc saraksta
         </app-color-totals>
     </p>
     <p>
-        <app-kastes-totals [totals]="kastesTotals()">
+        <app-kastes-totals [totals]="totals().packagesBySize">
             Sadalījums pa kastēm
         </app-kastes-totals>
     </p>

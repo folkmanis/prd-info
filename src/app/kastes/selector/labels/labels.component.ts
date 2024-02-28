@@ -3,26 +3,25 @@ import {
   Component,
   ElementRef,
   EventEmitter,
-  Input,
   Output,
-  ViewChild,
+  effect,
+  input,
+  model,
+  viewChild
 } from '@angular/core';
-import {
-  FormControl,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { Colors, VeikalsKaste } from 'src/app/kastes/interfaces';
-import { HideZeroPipe } from '../../../library/common/hide-zero.pipe';
+import { COLORS } from 'src/app/kastes/interfaces';
+import { HideZeroPipe } from 'src/app/library/common/hide-zero.pipe';
+import { AddressPackage } from '../../interfaces/address-package';
+import { kastesPreferences } from '../../services/kastes-preferences.service';
 
-export interface Status {
+export interface LabelStatus {
   type: 'empty' | 'kaste' | 'none';
-  kaste?: VeikalsKaste;
+  addressPackage?: AddressPackage;
 }
 
 export class NoopErrorStateMatcher implements ErrorStateMatcher {
@@ -40,41 +39,40 @@ export class NoopErrorStateMatcher implements ErrorStateMatcher {
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
-    ReactiveFormsModule,
     MatButtonModule,
     HideZeroPipe,
   ],
 })
 export class LabelsComponent {
-  @ViewChild('kodsInput') kodsInput: ElementRef<HTMLInputElement>;
 
-  @Input() set status(status: Status) {
-    if (!status) {
-      return;
-    }
-    this._status = status;
-    this.kodsControl.enable();
-    this.kodsInput?.nativeElement.focus();
-    this.kodsInput?.nativeElement.select();
-    if (status.type === 'none') {
-      this.kodsControl.reset(undefined, { emitEvent: false });
-    }
-  }
-  get status(): Status {
-    return this._status;
-  }
-  private _status: Status = { type: 'none' };
+  private kodsInput = viewChild.required<ElementRef<HTMLInputElement>>('kodsInputElement');
 
-  @Input() colors: { [key in Colors]: string } | undefined;
+  status = input.required<LabelStatus>();
+
+  colors = COLORS;
+
+  colorCodes = kastesPreferences('colors');
 
   @Output() code = new EventEmitter<number>();
 
-  kodsControl = new FormControl('', {
-    validators: [Validators.required],
-  });
+  kods = model('');
+
+
+  constructor() {
+    effect(() => {
+      this.status();
+      this.kodsInput().nativeElement.disabled = false;
+      this.kodsInput().nativeElement.focus();
+      this.kodsInput().nativeElement.select();
+      if (this.status().type === 'none') {
+        this.kods.set('');
+      }
+    });
+  }
 
   onLabelSubmit(): void {
-    this.kodsControl.disable();
-    this.code.next(+this.kodsControl.value);
+    this.kodsInput().nativeElement.disabled = true;
+    this.code.next(+this.kods());
   }
+
 }

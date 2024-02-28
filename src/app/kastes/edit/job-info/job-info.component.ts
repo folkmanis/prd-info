@@ -9,13 +9,10 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { KastesJob, Veikals } from 'src/app/kastes/interfaces';
-import {
-  ColorTotalsComponent,
-  KastesTotalsComponent,
-  colorTotalsFromVeikali,
-  jobProductsToColorTotals,
-  kastesTotalsFromVeikali,
-} from '../../common';
+import { jobProductsToColorTotals } from '../../common/color-totals-from-veikali';
+import { ColorTotalsComponent } from '../../common/color-totals/color-totals.component';
+import { KastesTotalsComponent } from '../../common/kastes-totals/kastes-totals.component';
+import { totalsFromAddresesWithPackages } from "../../services/item-packing.utilities";
 import { PasutijumsEditComponent } from '../pasutijums-edit/pasutijums-edit.component';
 
 @Component({
@@ -44,9 +41,7 @@ export class JobInfoComponent {
 
   plannedTotals = computed(() => jobProductsToColorTotals(this.job().products || []));
 
-  colorTotals = computed(() => colorTotalsFromVeikali(this.veikali()));
-
-  kastesTotals = computed(() => kastesTotalsFromVeikali(this.veikali()));
+  totals = computed(() => totalsFromAddresesWithPackages(this.veikali()));
 
   onSetAsActive() {
     this.pasutijumsEdit.setAsActive();

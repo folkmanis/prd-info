@@ -1,24 +1,24 @@
 <form (submit)="onLabelSubmit()">
     <p>
         <mat-form-field>
-            <input matInput [formControl]="kodsControl" type="text" placeholder="Adreses kods" autocomplete="off"
-                #kodsInput>
+            <input matInput [(ngModel)]="kods" name="kods" type="text" placeholder="Adreses kods" autocomplete="off"
+                #kodsInput="ngModel" required #kodsInputElement>
         </mat-form-field>
     </p>
     <p>
-        <button mat-raised-button type="submit" #submitButton [disabled]="!kodsControl.valid">Apstiprināt</button>
+        <button mat-raised-button type="submit" #submitButton [disabled]="kodsInput.invalid">Apstiprināt</button>
     </p>
 </form>
 
 <p>
-    @switch (status.type) {
+    @switch (status().type) {
     @case ('kaste') {
     <span>
-        <div class="item" [style.color]="colors?.yellow">{{status.kaste.kastes?.yellow | hideZero}}</div>
-        <div class="item" [style.color]="colors?.rose">{{status.kaste.kastes?.rose | hideZero}}</div>
-        <div class="item" [style.color]="colors?.white">{{status.kaste.kastes?.white | hideZero}}</div>
+        @for (color of colors; track $index) {
+        <div class="item" [style.color]="colorCodes()[color]">{{status().addressPackage[color] | hideZero}}</div>
+        }
         <div class="adrese">
-            {{status.kaste.kods}}-{{status.kaste.adrese}}
+            {{ status().addressPackage.addressId }}-{{ status().addressPackage.address }}
         </div>
     </span>
     }

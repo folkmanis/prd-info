@@ -1,21 +1,17 @@
-import { Directive, Input, HostBinding, ElementRef, Inject, HostListener } from '@angular/core';
 import { CdkScrollable } from '@angular/cdk/scrolling';
-import { VeikalsKaste } from 'src/app/kastes/interfaces';
-
-const DELAY_TIME = 5000;
+import { Directive, ElementRef, HostBinding, HostListener, Input, inject } from '@angular/core';
+import { AddressPackage } from '../../interfaces/address-package';
 
 @Directive({
-    selector: 'tr[appRowId]',
-    standalone: true
+  selector: '[appRowId]',
+  standalone: true
 })
 export class RowIdDirective {
-  // eslint-disable-next-line @angular-eslint/no-input-rename
-  @Input('appRowId') kaste: VeikalsKaste | undefined;
 
-  constructor(
-    private element: ElementRef<HTMLTableRowElement>,
-    @Inject(CdkScrollable) private _scroller: CdkScrollable,
-  ) { }
+  @Input({ alias: 'appRowId', required: true }) addressPackage!: AddressPackage;
+
+  private element = inject(ElementRef);
+  private scroller = inject(CdkScrollable);
 
   @HostBinding('class.activated') activated = false;
 
@@ -24,8 +20,8 @@ export class RowIdDirective {
   }
 
   scrollIn() {
-    this._scroller.scrollTo({
-      top: this.element.nativeElement.offsetTop,
+    this.scroller.scrollTo({
+      top: this.element.nativeElement.offsetTop - (48 * 2 + 48 / 2),
       behavior: 'smooth'
     });
     this.activated = true;

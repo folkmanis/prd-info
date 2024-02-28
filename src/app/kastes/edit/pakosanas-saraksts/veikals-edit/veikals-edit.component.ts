@@ -1,4 +1,4 @@
-import { AsyncPipe, CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -84,7 +84,7 @@ export class VeikalsEditComponent {
   @Output()
   valueChanges: Observable<Veikals> = toObservable(this.veikalsValueChanges);
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder) { }
 
   private updateKaste(initial: Kaste, update: KasteColors): Kaste {
     const total = boxTotals(update);

@@ -1,5 +1,5 @@
 import { HttpClient, HttpContextToken } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import {
@@ -13,12 +13,12 @@ import { HttpOptions } from 'src/app/library/http';
 import { KastesJobPartial } from '../interfaces';
 
 @Injectable({
-  providedIn: 'any',
+  providedIn: 'root',
 })
 export class KastesApiService {
-  private readonly path = getAppParams('apiPath') + 'kastes/';
 
-  constructor(private http: HttpClient) {}
+  private readonly path = getAppParams('apiPath') + 'kastes/';
+  private http = inject(HttpClient);
 
   getKastes(jobId: number): Observable<VeikalsKaste[]> {
     const options = new HttpOptions();
@@ -75,7 +75,7 @@ export class KastesApiService {
 
   putTable(veikali: VeikalsUpload[]): Observable<number> {
     return this.http
-      .put<{ modifiedCount: number }>(this.path, veikali, new HttpOptions())
+      .put<{ modifiedCount: number; }>(this.path, veikali, new HttpOptions())
       .pipe(map((data) => data.modifiedCount));
   }
 
@@ -89,7 +89,7 @@ export class KastesApiService {
 
   deleteVeikali(pasutijumsId: number): Observable<number> {
     return this.http
-      .delete<{ deletedCount: number }>(
+      .delete<{ deletedCount: number; }>(
         this.path + pasutijumsId,
         new HttpOptions()
       )

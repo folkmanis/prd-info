@@ -6,14 +6,15 @@
             <mat-label>
                 Lietotājs
             </mat-label>
-            <input matInput formControlName="username" type="text" autocomplete="off" autocapitalize="none" appFocused>
+            <input matInput formControlName="username" type="text" autocomplete="username" autocapitalize="none"
+                appFocused>
         </mat-form-field>
 
         <mat-form-field class="item">
             <mat-label>
                 Parole
             </mat-label>
-            <input matInput formControlName="password" type="password">
+            <input matInput formControlName="password" type="password" autocomplete="current-password">
         </mat-form-field>
 
         <button mat-raised-button type="submit" color="primary" [disabled]="loginForm.invalid" class="item">

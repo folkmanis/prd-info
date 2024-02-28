@@ -1,76 +1,83 @@
-import { Injectable } from '@angular/core';
-import { cacheWithUpdate } from 'src/app/library/rxjs';
-import { Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
-import {
-  Colors,
-  COLORS,
-  Totals,
-  VeikalsKaste,
-} from 'src/app/kastes/interfaces';
-import { combineReload } from 'src/app/library/rxjs';
+import { inject, Injectable } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
+import { COLORS, VeikalsKaste } from 'src/app/kastes/interfaces';
+import { AddressPackage } from '../../interfaces/address-package';
 import { KastesApiService } from '../../services/kastes-api.service';
+import { KastesPasutijumiService } from '../../services/kastes-pasutijumi.service';
 
 @Injectable({
-  providedIn: 'any',
+  providedIn: 'root',
 })
 export class KastesTabulaService {
-  constructor(private api: KastesApiService) {}
+  private api = inject(KastesApiService);
 
-  kastesAll(
-    pasutijumsId: Observable<number>,
-    reload: Observable<void>,
-    update: Observable<VeikalsKaste>
-  ): Observable<VeikalsKaste[]> {
-    return combineReload(pasutijumsId, reload).pipe(
-      switchMap((id) => this.api.getKastes(id)),
-      cacheWithUpdate(
-        update,
-        (o1, o2) => o1._id === o2._id && o1.kaste === o2.kaste
-      )
-    );
+  private pasutijumiService = inject(KastesPasutijumiService);
+
+  async getKastesJob(jobId: number) {
+    return firstValueFrom(this.pasutijumiService.getKastesJob(jobId));
   }
 
-  setGatavs(kaste: VeikalsKaste, yesno: boolean): Observable<VeikalsKaste> {
-    return this.api.setGatavs(kaste, yesno);
+  async getAddressPackages(jobId: number): Promise<AddressPackage[]> {
+
+    if (!jobId) {
+      return [];
+    }
+
+    const veikalsKastes = await firstValueFrom(this.api.getKastes(jobId));
+
+    return veikalsKastes.map(veikalsKasteToAddressPackage);
+
   }
 
-  setLabel(kods: number, pasutijums: number): Observable<VeikalsKaste | null> {
-    return this.api.setLabel({ pasutijums, kods });
+  async getBoxSizeQuantities(jobId: number): Promise<number[]> {
+    if (!jobId) {
+      return [];
+    }
+    return firstValueFrom(this.api.getApjomi(jobId));
   }
 
-  getApjomi(pasutijumsId: number): Observable<number[]> {
-    return this.api.getApjomi(pasutijumsId);
+  async setCompleted(documentId: string, boxSequence: number, value: boolean): Promise<AddressPackage> {
+    const veikalsKaste = await firstValueFrom(this.api.setGatavs({ _id: documentId, kaste: boxSequence }, value));
+    return veikalsKasteToAddressPackage(veikalsKaste);
   }
 
-  getKastes(pasutijumsId: number): Observable<VeikalsKaste[]> {
-    return this.api.getKastes(pasutijumsId);
+  async setHaslabel(jobId: number, addressId: number): Promise<AddressPackage> {
+    const veikalsKaste = await firstValueFrom(this.api.setLabel({ pasutijums: jobId, kods: addressId }));
+    return veikalsKasteToAddressPackage(veikalsKaste);
   }
 
-  calcTotals(kastes: VeikalsKaste[]): Totals {
-    const colorsPakas = kastes.reduce(
-      (total, curr) => {
-        const _ =
-          curr.kastes.gatavs ||
-          Object.keys(total).forEach((key) => (total[key] += curr.kastes[key]));
-        return total;
-      },
-      { yellow: 0, rose: 0, white: 0 }
-    );
-    return {
-      total: kastes.length,
-      kastes: kastes.reduce(
-        (total, curr) => (total += curr.kastes.gatavs ? 0 : 1),
-        0
-      ),
-      labels: kastes.reduce(
-        (total, curr) => (total += curr.kastes.uzlime ? 0 : 1),
-        0
-      ),
-      colorTotals: COLORS.map((k: Colors) => ({
-        color: k,
-        total: colorsPakas[k],
-      })),
-    };
+  replacePackage(packages: AddressPackage[], update: AddressPackage): AddressPackage[] {
+
+    const idx = packages
+      .findIndex((pack) =>
+        pack.documentId === update.documentId
+        && pack.boxSequence === update.boxSequence
+      );
+
+    if (idx > -1) {
+      return [...packages.slice(0, idx), update, ...packages.slice(idx + 1)];
+    } else {
+      return [update, ...packages];
+    }
+
   }
+
+}
+
+function veikalsKasteToAddressPackage({ kastes, ...veikals }: VeikalsKaste): AddressPackage {
+
+  const addressPackage = {
+    address: veikals.adrese,
+    addressId: veikals.kods,
+    boxSequence: veikals.kaste,
+    completed: kastes.gatavs,
+    documentId: veikals._id,
+    hasLabel: kastes.uzlime,
+    total: kastes.total,
+  } as AddressPackage;
+
+  COLORS.forEach(color => addressPackage[color] = kastes[color]);
+
+  return addressPackage;
+
 }

@@ -3,9 +3,9 @@
         Kopējie skaiti
     </h4>
     <ul>
-        @for (colorTotal of colorTotals; track $index) {
-        <li [style.color]="colors && colors[colorTotal.color]">
-            {{colorTotal.total}}
+        @for (color of colors; track color) {
+        <li [style.color]="colorCodes()[color]">
+            {{ colorTotals()[color] }}
         </li>
         }
     </ul>
@@ -15,9 +15,9 @@
         Apjomi
     </h4>
     <ul>
-        @for (apjoms of apjomiTotals; track $index) {
+        @for (size of totalsBySize(); track $index) {
         <li>
-            {{apjoms[0]}}-{{apjoms[1]}}
+            {{ size[0] }}-{{ size[1] }}
         </li>
         }
     </ul>
