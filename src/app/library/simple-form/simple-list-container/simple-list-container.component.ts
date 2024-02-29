@@ -3,11 +3,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
-  Output,
   TemplateRef,
   booleanAttribute,
   input,
   model,
+  signal,
   viewChild
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -17,7 +17,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { ReplaySubject } from 'rxjs';
 import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
 import { ViewSizeDirective } from 'src/app/library/view-size';
 
@@ -46,7 +45,9 @@ export class SimpleListContainerComponent {
 
   filterTemplate: TemplateRef<any> | null = null;
 
-  @Input() editorWidth = '50%';
+  editorWidth = input('50%');
+
+  hideFilterWhenActive = input(false, { transform: booleanAttribute });
 
   plusButton = input(false, { transform: booleanAttribute });
 
@@ -62,21 +63,13 @@ export class SimpleListContainerComponent {
 
   filter = model('');
 
-  @Output() activeStatusChanges = new ReplaySubject<boolean>(1);
-
-  get isActivated(): boolean {
-    return this.routerOutlet()?.isActivated || false;
-  }
-
-  ngAfterViewInit() {
-    this.activeStatusChanges.next(this.isActivated);
-  }
-
-  ngOnDestroy(): void {
-    this.activeStatusChanges.complete();
-  }
+  activeStatus = signal(false);
 
   onActivate(): void {
-    this.activeStatusChanges.next(this.isActivated);
+    this.activeStatus.set(true);
+  }
+
+  onDeactivate(): void {
+    this.activeStatus.set(false);
   }
 }

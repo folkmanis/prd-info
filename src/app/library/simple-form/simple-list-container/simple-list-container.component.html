@@ -9,7 +9,7 @@
                 </button>
             </div>
             }
-            @if (filterInput) {
+            @if (filterInput && (hideFilterWhenActive() === false || activeStatus() === false)) {
             <div class="search">
                 <ng-container *ngTemplateOutlet="filterTemplate || defaultFilterTemplate"></ng-container>
             </div>
@@ -21,8 +21,8 @@
         </div>
     </div>
 
-    <div class="editor" [style.flex]="viewSize.isLarge ? '0 0 ' + editorWidth : null">
-        <router-outlet #editor="outlet" (activate)="onActivate()" (deactivate)="onActivate()"></router-outlet>
+    <div class="editor" [style.flex]="viewSize.isLarge ? '0 0 ' + editorWidth() : null">
+        <router-outlet #editor="outlet" (activate)="onActivate()" (deactivate)="onDeactivate()"></router-outlet>
     </div>
 
 </div>

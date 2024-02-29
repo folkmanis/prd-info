@@ -1,8 +1,8 @@
-<app-simple-list-container #container filterInput (filterChange)="onFilter($event)" editorWidth="70%">
+<app-simple-list-container #container filterInput [(filter)]="name" editorWidth="70%" hideFilterWhenActive>
     <mat-table [dataSource]="kastesJobs()" class="simple-form-table">
 
-        <mat-header-row *matHeaderRowDef="container.isActivated ? columnsActive : columns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: container.isActivated ? columnsActive : columns;"
+        <mat-header-row *matHeaderRowDef="container.activeStatus() ? columnsActive : columns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: container.activeStatus() ? columnsActive : columns;"
             [routerLink]="row.jobId" routerLinkActive="selected"></mat-row>
 
         <!-- Aktīvais pasūtījums -->

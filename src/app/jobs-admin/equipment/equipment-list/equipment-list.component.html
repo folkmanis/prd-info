@@ -1,5 +1,4 @@
-<app-simple-list-container plusButton #listContainer [filterInput]="listContainer.isActivated == false"
-    [(filter)]="name">
+<app-simple-list-container plusButton filterInput hideFilterWhenActive [(filter)]="name">
 
     <mat-table [dataSource]="equipment()" class="app-table">
 

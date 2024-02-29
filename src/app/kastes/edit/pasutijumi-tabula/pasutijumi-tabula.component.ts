@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterLinkActive } from '@angular/router';
@@ -7,6 +7,8 @@ import { SimpleListContainerComponent } from 'src/app/library/simple-form';
 import { KastesPasutijumiService } from '../../services/kastes-pasutijumi.service';
 import { kastesPreferences } from '../../services/kastes-preferences.service';
 import { KastesJobPartial } from '../../interfaces';
+import { firstValueFrom } from 'rxjs';
+import { isEqual } from 'lodash-es';
 
 @Component({
   selector: 'app-pasutijumi-tabula',
@@ -23,9 +25,14 @@ import { KastesJobPartial } from '../../interfaces';
     DatePipe,
   ],
 })
-export class PasutijumiTabulaComponent implements OnInit {
+export class PasutijumiTabulaComponent {
 
   private kastesPasutijumiService = inject(KastesPasutijumiService);
+
+  private filter = computed(
+    () => this.name().trim().length > 0 ? { name: this.name().trim() } : {},
+    { equal: isEqual }
+  );
 
   readonly columns = ['active', 'jobId', 'name', 'receivedDate', 'dueDate'];
   readonly columnsActive = ['active', 'jobId', 'name'];
@@ -34,18 +41,16 @@ export class PasutijumiTabulaComponent implements OnInit {
 
   activeJob = kastesPreferences('pasutijums');
 
-  //
+  name = signal('');
 
 
-  datasource$ = this.kastesPasutijumiService.kastesJobs$;
-
-
-  ngOnInit(): void {
-    this.kastesPasutijumiService.setFilter({});
+  constructor() {
+    effect(async () => {
+      const jobs = await firstValueFrom(
+        this.kastesPasutijumiService.getKastesJobs(this.filter())
+      );
+      this.kastesJobs.set(jobs);
+    }, { allowSignalWrites: true });
   }
 
-  onFilter(name: string): void {
-    const filter = name.length > 0 ? { name } : {};
-    this.kastesPasutijumiService.setFilter(filter);
-  }
 }

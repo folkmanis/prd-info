@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { map, switchMap, throttleTime } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { KastesJob, Veikals, VeikalsUpload } from '../interfaces';
 import { KastesJobPartial } from '../interfaces/kastes-job-partial';
 import { KastesApiService } from './kastes-api.service';
@@ -16,20 +16,7 @@ export class KastesPasutijumiService {
 
   private api = inject(KastesApiService);
 
-  private readonly _filter$ = new BehaviorSubject<KastesJobFilter>({});
-
-  get kastesJobs$(): Observable<KastesJobPartial[]> {
-    return this._filter$.pipe(
-      throttleTime(300),
-      switchMap((filter) => this.getKastesJobs(filter))
-    );
-  }
-
-  setFilter(filter: KastesJobFilter) {
-    this._filter$.next(filter);
-  }
-
-  getKastesJobs(filter: KastesJobFilter): Observable<KastesJobPartial[]> {
+  getKastesJobs(filter: KastesJobFilter = {}): Observable<KastesJobPartial[]> {
     return this.api.getAllKastesJobs(filter);
   }
 

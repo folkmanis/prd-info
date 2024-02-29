@@ -1,5 +1,4 @@
-<app-simple-list-container #listContainer [(filter)]="name" plusButton
-    [filterInput]="listContainer.isActivated == false" editorWidth="60%">
+<app-simple-list-container [(filter)]="name" plusButton filterInput hideFilterWhenActive editorWidth="60%">
 
     <mat-table [dataSource]="products()" class="app-table">
 

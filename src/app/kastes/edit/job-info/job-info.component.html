@@ -25,7 +25,7 @@
             NOTEIKT KĀ AKTĪVO
         </button>
         <button mat-raised-button (click)="onDeleteVeikali()"
-            [disabled]="job().jobStatus.generalStatus >= 30 || veikali.length === 0">
+            [disabled]="job().jobStatus.generalStatus >= 30 || veikali().length === 0">
             IZDZĒST PAKOŠANAS SARAKSTU
         </button>
         <a mat-raised-button [routerLink]="['/', 'jobs', 'repro', job().jobId]">
