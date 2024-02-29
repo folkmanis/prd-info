@@ -45,6 +45,10 @@ export class ProductsService {
     );
   }
 
+  getAllProducts(): Observable<ProductPartial[]> {
+    return this.api.getAll();
+  }
+
   getProduct(id: string): Observable<Product> {
     return this.api.getOne(id);
   }

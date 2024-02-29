@@ -22,6 +22,8 @@ import { ProductProductionComponent } from '../product-production/product-produc
 import { ProductsFormService } from '../services/products-form.service';
 import { PaytraqProductComponent } from './paytraq-product/paytraq-product.component';
 import { ProductPricesComponent } from './product-prices/product-prices.component';
+import { ProductsListComponent } from '../products-list/products-list.component';
+import { navigateRelative } from 'src/app/library/common';
 
 @Component({
   selector: 'app-products-editor',
@@ -50,6 +52,13 @@ import { ProductPricesComponent } from './product-prices/product-prices.componen
   ],
 })
 export class ProductsEditorComponent implements CanComponentDeactivate {
+
+  private formService = inject(ProductsFormService);
+
+  private productsList = inject(ProductsListComponent, { optional: true });
+
+  private navigate = navigateRelative();
+
   form = this.formService.form;
 
   product = input.required<Product>();
@@ -68,9 +77,6 @@ export class ProductsEditorComponent implements CanComponentDeactivate {
   }
 
   constructor(
-    private formService: ProductsFormService,
-    private router: Router,
-    private route: ActivatedRoute
   ) {
     effect(() => {
       this.formService.setInitial(this.product());
@@ -80,9 +86,10 @@ export class ProductsEditorComponent implements CanComponentDeactivate {
   onSave() {
     this.formService
       .save()
-      .subscribe((product) =>
-        this.router.navigate(['..', product._id], { relativeTo: this.route })
-      );
+      .subscribe(async (product) => {
+        await this.productsList?.reload();
+        await this.navigate(['..', product._id]);
+      });
   }
 
   onReset(): void {
@@ -90,6 +97,6 @@ export class ProductsEditorComponent implements CanComponentDeactivate {
   }
 
   canDeactivate(): Observable<boolean> | boolean {
-    return !this.changes; // || this.productFormService.isNew();
+    return this.formService.canDeactivate();
   }
 }

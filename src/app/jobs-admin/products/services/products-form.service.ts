@@ -60,10 +60,14 @@ export class ProductsFormService {
       const update = { ...this.changes, _id: this.value._id };
       return this.productService.updateProduct(update).pipe(
         tap(value => this.setInitial(value)),
+        tap((value) => this.setInitial(value)),
       );
     }
   }
 
+  canDeactivate(): boolean {
+    return !this.changes || this.form.pristine;
+  }
 
   reset(): void {
     this.form.reset(this.initialValue);

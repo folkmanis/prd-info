@@ -4,6 +4,7 @@ import {
   Component,
   computed,
   inject,
+  model,
   signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -34,11 +35,12 @@ export class UsersListComponent {
   private users = toSignal(inject(UsersService).users$, { initialValue: [] });
 
   usersFiltered = computed(() => {
-    const filterUpperStr = this.filter().toUpperCase();
+    console.log(this.filter());
+    const filterUpperStr = this.filter()?.toUpperCase() || '';
     return this.users().filter(
-      (u) =>
-        u.name.toUpperCase().includes(filterUpperStr) ||
-        u.username.toUpperCase().includes(filterUpperStr)
+      (user) =>
+        user.name.toUpperCase().includes(filterUpperStr) ||
+        user.username.toUpperCase().includes(filterUpperStr)
     );
   });
 }

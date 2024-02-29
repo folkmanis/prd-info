@@ -1,4 +1,4 @@
-<app-simple-list-container (filter)="filter.set($event)" plusButton filterInput>
+<app-simple-list-container [(filter)]="filter" plusButton filterInput>
 
     <table mat-table [dataSource]="usersFiltered()">
 

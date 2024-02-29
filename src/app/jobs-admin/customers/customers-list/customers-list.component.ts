@@ -20,7 +20,7 @@ import { CustomersService } from 'src/app/services';
 })
 export class CustomersListComponent {
 
-  nameFilterStr = signal('');
+  name = signal('');
 
   customers = toSignal(inject(CustomersService).customers$, { initialValue: <CustomerPartial[]>[] });
 
@@ -29,7 +29,7 @@ export class CustomersListComponent {
     .filter(cust => cust
       .CustomerName
       .toUpperCase()
-      .includes(this.nameFilterStr().toUpperCase())
+      .includes(this.name().toUpperCase())
     )
   );
 

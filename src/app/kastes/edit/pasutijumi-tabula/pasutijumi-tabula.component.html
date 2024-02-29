@@ -1,4 +1,4 @@
-<app-simple-list-container #container filterInput (filter)="onFilter($event)" editorWidth="70%">
+<app-simple-list-container #container filterInput (filterChange)="onFilter($event)" editorWidth="70%">
     <mat-table [dataSource]="kastesJobs()" class="simple-form-table">
 
         <mat-header-row *matHeaderRowDef="container.isActivated ? columnsActive : columns"></mat-header-row>

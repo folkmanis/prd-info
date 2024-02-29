@@ -1,11 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { BehaviorSubject, combineLatest } from 'rxjs';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+import { BehaviorSubject, combineLatest, firstValueFrom } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
 import { ProductsService } from 'src/app/services';
 import { SimpleListContainerComponent } from 'src/app/library/simple-form';
 import { MatTable, MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { ProductPartial } from 'src/app/interfaces';
 
 @Component({
   selector: 'app-products-list',
@@ -20,28 +21,33 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
     RouterLinkActive,
   ],
 })
-export class ProductsListComponent implements OnInit {
+export class ProductsListComponent {
+
+  private productsService = inject(ProductsService);
+  private allProducts = signal<ProductPartial[]>([]);
+
+  private filter = computed(() => this.name()?.trim().toLowerCase() || '');
+
   displayedColumns = ['name', 'category'];
 
-  private filter = new BehaviorSubject('');
+  name = signal('');
 
-  products$ = combineLatest([
-    this.filter.pipe(
-      debounceTime(200),
-      map((str) => str.toUpperCase())
-    ),
-    this.productsService.products$,
-  ]).pipe(
-    map(([str, prod]) =>
-      prod.filter((pr) => pr.name.toUpperCase().includes(str))
-    )
-  );
+  products = computed(() => {
+    const filter = this.filter();
+    return this.allProducts().filter(product => product.name.toLowerCase().includes(filter));
+  });
 
-  constructor(private productsService: ProductsService) {}
-
-  ngOnInit(): void {}
-
-  onFilter(value: string) {
-    this.filter.next(value);
+  constructor() {
+    this.getAllProducts();
   }
+
+  async reload() {
+    this.getAllProducts();
+  }
+
+  private async getAllProducts() {
+    const products = await firstValueFrom(this.productsService.getAllProducts());
+    this.allProducts.set(products);
+  }
+
 }

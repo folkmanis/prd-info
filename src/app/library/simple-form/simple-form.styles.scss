@@ -14,9 +14,11 @@
             background-color: mat.get-color-from-palette($primary, "lighter");
             border-bottom-color: mat.get-color-from-palette($primary, "darker");
         }
+
         &.selected {
             background-color: mat.get-color-from-palette($primary, 50);
         }
+
         &.disabled {
             opacity: 0.5;
         }
@@ -29,6 +31,7 @@
 
     .app-table tbody tr {
         cursor: default;
+
         &:hover {
             font-weight: 800;
             // font-weight: mat.font-weight($config, body+3);
@@ -39,6 +42,10 @@
 @mixin simple-form-table() {
     .simple-form-table table {
         width: 100%;
+    }
+
+    .simple-form-table table,
+    .simple-form-table mat-table {
         cursor: pointer;
     }
 }
@@ -50,10 +57,11 @@
 
     // Do not generate styles if configurations for individual theming
     // systems have been explicitly set to `null`.
-    @if $color != null {
+    @if $color !=null {
         @include simple-form-color($color);
     }
-    @if $typography != null {
+
+    @if $typography !=null {
         @include simple-form-typography($typography);
     }
 

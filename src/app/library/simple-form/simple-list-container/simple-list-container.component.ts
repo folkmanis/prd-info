@@ -1,4 +1,3 @@
-import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -6,16 +5,19 @@ import {
   Input,
   Output,
   TemplateRef,
-  ViewChild,
+  booleanAttribute,
+  input,
+  model,
+  viewChild
 } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { ReplaySubject, debounceTime } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
 import { ViewSizeDirective } from 'src/app/library/view-size';
 
@@ -26,11 +28,10 @@ import { ViewSizeDirective } from 'src/app/library/view-size';
   styleUrls: ['./simple-list-container.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    FormsModule,
     RouterOutlet,
-    ReactiveFormsModule,
     ScrollTopDirective,
     RouterLink,
-    FormsModule,
     MatButtonModule,
     MatIconModule,
     MatFormFieldModule,
@@ -41,26 +42,17 @@ import { ViewSizeDirective } from 'src/app/library/view-size';
   ],
 })
 export class SimpleListContainerComponent {
-  @ViewChild('editor') private routerOutlet: RouterOutlet;
-
-  searchControl = new FormControl<string>('');
+  private routerOutlet = viewChild<RouterOutlet>('editor');
 
   filterTemplate: TemplateRef<any> | null = null;
 
   @Input() editorWidth = '50%';
 
-  @Input()
-  set plusButton(val: any) {
-    this._plusButton = coerceBooleanProperty(val);
-  }
-  get plusButton() {
-    return this._plusButton;
-  }
-  private _plusButton = false;
+  plusButton = input(false, { transform: booleanAttribute });
 
   @Input()
   set filterInput(val: any) {
-    this._filterInput = coerceBooleanProperty(val);
+    this._filterInput = booleanAttribute(val);
     this.filterTemplate = val instanceof TemplateRef ? val : null;
   }
   get filterInput() {
@@ -68,12 +60,12 @@ export class SimpleListContainerComponent {
   }
   private _filterInput = false;
 
-  @Output() filter = this.searchControl.valueChanges.pipe(debounceTime(200));
+  filter = model('');
 
   @Output() activeStatusChanges = new ReplaySubject<boolean>(1);
 
   get isActivated(): boolean {
-    return this.routerOutlet?.isActivated || false;
+    return this.routerOutlet()?.isActivated || false;
   }
 
   ngAfterViewInit() {

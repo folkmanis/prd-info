@@ -2,7 +2,7 @@
     <div class="list">
 
         <mat-toolbar>
-            @if (plusButton) {
+            @if (plusButton()) {
             <div>
                 <button mat-mini-fab color="primary" routerLink="new">
                     <mat-icon>add</mat-icon>
@@ -29,14 +29,14 @@
 
 <ng-template #defaultFilterTemplate>
     <mat-form-field subscriptSizing="dynamic">
-        <input matInput [formControl]='searchControl'>
-        @if (!searchControl.value.length) {
+        <input matInput [(ngModel)]="filter" name="filterInput">
+        @if (filter().length == 0) {
         <button mat-icon-button matIconSuffix disabled>
             <mat-icon>search</mat-icon>
         </button>
         }
-        @if (searchControl.value.length) {
-        <button mat-icon-button matIconSuffix (click)="searchControl.reset('')">
+        @if (filter().length > 0) {
+        <button mat-icon-button matIconSuffix (click)="filter.set('')">
             <mat-icon>clear</mat-icon>
         </button>
         }

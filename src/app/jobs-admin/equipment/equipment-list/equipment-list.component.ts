@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { BehaviorSubject, Observable, debounceTime, switchMap } from 'rxjs';
@@ -7,6 +7,7 @@ import { EquipmentPartial } from 'src/app/interfaces';
 import { combineReload } from 'src/app/library/rxjs';
 import { SimpleListContainerComponent } from 'src/app/library/simple-form';
 import { EquipmentFilter, EquipmentService } from '../services/equipment.service';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-equipment-list',
@@ -15,7 +16,6 @@ import { EquipmentFilter, EquipmentService } from '../services/equipment.service
   styleUrls: ['./equipment-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
     SimpleListContainerComponent,
     RouterLink,
     RouterLinkActive,
@@ -24,27 +24,23 @@ import { EquipmentFilter, EquipmentService } from '../services/equipment.service
 })
 export class EquipmentListComponent {
 
-  private filter = new BehaviorSubject<EquipmentFilter>({});
+  private equipmentService = inject(EquipmentService);
 
-  equipment$: Observable<EquipmentPartial[]> = combineReload(this.filter, this.equipmentService.reload$).pipe(
+  private filter = computed(() => {
+    const name = this.name()?.trim() || '';
+    return name.length > 0 ? { name } : {};
+  });
+
+  private equipment$: Observable<EquipmentPartial[]> = combineReload(toObservable(this.filter), this.equipmentService.reload$).pipe(
     debounceTime(300),
     switchMap(filter => this.equipmentService.getList(filter)),
   );
 
+  name = signal('');
+
+  equipment = toSignal(this.equipment$, { initialValue: [] });
 
   displayedColumns = ['name'];
 
-  constructor(
-    private equipmentService: EquipmentService,
-  ) { }
-
-
-  onSetFilter(name: string) {
-    if (typeof name === 'string' && name.trim().length > 0) {
-      this.filter.next({ name: name.trim() });
-    } else {
-      this.filter.next({});
-    }
-  }
 
 }

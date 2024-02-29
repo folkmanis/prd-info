@@ -1,4 +1,4 @@
-<app-simple-list-container (filter)="nameFilterStr.set($event)" plusButton filterInput editorWidth="60%">
+<app-simple-list-container [(filter)]="name" plusButton filterInput editorWidth="60%">
 
     <table mat-table [dataSource]="customersFiltered()" class="simple-form-table">
 
