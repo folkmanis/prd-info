@@ -1,11 +1,12 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { SimpleListContainerComponent } from 'src/app/library/simple-form';
 import { KastesPasutijumiService } from '../../services/kastes-pasutijumi.service';
 import { kastesPreferences } from '../../services/kastes-preferences.service';
+import { KastesJobPartial } from '../../interfaces';
 
 @Component({
   selector: 'app-pasutijumi-tabula',
@@ -29,7 +30,12 @@ export class PasutijumiTabulaComponent implements OnInit {
   readonly columns = ['active', 'jobId', 'name', 'receivedDate', 'dueDate'];
   readonly columnsActive = ['active', 'jobId', 'name'];
 
+  kastesJobs = signal<KastesJobPartial[]>([]);
+
   activeJob = kastesPreferences('pasutijums');
+
+  //
+
 
   datasource$ = this.kastesPasutijumiService.kastesJobs$;
 

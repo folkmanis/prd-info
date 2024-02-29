@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import {
+  COLORS,
   KastesJob,
   KastesUserPreferences,
   Veikals,
@@ -11,6 +12,7 @@ import {
 } from 'src/app/kastes/interfaces';
 import { HttpOptions } from 'src/app/library/http';
 import { KastesJobPartial } from '../interfaces';
+import { AddressPackage } from '../interfaces/address-package';
 
 @Injectable({
   providedIn: 'root',
@@ -20,9 +22,11 @@ export class KastesApiService {
   private readonly path = getAppParams('apiPath') + 'kastes/';
   private http = inject(HttpClient);
 
-  getKastes(jobId: number): Observable<VeikalsKaste[]> {
+  getAddressPackages(jobId: number): Observable<AddressPackage[]> {
     const options = new HttpOptions();
-    return this.http.get<VeikalsKaste[]>(this.path + jobId, options);
+    return this.http.get<VeikalsKaste[]>(this.path + jobId, options).pipe(
+      map(data => data.map(row => veikalsKasteToAddressPackage(row)))
+    );
   }
 
   getVeikali(jobId: number): Observable<Veikals[]> {
@@ -32,7 +36,7 @@ export class KastesApiService {
     );
   }
 
-  getApjomi(jobId: number): Observable<number[]> {
+  getBoxSizeQuantities(jobId: number): Observable<number[]> {
     return this.http.get<number[]>(
       this.path + jobId + '/apjomi',
       new HttpOptions()
@@ -56,21 +60,22 @@ export class KastesApiService {
     );
   }
 
-  setGatavs(
-    { _id, kaste }: Pick<VeikalsKaste, '_id' | 'kaste'>,
-    yesno: boolean
-  ): Observable<VeikalsKaste> {
+  setCompleteState(
+    { documentId, boxSequence }: Pick<AddressPackage, 'documentId' | 'boxSequence'>,
+    state: boolean
+  ): Observable<AddressPackage> {
     // `192.168.8.73:4030/data/kastes/60f9214bf0b8622f7cedccaa/0/gatavs/false`
-    const path = `${this.path}${_id}/${kaste}/gatavs/${yesno}`;
-    return this.http.patch<VeikalsKaste>(path, {}, new HttpOptions());
+    const path = `${this.path}${documentId}/${boxSequence}/gatavs/${state}`;
+    return this.http.patch<VeikalsKaste>(path, {}, new HttpOptions()).pipe(
+      map(data => veikalsKasteToAddressPackage(data)),
+    );
   }
 
-  setLabel({
-    pasutijums,
-    kods,
-  }: Pick<VeikalsKaste, 'pasutijums' | 'kods'>): Observable<VeikalsKaste> {
-    const path = `${this.path}${pasutijums}/${kods}/label`;
-    return this.http.patch<VeikalsKaste>(path, {}, new HttpOptions());
+  setHasLabel(jobId: number, addressId: number): Observable<AddressPackage> {
+    const path = `${this.path}${jobId}/${addressId}/label`;
+    return this.http.patch<VeikalsKaste>(path, {}, new HttpOptions()).pipe(
+      map(data => veikalsKasteToAddressPackage(data)),
+    );
   }
 
   putTable(veikali: VeikalsUpload[]): Observable<number> {
@@ -96,8 +101,8 @@ export class KastesApiService {
       .pipe(map((data) => data.deletedCount));
   }
 
-  parseXlsx(form: FormData): Observable<any[][]> {
-    return this.http.post<any[][]>(this.path + 'parseXlsx', form);
+  parseXlsx(form: FormData): Observable<Array<string | number>[]> {
+    return this.http.post<Array<string | number>[]>(this.path + 'parseXlsx', form);
   }
 
   getAllKastesJobs(filter: Record<string, any>) {
@@ -127,4 +132,22 @@ export class KastesApiService {
       modifiedCount: number;
     }>(this.path + jobId + '/firestore/download', null, new HttpOptions());
   }
+}
+
+function veikalsKasteToAddressPackage({ kastes, ...veikals }: VeikalsKaste): AddressPackage {
+
+  const addressPackage = {
+    address: veikals.adrese,
+    addressId: veikals.kods,
+    boxSequence: veikals.kaste,
+    completed: kastes.gatavs,
+    documentId: veikals._id,
+    hasLabel: kastes.uzlime,
+    total: kastes.total,
+  } as AddressPackage;
+
+  COLORS.forEach(color => addressPackage[color] = kastes[color]);
+
+  return addressPackage;
+
 }

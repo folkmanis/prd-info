@@ -18,7 +18,7 @@ import { kastesPreferences } from '../services/kastes-preferences.service';
 import { KasteDialogComponent, KasteDialogData } from './kaste-dialog/kaste-dialog.component';
 import { LabelStatus, LabelsComponent } from './labels/labels.component';
 import { OrderTotalsComponent } from './order-totals/order-totals.component';
-import { KastesTabulaService } from './services/kastes-tabula.service';
+import { PackingTableService } from '../services/packing-table.service';
 import { TabulaComponent } from './tabula/tabula.component';
 import { TotalsForSelectedSizeComponent } from './totals-for-selected-size/totals-for-selected-size.component';
 
@@ -51,7 +51,7 @@ import { TotalsForSelectedSizeComponent } from './totals-for-selected-size/total
 })
 export class SelectorComponent {
 
-  private tabulaService = inject(KastesTabulaService);
+  private tabulaService = inject(PackingTableService);
   private dialog = inject(MatDialog);
 
   private table = viewChild(TabulaComponent);
