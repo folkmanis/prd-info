@@ -1,4 +1,3 @@
-@if (colors$ | async; as colorCodes) {
 <div class="container">
     <div>
         <app-kastes-totals [totals]="kastesTotals$ | async">
@@ -13,7 +12,7 @@
                 <td mat-cell *matCellDef="let row;">{{row.kods}}</td>
             </ng-container>
             <ng-container matColumnDef="adrese">
-                <th mat-header-cell *matHeaderCellDef="let row;">Adrese</th>
+                <th mat-header-cell *matHeaderCellDef="let row;">Adrese</th>`
                 <td mat-cell *matCellDef="let row;">{{row.adrese}}</td>
             </ng-container>
             <!-- Pogas -->
@@ -40,9 +39,9 @@
             <ng-container matColumnDef="pakas">
                 <th mat-header-cell *matHeaderCellDef="let row;">
                     <div>
-                        @for (col of colors; track $index) {
-                        <div [style.color]="colorCodes[col]">
-                            {{col | titlecase}}
+                        @for (color of colors; track $index) {
+                        <div [style.color]="colorCodes()[color]">
+                            {{color | titlecase}}
                         </div>
                         }
                         <div>
@@ -68,9 +67,9 @@
                     } @else {
                     @for (kaste of row.kastes; track $index) {
                     <div>
-                        @for (col of colors; track $index) {
-                        <div [style.color]="colorCodes[col]" class="numb">
-                            {{kaste[col]}}
+                        @for (color of colors; track $index) {
+                        <div [style.color]="colorCodes()[color]" class="numb">
+                            {{kaste[color]}}
                         </div>
                         }
                         <div>
@@ -91,4 +90,3 @@
     </div>
 
 </div>
-}

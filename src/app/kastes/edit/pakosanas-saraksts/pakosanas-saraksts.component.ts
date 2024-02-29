@@ -6,6 +6,7 @@ import {
   Input,
   Output,
   booleanAttribute,
+  input,
   signal,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,7 +16,7 @@ import { BehaviorSubject, Observable, map } from 'rxjs';
 import { kastesTotalsFromVeikali } from '../../common/color-totals-from-veikali';
 import { KastesTotalsComponent, } from '../../common/kastes-totals/kastes-totals.component';
 import { COLORS, Veikals } from '../../interfaces';
-import { getKastesPreferences } from '../../services/kastes-preferences.service';
+import { getKastesPreferences, kastesPreferences } from '../../services/kastes-preferences.service';
 import { VeikalsValidationErrors } from '../services/veikals-validation-errors';
 import { TotalsComponent } from './totals/totals.component';
 import { VeikalsEditComponent } from './veikals-edit/veikals-edit.component';
@@ -38,7 +39,8 @@ import { VeikalsEditComponent } from './veikals-edit/veikals-edit.component';
   ],
 })
 export class PakosanasSarakstsComponent {
-  colors$ = getKastesPreferences('colors');
+
+  colorCodes = kastesPreferences('colors');
 
   dataSource$ = new BehaviorSubject<Veikals[]>([]);
 
@@ -60,7 +62,7 @@ export class PakosanasSarakstsComponent {
     this.dataSource$.next(veikali || []);
   }
 
-  @Input({ transform: booleanAttribute }) disabled: boolean = false;
+  disabled = input(false, { transform: booleanAttribute });
 
   @Output() veikalsChange = new EventEmitter<Veikals>();
 
@@ -74,6 +76,6 @@ export class PakosanasSarakstsComponent {
   }
 
   isDisabled(veikals: Veikals): boolean {
-    return this.disabled || veikals.kastes.every((k) => k.gatavs);
+    return this.disabled() || veikals.kastes.every((k) => k.gatavs);
   }
 }

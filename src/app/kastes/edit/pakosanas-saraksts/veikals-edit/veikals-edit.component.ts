@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -26,16 +25,15 @@ import {
   COLORS,
   Colors,
   Kaste,
-  KasteColors,
   MAX_ITEMS_BOX,
   Veikals,
 } from 'src/app/kastes/interfaces';
 import { InputDirective } from 'src/app/library/directives/input.directive';
-import { getKastesPreferences } from '../../../services/kastes-preferences.service';
+import { kastesPreferences } from '../../../services/kastes-preferences.service';
 import { VeikalsValidationErrors } from '../../services/veikals-validation-errors';
 
 type ColorsGroup = FormGroup<{
-  [color in keyof KasteColors]: FormControl<KasteColors[color]>;
+  [color in Colors]: FormControl<number>;
 }>;
 
 @Component({
@@ -44,14 +42,17 @@ type ColorsGroup = FormGroup<{
   templateUrl: './veikals-edit.component.html',
   styleUrls: ['./veikals-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, ReactiveFormsModule, InputDirective, AsyncPipe],
+  imports: [FormsModule, ReactiveFormsModule, InputDirective],
 })
 export class VeikalsEditComponent {
+
+  private fb = new FormBuilder().nonNullable;
+
   boxTotals = boxTotals;
 
-  colors$ = getKastesPreferences('colors');
+  colorCodes = kastesPreferences('colors');
 
-  colorNames = COLORS;
+  colors = COLORS;
 
   @Input() set veikals(value: Veikals) {
     this.initForm(value.kastes);
@@ -67,7 +68,7 @@ export class VeikalsEditComponent {
   private veikalsValueChanges: Signal<Veikals> = computed(() => {
     const veikals = this.veikalsInitial();
     if (veikals) {
-      const kastesColors = this.formValue() as KasteColors[];
+      this.formValue();
       const kastes = veikals.kastes.map((kaste, idx) =>
         this.updateKaste(kaste, this.form.getRawValue()[idx])
       );
@@ -84,9 +85,8 @@ export class VeikalsEditComponent {
   @Output()
   valueChanges: Observable<Veikals> = toObservable(this.veikalsValueChanges);
 
-  constructor(private fb: FormBuilder) { }
 
-  private updateKaste(initial: Kaste, update: KasteColors): Kaste {
+  private updateKaste(initial: Kaste, update: Record<Colors, number>): Kaste {
     const total = boxTotals(update);
     return {
       ...initial,
@@ -110,7 +110,7 @@ export class VeikalsEditComponent {
     this.form.updateValueAndValidity();
   }
 
-  private colorsControlGroup(kaste: KasteColors): ColorsGroup {
+  private colorsControlGroup(kaste: Record<Colors, number>): ColorsGroup {
     const colors = COLORS.map((color) => ({
       [color]: [
         kaste[color],
@@ -119,14 +119,14 @@ export class VeikalsEditComponent {
     }));
     const controls: { [key in Colors]: [number, ValidatorFn[]] } =
       Object.assign({}, ...colors);
-    return this.fb.nonNullable.group(controls, {
+    return this.fb.group(controls, {
       validators: [maxItemsValidator(MAX_ITEMS_BOX)],
     });
   }
 }
 
-function colorTotals(kastes: KasteColors[]): KasteColors {
-  const tot: KasteColors = Object.assign(
+function colorTotals(kastes: Record<Colors, number>[]): Record<Colors, number> {
+  const tot: Record<Colors, number> = Object.assign(
     {},
     ...COLORS.map((col) => ({ [col]: 0 }))
   );
@@ -138,7 +138,7 @@ function colorTotals(kastes: KasteColors[]): KasteColors {
   return tot;
 }
 
-function totalsValidator(kastes: KasteColors[]): ValidatorFn {
+function totalsValidator(kastes: Record<Colors, number>[]): ValidatorFn {
   return (control: FormArray<ColorsGroup>): ValidationErrors => {
     if (control.value.length === 0) {
       return null;
@@ -147,7 +147,7 @@ function totalsValidator(kastes: KasteColors[]): ValidatorFn {
     const totals = colorTotals(control.getRawValue());
     const initTotals = colorTotals(kastes);
 
-    const diff: KasteColors = Object.assign(
+    const diff: Record<Colors, number> = Object.assign(
       {},
       ...COLORS.map((col) => ({ [col]: totals[col] - initTotals[col] }))
     );
@@ -167,6 +167,6 @@ function maxItemsValidator(maxItemsBox: number): ValidatorFn {
   };
 }
 
-function boxTotals(val: KasteColors): number {
+function boxTotals(val: Record<Colors, number>): number {
   return COLORS.reduce((acc, k) => acc + val[k], 0);
 }

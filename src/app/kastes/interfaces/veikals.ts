@@ -12,13 +12,9 @@ export interface Veikals {
 export type VeikalsKaste = Veikals & {
     kastes: Kaste;
     kaste: number;
-    loading?: boolean;
-    pending?: boolean;
 };
 
-export type KasteColors = { [key in Colors]: number; };
-
-export type Kaste = KasteColors & {
+export type Kaste = Record<Colors, number> & {
     total: number;
     gatavs: boolean;
     uzlime: boolean;

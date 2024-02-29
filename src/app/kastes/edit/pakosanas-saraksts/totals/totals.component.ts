@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { Veikals } from 'src/app/kastes/interfaces';
 import { getKastesPreferences } from 'src/app/kastes/services/kastes-preferences.service';
 import { colorTotalsFromVeikalsBoxs } from '../../../common/color-totals-from-veikali';
-import { PlusSignPipe } from '../../services/plus-sign.pipe';
+import { PlusSignPipe } from '../../../../library/common/plus-sign.pipe';
 import { VeikalsValidationErrors } from '../../services/veikals-validation-errors';
 
 @Component({

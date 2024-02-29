@@ -1,15 +1,13 @@
-@if (colors$ | async; as colors) {
 @for (control of form.controls; track $index) {
 <div [formGroup]="control" class="container">
-    @for (colorName of colorNames; track $index) {
+    @for (color of colors; track color) {
     <div>
-        <input appInput type="number" [formControlName]="colorName"
-            [style.color]="control.get(colorName).valid ? colors[colorName] : undefined">
+        <input appInput type="number" [formControlName]="color"
+            [style.color]="control.get(color).valid ? colorCodes()[color] : undefined">
     </div>
     }
     <div [class.invalid]="control.invalid">
         {{boxTotals(control.getRawValue())}}
     </div>
 </div>
-}
 }
