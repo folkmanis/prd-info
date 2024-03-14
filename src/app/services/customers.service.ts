@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, Subject } from 'rxjs';
+import { firstValueFrom, Observable, of, Subject } from 'rxjs';
 import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { Customer, CustomerPartial, CustomerUpdate, NewCustomer } from 'src/app/interfaces';
 import { CustomersApiService } from './prd-api/customers-api.service';
@@ -22,10 +22,10 @@ export class CustomersService {
     private api: CustomersApiService,
   ) { }
 
-  updateCustomer({ _id, ...rest }: CustomerUpdate): Observable<Customer> {
-    return this.api.updateOne(_id, rest).pipe(
-      tap(() => this.reloadCustomers$.next()),
-    );
+  async updateCustomer({ _id, ...rest }: CustomerUpdate): Promise<Customer> {
+    const update = await firstValueFrom(this.api.updateOne(_id, rest));
+    this.reloadCustomers$.next();
+    return update;
   }
 
   getCustomerList(filter: { name?: string, email?: string; } = {}): Observable<CustomerPartial[]> {
@@ -43,10 +43,10 @@ export class CustomersService {
     return this.api.getOne(name);
   }
 
-  saveNewCustomer(customer: NewCustomer): Observable<Customer> {
-    return this.api.insertOne(customer).pipe(
-      tap(_ => this.reloadCustomers$.next()),
-    );
+  async saveNewCustomer(customer: NewCustomer): Promise<Customer> {
+    const update = await firstValueFrom(this.api.insertOne(customer));
+    this.reloadCustomers$.next();
+    return update;
   }
 
   validator<K extends keyof Customer>(key: K, value: Customer[K]): Observable<boolean> {

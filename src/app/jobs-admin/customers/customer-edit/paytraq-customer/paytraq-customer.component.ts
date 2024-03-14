@@ -1,8 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  Input,
-  signal,
+  effect,
+  inject,
+  input,
+  model,
+  signal
 } from '@angular/core';
 import {
   ControlValueAccessor,
@@ -16,10 +19,6 @@ import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { PaytraqClientService } from '../../services/paytraq-client.service';
 import { PaytraqCustomerTableComponent } from './paytraq-customer-table/paytraq-customer-table.component';
 
-const DEFAULT_VALUE: CustomerFinancial = {
-  clientName: '',
-  paytraqId: undefined,
-};
 
 @Component({
   selector: 'app-paytraq-customer',
@@ -42,36 +41,36 @@ const DEFAULT_VALUE: CustomerFinancial = {
   ],
 })
 export class PaytraqCustomerComponent implements ControlValueAccessor {
-  @Input() set customer(
-    customer: Partial<Pick<Customer, 'financial' | 'CustomerName'>>
-  ) {
-    this.initialSearch.set(
-      customer.financial?.paytraqId
-        ? ''
-        : customer.financial?.clientName || customer.CustomerName
-    );
-  }
+
+  private paytraqService = inject(PaytraqClientService);
+
   private onChanges: (obj: CustomerFinancial | null) => void;
   private onTouched: () => void;
 
-  initialSearch = signal('');
+  customer = input.required<Partial<Customer> | null>();
+
+  search = model('');
+
   searchDisabled = signal(false);
 
   clients = signal<PaytraqClient[] | null>(null);
 
-  get value(): CustomerFinancial {
-    return this._value;
-  }
-  set value(value: CustomerFinancial) {
-    this._value = value;
-  }
-  private _value: CustomerFinancial;
+  value = signal<CustomerFinancial | null>(null);
 
-  constructor(private paytraqService: PaytraqClientService) {}
+  constructor() {
+    effect(() => {
+      const value = this.value();
+      this.onChanges(value);
+    });
+    effect(() => {
+      const customer = this.customer();
+      this.search.set(customer.financial?.clientName || customer.CustomerName || null);
+    }, { allowSignalWrites: true });
+  }
 
-  writeValue(obj: CustomerFinancial) {
+  writeValue(obj: CustomerFinancial | null) {
     this.clients.set(null);
-    this.value = { ...DEFAULT_VALUE, ...obj };
+    this.value.set(obj);
   }
 
   registerOnChange(fn: (obj: CustomerFinancial | null) => void) {
@@ -86,25 +85,23 @@ export class PaytraqCustomerComponent implements ControlValueAccessor {
     this.searchDisabled.set(isDisabled);
   }
 
-  onSearchClient(ev: string) {
+  onSearchClient() {
     this.onTouched();
     this.searchDisabled.set(true);
-    this.paytraqService.getClients({ query: ev }).subscribe((clients) => {
+    this.paytraqService.getClients({ query: this.search().trim() }).subscribe((clients) => {
       this.clients.set(clients);
       this.searchDisabled.set(false);
     });
   }
 
-  onClientSelected(ev: PaytraqClient) {
-    this.value = {
-      clientName: ev.name,
-      paytraqId: ev.clientID,
-    };
-    this.onChanges(this.value);
+  onClientSelected(client: PaytraqClient) {
+    this.value.set({
+      clientName: client.name,
+      paytraqId: client.clientID,
+    });
   }
 
   onClearValue() {
-    this.value = null;
-    this.onChanges(this.value);
+    this.value.set(null);
   }
 }

@@ -1,7 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, Input, Output, ChangeDetectionStrategy, EventEmitter } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
-import { ReplaySubject } from 'rxjs';
 import { PaytraqProduct } from 'src/app/interfaces/paytraq';
 
 @Component({
@@ -11,26 +9,15 @@ import { PaytraqProduct } from 'src/app/interfaces/paytraq';
   styleUrls: ['./paytraq-product-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
     MatTableModule,
   ]
 })
-export class PaytraqProductTableComponent implements OnDestroy {
+export class PaytraqProductTableComponent {
 
-  @Input() set products(products: PaytraqProduct[]) {
-    this.products$.next(products);
-  }
+  products = input<PaytraqProduct[]>([]);
 
-  @Output() productSelected = new EventEmitter<PaytraqProduct>();
+  productSelected = output<PaytraqProduct>();
 
-  products$ = new ReplaySubject<PaytraqProduct[]>(1);
   displayedColumns: (keyof PaytraqProduct)[] = ['itemID', 'name'];
-
-  constructor() { }
-
-  ngOnDestroy() {
-    this.products$.complete();
-    this.productSelected.complete();
-  }
 
 }

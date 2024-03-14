@@ -4,14 +4,14 @@
         <mat-label>
             Meklēt paytraq
         </mat-label>
-        <input matInput [formControl]="searchControl">
-        <button matIconSuffix mat-icon-button (click)="searchControl.reset()">
+        <input matInput [(ngModel)]="search" [disabled]="disabled()" #searchInput="ngModel">
+        <button matIconSuffix mat-icon-button (click)="search.set('')" [disabled]="!searchInput.value || disabled()">
             <mat-icon>
                 clear
             </mat-icon>
         </button>
-        <button matIconSuffix mat-icon-button [disabled]="!searchControl.value || disabled" #searchButton
-            (click)="search.next(searchControl.value)">
+        <button matIconSuffix mat-icon-button [disabled]="!searchInput.value || disabled()" #searchButton
+            (click)="onSubmit()">
             <mat-icon>
                 search
             </mat-icon>

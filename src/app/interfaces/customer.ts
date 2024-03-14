@@ -1,11 +1,7 @@
 import { Expose, Type } from 'class-transformer';
 
-export class CustomerFinancial {
-
-    @Expose()
+export interface CustomerFinancial {
     clientName: string;
-
-    @Expose()
     paytraqId?: number;
 }
 
@@ -50,8 +46,7 @@ export class Customer {
     description?: string = null;
 
     @Expose()
-    @Type(() => CustomerFinancial)
-    financial?: CustomerFinancial = null;
+    financial?: CustomerFinancial | null = null;
 
     @Expose()
     ftpUser: boolean = false;

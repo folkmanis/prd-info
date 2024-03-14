@@ -1,9 +1,10 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  ViewChild,
   computed,
   effect,
+  inject,
+  input
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
@@ -14,19 +15,18 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { MatExpansionPanel } from '@angular/material/expansion';
-import { ActivatedRoute, Router } from '@angular/router';
-import { isEqual, pickBy } from 'lodash-es';
-import { Observable, Subscription, map, of } from 'rxjs';
+import { isEqual, isNull, omitBy } from 'lodash-es';
+import { map, of } from 'rxjs';
 import { Customer, NewCustomer } from 'src/app/interfaces';
+import { navigateRelative } from 'src/app/library/common';
+import { InputUppercaseDirective } from 'src/app/library/directives/input-uppercase.directive';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { CustomersService } from 'src/app/services';
-import { getConfig } from 'src/app/services/config.provider';
+import { configuration } from 'src/app/services/config.provider';
 import { CustomerContactsComponent } from './customer-contacts/customer-contacts.component';
 import { FtpUserComponent } from './ftp-user/ftp-user.component';
-import { InputUppercaseDirective } from 'src/app/library/directives/input-uppercase.directive';
 import { PaytraqCustomerComponent } from './paytraq-customer/paytraq-customer.component';
 
 type CustomerEditable = Omit<Customer, '_id'>;
@@ -51,82 +51,60 @@ type CustomerEditGroup = FormGroup<{
   ],
 })
 export class CustomerEditComponent implements CanComponentDeactivate {
-  @ViewChild('paytraqPanel') paytraqPanel: MatExpansionPanel;
 
-  paytraqEnabled = toSignal(getConfig('paytraq', 'enabled'));
+  private customersService = inject(CustomersService);
+  private fb = inject(FormBuilder);
+
+  private navigate = navigateRelative();
+
+  paytraqEnabled = configuration('paytraq', 'enabled');
 
   form = this.createForm();
 
-  private _initialValue: Customer = new Customer();
-  set initialValue(value: Customer) {
-    this._initialValue = value;
-    this.form.reset(this.initialValue);
-  }
-  get initialValue() {
-    return this._initialValue;
-  }
+  customer = input.required<Customer>();
 
   formValue = toSignal(this.form.valueChanges, {
-    initialValue: this.initialValue,
+    initialValue: this.form.value,
   });
 
   changes = computed(() => {
     const value = this.formValue();
-    const diff = pickBy(
+    const initialValue = this.customer();
+    const diff = omitBy(
       value,
-      (val, key) => !isEqual(val, this.initialValue[key])
+      (val, key) => isEqual(val, initialValue[key])
     );
     return Object.keys(diff).length ? diff : undefined;
   });
 
-  private routeData = toSignal(this.route.data);
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private customersService: CustomersService,
-    private fb: FormBuilder
-  ) {
-    effect(
-      () => {
-        this.initialValue = this.routeData().customer as Customer;
-      },
-      { allowSignalWrites: true }
-    );
+  constructor() {
+    effect(() => {
+      this.form.reset(this.customer());
+    }, { allowSignalWrites: true });
   }
 
   onReset(): void {
-    this.form.reset(this.initialValue);
-    this.paytraqPanel?.close();
+    this.form.reset(this.customer());
   }
 
-  onSave(): void {
-    if (this.initialValue._id) {
-      const update = { ...this.changes(), _id: this.initialValue._id };
-      const obs = this.customersService.updateCustomer(update);
-      this.saveAndNavigate(obs);
+  async onSave() {
+    let id = this.customer()._id;
+    if (id) {
+      const update = { ...this.changes(), _id: this.customer()._id };
+      await this.customersService.updateCustomer(update);
     } else {
-      const customer = pickBy(
-        this.formValue(),
-        (val) => val !== null
-      ) as NewCustomer;
-      const obs = this.customersService.saveNewCustomer(customer);
-      this.saveAndNavigate(obs);
+      const customer = omitBy(this.formValue(), isNull) as NewCustomer;
+      const createdCustomer = await this.customersService.saveNewCustomer(customer);
+      id = createdCustomer._id;
     }
+
+    this.form.markAsPristine();
+    this.navigate(['..', id], { queryParams: { upd: Date.now() }, });
+
   }
 
   canDeactivate(): boolean {
     return this.form.pristine || !this.changes();
-  }
-
-  private saveAndNavigate(obs: Observable<Customer>): Subscription {
-    return obs.subscribe((customer) => {
-      this.form.markAsPristine();
-      this.router.navigate(['..', customer._id], {
-        relativeTo: this.route,
-        queryParams: { upd: Date.now() },
-      });
-    });
   }
 
   private createForm(): CustomerEditGroup {
@@ -153,7 +131,7 @@ export class CustomerEditComponent implements CanComponentDeactivate {
 
   private validateCode(): AsyncValidatorFn {
     return (control) => {
-      if (this.initialValue?.code === control.value) {
+      if (this.customer().code === control.value) {
         return of(null);
       } else {
         return this.customersService
@@ -165,7 +143,7 @@ export class CustomerEditComponent implements CanComponentDeactivate {
 
   private validateName(): AsyncValidatorFn {
     return (control) => {
-      if (this.initialValue?.CustomerName === control.value) {
+      if (this.customer().CustomerName === control.value) {
         return of(null);
       } else {
         return this.customersService

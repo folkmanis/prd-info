@@ -1,7 +1,7 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, Input, Output, booleanAttribute, input, model, output } from '@angular/core';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,37 +15,23 @@ import { Subject } from 'rxjs';
   styleUrls: ['./paytraq-search-header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
     MatFormFieldModule,
     MatIconModule,
-    MatFormFieldModule,
     MatInputModule,
-    ReactiveFormsModule,
+    FormsModule,
     MatButtonModule,
   ],
 })
 export class PaytraqSearchHeaderComponent {
 
-  @Input() set initial(value: string) {
-    this.searchControl.setValue(value);
+  search = model.required<string>();
+
+  disabled = input(false, { transform: booleanAttribute });
+
+  submit = output();
+
+  onSubmit() {
+    this.submit.emit();
   }
-
-  @Output() search = new Subject<string>();
-
-  private _disabled = false;
-  @Input() set disabled(value: any) {
-    this._disabled = coerceBooleanProperty(value);
-    if (this.disabled) {
-      this.searchControl.disable();
-    } else {
-      this.searchControl.enable();
-    }
-  }
-  get disabled(): boolean {
-    return this._disabled;
-  }
-
-  searchControl = new FormControl<string>('');
-
 
 }

@@ -2,6 +2,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
+  effect,
+  inject,
+  input,
+  model,
   signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -31,31 +35,35 @@ import { PaytraqProductTableComponent } from './paytraq-product-table/paytraq-pr
   ],
 })
 export class PaytraqProductComponent implements ControlValueAccessor {
-  @Input() set productName(name: string) {
-    this.initialSearch.set(name || '');
-  }
 
-  private _value: number | null = null;
-  set value(value: number | null) {
-    this._value = value;
-  }
-  get value(): number | null {
-    return this._value;
-  }
-
-  products = signal<PaytraqProduct[] | null>(null);
-
-  initialSearch = signal('');
-  searchDisabled = signal(false);
+  private paytraqService = inject(PaytraqProductsService);
 
   private onChanges: (obj: number | null) => void;
   private onTouched: () => void;
 
-  constructor(private paytraqService: PaytraqProductsService) {}
+  productName = input<string>('');
+
+  value = signal<number | null>(null);
+
+  products = signal<PaytraqProduct[] | null>(null);
+
+  disabled = signal(false);
+
+  search = model('');
+
+  constructor() {
+    effect(() => {
+      const value = this.value();
+      this.onChanges(value);
+    });
+    effect(() => {
+      this.search.set(this.productName());
+    }, { allowSignalWrites: true });
+  }
 
   writeValue(obj: number) {
     this.products.set(null);
-    this.value = obj;
+    this.value.set(obj);
   }
 
   registerOnChange(fn: (obj: number) => void) {
@@ -67,27 +75,25 @@ export class PaytraqProductComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean) {
-    this.searchDisabled.set(isDisabled);
+    this.disabled.set(isDisabled);
   }
 
-  onSearchProducts(ev: string) {
-    this.searchDisabled.set(true);
+  onSearchProducts() {
+    this.disabled.set(true);
     this.onTouched();
     this.paytraqService
-      .getProducts({ query: ev.trim() })
+      .getProducts({ query: this.search().trim() })
       .subscribe((products) => {
         this.products.set(products);
-        this.searchDisabled.set(false);
+        this.disabled.set(false);
       });
   }
 
-  onProductSelected(ev: PaytraqProduct) {
-    this.value = ev.itemID;
-    this.onChanges(this.value);
+  onProductSelected(product: PaytraqProduct) {
+    this.value.set(product.itemID);
   }
 
   onClearValue() {
-    this.value = null;
-    this.onChanges(this.value);
+    this.value.set(null);
   }
 }

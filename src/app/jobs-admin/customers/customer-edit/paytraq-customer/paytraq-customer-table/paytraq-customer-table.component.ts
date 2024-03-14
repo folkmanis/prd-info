@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
-import { ReplaySubject } from 'rxjs';
 import { PaytraqClient } from 'src/app/interfaces/paytraq';
 
 @Component({
@@ -13,20 +12,16 @@ import { PaytraqClient } from 'src/app/interfaces/paytraq';
     MatTableModule,
   ]
 })
-export class PaytraqCustomerTableComponent implements OnDestroy {
+export class PaytraqCustomerTableComponent {
 
-  @Input() set clients(clients: PaytraqClient[]) {
-    this.clients$.next(clients || []);
-  }
+  clients = input<PaytraqClient[]>([]);
 
-  @Output() clientSelected = new EventEmitter<PaytraqClient>();
+  clientSelected = output<PaytraqClient>();
 
-  clients$ = new ReplaySubject<PaytraqClient[]>(1);
   displayedColumns: (keyof PaytraqClient)[] = ['clientID', 'name', 'regNumber'];
 
-  ngOnDestroy() {
-    this.clients$.complete();
-    this.clientSelected.complete();
+  onSelected(client: PaytraqClient) {
+    this.clientSelected.emit(client);
   }
 
 }

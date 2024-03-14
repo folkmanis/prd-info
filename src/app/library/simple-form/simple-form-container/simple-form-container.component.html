@@ -4,10 +4,10 @@
         @if (buttons) {
         <span>
             <button mat-raised-button (click)="onSave()" color="primary"
-                [disabled]="this.status !== 'VALID' || this.isChanges === false">
+                [disabled]="this.status() !== 'VALID' || this.isChanges() === false">
                 SAGLABĀT
             </button>
-            <button mat-raised-button (click)="onReset()" [disabled]="this.isChanges === false">
+            <button mat-raised-button (click)="onReset()" [disabled]="this.isChanges() === false">
                 ATIESTATĪT
             </button>
         </span>
