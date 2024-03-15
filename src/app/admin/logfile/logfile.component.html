@@ -1,11 +1,21 @@
-<div class="main-content">
-    <div class="filter-box">
-        <app-log-filter [validDates]="validDates$ | async" (filter)="setFilter($event)" (levelChange)="onLevel($event)">
-        </app-log-filter>
-    </div>
+<div class="filter-box">
 
-    <div class="table-container">
-        <app-logfile-table [log]="log$ | async"></app-logfile-table>
-    </div>
+    <!-- Reload button -->
+    <button mat-icon-button (click)="onReload()" matTooltip="Atjaunināt">
+        <mat-icon>refresh</mat-icon>
+    </button>
 
+    <!-- Log level selector -->
+    <app-log-level [logLevels]="logLevels()" [(level)]="logLevel" />
+
+    <!-- Datums -->
+    <app-log-calendar [availableDates]="availableDates()" [(date)]="logDate" />
+
+    <!-- <app-log-filter [validDates]="validDates$ | async" (filter)="setFilter($event)" (levelChange)="onLevel($event)">
+        </app-log-filter> -->
+
+</div>
+
+<div class="table-container">
+    <app-logfile-table [log]="log()"></app-logfile-table>
 </div>

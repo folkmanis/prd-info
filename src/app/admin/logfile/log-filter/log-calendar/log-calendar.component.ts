@@ -1,69 +1,49 @@
-import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { ValidDates } from '../../valid-dates.class';
-import { MatIconModule } from '@angular/material/icon';
+import { ChangeDetectionStrategy, Component, computed, input, model } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { isFirstDate, isLastDate, isValidDate, lastDate, shiftDate, validDate } from '../../log-dates-utils';
 
 @Component({
-    selector: 'app-log-calendar',
-    templateUrl: './log-calendar.component.html',
-    styleUrls: ['./log-calendar.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        MatFormFieldModule,
-        MatInputModule,
-        MatDatepickerModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatTooltipModule,
-        MatButtonModule,
-        MatIconModule,
-    ],
+  selector: 'app-log-calendar',
+  templateUrl: './log-calendar.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatTooltipModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
 })
 export class LogCalendarComponent {
 
-  dateControl = new FormControl<Date>(new Date());
+  date = model.required<Date>();
 
-  private _validDates = new ValidDates([]);
-  @Input() set validDates(value: ValidDates) {
-    if (!value) {
-      return;
-    }
-    this._validDates = value;
-    const currentDate = this.dateControl.value;
-    if (this.isValiddate(currentDate)) {
-      this.dateControl.setValue(currentDate);
-    } else {
-      this.dateControl.setValue(this.validDates.interval.end);
-    }
-  }
-  get validDates() {
-    return this._validDates;
-  }
+  availableDates = input<Date[]>([]);
 
-  @Output() selectedDate: Observable<Date> = this.dateControl.valueChanges;
+  lastDate = computed(() => lastDate(this.availableDates()));
 
-  isValiddate = (date: Date) => this.validDates.isValid(date);
-  isMinDate = () => this.validDates.isMin(this.dateControl.value);
-  isMaxDate = () => this.validDates.isMax(this.dateControl.value);
+  isMinDate = computed(() => isFirstDate(this.date(), this.availableDates()));
+  isMaxDate = computed(() => isLastDate(this.date(), this.availableDates()));
 
+  isValiddate = (date: Date) => isValidDate(date, this.availableDates());
 
   onDateShift(days: 1 | -1): void {
-    const currentDate = this.dateControl.value;
-    const newDate = this.validDates.shift(currentDate, days);
-    if (newDate !== currentDate) {
-      this.dateControl.setValue(newDate);
-    }
+    const currentDate = this.date();
+    const newDate = shiftDate(currentDate, days, this.availableDates());
+    this.date.set(newDate);
   }
 
   onToday(): void {
-    this.dateControl.setValue(this.isValiddate(new Date()) ? new Date() : this.validDates.interval.end);
+    this.date.set(validDate(new Date(), this.availableDates()));
   }
 
 }

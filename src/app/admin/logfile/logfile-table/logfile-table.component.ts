@@ -11,6 +11,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   OnInit,
+  input,
 } from '@angular/core';
 import { LogRecord } from '../../services/logfile-record';
 import { ReplaySubject } from 'rxjs';
@@ -39,13 +40,8 @@ import { MatTableModule } from '@angular/material/table';
 export class LogfileTableComponent {
   readonly displayedColumns = ['level', 'timestamp', 'info', 'metadata'];
 
-  datasource$ = new ReplaySubject<LogRecord[]>(1);
-
   expandedRecord: LogRecord | null;
 
-  @Input() set log(value: LogRecord[] | null) {
-    if (value) {
-      this.datasource$.next(value);
-    }
-  }
+  log = input<LogRecord[]>([]);
+
 }

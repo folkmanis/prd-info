@@ -1,21 +1,23 @@
-.main-content {
-    display: flex;
-    flex-direction: column;
+:host {
+    overflow: auto;
+    height: 100%;
+    display: block;
 }
 
 .filter-box {
-    flex: 0 0 auto;
-    top: 0;
-    position: sticky;
-    height: 100px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    padding: 16px 16px 0;
+    height: 90px;
     z-index: 2;
     background-color: white;
+    overflow: hidden;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
 }
 
 .table-container {
-    flex: 1;
-    width: 100%;
-    top: 100px;
-    bottom: 0;
-    left: 0;
+    padding-top: 90px;
 }

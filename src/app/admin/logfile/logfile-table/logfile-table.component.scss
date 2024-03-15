@@ -1,33 +1,40 @@
-tr td {
+:host {
+    display: block;
+}
+
+.record-row {
     cursor: pointer;
 }
 
-.full-width {
-    width: 100%;
-}
-
-.cdk-column-level {
-    width: 100px;
-}
-
-.cdk-column-timestamp {
-    padding: 0 8px;
-    width: 160px;
-}
-
-.cdk-column-info {
+.mat-mdc-cell {
     padding: 0 8px;
 }
 
-tr.detail-row {
-    height: 0px;
+.mat-column-level {
+    flex: 0 0 100px;
 }
 
-.record-row td {
+.mat-column-timestamp {
+    flex: 0 0 160px;
+}
+
+.mat-column-info {
+    padding: 0 8px;
+}
+
+.detail-row {
+    min-height: 0;
+
+    .mat-mdc-cell {
+        min-height: 0;
+    }
+}
+
+.record-row .mat-mdc-cell {
     border-bottom-width: 0;
 }
 
-tr.record-row:not(.expanded-row):hover {
+.record-row:not(.expanded-row):hover {
     background-color: whitesmoke;
 }
 
@@ -37,5 +44,4 @@ tr.record-row:not(.expanded-row):hover {
 
 .json-display {
     padding-bottom: 8px;
-
 }

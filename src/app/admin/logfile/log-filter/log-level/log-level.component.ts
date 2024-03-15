@@ -1,43 +1,27 @@
-import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Output } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, input, model } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { Observable, distinctUntilChanged, filter, map, tap } from 'rxjs';
-import { getConfig } from 'src/app/services/config.provider';
 import { LogLevel } from '../../log-level.interface';
 
-const maxLevel = (levels: LogLevel[]) =>
-  Math.max(...levels.map(({ key }) => key));
 
 @Component({
   selector: 'app-log-level',
   templateUrl: './log-level.component.html',
-  styleUrls: ['./log-level.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
+    FormsModule,
     MatFormFieldModule,
     MatSelectModule,
-    FormsModule,
-    ReactiveFormsModule,
     MatOptionModule,
-    AsyncPipe,
   ],
 })
 export class LogLevelComponent {
-  levelControl = new FormControl(0);
 
-  logLevels$: Observable<LogLevel[]> = getConfig('system', 'logLevels').pipe(
-    map((levels) => levels.map(([key, value]) => ({ key, value }))),
-    map((levels) => levels.sort((a, b) => a.key - b.key)),
-    tap((level) => this.levelControl.setValue(maxLevel(level)))
-  );
+  logLevels = input.required<LogLevel[]>();
 
-  @Output() levelChange: Observable<number> =
-    this.levelControl.valueChanges.pipe(
-      filter((level) => level >= 0),
-      distinctUntilChanged()
-    );
+  level = model.required<number>();
+
 }

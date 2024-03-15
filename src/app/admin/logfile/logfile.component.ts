@@ -1,55 +1,111 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Observable, ReplaySubject, Subject } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, model, signal, untracked } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { Subscription } from 'rxjs';
 import { HttpCacheService } from 'src/app/library/http/http-cache.service';
+import { configuration } from 'src/app/services/config.provider';
 import { LogfileApiService } from '../services/logfile-api.service';
 import { LogQueryFilter, LogRecord } from '../services/logfile-record';
-import { ValidDates } from './valid-dates.class';
-import { AsyncPipe } from '@angular/common';
+import { validDate } from './log-dates-utils';
+import { LogCalendarComponent } from './log-filter/log-calendar/log-calendar.component';
+import { LogLevelComponent } from './log-filter/log-level/log-level.component';
+import { LogLevel } from './log-level.interface';
 import { LogfileTableComponent } from './logfile-table/logfile-table.component';
-import { LogFilterComponent } from './log-filter/log-filter.component';
 
+function maxLevel(levels: LogLevel[]) {
+  if (levels.length > 0) {
+    return Math.max(...levels.map(({ key }) => key));
+  } else {
+    return null;
+  }
+}
 
 @Component({
-    selector: 'app-logfile',
-    templateUrl: './logfile.component.html',
-    styleUrls: ['./logfile.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        LogFilterComponent,
-        LogfileTableComponent,
-        AsyncPipe,
-    ],
+  selector: 'app-logfile',
+  templateUrl: './logfile.component.html',
+  styleUrls: ['./logfile.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    LogfileTableComponent,
+    MatButtonModule,
+    MatIconModule,
+    LogLevelComponent,
+    LogCalendarComponent,
+  ],
 })
 export class LogfileComponent {
 
-  private level$ = new ReplaySubject<number>(1);
+  private api = inject(LogfileApiService);
+  private cacheService = inject(HttpCacheService);
 
-  private logFilter$: Subject<LogQueryFilter> = new ReplaySubject(1);
+  private levelsMap = configuration('system', 'logLevels');
 
-  log$: Observable<LogRecord[]> = this.logFilter$.pipe(
-    switchMap(filter => this.api.getLog(filter)),
-  );
+  logLevels = computed(() => {
+    const levelObj = this.levelsMap().map(([key, value]) => ({ key, value }));
+    levelObj.sort((a, b) => a.key - b.key);
+    return levelObj;
+  });
 
-  validDates$: Observable<ValidDates> = this.level$.pipe(
-    switchMap(level => this.api.getDatesGroups(level)),
-    map(dates => new ValidDates(dates)),
-  );
+  logLevel = model<number | null>(null);
 
-  constructor(
-    private api: LogfileApiService,
-    private cacheService: HttpCacheService,
-  ) { }
+  logDate = model<Date | null>(null);
 
-  onLevel(value: number) {
-    this.level$.next(value);
+  logFilter = computed(() => {
+    const logLevel = this.logLevel();
+    const logDate = this.logDate();
+    if (typeof logLevel !== 'number' || !(logDate instanceof Date)) {
+      return null;
+    }
+    return new LogQueryFilter(logLevel, logDate);
+  });
+
+  log = signal<LogRecord[]>([]);
+
+  availableDates = signal<Date[]>([]);
+
+  constructor() {
+    effect(() => {
+      const level = maxLevel(this.logLevels());
+      this.logLevel.set(level);
+    }, { allowSignalWrites: true });
+
+    effect((onCleanup) => {
+      const subscription = this.getLog(this.logFilter());
+      onCleanup(() => subscription?.unsubscribe());
+    }, { allowSignalWrites: true });
+
+    effect((onCleanup) => {
+      const logLevel = this.logLevel();
+      if (typeof logLevel !== 'number') {
+        return;
+      }
+      const subscription = this.api.getDatesGroups(logLevel)
+        .subscribe(dates => this.availableDates.set(dates));
+
+      onCleanup(() => subscription?.unsubscribe());
+    }, { allowSignalWrites: true });
+
+    effect(() => {
+      const availableDates = this.availableDates();
+      const logDate = untracked(this.logDate);
+      this.logDate.set(validDate(logDate, availableDates));
+    }, { allowSignalWrites: true });
   }
 
-  setFilter(filter: LogQueryFilter) {
+  onReload() {
+    this.getLog(this.logFilter());
+  }
+
+  private getLog(logFilter: LogQueryFilter | null): Subscription | undefined {
+
+    if (logFilter == null) {
+      return;
+    }
+
     this.cacheService.clear();
-    this.logFilter$.next(filter);
+    return this.api.getLog(logFilter)
+      .subscribe(log => this.log.set(log));
+
   }
-
-
 }

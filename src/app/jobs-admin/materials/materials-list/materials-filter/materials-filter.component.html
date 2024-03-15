@@ -10,7 +10,7 @@
     <mat-form-field class="categories" subscriptSizing="dynamic">
         <mat-label> Materiālu grupas </mat-label>
         <mat-select formControlName="categories" multiple>
-            @for (category of categories$ | async; track $index) {
+            @for (category of categories(); track $index) {
             <mat-option [value]="category.category">
                 {{category.description}}
             </mat-option>
