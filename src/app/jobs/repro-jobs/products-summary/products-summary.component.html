@@ -1,12 +1,10 @@
-<mat-list>
-
-    @for (product of productSums; track $index) {
-    <mat-list-item (mouseenter)="onMouseEnter(product.name)" (mouseleave)="onMouseLeave(product.name)">
-
+<ul>
+    @for (product of productSums(); track $index) {
+    <li (mouseenter)="onMouseEnter(product.name)" (mouseleave)="onMouseLeave()">
         <span>
-            <span>
-                {{ product.name }}
-            </span>
+            {{ product.name }}
+        </span>
+        <span class="amount">
             <span class="count">
                 {{ product.count }}
             </span>
@@ -14,8 +12,6 @@
                 &nbsp;{{ product.units }}
             </span>
         </span>
-
-    </mat-list-item>
+    </li>
     }
-
-</mat-list>
+</ul>

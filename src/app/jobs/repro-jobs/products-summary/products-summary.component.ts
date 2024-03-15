@@ -1,12 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  Output,
-} from '@angular/core';
-import { MatListModule } from '@angular/material/list';
-import { Subject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { JobPartial } from '../../interfaces';
 
 interface ProductSum {
@@ -21,24 +13,21 @@ interface ProductSum {
   styleUrls: ['./products-summary.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [MatListModule],
 })
 export class ProductsSummaryComponent {
-  productSums: ProductSum[] = [];
 
-  @Input() set jobs(value: JobPartial[]) {
-    this.productSums = this.productsSummary(value);
-  }
+  jobs = input<JobPartial[]>([]);
 
-  private readonly hover = new Subject<string | null>();
-  @Output() productHover = this.hover.pipe(debounceTime(100));
+  productSums = computed(() => this.productsSummary(this.jobs()));
+
+  productHover = output<string | null>();
 
   onMouseEnter(name: string) {
-    this.hover.next(name);
+    this.productHover.emit(name);
   }
 
-  onMouseLeave(name: string) {
-    this.hover.next(null);
+  onMouseLeave() {
+    this.productHover.emit(null);
   }
 
   private productsSummary(jobs: JobPartial[] | undefined): ProductSum[] {
