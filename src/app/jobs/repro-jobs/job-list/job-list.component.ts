@@ -12,7 +12,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subject, from, map } from 'rxjs';
-import { ClipboardService } from 'src/app/library/services/clipboard.service';
+import { CopyClipboardDirective } from "src/app/library/directives/copy-clipboard.directive";
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { ProductsService } from 'src/app/services/products.service';
 import { ScrollTopDirective } from '../../../library/scroll-to-top/scroll-top.directive';
@@ -50,6 +50,7 @@ import { NewJobButtonComponent } from './new-job-button/new-job-button.component
     MatMenuModule,
     AsyncPipe,
     DatePipe,
+    CopyClipboardDirective,
   ],
 })
 export class JobListComponent {
@@ -72,14 +73,13 @@ export class JobListComponent {
     private router: Router,
     private userFileUpload: UploadRefService,
     private reproJobService: ReproJobService,
-    private clipboard: ClipboardService,
     private sanitize: SanitizeService,
     private route: ActivatedRoute,
     private productsService: ProductsService
-  ) {}
+  ) { }
 
   copyJobIdAndName({ name, jobId }: Pick<JobPartial, 'jobId' | 'name'>) {
-    this.clipboard.copy(`${jobId}-${this.sanitize.sanitizeFileName(name)}`);
+    return `${jobId}-${this.sanitize.sanitizeFileName(name)}`;
   }
 
   onJobFilter(filter: JobQueryFilter) {

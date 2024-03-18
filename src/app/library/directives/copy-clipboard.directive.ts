@@ -1,39 +1,38 @@
-import {
-  Directive,
-  Input,
-  Output,
-  EventEmitter,
-  HostListener,
-  ElementRef,
-  HostBinding,
-} from '@angular/core';
-import { ClipboardService } from '../services/clipboard.service';
+import { CdkCopyToClipboard } from "@angular/cdk/clipboard";
+import { Directive, inject, input, output } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
+const SNACKBAR_TEXT = (txt: string) => `"${txt}" izkopēts!`;
+
 
 @Directive({
   selector: '[appCopyClipboard]',
   standalone: true,
+  hostDirectives: [
+    {
+      directive: CdkCopyToClipboard,
+      inputs: ['cdkCopyToClipboard: appCopyClipboard'],
+      outputs: ['cdkCopyToClipboardCopied'],
+    },
+  ],
+  host: {
+    'class': 'app-copy-clipboard',
+    '(cdkCopyToClipboardCopied)': 'onComplete($event)',
+  }
 })
 export class CopyClipboardDirective {
-  /** If input value not provided, uses HTMLElement.innerText */
-  @Input('appCopyClipboard')
-  payload: string;
 
-  @Output()
-  copied: EventEmitter<string> = new EventEmitter<string>();
+  private snack = inject(MatSnackBar);
 
-  @HostBinding('class.app-copy-clipboard')
-  appCopyClipboardClass = true;
+  payload = input.required<string>({ alias: 'appCopyClipboard' });
 
-  @HostListener('click', ['$event'])
-  onClick(event: MouseEvent): void {
-    event.preventDefault();
-    const txt: string =
-      this.payload || (this.el.nativeElement as HTMLElement).innerText.trim();
-    this.clipboardService.copy(txt, this.copied);
+  copied = output<boolean>({ alias: 'appCopyClipboardCopied' });
+
+
+  onComplete(result: boolean) {
+    if (result === true) {
+      this.snack.open(SNACKBAR_TEXT(this.payload()), 'OK', { duration: 2000 });
+    }
+    this.copied.emit(result);
   }
-
-  constructor(
-    private clipboardService: ClipboardService,
-    private el: ElementRef
-  ) {}
 }

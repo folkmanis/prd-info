@@ -66,8 +66,8 @@
                                     {{job.name}}
                                 </span>
                                 <span *appViewLarge class="buttons">
-                                    <button mat-icon-button (click)="$event.stopPropagation(); copyJobIdAndName(job);"
-                                        matTooltip="Kopēt nosaukumu">
+                                    <button mat-icon-button [appCopyClipboard]="copyJobIdAndName(job)"
+                                        (click)="$event.stopPropagation();" matTooltip="Kopēt nosaukumu">
                                         <mat-icon>filter_none</mat-icon>
                                     </button>
                                     @switch (job.jobStatus.generalStatus) {
