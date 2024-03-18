@@ -12,9 +12,9 @@
         </mat-select>
     </mat-form-field>
 
-    <mat-card (appKastesTabulaDrop)="onXlsDrop($event)" #fileDrop="appKastesTabulaDrop">
+    <mat-card appKastesTabulaDrop (xlsFile)="onXlsDrop($event)" #fileDrop="appKastesTabulaDrop">
         <mat-card-content>
-            {{ fileDrop.status }}
+            {{ fileDrop.status() }}
         </mat-card-content>
     </mat-card>
 

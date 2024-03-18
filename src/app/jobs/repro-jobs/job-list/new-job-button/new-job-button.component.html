@@ -1,6 +1,6 @@
 <button appFileDrop #fileDrop="appFileDrop" mat-fab (filesEmitter)="onFileDrop($event)" [matMenuTriggerFor]="newJobMenu"
     color="primary" class="plus-button mat-elevation-z8">
-    @if (!fileDrop.dragOver) {
+    @if (!fileDrop.dragOver()) {
     <mat-icon>
         add
     </mat-icon>
