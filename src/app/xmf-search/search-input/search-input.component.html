@@ -1,13 +1,13 @@
 <mat-form-field>
 
-    <input matInput [formControl]="searchControl" appFocused>
+    <input matInput [(ngModel)]="searchString" name="searchString" appFocused appInputTrim>
 
-    @if (searchControl.value.length === 0) {
+    @if (searchString().length === 0) {
     <button mat-icon-button matSuffix disabled>
         <mat-icon>search</mat-icon>
     </button>
     } @else {
-    <button mat-icon-button matSuffix (click)="searchControl.setValue('')">
+    <button mat-icon-button matSuffix (click)="searchString.set('')">
         <mat-icon>close</mat-icon>
     </button>
     }

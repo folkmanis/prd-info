@@ -6,8 +6,10 @@ import {
 import {
   ChangeDetectionStrategy,
   Component,
-  Input,
-  ViewChild,
+  computed,
+  effect,
+  input,
+  viewChild
 } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -35,23 +37,23 @@ import { SearchData } from '../services/search-data';
   ],
 })
 export class SearchTableComponent {
-  @ViewChild(CdkVirtualScrollViewport)
-  private content: CdkVirtualScrollViewport;
 
-  @Input() search: SearchQuery | null;
+  private content = viewChild(CdkVirtualScrollViewport);
 
-  private _data: SearchData | null;
-  @Input() set data(value: SearchData | null) {
-    this._data = value;
-    this.scrollToTop();
-  }
-  get data() {
-    return this._data;
-  }
+  search = input<SearchQuery | null>(null);
+
+  searchString = computed(() => this.search()?.q || '');
+
+  data = input<SearchData | null>(null);
 
   actions: string[] = [, 'Archive', 'Restore', 'Skip', 'Delete'];
 
-  private scrollToTop() {
-    this.content?.scrollTo({ top: 0, behavior: 'smooth' });
+  constructor() {
+    effect(() => {
+      if (this.data()) {
+        this.content()?.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
   }
+
 }

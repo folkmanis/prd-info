@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, model, signal, viewChild } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { DrawerButtonDirective } from '../library/side-button/drawer-button.directive';
@@ -10,6 +10,7 @@ import { SearchInputComponent } from './search-input/search-input.component';
 import { SearchTableComponent } from './search-table/search-table.component';
 import { ArchiveSearchService } from './services/archive-search.service';
 import { StatusCountComponent } from './status-count/status-count.component';
+import { debounceTime } from 'rxjs';
 
 @Component({
   selector: 'app-xmf-search',
@@ -29,13 +30,16 @@ import { StatusCountComponent } from './status-count/status-count.component';
   ],
 })
 export class XmfSearchComponent {
+
   private facetComponent = viewChild.required(FacetComponent);
 
   private service = inject(ArchiveSearchService);
 
   query = signal(new SearchQuery());
 
-  private query$ = toObservable(this.query);
+  private query$ = toObservable(this.query).pipe(
+    debounceTime(300)
+  );
 
   count$ = this.service.getCount(this.query$);
 
@@ -46,9 +50,10 @@ export class XmfSearchComponent {
 
   data$ = this.service.getData(this.query$, this.count$);
 
-  onSearch(search: string) {
+
+  onSearchString(str: string) {
+    this.query.set(new SearchQuery(str));
     this.facetComponent().deselectAll();
-    this.query.set(new SearchQuery(search));
   }
 
   onFacet(facet: FacetFilter) {

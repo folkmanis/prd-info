@@ -1,21 +1,21 @@
-import { AfterViewInit, Directive, ElementRef } from '@angular/core';
+import { AfterRenderPhase, AfterViewInit, Directive, ElementRef, afterNextRender, afterRender } from '@angular/core';
 
 @Directive({
   selector: 'input[appFocused]',
   standalone: true,
 })
-export class FocusedDirective implements AfterViewInit {
+export class FocusedDirective {
 
   constructor(
-    private el: ElementRef<HTMLInputElement>,
-  ) { }
-
-  focus() {
-    this.el.nativeElement.focus();
+    private elementRef: ElementRef<HTMLInputElement>,
+  ) {
+    afterNextRender(() => {
+      this.focus();
+    }, { phase: AfterRenderPhase.Write });
   }
 
-  ngAfterViewInit(): void {
-    setTimeout(() => this.focus(), 0);
+  focus() {
+    this.elementRef.nativeElement.focus();
   }
 
 

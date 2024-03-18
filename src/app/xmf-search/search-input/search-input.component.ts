@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, Output } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, model } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs';
-import { FocusedDirective } from '../../library/directives/focused.directive';
+import { FocusedDirective } from 'src/app/library/directives/focused.directive';
+import { InputTrimDirective } from 'src/app/library/directives/input-trim.directive';
 
 @Component({
   selector: 'app-search-input',
@@ -18,17 +18,11 @@ import { FocusedDirective } from '../../library/directives/focused.directive';
     MatInputModule,
     FocusedDirective,
     FormsModule,
-    ReactiveFormsModule,
     MatButtonModule,
     MatIconModule,
+    InputTrimDirective,
   ],
 })
 export class SearchInputComponent {
-  searchControl = new FormControl('');
-
-  @Output() searchString = this.searchControl.valueChanges.pipe(
-    debounceTime(300),
-    map((q) => q.trim()),
-    distinctUntilChanged()
-  );
+  searchString = model('');
 }

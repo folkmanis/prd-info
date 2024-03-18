@@ -1,100 +1,63 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-/**
- * Meklē fragmentu steksta rindā un izceļ ar stiliem
- *
- * @param text - teksta rinda, kuru jāparāda
- * @param search - fragments, kurš jāizceļ
- * @param style - stili izcelšanai, formātā, kuru izmanto ngStyle.
- */
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+
 interface Chunk {
   text: string;
-  styled: boolean;
+  style?: Record<string, string>;
 }
 
+const DEFAULT_STYLE = {
+  'font-weight': 'bold',
+  color: 'red',
+};
 @Component({
   selector: 'app-tagged-string',
-  template: `@for(chunk of chunks; track $index) {<span
-      [style]="chunk.styled ? style : undefined"
-      >{{ chunk.text }}</span
-    >}`,
+  templateUrl: 'tagged-string.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
 })
 export class TaggedStringComponent {
-  @Input() set text(text: string | null) {
-    this._text = text || '';
-    this.parseValues();
-  }
-  get text(): string {
-    return this._text;
-  }
-  private _text = '';
 
-  @Input() set search(search: string) {
-    this._search = search;
-    this.parseValues();
-  }
-  get search(): string | undefined {
-    return this._search;
-  }
-  private _search: string | undefined;
+  text = input.required<string>();
 
-  @Input() set style(style: { [key: string]: string }) {
-    this._style = style;
-  }
-  get style(): { [key: string]: string } {
-    return this._style;
-  }
-  private _style: { [key: string]: string } = {
-    'font-weight': 'bold',
-    color: 'red',
-  };
+  styledString = input('');
 
-  chunks: Chunk[] = [];
+  highlightedStyle = input<Record<string, string>>(DEFAULT_STYLE);
 
-  constructor() {}
+  chunks = computed(() => this.createChunks(this.text(), this.styledString(), this.highlightedStyle()));
 
-  parseValues() {
-    this.chunks = [];
+  private createChunks(text: string, styledString: string, style: Record<string, string>): Chunk[] {
 
-    if (!this.text) {
-      return; // Ja nav teksta, tad nav nekā
+    if (!styledString) {
+      return [{ text, style: undefined }];
     }
 
-    if (!this.search) {
-      this.chunks.push({ text: this.text, styled: false });
-      return;
-    }
+    const chunks = [] as Chunk[];
+    let remainder = text;
 
-    let remainder = this.text;
     while (remainder.length > 0) {
-      remainder = this.splitStr(remainder);
-    }
-  }
-  /**
-   * Meklē rindu this.search rindā str.
-   * String daļu pirms atrastā liek this.chunks masīvā bez style
-   * Atrasto daļu liek this.chunks ar stilu this.style
-   * Atgriež atlikušo daļu
-   *
-   * @param str teksta rinda apstrādei
-   */
-  private splitStr(str: string): string {
-    const idx = str.toUpperCase().indexOf(this.search.toUpperCase());
 
-    if (idx === -1) {
-      // nav atrasts
-      this.chunks.push({ text: str, styled: false });
-      return ''; // atlikumā tukša rinda
+      const idx = remainder.toUpperCase().indexOf(styledString.toUpperCase());
+
+      if (idx === -1) {
+        chunks.push({ text: remainder, style: undefined });
+        remainder = '';
+      }
+      if (idx > 0) {
+        chunks.push({ text: remainder.slice(0, idx), style: undefined });
+        remainder = remainder.slice(idx);
+      }
+      if (idx === 0) {
+        const end = styledString.length + idx;
+        chunks.push({
+          text: remainder.slice(idx, end),
+          style
+        });
+        remainder = remainder.slice(end);
+      }
+
     }
-    if (idx > 0) {
-      this.chunks.push({ text: str.slice(0, idx), styled: false });
-    }
-    const end = this.search.length + idx;
-    this.chunks.push({ text: str.slice(idx, end), styled: true });
-    if (end <= str.length) {
-      return str.slice(end);
-    }
-    return '';
+
+    return chunks;
+
   }
 }

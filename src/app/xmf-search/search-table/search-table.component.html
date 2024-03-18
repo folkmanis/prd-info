@@ -1,12 +1,12 @@
 <cdk-virtual-scroll-viewport itemSize="137" class="scroll-container" templateCacheSize="0" scroll-to-top>
-    <div *cdkVirtualFor="let dataItem of data; let lastItem = last; let idx = index;" class="item">
+    <div *cdkVirtualFor="let dataItem of data(); let lastItem = last; let idx = index;" class="item">
         @if (dataItem) {
         <div>
             <div [style.fontWeight]="dataItem.jdfJobId === search ? 'bold' : undefined " class="jobId">
                 {{dataItem.jdfJobId}}
             </div>
             <div>
-                <app-tagged-string [text]="dataItem.descriptiveName" [search]="search?.q"></app-tagged-string>
+                <app-tagged-string [text]="dataItem.descriptiveName" [styledString]="searchString()" />
             </div>
             <div class="search-table">
                 @for (row of dataItem.archives; track $index) {
