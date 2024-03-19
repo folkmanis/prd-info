@@ -1,7 +1,7 @@
 <mat-toolbar color="primary">
   <!-- Side menu poga -->
   <span>
-    <button mat-icon-button (click)="sideMenuToggle.next()">
+    <button mat-icon-button (click)="sideMenuToggle.emit()">
       <mat-icon>menu</mat-icon>
     </button>
   </span>
@@ -12,7 +12,7 @@
     </a>
   </span>
 
-  @if (activeModule; as mod) {
+  @if (activeModule(); as mod) {
   <span>
     <a mat-button [routerLink]="mod.route">
       {{mod.name}}
@@ -47,7 +47,7 @@
   <span>
 
     <button mat-icon-button [matMenuTriggerFor]='userMenu'>
-      @if (user.google?.picture) {
+      @if (user().google?.picture) {
       <span class="avatar">
       </span>
       } @else {
@@ -66,7 +66,7 @@
     Versija {{version}}
   </span>
   <a mat-menu-item class="mat-caption username" routerLink="/user-settings">
-    Lietotājs: <strong>{{user.name}}</strong>
+    Lietotājs: <strong>{{ user().name }}</strong>
   </a>
   <a mat-menu-item routerLink="/login">
     Atslēgties
