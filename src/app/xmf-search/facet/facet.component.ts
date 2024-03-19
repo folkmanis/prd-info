@@ -1,10 +1,8 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
-  Input,
-  Output,
   input,
+  output,
   viewChildren
 } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
@@ -20,12 +18,14 @@ import { FacetCheckerComponent } from './facet-checker/facet-checker.component';
   imports: [FacetCheckerComponent, MatDividerModule],
 })
 export class FacetComponent {
-  facet = input.required<ArchiveFacet>();
-  @Output() filter = new EventEmitter<FacetFilter>();
 
   private blocks = viewChildren(FacetCheckerComponent);
 
-  facetFilter = new FacetFilter();
+  private facetFilter = new FacetFilter();
+
+  facet = input.required<ArchiveFacet>();
+
+  filter = output<FacetFilter>();
 
   deselectAll() {
     this.facetFilter = new FacetFilter();
@@ -34,6 +34,6 @@ export class FacetComponent {
 
   onSelect(selected: (string | number)[], key: keyof FacetFilter) {
     this.facetFilter[key] = selected;
-    this.filter.next(this.facetFilter);
+    this.filter.emit(this.facetFilter);
   }
 }

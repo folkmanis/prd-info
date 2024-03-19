@@ -1,8 +1,7 @@
-import { CdkScrollable } from '@angular/cdk/scrolling';
-import { ChangeDetectionStrategy, Component, HostBinding } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { ScrollTopDirective } from './scroll-top.directive';
 
 
 @Component({
@@ -11,23 +10,22 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrls: ['./scroll-to-top.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
     MatIconModule,
     MatButtonModule,
   ]
 })
 export class ScrollToTopComponent {
 
-  visible = false;
+  private scrollable = inject(ScrollTopDirective);
 
-  scrollable: CdkScrollable | undefined;
+  visible = this.scrollable.visible;
 
-  bottom?: string;
+  bottom = this.scrollable.bottom;
 
-  right?: string;
+  right = this.scrollable.right;
 
   scrollToTop() {
-    this.scrollable?.scrollTo({ top: 0, behavior: 'smooth' });
+    this.scrollable.scrollToTop();
   }
 
 }

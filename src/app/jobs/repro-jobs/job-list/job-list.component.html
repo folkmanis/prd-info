@@ -9,7 +9,7 @@
 
     <mat-drawer-content>
 
-        <app-new-job-button (fileList)="onFileDrop($event)" [class.rised]="scroll.visible">
+        <app-new-job-button (fileList)="onFileDrop($event)" [class.rised]="scroll.visible()">
         </app-new-job-button>
 
         <app-job-filter [filter]="filter$ | async" (filterChanges)="onJobFilter($event)"

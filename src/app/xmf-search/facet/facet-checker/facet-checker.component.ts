@@ -1,10 +1,8 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
-  Input,
-  Output,
   input,
+  output,
   viewChild
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -27,8 +25,7 @@ export class FacetCheckerComponent {
   title = input('');
   data = input.required<FacetCount[]>();
 
-  @Output() filterValue: EventEmitter<Array<number | string>> =
-    new EventEmitter();
+  filterValue = output<Array<number | string>>();
 
   deselect() {
     this.selection().deselectAll();
