@@ -1,7 +1,9 @@
 import { DatePipe } from '@angular/common';
 import {
+  AfterRenderPhase,
   ChangeDetectionStrategy,
   Component,
+  afterNextRender,
   computed,
   inject,
   model,
@@ -12,6 +14,7 @@ import { MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { SimpleListContainerComponent } from 'src/app/library/simple-form';
 import { UsersService } from '../../services/users.service';
+import { User } from 'src/app/interfaces';
 
 @Component({
   selector: 'app-users-list',
@@ -28,14 +31,16 @@ import { UsersService } from '../../services/users.service';
   ],
 })
 export class UsersListComponent {
+
+  private usersService = inject(UsersService);
+
   displayedColumns = ['username', 'name', 'last_login'];
 
   filter = signal('');
 
-  private users = toSignal(inject(UsersService).users$, { initialValue: [] });
+  private users = signal<User[]>([]);
 
   usersFiltered = computed(() => {
-    console.log(this.filter());
     const filterUpperStr = this.filter()?.toUpperCase() || '';
     return this.users().filter(
       (user) =>
@@ -43,4 +48,17 @@ export class UsersListComponent {
         user.username.toUpperCase().includes(filterUpperStr)
     );
   });
+
+  constructor() {
+    this.loadUsers();
+  }
+
+  async onReload() {
+    this.loadUsers();
+  }
+
+  private async loadUsers() {
+    const users = await this.usersService.getAllUsers();
+    this.users.set(users);
+  }
 }

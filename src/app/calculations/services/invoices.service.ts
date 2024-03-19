@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { pick } from 'lodash-es';
-import { tap, EMPTY, Observable, map, mergeMap } from 'rxjs';
+import { tap, EMPTY, Observable, map, mergeMap, firstValueFrom } from 'rxjs';
 import { Invoice, INVOICE_UPDATE_FIELDS, InvoiceForReport, InvoicesFilter, InvoiceTable, InvoiceUpdate } from 'src/app/interfaces';
 import { PaytraqInvoice } from 'src/app/interfaces/paytraq';
 import { Sale } from 'src/app/interfaces/paytraq/invoice';
@@ -19,7 +19,6 @@ export class InvoicesService {
     private jobService: JobService,
     private paytraqApi: PaytraqApiService,
     private api: InvoicesApiService,
-    private confirmation: ConfirmationDialogService,
   ) { }
 
   getJobsWithoutInvoicesTotals(): Observable<JobsWithoutInvoicesTotals[]> {
@@ -65,10 +64,8 @@ export class InvoicesService {
     );
   }
 
-  deleteInvoice(invoiceId: string): Observable<number> {
-    return this.confirmation.confirmDelete().pipe(
-      mergeMap(resp => resp ? this.api.deleteOne(invoiceId) : EMPTY),
-    );
+  async deleteInvoice(invoiceId: string): Promise<number> {
+    return firstValueFrom(this.api.deleteOne(invoiceId));
   }
 
 }

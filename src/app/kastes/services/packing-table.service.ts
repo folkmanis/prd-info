@@ -13,7 +13,7 @@ export class PackingTableService {
   private pasutijumiService = inject(KastesPasutijumiService);
 
   async getKastesJob(jobId: number) {
-    return firstValueFrom(this.pasutijumiService.getKastesJob(jobId));
+    return this.pasutijumiService.getKastesJob(jobId);
   }
 
   async getAddressPackages(jobId: number): Promise<AddressPackage[]> {

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import { map, startWith, switchMap, tap } from 'rxjs/operators';
+import { Observable, firstValueFrom } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { User } from 'src/app/interfaces';
 import { UsersApiService } from 'src/app/services/prd-api/users-api.service';
 import { XmfCustomer } from 'src/app/xmf-search/interfaces';
@@ -10,17 +10,15 @@ import { XmfArchiveApiService } from 'src/app/xmf-search/services/xmf-archive-ap
   providedIn: 'root',
 })
 export class UsersService {
-  private reload$ = new Subject<void>();
-
-  users$ = this.reload$.pipe(
-    startWith({}),
-    switchMap(() => this.api.getAll({}))
-  );
 
   constructor(
     private api: UsersApiService,
     private xmfApi: XmfArchiveApiService
   ) { }
+
+  async getAllUsers() {
+    return firstValueFrom(this.api.getAll());
+  }
 
   getXmfCustomers(): Observable<XmfCustomer[]> {
     return this.xmfApi
@@ -32,39 +30,32 @@ export class UsersService {
       );
   }
 
-  getUser(username: string): Observable<User> {
-    return this.api.getOne(username);
+  async getUser(username: string): Promise<User> {
+    return firstValueFrom(this.api.getOne(username));
   }
 
-  updateUser({ username, ...update }: Partial<User>): Observable<User> {
-    return this.api
-      .updateOne(username, update)
-      .pipe(tap((_) => this.reload$.next()));
+  async updateUser({ username, ...update }: Partial<User>): Promise<User> {
+    return firstValueFrom(this.api.updateOne(username, update));
   }
 
-  updatePassword(username: string, password: string): Observable<User> {
-    return this.api.passwordUpdate(username, password);
+  async updatePassword(username: string, password: string): Promise<User> {
+    return firstValueFrom(this.api.passwordUpdate(username, password));
   }
 
-  addUser(data: Partial<User>): Observable<User> {
-    return this.api.insertOne(data).pipe(tap((_) => this.reload$.next()));
+  async addUser(data: Partial<User>): Promise<User> {
+    return firstValueFrom(this.api.insertOne(data));
   }
 
-  deleteUser(username: string): Observable<boolean> {
-    return this.api.deleteOne(username).pipe(
-      tap((resp) => {
-        if (!resp) throw new Error('User delete failed');
-      }),
-      tap((resp) => resp && this.reload$.next())
-    );
+  async deleteUser(username: string): Promise<boolean> {
+    return firstValueFrom(this.api.deleteOne(username));
   }
 
-  deleteSessions(username: string, sessionIds: string[]): Observable<number> {
-    return this.api.deleteSessions(username, sessionIds);
+  async deleteSessions(username: string, sessionIds: string[]): Promise<number> {
+    return firstValueFrom(this.api.deleteSessions(username, sessionIds));
   }
 
-  uploadToFirestore(username: string) {
-    return this.api.uploadToFirestore(username);
+  async uploadToFirestore(username: string) {
+    return firstValueFrom(this.api.uploadToFirestore(username));
   }
 
   validateUsername(username: string): Observable<boolean> {

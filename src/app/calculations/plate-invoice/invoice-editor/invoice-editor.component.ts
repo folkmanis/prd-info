@@ -29,6 +29,7 @@ import { InvoicesService } from '../../services/invoices.service';
 import { InvoiceCsv } from './invoice-csv';
 import { InvoicePaytraqComponent } from './invoice-paytraq/invoice-paytraq.component';
 import { InvoiceProductsComponent } from './invoice-products/invoice-products.component';
+import { ConfirmationDialogService } from 'src/app/library';
 
 const deleteSuccessMessage = (id: string) => `Aprēķins ${id} izdzēsts`;
 const deleteFailMessage = (err: Error) => `Radās kļūda: ${err.message}`;
@@ -71,6 +72,7 @@ export class InvoiceEditorComponent implements InvoiceEditor {
   private snack = inject(MatSnackBar);
   private invoicesService = inject(InvoicesService);
   private productsService = inject(ProductsService);
+  private confirmation = inject(ConfirmationDialogService);
 
   invoice = input.required<Invoice>();
 
@@ -113,18 +115,22 @@ export class InvoiceEditorComponent implements InvoiceEditor {
     );
   }
 
-  onDelete(): void {
+  async onDelete() {
+
+    const confirmation = await this.confirmation.confirmDelete();
+    if (!confirmation) {
+      return;
+    }
+
     const { invoiceId } = this.invoice();
 
-    this.invoicesService.deleteInvoice(invoiceId).subscribe({
-      next: () => {
-        this.snack.open(deleteSuccessMessage(invoiceId), 'OK', { duration: 5000 });
-        this.navigate(['..']);
-      },
-      error: (err) =>
-        this.snack.open(deleteFailMessage(err), 'OK', { duration: 5000 }),
-      complete: () => { },
-    });
+    try {
+      await this.invoicesService.deleteInvoice(invoiceId);
+      this.snack.open(deleteSuccessMessage(invoiceId), 'OK', { duration: 5000 });
+      this.navigate(['..']);
+    } catch (err) {
+      this.snack.open(deleteFailMessage(err), 'OK', { duration: 5000 });
+    }
   }
 
   onSaveToPaytraq(): void {

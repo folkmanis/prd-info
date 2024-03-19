@@ -76,7 +76,7 @@ export class UploadComponent {
         this.plannedTotals.set(null);
         return;
       }
-      const { products } = await firstValueFrom(this.pasutijumiService.getKastesJob(id));
+      const { products } = await this.pasutijumiService.getKastesJob(id);
       this.plannedTotals.set(jobProductsToColorTotals(products || []));
     }, { allowSignalWrites: true });
   }

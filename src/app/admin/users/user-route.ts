@@ -3,6 +3,7 @@ import { UsersListComponent } from './users-list/users-list.component';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { resolveUser } from './user-resolver';
 import { canComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
+import { User } from 'src/app/interfaces';
 
 export default [
   {
@@ -13,7 +14,7 @@ export default [
         path: 'new',
         component: UserEditComponent,
         data: {
-          user: null,
+          user: new User(),
         },
         canDeactivate: [canComponentDeactivate],
       },
@@ -24,6 +25,7 @@ export default [
           user: resolveUser,
         },
         canDeactivate: [canComponentDeactivate],
+        runGuardsAndResolvers: 'always',
       },
     ],
   },

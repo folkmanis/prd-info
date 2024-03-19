@@ -28,7 +28,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDateFnsModule } from '@angular/material-date-fns-adapter';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
-import { provideRouter, withComponentInputBinding } from '@angular/router';
+import { provideRouter, withComponentInputBinding, withRouterConfig } from '@angular/router';
 import { APP_ROUTES } from './app/app-routes';
 import { HttpClientModule } from '@angular/common/http';
 registerLocaleData(localeLv);
@@ -45,7 +45,7 @@ bootstrapApplication(AppComponent, {
     },
     { provide: ErrorHandler, useClass: ErrorsService },
     { provide: ClassTransformer, useExisting: AppClassTransformerService },
-    provideRouter(APP_ROUTES, withComponentInputBinding()),
+    provideRouter(APP_ROUTES, withComponentInputBinding(), withRouterConfig({ onSameUrlNavigation: 'reload' })),
     importProvidersFrom(
       HttpClientModule,
       BrowserAnimationsModule,

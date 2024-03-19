@@ -13,6 +13,7 @@ type Params = Record<string, any>;
   providedIn: 'root',
 })
 export class UsersApiService {
+
   readonly path = getAppParams('apiPath') + 'users/';
 
   private isDemo = inject(DEMO_MODE);
@@ -28,9 +29,9 @@ export class UsersApiService {
       .pipe(this.transformer.toClass(User));
   }
 
-  getAll(params: Params): Observable<User[]> {
+  getAll(): Observable<User[]> {
     return this.http
-      .get(this.path, new HttpOptions(params).cacheable())
+      .get(this.path, new HttpOptions().cacheable())
       .pipe(this.transformer.toClass(User));
   }
 

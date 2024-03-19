@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { EMPTY, Observable, mergeMap } from 'rxjs';
+import { EMPTY, Observable, firstValueFrom, mergeMap } from 'rxjs';
 import { ConfirmationDialogComponent } from './confirmation-dialog.component';
+import { ConfirmDeleteComponent } from './confirm-delete/confirm-delete.component';
 
 @Injectable({
   providedIn: 'root'
@@ -34,13 +35,8 @@ export class ConfirmationDialogService {
     });
   }
 
-  confirmDelete(): Observable<boolean> {
-    return this.confirm('Tiešām vēlaties izdzēst?', {
-      data: {
-        yes: 'Jā, izdzēst',
-        no: 'Tomēr nē',
-      }
-    });
+  confirmDelete(): Promise<boolean> {
+    return firstValueFrom(this.dialog.open(ConfirmDeleteComponent).afterClosed());
   }
 
   confirmDataError(message?: string): Observable<never> {

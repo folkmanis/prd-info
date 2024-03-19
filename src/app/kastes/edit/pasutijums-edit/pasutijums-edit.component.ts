@@ -22,6 +22,7 @@ import { JobInfoComponent } from '../job-info/job-info.component';
 import { PakosanasSarakstsComponent } from '../pakosanas-saraksts/pakosanas-saraksts.component';
 
 const VEIKALI_DELETED_MESSAGE = 'Pakošanas saraksts izdzēsts';
+const VEIKALI_DELETE_FAILED_MESSAGE = 'Darbība neizdevās';
 
 const FIREBASE_COPY_TO_CONFIRMATION = 'Kopēt visus ierakstus uz lietotni?';
 const FIREBASE_COPY_FROM_CONFIRMATION = 'Kopēt datus no lietotnes?';
@@ -86,20 +87,24 @@ export class PasutijumsEditComponent {
     this.preferencesService.updateUserPreferences({ pasutijums }).subscribe();
   }
 
-  deleteVeikali() {
+  async deleteVeikali() {
+
+    const confirmation = await this.confirmationDialog.confirmDelete();
+    if (!confirmation) {
+      return;
+    }
+
     const jobId = this.jobId();
-    this.confirmationDialog
-      .confirmDelete()
-      .pipe(
-        mergeMap((resp) =>
-          resp ? this.pasutijumiService.deleteKastes(jobId) : EMPTY
-        ),
-        tap(() =>
-          this.snack.open(VEIKALI_DELETED_MESSAGE, 'OK', { duration: 3000 })
-        ),
-        switchMap(() => this.pasutijumiService.getKastesJob(jobId))
-      )
-      .subscribe((job) => this.jobUpdate$.next(job));
+
+    try {
+      await this.pasutijumiService.deleteKastes(jobId);
+      this.snack.open(VEIKALI_DELETED_MESSAGE, 'OK', { duration: 3000 });
+    } catch (error) {
+      this.snack.open(VEIKALI_DELETE_FAILED_MESSAGE, 'OK', { duration: 3000 });
+    }
+    const job = await this.pasutijumiService.getKastesJob(jobId);
+    this.jobUpdate$.next(job);
+
   }
 
   copyToFirebase() {

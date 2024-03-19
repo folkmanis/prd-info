@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, firstValueFrom, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { KastesJob, Veikals, VeikalsUpload } from '../interfaces';
 import { KastesJobPartial } from '../interfaces/kastes-job-partial';
@@ -20,8 +20,8 @@ export class KastesPasutijumiService {
     return this.api.getAllKastesJobs(filter);
   }
 
-  getKastesJob(id: number): Observable<KastesJob> {
-    return this.api.getOneKastesJob(id);
+  async getKastesJob(id: number): Promise<KastesJob> {
+    return firstValueFrom(this.api.getOneKastesJob(id));
   }
 
   getVeikali(jobId: number): Observable<Veikals[]> {
@@ -36,8 +36,8 @@ export class KastesPasutijumiService {
     return this.api.putTable(data);
   }
 
-  deleteKastes(pasutijumsId: number): Observable<number> {
-    return this.api.deleteVeikali(pasutijumsId);
+  async deleteKastes(pasutijumsId: number): Promise<number> {
+    return firstValueFrom(this.api.deleteVeikali(pasutijumsId));
   }
 
   copyToFirestore(pasutijumsId: number) {
