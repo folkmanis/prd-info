@@ -3,4 +3,4 @@ import { CanMatchFn, Route } from '@angular/router';
 import { LoginService } from './services/login.service';
 
 export const isModuleAllowed: CanMatchFn = (route: Route) =>
-  inject(LoginService).isModule(route.path);
+  inject(LoginService).isModuleAvailable(route.path);

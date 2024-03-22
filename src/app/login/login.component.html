@@ -1,23 +1,24 @@
 <div class="container">
 
-    <form [formGroup]="loginForm" (submit)="onLogin()">
+    <form (submit)="onLogin()">
 
-        <mat-form-field class="item">
+        <mat-form-field class="full-width">
             <mat-label>
                 Lietotājs
             </mat-label>
-            <input matInput formControlName="username" type="text" autocomplete="username" autocapitalize="none"
-                appFocused>
+            <input matInput [(ngModel)]="username" name="username" autocomplete="username" #usernameControl="ngModel"
+                autocapitalize="none" appFocused required>
         </mat-form-field>
 
-        <mat-form-field class="item">
+        <mat-form-field class="full-width">
             <mat-label>
                 Parole
             </mat-label>
-            <input matInput formControlName="password" type="password" autocomplete="current-password">
+            <input matInput [(ngModel)]="password" name="password" type="password" autocomplete="current-password">
         </mat-form-field>
 
-        <button mat-raised-button type="submit" color="primary" [disabled]="loginForm.invalid" class="item">
+        <button mat-raised-button type="submit" color="primary" [disabled]="!usernameControl.valid || busy()"
+            class="full-width">
             PIESLĒGTIES
         </button>
 
@@ -26,7 +27,7 @@
     <hr>
 
     @if (isDemo === false) {
-    <a mat-raised-button href="/data/login/google">
+    <a mat-raised-button href="/data/login/google" [disabled]="busy()" class="full-width">
         PIEVIENOTIES AR GOOGLE
     </a>
     }

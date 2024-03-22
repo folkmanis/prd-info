@@ -89,15 +89,15 @@ export class JobListComponent {
     });
   }
 
-  onSetJobStatus(jobId: number, status: number) {
-    this.jobService
+  async onSetJobStatus(jobId: number, status: number) {
+    await this.jobService
       .updateJob(jobId, {
         jobStatus: {
           generalStatus: status,
           timestamp: new Date(),
         },
-      })
-      .subscribe(() => this.reload$.next());
+      });
+    this.reload$.next();
   }
 
   hasProduct(job: JobPartial, productName: string): boolean {

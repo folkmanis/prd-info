@@ -1,28 +1,23 @@
 import { AsyncPipe, Location } from '@angular/common';
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   OnDestroy,
   OnInit,
-  ViewChild,
+  computed,
+  inject,
+  model,
+  signal
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import {
-  BehaviorSubject,
-  Observable,
-  Observer,
-  combineLatest,
-  concatMap,
-  map,
-  of,
-  startWith,
-} from 'rxjs';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Observable, concatMap, of } from 'rxjs';
 import { DropFolder } from 'src/app/interfaces';
+import { ConfirmationDialogService } from 'src/app/library';
+import { navigateRelative } from 'src/app/library/common';
 import { FileUploadMessage, Job } from '../../interfaces';
 import { JobFormService } from '../services/job-form.service';
 import { ReproJobService } from '../services/repro-job.service';
@@ -54,10 +49,13 @@ import { KeyPressDirective } from './key-press.directive';
     AsyncPipe,
   ],
 })
-export class ReproJobEditComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild(JobFormComponent) private jobFormComponent: JobFormComponent;
-  @ViewChild(FolderPathComponent)
-  private folderPathComponent: FolderPathComponent;
+export class ReproJobEditComponent implements OnInit, OnDestroy {
+
+  private confirmationDialogService = inject(ConfirmationDialogService);
+
+  private navigate = navigateRelative();
+
+  private dropFolder = signal<DropFolder | null>(null);
 
   form = this.formService.form;
 
@@ -65,35 +63,22 @@ export class ReproJobEditComponent implements OnInit, AfterViewInit, OnDestroy {
 
   uploadRef: UploadRef | null = null;
 
-  saved$ = new BehaviorSubject(false);
+  saved = signal(false);
 
-  folderPath$ = this.formService.value$.pipe(
-    map((job) => job.files?.path),
-    map((path) => path?.join('/') || '')
-  );
+  folderPath = computed(() => {
+    const job = this.formService.value();
+    return job.files?.path?.join('/') || '';
+  });
 
-  updateFolderLocationEnabled$: Observable<boolean> =
-    this.formService.update$.pipe(
-      map(
-        (upd) => !!upd && (!!upd.customer || !!upd.name || !!upd.receivedDate)
-      )
-    );
+  updateFolderLocationEnabled = computed(() => {
+    const update = this.formService.update();
+    return !!update && (!!update.customer || !!update.name || !!update.receivedDate);
+  });
 
-  private dropFolder$ = new BehaviorSubject<DropFolder | null>(null);
 
-  saveDisabled$ = combineLatest({
-    update: this.formService.update$,
-    status: this.formService.form.statusChanges,
-    saved: this.saved$,
-    dropFolder: this.dropFolder$,
-  }).pipe(
-    map(
-      ({ update, status, saved, dropFolder }) =>
-        status !== 'VALID' ||
-        (update == undefined && dropFolder == null) ||
-        saved
-    ),
-    startWith(true)
+  saveDisabled = computed(() => this.formService.status() !== 'VALID' ||
+    (this.formService.update() == undefined && this.dropFolder() == null) ||
+    this.saved()
   );
 
   dropFolders$: Observable<DropFolder[]> = this.formService.dropFolders$;
@@ -104,30 +89,15 @@ export class ReproJobEditComponent implements OnInit, AfterViewInit, OnDestroy {
     return !!this.uploadRef;
   }
 
-  private jobSaveObserver: Observer<Job> = {
-    next: (job) => {
-      this.uploadRef?.addToJob(job.jobId);
-      this.copyToDropfolder(job);
-      this.snack.openFromComponent(SnackbarMessageComponent, {
-        data: { job, progress: this.fileUploadProgress$ },
-      });
-      this.router.navigate(['..'], { relativeTo: this.route });
-    },
-    error: (error) =>
-      this.snack.openFromComponent(SnackbarMessageComponent, {
-        data: { progress: this.fileUploadProgress$, error },
-      }),
-    complete: () => {},
-  };
+  updatePath = model(false);
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
     private reproJobService: ReproJobService,
     private snack: MatSnackBar,
     private formService: JobFormService,
     private location: Location
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.formService.setValue(this.route.snapshot.data.job);
@@ -144,48 +114,50 @@ export class ReproJobEditComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  ngAfterViewInit(): void {
-    if (!this.formService.value.customer) {
-      this.jobFormComponent.customerInput.focus();
-    }
-  }
-
   ngOnDestroy(): void {
     this.reproJobService.uploadRef = null;
   }
 
-  onUpdate() {
-    this.saved$.next(true);
-    const jobId = this.formService.value.jobId;
-    const jobUpdate: Partial<Job> = this.formService.update;
-    this.reproJobService
-      .updateJob(
-        { jobId, ...jobUpdate },
-        { updatePath: this.folderPathComponent.updatePath }
-      )
-      .subscribe(this.jobSaveObserver);
+  async onUpdate() {
+    this.saved.set(true);
+    const jobId = this.formService.value().jobId;
+    const jobUpdate = this.formService.update;
+    try {
+      const updatedJob = await this.reproJobService
+        .updateJob(
+          { jobId, ...jobUpdate },
+          { updatePath: this.updatePath() && this.updateFolderLocationEnabled() }
+        );
+      this.onSaveSuccess(updatedJob);
+    } catch (error) {
+      this.onSaveError(error);
+    }
   }
 
-  onCreate() {
-    this.saved$.next(true);
-    const jobUpdate: Partial<Omit<Job, 'jobId'>> = this.formService.update;
+  async onCreate() {
+    this.saved.set(true);
+    const jobUpdate = this.formService.update();
     this.reproJobService.uploadRef = null;
-
-    this.reproJobService.createJob(jobUpdate).subscribe(this.jobSaveObserver);
+    try {
+      const createdJob = await this.reproJobService.createJob(jobUpdate);
+      this.onSaveSuccess(createdJob);
+    } catch (error) {
+      this.onSaveError(error);
+    }
   }
 
-  onCreateFolder() {
-    const jobId = this.formService.value.jobId;
-    this.reproJobService
-      .createFolder(jobId)
-      .pipe(map((job) => job.files))
-      .subscribe((files) =>
-        this.formService.form.controls.files.setValue(files)
-      );
+  async onCreateFolder() {
+    const jobId = this.formService.value().jobId;
+    try {
+      const job = await this.reproJobService.createFolder(jobId);
+      this.formService.form.controls.files.setValue(job.files);
+    } catch (error) {
+      this.confirmationDialogService.confirmDataError();
+    }
   }
 
   onDropFolder(folder: DropFolder | null) {
-    this.dropFolder$.next(folder);
+    this.dropFolder.set(folder);
   }
 
   onBack() {
@@ -193,7 +165,7 @@ export class ReproJobEditComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private copyToDropfolder({ files }: Pick<Job, 'files'>) {
-    const dropFolder = this.dropFolder$.value;
+    const dropFolder = this.dropFolder();
 
     if (!dropFolder) {
       return;
@@ -218,5 +190,20 @@ export class ReproJobEditComponent implements OnInit, AfterViewInit, OnDestroy {
         .copyToDropFolder(files.path, dropFolder.path)
         .subscribe();
     }
+  }
+
+  private onSaveSuccess(job: Job) {
+    this.uploadRef?.addToJob(job.jobId);
+    this.copyToDropfolder(job);
+    this.snack.openFromComponent(SnackbarMessageComponent, {
+      data: { job, progress: this.fileUploadProgress$ },
+    });
+    this.navigate(['..']);
+  }
+
+  private onSaveError(error: unknown) {
+    this.snack.openFromComponent(SnackbarMessageComponent, {
+      data: { progress: this.fileUploadProgress$, error },
+    });
   }
 }

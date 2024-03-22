@@ -82,7 +82,7 @@ export class ProductsProductionComponent implements OnInit {
 
   totals = new Totals();
 
-  isAdmin$ = this.loginService.isModule('jobs-admin');
+  isAdmin$ = this.loginService.isModuleAvailable('jobs-admin');
 
   private _selection: JobsProduction[] = [];
   set selection(value: JobsProduction[]) {
@@ -103,7 +103,7 @@ export class ProductsProductionComponent implements OnInit {
     private prefStorage: ProductsProductionPreferencesUpdaterService,
     private destroy$: DestroyService,
     private loginService: LoginService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     merge(

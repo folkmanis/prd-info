@@ -27,4 +27,6 @@ export class JobProductionStage {
     @Expose()
     fixedAmount: number = 0;
 
+    productionStatus?: number = 10;
+
 }

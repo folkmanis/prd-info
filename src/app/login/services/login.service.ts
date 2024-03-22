@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, merge, Observable, of, Subject } from 'rxjs';
-import { catchError, map, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators';
+import { BehaviorSubject, firstValueFrom, merge, Observable, of, Subject } from 'rxjs';
+import { catchError, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { User } from 'src/app/interfaces';
-import { LoginApiService } from './login-api.service';
 import { Login } from '../login.interface';
+import { LoginApiService } from './login-api.service';
 
 type UserUpdate = Partial<User>;
 
@@ -27,44 +27,39 @@ export class LoginService {
     private api: LoginApiService,
   ) { }
 
-  isLogin(): Observable<boolean> {
-    return this.user$.pipe(
-      map(usr => !!usr),
-      take(1)
-    );
+  async isLoggedIn(): Promise<boolean> {
+    const user = await firstValueFrom(this.user$);
+    return !!user;
   }
 
-  logIn(login: Login): Observable<User> {
-    return this.api.login(login).pipe(
-      tap(usr => this.loginUpdate$.next(usr)),
-    );
+  async logIn(login: Login): Promise<User> {
+    const user = await firstValueFrom(this.api.login(login));
+    this.loginUpdate$.next(user);
+    return user;
   }
 
   reloadUser() {
     this.reload$.next();
   }
 
-  logOut(): Observable<unknown> {
-    return this.api.logout().pipe(
-      tap(() => this.loginUpdate$.next(null)),
-    );
+  async logOut(): Promise<void> {
+    await firstValueFrom(this.api.logout());
+    this.loginUpdate$.next(null);
   }
 
-  isModule(mod: string): Observable<boolean> {
-    return this.user$.pipe(
-      map(usr => usr?.hasModule(mod)),
-      take(1),
-    );
+  async isModuleAvailable(module: string): Promise<boolean> {
+    const user = await firstValueFrom(this.user$);
+    return !!user?.preferences.modules.includes(module);
   }
 
   sessionToken(): Observable<string> {
     return this.api.getSessionToken();
   }
 
-  updateUser(update: UserUpdate) {
-    return this.api.patchUser(update).pipe(
-      tap(resp => this.loginUpdate$.next(resp)),
-    );
+  async updateUser(update: UserUpdate): Promise<User> {
+    const user = await firstValueFrom(this.api.patchUser(update));
+    this.loginUpdate$.next(user);
+    return user;
   }
 
   getSessionId(): Observable<string> {

@@ -29,8 +29,8 @@
         <mat-card-content>
 
             @if (form.value.jobId) {
-            <app-folder-path [path]="folderPath$ | async" (createFolder)="onCreateFolder()"
-                [enabled]="updateFolderLocationEnabled$ | async">
+            <app-folder-path [path]="folderPath()" (createFolder)="onCreateFolder()" [(updatePath)]="updatePath"
+                [enabled]="updateFolderLocationEnabled()">
             </app-folder-path>
             }
 
@@ -51,13 +51,11 @@
 <footer>
 
     @if (form.value.jobId) {
-    <button mat-raised-button color="primary" appKeyPress="ctrlEnter" [disabled]="saveDisabled$ | async"
-        (click)="onUpdate()">
+    <button mat-raised-button color="primary" appKeyPress="ctrlEnter" [disabled]="saveDisabled()" (click)="onUpdate()">
         SAGLABĀT
     </button>
     } @else {
-    <button mat-raised-button color="primary" [disabled]="saveDisabled$ | async" appKeyPress="ctrlEnter"
-        (click)="onCreate()">
+    <button mat-raised-button color="primary" [disabled]="saveDisabled()" appKeyPress="ctrlEnter" (click)="onCreate()">
         IZVEIDOT
     </button>
     }

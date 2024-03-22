@@ -1,7 +1,5 @@
-import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, booleanAttribute, input, model, output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
@@ -14,47 +12,24 @@ import { MatIconModule } from '@angular/material/icon';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    NgIf,
+    FormsModule,
     MatIconModule,
     MatCheckboxModule,
-    FormsModule,
-    ReactiveFormsModule,
     MatButtonModule,
   ],
 })
 export class FolderPathComponent {
 
-  @Input() set path(path: string) {
-    this._path = path || '';
-  }
-  get path(): string {
-    return this._path;
-  }
-  private _path = '';
+  path = input('');
 
-  updateJobFolderPathControl = new FormControl({ value: true, disabled: true });
+  updatePath = model(false);
 
-  @Input() set updatePath(value: boolean) {
-    value = coerceBooleanProperty(value);
-    this.updateJobFolderPathControl.setValue(value);
-  }
-  get updatePath(): boolean {
-    return this.enabled && this.updateJobFolderPathControl.value;
-  }
+  enabled = input(false, { transform: booleanAttribute });
 
+  createFolder = output();
 
-  @Input() set enabled(value: any) {
-    value = coerceBooleanProperty(value);
-    if (value === true) {
-      this.updateJobFolderPathControl.enable();
-    } else {
-      this.updateJobFolderPathControl.disable();
-    }
+  onCreateFolder() {
+    this.createFolder.emit();
   }
-  get enabled() {
-    return this.updateJobFolderPathControl.enabled;
-  }
-
-  @Output() createFolder = new EventEmitter<void>();
 
 }

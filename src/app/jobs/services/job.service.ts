@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ClassTransformer } from 'class-transformer';
 import { endOfDay } from 'date-fns';
-import { catchError, EMPTY, map, Observable, switchMap } from 'rxjs';
-import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
+import { EMPTY, firstValueFrom, map, Observable, switchMap } from 'rxjs';
 import { combineReload } from 'src/app/library/rxjs';
 import { NotificationsService } from '../../services';
 import { Job, JobPartial, JobQueryFilter, JobQueryFilterOptions, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
@@ -16,7 +15,6 @@ export class JobService {
 
   constructor(
     private notificatinsService: NotificationsService,
-    private confirmationDialogService: ConfirmationDialogService,
     private api: JobsApiService,
     private transformer: ClassTransformer,
   ) { }
@@ -33,18 +31,18 @@ export class JobService {
   }
 
 
-  newJob(job: Partial<Job>, params: JobUpdateParams = {}): Observable<Job> {
-    return this.api.insertOne(job, params);
+  async newJob(job: Partial<Job>, params: JobUpdateParams = {}): Promise<Job> {
+    return firstValueFrom(this.api.insertOne(job, params));
   }
 
-  updateJob(jobId: number, job: Partial<Job>, params: JobUpdateParams = {}): Observable<Job> {
+  async updateJob(jobId: number, job: Partial<Job>, params: JobUpdateParams = {}): Promise<Job> {
     if (job.dueDate) {
       job.dueDate = endOfDay(new Date(job.dueDate));
     }
     if (job.jobStatus) {
       job.jobStatus.timestamp = new Date();
     }
-    return this.api.updateOne(
+    const jobUpdate$ = this.api.updateOne(
       jobId,
       {
         ...job,
@@ -53,12 +51,11 @@ export class JobService {
       },
       params
     );
+    return firstValueFrom(jobUpdate$);
   }
 
-  createFolder(jobId: number): Observable<Job> {
-    return this.api.createFolder(jobId).pipe(
-      catchError(() => this.confirmationDialogService.confirmDataError())
-    );
+  async createFolder(jobId: number): Promise<Job> {
+    return firstValueFrom(this.api.createFolder(jobId));
   }
 
   updateJobs(jobs: Partial<Job>[], params?: JobUpdateParams): Observable<number> {

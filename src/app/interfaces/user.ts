@@ -65,8 +65,5 @@ export class User {
     @Type(() => GoogleUser)
     google?: GoogleUser;
 
-    hasModule(module: string): boolean {
-        return this.preferences.modules.includes(module);
-    }
 }
 

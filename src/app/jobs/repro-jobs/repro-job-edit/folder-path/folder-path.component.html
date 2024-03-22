@@ -1,4 +1,4 @@
-@if (path.length > 0) {
+@if (path()) {
 <p class="path">
 
     <span>
@@ -8,19 +8,19 @@
     </span>
 
     <span>
-        {{ path }}
+        {{ path() }}
     </span>
 
 </p>
 
 <p>
-    <mat-checkbox [formControl]="updateJobFolderPathControl">
+    <mat-checkbox [(ngModel)]="updatePath" name="updatePath" [disabled]="!enabled()">
         Pārvietot folderi
     </mat-checkbox>
 </p>
 
 } @else {
-<button mat-raised-button (click)="createFolder.next()">
+<button mat-raised-button (click)="onCreateFolder()">
     IZVEIDOT FOLDERI
 </button>
 

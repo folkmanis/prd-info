@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { flatten } from 'lodash-es';
-import { concatMap, map, BehaviorSubject, forkJoin, from, Observable, of, toArray, filter } from 'rxjs';
+import { Observable, firstValueFrom, map } from 'rxjs';
+import { JobFilesService } from 'src/app/filesystem';
 import { JobProductionStage } from 'src/app/interfaces';
 import { ProductsService } from 'src/app/services';
 import { Job, JobProduct } from '../../interfaces';
 import { JobService } from '../../services/job.service';
 import { UploadRef } from './upload-ref';
-import { JobFilesService } from 'src/app/filesystem';
 
 
 export type PartialJob = Pick<Job, 'jobId'> & Partial<Job>;
@@ -30,21 +30,24 @@ export class ReproJobService {
     private jobFilesService: JobFilesService,
   ) { }
 
-  updateJob(jobUpdate: PartialJob, params: { updatePath?: boolean; } = {}): Observable<Job> {
+  async updateJob(jobUpdate: PartialJob, params: { updatePath?: boolean; } = {}): Promise<Job> {
 
     const { updatePath } = params;
 
-    return this.addProductionStages(jobUpdate).pipe(
-      concatMap(job => this.jobService.updateJob(job.jobId, job)),
-      concatMap(job => updatePath ? this.updateFilesLocation(job) : of(job))
-    );
+    const update = await this.addProductionStages(jobUpdate);
+
+    const updatedJob = await this.jobService.updateJob(update.jobId, update);
+    if (updatePath) {
+      await this.updateFilesLocation(updatedJob);
+    }
+
+    return updatedJob;
 
   }
 
-  createJob(jobUpdate: Omit<Partial<Job>, 'jobId'>) {
-    return this.addProductionStages(jobUpdate).pipe(
-      concatMap(job => this.jobService.newJob(job)),
-    );
+  async createJob(jobUpdate: Omit<Partial<Job>, 'jobId'>): Promise<Job> {
+    const update = await this.addProductionStages(jobUpdate);
+    return this.jobService.newJob(update);
   }
 
   jobNameFromFiles(fileNames: string[]): string {
@@ -54,26 +57,19 @@ export class ReproJobService {
       .join('_');
   }
 
-  productionStages(products: JobProduct[]): Observable<JobProductionStage[]> {
+  async productionStages(products: JobProduct[] = []): Promise<JobProductionStage[]> {
 
-    return from(products || []).pipe(
-      filter(prod => !!prod?.name),
-      concatMap(prod => this.productsService.productionStages(prod.name).pipe(
-        concatMap(stages => from(stages)),
-        map(stage => ({
-          productionStageId: stage.productionStageId,
-          fixedAmount: stage.fixedAmount || 0,
-          amount: stage.amount * prod.count + stage.fixedAmount,
-          productionStatus: 10,
-          materials: stage.materials.map(material => ({
-            materialId: material.materialId,
-            amount: material.amount * stage.amount * prod.count + material.fixedAmount,
-            fixedAmount: material.fixedAmount
-          }))
-        })),
-      )),
-      toArray(),
-    );
+    const productStages = products.map(async product => {
+
+      if (!product.name) {
+        return [];
+      }
+
+      const stages = await firstValueFrom(this.productsService.productionStages(product.name));
+      return stages.map(stage => this.jobProductionStage(stage, product));
+    });
+    const allStages = await Promise.all(productStages);
+    return flatten(allStages);
 
   }
 
@@ -87,26 +83,40 @@ export class ReproJobService {
     return this.jobService.createFolder(jobId);
   }
 
-  private updateFilesLocation(job: Job): Observable<Job> {
-    return this.jobFilesService.updateFolderLocation(job.jobId).pipe(
-      map(_ => job),
-    );
+  private async updateFilesLocation(job: Job): Promise<string[]> {
+    return firstValueFrom(this.jobFilesService.updateFolderLocation(job.jobId));
   }
 
-  private addProductionStages<T extends Partial<Job>>(job: T): Observable<T> {
-    if (job?.products instanceof Array && job.products.length > 0) {
-      return this.productionStages(job.products).pipe(
-        map(productionStages => ({
-          ...job,
-          productionStages,
-        })),
-      );
-    } else {
-      return of(job);
+  private async addProductionStages<T extends Partial<Job>>(job: T): Promise<T> {
+
+    if (!Array.isArray(job?.products) || job.products.length === 0) {
+      return job;
     }
+
+    const productionStages = await this.productionStages(job.products);
+    return {
+      ...job,
+      productionStages,
+    };
+
   }
 
+  private jobProductionStage(stage: JobProductionStage, product: JobProduct): JobProductionStage {
+    return {
+      productionStageId: stage.productionStageId,
+      fixedAmount: stage.fixedAmount || 0,
+      amount: stage.amount * product.count + stage.fixedAmount,
+      productionStatus: 10,
+      materials: stage
+        .materials
+        .map(material => ({
+          materialId: material.materialId,
+          amount: material.amount * stage.amount * product.count + material.fixedAmount,
+          fixedAmount: material.fixedAmount
+        }))
+    };
+
+
+  }
 
 }
-
-

@@ -2,9 +2,9 @@ import { TitleCasePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
-  Input,
-  Output,
+  computed,
+  input,
+  output
 } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
 import { GoogleUser } from 'src/app/interfaces';
@@ -28,15 +28,14 @@ const FIELDS_FOR_DISPLAY: (keyof GoogleUser)[] = [
   imports: [MatListModule, TitleCasePipe],
 })
 export class GoogleInfoComponent {
-  values: [string, string][] = [];
 
-  @Input() set googleInfo(value: GoogleUser) {
-    if (value) {
-      this.values = Object.entries(value).filter((val) =>
-        FIELDS_FOR_DISPLAY.includes(val[0] as keyof GoogleUser)
-      );
-    }
-  }
+  values = computed(() => {
+    return Object.entries(this.googleInfo() || {}).filter((val) =>
+      FIELDS_FOR_DISPLAY.includes(val[0] as keyof GoogleUser)
+    );
+  });
 
-  @Output('valueClicked') clickEvent = new EventEmitter<[string, string]>();
+  googleInfo = input<GoogleUser>();
+
+  clickEvent = output<[string, string]>({ alias: 'valueClicked' });
 }

@@ -37,7 +37,7 @@
                 Jānorāda obligāti
             </mat-error>
             }
-            <button mat-icon-button [appCopyClipboard]="jobIdAndName$ | async" matIconSuffix tabindex="-1">
+            <button mat-icon-button [appCopyClipboard]="jobIdAndName()" matIconSuffix tabindex="-1">
                 <mat-icon>filter_none</mat-icon>
             </button>
         </mat-form-field>
@@ -51,7 +51,7 @@
             <mat-form-field>
                 <mat-label>Kategorija</mat-label>
                 <mat-select formControlName="category" required>
-                    @for (category of categories$ | async; track category.category) {
+                    @for (category of categories(); track category.category) {
                     <mat-option [value]="category.category">
                         {{category.description}}
                     </mat-option>
@@ -64,7 +64,7 @@
             <mat-form-field>
                 <mat-label>Stadija</mat-label>
                 <mat-select formControlName="generalStatus">
-                    @for (state of jobStates$ | async; track $index) {
+                    @for (state of jobStates(); track $index) {
                     <mat-option [value]="state.state">
                         {{state.description}}
                     </mat-option>
@@ -84,8 +84,7 @@
     <!-- Preces apakšforma -->
     @if (customerProducts$ | async; as customerProducts) {
     <app-repro-products-editor [customerProducts]="customerProducts" formControlName="products"
-        [showPrices]="showPrices$ | async">
-    </app-repro-products-editor>
+        [showPrices]="showPrices()" />
     }
 
     <div class="container-multi">

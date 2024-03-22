@@ -1,11 +1,14 @@
 import { TextFieldModule } from '@angular/cdk/text-field';
-import { AsyncPipe, NgFor } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  OnInit,
-  ViewChild,
+  afterNextRender,
+  computed,
+  signal,
+  viewChild
 } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -18,16 +21,15 @@ import { MatSelectModule } from '@angular/material/select';
 import { addDays, subDays } from 'date-fns';
 import { Observable, distinctUntilChanged, filter, map, switchMap } from 'rxjs';
 import { CustomerPartial } from 'src/app/interfaces';
+import { CopyClipboardDirective } from 'src/app/library/directives/copy-clipboard.directive';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
+import { ViewSizeModule } from 'src/app/library/view-size/view-size.module';
 import { LoginService } from 'src/app/login';
 import { CustomersService, ProductsService } from 'src/app/services';
-import { getConfig } from 'src/app/services/config.provider';
-import { ViewSizeModule } from 'src/app/library/view-size/view-size.module';
-import { Job } from '../../../interfaces';
+import { configuration } from 'src/app/services/config.provider';
 import { JobFormService } from '../../services/job-form.service';
 import { CustomerInputComponent } from '../customer-input/customer-input.component';
 import { ReproProductsEditorComponent } from '../repro-products-editor/repro-products-editor.component';
-import { CopyClipboardDirective } from 'src/app/library/directives/copy-clipboard.directive';
 
 @Component({
   selector: 'app-job-form',
@@ -54,8 +56,11 @@ import { CopyClipboardDirective } from 'src/app/library/directives/copy-clipboar
     CopyClipboardDirective,
   ],
 })
-export class JobFormComponent implements OnInit {
-  @ViewChild(CustomerInputComponent) customerInput: CustomerInputComponent;
+export class JobFormComponent {
+
+  private customerInput = viewChild(CustomerInputComponent);
+
+  private allJobStates = configuration('jobs', 'jobStates');
 
   form = this.formService.form;
 
@@ -69,32 +74,29 @@ export class JobFormComponent implements OnInit {
     max: addDays(Date.now(), 3),
   };
 
-  jobStates$ = getConfig('jobs', 'jobStates').pipe(
-    map((states) => states.filter((st) => st.state < 50))
-  );
+  jobStates = computed(() => this.allJobStates().filter((st) => st.state < 50));
 
-  categories$ = getConfig('jobs', 'productCategories');
+  categories = configuration('jobs', 'productCategories');
 
-  jobIdAndName$ = this.formService.value$.pipe(
-    map((job) => this.jobIdAndName(job))
-  );
+  jobIdAndName = computed(() => {
+    const job = this.formService.value();
+    const name = this.sanitize.sanitizeFileName(job.name);
+    return `${job.jobId}-${name}`;
+  });
 
-  customerProducts$ = this.formService.value$.pipe(
+  customerProducts$ = toObservable(this.formService.value).pipe(
     map((value) => value.customer),
     filter((customer) => !!customer),
     distinctUntilChanged(),
     switchMap((customer) => this.productsService.productsCustomer(customer))
   );
 
-  showPrices$: Observable<boolean> = this.loginService.isModule('calculations');
+  showPrices = signal(false);
 
   get nameControl() {
     return this.formService.form.controls.name;
   }
 
-  get isNew(): boolean {
-    return !this.formService.value.jobId;
-  }
 
   constructor(
     private productsService: ProductsService,
@@ -102,12 +104,17 @@ export class JobFormComponent implements OnInit {
     private sanitize: SanitizeService,
     private loginService: LoginService,
     private formService: JobFormService
-  ) {}
+  ) {
 
-  ngOnInit(): void {}
+    this.loginService.isModuleAvailable('calculations')
+      .then(result => this.showPrices.set(result));
 
-  private jobIdAndName(job: Partial<Job>) {
-    const name = this.sanitize.sanitizeFileName(job.name);
-    return `${job.jobId}-${name}`;
+    afterNextRender(() => {
+      if (this.formService.isNew()) {
+        this.customerInput().focus();
+      }
+    });
+
   }
+
 }
