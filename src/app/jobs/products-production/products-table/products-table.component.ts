@@ -1,90 +1,83 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { AfterViewInit, ChangeDetectionStrategy, Component, Input, Output, ViewChild } from '@angular/core';
+import { CurrencyPipe, DecimalPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, effect, input, model, viewChild } from '@angular/core';
+import { outputFromObservable } from '@angular/core/rxjs-interop';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { JobsProduction } from '../../interfaces';
 import { Totals } from '../services/totals';
-import { DecimalPipe, CurrencyPipe } from '@angular/common';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ProductsSortDirective } from './products-sort.directive';
 
 
 
 @Component({
-    selector: 'app-products-table',
-    templateUrl: './products-table.component.html',
-    styleUrls: ['./products-table.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        MatTableModule,
-        ProductsSortDirective,
-        MatCheckboxModule,
-        MatSortModule,
-        DecimalPipe,
-        CurrencyPipe,
-    ],
+  selector: 'app-products-table',
+  templateUrl: './products-table.component.html',
+  styleUrls: ['./products-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    MatTableModule,
+    ProductsSortDirective,
+    MatCheckboxModule,
+    MatSortModule,
+    DecimalPipe,
+    CurrencyPipe,
+  ],
 })
-export class ProductsTableComponent implements AfterViewInit {
+export class ProductsTableComponent {
 
-  @ViewChild(MatSort) private sort: MatSort;
+  private sort = viewChild(MatSort);
 
   selector = new SelectionModel<JobsProduction>(true);
 
   columns = ['selection', 'name', 'category', 'units', 'count', 'sum'];
   adminColumns = [...this.columns, 'total'];
 
-
   readonly dataSource = new MatTableDataSource<JobsProduction>();
 
-  @Input() set data(value: JobsProduction[]) {
-    if (Array.isArray(value)) {
-      this.dataSource.data = value;
-    }
-  }
-  get data() {
-    return this.dataSource.filteredData;
-  }
+  data = input<JobsProduction[]>([]);
 
-  @Input() isAdmin = false;
+  isAdmin = input(false);
 
-  @Input()
-  initialSort: string = 'name,1';
+  totals = input.required<Totals>();
 
-  @Input()
-  totals: Totals = new Totals();
+  selection = input<JobsProduction[]>([]);
 
-  @Output('sortChange')
-  readonly sort$ = new Subject<string>();
-
-  @Input() set selection(value: JobsProduction[]) {
-    value = value || [];
-    this.selector.setSelection(...value);
-  }
-
-  @Output() selectionChange = this.selector.changed.pipe(
+  selectionChange$ = this.selector.changed.pipe(
     map(change => change.source.selected),
   );
 
+  selectionChange = outputFromObservable(this.selectionChange$);
+
+  sortString = model('name,1');
+
+  isAllSelected = computed(() => {
+    this.data();
+    const filteredData = this.dataSource.filteredData;
+    return filteredData.length > 0 && this.selector.selected.length === filteredData.length;
+  });
 
 
-  ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
-  }
-
-  onSortChange(value: string) {
-    this.sort$.next(value);
-  }
-
-  isAllSelected() {
-    return this.data.length > 0 && this.selector.selected.length === this.data.length;
+  constructor() {
+    effect(() => {
+      this.dataSource.sort = this.sort();
+    });
+    effect(() => {
+      this.dataSource.data = this.data();
+    });
+    effect(() => {
+      this.selector.setSelection(...this.selection());
+    });
   }
 
   toggleAll() {
-    return this.isAllSelected() ? this.selector.clear() : this.selector.setSelection(...this.data);
+    if (this.isAllSelected()) {
+      this.selector.clear();
+    } else {
+      this.selector.setSelection(...this.data());
+    }
   }
-
-
 }

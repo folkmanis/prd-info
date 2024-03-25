@@ -1,32 +1,13 @@
-import { LoginService } from 'src/app/login';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, model, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { DestroyService } from 'src/app/library/rxjs';
-import {
-  combineLatest,
-  concat,
-  debounceTime,
-  map,
-  merge,
-  Observable,
-  of,
-  share,
-  Subject,
-  switchMap,
-  take,
-  takeUntil,
-  tap,
-} from 'rxjs';
-import { combineReload } from 'src/app/library/rxjs';
-import { NotificationsService } from 'src/app/services/notifications.service';
-import { JobsProduction, JobsProductionFilterQuery } from '../interfaces';
-import { JobsApiService } from '../services/jobs-api.service';
-import { JobsUserPreferencesService } from '../services/jobs-user-preferences.service';
-import { ProductsProductionPreferencesUpdaterService } from './services/products-production-preferences-updater.service';
-import { Totals } from './services/totals';
-import { AsyncPipe } from '@angular/common';
+import { LoginService } from 'src/app/login';
 import { ScrollTopDirective } from '../../library/scroll-to-top/scroll-top.directive';
-import { ProductsTableComponent } from './products-table/products-table.component';
+import { JobsProduction, JobsProductionFilterQuery } from '../interfaces';
 import { FilterComponent } from './filter/filter.component';
+import { ProductsTableComponent } from './products-table/products-table.component';
+import { ProductsProductionService } from './services/products-production.service';
+import { Totals } from './services/totals';
 
 @Component({
   selector: 'app-products-production',
@@ -39,86 +20,56 @@ import { FilterComponent } from './filter/filter.component';
     FilterComponent,
     ProductsTableComponent,
     ScrollTopDirective,
-    AsyncPipe,
   ],
 })
-export class ProductsProductionComponent implements OnInit {
-  readonly sortChange$ = new Subject<string>();
-  readonly savedSort$ = this.prefService.userPreferences$.pipe(
-    take(1),
-    map((data) => data.jobsProductionQuery.sort),
-    map((sort) => sort || 'name,1')
-  );
+export class ProductsProductionComponent {
 
-  readonly filterChange$ = new Subject<JobsProductionFilterQuery>();
-  readonly savedFilter$ = this.prefService.userPreferences$.pipe(
-    take(1),
-    map((data) => data.jobsProductionQuery)
-  );
-  readonly filter$: Observable<JobsProductionFilterQuery> = concat(
-    this.savedFilter$,
-    this.filterChange$
-  );
+  private productsService = inject(ProductsProductionService);
+  private loginService = inject(LoginService);
 
-  private readonly offset$ = of({ start: 0, limit: 1000 });
+  private data$ = this.productsService.dataFlow();
 
-  private readonly query$ = combineLatest({
-    filter: this.filter$,
-    sort: of('name,1'),
-    start: this.offset$,
-  }).pipe(
-    debounceTime(300),
-    map(({ filter, sort, start }) => ({ ...filter, sort, ...start }))
-  );
+  isAdmin = signal(false);
 
-  data$ = combineReload(
-    this.query$,
-    this.notifications.wsMultiplex('jobs').pipe(map(() => undefined))
-  ).pipe(
-    switchMap((query) => this.api.getJobsProduction(query)),
-    tap((products) => (this.selection = products)),
-    share()
-  );
+  query = this.productsService.query;
 
-  totals = new Totals();
+  // sort = this.productsService.sort;
 
-  isAdmin$ = this.loginService.isModuleAvailable('jobs-admin');
+  // filter = this.productsService.filter;
 
-  private _selection: JobsProduction[] = [];
-  set selection(value: JobsProduction[]) {
-    this._selection = value || [];
-    this.totals = this.selection.reduce(
+  selection = signal<JobsProduction[]>([]);
+
+  data = toSignal(this.data$, { initialValue: [] });
+
+  totals = computed(() => {
+    const selection = this.selection();
+    return selection.reduce(
       (acc, curr) => acc.add(curr),
-      new Totals()
+      new Totals(),
     );
-  }
-  get selection() {
-    return this._selection;
+  });
+
+
+  constructor() {
+
+    this.loginService.isModuleAvailable('jobs-admin')
+      .then(value => this.isAdmin.set(value));
+
+    effect(() => {
+      const products = this.data();
+      this.selection.set(products);
+    }, { allowSignalWrites: true });
+
   }
 
-  constructor(
-    private prefService: JobsUserPreferencesService,
-    private api: JobsApiService,
-    private notifications: NotificationsService,
-    private prefStorage: ProductsProductionPreferencesUpdaterService,
-    private destroy$: DestroyService,
-    private loginService: LoginService
-  ) { }
-
-  ngOnInit(): void {
-    merge(
-      this.sortChange$.pipe(map((sort) => ({ sort }))),
-      this.filterChange$.pipe(debounceTime(100))
-    )
-      .pipe(takeUntil(this.destroy$), this.prefStorage.savePreferences())
-      .subscribe();
+  async onSort(sort: string) {
+    console.log('sort: ', sort);
+    this.productsService.setSort(sort);
   }
 
-  onSort(value: string) {
-    this.sortChange$.next(value);
+  async onFilter(filter: JobsProductionFilterQuery) {
+    console.log('filter', filter);
+    this.productsService.setFilter(filter);
   }
 
-  onFilter(value: JobsProductionFilterQuery) {
-    this.filterChange$.next(value);
-  }
 }

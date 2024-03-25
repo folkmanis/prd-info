@@ -77,17 +77,11 @@ export class JobsApiService {
   }
 
   getUserPreferences(): Observable<JobsUserPreferences> {
-    return this.http.get<Record<string, any>>(this.path + 'preferences', new HttpOptions()).pipe(
-      map(data => this.transformer.plainToInstance(JobsUserPreferences, data, { excludeExtraneousValues: true })),
-    );
+    return this.http.get<JobsUserPreferences>(this.path + 'preferences', new HttpOptions());
   }
 
   setUserPreferences(preferences: JobsUserPreferences) {
-    const data = this.transformer.instanceToPlain(preferences);
-    return this.http.patch<Record<string, any>>(this.path + 'preferences', data, new HttpOptions()).pipe(
-      map(data => this.transformer.plainToInstance(JobsUserPreferences, data, { excludeExtraneousValues: true })),
-    );
+    return this.http.patch<JobsUserPreferences>(this.path + 'preferences', preferences, new HttpOptions());
   }
-
 
 }

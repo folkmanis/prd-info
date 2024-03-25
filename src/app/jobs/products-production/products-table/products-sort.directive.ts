@@ -1,37 +1,32 @@
-import { Directive, Input, Output } from '@angular/core';
+import { Directive, Input, Output, computed, input, model, output } from '@angular/core';
 import { MatSort, Sort } from '@angular/material/sort';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Directive({
-    selector: '[appProductsSort]',
-    providers: [{ provide: MatSort, useExisting: ProductsSortDirective }],
-    standalone: true
-})
-export class ProductsSortDirective extends MatSort {
-
-  @Output()
-  sortStringChange: Observable<string> = this.sortChange.pipe(
-    map(sort => this.sortToString(sort)),
-  );
-
-  @Input('activeSortString')
-  set activeString(str: string) {
-    if (typeof str !== 'string') {
-      return;
-    }
-    const { active, direction } = this.stringToSort(str);
-    if (this.sortables.has(active)) {
-      this.active = active;
-      this.direction = direction;
-      this._stateChanges.next();
-    }
+  selector: '[appProductsSort]',
+  standalone: true,
+  hostDirectives: [{
+    directive: MatSort,
+    inputs: ['matSortActive', 'matSortDirection', 'matSortDisableClear'],
+    outputs: ['matSortChange'],
+  }],
+  host: {
+    '[matSortActive]': 'sort().active',
+    '[matSortDirection]': 'sort().direction',
+    '(matSortChange)': 'onSortChange($event)'
   }
-  get activeString(): string {
-    return this.sortToString({
-      active: this.active,
-      direction: this.direction,
-    });
+})
+export class ProductsSortDirective {
+
+
+  sortString = model('name,1');
+
+  sort = computed(() => this.stringToSort(this.sortString()));
+
+  onSortChange(event: Sort) {
+    const sortString = this.sortToString(event);
+    this.sortString.set(sortString);
   }
 
 

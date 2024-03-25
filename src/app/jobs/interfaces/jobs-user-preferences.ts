@@ -1,40 +1,28 @@
-import { Type, Transform, Expose } from 'class-transformer';
+export interface SavedJobsProductionQuery {
 
-
-export class SavedJobsProductionQuery {
-
-    @Expose()
     sort?: string;
-
-    @Expose()
     fromDate?: string;
-
-    @Expose()
     toDate?: string;
-
-    @Expose()
     jobStatus?: number[];
-
-    @Expose()
     category?: string[];
 
 }
 
-export class GmailUserSettings {
-
-    @Expose()
-    activeLabelId: string[] = ['CATEGORY_PERSONAL'];
-
+export interface GmailUserSettings {
+    activeLabelId: string[];
 }
 
 
-export class JobsUserPreferences {
-
-    @Expose()
-    @Type(() => SavedJobsProductionQuery)
-    jobsProductionQuery: SavedJobsProductionQuery = new SavedJobsProductionQuery();
-
-    @Expose()
-    @Type(() => GmailUserSettings)
-    gmail: GmailUserSettings = new GmailUserSettings();
+export interface JobsUserPreferences {
+    jobsProductionQuery: SavedJobsProductionQuery;
+    gmail: GmailUserSettings;
 }
+
+export const DEFAULT_JOBS_USER_PREFERENCES: JobsUserPreferences = {
+    jobsProductionQuery: {
+        sort: 'name,1',
+    },
+    gmail: {
+        activeLabelId: ['CATEGORY_PERSONAL'],
+    }
+};

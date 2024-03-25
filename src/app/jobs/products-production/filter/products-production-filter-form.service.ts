@@ -3,6 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { formatISO, parseISO } from 'date-fns';
 import { DateUtilsService } from 'src/app/library/date-services/date-utils.service';
 import { JobsProductionFilterQuery } from '../../interfaces';
+import { pickBy } from 'lodash-es';
 
 interface NullableInterval {
     start: Date | null;
@@ -71,12 +72,14 @@ export class ProductsProductionFilterFormService {
 
     formToFilterQuery({ jobStatus, category, fromDate, toDate }: Partial<ProductsFormData>): JobsProductionFilterQuery {
 
-        return {
+        const query = {
             fromDate: fromDate && formatISO(fromDate, { representation: 'date' }),
             toDate: toDate && formatISO(toDate, { representation: 'date' }),
             jobStatus: jobStatus?.length ? jobStatus : undefined,
             category: category?.length ? category : undefined,
         };
+
+        return pickBy(query);
     }
 
     filterQueryToForm(query: JobsProductionFilterQuery) {

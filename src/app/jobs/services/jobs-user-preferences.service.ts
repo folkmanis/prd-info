@@ -1,8 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { merge, Observable, Subject } from 'rxjs';
-import { catchError, shareReplay, tap } from 'rxjs/operators';
-import { JobsUserPreferences } from '../interfaces/jobs-user-preferences';
+import { inject, Injectable, signal } from '@angular/core';
+import { isEqual } from 'lodash-es';
+import { firstValueFrom } from 'rxjs';
+import { DEFAULT_JOBS_USER_PREFERENCES, JobsUserPreferences } from '../interfaces/jobs-user-preferences';
 import { JobsApiService } from './jobs-api.service';
 
 @Injectable({
@@ -10,37 +10,55 @@ import { JobsApiService } from './jobs-api.service';
 })
 export class JobsUserPreferencesService {
 
-  private readonly reload$ = new Subject<JobsUserPreferences>();
+  private api = inject(JobsApiService);
 
-  readonly userPreferences$: Observable<JobsUserPreferences> = merge(
-    this.getUserPreferences(),
-    this.reload$
-  ).pipe(
-    shareReplay(1),
+  userPreferences = signal<JobsUserPreferences | null>(
+    null,
+    { equal: isEqual }
   );
 
-
-  constructor(
-    private api: JobsApiService,
-  ) { }
-
-  setUserPreferences(preferences: JobsUserPreferences): Observable<JobsUserPreferences> {
-    return this.api.setUserPreferences(preferences).pipe(
-      tap(preferences => this.reload$.next(preferences))
-    );
+  constructor() {
+    this.getUserPreferences()
+      .then(preferences => this.userPreferences.set(preferences));
   }
 
-  private getUserPreferences(): Observable<JobsUserPreferences> {
-    return this.api.getUserPreferences().pipe(
-      catchError(error => this.setMissingPreferences(error)),
-    );
+  patchUserPreferences(patch: Partial<JobsUserPreferences>) {
+    const update = {
+      ...this.assertUserPreferences(),
+      ...patch,
+    };
+    console.log('patchUserPreferences', update);
+    return update;
+    return this.setUserPreferences(update);
   }
 
-  private setMissingPreferences(error: Error): Observable<JobsUserPreferences> {
+  async setUserPreferences(preferences: JobsUserPreferences): Promise<JobsUserPreferences> {
+    this.userPreferences.set(preferences);
+    const updatedPreferences = await firstValueFrom(this.api.setUserPreferences(preferences));
+    this.userPreferences.set(updatedPreferences);
+    return updatedPreferences;
+  }
+
+  private async getUserPreferences(): Promise<JobsUserPreferences> {
+    try {
+      return firstValueFrom(this.api.getUserPreferences());
+    } catch (error) {
+      return this.setMissingPreferences(error);
+    }
+  }
+
+  private setMissingPreferences(error: Error): Promise<JobsUserPreferences> {
     if (error instanceof HttpErrorResponse && error.status === 404) {
-      return this.setUserPreferences(new JobsUserPreferences());
+      return this.setUserPreferences(DEFAULT_JOBS_USER_PREFERENCES);
     }
     throw error;
+  }
+
+  private assertUserPreferences(): JobsUserPreferences {
+    if (!this.userPreferences()) {
+      throw new Error('User preferences empty');
+    }
+    return this.userPreferences();
   }
 
 }

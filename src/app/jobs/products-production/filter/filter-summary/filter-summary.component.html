@@ -1,9 +1,8 @@
-{{ state }}
+{{ state() }}
 
-@if (state && category) {
+@if (state() && category()) {
 &nbsp;//&nbsp;
+{{ category() }}
 }
 
-{{ category }}
-
-{{ interval }}
+{{ interval() }}

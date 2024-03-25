@@ -1,9 +1,9 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  Input,
-  OnChanges,
-  SimpleChanges,
+  computed,
+  inject,
+  input
 } from '@angular/core';
 import { JobState, ProductCategory } from 'src/app/interfaces';
 import { DateUtilsService } from 'src/app/library/date-services';
@@ -16,48 +16,55 @@ import { ProductsFormData } from '../products-production-filter-form.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
 })
-export class FilterSummaryComponent implements OnChanges {
-  @Input() query: ProductsFormData | null = null;
+export class FilterSummaryComponent {
 
-  @Input() states: JobState[] = [];
+  private dateUtils = inject(DateUtilsService);
 
-  @Input() categories: ProductCategory[] = [];
+  query = input<ProductsFormData | null>(null);
 
-  state: string | null = null;
-  category: string | null = null;
-  interval: string = '';
+  states = input<JobState[]>([]);
 
-  constructor(private dateUtils: DateUtilsService) {}
+  categories = input<ProductCategory[]>([]);
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (!this.query) {
-      return;
-    }
-
-    if (changes.query || changes.states) {
-      this.state = this.states
-        .filter((state) => this.query.jobStatus?.includes(state.state))
+  state = computed(() => {
+    const query = this.query();
+    if (Array.isArray(query?.jobStatus)) {
+      return this.states()
+        .filter((state) => query.jobStatus.includes(state.state))
         .map((state) => state.description)
         .join(', ');
+    } else {
+      return '';
     }
 
-    if (changes.query || changes.categories) {
-      this.category = this.categories
-        .filter((ctg) => this.query.category?.includes(ctg.category))
+  });
+
+  category = computed(() => {
+    const query = this.query();
+    if (Array.isArray(query?.category)) {
+      return this.categories()
+        .filter((ctg) => query.category.includes(ctg.category))
         .map((ctg) => ctg.description)
         .join(', ');
+    } else {
+      return '';
     }
+  });
 
-    if (changes.query) {
-      const { fromDate, toDate } = this.query;
-      this.interval = '';
+  interval = computed(() => {
+    const query = this.query();
+    let interval = '';
+    if (query) {
+      const { fromDate, toDate } = query;
       if (fromDate) {
-        this.interval += this.dateUtils.localDate(fromDate);
+        interval += this.dateUtils.localDate(fromDate);
       }
-      this.interval += ' - ';
+      interval += ' - ';
       if (toDate) {
-        this.interval += this.dateUtils.localDate(toDate);
+        interval += this.dateUtils.localDate(toDate);
       }
     }
-  }
+    return interval;
+  });
+
 }

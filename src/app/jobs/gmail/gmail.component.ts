@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -26,6 +26,7 @@ import { GmailPaginatorComponent } from './gmail-paginator/gmail-paginator.compo
 import { Thread, Threads, ThreadsFilterQuery } from './interfaces';
 import { GmailService } from './services/gmail.service';
 import { ThreadsFilterComponent } from './threads-filter/threads-filter.component';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 export type ThreadsListItem = Pick<Thread, 'id' | 'historyId' | 'snippet'>;
 
@@ -53,13 +54,21 @@ const DEFAULT_FILTER: ThreadsFilterQuery = {
   ],
 })
 export class GmailComponent {
+
+  private userPreferences = this.preferencesService.userPreferences;
+  private gmailPreferences = computed(() => this.userPreferences().gmail);
+
+  private threadsCache: Threads[] = [];
+
   loading = signal(true);
 
   loadingThread: Thread | null;
 
+
+
   threadsFilter$: Observable<ThreadsFilterQuery> =
-    this.preferences.userPreferences$.pipe(
-      map((pref) => ({ labelIds: pref.gmail.activeLabelId })),
+    toObservable(this.gmailPreferences).pipe(
+      map((preference) => ({ labelIds: preference.activeLabelId })),
       scan((acc, update) => ({ ...acc, ...update }), DEFAULT_FILTER),
       tap(() => (this.threadsCache = [])),
       shareReplay(1)
@@ -91,30 +100,26 @@ export class GmailComponent {
   sanitize = (snippet: string) =>
     this.sanitizer.bypassSecurityTrustHtml(snippet);
 
-  private threadsCache: Threads[] = [];
 
   constructor(
-    private gmail: GmailService,
+    private gmailService: GmailService,
     private sanitizer: DomSanitizer,
-    private preferences: JobsUserPreferencesService
-  ) {}
+    private preferencesService: JobsUserPreferencesService
+  ) { }
 
   onSetFilter(labelIds: string[]) {
     if (!Array.isArray(labelIds) || labelIds.length === 0) {
       return;
     }
 
-    this.preferences.userPreferences$
-      .pipe(
-        take(1),
-        mergeMap((prefs) =>
-          this.preferences.setUserPreferences({
-            ...prefs,
-            gmail: { ...prefs.gmail, activeLabelId: labelIds },
-          })
-        )
-      )
-      .subscribe();
+    this.preferencesService.patchUserPreferences(
+      {
+        gmail: {
+          ...this.gmailPreferences(),
+          activeLabelId: labelIds,
+        }
+      }
+    );
   }
 
   onSetPageIdx(idx: number) {
@@ -127,7 +132,7 @@ export class GmailComponent {
   ): Observable<Threads> {
     if (idx === 0) {
       this.threadsCache = [];
-      return this.gmail
+      return this.gmailService
         .getThreads(fltr)
         .pipe(tap((data) => this.threadsCache.push(data)));
     }
@@ -143,7 +148,7 @@ export class GmailComponent {
       return EMPTY;
     }
 
-    return this.gmail
+    return this.gmailService
       .getThreads({ ...fltr, pageToken })
       .pipe(tap((data) => this.threadsCache.push(data)));
   }

@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, Output } from '@angular/core';
-import { interval, map, Observable, switchMap } from 'rxjs';
-import { getConfig } from 'src/app/services/config.provider';
+import { ChangeDetectionStrategy, Component, Input, OnInit, Output, effect, inject, input } from '@angular/core';
+import { debounceTime, filter, interval, map, Observable, switchMap, tap } from 'rxjs';
+import { configuration, getConfig } from 'src/app/services/config.provider';
 import { JobsProductionFilterQuery } from '../../interfaces';
 import { ProductsProductionFilterFormService, ProductsFormData } from './products-production-filter-form.service';
 import { MatMenuModule } from '@angular/material/menu';
@@ -15,6 +15,8 @@ import { FilterSummaryComponent } from './filter-summary/filter-summary.componen
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ViewSizeModule } from '../../../library/view-size/view-size.module';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { outputFromObservable } from '@angular/core/rxjs-interop';
+import { isEqual, pick } from 'lodash-es';
 
 export const REPRO_DEFAULTS: ProductsFormData = {
   jobStatus: [10, 20],
@@ -25,29 +27,29 @@ export const REPRO_DEFAULTS: ProductsFormData = {
 
 
 @Component({
-    selector: 'app-filter',
-    templateUrl: './filter.component.html',
-    styleUrls: ['./filter.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        MatExpansionModule,
-        ViewSizeModule,
-        FormsModule,
-        ReactiveFormsModule,
-        FilterSummaryComponent,
-        MatFormFieldModule,
-        MatSelectModule,
-        NgFor,
-        MatOptionModule,
-        MatDatepickerModule,
-        MatButtonModule,
-        MatIconModule,
-        MatMenuModule,
-        AsyncPipe,
-    ],
+  selector: 'app-filter',
+  templateUrl: './filter.component.html',
+  styleUrls: ['./filter.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    MatExpansionModule,
+    ViewSizeModule,
+    FormsModule,
+    ReactiveFormsModule,
+    FilterSummaryComponent,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatDatepickerModule,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+  ],
 })
-export class FilterComponent implements OnInit {
+export class FilterComponent {
+
+  private formService = inject(ProductsProductionFilterFormService);
 
   form = this.formService.createForm();
 
@@ -56,37 +58,33 @@ export class FilterComponent implements OnInit {
   thisMonth = this.formService.thisMonthFn(this.form);
   pastYear = this.formService.pastYearFn(this.form);
 
+  filter = input<JobsProductionFilterQuery | null>(null);
 
-  @Output() filterChanges: Observable<JobsProductionFilterQuery> = interval(500).pipe(
-    switchMap(() => this.form.valueChanges),
-    map(value => this.formService.formToFilterQuery(value)),
-  );
-
-
-  @Input('filter')
-  set filter(value: JobsProductionFilterQuery) {
-    if (!value) {
-      return;
-    }
-    this.form.setValue(
-      this.formService.filterQueryToForm(value),
-      { emitEvent: false }
+  filterChange$: Observable<JobsProductionFilterQuery> = this.form.valueChanges
+    .pipe(
+      map(value => this.formService.formToFilterQuery(value)),
+      filter(value => this.isFilterChanged(value)),
+      debounceTime(300),
+      tap(value => console.log('filterChange$', value)),
     );
-  }
-  get filter(): JobsProductionFilterQuery {
-    return this.formService.formToFilterQuery(this.form.value);
-  }
 
+  filterChange = outputFromObservable(this.filterChange$);
 
-  jobStates$ = getConfig('jobs', 'jobStates');
+  jobStates = configuration('jobs', 'jobStates');
 
-  categories$ = getConfig('jobs', 'productCategories');
+  categories = configuration('jobs', 'productCategories');
 
-  constructor(
-    private formService: ProductsProductionFilterFormService,
-  ) { }
-
-  ngOnInit(): void {
+  constructor() {
+    effect(() => {
+      const filter = this.filter();
+      if (filter) {
+        console.log('set filter', filter);
+        this.form.setValue(
+          this.formService.filterQueryToForm(filter),
+          { emitEvent: false }
+        );
+      }
+    }, { allowSignalWrites: true });
   }
 
   setRepro() {
@@ -95,6 +93,12 @@ export class FilterComponent implements OnInit {
 
   onReSetInterval() {
     this.formService.setInterval(this.form);
+  }
+
+  private isFilterChanged(value: any): boolean {
+    const initialValue = pick(this.filter(), ['jobStatus', 'category', 'fromDate', 'toDate']);
+    console.log(initialValue, value);
+    return !isEqual(value, initialValue);
   }
 
 

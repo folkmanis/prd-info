@@ -1,11 +1,11 @@
-<div class="container">
+@if (query(); as savedQuery) {
 
-    <app-filter [filter]="savedFilter$ | async" (filterChanges)="onFilter($event)">
+<app-filter [filter]="savedQuery" (filterChange)="onFilter($event)">
 
-    </app-filter>
+</app-filter>
 
-    <app-products-table [data]="data$ | async" [initialSort]="savedSort$ | async" (sortChange)="onSort($event)"
-        [totals]="totals" [(selection)]="selection" scroll-to-top [isAdmin]="isAdmin$ | async">
-    </app-products-table>
+<app-products-table [data]="data()" [sortString]="savedQuery.sort" (sortStringChange)="onSort($event)"
+    [totals]="totals()" [(selection)]="selection" scroll-to-top [isAdmin]="isAdmin()">
+</app-products-table>
 
-</div>
+}
