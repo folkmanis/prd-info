@@ -27,8 +27,6 @@ export class JobsUserPreferencesService {
       ...this.assertUserPreferences(),
       ...patch,
     };
-    console.log('patchUserPreferences', update);
-    return update;
     return this.setUserPreferences(update);
   }
 

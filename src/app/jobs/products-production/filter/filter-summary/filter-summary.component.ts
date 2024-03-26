@@ -5,9 +5,10 @@ import {
   inject,
   input
 } from '@angular/core';
+import { parseISO } from 'date-fns';
 import { JobState, ProductCategory } from 'src/app/interfaces';
+import { JobsProductionFilterQuery } from 'src/app/jobs/interfaces';
 import { DateUtilsService } from 'src/app/library/date-services';
-import { ProductsFormData } from '../products-production-filter-form.service';
 
 @Component({
   selector: 'app-filter-summary',
@@ -20,7 +21,7 @@ export class FilterSummaryComponent {
 
   private dateUtils = inject(DateUtilsService);
 
-  query = input<ProductsFormData | null>(null);
+  query = input.required<JobsProductionFilterQuery>();
 
   states = input<JobState[]>([]);
 
@@ -57,11 +58,11 @@ export class FilterSummaryComponent {
     if (query) {
       const { fromDate, toDate } = query;
       if (fromDate) {
-        interval += this.dateUtils.localDate(fromDate);
+        interval += this.dateUtils.localDate(parseISO(fromDate));
       }
       interval += ' - ';
       if (toDate) {
-        interval += this.dateUtils.localDate(toDate);
+        interval += this.dateUtils.localDate(parseISO(toDate));
       }
     }
     return interval;

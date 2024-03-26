@@ -3,10 +3,19 @@
     padding: 16px;
 }
 
-span {
-    margin: 0 8px;
+mat-panel-description {
+    overflow: hidden;
+    flex-grow: 5;
 }
 
-.invisible {
-    visibility: hidden;
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .large & {
+        flex-direction: row;
+        align-items: baseline;
+        gap: 16px;
+    }
 }

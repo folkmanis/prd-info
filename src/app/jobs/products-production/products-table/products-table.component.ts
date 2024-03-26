@@ -1,10 +1,10 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { CurrencyPipe, DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, input, model, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, input, model } from '@angular/core';
 import { outputFromObservable } from '@angular/core/rxjs-interop';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
 import { map } from 'rxjs/operators';
 import { JobsProduction } from '../../interfaces';
 import { Totals } from '../services/totals';
@@ -29,14 +29,10 @@ import { ProductsSortDirective } from './products-sort.directive';
 })
 export class ProductsTableComponent {
 
-  private sort = viewChild(MatSort);
-
   selector = new SelectionModel<JobsProduction>(true);
 
   columns = ['selection', 'name', 'category', 'units', 'count', 'sum'];
   adminColumns = [...this.columns, 'total'];
-
-  readonly dataSource = new MatTableDataSource<JobsProduction>();
 
   data = input<JobsProduction[]>([]);
 
@@ -55,19 +51,12 @@ export class ProductsTableComponent {
   sortString = model('name,1');
 
   isAllSelected = computed(() => {
-    this.data();
-    const filteredData = this.dataSource.filteredData;
-    return filteredData.length > 0 && this.selector.selected.length === filteredData.length;
+    return this.data().length > 0
+      && this.selection().length === this.data().length;
   });
 
 
   constructor() {
-    effect(() => {
-      this.dataSource.sort = this.sort();
-    });
-    effect(() => {
-      this.dataSource.data = this.data();
-    });
     effect(() => {
       this.selector.setSelection(...this.selection());
     });
@@ -77,7 +66,7 @@ export class ProductsTableComponent {
     if (this.isAllSelected()) {
       this.selector.clear();
     } else {
-      this.selector.setSelection(...this.data());
+      this.selector.select(...this.data());
     }
   }
 }

@@ -1,13 +1,13 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { pickBy } from 'lodash-es';
+import { debounceTime, filter, map, switchMap } from 'rxjs';
+import { combineReload } from 'src/app/library/rxjs';
+import { NotificationsService } from 'src/app/services';
 import { JobsProductionFilterQuery, JobsProductionQuery } from '../../interfaces';
 import { SavedJobsProductionQuery } from '../../interfaces/jobs-user-preferences';
-import { JobsUserPreferencesService } from '../../services/jobs-user-preferences.service';
-import { combineReload } from 'src/app/library/rxjs';
-import { toObservable } from '@angular/core/rxjs-interop';
-import { NotificationsService } from 'src/app/services';
 import { JobsApiService } from '../../services/jobs-api.service';
-import { debounceTime, filter, map, switchMap } from 'rxjs';
-import { isEqual, pickBy } from 'lodash-es';
+import { JobsUserPreferencesService } from '../../services/jobs-user-preferences.service';
 
 @Injectable({
   providedIn: 'root'

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, model, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { DestroyService } from 'src/app/library/rxjs';
 import { LoginService } from 'src/app/login';
@@ -33,10 +33,6 @@ export class ProductsProductionComponent {
 
   query = this.productsService.query;
 
-  // sort = this.productsService.sort;
-
-  // filter = this.productsService.filter;
-
   selection = signal<JobsProduction[]>([]);
 
   data = toSignal(this.data$, { initialValue: [] });
@@ -63,12 +59,10 @@ export class ProductsProductionComponent {
   }
 
   async onSort(sort: string) {
-    console.log('sort: ', sort);
     this.productsService.setSort(sort);
   }
 
   async onFilter(filter: JobsProductionFilterQuery) {
-    console.log('filter', filter);
     this.productsService.setFilter(filter);
   }
 
