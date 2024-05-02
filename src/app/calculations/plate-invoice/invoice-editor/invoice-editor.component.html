@@ -88,7 +88,7 @@
             </mat-card-title>
         </mat-card-header>
         <mat-card-content>
-            <app-job-selection-table [jobs]="invoice().jobs" disabled [large]="viewSize.isLarge"
+            <app-job-selection-table [jobs]="invoice().jobs" disabled [large]="viewSize.isLarge()"
                 [total]="invoice().total" />
         </mat-card-content>
     </mat-card>

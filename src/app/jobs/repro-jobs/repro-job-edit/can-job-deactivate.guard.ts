@@ -8,9 +8,9 @@ export const canJobDeactivate: CanDeactivateFn<ReproJobEditComponent> = (compone
 
   const dialog = inject(ConfirmationDialogService);
 
-  const { saved, form: { pristine }, uploadRef } = component;
+  const { saved, form, uploadRef, update } = component;
 
-  if (saved() || pristine && !uploadRef) {
+  if (saved() || (update() == undefined || form.pristine) && !uploadRef) {
     return true;
   } else {
     return dialog.discardChanges().pipe(

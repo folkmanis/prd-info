@@ -4,6 +4,9 @@ import {
   Input,
   QueryList,
   ViewChildren,
+  booleanAttribute,
+  input,
+  viewChildren,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -24,19 +27,17 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { DestroyService } from 'src/app/library/rxjs';
 import { CustomerProduct } from 'src/app/interfaces';
 import { JobProduct } from 'src/app/jobs';
 import { KeyPressDirective } from '../key-press.directive';
 import { JobProductForm } from './repro-product/job-product-form.interface';
-import { ProductControlDirective } from './repro-product/product-control.directive';
 import { ReproProductComponent } from './repro-product/repro-product.component';
 
 const DEFAULT_PRODUCT: JobProduct = {
-  name: '',
-  price: 0,
-  units: 'gab.',
-  count: 0,
+  name: null,
+  price: null,
+  units: null,
+  count: null,
   comment: null,
 };
 
@@ -46,7 +47,6 @@ const DEFAULT_PRODUCT: JobProduct = {
   styleUrls: ['./repro-products-editor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    DestroyService,
     {
       provide: NG_VALUE_ACCESSOR,
       multi: true,
@@ -62,7 +62,6 @@ const DEFAULT_PRODUCT: JobProduct = {
   imports: [
     MatCardModule,
     ReproProductComponent,
-    ProductControlDirective,
     FormsModule,
     ReactiveFormsModule,
     MatButtonModule,
@@ -72,25 +71,22 @@ const DEFAULT_PRODUCT: JobProduct = {
   ],
 })
 export class ReproProductsEditorComponent
-  implements ControlValueAccessor, Validator
-{
-  @ViewChildren(ReproProductComponent)
-  productComponents: QueryList<ReproProductComponent>;
+  implements ControlValueAccessor, Validator {
 
-  @Input()
-  customerProducts: CustomerProduct[] = [];
+  productComponents = viewChildren(ReproProductComponent);
 
-  @Input()
-  showPrices: boolean;
+  customerProducts = input.required<CustomerProduct[]>();
 
-  productsControl = new FormArray<JobProductForm>([]);
+  showPrices = input(false, { transform: booleanAttribute });
 
-  onTouched: () => void = () => {};
+  productsControl = new FormArray<FormControl<JobProduct>>([]);
+
+  onTouched: () => void = () => { };
 
   writeValue(obj: JobProduct[] | null): void {
     this.productsControl.clear({ emitEvent: false });
     if (Array.isArray(obj)) {
-      obj.forEach((prod) => this.productsControl.push(this.createForm(prod)), {
+      obj.forEach((prod) => this.productsControl.push(new FormControl(prod)), {
         emitEvent: false,
       });
     }
@@ -113,16 +109,19 @@ export class ReproProductsEditorComponent
   }
 
   validate(): ValidationErrors {
-    if (this.productsControl.valid) return null;
+    if (this.productsControl.valid) {
+      return null;
+    };
 
-    return this.productsControl.controls.reduce(
-      (acc, curr, idx) => ({ ...acc, [idx]: curr.errors }),
+    const errors = this.productsControl.controls.reduce(
+      (errors, control, idx) => ({ ...errors, [idx]: control.errors }),
       {}
     );
+    return errors;
   }
 
   focusLatest() {
-    this.productComponents.last.focus();
+    this.productComponents().slice(-1)[0]?.focus(); // last element
   }
 
   onRemoveProduct(idx: number) {
@@ -130,34 +129,8 @@ export class ReproProductsEditorComponent
   }
 
   onAddProduct() {
-    this.productsControl.push(this.createForm(DEFAULT_PRODUCT));
+    this.productsControl.push(new FormControl(DEFAULT_PRODUCT));
     setTimeout(() => this.focusLatest(), 0);
   }
 
-  private createForm(product: JobProduct): JobProductForm {
-    return new FormGroup({
-      name: new FormControl(product.name, [this.productNameValidatorFn()]),
-      price: new FormControl<number>(product.price, [
-        Validators.required,
-        Validators.min(0),
-      ]),
-      count: new FormControl<number>(product.count, [
-        Validators.required,
-        Validators.min(0),
-      ]),
-      units: new FormControl(product.units, Validators.required),
-      comment: new FormControl(product.comment),
-    });
-  }
-
-  private productNameValidatorFn(): ValidatorFn {
-    const err = { invalidProduct: 'Prece nav atrasta katalogā' };
-    return (control: AbstractControl<string>) => {
-      return this.customerProducts.some(
-        (prod) => prod.productName === control.value
-      )
-        ? null
-        : err;
-    };
-  }
 }

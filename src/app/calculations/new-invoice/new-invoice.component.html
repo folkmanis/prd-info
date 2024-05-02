@@ -33,7 +33,7 @@
 
 
         <!-- Darbu atlase -->
-        <app-job-selection-table [jobs]="jobs()" [large]="viewSize.isLarge" [selected]="selectedJobs()"
+        <app-job-selection-table [jobs]="jobs()" [large]="viewSize.isLarge()" [selected]="selectedJobs()"
             (selectedChange)="selectedJobs.set($event)" [total]="grandTotal()" scroll-to-top scrollToTopRight="140px">
         </app-job-selection-table>
 

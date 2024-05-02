@@ -1,68 +1,27 @@
-import {
-  ChangeDetectorRef,
-  Directive,
-  HostBinding,
-  OnInit,
-  Output,
-} from '@angular/core';
-import { DestroyService } from 'src/app/library/rxjs';
-import { takeUntil } from 'rxjs';
+import { Directive, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { LayoutService } from '../layout.service';
 
 @Directive({
-    selector: '[appViewSize]',
-    providers: [DestroyService],
-    exportAs: 'viewSize',
-    standalone: true,
+  selector: '[appViewSize]',
+  exportAs: 'viewSize',
+  standalone: true,
+  host: {
+    '[class.large]': 'isLarge()',
+    '[class.medium]': 'isMedium()',
+    '[class.small]': 'isSmall()',
+  }
 })
-export class ViewSizeDirective implements OnInit {
-  @Output('appViewIsLarge')
-  isLarge$ = this.layoutService.isLarge$;
+export class ViewSizeDirective {
 
-  @Output('appViewIsMedium')
-  isMedium$ = this.layoutService.isMedium$;
+  private layoutService = inject(LayoutService);
 
-  @Output('appViewIsSmall')
-  isSmall$ = this.layoutService.isSmall$;
+  isLarge = toSignal(this.layoutService.matches('large'), { requireSync: true });
 
-  @HostBinding('class.large') isLarge = false;
+  isMedium = toSignal(this.layoutService.matches('medium'), { requireSync: true });
 
-  @HostBinding('class.medium') isMedium = false;
+  isSmall = toSignal(this.layoutService.matches('small'), { requireSync: true });
 
-  @HostBinding('class.small') isSmall = false;
 
-  constructor(
-    private layoutService: LayoutService,
-    private chDetector: ChangeDetectorRef,
-    private destroy$: DestroyService
-  ) {}
 
-  ngOnInit(): void {
-    this.isLarge$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((large) => this.setLarge(large));
-
-    this.isMedium$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((medium) => this.setMedium(medium));
-
-    this.isSmall$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((small) => this.setSmall(small));
-  }
-
-  private setLarge(large: boolean) {
-    this.isLarge = large;
-    this.chDetector.markForCheck();
-  }
-
-  private setMedium(medium: boolean) {
-    this.isMedium = medium;
-    this.chDetector.markForCheck();
-  }
-
-  private setSmall(small: boolean) {
-    this.isSmall = small;
-    this.chDetector.markForCheck();
-  }
 }

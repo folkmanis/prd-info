@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    <div class="editor" [style.flex]="viewSize.isLarge ? '0 0 ' + editorWidth() : null">
+    <div class="editor" [style.flex]="viewSize.isLarge() ? '0 0 ' + editorWidth() : null">
         <router-outlet #editor="outlet" (activate)="onActivate()" (deactivate)="onDeactivate()"></router-outlet>
     </div>
 

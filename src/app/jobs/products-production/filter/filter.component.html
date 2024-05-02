@@ -1,4 +1,4 @@
-<mat-expansion-panel appViewSize (appViewIsLarge)="panel.expanded = $event" #panel>
+<mat-expansion-panel appViewSize #viewSize="viewSize" [expanded]="viewSize.isLarge()">
     <mat-expansion-panel-header>
         <mat-panel-title>
             Atlase

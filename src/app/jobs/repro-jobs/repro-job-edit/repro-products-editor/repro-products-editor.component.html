@@ -9,8 +9,8 @@
     <mat-card-content>
 
         @for (control of productsControl.controls; track $index) {
-        <app-repro-product (remove)="onRemoveProduct($index)" [customerProducts]="customerProducts" appProductControl
-            [showPrices]="showPrices" [productForm]="productsControl.controls[$index]" />
+        <app-repro-product (remove)="onRemoveProduct($index)" [customerProducts]="customerProducts()"
+            [showPrices]="showPrices()" [formControl]="productsControl.controls[$index]" />
         }
 
     </mat-card-content>

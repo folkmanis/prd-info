@@ -5,9 +5,9 @@ import { takeUntil } from 'rxjs';
 import { LayoutService } from './layout.service';
 
 @Directive({
-    selector: 'mat-drawer,mat-sidenav',
-    providers: [DestroyService],
-    standalone: true,
+  selector: 'mat-drawer,mat-sidenav',
+  providers: [DestroyService],
+  standalone: true,
 })
 export class DrawerSmallDirective implements OnInit {
   private drawer: MatDrawer;
@@ -32,7 +32,7 @@ export class DrawerSmallDirective implements OnInit {
   }
 
   ngOnInit(): void {
-    this.layoutService.isLarge$
+    this.layoutService.matches('large')
       .pipe(takeUntil(this.destroy$))
       .subscribe((large) => (this.large = large));
   }

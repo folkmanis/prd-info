@@ -102,8 +102,8 @@
             </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="viewSize.isSmall ? colSmall : col"></tr>
-        <tr mat-row *matRowDef="let job; columns: viewSize.isSmall ? colSmall : col"
+        <tr mat-header-row *matHeaderRowDef="viewSize.isSmall() ? colSmall : col"></tr>
+        <tr mat-row *matRowDef="let job; columns: viewSize.isSmall() ? colSmall : col"
             [class.price-update]="job['products.priceUpdate'] !== undefined" [class.no-price]="!job['products.price']">
         </tr>
 

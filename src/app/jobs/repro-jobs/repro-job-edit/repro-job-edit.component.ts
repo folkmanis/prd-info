@@ -52,12 +52,16 @@ import { KeyPressDirective } from './key-press.directive';
 export class ReproJobEditComponent implements OnInit, OnDestroy {
 
   private confirmationDialogService = inject(ConfirmationDialogService);
+  private formService = inject(JobFormService);
+
 
   private navigate = navigateRelative();
 
   private dropFolder = signal<DropFolder | null>(null);
 
   form = this.formService.form;
+
+  update = this.formService.update;
 
   fileUploadProgress$: Observable<FileUploadMessage[]> = of([]);
 
@@ -77,7 +81,7 @@ export class ReproJobEditComponent implements OnInit, OnDestroy {
 
 
   saveDisabled = computed(() => this.formService.status() !== 'VALID' ||
-    (this.formService.update() == undefined && this.dropFolder() == null) ||
+    (this.update() == undefined && this.dropFolder() == null) ||
     this.saved()
   );
 
@@ -95,7 +99,6 @@ export class ReproJobEditComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private reproJobService: ReproJobService,
     private snack: MatSnackBar,
-    private formService: JobFormService,
     private location: Location
   ) { }
 
@@ -121,7 +124,7 @@ export class ReproJobEditComponent implements OnInit, OnDestroy {
   async onUpdate() {
     this.saved.set(true);
     const jobId = this.formService.value().jobId;
-    const jobUpdate = this.formService.update;
+    const jobUpdate = this.formService.update();
     try {
       const updatedJob = await this.reproJobService
         .updateJob(

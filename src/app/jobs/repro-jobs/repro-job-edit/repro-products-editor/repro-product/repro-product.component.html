@@ -1,13 +1,14 @@
-<div [formGroup]="productForm" class="container" appViewSize #viewSize="viewSize">
+<div [formGroup]="productForm" class="container" appViewSize #viewSize="viewSize" [appProductControl]="name()"
+    (selectedProduct)="onProductSelected($event)" [customerProducts]="customerProducts()">
 
     <!-- Prece -->
-    @if (viewSize.isSmall === false) {
-    <button mat-icon-button (click)="remove.next()" [disabled]="productForm.disabled">
+    @if (viewSize.isSmall() === false) {
+    <button mat-icon-button (click)="remove.emit()" [disabled]="productForm.disabled">
         <mat-icon>delete</mat-icon>
     </button>
     }
 
-    <app-product-autocomplete [customerProducts]="productsAvailable()" [control]="productForm.controls.name">
+    <app-product-autocomplete [customerProducts]="customerProducts()" [control]="productForm.controls.name">
     </app-product-autocomplete>
 
     <div class="numbers">
@@ -21,7 +22,7 @@
         </mat-form-field>
 
 
-        @if (showPrices) {
+        @if (showPrices()) {
         <!-- Cena -->
         <mat-form-field class="price">
             <input matInput type="number" formControlName="price">
@@ -44,9 +45,9 @@
 
     </div>
 
-    @if (viewSize.isSmall) {
+    @if (viewSize.isSmall()) {
     <div>
-        <button mat-button (click)="remove.next()" [disabled]="productForm.disabled">
+        <button mat-button (click)="remove.emit()" [disabled]="productForm.disabled">
             DZĒST
         </button>
     </div>

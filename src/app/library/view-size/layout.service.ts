@@ -1,5 +1,5 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Inject, Injectable, InjectionToken } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 
@@ -8,31 +8,15 @@ export const BREAKPOINTS = ['small', 'medium', 'large', 'handset'] as const;
 
 export type AppBreakpoints = typeof BREAKPOINTS[number];
 
-export interface MediaBreakpoints {
-  small: string;
-  medium: string;
+const TOOLBAR_HEIGHT = {
+  desktop: 64,
+  mobile: 56,
 };
 
-export interface ToolbarHeight {
-  desktop: number,
-  mobile: number,
-
-}
-
-export const TOOLBAR_HEIGHT = new InjectionToken<ToolbarHeight>('TOOLBAR_HEIGHT', {
-  factory: () => ({
-    desktop: 64,
-    mobile: 56,
-  })
-});
-
-
-export const MEDIA_BREAKPOINTS = new InjectionToken<MediaBreakpoints>('MEDIA_BREAKPOINTS', {
-  factory: () => ({
-    small: '700px',
-    medium: '1000px',
-  })
-});
+const MEDIA_BREAKPOINTS = {
+  small: '700px',
+  medium: '1000px',
+};
 
 
 @Injectable({
@@ -40,43 +24,21 @@ export const MEDIA_BREAKPOINTS = new InjectionToken<MediaBreakpoints>('MEDIA_BRE
 })
 export class LayoutService {
 
-  private readonly breakpoints: { [key in AppBreakpoints]: string | string[] };
+  private breakpointObserver = inject(BreakpointObserver);
 
-  isHandset$: Observable<boolean>;
-  isSmall$: Observable<boolean>;
-  isMedium$: Observable<boolean>;
-  isLarge$: Observable<boolean>;
+  private readonly breakpoints: { [key in AppBreakpoints]: string | string[] } = {
+    small: `(max-width: ${MEDIA_BREAKPOINTS.small})`,
+    medium: [
+      `(max-width: ${MEDIA_BREAKPOINTS.medium}) and (min-width: ${MEDIA_BREAKPOINTS.small})`,
+    ],
+    large: `(min-width: ${MEDIA_BREAKPOINTS.medium})`,
+    handset: Breakpoints.Handset,
+  };
 
-  toolbarHeight$: Observable<number>;
+  toolbarHeight$ = this.matches('handset').pipe(
+    map(mobile => mobile ? TOOLBAR_HEIGHT.mobile : TOOLBAR_HEIGHT.desktop)
+  );
 
-  constructor(
-    private breakpointObserver: BreakpointObserver,
-    @Inject(MEDIA_BREAKPOINTS) breakpts: MediaBreakpoints,
-    @Inject(TOOLBAR_HEIGHT) toolbarHeight: ToolbarHeight,
-  ) {
-    this.breakpoints = {
-      small: `(max-width: ${breakpts.small})`,
-      medium: [
-        `(max-width: ${breakpts.medium})`,
-        `(min-width: ${breakpts.small})`
-      ],
-      large: `(min-width: ${breakpts.medium})`,
-      handset: Breakpoints.Handset,
-    };
-
-    this.isHandset$ = this.matches('handset');
-
-    this.isSmall$ = this.matches('small');
-
-    this.isMedium$ = this.matches('medium');
-
-    this.isLarge$ = this.matches('large');
-
-    this.toolbarHeight$ = this.isHandset$.pipe(
-      map(mobile => mobile ? toolbarHeight.mobile : toolbarHeight.desktop)
-    );
-
-  }
 
   matches(matcher: AppBreakpoints): Observable<boolean> {
     return this.breakpointObserver
