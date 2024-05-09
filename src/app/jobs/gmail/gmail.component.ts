@@ -1,5 +1,6 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -7,18 +8,16 @@ import { MatTableModule } from '@angular/material/table';
 import { DomSanitizer } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import {
-  BehaviorSubject,
   EMPTY,
   Observable,
   combineLatest,
   concatMap,
+  filter,
   map,
-  mergeMap,
   of,
   scan,
   shareReplay,
-  take,
-  tap,
+  tap
 } from 'rxjs';
 import { ScrollTopDirective } from '../../library/scroll-to-top/scroll-top.directive';
 import { JobsUserPreferencesService } from '../services/jobs-user-preferences.service';
@@ -26,7 +25,6 @@ import { GmailPaginatorComponent } from './gmail-paginator/gmail-paginator.compo
 import { Thread, Threads, ThreadsFilterQuery } from './interfaces';
 import { GmailService } from './services/gmail.service';
 import { ThreadsFilterComponent } from './threads-filter/threads-filter.component';
-import { toObservable } from '@angular/core/rxjs-interop';
 
 export type ThreadsListItem = Pick<Thread, 'id' | 'historyId' | 'snippet'>;
 
@@ -55,8 +53,12 @@ const DEFAULT_FILTER: ThreadsFilterQuery = {
 })
 export class GmailComponent {
 
+  private gmailService = inject(GmailService);
+  private sanitizer = inject(DomSanitizer);
+  private preferencesService = inject(JobsUserPreferencesService);
+
   private userPreferences = this.preferencesService.userPreferences;
-  private gmailPreferences = computed(() => this.userPreferences().gmail);
+  private gmailPreferences = computed(() => this.userPreferences()?.gmail);
 
   private threadsCache: Threads[] = [];
 
@@ -64,48 +66,37 @@ export class GmailComponent {
 
   loadingThread: Thread | null;
 
-
+  pageIdx = signal(0);
 
   threadsFilter$: Observable<ThreadsFilterQuery> =
     toObservable(this.gmailPreferences).pipe(
+      filter(preference => !!preference),
       map((preference) => ({ labelIds: preference.activeLabelId })),
       scan((acc, update) => ({ ...acc, ...update }), DEFAULT_FILTER),
       tap(() => (this.threadsCache = [])),
       shareReplay(1)
     );
 
-  pageIdx$ = new BehaviorSubject<number>(0);
-
   threads$: Observable<Threads> = combineLatest({
     fltr: this.threadsFilter$,
-    idx: this.pageIdx$,
+    idx: toObservable(this.pageIdx),
   }).pipe(
     tap(() => this.loading.set(true)),
     concatMap(({ fltr, idx }) => this.getThreadsPage(fltr, idx)),
     shareReplay(1)
   );
 
-  lastPage$: Observable<boolean> = this.threads$.pipe(
-    map(({ nextPageToken }) => !nextPageToken)
-  );
+  threads = toSignal(this.threads$, { initialValue: new Threads() });
 
-  loadedCount$: Observable<number> = this.threads$.pipe(
-    map(({ threads }) => threads?.length || 0)
-  );
+  lastPage = computed(() => !this.threads().nextPageToken);
 
-  datasource$: Observable<ThreadsListItem[]> = this.threads$.pipe(
-    map((data) => data.threads)
-  );
+  loadedCount = computed(() => this.threads().threads.length);
+
+  datasource = computed(() => this.threads().threads);
 
   sanitize = (snippet: string) =>
     this.sanitizer.bypassSecurityTrustHtml(snippet);
 
-
-  constructor(
-    private gmailService: GmailService,
-    private sanitizer: DomSanitizer,
-    private preferencesService: JobsUserPreferencesService
-  ) { }
 
   onSetFilter(labelIds: string[]) {
     if (!Array.isArray(labelIds) || labelIds.length === 0) {
@@ -123,7 +114,7 @@ export class GmailComponent {
   }
 
   onSetPageIdx(idx: number) {
-    this.pageIdx$.next(idx);
+    this.pageIdx.set(idx);
   }
 
   private getThreadsPage(
@@ -144,7 +135,7 @@ export class GmailComponent {
     const pageToken = this.threadsCache[idx - 1]?.nextPageToken;
 
     if (!pageToken) {
-      this.pageIdx$.next(0);
+      this.pageIdx.set(0);
       return EMPTY;
     }
 

@@ -5,15 +5,18 @@ import {
   OnDestroy,
   OnInit,
   computed,
+  effect,
   inject,
+  input,
   model,
-  signal
+  signal,
+  viewChild
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { Observable, concatMap, of } from 'rxjs';
 import { DropFolder } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library';
@@ -54,6 +57,8 @@ export class ReproJobEditComponent implements OnInit, OnDestroy {
   private confirmationDialogService = inject(ConfirmationDialogService);
   private formService = inject(JobFormService);
 
+  private customerInput = viewChild(JobFormComponent);
+
 
   private navigate = navigateRelative();
 
@@ -62,6 +67,8 @@ export class ReproJobEditComponent implements OnInit, OnDestroy {
   form = this.formService.form;
 
   update = this.formService.update;
+
+  job = input.required<Job>();
 
   fileUploadProgress$: Observable<FileUploadMessage[]> = of([]);
 
@@ -96,14 +103,20 @@ export class ReproJobEditComponent implements OnInit, OnDestroy {
   updatePath = model(false);
 
   constructor(
-    private route: ActivatedRoute,
     private reproJobService: ReproJobService,
     private snack: MatSnackBar,
     private location: Location
-  ) { }
+  ) {
+    effect(() => {
+      this.formService.setValue(this.job());
+      if (!this.job().customer) {
+        this.customerInput().focusCustomer();
+      }
+
+    }, { allowSignalWrites: true });
+  }
 
   ngOnInit(): void {
-    this.formService.setValue(this.route.snapshot.data.job);
 
     if (this.reproJobService.uploadRef) {
       this.uploadRef = this.reproJobService.uploadRef;

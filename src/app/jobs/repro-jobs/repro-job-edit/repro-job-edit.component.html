@@ -30,16 +30,13 @@
 
             @if (form.value.jobId) {
             <app-folder-path [path]="folderPath()" (createFolder)="onCreateFolder()" [(updatePath)]="updatePath"
-                [enabled]="updateFolderLocationEnabled()">
-            </app-folder-path>
+                [enabled]="updateFolderLocationEnabled()" />
             }
 
-            <app-upload-progress [progress]="fileUploadProgress$ | async">
-            </app-upload-progress>
+            <app-upload-progress [progress]="fileUploadProgress$ | async" />
 
             <app-drop-folder [folders]="dropFolders$ | async" [defaultEnabled]="isUpload"
-                (folderChanges)="onDropFolder($event)" [disabled]="isUpload == false && form.value.files == null">
-            </app-drop-folder>
+                (folderChanges)="onDropFolder($event)" [disabled]="isUpload == false && form.value.files == null" />
 
         </mat-card-content>
 

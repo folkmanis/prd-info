@@ -12,10 +12,9 @@
     </div>
 
     <div class="right-container">
-        <app-gmail-paginator #paginator [activePage]="pageIdx$ | async"
-            (indexChanges)="scroll.scrollToTop(); onSetPageIdx($event)" [loadedCount]="loadedCount$ | async"
-            [pageSize]="(threadsFilter$ | async)?.maxResults" [lastPage]="lastPage$ | async">
-        </app-gmail-paginator>
+        <app-gmail-paginator #paginator [activePage]="pageIdx()"
+            (indexChanges)="scroll.scrollToTop(); onSetPageIdx($event)" [loadedCount]="loadedCount()"
+            [pageSize]="(threadsFilter$ | async)?.maxResults" [lastPage]="lastPage()" />
     </div>
 
 </div>
@@ -29,7 +28,7 @@
 </div>
 
 
-<mat-table [dataSource]="datasource$" class="app-table" scroll-to-top #scroll="scrollToTop"
+<mat-table [dataSource]="datasource()" class="app-table" scroll-to-top #scroll="scrollToTop"
     (contentChanged)="loading.set(false)">
 
     <ng-container matColumnDef="snippet">

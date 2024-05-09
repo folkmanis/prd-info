@@ -1,5 +1,5 @@
-import { concat, from, merge, Observable, OperatorFunction, pipe, Subject, timer } from 'rxjs';
-import { concatMap, filter, last, map, mergeMap, mergeMapTo, scan, shareReplay, takeUntil, tap, toArray } from 'rxjs/operators';
+import { from, merge, Observable, OperatorFunction, pipe, Subject } from 'rxjs';
+import { concatMap, filter, map, mergeMap, scan, shareReplay, takeUntil, tap, toArray } from 'rxjs/operators';
 import { Job } from '../../interfaces';
 import { FileUploadEventType, FileUploadMessage, UploadFinishMessage } from '../../interfaces/file-upload-message';
 

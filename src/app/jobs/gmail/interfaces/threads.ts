@@ -9,6 +9,6 @@ export class Threads {
 
     nextPageToken?: string;
 
-    resultSizeEstimate: number;
+    resultSizeEstimate: number = 0;
 
 }

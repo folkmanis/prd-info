@@ -3,7 +3,6 @@ import { AsyncPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  afterNextRender,
   computed,
   signal,
   viewChild
@@ -58,7 +57,7 @@ import { ReproProductsEditorComponent } from '../repro-products-editor/repro-pro
 })
 export class JobFormComponent {
 
-  private customerInput = viewChild(CustomerInputComponent);
+  private customerInput = viewChild.required(CustomerInputComponent);
 
   private allJobStates = configuration('jobs', 'jobStates');
 
@@ -109,12 +108,10 @@ export class JobFormComponent {
     this.loginService.isModuleAvailable('calculations')
       .then(result => this.showPrices.set(result));
 
-    afterNextRender(() => {
-      if (this.formService.isNew()) {
-        this.customerInput().focus();
-      }
-    });
+  }
 
+  focusCustomer() {
+    this.customerInput().focus();
   }
 
 }
