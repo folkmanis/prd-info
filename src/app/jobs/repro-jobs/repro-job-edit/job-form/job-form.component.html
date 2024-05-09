@@ -3,7 +3,7 @@
     <div class="container-multi">
 
         <!-- Klients -->
-        <app-customer-input formControlName="customer" [listItems]="customers$ | async">
+        <app-customer-input formControlName="customer" [listItems]="customersEnabled()">
             Klients
         </app-customer-input>
 
@@ -82,7 +82,7 @@
     </div>
 
     <!-- Preces apakšforma -->
-    @if (customerProducts$ | async; as customerProducts) {
+    @if (customerProducts(); as customerProducts) {
     <app-repro-products-editor [customerProducts]="customerProducts" formControlName="products"
         [showPrices]="showPrices()" />
     }

@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
@@ -48,7 +47,6 @@ const DEFAULT_FILTER: ThreadsFilterQuery = {
     MatTableModule,
     ScrollTopDirective,
     RouterLink,
-    AsyncPipe,
   ],
 })
 export class GmailComponent {
@@ -76,6 +74,8 @@ export class GmailComponent {
       tap(() => (this.threadsCache = [])),
       shareReplay(1)
     );
+
+  threadsFilter = toSignal(this.threadsFilter$);
 
   threads$: Observable<Threads> = combineLatest({
     fltr: this.threadsFilter$,

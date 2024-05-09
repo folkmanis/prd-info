@@ -1,16 +1,17 @@
-import { AsyncPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  Input,
-  Output,
+  computed,
   inject,
+  input,
+  output
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Observable, Subject, map } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Label, LabelListItem, getLabelDisplayName } from '../interfaces';
 import { GmailService } from '../services/gmail.service';
 
@@ -30,31 +31,29 @@ export interface ThreadsFilterData {
     MatMenuModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    AsyncPipe,
   ],
 })
 export class ThreadsFilterComponent {
-  @Input() labelIds: string[] | null = null;
 
-  @Output() labelIdsChange = new Subject<string[]>();
+  private labels = toSignal(inject(GmailService).labels(), { initialValue: [] });
 
-  labelItems$ = inject(GmailService)
-    .labels()
-    .pipe(
-      map((label) =>
-        label.sort((a, b) =>
-          a.displayName.toUpperCase() > b.displayName.toUpperCase() ? 1 : -1
-        )
-      )
-    );
+  labelIds = input<string[] | null>();
 
-  isLabelActive = (label: LabelListItem) => this.labelIds?.includes(label.id);
+  labelIdsChange = output<string[]>();
 
-  get activeLabelsText() {
-    return this.labelIds?.map((l) => getLabelDisplayName(l)).join(', ') || '';
-  }
+  labelItems = computed(() => {
+    const sorted = [...this.labels()];
+    sorted.sort((a, b) => a.displayName.toUpperCase() > b.displayName.toUpperCase() ? 1 : -1);
+    return sorted;
+  });
+
+  isLabelActive = (label: LabelListItem) => this.labelIds()?.includes(label.id);
+
+  activeLabelsText = computed(() => {
+    return this.labelIds()?.map((l) => getLabelDisplayName(l)).join(', ') || '';
+  });
 
   onActivateLabel(label: LabelListItem) {
-    this.labelIdsChange.next([label.id]);
+    this.labelIdsChange.emit([label.id]);
   }
 }

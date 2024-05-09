@@ -1,13 +1,13 @@
 import { TextFieldModule } from '@angular/cdk/text-field';
-import { AsyncPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  inject,
   signal,
   viewChild
 } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -18,8 +18,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { addDays, subDays } from 'date-fns';
-import { Observable, distinctUntilChanged, filter, map, switchMap } from 'rxjs';
-import { CustomerPartial } from 'src/app/interfaces';
+import { distinctUntilChanged, filter, map, switchMap } from 'rxjs';
 import { CopyClipboardDirective } from 'src/app/library/directives/copy-clipboard.directive';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { ViewSizeModule } from 'src/app/library/view-size/view-size.module';
@@ -51,22 +50,28 @@ import { ReproProductsEditorComponent } from '../repro-products-editor/repro-pro
     ReproProductsEditorComponent,
     MatCardModule,
     TextFieldModule,
-    AsyncPipe,
     CopyClipboardDirective,
   ],
 })
 export class JobFormComponent {
 
+  private productsService = inject(ProductsService);
+  private sanitize = inject(SanitizeService);
+  private loginService = inject(LoginService);
+  private formService = inject(JobFormService);
+
   private customerInput = viewChild.required(CustomerInputComponent);
 
   private allJobStates = configuration('jobs', 'jobStates');
 
-  form = this.formService.form;
+  private customers = toSignal(
+    inject(CustomersService).customers$,
+    { initialValue: [] }
+  );
 
-  customers$: Observable<CustomerPartial[]> =
-    this.customersService.customers$.pipe(
-      map((customers) => customers.filter((customer) => !customer.disabled))
-    );
+  customersEnabled = computed(() => this.customers().filter((customer) => !customer.disabled));
+
+  form = this.formService.form;
 
   receivedDate = {
     min: subDays(Date.now(), 5),
@@ -90,6 +95,8 @@ export class JobFormComponent {
     switchMap((customer) => this.productsService.productsCustomer(customer))
   );
 
+  customerProducts = toSignal(this.customerProducts$);
+
   showPrices = signal(false);
 
   get nameControl() {
@@ -97,13 +104,7 @@ export class JobFormComponent {
   }
 
 
-  constructor(
-    private productsService: ProductsService,
-    private customersService: CustomersService,
-    private sanitize: SanitizeService,
-    private loginService: LoginService,
-    private formService: JobFormService
-  ) {
+  constructor() {
 
     this.loginService.isModuleAvailable('calculations')
       .then(result => this.showPrices.set(result));

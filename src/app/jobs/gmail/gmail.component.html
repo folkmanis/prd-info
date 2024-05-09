@@ -7,14 +7,14 @@
             </mat-icon>
         </button>
 
-        <app-threads-filter [labelIds]="(threadsFilter$ | async)?.labelIds"
-            (labelIdsChange)="scroll.scrollToTop(); onSetFilter($event)"></app-threads-filter>
+        <app-threads-filter [labelIds]="threadsFilter()?.labelIds"
+            (labelIdsChange)="scroll.scrollToTop(); onSetFilter($event)" />
     </div>
 
     <div class="right-container">
         <app-gmail-paginator #paginator [activePage]="pageIdx()"
             (indexChanges)="scroll.scrollToTop(); onSetPageIdx($event)" [loadedCount]="loadedCount()"
-            [pageSize]="(threadsFilter$ | async)?.maxResults" [lastPage]="lastPage()" />
+            [pageSize]="threadsFilter()?.maxResults" [lastPage]="lastPage()" />
     </div>
 
 </div>
