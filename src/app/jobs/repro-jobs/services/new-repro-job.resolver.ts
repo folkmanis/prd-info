@@ -1,13 +1,11 @@
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
-import { Job } from 'src/app/jobs/interfaces';
-import { ReproJobService } from './repro-job.service';
+import { JobTemplate, ReproJobService } from './repro-job.service';
 
 
-type NewJob = Partial<Omit<Job, 'jobId'>>;
 
 
-const defaultReproJob: () => NewJob = () => ({
+const defaultReproJob: () => JobTemplate = () => ({
   name: '',
   receivedDate: new Date(),
   dueDate: new Date(),
@@ -20,26 +18,14 @@ const defaultReproJob: () => NewJob = () => ({
   }
 });
 
-export const newReproJob: ResolveFn<NewJob> = (route) => {
+export const newReproJob: ResolveFn<JobTemplate> = () => {
 
-  const reproJobService = inject(ReproJobService);
-
-  const serviceJob = reproJobService.job || {};
+  const jobTemplate = inject(ReproJobService).retrieveJobTemplate() ?? {};
 
   const job = {
     ...defaultReproJob(),
-    ...serviceJob,
+    ...jobTemplate,
   };
-
-  if (route.paramMap.get('name')) {
-    job.name = route.paramMap.get('name');
-  }
-
-  if (route.paramMap.get('customer')) {
-    job.customer = route.paramMap.get('customer');
-  }
-
-  reproJobService.job = null;
 
   return job;
 

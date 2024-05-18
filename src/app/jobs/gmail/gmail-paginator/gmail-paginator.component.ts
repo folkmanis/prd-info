@@ -1,48 +1,35 @@
-import { coerceNumberProperty, NumberInput } from '@angular/cdk/coercion';
-import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
-import { Subject } from 'rxjs';
+import { ChangeDetectionStrategy, Component, computed, input, numberAttribute, output } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button';
 
 
 @Component({
-    selector: 'app-gmail-paginator',
-    templateUrl: './gmail-paginator.component.html',
-    styleUrls: ['./gmail-paginator.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [MatButtonModule, MatMenuModule, MatIconModule]
+  selector: 'app-gmail-paginator',
+  templateUrl: './gmail-paginator.component.html',
+  styleUrls: ['./gmail-paginator.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [MatButtonModule, MatMenuModule, MatIconModule]
 })
 export class GmailPaginatorComponent {
 
-  @Input() activePage = 0;
+  activePage = input(0);
 
-  private _pageSize = 100;
-  @Input() set pageSize(value: NumberInput) {
-    this._pageSize = coerceNumberProperty(value, 100);
-  }
-  get pageSize(): number {
-    return this._pageSize;
-  }
+  pageSize = input(100, { transform: numberAttribute });
 
-  @Input() lastPage: boolean = true;
+  lastPage = input(true);
 
-  @Input() loadedCount = 0;
+  loadedCount = input(0);
 
-  @Output() indexChanges = new Subject<number>();
+  indexChanges = output<number>();
 
-  get start(): number {
-    return this.loadedCount ? this.activePage * this.pageSize + 1 : 0;
-  }
-  get end(): number {
-    return this.loadedCount ? this.activePage * this.pageSize + this.loadedCount : 0;
-  }
+  start = computed(() => this.loadedCount() ? this.activePage() * this.pageSize() + 1 : 0);
+
+  end = computed(() => this.loadedCount() ? this.activePage() * this.pageSize() + this.loadedCount() : 0);
 
   setPage(idx: number): void {
-    if (idx < 0) idx = 0;
-    this.activePage = idx;
-    this.indexChanges.next(this.activePage);
+    this.indexChanges.emit(idx);
   }
 
   firstPage() {
@@ -50,13 +37,15 @@ export class GmailPaginatorComponent {
   }
 
   nextPage() {
-    if (this.lastPage) return;
-    this.setPage(this.activePage + 1);
+    if (this.lastPage() === false) {
+      this.setPage(this.activePage() + 1);
+    }
   }
 
   previousPage() {
-    if (this.activePage === 0) return;
-    this.setPage(this.activePage - 1);
+    if (this.activePage() > 0) {
+      this.setPage(this.activePage() - 1);
+    }
   }
 
 

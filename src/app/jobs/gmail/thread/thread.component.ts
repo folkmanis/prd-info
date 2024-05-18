@@ -1,12 +1,10 @@
-import { AsyncPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  Input,
-  OnInit,
-  QueryList,
-  ViewChildren,
+  inject,
+  input,
   signal,
+  viewChildren
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -18,18 +16,28 @@ import { Router, RouterLink } from '@angular/router';
 import {
   EMPTY,
   Observable,
-  finalize,
+  OperatorFunction,
   map,
   mergeMap,
+  pipe,
   tap,
-  withLatestFrom,
+  withLatestFrom
 } from 'rxjs';
-import { ReproJobService } from 'src/app/jobs/repro-jobs/services/repro-job.service';
+import { JobTemplate, ReproJobService } from 'src/app/jobs/repro-jobs/services/repro-job.service';
 import { UploadRefService } from 'src/app/jobs/repro-jobs/services/upload-ref.service';
 import { CustomersService } from 'src/app/services/customers.service';
+import { UploadRef } from '../../repro-jobs/services/upload-ref';
 import { Attachment, Message, Thread } from '../interfaces';
 import { MessageComponent } from '../message/message.component';
 import { GmailService } from '../services/gmail.service';
+
+interface JobCreateResult {
+  fileNames: string[];
+  customer: string;
+  name: string;
+  uploadRef: UploadRef;
+  comment: string,
+}
 
 @Component({
   selector: 'app-thread',
@@ -45,13 +53,20 @@ import { GmailService } from '../services/gmail.service';
     MatExpansionModule,
     MatIconModule,
     MessageComponent,
-    AsyncPipe,
   ],
 })
-export class ThreadComponent implements OnInit {
-  @ViewChildren(MessageComponent) messageList: QueryList<MessageComponent>;
+export class ThreadComponent {
 
-  @Input() thread!: Thread;
+  private gmailService = inject(GmailService);
+  private customersService = inject(CustomersService);
+  private sanitizer = inject(DomSanitizer);
+  private router = inject(Router);
+  private userFileUploadService = inject(UploadRefService);
+  private reproJobService = inject(ReproJobService);
+
+  private messageList = viewChildren(MessageComponent);
+
+  thread = input.required<Thread>();
 
   busy = signal(false);
 
@@ -61,43 +76,26 @@ export class ThreadComponent implements OnInit {
   isExpanded = (msg: Message) =>
     msg.hasPdf && msg.labelIds.every((label) => label !== 'SENT');
 
-  constructor(
-    private gmail: GmailService,
-    private customers: CustomersService,
-    private sanitizer: DomSanitizer,
-    private router: Router,
-    private userFileUploadService: UploadRefService,
-    private reproJobService: ReproJobService
-  ) {}
-
-  ngOnInit(): void {}
-
   onCreateFromThread(thread: Thread) {
-    const selected = this.messageList.filter(
-      (item) => !!item.attachmentsList?.selected.length
+
+    this.busy.set(true);
+
+    const selected = this.messageList().filter(
+      (item) => item.attachmentsList?.selected.length > 0
     );
 
     if (selected.length === 0) {
-      this.reproJobService.job = {
-        comment: thread.plain,
-      };
-      const name = thread.subject;
-
-      this.resolveCustomer(thread.from)
-        .pipe()
-        .subscribe((customer) =>
-          this.router.navigate([
-            '/',
-            'jobs',
-            'repro',
-            'new',
-            { name, customer },
-          ])
-        );
+      this.resolveCustomer(thread.from).pipe(
+        tap(customer => this.reproJobService.setJobTemplate({
+          name: thread.subject,
+          customer,
+          comment: thread.plain,
+        })
+        )
+      )
+        .subscribe(() => this.navigateToNew());
     } else {
-      this.busy.set(true);
-
-      const attachments: { messageId: string; attachment: Attachment }[] =
+      const attachments: { messageId: string; attachment: Attachment; }[] =
         selected.reduce(
           (acc, curr) => [
             ...acc,
@@ -108,10 +106,8 @@ export class ThreadComponent implements OnInit {
           ],
           []
         );
-
-      this.createJobWithAttachments(attachments, thread, thread.subject)
-        .pipe(finalize(() => this.busy.set(false)))
-        .subscribe();
+      this.createJobWithAttachments(attachments, thread, EMPTY, thread.subject)
+        .subscribe(() => this.navigateToNew());
     }
   }
 
@@ -122,51 +118,48 @@ export class ThreadComponent implements OnInit {
       (attachment) => ({ messageId: message.id, attachment })
     );
 
-    this.createJobWithAttachments(attachments, message)
-      .pipe(
-        mergeMap(({ uploadRef }) => uploadRef.onAddedToJob()),
-        mergeMap(() =>
-          component.markAsRead ? this.gmail.markAsRead(message) : EMPTY
-        ),
-        finalize(() => component.busy.set(false))
-      )
-      .subscribe();
+    this.createJobWithAttachments(attachments, message, this.markAsRead(component))
+      .subscribe(() => this.navigateToNew());
   }
 
   private createJobWithAttachments(
-    attachments: { messageId: string; attachment: Attachment }[],
-    messageOrThread: { from: string; plain: string },
+    attachments: { messageId: string; attachment: Attachment; }[],
+    messageOrThread: { from: string; plain: string; },
+    afterAddedToJob: Observable<unknown>,
     name?: string
   ) {
-    this.reproJobService.job = {
-      comment: messageOrThread.plain,
-    };
-
-    return this.gmail.saveAttachments(attachments).pipe(
+    return this.gmailService.saveAttachments(attachments).pipe(
       withLatestFrom(this.resolveCustomer(messageOrThread.from)),
-      map(([fileNames, customer]) => ({
-        fileNames,
-        customer,
-        name: name || this.reproJobService.jobNameFromFiles(fileNames),
-        uploadRef: this.userFileUploadService.savedFileRef(fileNames),
-      })),
-      tap(({ uploadRef }) => (this.reproJobService.uploadRef = uploadRef)),
-      tap(({ name, customer }) =>
-        this.router.navigate(['/', 'jobs', 'repro', 'new', { name, customer }])
-      )
+      tap(([fileNames, customer]) => {
+        this.reproJobService.setJobTemplate({
+          customer,
+          name: name || this.reproJobService.jobNameFromFiles(fileNames),
+          comment: messageOrThread.plain,
+        });
+        this.userFileUploadService.setSavedFile(fileNames, afterAddedToJob);
+      }),
     );
+  }
+
+  private markAsRead(component: MessageComponent): Observable<unknown> {
+    return component.markAsRead ? this.gmailService.markAsRead(component.message) : EMPTY;
   }
 
   private resolveCustomer(from: string): Observable<string | undefined> {
     const email = extractEmail(from);
 
-    return this.customers
+    return this.customersService
       .getCustomerList({ email })
       .pipe(
         map((customers) =>
           customers.length === 1 ? customers[0].CustomerName : undefined
         )
       );
+  }
+
+  private navigateToNew() {
+
+    this.router.navigate(['/', 'jobs', 'repro', 'new']);
   }
 }
 

@@ -4,14 +4,14 @@ import {
   CdkVirtualScrollViewport,
 } from '@angular/cdk/scrolling';
 import { AsyncPipe, DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Subject, from, map } from 'rxjs';
+import { EMPTY, Subject, from, map } from 'rxjs';
 import { CopyClipboardDirective } from "src/app/library/directives/copy-clipboard.directive";
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { ProductsService } from 'src/app/services/products.service';
@@ -25,6 +25,7 @@ import { ProductsSummaryComponent } from '../products-summary/products-summary.c
 import { ReproJobService } from '../services/repro-job.service';
 import { UploadRefService } from '../services/upload-ref.service';
 import { NewJobButtonComponent } from './new-job-button/new-job-button.component';
+import { navigateRelative } from 'src/app/library/common';
 
 @Component({
   selector: 'app-job-list',
@@ -54,9 +55,18 @@ import { NewJobButtonComponent } from './new-job-button/new-job-button.component
   ],
 })
 export class JobListComponent {
+
+  private jobService = inject(JobService);
+  private router = inject(Router);
+  private uploadRefService = inject(UploadRefService);
+  private reproJobService = inject(ReproJobService);
+  private sanitize = inject(SanitizeService);
+
+  private navigate = navigateRelative();
+
   isLarge = false;
 
-  filter$ = this.route.queryParams.pipe(
+  filter$ = inject(ActivatedRoute).queryParams.pipe(
     map((query) => this.jobService.normalizeFilter(query))
   );
 
@@ -64,29 +74,16 @@ export class JobListComponent {
 
   jobs$ = this.jobService.getJobsObserver(this.filter$, this.reload$);
 
-  products$ = this.productsService.activeProducts$;
+  products$ = inject(ProductsService).activeProducts$;
 
   highlited: string | null = null;
-
-  constructor(
-    private jobService: JobService,
-    private router: Router,
-    private userFileUpload: UploadRefService,
-    private reproJobService: ReproJobService,
-    private sanitize: SanitizeService,
-    private route: ActivatedRoute,
-    private productsService: ProductsService
-  ) { }
 
   copyJobIdAndName({ name, jobId }: Pick<JobPartial, 'jobId' | 'name'>) {
     return `${jobId}-${this.sanitize.sanitizeFileName(name)}`;
   }
 
   onJobFilter(filter: JobQueryFilter) {
-    this.router.navigate(['.'], {
-      queryParams: filter,
-      relativeTo: this.route,
-    });
+    this.navigate(['.'], { queryParams: filter });
   }
 
   async onSetJobStatus(jobId: number, status: number) {
@@ -105,23 +102,16 @@ export class JobListComponent {
   }
 
   onFileDrop(fileList: FileList) {
-    if (this.reproJobService.uploadRef) {
-      return;
-    }
 
     const name = this.reproJobService.jobNameFromFiles(
       Array.from(fileList).map((file) => file.name)
     );
     const sortedFiles = Array.from(fileList).sort((a, b) => a.size - b.size);
 
-    this.reproJobService.uploadRef = this.userFileUpload.userFileUploadRef(
-      from(sortedFiles)
-    );
+    this.uploadRefService.setUserFile(from(sortedFiles), EMPTY);
 
-    this.router
-      .navigate(['jobs', 'repro', 'new', { name }])
-      .then((navigated) => {
-        if (!navigated) this.reproJobService.uploadRef = null;
-      });
+    this.reproJobService.setJobTemplate({ name });
+
+    this.router.navigate(['jobs', 'repro', 'new']);
   }
 }

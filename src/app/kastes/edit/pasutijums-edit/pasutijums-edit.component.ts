@@ -4,7 +4,6 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import {
-  EMPTY,
   Subject,
   merge,
   mergeMap,
@@ -107,14 +106,10 @@ export class PasutijumsEditComponent {
 
   }
 
-  copyToFirebase() {
+  async copyToFirebase() {
     const jobId = this.jobId();
-    this.confirmationDialog
-      .confirm(FIREBASE_COPY_TO_CONFIRMATION)
-      .pipe(
-        mergeMap((resp) =>
-          resp ? this.pasutijumiService.copyToFirestore(jobId) : EMPTY
-        ),
+    if (await this.confirmationDialog.confirm(FIREBASE_COPY_TO_CONFIRMATION)) {
+      this.pasutijumiService.copyToFirestore(jobId).pipe(
         tap((result) =>
           this.snack.open(
             firebaseCopyToResultMessage(result.recordsUpdated),
@@ -123,17 +118,14 @@ export class PasutijumsEditComponent {
           )
         )
       )
-      .subscribe();
+        .subscribe();
+    }
   }
 
-  copyFromFirebase() {
+  async copyFromFirebase() {
     const jobId = this.jobId();
-    this.confirmationDialog
-      .confirm(FIREBASE_COPY_FROM_CONFIRMATION)
-      .pipe(
-        mergeMap((resp) =>
-          resp ? this.pasutijumiService.copyFromFirestore(jobId) : EMPTY
-        ),
+    if (await this.confirmationDialog.confirm(FIREBASE_COPY_FROM_CONFIRMATION)) {
+      this.pasutijumiService.copyFromFirestore(jobId).pipe(
         tap((result) =>
           this.snack.open(
             firebaseCopyFromResultMessage(result.modifiedCount),
@@ -142,6 +134,7 @@ export class PasutijumsEditComponent {
           )
         )
       )
-      .subscribe();
+        .subscribe();
+    }
   }
 }

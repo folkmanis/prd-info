@@ -1,14 +1,13 @@
 import { OverlayRef } from '@angular/cdk/overlay';
-import { Directive, HostListener, Input, Optional } from '@angular/core';
+import { Directive, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 import { last } from 'lodash-es';
-import { map, mergeMap, pluck, switchMap, tap, from, MonoTypeOperatorFunction, Observable, of, catchError, EMPTY } from 'rxjs';
+import { EMPTY, Observable, catchError, map, tap } from 'rxjs';
+import { JobFilesService } from 'src/app/filesystem';
 import { ReproJobService } from 'src/app/jobs/repro-jobs/services/repro-job.service';
 import { UploadRefService } from 'src/app/jobs/repro-jobs/services/upload-ref.service';
-import { JobsApiService } from '../../jobs';
 import { JobData, Message, MessageFtpUser } from './interfaces';
 import { MessagingService } from './services/messaging.service';
-import { JobFilesService } from 'src/app/filesystem';
 
 export interface UserFile {
   name: string;
@@ -25,47 +24,48 @@ class FileMissingError extends Error {
 
 
 @Directive({
-    selector: '[appMessageJob]',
-    standalone: true
+  selector: '[appMessageJob]',
+  standalone: true,
+  host: {
+    '(click)': 'onClick()'
+  }
 })
 export class MessageJobDirective {
 
-  @Input('appMessageJob') message: Message | null = null;
+  private router = inject(Router);
+  private messaging = inject(MessagingService);
+  private overlayRef = inject(OverlayRef, { optional: true });
+  private reproJobService = inject(ReproJobService);
+  private uploadRefService = inject(UploadRefService);
+  private filesService = inject(JobFilesService);
 
-  @Input('appMessageJobFtpUser') ftpUser: MessageFtpUser | null = null;
+  message = input<Message | null>(null, { alias: 'appMessageJob' });
 
-  constructor(
-    private router: Router,
-    private messaging: MessagingService,
-    @Optional() private overlayRef: OverlayRef,
-    private reproJobService: ReproJobService,
-    private userFileUploadService: UploadRefService,
-    private filesService: JobFilesService,
-  ) { }
+  ftpUser = input<MessageFtpUser | null>(null, { alias: 'appMessageJobFtpUser' });
 
-  @HostListener('click')
   onClick() {
 
-    if (this.message?.data instanceof JobData && this.message.data.operation === 'add' && this.ftpUser instanceof MessageFtpUser) {
+    const message = this.message();
+    const ftpUser = this.ftpUser();
+
+    if (message?.data instanceof JobData && message.data.operation === 'add' && ftpUser instanceof MessageFtpUser) {
 
       this.overlayRef?.detach();
 
+      const path = message.data.path;
 
-      const path = this.message.data.path;
-
-      const customer = this.ftpUser;
       const name = this.reproJobService.jobNameFromFiles([last(path)]);
 
+      const afterAddedToJob = this.setMessageRead(message);
 
       this.fileExists(path).pipe(
-        map(() => this.userFileUploadService.ftpUploadRef(path)),
-        tap(uploadRef => this.reproJobService.uploadRef = uploadRef),
-        mergeMap(uploadRef => from(this.router.navigate(['/', 'jobs', 'repro', 'new', { name, customer: customer?.CustomerName }])).pipe(
-          mergeMap(() => uploadRef.onAddedToJob()),
-        )),
-        this.setMessageRead(this.message),
+        map(() => this.uploadRefService.setFtpUpload(path, afterAddedToJob)),
+        tap(() => this.reproJobService.setJobTemplate({
+          name,
+          customer: ftpUser?.CustomerName,
+        })),
         catchError(() => EMPTY)
-      ).subscribe();
+      ).subscribe(() => this.router.navigate(['/', 'jobs', 'repro', 'new']));
 
     }
 
@@ -81,10 +81,8 @@ export class MessageJobDirective {
     );
   }
 
-  private setMessageRead<T>(msg: Message): MonoTypeOperatorFunction<T> {
-
-    return switchMap(arg => msg.seen ? of(arg) : this.messaging.markOneRead(this.message._id).pipe(map(() => arg)));
-
+  private setMessageRead(message: Message): Observable<unknown> {
+    return message.seen ? EMPTY : this.messaging.markOneRead(message._id);
   }
 
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { concatMap, from, map, Observable, of, toArray } from 'rxjs';
 import { Attachment, Message, Threads, ThreadsFilterQuery } from '../interfaces';
 import { GmailApiService } from './gmail-api.service';
@@ -10,10 +10,7 @@ import { GmailApiService } from './gmail-api.service';
 })
 export class GmailService {
 
-
-  constructor(
-    private api: GmailApiService,
-  ) { }
+  private api = inject(GmailApiService);
 
   getThreads(filter: ThreadsFilterQuery): Observable<Threads> {
     return this.api.getThreads(filter);

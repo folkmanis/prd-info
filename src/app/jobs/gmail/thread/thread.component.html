@@ -3,11 +3,11 @@
     <mat-card-header>
 
         <mat-card-title>
-            {{ thread.from }}
+            {{ thread().from }}
         </mat-card-title>
 
         <mat-card-subtitle>
-            {{ thread.subject }}
+            {{ thread().subject }}
         </mat-card-subtitle>
 
     </mat-card-header>
@@ -16,7 +16,7 @@
         <a mat-button routerLink=".." color="primary">
             ATPAKAĻ
         </a>
-        <button mat-button (click)="onCreateFromThread(thread)">
+        <button mat-button (click)="onCreateFromThread(thread())">
             UZ DARBU
         </button>
     </mat-card-actions>
@@ -31,7 +31,7 @@
 
 <mat-accordion multi displayMode="flat">
 
-    @for (message of thread.messages; track $index) {
+    @for (message of thread().messages; track $index) {
     <mat-expansion-panel [expanded]="isExpanded(message)">
 
         <mat-expansion-panel-header>

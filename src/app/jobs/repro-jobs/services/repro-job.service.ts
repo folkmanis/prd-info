@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { flatten } from 'lodash-es';
 import { Observable, firstValueFrom, map } from 'rxjs';
 import { JobFilesService } from 'src/app/filesystem';
@@ -11,6 +11,9 @@ import { UploadRef } from './upload-ref';
 
 export type PartialJob = Pick<Job, 'jobId'> & Partial<Job>;
 
+export type JobTemplate = Partial<Omit<Job, 'jobId'>>;
+
+
 const MAX_JOB_NAME_LENGTH = 100; // TODO take from global config
 
 
@@ -19,16 +22,21 @@ const MAX_JOB_NAME_LENGTH = 100; // TODO take from global config
 })
 export class ReproJobService {
 
-  uploadRef: UploadRef | null = null;
+  private productsService = inject(ProductsService);
+  private jobService = inject(JobService);
+  private jobFilesService = inject(JobFilesService);
 
-  job: Partial<Job> | null = null;
+  private jobTemplate: JobTemplate | null = null;
 
+  setJobTemplate(template: JobTemplate) {
+    this.jobTemplate = template;
+  }
 
-  constructor(
-    private productsService: ProductsService,
-    private jobService: JobService,
-    private jobFilesService: JobFilesService,
-  ) { }
+  retrieveJobTemplate(): JobTemplate | null {
+    const template = this.jobTemplate;
+    this.jobTemplate = null;
+    return template;
+  }
 
   async updateJob(jobUpdate: PartialJob, params: { updatePath?: boolean; } = {}): Promise<Job> {
 

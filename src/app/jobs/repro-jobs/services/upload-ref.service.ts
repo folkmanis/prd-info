@@ -1,8 +1,8 @@
 import { HttpEvent, HttpEventType } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { last } from 'lodash-es';
 import { merge, Observable, of, OperatorFunction, partition, pipe } from 'rxjs';
-import { concatMap, filter, map, mergeMap, scan, share, throttleTime } from 'rxjs/operators';
+import { concatMap, filter, map, mergeMap, scan, share, switchMap, throttleTime } from 'rxjs/operators';
 import { JobFilesService } from 'src/app/filesystem';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { Job } from '../../interfaces';
@@ -20,15 +20,21 @@ const uploadId = (file: File): string => file.name;
 })
 export class UploadRefService {
 
+  private sanitize = inject(SanitizeService);
+  private jobFilesService = inject(JobFilesService);
+
   private isImportant = ({ type }: FileUploadMessage) =>
     type === FileUploadEventType.UploadFinish || type === FileUploadEventType.UploadStart;
 
-  constructor(
-    private sanitize: SanitizeService,
-    private jobFilesService: JobFilesService,
-  ) { }
+  private uploadRef: UploadRef | null = null;
 
-  userFileUploadRef(file$: Observable<File>): UploadRef {
+  retrieveUploadRef() {
+    const uploadRef = this.uploadRef;
+    this.uploadRef = null;
+    return uploadRef;
+  }
+
+  setUserFile(file$: Observable<File>, afterAddedToJob: Observable<unknown>) {
 
     const uploadMessages$ = file$.pipe(
       mergeMap(file => this.uploadFile(file), SIMULTANEOUS_UPLOADS),
@@ -47,10 +53,14 @@ export class UploadRefService {
       concatMap(fileNames => this.jobFilesService.deleteUserUploads(fileNames))
     ).subscribe();
 
-    return uploadRef;
+    uploadRef.onAddedToJob().pipe(
+      switchMap(() => afterAddedToJob)
+    ).subscribe();
+
+    this.uploadRef = uploadRef;
   }
 
-  ftpUploadRef(path: string[]): UploadRef {
+  setFtpUpload(path: string[], afterAddedToJob: Observable<unknown>) {
 
     const fileName = last(path);
     const message: FileUploadMessage = {
@@ -60,13 +70,19 @@ export class UploadRefService {
       size: 0,
       fileNames: [fileName],
     };
-    const progress$: Observable<FileUploadMessage[]> = of([message]);
 
-    return new UploadRef(progress$, this.addFtpFilesToJobFn(path.slice(0, -1)));
+    const progress$: Observable<FileUploadMessage[]> = of([message]);
+    const uploadRef = new UploadRef(progress$, this.addFtpFilesToJobFn(path.slice(0, -1)));
+
+    uploadRef.onAddedToJob().pipe(
+      switchMap(() => afterAddedToJob)
+    ).subscribe();
+
+    this.uploadRef = uploadRef;
 
   }
 
-  savedFileRef(fileNames: string[]): UploadRef {
+  setSavedFile(fileNames: string[], afterAddedToJob: Observable<unknown>) {
     const messages: FileUploadMessage[] = fileNames.map(name => ({
       type: FileUploadEventType.UploadFinish,
       id: name,
@@ -82,7 +98,11 @@ export class UploadRefService {
       concatMap(fileNames => this.jobFilesService.deleteUserUploads(fileNames))
     ).subscribe();
 
-    return uploadRef;
+    uploadRef.onAddedToJob().pipe(
+      switchMap(() => afterAddedToJob)
+    ).subscribe();
+
+    this.uploadRef = uploadRef;
   }
 
   private uploadFile(file: File): Observable<FileUploadMessage> {

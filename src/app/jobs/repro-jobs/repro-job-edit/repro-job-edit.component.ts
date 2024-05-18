@@ -2,8 +2,6 @@ import { AsyncPipe, Location } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  OnDestroy,
-  OnInit,
   computed,
   effect,
   inject,
@@ -17,7 +15,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterLink } from '@angular/router';
-import { Observable, concatMap, of } from 'rxjs';
+import { Observable, Subscription, concatMap, of } from 'rxjs';
 import { DropFolder } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library';
 import { navigateRelative } from 'src/app/library/common';
@@ -52,13 +50,12 @@ import { KeyPressDirective } from './key-press.directive';
     AsyncPipe,
   ],
 })
-export class ReproJobEditComponent implements OnInit, OnDestroy {
+export class ReproJobEditComponent {
 
   private confirmationDialogService = inject(ConfirmationDialogService);
   private formService = inject(JobFormService);
 
   private customerInput = viewChild(JobFormComponent);
-
 
   private navigate = navigateRelative();
 
@@ -72,7 +69,7 @@ export class ReproJobEditComponent implements OnInit, OnDestroy {
 
   fileUploadProgress$: Observable<FileUploadMessage[]> = of([]);
 
-  uploadRef: UploadRef | null = null;
+  uploadRef = input<UploadRef>();
 
   saved = signal(false);
 
@@ -97,7 +94,7 @@ export class ReproJobEditComponent implements OnInit, OnDestroy {
   history = window.history;
 
   get isUpload(): boolean {
-    return !!this.uploadRef;
+    return !!this.uploadRef();
   }
 
   updatePath = model(false);
@@ -114,24 +111,26 @@ export class ReproJobEditComponent implements OnInit, OnDestroy {
       }
 
     }, { allowSignalWrites: true });
-  }
 
-  ngOnInit(): void {
+    effect((onCleanup) => {
 
-    if (this.reproJobService.uploadRef) {
-      this.uploadRef = this.reproJobService.uploadRef;
-      this.fileUploadProgress$ = this.uploadRef.onMessages();
-      this.uploadRef.onAddedToJob().subscribe({
-        error: (error) =>
-          this.snack.openFromComponent(SnackbarMessageComponent, {
-            data: { progress: this.fileUploadProgress$, error },
-          }),
-      });
-    }
-  }
+      const uploadRef = this.uploadRef();
+      let subs: Subscription;
 
-  ngOnDestroy(): void {
-    this.reproJobService.uploadRef = null;
+      if (uploadRef) {
+        this.fileUploadProgress$ = uploadRef.onMessages();
+        subs = uploadRef.onAddedToJob().subscribe({
+          error: (error) =>
+            this.snack.openFromComponent(SnackbarMessageComponent, {
+              data: { progress: this.fileUploadProgress$, error },
+            }),
+        });
+      }
+
+      onCleanup(() => subs?.unsubscribe());
+
+    });
+
   }
 
   async onUpdate() {
@@ -153,7 +152,6 @@ export class ReproJobEditComponent implements OnInit, OnDestroy {
   async onCreate() {
     this.saved.set(true);
     const jobUpdate = this.formService.update();
-    this.reproJobService.uploadRef = null;
     try {
       const createdJob = await this.reproJobService.createJob(jobUpdate);
       this.onSaveSuccess(createdJob);
@@ -187,9 +185,9 @@ export class ReproJobEditComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.uploadRef) {
-      this.uploadRef
-        .onAddedToJob()
+    const uploadRef = this.uploadRef();
+    if (uploadRef) {
+      uploadRef.onAddedToJob()
         .pipe(
           concatMap(
             (job) =>
@@ -209,7 +207,7 @@ export class ReproJobEditComponent implements OnInit, OnDestroy {
   }
 
   private onSaveSuccess(job: Job) {
-    this.uploadRef?.addToJob(job.jobId);
+    this.uploadRef()?.addToJob(job.jobId);
     this.copyToDropfolder(job);
     this.snack.openFromComponent(SnackbarMessageComponent, {
       data: { job, progress: this.fileUploadProgress$ },
