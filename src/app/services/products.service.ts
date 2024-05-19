@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { cacheWithUpdate } from 'src/app/library/rxjs';
 import {
   catchError,
@@ -25,6 +25,9 @@ import { ProductsApiService } from 'src/app/services/prd-api/products-api.servic
   providedIn: 'root',
 })
 export class ProductsService {
+
+  private api = inject(ProductsApiService);
+
   readonly categories$ = getConfig('jobs', 'productCategories');
 
   private readonly _updateProducts$: Subject<void> = new Subject();
@@ -37,7 +40,6 @@ export class ProductsService {
     shareReplay(1)
   );
 
-  constructor(private api: ProductsApiService) { }
 
   get activeProducts$(): Observable<ProductPartial[]> {
     return this.products$.pipe(

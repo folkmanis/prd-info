@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { firstValueFrom, Observable, of, Subject } from 'rxjs';
 import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { Customer, CustomerPartial, CustomerUpdate, NewCustomer } from 'src/app/interfaces';
@@ -10,6 +10,8 @@ import { CustomersApiService } from './prd-api/customers-api.service';
 })
 export class CustomersService {
 
+  private api = inject(CustomersApiService);
+
   private reloadCustomers$: Subject<void> = new Subject();
 
   customers$: Observable<CustomerPartial[]> = this.reloadCustomers$.pipe(
@@ -17,10 +19,6 @@ export class CustomersService {
     switchMap(() => this.getCustomerList()),
     shareReplay(1),
   );
-
-  constructor(
-    private api: CustomersApiService,
-  ) { }
 
   async updateCustomer({ _id, ...rest }: CustomerUpdate): Promise<Customer> {
     const update = await firstValueFrom(this.api.updateOne(_id, rest));

@@ -2,8 +2,8 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Input,
-  OnInit,
+  inject,
+  input
 } from '@angular/core';
 import {
   AbstractControl,
@@ -56,19 +56,18 @@ type PricesForm = ReturnType<typeof productPriceGroup>;
     },
   ],
 })
-export class ProductPricesComponent
-  implements OnInit, ControlValueAccessor, Validator
-{
-  @Input() customers: CustomerPartial[] = [];
+export class ProductPricesComponent implements ControlValueAccessor, Validator {
+
+  private chDetector = inject(ChangeDetectorRef);
+
+  customers = input<CustomerPartial[]>([]);
 
   pricesFormArray = new FormArray<PricesForm>(
     [],
     [this.duplicateCustomersValidator]
   );
 
-  touchFn = () => {};
-
-  constructor(private chDetector: ChangeDetectorRef) {}
+  touchFn = () => { };
 
   writeValue(obj: ProductPrice[]): void {
     obj = obj instanceof Array ? obj : [];
@@ -101,7 +100,7 @@ export class ProductPricesComponent
     }
   }
 
-  validate(control: AbstractControl<any, any>): ValidationErrors {
+  validate(): ValidationErrors {
     if (this.pricesFormArray.valid) {
       return null;
     }
@@ -111,8 +110,6 @@ export class ProductPricesComponent
         .map((ctr) => ctr.errors),
     };
   }
-
-  ngOnInit(): void {}
 
   removePrice(idx: number): void {
     this.pricesFormArray.removeAt(idx);

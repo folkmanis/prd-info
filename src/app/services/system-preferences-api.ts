@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { PreferencesDbModule } from 'src/app/interfaces';
@@ -11,10 +11,7 @@ import { HttpOptions } from 'src/app/library/http';
 export class SystemPreferencesApiService {
 
     private readonly path = getAppParams('apiPath') + 'preferences/';
-
-    constructor(
-        private http: HttpClient,
-    ) { }
+    private http = inject(HttpClient);
 
     getAll(): Observable<PreferencesDbModule[]> {
         return this.http.get<PreferencesDbModule[]>(this.path, new HttpOptions().cacheable());
