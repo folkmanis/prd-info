@@ -20,16 +20,15 @@
 
 </section>
 
-<!-- Kopējie daudzumi -->
-<section class="totals">
+<section class="second-row">
     <div>
         <button mat-raised-button color="primary" (click)="onSave()"
             [disabled]="orderId() == null || adresesBox()==null">
             SAGLABĀT
         </button>
     </div>
+    <!-- Kopējie daudzumi -->
     <div>
-        @if (totals()) {
         <p>
             <app-color-totals [colorTotals]="plannedTotals()">
                 Plānotie apjomi (paciņas):
@@ -41,10 +40,9 @@
             </app-color-totals>
         </p>
         <p>
-            Adreses: {{ totals().addresses }} |
-            Kastes: {{ totals().packages }}
+            Adreses: {{ totals()?.addresses }} |
+            Kastes: {{ totals()?.packages }}
         </p>
-        }
     </div>
 </section>
 

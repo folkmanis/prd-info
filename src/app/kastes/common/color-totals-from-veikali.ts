@@ -26,7 +26,7 @@ export const jobProductsToColorTotals = (products: JobProduct[]): Record<Colors,
 
     products.forEach(product => {
         if (COLORS.includes(product.name as Colors)) {
-            totals[product.name] += product.count;
+            totals[product.name] += product.count * 2;
         }
     });
 
