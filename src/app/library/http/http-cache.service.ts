@@ -23,9 +23,6 @@ export class HttpCacheService implements Cache {
 
   private cacheMap: Map<string, CacheEntry> = new Map();
 
-  constructor() { }
-
-
   get(req: HttpRequest<any>): HttpResponse<any> | null {
     const entry = this.cacheMap.get(req.urlWithParams);
     if (!entry) { return null; }

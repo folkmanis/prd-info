@@ -1,18 +1,9 @@
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Route } from '@angular/router';
 import { MainMenuComponent } from './main-menu/main-menu.component';
-import { CacheInterceptorService } from 'src/app/library/http';
 
 export default [
   {
     path: '',
-    providers: [
-      {
-        provide: HTTP_INTERCEPTORS,
-        useClass: CacheInterceptorService,
-        multi: true,
-      },
-    ],
     children: [
       {
         path: 'customers',
