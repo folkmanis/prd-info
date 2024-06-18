@@ -12,19 +12,19 @@
         border: none;
 
         border-bottom: {
-            color: mat.get-color-from-palette(mat.$grey-palette, 500);
+            color: mat.m2-get-color-from-palette(mat.$m2-grey-palette, 500);
             width: 2px;
             style: solid;
         }
 
         &.ng-invalid {
-            border-bottom-color: mat.get-color-from-palette($warn-palette, 'text');
-            color: mat.get-color-from-palette($warn-palette, 'text');
+            border-bottom-color: mat.m2-get-color-from-palette($warn-palette, 'text');
+            color: mat.m2-get-color-from-palette($warn-palette, 'text');
         }
 
 
         &:focus {
-            border-bottom-color: mat.get-color-from-palette($primary-palette, 'lighter');
+            border-bottom-color: mat.m2-get-color-from-palette($primary-palette, 'lighter');
         }
     }
 
@@ -49,7 +49,7 @@
 
     @include appearance();
 
-    $color-config: mat.get-color-config($theme);
+    $color-config: mat.m2-get-color-config($theme);
 
     @if $color-config !=null {
         @include color($color-config);

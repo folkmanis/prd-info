@@ -6,7 +6,7 @@
 
     mat-list-item[appDenseList]:hover {
 
-        background-color: mat.get-color-from-palette($primary, "lighter");
+        background-color: mat.m2-get-color-from-palette($primary, "lighter");
 
     }
 }
@@ -40,7 +40,7 @@
 
 @mixin theme($theme) {
 
-    $color: mat.get-color-config($theme);
+    $color: mat.m2-get-color-config($theme);
 
     @if $color !=null {
         @include app-dense-list-color($color);

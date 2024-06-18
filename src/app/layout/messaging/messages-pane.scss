@@ -3,7 +3,7 @@
 @mixin messages-pane-color($config-or-theme) {
     // Extract the color configuration in case a theme has been passed.
     // This allows consumers to either pass a theme object or a color configuration.
-    $config: mat.get-color-config($config-or-theme);
+    $config: mat.m2-get-color-config($config-or-theme);
     // Extract the palettes you need from the theme definition.
     $background: map-get($config, background);
 
@@ -19,7 +19,7 @@
 
 @mixin messages-pane-typography($config-or-theme) {
     // Extract the typography configuration in case a theme has been passed.
-    $config: mat.get-typography-config($config-or-theme);
+    $config: mat.m2-get-typography-config($config-or-theme);
 }
 
 @mixin app-messages-pane() {
@@ -33,8 +33,8 @@
 
 @mixin theme($theme) {
     // Extracts the color and typography configurations from the theme.
-    $color: mat.get-color-config($theme);
-    $typography: mat.get-typography-config($theme);
+    $color: mat.m2-get-color-config($theme);
+    $typography: mat.m2-get-typography-config($theme);
 
     // Do not generate styles if configurations for individual theming
     // systems have been explicitly set to `null`.
