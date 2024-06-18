@@ -30,7 +30,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { provideRouter, withComponentInputBinding, withRouterConfig } from '@angular/router';
 import { APP_ROUTES } from './app/app-routes';
-import { HttpClientModule } from '@angular/common/http';
+import {} from '@angular/common/http';
 registerLocaleData(localeLv);
 
 bootstrapApplication(AppComponent, {
