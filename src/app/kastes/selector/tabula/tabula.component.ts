@@ -1,15 +1,11 @@
-import {
-  AsyncPipe,
-  TitleCasePipe,
-  UpperCasePipe,
-} from '@angular/common';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { TitleCasePipe, UpperCasePipe, } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
-  Output,
   input,
   model,
+  output,
   viewChild,
   viewChildren
 } from '@angular/core';
@@ -34,15 +30,15 @@ const COLUMNS = ['label', 'kods', 'adrese'];
     ScrollTopDirective,
     MatTableModule,
     RowIdDirective,
-    AsyncPipe,
     UpperCasePipe,
     TitleCasePipe,
     HideZeroPipe,
+    CdkScrollable,
   ],
 })
 export class TabulaComponent {
 
-  private scrollable = viewChild.required('scrollContainer', { read: ScrollTopDirective });
+  private scrollTopDirective = viewChild.required(ScrollTopDirective);
 
   private tableRows = viewChildren(RowIdDirective);
 
@@ -50,8 +46,7 @@ export class TabulaComponent {
 
   completed = model<AddressPackage>();
 
-  @Output()
-  selectedChange = new EventEmitter<AddressPackage | undefined>();
+  selectedChange = output<AddressPackage | undefined>();
 
   colorCodes = kastesPreferences('colors');
 
@@ -62,18 +57,16 @@ export class TabulaComponent {
   trackByFn = (_: number, item: AddressPackage) => item.addressId + item.boxSequence;
 
   scrollToTop() {
-    this.scrollable().scrollToTop();
+    this.scrollTopDirective().scrollToTop();
   }
 
   scrollToId(documentId: string, boxSequence: number) {
-    const row = this.tableRows()
-      .find((element) =>
-        element.addressPackage.documentId === documentId
-        && element.addressPackage.boxSequence === boxSequence
-      );
-    if (row) {
-      row.scrollIn();
-    }
+    this.tableRows()
+      .find((row) =>
+        row.addressPackage().documentId === documentId
+        && row.addressPackage().boxSequence === boxSequence
+      )
+      ?.scrollIn();
   }
 
   onGatavs(addressPackage: AddressPackage): void {
@@ -81,6 +74,6 @@ export class TabulaComponent {
   }
 
   onSelected(addressPackage: AddressPackage) {
-    this.selectedChange.next(addressPackage);
+    this.selectedChange.emit(addressPackage);
   }
 }

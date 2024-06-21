@@ -25,25 +25,23 @@ div.container {
 
   .has-label & {
     background-color: var(--primary-color);
-    transition: background-color 1s 500ms;
+  }
+
+  .activated & {
+    animation: blink 500ms alternate 6;
   }
 }
 
 
 @keyframes blink {
-
-  //TODO global styling
-  0% {
-    background-color: none;
+  from {
+    opacity: 0;
   }
 
-  50% {
-    background-color: rgba($color: var(--primary-color), $alpha: 0.2);
+  to {
+    opacity: 1;
   }
 
-  100% {
-    background-color: none;
-  }
 }
 
 .digit-column,
