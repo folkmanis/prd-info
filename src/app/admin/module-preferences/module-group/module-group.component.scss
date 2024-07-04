@@ -1,8 +1,13 @@
-button:not(:first-of-type) {
-    margin-left: 16px;
+:host {
+    display: block;
+}
+
+.mat-toolbar-single-row {
+    gap: 16px;
 }
 
 .container {
+    padding-top: 64px;
     display: flex;
     flex-wrap: wrap;
 }

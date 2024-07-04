@@ -1,31 +1,32 @@
-<app-module-group [formGroup]="prefForm" (reseting)="onResetAll()" (saving)="onSaveAll()">
+<app-module-group [formGroup]="prefForm" (reset)="onResetAll()" (save)="onSaveAll()" [pristine]="prefForm.pristine"
+    [valid]="prefForm.valid">
 
-    <app-preferences-card formControlName="system">
+    <app-preferences-card>
         <ng-container appCardTitle>
             Vispārīgie iestatījumi
         </ng-container>
-        <app-system-preferences></app-system-preferences>
+        <app-system-preferences formControlName="system" />
     </app-preferences-card>
 
-    <app-preferences-card formControlName="kastes">
+    <app-preferences-card>
         <ng-container appCardTitle>
             Pakošanas saraksta iestatījumi
         </ng-container>
-        <app-kastes-preferences></app-kastes-preferences>
+        <app-kastes-preferences formControlName="kastes" />
     </app-preferences-card>
 
-    <app-preferences-card formControlName="jobs">
+    <app-preferences-card>
         <ng-container appCardTitle>
             Darbu uzskaites iestatījumi
         </ng-container>
-        <app-jobs-preferences></app-jobs-preferences>
+        <app-jobs-preferences formControlName="jobs" />
     </app-preferences-card>
 
-    <app-preferences-card formControlName="paytraq">
+    <app-preferences-card>
         <ng-container appCardTitle>
             PayTraq grāmatvedības savienojums
         </ng-container>
-        <app-paytraq-preferences></app-paytraq-preferences>
+        <app-paytraq-preferences formControlName="paytraq" />
     </app-preferences-card>
 
 </app-module-group>

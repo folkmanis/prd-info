@@ -1,61 +1,85 @@
 import { FocusMonitor } from '@angular/cdk/a11y';
-import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, NG_VALUE_ACCESSOR, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { PaytraqConnectionParams } from 'src/app/interfaces';
-import { MatInputModule } from '@angular/material/input';
+import { ChangeDetectionStrategy, Component, effect, forwardRef, inject, output, viewChild } from '@angular/core';
+import { ControlValueAccessor, FormBuilder, FormsModule, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { map } from 'rxjs';
+import { PaytraqConnectionParams } from 'src/app/interfaces';
 
 const DEFAULT_VALUE: PaytraqConnectionParams = {
-  connectUrl: null,
-  connectKey: null,
-  apiUrl: null,
-  apiKey: null,
-  apiToken: null,
-  invoiceUrl: null,
+  connectUrl: '',
+  connectKey: '',
+  apiUrl: '',
+  apiKey: '',
+  apiToken: '',
+  invoiceUrl: '',
 };
 
+function isMissingParams(controlValue: Record<string, any>): boolean {
+  return Object.keys(controlValue).some(key => !controlValue[key]);
+}
+
+
 @Component({
-    selector: 'app-paytraq-connection-params',
-    templateUrl: './paytraq-connection-params.component.html',
-    styleUrls: ['./paytraq-connection-params.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: PaytraqConnectionParamsComponent,
-            multi: true,
-        }
-    ],
-    standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule]
+  selector: 'app-paytraq-connection-params',
+  templateUrl: './paytraq-connection-params.component.html',
+  styleUrls: ['./paytraq-connection-params.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => PaytraqConnectionParamsComponent),
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => PaytraqConnectionParamsComponent),
+      multi: true,
+    }
+  ],
+  standalone: true,
+  imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule]
 })
-export class PaytraqConnectionParamsComponent implements OnInit, ControlValueAccessor, AfterViewInit, OnDestroy {
+export class PaytraqConnectionParamsComponent implements ControlValueAccessor, Validator {
 
-  @ViewChild('container') private containerEl: HTMLDivElement;
-
-  controls = this.fb.group<PaytraqConnectionParams>({
-    connectUrl: undefined,
-    connectKey: undefined,
-    apiUrl: undefined,
-    apiKey: undefined,
-    apiToken: undefined,
-    invoiceUrl: undefined,
-  });
-
-
+  private containerEl = viewChild<HTMLDivElement>('container');
   private onTouched: () => void = () => { };
 
+  controls = inject(FormBuilder).group({
+    connectUrl: ['', Validators.required],
+    connectKey: ['', Validators.required],
+    apiUrl: ['', Validators.required],
+    apiKey: ['', Validators.required],
+    apiToken: ['', Validators.required],
+    invoiceUrl: ['', Validators.required],
+  });
+
+  focus = output<void>();
+
   constructor(
-    private fb: FormBuilder,
-    private focusMonitor: FocusMonitor,
-  ) { }
+    focusMonitor: FocusMonitor,
+  ) {
+    effect((onCleanup) => {
+      const container = this.containerEl();
+      focusMonitor.monitor(container, true)
+        .subscribe(() => {
+          this.onTouched();
+          this.focus.emit();
+        });
+      onCleanup(() => {
+        focusMonitor.stopMonitoring(container);
+      });
+    });
+  }
 
   writeValue(obj: PaytraqConnectionParams) {
     this.controls.setValue({ ...DEFAULT_VALUE, ...obj }, { emitEvent: false });
   }
 
   registerOnChange(fn: (obj: PaytraqConnectionParams) => void) {
-    this.controls.valueChanges.subscribe(fn);
+    this.controls.valueChanges.pipe(
+      map(value => isMissingParams(value) ? null : value)
+    ).subscribe(fn);
   }
 
   registerOnTouched(fn: () => void) {
@@ -70,16 +94,16 @@ export class PaytraqConnectionParamsComponent implements OnInit, ControlValueAcc
     }
   }
 
-  ngOnInit(): void {
+  validate(): ValidationErrors {
+    const values = this.controls.value;
+    if (isMissingParams(values)) {
+      return {
+        missing: Object.keys(values).filter(key => !values[key])
+      };
+    } else {
+      return null;
+    }
   }
-
-  ngAfterViewInit(): void {
-    this.focusMonitor.monitor(this.containerEl, true).subscribe(this.onTouched);
-  }
-
-  ngOnDestroy(): void {
-    this.focusMonitor.stopMonitoring(this.containerEl);
-  }
-
 
 }
+

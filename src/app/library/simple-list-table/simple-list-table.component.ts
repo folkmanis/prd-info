@@ -1,11 +1,12 @@
 import { ComponentType } from '@angular/cdk/portal';
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
-  Input,
-  OnDestroy,
-  OnInit,
+  computed,
+  inject,
+  input,
+  model,
+  signal
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,28 +14,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { BehaviorSubject, EMPTY, Observable, Subject, merge, of } from 'rxjs';
-import {
-  map,
-  mergeAll,
-  mergeMap,
-  shareReplay,
-  skip,
-  takeUntil,
-  tap,
-} from 'rxjs/operators';
-import { DestroyService } from 'src/app/library/rxjs';
+import { tap } from 'rxjs';
 
-enum Action {
-  ADD,
-  REMOVE,
-  UPDATE,
-}
-interface UpdateAction<T> {
-  type: Action;
-  data?: T;
-  idx?: number;
-}
 
 @Component({
   selector: 'app-simple-list-table',
@@ -42,7 +23,6 @@ interface UpdateAction<T> {
   styleUrls: ['./simple-list-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    DestroyService,
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: SimpleListTableComponent,
@@ -52,140 +32,81 @@ interface UpdateAction<T> {
   standalone: true,
   imports: [MatTableModule, MatButtonModule, MatTooltipModule, MatIconModule],
 })
-export class SimpleListTableComponent<T, K extends keyof T & string>
-  implements OnInit, OnDestroy, ControlValueAccessor
-{
-  @Input() set columns(columns: K[]) {
-    this._columns = columns;
-    this.displayedColumns = ['button', ...columns];
-  }
-  get columns(): K[] {
-    return this._columns;
-  }
-  private _columns: K[] = [];
+export class SimpleListTableComponent<T, K extends keyof T & string> implements ControlValueAccessor {
+  private dialog = inject(MatDialog);
 
-  @Input() editDialog: ComponentType<any>;
+  private onChangeFn: (obj: T[]) => void = () => { };
+  private onTouchedFn: () => void = () => { };
 
-  @Input() set disabled(disabled: boolean) {
-    this._disabled = disabled;
-  }
-  get disabled(): boolean {
-    return this._disabled;
-  }
-  private _disabled = false;
+  columns = input.required<K[]>();
+  displayedColumns = computed(() => ['button', ...this.columns()]);
 
-  private updateFn: (obj: T[]) => void = () => {};
-  private touchedFn: () => void = () => {};
+  editDialog = input<ComponentType<any>>();
 
-  displayedColumns: (keyof T | 'button')[] = [];
+  disabled = signal(false);
 
-  private _initialData$ = new BehaviorSubject<T[]>([]);
-  private _updateData$ = new Subject<UpdateAction<T>>();
-
-  data$: Observable<T[]> = this._initialData$.pipe(
-    map((data) =>
-      merge(
-        of(data),
-        this._updateData$.pipe(
-          map((upd) => (data = this.updateData(upd, data)))
-        )
-      )
-    ),
-    mergeAll(),
-    shareReplay(1)
-  );
-
-  constructor(
-    private destroy$: DestroyService,
-    private dialog: MatDialog,
-    private changeDetector: ChangeDetectorRef
-  ) {}
+  data = signal([] as T[]);
 
   writeValue(obj: T[]) {
-    this._initialData$.next(obj || []);
+    this.data.set(obj);
   }
 
   registerOnChange(fn: (obj: T[]) => void) {
-    this.updateFn = fn;
+    this.onChangeFn = fn;
   }
 
   registerOnTouched(fn: () => void) {
-    this.touchedFn = fn;
+    this.onTouchedFn = fn;
   }
 
   setDisabledState(isDisabled: boolean) {
-    this.disabled = isDisabled;
-    this.changeDetector.markForCheck();
-  }
-
-  ngOnInit(): void {
-    this.data$
-      .pipe(skip(1), takeUntil(this.destroy$))
-      .subscribe((data) => this.updateFn(data));
-  }
-
-  ngOnDestroy(): void {
-    this._updateData$.complete();
+    this.disabled.set(isDisabled);
   }
 
   onAddRow() {
-    if (!this.editDialog) {
+    const dialogComponent = this.editDialog();
+    if (!dialogComponent) {
       return;
     }
-    const dialogRef = this.dialog.open<any, T, T | undefined>(this.editDialog);
-    dialogRef
+    this.onTouchedFn();
+    this.dialog
+      .open<any, T, T | undefined>(dialogComponent)
       .afterClosed()
-      .pipe(
-        tap((_) => this.touchedFn()),
-        mergeMap((resp) => (resp ? of(resp) : EMPTY)),
-        takeUntil(this.destroy$)
-      )
-      .subscribe((cat) => {
-        this._updateData$.next({ type: Action.ADD, data: cat });
-      });
+      .subscribe((newRecord) => newRecord && this.updateData(() => this.addRecord(newRecord)));
   }
 
   onEditRow(obj: T, idx: number) {
-    if (this.disabled || !this.editDialog) {
+    const dialogComponent = this.editDialog();
+    if (this.disabled() || !dialogComponent) {
       return;
     }
-    const dialogRef = this.dialog.open<any, T, T | undefined>(this.editDialog, {
-      data: obj,
-    });
-    dialogRef
+    this.onTouchedFn();
+    this.dialog
+      .open<any, T, T | undefined>(dialogComponent, { data: obj })
       .afterClosed()
-      .pipe(
-        tap((_) => this.touchedFn()),
-        mergeMap((resp) => (resp ? of(resp) : EMPTY)),
-        takeUntil(this.destroy$)
-      )
-      .subscribe((cat) => {
-        this._updateData$.next({
-          type: Action.UPDATE,
-          data: { ...obj, ...cat },
-          idx,
-        });
-      });
+      .subscribe((update) => update && this.updateData(() => this.updateRecord(idx, update)));
   }
 
   onRemoveRow(idx: number) {
-    this._updateData$.next({ type: Action.REMOVE, idx });
-    this.touchedFn();
+    this.onTouchedFn();
+    this.updateData(() => this.removeRecord(idx));
   }
 
-  private updateData(
-    { type, data, idx }: UpdateAction<T>,
-    dataArray: T[]
-  ): T[] {
-    if (type === Action.ADD) {
-      return [...dataArray, data];
-    }
-    if (type === Action.REMOVE && typeof idx === 'number') {
-      return dataArray.filter((_, i) => i !== idx);
-    }
-    if (type === Action.UPDATE && typeof idx === 'number' && data) {
-      return dataArray.map((d, i) => (i === idx ? data : d));
-    }
-    return dataArray;
+  private updateData(updateFn: () => void) {
+    updateFn();
+    this.onChangeFn(this.data());
   }
+
+  private addRecord(record: T) {
+    this.data.update(records => [...records, record]);
+  }
+
+  private removeRecord(idx: number) {
+    this.data.update(records => records.filter((_, i) => i !== idx));
+  }
+
+  private updateRecord(idx: number, record: T) {
+    this.data.update(records => records.map((d, i) => (i === idx ? record : d)));
+  }
+
 }

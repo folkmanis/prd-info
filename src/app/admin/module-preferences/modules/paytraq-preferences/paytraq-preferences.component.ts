@@ -1,103 +1,81 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  OnDestroy,
-  OnInit,
+  forwardRef,
+  inject
 } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ValidationErrors, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DestroyService } from 'src/app/library/rxjs';
-import { Observable, Subject } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
-import { PaytraqConnectionParams, PaytraqSettings } from 'src/app/interfaces';
-import { PreferencesCardControl } from '../../preferences-card-control';
-import { PaytraqConnectionParamsComponent } from './paytraq-connection-params/paytraq-connection-params.component';
-import { MatDividerModule } from '@angular/material/divider';
+import { ControlValueAccessor, FormBuilder, FormsModule, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDividerModule } from '@angular/material/divider';
+import { map } from 'rxjs/operators';
+import { PaytraqConnectionParams } from 'src/app/interfaces';
+import { PaytraqConnectionParamsComponent } from './paytraq-connection-params/paytraq-connection-params.component';
 
 @Component({
-    selector: 'app-paytraq-preferences',
-    templateUrl: './paytraq-preferences.component.html',
-    styleUrls: ['./paytraq-preferences.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        {
-            provide: PreferencesCardControl,
-            useExisting: PaytraqPreferencesComponent,
-        },
-        DestroyService,
-    ],
-    standalone: true,
-    imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        MatCheckboxModule,
-        MatDividerModule,
-        PaytraqConnectionParamsComponent,
-    ],
+  selector: 'app-paytraq-preferences',
+  templateUrl: './paytraq-preferences.component.html',
+  styleUrls: ['./paytraq-preferences.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => PaytraqPreferencesComponent),
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => PaytraqPreferencesComponent),
+      multi: true,
+    }
+  ],
+  standalone: true,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatCheckboxModule,
+    MatDividerModule,
+    PaytraqConnectionParamsComponent,
+  ],
 })
-export class PaytraqPreferencesComponent
-  implements
-    OnInit,
-    OnDestroy,
-    PreferencesCardControl<Required<PaytraqSettings>>
-{
-  set value(value: PaytraqSettings) {
-    this.controls.reset(value);
-    this.stateChanges.next();
-  }
-  get value(): PaytraqSettings {
-    return this.controls.getRawValue();
-  }
+export class PaytraqPreferencesComponent implements ControlValueAccessor, Validator {
 
-  stateChanges = new Subject<void>();
+  onTouchFn = () => { };
 
-  controls = new FormGroup({
-    enabled: new FormControl(false),
-    connectionParams: new FormControl<PaytraqConnectionParams>(undefined, [
-      this.connectionParamsValidator,
-    ]),
+  controls = inject(FormBuilder).group({
+    enabled: [false],
+    connectionParams: [null as null | PaytraqConnectionParams]
   });
 
-  paramsValid$: Observable<boolean> =
-    this.controls.controls.connectionParams.statusChanges.pipe(
-      map((status) => status === 'VALID')
-    );
-
-  constructor(private destroy$: DestroyService) {}
-
-  ngOnInit(): void {
-    this.controls.controls.connectionParams.statusChanges
-      .pipe(
-        map((status) => status === 'VALID'),
-        takeUntil(this.destroy$)
-      )
-      .subscribe((valid) => {
-        if (valid) {
-          this.controls.controls.enabled.enable();
-        } else {
-          this.controls.controls.enabled.disable();
-          this.controls.controls.enabled.setValue(false);
-        }
-      });
+  writeValue(obj: any): void {
+    this.controls.reset(obj, { emitEvent: false });
   }
 
-  ngOnDestroy(): void {
-    this.stateChanges.complete();
+  registerOnChange(fn: any): void {
+    this.controls.valueChanges.pipe(
+      map(values => values.enabled ? values : { enabled: false, connectionParams: null })
+    ).subscribe(fn);
   }
 
-  connectionParamsValidator(
-    control: AbstractControl<PaytraqConnectionParams>
-  ): ValidationErrors | null {
-    const value = control.value;
-    if (!value) {
-      return { missing: 'all' };
+  registerOnTouched(fn: any): void {
+    this.onTouchFn = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    if (isDisabled) {
+      this.controls.disable();
+    } else {
+      this.controls.enable();
     }
-    for (const k of Object.keys(value)) {
-      const v: string = value[k];
-      if (!v?.length) {
-        return { missing: k };
-      }
-    }
-    return null;
   }
+
+  validate(): ValidationErrors {
+    if (!this.controls.value.enabled || this.controls.valid) {
+      return null;
+    } else {
+      return {
+        connectionParams: 'No set'
+      };
+    }
+  }
+
 }

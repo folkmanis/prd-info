@@ -1,44 +1,68 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Subject } from 'rxjs';
-import { KastesSettings } from 'src/app/kastes/interfaces';
-import { FormGroupType, PreferencesCardControl } from '../../preferences-card-control';
-import { KastesColorsComponent } from './kastes-colors/kastes-colors.component';
+import { TitleCasePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
+import { ControlValueAccessor, FormControl, FormGroup, FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
+import { COLORS, Colors, KastesSettings } from 'src/app/kastes/interfaces';
+import { ColorSliderComponent } from './color-slider/color-slider.component';
 
-type KastesSettingsPartial = Partial<KastesSettings>;
+type ColorSettings = KastesSettings['colors'];
+
+type ColorsGroup = {
+  [key in keyof ColorSettings]: FormControl<ColorSettings[key]>;
+};
 
 @Component({
-    selector: 'app-kastes-preferences',
-    templateUrl: './kastes-preferences.component.html',
-    styleUrls: ['./kastes-preferences.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [{ provide: PreferencesCardControl, useExisting: KastesPreferencesComponent }],
-    standalone: true,
-    imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        KastesColorsComponent,
-    ],
+  selector: 'app-kastes-preferences',
+  templateUrl: './kastes-preferences.component.html',
+  styleUrls: ['./kastes-preferences.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => KastesPreferencesComponent),
+      multi: true
+    }
+  ],
+  standalone: true,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    TitleCasePipe,
+    ColorSliderComponent,
+  ],
 })
-export class KastesPreferencesComponent implements PreferencesCardControl<KastesSettings>, OnDestroy {
+export class KastesPreferencesComponent implements ControlValueAccessor {
+  readonly colors = [...COLORS];
 
+  onTouchFn = () => { };
 
-  set value(obj: KastesSettingsPartial) {
-    this.controls.patchValue(obj);
-  }
-  get value(): KastesSettingsPartial {
-    return this.controls.getRawValue();
-  }
-
-  controls = new FormGroup<FormGroupType<KastesSettings>>({
-    colors: new FormControl<KastesSettings['colors']>(null)
+  preferencesControls = new FormGroup({
+    colors: new FormGroup<ColorsGroup>(
+      Object.assign({}, ...COLORS.map((col) => ({ [col]: new FormControl('') })))
+    )
   });
 
-  stateChanges = new Subject<void>();
+  colorControl(color: Colors): FormControl {
+    return this.preferencesControls.controls.colors.controls[color];
+  }
 
+  writeValue(obj: any): void {
+    this.preferencesControls.patchValue(obj, { emitEvent: false });
+  }
 
-  ngOnDestroy() {
-    this.stateChanges.complete();
+  registerOnChange(fn: any): void {
+    this.preferencesControls.valueChanges.subscribe(fn);
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouchFn = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    if (isDisabled) {
+      this.preferencesControls.disable();
+    } else {
+      this.preferencesControls.enable();
+    }
   }
 
 }

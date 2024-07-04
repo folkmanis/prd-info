@@ -1,20 +1,19 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, inject } from '@angular/core';
 import {
-  FormControl,
-  FormGroup,
-  Validators,
+  ControlValueAccessor,
+  FormBuilder,
   FormsModule,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
   ReactiveFormsModule,
+  ValidationErrors,
+  Validator,
+  Validators
 } from '@angular/forms';
-import { Subject } from 'rxjs';
-import { SystemSettings } from 'src/app/interfaces';
-import {
-  PreferencesCardControl,
-  FormGroupType,
-} from '../../preferences-card-control';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { SystemSettings } from 'src/app/interfaces';
 
 type SettingsToChange = Pick<
   SystemSettings,
@@ -28,9 +27,15 @@ type SettingsToChange = Pick<
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
-      provide: PreferencesCardControl,
-      useExisting: SystemPreferencesComponent,
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => SystemPreferencesComponent),
+      multi: true,
     },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => SystemPreferencesComponent),
+      multi: true,
+    }
   ],
   standalone: true,
   imports: [
@@ -41,25 +46,45 @@ type SettingsToChange = Pick<
     MatInputModule,
   ],
 })
-export class SystemPreferencesComponent
-  implements PreferencesCardControl<SettingsToChange>, OnDestroy
-{
-  set value(obj: Partial<SettingsToChange>) {
-    this.controls.patchValue(obj);
-    this.stateChanges.next();
-  }
-  get value(): Partial<SettingsToChange> {
-    return this.controls.value;
-  }
+export class SystemPreferencesComponent implements ControlValueAccessor, Validator {
 
-  controls = new FormGroup<FormGroupType<SettingsToChange>>({
-    menuExpandedByDefault: new FormControl(true),
-    hostname: new FormControl('', Validators.required),
+  controls = inject(FormBuilder).group({
+    menuExpandedByDefault: [true],
+    hostname: ['', Validators.required],
   });
 
-  stateChanges = new Subject<void>();
 
-  ngOnDestroy() {
-    this.stateChanges.complete();
+  onTouchFn = () => { };
+
+  writeValue(value: any): void {
+    this.controls.patchValue(value, { emitEvent: false });
   }
+
+  registerOnChange(fn: any): void {
+    this.controls.valueChanges.subscribe(fn);
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouchFn = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    if (isDisabled) {
+      this.controls.disable();
+    } else {
+      this.controls.enable();
+    }
+  }
+
+  validate(): ValidationErrors {
+    if (this.controls.valid) {
+      return null;
+    } else {
+      return {
+        hostname: this.controls.controls.hostname.errors
+      };
+    }
+  }
+
+
 }

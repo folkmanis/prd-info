@@ -1,28 +1,25 @@
-const hslRegex = /hsl\((?<hue>\d+),(?<saturation>\d+)%,(?<lightness>\d+)%\)/;
-
-export class HslColor {
-
-    static fromString(str: string): HslColor {
-        return this.stringToHsl(str);
-    }
-
-    static stringToHsl(color: string): HslColor {
-        const { hue, saturation, lightness } = color.match(hslRegex).groups;
-        return new HslColor(+hue || 0, +saturation || 0, +lightness || 0);
-    }
-
-    static hslToString({ hue, saturation, lightness }: HslColor): string {
-        return `hsl(${hue},${saturation}%,${lightness}%)`;
-    }
-
-    constructor(
-        public hue = 0,
-        public saturation = 0,
-        public lightness = 0,
-    ) { }
-    toString = (): string => HslColor.hslToString(this);
-
-
+export interface HslColor {
+    hue: number;
+    saturation: number;
+    lightness: number;
 }
 
+export function stringToHsl(color: string): HslColor | null {
+    const hslRegex = /hsl\((?<hue>\d+),(?<saturation>\d+)%,(?<lightness>\d+)%\)/;
+    const regexMatch = color.match(hslRegex);
+    if (typeof regexMatch?.groups === 'object' && regexMatch.groups !== null) {
+        const { hue, saturation, lightness } = regexMatch.groups;
+        return {
+            hue: +(hue ?? 0),
+            saturation: +(saturation ?? 0),
+            lightness: +(lightness ?? 0),
+        };
+    } else {
+        return null;
+    }
+}
+
+export function hslToString(hue: number, saturation: number, lightness: number): string {
+    return `hsl(${hue},${saturation}%,${lightness}%)`;
+}
 

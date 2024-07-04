@@ -1,5 +1,5 @@
-.container {
-    display: flex;
+:host {
+    display: inline-flex;
     align-items: center;
 }
 
@@ -8,6 +8,6 @@
     text-align: right;
 }
 
-.mat-slider {
+mat-slider {
     flex: 0 1 200px;
 }

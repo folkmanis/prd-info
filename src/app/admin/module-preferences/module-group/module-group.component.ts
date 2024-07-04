@@ -1,29 +1,30 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { ControlContainer, AbstractControl } from '@angular/forms';
+import { Component, booleanAttribute, computed, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
-    selector: 'app-module-group',
-    templateUrl: './module-group.component.html',
-    styleUrls: ['./module-group.component.scss'],
-    standalone: true,
-    imports: [MatToolbarModule, MatButtonModule]
+  selector: 'app-module-group',
+  templateUrl: './module-group.component.html',
+  styleUrls: ['./module-group.component.scss'],
+  standalone: true,
+  imports: [MatToolbarModule, MatButtonModule]
 })
-export class ModuleGroupComponent implements OnInit {
+export class ModuleGroupComponent {
 
-  @Output() saving = new EventEmitter<any>();
-  @Output() reseting = new EventEmitter<void>();
+  pristine = input(true, { transform: booleanAttribute });
+  valid = input(true, { transform: booleanAttribute });
 
-  controlForm: AbstractControl;
+  save = output<void>();
+  reset = output<void>();
 
-  constructor(
-    private controlContainer: ControlContainer,
-  ) { }
+  saveDisabled = computed(() => !this.valid() || this.pristine());
 
+  onSave() {
+    this.save.emit();
+  }
 
-  ngOnInit(): void {
-    this.controlForm = this.controlContainer.control;
+  onReset() {
+    this.reset.emit();
   }
 
 }

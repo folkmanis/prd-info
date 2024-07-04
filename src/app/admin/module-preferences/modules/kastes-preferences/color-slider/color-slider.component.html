@@ -1,11 +1,9 @@
-<div class="container">
+<span class="label" [style.color]="displayColor()">
+    {{ label() }}:
+</span>
 
-    <span class="label" [style.color]="hslColor.toString()">{{label}}:</span>
+<mat-slider [min]="0" [max]="100" [step]="1" [disabled]="disabled()">
+    <input [(ngModel)]="lightness" matSliderThumb (valueChange)="onValueChange()" />
+</mat-slider>
 
-    <mat-slider [min]="0" [max]="100" [step]="1">
-        <input matSliderThumb [formControl]="colorForm">
-    </mat-slider>
-
-    <span [style.color]="hslColor.toString()">{{hslColor.lightness}}%</span>
-
-</div>
+<span [style.color]="displayColor()">{{ lightness() }}%</span>

@@ -1,7 +1,24 @@
 .mat-column-button {
-    width: 48px;
+    flex: 0 auto;
 }
 
-.disabled{
-    opacity: 0.5;
+.data-cell {
+    cursor: pointer;
+}
+
+.disabled {
+
+    .data-cell {
+        cursor: initial;
+    }
+
+    .data-cell,
+    .header-cell {
+        opacity: 0.5;
+    }
+}
+
+
+.record-disabled {
+    text-decoration: line-through;
 }

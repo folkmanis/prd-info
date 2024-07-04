@@ -1,17 +1,17 @@
-<section [formGroup]="controls">
+<ng-container [formGroup]="controls">
 
     <section>
-        <mat-checkbox formControlName="enabled">
+        <mat-checkbox formControlName="enabled" (focus)="onTouchFn()">
             Iespējots
         </mat-checkbox>
     </section>
 
+    @if (controls.value.enabled) {
     <mat-divider></mat-divider>
 
     <section>
-
-        <app-paytraq-connection-params formControlName="connectionParams"></app-paytraq-connection-params>
-
+        <app-paytraq-connection-params formControlName="connectionParams" (focus)="onTouchFn()" />
     </section>
+    }
 
-</section>
+</ng-container>

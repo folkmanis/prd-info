@@ -1,15 +1,15 @@
 <form [formGroup]="controls">
 
     <p>
-        <mat-checkbox formControlName="menuExpandedByDefault">Sānu izvēlne izvērsta</mat-checkbox>
+        <mat-checkbox formControlName="menuExpandedByDefault" (focus)="onTouchFn()">Sānu izvēlne izvērsta</mat-checkbox>
     </p>
 
     <p>
-        <mat-form-field>
+        <mat-form-field floatLabel="always">
             <mat-label>
                 Hostname
             </mat-label>
-            <input matInput formControlName="hostname">
+            <input matInput formControlName="hostname" (focus)="onTouchFn()" />
         </mat-form-field>
     </p>
 

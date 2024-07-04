@@ -1,49 +1,44 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
-import { ProductUnit } from 'src/app/interfaces';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatInputModule } from '@angular/material/input';
+import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { ProductUnit } from 'src/app/interfaces';
 
 @Component({
-    selector: 'app-units-dialog',
-    templateUrl: './units-dialog.component.html',
-    styleUrls: ['./units-dialog.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        MatDialogTitle,
-        MatDialogContent,
-        FormsModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatCheckboxModule,
-        MatDialogActions,
-        MatButtonModule,
-        MatDialogClose,
-    ],
+  selector: 'app-units-dialog',
+  templateUrl: './units-dialog.component.html',
+  styleUrls: ['./units-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogClose,
+    MatInputModule,
+    MatCheckboxModule,
+    MatButtonModule,
+  ],
 })
-export class UnitsDialogComponent implements OnInit {
+export class UnitsDialogComponent {
 
-  unitsForm = new FormGroup({
-    shortName: new FormControl('', [Validators.required]),
-    description: new FormControl(''),
-    disabled: new FormControl(false),
+  private data = inject<ProductUnit>(MAT_DIALOG_DATA, { optional: true });
+  private dialogRef = inject(MatDialogRef);
+
+  unitsForm = inject(FormBuilder).group({
+    shortName: [{ value: this.data?.shortName, disabled: !!this.data }, [Validators.required]],
+    description: [this.data?.description],
+    disabled: [this.data?.disabled ?? false],
   });
 
-  constructor(
-    @Inject(MAT_DIALOG_DATA) private data?: ProductUnit,
-  ) { }
-
-  ngOnInit(): void {
-    if (this.data) {
-      this.unitsForm.setValue(this.data);
-      this.unitsForm.controls.shortName.disable();
-    }
+  onSubmit() {
+    this.dialogRef.close(this.unitsForm.getRawValue());
   }
-
 
 }

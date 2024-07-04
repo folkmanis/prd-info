@@ -1,54 +1,69 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, ViewChild, OnDestroy } from '@angular/core';
-import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatSlider, MatSliderModule } from '@angular/material/slider';
-import { HslColor } from './hsl-color';
 import { FocusMonitor } from '@angular/cdk/a11y';
+import { ChangeDetectionStrategy, Component, ElementRef, computed, effect, forwardRef, input, model, output, signal, viewChild } from '@angular/core';
+import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { MatSlider, MatSliderModule } from '@angular/material/slider';
+import { hslToString, stringToHsl } from './hsl-color';
 
 @Component({
-    selector: 'app-color-slider',
-    templateUrl: './color-slider.component.html',
-    styleUrls: ['./color-slider.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: ColorSliderComponent,
-            multi: true,
-        }
-    ],
-    standalone: true,
-    imports: [MatSliderModule, FormsModule, ReactiveFormsModule]
+  selector: 'app-color-slider',
+  templateUrl: './color-slider.component.html',
+  styleUrls: ['./color-slider.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => ColorSliderComponent),
+      multi: true,
+    }
+  ],
+  standalone: true,
+  imports: [MatSliderModule, FormsModule]
 })
-export class ColorSliderComponent implements ControlValueAccessor, AfterViewInit, OnDestroy {
+export class ColorSliderComponent implements ControlValueAccessor {
 
-  @Input() label = '';
+  private slider = viewChild(MatSlider, { read: ElementRef });
+  private onChangeFn: (obj: string) => void = () => { };
+  private onTouchedFn: () => void = () => { };
 
-  @ViewChild(MatSlider, { read: ElementRef }) private slide: ElementRef;
+  private hue = signal(0);
+  private saturation = signal(0);
 
-  onChangeFn: (obj: string) => void;
-  onTouchedFn: () => void;
+  label = input('');
 
-  hslColor = new HslColor();
+  disabled = signal(false);
 
-  colorForm = new FormControl<number>(0);
+  lightness = model(0);
+
+  displayColor = computed(() => hslToString(this.hue(), this.saturation(), this.lightness()));
+
+  focus = output<void>();
 
   constructor(
-    private cd: ChangeDetectorRef,
-    private focusMonitor: FocusMonitor,
-  ) { }
-
-  writeValue(obj: string) {
-    this.hslColor = HslColor.fromString(obj);
-    this.colorForm.setValue(this.hslColor.lightness);
-    this.cd.markForCheck();
+    focusMonitor: FocusMonitor,
+  ) {
+    effect((onCleanup) => {
+      const element = this.slider().nativeElement;
+      focusMonitor.monitor(element, true).subscribe(() => {
+        this.onTouchedFn();
+        this.focus.emit();
+      });
+      onCleanup(() => {
+        focusMonitor.stopMonitoring(element);
+      });
+    });
   }
 
-  registerOnChange(fn: (obj: string) => void) {
-    this.colorForm.valueChanges.subscribe(value => {
-      this.hslColor.lightness = value;
-      fn(this.hslColor.toString());
-      this.cd.markForCheck();
-    });
+  writeValue(obj: string) {
+    const hsl = stringToHsl(obj);
+    if (hsl) {
+      this.hue.set(hsl.hue);
+      this.saturation.set(hsl.saturation);
+      this.lightness.set(hsl.lightness);
+    }
+  }
+
+  registerOnChange(onChangeFn: (obj: string) => void) {
+    this.onChangeFn = onChangeFn;
   }
 
   registerOnTouched(fn: () => void) {
@@ -56,20 +71,11 @@ export class ColorSliderComponent implements ControlValueAccessor, AfterViewInit
   }
 
   setDisabledState(disabled: boolean) {
-    if (disabled) {
-      this.colorForm.disable();
-    } else {
-      this.colorForm.enable();
-    }
-    this.cd.markForCheck();
+    this.disabled.set(disabled);
   }
 
-  ngAfterViewInit() {
-    this.focusMonitor.monitor(this.slide.nativeElement, true).subscribe(this.onTouchedFn);
-  }
-
-  ngOnDestroy(): void {
-    this.focusMonitor.stopMonitoring(this.slide.nativeElement);
+  onValueChange() {
+    this.onChangeFn(this.displayColor());
   }
 
 }

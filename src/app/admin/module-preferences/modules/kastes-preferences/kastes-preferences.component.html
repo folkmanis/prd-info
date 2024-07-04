@@ -1,3 +1,4 @@
-<ng-container [formGroup]="controls">
-    <app-kastes-colors formControlName="colors"></app-kastes-colors>
-</ng-container>
+@for ( color of colors; track $index) {
+<app-color-slider [formControl]="preferencesControls.controls.colors.controls[color]" [label]="color | titlecase"
+    (focus)="onTouchFn()" />
+}

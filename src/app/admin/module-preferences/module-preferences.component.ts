@@ -1,22 +1,23 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
-  OnInit,
+  effect,
+  inject
 } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DestroyService } from 'src/app/library/rxjs';
-import { Observable, takeUntil } from 'rxjs';
+import { Observable } from 'rxjs';
 import { MODULES, SystemPreferences } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
+import { DestroyService } from 'src/app/library/rxjs';
 import { SystemPreferencesService } from 'src/app/services';
-import { PaytraqPreferencesComponent } from './modules/paytraq-preferences/paytraq-preferences.component';
+import { configuration } from 'src/app/services/config.provider';
+import { CardTitleDirective } from './card-title.directive';
+import { ModuleGroupComponent } from './module-group/module-group.component';
 import { JobsPreferencesComponent } from './modules/jobs-preferences/jobs-preferences.component';
 import { KastesPreferencesComponent } from './modules/kastes-preferences/kastes-preferences.component';
+import { PaytraqPreferencesComponent } from './modules/paytraq-preferences/paytraq-preferences.component';
 import { SystemPreferencesComponent } from './modules/system-preferences/system-preferences.component';
-import { CardTitleDirective } from './card-title.directive';
 import { PreferencesCardComponent } from './preferences-card/preferences-card.component';
-import { ModuleGroupComponent } from './module-group/module-group.component';
 
 @Component({
   selector: 'app-module-preferences',
@@ -37,31 +38,20 @@ import { ModuleGroupComponent } from './module-group/module-group.component';
     PaytraqPreferencesComponent,
   ],
 })
-export class ModulePreferencesComponent
-  implements OnInit, CanComponentDeactivate
-{
-  prefForm = this.fb.group<SystemPreferences>(
+export class ModulePreferencesComponent implements CanComponentDeactivate {
+  private systemPreferencesService = inject(SystemPreferencesService);
+
+  private savedConfiguration = configuration();
+
+  prefForm = inject(FormBuilder).group<SystemPreferences>(
     Object.assign({}, ...MODULES.map((mod) => ({ [mod]: [{}] })))
   );
 
-  private initialValue: SystemPreferences | undefined;
-
-  constructor(
-    private systemPreferencesService: SystemPreferencesService,
-    private cd: ChangeDetectorRef,
-    private destroy$: DestroyService,
-    private fb: FormBuilder
-  ) {}
-
-  ngOnInit() {
-    this.systemPreferencesService.preferences$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((prefs) => {
-        this.prefForm.reset(prefs);
-        this.prefForm.markAsPristine();
-        this.initialValue = prefs;
-        this.cd.markForCheck();
-      });
+  constructor() {
+    effect(() => {
+      this.prefForm.reset(this.savedConfiguration());
+      this.prefForm.markAsPristine();
+    }, { allowSignalWrites: true });
   }
 
   canDeactivate(): boolean | Observable<boolean> {
@@ -75,7 +65,7 @@ export class ModulePreferencesComponent
   }
 
   onResetAll() {
-    this.prefForm.reset(this.initialValue);
+    this.prefForm.reset(this.savedConfiguration());
     this.prefForm.markAsPristine();
   }
 }

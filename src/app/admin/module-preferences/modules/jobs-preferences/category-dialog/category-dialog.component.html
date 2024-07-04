@@ -4,26 +4,29 @@
 <form [formGroup]="productForm" (submit)="onSubmit()">
     <mat-dialog-content>
 
-        <mat-form-field>
-            <mat-label>
-                Kods (nav maināms)
-            </mat-label>
-            <input type="text" matInput formControlName="category" required>
-        </mat-form-field>
+        <div class="controls">
+            <mat-form-field>
+                <mat-label>
+                    Kods (nav maināms)
+                </mat-label>
+                <input type="text" matInput formControlName="category" required>
+            </mat-form-field>
 
-        <mat-form-field>
-            <mat-label>
-                Nosaukums
-            </mat-label>
-            <input type="text" matInput formControlName="description">
-        </mat-form-field>
+            <mat-form-field>
+                <mat-label>
+                    Nosaukums
+                </mat-label>
+                <input type="text" matInput formControlName="description">
+            </mat-form-field>
+        </div>
 
     </mat-dialog-content>
+
     <mat-dialog-actions>
-        <button mat-raised-button type="submit" color="primary" [disabled]="!productForm.valid || productForm.pristine">
+        <button mat-raised-button color="primary" [disabled]="!productForm.valid || productForm.pristine" type="submit">
             OK
         </button>
-        <button mat-raised-button [mat-dialog-close]="undefined">
+        <button mat-raised-button mat-dialog-close>
             ATCELT
         </button>
     </mat-dialog-actions>

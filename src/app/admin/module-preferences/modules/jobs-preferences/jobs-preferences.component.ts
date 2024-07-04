@@ -1,28 +1,20 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
-  OnDestroy,
-  OnInit,
+  forwardRef,
+  inject
 } from '@angular/core';
 import {
+  ControlValueAccessor,
   FormBuilder,
-  FormGroup,
-  FormControl,
   FormsModule,
-  ReactiveFormsModule,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule
 } from '@angular/forms';
-import { Subject } from 'rxjs';
-import { JobsSettings, ProductCategory, ProductUnit } from 'src/app/interfaces';
-import { PreferencesCardControl } from '../../preferences-card-control';
+import { ProductCategory, ProductUnit } from 'src/app/interfaces';
+import { SimpleListTableComponent } from 'src/app/library/simple-list-table/simple-list-table.component';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
 import { UnitsDialogComponent } from './units-dialog/units-dialog.component';
-import { SimpleListTableComponent } from 'src/app/library/simple-list-table/simple-list-table.component';
-
-type JobsSettingsControls = Pick<
-  JobsSettings,
-  'productCategories' | 'productUnits'
->;
 
 @Component({
   selector: 'app-jobs-preferences',
@@ -30,43 +22,44 @@ type JobsSettingsControls = Pick<
   styleUrls: ['./jobs-preferences.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    { provide: PreferencesCardControl, useExisting: JobsPreferencesComponent },
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => JobsPreferencesComponent),
+      multi: true,
+    }
   ],
   standalone: true,
   imports: [FormsModule, ReactiveFormsModule, SimpleListTableComponent],
 })
-export class JobsPreferencesComponent
-  implements PreferencesCardControl<JobsSettingsControls>, OnInit, OnDestroy
-{
-  controls = new FormGroup({
-    productCategories: new FormControl<ProductCategory[]>([]),
-    productUnits: new FormControl<ProductUnit[]>([]),
+export class JobsPreferencesComponent implements ControlValueAccessor {
+  controls = inject(FormBuilder).group({
+    productCategories: [[]] as Array<ProductCategory[]>,
+    productUnits: [[]] as Array<ProductUnit[]>,
   });
 
-  stateChanges = new Subject<void>();
-
-  get value(): JobsSettingsControls {
-    return this.controls.getRawValue();
-  }
-  set value(obj: JobsSettingsControls) {
-    this.controls.patchValue(obj);
-    this.stateChanges.next();
-  }
+  onTouchFn = () => { };
 
   categoryDialog = CategoryDialogComponent;
   unitsDialog = UnitsDialogComponent;
 
-  constructor(
-    private fb: FormBuilder,
-    private changeDetector: ChangeDetectorRef
-  ) {}
-
-  ngOnInit() {
-    this.controls;
-    this.stateChanges.subscribe((_) => this.changeDetector.markForCheck());
+  writeValue(obj: any): void {
+    this.controls.patchValue(obj, { emitEvent: false });
   }
 
-  ngOnDestroy() {
-    this.stateChanges.complete();
+  registerOnChange(fn: any): void {
+    this.controls.valueChanges.subscribe(fn);
   }
+
+  registerOnTouched(fn: any): void {
+    this.onTouchFn = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    if (isDisabled) {
+      this.controls.disable();
+    } else {
+      this.controls.enable();
+    }
+  }
+
 }
