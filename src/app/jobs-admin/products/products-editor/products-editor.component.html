@@ -1,143 +1,143 @@
 <app-simple-form-container buttons [status]="form.status" [isChanges]="changes" (save)="onSave()" (reset)="onReset()">
 
-    <form [formGroup]="form">
-        <h2>
-            @if (form.value._id == null) {
-            <!-- Nosaukums labojams -->
-            <mat-form-field>
-                <mat-label>Nosaukums</mat-label>
-                <input matInput formControlName="name" required>
-                @if (form.controls.name.hasError('required')) {
-                <mat-error>
-                    Jānorāda obligāti
-                </mat-error>
-                }
-                @if (form.controls.name.hasError('occupied')) {
-                <mat-error>
-                    Nosaukums {{form.controls.name.getError('occupied')}} jau aizņemts!
-                </mat-error>
-                }
-            </mat-form-field>
-            } @else {
-            <!-- Nosaukums nelabojams -->
-            {{form.controls.name.value}}
-            }
-        </h2>
+  <form [formGroup]="form">
+    <h2>
+      @if (form.value._id == null) {
+      <!-- Nosaukums labojams -->
+      <mat-form-field>
+        <mat-label>Nosaukums</mat-label>
+        <input matInput formControlName="name" required>
+        @if (form.controls.name.hasError('required')) {
+        <mat-error>
+          Jānorāda obligāti
+        </mat-error>
+        }
+        @if (form.controls.name.hasError('occupied')) {
+        <mat-error>
+          Nosaukums {{form.controls.name.getError('occupied')}} jau aizņemts!
+        </mat-error>
+        }
+      </mat-form-field>
+      } @else {
+      <!-- Nosaukums nelabojams -->
+      {{form.controls.name.value}}
+      }
+    </h2>
 
-        <mat-accordion multi>
-            <mat-expansion-panel expanded hideToggle>
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        Pamatinformācija
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-
-
-                <!-- Kategorija -->
-                <section>
-                    <mat-form-field>
-                        <mat-label>Kategorija</mat-label>
-                        <mat-select formControlName="category" required>
-                            @for (category of categories$ | async; track category.category) {
-                            <mat-option [value]="category.category">
-                                {{category.description}}
-                            </mat-option>
-                            }
-                        </mat-select>
-                    </mat-form-field>
-                </section>
-                <!-- Mērvienības -->
-                <section>
-                    <mat-form-field>
-                        <mat-label>Mērvienības</mat-label>
-                        <mat-select formControlName="units" required>
-                            @for (unit of units(); track unit.shortName) {
-                            @if(unit.disabled == false) {
-                            <mat-option [value]="unit.shortName">
-                                {{unit.shortName}} ({{unit.description}})
-                            </mat-option>
-                            }
-                            }
-                        </mat-select>
-                    </mat-form-field>
-                </section>
-                <!-- Neaktīvs -->
-                <section>
-                    <mat-checkbox formControlName="inactive">
-                        Neaktīvs
-                    </mat-checkbox>
-                </section>
-                <!-- Apraksts -->
-                <section>
-                    <mat-form-field>
-                        <mat-label>Papildus apraksts</mat-label>
-                        <textarea matInput matAutosize formControlName="description"></textarea>
-                    </mat-form-field>
-                </section>
-            </mat-expansion-panel>
-
-            <!-- Paytraq -->
-            <mat-expansion-panel #paytraqPanel [disabled]="paytraqEnabled() == false">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        Paytraq savienojums
-                    </mat-panel-title>
-                    @if (form.value.paytraqId; as id) {
-                    <mat-panel-description>
-                        {{ id }}
-                    </mat-panel-description>
-                    }
-                </mat-expansion-panel-header>
-
-                <app-paytraq-product formControlName="paytraqId" [productName]="form.value.name">
-                </app-paytraq-product>
-
-            </mat-expansion-panel>
-
-            <!-- <mat-expansion-panel expanded> -->
-            @if (customers$ | async; as customers) {
-            <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        Pārdošanas cenas
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-
-                <!-- Cenu tabula -->
-                <section>
-                    <app-product-prices formControlName="prices" [customers]="customers" #prices>
-                    </app-product-prices>
-                </section>
-
-                <mat-action-row>
-                    <button mat-mini-fab (click)="prices.addPrice()" [disabled]="form.invalid" color="primary">
-                        <mat-icon>
-                            add
-                        </mat-icon>
-                    </button>
-                </mat-action-row>
-
-            </mat-expansion-panel>
-            }
-
-            <mat-expansion-panel expanded>
-
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        Ražošanas procesi
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-
-                <section>
-                    <app-product-production formControlName="productionStages" [materials]="materials$ | async"
-                        [productionStages]="productionStages$ | async" />
-                </section>
-
-            </mat-expansion-panel>
-
-        </mat-accordion>
+    <mat-accordion multi>
+      <mat-expansion-panel expanded hideToggle>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Pamatinformācija
+          </mat-panel-title>
+        </mat-expansion-panel-header>
 
 
-    </form>
+        <!-- Kategorija -->
+        <section>
+          <mat-form-field>
+            <mat-label>Kategorija</mat-label>
+            <mat-select formControlName="category" required>
+              @for (category of categories(); track category.category) {
+              <mat-option [value]="category.category">
+                {{category.description}}
+              </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </section>
+        <!-- Mērvienības -->
+        <section>
+          <mat-form-field>
+            <mat-label>Mērvienības</mat-label>
+            <mat-select formControlName="units" required>
+              @for (unit of units(); track unit.shortName) {
+              @if(unit.disabled == false) {
+              <mat-option [value]="unit.shortName">
+                {{unit.shortName}} ({{unit.description}})
+              </mat-option>
+              }
+              }
+            </mat-select>
+          </mat-form-field>
+        </section>
+        <!-- Neaktīvs -->
+        <section>
+          <mat-checkbox formControlName="inactive">
+            Neaktīvs
+          </mat-checkbox>
+        </section>
+        <!-- Apraksts -->
+        <section>
+          <mat-form-field>
+            <mat-label>Papildus apraksts</mat-label>
+            <textarea matInput matAutosize formControlName="description"></textarea>
+          </mat-form-field>
+        </section>
+      </mat-expansion-panel>
+
+      <!-- Paytraq -->
+      <mat-expansion-panel #paytraqPanel [disabled]="paytraqEnabled() == false">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Paytraq savienojums
+          </mat-panel-title>
+          @if (form.value.paytraqId; as id) {
+          <mat-panel-description>
+            {{ id }}
+          </mat-panel-description>
+          }
+        </mat-expansion-panel-header>
+
+        <app-paytraq-product formControlName="paytraqId" [productName]="form.value.name">
+        </app-paytraq-product>
+
+      </mat-expansion-panel>
+
+      <!-- <mat-expansion-panel expanded> -->
+      @if (customers$ | async; as customers) {
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Pārdošanas cenas
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <!-- Cenu tabula -->
+        <section>
+          <app-product-prices formControlName="prices" [customers]="customers" #prices>
+          </app-product-prices>
+        </section>
+
+        <mat-action-row>
+          <button mat-mini-fab (click)="prices.addPrice()" [disabled]="form.invalid" color="primary">
+            <mat-icon>
+              add
+            </mat-icon>
+          </button>
+        </mat-action-row>
+
+      </mat-expansion-panel>
+      }
+
+      <mat-expansion-panel expanded>
+
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Ražošanas procesi
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <section>
+          <app-product-production formControlName="productionStages" [materials]="materials$ | async"
+            [productionStages]="productionStages$ | async" />
+        </section>
+
+      </mat-expansion-panel>
+
+    </mat-accordion>
+
+
+  </form>
 
 </app-simple-form-container>

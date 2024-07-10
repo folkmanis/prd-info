@@ -168,11 +168,9 @@ export class InvoiceEditorComponent implements InvoiceEditor {
       });
   }
 
-  navigateToProduct(name: string): void {
-    this.productsService.getProductByName(name).pipe(
-      map(product => product._id),
-    )
-      .subscribe(id => this.navigate(['/', 'jobs-admin', 'products', id]));
+  async navigateToProduct(name: string) {
+    const product = await this.productsService.getProductByName(name);
+    this.navigate(['/', 'jobs-admin', 'products', product._id]);
   }
 
   private reload() {

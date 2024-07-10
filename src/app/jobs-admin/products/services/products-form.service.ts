@@ -50,18 +50,17 @@ export class ProductsFormService {
     this.form.markAsPristine();
   }
 
-  save(): Observable<Product> {
+  async save(): Promise<Product> {
     if (this.isNew) {
-      const product = pickBy(this.value, value => value !== null) as NewProduct;
-      return this.productService.insertProduct(product).pipe(
-        tap(() => this.form.markAsPristine()),
-      );
+      const newProduct = pickBy(this.value, value => value !== null) as NewProduct;
+      const inserted = await this.productService.insertProduct(newProduct);
+      this.form.markAsPristine();
+      return inserted;
     } else {
       const update = { ...this.changes, _id: this.value._id };
-      return this.productService.updateProduct(update).pipe(
-        tap(value => this.setInitial(value)),
-        tap((value) => this.setInitial(value)),
-      );
+      const updated = await this.productService.updateProduct(update);
+      this.setInitial(updated);
+      return updated;
     }
   }
 
@@ -101,13 +100,12 @@ export class ProductsFormService {
   }
 
   private nameAsyncValidator(): AsyncValidatorFn {
-    return (control: AbstractControl<string>): Observable<ValidationErrors | null> => {
+    return async (control) => {
       if (control.value === this.initialValue?.name) {
-        return of(null);
+        return null;
       } else {
-        return this.productService.validate('name', control.value.trim()).pipe(
-          map(valid => valid ? null : { occupied: control.value })
-        );
+        const valid = await this.productService.validate('name', control.value.trim());
+        return valid ? null : { occupied: control.value };
       }
     };
   }

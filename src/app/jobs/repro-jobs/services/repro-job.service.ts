@@ -73,7 +73,7 @@ export class ReproJobService {
         return [];
       }
 
-      const stages = await firstValueFrom(this.productsService.productionStages(product.name));
+      const stages = await this.productsService.productionStages(product.name);
       return stages.map(stage => this.jobProductionStage(stage, product));
     });
     const allStages = await Promise.all(productStages);

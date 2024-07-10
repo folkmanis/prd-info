@@ -74,7 +74,7 @@ export class JobListComponent {
 
   jobs$ = this.jobService.getJobsObserver(this.filter$, this.reload$);
 
-  products$ = inject(ProductsService).activeProducts$;
+  products = inject(ProductsService).activeProducts;
 
   highlited: string | null = null;
 

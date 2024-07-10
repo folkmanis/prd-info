@@ -24,7 +24,7 @@ import { ProductPartial } from 'src/app/interfaces';
 export class ProductsListComponent {
 
   private productsService = inject(ProductsService);
-  private allProducts = signal<ProductPartial[]>([]);
+  private allProducts = this.productsService.products;
 
   private filter = computed(() => this.name()?.trim().toLowerCase() || '');
 
@@ -37,17 +37,9 @@ export class ProductsListComponent {
     return this.allProducts().filter(product => product.name.toLowerCase().includes(filter));
   });
 
-  constructor() {
-    this.getAllProducts();
-  }
-
   async reload() {
-    this.getAllProducts();
+    this.productsService.reload();
   }
 
-  private async getAllProducts() {
-    const products = await firstValueFrom(this.productsService.getAllProducts());
-    this.allProducts.set(products);
-  }
 
 }

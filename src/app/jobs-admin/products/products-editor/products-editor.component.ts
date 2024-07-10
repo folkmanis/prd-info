@@ -65,8 +65,8 @@ export class ProductsEditorComponent implements CanComponentDeactivate {
 
   paytraqEnabled = configuration('paytraq', 'enabled');
   units = configuration('jobs', 'productUnits');
+  categories = configuration('jobs', 'productCategories');
 
-  categories$ = inject(ProductsService).categories$;
   customers$ = inject(CustomersService).customers$;
   materials$ = inject(MaterialsService).getMaterials();
 
@@ -83,13 +83,14 @@ export class ProductsEditorComponent implements CanComponentDeactivate {
     }, { allowSignalWrites: true });
   }
 
-  onSave() {
-    this.formService
-      .save()
-      .subscribe(async (product) => {
-        await this.productsList?.reload();
-        await this.navigate(['..', product._id]);
-      });
+  async onSave() {
+    try {
+      const product = await this.formService.save();
+      await this.productsList?.reload();
+      await this.navigate(['..', product._id]);
+    } catch (error) {
+
+    }
   }
 
   onReset(): void {
