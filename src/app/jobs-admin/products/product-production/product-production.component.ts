@@ -124,7 +124,7 @@ export class ProductProductionComponent implements ControlValueAccessor, Validat
     stages = stages instanceof Array ? stages : [];
 
     if (stages.length === this.form.length) {
-      this.form.setValue(stages);
+      this.form.patchValue(stages);
     } else {
       this.form.clear({ emitEvent: false });
       stages.forEach((st) =>
