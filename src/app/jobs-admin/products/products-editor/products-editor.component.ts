@@ -67,7 +67,7 @@ export class ProductsEditorComponent implements CanComponentDeactivate {
   units = configuration('jobs', 'productUnits');
   categories = configuration('jobs', 'productCategories');
 
-  customers$ = inject(CustomersService).customers$;
+  customers = inject(CustomersService).customers;
   materials$ = inject(MaterialsService).getMaterials();
 
   productionStages$ = inject(ProductionStagesService).getProductionStages();

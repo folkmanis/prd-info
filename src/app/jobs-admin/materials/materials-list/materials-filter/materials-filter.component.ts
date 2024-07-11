@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
 import { outputFromObservable } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Observable, debounceTime, map } from 'rxjs';
@@ -23,7 +23,7 @@ import { MaterialsFilter } from '../../services/materials.service';
     ReactiveFormsModule,
     FormsModule,
     MatFormFieldModule,
-    MatIconModule,
+    MatIcon,
     MatOptionModule,
     MatInputModule,
     IfViewSizeDirective,
@@ -38,7 +38,7 @@ export class MaterialsFilterComponent {
     categories: [[] as string[]],
   });
 
-  private filter$: Observable<MaterialsFilter> =
+  filter$: Observable<MaterialsFilter> =
     this.filterGroup.valueChanges.pipe(
       debounceTime(200),
       map(({ name, categories }) => {
@@ -49,9 +49,17 @@ export class MaterialsFilterComponent {
       })
     );
 
-  filter = outputFromObservable(this.filter$);
+  filter = input({} as MaterialsFilter);
+
+  filterChange = outputFromObservable(this.filter$);
 
   categories = configuration('jobs', 'productCategories');
+
+  constructor() {
+    effect(() => {
+      this.filterGroup.reset(this.filter(), { emitEvent: false });
+    }, { allowSignalWrites: true });
+  }
 
   clear() {
     this.filterGroup.reset();

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ClassTransformer, ClassConstructor, ClassTransformOptions } from 'class-transformer';
-import { map, OperatorFunction } from 'rxjs';
+import { firstValueFrom, map, Observable, OperatorFunction } from 'rxjs';
 
 export * from 'class-transformer';
 
@@ -23,6 +23,16 @@ export class AppClassTransformerService extends ClassTransformer {
   toClass<T extends Record<string, any>, V, U = T>(obj: ClassConstructor<T>, options?: ClassTransformOptions): OperatorFunction<V, U>;
   toClass<T extends Record<string, any>, V>(obj: ClassConstructor<T>, options?: ClassTransformOptions): OperatorFunction<V, T | T[]> {
     return map((data) => this.plainToInstance(obj, data, options));
+  }
+
+  async toInstanceAsync<T extends Record<string, any>, V extends any[]>(cls: ClassConstructor<T>, data: Observable<V>, options?: ClassTransformOptions): Promise<T[]>;
+  async toInstanceAsync<T extends Record<string, any>, V>(cls: ClassConstructor<T>, data: Observable<V>, options?: ClassTransformOptions): Promise<T>;
+  async toInstanceAsync<T extends Record<string, any>, V>(cls: ClassConstructor<T>, data: Observable<V>, options: ClassTransformOptions = {}): Promise<T | T[]> {
+    options = {
+      exposeDefaultValues: true,
+      ...options,
+    };
+    return super.plainToInstance(cls, await firstValueFrom(data), options);
   }
 
 

@@ -16,7 +16,6 @@ import {
   Validators,
 } from '@angular/forms';
 import { isEqual, isNull, omitBy } from 'lodash-es';
-import { map, of } from 'rxjs';
 import { Customer, NewCustomer } from 'src/app/interfaces';
 import { navigateRelative } from 'src/app/library/common';
 import { InputUppercaseDirective } from 'src/app/library/directives/input-uppercase.directive';
@@ -53,13 +52,30 @@ type CustomerEditGroup = FormGroup<{
 export class CustomerEditComponent implements CanComponentDeactivate {
 
   private customersService = inject(CustomersService);
-  private fb = inject(FormBuilder);
 
   private navigate = navigateRelative();
 
   paytraqEnabled = configuration('paytraq', 'enabled');
 
-  form = this.createForm();
+  form: CustomerEditGroup = inject(FormBuilder).group({
+    CustomerName: [
+      '',
+      [Validators.required, Validators.minLength(3)],
+      [this.validateName()],
+    ],
+    code: [
+      '',
+      [Validators.required, Validators.minLength(2), Validators.maxLength(3)],
+      [this.validateCode()],
+    ],
+    disabled: [false],
+    description: [''],
+    financial: [null],
+    ftpUser: [false],
+    ftpUserData: [null],
+    contacts: [],
+    insertedFromXmf: [null],
+  });
 
   customer = input.required<Customer>();
 
@@ -74,7 +90,7 @@ export class CustomerEditComponent implements CanComponentDeactivate {
       value,
       (val, key) => isEqual(val, initialValue[key])
     );
-    return Object.keys(diff).length ? diff : undefined;
+    return Object.keys(diff).length ? diff : null;
   });
 
   constructor() {
@@ -107,48 +123,24 @@ export class CustomerEditComponent implements CanComponentDeactivate {
     return this.form.pristine || !this.changes();
   }
 
-  private createForm(): CustomerEditGroup {
-    return this.fb.group({
-      CustomerName: [
-        '',
-        [Validators.required, Validators.minLength(3)],
-        [this.validateName()],
-      ],
-      code: [
-        '',
-        [Validators.required, Validators.minLength(2), Validators.maxLength(3)],
-        [this.validateCode()],
-      ],
-      disabled: [false],
-      description: [''],
-      financial: [null],
-      ftpUser: [false],
-      ftpUserData: [null],
-      contacts: [],
-      insertedFromXmf: [null],
-    });
-  }
-
   private validateCode(): AsyncValidatorFn {
-    return (control) => {
+    return async (control) => {
       if (this.customer().code === control.value) {
-        return of(null);
+        return null;
       } else {
-        return this.customersService
-          .validator('code', control.value)
-          .pipe(map((val) => (val ? null : { occupied: control.value })));
+        return await this.customersService.isCustomerCodeAvailable(control.value)
+          ? null : { occupied: control.value };
       }
     };
   }
 
   private validateName(): AsyncValidatorFn {
-    return (control) => {
+    return async (control) => {
       if (this.customer().CustomerName === control.value) {
-        return of(null);
+        return null;
       } else {
-        return this.customersService
-          .validator('CustomerName', control.value)
-          .pipe(map((val) => (val ? null : { occupied: control.value })));
+        return await this.customersService.isNameAvailable(control.value)
+          ? null : { occupied: control.value };
       }
     };
   }

@@ -1,6 +1,4 @@
-import { inject, Injectable } from '@angular/core';
-import { firstValueFrom, Observable, of, Subject } from 'rxjs';
-import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { Customer, CustomerPartial, CustomerUpdate, NewCustomer } from 'src/app/interfaces';
 import { CustomersApiService } from './prd-api/customers-api.service';
 
@@ -12,50 +10,67 @@ export class CustomersService {
 
   private api = inject(CustomersApiService);
 
-  private reloadCustomers$: Subject<void> = new Subject();
+  readonly #customers = signal([] as CustomerPartial[]);
 
-  customers$: Observable<CustomerPartial[]> = this.reloadCustomers$.pipe(
-    startWith({}),
-    switchMap(() => this.getCustomerList()),
-    shareReplay(1),
-  );
+  customers = this.#customers.asReadonly();
+
+  customersEnabled = computed(() => this.#customers().filter((customer) => !customer.disabled));
+
+  constructor() {
+    this.reload();
+  }
+
+  async reload() {
+    try {
+      const data = await this.api.getAll({ disabled: true });
+      this.#customers.set(data);
+    } catch (error) {
+      this.#customers.set([]);
+    }
+  }
 
   async updateCustomer({ _id, ...rest }: CustomerUpdate): Promise<Customer> {
-    const update = await firstValueFrom(this.api.updateOne(_id, rest));
-    this.reloadCustomers$.next();
-    return update;
+    const updated = await this.api.updateOne(_id, rest);
+    await this.reload();
+    return updated;
   }
 
-  getCustomerList(filter: { name?: string, email?: string; } = {}): Observable<CustomerPartial[]> {
-    return this.api.getAll({ disabled: true, ...filter });
-  }
-
-  getCustomer(id: string): Observable<Customer | never> {
-
+  async getCustomer(id: string): Promise<Customer | never> {
     this.isValidId(id);
     return this.api.getOne(id);
-
   }
 
-  getCustomerByName(name: string): Observable<Customer> {
+  async getCustomerByName(name: string): Promise<Customer> {
     return this.api.getOne(name);
   }
 
   async saveNewCustomer(customer: NewCustomer): Promise<Customer> {
-    const update = await firstValueFrom(this.api.insertOne(customer));
-    this.reloadCustomers$.next();
-    return update;
+    const updated = await this.api.insertOne(customer);
+    await this.reload();
+    return updated;
   }
 
-  validator<K extends keyof Customer>(key: K, value: Customer[K]): Observable<boolean> {
-    if (!value) {
-      return of(false);
+
+  async getCustomerList(filter: { name?: string, email?: string, disabled?: boolean; } = {}): Promise<CustomerPartial[]> {
+    return this.api.getAll({ disabled: true, ...filter });
+  }
+
+  async isNameAvailable(name?: string): Promise<boolean> {
+    if (!name) {
+      return true;
     }
-    const str = value?.toString().toUpperCase();
-    return this.api.validatorData(key).pipe(
-      map(values => values.map(val => val.toString().toUpperCase())),
-      map(values => !values.includes(str)),
-    );
+    name = name.toUpperCase();
+    const values = await this.api.validatorData('CustomerName');
+    return values.every(value => value.toUpperCase() !== name);
+  }
+
+  async isCustomerCodeAvailable(code?: string): Promise<boolean> {
+    if (!code) {
+      return true;
+    }
+    code = code.toUpperCase();
+    const values = await this.api.validatorData('code');
+    return values.every(value => value.toUpperCase() !== code);
   }
 
   private isValidId(str: any): asserts str is string {

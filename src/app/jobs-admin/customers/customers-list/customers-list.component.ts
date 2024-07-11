@@ -22,7 +22,7 @@ export class CustomersListComponent {
 
   name = signal('');
 
-  customers = toSignal(inject(CustomersService).customers$, { initialValue: <CustomerPartial[]>[] });
+  customers = inject(CustomersService).customers;
 
   customersFiltered = computed(() => this
     .customers()
