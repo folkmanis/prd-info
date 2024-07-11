@@ -1,9 +1,10 @@
-import { AsyncPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
   effect,
+  inject,
+  input,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
@@ -18,20 +19,19 @@ import {
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ActivatedRoute, Router } from '@angular/router';
+import { MatSelectModule } from '@angular/material/select';
 import { isEqual, pickBy } from 'lodash-es';
-import { map, of } from 'rxjs';
 import { Material } from 'src/app/interfaces';
+import { navigateRelative } from 'src/app/library/common';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
-import { getConfig } from 'src/app/services/config.provider';
+import { configuration } from 'src/app/services/config.provider';
 import { MaterialsService } from '../services/materials.service';
 import { MaterialsPricesComponent } from './materials-prices/materials-prices.component';
-import { MatSelectModule } from '@angular/material/select';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 
 type MaterialForm = {
   [k in keyof Material]-?: FormControl<Material[k]>;
@@ -48,7 +48,6 @@ type MaterialForm = {
     FormsModule,
     ReactiveFormsModule,
     MaterialsPricesComponent,
-    AsyncPipe,
     MatFormFieldModule,
     MatInputModule,
     MatCardModule,
@@ -59,13 +58,17 @@ type MaterialForm = {
   ],
 })
 export class MaterialsEditComponent implements CanComponentDeactivate {
-  units$ = getConfig('jobs', 'productUnits').pipe(
-    map((units) => units.filter((unit) => !unit.disabled))
-  );
 
-  categories$ = getConfig('jobs', 'productCategories');
+  #materialsService = inject(MaterialsService);
 
-  form: FormGroup<MaterialForm> = this.fb.group({
+  #navigate = navigateRelative();
+
+  #units = configuration('jobs', 'productUnits');
+  activeUnits = computed(() => this.#units().filter((unit) => !unit.disabled));
+
+  categories = configuration('jobs', 'productCategories');
+
+  form: FormGroup<MaterialForm> = inject(FormBuilder).group({
     _id: [''],
     name: [
       '',
@@ -82,16 +85,7 @@ export class MaterialsEditComponent implements CanComponentDeactivate {
     fixedPrice: [0],
   });
 
-  private _initialValue = new Material();
-  get initialValue() {
-    return this._initialValue;
-  }
-  set initialValue(value: Material) {
-    this._initialValue = value;
-    this.form.reset(this.initialValue);
-  }
-
-  private routerData = toSignal(this.route.data);
+  material = input.required<Material>();
 
   private formValue = toSignal(this.form.valueChanges, {
     initialValue: this.form.value,
@@ -103,42 +97,34 @@ export class MaterialsEditComponent implements CanComponentDeactivate {
 
   changes = computed(() => {
     const value = this.formValue();
-    const diff = pickBy(value, (v, key) => !isEqual(v, this.initialValue[key]));
+    const initialValue = this.material();
+    const diff = pickBy(value, (v, key) => !isEqual(v, initialValue[key]));
     return Object.keys(diff).length ? diff : undefined;
   });
 
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private fb: FormBuilder,
-    private materialsService: MaterialsService
-  ) {
+  constructor() {
     effect(
-      () => (this.initialValue = this.routerData().material || new Material()),
+      () => this.form.reset(this.material()),
       { allowSignalWrites: true }
     );
   }
 
   onReset() {
-    this.form.reset(this.initialValue);
+    this.form.reset(this.material());
   }
 
-  onSave() {
-    if (this.initialValue._id) {
-      const update = { ...this.changes(), _id: this.initialValue._id };
-      return this.materialsService
-        .updateMaterial(update)
-        .subscribe((material) => (this.initialValue = material));
+  async onSave() {
+    let id = this.material()._id;
+    if (id) {
+      const update = { ...this.changes(), _id: id };
+      await this.#materialsService.updateMaterial(update);
     } else {
-      return this.materialsService
-        .insertMaterial(this.form.getRawValue())
-        .subscribe((material) => {
-          this.form.markAsPristine();
-          this.router.navigate(['..', material._id], {
-            relativeTo: this.route,
-          });
-        });
+      const { _id, ...newMaterial } = this.form.getRawValue();
+      const created = await this.#materialsService.insertMaterial(newMaterial);
+      id = created._id;
     }
+    this.form.markAsPristine();
+    await this.#navigate(['..', id], { queryParams: { upd: Date.now() } });
   }
 
   canDeactivate(): boolean {
@@ -146,15 +132,14 @@ export class MaterialsEditComponent implements CanComponentDeactivate {
   }
 
   private nameValidator(): AsyncValidatorFn {
-    return (control: AbstractControl<string>) => {
+    return async (control: AbstractControl<string>) => {
       const nameCtrl = control.value.trim().toUpperCase();
-      if (nameCtrl === this.initialValue.name?.toUpperCase()) {
-        return of(null);
+      const initialName = this.material().name.toUpperCase();
+      if (nameCtrl === initialName) {
+        return null;
       }
-      return this.materialsService.getNamesForValidation().pipe(
-        map((names) => names.some((name) => name.toUpperCase() === nameCtrl)),
-        map((invalid) => (invalid ? { occupied: nameCtrl } : null))
-      );
+      const names = await this.#materialsService.getNamesForValidation();
+      return names.every((name) => name.toUpperCase() !== nameCtrl) ? null : { occupied: nameCtrl };
     };
   }
 }

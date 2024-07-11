@@ -82,11 +82,11 @@
           <mat-panel-title>
             Paytraq savienojums
           </mat-panel-title>
-          @if (form.value.paytraqId; as id) {
           <mat-panel-description>
+            @if (form.value.paytraqId; as id) {
             {{ id }}
+            }
           </mat-panel-description>
-          }
         </mat-expansion-panel-header>
 
         <app-paytraq-product formControlName="paytraqId" [productName]="form.value.name">
@@ -95,7 +95,7 @@
       </mat-expansion-panel>
 
       <!-- <mat-expansion-panel expanded> -->
-      @if (customers$ | async; as customers) {
+      @if (customers()) {
       <mat-expansion-panel>
         <mat-expansion-panel-header>
           <mat-panel-title>
@@ -105,7 +105,7 @@
 
         <!-- Cenu tabula -->
         <section>
-          <app-product-prices formControlName="prices" [customers]="customers" #prices>
+          <app-product-prices formControlName="prices" [customers]="customers()" #prices>
           </app-product-prices>
         </section>
 

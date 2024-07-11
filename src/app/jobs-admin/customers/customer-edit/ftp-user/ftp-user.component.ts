@@ -82,10 +82,12 @@ export class FtpUserComponent implements ControlValueAccessor, Validator {
     return this.form.controls.folder;
   }
 
-  onTouchFn: () => void = () => {};
-  private _onChange: () => void = () => {};
+  onTouchFn: () => void = () => { };
+  private _onChange: () => void = () => { };
 
-  constructor(private filesApi: JobsFilesApiService) {}
+  constructor(private filesApi: JobsFilesApiService) {
+    this.form.events.subscribe((event) => console.log(event));
+  }
 
   writeValue(obj: FtpUserData): void {
     this.form.setValue(defaults(obj, DEFAULT_DATA), { emitEvent: false });

@@ -64,12 +64,7 @@ export class JobFormComponent {
 
   private allJobStates = configuration('jobs', 'jobStates');
 
-  private customers = toSignal(
-    inject(CustomersService).customers$,
-    { initialValue: [] }
-  );
-
-  customersEnabled = computed(() => this.customers().filter((customer) => !customer.disabled));
+  customersEnabled = inject(CustomersService).customersEnabled;
 
   form = this.formService.form;
 

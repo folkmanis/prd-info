@@ -1,30 +1,30 @@
 <app-simple-list-container plusButton editorWidth="50%">
 
-    <mat-card>
-        <mat-card-content>
-            <app-materials-filter (filter)="onSetFilter($event)" />
-        </mat-card-content>
-    </mat-card>
+  <mat-card>
+    <mat-card-content>
+      <app-materials-filter [(filter)]="filter" />
+    </mat-card-content>
+  </mat-card>
 
-    <table mat-table [dataSource]="materials$">
+  <table mat-table [dataSource]="materialsFiltered()" [trackBy]="trackByFn">
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns;"></tr>
-        <tr mat-row *matRowDef="let material; columns: displayedColumns" [routerLink]="[material._id]"
-            routerLinkActive="selected" [class.disabled]="material.inactive"></tr>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns;"></tr>
+    <tr mat-row *matRowDef="let material; columns: displayedColumns" [routerLink]="[material._id]"
+      routerLinkActive="selected" [class.disabled]="material.inactive"></tr>
 
-        <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef> Nosaukums </th>
-            <td mat-cell *matCellDef="let material">
-                {{material.name}}
-            </td>
-        </ng-container>
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Nosaukums </th>
+      <td mat-cell *matCellDef="let material">
+        {{material.name}}
+      </td>
+    </ng-container>
 
-        <ng-container matColumnDef="category">
-            <th mat-header-cell *matHeaderCellDef> Grupa </th>
-            <td mat-cell *matCellDef="let material">
-                {{material.catDes}}
-            </td>
-        </ng-container>
+    <ng-container matColumnDef="category">
+      <th mat-header-cell *matHeaderCellDef> Grupa </th>
+      <td mat-cell *matCellDef="let material">
+        {{material.catDes}}
+      </td>
+    </ng-container>
 
-    </table>
+  </table>
 </app-simple-list-container>

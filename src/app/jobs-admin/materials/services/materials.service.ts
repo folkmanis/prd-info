@@ -1,11 +1,10 @@
-import { Injectable } from '@angular/core';
-import { withLatestFrom, BehaviorSubject, combineLatest, EMPTY, map, Observable, switchMap, tap, OperatorFunction, Subject } from 'rxjs';
-import { Material, ProductCategory } from 'src/app/interfaces';
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { Material } from 'src/app/interfaces';
+import { configuration } from 'src/app/services/config.provider';
 import { MaterialsApiService } from 'src/app/services/prd-api/materials-api.service';
-import { getConfig } from 'src/app/services/config.provider';
 
 
-type MaterialWithDescription = Material & {
+export type MaterialWithDescription = Material & {
   catDes: string;
 };
 
@@ -19,56 +18,67 @@ export interface MaterialsFilter {
 })
 export class MaterialsService {
 
+  private api = inject(MaterialsApiService);
 
-  private productCategories$ = getConfig('jobs', 'productCategories');
+  private productCategories = configuration('jobs', 'productCategories');
 
-  reload$ = new Subject<void>();
+  #materials = signal([] as Material[]);
+
+  materials = this.#materials.asReadonly();
+
+  materialsWithDescriptions = computed<MaterialWithDescription[]>(() => {
+    const categories = this.productCategories();
+    return this.#materials().map(
+      material => ({
+        ...material,
+        catDes: categories.find(cat => cat.category === material.category)?.description || ''
+      })
+    );
+  });
 
 
-  constructor(
-    private api: MaterialsApiService,
-  ) { }
+  constructor() {
+    this.reload();
+  }
 
-  getMaterials(filter: MaterialsFilter = {}): Observable<Material[]> {
+  async reload() {
+    try {
+      this.#materials.set(await this.api.getAll());
+    } catch (error) {
+      this.#materials.set([]);
+    }
+  }
+
+
+  async getMaterials(filter: MaterialsFilter = {}): Promise<Material[]> {
     return this.api.getAll(filter);
   }
 
-  getMaterial(id: string): Observable<Material> {
+  async getMaterial(id: string): Promise<Material> {
     return this.api.getOne(id);
   }
 
-  getNamesForValidation(): Observable<string[]> {
+  async getNamesForValidation(): Promise<string[]> {
     return this.api.validatorData('name');
   }
 
-  updateMaterial(material: Partial<Material>): Observable<Material> {
+  async updateMaterial(material: Partial<Material>): Promise<Material> {
     const { _id: id, ...upd } = material;
     if (!id) {
-      return EMPTY;
+      throw new Error('id not set');
     }
-    return this.api.updateOne(id, upd).pipe(
-      tap(_ => this.reload$.next()),
-    );
+    const data = await this.api.updateOne(id, upd);
+    await this.reload();
+    return data;
   }
 
-  insertMaterial(material: Partial<Material>): Observable<Material> {
+  async insertMaterial(material: Partial<Material>): Promise<Material> {
     delete material._id;
-    return this.api.insertOne(material).pipe(
-      tap(_ => this.reload$.next()),
-    );
+    const data = await this.api.insertOne(material);
+    await this.reload();
+    return data;
   }
 
-  materialsWithDescriptions(filter: MaterialsFilter = {}): Observable<MaterialWithDescription[]> { // : MaterialWithDescription[]
-    return this.getMaterials(filter).pipe(
-      withLatestFrom(this.productCategories$),
-      map(([materials, categories]: [Material[], ProductCategory[]]) => materials.map(
-        material => ({
-          ...material,
-          catDes: categories.find(cat => cat.category === material.category)?.description || ''
-        })
-      )),
-    );
-  }
 
 
 }

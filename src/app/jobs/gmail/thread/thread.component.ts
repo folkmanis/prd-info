@@ -16,14 +16,10 @@ import { Router, RouterLink } from '@angular/router';
 import {
   EMPTY,
   Observable,
-  OperatorFunction,
-  map,
-  mergeMap,
-  pipe,
   tap,
   withLatestFrom
 } from 'rxjs';
-import { JobTemplate, ReproJobService } from 'src/app/jobs/repro-jobs/services/repro-job.service';
+import { ReproJobService } from 'src/app/jobs/repro-jobs/services/repro-job.service';
 import { UploadRefService } from 'src/app/jobs/repro-jobs/services/upload-ref.service';
 import { CustomersService } from 'src/app/services/customers.service';
 import { UploadRef } from '../../repro-jobs/services/upload-ref';
@@ -76,7 +72,7 @@ export class ThreadComponent {
   isExpanded = (msg: Message) =>
     msg.hasPdf && msg.labelIds.every((label) => label !== 'SENT');
 
-  onCreateFromThread(thread: Thread) {
+  async onCreateFromThread(thread: Thread) {
 
     this.busy.set(true);
 
@@ -85,15 +81,13 @@ export class ThreadComponent {
     );
 
     if (selected.length === 0) {
-      this.resolveCustomer(thread.from).pipe(
-        tap(customer => this.reproJobService.setJobTemplate({
-          name: thread.subject,
-          customer,
-          comment: thread.plain,
-        })
-        )
-      )
-        .subscribe(() => this.navigateToNew());
+      const customer = await this.resolveCustomer(thread.from);
+      this.reproJobService.setJobTemplate({
+        name: thread.subject,
+        customer,
+        comment: thread.plain,
+      });
+      this.navigateToNew();
     } else {
       const attachments: { messageId: string; attachment: Attachment; }[] =
         selected.reduce(
@@ -145,16 +139,12 @@ export class ThreadComponent {
     return component.markAsRead ? this.gmailService.markAsRead(component.message) : EMPTY;
   }
 
-  private resolveCustomer(from: string): Observable<string | undefined> {
+  private async resolveCustomer(from: string): Promise<string | undefined> {
     const email = extractEmail(from);
 
-    return this.customersService
-      .getCustomerList({ email })
-      .pipe(
-        map((customers) =>
-          customers.length === 1 ? customers[0].CustomerName : undefined
-        )
-      );
+    const customers = await this.customersService
+      .getCustomerList({ email });
+    return customers.length === 1 ? customers[0].CustomerName : undefined;
   }
 
   private navigateToNew() {

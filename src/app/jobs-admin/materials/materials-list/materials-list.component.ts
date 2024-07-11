@@ -1,13 +1,10 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { BehaviorSubject, debounceTime, switchMap } from 'rxjs';
-import { combineReload } from 'src/app/library/rxjs';
-import { MaterialsFilter, MaterialsService } from '../services/materials.service';
-import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
-import { MaterialsFilterComponent } from './materials-filter/materials-filter.component';
-import { SimpleListContainerComponent } from 'src/app/library/simple-form';
+import { ChangeDetectionStrategy, Component, computed, inject, model, TrackByFunction } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
+import { MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { SimpleListContainerComponent } from 'src/app/library/simple-form';
+import { MaterialsFilter, MaterialsService, MaterialWithDescription } from '../services/materials.service';
+import { MaterialsFilterComponent } from './materials-filter/materials-filter.component';
 
 
 @Component({
@@ -17,7 +14,6 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrls: ['./materials-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
     MatTableModule,
     MaterialsFilterComponent,
     SimpleListContainerComponent,
@@ -28,22 +24,22 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 })
 export class MaterialsListComponent {
 
-  private filter$ = new BehaviorSubject<MaterialsFilter>({});
+  #materials = inject(MaterialsService).materialsWithDescriptions;
 
-  materials$ = combineReload(this.filter$, this.materialsService.reload$).pipe(
-    debounceTime(300),
-    switchMap(filter => this.materialsService.materialsWithDescriptions(filter)),
-  );
+  filter = model<MaterialsFilter>({});
+
+  materialsFiltered = computed(() => {
+    const { name, categories } = this.filter() ?? {};
+    return this.#materials()
+      .filter(material =>
+        (!name || material.name.toUpperCase().includes(name.toUpperCase()))
+        && (!categories || categories.length === 0 || categories.includes(material.category))
+      );
+  });
+
+  trackByFn: TrackByFunction<MaterialWithDescription> = (_, material) => material._id;
+
 
   displayedColumns = ['name', 'category',];
-
-  constructor(
-    private materialsService: MaterialsService,
-  ) { }
-
-
-  onSetFilter(filter: MaterialsFilter) {
-    this.filter$.next(filter);
-  }
 
 }

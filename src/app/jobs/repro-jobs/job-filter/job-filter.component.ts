@@ -70,9 +70,7 @@ export class JobFilterComponent {
     productsName: [null],
   });
 
-  private customers = toSignal(inject(CustomersService).getCustomerList(), {
-    initialValue: [],
-  });
+  private customers = inject(CustomersService).customersEnabled;
   private customerControlValue = toSignal(
     this.filterForm.controls.customer.valueChanges
   );
@@ -103,7 +101,7 @@ export class JobFilterComponent {
       map(() => this.filter)
     );
 
-  constructor(private jobService: JobService, private fb: FormBuilder) {}
+  constructor(private jobService: JobService, private fb: FormBuilder) { }
 
   onReset<T extends keyof JobFilter>(key?: T) {
     if (key) {
