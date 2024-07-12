@@ -1,9 +1,9 @@
 import { HttpClient, HttpEvent, HttpRequest } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { ClassTransformer } from 'class-transformer';
+import { inject, Injectable } from '@angular/core';
 import { concatMap, from, map, Observable, reduce } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { Job } from 'src/app/jobs';
+import { AppClassTransformerService } from 'src/app/library';
 import { HttpOptions } from 'src/app/library/http';
 import { FileElement } from '../interfaces/file-element';
 import { FileLocationTypes } from '../interfaces/file-location-types';
@@ -15,11 +15,8 @@ import { FileLocationTypes } from '../interfaces/file-location-types';
 export class JobsFilesApiService {
 
   private path = getAppParams('apiPath') + 'jobs/files/';
-
-  constructor(
-    private http: HttpClient,
-    private transformer: ClassTransformer,
-  ) { }
+  private transformer = inject(AppClassTransformerService);
+  private http = inject(HttpClient);
 
   readJobFolder(path: string[]): Observable<FileElement[]> {
     return this.http.get<Record<string, any>[]>(
@@ -78,12 +75,13 @@ export class JobsFilesApiService {
     );
   }
 
-  readFtp(path?: string): Observable<FileElement[]> {
-    return this.http.get<Record<string, any>[]>(
-      this.path + 'read/ftp',
-      new HttpOptions({ path }).cacheable()
-    ).pipe(
-      map(data => this.transformer.plainToInstance(FileElement, data, { exposeDefaultValues: true }))
+  async readFtp(path?: string): Promise<FileElement[]> {
+    return this.transformer.toInstanceAsync(
+      FileElement,
+      this.http.get<Record<string, any>[]>(
+        this.path + 'read/ftp',
+        new HttpOptions({ path }).cacheable()
+      )
     );
   }
 

@@ -2,7 +2,7 @@ import { OverlayRef } from '@angular/cdk/overlay';
 import { Directive, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 import { last } from 'lodash-es';
-import { EMPTY, Observable, catchError, map, tap } from 'rxjs';
+import { EMPTY, Observable } from 'rxjs';
 import { JobFilesService } from 'src/app/filesystem';
 import { ReproJobService } from 'src/app/jobs/repro-jobs/services/repro-job.service';
 import { UploadRefService } from 'src/app/jobs/repro-jobs/services/upload-ref.service';
@@ -43,7 +43,7 @@ export class MessageJobDirective {
 
   ftpUser = input<MessageFtpUser | null>(null, { alias: 'appMessageJobFtpUser' });
 
-  onClick() {
+  async onClick() {
 
     const message = this.message();
     const ftpUser = this.ftpUser();
@@ -58,27 +58,27 @@ export class MessageJobDirective {
 
       const afterAddedToJob = this.setMessageRead(message);
 
-      this.fileExists(path).pipe(
-        map(() => this.uploadRefService.setFtpUpload(path, afterAddedToJob)),
-        tap(() => this.reproJobService.setJobTemplate({
+      if (await this.fileExists(path)) {
+        this.uploadRefService.setFtpUpload(path, afterAddedToJob);
+        this.reproJobService.setJobTemplate({
           name,
           customer: ftpUser?.CustomerName,
-        })),
-        catchError(() => EMPTY)
-      ).subscribe(() => this.router.navigate(['/', 'jobs', 'repro', 'new']));
+        });
+        await this.router.navigate(['/', 'jobs', 'repro', 'new']);
+      } else {
+        console.error(`File missing: ${name}`);
+      }
 
     }
 
   }
 
-  private fileExists(path: string[]): Observable<boolean> {
+  private async fileExists(path: string[]): Promise<boolean> {
     const fileName = last(path);
-    return this.filesService.ftpFolders(path.slice(0, -1)).pipe(
-      map(filelist => filelist.filter(val => !val.isFolder).map(val => val.name).includes(fileName)),
-      tap(isFile => {
-        if (!isFile) throw new FileMissingError(fileName);
-      })
-    );
+
+    return (await this.filesService.ftpFolders(path.slice(0, -1)))
+      .filter(element => !element.isFolder)
+      .some(file => file.name === fileName);
   }
 
   private setMessageRead(message: Message): Observable<unknown> {

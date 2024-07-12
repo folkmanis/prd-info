@@ -1,113 +1,111 @@
 <app-simple-form-container buttons [status]="form.status" [isChanges]="changes()" (save)="onSave()" (reset)="onReset()">
 
-    <form [formGroup]="form">
-        @if (customer()._id == null) {
-        <mat-form-field class="customer-name full-width">
-            <mat-label>Klienta nosaukums</mat-label>
-            <input matInput formControlName="CustomerName" placeholder="Nosaukums" autocomplete="off" required>
-            @if (form.controls.CustomerName.hasError('required')) {
+  <form [formGroup]="form">
+    @if (customer()._id == null) {
+    <mat-form-field class="customer-name full-width">
+      <mat-label>Klienta nosaukums</mat-label>
+      <input matInput formControlName="CustomerName" placeholder="Nosaukums" autocomplete="off" required>
+      @if (form.controls.CustomerName.hasError('required')) {
+      <mat-error>
+        Nosaukums jāievada obligāti!
+      </mat-error>
+      }
+      @if (form.controls.CustomerName.hasError('occupied')) {
+      <mat-error>
+        Nosaukums jau tiek izmantots
+      </mat-error>
+      }
+    </mat-form-field>
+    } @else {
+    <h2>
+      {{formValue().CustomerName}}
+    </h2>
+    }
+
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>
+          Pamatinformācija
+        </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <!-- Kods -->
+        <section>
+          <mat-form-field>
+            <mat-label>Klienta kods</mat-label>
+            <input matInput appInputUppercase formControlName="code" placeholder="Kods" autocomplete="off">
+            @if (form.controls.code.hasError('required')) {
             <mat-error>
-                Nosaukums jāievada obligāti!
+              Kodu jāievada obligāti!
             </mat-error>
             }
-            @if (form.controls.CustomerName.hasError('occupied')) {
+            @if (form.controls.code.hasError('occupied')) {
             <mat-error>
-                Nosaukums jau tiek izmantots
+              Kods jau tiek izmantots
             </mat-error>
             }
-        </mat-form-field>
-        } @else {
-        <h2>
-            {{formValue().CustomerName}}
-        </h2>
+          </mat-form-field>
+        </section>
+        <!-- apraksts -->
+        <section>
+          <mat-form-field class="full-width">
+            <mat-label>Apraksts</mat-label>
+            <input matInput formControlName="description" placeholder="Apraksts" autocomplete="off">
+          </mat-form-field>
+        </section>
+        <mat-divider></mat-divider>
+        <!-- ftp folderis -->
+        <section id="ftp-user">
+          <mat-checkbox class="input-element" formControlName="ftpUser" #ftpUser>
+            FTP lietotājs
+          </mat-checkbox>
+          <app-ftp-user [class.hidden]="!ftpUser.checked" formControlName="ftpUserData" />
+        </section>
+        <mat-divider></mat-divider>
+        <!-- Neaktīvs -->
+        <section>
+          <mat-checkbox class="input-element" formControlName="disabled">
+            Neaktīvs
+          </mat-checkbox>
+        </section>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>
+          Kontaktinformācija
+        </mat-card-title>
+        <mat-card-subtitle>
+          Klienta e-pasti
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <app-customer-contacts formControlName="contacts"></app-customer-contacts>
+      </mat-card-content>
+    </mat-card>
+
+    @if (paytraqEnabled()) {
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>
+          Sasaiste ar Paytraq
+        </mat-card-title>
+        @if (formValue().financial?.paytraqId) {
+        <mat-card-subtitle>
+          {{formValue().financial.paytraqId}} /
+          {{formValue().financial.clientName}}
+        </mat-card-subtitle>
         }
+      </mat-card-header>
 
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title>
-                    Pamatinformācija
-                </mat-card-title>
-            </mat-card-header>
-
-            <mat-card-content>
-                <!-- Kods -->
-                <section>
-                    <mat-form-field>
-                        <mat-label>Klienta kods</mat-label>
-                        <input matInput appInputUppercase formControlName="code" placeholder="Kods" autocomplete="off">
-                        @if (form.controls.code.hasError('required')) {
-                        <mat-error>
-                            Kodu jāievada obligāti!
-                        </mat-error>
-                        }
-                        @if (form.controls.code.hasError('occupied')) {
-                        <mat-error>
-                            Kods jau tiek izmantots
-                        </mat-error>
-                        }
-                    </mat-form-field>
-                </section>
-                <!-- apraksts -->
-                <section>
-                    <mat-form-field class="full-width">
-                        <mat-label>Apraksts</mat-label>
-                        <input matInput formControlName="description" placeholder="Apraksts" autocomplete="off">
-                    </mat-form-field>
-                </section>
-                <mat-divider></mat-divider>
-                <!-- ftp folderis -->
-                <section>
-                    <mat-checkbox class="input-element" formControlName="ftpUser" #ftpUser>
-                        FTP lietotājs
-                    </mat-checkbox>
-                    <app-ftp-user [class.hidden]="!ftpUser.checked" formControlName="ftpUserData"
-                        [required]="ftpUser.checked">
-                    </app-ftp-user>
-                </section>
-                <mat-divider></mat-divider>
-                <!-- Neaktīvs -->
-                <section>
-                    <mat-checkbox class="input-element" formControlName="disabled">
-                        Neaktīvs
-                    </mat-checkbox>
-                </section>
-            </mat-card-content>
-        </mat-card>
-
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title>
-                    Kontaktinformācija
-                </mat-card-title>
-                <mat-card-subtitle>
-                    Klienta e-pasti
-                </mat-card-subtitle>
-            </mat-card-header>
-
-            <mat-card-content>
-                <app-customer-contacts formControlName="contacts"></app-customer-contacts>
-            </mat-card-content>
-        </mat-card>
-
-        @if (paytraqEnabled()) {
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title>
-                    Sasaiste ar Paytraq
-                </mat-card-title>
-                @if (formValue().financial?.paytraqId) {
-                <mat-card-subtitle>
-                    {{formValue().financial.paytraqId}} /
-                    {{formValue().financial.clientName}}
-                </mat-card-subtitle>
-                }
-            </mat-card-header>
-
-            <mat-card-content>
-                <app-paytraq-customer formControlName="financial" [customer]="formValue()"></app-paytraq-customer>
-            </mat-card-content>
-        </mat-card>
-        }
-    </form>
+      <mat-card-content>
+        <app-paytraq-customer formControlName="financial" [customer]="formValue()"></app-paytraq-customer>
+      </mat-card-content>
+    </mat-card>
+    }
+  </form>
 
 </app-simple-form-container>

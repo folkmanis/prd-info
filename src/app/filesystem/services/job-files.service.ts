@@ -61,7 +61,7 @@ export class JobFilesService {
     );
   }
 
-  ftpFolders(path?: string[]): Observable<FileElement[]> {
+  ftpFolders(path?: string[]): Promise<FileElement[]> {
     return this.filesApi.readFtp(path?.join('/'));
   }
 
