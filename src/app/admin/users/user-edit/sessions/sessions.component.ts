@@ -2,14 +2,13 @@ import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  Input,
-  Output,
+  computed,
+  input,
+  output
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { Subject } from 'rxjs';
 import { UserSession } from 'src/app/interfaces';
 
 @Component({
@@ -23,28 +22,24 @@ import { UserSession } from 'src/app/interfaces';
     MatListModule,
     MatButtonModule,
     MatIconModule,
-    MatExpansionModule,
   ],
 })
 export class SessionsComponent {
-  @Input() sessions: UserSession[] = [];
+  sessions = input([] as UserSession[]);
 
-  @Input() currentSession: string = '';
+  currentSession = input<string>();
 
-  @Output() deleteSession = new Subject<string[]>();
+  deleteSession = output<string[]>();
 
-  constructor() {}
+  deleteAllDisabled = computed(() => this.sessions().length === 0 ||
+    this.sessions().every((s) => s._id === this.currentSession())
+  );
 
-  onDeleteAll(sessions: UserSession[]) {
-    this.deleteSession.next(
-      sessions.map((s) => s._id).filter((id) => id !== this.currentSession)
+  onDeleteAll() {
+    const currentSession = this.currentSession();
+    this.deleteSession.emit(
+      this.sessions().map((s) => s._id).filter((id) => id !== currentSession)
     );
   }
 
-  deleteAllDisabled(): boolean {
-    return (
-      !this.sessions.length ||
-      this.sessions.every((s) => s._id === this.currentSession)
-    );
-  }
 }
