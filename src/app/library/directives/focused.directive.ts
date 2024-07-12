@@ -1,4 +1,4 @@
-import { AfterRenderPhase, AfterViewInit, Directive, ElementRef, afterNextRender, afterRender } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, afterNextRender, afterRender } from '@angular/core';
 
 @Directive({
   selector: 'input[appFocused]',
@@ -9,9 +9,9 @@ export class FocusedDirective {
   constructor(
     private elementRef: ElementRef<HTMLInputElement>,
   ) {
-    afterNextRender(() => {
-      this.focus();
-    }, { phase: AfterRenderPhase.Write });
+    afterNextRender({ write: () => {
+        this.focus();
+    } }, );
   }
 
   focus() {
