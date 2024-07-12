@@ -13,6 +13,7 @@ import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { isEqual, isNull, omitBy } from 'lodash-es';
@@ -75,7 +76,10 @@ export class CustomerEditComponent implements CanComponentDeactivate {
     ftpUserData: [null],
     contacts: [],
     insertedFromXmf: [null],
-  });
+  }, {
+    validators: [this.validateFtp()],
+  }
+  );
 
   customer = input.required<Customer>();
 
@@ -142,6 +146,13 @@ export class CustomerEditComponent implements CanComponentDeactivate {
         return await this.customersService.isNameAvailable(control.value)
           ? null : { occupied: control.value };
       }
+    };
+  }
+
+  private validateFtp(): ValidatorFn {
+    return (control: CustomerEditGroup) => {
+      return (control.value.ftpUser === false || !!control.value.ftpUserData) ?
+        null : { ftpUserData: 'ftp data not set' };
     };
   }
 }

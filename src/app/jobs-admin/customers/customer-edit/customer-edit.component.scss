@@ -1,15 +1,35 @@
 mat-form-field.full-width {
-    width: 100%;
-}
-
-.hidden {
-    display: none;
+  width: 100%;
 }
 
 mat-card {
-    margin-top: 16px;
+  margin-top: 16px;
+}
+
+.mat-mdc-card-header {
+  margin-bottom: 16px;
 }
 
 .customer-name {
-    margin-top: 16px;
+  margin-top: 16px;
+}
+
+section {
+  margin: 8px 0;
+}
+
+section#ftp-user {
+
+  mat-checkbox[formControlName="ftpUser"] {
+    margin: 8px 0;
+  }
+
+  app-ftp-user {
+    display: block;
+    margin-top: 8px;
+
+    &.hidden {
+      display: none;
+    }
+  }
 }
