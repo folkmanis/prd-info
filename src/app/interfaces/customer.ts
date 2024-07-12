@@ -1,63 +1,67 @@
 import { Expose, Type } from 'class-transformer';
 
 export interface CustomerFinancial {
-    clientName: string;
-    paytraqId?: number;
+  clientName: string;
+  paytraqId?: number;
 }
 
 export class FtpUserData {
 
-    @Expose()
-    folder: string = '';
+  @Expose()
+  folder: string = '';
 
-    @Expose()
-    username: string = '';
+  @Expose()
+  username: string = '';
 
-    @Expose()
-    password: string = '';
+  @Expose()
+  password: string = '';
 }
 
 export class CustomerContact {
 
-    @Expose()
-    email: string;
+  @Expose()
+  email: string;
+
+  constructor(email: string) {
+    this.email = email;
+  }
 }
 
 
 export class Customer {
 
-    @Expose()
-    _id: string;
+  @Expose()
+  _id: string;
 
-    @Expose()
-    code: string = '';
+  @Expose()
+  code: string = '';
 
-    @Expose()
-    CustomerName: string = '';
+  @Expose()
+  CustomerName: string = '';
 
-    @Expose()
-    disabled: boolean = false;
+  @Expose()
+  disabled: boolean = false;
 
-    @Expose()
-    @Type(() => Date)
-    insertedFromXmf: Date = null;
+  @Expose()
+  @Type(() => Date)
+  insertedFromXmf: Date = null;
 
-    @Expose()
-    description?: string = null;
+  @Expose()
+  description?: string = null;
 
-    @Expose()
-    financial?: CustomerFinancial | null = null;
+  @Expose()
+  financial?: CustomerFinancial | null = null;
 
-    @Expose()
-    ftpUser: boolean = false;
+  @Expose()
+  ftpUser: boolean = false;
 
-    @Expose()
-    @Type(() => FtpUserData)
-    ftpUserData: FtpUserData = null;
+  @Expose()
+  @Type(() => FtpUserData)
+  ftpUserData: FtpUserData = null;
 
-    @Expose()
-    @Type(() => CustomerContact)
-    contacts: CustomerContact[] = [];
+  @Expose()
+  @Type(() => CustomerContact)
+  contacts: CustomerContact[] = [];
 }
 
 export type CustomerPartial = Pick<Customer, '_id' | 'CustomerName' | 'code' | 'disabled'>;

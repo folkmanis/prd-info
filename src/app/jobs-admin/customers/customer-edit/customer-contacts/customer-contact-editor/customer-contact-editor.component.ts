@@ -1,8 +1,7 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnInit, Output, ViewChild } from '@angular/core';
-import { ControlValueAccessor, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator, Validators } from '@angular/forms';
-import { Subject } from 'rxjs';
+import { afterNextRender, ChangeDetectionStrategy, Component, ElementRef, inject, output, viewChild } from '@angular/core';
+import { ControlValueAccessor, FormBuilder, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator, Validators } from '@angular/forms';
+import { map } from 'rxjs';
 import { CustomerContact } from 'src/app/interfaces';
-import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 
 @Component({
   selector: 'app-customer-contact-editor',
@@ -24,37 +23,44 @@ import { MaterialLibraryModule } from 'src/app/library/material-library.module';
   ],
   imports: [
     ReactiveFormsModule,
-    MaterialLibraryModule,
   ]
 })
-export class CustomerContactEditorComponent implements AfterViewInit, ControlValueAccessor, Validator {
+export class CustomerContactEditorComponent implements ControlValueAccessor, Validator {
 
-  @ViewChild('email') private emailInput: ElementRef<HTMLInputElement>;
+  private emailInput = viewChild.required<ElementRef<HTMLInputElement>>('email');
 
-  controlGroup = new FormGroup({
-    email: new FormControl<string>(null, {
+  emailControl = inject(FormBuilder).control(
+    null as string | null,
+    {
       validators: [
         Validators.required,
         Validators.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/),
       ]
-    })
-  });
+    }
+  );
 
-  @Output() complete = new Subject<void>();
+  complete = output<void>();
 
   private onTouchFn: () => void = () => { };
 
-  ngAfterViewInit(): void {
-    // this.onTouchFn();
-    this.emailInput.nativeElement.focus();
+  constructor() {
+    afterNextRender({
+      write: () => {
+        this.emailInput().nativeElement.focus();
+        this.onTouchFn();
+      }
+    }
+    );
   }
 
-  writeValue(obj: CustomerContact): void {
-    this.controlGroup.setValue(obj, { emitEvent: false });
+  writeValue(obj: CustomerContact | null): void {
+    this.emailControl.setValue(obj?.email, { emitEvent: false });
   }
 
   registerOnChange(fn: (value: CustomerContact) => void): void {
-    this.controlGroup.valueChanges.subscribe(fn);
+    this.emailControl.valueChanges.pipe(
+      map(value => value ? new CustomerContact(value) : null)
+    ).subscribe(fn);
   }
 
   registerOnTouched(fn: () => void): void {
@@ -63,17 +69,17 @@ export class CustomerContactEditorComponent implements AfterViewInit, ControlVal
 
   setDisabledState(isDisabled: boolean): void {
     if (isDisabled) {
-      this.controlGroup.disable({ emitEvent: false });
+      this.emailControl.disable({ emitEvent: false });
     } else {
-      this.controlGroup.enable({ emitEvent: false });
+      this.emailControl.enable({ emitEvent: false });
     }
   }
 
   validate(): ValidationErrors {
-    if (this.controlGroup.valid) {
+    if (this.emailControl.valid) {
       return null;
     }
-    return this.controlGroup.get('email').errors;
+    return this.emailControl.errors;
   }
 
 }

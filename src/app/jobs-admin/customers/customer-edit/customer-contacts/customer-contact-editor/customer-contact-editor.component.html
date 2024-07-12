@@ -1,5 +1,5 @@
-<div [formGroup]="controlGroup">
+<div>
 
-    <input appInput type="email" formControlName="email" required (blur)="complete.next()" #email>
+  <input appInput type="email" [formControl]="emailControl" required (blur)="complete.emit()" #email>
 
 </div>

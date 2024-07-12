@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  inject,
 } from '@angular/core';
 import {
   ControlValueAccessor,
@@ -16,12 +17,11 @@ import {
 import { plainToInstance } from 'class-transformer';
 import { map } from 'rxjs';
 import { CustomerContact } from 'src/app/interfaces';
-import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { CustomerContactEditorComponent } from './customer-contact-editor/customer-contact-editor.component';
+import { MatListModule } from '@angular/material/list';
+import { MatIcon } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
-const DEFAULT_CONTACT: CustomerContact = {
-  email: '',
-};
 
 @Component({
   selector: 'app-customer-contacts',
@@ -44,28 +44,22 @@ const DEFAULT_CONTACT: CustomerContact = {
   imports: [
     ReactiveFormsModule,
     CustomerContactEditorComponent,
-    MaterialLibraryModule,
+    MatListModule,
+    MatIcon,
+    MatButtonModule,
   ],
 })
 export class CustomerContactsComponent
-  implements ControlValueAccessor, Validator
-{
-  controlGroup = this.fb.group({
-    contacts: this.fb.array<CustomerContact>([]),
-  });
+  implements ControlValueAccessor, Validator {
 
-  get contactsArray() {
-    return this.controlGroup.controls.contacts;
-  }
+  private fb = inject(FormBuilder);
+  private changeDetector = inject(ChangeDetectorRef);
+
+  contactsArray = this.fb.array<CustomerContact>([]);
 
   active: FormControl<CustomerContact> | null = null;
 
-  private onTouchFn: () => void = () => {};
-
-  constructor(
-    private fb: FormBuilder,
-    private changeDetector: ChangeDetectorRef
-  ) {}
+  private onTouchFn: () => void = () => { };
 
   writeValue(obj: CustomerContact[]): void {
     obj = obj instanceof Array ? obj : [];
@@ -85,9 +79,9 @@ export class CustomerContactsComponent
 
   setDisabledState(isDisabled: boolean): void {
     if (isDisabled) {
-      this.controlGroup.disable({ emitEvent: false });
+      this.contactsArray.disable({ emitEvent: false });
     } else {
-      this.controlGroup.enable({ emitEvent: false });
+      this.contactsArray.enable({ emitEvent: false });
     }
   }
 
@@ -107,7 +101,7 @@ export class CustomerContactsComponent
   }
 
   addContact() {
-    const newContact = this.fb.control(DEFAULT_CONTACT);
+    const newContact = this.fb.control(new CustomerContact(''));
     this.contactsArray.push(newContact, { emitEvent: false });
     newContact.setErrors({ required: true }, { emitEvent: false });
     this.active = newContact;
