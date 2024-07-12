@@ -1,7 +1,7 @@
 import { Directive } from '@angular/core';
 
 @Directive({
-    selector: '[appCardTitle]',
-    standalone: true
+  selector: '[appCardTitle]',
+  standalone: true,
 })
-export class CardTitleDirective { }
+export class CardTitleDirective {}

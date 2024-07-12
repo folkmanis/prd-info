@@ -1,50 +1,48 @@
 <table>
-    <thead>
-        <th class="customer-name"> Klients </th>
-        <th class="price"> Cena </th>
-        <th class="buttons"> </th>
-    </thead>
+  <thead>
+    <th class="customer-name">Klients</th>
+    <th class="price">Cena</th>
+    <th class="buttons"></th>
+  </thead>
 
-    <tbody>
-        @for (control of pricesFormArray.controls; track $index) {
-        <tr>
-            <!-- Klients ar labošanu -->
-            <td class="customer-name">
-                <!-- <mat-form-field> -->
-                <mat-select [formControl]="control.controls.customerName">
-                    @for (customer of customers(); track customer.CustomerName) {
-                    <mat-option [value]="customer.CustomerName" [disabled]="customer.disabled">
-                        {{customer.CustomerName}}
-                    </mat-option>
-                    }
-                </mat-select>
-                <!-- </mat-form-field> -->
-            </td>
-            <!-- Cena labojama -->
-            <td class="price">
-                <!-- <mat-form-field> -->
-                <input [formControl]="control.controls.price" type="number" appInput>
-                <!-- </mat-form-field> -->
-            </td>
-            <!-- Pogas -->
-            <td class="buttons">
-                <button mat-icon-button (click)="removePrice($index)" color="warn">
-                    <mat-icon>delete_outline</mat-icon>
-                </button>
-            </td>
-        </tr>
+  <tbody>
+    @for (control of pricesFormArray.controls; track $index) {
+      <tr>
+        <!-- Klients ar labošanu -->
+        <td class="customer-name">
+          <!-- <mat-form-field> -->
+          <mat-select [formControl]="control.controls.customerName">
+            @for (customer of customers(); track customer.CustomerName) {
+              <mat-option [value]="customer.CustomerName" [disabled]="customer.disabled">
+                {{ customer.CustomerName }}
+              </mat-option>
+            }
+          </mat-select>
+          <!-- </mat-form-field> -->
+        </td>
+        <!-- Cena labojama -->
+        <td class="price">
+          <!-- <mat-form-field> -->
+          <input [formControl]="control.controls.price" type="number" appInput />
+          <!-- </mat-form-field> -->
+        </td>
+        <!-- Pogas -->
+        <td class="buttons">
+          <button mat-icon-button (click)="removePrice($index)" color="warn">
+            <mat-icon>delete_outline</mat-icon>
+          </button>
+        </td>
+      </tr>
+    }
+  </tbody>
+
+  <tfoot>
+    <tr>
+      <td colspan="3">
+        @if (pricesFormArray.hasError('duplicates')) {
+          <span class="error"> Atkārtoti norādīts klients {{ pricesFormArray.getError('duplicates') }} </span>
         }
-    </tbody>
-
-    <tfoot>
-        <tr>
-            <td colspan="3">
-                @if (pricesFormArray.hasError('duplicates')) {
-                <span class="error">
-                    Atkārtoti norādīts klients {{ pricesFormArray.getError('duplicates') }}
-                </span>
-                }
-            </td>
-        </tr>
-    </tfoot>
+      </td>
+    </tr>
+  </tfoot>
 </table>

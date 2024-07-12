@@ -1,13 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
-import { combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { EquipmentService } from '../../equipment/services/equipment.service';
-
-import { ProductionStagesService } from 'src/app/services/production-stages.service';
-import { SimpleListContainerComponent } from 'src/app/library/simple-form';
-import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { combineLatest, map } from 'rxjs';
+import { SimpleListContainerComponent } from 'src/app/library/simple-form';
+import { ProductionStagesService } from 'src/app/services/production-stages.service';
+import { EquipmentService } from '../../equipment/services/equipment.service';
 
 @Component({
   selector: 'app-production-stages-list',
@@ -15,42 +12,25 @@ import { MatTableModule } from '@angular/material/table';
   templateUrl: './production-stages-list.component.html',
   styleUrls: ['./production-stages-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    CommonModule,
-    SimpleListContainerComponent,
-    RouterLink,
-    RouterLinkActive,
-    MatTableModule,
-  ]
+  imports: [SimpleListContainerComponent, RouterLink, RouterLinkActive, MatTableModule],
 })
-export class ProductionStagesListComponent implements OnInit {
+export class ProductionStagesListComponent {
+  private productionStagesService = inject(ProductionStagesService);
+  private equipmentService = inject(EquipmentService);
 
-  stages$ = combineLatest([
-    this.productionStagesService.productionStages$,
-    this.equipmentService.getList(),
-  ]).pipe(
+  stages$ = combineLatest([this.productionStagesService.productionStages$, this.equipmentService.getList()]).pipe(
     map(([prodS, equipments]) =>
-      prodS.map(prod => ({
+      prodS.map((prod) => ({
         ...prod,
-        equipment: prod.equipmentIds?.map(eqId => equipments.find(eq => eq._id === eqId)?.name || '???').join(', ') || ''
-      }))
+        equipment: prod.equipmentIds?.map((eqId) => equipments.find((eq) => eq._id === eqId)?.name || '???').join(', ') || '',
+      })),
     ),
   );
 
   displayedColumns = ['name', 'equipment'];
 
-  constructor(
-    private productionStagesService: ProductionStagesService,
-    private equipmentService: EquipmentService,
-  ) { }
-
-  ngOnInit(): void {
-  }
-
   onSetNameFilter(name: string) {
     const filter = name?.length > 0 ? { name } : {};
     this.productionStagesService.setFilter(filter);
   }
-
 }
-

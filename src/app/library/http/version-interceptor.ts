@@ -7,7 +7,7 @@ import { ApiVersionService } from './api-version.service';
 export const versionInterceptor: HttpInterceptorFn = (request, next) => {
   const versionService = inject(ApiVersionService);
   return next(request).pipe(
-    tap(event => {
+    tap((event) => {
       if (event instanceof HttpResponse && event.headers.has('API-Version')) {
         const ver: ApiVersion = {
           apiBuild: +(event.headers.get('API-Version') || 0),
@@ -15,7 +15,6 @@ export const versionInterceptor: HttpInterceptorFn = (request, next) => {
         };
         versionService.setVersion(ver);
       }
-    })
+    }),
   );
-
 };

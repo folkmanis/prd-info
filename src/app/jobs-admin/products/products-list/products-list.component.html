@@ -1,24 +1,20 @@
 <app-simple-list-container [(filter)]="name" plusButton filterInput hideFilterWhenActive editorWidth="60%">
+  <mat-table [dataSource]="products()" class="app-table">
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let prod; columns: displayedColumns" [routerLink]="[prod._id]" routerLinkActive="selected" [class.disabled]="prod.inactive"></mat-row>
 
-    <mat-table [dataSource]="products()" class="app-table">
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef> Nosaukums </mat-header-cell>
+      <mat-cell *matCellDef="let prod">
+        {{ prod.name }}
+      </mat-cell>
+    </ng-container>
 
-        <mat-header-row *matHeaderRowDef="displayedColumns;"></mat-header-row>
-        <mat-row *matRowDef="let prod; columns: displayedColumns" [routerLink]="[prod._id]" routerLinkActive="selected"
-            [class.disabled]="prod.inactive"></mat-row>
-
-        <ng-container matColumnDef="name">
-            <mat-header-cell *matHeaderCellDef> Nosaukums </mat-header-cell>
-            <mat-cell *matCellDef="let prod;">
-                {{prod.name}}
-            </mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="category">
-            <mat-header-cell *matHeaderCellDef> Kategorija </mat-header-cell>
-            <mat-cell *matCellDef="let prod;">
-                {{prod.category}}
-            </mat-cell>
-        </ng-container>
-
-    </mat-table>
+    <ng-container matColumnDef="category">
+      <mat-header-cell *matHeaderCellDef> Kategorija </mat-header-cell>
+      <mat-cell *matCellDef="let prod">
+        {{ prod.category }}
+      </mat-cell>
+    </ng-container>
+  </mat-table>
 </app-simple-list-container>

@@ -4,9 +4,9 @@ import { CardMenuComponent } from '../library/card-menu/card-menu.component';
 
 @Component({
   standalone: true,
-  template: `<app-card-menu [modules]='modules()'></app-card-menu>`,
+  template: `<app-card-menu [modules]="modules()"></app-card-menu>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CardMenuComponent]
+  imports: [CardMenuComponent],
 })
 export class JobsComponent {
   modules = inject(SystemPreferencesService).childMenu;

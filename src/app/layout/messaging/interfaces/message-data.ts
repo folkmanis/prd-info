@@ -1,5 +1,4 @@
-
 export abstract class MessageData {
-    abstract toAction(): string;
-    abstract toDescription(): string;
+  abstract toAction(): string;
+  abstract toDescription(): string;
 }

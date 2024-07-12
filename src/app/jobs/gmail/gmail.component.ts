@@ -6,18 +6,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { DomSanitizer } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
-import {
-  EMPTY,
-  Observable,
-  combineLatest,
-  concatMap,
-  filter,
-  map,
-  of,
-  scan,
-  shareReplay,
-  tap
-} from 'rxjs';
+import { EMPTY, Observable, combineLatest, concatMap, filter, map, of, scan, shareReplay, tap } from 'rxjs';
 import { ScrollTopDirective } from '../../library/scroll-to-top/scroll-top.directive';
 import { JobsUserPreferencesService } from '../services/jobs-user-preferences.service';
 import { GmailPaginatorComponent } from './gmail-paginator/gmail-paginator.component';
@@ -38,19 +27,9 @@ const DEFAULT_FILTER: ThreadsFilterQuery = {
   styleUrls: ['./gmail.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    ThreadsFilterComponent,
-    GmailPaginatorComponent,
-    MatProgressBarModule,
-    MatTableModule,
-    ScrollTopDirective,
-    RouterLink,
-  ],
+  imports: [MatButtonModule, MatIconModule, ThreadsFilterComponent, GmailPaginatorComponent, MatProgressBarModule, MatTableModule, ScrollTopDirective, RouterLink],
 })
 export class GmailComponent {
-
   private gmailService = inject(GmailService);
   private sanitizer = inject(DomSanitizer);
   private preferencesService = inject(JobsUserPreferencesService);
@@ -66,14 +45,13 @@ export class GmailComponent {
 
   pageIdx = signal(0);
 
-  threadsFilter$: Observable<ThreadsFilterQuery> =
-    toObservable(this.gmailPreferences).pipe(
-      filter(preference => !!preference),
-      map((preference) => ({ labelIds: preference.activeLabelId })),
-      scan((acc, update) => ({ ...acc, ...update }), DEFAULT_FILTER),
-      tap(() => (this.threadsCache = [])),
-      shareReplay(1)
-    );
+  threadsFilter$: Observable<ThreadsFilterQuery> = toObservable(this.gmailPreferences).pipe(
+    filter((preference) => !!preference),
+    map((preference) => ({ labelIds: preference.activeLabelId })),
+    scan((acc, update) => ({ ...acc, ...update }), DEFAULT_FILTER),
+    tap(() => (this.threadsCache = [])),
+    shareReplay(1),
+  );
 
   threadsFilter = toSignal(this.threadsFilter$);
 
@@ -83,7 +61,7 @@ export class GmailComponent {
   }).pipe(
     tap(() => this.loading.set(true)),
     concatMap(({ fltr, idx }) => this.getThreadsPage(fltr, idx)),
-    shareReplay(1)
+    shareReplay(1),
   );
 
   threads = toSignal(this.threads$, { initialValue: new Threads() });
@@ -94,38 +72,29 @@ export class GmailComponent {
 
   datasource = computed(() => this.threads().threads);
 
-  sanitize = (snippet: string) =>
-    this.sanitizer.bypassSecurityTrustHtml(snippet);
-
+  sanitize = (snippet: string) => this.sanitizer.bypassSecurityTrustHtml(snippet);
 
   onSetFilter(labelIds: string[]) {
     if (!Array.isArray(labelIds) || labelIds.length === 0) {
       return;
     }
 
-    this.preferencesService.patchUserPreferences(
-      {
-        gmail: {
-          ...this.gmailPreferences(),
-          activeLabelId: labelIds,
-        }
-      }
-    );
+    this.preferencesService.patchUserPreferences({
+      gmail: {
+        ...this.gmailPreferences(),
+        activeLabelId: labelIds,
+      },
+    });
   }
 
   onSetPageIdx(idx: number) {
     this.pageIdx.set(idx);
   }
 
-  private getThreadsPage(
-    fltr: ThreadsFilterQuery,
-    idx: number
-  ): Observable<Threads> {
+  private getThreadsPage(fltr: ThreadsFilterQuery, idx: number): Observable<Threads> {
     if (idx === 0) {
       this.threadsCache = [];
-      return this.gmailService
-        .getThreads(fltr)
-        .pipe(tap((data) => this.threadsCache.push(data)));
+      return this.gmailService.getThreads(fltr).pipe(tap((data) => this.threadsCache.push(data)));
     }
 
     if (this.threadsCache[idx]) {
@@ -139,8 +108,6 @@ export class GmailComponent {
       return EMPTY;
     }
 
-    return this.gmailService
-      .getThreads({ ...fltr, pageToken })
-      .pipe(tap((data) => this.threadsCache.push(data)));
+    return this.gmailService.getThreads({ ...fltr, pageToken }).pipe(tap((data) => this.threadsCache.push(data)));
   }
 }

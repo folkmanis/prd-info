@@ -1,43 +1,33 @@
 <div class="stages">
-
-    @for (control of form.controls; track $index) {
+  @for (control of form.controls; track $index) {
     <mat-card [formGroup]="control">
+      <mat-card-content>
+        <div class="stage">
+          <select formControlName="productionStageId" appSelect>
+            @for (stage of productionStages(); track $index) {
+              <option [value]="stage._id">
+                {{ stage.name }}
+              </option>
+            }
+          </select>
 
-        <mat-card-content>
+          <input type="number" formControlName="amount" appInput />
 
-            <div class="stage">
+          <input type="number" formControlName="fixedAmount" appInput />
 
-                <select formControlName="productionStageId" appSelect>
-                    @for (stage of productionStages(); track $index) {
-                    <option [value]="stage._id">
-                        {{ stage.name }}
-                    </option>
-                    }
-                </select>
+          <button mat-icon-button color="warn" (click)="onDeleteStage($index)">
+            <mat-icon> delete_outline </mat-icon>
+          </button>
+        </div>
 
-                <input type="number" formControlName="amount" appInput>
+        <mat-divider></mat-divider>
 
-                <input type="number" formControlName="fixedAmount" appInput>
-
-                <button mat-icon-button color="warn" (click)="onDeleteStage($index)">
-                    <mat-icon>
-                        delete_outline
-                    </mat-icon>
-                </button>
-
-            </div>
-
-            <mat-divider></mat-divider>
-
-            <app-production-material [formControl]="control.controls.materials" [materials]="materials()" />
-
-        </mat-card-content>
+        <app-production-material [formControl]="control.controls.materials" [materials]="materials()" />
+      </mat-card-content>
     </mat-card>
-
-    }
-
+  }
 </div>
 
-<button mat-mini-fab color="primary" (click)="onNewProductionStage();" [disabled]="!form.valid">
-    <mat-icon> add </mat-icon>
+<button mat-mini-fab color="primary" (click)="onNewProductionStage()" [disabled]="!form.valid">
+  <mat-icon> add </mat-icon>
 </button>

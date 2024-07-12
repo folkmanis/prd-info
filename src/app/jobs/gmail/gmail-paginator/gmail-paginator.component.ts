@@ -3,17 +3,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 
-
 @Component({
   selector: 'app-gmail-paginator',
   templateUrl: './gmail-paginator.component.html',
   styleUrls: ['./gmail-paginator.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [MatButtonModule, MatMenuModule, MatIconModule]
+  imports: [MatButtonModule, MatMenuModule, MatIconModule],
 })
 export class GmailPaginatorComponent {
-
   activePage = input(0);
 
   pageSize = input(100, { transform: numberAttribute });
@@ -24,9 +22,9 @@ export class GmailPaginatorComponent {
 
   indexChanges = output<number>();
 
-  start = computed(() => this.loadedCount() ? this.activePage() * this.pageSize() + 1 : 0);
+  start = computed(() => (this.loadedCount() ? this.activePage() * this.pageSize() + 1 : 0));
 
-  end = computed(() => this.loadedCount() ? this.activePage() * this.pageSize() + this.loadedCount() : 0);
+  end = computed(() => (this.loadedCount() ? this.activePage() * this.pageSize() + this.loadedCount() : 0));
 
   setPage(idx: number): void {
     this.indexChanges.emit(idx);
@@ -47,6 +45,4 @@ export class GmailPaginatorComponent {
       this.setPage(this.activePage() - 1);
     }
   }
-
-
 }

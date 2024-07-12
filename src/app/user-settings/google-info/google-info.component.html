@@ -1,13 +1,10 @@
 <mat-list>
-
-    @for (value of values(); track $index) {
+  @for (value of values(); track $index) {
     <mat-list-item>
-        {{ value[0] | titlecase }}:&nbsp;
-        <span class="value" (click)="clickEvent.emit(value)">
-            {{ value[1] }}
-        </span>
+      {{ value[0] | titlecase }}:&nbsp;
+      <span class="value" (click)="clickEvent.emit(value)">
+        {{ value[1] }}
+      </span>
     </mat-list-item>
-    }
-
-
+  }
 </mat-list>

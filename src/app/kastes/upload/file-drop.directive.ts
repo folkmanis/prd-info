@@ -2,12 +2,9 @@ import { Directive, HostListener, ElementRef, EventEmitter, Output, inject } fro
 
 @Directive({
   selector: '[appFileDrop]',
-  standalone: true
+  standalone: true,
 })
-
-
 export class FileDropDirective {
-
   private element = inject(ElementRef).nativeElement;
 
   @Output('appFileDrop') filesEmitter = new EventEmitter<FileList>();
@@ -36,5 +33,4 @@ export class FileDropDirective {
       this.filesEmitter.emit(files);
     }
   }
-
 }

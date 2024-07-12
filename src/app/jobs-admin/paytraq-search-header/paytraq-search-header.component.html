@@ -1,27 +1,16 @@
 <span>
-
-    <mat-form-field>
-        <mat-label>
-            Meklēt paytraq
-        </mat-label>
-        <input matInput [(ngModel)]="search" [disabled]="disabled()" #searchInput="ngModel">
-        <button matIconSuffix mat-icon-button (click)="search.set('')" [disabled]="!searchInput.value || disabled()">
-            <mat-icon>
-                clear
-            </mat-icon>
-        </button>
-        <button matIconSuffix mat-icon-button [disabled]="!searchInput.value || disabled()" #searchButton
-            (click)="onSubmit()">
-            <mat-icon>
-                search
-            </mat-icon>
-        </button>
-    </mat-form-field>
-
+  <mat-form-field>
+    <mat-label> Meklēt paytraq </mat-label>
+    <input matInput [(ngModel)]="search" [disabled]="disabled()" #searchInput="ngModel" />
+    <button matIconSuffix mat-icon-button (click)="search.set('')" [disabled]="!searchInput.value || disabled()">
+      <mat-icon> clear </mat-icon>
+    </button>
+    <button matIconSuffix mat-icon-button [disabled]="!searchInput.value || disabled()" #searchButton (click)="onSubmit()">
+      <mat-icon> search </mat-icon>
+    </button>
+  </mat-form-field>
 </span>
 
 <span>
-
-    <ng-content select="button"></ng-content>
-
+  <ng-content select="button"></ng-content>
 </span>

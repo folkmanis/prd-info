@@ -5,26 +5,26 @@ import { ProductsListComponent } from './products-list/products-list.component';
 import { resolveProduct } from './services/product-resolver';
 
 export default [
-    {
-        path: '',
-        component: ProductsListComponent,
-        children: [
-            {
-                path: 'new',
-                component: ProductsEditorComponent,
-                canDeactivate: [canComponentDeactivate],
-                data: {
-                    product: {},
-                }
-            },
-            {
-                path: ':id',
-                component: ProductsEditorComponent,
-                canDeactivate: [canComponentDeactivate],
-                resolve: {
-                    product: resolveProduct,
-                }
-            },
-        ]
-    }
+  {
+    path: '',
+    component: ProductsListComponent,
+    children: [
+      {
+        path: 'new',
+        component: ProductsEditorComponent,
+        canDeactivate: [canComponentDeactivate],
+        data: {
+          product: {},
+        },
+      },
+      {
+        path: ':id',
+        component: ProductsEditorComponent,
+        canDeactivate: [canComponentDeactivate],
+        resolve: {
+          product: resolveProduct,
+        },
+      },
+    ],
+  },
 ] as Route[];

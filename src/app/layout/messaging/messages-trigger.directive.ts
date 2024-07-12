@@ -1,32 +1,16 @@
-import {
-  CdkOverlayOrigin,
-  ConnectedPosition,
-  Overlay,
-  OverlayConfig,
-  OverlayRef,
-} from '@angular/cdk/overlay';
+import { CdkOverlayOrigin, ConnectedPosition, Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
-import {
-  Directive,
-  ElementRef,
-  HostListener,
-  Injector,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
+import { Directive, ElementRef, HostListener, Injector, OnDestroy, OnInit } from '@angular/core';
 import { DestroyService } from 'src/app/library/rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MessagesListComponent } from './messages-list/messages-list.component';
 
 @Directive({
-    selector: 'button[appMessagesTrigger]',
-    providers: [DestroyService],
-    standalone: true,
+  selector: 'button[appMessagesTrigger]',
+  providers: [DestroyService],
+  standalone: true,
 })
-export class MessagesTriggerDirective
-  extends CdkOverlayOrigin
-  implements OnInit, OnDestroy
-{
+export class MessagesTriggerDirective extends CdkOverlayOrigin implements OnInit, OnDestroy {
   private overlayRef: OverlayRef;
 
   private readonly connectedPositions: ConnectedPosition[] = [
@@ -42,15 +26,13 @@ export class MessagesTriggerDirective
 
   @HostListener('click')
   onClick() {
-    this.overlayRef.hasAttached()
-      ? this.overlayRef.detach()
-      : this.openOverlay();
+    this.overlayRef.hasAttached() ? this.overlayRef.detach() : this.openOverlay();
   }
 
   constructor(
     private overlay: Overlay,
     elementRef: ElementRef,
-    private destroy$: DestroyService
+    private destroy$: DestroyService,
   ) {
     super(elementRef);
   }
@@ -77,22 +59,13 @@ export class MessagesTriggerDirective
     const injector = Injector.create({
       providers: [{ provide: OverlayRef, useValue: this.overlayRef }],
     });
-    const portal = new ComponentPortal(
-      MessagesListComponent,
-      undefined,
-      injector
-    );
+    const portal = new ComponentPortal(MessagesListComponent, undefined, injector);
     this.overlayRef.attach(portal);
   }
 
   private overlayConfig(): OverlayConfig {
     return new OverlayConfig({
-      positionStrategy: this.overlay
-        .position()
-        .flexibleConnectedTo(this.elementRef)
-        .withPositions(this.connectedPositions)
-        .withGrowAfterOpen()
-        .withLockedPosition(),
+      positionStrategy: this.overlay.position().flexibleConnectedTo(this.elementRef).withPositions(this.connectedPositions).withGrowAfterOpen().withLockedPosition(),
       scrollStrategy: this.overlay.scrollStrategies.block(),
       width: '320px',
       hasBackdrop: true,

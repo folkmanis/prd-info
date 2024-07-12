@@ -1,11 +1,11 @@
 <mat-form-field>
-    <mat-label>Klients</mat-label>
-    <mat-select [formControl]="customerId">
-        <mat-option value="">Visi</mat-option>
-        @for ( customer of customers; track customer._id) {
-        <mat-option [value]="customer._id">
-            {{customer._id}}
-        </mat-option>
-        }
-    </mat-select>
+  <mat-label>Klients</mat-label>
+  <mat-select [formControl]="customerId">
+    <mat-option value="">Visi</mat-option>
+    @for (customer of customers; track customer._id) {
+      <mat-option [value]="customer._id">
+        {{ customer._id }}
+      </mat-option>
+    }
+  </mat-select>
 </mat-form-field>

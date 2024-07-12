@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  forwardRef,
-  inject
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, inject } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormsModule, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
@@ -26,24 +21,17 @@ import { PaytraqConnectionParamsComponent } from './paytraq-connection-params/pa
       provide: NG_VALIDATORS,
       useExisting: forwardRef(() => PaytraqPreferencesComponent),
       multi: true,
-    }
+    },
   ],
   standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    MatCheckboxModule,
-    MatDividerModule,
-    PaytraqConnectionParamsComponent,
-  ],
+  imports: [FormsModule, ReactiveFormsModule, MatCheckboxModule, MatDividerModule, PaytraqConnectionParamsComponent],
 })
 export class PaytraqPreferencesComponent implements ControlValueAccessor, Validator {
-
-  onTouchFn = () => { };
+  onTouchFn = () => {};
 
   controls = inject(FormBuilder).group({
     enabled: [false],
-    connectionParams: [null as null | PaytraqConnectionParams]
+    connectionParams: [null as null | PaytraqConnectionParams],
   });
 
   writeValue(obj: any): void {
@@ -51,9 +39,7 @@ export class PaytraqPreferencesComponent implements ControlValueAccessor, Valida
   }
 
   registerOnChange(fn: any): void {
-    this.controls.valueChanges.pipe(
-      map(values => values.enabled ? values : { enabled: false, connectionParams: null })
-    ).subscribe(fn);
+    this.controls.valueChanges.pipe(map((values) => (values.enabled ? values : { enabled: false, connectionParams: null }))).subscribe(fn);
   }
 
   registerOnTouched(fn: any): void {
@@ -73,9 +59,8 @@ export class PaytraqPreferencesComponent implements ControlValueAccessor, Valida
       return null;
     } else {
       return {
-        connectionParams: 'No set'
+        connectionParams: 'No set',
       };
     }
   }
-
 }

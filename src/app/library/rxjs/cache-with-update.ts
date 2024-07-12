@@ -1,16 +1,6 @@
-import {
-  MonoTypeOperatorFunction,
-  Observable,
-  filter,
-  map,
-  merge,
-  tap,
-} from 'rxjs';
+import { MonoTypeOperatorFunction, Observable, filter, map, merge, tap } from 'rxjs';
 
-export function cacheWithUpdate<T>(
-  update$: Observable<T>,
-  compareFn: (o1: T, o2: T) => boolean
-): MonoTypeOperatorFunction<T[]> {
+export function cacheWithUpdate<T>(update$: Observable<T>, compareFn: (o1: T, o2: T) => boolean): MonoTypeOperatorFunction<T[]> {
   let cache: T[];
   return (data$: Observable<T[]>): Observable<T[]> => {
     return merge(
@@ -25,8 +15,8 @@ export function cacheWithUpdate<T>(
             cache = [upd, ...cache];
           }
           return cache;
-        })
-      )
+        }),
+      ),
     );
   };
 }

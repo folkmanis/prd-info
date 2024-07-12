@@ -6,7 +6,6 @@ export interface CustomerFinancial {
 }
 
 export class FtpUserData {
-
   @Expose()
   folder: string = '';
 
@@ -18,7 +17,6 @@ export class FtpUserData {
 }
 
 export class CustomerContact {
-
   @Expose()
   email: string;
 
@@ -27,9 +25,7 @@ export class CustomerContact {
   }
 }
 
-
 export class Customer {
-
   @Expose()
   _id: string;
 
@@ -69,4 +65,3 @@ export type CustomerPartial = Pick<Customer, '_id' | 'CustomerName' | 'code' | '
 export type NewCustomer = Pick<Customer, 'CustomerName' | 'disabled' | 'code' | 'description' | 'ftpUser' | 'contacts'>;
 
 export type CustomerUpdate = Pick<Customer, '_id'> & Partial<Customer>;
-

@@ -12,16 +12,9 @@ const COLUMNS = ['invoiceId', 'customer', 'createdDate', 'totalSum'];
   templateUrl: './invoices-list.component.html',
   styleUrls: ['./invoices-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    MatTableModule,
-    DatePipe,
-    CurrencyPipe,
-    RouterLink,
-  ]
+  imports: [MatTableModule, DatePipe, CurrencyPipe, RouterLink],
 })
 export class InvoicesListComponent {
-
   datasource = inject(InvoicesService).getInvoicesHttp({});
   displayedColumns: string[] = COLUMNS;
-
 }

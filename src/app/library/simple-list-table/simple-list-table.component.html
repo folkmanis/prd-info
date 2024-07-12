@@ -1,43 +1,34 @@
 <mat-table [dataSource]="data()" class="app-table" fixedLayout [class.disabled]="disabled()">
-
-    @for (col of columns(); track $index) {
+  @for (col of columns(); track $index) {
     <ng-container [matColumnDef]="col">
-        <mat-cell *matCellDef="let rowData; index as idx" class="data-cell" [class.record-disabled]="rowData.disabled"
-            (click)="onEditRow(rowData, idx)">
-            <span>
-                {{ rowData[col] }}
-            </span>
-        </mat-cell>
+      <mat-cell *matCellDef="let rowData; index as idx" class="data-cell" [class.record-disabled]="rowData.disabled" (click)="onEditRow(rowData, idx)">
+        <span>
+          {{ rowData[col] }}
+        </span>
+      </mat-cell>
     </ng-container>
-    }
+  }
 
-    <ng-container matColumnDef="button">
-        <mat-header-cell *matHeaderCellDef>
-            <button mat-icon-button (click)="onAddRow()" matTooltip="Pievienot jaunu" [disabled]="disabled()">
-                <mat-icon>
-                    add_circle_outline
-                </mat-icon>
-            </button>
-        </mat-header-cell>
-        <mat-cell *matCellDef="let row; index as idx">
-            <button mat-icon-button (click)="onRemoveRow(idx)" [disabled]="disabled()" matTooltip="Dzēst">
-                <mat-icon>
-                    delete_outline
-                </mat-icon>
-            </button>
-        </mat-cell>
-    </ng-container>
+  <ng-container matColumnDef="button">
+    <mat-header-cell *matHeaderCellDef>
+      <button mat-icon-button (click)="onAddRow()" matTooltip="Pievienot jaunu" [disabled]="disabled()">
+        <mat-icon> add_circle_outline </mat-icon>
+      </button>
+    </mat-header-cell>
+    <mat-cell *matCellDef="let row; index as idx">
+      <button mat-icon-button (click)="onRemoveRow(idx)" [disabled]="disabled()" matTooltip="Dzēst">
+        <mat-icon> delete_outline </mat-icon>
+      </button>
+    </mat-cell>
+  </ng-container>
 
-    <ng-container matColumnDef="header">
-        <mat-header-cell *matHeaderCellDef class="header-cell">
-            <ng-content></ng-content>
-        </mat-header-cell>
-    </ng-container>
+  <ng-container matColumnDef="header">
+    <mat-header-cell *matHeaderCellDef class="header-cell">
+      <ng-content></ng-content>
+    </mat-header-cell>
+  </ng-container>
 
-    <mat-header-row *matHeaderRowDef="['button','header'];"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns(); index as idx;"></mat-row>
-    <div *matNoDataRow>
-        Pagaidām nav neviena ieraksta
-    </div>
-
+  <mat-header-row *matHeaderRowDef="['button', 'header']"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns(); index as idx"></mat-row>
+  <div *matNoDataRow>Pagaidām nav neviena ieraksta</div>
 </mat-table>

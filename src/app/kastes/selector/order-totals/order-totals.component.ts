@@ -7,7 +7,6 @@ type OrderTotalsInput = Record<Colors, number> & {
   total: number;
 };
 
-
 @Component({
   selector: 'app-order-totals',
   templateUrl: './order-totals.component.html',
@@ -16,7 +15,6 @@ type OrderTotalsInput = Record<Colors, number> & {
   standalone: true,
 })
 export class OrderTotalsComponent {
-
   colors = COLORS;
 
   colorCodes = kastesPreferences('colors');
@@ -26,5 +24,4 @@ export class OrderTotalsComponent {
   totalsBySize = computed(() => totalsBySize(this.packages()));
 
   colorTotals = computed(() => totalsByColor(this.packages()));
-
 }

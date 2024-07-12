@@ -1,29 +1,18 @@
-<button appFileDrop #fileDrop="appFileDrop" mat-fab (filesEmitter)="onFileDrop($event)" [matMenuTriggerFor]="newJobMenu"
-    color="primary" class="plus-button mat-elevation-z8">
-    @if (!fileDrop.dragOver()) {
-    <mat-icon>
-        add
-    </mat-icon>
-    }
+<button appFileDrop #fileDrop="appFileDrop" mat-fab (filesEmitter)="onFileDrop($event)" [matMenuTriggerFor]="newJobMenu" color="primary" class="plus-button mat-elevation-z8">
+  @if (!fileDrop.dragOver()) {
+    <mat-icon> add </mat-icon>
+  }
 </button>
 
 <mat-menu #newJobMenu="matMenu">
-    <a mat-menu-item routerLink="/jobs/repro/new">
-        <mat-icon>
-            note_add
-        </mat-icon>
-        <span>
-            Jauns darbs
-        </span>
-    </a>
-    <button mat-menu-item (click)="uploadFile.click()">
-        <mat-icon>
-            upload_file
-        </mat-icon>
-        <span>
-            Augšuplādēt failu
-        </span>
-    </button>
+  <a mat-menu-item routerLink="/jobs/repro/new">
+    <mat-icon> note_add </mat-icon>
+    <span> Jauns darbs </span>
+  </a>
+  <button mat-menu-item (click)="uploadFile.click()">
+    <mat-icon> upload_file </mat-icon>
+    <span> Augšuplādēt failu </span>
+  </button>
 </mat-menu>
 
-<input type="file" hidden multiple #uploadFile (change)="onFileSelected($event)">
+<input type="file" hidden multiple #uploadFile (change)="onFileSelected($event)" />

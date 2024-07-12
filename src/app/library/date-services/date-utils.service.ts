@@ -7,22 +7,17 @@ export const DATE_FNS_LOCALE = new InjectionToken<Locale>('date-fns locale', {
   factory: () => enUS,
 });
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DateUtilsService {
-
   private locale: Locale;
 
-  constructor(
-    @Inject(DATE_FNS_LOCALE) locale: Locale,
-  ) {
+  constructor(@Inject(DATE_FNS_LOCALE) locale: Locale) {
     this.locale = locale || enUS;
   }
 
-  relative(date: Date | string | number, { strict, ...options }: { addSuffix?: boolean; strict?: boolean; } = {}): string {
-
+  relative(date: Date | string | number, { strict, ...options }: { addSuffix?: boolean; strict?: boolean } = {}): string {
     const defaultOptions = {
       addSuffix: true,
     };
@@ -40,7 +35,7 @@ export class DateUtilsService {
   thisWeek() {
     return {
       start: startOfWeek(new Date(), { locale: this.locale }),
-      end: endOfWeek(new Date(), { locale: this.locale })
+      end: endOfWeek(new Date(), { locale: this.locale }),
     };
   }
 
@@ -65,7 +60,6 @@ export class DateUtilsService {
       end: subYears(end, 1),
     };
   }
-
 }
 
 function toDate(value: string | number | Date): Date {
@@ -83,5 +77,4 @@ function toDate(value: string | number | Date): Date {
   }
 
   return date;
-
 }

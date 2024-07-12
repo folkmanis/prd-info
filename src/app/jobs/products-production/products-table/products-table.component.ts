@@ -10,25 +10,15 @@ import { JobsProduction } from '../../interfaces';
 import { Totals } from '../services/totals';
 import { ProductsSortDirective } from './products-sort.directive';
 
-
-
 @Component({
   selector: 'app-products-table',
   templateUrl: './products-table.component.html',
   styleUrls: ['./products-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [
-    MatTableModule,
-    ProductsSortDirective,
-    MatCheckboxModule,
-    MatSortModule,
-    DecimalPipe,
-    CurrencyPipe,
-  ],
+  imports: [MatTableModule, ProductsSortDirective, MatCheckboxModule, MatSortModule, DecimalPipe, CurrencyPipe],
 })
 export class ProductsTableComponent {
-
   selector = new SelectionModel<JobsProduction>(true);
 
   columns = ['selection', 'name', 'category', 'units', 'count', 'sum'];
@@ -42,19 +32,15 @@ export class ProductsTableComponent {
 
   selection = input<JobsProduction[]>([]);
 
-  selectionChange$ = this.selector.changed.pipe(
-    map(change => change.source.selected),
-  );
+  selectionChange$ = this.selector.changed.pipe(map((change) => change.source.selected));
 
   selectionChange = outputFromObservable(this.selectionChange$);
 
   sortString = model('name,1');
 
   isAllSelected = computed(() => {
-    return this.data().length > 0
-      && this.selection().length === this.data().length;
+    return this.data().length > 0 && this.selection().length === this.data().length;
   });
-
 
   constructor() {
     effect(() => {

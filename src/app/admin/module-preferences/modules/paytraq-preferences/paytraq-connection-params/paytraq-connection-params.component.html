@@ -1,45 +1,31 @@
 <div [formGroup]="controls" #container>
+  <mat-form-field floatLabel="always">
+    <mat-label> PayTraq Connect Url </mat-label>
+    <input matInput formControlName="connectUrl" />
+  </mat-form-field>
 
-    <mat-form-field floatLabel="always">
-        <mat-label>
-            PayTraq Connect Url
-        </mat-label>
-        <input matInput formControlName="connectUrl">
-    </mat-form-field>
+  <mat-form-field floatLabel="always">
+    <mat-label> PayTraq Connect Key </mat-label>
+    <input matInput formControlName="connectKey" />
+  </mat-form-field>
 
-    <mat-form-field floatLabel="always">
-        <mat-label>
-            PayTraq Connect Key
-        </mat-label>
-        <input matInput formControlName="connectKey">
-    </mat-form-field>
+  <mat-form-field floatLabel="always">
+    <mat-label> PayTraq API Url </mat-label>
+    <input matInput formControlName="apiUrl" />
+  </mat-form-field>
 
-    <mat-form-field floatLabel="always">
-        <mat-label>
-            PayTraq API Url
-        </mat-label>
-        <input matInput formControlName="apiUrl">
-    </mat-form-field>
+  <mat-form-field floatLabel="always">
+    <mat-label> PayTraq API Key </mat-label>
+    <input matInput formControlName="apiKey" />
+  </mat-form-field>
 
-    <mat-form-field floatLabel="always">
-        <mat-label>
-            PayTraq API Key
-        </mat-label>
-        <input matInput formControlName="apiKey">
-    </mat-form-field>
+  <mat-form-field floatLabel="always">
+    <mat-label> PayTraq API Token </mat-label>
+    <input matInput formControlName="apiToken" />
+  </mat-form-field>
 
-    <mat-form-field floatLabel="always">
-        <mat-label>
-            PayTraq API Token
-        </mat-label>
-        <input matInput formControlName="apiToken">
-    </mat-form-field>
-
-    <mat-form-field floatLabel="always">
-        <mat-label>
-            PayTraq Invoice URL base
-        </mat-label>
-        <input matInput formControlName="invoiceUrl">
-    </mat-form-field>
-
+  <mat-form-field floatLabel="always">
+    <mat-label> PayTraq Invoice URL base </mat-label>
+    <input matInput formControlName="invoiceUrl" />
+  </mat-form-field>
 </div>

@@ -1,42 +1,37 @@
 <app-simple-list-container #container filterInput [(filter)]="name" editorWidth="70%" hideFilterWhenActive>
-    <mat-table [dataSource]="kastesJobs()" class="simple-form-table">
+  <mat-table [dataSource]="kastesJobs()" class="simple-form-table">
+    <mat-header-row *matHeaderRowDef="container.activeStatus() ? columnsActive : columns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: container.activeStatus() ? columnsActive : columns" [routerLink]="row.jobId" routerLinkActive="selected"></mat-row>
 
-        <mat-header-row *matHeaderRowDef="container.activeStatus() ? columnsActive : columns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: container.activeStatus() ? columnsActive : columns;"
-            [routerLink]="row.jobId" routerLinkActive="selected"></mat-row>
-
-        <!-- Aktīvais pasūtījums -->
-        <ng-container matColumnDef="active">
-            <mat-header-cell *matHeaderCellDef> Aktīvs </mat-header-cell>
-            <mat-cell *matCellDef="let row;">
-                @if (row.jobId == activeJob()) {
-                <mat-icon>
-                    check_box
-                </mat-icon>
-                }
-            </mat-cell>
-        </ng-container>
-        <ng-container matColumnDef="jobId">
-            <mat-header-cell *matHeaderCellDef> Nr. </mat-header-cell>
-            <mat-cell *matCellDef="let row;">
-                {{row.jobId}}
-            </mat-cell>
-        </ng-container>
-        <!-- Nosaukums -->
-        <ng-container matColumnDef="name">
-            <mat-header-cell *matHeaderCellDef>Pasūtījuma nosaukums</mat-header-cell>
-            <mat-cell *matCellDef="let row;"> {{row.name}} </mat-cell>
-        </ng-container>
-        <!-- Izveidošanas datums -->
-        <ng-container matColumnDef="receivedDate">
-            <mat-header-cell *matHeaderCellDef>Pasūtījums izveidots</mat-header-cell>
-            <mat-cell *matCellDef="let row;">{{row.receivedDate || '' | date}}</mat-cell>
-        </ng-container>
-        <!-- Nodošanas datums -->
-        <ng-container matColumnDef="dueDate">
-            <mat-header-cell *matHeaderCellDef>Pasūtījums jānodod</mat-header-cell>
-            <mat-cell *matCellDef="let row;">{{row.dueDate || '' | date}}</mat-cell>
-        </ng-container>
-
-    </mat-table>
+    <!-- Aktīvais pasūtījums -->
+    <ng-container matColumnDef="active">
+      <mat-header-cell *matHeaderCellDef> Aktīvs </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        @if (row.jobId === activeJob()) {
+          <mat-icon> check_box </mat-icon>
+        }
+      </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="jobId">
+      <mat-header-cell *matHeaderCellDef> Nr. </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        {{ row.jobId }}
+      </mat-cell>
+    </ng-container>
+    <!-- Nosaukums -->
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef>Pasūtījuma nosaukums</mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{ row.name }} </mat-cell>
+    </ng-container>
+    <!-- Izveidošanas datums -->
+    <ng-container matColumnDef="receivedDate">
+      <mat-header-cell *matHeaderCellDef>Pasūtījums izveidots</mat-header-cell>
+      <mat-cell *matCellDef="let row">{{ row.receivedDate || '' | date }}</mat-cell>
+    </ng-container>
+    <!-- Nodošanas datums -->
+    <ng-container matColumnDef="dueDate">
+      <mat-header-cell *matHeaderCellDef>Pasūtījums jānodod</mat-header-cell>
+      <mat-cell *matCellDef="let row">{{ row.dueDate || '' | date }}</mat-cell>
+    </ng-container>
+  </mat-table>
 </app-simple-list-container>

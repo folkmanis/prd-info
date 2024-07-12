@@ -1,13 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  Input,
-  OnDestroy,
-  ViewChild,
-} from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnDestroy, ViewChild } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -49,21 +41,9 @@ import { CustomerPartial } from 'src/app/interfaces';
     },
   ],
   standalone: true,
-  imports: [
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule,
-    MatAutocompleteModule,
-    ReactiveFormsModule,
-    MatButtonModule,
-    MatIconModule,
-    MatOptionModule,
-    AsyncPipe,
-  ],
+  imports: [MatFormFieldModule, MatInputModule, FormsModule, MatAutocompleteModule, ReactiveFormsModule, MatButtonModule, MatIconModule, MatOptionModule, AsyncPipe],
 })
-export class CustomerInputComponent
-  implements OnDestroy, AfterViewInit, ControlValueAccessor, Validator
-{
+export class CustomerInputComponent implements OnDestroy, AfterViewInit, ControlValueAccessor, Validator {
   @ViewChild('customerInput') private input: ElementRef<HTMLInputElement>;
 
   private values$ = new BehaviorSubject<CustomerPartial[]>([]);
@@ -78,10 +58,7 @@ export class CustomerInputComponent
     validators: [Validators.required, this.validatorFn()],
   });
 
-  filtered$: Observable<CustomerPartial[]> = combineLatest([
-    this.values$,
-    this.control.valueChanges.pipe(startWith('')),
-  ]).pipe(map(this.filterCustomer));
+  filtered$: Observable<CustomerPartial[]> = combineLatest([this.values$, this.control.valueChanges.pipe(startWith(''))]).pipe(map(this.filterCustomer));
 
   onTouched: () => void = () => {};
   onValidationChange: () => void = () => {};
@@ -130,22 +107,15 @@ export class CustomerInputComponent
     this.input.nativeElement.focus();
   }
 
-  private filterCustomer([customers, value]: [
-    CustomerPartial[],
-    string
-  ]): CustomerPartial[] {
+  private filterCustomer([customers, value]: [CustomerPartial[], string]): CustomerPartial[] {
     const filterValue = new RegExp(value || '', 'i');
-    return customers.filter((customer) =>
-      filterValue.test(customer.CustomerName)
-    );
+    return customers.filter((customer) => filterValue.test(customer.CustomerName));
   }
 
   private validatorFn(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const value: string = control.value;
-      const isValid =
-        value &&
-        this.values.some((customer) => customer.CustomerName === value);
+      const isValid = value && this.values.some((customer) => customer.CustomerName === value);
       return isValid ? null : { notFound: value };
     };
   }

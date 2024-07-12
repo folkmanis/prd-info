@@ -4,16 +4,11 @@ import { CardMenuComponent } from 'src/app/library/card-menu/card-menu.component
 import { SystemPreferencesService } from 'src/app/services';
 
 @Component({
-  template: `<app-card-menu [modules]='modules$ | async'></app-card-menu>`,
+  template: `<app-card-menu [modules]="modules$ | async"></app-card-menu>`,
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    CommonModule,
-    CardMenuComponent,
-  ]
+  imports: [CommonModule, CardMenuComponent],
 })
 export class MainMenuComponent {
-
   modules$ = inject(SystemPreferencesService).childMenu$;
-
 }

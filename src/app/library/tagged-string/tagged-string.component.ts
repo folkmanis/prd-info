@@ -16,7 +16,6 @@ const DEFAULT_STYLE = {
   standalone: true,
 })
 export class TaggedStringComponent {
-
   text = input.required<string>();
 
   styledString = input('');
@@ -26,7 +25,6 @@ export class TaggedStringComponent {
   chunks = computed(() => this.createChunks(this.text(), this.styledString(), this.highlightedStyle()));
 
   private createChunks(text: string, styledString: string, style: Record<string, string>): Chunk[] {
-
     if (!styledString) {
       return [{ text, style: undefined }];
     }
@@ -35,7 +33,6 @@ export class TaggedStringComponent {
     let remainder = text;
 
     while (remainder.length > 0) {
-
       const idx = remainder.toUpperCase().indexOf(styledString.toUpperCase());
 
       if (idx === -1) {
@@ -50,14 +47,12 @@ export class TaggedStringComponent {
         const end = styledString.length + idx;
         chunks.push({
           text: remainder.slice(idx, end),
-          style
+          style,
         });
         remainder = remainder.slice(end);
       }
-
     }
 
     return chunks;
-
   }
 }

@@ -1,50 +1,38 @@
 <!-- Faila nomešana -->
 <section class="file-selection">
+  <mat-form-field>
+    <mat-label>Pasūtījums</mat-label>
+    <mat-select [(ngModel)]="orderId" name="orderId" required>
+      @for (order of orders(); track $index) {
+        <mat-option [value]="order.jobId">
+          {{ order.name }}
+        </mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
 
-    <mat-form-field>
-        <mat-label>Pasūtījums</mat-label>
-        <mat-select [(ngModel)]="orderId" name="orderId" required>
-            @for (order of orders(); track $index) {
-            <mat-option [value]="order.jobId">
-                {{order.name}}
-            </mat-option>
-            }
-        </mat-select>
-    </mat-form-field>
-
-    <mat-card appKastesTabulaDrop (xlsFile)="onXlsDrop($event)" #fileDrop="appKastesTabulaDrop">
-        <mat-card-content>
-            {{ fileDrop.status() }}
-        </mat-card-content>
-    </mat-card>
-
+  <mat-card appKastesTabulaDrop (xlsFile)="onXlsDrop($event)" #fileDrop="appKastesTabulaDrop">
+    <mat-card-content>
+      {{ fileDrop.status() }}
+    </mat-card-content>
+  </mat-card>
 </section>
 
 <section class="second-row">
-    <div>
-        <button mat-raised-button color="primary" (click)="onSave()"
-            [disabled]="orderId() == null || adresesBox()==null">
-            SAGLABĀT
-        </button>
-    </div>
-    <!-- Kopējie daudzumi -->
-    <div>
-        <p>
-            <app-color-totals [colorTotals]="plannedTotals()">
-                Plānotie apjomi (paciņas):
-            </app-color-totals>
-        </p>
-        <p>
-            <app-color-totals [colorTotals]="totals()">
-                Apjomi sarakstā (paciņas):
-            </app-color-totals>
-        </p>
-        <p>
-            Adreses: {{ totals()?.addresses }} |
-            Kastes: {{ totals()?.packages }}
-        </p>
-    </div>
+  <div>
+    <button mat-raised-button color="primary" (click)="onSave()" [disabled]="orderId() === null || adresesBox() === null">SAGLABĀT</button>
+  </div>
+  <!-- Kopējie daudzumi -->
+  <div>
+    <p>
+      <app-color-totals [colorTotals]="plannedTotals()"> Plānotie apjomi (paciņas): </app-color-totals>
+    </p>
+    <p>
+      <app-color-totals [colorTotals]="totals()"> Apjomi sarakstā (paciņas): </app-color-totals>
+    </p>
+    <p>Adreses: {{ totals()?.addresses }} | Kastes: {{ totals()?.packages }}</p>
+  </div>
 </section>
 
 <!-- Tabula -->
-<app-upload-adreses #tabula [data]="inputData()" (adresesBox)="adresesBox.set( $event)" />
+<app-upload-adreses #tabula [data]="inputData()" (adresesBox)="adresesBox.set($event)" />

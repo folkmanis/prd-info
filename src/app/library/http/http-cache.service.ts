@@ -15,18 +15,18 @@ export interface CacheEntry {
 
 const MAX_CACHE_AGE = 30000;
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HttpCacheService implements Cache {
-
   private cacheMap: Map<string, CacheEntry> = new Map();
 
   get(req: HttpRequest<any>): HttpResponse<any> | null {
     const entry = this.cacheMap.get(req.urlWithParams);
-    if (!entry) { return null; }
-    const isExpired = (Date.now() - entry.entryTime) > MAX_CACHE_AGE;
+    if (!entry) {
+      return null;
+    }
+    const isExpired = Date.now() - entry.entryTime > MAX_CACHE_AGE;
     return isExpired ? null : entry.response;
   }
 
@@ -45,11 +45,10 @@ export class HttpCacheService implements Cache {
   }
 
   private deleteExpiredCache() {
-    this.cacheMap.forEach(entry => {
-      if ((Date.now() - entry.entryTime) > MAX_CACHE_AGE) {
+    this.cacheMap.forEach((entry) => {
+      if (Date.now() - entry.entryTime > MAX_CACHE_AGE) {
         this.cacheMap.delete(entry.url);
       }
     });
   }
-
 }

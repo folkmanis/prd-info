@@ -1,24 +1,18 @@
 <section>
-    <h4>
-        Kopējie skaiti
-    </h4>
-    <ul>
-        @for (color of colors; track color) {
-        <li [style.color]="colorCodes()[color]">
-            {{ colorTotals()[color] }}
-        </li>
-        }
-    </ul>
+  <h4>Kopējie skaiti</h4>
+  <ul>
+    @for (color of colors; track color) {
+      <li [style.color]="colorCodes()[color]">
+        {{ colorTotals()[color] }}
+      </li>
+    }
+  </ul>
 </section>
 <section>
-    <h4>
-        Apjomi
-    </h4>
-    <ul>
-        @for (size of totalsBySize(); track $index) {
-        <li>
-            {{ size[0] }}-{{ size[1] }}
-        </li>
-        }
-    </ul>
+  <h4>Apjomi</h4>
+  <ul>
+    @for (size of totalsBySize(); track $index) {
+      <li>{{ size[0] }}-{{ size[1] }}</li>
+    }
+  </ul>
 </section>

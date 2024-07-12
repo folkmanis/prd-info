@@ -1,44 +1,29 @@
-<div [innerHTML]="replaceBr(message.html || message.plain)">
-</div>
+<div [innerHTML]="replaceBr(message.html || message.plain)"></div>
 
-<app-attachments [attachments]="message.attachments" #attachmentList>
-</app-attachments>
+<app-attachments [attachments]="message.attachments" #attachmentList> </app-attachments>
 
 @if (message.hasAttachment) {
-<mat-action-row>
-
-    <button mat-button (click)="markAsRead=true; onCreateJob(attachmentList.selected)"
-        [disabled]="!attachmentList.selected?.length || busy()" color="primary">
-        <mat-icon>
-            drafts
-        </mat-icon>
-        <span>
-            UZ DARBU
-        </span>
+  <mat-action-row>
+    <button mat-button (click)="markAsRead = true; onCreateJob(attachmentList.selected)" [disabled]="!attachmentList.selected?.length || busy()" color="primary">
+      <mat-icon> drafts </mat-icon>
+      <span> UZ DARBU </span>
     </button>
 
     <button mat-icon-button [matMenuTriggerFor]="saveMenu" [disabled]="!attachmentList.selected?.length || busy()">
-        <mat-icon>
-            more_vert
-        </mat-icon>
+      <mat-icon> more_vert </mat-icon>
     </button>
 
     <mat-menu #saveMenu>
-        <button mat-menu-item (click)="markAsRead=false; onCreateJob(attachmentList.selected)">
-            <mat-icon>
-                mark_as_unread
-            </mat-icon>
-            <span>
-                UZ DARBU, atstāt kā nelasītu
-            </span>
-        </button>
+      <button mat-menu-item (click)="markAsRead = false; onCreateJob(attachmentList.selected)">
+        <mat-icon> mark_as_unread </mat-icon>
+        <span> UZ DARBU, atstāt kā nelasītu </span>
+      </button>
     </mat-menu>
-
-</mat-action-row>
+  </mat-action-row>
 }
 
 <mat-card-footer>
-    @if (busy()) {
+  @if (busy()) {
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-    }
+  }
 </mat-card-footer>

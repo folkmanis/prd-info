@@ -1,4 +1,3 @@
-@for ( color of colors; track $index) {
-<app-color-slider [formControl]="preferencesControls.controls.colors.controls[color]" [label]="color | titlecase"
-    (focus)="onTouchFn()" />
+@for (color of colors; track $index) {
+  <app-color-slider [formControl]="preferencesControls.controls.colors.controls[color]" [label]="color | titlecase" (focus)="onTouchFn()" />
 }

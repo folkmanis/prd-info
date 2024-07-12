@@ -1,45 +1,37 @@
 <div class="materials-container">
-
-    @for (control of form.controls; track $index) {
+  @for (control of form.controls; track $index) {
     <div class="material" [formGroup]="control">
+      <select formControlName="materialId" appSelect>
+        @for (mat of materials(); track mat._id) {
+          <option [value]="mat._id">
+            {{ mat.name }}
+          </option>
+        }
+      </select>
 
-        <select formControlName="materialId" appSelect>
-            @for (mat of materials(); track mat._id) {
-            <option [value]="mat._id">
-                {{ mat.name }}
-            </option>
-            }
-        </select>
+      <div class="number-input">
+        <input type="number" appInput formControlName="amount" />
+        <span *appMaterialUnits="let unit of materials(); id: control.value.materialId">
+          {{ unit }}
+        </span>
+      </div>
 
-        <div class="number-input">
-            <input type="number" appInput formControlName="amount">
-            <span *appMaterialUnits="let unit of materials(); id: control.value.materialId">
-                {{ unit }}
-            </span>
-        </div>
+      <div class="number-input">
+        <input type="number" appInput formControlName="fixedAmount" />
+        <span *appMaterialUnits="let unit of materials(); id: control.value.materialId">
+          {{ unit }}
+        </span>
+      </div>
 
-        <div class="number-input">
-            <input type="number" appInput formControlName="fixedAmount">
-            <span *appMaterialUnits="let unit of materials(); id: control.value.materialId">
-                {{ unit }}
-            </span>
-        </div>
-
-        <button mat-icon-button color="warn" (click)="onDeleteMaterial($index)">
-            <mat-icon>
-                delete_outline
-            </mat-icon>
-        </button>
-
+      <button mat-icon-button color="warn" (click)="onDeleteMaterial($index)">
+        <mat-icon> delete_outline </mat-icon>
+      </button>
     </div>
-    }
-
+  }
 </div>
 
 <div>
-    <button mat-icon-button color="primary" (click)="onNewMaterial()" [disabled]="form.valid == false">
-        <mat-icon>
-            add
-        </mat-icon>
-    </button>
+  <button mat-icon-button color="primary" (click)="onNewMaterial()" [disabled]="form.valid === false">
+    <mat-icon> add </mat-icon>
+  </button>
 </div>

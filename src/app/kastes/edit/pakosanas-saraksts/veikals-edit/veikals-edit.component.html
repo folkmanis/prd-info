@@ -1,13 +1,12 @@
 @for (control of form.controls; track $index) {
-<div [formGroup]="control" class="container">
+  <div [formGroup]="control" class="container">
     @for (color of colors; track color) {
-    <div>
-        <input appInput type="number" [formControlName]="color"
-            [style.color]="control.get(color).valid ? colorCodes()[color] : undefined">
-    </div>
+      <div>
+        <input appInput type="number" [formControlName]="color" [style.color]="control.get(color).valid ? colorCodes()[color] : undefined" />
+      </div>
     }
     <div [class.invalid]="control.invalid">
-        {{boxTotals(control.getRawValue())}}
+      {{ boxTotals(control.getRawValue()) }}
     </div>
-</div>
+  </div>
 }

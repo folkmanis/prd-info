@@ -1,21 +1,19 @@
 <mat-form-field>
+  <mat-select [formControl]="customerControl">
+    <mat-option [value]="''">
+      Visi
+      @if (allTotals) {
+        <span> ({{ allTotals }}) </span>
+      }
+    </mat-option>
 
-    <mat-select [formControl]="customerControl">
-        <mat-option [value]="''">
-            Visi
-            @if (allTotals) {
-            <span> ({{ allTotals }}) </span>
-            }
-        </mat-option>
-
-        @for (customer of customers; track customer._id) {
-        <mat-option [value]="customer._id">
-            {{ customer._id }}
-            @if (customer.noPrice > 0) {
-            <span> ({{ customer.noPrice }}) </span>
-            }
-        </mat-option>
+    @for (customer of customers; track customer._id) {
+      <mat-option [value]="customer._id">
+        {{ customer._id }}
+        @if (customer.noPrice > 0) {
+          <span> ({{ customer.noPrice }}) </span>
         }
-    </mat-select>
-
+      </mat-option>
+    }
+  </mat-select>
 </mat-form-field>

@@ -15,16 +15,9 @@ import { LoginService } from './services/login.service';
   styleUrls: ['./login.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [
-    FormsModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    FocusedDirective,
-  ],
+  imports: [FormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, FocusedDirective],
 })
 export class LoginComponent {
-
   private router = inject(Router);
   private snack = inject(MatSnackBar);
   private loginService = inject(LoginService);
@@ -50,7 +43,6 @@ export class LoginComponent {
   }
 
   async onLogin() {
-
     this.busy.set(true);
 
     const loginData = {
@@ -68,7 +60,6 @@ export class LoginComponent {
     }
 
     this.busy.set(false);
-
   }
 
   private async checkLogout() {

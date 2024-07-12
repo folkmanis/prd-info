@@ -14,17 +14,14 @@ const PERCENT_REPORT_INTERVAL = 500;
 
 const uploadId = (file: File): string => file.name;
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UploadRefService {
-
   private sanitize = inject(SanitizeService);
   private jobFilesService = inject(JobFilesService);
 
-  private isImportant = ({ type }: FileUploadMessage) =>
-    type === FileUploadEventType.UploadFinish || type === FileUploadEventType.UploadStart;
+  private isImportant = ({ type }: FileUploadMessage) => type === FileUploadEventType.UploadFinish || type === FileUploadEventType.UploadStart;
 
   private uploadRef: UploadRef | null = null;
 
@@ -35,33 +32,26 @@ export class UploadRefService {
   }
 
   setUserFile(file$: Observable<File>, afterAddedToJob: Observable<unknown>) {
+    const uploadMessages$ = file$.pipe(mergeMap((file) => this.uploadFile(file), SIMULTANEOUS_UPLOADS));
 
-    const uploadMessages$ = file$.pipe(
-      mergeMap(file => this.uploadFile(file), SIMULTANEOUS_UPLOADS),
-    );
-
-    const messages$ = merge(
-      this.waitingMessages(file$),
-      uploadMessages$
-    ).pipe(
-      this.uploadProgress(),
-    );
+    const messages$ = merge(this.waitingMessages(file$), uploadMessages$).pipe(this.uploadProgress());
 
     const uploadRef = new UploadRef(messages$, this.addUserFilesToJobFn());
 
-    uploadRef.onCancel().pipe(
-      concatMap(fileNames => this.jobFilesService.deleteUserUploads(fileNames))
-    ).subscribe();
+    uploadRef
+      .onCancel()
+      .pipe(concatMap((fileNames) => this.jobFilesService.deleteUserUploads(fileNames)))
+      .subscribe();
 
-    uploadRef.onAddedToJob().pipe(
-      switchMap(() => afterAddedToJob)
-    ).subscribe();
+    uploadRef
+      .onAddedToJob()
+      .pipe(switchMap(() => afterAddedToJob))
+      .subscribe();
 
     this.uploadRef = uploadRef;
   }
 
   setFtpUpload(path: string[], afterAddedToJob: Observable<unknown>) {
-
     const fileName = last(path);
     const message: FileUploadMessage = {
       type: FileUploadEventType.UploadFinish,
@@ -74,16 +64,16 @@ export class UploadRefService {
     const progress$: Observable<FileUploadMessage[]> = of([message]);
     const uploadRef = new UploadRef(progress$, this.addFtpFilesToJobFn(path.slice(0, -1)));
 
-    uploadRef.onAddedToJob().pipe(
-      switchMap(() => afterAddedToJob)
-    ).subscribe();
+    uploadRef
+      .onAddedToJob()
+      .pipe(switchMap(() => afterAddedToJob))
+      .subscribe();
 
     this.uploadRef = uploadRef;
-
   }
 
   setSavedFile(fileNames: string[], afterAddedToJob: Observable<unknown>) {
-    const messages: FileUploadMessage[] = fileNames.map(name => ({
+    const messages: FileUploadMessage[] = fileNames.map((name) => ({
       type: FileUploadEventType.UploadFinish,
       id: name,
       name,
@@ -94,19 +84,20 @@ export class UploadRefService {
 
     const uploadRef = new UploadRef(messages$, this.addUserFilesToJobFn());
 
-    uploadRef.onCancel().pipe(
-      concatMap(fileNames => this.jobFilesService.deleteUserUploads(fileNames))
-    ).subscribe();
+    uploadRef
+      .onCancel()
+      .pipe(concatMap((names) => this.jobFilesService.deleteUserUploads(names)))
+      .subscribe();
 
-    uploadRef.onAddedToJob().pipe(
-      switchMap(() => afterAddedToJob)
-    ).subscribe();
+    uploadRef
+      .onAddedToJob()
+      .pipe(switchMap(() => afterAddedToJob))
+      .subscribe();
 
     this.uploadRef = uploadRef;
   }
 
   private uploadFile(file: File): Observable<FileUploadMessage> {
-
     const messageBase: UploadMessageBase = {
       id: uploadId(file),
       name: file.name,
@@ -114,27 +105,17 @@ export class UploadRefService {
     };
 
     const upload$ = this.jobFilesService.uploadUserFile(file).pipe(
-      map(event => this.progressMessage(event, messageBase)),
-      filter(event => event !== null),
+      map((event) => this.progressMessage(event, messageBase)),
+      filter((event) => event !== null),
       share(),
     );
 
-    const [important$, nonImportant$] = partition(upload$, message => this.isImportant(message));
+    const [important$, nonImportant$] = partition(upload$, (message) => this.isImportant(message));
 
-    return merge(
-      important$,
-      nonImportant$.pipe(throttleTime(PERCENT_REPORT_INTERVAL))
-    );
-
+    return merge(important$, nonImportant$.pipe(throttleTime(PERCENT_REPORT_INTERVAL)));
   }
 
-
-  private progressMessage(
-    event: HttpEvent<{ names: string[]; }>,
-    messageBase: UploadMessageBase,
-  ): FileUploadMessage | null {
-
-
+  private progressMessage(event: HttpEvent<{ names: string[] }>, messageBase: UploadMessageBase): FileUploadMessage | null {
     /* New upload started */
     if (event.type === HttpEventType.Sent) {
       return {
@@ -148,7 +129,7 @@ export class UploadRefService {
         ...messageBase,
         type: FileUploadEventType.UploadProgress,
         done: event.loaded,
-        percentDone: Math.round(100 * event.loaded / event.total),
+        percentDone: Math.round((100 * event.loaded) / event.total),
       };
     }
 
@@ -161,25 +142,23 @@ export class UploadRefService {
     }
 
     return null;
-
   }
 
   private uploadProgress(): OperatorFunction<FileUploadMessage, FileUploadMessage[]> {
     return pipe(
       scan((acc, msg) => acc.set(msg.id, msg), new Map<string, FileUploadMessage>()),
-      map(acc => [...acc.values()])
+      map((acc) => [...acc.values()]),
     );
-
   }
 
   private waitingMessages(file$: Observable<File>): Observable<UploadWaitingMessage> {
     return file$.pipe(
-      map(file => ({
+      map((file) => ({
         type: FileUploadEventType.UploadWaiting,
         id: uploadId(file),
         name: this.sanitize.sanitizeFileName(file.name),
         size: file.size,
-      }))
+      })),
     );
   }
 
@@ -188,11 +167,10 @@ export class UploadRefService {
   }
 
   private addFtpFilesToJobFn(basePath: string[]): (jobId: number, fileNames: string[]) => Observable<Job> {
-    return (jobId, fileNames) => this.jobFilesService.copyFtpFilesToJob(
-      jobId,
-      fileNames.map(name => [...basePath, name])
-    );
+    return (jobId, fileNames) =>
+      this.jobFilesService.copyFtpFilesToJob(
+        jobId,
+        fileNames.map((name) => [...basePath, name]),
+      );
   }
-
-
 }

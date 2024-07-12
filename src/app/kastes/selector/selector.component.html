@@ -1,68 +1,50 @@
 @if (jobId()) {
-<mat-drawer-container>
-
+  <mat-drawer-container>
     <mat-drawer-content>
+      <nav mat-tab-nav-bar [tabPanel]="tabPanel">
+        <a mat-tab-link routerLink="../../selector/0" [active]="activeBoxSize() === 0"> Visi </a>
+        @for (boxSize of boxSizes(); track $index) {
+          <a mat-tab-link [routerLink]="['../../selector', boxSize]" [active]="boxSize === activeBoxSize()">
+            {{ boxSize }}
+          </a>
+        }
+      </nav>
 
-        <nav mat-tab-nav-bar [tabPanel]="tabPanel">
-            <a mat-tab-link routerLink="../../selector/0" [active]="activeBoxSize() === 0">
-                Visi
-            </a>
-            @for (boxSize of boxSizes(); track $index) {
-            <a mat-tab-link [routerLink]="['../../selector', boxSize]" [active]="boxSize === activeBoxSize()">
-                {{ boxSize }}
-            </a>
-            }
-        </nav>
+      <mat-tab-nav-panel #tabPanel>
+        <!-- Kopējie skaiti -->
+        <div class="kopskaiti">
+          <app-totals-for-selected-size [packages]="packagesFilteredBySize()" />
 
-        <mat-tab-nav-panel #tabPanel>
+          <mat-slide-toggle [(ngModel)]="showCompleted" name="showCompleted" matTooltip="Rādīt arī gatavos iepakojumus"> Gatavie </mat-slide-toggle>
+        </div>
 
-            <!-- Kopējie skaiti -->
-            <div class="kopskaiti">
-
-                <app-totals-for-selected-size [packages]="packagesFilteredBySize()" />
-
-                <mat-slide-toggle [(ngModel)]="showCompleted" name="showCompleted"
-                    matTooltip="Rādīt arī gatavos iepakojumus">
-                    Gatavie
-                </mat-slide-toggle>
-
-            </div>
-
-            <app-tabula [addressPackages]="packagesToDisplay()" (selectedChange)="onSelection($event)" />
-
-        </mat-tab-nav-panel>
-
+        <app-tabula [addressPackages]="packagesToDisplay()" (selectedChange)="onSelection($event)" />
+      </mat-tab-nav-panel>
     </mat-drawer-content>
 
     <mat-drawer button>
-        @if (packagesJob();) {
+      @if (packagesJob()) {
         <div>
-            <h4>
-                {{packagesJob().jobId}} - {{packagesJob().name}}
-            </h4>
-            @if (activeBoxSize() === 0) {
+          <h4>{{ packagesJob().jobId }} - {{ packagesJob().name }}</h4>
+          @if (activeBoxSize() === 0) {
             <div>
-                <mat-divider></mat-divider>
-                <app-labels [status]="labelStatus()" (code)="onSetLabel($event)" />
+              <mat-divider></mat-divider>
+              <app-labels [status]="labelStatus()" (code)="onSetLabel($event)" />
             </div>
-            }
-            <div>
-                <mat-divider></mat-divider>
-                <app-order-totals [packages]="allAddressPackages()" />
-            </div>
+          }
+          <div>
+            <mat-divider></mat-divider>
+            <app-order-totals [packages]="allAddressPackages()" />
+          </div>
         </div>
-        }
+      }
     </mat-drawer>
-
-</mat-drawer-container>
-
+  </mat-drawer-container>
 } @else {
-<div class="no-active">
+  <div class="no-active">
+    <p>Nav izvēlēts aktīvais pakošanas saraksts.</p>
     <p>
-        Nav izvēlēts aktīvais pakošanas saraksts.
+      <a mat-raised-button routerLink="../../edit">IZVĒLĒTIES</a>
     </p>
-    <p>
-        <a mat-raised-button routerLink="../../edit">IZVĒLĒTIES</a>
-    </p>
-</div>
+  </div>
 }

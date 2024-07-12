@@ -1,27 +1,21 @@
-<h4>
-    Atlase
-</h4>
+<h4>Atlase</h4>
 
-@if(invoicesTotals) {
-<mat-list>
-
+@if (invoicesTotals) {
+  <mat-list>
     @for (total of invoicesTotals.totals; track total._id) {
-    <mat-list-item appDenseList appDenseListHeight="32px">
+      <mat-list-item appDenseList appDenseListHeight="32px">
         <span matListItemLine>
+          <span>
+            {{ total._id }}
+          </span>
 
-            <span>
-                {{total._id}}
-            </span>
-
-            <span>
-                {{total.count}}
-                {{total.units}}
-                <strong> {{total.total | currency}} </strong>
-            </span>
-
+          <span>
+            {{ total.count }}
+            {{ total.units }}
+            <strong> {{ total.total | currency }} </strong>
+          </span>
         </span>
-    </mat-list-item>
+      </mat-list-item>
     }
-
-</mat-list>
+  </mat-list>
 }

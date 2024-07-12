@@ -5,18 +5,12 @@ import { map } from 'rxjs/operators';
 import * as Pt from 'src/app/interfaces/paytraq';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PaytraqClientService {
-
-  constructor(
-    private api: PaytraqApiService,
-  ) { }
+  constructor(private api: PaytraqApiService) {}
 
   getClients(query: Pt.RequestOptions = {}): Observable<Pt.PaytraqClient[]> {
-    return this.api.getClients(query).pipe(
-      map(cl => cl?.client || [])
-    );
+    return this.api.getClients(query).pipe(map((cl) => cl?.client || []));
   }
-
 }

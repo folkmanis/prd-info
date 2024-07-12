@@ -1,33 +1,8 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  Output,
-  Signal,
-  computed,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, Output, Signal, computed, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import {
-  AbstractControl,
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  ValidationErrors,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Observable, map } from 'rxjs';
-import {
-  COLORS,
-  Colors,
-  Kaste,
-  MAX_ITEMS_BOX,
-  Veikals,
-} from 'src/app/kastes/interfaces';
+import { COLORS, Colors, Kaste, MAX_ITEMS_BOX, Veikals } from 'src/app/kastes/interfaces';
 import { InputDirective } from 'src/app/library/directives/input.directive';
 import { kastesPreferences } from '../../../services/kastes-preferences.service';
 import { VeikalsValidationErrors } from '../../services/veikals-validation-errors';
@@ -45,7 +20,6 @@ type ColorsGroup = FormGroup<{
   imports: [FormsModule, ReactiveFormsModule, InputDirective],
 })
 export class VeikalsEditComponent {
-
   private fb = new FormBuilder().nonNullable;
 
   boxTotals = boxTotals;
@@ -69,22 +43,16 @@ export class VeikalsEditComponent {
     const veikals = this.veikalsInitial();
     if (veikals) {
       this.formValue();
-      const kastes = veikals.kastes.map((kaste, idx) =>
-        this.updateKaste(kaste, this.form.getRawValue()[idx])
-      );
+      const kastes = veikals.kastes.map((kaste, idx) => this.updateKaste(kaste, this.form.getRawValue()[idx]));
       return { ...veikals, kastes };
     }
   });
 
   @Output()
-  errors: Observable<null | VeikalsValidationErrors> =
-    this.form.valueChanges.pipe(
-      map((_) => (this.form.valid ? null : this.form.errors || {}))
-    );
+  errors: Observable<null | VeikalsValidationErrors> = this.form.valueChanges.pipe(map((_) => (this.form.valid ? null : this.form.errors || {})));
 
   @Output()
   valueChanges: Observable<Veikals> = toObservable(this.veikalsValueChanges);
-
 
   private updateKaste(initial: Kaste, update: Record<Colors, number>): Kaste {
     const total = boxTotals(update);
@@ -112,13 +80,9 @@ export class VeikalsEditComponent {
 
   private colorsControlGroup(kaste: Record<Colors, number>): ColorsGroup {
     const colors = COLORS.map((color) => ({
-      [color]: [
-        kaste[color],
-        [Validators.required, Validators.min(0), Validators.max(MAX_ITEMS_BOX)],
-      ],
+      [color]: [kaste[color], [Validators.required, Validators.min(0), Validators.max(MAX_ITEMS_BOX)]],
     }));
-    const controls: { [key in Colors]: [number, ValidatorFn[]] } =
-      Object.assign({}, ...colors);
+    const controls: { [key in Colors]: [number, ValidatorFn[]] } = Object.assign({}, ...colors);
     return this.fb.group(controls, {
       validators: [maxItemsValidator(MAX_ITEMS_BOX)],
     });
@@ -126,10 +90,7 @@ export class VeikalsEditComponent {
 }
 
 function colorTotals(kastes: Record<Colors, number>[]): Record<Colors, number> {
-  const tot: Record<Colors, number> = Object.assign(
-    {},
-    ...COLORS.map((col) => ({ [col]: 0 }))
-  );
+  const tot: Record<Colors, number> = Object.assign({}, ...COLORS.map((col) => ({ [col]: 0 })));
   for (const box of kastes) {
     for (const color of COLORS) {
       tot[color] += box[color];
@@ -147,10 +108,7 @@ function totalsValidator(kastes: Record<Colors, number>[]): ValidatorFn {
     const totals = colorTotals(control.getRawValue());
     const initTotals = colorTotals(kastes);
 
-    const diff: Record<Colors, number> = Object.assign(
-      {},
-      ...COLORS.map((col) => ({ [col]: totals[col] - initTotals[col] }))
-    );
+    const diff: Record<Colors, number> = Object.assign({}, ...COLORS.map((col) => ({ [col]: totals[col] - initTotals[col] })));
 
     if (COLORS.some((color) => diff[color] !== 0)) {
       return { diff };

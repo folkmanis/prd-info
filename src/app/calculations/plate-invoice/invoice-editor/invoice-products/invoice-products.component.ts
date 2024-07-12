@@ -13,14 +13,9 @@ const COLUMNS = ['_id', 'count', 'price', 'total'];
   templateUrl: './invoice-products.component.html',
   styleUrls: ['./invoice-products.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    MatTableModule,
-    CurrencyPipe,
-    MatButtonModule,
-  ],
+  imports: [MatTableModule, CurrencyPipe, MatButtonModule],
 })
 export class InvoiceProductsComponent {
-
   private invoiceEditor = inject(InvoiceEditor);
 
   invoice = input.required<Invoice>();
@@ -31,15 +26,11 @@ export class InvoiceProductsComponent {
 
   total = computed(() => this.invoice().total || 0);
 
-  displayedColumns = computed(
-    () => this.pyatraqEnabled() ? ['paytraqId', ...COLUMNS] : [...COLUMNS]
-  );
+  displayedColumns = computed(() => (this.pyatraqEnabled() ? ['paytraqId', ...COLUMNS] : [...COLUMNS]));
 
   isJobsAdmin = input(false, { transform: booleanAttribute });
 
   onNavigateToProduct(name: string) {
     this.invoiceEditor.navigateToProduct(name);
   }
-
-
 }

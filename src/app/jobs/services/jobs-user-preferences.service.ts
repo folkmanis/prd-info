@@ -6,20 +6,15 @@ import { DEFAULT_JOBS_USER_PREFERENCES, JobsUserPreferences } from '../interface
 import { JobsApiService } from './jobs-api.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class JobsUserPreferencesService {
-
   private api = inject(JobsApiService);
 
-  userPreferences = signal<JobsUserPreferences | null>(
-    null,
-    { equal: isEqual }
-  );
+  userPreferences = signal<JobsUserPreferences | null>(null, { equal: isEqual });
 
   constructor() {
-    this.getUserPreferences()
-      .then(preferences => this.userPreferences.set(preferences));
+    this.getUserPreferences().then((preferences) => this.userPreferences.set(preferences));
   }
 
   patchUserPreferences(patch: Partial<JobsUserPreferences>) {
@@ -58,5 +53,4 @@ export class JobsUserPreferencesService {
     }
     return this.userPreferences();
   }
-
 }

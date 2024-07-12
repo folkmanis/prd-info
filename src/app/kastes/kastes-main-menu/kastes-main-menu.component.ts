@@ -9,6 +9,5 @@ import { SystemPreferencesService } from 'src/app/services';
   imports: [CardMenuComponent],
 })
 export class KastesMainMenuComponent {
-
   modules = inject(SystemPreferencesService).childMenu;
 }

@@ -23,7 +23,6 @@ import { CustomerSelectorComponent } from './customer-selector/customer-selector
 import { JobsWithoutInvoicesComponent } from './jobs-without-invoices/jobs-without-invoices.component';
 import { SelectionTotalsComponent } from './selection-totals/selection-totals.component';
 
-
 @Component({
   selector: 'app-new-invoice',
   standalone: true,
@@ -47,10 +46,9 @@ import { SelectionTotalsComponent } from './selection-totals/selection-totals.co
     JobSelectionTableComponent,
     ScrollTopDirective,
     MatButtonModule,
-  ]
+  ],
 })
 export class NewInvoiceComponent {
-
   @ViewChild(ScrollTopDirective) private scroll: ScrollTopDirective;
 
   @ViewChild(CustomerSelectorComponent) private customerSelector?: CustomerSelectorComponent;
@@ -63,7 +61,7 @@ export class NewInvoiceComponent {
 
   selectedJobs = signal<JobUnwindedPartial[]>([]);
 
-  selection = computed(() => this.selectedJobs().map(job => job.jobId));
+  selection = computed(() => this.selectedJobs().map((job) => job.jobId));
 
   invoicesTotals = computed(() => this.jobTotalsFromJobs(this.selectedJobs()));
   grandTotal = computed(() => this.invoicesTotals().grandTotal);
@@ -73,13 +71,9 @@ export class NewInvoiceComponent {
     private router: Router,
     private route: ActivatedRoute,
   ) {
-    const customerId$ = this.route.queryParamMap.pipe(
-      map(params => params.get('customer') || '')
-    );
+    const customerId$ = this.route.queryParamMap.pipe(map((params) => params.get('customer') || ''));
     this.customerId = toSignal(customerId$, { initialValue: '' });
-    const jobs$ = customerId$.pipe(
-      switchMap(customer => invoicesService.getJobsUnwinded({ customer, invoice: 0, limit: 1000 }))
-    );
+    const jobs$ = customerId$.pipe(switchMap((customer) => invoicesService.getJobsUnwinded({ customer, invoice: 0, limit: 1000 })));
     this.jobs = toSignal(jobs$, { initialValue: [] });
 
     effect(() => this.jobs() && this.scroll?.scrollToTop());
@@ -87,7 +81,8 @@ export class NewInvoiceComponent {
   }
 
   onCreateInvoice() {
-    this.invoicesService.createInvoice({ jobIds: this.selection(), customerId: this.customerId() })
+    this.invoicesService
+      .createInvoice({ jobIds: this.selection(), customerId: this.customerId() })
       .subscribe(({ invoiceId }) => this.router.navigate(['calculations', 'plate-invoice', invoiceId]));
   }
 
@@ -97,11 +92,11 @@ export class NewInvoiceComponent {
       customer: this.customerId(),
       createdDate: new Date(),
       jobs: this.selectedJobs(),
-      products: totals.map(tot => ({ ...tot, price: tot.total / tot.count, jobsCount: 0 })),
+      products: totals.map((tot) => ({ ...tot, price: tot.total / tot.count, jobsCount: 0 })),
       total: grandTotal,
       invoiceId: '',
     };
-    this.invoicesService.getReport(invoice).subscribe(data => {
+    this.invoicesService.getReport(invoice).subscribe((data) => {
       window.open(URL.createObjectURL(data), 'new');
     });
   }
@@ -113,9 +108,9 @@ export class NewInvoiceComponent {
   private jobTotalsFromJobs(jobs: JobUnwindedPartial[]): InvoicesTotals {
     const totalsMap = new Map<string, ProductTotals>();
     jobs
-      .map(job => job.products)
-      .filter(prod => !!prod)
-      .forEach(products => {
+      .map((job) => job.products)
+      .filter((prod) => !!prod)
+      .forEach((products) => {
         const { name: _id, price, count, units } = products;
         const total = totalsMap.get(_id) || {
           _id,
@@ -127,13 +122,10 @@ export class NewInvoiceComponent {
         total.total += price * count;
         totalsMap.set(_id, total);
       });
-    const totals = [...totalsMap.values()].sort((a, b) => a._id > b._id ? 1 : -1);
+    const totals = [...totalsMap.values()].sort((a, b) => (a._id > b._id ? 1 : -1));
     return {
       totals,
       grandTotal: totals.reduce((acc, curr) => acc + curr.total, 0),
     };
   }
-
-
 }
-

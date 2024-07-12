@@ -1,12 +1,5 @@
 import { TextFieldModule } from '@angular/cdk/text-field';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  signal,
-  viewChild
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal, viewChild } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -54,7 +47,6 @@ import { ReproProductsEditorComponent } from '../repro-products-editor/repro-pro
   ],
 })
 export class JobFormComponent {
-
   private productsService = inject(ProductsService);
   private sanitize = inject(SanitizeService);
   private loginService = inject(LoginService);
@@ -87,7 +79,7 @@ export class JobFormComponent {
     map((value) => value.customer),
     filter((customer) => !!customer),
     distinctUntilChanged(),
-    switchMap((customer) => this.productsService.productsCustomer(customer))
+    switchMap((customer) => this.productsService.productsCustomer(customer)),
   );
 
   customerProducts = toSignal(this.customerProducts$);
@@ -98,16 +90,11 @@ export class JobFormComponent {
     return this.formService.form.controls.name;
   }
 
-
   constructor() {
-
-    this.loginService.isModuleAvailable('calculations')
-      .then(result => this.showPrices.set(result));
-
+    this.loginService.isModuleAvailable('calculations').then((result) => this.showPrices.set(result));
   }
 
   focusCustomer() {
     this.customerInput().focus();
   }
-
 }

@@ -1,31 +1,28 @@
 <mat-form-field>
-    <input matInput [formControl]="control" [matAutocomplete]="auto" #name required>
-    <button mat-icon-button matIconSuffix (click)="control.setValue('')" tabindex="-1" [disabled]="control.disabled">
-        <mat-icon>
-            clear
-        </mat-icon>
-    </button>
-    @if (this.control.hasError('invalidProduct')) {
+  <input matInput [formControl]="control" [matAutocomplete]="auto" #name required />
+  <button mat-icon-button matIconSuffix (click)="control.setValue('')" tabindex="-1" [disabled]="control.disabled">
+    <mat-icon> clear </mat-icon>
+  </button>
+  @if (this.control.hasError('invalidProduct')) {
     <mat-error>
-        {{ this.control.getError('invalidProduct') }}
+      {{ this.control.getError('invalidProduct') }}
     </mat-error>
-    }
+  }
 </mat-form-field>
 
-
 <mat-autocomplete #auto="matAutocomplete" [autoActiveFirstOption]="true">
-    <mat-optgroup label="KLIENTA">
-        @for (product of firstProducts(); track product.productName) {
-        <mat-option [value]="product.productName">
-            {{product.productName}}
-        </mat-option>
-        }
-    </mat-optgroup>
-    <mat-optgroup label="VISI">
-        @for (product of restProducts(); track product.productName) {
-        <mat-option [value]="product.productName">
-            {{product.productName}}
-        </mat-option>
-        }
-    </mat-optgroup>
+  <mat-optgroup label="KLIENTA">
+    @for (product of firstProducts(); track product.productName) {
+      <mat-option [value]="product.productName">
+        {{ product.productName }}
+      </mat-option>
+    }
+  </mat-optgroup>
+  <mat-optgroup label="VISI">
+    @for (product of restProducts(); track product.productName) {
+      <mat-option [value]="product.productName">
+        {{ product.productName }}
+      </mat-option>
+    }
+  </mat-optgroup>
 </mat-autocomplete>

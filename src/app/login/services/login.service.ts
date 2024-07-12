@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, firstValueFrom, merge, Observable, of, Subject } from 'rxjs';
-import { catchError, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { catchError, shareReplay, switchMap } from 'rxjs/operators';
 import { User } from 'src/app/interfaces';
 import { Login } from '../login.interface';
 import { LoginApiService } from './login-api.service';
@@ -8,24 +8,16 @@ import { LoginApiService } from './login-api.service';
 type UserUpdate = Partial<User>;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LoginService {
-
   private loginUpdate$ = new Subject<User | null>();
 
   private reload$ = new BehaviorSubject<void>(null);
 
-  user$: Observable<User> = merge(
-    this.reload$.pipe(switchMap(() => this.getLogin())),
-    this.loginUpdate$,
-  ).pipe(
-    shareReplay(1),
-  );
+  user$: Observable<User> = merge(this.reload$.pipe(switchMap(() => this.getLogin())), this.loginUpdate$).pipe(shareReplay(1));
 
-  constructor(
-    private api: LoginApiService,
-  ) { }
+  constructor(private api: LoginApiService) {}
 
   async isLoggedIn(): Promise<boolean> {
     const user = await firstValueFrom(this.user$);
@@ -67,9 +59,6 @@ export class LoginService {
   }
 
   private getLogin(): Observable<User | null> {
-    return this.api.getLogin().pipe(
-      catchError(() => of(null))
-    );
+    return this.api.getLogin().pipe(catchError(() => of(null)));
   }
-
 }

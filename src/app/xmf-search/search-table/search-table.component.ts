@@ -1,16 +1,5 @@
-import {
-  CdkFixedSizeVirtualScroll,
-  CdkVirtualForOf,
-  CdkVirtualScrollViewport,
-} from '@angular/cdk/scrolling';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  input,
-  viewChild
-} from '@angular/core';
+import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { ChangeDetectionStrategy, Component, computed, effect, input, viewChild } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CopyClipboardDirective } from 'src/app/library/directives/copy-clipboard.directive';
@@ -37,7 +26,6 @@ import { SearchData } from '../services/search-data';
   ],
 })
 export class SearchTableComponent {
-
   private content = viewChild(CdkVirtualScrollViewport);
 
   search = input<SearchQuery | null>(null);
@@ -46,7 +34,7 @@ export class SearchTableComponent {
 
   data = input<SearchData | null>(null);
 
-  actions: string[] = [, 'Archive', 'Restore', 'Skip', 'Delete'];
+  actions: string[] = ['', 'Archive', 'Restore', 'Skip', 'Delete'];
 
   constructor() {
     effect(() => {
@@ -55,5 +43,4 @@ export class SearchTableComponent {
       }
     });
   }
-
 }

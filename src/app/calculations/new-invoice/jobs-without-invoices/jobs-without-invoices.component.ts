@@ -1,11 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
 import { JobsWithoutInvoicesTotals } from 'src/app/jobs';
 

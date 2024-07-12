@@ -1,18 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import {
-  AsyncValidatorFn,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { AsyncValidatorFn, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -34,13 +22,7 @@ type EquipmentForm = FormGroup<{
   templateUrl: './equipment-edit.component.html',
   styleUrls: ['./equipment-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    ReactiveFormsModule,
-    SimpleFormContainerComponent,
-    MatFormFieldModule,
-    MatInputModule,
-    MatCardModule,
-  ],
+  imports: [ReactiveFormsModule, SimpleFormContainerComponent, MatFormFieldModule, MatInputModule, MatCardModule],
 })
 export class EquipmentEditComponent implements CanComponentDeactivate {
   form: EquipmentForm = this.fb.group({
@@ -83,10 +65,7 @@ export class EquipmentEditComponent implements CanComponentDeactivate {
     if (this.isNew) {
       return value;
     } else {
-      const diff = pickBy(
-        value,
-        (v, key) => !isEqual(v, this.initialValue[key])
-      );
+      const diff = pickBy(value, (v, key) => !isEqual(v, this.initialValue[key]));
       return Object.keys(diff).length ? diff : undefined;
     }
   });
@@ -95,13 +74,9 @@ export class EquipmentEditComponent implements CanComponentDeactivate {
     private router: Router,
     private route: ActivatedRoute,
     private equipmentService: EquipmentService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
   ) {
-    effect(
-      () =>
-        (this.initialValue = this.routerData().equipment || new Equipment()),
-      { allowSignalWrites: true }
-    );
+    effect(() => (this.initialValue = this.routerData().equipment || new Equipment()), { allowSignalWrites: true });
   }
 
   onReset() {
@@ -110,19 +85,15 @@ export class EquipmentEditComponent implements CanComponentDeactivate {
 
   onSave() {
     if (this.isNew) {
-      return this.equipmentService
-        .insertOne(this.form.getRawValue())
-        .subscribe((equipment) => {
-          this.form.markAsPristine();
-          this.router.navigate(['..', equipment._id], {
-            relativeTo: this.route,
-          });
+      return this.equipmentService.insertOne(this.form.getRawValue()).subscribe((equipment) => {
+        this.form.markAsPristine();
+        this.router.navigate(['..', equipment._id], {
+          relativeTo: this.route,
         });
+      });
     } else {
       const update = { ...this.changes(), _id: this.initialValue._id };
-      return this.equipmentService
-        .updateOne(update)
-        .subscribe((equipment) => (this.initialValue = equipment));
+      return this.equipmentService.updateOne(update).subscribe((equipment) => (this.initialValue = equipment));
     }
   }
 
@@ -138,7 +109,7 @@ export class EquipmentEditComponent implements CanComponentDeactivate {
       }
       return this.equipmentService.names().pipe(
         map((names) => names.map((n) => n.toUpperCase()).includes(name)),
-        map((invalid) => (invalid ? { occupied: name } : null))
+        map((invalid) => (invalid ? { occupied: name } : null)),
       );
     };
   }

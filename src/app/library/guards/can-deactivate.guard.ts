@@ -9,16 +9,13 @@ export interface CanComponentDeactivate {
 }
 
 export const canComponentDeactivate: CanDeactivateFn<CanComponentDeactivate> = (component) => {
-
-  if (!component.canDeactivate) { return true; }
+  if (!component.canDeactivate) {
+    return true;
+  }
 
   const dialog = inject(ConfirmationDialogService);
 
   const cD = component.canDeactivate();
 
-  return (typeof cD === 'boolean' ? of(cD) : from(cD))
-    .pipe(
-      switchMap(can => can ? of(can) : dialog.discardChanges())
-    );
-
+  return (typeof cD === 'boolean' ? of(cD) : from(cD)).pipe(switchMap((can) => (can ? of(can) : dialog.discardChanges())));
 };

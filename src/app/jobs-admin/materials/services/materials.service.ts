@@ -3,7 +3,6 @@ import { Material } from 'src/app/interfaces';
 import { configuration } from 'src/app/services/config.provider';
 import { MaterialsApiService } from 'src/app/services/prd-api/materials-api.service';
 
-
 export type MaterialWithDescription = Material & {
   catDes: string;
 };
@@ -14,10 +13,9 @@ export interface MaterialsFilter {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MaterialsService {
-
   private api = inject(MaterialsApiService);
 
   private productCategories = configuration('jobs', 'productCategories');
@@ -28,14 +26,11 @@ export class MaterialsService {
 
   materialsWithDescriptions = computed<MaterialWithDescription[]>(() => {
     const categories = this.productCategories();
-    return this.#materials().map(
-      material => ({
-        ...material,
-        catDes: categories.find(cat => cat.category === material.category)?.description || ''
-      })
-    );
+    return this.#materials().map((material) => ({
+      ...material,
+      catDes: categories.find((cat) => cat.category === material.category)?.description || '',
+    }));
   });
-
 
   constructor() {
     this.reload();
@@ -48,7 +43,6 @@ export class MaterialsService {
       this.#materials.set([]);
     }
   }
-
 
   async getMaterials(filter: MaterialsFilter = {}): Promise<Material[]> {
     return this.api.getAll(filter);
@@ -78,7 +72,4 @@ export class MaterialsService {
     await this.reload();
     return data;
   }
-
-
-
 }

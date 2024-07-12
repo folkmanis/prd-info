@@ -1,24 +1,8 @@
 import { ChangeDetectionStrategy, Component, forwardRef, inject } from '@angular/core';
-import {
-  ControlValueAccessor,
-  FormBuilder,
-  FormsModule,
-  NG_VALIDATORS,
-  NG_VALUE_ACCESSOR,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validator,
-  Validators
-} from '@angular/forms';
+import { ControlValueAccessor, FormBuilder, FormsModule, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator, Validators } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { SystemSettings } from 'src/app/interfaces';
-
-type SettingsToChange = Pick<
-  SystemSettings,
-  'menuExpandedByDefault' | 'hostname'
->;
 
 @Component({
   selector: 'app-system-preferences',
@@ -35,26 +19,18 @@ type SettingsToChange = Pick<
       provide: NG_VALIDATORS,
       useExisting: forwardRef(() => SystemPreferencesComponent),
       multi: true,
-    }
+    },
   ],
   standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    MatCheckboxModule,
-    MatFormFieldModule,
-    MatInputModule,
-  ],
+  imports: [FormsModule, ReactiveFormsModule, MatCheckboxModule, MatFormFieldModule, MatInputModule],
 })
 export class SystemPreferencesComponent implements ControlValueAccessor, Validator {
-
   controls = inject(FormBuilder).group({
     menuExpandedByDefault: [true],
     hostname: ['', Validators.required],
   });
 
-
-  onTouchFn = () => { };
+  onTouchFn = () => {};
 
   writeValue(value: any): void {
     this.controls.patchValue(value, { emitEvent: false });
@@ -81,10 +57,8 @@ export class SystemPreferencesComponent implements ControlValueAccessor, Validat
       return null;
     } else {
       return {
-        hostname: this.controls.controls.hostname.errors
+        hostname: this.controls.controls.hostname.errors,
       };
     }
   }
-
-
 }

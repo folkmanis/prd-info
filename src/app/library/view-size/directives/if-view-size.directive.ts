@@ -3,11 +3,10 @@ import { ViewSizeBase } from './view-size-base.directive';
 import { AppBreakpoints } from '../layout.service';
 
 @Directive({
-    selector: '[appIfViewSize]',
-    standalone: true,
+  selector: '[appIfViewSize]',
+  standalone: true,
 })
 export class IfViewSizeDirective extends ViewSizeBase {
-
   @Input('appIfViewSize') set viewSize(value: AppBreakpoints) {
     this.setViewSize(value);
   }
@@ -15,6 +14,4 @@ export class IfViewSizeDirective extends ViewSizeBase {
   @Input('appIfViewSizeElse') set elseTemplate(value: TemplateRef<any> | null) {
     this.setElseTemplate(value);
   }
-
-
 }

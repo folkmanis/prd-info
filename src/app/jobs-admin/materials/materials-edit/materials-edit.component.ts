@@ -1,22 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  input,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import {
-  AbstractControl,
-  AsyncValidatorFn,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -58,7 +42,6 @@ type MaterialForm = {
   ],
 })
 export class MaterialsEditComponent implements CanComponentDeactivate {
-
   #materialsService = inject(MaterialsService);
 
   #navigate = navigateRelative();
@@ -103,10 +86,7 @@ export class MaterialsEditComponent implements CanComponentDeactivate {
   });
 
   constructor() {
-    effect(
-      () => this.form.reset(this.material()),
-      { allowSignalWrites: true }
-    );
+    effect(() => this.form.reset(this.material()), { allowSignalWrites: true });
   }
 
   onReset() {
@@ -119,6 +99,7 @@ export class MaterialsEditComponent implements CanComponentDeactivate {
       const update = { ...this.changes(), _id: id };
       await this.#materialsService.updateMaterial(update);
     } else {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { _id, ...newMaterial } = this.form.getRawValue();
       const created = await this.#materialsService.insertMaterial(newMaterial);
       id = created._id;

@@ -3,48 +3,45 @@ import { take } from 'rxjs/operators';
 import { WebSocketSubject } from 'rxjs/webSocket';
 
 export interface MultiplexConfig<U> {
-    subMsg: (token: string) => any;
-    unsubMsg: () => any;
-    messageFilter: (value: U) => boolean;
-    tokenFn: () => Observable<string>;
+  subMsg: (token: string) => any;
+  unsubMsg: () => any;
+  messageFilter: (value: U) => boolean;
+  tokenFn: () => Observable<string>;
 }
 
 export class WsAuthSubject<T> extends WebSocketSubject<T> {
+  multiplexAuth({ subMsg, unsubMsg, messageFilter, tokenFn }: MultiplexConfig<T>): Observable<T> {
+    return new Observable((observer: Observer<T>) => {
+      try {
+        tokenFn()
+          .pipe(take(1))
+          .subscribe((token) => this.next(subMsg(token)));
+      } catch (err) {
+        observer.error(err);
+      }
 
-    multiplexAuth({ subMsg, unsubMsg, messageFilter, tokenFn }: MultiplexConfig<T>): Observable<T> {
-        return new Observable((observer: Observer<T>) => {
-            try {
-                tokenFn().pipe(
-                    take(1),
-                ).subscribe(token => this.next(subMsg(token)));
-            } catch (err) {
-                observer.error(err);
+      const subscription = this.subscribe({
+        next: (x) => {
+          try {
+            if (messageFilter(x)) {
+              observer.next(x);
             }
+          } catch (err) {
+            observer.error(err);
+          }
+        },
+        error: (err) => observer.error(err),
+        complete: () => observer.complete(),
+      });
 
-            const subscription = this.subscribe({
-                next: (x) => {
-                    try {
-                        if (messageFilter(x)) {
-                            observer.next(x);
-                        }
-                    } catch (err) {
-                        observer.error(err);
-                    }
-                },
-                error: (err) => observer.error(err),
-                complete: () => observer.complete()
-            }
-            );
-
-            return () => {
-                try {
-                    this.next(unsubMsg());
-                } catch (err) {
-                    observer.error(err);
-                }
-                subscription.unsubscribe();
-            };
-        });
-    }
-
+      return () => {
+        try {
+          this.next(unsubMsg());
+        } catch (err) {
+          observer.error(err);
+        }
+        subscription.unsubscribe();
+      };
+    });
+  }
 }

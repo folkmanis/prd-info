@@ -1,35 +1,21 @@
 <div class="container">
+  <form (submit)="onLogin()">
+    <mat-form-field class="full-width">
+      <mat-label> Lietotājs </mat-label>
+      <input matInput [(ngModel)]="username" name="username" autocomplete="username" #usernameControl="ngModel" autocapitalize="none" appFocused required />
+    </mat-form-field>
 
-    <form (submit)="onLogin()">
+    <mat-form-field class="full-width">
+      <mat-label> Parole </mat-label>
+      <input matInput [(ngModel)]="password" name="password" type="password" autocomplete="current-password" />
+    </mat-form-field>
 
-        <mat-form-field class="full-width">
-            <mat-label>
-                Lietotājs
-            </mat-label>
-            <input matInput [(ngModel)]="username" name="username" autocomplete="username" #usernameControl="ngModel"
-                autocapitalize="none" appFocused required>
-        </mat-form-field>
+    <button mat-raised-button type="submit" color="primary" [disabled]="!usernameControl.valid || busy()" class="full-width">PIESLĒGTIES</button>
+  </form>
 
-        <mat-form-field class="full-width">
-            <mat-label>
-                Parole
-            </mat-label>
-            <input matInput [(ngModel)]="password" name="password" type="password" autocomplete="current-password">
-        </mat-form-field>
+  <hr />
 
-        <button mat-raised-button type="submit" color="primary" [disabled]="!usernameControl.valid || busy()"
-            class="full-width">
-            PIESLĒGTIES
-        </button>
-
-    </form>
-
-    <hr>
-
-    @if (isDemo === false) {
-    <a mat-raised-button href="/data/login/google" [disabled]="busy()" class="full-width">
-        PIEVIENOTIES AR GOOGLE
-    </a>
-    }
-
+  @if (isDemo === false) {
+    <a mat-raised-button href="/data/login/google" [disabled]="busy()" class="full-width"> PIEVIENOTIES AR GOOGLE </a>
+  }
 </div>

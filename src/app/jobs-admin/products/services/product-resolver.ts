@@ -10,5 +10,4 @@ export const resolveProduct: ResolveFn<Product> = async (route) => {
   } catch (error) {
     return new RedirectCommand(router.parseUrl('/jobs-admin/products'));
   }
-}
-
+};

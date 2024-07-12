@@ -19,38 +19,28 @@ import { CustomerContact } from 'src/app/interfaces';
       provide: NG_VALIDATORS,
       multi: true,
       useExisting: CustomerContactEditorComponent,
-    }
+    },
   ],
-  imports: [
-    ReactiveFormsModule,
-  ]
+  imports: [ReactiveFormsModule],
 })
 export class CustomerContactEditorComponent implements ControlValueAccessor, Validator {
-
   private emailInput = viewChild.required<ElementRef<HTMLInputElement>>('email');
 
-  emailControl = inject(FormBuilder).control(
-    null as string | null,
-    {
-      validators: [
-        Validators.required,
-        Validators.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/),
-      ]
-    }
-  );
+  emailControl = inject(FormBuilder).control(null as string | null, {
+    validators: [Validators.required, Validators.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)],
+  });
 
   complete = output<void>();
 
-  private onTouchFn: () => void = () => { };
+  private onTouchFn: () => void = () => {};
 
   constructor() {
     afterNextRender({
       write: () => {
         this.emailInput().nativeElement.focus();
         this.onTouchFn();
-      }
-    }
-    );
+      },
+    });
   }
 
   writeValue(obj: CustomerContact | null): void {
@@ -58,9 +48,7 @@ export class CustomerContactEditorComponent implements ControlValueAccessor, Val
   }
 
   registerOnChange(fn: (value: CustomerContact) => void): void {
-    this.emailControl.valueChanges.pipe(
-      map(value => value ? new CustomerContact(value) : null)
-    ).subscribe(fn);
+    this.emailControl.valueChanges.pipe(map((value) => (value ? new CustomerContact(value) : null))).subscribe(fn);
   }
 
   registerOnTouched(fn: () => void): void {
@@ -81,5 +69,4 @@ export class CustomerContactEditorComponent implements ControlValueAccessor, Val
     }
     return this.emailControl.errors;
   }
-
 }

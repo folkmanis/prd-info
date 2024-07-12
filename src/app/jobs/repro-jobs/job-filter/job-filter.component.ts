@@ -1,21 +1,7 @@
 import { AsyncPipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  Output,
-  computed,
-  inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, Output, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -71,14 +57,10 @@ export class JobFilterComponent {
   });
 
   private customers = inject(CustomersService).customersEnabled;
-  private customerControlValue = toSignal(
-    this.filterForm.controls.customer.valueChanges
-  );
+  private customerControlValue = toSignal(this.filterForm.controls.customer.valueChanges);
   customersFiltered = computed(() => {
     const input = this.customerControlValue()?.toUpperCase() || '';
-    return this.customers().filter((c) =>
-      c.CustomerName.toUpperCase().includes(input)
-    );
+    return this.customers().filter((c) => c.CustomerName.toUpperCase().includes(input));
   });
 
   @Input()
@@ -94,14 +76,16 @@ export class JobFilterComponent {
 
   @Input() products: ProductPartial[] | null = null;
 
-  @Output() filterChanges: Observable<JobQueryFilter> =
-    this.filterForm.valueChanges.pipe(
-      filter((_) => this.filterForm.valid),
-      debounceTime(300),
-      map(() => this.filter)
-    );
+  @Output() filterChanges: Observable<JobQueryFilter> = this.filterForm.valueChanges.pipe(
+    filter((_) => this.filterForm.valid),
+    debounceTime(300),
+    map(() => this.filter),
+  );
 
-  constructor(private jobService: JobService, private fb: FormBuilder) { }
+  constructor(
+    private jobService: JobService,
+    private fb: FormBuilder,
+  ) {}
 
   onReset<T extends keyof JobFilter>(key?: T) {
     if (key) {

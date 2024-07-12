@@ -1,112 +1,94 @@
 <form [formGroup]="form" appViewSize>
+  <div class="container-multi">
+    <!-- Klients -->
+    <app-customer-input formControlName="customer" [listItems]="customersEnabled()"> Klients </app-customer-input>
 
-    <div class="container-multi">
+    <!-- Izveidošanas Datums -->
+    <mat-form-field>
+      <mat-label>Izveidošanas datums</mat-label>
+      <input matInput formControlName="receivedDate" [matDatepicker]="datePicker" required [min]="receivedDate.min" [max]="receivedDate.max" />
+      <mat-datepicker-toggle matIconSuffix [for]="datePicker" tabindex="-1"></mat-datepicker-toggle>
+      <mat-datepicker #datePicker></mat-datepicker>
+    </mat-form-field>
 
-        <!-- Klients -->
-        <app-customer-input formControlName="customer" [listItems]="customersEnabled()">
-            Klients
-        </app-customer-input>
+    <!-- Nodošanas termiņš -->
+    <mat-form-field>
+      <mat-label>Nodošanas datums</mat-label>
+      <input matInput required [matDatepicker]="dueDatePicker" formControlName="dueDate" />
+      <mat-datepicker-toggle matIconSuffix [for]="dueDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #dueDatePicker></mat-datepicker>
+    </mat-form-field>
+  </div>
 
-        <!-- Izveidošanas Datums -->
-        <mat-form-field>
-            <mat-label>Izveidošanas datums</mat-label>
-            <input matInput formControlName="receivedDate" [matDatepicker]="datePicker" required
-                [min]="receivedDate.min" [max]="receivedDate.max">
-            <mat-datepicker-toggle matIconSuffix [for]="datePicker" tabindex="-1"></mat-datepicker-toggle>
-            <mat-datepicker #datePicker></mat-datepicker>
-        </mat-form-field>
+  <div>
+    <!-- Darba nosaukums -->
+    <mat-form-field class="full-width">
+      <mat-label>Darba nosaukums</mat-label>
+      <input type="text" matInput formControlName="name" required />
+      @if (nameControl.hasError('required')) {
+        <mat-error> Jānorāda obligāti </mat-error>
+      }
+      <button mat-icon-button [appCopyClipboard]="jobIdAndName()" matIconSuffix tabindex="-1">
+        <mat-icon>filter_none</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
 
-        <!-- Nodošanas termiņš -->
-        <mat-form-field>
-            <mat-label>Nodošanas datums</mat-label>
-            <input matInput required [matDatepicker]="dueDatePicker" formControlName="dueDate">
-            <mat-datepicker-toggle matIconSuffix [for]="dueDatePicker"></mat-datepicker-toggle>
-            <mat-datepicker #dueDatePicker></mat-datepicker>
-        </mat-form-field>
+  <div class="container-multi">
+    <!-- Darba kategorija -->
+    <ng-container formGroupName="production">
+      <mat-form-field>
+        <mat-label>Kategorija</mat-label>
+        <mat-select formControlName="category" required>
+          @for (category of categories(); track category.category) {
+            <mat-option [value]="category.category">
+              {{ category.description }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+    <!-- Statuss -->
+    <ng-container formGroupName="jobStatus">
+      <mat-form-field>
+        <mat-label>Stadija</mat-label>
+        <mat-select formControlName="generalStatus">
+          @for (state of jobStates(); track $index) {
+            <mat-option [value]="state.state">
+              {{ state.description }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
 
-    </div>
+    <!-- Klienta darba numurs -->
+    <mat-form-field>
+      <mat-label>Klienta darba numurs</mat-label>
+      <input matInput formControlName="customerJobId" />
+    </mat-form-field>
+  </div>
 
-    <div>
+  <!-- Preces apakšforma -->
+  @if (customerProducts(); as customerProducts) {
+    <app-repro-products-editor [customerProducts]="customerProducts" formControlName="products" [showPrices]="showPrices()" />
+  }
 
-        <!-- Darba nosaukums -->
+  <div class="container-multi">
+    <!-- Papildus apraksts -->
+    <mat-card>
+      <mat-card-content>
         <mat-form-field class="full-width">
-            <mat-label>Darba nosaukums</mat-label>
-            <input type="text" matInput formControlName="name" required>
-            @if(nameControl.hasError('required')) {
-            <mat-error>
-                Jānorāda obligāti
-            </mat-error>
-            }
-            <button mat-icon-button [appCopyClipboard]="jobIdAndName()" matIconSuffix tabindex="-1">
-                <mat-icon>filter_none</mat-icon>
-            </button>
+          <mat-label>Piezīmes</mat-label>
+          <textarea matInput formControlName="comment" cdkTextareaAutosize [cdkAutosizeMaxRows]="12"></textarea>
         </mat-form-field>
+      </mat-card-content>
+    </mat-card>
 
-    </div>
-
-    <div class="container-multi">
-
-        <!-- Darba kategorija -->
-        <ng-container formGroupName="production">
-            <mat-form-field>
-                <mat-label>Kategorija</mat-label>
-                <mat-select formControlName="category" required>
-                    @for (category of categories(); track category.category) {
-                    <mat-option [value]="category.category">
-                        {{category.description}}
-                    </mat-option>
-                    }
-                </mat-select>
-            </mat-form-field>
-        </ng-container>
-        <!-- Statuss -->
-        <ng-container formGroupName="jobStatus">
-            <mat-form-field>
-                <mat-label>Stadija</mat-label>
-                <mat-select formControlName="generalStatus">
-                    @for (state of jobStates(); track $index) {
-                    <mat-option [value]="state.state">
-                        {{state.description}}
-                    </mat-option>
-                    }
-                </mat-select>
-            </mat-form-field>
-        </ng-container>
-
-        <!-- Klienta darba numurs -->
-        <mat-form-field>
-            <mat-label>Klienta darba numurs</mat-label>
-            <input matInput formControlName="customerJobId">
-        </mat-form-field>
-
-    </div>
-
-    <!-- Preces apakšforma -->
-    @if (customerProducts(); as customerProducts) {
-    <app-repro-products-editor [customerProducts]="customerProducts" formControlName="products"
-        [showPrices]="showPrices()" />
-    }
-
-    <div class="container-multi">
-
-        <!-- Papildus apraksts -->
-        <mat-card>
-            <mat-card-content>
-                <mat-form-field class="full-width">
-                    <mat-label>Piezīmes</mat-label>
-                    <textarea matInput formControlName="comment" cdkTextareaAutosize
-                        [cdkAutosizeMaxRows]="12"></textarea>
-                </mat-form-field>
-            </mat-card-content>
-        </mat-card>
-
-        <mat-card>
-            <mat-card-content>
-                <ng-content></ng-content>
-            </mat-card-content>
-        </mat-card>
-
-
-    </div>
-
+    <mat-card>
+      <mat-card-content>
+        <ng-content></ng-content>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </form>

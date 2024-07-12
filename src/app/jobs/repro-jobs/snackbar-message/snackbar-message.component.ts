@@ -1,15 +1,7 @@
 import { AsyncPipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import {
-  MAT_SNACK_BAR_DATA,
-  MatSnackBarRef,
-} from '@angular/material/snack-bar';
+import { MAT_SNACK_BAR_DATA, MatSnackBarRef } from '@angular/material/snack-bar';
 import { Observable, delay, finalize, of } from 'rxjs';
 import { FileUploadMessage, Job } from '../../interfaces';
 import { UploadProgressComponent } from '../upload-progress/upload-progress.component';
@@ -37,14 +29,14 @@ export class SnackbarMessageComponent implements OnInit {
 
   constructor(
     @Inject(MAT_SNACK_BAR_DATA) private data: SnackBarMessageData,
-    private snackbarRef: MatSnackBarRef<SnackbarMessageComponent>
+    private snackbarRef: MatSnackBarRef<SnackbarMessageComponent>,
   ) {}
 
   ngOnInit(): void {
     this.progress$
       .pipe(
         delay(3000),
-        finalize(() => this.snackbarRef.dismiss())
+        finalize(() => this.snackbarRef.dismiss()),
       )
       .subscribe();
   }

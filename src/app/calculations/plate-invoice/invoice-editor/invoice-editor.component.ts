@@ -1,11 +1,5 @@
 import { DatePipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  input,
-  signal
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -62,9 +56,7 @@ export abstract class InvoiceEditor {
     MatCardModule,
     DatePipe,
   ],
-  providers: [
-    { provide: InvoiceEditor, useExisting: InvoiceEditorComponent }
-  ]
+  providers: [{ provide: InvoiceEditor, useExisting: InvoiceEditorComponent }],
 })
 export class InvoiceEditorComponent implements InvoiceEditor {
   private locale?: Locale = inject<Locale>(DATE_FNS_LOCALE, { optional: true });
@@ -78,10 +70,7 @@ export class InvoiceEditorComponent implements InvoiceEditor {
 
   pyatraqEnabled = configuration('paytraq', 'enabled');
 
-  isJobsAdmin = toSignal(inject(LoginService).user$.pipe(
-    map(usr => usr.preferences.modules.includes('jobs-admin')),
-  ), { initialValue: false });
-
+  isJobsAdmin = toSignal(inject(LoginService).user$.pipe(map((usr) => usr.preferences.modules.includes('jobs-admin'))), { initialValue: false });
 
   busy = signal(false);
 
@@ -91,11 +80,7 @@ export class InvoiceEditorComponent implements InvoiceEditor {
       separator: ',',
       locale: this.locale,
     });
-    const file = new File(
-      [csv.toCsvInvoice()],
-      `Invoice ${invoice.invoiceId}.csv`,
-      { type: 'text/csv' }
-    );
+    const file = new File([csv.toCsvInvoice()], `Invoice ${invoice.invoiceId}.csv`, { type: 'text/csv' });
     saveAs(file);
   }
 
@@ -106,17 +91,10 @@ export class InvoiceEditorComponent implements InvoiceEditor {
       separator: ',',
       locale: this.locale,
     });
-    saveAs(
-      new File(
-        [csv.toCsvReport()],
-        `${invoice.customer}-${invoice.invoiceId}.csv`,
-        { type: 'text/csv' }
-      )
-    );
+    saveAs(new File([csv.toCsvReport()], `${invoice.customer}-${invoice.invoiceId}.csv`, { type: 'text/csv' }));
   }
 
   async onDelete() {
-
     const confirmation = await this.confirmation.confirmDelete();
     if (!confirmation) {
       return;
@@ -145,10 +123,10 @@ export class InvoiceEditorComponent implements InvoiceEditor {
             mergeMap((documentRef) =>
               this.invoicesService.updateInvoice(invoice.invoiceId, {
                 paytraq: { paytraqId, documentRef },
-              })
-            )
-          )
-        )
+              }),
+            ),
+          ),
+        ),
       )
       .subscribe(() => {
         this.busy.set(false);
@@ -160,12 +138,11 @@ export class InvoiceEditorComponent implements InvoiceEditor {
   onUnlinkPaytraq(): void {
     this.busy.set(true);
     const { invoiceId } = this.invoice();
-    this.invoicesService.updateInvoice(invoiceId, { paytraq: null })
-      .subscribe(() => {
-        this.busy.set(false);
-        this.snack.open(PAYTRAQ_UNLINK_MESSAGE, 'OK', { duration: 5000 });
-        this.reload();
-      });
+    this.invoicesService.updateInvoice(invoiceId, { paytraq: null }).subscribe(() => {
+      this.busy.set(false);
+      this.snack.open(PAYTRAQ_UNLINK_MESSAGE, 'OK', { duration: 5000 });
+      this.reload();
+    });
   }
 
   async navigateToProduct(name: string) {

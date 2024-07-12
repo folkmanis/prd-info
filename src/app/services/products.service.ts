@@ -1,18 +1,11 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import {
-  CustomerProduct,
-  JobProductionStage,
-  NewProduct,
-  Product,
-  ProductPartial,
-} from 'src/app/interfaces';
+import { CustomerProduct, JobProductionStage, NewProduct, Product, ProductPartial } from 'src/app/interfaces';
 import { ProductsApiService } from 'src/app/services/prd-api/products-api.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductsService {
-
   private api = inject(ProductsApiService);
 
   readonly #products = signal<ProductPartial[]>([]);
@@ -85,5 +78,4 @@ export class ProductsService {
     }
     return inserted;
   }
-
 }

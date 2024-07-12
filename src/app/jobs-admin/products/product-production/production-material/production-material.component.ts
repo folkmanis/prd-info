@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  inject,
-  input
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, input } from '@angular/core';
 import {
   ControlValueAccessor,
   FormArray,
@@ -25,9 +19,7 @@ import { SelectDirective } from 'src/app/library/directives/select.directive';
 import { MaterialUnitsDirective } from './material-units.directive';
 
 type MaterialGroup = FormGroup<{
-  [key in keyof JobProductionStageMaterial]: FormControl<
-    JobProductionStageMaterial[key]
-  >;
+  [key in keyof JobProductionStageMaterial]: FormControl<JobProductionStageMaterial[key]>;
 }>;
 
 @Component({
@@ -36,13 +28,7 @@ type MaterialGroup = FormGroup<{
   templateUrl: './production-material.component.html',
   styleUrls: ['./production-material.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    ReactiveFormsModule,
-    MaterialUnitsDirective,
-    SelectDirective,
-    MatIcon,
-    MatButtonModule,
-  ],
+  imports: [ReactiveFormsModule, MaterialUnitsDirective, SelectDirective, MatIcon, MatButtonModule],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -66,7 +52,7 @@ export class ProductionMaterialComponent implements ControlValueAccessor, Valida
 
   trackByFn = (idx: number) => this.form.controls[idx];
 
-  touchFn = () => { };
+  touchFn = () => {};
 
   writeValue(obj: JobProductionStageMaterial[]): void {
     this.initControl(obj);
@@ -94,9 +80,7 @@ export class ProductionMaterialComponent implements ControlValueAccessor, Valida
       return null;
     } else {
       return {
-        materials: this.form.controls
-          .filter((c) => !c.valid)
-          .map((c) => c.errors),
+        materials: this.form.controls.filter((c) => !c.valid).map((c) => c.errors),
       };
     }
   }
@@ -116,22 +100,15 @@ export class ProductionMaterialComponent implements ControlValueAccessor, Valida
       this.form.setValue(materials, { emitEvent: false });
     } else {
       this.form.clear({ emitEvent: false });
-      materials.forEach((m) =>
-        this.form.push(this.materialGroup(m), { emitEvent: false })
-      );
+      materials.forEach((m) => this.form.push(this.materialGroup(m), { emitEvent: false }));
     }
   }
 
-  private materialGroup(
-    material = new JobProductionStageMaterial()
-  ): MaterialGroup {
+  private materialGroup(material = new JobProductionStageMaterial()): MaterialGroup {
     return this.fb.group({
       materialId: [material.materialId, [Validators.required]],
       amount: [material.amount, [Validators.required, Validators.min(0)]],
-      fixedAmount: [
-        material.fixedAmount,
-        [Validators.required, Validators.min(0)],
-      ],
+      fixedAmount: [material.fixedAmount, [Validators.required, Validators.min(0)]],
     });
   }
 }

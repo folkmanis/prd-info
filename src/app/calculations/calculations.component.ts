@@ -5,15 +5,10 @@ import { SystemPreferencesService } from '../services/system-preferences.service
 
 @Component({
   selector: 'app-calculations',
-  template: `<app-card-menu [modules]='modules$ | async'></app-card-menu>`,
+  template: `<app-card-menu [modules]="modules$ | async"></app-card-menu>`,
   standalone: true,
-  imports: [
-    CardMenuComponent,
-    AsyncPipe,
-  ]
+  imports: [CardMenuComponent, AsyncPipe],
 })
 export class CalculationsComponent {
-
   modules$ = inject(SystemPreferencesService).childMenu$;
-
 }

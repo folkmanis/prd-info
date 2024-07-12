@@ -1,33 +1,25 @@
 <table mat-table [dataSource]="clients()" class="app-table">
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let client; columns: displayedColumns" (click)="onSelected(client)"></tr>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let client; columns: displayedColumns" (click)="onSelected(client)"></tr>
+  <ng-container matColumnDef="clientID">
+    <th mat-header-cell *matHeaderCellDef>Paytraq kods</th>
+    <td mat-cell *matCellDef="let client">
+      {{ client.clientID }}
+    </td>
+  </ng-container>
 
-    <ng-container matColumnDef="clientID">
-        <th mat-header-cell *matHeaderCellDef>
-            Paytraq kods
-        </th>
-        <td mat-cell *matCellDef="let client">
-            {{client.clientID}}
-        </td>
-    </ng-container>
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>Nosaukums</th>
+    <td mat-cell *matCellDef="let client">
+      {{ client.name }}
+    </td>
+  </ng-container>
 
-    <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>
-            Nosaukums
-        </th>
-        <td mat-cell *matCellDef="let client">
-            {{client.name}}
-        </td>
-    </ng-container>
-
-    <ng-container matColumnDef="regNumber">
-        <th mat-header-cell *matHeaderCellDef>
-            Reģ. nr.
-        </th>
-        <td mat-cell *matCellDef="let client">
-            {{client.regNumber}}
-        </td>
-    </ng-container>
-
+  <ng-container matColumnDef="regNumber">
+    <th mat-header-cell *matHeaderCellDef>Reģ. nr.</th>
+    <td mat-cell *matCellDef="let client">
+      {{ client.regNumber }}
+    </td>
+  </ng-container>
 </table>

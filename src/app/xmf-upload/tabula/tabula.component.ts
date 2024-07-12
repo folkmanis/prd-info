@@ -22,12 +22,5 @@ export class TabulaComponent {
     }
   }
 
-  displayedColumns = [
-    'started',
-    'fileName',
-    'fileSize',
-    'count.processed',
-    'count.upserted',
-    'count.modified',
-  ];
+  displayedColumns = ['started', 'fileName', 'fileSize', 'count.processed', 'count.upserted', 'count.modified'];
 }

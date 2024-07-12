@@ -1,14 +1,11 @@
 import { Thread } from './thread';
 import { Type } from 'class-transformer';
 
-
 export class Threads {
+  @Type(() => Thread)
+  threads: Pick<Thread, 'id' | 'historyId' | 'snippet'>[] = [];
 
-    @Type(() => Thread)
-    threads: Pick<Thread, 'id' | 'historyId' | 'snippet'>[] = [];
+  nextPageToken?: string;
 
-    nextPageToken?: string;
-
-    resultSizeEstimate: number = 0;
-
+  resultSizeEstimate: number = 0;
 }

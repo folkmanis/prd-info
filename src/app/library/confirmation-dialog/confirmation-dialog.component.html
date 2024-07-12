@@ -1,18 +1,18 @@
-<h2 mat-dialog-title> {{ data.title || 'Apstipriniet!' }} </h2>
+<h2 mat-dialog-title>{{ data.title || 'Apstipriniet!' }}</h2>
 
 <mat-dialog-content>
-    {{data.prompt}}
+  {{ data.prompt }}
 </mat-dialog-content>
 
 <mat-dialog-actions>
-    @if (data.yes; as yes) {
+  @if (data.yes; as yes) {
     <button mat-raised-button color="primary" [mat-dialog-close]="true">
-        {{ yes }}
+      {{ yes }}
     </button>
-    }
-    @if (data.no; as no) {
+  }
+  @if (data.no; as no) {
     <button mat-button [mat-dialog-close]="false">
-        {{ no }}
+      {{ no }}
     </button>
-    }
+  }
 </mat-dialog-actions>

@@ -21,14 +21,13 @@ export const REPRO_DEFAULTS = {
   interval: {
     fromDate: null,
     toDate: null,
-  }
+  },
 };
 
 interface NullableInterval {
   start: Date | null;
   end: Date | null;
 }
-
 
 @Component({
   selector: 'app-filter',
@@ -50,7 +49,6 @@ interface NullableInterval {
   ],
 })
 export class FilterComponent {
-
   private dateUtils = inject(DateUtilsService);
 
   filter = input<JobsProductionFilterQuery | null>(null);
@@ -63,10 +61,13 @@ export class FilterComponent {
 
   jobStatus = signal<number[]>([10, 20], { equal: isEqual });
   category = signal<string[]>(['repro'], { equal: isEqual });
-  interval = signal<{ fromDate: Date | null, toDate: Date | null; }>({
-    fromDate: null,
-    toDate: null,
-  }, { equal: isEqual });
+  interval = signal<{ fromDate: Date | null; toDate: Date | null }>(
+    {
+      fromDate: null,
+      toDate: null,
+    },
+    { equal: isEqual },
+  );
 
   query = computed<JobsProductionFilterQuery>(() => {
     const fromDate = this.interval().fromDate;
@@ -84,9 +85,12 @@ export class FilterComponent {
   filterChange = output<JobsProductionFilterQuery>();
 
   constructor() {
-    effect(() => {
-      this.writeValue(this.filter());
-    }, { allowSignalWrites: true });
+    effect(
+      () => {
+        this.writeValue(this.filter());
+      },
+      { allowSignalWrites: true },
+    );
   }
 
   onChangeJobStatus(value: number[]) {
@@ -100,12 +104,12 @@ export class FilterComponent {
   }
 
   onChangeFromDate(event: MatDatepickerInputEvent<Date>) {
-    this.interval.update(value => ({ ...value, fromDate: event.value }));
+    this.interval.update((value) => ({ ...value, fromDate: event.value }));
     this.filterChange.emit(this.query());
   }
 
   onChangeToDate(event: MatDatepickerInputEvent<Date>) {
-    this.interval.update(value => ({ ...value, toDate: event.value }));
+    this.interval.update((value) => ({ ...value, toDate: event.value }));
     this.filterChange.emit(this.query());
   }
 
@@ -132,7 +136,6 @@ export class FilterComponent {
     this.setInterval(this.dateUtils.pastYear());
   }
 
-
   private setInterval({ start, end }: NullableInterval) {
     this.interval.set({
       fromDate: start,
@@ -152,7 +155,4 @@ export class FilterComponent {
       });
     }
   }
-
-
-
 }

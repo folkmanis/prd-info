@@ -1,13 +1,9 @@
 <app-paytraq-search-header [(search)]="search" (submit)="onSearchProducts()" [disabled]="disabled()">
-
-    <button mat-button (click)="onClearValue()" [disabled]="!value() || disabled()">
-        ATVIENOT
-    </button>
-
+  <button mat-button (click)="onClearValue()" [disabled]="!value() || disabled()">ATVIENOT</button>
 </app-paytraq-search-header>
 
 <div>
-    @if (products(); as productsArray) {
+  @if (products(); as productsArray) {
     <app-paytraq-product-table [products]="productsArray" (productSelected)="onProductSelected($event)" />
-    }
+  }
 </div>

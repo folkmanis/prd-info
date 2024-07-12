@@ -5,26 +5,25 @@ import { Type } from 'class-transformer';
 import { Modules } from '../../../interfaces/system-preferences';
 
 export class Message {
+  _id: string;
 
-    _id: string;
+  @Type(() => Date)
+  timestamp: Date;
 
-    @Type(() => Date)
-    timestamp: Date;
+  seen: boolean;
 
-    seen: boolean;
+  deleted: boolean;
 
-    deleted: boolean;
+  module: Modules;
 
-    module: Modules;
-
-    @Type(() => MessageData, {
-        discriminator: {
-            property: '_type',
-            subTypes: [
-                { value: JobData, name: 'jobs' },
-                { value: XmfUploadData, name: 'xmf-upload' },
-            ]
-        }
-    })
-    data: JobData | XmfUploadData;
+  @Type(() => MessageData, {
+    discriminator: {
+      property: '_type',
+      subTypes: [
+        { value: JobData, name: 'jobs' },
+        { value: XmfUploadData, name: 'xmf-upload' },
+      ],
+    },
+  })
+  data: JobData | XmfUploadData;
 }

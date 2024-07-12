@@ -2,41 +2,43 @@
   <!-- Log level -->
   <ng-container matColumnDef="level">
     <mat-header-cell *matHeaderCellDef>Nozīmīgums</mat-header-cell>
-    <mat-cell *matCellDef="let record;">{{record.levelVerb}}</mat-cell>
+    <mat-cell *matCellDef="let record">{{ record.levelVerb }}</mat-cell>
   </ng-container>
   <!-- Date -->
   <ng-container matColumnDef="timestamp">
     <mat-header-cell *matHeaderCellDef>Laiks</mat-header-cell>
-    <mat-cell *matCellDef="let record;">{{record.timestamp | date:'HH:mm:ss.SSS z'}}</mat-cell>
+    <mat-cell *matCellDef="let record">{{ record.timestamp | date: 'HH:mm:ss.SSS z' }}</mat-cell>
   </ng-container>
   <!-- Info -->
   <ng-container matColumnDef="info">
     <mat-header-cell *matHeaderCellDef>Apraksts</mat-header-cell>
-    <mat-cell *matCellDef="let record;">{{record.info}}</mat-cell>
+    <mat-cell *matCellDef="let record">{{ record.info }}</mat-cell>
   </ng-container>
   <!-- Metadata -->
   <ng-container matColumnDef="metadata">
     <mat-header-cell *matHeaderCellDef>Papildus dati</mat-header-cell>
-    <mat-cell *matCellDef="let record;">{{record.metadata | json | shortenText:70}}</mat-cell>
+    <mat-cell *matCellDef="let record">{{ record.metadata | json | shortenText: 70 }}</mat-cell>
   </ng-container>
   <!-- Izvērsts skats -->
   <ng-container matColumnDef="expandedRecord">
-    <mat-cell *matCellDef="let record;" [attr.colspan]="displayedColumns.length">
-      <div [@detailExpand]="record === expandedRecord ? 'expanded':'collapsed'" class="record-detail">
+    <mat-cell *matCellDef="let record" [attr.colspan]="displayedColumns.length">
+      <div [@detailExpand]="record === expandedRecord ? 'expanded' : 'collapsed'" class="record-detail">
         <!-- Izvērstā skata apraksts -->
         @if (record === expandedRecord) {
-        <div class="json-display">
-          {{record.metadata | json}}
-        </div>
+          <div class="json-display">
+            {{ record.metadata | json }}
+          </div>
         }
       </div>
     </mat-cell>
   </ng-container>
 
-  <mat-header-row *matHeaderRowDef="displayedColumns; sticky: false;"></mat-header-row>
-  <mat-row *matRowDef="let record; columns: displayedColumns;" class="record-row"
+  <mat-header-row *matHeaderRowDef="displayedColumns; sticky: false"></mat-header-row>
+  <mat-row
+    *matRowDef="let record; columns: displayedColumns"
+    class="record-row"
     (click)="expandedRecord = expandedRecord === record ? null : record"
-    [class.expanded-row]="expandedRecord === record"></mat-row>
+    [class.expanded-row]="expandedRecord === record"
+  ></mat-row>
   <mat-row *matRowDef="let row; columns: ['expandedRecord']" class="detail-row"></mat-row>
-
 </mat-table>

@@ -7,8 +7,6 @@ import { MatCardModule } from '@angular/material/card';
   styleUrls: ['./preferences-card.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [MatCardModule]
+  imports: [MatCardModule],
 })
-export class PreferencesCardComponent<T> {
-
-}
+export class PreferencesCardComponent {}

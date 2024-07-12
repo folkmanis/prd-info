@@ -1,7 +1,6 @@
 <ng-container *appIfViewSize="'large'" [formGroup]="filterGroup">
-
   <mat-form-field class="name" subscriptSizing="dynamic">
-    <input matInput formControlName="name">
+    <input matInput formControlName="name" />
     <button mat-icon-button disabled matIconSuffix>
       <mat-icon>search</mat-icon>
     </button>
@@ -11,9 +10,9 @@
     <mat-label> Materiālu grupas </mat-label>
     <mat-select formControlName="categories" multiple>
       @for (category of categories(); track $index) {
-      <mat-option [value]="category.category">
-        {{category.description}}
-      </mat-option>
+        <mat-option [value]="category.category">
+          {{ category.description }}
+        </mat-option>
       }
     </mat-select>
   </mat-form-field>
@@ -21,5 +20,4 @@
   <button mat-icon-button (click)="clear()">
     <mat-icon>clear</mat-icon>
   </button>
-
 </ng-container>

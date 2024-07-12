@@ -7,10 +7,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   templateUrl: './module-group.component.html',
   styleUrls: ['./module-group.component.scss'],
   standalone: true,
-  imports: [MatToolbarModule, MatButtonModule]
+  imports: [MatToolbarModule, MatButtonModule],
 })
 export class ModuleGroupComponent {
-
   pristine = input(true, { transform: booleanAttribute });
   valid = input(true, { transform: booleanAttribute });
 
@@ -26,5 +25,4 @@ export class ModuleGroupComponent {
   onReset() {
     this.reset.emit();
   }
-
 }

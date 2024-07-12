@@ -1,14 +1,9 @@
 <ng-content></ng-content>
-@if(colorTotals()) {
-
-@for(color of colors; track color; let last = $last) {
-<span [style.color]="colorStyles()[color]">
-    {{ color | titlecase }} {{ colorTotals()[color] }}
-</span>
-@if (!last) {
-<span>|</span>
-}
-
-}
-
+@if (colorTotals()) {
+  @for (color of colors; track color; let last = $last) {
+    <span [style.color]="colorStyles()[color]"> {{ color | titlecase }} {{ colorTotals()[color] }} </span>
+    @if (!last) {
+      <span>|</span>
+    }
+  }
 }

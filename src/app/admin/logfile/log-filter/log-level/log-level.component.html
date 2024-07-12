@@ -1,10 +1,10 @@
 <mat-form-field>
-    <mat-label>Log level</mat-label>
-    <mat-select [(ngModel)]="level">
-        @for (level of logLevels(); track level.key) {
-        <mat-option [value]="level.key">
-            {{level.value}}
-        </mat-option>
-        }
-    </mat-select>
+  <mat-label>Log level</mat-label>
+  <mat-select [(ngModel)]="level">
+    @for (level of logLevels(); track level.key) {
+      <mat-option [value]="level.key">
+        {{ level.value }}
+      </mat-option>
+    }
+  </mat-select>
 </mat-form-field>

@@ -7,29 +7,19 @@ import { NotificationsService } from '../../services';
 import { Job, JobPartial, JobQueryFilter, JobQueryFilterOptions, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
 import { JobsApiService, JobUpdateParams } from './jobs-api.service';
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class JobService {
-
   constructor(
     private notificatinsService: NotificationsService,
     private api: JobsApiService,
     private transformer: ClassTransformer,
-  ) { }
+  ) {}
 
   getJobsObserver(filter$: Observable<JobQueryFilter>, reload$: Observable<void>) {
-
-    return combineReload(
-      filter$,
-      reload$,
-      this.notificatinsService.wsMultiplex('jobs').pipe(map(() => undefined))
-    ).pipe(
-      switchMap(filter => this.getJobList(filter)),
-    );
+    return combineReload(filter$, reload$, this.notificatinsService.wsMultiplex('jobs').pipe(map(() => undefined))).pipe(switchMap((filter) => this.getJobList(filter)));
   }
-
 
   async newJob(job: Partial<Job>, params: JobUpdateParams = {}): Promise<Job> {
     return firstValueFrom(this.api.insertOne(job, params));
@@ -49,7 +39,7 @@ export class JobService {
         jobId: undefined,
         _id: undefined,
       },
-      params
+      params,
     );
     return firstValueFrom(jobUpdate$);
   }
@@ -59,7 +49,7 @@ export class JobService {
   }
 
   updateJobs(jobs: Partial<Job>[], params?: JobUpdateParams): Observable<number> {
-    if (jobs.some(job => !job.jobId)) {
+    if (jobs.some((job) => !job.jobId)) {
       return EMPTY;
     }
     return this.api.updateMany(jobs, params);
@@ -84,6 +74,4 @@ export class JobService {
   normalizeFilter(jobFilter: Record<string, any>): JobQueryFilter {
     return this.transformer.plainToInstance(JobQueryFilter, jobFilter);
   }
-
-
 }

@@ -6,9 +6,7 @@ interface DataWithUnits {
 }
 
 class UnitsDirectiveContext {
-  constructor(
-    public $implicit: string,
-  ) { }
+  constructor(public $implicit: string) {}
 }
 
 @Directive({
@@ -16,7 +14,6 @@ class UnitsDirectiveContext {
   standalone: true,
 })
 export class MaterialUnitsDirective {
-
   private _units: DataWithUnits[] = [];
   @Input('appMaterialUnitsOf') set units(value: DataWithUnits[]) {
     this._units = Array.isArray(value) ? value : [];
@@ -40,7 +37,7 @@ export class MaterialUnitsDirective {
   constructor(
     private templateRef: TemplateRef<UnitsDirectiveContext>,
     private containerRef: ViewContainerRef,
-  ) { }
+  ) {}
 
   private createView() {
     if (!this.units || !this.id) {
@@ -52,12 +49,11 @@ export class MaterialUnitsDirective {
   }
 
   private unit(): string {
-    const material = this.units.find(un => un._id === this.id);
+    const material = this.units.find((un) => un._id === this.id);
     return material?.units || '';
   }
 
   static ngTemplateContextGuard(dir: MaterialUnitsDirective, ctx: unknown): ctx is UnitsDirectiveContext {
     return true;
   }
-
 }

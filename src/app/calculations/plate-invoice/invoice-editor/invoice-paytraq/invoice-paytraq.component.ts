@@ -1,16 +1,8 @@
-import { AsyncPipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  input
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { Invoice, InvoiceProduct } from 'src/app/interfaces';
 import { configuration } from 'src/app/services/config.provider';
 import { InvoiceEditor } from '../invoice-editor.component';
-
 
 @Component({
   selector: 'app-invoice-paytraq',
@@ -24,19 +16,11 @@ export class InvoicePaytraqComponent {
   invoice = input.required<Invoice>();
   busy = input(false);
 
-  paytraqUrl = configuration(
-    'paytraq',
-    'connectionParams',
-    'invoiceUrl'
-  );
+  paytraqUrl = configuration('paytraq', 'connectionParams', 'invoiceUrl');
 
   canCreatePaytraq = computed(() => {
     const { customerInfo, paytraq, products } = this.invoice();
-    return (
-      !!customerInfo?.financial?.paytraqId &&
-      !paytraq &&
-      allProductsWithPaytraq(products)
-    );
+    return !!customerInfo?.financial?.paytraqId && !paytraq && allProductsWithPaytraq(products);
   });
 
   private invoiceEditor = inject(InvoiceEditor);

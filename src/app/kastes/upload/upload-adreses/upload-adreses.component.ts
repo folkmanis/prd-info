@@ -1,13 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Output,
-  computed,
-  effect,
-  model,
-  signal
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Output, computed, effect, model, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -27,39 +19,22 @@ import { DragableDirective } from './dragable.directive';
   styleUrls: ['./upload-adreses.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [
-    MatButtonModule,
-    MatCheckboxModule,
-    MatChipsModule,
-    DragableDirective,
-    MatTableModule,
-    DragDropDirective,
-    MatIconModule,
-    ScrollTopDirective,
-  ],
+  imports: [MatButtonModule, MatCheckboxModule, MatChipsModule, DragableDirective, MatTableModule, DragDropDirective, MatIconModule, ScrollTopDirective],
 })
 export class UploadAdresesComponent {
-
   rowSelection = new SelectionModel<number>(true);
   columnSelection = new SelectionModel<number>(true);
 
-  private selectedRows = toSignal(
-    this.rowSelection.changed.pipe(
-      map(change => change.source)
-    ),
-    { initialValue: this.rowSelection }
-  );
+  private selectedRows = toSignal(this.rowSelection.changed.pipe(map((change) => change.source)), { initialValue: this.rowSelection });
 
   adreses = model<Array<number | string>[]>([], { alias: 'data' });
 
   assignedChips = signal<[number, ColumnNames][]>([]);
 
-  availableChips = computed(
-    () => {
-      const assignedNames = this.assignedChips().map(([, name]) => name);
-      return TABLE_COLUMNS
-        .filter(name => assignedNames.includes(name) === false);
-    });
+  availableChips = computed(() => {
+    const assignedNames = this.assignedChips().map(([, name]) => name);
+    return TABLE_COLUMNS.filter((name) => assignedNames.includes(name) === false);
+  });
 
   columns = computed(() => {
     const hasData = this.adreses()[0]?.length > 0;
@@ -68,35 +43,30 @@ export class UploadAdresesComponent {
 
   displayColumns = computed(() => {
     if (this.columns().length > 0) {
-      return ['selected', ...this.columns().map(column => column.toString())];
+      return ['selected', ...this.columns().map((column) => column.toString())];
     } else {
       return [];
     }
   });
-  displayCheckboxColumns = computed(() => this.displayColumns()
-    .map(column => 'checkBox-' + column)
-  );
+  displayCheckboxColumns = computed(() => this.displayColumns().map((column) => 'checkBox-' + column));
 
   constructor() {
-    effect(() => {
+    effect(
+      () => {
+        this.columnSelection.clear();
+        this.selectAllRows();
 
-      this.columnSelection.clear();
-      this.selectAllRows();
-
-      this.resetChips();
-
-    }, { allowSignalWrites: true });
+        this.resetChips();
+      },
+      { allowSignalWrites: true },
+    );
   }
 
-  assignedChipName = (column: number) => this.assignedChips()
-    .find(([idx]) => idx === column)?.[1];
+  assignedChipName = (column: number) => this.assignedChips().find(([idx]) => idx === column)?.[1];
 
   adresesPackages = computed(() => {
     const selectedRows = this.selectedRows();
-    if (
-      this.assignedChips().length < TABLE_COLUMNS.length ||
-      this.selectedRows().isEmpty()
-    ) {
+    if (this.assignedChips().length < TABLE_COLUMNS.length || this.selectedRows().isEmpty()) {
       return null;
     }
     const rows = this.adreses().filter((_, idx) => selectedRows.isSelected(idx));
@@ -106,18 +76,15 @@ export class UploadAdresesComponent {
   @Output() adresesBox = toObservable(this.adresesPackages);
 
   deleteColumns() {
-
     this.resetChips();
 
-    const updated = this.adreses()
-      .map(row => row.filter((_, column) => !this.columnSelection.isSelected(column)));
+    const updated = this.adreses().map((row) => row.filter((_, column) => !this.columnSelection.isSelected(column)));
     this.adreses.set(updated);
 
     this.columnSelection.clear();
   }
 
   joinColumns() {
-
     this.resetChips();
 
     this.columnSelection.sort();
@@ -125,17 +92,13 @@ export class UploadAdresesComponent {
     const updated = [];
 
     this.adreses().forEach((row) => {
-
-      const joinedCell = selected
-        .map(idx => row[idx])
-        .join(' ');
+      const joinedCell = selected.map((idx) => row[idx]).join(' ');
       const joinedIdx = selected[0];
 
       const updatedRow = row.filter((_, idx) => !this.columnSelection.isSelected(idx) || idx === joinedIdx);
       updatedRow[joinedIdx] = joinedCell;
 
       updated.push(updatedRow);
-
     });
     this.adreses.set(updated);
 
@@ -143,25 +106,18 @@ export class UploadAdresesComponent {
   }
 
   addEmptyColumn() {
-    this.adreses.set(
-      this.adreses().map(row => [...row, 0])
-    );
+    this.adreses.set(this.adreses().map((row) => [...row, 0]));
   }
 
   onDrop(chipName: ColumnNames, targetColumn: number) {
-
     const update = removeChipByName(this.assignedChips(), chipName);
-    this.assignedChips.set(
-      [...removeChipByColumn(update, targetColumn), [targetColumn, chipName]]
-    );
-
+    this.assignedChips.set([...removeChipByColumn(update, targetColumn), [targetColumn, chipName]]);
   }
 
   onChipRemove(column: number) {
     const chips = this.assignedChips();
     this.assignedChips.set(removeChipByColumn(chips, column));
   }
-
 
   private selectAllRows() {
     this.rowSelection.setSelection(...this.adreses().map((_, idx) => idx));
@@ -170,7 +126,6 @@ export class UploadAdresesComponent {
   private resetChips() {
     this.assignedChips.set([]);
   }
-
 }
 
 function removeChipByName(chips: [number, ColumnNames][], chipName: ColumnNames) {

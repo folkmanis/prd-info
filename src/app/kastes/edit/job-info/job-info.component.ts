@@ -1,18 +1,12 @@
 import { DatePipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  input
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { KastesJob, Veikals } from 'src/app/kastes/interfaces';
 import { jobProductsToColorTotals } from '../../common/color-totals-from-veikali';
 import { ColorTotalsComponent } from '../../common/color-totals/color-totals.component';
 import { KastesTotalsComponent } from '../../common/kastes-totals/kastes-totals.component';
-import { totalsFromAddresesWithPackages } from "../../services/item-packing.utilities";
+import { totalsFromAddresesWithPackages } from '../../services/item-packing.utilities';
 import { PasutijumsEditComponent } from '../pasutijums-edit/pasutijums-edit.component';
 
 @Component({
@@ -21,16 +15,9 @@ import { PasutijumsEditComponent } from '../pasutijums-edit/pasutijums-edit.comp
   templateUrl: './job-info.component.html',
   styleUrls: ['./job-info.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    ColorTotalsComponent,
-    MatButtonModule,
-    RouterLink,
-    KastesTotalsComponent,
-    DatePipe,
-  ],
+  imports: [ColorTotalsComponent, MatButtonModule, RouterLink, KastesTotalsComponent, DatePipe],
 })
 export class JobInfoComponent {
-
   private pasutijumsEdit = inject(PasutijumsEditComponent);
 
   job = input.required<KastesJob>();
@@ -58,5 +45,4 @@ export class JobInfoComponent {
   onCopyFromFirebase() {
     this.pasutijumsEdit.copyFromFirebase();
   }
-
 }

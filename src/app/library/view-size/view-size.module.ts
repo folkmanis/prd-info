@@ -10,24 +10,7 @@ import { ViewNotSmallDirective } from './directives/view-not-small.directive';
 
 @NgModule({
   declarations: [],
-  imports: [
-    ViewSizeDirective,
-    DrawerSmallDirective,
-    IfViewSizeDirective,
-    ViewLargeDirective,
-    ViewNotLargeDirective,
-    ViewSmallDirective,
-    ViewNotSmallDirective,
-    CommonModule,
-  ],
-  exports: [
-    ViewSizeDirective,
-    DrawerSmallDirective,
-    IfViewSizeDirective,
-    ViewLargeDirective,
-    ViewNotLargeDirective,
-    ViewSmallDirective,
-    ViewNotSmallDirective,
-  ],
+  imports: [ViewSizeDirective, DrawerSmallDirective, IfViewSizeDirective, ViewLargeDirective, ViewNotLargeDirective, ViewSmallDirective, ViewNotSmallDirective, CommonModule],
+  exports: [ViewSizeDirective, DrawerSmallDirective, IfViewSizeDirective, ViewLargeDirective, ViewNotLargeDirective, ViewSmallDirective, ViewNotSmallDirective],
 })
 export class ViewSizeModule {}

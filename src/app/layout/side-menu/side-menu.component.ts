@@ -1,10 +1,5 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { DestroyService } from 'src/app/library/rxjs';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, pluck, takeUntil } from 'rxjs/operators';
@@ -18,19 +13,13 @@ import { MatTreeModule } from '@angular/material/tree';
 import { MatListModule } from '@angular/material/list';
 
 @Component({
-    selector: 'app-side-menu',
-    templateUrl: './side-menu.component.html',
-    styleUrls: ['./side-menu.component.scss'],
-    providers: [DestroyService],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        MatListModule,
-        MatTreeModule,
-        RouterLink,
-        MatButtonModule,
-        MatIconModule,
-    ],
+  selector: 'app-side-menu',
+  templateUrl: './side-menu.component.html',
+  styleUrls: ['./side-menu.component.scss'],
+  providers: [DestroyService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [MatListModule, MatTreeModule, RouterLink, MatButtonModule, MatIconModule],
 })
 export class SideMenuComponent implements OnInit {
   treeControl = new NestedTreeControl<SideMenuData>((node) => node.childMenu);
@@ -38,33 +27,22 @@ export class SideMenuComponent implements OnInit {
 
   activeRoute: string;
 
-  private expandedByDefault$: Observable<boolean> =
-    this.systemPreferencesService.preferences$.pipe(
-      pluck('system', 'menuExpandedByDefault'),
-      distinctUntilChanged()
-    );
+  private expandedByDefault$: Observable<boolean> = this.systemPreferencesService.preferences$.pipe(pluck('system', 'menuExpandedByDefault'), distinctUntilChanged());
 
-  private expandAll$: Observable<[SideMenuData[], boolean]> = combineLatest([
-    this.dataSource.dataChange$,
-    this.expandedByDefault$,
-  ]);
+  private expandAll$: Observable<[SideMenuData[], boolean]> = combineLatest([this.dataSource.dataChange$, this.expandedByDefault$]);
 
   hasChild = (_: number, node: SideMenuData) => node.childMenu?.length > 0;
 
   constructor(
     private systemPreferencesService: SystemPreferencesService,
     private destroy$: DestroyService,
-    private changeDetector: ChangeDetectorRef
+    private changeDetector: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
-    this.expandAll$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => this.expandAll(value));
+    this.expandAll$.pipe(takeUntil(this.destroy$)).subscribe((value) => this.expandAll(value));
 
-    this.systemPreferencesService.activeModules$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((mod) => this.setActiveRoute(mod));
+    this.systemPreferencesService.activeModules$.pipe(takeUntil(this.destroy$)).subscribe((mod) => this.setActiveRoute(mod));
   }
 
   private expandAll([data, expand]: [SideMenuData[], boolean]) {
@@ -78,9 +56,7 @@ export class SideMenuComponent implements OnInit {
   }
 
   private setActiveRoute(modules: UserModule[]): void {
-    const active = this.dataSource.data.find(
-      (data) => data.routeStr === modules[0]?.route
-    );
+    const active = this.dataSource.data.find((data) => data.routeStr === modules[0]?.route);
     this.treeControl.expand(active);
     this.activeRoute = modules.map((mod) => mod.route).join('/');
     this.changeDetector.markForCheck();

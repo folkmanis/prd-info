@@ -1,13 +1,9 @@
-import { Type, Expose } from 'class-transformer';
-
 export class Equipment {
+  _id: string;
 
-    _id: string;
+  name: string = '';
 
-    name: string = '';
-
-    description: string = '';
-
+  description: string = '';
 }
 
 export type EquipmentPartial = Pick<Equipment, '_id' | 'name'>;

@@ -7,35 +7,32 @@ import { resolveEquipmentList } from './services/equipment-resolver';
 import { resolveDropFolders } from './services/drop-folders-resolver';
 import { resolveCustomers } from './services/customers-resolver';
 
-
 export default [
-
-    {
-        path: '',
-        component: ProductionStagesListComponent,
-        children: [
-            {
-                path: 'new',
-                component: ProductionStagesEditComponent,
-                canDeactivate: [canComponentDeactivate],
-                resolve: {
-                    equipment: resolveEquipmentList,
-                    dropFolders: resolveDropFolders,
-                    customers: resolveCustomers,
-                },
-            },
-            {
-                path: ':id',
-                component: ProductionStagesEditComponent,
-                canDeactivate: [canComponentDeactivate],
-                resolve: {
-                    productionStage: resolveProductionStage,
-                    equipment: resolveEquipmentList,
-                    dropFolders: resolveDropFolders,
-                    customers: resolveCustomers,
-                }
-            }
-        ]
-    }
-
+  {
+    path: '',
+    component: ProductionStagesListComponent,
+    children: [
+      {
+        path: 'new',
+        component: ProductionStagesEditComponent,
+        canDeactivate: [canComponentDeactivate],
+        resolve: {
+          equipment: resolveEquipmentList,
+          dropFolders: resolveDropFolders,
+          customers: resolveCustomers,
+        },
+      },
+      {
+        path: ':id',
+        component: ProductionStagesEditComponent,
+        canDeactivate: [canComponentDeactivate],
+        resolve: {
+          productionStage: resolveProductionStage,
+          equipment: resolveEquipmentList,
+          dropFolders: resolveDropFolders,
+          customers: resolveCustomers,
+        },
+      },
+    ],
+  },
 ] as Route[];

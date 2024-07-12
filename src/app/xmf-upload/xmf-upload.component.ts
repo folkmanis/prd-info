@@ -17,24 +17,14 @@ import { TabulaComponent } from './tabula/tabula.component';
   styleUrls: ['./xmf-upload.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [
-    MatCardModule,
-    FilesizePipe,
-    AsyncPipe,
-    MatProgressBarModule,
-    FileDropDirective,
-    TabulaComponent,
-    MatButtonModule,
-  ],
+  imports: [MatCardModule, FilesizePipe, AsyncPipe, MatProgressBarModule, FileDropDirective, TabulaComponent, MatButtonModule],
 })
 export class XmfUploadComponent {
   private historyUpdate$ = new Subject<XmfUploadProgress>();
 
   busy = signal(false);
 
-  history$: Observable<XmfUploadProgress[]> = this.uploadService
-    .getHistory()
-    .pipe(cacheWithUpdate(this.historyUpdate$, (o1, o2) => o1._id === o2._id));
+  history$: Observable<XmfUploadProgress[]> = this.uploadService.getHistory().pipe(cacheWithUpdate(this.historyUpdate$, (o1, o2) => o1._id === o2._id));
 
   file: File | null = null;
 
@@ -59,7 +49,7 @@ export class XmfUploadComponent {
         finalize(() => {
           this.busy.set(false);
           this.file = null;
-        })
+        }),
       )
       .subscribe((record) => {
         this.historyUpdate$.next(record);

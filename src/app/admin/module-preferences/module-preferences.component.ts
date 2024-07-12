@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  effect,
-  inject
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { MODULES, SystemPreferences } from 'src/app/interfaces';
@@ -43,15 +38,16 @@ export class ModulePreferencesComponent implements CanComponentDeactivate {
 
   private savedConfiguration = configuration();
 
-  prefForm = inject(FormBuilder).group<SystemPreferences>(
-    Object.assign({}, ...MODULES.map((mod) => ({ [mod]: [{}] })))
-  );
+  prefForm = inject(FormBuilder).group<SystemPreferences>(Object.assign({}, ...MODULES.map((mod) => ({ [mod]: [{}] }))));
 
   constructor() {
-    effect(() => {
-      this.prefForm.reset(this.savedConfiguration());
-      this.prefForm.markAsPristine();
-    }, { allowSignalWrites: true });
+    effect(
+      () => {
+        this.prefForm.reset(this.savedConfiguration());
+        this.prefForm.markAsPristine();
+      },
+      { allowSignalWrites: true },
+    );
   }
 
   canDeactivate(): boolean | Observable<boolean> {
@@ -59,9 +55,7 @@ export class ModulePreferencesComponent implements CanComponentDeactivate {
   }
 
   onSaveAll() {
-    this.systemPreferencesService.updatePreferences(
-      this.prefForm.getRawValue()
-    );
+    this.systemPreferencesService.updatePreferences(this.prefForm.getRawValue());
   }
 
   onResetAll() {

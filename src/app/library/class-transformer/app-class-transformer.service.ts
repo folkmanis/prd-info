@@ -5,10 +5,9 @@ import { firstValueFrom, map, Observable, OperatorFunction } from 'rxjs';
 export * from 'class-transformer';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AppClassTransformerService extends ClassTransformer {
-
   plainToInstance<T extends Record<string, any>, V extends any[]>(cls: ClassConstructor<T>, plain: V, options?: ClassTransformOptions): T[];
   plainToInstance<T extends Record<string, any>, V>(cls: ClassConstructor<T>, plain: V, options?: ClassTransformOptions): T;
   plainToInstance<T extends Record<string, any>>(cls: ClassConstructor<T>, plain: unknown, options: ClassTransformOptions = {}): T | T[] {
@@ -34,6 +33,4 @@ export class AppClassTransformerService extends ClassTransformer {
     };
     return super.plainToInstance(cls, await firstValueFrom(data), options);
   }
-
-
 }

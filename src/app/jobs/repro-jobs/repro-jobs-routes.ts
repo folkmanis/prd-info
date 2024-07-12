@@ -9,33 +9,32 @@ import { resolveReproJob } from './services/repro-job-resolver';
 import { UploadRefService } from './services/upload-ref.service';
 
 export default [
-    {
-        path: 'new',
-        component: ReproJobEditComponent,
-        resolve: {
-            job: newReproJob,
-            uploadRef: () => inject(UploadRefService).retrieveUploadRef(),
-        },
-        canDeactivate: [canJobDeactivate]
+  {
+    path: 'new',
+    component: ReproJobEditComponent,
+    resolve: {
+      job: newReproJob,
+      uploadRef: () => inject(UploadRefService).retrieveUploadRef(),
     },
-    {
-        path: ':jobId',
-        component: ReproJobEditComponent,
-        resolve: {
-            job: resolveReproJob,
-        },
-        canDeactivate: [canJobDeactivate]
+    canDeactivate: [canJobDeactivate],
+  },
+  {
+    path: ':jobId',
+    component: ReproJobEditComponent,
+    resolve: {
+      job: resolveReproJob,
     },
-    {
-        path: '',
-        component: JobListComponent,
-        pathMatch: 'full',
-        runGuardsAndResolvers: 'paramsOrQueryParamsChange',
-        canActivate: [appendJobStatus],
-    },
-    {
-        path: '**',
-        redirectTo: '',
-    }
-
+    canDeactivate: [canJobDeactivate],
+  },
+  {
+    path: '',
+    component: JobListComponent,
+    pathMatch: 'full',
+    runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+    canActivate: [appendJobStatus],
+  },
+  {
+    path: '**',
+    redirectTo: '',
+  },
 ] as Route[];

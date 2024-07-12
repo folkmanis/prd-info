@@ -1,43 +1,22 @@
 <div>
-    <p>
-        Saņemts {{job().receivedDate | date:'mediumDate'}}
-    </p>
-    <p>
-        Jānodod {{job().dueDate | date:'mediumDate'}}
-    </p>
-    <p>
-        <app-color-totals [colorTotals]="plannedTotals()">
-            Paredzētie skaiti
-        </app-color-totals>
-    </p>
-    <p>
-        <app-color-totals [colorTotals]="totals()">
-            Skaiti pēc saraksta
-        </app-color-totals>
-    </p>
-    <p>
-        <app-kastes-totals [totals]="totals().packagesBySize">
-            Sadalījums pa kastēm
-        </app-kastes-totals>
-    </p>
-    <p>
-        <button mat-raised-button [disabled]="job().jobId === activeJobId()" (click)="onSetAsActive()">
-            NOTEIKT KĀ AKTĪVO
-        </button>
-        <button mat-raised-button (click)="onDeleteVeikali()"
-            [disabled]="job().jobStatus.generalStatus >= 30 || veikali().length === 0">
-            IZDZĒST PAKOŠANAS SARAKSTU
-        </button>
-        <a mat-raised-button [routerLink]="['/', 'jobs', 'repro', job().jobId]">
-            ATVĒRT DARBU
-        </a>
-    </p>
-    <p>
-        <button mat-raised-button (click)="onCopyToFirebase()">
-            KOPĒT UZ LIETOTNI
-        </button>
-        <button mat-raised-button (click)="onCopyFromFirebase()">
-            KOPĒT NO LIETOTNES
-        </button>
-    </p>
+  <p>Saņemts {{ job().receivedDate | date: 'mediumDate' }}</p>
+  <p>Jānodod {{ job().dueDate | date: 'mediumDate' }}</p>
+  <p>
+    <app-color-totals [colorTotals]="plannedTotals()"> Paredzētie skaiti </app-color-totals>
+  </p>
+  <p>
+    <app-color-totals [colorTotals]="totals()"> Skaiti pēc saraksta </app-color-totals>
+  </p>
+  <p>
+    <app-kastes-totals [totals]="totals().packagesBySize"> Sadalījums pa kastēm </app-kastes-totals>
+  </p>
+  <p>
+    <button mat-raised-button [disabled]="job().jobId === activeJobId()" (click)="onSetAsActive()">NOTEIKT KĀ AKTĪVO</button>
+    <button mat-raised-button (click)="onDeleteVeikali()" [disabled]="job().jobStatus.generalStatus >= 30 || veikali().length === 0">IZDZĒST PAKOŠANAS SARAKSTU</button>
+    <a mat-raised-button [routerLink]="['/', 'jobs', 'repro', job().jobId]"> ATVĒRT DARBU </a>
+  </p>
+  <p>
+    <button mat-raised-button (click)="onCopyToFirebase()">KOPĒT UZ LIETOTNI</button>
+    <button mat-raised-button (click)="onCopyFromFirebase()">KOPĒT NO LIETOTNES</button>
+  </p>
 </div>

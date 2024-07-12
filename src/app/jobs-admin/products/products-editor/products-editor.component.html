@@ -1,37 +1,29 @@
 <app-simple-form-container buttons [status]="form.status" [isChanges]="changes" (save)="onSave()" (reset)="onReset()">
-
   <form [formGroup]="form">
     <h2>
-      @if (form.value._id == null) {
-      <!-- Nosaukums labojams -->
-      <mat-form-field>
-        <mat-label>Nosaukums</mat-label>
-        <input matInput formControlName="name" required>
-        @if (form.controls.name.hasError('required')) {
-        <mat-error>
-          Jānorāda obligāti
-        </mat-error>
-        }
-        @if (form.controls.name.hasError('occupied')) {
-        <mat-error>
-          Nosaukums {{form.controls.name.getError('occupied')}} jau aizņemts!
-        </mat-error>
-        }
-      </mat-form-field>
+      @if (form.value._id === null) {
+        <!-- Nosaukums labojams -->
+        <mat-form-field>
+          <mat-label>Nosaukums</mat-label>
+          <input matInput formControlName="name" required />
+          @if (form.controls.name.hasError('required')) {
+            <mat-error> Jānorāda obligāti </mat-error>
+          }
+          @if (form.controls.name.hasError('occupied')) {
+            <mat-error> Nosaukums {{ form.controls.name.getError('occupied') }} jau aizņemts! </mat-error>
+          }
+        </mat-form-field>
       } @else {
-      <!-- Nosaukums nelabojams -->
-      {{form.controls.name.value}}
+        <!-- Nosaukums nelabojams -->
+        {{ form.controls.name.value }}
       }
     </h2>
 
     <mat-accordion multi>
       <mat-expansion-panel expanded hideToggle>
         <mat-expansion-panel-header>
-          <mat-panel-title>
-            Pamatinformācija
-          </mat-panel-title>
+          <mat-panel-title> Pamatinformācija </mat-panel-title>
         </mat-expansion-panel-header>
-
 
         <!-- Kategorija -->
         <section>
@@ -39,9 +31,9 @@
             <mat-label>Kategorija</mat-label>
             <mat-select formControlName="category" required>
               @for (category of categories(); track category.category) {
-              <mat-option [value]="category.category">
-                {{category.description}}
-              </mat-option>
+                <mat-option [value]="category.category">
+                  {{ category.description }}
+                </mat-option>
               }
             </mat-select>
           </mat-form-field>
@@ -52,20 +44,16 @@
             <mat-label>Mērvienības</mat-label>
             <mat-select formControlName="units" required>
               @for (unit of units(); track unit.shortName) {
-              @if(unit.disabled == false) {
-              <mat-option [value]="unit.shortName">
-                {{unit.shortName}} ({{unit.description}})
-              </mat-option>
-              }
+                @if (unit.disabled === false) {
+                  <mat-option [value]="unit.shortName"> {{ unit.shortName }} ({{ unit.description }}) </mat-option>
+                }
               }
             </mat-select>
           </mat-form-field>
         </section>
         <!-- Neaktīvs -->
         <section>
-          <mat-checkbox formControlName="inactive">
-            Neaktīvs
-          </mat-checkbox>
+          <mat-checkbox formControlName="inactive"> Neaktīvs </mat-checkbox>
         </section>
         <!-- Apraksts -->
         <section>
@@ -77,67 +65,48 @@
       </mat-expansion-panel>
 
       <!-- Paytraq -->
-      <mat-expansion-panel #paytraqPanel [disabled]="paytraqEnabled() == false">
+      <mat-expansion-panel #paytraqPanel [disabled]="paytraqEnabled() === false">
         <mat-expansion-panel-header>
-          <mat-panel-title>
-            Paytraq savienojums
-          </mat-panel-title>
+          <mat-panel-title> Paytraq savienojums </mat-panel-title>
           <mat-panel-description>
             @if (form.value.paytraqId; as id) {
-            {{ id }}
+              {{ id }}
             }
           </mat-panel-description>
         </mat-expansion-panel-header>
 
-        <app-paytraq-product formControlName="paytraqId" [productName]="form.value.name">
-        </app-paytraq-product>
-
+        <app-paytraq-product formControlName="paytraqId" [productName]="form.value.name"> </app-paytraq-product>
       </mat-expansion-panel>
 
       <!-- <mat-expansion-panel expanded> -->
       @if (customers()) {
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Pārdošanas cenas
-          </mat-panel-title>
-        </mat-expansion-panel-header>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title> Pārdošanas cenas </mat-panel-title>
+          </mat-expansion-panel-header>
 
-        <!-- Cenu tabula -->
-        <section>
-          <app-product-prices formControlName="prices" [customers]="customers()" #prices>
-          </app-product-prices>
-        </section>
+          <!-- Cenu tabula -->
+          <section>
+            <app-product-prices formControlName="prices" [customers]="customers()" #prices> </app-product-prices>
+          </section>
 
-        <mat-action-row>
-          <button mat-mini-fab (click)="prices.addPrice()" [disabled]="form.invalid" color="primary">
-            <mat-icon>
-              add
-            </mat-icon>
-          </button>
-        </mat-action-row>
-
-      </mat-expansion-panel>
+          <mat-action-row>
+            <button mat-mini-fab (click)="prices.addPrice()" [disabled]="form.invalid" color="primary">
+              <mat-icon> add </mat-icon>
+            </button>
+          </mat-action-row>
+        </mat-expansion-panel>
       }
 
       <mat-expansion-panel expanded>
-
         <mat-expansion-panel-header>
-          <mat-panel-title>
-            Ražošanas procesi
-          </mat-panel-title>
+          <mat-panel-title> Ražošanas procesi </mat-panel-title>
         </mat-expansion-panel-header>
 
         <section>
-          <app-product-production formControlName="productionStages" [materials]="materials$ | async"
-            [productionStages]="productionStages$ | async" />
+          <app-product-production formControlName="productionStages" [materials]="materials$ | async" [productionStages]="productionStages$ | async" />
         </section>
-
       </mat-expansion-panel>
-
     </mat-accordion>
-
-
   </form>
-
 </app-simple-form-container>

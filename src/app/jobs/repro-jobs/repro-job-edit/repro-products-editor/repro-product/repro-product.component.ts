@@ -1,16 +1,19 @@
 import { CurrencyPipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Signal,
-  computed,
-  inject,
-  input,
-  output,
-  viewChild
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Signal, computed, inject, input, output, viewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AbstractControl, ControlValueAccessor, FormBuilder, FormsModule, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator, ValidatorFn, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  ControlValueAccessor,
+  FormBuilder,
+  FormsModule,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validator,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -52,25 +55,18 @@ import { ProductControlDirective } from './product-control.directive';
       provide: NG_VALIDATORS,
       useExisting: ReproProductComponent,
       multi: true,
-    }
-  ]
+    },
+  ],
 })
 export class ReproProductComponent implements ControlValueAccessor, Validator {
-
   private productNameControl = viewChild.required(ProductAutocompleteComponent);
 
   customerProducts = input<CustomerProduct[]>([]);
 
   productForm: JobProductForm = inject(FormBuilder).nonNullable.group({
     name: [null as string | null, [this.productNameValidatorFn(this.customerProducts)]],
-    price: [null as number | null, [
-      Validators.required,
-      Validators.min(0),
-    ]],
-    count: [null as number | null, [
-      Validators.required,
-      Validators.min(0),
-    ]],
+    price: [null as number | null, [Validators.required, Validators.min(0)]],
+    count: [null as number | null, [Validators.required, Validators.min(0)]],
     units: [null as string | null, Validators.required],
     comment: [''],
   });
@@ -83,7 +79,7 @@ export class ReproProductComponent implements ControlValueAccessor, Validator {
 
   remove = output<void>();
 
-  onTouched: () => void = () => { };
+  onTouched: () => void = () => {};
 
   writeValue(value: JobProduct): void {
     this.productForm.reset(value, { emitEvent: false });
@@ -117,9 +113,7 @@ export class ReproProductComponent implements ControlValueAccessor, Validator {
   }
 
   onSetPrice() {
-    const price = this.customerProducts().find(
-      (prod) => prod.productName === this.productForm.value.name
-    )?.price;
+    const price = this.customerProducts().find((prod) => prod.productName === this.productForm.value.name)?.price;
     if (price) {
       this.productForm.controls.price.setValue(price);
     }
@@ -137,12 +131,7 @@ export class ReproProductComponent implements ControlValueAccessor, Validator {
   private productNameValidatorFn(products: Signal<CustomerProduct[]>): ValidatorFn {
     const err = { invalidProduct: 'Prece nav atrasta katalogā' };
     return (control: AbstractControl<string>) => {
-      return products().some(
-        (prod) => prod.productName === control.value
-      )
-        ? null
-        : err;
+      return products().some((prod) => prod.productName === control.value) ? null : err;
     };
   }
-
 }

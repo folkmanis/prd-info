@@ -1,79 +1,66 @@
-<app-simple-form-container buttons [status]="formStatus()" [isChanges]="changes()" (save)="onSave()" (reset)="onReset()"
-  [formGroup]="form">
-
+<app-simple-form-container buttons [status]="formStatus()" [isChanges]="changes()" (save)="onSave()" (reset)="onReset()" [formGroup]="form">
   <!-- Lietotājvārds -->
   <h2>
     @if (isNew) {
-    <mat-form-field>
-      <mat-label> Lietotājvārds </mat-label>
-      <input formControlName="username" matInput autocomplete="off" required>
-      @if (unameCtrl.hasError('minlength') && !unameCtrl.hasError('symbol')) {
-      <mat-error>
-        Jābūt vismaz {{unameCtrl.errors.minlength.requiredLength}} simboliem
-      </mat-error>
-      }
-      @if (unameCtrl.hasError('symbol')) {
-      <mat-error>
-        {{unameCtrl.errors.symbol}}
-      </mat-error>
-      }
-      @if (unameCtrl.hasError('existing')) {
-      <mat-error>
-        {{unameCtrl.errors.existing}}
-      </mat-error>
-      }
-    </mat-form-field>
+      <mat-form-field>
+        <mat-label> Lietotājvārds </mat-label>
+        <input formControlName="username" matInput autocomplete="off" required />
+        @if (unameCtrl.hasError('minlength') && !unameCtrl.hasError('symbol')) {
+          <mat-error> Jābūt vismaz {{ unameCtrl.errors.minlength.requiredLength }} simboliem </mat-error>
+        }
+        @if (unameCtrl.hasError('symbol')) {
+          <mat-error>
+            {{ unameCtrl.errors.symbol }}
+          </mat-error>
+        }
+        @if (unameCtrl.hasError('existing')) {
+          <mat-error>
+            {{ unameCtrl.errors.existing }}
+          </mat-error>
+        }
+      </mat-form-field>
     } @else {
-    {{unameCtrl.value}}
+      {{ unameCtrl.value }}
     }
   </h2>
 
   <!-- Pilns vārds -->
   <mat-card>
-
     <mat-card-content>
       <mat-form-field>
         <mat-label> Pilns vārds </mat-label>
-        <input formControlName="name" matInput autocomplete="off">
+        <input formControlName="name" matInput autocomplete="off" />
       </mat-form-field>
     </mat-card-content>
-
   </mat-card>
 
   <mat-card>
     <!-- Parole jaunam lietotājam -->
     @if (isNew) {
-    <mat-card-header>
-      <mat-card-title>
-        Parole
-      </mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <app-password-input-group formControlName="password" [passwordMinimumLength]="3"></app-password-input-group>
-    </mat-card-content>
+      <mat-card-header>
+        <mat-card-title> Parole </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <app-password-input-group formControlName="password" [passwordMinimumLength]="3"></app-password-input-group>
+      </mat-card-content>
     } @else {
-    <mat-card-content>
-      <div class="button-row">
-        <!-- Paroles maiņa -->
-        <button mat-raised-button appPasswordInput [passwordMinimumLength]="6"
-          (appPasswordChange)="onPasswordChange($event, unameCtrl.value)" color="primary">
-          MAINĪT PAROLI
-        </button>
-        <!-- Dzēšana -->
-        <button mat-raised-button color="warn" (click)="onDeleteUser(unameCtrl.value)">
-          DZĒST
-        </button>
-      </div>
-    </mat-card-content>
+      <mat-card-content>
+        <div class="button-row">
+          <!-- Paroles maiņa -->
+          <button mat-raised-button appPasswordInput [passwordMinimumLength]="6" (appPasswordChange)="onPasswordChange($event, unameCtrl.value)" color="primary">
+            MAINĪT PAROLI
+          </button>
+          <!-- Dzēšana -->
+          <button mat-raised-button color="warn" (click)="onDeleteUser(unameCtrl.value)">DZĒST</button>
+        </div>
+      </mat-card-content>
     }
   </mat-card>
 
   <!-- Iestatījumi -->
   <mat-card>
     <mat-card-header>
-      <mat-card-title>
-        Lietotāja iestatījumi
-      </mat-card-title>
+      <mat-card-title> Lietotāja iestatījumi </mat-card-title>
     </mat-card-header>
 
     <mat-card-content>
@@ -85,10 +72,8 @@
       <!-- e-pasts -->
       <section>
         <mat-form-field>
-          <input matInput formControlName="eMail" type="email">
-          <mat-label>
-            e-pasts
-          </mat-label>
+          <input matInput formControlName="eMail" type="email" />
+          <mat-label> e-pasts </mat-label>
         </mat-form-field>
       </section>
 
@@ -99,9 +84,9 @@
             <mat-label>Pieejamie moduļi</mat-label>
             <mat-select formControlName="modules" multiple>
               @for (module of userModules; track $index) {
-              <mat-option [value]="module.route">
-                {{module.name}}
-              </mat-option>
+                <mat-option [value]="module.route">
+                  {{ module.name }}
+                </mat-option>
               }
             </mat-select>
           </mat-form-field>
@@ -113,48 +98,38 @@
             <mat-label>Pieejamie XMF klienti</mat-label>
             <mat-select formControlName="customers" multiple>
               @for (customer of customers$ | async; track $index) {
-              <mat-option [value]="customer.value">
-                {{customer.name}}
-              </mat-option>
+                <mat-option [value]="customer.value">
+                  {{ customer.name }}
+                </mat-option>
               }
             </mat-select>
           </mat-form-field>
         </section>
       </div>
-
     </mat-card-content>
   </mat-card>
 
-  @if(!isNew) {
-  <mat-card>
-    <mat-card-content>
-      <button mat-raised-button (click)="onUploadToFirestore(unameCtrl.value)" [disabled]="changes() != null">
-        SAGLABĀT LIETOTNĒ
-      </button>
-    </mat-card-content>
-  </mat-card>
+  @if (!isNew) {
+    <mat-card>
+      <mat-card-content>
+        <button mat-raised-button (click)="onUploadToFirestore(unameCtrl.value)" [disabled]="changes() !== null">SAGLABĀT LIETOTNĒ</button>
+      </mat-card-content>
+    </mat-card>
   }
 
   @if (sessions()) {
-  <mat-card>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title> Aktīvās sesijas </mat-card-title>
+      </mat-card-header>
 
-    <mat-card-header>
-      <mat-card-title>
-        Aktīvās sesijas
-      </mat-card-title>
-    </mat-card-header>
+      <mat-card-content>
+        <app-sessions [sessions]="sessions()" [currentSession]="currentSessionId$ | async" (deleteSession)="onDeleteSessions($event, unameCtrl.value)" />
+      </mat-card-content>
 
-    <mat-card-content>
-      <app-sessions [sessions]="sessions()" [currentSession]="currentSessionId$ | async"
-        (deleteSession)="onDeleteSessions($event, unameCtrl.value)" />
-    </mat-card-content>
-
-    <mat-card-actions>
-      <ng-content select="[actions]"></ng-content>
-    </mat-card-actions>
-
-  </mat-card>
+      <mat-card-actions>
+        <ng-content select="[actions]"></ng-content>
+      </mat-card-actions>
+    </mat-card>
   }
-
-
 </app-simple-form-container>

@@ -1,113 +1,96 @@
 <mat-expansion-panel [expanded]="false">
+  <mat-expansion-panel-header>
+    <mat-panel-title> Filtrs </mat-panel-title>
 
-    <mat-expansion-panel-header>
-        <mat-panel-title>
-            Filtrs
-        </mat-panel-title>
+    <mat-panel-description>
+      @if (filterForm.valid) {
+        <span>
+          {{ filterForm.value.jobsId }}
+        </span>
+        <span>
+          {{ filterForm.value.name }}
+        </span>
+        <span>
+          {{ filterForm.value.customer }}
+        </span>
+        <span>
+          {{ filterForm.value.productsName }}
+        </span>
+        <span>
+          {{ statesSelect.triggerValue }}
+        </span>
+      }
+    </mat-panel-description>
+  </mat-expansion-panel-header>
 
-        <mat-panel-description>
-            @if (filterForm.valid) {
-            <span>
-                {{ filterForm.value.jobsId}}
-            </span>
-            <span>
-                {{ filterForm.value.name }}
-            </span>
-            <span>
-                {{ filterForm.value.customer }}
-            </span>
-            <span>
-                {{ filterForm.value.productsName }}
-            </span>
-            <span>
-                {{ statesSelect.triggerValue }}
-            </span>
-            }
-        </mat-panel-description>
-
-    </mat-expansion-panel-header>
-
-    <div class="container" appViewSize>
-
-        <div>
-            <!-- Atiestatīt formu -->
-            <button mat-mini-fab color="primary" (click)="onReset()" matTooltip="Atiestatīt">
-                <mat-icon>
-                    clear
-                </mat-icon>
-            </button>
-
-        </div>
-
-        <div [formGroup]="filterForm" class="filter-row">
-            <!-- Darba numurs -->
-            <mat-form-field>
-                <mat-label>Darba numurs</mat-label>
-                <input matInput type="text" formControlName="jobsId">
-                <button mat-icon-button matSuffix (click)="onReset('jobsId')">
-                    <mat-icon>clear</mat-icon>
-                </button>
-            </mat-form-field>
-            <span class="spacer"></span>
-            <!-- Teksta meklēšana -->
-            <mat-form-field class="search">
-                <mat-label>Nosaukums</mat-label>
-                <input matInput type="text" formControlName="name">
-                <button mat-icon-button matSuffix (click)="onReset('name')">
-                    <mat-icon>clear</mat-icon>
-                </button>
-            </mat-form-field>
-            <span class="spacer"></span>
-            <!-- Klients -->
-            <mat-form-field>
-                <mat-label>Klients</mat-label>
-                <input matInput type="text" formControlName="customer" [matAutocomplete]="auto">
-                <button mat-icon-button matSuffix (click)="onReset('customer')">
-                    <mat-icon>clear</mat-icon>
-                </button>
-            </mat-form-field>
-            <span class="spacer"></span>
-            <!-- Darbu statusi -->
-            <mat-form-field>
-                <mat-label>
-                    Statuss
-                </mat-label>
-                <mat-select formControlName="jobStatus" multiple #statesSelect>
-                    @for (status of jobStates$ | async; track $index) {
-                    <mat-option [value]="status.state">
-                        {{status.description}}
-                    </mat-option>
-                    }
-                </mat-select>
-            </mat-form-field>
-            <span class="spacer"></span>
-            <!-- Produkta Nosaukums -->
-            <mat-form-field>
-                <mat-label>
-                    Prece
-                </mat-label>
-                <mat-select formControlName="productsName">
-                    <mat-option [value]="null">
-                        Visi
-                    </mat-option>
-                    @for (product of products; track product.name) {
-                    <mat-option [value]="product.name">
-                        {{ product.name }}
-                    </mat-option>
-                    }
-                </mat-select>
-            </mat-form-field>
-
-        </div>
-
+  <div class="container" appViewSize>
+    <div>
+      <!-- Atiestatīt formu -->
+      <button mat-mini-fab color="primary" (click)="onReset()" matTooltip="Atiestatīt">
+        <mat-icon> clear </mat-icon>
+      </button>
     </div>
 
-    <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
-        @for (customer of customersFiltered(); track customer.CustomerName) {
-        <mat-option [value]="customer.CustomerName">
-            {{customer.CustomerName}}
-        </mat-option>
-        }
-    </mat-autocomplete>
+    <div [formGroup]="filterForm" class="filter-row">
+      <!-- Darba numurs -->
+      <mat-form-field>
+        <mat-label>Darba numurs</mat-label>
+        <input matInput type="text" formControlName="jobsId" />
+        <button mat-icon-button matSuffix (click)="onReset('jobsId')">
+          <mat-icon>clear</mat-icon>
+        </button>
+      </mat-form-field>
+      <span class="spacer"></span>
+      <!-- Teksta meklēšana -->
+      <mat-form-field class="search">
+        <mat-label>Nosaukums</mat-label>
+        <input matInput type="text" formControlName="name" />
+        <button mat-icon-button matSuffix (click)="onReset('name')">
+          <mat-icon>clear</mat-icon>
+        </button>
+      </mat-form-field>
+      <span class="spacer"></span>
+      <!-- Klients -->
+      <mat-form-field>
+        <mat-label>Klients</mat-label>
+        <input matInput type="text" formControlName="customer" [matAutocomplete]="auto" />
+        <button mat-icon-button matSuffix (click)="onReset('customer')">
+          <mat-icon>clear</mat-icon>
+        </button>
+      </mat-form-field>
+      <span class="spacer"></span>
+      <!-- Darbu statusi -->
+      <mat-form-field>
+        <mat-label> Statuss </mat-label>
+        <mat-select formControlName="jobStatus" multiple #statesSelect>
+          @for (status of jobStates$ | async; track $index) {
+            <mat-option [value]="status.state">
+              {{ status.description }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <span class="spacer"></span>
+      <!-- Produkta Nosaukums -->
+      <mat-form-field>
+        <mat-label> Prece </mat-label>
+        <mat-select formControlName="productsName">
+          <mat-option [value]="null"> Visi </mat-option>
+          @for (product of products; track product.name) {
+            <mat-option [value]="product.name">
+              {{ product.name }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
 
+  <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
+    @for (customer of customersFiltered(); track customer.CustomerName) {
+      <mat-option [value]="customer.CustomerName">
+        {{ customer.CustomerName }}
+      </mat-option>
+    }
+  </mat-autocomplete>
 </mat-expansion-panel>

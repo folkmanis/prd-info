@@ -1,16 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  forwardRef,
-  inject
-} from '@angular/core';
-import {
-  ControlValueAccessor,
-  FormBuilder,
-  FormsModule,
-  NG_VALUE_ACCESSOR,
-  ReactiveFormsModule
-} from '@angular/forms';
+import { ChangeDetectionStrategy, Component, forwardRef, inject } from '@angular/core';
+import { ControlValueAccessor, FormBuilder, FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { ProductCategory, ProductUnit } from 'src/app/interfaces';
 import { SimpleListTableComponent } from 'src/app/library/simple-list-table/simple-list-table.component';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
@@ -26,7 +15,7 @@ import { UnitsDialogComponent } from './units-dialog/units-dialog.component';
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => JobsPreferencesComponent),
       multi: true,
-    }
+    },
   ],
   standalone: true,
   imports: [FormsModule, ReactiveFormsModule, SimpleListTableComponent],
@@ -37,7 +26,7 @@ export class JobsPreferencesComponent implements ControlValueAccessor {
     productUnits: [[]] as Array<ProductUnit[]>,
   });
 
-  onTouchFn = () => { };
+  onTouchFn = () => {};
 
   categoryDialog = CategoryDialogComponent;
   unitsDialog = UnitsDialogComponent;
@@ -61,5 +50,4 @@ export class JobsPreferencesComponent implements ControlValueAccessor {
       this.controls.enable();
     }
   }
-
 }

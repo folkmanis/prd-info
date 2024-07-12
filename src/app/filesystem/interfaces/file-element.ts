@@ -1,17 +1,15 @@
 import { Expose } from 'class-transformer';
 
 export class FileElement {
+  @Expose()
+  id?: string | null = null;
 
-    @Expose()
-    id?: string | null = null;
+  @Expose()
+  isFolder: boolean = false;
 
-    @Expose()
-    isFolder: boolean = false;
+  @Expose()
+  name: string;
 
-    @Expose()
-    name: string;
-
-    @Expose()
-    parent: string[] = [];
-
+  @Expose()
+  parent: string[] = [];
 }

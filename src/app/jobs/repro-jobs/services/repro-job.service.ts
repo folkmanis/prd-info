@@ -6,22 +6,17 @@ import { JobProductionStage } from 'src/app/interfaces';
 import { ProductsService } from 'src/app/services';
 import { Job, JobProduct } from '../../interfaces';
 import { JobService } from '../../services/job.service';
-import { UploadRef } from './upload-ref';
-
 
 export type PartialJob = Pick<Job, 'jobId'> & Partial<Job>;
 
 export type JobTemplate = Partial<Omit<Job, 'jobId'>>;
 
-
 const MAX_JOB_NAME_LENGTH = 100; // TODO take from global config
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ReproJobService {
-
   private productsService = inject(ProductsService);
   private jobService = inject(JobService);
   private jobFilesService = inject(JobFilesService);
@@ -38,8 +33,7 @@ export class ReproJobService {
     return template;
   }
 
-  async updateJob(jobUpdate: PartialJob, params: { updatePath?: boolean; } = {}): Promise<Job> {
-
+  async updateJob(jobUpdate: PartialJob, params: { updatePath?: boolean } = {}): Promise<Job> {
     const { updatePath } = params;
 
     const update = await this.addProductionStages(jobUpdate);
@@ -50,7 +44,6 @@ export class ReproJobService {
     }
 
     return updatedJob;
-
   }
 
   async createJob(jobUpdate: Omit<Partial<Job>, 'jobId'>): Promise<Job> {
@@ -66,25 +59,20 @@ export class ReproJobService {
   }
 
   async productionStages(products: JobProduct[] = []): Promise<JobProductionStage[]> {
-
-    const productStages = products.map(async product => {
-
+    const productStages = products.map(async (product) => {
       if (!product.name) {
         return [];
       }
 
       const stages = await this.productsService.productionStages(product.name);
-      return stages.map(stage => this.jobProductionStage(stage, product));
+      return stages.map((stage) => this.jobProductionStage(stage, product));
     });
     const allStages = await Promise.all(productStages);
     return flatten(allStages);
-
   }
 
   copyToDropFolder(jobFilesPath: string[], dropFolder: string[]): Observable<boolean> {
-    return this.jobFilesService.copyJobFolderToDropFolder(jobFilesPath, dropFolder).pipe(
-      map(() => true),
-    );
+    return this.jobFilesService.copyJobFolderToDropFolder(jobFilesPath, dropFolder).pipe(map(() => true));
   }
 
   createFolder(jobId: number) {
@@ -96,7 +84,6 @@ export class ReproJobService {
   }
 
   private async addProductionStages<T extends Partial<Job>>(job: T): Promise<T> {
-
     if (!Array.isArray(job?.products) || job.products.length === 0) {
       return job;
     }
@@ -106,7 +93,6 @@ export class ReproJobService {
       ...job,
       productionStages,
     };
-
   }
 
   private jobProductionStage(stage: JobProductionStage, product: JobProduct): JobProductionStage {
@@ -115,16 +101,11 @@ export class ReproJobService {
       fixedAmount: stage.fixedAmount || 0,
       amount: stage.amount * product.count + stage.fixedAmount,
       productionStatus: 10,
-      materials: stage
-        .materials
-        .map(material => ({
-          materialId: material.materialId,
-          amount: material.amount * stage.amount * product.count + material.fixedAmount,
-          fixedAmount: material.fixedAmount
-        }))
+      materials: stage.materials.map((material) => ({
+        materialId: material.materialId,
+        amount: material.amount * stage.amount * product.count + material.fixedAmount,
+        fixedAmount: material.fixedAmount,
+      })),
     };
-
-
   }
-
 }

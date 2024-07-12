@@ -13,15 +13,7 @@ import { InputTrimDirective } from 'src/app/library/directives/input-trim.direct
   styleUrls: ['./search-input.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [
-    MatFormFieldModule,
-    MatInputModule,
-    FocusedDirective,
-    FormsModule,
-    MatButtonModule,
-    MatIconModule,
-    InputTrimDirective,
-  ],
+  imports: [MatFormFieldModule, MatInputModule, FocusedDirective, FormsModule, MatButtonModule, MatIconModule, InputTrimDirective],
 })
 export class SearchInputComponent {
   searchString = model('');

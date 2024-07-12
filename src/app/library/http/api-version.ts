@@ -1,4 +1,4 @@
 export interface ApiVersion {
-    apiBuild: number;
-    appBuild: number;
+  apiBuild: number;
+  appBuild: number;
 }

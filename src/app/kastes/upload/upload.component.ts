@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  model,
-  signal
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, model, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -56,35 +49,31 @@ export class UploadComponent {
 
   inputData = signal<Array<string | number>[]>([]);
 
-  orders = toSignal(
-    this.pasutijumiService.getKastesJobs({}),
-    { initialValue: [] }
-  );
+  orders = toSignal(this.pasutijumiService.getKastesJobs({}), { initialValue: [] });
 
-  totals = computed(() =>
-    this.adresesBox()
-    && totalsFromAddresesWithPackages(this.adresesBox()));
+  totals = computed(() => this.adresesBox() && totalsFromAddresesWithPackages(this.adresesBox()));
 
   constructor(
     private pasutijumiService: KastesPasutijumiService,
     private preferences: KastesPreferencesService,
     private matDialog: MatDialog,
   ) {
-    effect(async () => {
-      const id = this.orderId();
-      if (typeof id !== 'number') {
-        this.plannedTotals.set(null);
-        return;
-      }
-      const { products } = await this.pasutijumiService.getKastesJob(id);
-      this.plannedTotals.set(jobProductsToColorTotals(products || []));
-    }, { allowSignalWrites: true });
+    effect(
+      async () => {
+        const id = this.orderId();
+        if (typeof id !== 'number') {
+          this.plannedTotals.set(null);
+          return;
+        }
+        const { products } = await this.pasutijumiService.getKastesJob(id);
+        this.plannedTotals.set(jobProductsToColorTotals(products || []));
+      },
+      { allowSignalWrites: true },
+    );
   }
 
   async onXlsDrop(file: File | undefined) {
-    const data = await firstValueFrom(
-      this.pasutijumiService.parseXlsx(file)
-    );
+    const data = await firstValueFrom(this.pasutijumiService.parseXlsx(file));
     this.inputData.set(data);
   }
 
@@ -94,16 +83,12 @@ export class UploadComponent {
       return;
     }
     const uploadData = addOrderId(this.adresesBox(), orderId);
-    const affectedRows = await firstValueFrom(
-      this.pasutijumiService.addKastes(uploadData));
+    const affectedRows = await firstValueFrom(this.pasutijumiService.addKastes(uploadData));
 
-    await firstValueFrom(
-      this.preferences.updateUserPreferences({ pasutijums: orderId })
-    );
+    await firstValueFrom(this.preferences.updateUserPreferences({ pasutijums: orderId }));
 
     this.matDialog.open(EndDialogComponent, { data: affectedRows });
 
     this.navigate(['/', 'kastes', 'edit', orderId]);
-
   }
 }

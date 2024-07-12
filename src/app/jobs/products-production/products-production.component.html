@@ -1,8 +1,13 @@
 @if (query(); as savedQuery) {
+  <app-filter [filter]="savedQuery" (filterChange)="onFilter($event)" />
 
-<app-filter [filter]="savedQuery" (filterChange)="onFilter($event)" />
-
-<app-products-table [data]="data()" [sortString]="savedQuery.sort" (sortStringChange)="onSort($event)"
-    [totals]="totals()" [(selection)]="selection" scroll-to-top [isAdmin]="isAdmin()" />
-
+  <app-products-table
+    [data]="data()"
+    [sortString]="savedQuery.sort"
+    (sortStringChange)="onSort($event)"
+    [totals]="totals()"
+    [(selection)]="selection"
+    scroll-to-top
+    [isAdmin]="isAdmin()"
+  />
 }

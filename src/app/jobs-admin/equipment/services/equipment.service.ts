@@ -8,16 +8,12 @@ export interface EquipmentFilter {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class EquipmentService {
-
   reload$ = new Subject<void>();
 
-  constructor(
-    private api: EquipmentApiService,
-  ) { }
-
+  constructor(private api: EquipmentApiService) {}
 
   getList(filter: EquipmentFilter = {}): Observable<EquipmentPartial[]> {
     return this.api.getAll(filter);
@@ -28,20 +24,15 @@ export class EquipmentService {
   }
 
   insertOne(equipment: Omit<Equipment, '_id'>): Observable<Equipment> {
-    return this.api.insertOne(equipment).pipe(
-      tap(() => this.reload$.next()),
-    );
+    return this.api.insertOne(equipment).pipe(tap(() => this.reload$.next()));
   }
 
   updateOne(equipment: Pick<Equipment, '_id'> & Partial<Equipment>): Observable<Equipment> {
     const { _id, ...update } = equipment;
-    return this.api.updateOne(_id, update).pipe(
-      tap(() => this.reload$.next()),
-    );
+    return this.api.updateOne(_id, update).pipe(tap(() => this.reload$.next()));
   }
 
   names(): Observable<string[]> {
     return this.api.validatorData('name');
   }
-
 }

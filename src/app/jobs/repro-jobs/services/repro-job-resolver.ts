@@ -5,12 +5,10 @@ import { Job } from 'src/app/jobs/interfaces';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { JobService } from '../../services/job.service';
 
-
 const invalidJobIdMessage = (id: any) => `Nepareizs darba numurs ${id}`;
 const notFoundMessage = (id: number, err: Error) => `Darbs nr. ${id} nav atrasts. Kļūda ${err.message}`;
 
 export const resolveReproJob: ResolveFn<Job> = async (route) => {
-
   const router = inject(Router);
   const navigateToJobList = () => router.navigate(['jobs', 'repro']);
   const dialog = inject(ConfirmationDialogService);
@@ -30,6 +28,4 @@ export const resolveReproJob: ResolveFn<Job> = async (route) => {
     navigateToJobList();
     dialog.confirmDataError(notFoundMessage(jobId, error));
   }
-
-
 };

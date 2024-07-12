@@ -15,7 +15,6 @@ interface ProductSum {
   standalone: true,
 })
 export class ProductsSummaryComponent {
-
   jobs = input<JobPartial[]>([]);
 
   productSums = computed(() => this.productsSummary(this.jobs()));
@@ -31,10 +30,7 @@ export class ProductsSummaryComponent {
   }
 
   private productsSummary(jobs: JobPartial[] | undefined): ProductSum[] {
-    const products =
-      jobs
-        ?.filter((job) => job.products instanceof Array)
-        .reduce((acc, curr) => [...acc, ...curr.products], []) || [];
+    const products = jobs?.filter((job) => job.products instanceof Array).reduce((acc, curr) => [...acc, ...curr.products], []) || [];
     const productMap = new Map<string, ProductSum>();
 
     for (const product of products) {

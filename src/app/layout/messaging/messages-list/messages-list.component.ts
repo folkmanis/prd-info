@@ -1,9 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  TrackByFunction,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, TrackByFunction } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -20,14 +16,7 @@ import { RelativeDatePipe } from 'src/app/library/date-services';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DestroyService],
   standalone: true,
-  imports: [
-    MatButtonModule,
-    MatMenuModule,
-    MatIconModule,
-    MessageJobDirective,
-    AsyncPipe,
-    RelativeDatePipe,
-  ],
+  imports: [MatButtonModule, MatMenuModule, MatIconModule, MessageJobDirective, AsyncPipe, RelativeDatePipe],
 })
 export class MessagesListComponent {
   readonly messages$ = this.messaging.messages$;
@@ -39,10 +28,7 @@ export class MessagesListComponent {
   constructor(private messaging: MessagingService) {}
 
   ftpUsers({ data }: Message): MessageFtpUser[] {
-    return (
-      (data instanceof JobData && data.operation === 'add' && data.ftpUsers) ||
-      []
-    );
+    return (data instanceof JobData && data.operation === 'add' && data.ftpUsers) || [];
   }
 
   onDelete(id: string) {

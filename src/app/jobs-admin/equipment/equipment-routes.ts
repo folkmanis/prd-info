@@ -4,24 +4,24 @@ import { EquipmentEditComponent } from './equipment-edit/equipment-edit.componen
 import { resolveEquipment } from './services/equipment-resolver';
 
 export default [
-    {
-        path: '',
-        component: EquipmentListComponent,
-        children: [
-            {
-                path: 'new',
-                component: EquipmentEditComponent,
-                data: {
-                    equipment: null,
-                }
-            },
-            {
-                path: ':id',
-                component: EquipmentEditComponent,
-                resolve: {
-                    equipment: resolveEquipment,
-                }
-            }
-        ]
-    }
+  {
+    path: '',
+    component: EquipmentListComponent,
+    children: [
+      {
+        path: 'new',
+        component: EquipmentEditComponent,
+        data: {
+          equipment: null,
+        },
+      },
+      {
+        path: ':id',
+        component: EquipmentEditComponent,
+        resolve: {
+          equipment: resolveEquipment,
+        },
+      },
+    ],
+  },
 ] as Route[];

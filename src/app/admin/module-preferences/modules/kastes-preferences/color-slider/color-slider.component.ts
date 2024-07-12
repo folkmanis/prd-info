@@ -14,16 +14,15 @@ import { hslToString, stringToHsl } from './hsl-color';
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => ColorSliderComponent),
       multi: true,
-    }
+    },
   ],
   standalone: true,
-  imports: [MatSliderModule, FormsModule]
+  imports: [MatSliderModule, FormsModule],
 })
 export class ColorSliderComponent implements ControlValueAccessor {
-
   private slider = viewChild(MatSlider, { read: ElementRef });
-  private onChangeFn: (obj: string) => void = () => { };
-  private onTouchedFn: () => void = () => { };
+  private onChangeFn: (obj: string) => void = () => {};
+  private onTouchedFn: () => void = () => {};
 
   private hue = signal(0);
   private saturation = signal(0);
@@ -38,9 +37,7 @@ export class ColorSliderComponent implements ControlValueAccessor {
 
   focus = output<void>();
 
-  constructor(
-    focusMonitor: FocusMonitor,
-  ) {
+  constructor(focusMonitor: FocusMonitor) {
     effect((onCleanup) => {
       const element = this.slider().nativeElement;
       focusMonitor.monitor(element, true).subscribe(() => {
@@ -77,6 +74,4 @@ export class ColorSliderComponent implements ControlValueAccessor {
   onValueChange() {
     this.onChangeFn(this.displayColor());
   }
-
 }
-

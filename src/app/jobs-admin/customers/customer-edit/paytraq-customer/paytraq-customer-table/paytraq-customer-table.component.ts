@@ -8,12 +8,9 @@ import { PaytraqClient } from 'src/app/interfaces/paytraq';
   templateUrl: './paytraq-customer-table.component.html',
   styleUrls: ['./paytraq-customer-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    MatTableModule,
-  ]
+  imports: [MatTableModule],
 })
 export class PaytraqCustomerTableComponent {
-
   clients = input<PaytraqClient[]>([]);
 
   clientSelected = output<PaytraqClient>();
@@ -23,5 +20,4 @@ export class PaytraqCustomerTableComponent {
   onSelected(client: PaytraqClient) {
     this.clientSelected.emit(client);
   }
-
 }

@@ -1,32 +1,14 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { SelectionModel } from '@angular/cdk/collections';
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { JobUnwindedPartial } from 'src/app/jobs';
 
-const TABLE_COLUMNS = [
-  'selected',
-  'jobId',
-  'receivedDate',
-  'custCode',
-  'name',
-  'productName',
-  'count',
-  'price',
-  'total',
-];
+const TABLE_COLUMNS = ['selected', 'jobId', 'receivedDate', 'custCode', 'name', 'productName', 'count', 'price', 'total'];
 
 @Component({
   selector: 'app-job-selection-table',
@@ -34,13 +16,7 @@ const TABLE_COLUMNS = [
   templateUrl: './job-selection-table.component.html',
   styleUrls: ['./job-selection-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    MatTableModule,
-    MatCheckboxModule,
-    DatePipe,
-    RouterLink,
-    CurrencyPipe,
-  ],
+  imports: [MatTableModule, MatCheckboxModule, DatePipe, RouterLink, CurrencyPipe],
 })
 export class JobSelectionTableComponent implements OnInit, OnDestroy {
   jobs$ = new BehaviorSubject<JobUnwindedPartial[]>([]);
@@ -100,10 +76,7 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
   }
 
   isAllSelected(): boolean {
-    return (
-      this.jobIdSet?.size > 0 &&
-      this.selector.selected.length === this.jobIdSet.size
-    );
+    return this.jobIdSet?.size > 0 && this.selector.selected.length === this.jobIdSet.size;
   }
 
   toggle(jobId: number) {
@@ -126,13 +99,7 @@ export class JobSelectionTableComponent implements OnInit, OnDestroy {
   }
 
   private setDisplayedColumns() {
-    const cols = this.disabled
-      ? TABLE_COLUMNS.filter((col) => col !== 'selected')
-      : TABLE_COLUMNS;
-    this.displayedColumns = this.large
-      ? cols
-      : cols.filter((col) =>
-          ['selected', 'jobId', 'customer', 'name', 'total'].includes(col)
-        );
+    const cols = this.disabled ? TABLE_COLUMNS.filter((col) => col !== 'selected') : TABLE_COLUMNS;
+    this.displayedColumns = this.large ? cols : cols.filter((col) => ['selected', 'jobId', 'customer', 'name', 'total'].includes(col));
   }
 }

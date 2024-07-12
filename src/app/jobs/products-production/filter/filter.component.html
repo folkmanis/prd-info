@@ -1,65 +1,55 @@
 <mat-expansion-panel appViewSize #viewSize="viewSize" [expanded]="viewSize.isLarge()">
-    <mat-expansion-panel-header>
-        <mat-panel-title>
-            Atlase
-        </mat-panel-title>
-        <mat-panel-description>
-            <app-filter-summary [states]="jobStates()" [categories]="categories()" [query]="query()" />
-        </mat-panel-description>
-    </mat-expansion-panel-header>
+  <mat-expansion-panel-header>
+    <mat-panel-title> Atlase </mat-panel-title>
+    <mat-panel-description>
+      <app-filter-summary [states]="jobStates()" [categories]="categories()" [query]="query()" />
+    </mat-panel-description>
+  </mat-expansion-panel-header>
 
-    <section class="container">
-        <mat-form-field>
-            <mat-label> Ražošanas stadija </mat-label>
-            <mat-select [value]="jobStatus()" (valueChange)="onChangeJobStatus($event)" multiple
-                [disabled]="disabled()">
-                @for (state of jobStates(); track state.state) {
-                <mat-option [value]="state.state">
-                    {{ state.description }}
-                </mat-option>
-                }
-            </mat-select>
-        </mat-form-field>
+  <section class="container">
+    <mat-form-field>
+      <mat-label> Ražošanas stadija </mat-label>
+      <mat-select [value]="jobStatus()" (valueChange)="onChangeJobStatus($event)" multiple [disabled]="disabled()">
+        @for (state of jobStates(); track state.state) {
+          <mat-option [value]="state.state">
+            {{ state.description }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
 
-        <mat-form-field>
-            <mat-label> Materiālu grupa </mat-label>
-            <mat-select [value]="category()" (valueChange)="onChangeCategory($event)" multiple [disabled]="disabled()">
-                @for ( category of categories(); track category.category) {
-                <mat-option [value]="category.category">
-                    {{ category.description }}
-                </mat-option>
-                }
-            </mat-select>
-        </mat-form-field>
+    <mat-form-field>
+      <mat-label> Materiālu grupa </mat-label>
+      <mat-select [value]="category()" (valueChange)="onChangeCategory($event)" multiple [disabled]="disabled()">
+        @for (category of categories(); track category.category) {
+          <mat-option [value]="category.category">
+            {{ category.description }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
 
-        <mat-form-field>
-            <mat-label> Laiks </mat-label>
-            <mat-date-range-input [rangePicker]="picker" [disabled]="disabled()">
-                <input matStartDate [value]="interval().fromDate" (dateChange)="onChangeFromDate($event)"
-                    [disabled]="disabled()">
-                <input matEndDate [value]="interval().toDate" [disabled]="disabled()">
-            </mat-date-range-input>
-            <mat-datepicker-toggle matSuffix [for]="picker" [disabled]="disabled()"></mat-datepicker-toggle>
-            <button mat-icon-button matSuffix [matMenuTriggerFor]="intervalMenu" [disabled]="disabled()">
-                <mat-icon> more_vert </mat-icon>
-            </button>
+    <mat-form-field>
+      <mat-label> Laiks </mat-label>
+      <mat-date-range-input [rangePicker]="picker" [disabled]="disabled()">
+        <input matStartDate [value]="interval().fromDate" (dateChange)="onChangeFromDate($event)" [disabled]="disabled()" />
+        <input matEndDate [value]="interval().toDate" [disabled]="disabled()" />
+      </mat-date-range-input>
+      <mat-datepicker-toggle matSuffix [for]="picker" [disabled]="disabled()"></mat-datepicker-toggle>
+      <button mat-icon-button matSuffix [matMenuTriggerFor]="intervalMenu" [disabled]="disabled()">
+        <mat-icon> more_vert </mat-icon>
+      </button>
+    </mat-form-field>
 
-        </mat-form-field>
-
-        <button mat-raised-button (click)="onSetRepro()" [disabled]="disabled()">
-            REPRO
-        </button>
-
-    </section>
-
-
+    <button mat-raised-button (click)="onSetRepro()" [disabled]="disabled()">REPRO</button>
+  </section>
 </mat-expansion-panel>
 
 <mat-date-range-picker #picker></mat-date-range-picker>
 
 <mat-menu #intervalMenu="matMenu">
-    <button mat-menu-item (click)="onThisWeek()"> Nedēļa </button>
-    <button mat-menu-item (click)="onThisMonth()"> Mēnesis </button>
-    <button mat-menu-item (click)="onThisYear()"> Gads </button>
-    <button mat-menu-item (click)="onPastYear()"> Iepriekšējais gads </button>
+  <button mat-menu-item (click)="onThisWeek()">Nedēļa</button>
+  <button mat-menu-item (click)="onThisMonth()">Mēnesis</button>
+  <button mat-menu-item (click)="onThisYear()">Gads</button>
+  <button mat-menu-item (click)="onPastYear()">Iepriekšējais gads</button>
 </mat-menu>

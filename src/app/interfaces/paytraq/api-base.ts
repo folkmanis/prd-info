@@ -2,24 +2,24 @@ import { PaytraqClients, PaytraqClient } from './client';
 import { PaytraqProduct, PaytraqProducts } from './product';
 
 interface ClientData {
-    client: PaytraqClient;
+  client: PaytraqClient;
 }
 
 interface ClientsData {
-    clients: PaytraqClients;
+  clients: PaytraqClients;
 }
 
 interface ProductData {
-    product: PaytraqProduct;
+  product: PaytraqProduct;
 }
 
 interface ProductsData {
-    products: PaytraqProducts;
+  products: PaytraqProducts;
 }
 
 export type PaytraqData = ClientData | ClientsData | ProductData | ProductsData;
 
 export interface RequestOptions {
-    page?: number;
-    query?: string;
+  page?: number;
+  query?: string;
 }

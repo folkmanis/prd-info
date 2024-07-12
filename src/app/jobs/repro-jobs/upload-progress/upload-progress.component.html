@@ -1,41 +1,35 @@
 <ul>
-    @for (progr of progress; track progr.id) {
+  @for (progr of progress; track progr.id) {
     <li @collapseAnimation>
+      <div class="filename">
+        {{ progr.name }}
+      </div>
 
-        <div class="filename">
-            {{progr.name}}
-        </div>
+      <mat-progress-bar mode="determinate" [value]="progressPercent(progr)" [color]="progr.type === types.UploadAbort ? 'warn' : 'primary'"> </mat-progress-bar>
 
-        <mat-progress-bar mode="determinate" [value]="progressPercent(progr)"
-            [color]="progr.type === types.UploadAbort ? 'warn' : 'primary'">
-        </mat-progress-bar>
-
-        <div>
-            @switch (progr.type) {
-            @case (types.UploadWaiting) {
+      <div>
+        @switch (progr.type) {
+          @case (types.UploadWaiting) {
             Gaida augšupielādi...
-            }
+          }
 
-            @case (types.UploadProgress) {
-            {{progressPercent(progr)}}%
-            }
+          @case (types.UploadProgress) {
+            {{ progressPercent(progr) }}%
+          }
 
-            @case (types.UploadFinish) {
+          @case (types.UploadFinish) {
             100% Augšupielāde pabeigta!
-            }
+          }
 
-            @case (types.UploadAbort) {
+          @case (types.UploadAbort) {
             Augšupielāde atcelta!
-            }
-            }
-        </div>
-
-        @if (!$last) {
-        <mat-divider />
+          }
         }
+      </div>
 
+      @if (!$last) {
+        <mat-divider />
+      }
     </li>
-
-    }
-
+  }
 </ul>

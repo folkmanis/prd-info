@@ -1,7 +1,6 @@
 import { inject } from '@angular/core';
-import { EquipmentService } from '../../equipment/services/equipment.service';
 import { ResolveFn } from '@angular/router';
-import { Equipment, EquipmentPartial } from 'src/app/interfaces';
+import { EquipmentPartial } from 'src/app/interfaces';
+import { EquipmentService } from '../../equipment/services/equipment.service';
 
-export const resolveEquipmentList: ResolveFn<EquipmentPartial[]> = () =>
-    inject(EquipmentService).getList();
+export const resolveEquipmentList: ResolveFn<EquipmentPartial[]> = () => inject(EquipmentService).getList();

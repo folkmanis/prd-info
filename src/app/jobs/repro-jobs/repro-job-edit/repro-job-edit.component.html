@@ -1,60 +1,46 @@
 <header>
-
-    @if (history.length > 2) {
+  @if (history.length > 2) {
     <button mat-icon-button appKeyPress="escape" tabindex="-1" (click)="onBack()">
-        <mat-icon> arrow_back </mat-icon>
+      <mat-icon> arrow_back </mat-icon>
     </button>
-    } @else {
+  } @else {
     <a mat-icon-button routerLink="..">
-        <mat-icon> arrow_upward </mat-icon>
+      <mat-icon> arrow_upward </mat-icon>
     </a>
+  }
+
+  <h4>
+    @if (form.value.jobId) {
+      <span> {{ form.value.jobId }}&nbsp;-&nbsp; </span>
     }
-
-    <h4>
-        @if (form.value.jobId) {
-        <span>
-            {{ form.value.jobId }}&nbsp;-&nbsp;
-        </span>
-        }
-        {{ form.value.name }}
-    </h4>
-
+    {{ form.value.name }}
+  </h4>
 </header>
 
-
 <div class="content">
-    <app-job-form>
+  <app-job-form>
+    <!-- Folderis -->
+    <mat-card-content>
+      @if (form.value.jobId) {
+        <app-folder-path [path]="folderPath()" (createFolder)="onCreateFolder()" [(updatePath)]="updatePath" [enabled]="updateFolderLocationEnabled()" />
+      }
 
-        <!-- Folderis -->
-        <mat-card-content>
+      <app-upload-progress [progress]="fileUploadProgress$ | async" />
 
-            @if (form.value.jobId) {
-            <app-folder-path [path]="folderPath()" (createFolder)="onCreateFolder()" [(updatePath)]="updatePath"
-                [enabled]="updateFolderLocationEnabled()" />
-            }
-
-            <app-upload-progress [progress]="fileUploadProgress$ | async" />
-
-            <app-drop-folder [folders]="dropFolders$ | async" [defaultEnabled]="isUpload"
-                (folderChanges)="onDropFolder($event)" [disabled]="isUpload == false && form.value.files == null" />
-
-        </mat-card-content>
-
-    </app-job-form>
-
+      <app-drop-folder
+        [folders]="dropFolders$ | async"
+        [defaultEnabled]="isUpload"
+        (folderChanges)="onDropFolder($event)"
+        [disabled]="isUpload === false && form.value.files === null"
+      />
+    </mat-card-content>
+  </app-job-form>
 </div>
 
-
 <footer>
-
-    @if (form.value.jobId) {
-    <button mat-raised-button color="primary" appKeyPress="ctrlEnter" [disabled]="saveDisabled()" (click)="onUpdate()">
-        SAGLABĀT
-    </button>
-    } @else {
-    <button mat-raised-button color="primary" [disabled]="saveDisabled()" appKeyPress="ctrlEnter" (click)="onCreate()">
-        IZVEIDOT
-    </button>
-    }
-
+  @if (form.value.jobId) {
+    <button mat-raised-button color="primary" appKeyPress="ctrlEnter" [disabled]="saveDisabled()" (click)="onUpdate()">SAGLABĀT</button>
+  } @else {
+    <button mat-raised-button color="primary" [disabled]="saveDisabled()" appKeyPress="ctrlEnter" (click)="onCreate()">IZVEIDOT</button>
+  }
 </footer>

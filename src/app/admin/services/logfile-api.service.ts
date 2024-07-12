@@ -7,46 +7,33 @@ import { getAppParams } from 'src/app/app-params';
 import { HttpOptions } from 'src/app/library/http';
 import { getConfig } from 'src/app/services/config.provider';
 
-
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
 export class LogfileApiService {
+  private levelMap$ = getConfig('system', 'logLevels').pipe(map((levels) => new Map<number, string>(levels)));
 
-    private levelMap$ = getConfig('system', 'logLevels').pipe(
-        map(levels => new Map<number, string>(levels)),
+  private path = getAppParams().apiPath + 'logging/';
+
+  constructor(private http: HttpClient) {}
+
+  getLog(filter: LogQueryFilter): Observable<LogRecord[]> {
+    return this.http.get<LogRecordHttp[]>(this.path, new HttpOptions(filter).cacheable()).pipe(
+      withLatestFrom(this.levelMap$),
+      map(([logs, levelMap]) =>
+        logs.map((rec) => ({
+          ...rec,
+          levelVerb: levelMap.get(rec.level) || rec.level.toString(),
+        })),
+      ),
     );
+  }
 
-    private path = getAppParams().apiPath + 'logging/';
+  getCount(filter: LogQueryFilter): Observable<number> {
+    return this.http.get<{ count: number }>(this.path + 'count', new HttpOptions(filter).cacheable()).pipe(map((data) => data.count));
+  }
 
-    constructor(
-        private http: HttpClient,
-    ) { }
-
-    getLog(filter: LogQueryFilter): Observable<LogRecord[]> {
-        return this.http.get<LogRecordHttp[]>(this.path, new HttpOptions(filter).cacheable()).pipe(
-            withLatestFrom(this.levelMap$),
-            map(([logs, levelMap]) => logs.map(rec => ({
-                ...rec,
-                levelVerb: levelMap.get(rec.level) || rec.level.toString(),
-            }))),
-        );
-    }
-
-    getCount(filter: LogQueryFilter): Observable<number> {
-        return this.http.get<{ count: number; }>(
-            this.path + 'count',
-            new HttpOptions(filter).cacheable()
-        ).pipe(
-            map(data => data.count)
-        );
-    }
-
-    getDatesGroups(level: number): Observable<Date[]> {
-        return this.http.get<string[]>(this.path + 'dates-groups', new HttpOptions({ level }).cacheable()).pipe(
-            map(dates => dates.map(date => parse(date, 'y-MM-dd', 0))),
-        );
-    }
-
-
+  getDatesGroups(level: number): Observable<Date[]> {
+    return this.http.get<string[]>(this.path + 'dates-groups', new HttpOptions({ level }).cacheable()).pipe(map((dates) => dates.map((date) => parse(date, 'y-MM-dd', 0))));
+  }
 }

@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  input,
-  output,
-  viewChildren
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, viewChildren } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { ArchiveFacet, FacetFilter } from '../interfaces';
 import { FacetCheckerComponent } from './facet-checker/facet-checker.component';
@@ -18,7 +12,6 @@ import { FacetCheckerComponent } from './facet-checker/facet-checker.component';
   imports: [FacetCheckerComponent, MatDividerModule],
 })
 export class FacetComponent {
-
   private blocks = viewChildren(FacetCheckerComponent);
 
   private facetFilter = new FacetFilter();

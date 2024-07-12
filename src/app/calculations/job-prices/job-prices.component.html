@@ -1,16 +1,11 @@
 <mat-card>
-    <mat-card-content>
+  <mat-card-content>
+    <app-customer-selector [customers]="customers" (customerChanges)="onCustomerSelected($event)" [customer]="customer"></app-customer-selector>
 
-        <app-customer-selector [customers]="customers" (customerChanges)="onCustomerSelected($event)"
-            [customer]="customer"></app-customer-selector>
-
-        <button mat-raised-button [matBadge]="jobUpdate().length" [matBadgeHidden]="saveEnabled() === false"
-            (click)="onSavePrices()" [disabled]="saveEnabled() === false">
-            SAGLABĀT
-        </button>
-
-    </mat-card-content>
+    <button mat-raised-button [matBadge]="jobUpdate().length" [matBadgeHidden]="saveEnabled() === false" (click)="onSavePrices()" [disabled]="saveEnabled() === false">
+      SAGLABĀT
+    </button>
+  </mat-card-content>
 </mat-card>
 
-<app-job-prices-table class="table-container" [jobs]="jobs"
-    (jobChanges)="onJobsSelected($event)"></app-job-prices-table>
+<app-job-prices-table class="table-container" [jobs]="jobs" (jobChanges)="onJobsSelected($event)"></app-job-prices-table>

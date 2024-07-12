@@ -1,4 +1,4 @@
 export const environment = {
-    production: true,
-    demo: true,
+  production: true,
+  demo: true,
 };

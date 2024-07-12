@@ -1,13 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import {
-  ControlValueAccessor,
-  FormBuilder,
-  NG_VALUE_ACCESSOR,
-  ReactiveFormsModule,
-  TouchedChangeEvent,
-  Validators,
-  ValueChangeEvent
-} from '@angular/forms';
+import { ControlValueAccessor, FormBuilder, NG_VALUE_ACCESSOR, ReactiveFormsModule, TouchedChangeEvent, Validators, ValueChangeEvent } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -30,16 +22,9 @@ import { FtpUserData } from 'src/app/interfaces';
       useExisting: FtpUserComponent,
     },
   ],
-  imports: [
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatOptionModule,
-    MatSelectModule,
-    MatInputModule,
-  ],
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatOptionModule, MatSelectModule, MatInputModule],
 })
 export class FtpUserComponent implements ControlValueAccessor {
-
   private filesApi = inject(JobFilesService);
 
   ftpFolders = signal([] as string[]);
@@ -54,13 +39,11 @@ export class FtpUserComponent implements ControlValueAccessor {
     return this.form.controls.folder;
   }
 
-  onTouchFn: () => void = () => { };
+  onTouchFn: () => void = () => {};
 
   constructor() {
     this.getFtpFolders();
-    this.form.events.pipe(
-      filter(event => event instanceof TouchedChangeEvent && event.touched === true)
-    ).subscribe(() => this.onTouchFn());
+    this.form.events.pipe(filter((event) => event instanceof TouchedChangeEvent && event.touched === true)).subscribe(() => this.onTouchFn());
   }
 
   writeValue(obj: FtpUserData | null): void {
@@ -69,10 +52,12 @@ export class FtpUserComponent implements ControlValueAccessor {
   }
 
   registerOnChange(fn: (data: FtpUserData | null) => void): void {
-    this.form.events.pipe(
-      filter(event => event instanceof ValueChangeEvent),
-      map(({ source, value }: ValueChangeEvent<FtpUserData>) => source.valid ? plainToInstance(FtpUserData, value) : null)
-    ).subscribe(fn);
+    this.form.events
+      .pipe(
+        filter((event) => event instanceof ValueChangeEvent),
+        map(({ source, value }: ValueChangeEvent<FtpUserData>) => (source.valid ? plainToInstance(FtpUserData, value) : null)),
+      )
+      .subscribe(fn);
   }
 
   registerOnTouched(fn: any): void {
@@ -88,9 +73,7 @@ export class FtpUserComponent implements ControlValueAccessor {
   }
 
   private async getFtpFolders() {
-    const folders = (await this.filesApi.ftpFolders())
-      .filter(element => element.isFolder)
-      .map(element => element.name);
+    const folders = (await this.filesApi.ftpFolders()).filter((element) => element.isFolder).map((element) => element.name);
     this.ftpFolders.set(folders);
   }
 

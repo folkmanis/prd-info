@@ -1,24 +1,11 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  effect,
-  inject,
-  input,
-  model,
-  signal
-} from '@angular/core';
-import {
-  ControlValueAccessor,
-  NG_VALUE_ACCESSOR,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { ChangeDetectionStrategy, Component, effect, inject, input, model, signal } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { Customer, CustomerFinancial } from 'src/app/interfaces';
 import { PaytraqClient } from 'src/app/interfaces/paytraq';
 import { PaytraqSearchHeaderComponent } from 'src/app/jobs-admin/paytraq-search-header/paytraq-search-header.component';
 import { PaytraqClientService } from '../../services/paytraq-client.service';
 import { PaytraqCustomerTableComponent } from './paytraq-customer-table/paytraq-customer-table.component';
-
 
 @Component({
   selector: 'app-paytraq-customer',
@@ -33,15 +20,9 @@ import { PaytraqCustomerTableComponent } from './paytraq-customer-table/paytraq-
       multi: true,
     },
   ],
-  imports: [
-    PaytraqCustomerTableComponent,
-    ReactiveFormsModule,
-    PaytraqSearchHeaderComponent,
-    MatButtonModule,
-  ],
+  imports: [PaytraqCustomerTableComponent, ReactiveFormsModule, PaytraqSearchHeaderComponent, MatButtonModule],
 })
 export class PaytraqCustomerComponent implements ControlValueAccessor {
-
   private paytraqService = inject(PaytraqClientService);
 
   private onChanges: (obj: CustomerFinancial | null) => void;
@@ -62,10 +43,13 @@ export class PaytraqCustomerComponent implements ControlValueAccessor {
       const value = this.value();
       this.onChanges(value);
     });
-    effect(() => {
-      const customer = this.customer();
-      this.search.set(customer.financial?.clientName || customer.CustomerName || null);
-    }, { allowSignalWrites: true });
+    effect(
+      () => {
+        const customer = this.customer();
+        this.search.set(customer.financial?.clientName || customer.CustomerName || null);
+      },
+      { allowSignalWrites: true },
+    );
   }
 
   writeValue(obj: CustomerFinancial | null) {

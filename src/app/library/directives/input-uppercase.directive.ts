@@ -8,15 +8,11 @@ import { ControlValueAccessor, NgControl } from '@angular/forms';
   standalone: true,
 })
 export class InputUppercaseDirective {
-
   @HostBinding('style.text-transform') uppercase = 'uppercase';
 
-  constructor(
-    ngControl: NgControl,
-  ) {
+  constructor(ngControl: NgControl) {
     upperCaseAccessor(ngControl.valueAccessor);
   }
-
 }
 
 function upperCaseAccessor(valueAccessor: ControlValueAccessor) {

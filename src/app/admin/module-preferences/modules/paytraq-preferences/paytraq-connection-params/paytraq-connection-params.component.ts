@@ -16,9 +16,8 @@ const DEFAULT_VALUE: PaytraqConnectionParams = {
 };
 
 function isMissingParams(controlValue: Record<string, any>): boolean {
-  return Object.keys(controlValue).some(key => !controlValue[key]);
+  return Object.keys(controlValue).some((key) => !controlValue[key]);
 }
-
 
 @Component({
   selector: 'app-paytraq-connection-params',
@@ -35,15 +34,14 @@ function isMissingParams(controlValue: Record<string, any>): boolean {
       provide: NG_VALIDATORS,
       useExisting: forwardRef(() => PaytraqConnectionParamsComponent),
       multi: true,
-    }
+    },
   ],
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule]
+  imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule],
 })
 export class PaytraqConnectionParamsComponent implements ControlValueAccessor, Validator {
-
   private containerEl = viewChild<HTMLDivElement>('container');
-  private onTouched: () => void = () => { };
+  private onTouched: () => void = () => {};
 
   controls = inject(FormBuilder).group({
     connectUrl: ['', Validators.required],
@@ -56,16 +54,13 @@ export class PaytraqConnectionParamsComponent implements ControlValueAccessor, V
 
   focus = output<void>();
 
-  constructor(
-    focusMonitor: FocusMonitor,
-  ) {
+  constructor(focusMonitor: FocusMonitor) {
     effect((onCleanup) => {
       const container = this.containerEl();
-      focusMonitor.monitor(container, true)
-        .subscribe(() => {
-          this.onTouched();
-          this.focus.emit();
-        });
+      focusMonitor.monitor(container, true).subscribe(() => {
+        this.onTouched();
+        this.focus.emit();
+      });
       onCleanup(() => {
         focusMonitor.stopMonitoring(container);
       });
@@ -77,9 +72,7 @@ export class PaytraqConnectionParamsComponent implements ControlValueAccessor, V
   }
 
   registerOnChange(fn: (obj: PaytraqConnectionParams) => void) {
-    this.controls.valueChanges.pipe(
-      map(value => isMissingParams(value) ? null : value)
-    ).subscribe(fn);
+    this.controls.valueChanges.pipe(map((value) => (isMissingParams(value) ? null : value))).subscribe(fn);
   }
 
   registerOnTouched(fn: () => void) {
@@ -98,12 +91,10 @@ export class PaytraqConnectionParamsComponent implements ControlValueAccessor, V
     const values = this.controls.value;
     if (isMissingParams(values)) {
       return {
-        missing: Object.keys(values).filter(key => !values[key])
+        missing: Object.keys(values).filter((key) => !values[key]),
       };
     } else {
       return null;
     }
   }
-
 }
-

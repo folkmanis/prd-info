@@ -1,14 +1,6 @@
 import { CdkScrollable } from '@angular/cdk/scrolling';
-import { TitleCasePipe, UpperCasePipe, } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  input,
-  model,
-  output,
-  viewChild,
-  viewChildren
-} from '@angular/core';
+import { TitleCasePipe, UpperCasePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, input, model, output, viewChild, viewChildren } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
 import { HideZeroPipe } from '../../../library/common/hide-zero.pipe';
@@ -16,7 +8,6 @@ import { COLORS } from '../../interfaces';
 import { AddressPackage } from '../../interfaces/address-package';
 import { kastesPreferences } from '../../services/kastes-preferences.service';
 import { RowIdDirective } from './row-id.directive';
-
 
 const COLUMNS = ['label', 'kods', 'adrese'];
 
@@ -26,18 +17,9 @@ const COLUMNS = ['label', 'kods', 'adrese'];
   styleUrls: ['./tabula.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [
-    ScrollTopDirective,
-    MatTableModule,
-    RowIdDirective,
-    UpperCasePipe,
-    TitleCasePipe,
-    HideZeroPipe,
-    CdkScrollable,
-  ],
+  imports: [ScrollTopDirective, MatTableModule, RowIdDirective, UpperCasePipe, TitleCasePipe, HideZeroPipe, CdkScrollable],
 })
 export class TabulaComponent {
-
   private scrollTopDirective = viewChild.required(ScrollTopDirective);
 
   private tableRows = viewChildren(RowIdDirective);
@@ -50,7 +32,7 @@ export class TabulaComponent {
 
   colorCodes = kastesPreferences('colors');
 
-  displayedColumns: string[] = [...COLUMNS, ...COLORS.map(color => 'item-' + color)];
+  displayedColumns: string[] = [...COLUMNS, ...COLORS.map((color) => 'item-' + color)];
 
   colors = COLORS;
 
@@ -62,10 +44,7 @@ export class TabulaComponent {
 
   scrollToId(documentId: string, boxSequence: number) {
     this.tableRows()
-      .find((row) =>
-        row.addressPackage().documentId === documentId
-        && row.addressPackage().boxSequence === boxSequence
-      )
+      .find((row) => row.addressPackage().documentId === documentId && row.addressPackage().boxSequence === boxSequence)
       ?.scrollIn();
   }
 

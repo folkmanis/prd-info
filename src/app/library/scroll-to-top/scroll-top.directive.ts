@@ -1,27 +1,18 @@
-import {
-  Directive,
-  ElementRef,
-  Injector,
-  ViewContainerRef,
-  afterNextRender,
-  computed,
-  inject,
-  input
-} from '@angular/core';
+import { Directive, ElementRef, Injector, ViewContainerRef, afterNextRender, computed, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Subject, auditTime, map } from 'rxjs';
 import { ScrollToTopComponent } from './scroll-to-top.component';
 
 @Directive({
   standalone: true,
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[scroll-to-top]',
   exportAs: 'scrollToTop',
   host: {
-    '(scroll)': 'onScroll($event)'
-  }
+    '(scroll)': 'onScroll($event)',
+  },
 })
 export class ScrollTopDirective {
-
   private scrollAuditTime = 200;
 
   private elementRef = inject(ElementRef) as ElementRef<HTMLElement>;
@@ -49,10 +40,7 @@ export class ScrollTopDirective {
   bottom = input('20px', { alias: 'scrollToTopBottom' });
   right = input('80px', { alias: 'scrollToTopRight' });
 
-  constructor(
-    container: ViewContainerRef,
-    injector: Injector,
-  ) {
+  constructor(container: ViewContainerRef, injector: Injector) {
     afterNextRender(() => {
       container.createComponent(ScrollToTopComponent, { injector });
     });
@@ -65,5 +53,4 @@ export class ScrollTopDirective {
   onScroll(event: Event) {
     this.elementScrolled$.next(event);
   }
-
 }

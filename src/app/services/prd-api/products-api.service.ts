@@ -6,12 +6,10 @@ import { CustomerProduct, JobProductionStage, Product, ProductPartial } from 'sr
 import { AppClassTransformerService } from 'src/app/library';
 import { HttpOptions } from 'src/app/library/http';
 
-
 @Injectable({
   providedIn: 'root',
 })
 export class ProductsApiService {
-
   readonly path = getAppParams('apiPath') + 'products/';
   private http = inject(HttpClient);
   private transformer = inject(AppClassTransformerService);
@@ -27,15 +25,12 @@ export class ProductsApiService {
   }
 
   async getOneByName(name: string): Promise<Product> {
-    const data$ = this.http.get<Record<string, any>>(
-      this.path + 'name/' + name,
-      new HttpOptions()
-    );
+    const data$ = this.http.get<Record<string, any>>(this.path + 'name/' + name, new HttpOptions());
     return this.transformer.plainToInstance(Product, await firstValueFrom(data$));
   }
 
   async deleteOne(id: string): Promise<number> {
-    const response$ = this.http.delete<{ deletedCount: number; }>(this.path + id, new HttpOptions());
+    const response$ = this.http.delete<{ deletedCount: number }>(this.path + id, new HttpOptions());
     return (await firstValueFrom(response$)).deletedCount;
   }
 
@@ -54,20 +49,12 @@ export class ProductsApiService {
   }
 
   async productsCustomer(customer: string): Promise<CustomerProduct[]> {
-    const data$ = this.http.get<Record<string, any>[]>(
-      this.path + 'prices/customer/' + customer,
-      new HttpOptions().cacheable(),
-    );
+    const data$ = this.http.get<Record<string, any>[]>(this.path + 'prices/customer/' + customer, new HttpOptions().cacheable());
     return this.transformer.plainToInstance(CustomerProduct, await firstValueFrom(data$));
-
   }
 
   async productionStages(productName: string): Promise<JobProductionStage[]> {
-    const data$ = this.http.get<Record<string, any>[]>(
-      this.path + productName + '/productionStages',
-      new HttpOptions().cacheable(),
-    );
+    const data$ = this.http.get<Record<string, any>[]>(this.path + productName + '/productionStages', new HttpOptions().cacheable());
     return this.transformer.plainToInstance(JobProductionStage, await firstValueFrom(data$));
   }
-
 }

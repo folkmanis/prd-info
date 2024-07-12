@@ -9,8 +9,8 @@ const KEYS = new Map<Events, Partial<KeyboardEvent>>([
 ]);
 
 @Directive({
-    selector: 'button[appKeyPress],a[appKeyPress]',
-    standalone: true,
+  selector: 'button[appKeyPress],a[appKeyPress]',
+  standalone: true,
 })
 export class KeyPressDirective {
   @Input() set appKeyPress(value: Events) {
@@ -19,9 +19,7 @@ export class KeyPressDirective {
 
   eventToListen: Partial<KeyboardEvent> = {};
 
-  constructor(
-    private elRef: ElementRef<HTMLButtonElement>,
-  ) { }
+  constructor(private elRef: ElementRef<HTMLButtonElement>) {}
 
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -31,7 +29,6 @@ export class KeyPressDirective {
       event.stopPropagation();
     }
   }
-
 }
 
 function isEqual(obj1: Record<string, any>, obj2: Record<string, any>): boolean {

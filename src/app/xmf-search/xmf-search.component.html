@@ -1,20 +1,17 @@
 <mat-drawer-container>
-    <mat-drawer button>
-        <app-facet [facet]="facet()" (filter)="onFacet($event)" />
-    </mat-drawer>
+  <mat-drawer button>
+    <app-facet [facet]="facet()" (filter)="onFacet($event)" />
+  </mat-drawer>
 
-    <mat-drawer-content>
+  <mat-drawer-content>
+    <div class="search-box mat-elevation-z4">
+      <app-search-input (searchStringChange)="onSearchString($event)" />
 
-        <div class="search-box mat-elevation-z4">
+      <app-status-count [count]="count$ | async" />
+    </div>
 
-            <app-search-input (searchStringChange)="onSearchString($event)" />
-
-            <app-status-count [count]="count$ | async" />
-
-        </div>
-
-        <div class="main">
-            <app-search-table [search]="query()" [data]="data$ | async" />
-        </div>
-    </mat-drawer-content>
+    <div class="main">
+      <app-search-table [search]="query()" [data]="data$ | async" />
+    </div>
+  </mat-drawer-content>
 </mat-drawer-container>

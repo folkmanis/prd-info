@@ -1,14 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  EventEmitter,
-  Output,
-  effect,
-  input,
-  model,
-  viewChild
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Output, effect, input, model, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { ErrorStateMatcher } from '@angular/material/core';
@@ -35,16 +25,9 @@ export class NoopErrorStateMatcher implements ErrorStateMatcher {
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{ provide: ErrorStateMatcher, useClass: NoopErrorStateMatcher }],
   standalone: true,
-  imports: [
-    FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    HideZeroPipe,
-  ],
+  imports: [FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, HideZeroPipe],
 })
 export class LabelsComponent {
-
   private kodsInput = viewChild.required<ElementRef<HTMLInputElement>>('kodsInputElement');
 
   status = input.required<LabelStatus>();
@@ -56,7 +39,6 @@ export class LabelsComponent {
   @Output() code = new EventEmitter<number>();
 
   kods = model('');
-
 
   constructor() {
     effect(() => {
@@ -74,5 +56,4 @@ export class LabelsComponent {
     this.kodsInput().nativeElement.disabled = true;
     this.code.next(+this.kods());
   }
-
 }

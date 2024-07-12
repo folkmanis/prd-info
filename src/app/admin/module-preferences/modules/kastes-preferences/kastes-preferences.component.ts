@@ -19,26 +19,19 @@ type ColorsGroup = {
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => KastesPreferencesComponent),
-      multi: true
-    }
+      multi: true,
+    },
   ],
   standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    TitleCasePipe,
-    ColorSliderComponent,
-  ],
+  imports: [FormsModule, ReactiveFormsModule, TitleCasePipe, ColorSliderComponent],
 })
 export class KastesPreferencesComponent implements ControlValueAccessor {
   readonly colors = [...COLORS];
 
-  onTouchFn = () => { };
+  onTouchFn = () => {};
 
   preferencesControls = new FormGroup({
-    colors: new FormGroup<ColorsGroup>(
-      Object.assign({}, ...COLORS.map((col) => ({ [col]: new FormControl('') })))
-    )
+    colors: new FormGroup<ColorsGroup>(Object.assign({}, ...COLORS.map((col) => ({ [col]: new FormControl('') })))),
   });
 
   colorControl(color: Colors): FormControl {
@@ -64,5 +57,4 @@ export class KastesPreferencesComponent implements ControlValueAccessor {
       this.preferencesControls.enable();
     }
   }
-
 }

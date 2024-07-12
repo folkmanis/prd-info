@@ -1,71 +1,51 @@
 <div mat-dialog-title>
-
-    <div class="kods" [class.gatavs]="addressPackage.completed === true">
-        <span>
-            {{ addressPackage.addressId }}
-        </span>
-        <span class="subs">
-            /{{ addressPackage.boxSequence + 1 }}
-        </span>
-    </div>
-    <h1>
-        {{ addressPackage.address| titlecase }}
-    </h1>
-
+  <div class="kods" [class.gatavs]="addressPackage.completed === true">
+    <span>
+      {{ addressPackage.addressId }}
+    </span>
+    <span class="subs"> /{{ addressPackage.boxSequence + 1 }} </span>
+  </div>
+  <h1>
+    {{ addressPackage.address | titlecase }}
+  </h1>
 </div>
 
 <mat-dialog-content>
-
-    <div class="colors">
-        @for (color of colors; track $index) {
-        @if (addressPackage[color] > 0) {
+  <div class="colors">
+    @for (color of colors; track $index) {
+      @if (addressPackage[color] > 0) {
         <div [style.color]="colorCodes()[color]">
-            {{ addressPackage[color] }}
+          {{ addressPackage[color] }}
         </div>
-        }
-        }
-    </div>
+      }
+    }
+  </div>
 
-    <div class="summary">
-        @for (pack of allAddressPackages; track $index) {
-        <div class="kaste" [class.gatavs]="pack.completed" [class.current]="$index === pack.boxSequence">
-            <span>
-                {{ $index + 1 }}:&nbsp;
-            </span>
-            @for (color of colors; track color) {
-            <span [style.color]="colorCodes[color]">
-                {{ pack[color] }}&nbsp;
-            </span>
-            }
-            <span>
-                /{{ pack.total }}
-            </span>
-        </div>
+  <div class="summary">
+    @for (pack of allAddressPackages; track $index) {
+      <div class="kaste" [class.gatavs]="pack.completed" [class.current]="$index === pack.boxSequence">
+        <span> {{ $index + 1 }}:&nbsp; </span>
+        @for (color of colors; track color) {
+          <span [style.color]="colorCodes[color]"> {{ pack[color] }}&nbsp; </span>
         }
-    </div>
-
-
+        <span> /{{ pack.total }} </span>
+      </div>
+    }
+  </div>
 </mat-dialog-content>
 
 <mat-dialog-actions>
-    @if (addressPackage.completed === false) {
+  @if (addressPackage.completed === false) {
     <button mat-fab color="primary" [mat-dialog-close]="true">
-        <mat-icon>
-            done
-        </mat-icon>
+      <mat-icon> done </mat-icon>
     </button>
-    } @else {
+  } @else {
     <button mat-fab color="warn" [mat-dialog-close]="false">
-        <mat-icon>
-            remove_done
-        </mat-icon>
+      <mat-icon> remove_done </mat-icon>
     </button>
-    }
+  }
 
-    <button mat-fab matDialogClose>
-        <mat-icon>
-            close
-        </mat-icon>
-    </button>
-
+  <button mat-fab matDialogClose>
+    <mat-icon> close </mat-icon>
+  </button>
 </mat-dialog-actions>

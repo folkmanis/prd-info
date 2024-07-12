@@ -15,21 +15,10 @@ import { ToolbarComponent } from '../toolbar/toolbar.component';
   styleUrls: ['./app-container.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [
-    ToolbarComponent,
-    MatSidenavModule,
-    ViewSizeModule,
-    SideMenuComponent,
-    RouterOutlet,
-    AsyncPipe,
-  ],
+  imports: [ToolbarComponent, MatSidenavModule, ViewSizeModule, SideMenuComponent, RouterOutlet, AsyncPipe],
 })
 export class AppContainerComponent {
-
   user$ = inject(LoginService).user$;
 
-  activeModule$ = inject(SystemPreferencesService).activeModules$.pipe(
-    map((modules) => modules[0])
-  );
-
+  activeModule$ = inject(SystemPreferencesService).activeModules$.pipe(map((modules) => modules[0]));
 }

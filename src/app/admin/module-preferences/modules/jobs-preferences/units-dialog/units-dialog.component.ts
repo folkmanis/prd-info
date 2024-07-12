@@ -27,7 +27,6 @@ import { ProductUnit } from 'src/app/interfaces';
   ],
 })
 export class UnitsDialogComponent {
-
   private data = inject<ProductUnit>(MAT_DIALOG_DATA, { optional: true });
   private dialogRef = inject(MatDialogRef);
 
@@ -40,5 +39,4 @@ export class UnitsDialogComponent {
   onSubmit() {
     this.dialogRef.close(this.unitsForm.getRawValue());
   }
-
 }

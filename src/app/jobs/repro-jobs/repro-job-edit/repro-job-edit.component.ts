@@ -1,15 +1,5 @@
 import { AsyncPipe, Location } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  input,
-  model,
-  signal,
-  viewChild
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, model, signal, viewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -51,7 +41,6 @@ import { KeyPressDirective } from './key-press.directive';
   ],
 })
 export class ReproJobEditComponent {
-
   private confirmationDialogService = inject(ConfirmationDialogService);
   private formService = inject(JobFormService);
 
@@ -83,11 +72,7 @@ export class ReproJobEditComponent {
     return !!update && (!!update.customer || !!update.name || !!update.receivedDate);
   });
 
-
-  saveDisabled = computed(() => this.formService.status() !== 'VALID' ||
-    (this.update() == undefined && this.dropFolder() == null) ||
-    this.saved()
-  );
+  saveDisabled = computed(() => this.formService.status() !== 'VALID' || (this.update() == undefined && this.dropFolder() == null) || this.saved());
 
   dropFolders$: Observable<DropFolder[]> = this.formService.dropFolders$;
 
@@ -102,18 +87,19 @@ export class ReproJobEditComponent {
   constructor(
     private reproJobService: ReproJobService,
     private snack: MatSnackBar,
-    private location: Location
+    private location: Location,
   ) {
-    effect(() => {
-      this.formService.setValue(this.job());
-      if (!this.job().customer) {
-        this.customerInput().focusCustomer();
-      }
-
-    }, { allowSignalWrites: true });
+    effect(
+      () => {
+        this.formService.setValue(this.job());
+        if (!this.job().customer) {
+          this.customerInput().focusCustomer();
+        }
+      },
+      { allowSignalWrites: true },
+    );
 
     effect((onCleanup) => {
-
       const uploadRef = this.uploadRef();
       let subs: Subscription;
 
@@ -128,9 +114,7 @@ export class ReproJobEditComponent {
       }
 
       onCleanup(() => subs?.unsubscribe());
-
     });
-
   }
 
   async onUpdate() {
@@ -138,11 +122,7 @@ export class ReproJobEditComponent {
     const jobId = this.formService.value().jobId;
     const jobUpdate = this.formService.update();
     try {
-      const updatedJob = await this.reproJobService
-        .updateJob(
-          { jobId, ...jobUpdate },
-          { updatePath: this.updatePath() && this.updateFolderLocationEnabled() }
-        );
+      const updatedJob = await this.reproJobService.updateJob({ jobId, ...jobUpdate }, { updatePath: this.updatePath() && this.updateFolderLocationEnabled() });
       this.onSaveSuccess(updatedJob);
     } catch (error) {
       this.onSaveError(error);
@@ -187,22 +167,12 @@ export class ReproJobEditComponent {
 
     const uploadRef = this.uploadRef();
     if (uploadRef) {
-      uploadRef.onAddedToJob()
-        .pipe(
-          concatMap(
-            (job) =>
-              job.files &&
-              this.reproJobService.copyToDropFolder(
-                job.files.path,
-                dropFolder.path
-              )
-          )
-        )
+      uploadRef
+        .onAddedToJob()
+        .pipe(concatMap((job) => job.files && this.reproJobService.copyToDropFolder(job.files.path, dropFolder.path)))
         .subscribe();
     } else {
-      this.reproJobService
-        .copyToDropFolder(files.path, dropFolder.path)
-        .subscribe();
+      this.reproJobService.copyToDropFolder(files.path, dropFolder.path).subscribe();
     }
   }
 

@@ -1,21 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  input
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import {
-  AsyncValidatorFn,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
+import { AsyncValidatorFn, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
@@ -59,34 +44,27 @@ type CustomerEditGroup = FormGroup<{
   ],
 })
 export class CustomerEditComponent implements CanComponentDeactivate {
-
   private customersService = inject(CustomersService);
 
   private navigate = navigateRelative();
 
   paytraqEnabled = configuration('paytraq', 'enabled');
 
-  form: CustomerEditGroup = inject(FormBuilder).group({
-    CustomerName: [
-      '',
-      [Validators.required, Validators.minLength(3)],
-      [this.validateName()],
-    ],
-    code: [
-      '',
-      [Validators.required, Validators.minLength(2), Validators.maxLength(3)],
-      [this.validateCode()],
-    ],
-    disabled: [false],
-    description: [''],
-    financial: [null],
-    ftpUser: [false],
-    ftpUserData: [null],
-    contacts: [],
-    insertedFromXmf: [null],
-  }, {
-    validators: [this.validateFtp()],
-  }
+  form: CustomerEditGroup = inject(FormBuilder).group(
+    {
+      CustomerName: ['', [Validators.required, Validators.minLength(3)], [this.validateName()]],
+      code: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(3)], [this.validateCode()]],
+      disabled: [false],
+      description: [''],
+      financial: [null],
+      ftpUser: [false],
+      ftpUserData: [null],
+      contacts: [],
+      insertedFromXmf: [null],
+    },
+    {
+      validators: [this.validateFtp()],
+    },
   );
 
   customer = input.required<Customer>();
@@ -98,17 +76,17 @@ export class CustomerEditComponent implements CanComponentDeactivate {
   changes = computed(() => {
     const value = this.formValue();
     const initialValue = this.customer();
-    const diff = omitBy(
-      value,
-      (val, key) => isEqual(val, initialValue[key])
-    );
+    const diff = omitBy(value, (val, key) => isEqual(val, initialValue[key]));
     return Object.keys(diff).length ? diff : null;
   });
 
   constructor() {
-    effect(() => {
-      this.form.reset(this.customer());
-    }, { allowSignalWrites: true });
+    effect(
+      () => {
+        this.form.reset(this.customer());
+      },
+      { allowSignalWrites: true },
+    );
   }
 
   onReset(): void {
@@ -127,8 +105,7 @@ export class CustomerEditComponent implements CanComponentDeactivate {
     }
 
     this.form.markAsPristine();
-    this.navigate(['..', id], { queryParams: { upd: Date.now() }, });
-
+    this.navigate(['..', id], { queryParams: { upd: Date.now() } });
   }
 
   canDeactivate(): boolean {
@@ -140,8 +117,7 @@ export class CustomerEditComponent implements CanComponentDeactivate {
       if (this.customer().code === control.value) {
         return null;
       } else {
-        return await this.customersService.isCustomerCodeAvailable(control.value)
-          ? null : { occupied: control.value };
+        return (await this.customersService.isCustomerCodeAvailable(control.value)) ? null : { occupied: control.value };
       }
     };
   }
@@ -151,16 +127,14 @@ export class CustomerEditComponent implements CanComponentDeactivate {
       if (this.customer().CustomerName === control.value) {
         return null;
       } else {
-        return await this.customersService.isNameAvailable(control.value)
-          ? null : { occupied: control.value };
+        return (await this.customersService.isNameAvailable(control.value)) ? null : { occupied: control.value };
       }
     };
   }
 
   private validateFtp(): ValidatorFn {
     return (control: CustomerEditGroup) => {
-      return (control.value.ftpUser === false || !!control.value.ftpUserData) ?
-        null : { ftpUserData: 'ftp data not set' };
+      return control.value.ftpUser === false || !!control.value.ftpUserData ? null : { ftpUserData: 'ftp data not set' };
     };
   }
 }

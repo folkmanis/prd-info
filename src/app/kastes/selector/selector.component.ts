@@ -22,7 +22,6 @@ import { PackingTableService } from '../services/packing-table.service';
 import { TabulaComponent } from './tabula/tabula.component';
 import { TotalsForSelectedSizeComponent } from './totals-for-selected-size/totals-for-selected-size.component';
 
-
 @Component({
   selector: 'app-selector',
   templateUrl: './selector.component.html',
@@ -50,7 +49,6 @@ import { TotalsForSelectedSizeComponent } from './totals-for-selected-size/total
   ],
 })
 export class SelectorComponent {
-
   private tabulaService = inject(PackingTableService);
   private dialog = inject(MatDialog);
 
@@ -70,41 +68,45 @@ export class SelectorComponent {
 
   packagesFilteredBySize = computed(() => {
     const activeBoxSize = this.activeBoxSize();
-    return this.allAddressPackages()
-      .filter(pack => activeBoxSize === 0 || pack.total === activeBoxSize);
+    return this.allAddressPackages().filter((pack) => activeBoxSize === 0 || pack.total === activeBoxSize);
   });
 
   packagesToDisplay = computed(() => {
     const showCompleted = this.showCompleted();
-    return this.packagesFilteredBySize()
-      .filter(pack => showCompleted || pack.completed === false);
+    return this.packagesFilteredBySize().filter((pack) => showCompleted || pack.completed === false);
   });
 
   labelStatus = signal<LabelStatus>({ type: 'none' });
 
-
   constructor() {
-    effect(async () => {
-      if (this.jobId()) {
-        const packages = await this.tabulaService.getAddressPackages(this.jobId());
-        this.allAddressPackages.set(packages);
-      }
-    }, { allowSignalWrites: true });
+    effect(
+      async () => {
+        if (this.jobId()) {
+          const packages = await this.tabulaService.getAddressPackages(this.jobId());
+          this.allAddressPackages.set(packages);
+        }
+      },
+      { allowSignalWrites: true },
+    );
 
-    effect(async () => {
-      if (this.jobId()) {
-        this.boxSizes.set(
-          await this.tabulaService.getBoxSizeQuantities(this.jobId())
-        );
-      }
-    }, { allowSignalWrites: true });
+    effect(
+      async () => {
+        if (this.jobId()) {
+          this.boxSizes.set(await this.tabulaService.getBoxSizeQuantities(this.jobId()));
+        }
+      },
+      { allowSignalWrites: true },
+    );
 
-    effect(async () => {
-      if (this.jobId()) {
-        const job = await this.tabulaService.getKastesJob(this.jobId());
-        this.packagesJob.set(job);
-      }
-    }, { allowSignalWrites: true });
+    effect(
+      async () => {
+        if (this.jobId()) {
+          const job = await this.tabulaService.getKastesJob(this.jobId());
+          this.packagesJob.set(job);
+        }
+      },
+      { allowSignalWrites: true },
+    );
 
     effect(() => {
       this.activeBoxSize();
@@ -113,11 +115,10 @@ export class SelectorComponent {
   }
 
   async onSelection(addressPackage: AddressPackage) {
-
     const config: MatDialogConfig<KasteDialogData> = {
       data: {
         addressPackage,
-        allAddressPackages: this.allAddressPackages().filter(pack => pack.addressId === addressPackage.addressId),
+        allAddressPackages: this.allAddressPackages().filter((pack) => pack.addressId === addressPackage.addressId),
       },
       minWidth: '300px',
       minHeight: '500px',
@@ -134,29 +135,21 @@ export class SelectorComponent {
     const updatedPackage = await this.tabulaService.setCompleted(addressPackage.documentId, addressPackage.boxSequence, result);
 
     this.replacePackage(updatedPackage);
-
   }
 
   async onSetLabel(addressId: number) {
-
     try {
-
       const updatedPackage = await this.tabulaService.setHaslabel(this.jobId(), addressId);
       this.replacePackage(updatedPackage);
       this.labelStatus.set({ type: 'kaste', addressPackage: updatedPackage });
       this.table().scrollToId(updatedPackage.documentId, updatedPackage.boxSequence);
-
     } catch (error) {
       this.labelStatus.set({ type: 'empty' });
     }
-
   }
 
   private replacePackage(updatedPackage: AddressPackage) {
-
     const updatedPackages = this.tabulaService.replacePackage(this.allAddressPackages(), updatedPackage);
     this.allAddressPackages.set(updatedPackages);
-
   }
-
 }

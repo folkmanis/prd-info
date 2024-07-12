@@ -4,6 +4,4 @@ import { Directive } from '@angular/core';
   selector: '[appInput]',
   standalone: true,
 })
-export class InputDirective {
-
-}
+export class InputDirective {}

@@ -4,29 +4,23 @@
     <mat-select formControlName="folder" required>
       <mat-option> --Nav norādīts-- </mat-option>
       @for (folder of ftpFolders(); track folder) {
-      <mat-option [value]="folder">
-        {{ folder }}
-      </mat-option>
+        <mat-option [value]="folder">
+          {{ folder }}
+        </mat-option>
       }
     </mat-select>
     @if (folderControl.hasError('required')) {
-    <mat-error>
-      Jānorāda obligāti
-    </mat-error>
+      <mat-error> Jānorāda obligāti </mat-error>
     }
   </mat-form-field>
 
   <mat-form-field>
-    <input matInput formControlName="username">
-    <mat-label>
-      Lietotājvārds
-    </mat-label>
+    <input matInput formControlName="username" />
+    <mat-label> Lietotājvārds </mat-label>
   </mat-form-field>
 
   <mat-form-field>
-    <input matInput formControlName="password">
-    <mat-label>
-      FTP lietotāja parole
-    </mat-label>
+    <input matInput formControlName="password" />
+    <mat-label> FTP lietotāja parole </mat-label>
   </mat-form-field>
 </div>

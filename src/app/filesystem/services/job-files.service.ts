@@ -7,16 +7,14 @@ import { FileElement } from '../interfaces/file-element';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { FileLocationTypes } from '../interfaces/file-location-types';
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class JobFilesService {
-
   constructor(
     private filesApi: JobsFilesApiService,
     private sanitize: SanitizeService,
-  ) { }
+  ) {}
 
   moveUserFilesToJob(jobId: number, fileNames: string[]): Observable<Job> {
     return this.filesApi.transferUserfilesToJob(jobId, fileNames);
@@ -28,10 +26,11 @@ export class JobFilesService {
 
   updateFolderLocation(jobId: number) {
     return this.filesApi.updateFilesLocation(jobId).pipe(
-      catchError(err => {
+      catchError((err) => {
+        // eslint-disable-next-line no-console
         console.error(err);
         return of(null);
-      })
+      }),
     );
   }
 
@@ -39,20 +38,18 @@ export class JobFilesService {
     return this.filesApi.readJobFolder(path);
   }
 
-  uploadUserFile(file: File, name?: string): Observable<HttpEvent<{ names: string[]; }>> {
-
+  uploadUserFile(file: File, name?: string): Observable<HttpEvent<{ names: string[] }>> {
     const formData = new FormData();
     name = this.sanitize.sanitizeFileName(name || file.name);
 
     formData.append('fileUpload', file, name);
 
     return this.filesApi.userFileUpload(formData);
-
   }
 
   deleteUserUploads(fileNames: string[]): Observable<null> {
     return this.filesApi.deleteUserFiles(fileNames).pipe(
-      tap(count => {
+      tap((count) => {
         if (count !== fileNames.length) {
           throw new Error('Not all uploads deleted');
         }
@@ -70,13 +67,6 @@ export class JobFilesService {
   }
 
   copyJobFolderToDropFolder(path: string[], dropFolder: string[]): Observable<number> {
-    return this.filesApi.copyFile(
-      FileLocationTypes.JOB,
-      FileLocationTypes.DROPFOLDER,
-      path.join('/'),
-      dropFolder.join('/'),
-    );
+    return this.filesApi.copyFile(FileLocationTypes.JOB, FileLocationTypes.DROPFOLDER, path.join('/'), dropFolder.join('/'));
   }
-
-
 }

@@ -20,10 +20,10 @@ export default [
         path: ':id',
         component: MaterialsEditComponent,
         resolve: {
-          material: resolveMaterial
+          material: resolveMaterial,
         },
         runGuardsAndResolvers: 'always',
-      }
-    ]
-  }
+      },
+    ],
+  },
 ] as Route[];

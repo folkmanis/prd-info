@@ -13,8 +13,7 @@ export default [
   },
   {
     path: 'upload',
-    loadComponent: () =>
-      import('./upload/upload.component').then((c) => c.UploadComponent),
+    loadComponent: () => import('./upload/upload.component').then((c) => c.UploadComponent),
   },
   {
     path: 'edit',

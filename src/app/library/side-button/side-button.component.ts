@@ -9,19 +9,13 @@ import { MatDrawer } from '@angular/material/sidenav';
   standalone: true,
   styleUrls: ['./side-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    CommonModule,
-    MatIconModule,
-    MatButtonModule,
-  ]
+  imports: [CommonModule, MatIconModule, MatButtonModule],
 })
 export class SideButtonComponent {
-
   opened: Signal<boolean> = signal(false);
   drawer?: MatDrawer;
 
   onClick() {
     this.drawer?.toggle();
   }
-
 }

@@ -2,12 +2,10 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { Customer, CustomerPartial, CustomerUpdate, NewCustomer } from 'src/app/interfaces';
 import { CustomersApiService } from './prd-api/customers-api.service';
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CustomersService {
-
   private api = inject(CustomersApiService);
 
   readonly #customers = signal([] as CustomerPartial[]);
@@ -50,8 +48,7 @@ export class CustomersService {
     return updated;
   }
 
-
-  async getCustomerList(filter: { name?: string, email?: string, disabled?: boolean; } = {}): Promise<CustomerPartial[]> {
+  async getCustomerList(filter: { name?: string; email?: string; disabled?: boolean } = {}): Promise<CustomerPartial[]> {
     return this.api.getAll({ disabled: true, ...filter });
   }
 
@@ -61,7 +58,7 @@ export class CustomersService {
     }
     name = name.toUpperCase();
     const values = await this.api.validatorData('CustomerName');
-    return values.every(value => value.toUpperCase() !== name);
+    return values.every((value) => value.toUpperCase() !== name);
   }
 
   async isCustomerCodeAvailable(code?: string): Promise<boolean> {
@@ -70,13 +67,12 @@ export class CustomersService {
     }
     code = code.toUpperCase();
     const values = await this.api.validatorData('code');
-    return values.every(value => value.toUpperCase() !== code);
+    return values.every((value) => value.toUpperCase() !== code);
   }
 
   private isValidId(str: any): asserts str is string {
-    if (!(/^[a-f\d]{24}$/i).test(str)) {
+    if (!/^[a-f\d]{24}$/i.test(str)) {
       throw new Error(`Invalid id ${str}`);
     }
   }
-
 }

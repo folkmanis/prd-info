@@ -1,22 +1,18 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
-import { isEqual, pickBy } from 'lodash-es';
-import { tap, map, Observable, of } from 'rxjs';
-import { JobProductionStage, Product, NewProduct, ProductPrice } from 'src/app/interfaces';
-import { ProductsService } from 'src/app/services';
+import { AsyncValidatorFn, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ClassTransformer } from 'class-transformer';
-
+import { isEqual, pickBy } from 'lodash-es';
+import { map } from 'rxjs';
+import { JobProductionStage, NewProduct, Product, ProductPrice } from 'src/app/interfaces';
+import { ProductsService } from 'src/app/services';
 
 @Injectable()
 export class ProductsFormService {
-
   initialValue: Product | null = null;
 
   form = this.createForm();
 
-  updateChanges = this.form.valueChanges.pipe(
-    map(() => this.changes),
-  );
+  updateChanges = this.form.valueChanges.pipe(map(() => this.changes));
 
   get isNew(): boolean {
     return !this.initialValue?._id;
@@ -28,7 +24,7 @@ export class ProductsFormService {
 
   get changes(): Partial<Product> | undefined {
     if (this.isNew) {
-      return pickBy(this.value, value => value !== null);
+      return pickBy(this.value, (value) => value !== null);
     } else {
       const diff = pickBy(this.value, (value, key) => !isEqual(value, this.initialValue[key]));
       return Object.keys(diff).length ? diff : undefined;
@@ -38,7 +34,7 @@ export class ProductsFormService {
   constructor(
     private productService: ProductsService,
     private transformer: ClassTransformer,
-  ) { }
+  ) {}
 
   setInitial(value: Product | null) {
     if (value._id) {
@@ -52,7 +48,7 @@ export class ProductsFormService {
 
   async save(): Promise<Product> {
     if (this.isNew) {
-      const newProduct = pickBy(this.value, value => value !== null) as NewProduct;
+      const newProduct = pickBy(this.value, (value) => value !== null) as NewProduct;
       const inserted = await this.productService.insertProduct(newProduct);
       this.form.markAsPristine();
       return inserted;
@@ -76,27 +72,17 @@ export class ProductsFormService {
     return new FormGroup({
       _id: new FormControl<string>(''),
       inactive: new FormControl(false, { nonNullable: true }),
-      category: new FormControl<string>(
-        undefined,
-        [Validators.required]
-      ),
-      name: new FormControl<string>(
-        undefined,
-        {
-          validators: [Validators.required],
-          asyncValidators: [this.nameAsyncValidator()]
-        }
-      ),
+      category: new FormControl<string>(undefined, [Validators.required]),
+      name: new FormControl<string>(undefined, {
+        validators: [Validators.required],
+        asyncValidators: [this.nameAsyncValidator()],
+      }),
       description: new FormControl<string>(''),
-      units: new FormControl<string>(
-        undefined,
-        [Validators.required],
-      ),
+      units: new FormControl<string>(undefined, [Validators.required]),
       prices: new FormControl<ProductPrice[]>([], { nonNullable: true }),
       paytraqId: new FormControl<number>(null),
       productionStages: new FormControl<JobProductionStage[]>([], { nonNullable: true }),
     });
-
   }
 
   private nameAsyncValidator(): AsyncValidatorFn {
@@ -109,6 +95,4 @@ export class ProductsFormService {
       }
     };
   }
-
-
 }

@@ -1,28 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  QueryList,
-  ViewChildren,
-  booleanAttribute,
-  input,
-  viewChildren,
-} from '@angular/core';
-import {
-  AbstractControl,
-  ControlValueAccessor,
-  FormArray,
-  FormControl,
-  FormGroup,
-  FormsModule,
-  NG_VALIDATORS,
-  NG_VALUE_ACCESSOR,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validator,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
+import { ChangeDetectionStrategy, Component, booleanAttribute, input, viewChildren } from '@angular/core';
+import { ControlValueAccessor, FormArray, FormControl, FormsModule, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -30,7 +7,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CustomerProduct } from 'src/app/interfaces';
 import { JobProduct } from 'src/app/jobs';
 import { KeyPressDirective } from '../key-press.directive';
-import { JobProductForm } from './repro-product/job-product-form.interface';
 import { ReproProductComponent } from './repro-product/repro-product.component';
 
 const DEFAULT_PRODUCT: JobProduct = {
@@ -59,20 +35,9 @@ const DEFAULT_PRODUCT: JobProduct = {
     },
   ],
   standalone: true,
-  imports: [
-    MatCardModule,
-    ReproProductComponent,
-    FormsModule,
-    ReactiveFormsModule,
-    MatButtonModule,
-    KeyPressDirective,
-    MatTooltipModule,
-    MatIconModule,
-  ],
+  imports: [MatCardModule, ReproProductComponent, FormsModule, ReactiveFormsModule, MatButtonModule, KeyPressDirective, MatTooltipModule, MatIconModule],
 })
-export class ReproProductsEditorComponent
-  implements ControlValueAccessor, Validator {
-
+export class ReproProductsEditorComponent implements ControlValueAccessor, Validator {
   productComponents = viewChildren(ReproProductComponent);
 
   customerProducts = input.required<CustomerProduct[]>();
@@ -81,7 +46,7 @@ export class ReproProductsEditorComponent
 
   productsControl = new FormArray<FormControl<JobProduct>>([]);
 
-  onTouched: () => void = () => { };
+  onTouched: () => void = () => {};
 
   writeValue(obj: JobProduct[] | null): void {
     this.productsControl.clear({ emitEvent: false });
@@ -111,13 +76,9 @@ export class ReproProductsEditorComponent
   validate(): ValidationErrors {
     if (this.productsControl.valid) {
       return null;
-    };
+    }
 
-    const errors = this.productsControl.controls.reduce(
-      (errors, control, idx) => ({ ...errors, [idx]: control.errors }),
-      {}
-    );
-    return errors;
+    return this.productsControl.controls.reduce((errors, control, idx) => ({ ...errors, [idx]: control.errors }), {});
   }
 
   focusLatest() {
@@ -132,5 +93,4 @@ export class ReproProductsEditorComponent
     this.productsControl.push(new FormControl(DEFAULT_PRODUCT));
     setTimeout(() => this.focusLatest(), 0);
   }
-
 }

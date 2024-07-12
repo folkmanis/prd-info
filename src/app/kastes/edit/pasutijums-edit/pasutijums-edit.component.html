@@ -1,21 +1,17 @@
-@if(job$ | async; as job) {
-<app-simple-form-container>
-
-    <h2 appSimpleFormTypedLabel>
-        {{job.jobId}} / {{job.name}}
-    </h2>
+@if (job$ | async; as job) {
+  <app-simple-form-container>
+    <h2 appSimpleFormTypedLabel>{{ job.jobId }} / {{ job.name }}</h2>
 
     <mat-tab-group [selectedIndex]="0">
-        <mat-tab label="Informācija">
-            <app-job-info [job]="job" [veikali]="veikali()" [activeJobId]="activeJobId()" />
-        </mat-tab>
+      <mat-tab label="Informācija">
+        <app-job-info [job]="job" [veikali]="veikali()" [activeJobId]="activeJobId()" />
+      </mat-tab>
 
-        <mat-tab label="Pakošanas saraksts" [disabled]="veikali().length == 0">
-            <ng-template matTabContent>
-                <app-pakosanas-saraksts [veikali]="veikali()" [disabled]="job.jobStatus.generalStatus >= 30"
-                    (veikalsChange)="onUpdateVeikals($event)" />
-            </ng-template>
-        </mat-tab>
+      <mat-tab label="Pakošanas saraksts" [disabled]="veikali().length === 0">
+        <ng-template matTabContent>
+          <app-pakosanas-saraksts [veikali]="veikali()" [disabled]="job.jobStatus.generalStatus >= 30" (veikalsChange)="onUpdateVeikals($event)" />
+        </ng-template>
+      </mat-tab>
     </mat-tab-group>
-</app-simple-form-container>
+  </app-simple-form-container>
 }

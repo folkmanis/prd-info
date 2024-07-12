@@ -3,5 +3,4 @@ import { Equipment } from 'src/app/interfaces';
 import { EquipmentService } from './equipment.service';
 import { inject } from '@angular/core';
 
-export const resolveEquipment: ResolveFn<Equipment> = (route) =>
-    inject(EquipmentService).getOne(route.paramMap.get('id'));
+export const resolveEquipment: ResolveFn<Equipment> = (route) => inject(EquipmentService).getOne(route.paramMap.get('id'));

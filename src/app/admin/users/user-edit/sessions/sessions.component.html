@@ -1,18 +1,14 @@
 <mat-list dense>
   @for (session of sessions(); track $index) {
-  <mat-list-item>
-    <button mat-icon-button (click)="deleteSession.emit([session._id])" [disabled]="session._id === currentSession()">
-      <mat-icon>
-        delete
-      </mat-icon>
-    </button>
-    {{ session.lastSeen.date | date:'full'}} - {{ session.lastSeen.ip}}
-  </mat-list-item>
+    <mat-list-item>
+      <button mat-icon-button (click)="deleteSession.emit([session._id])" [disabled]="session._id === currentSession()">
+        <mat-icon> delete </mat-icon>
+      </button>
+      {{ session.lastSeen.date | date: 'full' }} - {{ session.lastSeen.ip }}
+    </mat-list-item>
   }
 </mat-list>
 
 <ng-container actions>
-  <button mat-raised-button (click)="onDeleteAll()" [disabled]="deleteAllDisabled()">
-    IZBEIGT VISAS
-  </button>
+  <button mat-raised-button (click)="onDeleteAll()" [disabled]="deleteAllDisabled()">IZBEIGT VISAS</button>
 </ng-container>

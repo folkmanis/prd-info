@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  inject,
-  input
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, input } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -34,15 +28,7 @@ type PricesForm = ReturnType<typeof productPriceGroup>;
   templateUrl: './product-prices.component.html',
   styleUrls: ['./product-prices.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    ReactiveFormsModule,
-    FormsModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatIconModule,
-    MatButtonModule,
-    InputDirective,
-  ],
+  imports: [ReactiveFormsModule, FormsModule, MatSelectModule, MatOptionModule, MatIconModule, MatButtonModule, InputDirective],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -57,17 +43,13 @@ type PricesForm = ReturnType<typeof productPriceGroup>;
   ],
 })
 export class ProductPricesComponent implements ControlValueAccessor, Validator {
-
   private chDetector = inject(ChangeDetectorRef);
 
   customers = input<CustomerPartial[]>([]);
 
-  pricesFormArray = new FormArray<PricesForm>(
-    [],
-    [this.duplicateCustomersValidator]
-  );
+  pricesFormArray = new FormArray<PricesForm>([], [this.duplicateCustomersValidator]);
 
-  touchFn = () => { };
+  touchFn = () => {};
 
   writeValue(obj: ProductPrice[]): void {
     obj = obj instanceof Array ? obj : [];
@@ -105,9 +87,7 @@ export class ProductPricesComponent implements ControlValueAccessor, Validator {
       return null;
     }
     return {
-      errors: this.pricesFormArray.controls
-        .filter((ctrl) => ctrl.invalid)
-        .map((ctr) => ctr.errors),
+      errors: this.pricesFormArray.controls.filter((ctrl) => ctrl.invalid).map((ctr) => ctr.errors),
     };
   }
 
@@ -122,13 +102,9 @@ export class ProductPricesComponent implements ControlValueAccessor, Validator {
     this.chDetector.markForCheck();
   }
 
-  private duplicateCustomersValidator(
-    ctrl: AbstractControl<ProductPrice[]>
-  ): ValidationErrors | null {
+  private duplicateCustomersValidator(ctrl: AbstractControl<ProductPrice[]>): ValidationErrors | null {
     const customers: string[] = ctrl.value.map((pr) => pr.customerName);
-    const duplicates: string[] = customers.filter(
-      (val, idx, self) => self.indexOf(val) !== idx
-    );
+    const duplicates: string[] = customers.filter((val, idx, self) => self.indexOf(val) !== idx);
     return duplicates.length === 0 ? null : { duplicates: duplicates.join() };
   }
 }
@@ -136,10 +112,7 @@ export class ProductPricesComponent implements ControlValueAccessor, Validator {
 function productPriceGroup(price: ProductPrice) {
   return new FormGroup({
     customerName: new FormControl(price?.customerName, [Validators.required]),
-    price: new FormControl(price?.price, [
-      Validators.required,
-      Validators.pattern(/[0-9]{1,}(((,|\.)[0-9]{0,2})?)/),
-    ]),
+    price: new FormControl(price?.price, [Validators.required, Validators.pattern(/[0-9]{1,}(((,|\.)[0-9]{0,2})?)/)]),
     lastUsed: new FormControl<Date>({
       value: null,
       disabled: true,

@@ -1,19 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  inject,
-} from '@angular/core';
-import {
-  ControlValueAccessor,
-  FormBuilder,
-  FormControl,
-  NG_VALIDATORS,
-  NG_VALUE_ACCESSOR,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validator,
-} from '@angular/forms';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ControlValueAccessor, FormBuilder, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator } from '@angular/forms';
 import { plainToInstance } from 'class-transformer';
 import { map } from 'rxjs';
 import { CustomerContact } from 'src/app/interfaces';
@@ -21,7 +7,6 @@ import { CustomerContactEditorComponent } from './customer-contact-editor/custom
 import { MatListModule } from '@angular/material/list';
 import { MatIcon } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-
 
 @Component({
   selector: 'app-customer-contacts',
@@ -41,17 +26,9 @@ import { MatButtonModule } from '@angular/material/button';
       useExisting: CustomerContactsComponent,
     },
   ],
-  imports: [
-    ReactiveFormsModule,
-    CustomerContactEditorComponent,
-    MatListModule,
-    MatIcon,
-    MatButtonModule,
-  ],
+  imports: [ReactiveFormsModule, CustomerContactEditorComponent, MatListModule, MatIcon, MatButtonModule],
 })
-export class CustomerContactsComponent
-  implements ControlValueAccessor, Validator {
-
+export class CustomerContactsComponent implements ControlValueAccessor, Validator {
   private fb = inject(FormBuilder);
   private changeDetector = inject(ChangeDetectorRef);
 
@@ -59,7 +36,7 @@ export class CustomerContactsComponent
 
   active: FormControl<CustomerContact> | null = null;
 
-  private onTouchFn: () => void = () => { };
+  private onTouchFn: () => void = () => {};
 
   writeValue(obj: CustomerContact[]): void {
     obj = obj instanceof Array ? obj : [];
@@ -68,9 +45,7 @@ export class CustomerContactsComponent
   }
 
   registerOnChange(fn: (val: CustomerContact[]) => void): void {
-    this.contactsArray.valueChanges
-      .pipe(map((value) => plainToInstance(CustomerContact, value)))
-      .subscribe(fn);
+    this.contactsArray.valueChanges.pipe(map((value) => plainToInstance(CustomerContact, value))).subscribe(fn);
   }
 
   registerOnTouched(fn: any): void {
@@ -89,10 +64,7 @@ export class CustomerContactsComponent
     if (this.contactsArray.valid) {
       return null;
     } else {
-      return this.contactsArray.controls.reduce(
-        (acc, curr) => ({ ...acc, ...curr.errors }),
-        {}
-      );
+      return this.contactsArray.controls.reduce((acc, curr) => ({ ...acc, ...curr.errors }), {});
     }
   }
 

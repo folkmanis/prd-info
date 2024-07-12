@@ -9,7 +9,6 @@ import { PasswordDialogData, PasswordInputDialogComponent } from './password-inp
   standalone: true,
 })
 export class PasswordInputDirective {
-
   @Input('passwordMinimumLength')
   minLength: number | undefined;
 
@@ -19,9 +18,7 @@ export class PasswordInputDirective {
   @Output('appPasswordChange')
   passwordEvent = new EventEmitter<string>();
 
-  constructor(
-    private dialog: MatDialog,
-  ) { }
+  constructor(private dialog: MatDialog) {}
 
   @HostListener('click')
   onClick() {
@@ -29,14 +26,13 @@ export class PasswordInputDirective {
       data: {
         minLength: this.minLength,
         validatorFn: this.validatorFn,
-      }
+      },
     };
 
-    this.dialog.open(PasswordInputDialogComponent, config)
-      .afterClosed().pipe(
-        filter(value => value && typeof value === 'string'),
-      )
-      .subscribe(value => this.passwordEvent.emit(value));
+    this.dialog
+      .open(PasswordInputDialogComponent, config)
+      .afterClosed()
+      .pipe(filter((value) => value && typeof value === 'string'))
+      .subscribe((value) => this.passwordEvent.emit(value));
   }
-
 }

@@ -11,7 +11,6 @@ import { kastesPreferences } from '../../services/kastes-preferences.service';
   imports: [TitleCasePipe],
 })
 export class ColorTotalsComponent {
-
   colors = COLORS;
 
   colorStyles = kastesPreferences('colors');

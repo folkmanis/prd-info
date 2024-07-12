@@ -15,10 +15,9 @@ type TotalsInput = Record<Colors, number> & {
   imports: [TitleCasePipe],
   templateUrl: './totals-for-selected-size.component.html',
   styleUrl: './totals-for-selected-size.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TotalsForSelectedSizeComponent {
-
   readonly colors = COLORS;
 
   colorCodes = kastesPreferences('colors');
@@ -30,5 +29,4 @@ export class TotalsForSelectedSizeComponent {
   notLabelledCount = computed(() => this.packages().reduce((acc, curr) => acc + +!curr.hasLabel, 0));
 
   colorTotals = computed(() => totalsByColor(this.packages()));
-
 }

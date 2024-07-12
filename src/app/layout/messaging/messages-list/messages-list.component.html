@@ -1,70 +1,54 @@
 @if (messages$ | async; as messages) {
-@for (message of messages; track message._id) {
-<div class="message" [class.unread]="!message.seen" [class.selected]="message === selected">
+  @for (message of messages; track message._id) {
+    <div class="message" [class.unread]="!message.seen" [class.selected]="message === selected">
+      <div class="signal"></div>
 
-    <div class="signal">
-    </div>
-
-    <div class="message-text">
-
+      <div class="message-text">
         <span>
-            <small>
-                {{ message.timestamp | relativeDate:'strict' }} {{ message.data.toAction() }}
-            </small>
+          <small> {{ message.timestamp | relativeDate: 'strict' }} {{ message.data.toAction() }} </small>
         </span>
         <span>
-            {{message.data.toDescription()}}
+          {{ message.data.toDescription() }}
         </span>
+      </div>
 
-    </div>
-
-    <div class="message-menu">
+      <div class="message-menu">
         @if (ftpUsers(message).length > 0) {
-        <button mat-icon-button [matMenuTriggerFor]="ftpSave"
-            [matMenuTriggerData]="{ users: ftpUsers(message), message }" (menuOpened)="selected = message"
-            (menuClosed)="selected = null">
-            <mat-icon>
-                save
-            </mat-icon>
-        </button>
+          <button
+            mat-icon-button
+            [matMenuTriggerFor]="ftpSave"
+            [matMenuTriggerData]="{ users: ftpUsers(message), message }"
+            (menuOpened)="selected = message"
+            (menuClosed)="selected = null"
+          >
+            <mat-icon> save </mat-icon>
+          </button>
         }
 
         @if (!message.seen) {
-        <button mat-icon-button (click)="onMarkAsRead(message._id)">
-            <mat-icon>
-                done
-            </mat-icon>
-        </button>
+          <button mat-icon-button (click)="onMarkAsRead(message._id)">
+            <mat-icon> done </mat-icon>
+          </button>
         }
 
         <button mat-icon-button (click)="onDelete(message._id)">
-            <mat-icon>
-                delete
-            </mat-icon>
+          <mat-icon> delete </mat-icon>
         </button>
-
+      </div>
     </div>
-
-
-
-</div>
-
-}
-
+  }
 } @else {
-<div class="message">
-    <div class="message-text">
-        Ziņojumu nav
-    </div>
-</div>
+  <div class="message">
+    <div class="message-text">Ziņojumu nav</div>
+  </div>
 }
 
 <mat-menu #ftpSave="matMenu">
-    <ng-template matMenuContent let-users="users" let-message="message">
-        @for (ftpUser of users; track $index) {
-        <button mat-menu-item [appMessageJob]="message" [appMessageJobFtpUser]="ftpUser">
-            {{ ftpUser.CustomerName }}
-        </button>
-        }
-    </ng-template>
+  <ng-template matMenuContent let-users="users" let-message="message">
+    @for (ftpUser of users; track $index) {
+      <button mat-menu-item [appMessageJob]="message" [appMessageJobFtpUser]="ftpUser">
+        {{ ftpUser.CustomerName }}
+      </button>
+    }
+  </ng-template>
 </mat-menu>

@@ -1,69 +1,61 @@
-import { Expose, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 
 export class UserPreferences {
+  customers: string[] = [];
 
-    customers: string[] = [];
-
-    modules: string[] = [];
+  modules: string[] = [];
 }
 
 export class LastSeen {
+  @Type(() => Date)
+  date: Date = new Date();
 
-    @Type(() => Date)
-    date: Date = new Date();
-
-    ip: string = '';
-};
-
-
-export class UserSession {
-
-    _id: string;
-
-    @Type(() => LastSeen)
-    lastSeen: LastSeen;
+  ip: string = '';
 }
 
+export class UserSession {
+  _id: string;
+
+  @Type(() => LastSeen)
+  lastSeen: LastSeen;
+}
 
 export class GoogleUser {
-    id: string;
-    email: string;
-    verified_email: boolean;
-    name: string;
-    given_name: string;
-    family_name: string;
-    link: string;
-    picture: string;
-    gender: string;
-    locale: string;
-    hd: string;
+  id: string;
+  email: string;
+  verified_email: boolean;
+  name: string;
+  given_name: string;
+  family_name: string;
+  link: string;
+  picture: string;
+  gender: string;
+  locale: string;
+  hd: string;
 }
 
 export class User {
+  username: string = '';
 
-    username: string = '';
+  name: string = '';
 
-    name: string = '';
+  password: string = '';
 
-    password: string = '';
+  admin: boolean = false;
 
-    admin: boolean = false;
+  userDisabled: boolean = false;
 
-    userDisabled: boolean = false;
+  eMail: string = '';
 
-    eMail: string = '';
+  @Type(() => Date)
+  last_login?: Date;
 
-    @Type(() => Date)
-    last_login?: Date;
+  @Type(() => UserPreferences)
+  preferences: UserPreferences = new UserPreferences();
 
-    @Type(() => UserPreferences)
-    preferences: UserPreferences = new UserPreferences();
+  @Type(() => UserSession)
+  sessions: UserSession[];
 
-    @Type(() => UserSession)
-    sessions: UserSession[];
-
-    @Type(() => GoogleUser)
-    google?: GoogleUser;
-
+  @Type(() => GoogleUser)
+  google?: GoogleUser;
 }
-

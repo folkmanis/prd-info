@@ -1,12 +1,8 @@
 <mat-toolbar>
-    <button mat-raised-button (click)="onSave()" [disabled]="saveDisabled()">
-        SAGLABĀT
-    </button>
-    <button mat-raised-button (click)="onReset()" [disabled]="pristine()">
-        ATIESTATĪT
-    </button>
+  <button mat-raised-button (click)="onSave()" [disabled]="saveDisabled()">SAGLABĀT</button>
+  <button mat-raised-button (click)="onReset()" [disabled]="pristine()">ATIESTATĪT</button>
 </mat-toolbar>
 
 <div class="container">
-    <ng-content></ng-content>
+  <ng-content></ng-content>
 </div>

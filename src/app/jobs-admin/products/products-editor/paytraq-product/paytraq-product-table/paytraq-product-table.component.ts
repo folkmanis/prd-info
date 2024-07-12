@@ -8,16 +8,12 @@ import { PaytraqProduct } from 'src/app/interfaces/paytraq';
   templateUrl: './paytraq-product-table.component.html',
   styleUrls: ['./paytraq-product-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    MatTableModule,
-  ]
+  imports: [MatTableModule],
 })
 export class PaytraqProductTableComponent {
-
   products = input<PaytraqProduct[]>([]);
 
   productSelected = output<PaytraqProduct>();
 
   displayedColumns: (keyof PaytraqProduct)[] = ['itemID', 'name'];
-
 }

@@ -6,62 +6,52 @@ import { Invoice, InvoiceForReport, InvoiceTable, ProductTotals } from 'src/app/
 import { AppClassTransformerService } from 'src/app/library';
 import { HttpOptions } from 'src/app/library/http';
 
-
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
 export class InvoicesApiService {
+  readonly path = getAppParams('apiPath') + 'invoices/';
 
-    readonly path = getAppParams('apiPath') + 'invoices/';
+  constructor(
+    private http: HttpClient,
+    private transformer: AppClassTransformerService,
+  ) {}
 
-    constructor(
-        private http: HttpClient,
-        private transformer: AppClassTransformerService,
-    ) { }
+  getOne(id: string): Observable<Invoice> {
+    return this.http.get(this.path + id, new HttpOptions().cacheable()).pipe(this.transformer.toClass(Invoice));
+  }
 
+  getAll(params: Record<string, any>): Observable<InvoiceTable[]> {
+    return this.http.get<InvoiceTable[]>(this.path, new HttpOptions(params).cacheable());
+  }
 
-    getOne(id: string): Observable<Invoice> {
-        return this.http.get(this.path + id, new HttpOptions().cacheable()).pipe(
-            this.transformer.toClass(Invoice),
-        );
-    }
+  updateOne(id: string, data: Partial<Invoice>): Observable<Invoice> {
+    return this.http.patch(this.path + id, data, new HttpOptions()).pipe(this.transformer.toClass(Invoice));
+  }
 
-    getAll(params: Record<string, any>): Observable<InvoiceTable[]> {
-        return this.http.get<InvoiceTable[]>(this.path, new HttpOptions(params).cacheable());
-    }
+  deleteOne(id: string): Observable<number> {
+    return this.http.delete<{ deletedCount: number }>(this.path + id, new HttpOptions()).pipe(
+      map((data) => {
+        if (!data.deletedCount) {
+          throw new Error('Not deleted');
+        }
+        return data.deletedCount;
+      }),
+    );
+  }
 
-    updateOne(id: string, data: Partial<Invoice>): Observable<Invoice> {
-        return this.http.patch(this.path + id, data, new HttpOptions()).pipe(
-            this.transformer.toClass(Invoice),
-        );
-    }
+  createInvoice(params: { jobIds: number[]; customerId: string }): Observable<Invoice> {
+    return this.http.put(this.path, params, new HttpOptions()).pipe(this.transformer.toClass(Invoice));
+  }
 
-    deleteOne(id: string): Observable<number> {
-        return this.http.delete<{ deletedCount: number; }>(this.path + id, new HttpOptions()).pipe(
-            map(data => {
-                if (!data.deletedCount) {
-                    throw new Error('Not deleted');
-                }
-                return data.deletedCount;
-            }),
-        );
-    }
+  getTotals(jobsId: number[]): Observable<ProductTotals[]> {
+    return this.http.get<{ totals: ProductTotals[] }>(this.path + 'totals', new HttpOptions({ jobsId })).pipe(
+      map((data) => data.totals),
+      this.transformer.toClass(ProductTotals),
+    );
+  }
 
-    createInvoice(params: { jobIds: number[]; customerId: string; }): Observable<Invoice> {
-        return this.http.put(this.path, params, new HttpOptions()).pipe(
-            this.transformer.toClass(Invoice),
-        );
-    }
-
-    getTotals(jobsId: number[]): Observable<ProductTotals[]> {
-        return this.http.get<{ totals: ProductTotals[]; }>(this.path + 'totals', new HttpOptions({ jobsId })).pipe(
-            map(data => data.totals),
-            this.transformer.toClass(ProductTotals),
-        );
-    }
-
-    getReport(data: InvoiceForReport): Observable<Blob> {
-        return this.http.put(this.path + 'report', data, { responseType: 'blob' });
-    }
-
+  getReport(data: InvoiceForReport): Observable<Blob> {
+    return this.http.put(this.path + 'report', data, { responseType: 'blob' });
+  }
 }

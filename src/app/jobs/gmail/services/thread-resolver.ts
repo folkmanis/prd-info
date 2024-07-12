@@ -8,7 +8,6 @@ import { GmailService } from './gmail.service';
 const NOT_FOUND_MESSAGE = 'Ieraksts nav atrasts';
 
 export const resolveThread: ResolveFn<Thread> = async (route) => {
-
   const id = route.paramMap.get('id');
 
   const dialog = inject(ConfirmationDialogService);

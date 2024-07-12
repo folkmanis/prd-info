@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Input,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input } from '@angular/core';
 import {
   ControlValueAccessor,
   FormArray,
@@ -24,10 +18,10 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
-import { ClassTransformer } from 'class-transformer';
 import { isEqual } from 'lodash-es';
 import { map } from 'rxjs';
 import { CustomerPartial, DropFolder } from 'src/app/interfaces';
+import { AppClassTransformerService } from 'src/app/library';
 
 type DropFolderForm = FormGroup<{
   path: FormControl<string[]>;
@@ -40,15 +34,7 @@ type DropFolderForm = FormGroup<{
   templateUrl: './drop-folders.component.html',
   styleUrls: ['./drop-folders.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    ReactiveFormsModule,
-    FormsModule,
-    MatIconModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatOptionModule,
-  ],
+  imports: [ReactiveFormsModule, FormsModule, MatIconModule, MatButtonModule, MatFormFieldModule, MatSelectModule, MatOptionModule],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -62,11 +48,11 @@ type DropFolderForm = FormGroup<{
     },
   ],
 })
-export class DropFoldersComponent
-  implements OnInit, ControlValueAccessor, Validator
-{
-  @Input({ required: true }) dropFolders: { value: string[]; name: string }[] =
-    [];
+export class DropFoldersComponent implements ControlValueAccessor, Validator {
+  private transformer = inject(AppClassTransformerService);
+  private chDetector = inject(ChangeDetectorRef);
+
+  @Input({ required: true }) dropFolders: { value: string[]; name: string }[] = [];
 
   @Input({ required: true }) customers: CustomerPartial[] = [];
 
@@ -78,28 +64,19 @@ export class DropFoldersComponent
 
   pathCompare: (o1: string[], o2: string[]) => boolean = isEqual;
 
-  constructor(
-    private transformer: ClassTransformer,
-    private chDetector: ChangeDetectorRef
-  ) {}
-
   writeValue(obj: DropFolder[]): void {
     obj = Array.isArray(obj) ? obj : [];
     if (this.form.length === obj.length) {
       this.form.setValue(obj, { emitEvent: false });
     } else {
       this.form.clear({ emitEvent: false });
-      obj.forEach((o) =>
-        this.form.push(this.dropFolderForm(o), { emitEvent: false })
-      );
+      obj.forEach((o) => this.form.push(this.dropFolderForm(o), { emitEvent: false }));
     }
     this.chDetector.markForCheck();
   }
 
   registerOnChange(fn: any): void {
-    this.form.valueChanges
-      .pipe(map((value) => this.transformer.plainToInstance(DropFolder, value)))
-      .subscribe(fn);
+    this.form.valueChanges.pipe(map((value) => this.transformer.plainToInstance(DropFolder, value))).subscribe(fn);
   }
 
   registerOnTouched(fn: () => void): void {
@@ -117,8 +94,6 @@ export class DropFoldersComponent
   validate(): ValidationErrors {
     return this.form.valid ? null : { dropFolders: this.folderErrors };
   }
-
-  ngOnInit(): void {}
 
   onCustomerSelection({ value, source }: MatSelectChange): void {
     if (Array.isArray(value) && value.includes('**')) {
@@ -153,9 +128,7 @@ export class DropFoldersComponent
 
   private duplicateDefaultValidator(): ValidatorFn {
     return (control: FormArray<DropFolderForm>) => {
-      const defaults = control.value?.filter((val) =>
-        val.customers?.includes('**')
-      );
+      const defaults = control.value?.filter((val) => val.customers?.includes('**'));
       return defaults.length > 1 ? { duplicateDefaults: defaults } : null;
     };
   }

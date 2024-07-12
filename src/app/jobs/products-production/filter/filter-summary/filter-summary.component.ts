@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  input
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { parseISO } from 'date-fns';
 import { JobState, ProductCategory } from 'src/app/interfaces';
 import { JobsProductionFilterQuery } from 'src/app/jobs/interfaces';
@@ -18,7 +12,6 @@ import { DateUtilsService } from 'src/app/library/date-services';
   standalone: true,
 })
 export class FilterSummaryComponent {
-
   private dateUtils = inject(DateUtilsService);
 
   query = input.required<JobsProductionFilterQuery>();
@@ -37,7 +30,6 @@ export class FilterSummaryComponent {
     } else {
       return '';
     }
-
   });
 
   category = computed(() => {
@@ -67,5 +59,4 @@ export class FilterSummaryComponent {
     }
     return interval;
   });
-
 }

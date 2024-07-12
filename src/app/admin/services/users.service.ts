@@ -10,24 +10,17 @@ import { XmfArchiveApiService } from 'src/app/xmf-search/services/xmf-archive-ap
   providedIn: 'root',
 })
 export class UsersService {
-
   constructor(
     private api: UsersApiService,
-    private xmfApi: XmfArchiveApiService
-  ) { }
+    private xmfApi: XmfArchiveApiService,
+  ) {}
 
   async getAllUsers() {
     return firstValueFrom(this.api.getAll());
   }
 
   getXmfCustomers(): Observable<XmfCustomer[]> {
-    return this.xmfApi
-      .getXmfCustomer()
-      .pipe(
-        map((customer) =>
-          customer.map((cust) => ({ name: cust || 'Nenoteikts', value: cust }))
-        )
-      );
+    return this.xmfApi.getXmfCustomer().pipe(map((customer) => customer.map((cust) => ({ name: cust || 'Nenoteikts', value: cust }))));
   }
 
   async getUser(username: string): Promise<User> {
@@ -59,8 +52,6 @@ export class UsersService {
   }
 
   validateUsername(username: string): Observable<boolean> {
-    return this.api
-      .validatorData('username')
-      .pipe(map((names) => !names.includes(username)));
+    return this.api.validatorData('username').pipe(map((names) => !names.includes(username)));
   }
 }

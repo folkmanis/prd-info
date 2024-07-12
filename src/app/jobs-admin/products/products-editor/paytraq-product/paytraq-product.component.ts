@@ -1,13 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  effect,
-  inject,
-  input,
-  model,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, model, signal } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { PaytraqProduct } from 'src/app/interfaces/paytraq';
@@ -21,11 +12,7 @@ import { PaytraqProductTableComponent } from './paytraq-product-table/paytraq-pr
   templateUrl: './paytraq-product.component.html',
   styleUrls: ['./paytraq-product.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    PaytraqProductTableComponent,
-    PaytraqSearchHeaderComponent,
-    MatButtonModule,
-  ],
+  imports: [PaytraqProductTableComponent, PaytraqSearchHeaderComponent, MatButtonModule],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -35,7 +22,6 @@ import { PaytraqProductTableComponent } from './paytraq-product-table/paytraq-pr
   ],
 })
 export class PaytraqProductComponent implements ControlValueAccessor {
-
   private paytraqService = inject(PaytraqProductsService);
 
   private onChanges: (obj: number | null) => void;
@@ -56,9 +42,12 @@ export class PaytraqProductComponent implements ControlValueAccessor {
       const value = this.value();
       this.onChanges(value);
     });
-    effect(() => {
-      this.search.set(this.productName());
-    }, { allowSignalWrites: true });
+    effect(
+      () => {
+        this.search.set(this.productName());
+      },
+      { allowSignalWrites: true },
+    );
   }
 
   writeValue(obj: number) {
@@ -81,12 +70,10 @@ export class PaytraqProductComponent implements ControlValueAccessor {
   onSearchProducts() {
     this.disabled.set(true);
     this.onTouched();
-    this.paytraqService
-      .getProducts({ query: this.search().trim() })
-      .subscribe((products) => {
-        this.products.set(products);
-        this.disabled.set(false);
-      });
+    this.paytraqService.getProducts({ query: this.search().trim() }).subscribe((products) => {
+      this.products.set(products);
+      this.disabled.set(false);
+    });
   }
 
   onProductSelected(product: PaytraqProduct) {

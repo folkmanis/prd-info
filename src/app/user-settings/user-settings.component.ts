@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -26,20 +26,9 @@ const NO_USER: UserUpdate = { name: '', eMail: '' };
   templateUrl: './user-settings.component.html',
   styleUrls: ['./user-settings.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    GoogleInfoComponent,
-    MatDividerModule,
-    MatButtonModule,
-    PasswordInputDirective,
-  ],
+  imports: [FormsModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, GoogleInfoComponent, MatDividerModule, MatButtonModule, PasswordInputDirective],
 })
 export class UserSettingsComponent implements CanComponentDeactivate {
-
   private loginService = inject(LoginService);
   private snackService = inject(MatSnackBar);
 
@@ -116,5 +105,4 @@ export class UserSettingsComponent implements CanComponentDeactivate {
   private snack(msg: string) {
     this.snackService.open(msg, 'OK', { duration: 3000 });
   }
-
 }

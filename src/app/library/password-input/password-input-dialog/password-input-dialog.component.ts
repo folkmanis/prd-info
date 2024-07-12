@@ -6,8 +6,8 @@ import { PasswordInputGroupComponent } from '../password-input-group/password-in
 import { MatButtonModule } from '@angular/material/button';
 
 export interface PasswordDialogData {
-  minLength?: number,
-  validatorFn?: ValidatorFn,
+  minLength?: number;
+  validatorFn?: ValidatorFn;
 }
 
 @Component({
@@ -16,25 +16,16 @@ export interface PasswordDialogData {
   templateUrl: './password-input-dialog.component.html',
   styleUrls: ['./password-input-dialog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatButtonModule,
-    PasswordInputGroupComponent,
-  ]
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatButtonModule, PasswordInputGroupComponent],
 })
 export class PasswordInputDialogComponent implements OnInit {
-
   passwordControl = new FormControl<string>('');
 
   minLength: number | null;
 
   validatorFn: ValidatorFn | null;
 
-  constructor(
-    @Inject(MAT_DIALOG_DATA) private data: PasswordDialogData,
-  ) { }
+  constructor(@Inject(MAT_DIALOG_DATA) private data: PasswordDialogData) {}
 
   ngOnInit(): void {
     this.minLength = this.data.minLength;

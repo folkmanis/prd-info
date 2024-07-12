@@ -2,6 +2,6 @@ import { Directive } from '@angular/core';
 
 @Directive({
   selector: '[appSelect]',
-  standalone: true
+  standalone: true,
 })
-export class SelectDirective { }
+export class SelectDirective {}

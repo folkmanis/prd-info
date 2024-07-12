@@ -13,18 +13,9 @@ import { isFirstDate, isLastDate, isValidDate, lastDate, shiftDate, validDate } 
   templateUrl: './log-calendar.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [
-    FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatDatepickerModule,
-    MatTooltipModule,
-    MatButtonModule,
-    MatIconModule,
-  ],
+  imports: [FormsModule, MatFormFieldModule, MatInputModule, MatDatepickerModule, MatTooltipModule, MatButtonModule, MatIconModule],
 })
 export class LogCalendarComponent {
-
   date = model.required<Date>();
 
   availableDates = input<Date[]>([]);
@@ -45,5 +36,4 @@ export class LogCalendarComponent {
   onToday(): void {
     this.date.set(validDate(new Date(), this.availableDates()));
   }
-
 }

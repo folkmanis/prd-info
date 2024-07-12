@@ -1,18 +1,16 @@
 @if (invoice().paytraq; as paytraq) {
-<div class="button-row">
+  <div class="button-row">
     <a mat-raised-button [href]="paytraqUrl() + paytraq.paytraqId" target="new">
-        {{ paytraq.documentRef }}
+      {{ paytraq.documentRef }}
     </a>
-    <button mat-raised-button color="warn" (click)="onUnlinkPaytraq()" matTooltip="Dzēst savienojumu">
-        ATVIENOT
-    </button>
-</div>
+    <button mat-raised-button color="warn" (click)="onUnlinkPaytraq()" matTooltip="Dzēst savienojumu">ATVIENOT</button>
+  </div>
 } @else {
-<button mat-raised-button [disabled]="canCreatePaytraq()  == false || busy() == true" (click)="onPaytraq()">
+  <button mat-raised-button [disabled]="canCreatePaytraq() === false || busy() === true" (click)="onPaytraq()">
     @if (busy()) {
-    <span> SAGLABĀ... </span>
+      <span> SAGLABĀ... </span>
     } @else {
-    <span> UZ PAYTRAQ </span>
+      <span> UZ PAYTRAQ </span>
     }
-</button>
+  </button>
 }

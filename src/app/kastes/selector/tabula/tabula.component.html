@@ -1,53 +1,51 @@
-<mat-table [dataSource]="addressPackages()" [trackBy]="trackByFn" class="app-table container" #scrollContainer
-  scroll-to-top cdk-scrollable>
-
+<mat-table [dataSource]="addressPackages()" [trackBy]="trackByFn" class="app-table container" #scrollContainer scroll-to-top cdk-scrollable>
   <!-- Sleja ar atzīmi par uzlīmes esamību -->
   <ng-container matColumnDef="label">
     <mat-header-cell *matHeaderCellDef></mat-header-cell>
-    <mat-cell *matCellDef="let addressPackage;"></mat-cell>
+    <mat-cell *matCellDef="let addressPackage"></mat-cell>
   </ng-container>
 
   <!-- Id Column -->
   <ng-container matColumnDef="kods">
     <mat-header-cell *matHeaderCellDef>Nr</mat-header-cell>
-    <mat-cell *matCellDef="let addressPackage;">{{ addressPackage.addressId }}</mat-cell>
+    <mat-cell *matCellDef="let addressPackage">{{ addressPackage.addressId }}</mat-cell>
   </ng-container>
 
   <!-- Adrese sleja -->
   <ng-container matColumnDef="adrese">
     <mat-header-cell *matHeaderCellDef mat>Adrese</mat-header-cell>
-    <mat-cell *matCellDef="let addressPackage;">
-      {{ addressPackage.address | titlecase }} ({{ addressPackage.total }})
-    </mat-cell>
+    <mat-cell *matCellDef="let addressPackage"> {{ addressPackage.address | titlecase }} ({{ addressPackage.total }}) </mat-cell>
   </ng-container>
 
   <!-- Krāsu slejas -->
   @for (color of colors; track $index) {
-  <ng-container [matColumnDef]="'item-'+color">
-    <mat-header-cell *matHeaderCellDef [style.color]="colorCodes()[color]" class="digit-column">
-      <span>
-        {{ color[0] | uppercase }}
-      </span>
-    </mat-header-cell>
-    <mat-cell *matCellDef="let addressPackage;" [style.color]="colorCodes()[color]" class="digit-column">
-      <span>
-        {{ addressPackage[color] | hideZero }}
-      </span>
-    </mat-cell>
-  </ng-container>
+    <ng-container [matColumnDef]="'item-' + color">
+      <mat-header-cell *matHeaderCellDef [style.color]="colorCodes()[color]" class="digit-column">
+        <span>
+          {{ color[0] | uppercase }}
+        </span>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let addressPackage" [style.color]="colorCodes()[color]" class="digit-column">
+        <span>
+          {{ addressPackage[color] | hideZero }}
+        </span>
+      </mat-cell>
+    </ng-container>
   }
 
   <ng-container matColumnDef="blank">
-    <mat-footer-cell *matFooterCellDef>
-    </mat-footer-cell>
+    <mat-footer-cell *matFooterCellDef> </mat-footer-cell>
   </ng-container>
 
-  <mat-header-row *matHeaderRowDef="displayedColumns;"></mat-header-row>
-  <mat-row *matRowDef="let addressPackage; columns: displayedColumns;" (click)="onSelected(addressPackage)"
-    [appRowId]="addressPackage" [class.gatavs]="addressPackage.completed"
-    [class.has-label]="addressPackage.hasLabel"></mat-row>
-  <mat-footer-row *matFooterRowDef="['blank'];"></mat-footer-row>
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row
+    *matRowDef="let addressPackage; columns: displayedColumns"
+    (click)="onSelected(addressPackage)"
+    [appRowId]="addressPackage"
+    [class.gatavs]="addressPackage.completed"
+    [class.has-label]="addressPackage.hasLabel"
+  ></mat-row>
+  <mat-footer-row *matFooterRowDef="['blank']"></mat-footer-row>
 </mat-table>
-
 
 <div class="blank"></div>

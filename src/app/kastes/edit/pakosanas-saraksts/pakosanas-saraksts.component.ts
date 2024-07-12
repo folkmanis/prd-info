@@ -1,22 +1,13 @@
 import { AsyncPipe, TitleCasePipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-  booleanAttribute,
-  input,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, booleanAttribute, input, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 import { kastesTotalsFromVeikali } from '../../common/color-totals-from-veikali';
-import { KastesTotalsComponent, } from '../../common/kastes-totals/kastes-totals.component';
+import { KastesTotalsComponent } from '../../common/kastes-totals/kastes-totals.component';
 import { COLORS, Veikals } from '../../interfaces';
-import { getKastesPreferences, kastesPreferences } from '../../services/kastes-preferences.service';
+import { kastesPreferences } from '../../services/kastes-preferences.service';
 import { VeikalsValidationErrors } from '../services/veikals-validation-errors';
 import { TotalsComponent } from './totals/totals.component';
 import { VeikalsEditComponent } from './veikals-edit/veikals-edit.component';
@@ -27,26 +18,14 @@ import { VeikalsEditComponent } from './veikals-edit/veikals-edit.component';
   templateUrl: './pakosanas-saraksts.component.html',
   styleUrls: ['./pakosanas-saraksts.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    MatTableModule,
-    KastesTotalsComponent,
-    MatIconModule,
-    TotalsComponent,
-    VeikalsEditComponent,
-    MatButtonModule,
-    TitleCasePipe,
-    AsyncPipe,
-  ],
+  imports: [MatTableModule, KastesTotalsComponent, MatIconModule, TotalsComponent, VeikalsEditComponent, MatButtonModule, TitleCasePipe, AsyncPipe],
 })
 export class PakosanasSarakstsComponent {
-
   colorCodes = kastesPreferences('colors');
 
   dataSource$ = new BehaviorSubject<Veikals[]>([]);
 
-  kastesTotals$: Observable<[number, number][]> = this.dataSource$.pipe(
-    map((veikali) => kastesTotalsFromVeikali(veikali))
-  );
+  kastesTotals$: Observable<[number, number][]> = this.dataSource$.pipe(map((veikali) => kastesTotalsFromVeikali(veikali)));
 
   displayedColumnsTop = ['kods', 'adrese', 'pakas'];
   displayedColumnsBottom = ['spacer', 'buttons', 'editor'];

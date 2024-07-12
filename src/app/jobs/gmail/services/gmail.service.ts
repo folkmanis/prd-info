@@ -3,13 +3,10 @@ import { concatMap, from, map, Observable, of, toArray } from 'rxjs';
 import { Attachment, Message, Threads, ThreadsFilterQuery } from '../interfaces';
 import { GmailApiService } from './gmail-api.service';
 
-
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GmailService {
-
   private api = inject(GmailApiService);
 
   getThreads(filter: ThreadsFilterQuery): Observable<Threads> {
@@ -40,16 +37,11 @@ export class GmailService {
     }
   }
 
-  saveAttachments(attachments: { messageId: string, attachment: Attachment; }[]): Observable<string[]> {
-
+  saveAttachments(attachments: { messageId: string; attachment: Attachment }[]): Observable<string[]> {
     return from(attachments).pipe(
-      concatMap(att => this.api.attachmentToUserStorage(att.messageId, att.attachment)),
+      concatMap((att) => this.api.attachmentToUserStorage(att.messageId, att.attachment)),
       map(({ names }) => names[0]),
-      toArray()
+      toArray(),
     );
-
   }
-
-
-
 }

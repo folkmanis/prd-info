@@ -1,17 +1,15 @@
 <ul>
-    @for (product of productSums(); track $index) {
+  @for (product of productSums(); track $index) {
     <li (mouseenter)="onMouseEnter(product.name)" (mouseleave)="onMouseLeave()">
-        <span>
-            {{ product.name }}
+      <span>
+        {{ product.name }}
+      </span>
+      <span class="amount">
+        <span class="count">
+          {{ product.count }}
         </span>
-        <span class="amount">
-            <span class="count">
-                {{ product.count }}
-            </span>
-            <span>
-                &nbsp;{{ product.units }}
-            </span>
-        </span>
+        <span> &nbsp;{{ product.units }} </span>
+      </span>
     </li>
-    }
+  }
 </ul>

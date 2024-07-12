@@ -10,10 +10,9 @@ import { JobsApiService } from '../../services/jobs-api.service';
 import { JobsUserPreferencesService } from '../../services/jobs-user-preferences.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProductsProductionService {
-
   private preferencesService = inject(JobsUserPreferencesService);
   private notifications = inject(NotificationsService);
   private api = inject(JobsApiService);
@@ -37,27 +36,22 @@ export class ProductsProductionService {
   });
 
   dataFlow() {
-    const wsUpdates$ = this.notifications.wsMultiplex('jobs')
-      .pipe(map(() => undefined));
-    return combineReload(
-      toObservable(this.query),
-      wsUpdates$,
-    ).pipe(
+    const wsUpdates$ = this.notifications.wsMultiplex('jobs').pipe(map(() => undefined));
+    return combineReload(toObservable(this.query), wsUpdates$).pipe(
       filter(Boolean),
       debounceTime(300),
       switchMap((query) => this.api.getJobsProduction(query)),
     );
   }
 
-  async setFilter(filter: JobsProductionFilterQuery) {
+  async setFilter(jobsFilter: JobsProductionFilterQuery) {
     const userPreferences = this.preferencesService.userPreferences();
     if (userPreferences) {
       const jobsProductionQuery: SavedJobsProductionQuery = {
         sort: userPreferences.jobsProductionQuery.sort,
-        ...filter,
+        ...jobsFilter,
       };
       return this.preferencesService.patchUserPreferences({ jobsProductionQuery });
-
     }
   }
 
@@ -71,5 +65,4 @@ export class ProductsProductionService {
       return this.preferencesService.patchUserPreferences({ jobsProductionQuery });
     }
   }
-
 }

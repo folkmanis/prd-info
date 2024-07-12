@@ -5,6 +5,7 @@ import { takeUntil } from 'rxjs';
 import { LayoutService } from './layout.service';
 
 @Directive({
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: 'mat-drawer,mat-sidenav',
   providers: [DestroyService],
   standalone: true,
@@ -26,13 +27,14 @@ export class DrawerSmallDirective implements OnInit {
     @Optional() @Host() @Self() drawer: MatDrawer,
     @Optional() @Host() @Self() sidenav: MatSidenav,
     private layoutService: LayoutService,
-    private destroy$: DestroyService
+    private destroy$: DestroyService,
   ) {
     this.drawer = drawer || sidenav;
   }
 
   ngOnInit(): void {
-    this.layoutService.matches('large')
+    this.layoutService
+      .matches('large')
       .pipe(takeUntil(this.destroy$))
       .subscribe((large) => (this.large = large));
   }

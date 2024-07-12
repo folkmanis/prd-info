@@ -1,22 +1,19 @@
 <button mat-button [matMenuTriggerFor]="labelsMenu">
-    <mat-icon>
-        label
-    </mat-icon>
-    &nbsp;{{ activeLabelsText() }}
+  <mat-icon> label </mat-icon>
+  &nbsp;{{ activeLabelsText() }}
 </button>
 
-
 <mat-menu #labelsMenu="matMenu">
-    <ng-template matMenuContent>
-        @for (item of labelItems(); track $index) {
-        <button mat-menu-item (click)="onActivateLabel(item)">
-            @if (isLabelActive(item)) {
-            <mat-icon>check</mat-icon>
-            }
-            <span> {{ item.displayName }} </span>
-        </button>
-        } @empty {
-        <mat-spinner class="loading" [diameter]="150" />
+  <ng-template matMenuContent>
+    @for (item of labelItems(); track $index) {
+      <button mat-menu-item (click)="onActivateLabel(item)">
+        @if (isLabelActive(item)) {
+          <mat-icon>check</mat-icon>
         }
-    </ng-template>
+        <span> {{ item.displayName }} </span>
+      </button>
+    } @empty {
+      <mat-spinner class="loading" [diameter]="150" />
+    }
+  </ng-template>
 </mat-menu>

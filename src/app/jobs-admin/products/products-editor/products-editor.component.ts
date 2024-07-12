@@ -15,7 +15,7 @@ import { Product } from 'src/app/interfaces';
 import { navigateRelative } from 'src/app/library/common';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
-import { CustomersService, ProductsService } from 'src/app/services';
+import { CustomersService } from 'src/app/services';
 import { configuration } from 'src/app/services/config.provider';
 import { ProductionStagesService } from 'src/app/services/production-stages.service';
 import { MaterialsService } from '../../materials/services/materials.service';
@@ -52,7 +52,6 @@ import { ProductPricesComponent } from './product-prices/product-prices.componen
   ],
 })
 export class ProductsEditorComponent implements CanComponentDeactivate {
-
   private formService = inject(ProductsFormService);
 
   private productsList = inject(ProductsListComponent, { optional: true });
@@ -76,11 +75,13 @@ export class ProductsEditorComponent implements CanComponentDeactivate {
     return this.formService.changes;
   }
 
-  constructor(
-  ) {
-    effect(() => {
-      this.formService.setInitial(this.product());
-    }, { allowSignalWrites: true });
+  constructor() {
+    effect(
+      () => {
+        this.formService.setInitial(this.product());
+      },
+      { allowSignalWrites: true },
+    );
   }
 
   async onSave() {
@@ -89,7 +90,7 @@ export class ProductsEditorComponent implements CanComponentDeactivate {
       await this.productsList?.reload();
       await this.navigate(['..', product._id]);
     } catch (error) {
-
+      // Ignore error
     }
   }
 

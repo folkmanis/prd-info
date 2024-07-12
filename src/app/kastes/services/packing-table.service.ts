@@ -17,13 +17,11 @@ export class PackingTableService {
   }
 
   async getAddressPackages(jobId: number): Promise<AddressPackage[]> {
-
     if (!jobId) {
       return [];
     }
 
     return firstValueFrom(this.api.getAddressPackages(jobId));
-
   }
 
   async getBoxSizeQuantities(jobId: number): Promise<number[]> {
@@ -42,19 +40,12 @@ export class PackingTableService {
   }
 
   replacePackage(packages: AddressPackage[], update: AddressPackage): AddressPackage[] {
-
-    const idx = packages
-      .findIndex((pack) =>
-        pack.documentId === update.documentId
-        && pack.boxSequence === update.boxSequence
-      );
+    const idx = packages.findIndex((pack) => pack.documentId === update.documentId && pack.boxSequence === update.boxSequence);
 
     if (idx > -1) {
       return [...packages.slice(0, idx), update, ...packages.slice(idx + 1)];
     } else {
       return [update, ...packages];
     }
-
   }
-
 }

@@ -4,17 +4,17 @@ import { InvoiceEditorComponent } from './invoice-editor/invoice-editor.componen
 import { InvoicesListComponent } from './invoices-list/invoices-list.component';
 
 export default [
-    {
-        path: ':invoiceId',
-        component: InvoiceEditorComponent,
-        resolve: {
-            invoice: resolveInvoice,
-        },
-        runGuardsAndResolvers: 'always',
+  {
+    path: ':invoiceId',
+    component: InvoiceEditorComponent,
+    resolve: {
+      invoice: resolveInvoice,
     },
-    {
-        path: '',
-        component: InvoicesListComponent,
-        pathMatch: 'full',
-    },
+    runGuardsAndResolvers: 'always',
+  },
+  {
+    path: '',
+    component: InvoicesListComponent,
+    pathMatch: 'full',
+  },
 ] as Route[];

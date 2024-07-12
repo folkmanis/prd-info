@@ -26,16 +26,9 @@ function maxLevel(levels: LogLevel[]) {
   styleUrls: ['./logfile.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [
-    LogfileTableComponent,
-    MatButtonModule,
-    MatIconModule,
-    LogLevelComponent,
-    LogCalendarComponent,
-  ],
+  imports: [LogfileTableComponent, MatButtonModule, MatIconModule, LogLevelComponent, LogCalendarComponent],
 })
 export class LogfileComponent {
-
   private api = inject(LogfileApiService);
   private cacheService = inject(HttpCacheService);
 
@@ -65,32 +58,43 @@ export class LogfileComponent {
   availableDates = signal<Date[]>([]);
 
   constructor() {
-    effect(() => {
-      const level = maxLevel(this.logLevels());
-      this.logLevel.set(level);
-    }, { allowSignalWrites: true });
+    effect(
+      () => {
+        const level = maxLevel(this.logLevels());
+        this.logLevel.set(level);
+      },
+      { allowSignalWrites: true },
+    );
 
-    effect((onCleanup) => {
-      const subscription = this.getLog(this.logFilter());
-      onCleanup(() => subscription?.unsubscribe());
-    }, { allowSignalWrites: true });
+    effect(
+      (onCleanup) => {
+        const subscription = this.getLog(this.logFilter());
+        onCleanup(() => subscription?.unsubscribe());
+      },
+      { allowSignalWrites: true },
+    );
 
-    effect((onCleanup) => {
-      const logLevel = this.logLevel();
-      if (typeof logLevel !== 'number') {
-        return;
-      }
-      const subscription = this.api.getDatesGroups(logLevel)
-        .subscribe(dates => this.availableDates.set(dates));
+    effect(
+      (onCleanup) => {
+        const logLevel = this.logLevel();
+        if (typeof logLevel !== 'number') {
+          return;
+        }
+        const subscription = this.api.getDatesGroups(logLevel).subscribe((dates) => this.availableDates.set(dates));
 
-      onCleanup(() => subscription?.unsubscribe());
-    }, { allowSignalWrites: true });
+        onCleanup(() => subscription?.unsubscribe());
+      },
+      { allowSignalWrites: true },
+    );
 
-    effect(() => {
-      const availableDates = this.availableDates();
-      const logDate = untracked(this.logDate);
-      this.logDate.set(validDate(logDate, availableDates));
-    }, { allowSignalWrites: true });
+    effect(
+      () => {
+        const availableDates = this.availableDates();
+        const logDate = untracked(this.logDate);
+        this.logDate.set(validDate(logDate, availableDates));
+      },
+      { allowSignalWrites: true },
+    );
   }
 
   onReload() {
@@ -98,14 +102,11 @@ export class LogfileComponent {
   }
 
   private getLog(logFilter: LogQueryFilter | null): Subscription | undefined {
-
     if (logFilter == null) {
       return;
     }
 
     this.cacheService.clear();
-    return this.api.getLog(logFilter)
-      .subscribe(log => this.log.set(log));
-
+    return this.api.getLog(logFilter).subscribe((log) => this.log.set(log));
   }
 }

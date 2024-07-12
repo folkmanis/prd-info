@@ -1,12 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  Output,
-  ViewChild,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, Output, ViewChild, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -24,16 +17,7 @@ import { Attachment, Message } from '../interfaces';
   styleUrls: ['./message.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [
-    AttachmentsComponent,
-    MatExpansionModule,
-    MatButtonModule,
-    MatIconModule,
-    MatMenuModule,
-    MatCardModule,
-    MatProgressBarModule,
-    AsyncPipe,
-  ],
+  imports: [AttachmentsComponent, MatExpansionModule, MatButtonModule, MatIconModule, MatMenuModule, MatCardModule, MatProgressBarModule, AsyncPipe],
 })
 export class MessageComponent {
   @ViewChild(AttachmentsComponent) attachmentsList: AttachmentsComponent;
@@ -58,9 +42,7 @@ export class MessageComponent {
   constructor(private sanitizer: DomSanitizer) {}
 
   replaceBr(str: string) {
-    return this.sanitizer.bypassSecurityTrustHtml(
-      str?.replace(/\r\n/g, '<br />')
-    );
+    return this.sanitizer.bypassSecurityTrustHtml(str?.replace(/\r\n/g, '<br />'));
   }
 
   onCreateJob(attachments: Attachment[]) {

@@ -6,40 +6,27 @@ import { SimpleListContainerComponent } from 'src/app/library/simple-form';
 import { MaterialsFilter, MaterialsService, MaterialWithDescription } from '../services/materials.service';
 import { MaterialsFilterComponent } from './materials-filter/materials-filter.component';
 
-
 @Component({
   selector: 'app-materials-list',
   standalone: true,
   templateUrl: './materials-list.component.html',
   styleUrls: ['./materials-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    MatTableModule,
-    MaterialsFilterComponent,
-    SimpleListContainerComponent,
-    MatCardModule,
-    RouterLink,
-    RouterLinkActive,
-  ]
+  imports: [MatTableModule, MaterialsFilterComponent, SimpleListContainerComponent, MatCardModule, RouterLink, RouterLinkActive],
 })
 export class MaterialsListComponent {
-
   #materials = inject(MaterialsService).materialsWithDescriptions;
 
   filter = model<MaterialsFilter>({});
 
   materialsFiltered = computed(() => {
     const { name, categories } = this.filter() ?? {};
-    return this.#materials()
-      .filter(material =>
-        (!name || material.name.toUpperCase().includes(name.toUpperCase()))
-        && (!categories || categories.length === 0 || categories.includes(material.category))
-      );
+    return this.#materials().filter(
+      (material) => (!name || material.name.toUpperCase().includes(name.toUpperCase())) && (!categories || categories.length === 0 || categories.includes(material.category)),
+    );
   });
 
   trackByFn: TrackByFunction<MaterialWithDescription> = (_, material) => material._id;
 
-
-  displayedColumns = ['name', 'category',];
-
+  displayedColumns = ['name', 'category'];
 }

@@ -15,7 +15,6 @@ import { ProductCategory } from 'src/app/interfaces';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoryDialogComponent {
-
   private data = inject<ProductCategory>(MAT_DIALOG_DATA, { optional: true });
   private dialogRef = inject(MatDialogRef);
 
@@ -27,5 +26,4 @@ export class CategoryDialogComponent {
   onSubmit() {
     this.dialogRef.close(this.productForm.getRawValue());
   }
-
 }

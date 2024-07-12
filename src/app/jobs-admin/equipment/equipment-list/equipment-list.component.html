@@ -1,18 +1,13 @@
 <app-simple-list-container plusButton filterInput hideFilterWhenActive [(filter)]="name">
+  <mat-table [dataSource]="equipment()" class="app-table">
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef> Nosaukums </mat-header-cell>
+      <mat-cell *matCellDef="let equipment">
+        {{ equipment.name }}
+      </mat-cell>
+    </ng-container>
 
-    <mat-table [dataSource]="equipment()" class="app-table">
-
-        <ng-container matColumnDef="name">
-            <mat-header-cell *matHeaderCellDef> Nosaukums </mat-header-cell>
-            <mat-cell *matCellDef="let equipment;">
-                {{ equipment.name }}
-            </mat-cell>
-        </ng-container>
-
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let equipment; columns: displayedColumns" [routerLink]="[equipment._id]"
-            routerLinkActive="selected"></mat-row>
-
-    </mat-table>
-
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let equipment; columns: displayedColumns" [routerLink]="[equipment._id]" routerLinkActive="selected"></mat-row>
+  </mat-table>
 </app-simple-list-container>

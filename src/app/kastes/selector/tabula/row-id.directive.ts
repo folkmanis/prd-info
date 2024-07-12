@@ -8,10 +8,9 @@ import { AddressPackage } from '../../interfaces/address-package';
   host: {
     '[class.activated]': 'activated()',
     '(animationend)': 'onAnimationEnd()',
-  }
+  },
 })
 export class RowIdDirective {
-
   addressPackage = input.required<AddressPackage>({ alias: 'appRowId' });
 
   private element = inject(ElementRef);
@@ -26,9 +25,8 @@ export class RowIdDirective {
   scrollIn() {
     this.scroller.scrollTo({
       top: this.element.nativeElement.offsetTop - (48 * 2 + 48 / 2),
-      behavior: 'smooth'
+      behavior: 'smooth',
     });
     this.activated.set(true);
   }
-
 }

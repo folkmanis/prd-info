@@ -1,4 +1,4 @@
 export interface LogLevel {
-    key: number;
-    value: string;
+  key: number;
+  value: string;
 }

@@ -1,8 +1,4 @@
-import {
-  CdkFixedSizeVirtualScroll,
-  CdkVirtualForOf,
-  CdkVirtualScrollViewport,
-} from '@angular/cdk/scrolling';
+import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,7 +8,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EMPTY, Subject, from, map } from 'rxjs';
-import { CopyClipboardDirective } from "src/app/library/directives/copy-clipboard.directive";
+import { CopyClipboardDirective } from 'src/app/library/directives/copy-clipboard.directive';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { ProductsService } from 'src/app/services/products.service';
 import { ScrollTopDirective } from '../../../library/scroll-to-top/scroll-top.directive';
@@ -55,7 +51,6 @@ import { navigateRelative } from 'src/app/library/common';
   ],
 })
 export class JobListComponent {
-
   private jobService = inject(JobService);
   private router = inject(Router);
   private uploadRefService = inject(UploadRefService);
@@ -66,9 +61,7 @@ export class JobListComponent {
 
   isLarge = false;
 
-  filter$ = inject(ActivatedRoute).queryParams.pipe(
-    map((query) => this.jobService.normalizeFilter(query))
-  );
+  filter$ = inject(ActivatedRoute).queryParams.pipe(map((query) => this.jobService.normalizeFilter(query)));
 
   reload$ = new Subject<void>();
 
@@ -87,13 +80,12 @@ export class JobListComponent {
   }
 
   async onSetJobStatus(jobId: number, status: number) {
-    await this.jobService
-      .updateJob(jobId, {
-        jobStatus: {
-          generalStatus: status,
-          timestamp: new Date(),
-        },
-      });
+    await this.jobService.updateJob(jobId, {
+      jobStatus: {
+        generalStatus: status,
+        timestamp: new Date(),
+      },
+    });
     this.reload$.next();
   }
 
@@ -102,10 +94,7 @@ export class JobListComponent {
   }
 
   onFileDrop(fileList: FileList) {
-
-    const name = this.reproJobService.jobNameFromFiles(
-      Array.from(fileList).map((file) => file.name)
-    );
+    const name = this.reproJobService.jobNameFromFiles(Array.from(fileList).map((file) => file.name));
     const sortedFiles = Array.from(fileList).sort((a, b) => a.size - b.size);
 
     this.uploadRefService.setUserFile(from(sortedFiles), EMPTY);

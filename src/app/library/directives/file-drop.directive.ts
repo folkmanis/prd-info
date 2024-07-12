@@ -10,10 +10,9 @@ import { Directive, output, signal } from '@angular/core';
     '(dragenter)': 'onDragEnter($event)',
     '(dragleave)': 'onDragLeave($event)',
     '(drop)': 'onDrop($event)',
-  }
+  },
 })
 export class FileDropDirective {
-
   dragOver = signal(false);
 
   filesEmitter = output<FileList>();
@@ -43,5 +42,4 @@ export class FileDropDirective {
       this.filesEmitter.emit(files);
     }
   }
-
 }

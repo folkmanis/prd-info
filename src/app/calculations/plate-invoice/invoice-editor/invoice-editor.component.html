@@ -1,96 +1,74 @@
 <mat-menu #menu="matMenu">
-    <button mat-menu-item (click)="onCsvInvoice()">
-        <mat-icon>file_download</mat-icon>
-        <span> CSV PAVADZĪMEI </span>
-    </button>
-    <button mat-menu-item (click)="onCsvReport()">
-        <mat-icon>file_download</mat-icon>
-        <span> CSV SARAKSTS </span>
-    </button>
-    <button mat-menu-item (click)="onDelete()">
-        <mat-icon>delete_forever</mat-icon>
-        <span> DZĒST </span>
-    </button>
+  <button mat-menu-item (click)="onCsvInvoice()">
+    <mat-icon>file_download</mat-icon>
+    <span> CSV PAVADZĪMEI </span>
+  </button>
+  <button mat-menu-item (click)="onCsvReport()">
+    <mat-icon>file_download</mat-icon>
+    <span> CSV SARAKSTS </span>
+  </button>
+  <button mat-menu-item (click)="onDelete()">
+    <mat-icon>delete_forever</mat-icon>
+    <span> DZĒST </span>
+  </button>
 </mat-menu>
 
 <mat-toolbar>
-    <span>
-        <a mat-icon-button routerLink="..">
-            <mat-icon>
-                arrow_back
-            </mat-icon>
-        </a>
-    </span>
-
-    <span class="distancer"></span>
-
-    <span>
-        {{invoice().invoiceId}} {{invoice().customerInfo.CustomerName}}
-    </span>
-
-    <span class="spacer"></span>
-
-    <a mat-icon-button href="/data/invoices/report_{{invoice().invoiceId}}.pdf" target="new" matTooltip="Atvērt PDF">
-        <mat-icon>
-            picture_as_pdf
-        </mat-icon>
+  <span>
+    <a mat-icon-button routerLink="..">
+      <mat-icon> arrow_back </mat-icon>
     </a>
-    <button mat-icon-button [matMenuTriggerFor]="menu">
-        <mat-icon>
-            more_vert
-        </mat-icon>
-    </button>
+  </span>
 
+  <span class="distancer"></span>
+
+  <span> {{ invoice().invoiceId }} {{ invoice().customerInfo.CustomerName }} </span>
+
+  <span class="spacer"></span>
+
+  <a mat-icon-button href="/data/invoices/report_{{ invoice().invoiceId }}.pdf" target="new" matTooltip="Atvērt PDF">
+    <mat-icon> picture_as_pdf </mat-icon>
+  </a>
+  <button mat-icon-button [matMenuTriggerFor]="menu">
+    <mat-icon> more_vert </mat-icon>
+  </button>
 </mat-toolbar>
 
-
 <div class="container" appViewSize #viewSize="viewSize">
+  <h4>{{ invoice().createdDate | date }}</h4>
 
-    <h4> {{invoice().createdDate | date}} </h4>
-
-    <!-- Paytraq -->
-    @if (pyatraqEnabled()) {
+  <!-- Paytraq -->
+  @if (pyatraqEnabled()) {
     <mat-card>
-        <mat-card-header>
-            <mat-card-title>
-                Paytraq pavadzīme
-            </mat-card-title>
-            @if (invoice().customerInfo.financial?.clientName) {
-            <mat-card-subtitle>
-                ({{invoice().customerInfo.financial.clientName}})
-            </mat-card-subtitle>
-            }
-        </mat-card-header>
-        <mat-card-content>
-            <app-invoice-paytraq [invoice]="invoice()" [busy]="busy()" />
-        </mat-card-content>
+      <mat-card-header>
+        <mat-card-title> Paytraq pavadzīme </mat-card-title>
+        @if (invoice().customerInfo.financial?.clientName) {
+          <mat-card-subtitle> ({{ invoice().customerInfo.financial.clientName }}) </mat-card-subtitle>
+        }
+      </mat-card-header>
+      <mat-card-content>
+        <app-invoice-paytraq [invoice]="invoice()" [busy]="busy()" />
+      </mat-card-content>
     </mat-card>
-    }
+  }
 
-    <!-- Preces -->
-    <mat-card>
-        <mat-card-header>
-            <mat-card-title>
-                Preces
-            </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            <app-invoice-products [invoice]="invoice()" [pyatraqEnabled]="pyatraqEnabled()"
-                [isJobsAdmin]="isJobsAdmin()" />
-        </mat-card-content>
-    </mat-card>
+  <!-- Preces -->
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title> Preces </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <app-invoice-products [invoice]="invoice()" [pyatraqEnabled]="pyatraqEnabled()" [isJobsAdmin]="isJobsAdmin()" />
+    </mat-card-content>
+  </mat-card>
 
-    <!-- Darbi -->
-    <mat-card>
-        <mat-card-header>
-            <mat-card-title>
-                Darbi
-            </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            <app-job-selection-table [jobs]="invoice().jobs" disabled [large]="viewSize.isLarge()"
-                [total]="invoice().total" />
-        </mat-card-content>
-    </mat-card>
-
+  <!-- Darbi -->
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title> Darbi </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <app-job-selection-table [jobs]="invoice().jobs" disabled [large]="viewSize.isLarge()" [total]="invoice().total" />
+    </mat-card-content>
+  </mat-card>
 </div>

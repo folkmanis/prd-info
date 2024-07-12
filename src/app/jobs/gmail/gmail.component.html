@@ -1,63 +1,48 @@
 <div class="paginator-container">
+  <div class="left-container">
+    <button mat-icon-button color="primary" (click)="paginator.firstPage()">
+      <mat-icon> refresh </mat-icon>
+    </button>
 
-    <div class="left-container">
-        <button mat-icon-button color="primary" (click)="paginator.firstPage()">
-            <mat-icon>
-                refresh
-            </mat-icon>
-        </button>
+    <app-threads-filter [labelIds]="threadsFilter()?.labelIds" (labelIdsChange)="scroll.scrollToTop(); onSetFilter($event)" />
+  </div>
 
-        <app-threads-filter [labelIds]="threadsFilter()?.labelIds"
-            (labelIdsChange)="scroll.scrollToTop(); onSetFilter($event)" />
-    </div>
-
-    <div class="right-container">
-        <app-gmail-paginator #paginator [activePage]="pageIdx()"
-            (indexChanges)="scroll.scrollToTop(); onSetPageIdx($event)" [loadedCount]="loadedCount()"
-            [pageSize]="threadsFilter()?.maxResults" [lastPage]="lastPage()" />
-    </div>
-
+  <div class="right-container">
+    <app-gmail-paginator
+      #paginator
+      [activePage]="pageIdx()"
+      (indexChanges)="scroll.scrollToTop(); onSetPageIdx($event)"
+      [loadedCount]="loadedCount()"
+      [pageSize]="threadsFilter()?.maxResults"
+      [lastPage]="lastPage()"
+    />
+  </div>
 </div>
 
 <div class="progress-container">
-
-    @if (loading()) {
+  @if (loading()) {
     <mat-progress-bar mode="indeterminate" />
-    }
-
+  }
 </div>
 
+<mat-table [dataSource]="datasource()" class="app-table" scroll-to-top #scroll="scrollToTop" (contentChanged)="loading.set(false)">
+  <ng-container matColumnDef="snippet">
+    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+    <mat-cell *matCellDef="let thread">
+      <div>
+        <div [innerHTML]="sanitize(thread.snippet)" class="snippet-text"></div>
 
-<mat-table [dataSource]="datasource()" class="app-table" scroll-to-top #scroll="scrollToTop"
-    (contentChanged)="loading.set(false)">
-
-    <ng-container matColumnDef="snippet">
-        <mat-header-cell *matHeaderCellDef></mat-header-cell>
-        <mat-cell *matCellDef="let thread">
-
-            <div>
-
-                <div [innerHTML]="sanitize(thread.snippet)" class="snippet-text">
-                </div>
-
-                <div class="progress-container">
-                    @if (thread === loadingThread) {
-                    <mat-progress-bar mode="indeterminate" />
-                    }
-                </div>
-
-
-            </div>
-
-        </mat-cell>
-    </ng-container>
-
-    <mat-row *matRowDef="let thread; columns: ['snippet']" [routerLink]="thread.id" (click)="loadingThread=thread;">
-    </mat-row>
-    <div *matNoDataRow class="mat-row">
-        <div class="mat-cell">
-            Atbilstošu e-pastu nav
+        <div class="progress-container">
+          @if (thread === loadingThread) {
+            <mat-progress-bar mode="indeterminate" />
+          }
         </div>
-    </div>
+      </div>
+    </mat-cell>
+  </ng-container>
 
+  <mat-row *matRowDef="let thread; columns: ['snippet']" [routerLink]="thread.id" (click)="loadingThread = thread"> </mat-row>
+  <div *matNoDataRow class="mat-row">
+    <div class="mat-cell">Atbilstošu e-pastu nav</div>
+  </div>
 </mat-table>

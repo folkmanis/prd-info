@@ -1,11 +1,6 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { AsyncPipe, CurrencyPipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  Output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
@@ -23,17 +18,7 @@ import { COLUMNS, COLUMNS_SMALL, JobData, JobWithUpdate } from '../interfaces';
   templateUrl: './job-prices-table.component.html',
   styleUrls: ['./job-prices-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    MatTableModule,
-    ScrollTopDirective,
-    MatCheckboxModule,
-    MatButtonModule,
-    MatIconModule,
-    RouterLink,
-    CurrencyPipe,
-    AsyncPipe,
-    ViewSizeDirective,
-  ],
+  imports: [MatTableModule, ScrollTopDirective, MatCheckboxModule, MatButtonModule, MatIconModule, RouterLink, CurrencyPipe, AsyncPipe, ViewSizeDirective],
 })
 export class JobPricesTableComponent {
   private _jobs: JobData[] = [];
@@ -50,7 +35,7 @@ export class JobPricesTableComponent {
 
   @Output() jobChanges = this.selection.changed.pipe(
     map((changes) => changes.source.selected),
-    map((selected) => this.jobUpdateFields(selected))
+    map((selected) => this.jobUpdateFields(selected)),
   );
 
   trackByFn = (_: number, item: JobData) => `${item.jobId}-${item.productsIdx}`;
@@ -58,12 +43,7 @@ export class JobPricesTableComponent {
   col = COLUMNS;
   colSmall = COLUMNS_SMALL;
 
-  private jobUpdateFields(
-    jobs: Pick<
-      JobWithUpdate,
-      'jobId' | 'productsIdx' | 'products.priceUpdate'
-    >[]
-  ): Partial<Job>[] {
+  private jobUpdateFields(jobs: Pick<JobWithUpdate, 'jobId' | 'productsIdx' | 'products.priceUpdate'>[]): Partial<Job>[] {
     return jobs.map((job) => ({
       jobId: job.jobId,
       [`products.${job.productsIdx}.price`]: job['products.priceUpdate'],

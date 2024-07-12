@@ -8,7 +8,7 @@ export interface DragData {
 
 @Directive({
   selector: '[appDragDrop]',
-  standalone: true
+  standalone: true,
 })
 export class DragDropDirective {
   @Output() private dropEmitter = new EventEmitter<DragData>();

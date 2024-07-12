@@ -1,32 +1,27 @@
 <app-simple-list-container [(filter)]="filter" plusButton filterInput>
+  <table mat-table [dataSource]="usersFiltered()">
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let user; columns: displayedColumns" [routerLink]="user.username" [class.disabled]="user.userDisabled" routerLinkActive="selected"></tr>
 
-    <table mat-table [dataSource]="usersFiltered()">
+    <ng-container matColumnDef="username">
+      <th mat-header-cell *matHeaderCellDef>Lietotājvārds</th>
+      <td mat-cell *matCellDef="let user">
+        {{ user.username }}
+      </td>
+    </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let user; columns: displayedColumns;" [routerLink]="user.username"
-            [class.disabled]="user.userDisabled" routerLinkActive="selected"></tr>
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Vārds</th>
+      <td mat-cell *matCellDef="let user">
+        {{ user.name }}
+      </td>
+    </ng-container>
 
-        <ng-container matColumnDef="username">
-            <th mat-header-cell *matHeaderCellDef> Lietotājvārds </th>
-            <td mat-cell *matCellDef="let user;">
-                {{user.username}}
-            </td>
-        </ng-container>
-
-        <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef> Vārds </th>
-            <td mat-cell *matCellDef="let user;">
-                {{user.name}}
-            </td>
-        </ng-container>
-
-        <ng-container matColumnDef="last_login">
-            <th mat-header-cell *matHeaderCellDef> Pēdējoreiz redzēts </th>
-            <td mat-cell *matCellDef="let user;">
-                {{user.last_login | date}}
-            </td>
-        </ng-container>
-
-    </table>
-
+    <ng-container matColumnDef="last_login">
+      <th mat-header-cell *matHeaderCellDef>Pēdējoreiz redzēts</th>
+      <td mat-cell *matCellDef="let user">
+        {{ user.last_login | date }}
+      </td>
+    </ng-container>
+  </table>
 </app-simple-list-container>

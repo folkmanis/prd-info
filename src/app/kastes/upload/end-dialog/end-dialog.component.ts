@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, Inject, inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
 
 @Component({
   templateUrl: './end-dialog.component.html',
@@ -9,7 +9,5 @@ import { MatButtonModule } from '@angular/material/button';
   imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButtonModule, MatDialogClose],
 })
 export class EndDialogComponent {
-
   count: number = inject(MAT_DIALOG_DATA);
-
 }

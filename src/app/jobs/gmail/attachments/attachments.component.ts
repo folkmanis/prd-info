@@ -1,15 +1,8 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
-import { MatSelectionList, MatListModule } from '@angular/material/list';
+import { ChangeDetectionStrategy, Component, Input, ViewChild } from '@angular/core';
+import { MatListModule, MatSelectionList } from '@angular/material/list';
 import { isEqual } from 'lodash-es';
-import { Attachment } from '../interfaces';
-import { NgFor } from '@angular/common';
 import { FilesizePipe } from 'src/app/library/common';
+import { Attachment } from '../interfaces';
 
 @Component({
   selector: 'app-attachments',

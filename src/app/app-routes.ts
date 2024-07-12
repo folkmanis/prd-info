@@ -9,8 +9,7 @@ import { isModuleAllowed } from './login/module.guard';
 export const APP_ROUTES: Route[] = [
   {
     path: 'login',
-    loadComponent: () =>
-      import('./login/login.component').then((c) => c.LoginComponent),
+    loadComponent: () => import('./login/login.component').then((c) => c.LoginComponent),
   },
   {
     path: '',
@@ -19,10 +18,7 @@ export const APP_ROUTES: Route[] = [
     children: [
       {
         path: 'user-settings',
-        loadComponent: () =>
-          import('./user-settings/user-settings.component').then(
-            (c) => c.UserSettingsComponent
-          ),
+        loadComponent: () => import('./user-settings/user-settings.component').then((c) => c.UserSettingsComponent),
         canDeactivate: [canComponentDeactivate],
       },
       {
@@ -33,18 +29,12 @@ export const APP_ROUTES: Route[] = [
       {
         path: 'xmf-search',
         canMatch: [isModuleAllowed],
-        loadComponent: () =>
-          import('./xmf-search/xmf-search.component').then(
-            (c) => c.XmfSearchComponent
-          ),
+        loadComponent: () => import('./xmf-search/xmf-search.component').then((c) => c.XmfSearchComponent),
       },
       {
         path: 'xmf-upload',
         canMatch: [isModuleAllowed],
-        loadComponent: () =>
-          import('./xmf-upload/xmf-upload.component').then(
-            (c) => c.XmfUploadComponent
-          ),
+        loadComponent: () => import('./xmf-upload/xmf-upload.component').then((c) => c.XmfUploadComponent),
       },
       {
         path: 'kastes',

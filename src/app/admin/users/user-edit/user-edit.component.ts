@@ -1,23 +1,7 @@
 import { AsyncPipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  input,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import {
-  AbstractControl,
-  AsyncValidatorFn,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validators,
-} from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOption, MatSelect } from '@angular/material/select';
@@ -65,7 +49,6 @@ import { MatCheckbox } from '@angular/material/checkbox';
   ],
 })
 export class UserEditComponent implements CanComponentDeactivate {
-
   private navigate = navigateRelative();
 
   private usersList = inject(UsersListComponent);
@@ -79,11 +62,7 @@ export class UserEditComponent implements CanComponentDeactivate {
   currentSessionId$ = inject(LoginService).getSessionId();
 
   form = new FormGroup({
-    username: new FormControl(
-      '',
-      [Validators.required, usernamePatternValidator],
-      [this.existingUsernameValidator()]
-    ),
+    username: new FormControl('', [Validators.required, usernamePatternValidator], [this.existingUsernameValidator()]),
     name: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required]),
     last_login: new FormControl<Date>({ value: new Date(), disabled: true }),
@@ -126,18 +105,21 @@ export class UserEditComponent implements CanComponentDeactivate {
     private snackBar: MatSnackBar,
     private usersService: UsersService,
     private confirmationDialog: ConfirmationDialogService,
-    private transformer: AppClassTransformerService
+    private transformer: AppClassTransformerService,
   ) {
-    effect(() => {
-      const initialValue = this.initialValue();
-      this.sessions.set(initialValue.sessions);
-      this.form.reset(initialValue);
-      if (initialValue.username) {
-        this.form.controls.password.disable();
-      }
-    }, {
-      allowSignalWrites: true,
-    });
+    effect(
+      () => {
+        const initialValue = this.initialValue();
+        this.sessions.set(initialValue.sessions);
+        this.form.reset(initialValue);
+        if (initialValue.username) {
+          this.form.controls.password.disable();
+        }
+      },
+      {
+        allowSignalWrites: true,
+      },
+    );
   }
 
   canDeactivate(): boolean {
@@ -165,7 +147,7 @@ export class UserEditComponent implements CanComponentDeactivate {
       await this.usersService.updatePassword(username, password);
       this.snackBar.open(`Lietotāja ${username} parole nomainita!`, 'OK', { duration: 3000 });
     } catch (err) {
-      this.snackBar.open(`Paroli nomainīt neizdevās`, 'OK', { duration: 5000, });
+      this.snackBar.open(`Paroli nomainīt neizdevās`, 'OK', { duration: 5000 });
     }
   }
 
@@ -184,12 +166,10 @@ export class UserEditComponent implements CanComponentDeactivate {
     } catch (error) {
       this.snackBar.open(`Neizdevās izdzēst`, 'OK', { duration: 5000 });
     }
-
   }
 
   async onDeleteSessions(sessionIds: string[], username: string) {
-
-    if (await this.confirmationDialog.confirmDelete() !== true) {
+    if ((await this.confirmationDialog.confirmDelete()) !== true) {
       return;
     }
 
@@ -223,16 +203,10 @@ export class UserEditComponent implements CanComponentDeactivate {
       if (control.value === this.initialValue()?.username) {
         return of(null);
       } else {
-        return this.usersService
-          .validateUsername(control.value)
-          .pipe(
-            map((valid) => (valid ? null : { existing: 'Esošs lietotājvārds' }))
-          );
+        return this.usersService.validateUsername(control.value).pipe(map((valid) => (valid ? null : { existing: 'Esošs lietotājvārds' })));
       }
     };
   }
-
-
 }
 
 function usernamePatternValidator(control: AbstractControl): ValidationErrors {

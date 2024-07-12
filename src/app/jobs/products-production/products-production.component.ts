@@ -16,14 +16,9 @@ import { Totals } from './services/totals';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DestroyService],
   standalone: true,
-  imports: [
-    FilterComponent,
-    ProductsTableComponent,
-    ScrollTopDirective,
-  ],
+  imports: [FilterComponent, ProductsTableComponent, ScrollTopDirective],
 })
 export class ProductsProductionComponent {
-
   private productsService = inject(ProductsProductionService);
   private loginService = inject(LoginService);
 
@@ -39,23 +34,19 @@ export class ProductsProductionComponent {
 
   totals = computed(() => {
     const selection = this.selection();
-    return selection.reduce(
-      (acc, curr) => acc.add(curr),
-      new Totals(),
-    );
+    return selection.reduce((acc, curr) => acc.add(curr), new Totals());
   });
 
-
   constructor() {
+    this.loginService.isModuleAvailable('jobs-admin').then((value) => this.isAdmin.set(value));
 
-    this.loginService.isModuleAvailable('jobs-admin')
-      .then(value => this.isAdmin.set(value));
-
-    effect(() => {
-      const products = this.data();
-      this.selection.set(products);
-    }, { allowSignalWrites: true });
-
+    effect(
+      () => {
+        const products = this.data();
+        this.selection.set(products);
+      },
+      { allowSignalWrites: true },
+    );
   }
 
   async onSort(sort: string) {
@@ -65,5 +56,4 @@ export class ProductsProductionComponent {
   async onFilter(filter: JobsProductionFilterQuery) {
     this.productsService.setFilter(filter);
   }
-
 }

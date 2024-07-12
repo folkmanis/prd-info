@@ -14,24 +14,14 @@ export interface UserFile {
   size: number;
 }
 
-
-class FileMissingError extends Error {
-  constructor(fileName: string) {
-    super(fileName);
-    this.name = 'File Missing';
-  }
-}
-
-
 @Directive({
   selector: '[appMessageJob]',
   standalone: true,
   host: {
-    '(click)': 'onClick()'
-  }
+    '(click)': 'onClick()',
+  },
 })
 export class MessageJobDirective {
-
   private router = inject(Router);
   private messaging = inject(MessagingService);
   private overlayRef = inject(OverlayRef, { optional: true });
@@ -44,12 +34,10 @@ export class MessageJobDirective {
   ftpUser = input<MessageFtpUser | null>(null, { alias: 'appMessageJobFtpUser' });
 
   async onClick() {
-
     const message = this.message();
     const ftpUser = this.ftpUser();
 
     if (message?.data instanceof JobData && message.data.operation === 'add' && ftpUser instanceof MessageFtpUser) {
-
       this.overlayRef?.detach();
 
       const path = message.data.path;
@@ -66,25 +54,19 @@ export class MessageJobDirective {
         });
         await this.router.navigate(['/', 'jobs', 'repro', 'new']);
       } else {
+        // eslint-disable-next-line no-console
         console.error(`File missing: ${name}`);
       }
-
     }
-
   }
 
   private async fileExists(path: string[]): Promise<boolean> {
     const fileName = last(path);
 
-    return (await this.filesService.ftpFolders(path.slice(0, -1)))
-      .filter(element => !element.isFolder)
-      .some(file => file.name === fileName);
+    return (await this.filesService.ftpFolders(path.slice(0, -1))).filter((element) => !element.isFolder).some((file) => file.name === fileName);
   }
 
   private setMessageRead(message: Message): Observable<unknown> {
     return message.seen ? EMPTY : this.messaging.markOneRead(message._id);
   }
-
-
-
 }

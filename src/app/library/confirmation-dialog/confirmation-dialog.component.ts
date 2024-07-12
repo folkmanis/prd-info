@@ -16,6 +16,6 @@ export class ConfirmationDialogComponent {
       title?: string;
       yes?: string;
       no?: string;
-    }
+    },
   ) {}
 }

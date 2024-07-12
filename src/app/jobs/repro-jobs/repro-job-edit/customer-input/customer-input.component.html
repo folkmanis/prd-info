@@ -1,27 +1,23 @@
 <mat-form-field>
-    <mat-label>
-        <ng-content></ng-content>
-    </mat-label>
-    <input #customerInput type="text" matInput [formControl]="control" [matAutocomplete]="auto" required>
-    <button matIconSuffix mat-icon-button (click)="control.reset()" [disabled]="control.disabled">
-        <mat-icon> clear </mat-icon>
-    </button>
-    @if (control.hasError('required')) {
-    <mat-error>
-        Jānorāda obligāti
-    </mat-error>
-    }
-    @if (control.hasError('notFound')) {
-    <mat-error>
-        Klients {{ control.getError('notFound') }} nav atrasts
-    </mat-error>
-    }
+  <mat-label>
+    <ng-content></ng-content>
+  </mat-label>
+  <input #customerInput type="text" matInput [formControl]="control" [matAutocomplete]="auto" required />
+  <button matIconSuffix mat-icon-button (click)="control.reset()" [disabled]="control.disabled">
+    <mat-icon> clear </mat-icon>
+  </button>
+  @if (control.hasError('required')) {
+    <mat-error> Jānorāda obligāti </mat-error>
+  }
+  @if (control.hasError('notFound')) {
+    <mat-error> Klients {{ control.getError('notFound') }} nav atrasts </mat-error>
+  }
 </mat-form-field>
 
 <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
-    @for (customer of filtered$ | async; track customer.CustomerName) {
+  @for (customer of filtered$ | async; track customer.CustomerName) {
     <mat-option [value]="customer.CustomerName">
-        {{ customer.CustomerName }}
+      {{ customer.CustomerName }}
     </mat-option>
-    }
+  }
 </mat-autocomplete>

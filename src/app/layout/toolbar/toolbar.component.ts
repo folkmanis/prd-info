@@ -8,7 +8,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink } from '@angular/router';
 import { Observable, timer } from 'rxjs';
-import { filter, map, mergeMap, share, take, throttleTime, } from 'rxjs/operators';
+import { filter, map, mergeMap, share, take, throttleTime } from 'rxjs/operators';
 import { getAppParams } from 'src/app/app-params';
 import { SystemNotification, SystemOperations, User, UserModule } from 'src/app/interfaces';
 import { LoginService } from 'src/app/login';
@@ -25,20 +25,9 @@ const INITIAL_DELAY = 3000;
   styleUrls: ['./toolbar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [
-    MatToolbarModule,
-    MatButtonModule,
-    MatIconModule,
-    RouterLink,
-    ViewSizeModule,
-    MatBadgeModule,
-    MessagesTriggerDirective,
-    MatMenuModule,
-    AsyncPipe,
-  ],
+  imports: [MatToolbarModule, MatButtonModule, MatIconModule, RouterLink, ViewSizeModule, MatBadgeModule, MessagesTriggerDirective, MatMenuModule, AsyncPipe],
 })
 export class ToolbarComponent implements OnInit {
-
   user = input.required<User>();
 
   activeModule = input<UserModule | null>(null);
@@ -52,22 +41,17 @@ export class ToolbarComponent implements OnInit {
 
   private systemNotifications$ = timer(INITIAL_DELAY).pipe(
     take(1),
-    mergeMap(
-      (_) =>
-        this.notifications.wsMultiplex(
-          'system'
-        ) as Observable<SystemNotification>
-    ),
+    mergeMap((_) => this.notifications.wsMultiplex('system') as Observable<SystemNotification>),
     throttleTime(500),
     takeUntilDestroyed(),
-    share()
+    share(),
   );
 
   constructor(
     private messagingService: MessagingService,
     private notifications: NotificationsService,
-    private loginService: LoginService
-  ) { }
+    private loginService: LoginService,
+  ) {}
 
   ngOnInit(): void {
     this.systemNotifications$.subscribe(() => this.messagingService.reload());
@@ -75,11 +59,7 @@ export class ToolbarComponent implements OnInit {
     this.systemNotifications$
       .pipe(
         map(({ payload }) => payload),
-        filter(
-          ({ operation, id }) =>
-            operation === SystemOperations.USER_UPDATED &&
-            id === this.user().username
-        )
+        filter(({ operation, id }) => operation === SystemOperations.UserUpdated && id === this.user().username),
       )
       .subscribe(() => this.loginService.reloadUser());
   }

@@ -15,8 +15,7 @@ export default [
       },
       {
         path: 'production-stages',
-        loadChildren: () =>
-          import('./production-stages/production-stages-routes'),
+        loadChildren: () => import('./production-stages/production-stages-routes'),
       },
       {
         path: 'equipment',

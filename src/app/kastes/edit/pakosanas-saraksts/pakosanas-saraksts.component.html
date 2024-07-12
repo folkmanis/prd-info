@@ -1,92 +1,84 @@
 <div class="container">
-    <div>
-        <app-kastes-totals [totals]="kastesTotals$ | async">
-            Sadalījums pa kastēm:
-        </app-kastes-totals>
-    </div>
+  <div>
+    <app-kastes-totals [totals]="kastesTotals$ | async"> Sadalījums pa kastēm: </app-kastes-totals>
+  </div>
 
-    <div>
-        <table mat-table [dataSource]="dataSource$" multiTemplateDataRows>
-            <ng-container matColumnDef="kods">
-                <th mat-header-cell *matHeaderCellDef="let row;">Kods</th>
-                <td mat-cell *matCellDef="let row;">{{row.kods}}</td>
-            </ng-container>
-            <ng-container matColumnDef="adrese">
-                <th mat-header-cell *matHeaderCellDef="let row;">Adrese</th>`
-                <td mat-cell *matCellDef="let row;">{{row.adrese}}</td>
-            </ng-container>
-            <!-- Pogas -->
-            <ng-container matColumnDef="buttons">
-                <!-- <th mat-header-cell *matHeaderCellDef="let row;"></th> -->
-                <td mat-cell *matCellDef="let row;">
-                    <div>
-                        @if (edited !== row) {
-                        <button mat-icon-button [disabled]="isDisabled(row)" (click)="edited = row">
-                            <mat-icon>lock_open</mat-icon>
-                        </button>
-                        } @else {
-                        <button mat-icon-button (click)="edited = null; errors.set(null)">
-                            <mat-icon>clear</mat-icon>
-                        </button>
-                        <button mat-icon-button [disabled]="!!errors()" (click)="onSaveVeikals()">
-                            <mat-icon>save_alt</mat-icon>
-                        </button>
-                        }
-                    </div>
-                </td>
-            </ng-container>
-            <!-- Sleja ar skaitiem -->
-            <ng-container matColumnDef="pakas">
-                <th mat-header-cell *matHeaderCellDef="let row;">
-                    <div>
-                        @for (color of colors; track $index) {
-                        <div [style.color]="colorCodes()[color]">
-                            {{color | titlecase}}
-                        </div>
-                        }
-                        <div>
-                            Kopā
-                        </div>
-                    </div>
-                </th>
-                <td mat-cell *matCellDef="let row;">
-                    <app-totals [veikals]="row" [errors]="edited === row ? errors() : null"></app-totals>
-                </td>
-            </ng-container>
-            <!-- Labošanas rinda -->
-            <ng-container matColumnDef="spacer">
-                <td mat-cell *matCellDef="let row;">
-                </td>
-            </ng-container>
-            <!-- Labošanas modulis -->
-            <ng-container matColumnDef="editor">
-                <td mat-cell *matCellDef="let row;">
-                    @if (edited === row) {
-                    <app-veikals-edit [veikals]="row" (errors)="errors.set($event)"
-                        (valueChanges)="veikalsUpdate=$event" />
-                    } @else {
-                    @for (kaste of row.kastes; track $index) {
-                    <div>
-                        @for (color of colors; track $index) {
-                        <div [style.color]="colorCodes()[color]" class="numb">
-                            {{kaste[color]}}
-                        </div>
-                        }
-                        <div>
-                            {{kaste.total}}
-                        </div>
-                    </div>
-                    }
-                    }
-                </td>
-            </ng-container>
+  <div>
+    <table mat-table [dataSource]="dataSource$" multiTemplateDataRows>
+      <ng-container matColumnDef="kods">
+        <th mat-header-cell *matHeaderCellDef="let row">Kods</th>
+        <td mat-cell *matCellDef="let row">{{ row.kods }}</td>
+      </ng-container>
+      <ng-container matColumnDef="adrese">
+        <th mat-header-cell *matHeaderCellDef="let row">Adrese</th>
+        `
+        <td mat-cell *matCellDef="let row">{{ row.adrese }}</td>
+      </ng-container>
+      <!-- Pogas -->
+      <ng-container matColumnDef="buttons">
+        <!-- <th mat-header-cell *matHeaderCellDef="let row;"></th> -->
+        <td mat-cell *matCellDef="let row">
+          <div>
+            @if (edited !== row) {
+              <button mat-icon-button [disabled]="isDisabled(row)" (click)="edited = row">
+                <mat-icon>lock_open</mat-icon>
+              </button>
+            } @else {
+              <button mat-icon-button (click)="edited = null; errors.set(null)">
+                <mat-icon>clear</mat-icon>
+              </button>
+              <button mat-icon-button [disabled]="!!errors()" (click)="onSaveVeikals()">
+                <mat-icon>save_alt</mat-icon>
+              </button>
+            }
+          </div>
+        </td>
+      </ng-container>
+      <!-- Sleja ar skaitiem -->
+      <ng-container matColumnDef="pakas">
+        <th mat-header-cell *matHeaderCellDef="let row">
+          <div>
+            @for (color of colors; track $index) {
+              <div [style.color]="colorCodes()[color]">
+                {{ color | titlecase }}
+              </div>
+            }
+            <div>Kopā</div>
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <app-totals [veikals]="row" [errors]="edited === row ? errors() : null"></app-totals>
+        </td>
+      </ng-container>
+      <!-- Labošanas rinda -->
+      <ng-container matColumnDef="spacer">
+        <td mat-cell *matCellDef="let row"></td>
+      </ng-container>
+      <!-- Labošanas modulis -->
+      <ng-container matColumnDef="editor">
+        <td mat-cell *matCellDef="let row">
+          @if (edited === row) {
+            <app-veikals-edit [veikals]="row" (errors)="errors.set($event)" (valueChanges)="veikalsUpdate = $event" />
+          } @else {
+            @for (kaste of row.kastes; track $index) {
+              <div>
+                @for (color of colors; track $index) {
+                  <div [style.color]="colorCodes()[color]" class="numb">
+                    {{ kaste[color] }}
+                  </div>
+                }
+                <div>
+                  {{ kaste.total }}
+                </div>
+              </div>
+            }
+          }
+        </td>
+      </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumnsTop;"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumnsTop;"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumnsBottom;" class="editor"
-                [class.active]="edited === row">
-            </tr>
-        </table>
-    </div>
-
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsTop"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsTop"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsBottom" class="editor" [class.active]="edited === row"></tr>
+    </table>
+  </div>
 </div>

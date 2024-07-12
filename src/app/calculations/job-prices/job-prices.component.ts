@@ -17,16 +17,9 @@ const updateMessage = (n: number) => `Izmainīti ${n} ieraksti.`;
   templateUrl: './job-prices.component.html',
   styleUrls: ['./job-prices.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    CustomerSelectorComponent,
-    MatButtonModule,
-    MatBadgeModule,
-    MatCardModule,
-    JobPricesTableComponent,
-  ]
+  imports: [CustomerSelectorComponent, MatButtonModule, MatBadgeModule, MatCardModule, JobPricesTableComponent],
 })
 export class JobPricesComponent {
-
   @Input()
   customer: string;
 
@@ -45,7 +38,7 @@ export class JobPricesComponent {
     private router: Router,
     private snack: MatSnackBar,
     private jobService: JobService,
-  ) { }
+  ) {}
 
   onCustomerSelected(value: string | undefined) {
     this.router.navigate([], { queryParams: { customer: value }, relativeTo: this.route });
@@ -56,11 +49,9 @@ export class JobPricesComponent {
   }
 
   onSavePrices() {
-    this.jobService.updateJobs(this.jobUpdate()).subscribe(updatedCount => {
+    this.jobService.updateJobs(this.jobUpdate()).subscribe((updatedCount) => {
       this.snack.open(updateMessage(updatedCount), 'OK', { duration: 3000 });
       this.router.navigate([], { queryParams: { customer: this.customer, upd: Date.now() }, relativeTo: this.route });
     });
   }
-
-
 }

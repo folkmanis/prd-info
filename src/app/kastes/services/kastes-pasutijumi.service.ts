@@ -13,7 +13,6 @@ export interface KastesJobFilter {
   providedIn: 'root',
 })
 export class KastesPasutijumiService {
-
   private api = inject(KastesApiService);
 
   getKastesJobs(filter: KastesJobFilter = {}): Observable<KastesJobPartial[]> {
@@ -54,18 +53,13 @@ export class KastesPasutijumiService {
     }
     const form = new FormData();
     form.append('table', file, file.name);
-    return this.api
-      .parseXlsx(form)
-      .pipe(map((data) => this.normalizeTable(data)));
+    return this.api.parseXlsx(form).pipe(map((data) => this.normalizeTable(data)));
   }
 
   private normalizeTable(data: any[][]): Array<string | number>[] {
-    const width = data.reduce(
-      (acc, row) => (row.length > acc ? row.length : acc),
-      0
-    );
+    const width = data.reduce((acc, row) => (row.length > acc ? row.length : acc), 0);
     return data
-      .filter(row => row.length > 0)
+      .filter((row) => row.length > 0)
       .map((row) => {
         const nrow = new Array(width);
         for (let idx = 0; idx < width; idx++) {

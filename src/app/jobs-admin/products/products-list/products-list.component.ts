@@ -1,12 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
-import { BehaviorSubject, combineLatest, firstValueFrom } from 'rxjs';
-import { debounceTime, map } from 'rxjs/operators';
-import { ProductsService } from 'src/app/services';
-import { SimpleListContainerComponent } from 'src/app/library/simple-form';
-import { MatTable, MatTableModule } from '@angular/material/table';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { ProductPartial } from 'src/app/interfaces';
+import { SimpleListContainerComponent } from 'src/app/library/simple-form';
+import { ProductsService } from 'src/app/services';
 
 @Component({
   selector: 'app-products-list',
@@ -14,15 +10,9 @@ import { ProductPartial } from 'src/app/interfaces';
   templateUrl: './products-list.component.html',
   styleUrls: ['./products-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    SimpleListContainerComponent,
-    MatTableModule,
-    RouterLink,
-    RouterLinkActive,
-  ],
+  imports: [SimpleListContainerComponent, MatTableModule, RouterLink, RouterLinkActive],
 })
 export class ProductsListComponent {
-
   private productsService = inject(ProductsService);
   private allProducts = this.productsService.products;
 
@@ -34,12 +24,10 @@ export class ProductsListComponent {
 
   products = computed(() => {
     const filter = this.filter();
-    return this.allProducts().filter(product => product.name.toLowerCase().includes(filter));
+    return this.allProducts().filter((product) => product.name.toLowerCase().includes(filter));
   });
 
   async reload() {
     this.productsService.reload();
   }
-
-
 }

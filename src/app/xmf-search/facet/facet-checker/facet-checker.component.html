@@ -1,19 +1,19 @@
 <div class="head">
-    <h4>
-        {{ title() }}
-    </h4>
-    <button mat-icon-button (click)="onDeselectAll();">
-        <mat-icon>close</mat-icon>
-    </button>
+  <h4>
+    {{ title() }}
+  </h4>
+  <button mat-icon-button (click)="onDeselectAll()">
+    <mat-icon>close</mat-icon>
+  </button>
 </div>
 
 <mat-selection-list #selection (selectionChange)="onSelectionChange()" dense>
-    @for (item of data(); track $index) {
+  @for (item of data(); track $index) {
     <mat-list-option checkboxPosition="before" [value]="item._id" [style.height.px]="24">
-        {{item._id | xmfFacet}}
-        @if (item.count > 0) {
+      {{ item._id | xmfFacet }}
+      @if (item.count > 0) {
         ({{ item.count }})
-        }
+      }
     </mat-list-option>
-    }
+  }
 </mat-selection-list>

@@ -5,13 +5,10 @@ import { ConfirmDeleteComponent } from './confirm-delete/confirm-delete.componen
 import { ConfirmationDialogComponent } from './confirmation-dialog.component';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ConfirmationDialogService {
-
-  constructor(
-    private dialog: MatDialog,
-  ) { }
+  constructor(private dialog: MatDialog) {}
 
   confirm(prompt: string, config: MatDialogConfig = {}): Promise<boolean> {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
@@ -31,7 +28,7 @@ export class ConfirmationDialogService {
       data: {
         yes: 'Jā, pamest!',
         no: 'Nē, turpināt!',
-      }
+      },
     });
   }
 
@@ -40,15 +37,12 @@ export class ConfirmationDialogService {
   }
 
   async confirmDataError(message?: string): Promise<void> {
-    await this.confirm(message || 'Radusies problēma ar serveri. Mēģiniet vēlreiz vēlāk vai sazinieties ar atbalstu',
-      {
-        data: {
-          title: 'Kļūda!',
-          yes: 'OK',
-          no: undefined,
-        }
-      }
-    );
+    await this.confirm(message || 'Radusies problēma ar serveri. Mēģiniet vēlreiz vēlāk vai sazinieties ar atbalstu', {
+      data: {
+        title: 'Kļūda!',
+        yes: 'OK',
+        no: undefined,
+      },
+    });
   }
-
 }

@@ -1,25 +1,17 @@
 <mat-card>
+  <mat-card-header>
+    <mat-card-subtitle> Preces </mat-card-subtitle>
+  </mat-card-header>
 
-    <mat-card-header>
-        <mat-card-subtitle>
-            Preces
-        </mat-card-subtitle>
-    </mat-card-header>
+  <mat-card-content>
+    @for (control of productsControl.controls; track $index) {
+      <app-repro-product (remove)="onRemoveProduct($index)" [customerProducts]="customerProducts()" [showPrices]="showPrices()" [formControl]="productsControl.controls[$index]" />
+    }
+  </mat-card-content>
 
-    <mat-card-content>
-
-        @for (control of productsControl.controls; track $index) {
-        <app-repro-product (remove)="onRemoveProduct($index)" [customerProducts]="customerProducts()"
-            [showPrices]="showPrices()" [formControl]="productsControl.controls[$index]" />
-        }
-
-    </mat-card-content>
-
-    <mat-card-actions>
-        <button mat-mini-fab (click)="onAddProduct()" [disabled]="productsControl.disabled || productsControl.invalid"
-            matTooltip="Ctrl +" color="primary" appKeyPress="ctrlPlus">
-            <mat-icon>add</mat-icon>
-        </button>
-    </mat-card-actions>
-
+  <mat-card-actions>
+    <button mat-mini-fab (click)="onAddProduct()" [disabled]="productsControl.disabled || productsControl.invalid" matTooltip="Ctrl +" color="primary" appKeyPress="ctrlPlus">
+      <mat-icon>add</mat-icon>
+    </button>
+  </mat-card-actions>
 </mat-card>

@@ -1,16 +1,14 @@
-import { TemplateRef, EmbeddedViewRef, ViewContainerRef, Input, Directive, OnInit, OnDestroy } from '@angular/core';
-import { LayoutService, AppBreakpoints, BREAKPOINTS } from '../layout.service';
-import { Subscription, combineLatest, takeUntil, BehaviorSubject, switchMap, map } from 'rxjs';
+import { Directive, EmbeddedViewRef, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
+import { BehaviorSubject, Subscription, combineLatest, map, switchMap } from 'rxjs';
+import { AppBreakpoints, BREAKPOINTS, LayoutService } from '../layout.service';
 
 interface ViewSize {
-  breakPoint: AppBreakpoints,
-  not: boolean,
+  breakPoint: AppBreakpoints;
+  not: boolean;
 }
-
 
 @Directive()
 export class ViewSizeBase implements OnInit, OnDestroy {
-
   private readonly viewSize$ = new BehaviorSubject<ViewSize>({ breakPoint: 'large', not: false });
 
   private readonly elseTemplate$ = new BehaviorSubject<TemplateRef<any> | null>(null);
@@ -24,7 +22,7 @@ export class ViewSizeBase implements OnInit, OnDestroy {
     private templateRef: TemplateRef<any>,
     private viewContainer: ViewContainerRef,
     private layout: LayoutService,
-  ) { }
+  ) {}
 
   setViewSize(breakPoint: AppBreakpoints, not = false) {
     if (typeof breakPoint === 'string' && BREAKPOINTS.includes(breakPoint)) {
@@ -39,19 +37,11 @@ export class ViewSizeBase implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    const matches$ = this.viewSize$.pipe(switchMap((size) => this.layout.matches(size.breakPoint).pipe(map((match) => (size.not ? !match : match)))));
 
-    const matches$ = this.viewSize$.pipe(
-      switchMap(size => this.layout.matches(size.breakPoint).pipe(
-        map(match => size.not ? !match : match)
-      ))
-    );
-
-    this.subs = combineLatest([
-      matches$,
-      this.elseTemplate$
-    ])
-      .pipe(
-    ).subscribe(([matches, elseTemplate]) => this.setView(matches, elseTemplate));
+    this.subs = combineLatest([matches$, this.elseTemplate$])
+      .pipe()
+      .subscribe(([matches, elseTemplate]) => this.setView(matches, elseTemplate));
   }
 
   ngOnDestroy(): void {
@@ -77,6 +67,4 @@ export class ViewSizeBase implements OnInit, OnDestroy {
       }
     }
   }
-
-
 }

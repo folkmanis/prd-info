@@ -13,11 +13,11 @@
   </span>
 
   @if (activeModule(); as mod) {
-  <span>
-    <a mat-button [routerLink]="mod.route">
-      {{mod.name}}
-    </a>
-  </span>
+    <span>
+      <a mat-button [routerLink]="mod.route">
+        {{ mod.name }}
+      </a>
+    </span>
   }
 
   <!-- Starpotājs -->
@@ -26,49 +26,32 @@
   <!-- Ziņojumi -->
   <span *appViewSmall>
     <a mat-icon-button [disabled]="(messagesCount$ | async) === 0" routerLink="/messages">
-      <mat-icon [matBadge]="unreadMessagesCount$ | async" [matBadgeHidden]="(unreadMessagesCount$ | async) === 0"
-        matBadgeColor="accent">
-        notifications
-      </mat-icon>
+      <mat-icon [matBadge]="unreadMessagesCount$ | async" [matBadgeHidden]="(unreadMessagesCount$ | async) === 0" matBadgeColor="accent"> notifications </mat-icon>
     </a>
   </span>
 
   <span *appViewNotSmall>
     <button mat-icon-button appMessagesTrigger [disabled]="(messagesCount$ | async) === 0">
-      <mat-icon [matBadge]="unreadMessagesCount$ | async" [matBadgeHidden]="(unreadMessagesCount$ | async) === 0"
-        matBadgeColor="accent">
-        notifications
-      </mat-icon>
+      <mat-icon [matBadge]="unreadMessagesCount$ | async" [matBadgeHidden]="(unreadMessagesCount$ | async) === 0" matBadgeColor="accent"> notifications </mat-icon>
     </button>
   </span>
 
-
   <!-- Mazais lietotāja menu -->
   <span>
-
-    <button mat-icon-button [matMenuTriggerFor]='userMenu'>
+    <button mat-icon-button [matMenuTriggerFor]="userMenu">
       @if (user().google?.picture) {
-      <span class="avatar">
-      </span>
+        <span class="avatar"> </span>
       } @else {
-      <mat-icon>
-        account_circle
-      </mat-icon>
+        <mat-icon> account_circle </mat-icon>
       }
-
     </button>
-
   </span>
 </mat-toolbar>
 
 <mat-menu #userMenu="matMenu">
-  <span mat-menu-item>
-    Versija {{version}}
-  </span>
+  <span mat-menu-item> Versija {{ version }} </span>
   <a mat-menu-item class="mat-caption username" routerLink="/user-settings">
     Lietotājs: <strong>{{ user().name }}</strong>
   </a>
-  <a mat-menu-item routerLink="/login">
-    Atslēgties
-  </a>
+  <a mat-menu-item routerLink="/login"> Atslēgties </a>
 </mat-menu>

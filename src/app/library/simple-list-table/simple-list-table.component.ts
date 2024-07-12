@@ -1,21 +1,11 @@
 import { ComponentType } from '@angular/cdk/portal';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  input,
-  model,
-  signal
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { tap } from 'rxjs';
-
 
 @Component({
   selector: 'app-simple-list-table',
@@ -35,8 +25,8 @@ import { tap } from 'rxjs';
 export class SimpleListTableComponent<T, K extends keyof T & string> implements ControlValueAccessor {
   private dialog = inject(MatDialog);
 
-  private onChangeFn: (obj: T[]) => void = () => { };
-  private onTouchedFn: () => void = () => { };
+  private onChangeFn: (obj: T[]) => void = () => {};
+  private onTouchedFn: () => void = () => {};
 
   columns = input.required<K[]>();
   displayedColumns = computed(() => ['button', ...this.columns()]);
@@ -98,15 +88,14 @@ export class SimpleListTableComponent<T, K extends keyof T & string> implements 
   }
 
   private addRecord(record: T) {
-    this.data.update(records => [...records, record]);
+    this.data.update((records) => [...records, record]);
   }
 
   private removeRecord(idx: number) {
-    this.data.update(records => records.filter((_, i) => i !== idx));
+    this.data.update((records) => records.filter((_, i) => i !== idx));
   }
 
   private updateRecord(idx: number, record: T) {
-    this.data.update(records => records.map((d, i) => (i === idx ? record : d)));
+    this.data.update((records) => records.map((d, i) => (i === idx ? record : d)));
   }
-
 }

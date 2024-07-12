@@ -1,71 +1,65 @@
 <div class="buttons-bar">
-    <button mat-raised-button (click)="addEmptyColumn()" [disabled]="adreses().length === 0">Pievienot
-        tukšu sleju</button>
-    <button mat-raised-button (click)="deleteColumns()" [disabled]="columnSelection.isEmpty()">Dzēst
-        slejas</button>
-    <button mat-raised-button (click)="joinColumns()" [disabled]="columnSelection.selected.length < 2">Apvienot
-        slejas</button>
+  <button mat-raised-button (click)="addEmptyColumn()" [disabled]="adreses().length === 0">Pievienot tukšu sleju</button>
+  <button mat-raised-button (click)="deleteColumns()" [disabled]="columnSelection.isEmpty()">Dzēst slejas</button>
+  <button mat-raised-button (click)="joinColumns()" [disabled]="columnSelection.selected.length < 2">Apvienot slejas</button>
 </div>
 
 <div class="chips-bar">
-    <mat-chip-set>
-        @for (chipName of availableChips(); track $index) {
-        <mat-chip color="primary" [appDragable]="chipName">
-            {{ chipName }}
-        </mat-chip>
-        }
-    </mat-chip-set>
+  <mat-chip-set>
+    @for (chipName of availableChips(); track $index) {
+      <mat-chip color="primary" [appDragable]="chipName">
+        {{ chipName }}
+      </mat-chip>
+    }
+  </mat-chip-set>
 </div>
 
 <mat-table class="app-table" [dataSource]="adreses()" scroll-to-top>
-    <ng-container matColumnDef="selected">
-        <mat-header-cell *matHeaderCellDef></mat-header-cell>
-        <mat-cell *matCellDef="let row; index as idx;">
-            <mat-checkbox (change)="rowSelection.toggle(idx)" [checked]="rowSelection.isSelected(idx)">
-            </mat-checkbox>
-        </mat-cell>
-    </ng-container>
+  <ng-container matColumnDef="selected">
+    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+    <mat-cell *matCellDef="let row; index as idx">
+      <mat-checkbox (change)="rowSelection.toggle(idx)" [checked]="rowSelection.isSelected(idx)"> </mat-checkbox>
+    </mat-cell>
+  </ng-container>
 
-    <ng-container matColumnDef="checkBox-selected">
-        <mat-header-cell *matHeaderCellDef></mat-header-cell>
-    </ng-container>
+  <ng-container matColumnDef="checkBox-selected">
+    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+  </ng-container>
 
-    @for (column of columns(); track $index) {
-    <ng-container [matColumnDef]="'checkBox-'+column">
-        <mat-header-cell *matHeaderCellDef>
-            <div class="column-check">
-                <mat-checkbox (change)="columnSelection.toggle(column)"
-                    [checked]="columnSelection.isSelected(column)" />
-            </div>
-        </mat-header-cell>
+  @for (column of columns(); track $index) {
+    <ng-container [matColumnDef]="'checkBox-' + column">
+      <mat-header-cell *matHeaderCellDef>
+        <div class="column-check">
+          <mat-checkbox (change)="columnSelection.toggle(column)" [checked]="columnSelection.isSelected(column)" />
+        </div>
+      </mat-header-cell>
     </ng-container>
-    }
+  }
 
-    @for (column of columns(); track $index) {
+  @for (column of columns(); track $index) {
     <ng-container [matColumnDef]="column.toString()">
-        <mat-header-cell *matHeaderCellDef>
-            <div appDragDrop (dropEmitter)="onDrop($event.chipName,column)">
-                <mat-chip-set>
-                    @if (assignedChipName(column); as chipName) {
-                    <mat-chip color="primary" [appDragable]="chipName" removable [sourceColumn]="column"
-                        (removed)="onChipRemove(column)">
-                        {{ chipName }}
-                        <mat-icon matChipRemove>cancel</mat-icon>
-                    </mat-chip>
-                    }
-                </mat-chip-set>
-            </div>
-        </mat-header-cell>
-        <mat-cell *matCellDef="let row;">{{ row[column]}}</mat-cell>
+      <mat-header-cell *matHeaderCellDef>
+        <div appDragDrop (dropEmitter)="onDrop($event.chipName, column)">
+          <mat-chip-set>
+            @if (assignedChipName(column); as chipName) {
+              <mat-chip color="primary" [appDragable]="chipName" removable [sourceColumn]="column" (removed)="onChipRemove(column)">
+                {{ chipName }}
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+            }
+          </mat-chip-set>
+        </div>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{ row[column] }}</mat-cell>
     </ng-container>
-    }
+  }
 
-    <ng-container matColumnDef="spacer">
-        <mat-footer-cell *matFooterCellDef></mat-footer-cell>
-    </ng-container>
+  <ng-container matColumnDef="spacer">
+    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+  </ng-container>
 
-    <mat-header-row *matHeaderRowDef="displayColumns(); sticky: true"></mat-header-row>
-    <mat-header-row *matHeaderRowDef="displayCheckboxColumns(); sticky: true"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayColumns()"></mat-row>
-    <mat-footer-row *matFooterRowDef="['spacer']" class="spacer"></mat-footer-row>
+  <mat-header-row *matHeaderRowDef="displayColumns(); sticky: true"></mat-header-row>
+  <mat-header-row *matHeaderRowDef="displayCheckboxColumns(); sticky: true"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayColumns()"></mat-row>
+  <mat-footer-row *matFooterRowDef="['spacer']" class="spacer"></mat-footer-row>
 </mat-table>

@@ -3,15 +3,14 @@ import { MessageData } from './message-data';
 import { filesize } from 'filesize';
 
 export class XmfUploadData extends XmfUploadProgress implements MessageData {
-
-    toAction() {
-        if (this.state === 'finished') {
-            return 'Pievienoti dati no XMF arhīva';
-        }
-        return '';
+  toAction() {
+    if (this.state === 'finished') {
+      return 'Pievienoti dati no XMF arhīva';
     }
+    return '';
+  }
 
-    toDescription() {
-        return `${this.fileName} (${filesize(this.fileSize)})`;
-    }
-};
+  toDescription() {
+    return `${this.fileName} (${filesize(this.fileSize)})`;
+  }
+}

@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  input,
-  output,
-  viewChild
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, viewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule, MatSelectionList } from '@angular/material/list';
@@ -38,9 +32,7 @@ export class FacetCheckerComponent {
 
   onSelectionChange(): void {
     const { selected } = this.selection().selectedOptions; // event.source.selectedOptions.selected;
-    const filter = selected.length
-      ? selected.map((element) => element.value as number | string)
-      : undefined; // Ja nekas nav atzīmēts, tad vispār nav
+    const filter = selected.length ? selected.map((element) => element.value as number | string) : undefined; // Ja nekas nav atzīmēts, tad vispār nav
     this.filterValue.emit(filter);
   }
 }

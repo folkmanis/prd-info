@@ -1,10 +1,5 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  Output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatOptionModule } from '@angular/material/core';
@@ -19,14 +14,7 @@ import { DropFolder } from 'src/app/interfaces';
   styleUrls: ['./drop-folder.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [
-    MatCheckboxModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatOptionModule,
-  ],
+  imports: [MatCheckboxModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, MatOptionModule],
 })
 export class DropFolderComponent {
   folderControl = new FormControl<DropFolder>(null);
@@ -56,9 +44,7 @@ export class DropFolderComponent {
     this.folderControl.setValue(value);
   }
   get folder() {
-    return this.folderActive.enabled && this.folderActive.value === true
-      ? this.folderControl.value
-      : null;
+    return this.folderActive.enabled && this.folderActive.value === true ? this.folderControl.value : null;
   }
 
   private _disabled = false;
@@ -70,18 +56,12 @@ export class DropFolderComponent {
     return this._disabled;
   }
 
-  @Output() folderChanges = merge(
-    this.folderActive.valueChanges,
-    this.folderControl.valueChanges
-  ).pipe(map(() => this.folder));
+  @Output() folderChanges = merge(this.folderActive.valueChanges, this.folderControl.valueChanges).pipe(map(() => this.folder));
 
-  compareFn: (o1: DropFolder, o2: DropFolder) => boolean = (o1, o2) =>
-    o1?.path.join('/') === o2?.path.join('/');
+  compareFn: (o1: DropFolder, o2: DropFolder) => boolean = (o1, o2) => o1?.path.join('/') === o2?.path.join('/');
 
   private setActive() {
-    this.folderActive.setValue(
-      this._folders.length > 0 && this.defaultEnabled && !this.disabled
-    );
+    this.folderActive.setValue(this._folders.length > 0 && this.defaultEnabled && !this.disabled);
     if (this._folders.length > 0 && !this.disabled) {
       this.folderActive.enable();
     } else {

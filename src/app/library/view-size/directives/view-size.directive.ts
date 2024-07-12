@@ -10,10 +10,9 @@ import { LayoutService } from '../layout.service';
     '[class.large]': 'isLarge()',
     '[class.medium]': 'isMedium()',
     '[class.small]': 'isSmall()',
-  }
+  },
 })
 export class ViewSizeDirective {
-
   private layoutService = inject(LayoutService);
 
   isLarge = toSignal(this.layoutService.matches('large'), { requireSync: true });
@@ -21,7 +20,4 @@ export class ViewSizeDirective {
   isMedium = toSignal(this.layoutService.matches('medium'), { requireSync: true });
 
   isSmall = toSignal(this.layoutService.matches('small'), { requireSync: true });
-
-
-
 }

@@ -1,11 +1,6 @@
 import { A11yModule } from '@angular/cdk/a11y';
 import { coerceNumberProperty } from '@angular/cdk/coercion';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import {
   ControlValueAccessor,
   FormControl,
@@ -33,15 +28,7 @@ const MIN_LENGTH = 6;
   templateUrl: './password-input-group.component.html',
   styleUrls: ['./password-input-group.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    ReactiveFormsModule,
-    FormsModule,
-    A11yModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatButtonModule,
-    MatInputModule,
-  ],
+  imports: [ReactiveFormsModule, FormsModule, A11yModule, MatFormFieldModule, MatIconModule, MatButtonModule, MatInputModule],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -55,9 +42,7 @@ const MIN_LENGTH = 6;
     },
   ],
 })
-export class PasswordInputGroupComponent
-  implements OnInit, ControlValueAccessor, Validator
-{
+export class PasswordInputGroupComponent implements OnInit, ControlValueAccessor, Validator {
   hide = true;
 
   passwordForm = new FormGroup(
@@ -67,7 +52,7 @@ export class PasswordInputGroupComponent
     },
     {
       validators: equalityValidator(),
-    }
+    },
   );
 
   onTouchFn: () => void = () => {};
@@ -101,9 +86,7 @@ export class PasswordInputGroupComponent
   }
 
   registerOnChange(fn: any): void {
-    this.passwordForm.valueChanges
-      .pipe(map((val) => val.password1))
-      .subscribe(fn);
+    this.passwordForm.valueChanges.pipe(map((val) => val.password1)).subscribe(fn);
   }
 
   registerOnTouched(fn: any): void {
@@ -127,10 +110,7 @@ export class PasswordInputGroupComponent
   }
 
   private setValidators() {
-    const validators: ValidatorFn[] = [
-      Validators.required,
-      Validators.minLength(this.minLength),
-    ];
+    const validators: ValidatorFn[] = [Validators.required, Validators.minLength(this.minLength)];
 
     if (typeof this.validatorFn === 'function') {
       validators.push(this.validatorFn);

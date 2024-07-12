@@ -7,8 +7,7 @@ import { InvoicesService } from '../services/invoices.service';
 
 export const resolveInvoice: ResolveFn<Invoice> = (route) => {
   const invoiceId: string = route.paramMap.get('invoiceId');
-  return inject(InvoicesService).getInvoice(invoiceId).pipe(
-    mergeMap(invoice => invoice ? of(invoice) : EMPTY),
-  );
-
+  return inject(InvoicesService)
+    .getInvoice(invoiceId)
+    .pipe(mergeMap((invoice) => (invoice ? of(invoice) : EMPTY)));
 };

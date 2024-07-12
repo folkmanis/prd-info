@@ -1,7 +1,5 @@
 export interface MessageModifyDto {
+  addLabelIds?: string[];
 
-    addLabelIds?: string[];
-
-    removeLabelIds?: string[];
-
+  removeLabelIds?: string[];
 }

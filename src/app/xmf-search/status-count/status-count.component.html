@@ -1,9 +1,7 @@
-@if(count === undefined || count === null) {
-<span class="spinner">
+@if (count === undefined || count === null) {
+  <span class="spinner">
     <mat-spinner color="primary" [diameter]="32"></mat-spinner>
-</span>
+  </span>
 } @else {
-<h3>
-    Atrast{{isMultiple(count) ? 'i' : 's'}} {{count}} ierakst{{isMultiple(count) ? 'i' : 's'}}
-</h3>
+  <h3>Atrast{{ isMultiple(count) ? 'i' : 's' }} {{ count }} ierakst{{ isMultiple(count) ? 'i' : 's' }}</h3>
 }

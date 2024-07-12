@@ -1,13 +1,12 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { BehaviorSubject, Observable, debounceTime, switchMap } from 'rxjs';
+import { Observable, debounceTime, switchMap } from 'rxjs';
 import { EquipmentPartial } from 'src/app/interfaces';
 import { combineReload } from 'src/app/library/rxjs';
 import { SimpleListContainerComponent } from 'src/app/library/simple-form';
-import { EquipmentFilter, EquipmentService } from '../services/equipment.service';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { EquipmentService } from '../services/equipment.service';
 
 @Component({
   selector: 'app-equipment-list',
@@ -15,15 +14,9 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
   templateUrl: './equipment-list.component.html',
   styleUrls: ['./equipment-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    SimpleListContainerComponent,
-    RouterLink,
-    RouterLinkActive,
-    MatTableModule,
-  ]
+  imports: [SimpleListContainerComponent, RouterLink, RouterLinkActive, MatTableModule],
 })
 export class EquipmentListComponent {
-
   private equipmentService = inject(EquipmentService);
 
   private filter = computed(() => {
@@ -33,7 +26,7 @@ export class EquipmentListComponent {
 
   private equipment$: Observable<EquipmentPartial[]> = combineReload(toObservable(this.filter), this.equipmentService.reload$).pipe(
     debounceTime(300),
-    switchMap(filter => this.equipmentService.getList(filter)),
+    switchMap((filter) => this.equipmentService.getList(filter)),
   );
 
   name = signal('');
@@ -41,6 +34,4 @@ export class EquipmentListComponent {
   equipment = toSignal(this.equipment$, { initialValue: [] });
 
   displayedColumns = ['name'];
-
-
 }
