@@ -188,8 +188,8 @@ export class UserEditComponent implements CanComponentDeactivate {
   }
 
   async onDeleteSessions(sessionIds: string[], username: string) {
-    const confirmation = await this.confirmationDialog.confirmDelete();
-    if (!confirmation) {
+
+    if (await this.confirmationDialog.confirmDelete() !== true) {
       return;
     }
 
