@@ -12,10 +12,10 @@ import {
   NG_VALUE_ACCESSOR,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { Customer, CustomerFinancial } from 'src/app/interfaces';
 import { PaytraqClient } from 'src/app/interfaces/paytraq';
 import { PaytraqSearchHeaderComponent } from 'src/app/jobs-admin/paytraq-search-header/paytraq-search-header.component';
-import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { PaytraqClientService } from '../../services/paytraq-client.service';
 import { PaytraqCustomerTableComponent } from './paytraq-customer-table/paytraq-customer-table.component';
 
@@ -36,8 +36,8 @@ import { PaytraqCustomerTableComponent } from './paytraq-customer-table/paytraq-
   imports: [
     PaytraqCustomerTableComponent,
     ReactiveFormsModule,
-    MaterialLibraryModule,
     PaytraqSearchHeaderComponent,
+    MatButtonModule,
   ],
 })
 export class PaytraqCustomerComponent implements ControlValueAccessor {

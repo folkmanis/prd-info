@@ -18,9 +18,10 @@ import {
   Validator,
   Validators,
 } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 import { JobProductionStageMaterial, Material } from 'src/app/interfaces';
 import { SelectDirective } from 'src/app/library/directives/select.directive';
-import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { MaterialUnitsDirective } from './material-units.directive';
 
 type MaterialGroup = FormGroup<{
@@ -36,10 +37,11 @@ type MaterialGroup = FormGroup<{
   styleUrls: ['./production-material.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    MaterialLibraryModule,
     ReactiveFormsModule,
     MaterialUnitsDirective,
     SelectDirective,
+    MatIcon,
+    MatButtonModule,
   ],
   providers: [
     {

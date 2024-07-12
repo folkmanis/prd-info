@@ -18,6 +18,9 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatOption, MatSelect } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { isEqual, pickBy } from 'lodash-es';
 import { Observable, map, of } from 'rxjs';
@@ -27,7 +30,6 @@ import { ConfirmationDialogService } from 'src/app/library';
 import { AppClassTransformerService } from 'src/app/library/class-transformer/app-class-transformer.service';
 import { navigateRelative } from 'src/app/library/common';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
-import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { PasswordInputDirective } from 'src/app/library/password-input';
 import { PasswordInputGroupComponent } from 'src/app/library/password-input/password-input-group/password-input-group.component';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
@@ -36,6 +38,9 @@ import { XmfCustomer } from 'src/app/xmf-search/interfaces';
 import { UsersService } from '../../services/users.service';
 import { UsersListComponent } from '../users-list/users-list.component';
 import { SessionsComponent } from './sessions/sessions.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInput } from '@angular/material/input';
+import { MatCheckbox } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-user-edit',
@@ -44,13 +49,19 @@ import { SessionsComponent } from './sessions/sessions.component';
   styleUrls: ['./user-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    MaterialLibraryModule,
     ReactiveFormsModule,
     SessionsComponent,
     PasswordInputDirective,
     SimpleFormContainerComponent,
     PasswordInputGroupComponent,
     AsyncPipe,
+    MatFormFieldModule,
+    MatSelect,
+    MatOption,
+    MatCardModule,
+    MatButtonModule,
+    MatInput,
+    MatCheckbox,
   ],
 })
 export class UserEditComponent implements CanComponentDeactivate {

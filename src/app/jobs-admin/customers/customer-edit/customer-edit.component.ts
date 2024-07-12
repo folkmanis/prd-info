@@ -16,12 +16,16 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 import { isEqual, isNull, omitBy } from 'lodash-es';
 import { Customer, NewCustomer } from 'src/app/interfaces';
 import { navigateRelative } from 'src/app/library/common';
 import { InputUppercaseDirective } from 'src/app/library/directives/input-uppercase.directive';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
-import { MaterialLibraryModule } from 'src/app/library/material-library.module';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { CustomersService } from 'src/app/services';
 import { configuration } from 'src/app/services/config.provider';
@@ -41,13 +45,17 @@ type CustomerEditGroup = FormGroup<{
   styleUrls: ['./customer-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    MaterialLibraryModule,
     ReactiveFormsModule,
     SimpleFormContainerComponent,
     PaytraqCustomerComponent,
     InputUppercaseDirective,
     FtpUserComponent,
     CustomerContactsComponent,
+    MatFormFieldModule,
+    MatCardModule,
+    MatDividerModule,
+    MatCheckboxModule,
+    MatInput,
   ],
 })
 export class CustomerEditComponent implements CanComponentDeactivate {
