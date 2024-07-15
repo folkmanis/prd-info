@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, input, output } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,6 +28,18 @@ const INITIAL_DELAY = 3000;
   imports: [MatToolbarModule, MatButtonModule, MatIconModule, RouterLink, ViewSizeModule, MatBadgeModule, MessagesTriggerDirective, MatMenuModule, AsyncPipe],
 })
 export class ToolbarComponent implements OnInit {
+  private messagingService = inject(MessagingService);
+  private notifications = inject(NotificationsService);
+  private loginService = inject(LoginService);
+
+  private systemNotifications$ = timer(INITIAL_DELAY).pipe(
+    take(1),
+    mergeMap(() => this.notifications.wsMultiplex('system') as Observable<SystemNotification>),
+    throttleTime(500),
+    takeUntilDestroyed(),
+    share(),
+  );
+
   user = input.required<User>();
 
   activeModule = input<UserModule | null>(null);
@@ -38,20 +50,6 @@ export class ToolbarComponent implements OnInit {
 
   messagesCount$: Observable<number> = this.messagingService.messagesCount$;
   unreadMessagesCount$: Observable<number> = this.messagingService.unreadCount$;
-
-  private systemNotifications$ = timer(INITIAL_DELAY).pipe(
-    take(1),
-    mergeMap((_) => this.notifications.wsMultiplex('system') as Observable<SystemNotification>),
-    throttleTime(500),
-    takeUntilDestroyed(),
-    share(),
-  );
-
-  constructor(
-    private messagingService: MessagingService,
-    private notifications: NotificationsService,
-    private loginService: LoginService,
-  ) {}
 
   ngOnInit(): void {
     this.systemNotifications$.subscribe(() => this.messagingService.reload());
