@@ -1,6 +1,7 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { AsyncPipe, CurrencyPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
+import { CurrencyPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, effect, input } from '@angular/core';
+import { outputFromObservable } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,30 +19,31 @@ import { COLUMNS, COLUMNS_SMALL, JobData, JobWithUpdate } from '../interfaces';
   templateUrl: './job-prices-table.component.html',
   styleUrls: ['./job-prices-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatTableModule, ScrollTopDirective, MatCheckboxModule, MatButtonModule, MatIconModule, RouterLink, CurrencyPipe, AsyncPipe, ViewSizeDirective],
+  imports: [MatTableModule, ScrollTopDirective, MatCheckboxModule, MatButtonModule, MatIconModule, RouterLink, CurrencyPipe, ViewSizeDirective],
+  hostDirectives: [ScrollTopDirective],
 })
 export class JobPricesTableComponent {
-  private _jobs: JobData[] = [];
-  @Input()
-  set jobs(value: JobData[]) {
-    this._jobs = value;
-    this.selection.clear();
-  }
-  get jobs() {
-    return this._jobs;
-  }
+  jobs = input([] as JobData[]);
 
   selection = new SelectionModel<JobData>(true, [], true);
 
-  @Output() jobChanges = this.selection.changed.pipe(
-    map((changes) => changes.source.selected),
-    map((selected) => this.jobUpdateFields(selected)),
+  jobChange = outputFromObservable(
+    this.selection.changed.pipe(
+      map((changes) => changes.source.selected),
+      map((selected) => this.jobUpdateFields(selected)),
+    ),
   );
 
   trackByFn = (_: number, item: JobData) => `${item.jobId}-${item.productsIdx}`;
 
   col = COLUMNS;
   colSmall = COLUMNS_SMALL;
+
+  constructor() {
+    effect(() => {
+      this.jobs() && this.selection.clear();
+    });
+  }
 
   private jobUpdateFields(jobs: Pick<JobWithUpdate, 'jobId' | 'productsIdx' | 'products.priceUpdate'>[]): Partial<Job>[] {
     return jobs.map((job) => ({

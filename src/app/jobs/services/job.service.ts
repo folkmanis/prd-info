@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ClassTransformer } from 'class-transformer';
 import { endOfDay } from 'date-fns';
-import { EMPTY, firstValueFrom, map, Observable, switchMap } from 'rxjs';
+import { firstValueFrom, map, Observable, switchMap } from 'rxjs';
 import { combineReload } from 'src/app/library/rxjs';
 import { NotificationsService } from '../../services';
 import { Job, JobPartial, JobQueryFilter, JobQueryFilterOptions, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
@@ -48,9 +48,9 @@ export class JobService {
     return firstValueFrom(this.api.createFolder(jobId));
   }
 
-  updateJobs(jobs: Partial<Job>[], params?: JobUpdateParams): Observable<number> {
+  async updateJobs(jobs: Partial<Job>[], params?: JobUpdateParams): Promise<number> {
     if (jobs.some((job) => !job.jobId)) {
-      return EMPTY;
+      return 0;
     }
     return this.api.updateMany(jobs, params);
   }

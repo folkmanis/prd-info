@@ -1,45 +1,35 @@
-$padd: 4px;
-
 :host {
   display: block;
-  height: 100%;
-}
-
-.container {
   height: 100%;
   overflow: auto;
 }
 
-table {
-  table-layout: fixed;
-}
-
 .mat-mdc-cell,
 .mat-mdc-header-cell {
-  padding-left: 4px;
-  padding-right: 4px;
+  padding-inline: 4px;
 }
 
 .mat-column-selection {
-  width: 48px;
+  flex: 0 48px;
 }
 
 .mat-column-jobId {
-  width: 4em;
+  flex: 0 4em;
 }
 
 .mat-column-custCode {
-  width: 3em;
+  flex: 0 3em;
 }
 
 .mat-column-name {
+  flex: 1 100px;
 
   &>div {
     display: flex;
     align-items: center;
+    overflow: hidden;
 
     & span.name {
-      flex: 1 1 600px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -47,17 +37,17 @@ table {
 
     & span.buttons {
       display: none;
-      flex: 0 0 44px;
+      flex: 0 44px;
+
+      .mat-mdc-row:hover & {
+        display: initial;
+      }
     }
   }
 }
 
-tr:hover .mat-column-name span.buttons {
-  display: initial;
-}
 
 .mat-column-products-name {
-  padding-left: $padd;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -67,12 +57,19 @@ tr:hover .mat-column-name span.buttons {
   }
 }
 
-.mat-column-products-price,
 .mat-column-products-total,
 .mat-column-products-count {
-  width: 5em;
-  padding-left: $padd;
-  text-align: right;
+  justify-content: end;
+  flex: 0 5em;
+}
+
+.mat-column-products-price {
+  justify-content: end;
+  flex: 0 5em;
+
+  .no-price & {
+    font-weight: bold;
+  }
 }
 
 .price-update {
@@ -84,18 +81,14 @@ tr:hover .mat-column-name span.buttons {
   }
 }
 
-.no-price .mat-column-products-price {
-  font-weight: bold;
-}
 
 .mat-column-products-units {
-  width: 6em;
-  padding-left: $padd;
+  flex: 0 6em;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
 .mat-column-edit {
-  width: 24px;
+  flex: 0 48px;
 }

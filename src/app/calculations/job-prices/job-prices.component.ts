@@ -1,13 +1,13 @@
-import { ChangeDetectionStrategy, Component, Input, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Job, JobService, JobsWithoutInvoicesTotals } from 'src/app/jobs';
+import { navigateRelative } from 'src/app/library/common';
 import { CustomerSelectorComponent } from './customer-selector/customer-selector.component';
-import { JobPricesTableComponent } from './job-prices-table/job-prices-table.component';
 import { JobData } from './interfaces';
+import { JobPricesTableComponent } from './job-prices-table/job-prices-table.component';
 
 const updateMessage = (n: number) => `Izmainīti ${n} ieraksti.`;
 
@@ -20,38 +20,32 @@ const updateMessage = (n: number) => `Izmainīti ${n} ieraksti.`;
   imports: [CustomerSelectorComponent, MatButtonModule, MatBadgeModule, MatCardModule, JobPricesTableComponent],
 })
 export class JobPricesComponent {
-  @Input()
-  customer: string;
+  private snack = inject(MatSnackBar);
+  private jobService = inject(JobService);
+  private navigate = navigateRelative();
 
-  @Input()
-  jobs: JobData[] = [];
+  customer = input<string>();
+  customerWithDefault = computed(() => this.customer() ?? '');
 
-  @Input()
-  customers: JobsWithoutInvoicesTotals[] = [];
+  jobs = input([] as JobData[]);
+
+  customers = input([] as JobsWithoutInvoicesTotals[]);
 
   jobUpdate = signal<Partial<Job>[]>([]);
 
   saveEnabled = computed(() => this.jobUpdate().length > 0);
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private snack: MatSnackBar,
-    private jobService: JobService,
-  ) {}
-
-  onCustomerSelected(value: string | undefined) {
-    this.router.navigate([], { queryParams: { customer: value }, relativeTo: this.route });
+  onCustomerSelected(value: string) {
+    this.navigate([], { queryParams: { customer: value || undefined } });
   }
 
   onJobsSelected(value: Partial<Job>[]) {
     this.jobUpdate.set(value);
   }
 
-  onSavePrices() {
-    this.jobService.updateJobs(this.jobUpdate()).subscribe((updatedCount) => {
-      this.snack.open(updateMessage(updatedCount), 'OK', { duration: 3000 });
-      this.router.navigate([], { queryParams: { customer: this.customer, upd: Date.now() }, relativeTo: this.route });
-    });
+  async onSavePrices() {
+    const updatedCount = await this.jobService.updateJobs(this.jobUpdate());
+    this.snack.open(updateMessage(updatedCount), 'OK', { duration: 3000 });
+    await this.navigate([], { queryParams: { customer: this.customer(), upd: Date.now() } });
   }
 }

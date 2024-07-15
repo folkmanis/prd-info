@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ClassTransformer } from 'class-transformer';
 import { pickBy } from 'lodash-es';
-import { map, Observable } from 'rxjs';
+import { firstValueFrom, map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { HttpOptions } from 'src/app/library/http';
 import { Job, JobPartial, JobQueryFilter, JobsProduction, JobsProductionQuery, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
@@ -34,8 +34,9 @@ export class JobsApiService {
     return this.http.get(this.path, new HttpOptions(filter));
   }
 
-  updateMany(jobs: Partial<Job>[], params?: JobUpdateParams) {
-    return this.http.patch<number>(this.path, jobs, new HttpOptions(params));
+  async updateMany(jobs: Partial<Job>[], params?: JobUpdateParams): Promise<number> {
+    const response = await firstValueFrom(this.http.patch<{ count: number }>(this.path, jobs, new HttpOptions(params)));
+    return response.count;
   }
 
   getOne(jobId: number) {
