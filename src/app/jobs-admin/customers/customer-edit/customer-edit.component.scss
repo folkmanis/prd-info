@@ -24,12 +24,8 @@ section#ftp-user {
     margin: 8px 0;
   }
 
-  app-ftp-user {
+  app-ftp-user:not([hidden]) {
     display: block;
     margin-top: 8px;
-
-    &.hidden {
-      display: none;
-    }
   }
 }

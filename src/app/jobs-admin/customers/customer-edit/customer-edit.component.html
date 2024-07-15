@@ -47,7 +47,7 @@
         <!-- ftp folderis -->
         <section id="ftp-user">
           <mat-checkbox class="input-element" formControlName="ftpUser" #ftpUser> FTP lietotājs </mat-checkbox>
-          <app-ftp-user [class.hidden]="!ftpUser.checked" formControlName="ftpUserData" />
+          <app-ftp-user [attr.hidden]="!ftpUser.checked ? '' : null" formControlName="ftpUserData" />
         </section>
         <mat-divider></mat-divider>
         <!-- Neaktīvs -->
