@@ -1,14 +1,14 @@
 <h4>Nav izrakstīts</h4>
 
 <mat-list>
-  @for (cust of noInvoices; track $index) {
+  @for (cust of noInvoices(); track $index) {
     <mat-list-item appDenseList appDenseListHeight="32px" (click)="onSetCustomer(cust._id)">
-      <span matListItemLine>
-        <span>
+      <span class="list-item">
+        <span class="customer">
           {{ cust._id }}
         </span>
 
-        <span>
+        <span class="cost">
           <strong> {{ cust.totals | currency }} </strong>
         </span>
       </span>

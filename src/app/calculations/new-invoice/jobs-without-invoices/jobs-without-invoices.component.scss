@@ -1,9 +1,21 @@
 :host {
-    display: block;
-    margin-bottom: 16px;
+  display: block;
+  margin-bottom: 16px;
 }
 
 h4 {
-    margin: 8px 0 0;
-    padding: 0 16px;
+  margin: 8px 0 0;
+  padding: 0 16px;
+}
+
+.list-item {
+  display: flex;
+
+  .customer {
+    padding-right: 8px;
+  }
+
+  .cost {
+    margin-left: auto;
+  }
 }

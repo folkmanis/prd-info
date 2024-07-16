@@ -1,7 +1,8 @@
 import { CurrencyPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
 import { JobsWithoutInvoicesTotals } from 'src/app/jobs';
+import { DenseListDirective } from 'src/app/library/dense-list/dense-list.directive';
 
 @Component({
   selector: 'app-jobs-without-invoices',
@@ -9,14 +10,14 @@ import { JobsWithoutInvoicesTotals } from 'src/app/jobs';
   templateUrl: './jobs-without-invoices.component.html',
   styleUrls: ['./jobs-without-invoices.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatListModule, CurrencyPipe],
+  imports: [MatListModule, CurrencyPipe, DenseListDirective],
 })
 export class JobsWithoutInvoicesComponent {
-  @Input() noInvoices: JobsWithoutInvoicesTotals[] = [];
+  noInvoices = input([] as JobsWithoutInvoicesTotals[]);
 
-  @Output() customerChanges = new EventEmitter<string>();
+  customerChange = output<string>();
 
   onSetCustomer(id: string) {
-    this.customerChanges.next(id);
+    this.customerChange.emit(id);
   }
 }

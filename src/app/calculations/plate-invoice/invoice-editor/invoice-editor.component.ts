@@ -10,8 +10,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink } from '@angular/router';
 import { Locale } from 'date-fns';
 import { saveAs } from 'file-saver';
-import { map, mergeMap } from 'rxjs';
+import { map } from 'rxjs';
 import { Invoice } from 'src/app/interfaces';
+import { ConfirmationDialogService } from 'src/app/library';
 import { navigateRelative } from 'src/app/library/common';
 import { DATE_FNS_LOCALE } from 'src/app/library/date-services';
 import { ViewSizeModule } from 'src/app/library/view-size/view-size.module';
@@ -23,10 +24,9 @@ import { InvoicesService } from '../../services/invoices.service';
 import { InvoiceCsv } from './invoice-csv';
 import { InvoicePaytraqComponent } from './invoice-paytraq/invoice-paytraq.component';
 import { InvoiceProductsComponent } from './invoice-products/invoice-products.component';
-import { ConfirmationDialogService } from 'src/app/library';
 
 const deleteSuccessMessage = (id: string) => `Aprēķins ${id} izdzēsts`;
-const deleteFailMessage = (err: Error) => `Radās kļūda: ${err.message}`;
+const errorMessage = (err: Error) => `Radās kļūda: ${err.message}`;
 
 const PAYTRAQ_SAVED_MESSAGE = 'Izveidota pavadzīme Paytraq sistēmā';
 const PAYTRAQ_UNLINK_MESSAGE = 'Paytraq savienojums dzēsts';
@@ -107,42 +107,42 @@ export class InvoiceEditorComponent implements InvoiceEditor {
       this.snack.open(deleteSuccessMessage(invoiceId), 'OK', { duration: 5000 });
       this.navigate(['..']);
     } catch (err) {
-      this.snack.open(deleteFailMessage(err), 'OK', { duration: 5000 });
+      this.snack.open(errorMessage(err), 'OK', { duration: 5000 });
     }
   }
 
-  onSaveToPaytraq(): void {
+  async onSaveToPaytraq() {
     this.busy.set(true);
     const invoice = this.invoice();
 
-    this.invoicesService
-      .postPaytraqInvoice(invoice)
-      .pipe(
-        mergeMap((paytraqId) =>
-          this.invoicesService.getPaytraqInvoiceRef(paytraqId).pipe(
-            mergeMap((documentRef) =>
-              this.invoicesService.updateInvoice(invoice.invoiceId, {
-                paytraq: { paytraqId, documentRef },
-              }),
-            ),
-          ),
-        ),
-      )
-      .subscribe(() => {
-        this.busy.set(false);
-        this.snack.open(PAYTRAQ_SAVED_MESSAGE, 'OK', { duration: 5000 });
-        this.reload();
+    try {
+      const paytraqId = await this.invoicesService.postPaytraqInvoice(invoice);
+      const documentRef = await this.invoicesService.getPaytraqInvoiceRef(paytraqId);
+      await this.invoicesService.updateInvoice(invoice.invoiceId, {
+        paytraq: { paytraqId, documentRef },
       });
+      this.snack.open(PAYTRAQ_SAVED_MESSAGE, 'OK', { duration: 5000 });
+      this.reload();
+    } catch (error) {
+      this.snack.open(errorMessage(error), 'OK', { duration: 5000 });
+    } finally {
+      this.busy.set(false);
+    }
   }
 
-  onUnlinkPaytraq(): void {
+  async onUnlinkPaytraq() {
     this.busy.set(true);
     const { invoiceId } = this.invoice();
-    this.invoicesService.updateInvoice(invoiceId, { paytraq: null }).subscribe(() => {
-      this.busy.set(false);
+
+    try {
+      await this.invoicesService.updateInvoice(invoiceId, { paytraq: null });
       this.snack.open(PAYTRAQ_UNLINK_MESSAGE, 'OK', { duration: 5000 });
       this.reload();
-    });
+    } catch (error) {
+      this.snack.open(errorMessage(error), 'OK', { duration: 5000 });
+    } finally {
+      this.busy.set(false);
+    }
   }
 
   async navigateToProduct(name: string) {

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { pick } from 'lodash-es';
-import { firstValueFrom, map, Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { Invoice, INVOICE_UPDATE_FIELDS, InvoiceForReport, InvoicesFilter, InvoiceTable, InvoiceUpdate } from 'src/app/interfaces';
 import { PaytraqInvoice } from 'src/app/interfaces/paytraq';
 import { Sale } from 'src/app/interfaces/paytraq/invoice';
@@ -26,19 +26,19 @@ export class InvoicesService {
     return this.jobService.getJobListUnwinded(filter);
   }
 
-  createInvoice(params: { jobIds: number[]; customerId: string }): Observable<Invoice> {
+  createInvoice(params: { jobIds: number[]; customerId: string }): Promise<Invoice> {
     return this.api.createInvoice(params);
   }
 
-  getInvoice(invoiceId: string): Observable<Invoice> {
+  async getInvoice(invoiceId: string): Promise<Invoice> {
     return this.api.getOne(invoiceId);
   }
 
-  getReport(data: InvoiceForReport) {
+  async getReport(data: InvoiceForReport) {
     return this.api.getReport(data);
   }
 
-  updateInvoice(id: string, update: InvoiceUpdate): Observable<Invoice> {
+  async updateInvoice(id: string, update: InvoiceUpdate): Promise<Invoice> {
     update = pick(update, ...INVOICE_UPDATE_FIELDS);
     return this.api.updateOne(id, update);
   }
@@ -47,13 +47,19 @@ export class InvoicesService {
     return this.api.getAll(params);
   }
 
-  getPaytraqInvoiceRef(id: number): Observable<string> {
-    return this.paytraqApi.getSale(id).pipe(map((data) => data.sale?.header?.document?.documentRef));
+  async getPaytraqInvoiceRef(id: number): Promise<string> {
+    const data = await this.paytraqApi.getSale(id);
+    const documentRef = data.sale?.header?.document?.documentRef;
+    if (!documentRef) {
+      throw new Error('Undefined');
+    }
+    return documentRef;
   }
 
-  postPaytraqInvoice(invoice: Invoice): Observable<number> {
+  async postPaytraqInvoice(invoice: Invoice): Promise<number> {
     const ptInvoice = new PaytraqInvoiceClass(invoice);
-    return this.paytraqApi.postSale(ptInvoice).pipe(map((data) => data.response.documentID));
+    const data = await this.paytraqApi.postSale(ptInvoice);
+    return data.response.documentID;
   }
 
   async deleteInvoice(invoiceId: string): Promise<number> {
