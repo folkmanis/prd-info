@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { firstValueFrom, map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { User } from 'src/app/interfaces';
 import { AppClassTransformerService } from 'src/app/library';
@@ -13,24 +13,21 @@ import { DEMO_MODE } from 'src/app/services/app-mode.provider';
 })
 export class LoginApiService {
   private path = getAppParams('apiPath') + 'login/';
+  private http = inject(HttpClient);
+  private transformer = inject(AppClassTransformerService);
 
   private isDemo = inject(DEMO_MODE);
 
-  constructor(
-    private http: HttpClient,
-    private transformer: AppClassTransformerService,
-  ) {}
-
-  login(login: Login): Observable<User> {
-    return this.http.post<Record<string, any>>(this.path, login).pipe(this.transformer.toClass(User));
+  async login(login: Login): Promise<User> {
+    return this.transformer.toInstanceAsync(User, this.http.post<Record<string, any>>(this.path, login));
   }
 
-  logout(): Observable<unknown> {
-    return this.http.delete(this.path);
+  async logout(): Promise<unknown> {
+    return firstValueFrom(this.http.delete(this.path));
   }
 
-  getLogin(): Observable<User> {
-    return this.http.get<Record<string, any>>(this.path).pipe(this.transformer.toClass(User));
+  async getLogin(): Promise<User> {
+    return this.transformer.toInstanceAsync(User, this.http.get<Record<string, any>>(this.path));
   }
 
   getSessionToken(): Observable<string> {
@@ -41,9 +38,9 @@ export class LoginApiService {
     return this.http.get<{ sessionId: string }>(this.path + 'session-id').pipe(map((data) => data.sessionId));
   }
 
-  patchUser({ username, ...update }: Partial<User>): Observable<User> {
+  async patchUser({ username, ...update }: Partial<User>): Promise<User> {
     this.checkDemoMode();
-    return this.http.patch<Record<string, any>>(this.path, update, new HttpOptions()).pipe(this.transformer.toClass(User));
+    return this.transformer.toInstanceAsync(User, this.http.patch<Record<string, any>>(this.path, update, new HttpOptions()));
   }
 
   private checkDemoMode(): void | never {

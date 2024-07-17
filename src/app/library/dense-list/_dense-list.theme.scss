@@ -2,49 +2,59 @@
 
 @mixin app-dense-list-color($color) {
 
-    $primary: map-get($color, primary);
+  $primary: map-get($color, primary);
 
-    mat-list-item[appDenseList]:hover {
+  mat-list-item[appDenseList]:hover {
 
-        background-color: mat.m2-get-color-from-palette($primary, "lighter");
+    background-color: mat.m2-get-color-from-palette($primary, "lighter");
 
-    }
+  }
 }
 
 @mixin app-dense-list() {
 
-    mat-list-item[appDenseList] {
+  mat-list-item[appdenselist] {
 
-        &.mdc-list-item.mdc-list-item--with-one-line {
-            cursor: default;
-        }
+    --mdc-list-list-item-label-text-size: 14px;
+    --mdc-list-list-item-label-text-line-height: 16px;
 
-
-        span[matListItemLine] {
-            display: flex;
-            width: 100%;
-
-            >:nth-child(2) {
-                margin-left: auto;
-            }
-        }
-
-        [appDenseListTotal] {
-            color: var(--primary-color);
-            font-weight: 700;
-        }
-
+    &.mdc-list-item.mdc-list-item--with-one-line {
+      cursor: default;
     }
+
+
+    .mat-mdc-list-item-unscoped-content>span {
+
+      display: flex;
+
+      >:first-child {
+        padding-right: 8px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      >:last-child {
+        margin-left: auto;
+      }
+    }
+
+    [appDenseListTotal] {
+      color: var(--primary-color);
+      font-weight: 700;
+    }
+
+  }
 
 }
 
 @mixin theme($theme) {
 
-    $color: mat.m2-get-color-config($theme);
+  $color: mat.m2-get-color-config($theme);
 
-    @if $color !=null {
-        @include app-dense-list-color($color);
-    }
+  @if $color !=null {
+    @include app-dense-list-color($color);
+  }
 
-    @include app-dense-list();
+  @include app-dense-list();
 }

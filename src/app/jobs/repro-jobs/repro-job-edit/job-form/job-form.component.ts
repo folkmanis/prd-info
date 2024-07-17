@@ -1,5 +1,5 @@
 import { TextFieldModule } from '@angular/cdk/text-field';
-import { ChangeDetectionStrategy, Component, computed, inject, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, viewChild } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -84,14 +84,10 @@ export class JobFormComponent {
 
   customerProducts = toSignal(this.customerProducts$);
 
-  showPrices = signal(false);
+  showPrices = toSignal(this.loginService.isModuleAvailable('calculations'), { initialValue: false });
 
   get nameControl() {
     return this.formService.form.controls.name;
-  }
-
-  constructor() {
-    this.loginService.isModuleAvailable('calculations').then((result) => this.showPrices.set(result));
   }
 
   focusCustomer() {

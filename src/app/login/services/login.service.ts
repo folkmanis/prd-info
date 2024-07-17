@@ -1,6 +1,5 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, firstValueFrom, merge, Observable, of, Subject } from 'rxjs';
-import { catchError, shareReplay, switchMap } from 'rxjs/operators';
+import { inject, Injectable } from '@angular/core';
+import { BehaviorSubject, catchError, firstValueFrom, map, merge, Observable, of, shareReplay, Subject, switchMap } from 'rxjs';
 import { User } from 'src/app/interfaces';
 import { Login } from '../login.interface';
 import { LoginApiService } from './login-api.service';
@@ -11,21 +10,22 @@ type UserUpdate = Partial<User>;
   providedIn: 'root',
 })
 export class LoginService {
-  private loginUpdate$ = new Subject<User | null>();
+  private api = inject(LoginApiService);
 
+  private loginUpdate$ = new Subject<User | null>();
   private reload$ = new BehaviorSubject<void>(null);
 
-  user$: Observable<User> = merge(this.reload$.pipe(switchMap(() => this.getLogin())), this.loginUpdate$).pipe(shareReplay(1));
-
-  constructor(private api: LoginApiService) {}
+  user$: Observable<User> = merge(this.reload$.pipe(switchMap(() => this.api.getLogin())), this.loginUpdate$).pipe(
+    catchError(() => of(null)),
+    shareReplay(1),
+  );
 
   async isLoggedIn(): Promise<boolean> {
-    const user = await firstValueFrom(this.user$);
-    return !!user;
+    return !!(await firstValueFrom(this.user$));
   }
 
   async logIn(login: Login): Promise<User> {
-    const user = await firstValueFrom(this.api.login(login));
+    const user = await this.api.login(login);
     this.loginUpdate$.next(user);
     return user;
   }
@@ -35,13 +35,12 @@ export class LoginService {
   }
 
   async logOut(): Promise<void> {
-    await firstValueFrom(this.api.logout());
+    await this.api.logout();
     this.loginUpdate$.next(null);
   }
 
-  async isModuleAvailable(module: string): Promise<boolean> {
-    const user = await firstValueFrom(this.user$);
-    return !!user?.preferences.modules.includes(module);
+  isModuleAvailable(module: string): Observable<boolean> {
+    return this.user$.pipe(map((user) => !!user?.preferences.modules.includes(module)));
   }
 
   sessionToken(): Observable<string> {
@@ -49,16 +48,12 @@ export class LoginService {
   }
 
   async updateUser(update: UserUpdate): Promise<User> {
-    const user = await firstValueFrom(this.api.patchUser(update));
+    const user = await this.api.patchUser(update);
     this.loginUpdate$.next(user);
     return user;
   }
 
   getSessionId(): Observable<string> {
     return this.api.getSessionId();
-  }
-
-  private getLogin(): Observable<User | null> {
-    return this.api.getLogin().pipe(catchError(() => of(null)));
   }
 }

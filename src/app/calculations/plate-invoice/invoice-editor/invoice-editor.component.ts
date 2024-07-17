@@ -10,7 +10,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink } from '@angular/router';
 import { Locale } from 'date-fns';
 import { saveAs } from 'file-saver';
-import { map } from 'rxjs';
 import { Invoice } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library';
 import { navigateRelative } from 'src/app/library/common';
@@ -70,7 +69,7 @@ export class InvoiceEditorComponent implements InvoiceEditor {
 
   pyatraqEnabled = configuration('paytraq', 'enabled');
 
-  isJobsAdmin = toSignal(inject(LoginService).user$.pipe(map((usr) => usr.preferences.modules.includes('jobs-admin'))), { initialValue: false });
+  isJobsAdmin = toSignal(inject(LoginService).isModuleAvailable('jobs-admin'), { initialValue: false });
 
   busy = signal(false);
 

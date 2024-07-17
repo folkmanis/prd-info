@@ -1,8 +1,8 @@
 import { CurrencyPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
-import { InvoicesTotals } from '../../interfaces';
 import { DenseListDirective } from 'src/app/library/dense-list/dense-list.directive';
+import { InvoicesTotals } from '../../interfaces';
 
 @Component({
   selector: 'app-selection-totals',
@@ -13,6 +13,5 @@ import { DenseListDirective } from 'src/app/library/dense-list/dense-list.direct
   imports: [MatListModule, CurrencyPipe, DenseListDirective],
 })
 export class SelectionTotalsComponent {
-  @Input()
-  invoicesTotals: InvoicesTotals | null = null;
+  invoicesTotals = input(null as InvoicesTotals | null);
 }

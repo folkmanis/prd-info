@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { firstValueFrom, map, Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { Invoice, InvoiceForReport, InvoiceTable } from 'src/app/interfaces';
 import { AppClassTransformerService } from 'src/app/library';
@@ -26,15 +26,12 @@ export class InvoicesApiService {
     return firstValueFrom(this.http.patch(this.path + id, data, new HttpOptions()).pipe(this.transformer.toClass(Invoice)));
   }
 
-  deleteOne(id: string): Observable<number> {
-    return this.http.delete<{ deletedCount: number }>(this.path + id, new HttpOptions()).pipe(
-      map((data) => {
-        if (!data.deletedCount) {
-          throw new Error('Not deleted');
-        }
-        return data.deletedCount;
-      }),
-    );
+  async deleteOne(id: string): Promise<number> {
+    const { deletedCount } = await firstValueFrom(this.http.delete<{ deletedCount: number }>(this.path + id, new HttpOptions()));
+    if (!deletedCount) {
+      throw new Error('Not deleted');
+    }
+    return deletedCount;
   }
 
   async createInvoice(params: { jobIds: number[]; customerId: string }): Promise<Invoice> {

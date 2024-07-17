@@ -20,19 +20,6 @@
   }
 }
 
-@mixin app-table-typography($config-or-theme) {
-
-  $config: mat.m2-get-typography-config($config-or-theme);
-
-  .app-table tbody tr,
-  .app-table .mat-mdc-row {
-    &:hover {
-      font-weight: 800;
-      // font-weight: mat.font-weight($config, body+3);
-    }
-  }
-}
-
 @mixin app-table() {
 
   table.app-table,
@@ -51,10 +38,6 @@
   // systems have been explicitly set to `null`.
   @if $color !=null {
     @include app-table-color($color);
-  }
-
-  @if $typography !=null {
-    @include app-table-typography($typography);
   }
 
   @include app-table();

@@ -24,7 +24,7 @@ export class ProductsProductionComponent {
 
   private data$ = this.productsService.dataFlow();
 
-  isAdmin = signal(false);
+  isAdmin = toSignal(this.loginService.isModuleAvailable('jobs-admin'), { initialValue: false });
 
   query = this.productsService.query;
 
@@ -38,12 +38,9 @@ export class ProductsProductionComponent {
   });
 
   constructor() {
-    this.loginService.isModuleAvailable('jobs-admin').then((value) => this.isAdmin.set(value));
-
     effect(
       () => {
-        const products = this.data();
-        this.selection.set(products);
+        this.selection.set(this.data());
       },
       { allowSignalWrites: true },
     );

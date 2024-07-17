@@ -1,9 +1,8 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { pick } from 'lodash-es';
-import { firstValueFrom, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Invoice, INVOICE_UPDATE_FIELDS, InvoiceForReport, InvoicesFilter, InvoiceTable, InvoiceUpdate } from 'src/app/interfaces';
-import { PaytraqInvoice } from 'src/app/interfaces/paytraq';
-import { Sale } from 'src/app/interfaces/paytraq/invoice';
+import { PaytraqInvoice, Sale } from 'src/app/interfaces/paytraq';
 import { JobQueryFilterOptions, JobService, JobsWithoutInvoicesTotals, JobUnwindedPartial } from 'src/app/jobs';
 import { InvoicesApiService } from 'src/app/services/prd-api/invoices-api.service';
 import { PaytraqApiService } from 'src/app/services/prd-api/paytraq-api.service';
@@ -12,11 +11,9 @@ import { PaytraqApiService } from 'src/app/services/prd-api/paytraq-api.service'
   providedIn: 'root',
 })
 export class InvoicesService {
-  constructor(
-    private jobService: JobService,
-    private paytraqApi: PaytraqApiService,
-    private api: InvoicesApiService,
-  ) {}
+  private api = inject(InvoicesApiService);
+  private paytraqApi = inject(PaytraqApiService);
+  private jobService = inject(JobService);
 
   getJobsWithoutInvoicesTotals(): Observable<JobsWithoutInvoicesTotals[]> {
     return this.jobService.getJobsWithoutInvoicesTotals();
@@ -57,38 +54,36 @@ export class InvoicesService {
   }
 
   async postPaytraqInvoice(invoice: Invoice): Promise<number> {
-    const ptInvoice = new PaytraqInvoiceClass(invoice);
+    const ptInvoice = invoiceToPaytraqInvoice(invoice);
     const data = await this.paytraqApi.postSale(ptInvoice);
     return data.response.documentID;
   }
 
   async deleteInvoice(invoiceId: string): Promise<number> {
-    return firstValueFrom(this.api.deleteOne(invoiceId));
+    return this.api.deleteOne(invoiceId);
   }
 }
 
-class PaytraqInvoiceClass implements PaytraqInvoice {
-  sale: Sale;
-  constructor(invoice: Invoice) {
-    this.sale = {
-      header: {
-        document: {
-          client: {
-            clientID: invoice.customerInfo.financial.paytraqId,
-          },
+function invoiceToPaytraqInvoice(invoice: Invoice): PaytraqInvoice {
+  const sale: Sale = {
+    header: {
+      document: {
+        client: {
+          clientID: invoice.customerInfo.financial.paytraqId,
         },
-        saleType: 'sales_invoice',
-        operation: 'sell_goods',
       },
-      lineItems: {
-        lineItem: invoice.products.map((product) => ({
-          item: {
-            itemID: product.paytraqId,
-          },
-          qty: product.count,
-          price: product.price,
-        })),
-      },
-    };
-  }
+      saleType: 'sales_invoice',
+      operation: 'sell_goods',
+    },
+    lineItems: {
+      lineItem: invoice.products.map((product) => ({
+        item: {
+          itemID: product.paytraqId,
+        },
+        qty: product.count,
+        price: product.price,
+      })),
+    },
+  };
+  return { sale };
 }
