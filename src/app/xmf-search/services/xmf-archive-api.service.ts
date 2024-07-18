@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ClassTransformer } from 'class-transformer';
-import { Observable, map } from 'rxjs';
+import { Observable, firstValueFrom, map } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { HttpOptions } from 'src/app/library/http/http-options';
 import { ArchiveFacet, ArchiveRecord, SearchQuery } from '../interfaces';
@@ -23,8 +23,8 @@ export class XmfArchiveApiService {
     private transformer: ClassTransformer,
   ) {}
 
-  getXmfCustomer(): Observable<string[]> {
-    return this.http.get<string[]>(this.path + 'customers');
+  async getXmfCustomer(): Promise<string[]> {
+    return firstValueFrom(this.http.get<string[]>(this.path + 'customers'));
   }
 
   getArchive(query: SearchQuery, start?: number, limit?: number): Observable<ArchiveRecord[]> {

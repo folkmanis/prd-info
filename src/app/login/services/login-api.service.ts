@@ -34,8 +34,9 @@ export class LoginApiService {
     return this.http.get<{ data: string }>(this.path + 'session-token').pipe(map((value) => value.data));
   }
 
-  getSessionId(): Observable<string> {
-    return this.http.get<{ sessionId: string }>(this.path + 'session-id').pipe(map((data) => data.sessionId));
+  async getSessionId(): Promise<string> {
+    const { sessionId } = await firstValueFrom(this.http.get<{ sessionId: string }>(this.path + 'session-id'));
+    return sessionId;
   }
 
   async patchUser({ username, ...update }: Partial<User>): Promise<User> {

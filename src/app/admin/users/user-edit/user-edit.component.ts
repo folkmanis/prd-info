@@ -1,13 +1,14 @@
-import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormBuilder, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatCheckbox } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { isEqual, pickBy } from 'lodash-es';
-import { Observable, map, of } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { User, UserSession } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library';
@@ -16,15 +17,12 @@ import { navigateRelative } from 'src/app/library/common';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { PasswordInputDirective } from 'src/app/library/password-input';
 import { PasswordInputGroupComponent } from 'src/app/library/password-input/password-input-group/password-input-group.component';
+import { promiseToSignal } from 'src/app/library/rxjs';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { LoginService } from 'src/app/login';
-import { XmfCustomer } from 'src/app/xmf-search/interfaces';
 import { UsersService } from '../../services/users.service';
 import { UsersListComponent } from '../users-list/users-list.component';
 import { SessionsComponent } from './sessions/sessions.component';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInput } from '@angular/material/input';
-import { MatCheckbox } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-user-edit',
@@ -33,12 +31,12 @@ import { MatCheckbox } from '@angular/material/checkbox';
   styleUrls: ['./user-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    FormsModule,
     ReactiveFormsModule,
     SessionsComponent,
     PasswordInputDirective,
     SimpleFormContainerComponent,
     PasswordInputGroupComponent,
-    AsyncPipe,
     MatFormFieldModule,
     MatSelect,
     MatOption,
@@ -50,27 +48,27 @@ import { MatCheckbox } from '@angular/material/checkbox';
 })
 export class UserEditComponent implements CanComponentDeactivate {
   private navigate = navigateRelative();
-
+  private fb = inject(FormBuilder).nonNullable;
   private usersList = inject(UsersListComponent);
 
-  customers$: Observable<XmfCustomer[]> = this.usersService.getXmfCustomers();
+  customers = promiseToSignal(this.usersService.getXmfCustomers());
 
   userModules = getAppParams('userModules');
 
   sessions = signal<UserSession[] | null>(null);
 
-  currentSessionId$ = inject(LoginService).getSessionId();
+  currentSessionId = promiseToSignal(inject(LoginService).getSessionId());
 
-  form = new FormGroup({
-    username: new FormControl('', [Validators.required, usernamePatternValidator], [this.existingUsernameValidator()]),
-    name: new FormControl('', [Validators.required]),
-    password: new FormControl('', [Validators.required]),
-    last_login: new FormControl<Date>({ value: new Date(), disabled: true }),
-    userDisabled: new FormControl(false),
-    eMail: new FormControl(''),
-    preferences: new FormGroup({
-      customers: new FormControl([]),
-      modules: new FormControl([]),
+  form = this.fb.group({
+    username: ['', [Validators.required, usernamePatternValidator], [this.existingUsernameValidator()]],
+    name: ['', [Validators.required]],
+    password: ['', [Validators.required]],
+    last_login: { value: new Date(), disabled: true },
+    userDisabled: [false],
+    eMail: [''],
+    preferences: this.fb.group({
+      customers: [[] as string[]],
+      modules: [[] as string[]],
     }),
   });
 
@@ -93,9 +91,7 @@ export class UserEditComponent implements CanComponentDeactivate {
     return Object.keys(diff).length ? diff : undefined;
   });
 
-  get isNew() {
-    return !this.initialValue().username;
-  }
+  isNew = computed(() => !this.initialValue().username);
 
   get unameCtrl() {
     return this.form.controls.username;
@@ -131,7 +127,7 @@ export class UserEditComponent implements CanComponentDeactivate {
   }
 
   async onSave() {
-    if (this.isNew) {
+    if (this.isNew()) {
       const newUser = pickBy(this.form.getRawValue(), (val) => val !== null);
       const { username } = await this.usersService.addUser(newUser);
       this.afterUserSaved(username);
@@ -142,7 +138,8 @@ export class UserEditComponent implements CanComponentDeactivate {
     }
   }
 
-  async onPasswordChange(password: string, username: string) {
+  async onPasswordChange(password: string) {
+    const username = this.form.value.username;
     try {
       await this.usersService.updatePassword(username, password);
       this.snackBar.open(`Lietotāja ${username} parole nomainita!`, 'OK', { duration: 3000 });
@@ -151,7 +148,8 @@ export class UserEditComponent implements CanComponentDeactivate {
     }
   }
 
-  async onDeleteUser(username: string) {
+  async onDeleteUser() {
+    const username = this.form.value.username;
     const confirmation = await this.confirmationDialog.confirmDelete();
     if (!confirmation) {
       return;
@@ -168,7 +166,8 @@ export class UserEditComponent implements CanComponentDeactivate {
     }
   }
 
-  async onDeleteSessions(sessionIds: string[], username: string) {
+  async onDeleteSessions(sessionIds: string[]) {
+    const username = this.form.value.username;
     if ((await this.confirmationDialog.confirmDelete()) !== true) {
       return;
     }
@@ -183,7 +182,8 @@ export class UserEditComponent implements CanComponentDeactivate {
     }
   }
 
-  async onUploadToFirestore(username: string) {
+  async onUploadToFirestore() {
+    const username = this.form.value.username;
     try {
       await this.usersService.uploadToFirestore(username);
       this.snackBar.open('Dati saglabāti lietotnē', 'OK', { duration: 5000 });
@@ -199,13 +199,8 @@ export class UserEditComponent implements CanComponentDeactivate {
   }
 
   private existingUsernameValidator(): AsyncValidatorFn {
-    return (control: AbstractControl<string>): Observable<ValidationErrors> => {
-      if (control.value === this.initialValue()?.username) {
-        return of(null);
-      } else {
-        return this.usersService.validateUsername(control.value).pipe(map((valid) => (valid ? null : { existing: 'Esošs lietotājvārds' })));
-      }
-    };
+    return async ({ value }: AbstractControl<string>) =>
+      value === this.initialValue()?.username || (await this.usersService.validateUsername(value)) ? null : { existing: 'Esošs lietotājvārds' };
   }
 }
 

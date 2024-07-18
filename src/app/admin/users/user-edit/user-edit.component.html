@@ -1,7 +1,7 @@
 <app-simple-form-container buttons [status]="formStatus()" [isChanges]="changes()" (save)="onSave()" (reset)="onReset()" [formGroup]="form">
   <!-- Lietotājvārds -->
   <h2>
-    @if (isNew) {
+    @if (isNew()) {
       <mat-form-field>
         <mat-label> Lietotājvārds </mat-label>
         <input formControlName="username" matInput autocomplete="off" required />
@@ -36,7 +36,7 @@
 
   <mat-card>
     <!-- Parole jaunam lietotājam -->
-    @if (isNew) {
+    @if (isNew()) {
       <mat-card-header>
         <mat-card-title> Parole </mat-card-title>
       </mat-card-header>
@@ -47,11 +47,9 @@
       <mat-card-content>
         <div class="button-row">
           <!-- Paroles maiņa -->
-          <button mat-raised-button appPasswordInput [passwordMinimumLength]="6" (appPasswordChange)="onPasswordChange($event, unameCtrl.value)" color="primary">
-            MAINĪT PAROLI
-          </button>
+          <button mat-raised-button appPasswordInput [passwordMinimumLength]="6" (appPasswordChange)="onPasswordChange($event)" color="primary">MAINĪT PAROLI</button>
           <!-- Dzēšana -->
-          <button mat-raised-button color="warn" (click)="onDeleteUser(unameCtrl.value)">DZĒST</button>
+          <button mat-raised-button color="warn" (click)="onDeleteUser()">DZĒST</button>
         </div>
       </mat-card-content>
     }
@@ -97,7 +95,7 @@
           <mat-form-field>
             <mat-label>Pieejamie XMF klienti</mat-label>
             <mat-select formControlName="customers" multiple>
-              @for (customer of customers$ | async; track $index) {
+              @for (customer of customers(); track $index) {
                 <mat-option [value]="customer.value">
                   {{ customer.name }}
                 </mat-option>
@@ -109,10 +107,10 @@
     </mat-card-content>
   </mat-card>
 
-  @if (!isNew) {
+  @if (!isNew()) {
     <mat-card>
       <mat-card-content>
-        <button mat-raised-button (click)="onUploadToFirestore(unameCtrl.value)" [disabled]="changes() !== null">SAGLABĀT LIETOTNĒ</button>
+        <button mat-raised-button (click)="onUploadToFirestore()" [disabled]="changes() !== null">SAGLABĀT LIETOTNĒ</button>
       </mat-card-content>
     </mat-card>
   }
@@ -124,7 +122,7 @@
       </mat-card-header>
 
       <mat-card-content>
-        <app-sessions [sessions]="sessions()" [currentSession]="currentSessionId$ | async" (deleteSession)="onDeleteSessions($event, unameCtrl.value)" />
+        <app-sessions [sessions]="sessions()" [currentSession]="currentSessionId()" (deleteSession)="onDeleteSessions($event)" />
       </mat-card-content>
 
       <mat-card-actions>

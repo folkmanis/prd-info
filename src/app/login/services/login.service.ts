@@ -53,7 +53,7 @@ export class LoginService {
     return user;
   }
 
-  getSessionId(): Observable<string> {
+  async getSessionId(): Promise<string> {
     return this.api.getSessionId();
   }
 }
