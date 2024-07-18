@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { SimpleListContainerComponent } from 'src/app/library/simple-form';
@@ -10,6 +10,7 @@ import { CustomersService } from 'src/app/services';
   templateUrl: './customers-list.component.html',
   styleUrls: ['./customers-list.component.scss'],
   imports: [MatTableModule, RouterLink, RouterLinkActive, SimpleListContainerComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CustomersListComponent {
   name = signal('');

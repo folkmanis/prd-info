@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SystemPreferencesService } from 'src/app/services';
 import { CardMenuComponent } from '../../library/card-menu/card-menu.component';
 
@@ -9,6 +9,7 @@ import { CardMenuComponent } from '../../library/card-menu/card-menu.component';
   styleUrls: ['./main-menu.component.scss'],
   standalone: true,
   imports: [CardMenuComponent, AsyncPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MainMenuComponent {
   menuItems$ = inject(SystemPreferencesService).modules$;

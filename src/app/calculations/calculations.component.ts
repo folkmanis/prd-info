@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CardMenuComponent } from '../library/card-menu/card-menu.component';
 import { SystemPreferencesService } from '../services/system-preferences.service';
 
@@ -8,6 +8,7 @@ import { SystemPreferencesService } from '../services/system-preferences.service
   template: `<app-card-menu [modules]="modules$ | async"></app-card-menu>`,
   standalone: true,
   imports: [CardMenuComponent, AsyncPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalculationsComponent {
   modules$ = inject(SystemPreferencesService).childMenu$;

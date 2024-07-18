@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CardMenuComponent } from 'src/app/library/card-menu/card-menu.component';
 import { SystemPreferencesService } from 'src/app/services';
 
@@ -7,6 +7,7 @@ import { SystemPreferencesService } from 'src/app/services';
   template: `<app-card-menu [modules]="modules()" />`,
   standalone: true,
   imports: [CardMenuComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KastesMainMenuComponent {
   modules = inject(SystemPreferencesService).childMenu;
