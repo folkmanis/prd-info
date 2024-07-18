@@ -6,7 +6,7 @@ import { provideDateFnsAdapter } from '@angular/material-date-fns-adapter';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { bootstrapApplication } from '@angular/platform-browser';
-import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter, withComponentInputBinding, withRouterConfig } from '@angular/router';
 import { ClassTransformer } from 'class-transformer';
 import { lv } from 'date-fns/locale';
@@ -38,7 +38,7 @@ bootstrapApplication(AppComponent, {
     { provide: ClassTransformer, useExisting: AppClassTransformerService },
     provideRouter(APP_ROUTES, withComponentInputBinding(), withRouterConfig({ onSameUrlNavigation: 'reload' })),
     provideHttpClient(withInterceptors(httpInterceptors)),
-    provideAnimations(),
+    provideAnimationsAsync(),
     provideDateFnsAdapter(),
   ],
   // eslint-disable-next-line no-console
