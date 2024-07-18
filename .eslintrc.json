@@ -70,7 +70,8 @@
             "requireReturn": false,
             "prefer": { "returns": "return" }
           }
-        ]
+        ],
+        "@angular-eslint/prefer-on-push-component-change-detection": ["error"]
       }
     },
     {
