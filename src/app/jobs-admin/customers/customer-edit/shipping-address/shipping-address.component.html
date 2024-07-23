@@ -1,0 +1,41 @@
+<!--
+googleId: ['']
+-->
+<ng-container [formGroup]="form">
+  <section>
+    <mat-form-field class="full-width">
+      <mat-label> Adrese </mat-label>
+      <input type="text" matInput formControlName="address" />
+      <button matSuffix mat-icon-button aria-label="Clear" (click)="form.reset()" [disabled]="!form.controls.address.value">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+  </section>
+
+  <section class="flex-row">
+    <mat-form-field class="flex-1">
+      <mat-label> Pasta indekss </mat-label>
+      <input type="text" matInput formControlName="zip" />
+    </mat-form-field>
+    <mat-form-field class="flex-1">
+      <mat-label> Valsts </mat-label>
+      <input type="text" matInput formControlName="country" />
+    </mat-form-field>
+  </section>
+
+  <section>
+    <mat-form-field class="full-width">
+      <mat-label> Google Address ID </mat-label>
+      <input type="text" matInput formControlName="googleId" />
+    </mat-form-field>
+  </section>
+
+  @if (paytraqEnabled()) {
+    <section class="flex-row">
+      <button mat-raised-button (click)="onPaytraq()" [disabled]="!paytraqClientId()">No PayTraq</button>
+      @if (form.value.paytraqId; as id) {
+        <span> Paytraq ID: {{ id }} </span>
+      }
+    </section>
+  }
+</ng-container>

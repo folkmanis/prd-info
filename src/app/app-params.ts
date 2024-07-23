@@ -37,6 +37,11 @@ export const PRD_DEFAULTS: AppParams = {
     paytraq: {
       enabled: false,
     },
+    shippingAddress: {
+      address: '',
+      zip: '',
+      country: '',
+    },
   },
   gmailScope: 'https://www.googleapis.com/auth/gmail.readonly',
 };

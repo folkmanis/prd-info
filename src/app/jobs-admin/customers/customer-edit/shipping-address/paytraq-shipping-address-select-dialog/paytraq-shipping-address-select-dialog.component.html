@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>Piegādes adrese no PayTraq sistēmas</h2>
+<mat-dialog-content>
+  @if (data.paytraqAddresses | async; as addresses) {
+    @if (addresses.length === 0) {
+      <p>Nav atrasta neviena piegādes adrese.</p>
+    } @else {
+      <mat-selection-list #list>
+        @for (address of addresses; track address.addressID) {
+          <mat-list-item [mat-dialog-close]="address">
+            <h4 matListItemTitle>
+              @if (address.isDefault) {
+                <mat-icon inline>home_pin</mat-icon>
+              }
+              {{ address.shipTo }}
+            </h4>
+            <p matListItemLine>{{ address.address }}, {{ address.zip }}, {{ address.country }}</p>
+          </mat-list-item>
+        }
+      </mat-selection-list>
+    }
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close>Aizvērt</button>
+</mat-dialog-actions>

@@ -8,12 +8,13 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EMPTY, Subject, from, map } from 'rxjs';
+import { ViewLargeDirective, ViewNotLargeDirective } from 'src/app/library/view-size';
+import { navigateRelative } from 'src/app/library/common';
 import { CopyClipboardDirective } from 'src/app/library/directives/copy-clipboard.directive';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { ProductsService } from 'src/app/services/products.service';
 import { ScrollTopDirective } from '../../../library/scroll-to-top/scroll-top.directive';
 import { DrawerButtonDirective } from '../../../library/side-button/drawer-button.directive';
-import { ViewSizeModule } from '../../../library/view-size/view-size.module';
 import { JobPartial, JobQueryFilter } from '../../interfaces';
 import { JobService } from '../../services/job.service';
 import { JobFilterComponent } from '../job-filter/job-filter.component';
@@ -21,7 +22,6 @@ import { ProductsSummaryComponent } from '../products-summary/products-summary.c
 import { ReproJobService } from '../services/repro-job.service';
 import { UploadRefService } from '../services/upload-ref.service';
 import { NewJobButtonComponent } from './new-job-button/new-job-button.component';
-import { navigateRelative } from 'src/app/library/common';
 
 @Component({
   selector: 'app-job-list',
@@ -31,7 +31,7 @@ import { navigateRelative } from 'src/app/library/common';
   standalone: true,
   imports: [
     MatSidenavModule,
-    ViewSizeModule,
+    ViewLargeDirective,
     DrawerButtonDirective,
     ProductsSummaryComponent,
     NewJobButtonComponent,
@@ -48,6 +48,7 @@ import { navigateRelative } from 'src/app/library/common';
     AsyncPipe,
     DatePipe,
     CopyClipboardDirective,
+    ViewNotLargeDirective,
   ],
 })
 export class JobListComponent {

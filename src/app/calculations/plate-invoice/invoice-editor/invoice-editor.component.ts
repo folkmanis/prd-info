@@ -12,9 +12,9 @@ import { Locale } from 'date-fns';
 import { saveAs } from 'file-saver';
 import { Invoice } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library';
+import { ViewSizeDirective } from 'src/app/library/view-size';
 import { navigateRelative } from 'src/app/library/common';
 import { DATE_FNS_LOCALE } from 'src/app/library/date-services';
-import { ViewSizeModule } from 'src/app/library/view-size/view-size.module';
 import { LoginService } from 'src/app/login';
 import { ProductsService } from 'src/app/services';
 import { configuration } from 'src/app/services/config.provider';
@@ -46,7 +46,7 @@ export abstract class InvoiceEditor {
     MatMenuModule,
     MatIconModule,
     MatToolbarModule,
-    ViewSizeModule,
+    ViewSizeDirective,
     InvoicePaytraqComponent,
     InvoiceProductsComponent,
     JobSelectionTableComponent,

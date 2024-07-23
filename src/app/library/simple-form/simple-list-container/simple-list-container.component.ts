@@ -1,5 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, TemplateRef, booleanAttribute, input, model, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, TemplateRef, booleanAttribute, input, model, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -31,8 +31,6 @@ import { ViewSizeDirective } from 'src/app/library/view-size';
   ],
 })
 export class SimpleListContainerComponent {
-  private routerOutlet = viewChild<RouterOutlet>('editor');
-
   filterTemplate: TemplateRef<any> | null = null;
 
   editorWidth = input('50%');

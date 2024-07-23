@@ -1,0 +1,40 @@
+<!-- address: ['', [Validators.required]],
+zip: ['', [Validators.required]],
+country: ['LV', [Validators.required]],
+paytraqId: [null as number | null],
+googleId: [null as string | null], -->
+
+<ng-container [formGroup]="form">
+  <section>
+    <mat-form-field class="full-width">
+      <mat-label> Adrese </mat-label>
+      <input matInput formControlName="address" />
+    </mat-form-field>
+  </section>
+
+  <section class="flex-width">
+    <mat-form-field class="flex-1">
+      <mat-label> Indekss </mat-label>
+      <input matInput formControlName="zip" />
+    </mat-form-field>
+
+    <mat-form-field class="flex-1">
+      <mat-label> Valsts </mat-label>
+      <input matInput formControlName="country" appInputUppercase />
+    </mat-form-field>
+  </section>
+
+  <section>
+    <mat-form-field class="full-width">
+      <mat-label> PayTraq ID </mat-label>
+      <input matInput formControlName="paytraqId" />
+    </mat-form-field>
+  </section>
+
+  <section>
+    <mat-form-field class="full-width">
+      <mat-label> Google Address ID </mat-label>
+      <input matInput formControlName="googleId" />
+    </mat-form-field>
+  </section>
+</ng-container>

@@ -13,9 +13,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Observable, debounceTime, filter, map } from 'rxjs';
 import { ProductPartial } from 'src/app/interfaces';
+import { ViewSizeDirective } from 'src/app/library/view-size';
 import { CustomersService } from 'src/app/services';
 import { getConfig } from 'src/app/services/config.provider';
-import { ViewSizeModule } from '../../../library/view-size/view-size.module';
 import { DEFAULT_FILTER, JobFilter, JobQueryFilter } from '../../interfaces';
 import { JobService } from '../../services/job.service';
 
@@ -31,7 +31,7 @@ export type FilterFormType = {
   standalone: true,
   imports: [
     MatExpansionModule,
-    ViewSizeModule,
+    ViewSizeDirective,
     MatButtonModule,
     MatTooltipModule,
     MatIconModule,

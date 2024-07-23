@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { CreateProductionStage, ProductionStage, UpdateProductionStage } from 'src/app/interfaces';
@@ -11,18 +11,15 @@ import { HttpOptions } from 'src/app/library/http/http-options';
 })
 export class ProductionStageApiService {
   private path = getAppParams('apiPath') + 'production-stages/';
-
-  constructor(
-    private http: HttpClient,
-    private transformer: AppClassTransformerService,
-  ) {}
+  private http = inject(HttpClient);
+  private transformer = inject(AppClassTransformerService);
 
   getAll(params: Record<string, any> = {}): Observable<ProductionStage[]> {
     return this.http.get<Record<string, any>[]>(this.path, new HttpOptions(params).cacheable()).pipe(this.transformer.toClass(ProductionStage));
   }
 
-  getOne(id: string): Observable<ProductionStage> {
-    return this.http.get<Record<string, any>>(this.path + id, new HttpOptions().cacheable()).pipe(this.transformer.toClass(ProductionStage));
+  async getOne(id: string): Promise<ProductionStage> {
+    return this.transformer.toInstanceAsync(ProductionStage, this.http.get<Record<string, any>>(this.path + id, new HttpOptions().cacheable()));
   }
 
   updateOne({ _id, ...data }: UpdateProductionStage): Observable<ProductionStage> {

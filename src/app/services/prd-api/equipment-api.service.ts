@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { Equipment } from 'src/app/interfaces';
@@ -10,15 +10,12 @@ import { HttpOptions } from 'src/app/library/http';
   providedIn: 'root',
 })
 export class EquipmentApiService {
-  readonly path = getAppParams('apiPath') + 'equipment/';
+  private path = getAppParams('apiPath') + 'equipment/';
+  private http = inject(HttpClient);
+  private transformer = inject(AppClassTransformerService);
 
-  constructor(
-    private http: HttpClient,
-    private transformer: AppClassTransformerService,
-  ) {}
-
-  getOne(id: string): Observable<Equipment> {
-    return this.http.get(this.path + id, new HttpOptions().cacheable()).pipe(this.transformer.toClass(Equipment));
+  async getOne(id: string): Promise<Equipment> {
+    return this.transformer.toInstanceAsync(Equipment, this.http.get(this.path + id, new HttpOptions().cacheable()));
   }
 
   getAll(filter: Record<string, any>): Observable<Equipment[]> {

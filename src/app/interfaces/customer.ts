@@ -1,4 +1,5 @@
 import { Expose, Type } from 'class-transformer';
+import { ShippingAddressType } from './shipping-address';
 
 export interface CustomerFinancial {
   clientName: string;
@@ -23,6 +24,23 @@ export class CustomerContact {
   constructor(email: string) {
     this.email = email;
   }
+}
+
+export class ShippingAddress implements ShippingAddressType {
+  @Expose()
+  address: string;
+
+  @Expose()
+  zip: string;
+
+  @Expose()
+  country: string;
+
+  @Expose()
+  paytraqId?: number;
+
+  @Expose()
+  googleId?: string;
 }
 
 export class Customer {
@@ -58,6 +76,10 @@ export class Customer {
   @Expose()
   @Type(() => CustomerContact)
   contacts: CustomerContact[] = [];
+
+  @Expose()
+  @Type(() => ShippingAddress)
+  shippingAddress: ShippingAddress | null = null;
 }
 
 export type CustomerPartial = Pick<Customer, '_id' | 'CustomerName' | 'code' | 'disabled'>;

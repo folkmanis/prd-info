@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { DestroyService } from 'src/app/library/rxjs';
 import { LoginService } from 'src/app/login';
 import { ScrollTopDirective } from '../../library/scroll-to-top/scroll-top.directive';
 import { JobsProduction, JobsProductionFilterQuery } from '../interfaces';
@@ -14,7 +13,6 @@ import { Totals } from './services/totals';
   templateUrl: './products-production.component.html',
   styleUrls: ['./products-production.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DestroyService],
   standalone: true,
   imports: [FilterComponent, ProductsTableComponent, ScrollTopDirective],
 })

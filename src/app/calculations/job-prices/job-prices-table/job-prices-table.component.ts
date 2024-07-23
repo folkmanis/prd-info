@@ -9,7 +9,7 @@ import { MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 import { Job } from 'src/app/jobs';
-import { ViewSizeDirective } from 'src/app/library';
+import { ViewSizeDirective } from 'src/app/library/view-size';
 import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
 import { COLUMNS, COLUMNS_SMALL, JobData, JobWithUpdate } from '../interfaces';
 

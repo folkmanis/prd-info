@@ -8,7 +8,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Observable, debounceTime, map } from 'rxjs';
-import { IfViewSizeDirective } from 'src/app/library';
+import { IfViewSizeDirective } from 'src/app/library/view-size';
 import { configuration } from 'src/app/services/config.provider';
 import { MaterialsFilter } from '../../services/materials.service';
 

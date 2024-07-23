@@ -1,48 +1,42 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { DestroyService } from 'src/app/library/rxjs';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatTreeModule } from '@angular/material/tree';
+import { RouterLink } from '@angular/router';
 import { combineLatest, Observable } from 'rxjs';
-import { distinctUntilChanged, pluck, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged } from 'rxjs/operators';
 import { UserModule } from 'src/app/interfaces';
 import { SystemPreferencesService } from 'src/app/services';
+import { getConfig } from 'src/app/services/config.provider';
 import { MenuDataSource, SideMenuData } from './menu-datasource';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { RouterLink } from '@angular/router';
-import { MatTreeModule } from '@angular/material/tree';
-import { MatListModule } from '@angular/material/list';
 
 @Component({
   selector: 'app-side-menu',
   templateUrl: './side-menu.component.html',
   styleUrls: ['./side-menu.component.scss'],
-  providers: [DestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [MatListModule, MatTreeModule, RouterLink, MatButtonModule, MatIconModule],
 })
 export class SideMenuComponent implements OnInit {
+  private changeDetector = inject(ChangeDetectorRef);
+  private expandedByDefault$: Observable<boolean> = getConfig('system', 'menuExpandedByDefault').pipe(distinctUntilChanged());
+  private activeModules$ = inject(SystemPreferencesService).activeModules$.pipe(takeUntilDestroyed());
+
   treeControl = new NestedTreeControl<SideMenuData>((node) => node.childMenu);
-  dataSource = new MenuDataSource(this.systemPreferencesService.modules$);
+  dataSource = new MenuDataSource(inject(SystemPreferencesService).modules$);
+  expandAll$: Observable<[SideMenuData[], boolean]> = combineLatest([this.dataSource.dataChange$, this.expandedByDefault$]).pipe(takeUntilDestroyed());
 
   activeRoute: string;
 
-  private expandedByDefault$: Observable<boolean> = this.systemPreferencesService.preferences$.pipe(pluck('system', 'menuExpandedByDefault'), distinctUntilChanged());
-
-  private expandAll$: Observable<[SideMenuData[], boolean]> = combineLatest([this.dataSource.dataChange$, this.expandedByDefault$]);
-
   hasChild = (_: number, node: SideMenuData) => node.childMenu?.length > 0;
 
-  constructor(
-    private systemPreferencesService: SystemPreferencesService,
-    private destroy$: DestroyService,
-    private changeDetector: ChangeDetectorRef,
-  ) {}
-
   ngOnInit(): void {
-    this.expandAll$.pipe(takeUntil(this.destroy$)).subscribe((value) => this.expandAll(value));
-
-    this.systemPreferencesService.activeModules$.pipe(takeUntil(this.destroy$)).subscribe((mod) => this.setActiveRoute(mod));
+    this.expandAll$.subscribe((value) => this.expandAll(value));
+    this.activeModules$.subscribe((mod) => this.setActiveRoute(mod));
   }
 
   private expandAll([data, expand]: [SideMenuData[], boolean]) {

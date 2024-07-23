@@ -10,10 +10,10 @@ import { Router } from '@angular/router';
 import { switchMap, tap } from 'rxjs';
 import { InvoiceForReport, ProductTotals } from 'src/app/interfaces';
 import { JobUnwindedPartial } from 'src/app/jobs';
+import { ViewSizeDirective } from 'src/app/library/view-size';
 import { navigateRelative } from 'src/app/library/common';
 import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
 import { DrawerButtonDirective } from 'src/app/library/side-button/drawer-button.directive';
-import { ViewSizeModule } from 'src/app/library/view-size/view-size.module';
 import { InvoicesTotals } from '../interfaces';
 import { JobSelectionTableComponent } from '../job-selection-table/job-selection-table.component';
 import { InvoicesService } from '../services/invoices.service';
@@ -35,7 +35,7 @@ import { SelectionTotalsComponent } from './selection-totals/selection-totals.co
     MatCardModule,
     SelectionTotalsComponent,
     JobsWithoutInvoicesComponent,
-    ViewSizeModule,
+    ViewSizeDirective,
     JobSelectionTableComponent,
     ScrollTopDirective,
     MatButtonModule,

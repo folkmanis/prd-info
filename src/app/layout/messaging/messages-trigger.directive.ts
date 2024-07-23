@@ -1,16 +1,17 @@
 import { CdkOverlayOrigin, ConnectedPosition, Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
-import { Directive, ElementRef, HostListener, Injector, OnDestroy, OnInit } from '@angular/core';
-import { DestroyService } from 'src/app/library/rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { DestroyRef, Directive, HostListener, inject, Injector, OnDestroy, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MessagesListComponent } from './messages-list/messages-list.component';
 
 @Directive({
   selector: 'button[appMessagesTrigger]',
-  providers: [DestroyService],
   standalone: true,
 })
 export class MessagesTriggerDirective extends CdkOverlayOrigin implements OnInit, OnDestroy {
+  private overlay = inject(Overlay);
+  private destroyRef = inject(DestroyRef);
+
   private overlayRef: OverlayRef;
 
   private readonly connectedPositions: ConnectedPosition[] = [
@@ -29,21 +30,11 @@ export class MessagesTriggerDirective extends CdkOverlayOrigin implements OnInit
     this.overlayRef.hasAttached() ? this.overlayRef.detach() : this.openOverlay();
   }
 
-  constructor(
-    private overlay: Overlay,
-    elementRef: ElementRef,
-    private destroy$: DestroyService,
-  ) {
-    super(elementRef);
-  }
-
-  ngOnInit() {
-    const config = this.overlayConfig();
-    this.overlayRef = this.overlay.create(config);
-
+  ngOnInit(): void {
+    this.overlayRef = this.overlay.create(this.overlayConfig());
     this.overlayRef
       .backdropClick()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((event) => {
         event.stopPropagation();
         event.preventDefault();

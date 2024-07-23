@@ -1,41 +1,22 @@
-import { Optional, Directive, Host, OnInit, Self } from '@angular/core';
+import { Directive, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDrawer, MatSidenav } from '@angular/material/sidenav';
-import { DestroyService } from 'src/app/library/rxjs';
-import { takeUntil } from 'rxjs';
 import { LayoutService } from './layout.service';
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
   selector: 'mat-drawer,mat-sidenav',
-  providers: [DestroyService],
   standalone: true,
 })
 export class DrawerSmallDirective implements OnInit {
-  private drawer: MatDrawer;
+  private drawer: MatDrawer = inject(MatDrawer, { optional: true, self: true, host: true }) || inject(MatSidenav, { optional: true, self: true, host: true });
 
-  private _large = false;
-  set large(value: boolean) {
-    this._large = value;
-    this.drawer.opened = this.large;
-    this.drawer.mode = this.large ? 'side' : 'over';
-  }
-  get large(): boolean {
-    return this._large;
-  }
-
-  constructor(
-    @Optional() @Host() @Self() drawer: MatDrawer,
-    @Optional() @Host() @Self() sidenav: MatSidenav,
-    private layoutService: LayoutService,
-    private destroy$: DestroyService,
-  ) {
-    this.drawer = drawer || sidenav;
-  }
+  private large$ = inject(LayoutService).matches('large').pipe(takeUntilDestroyed());
 
   ngOnInit(): void {
-    this.layoutService
-      .matches('large')
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((large) => (this.large = large));
+    this.large$.subscribe((large) => {
+      this.drawer.opened = large;
+      this.drawer.mode = large ? 'side' : 'over';
+    });
   }
 }

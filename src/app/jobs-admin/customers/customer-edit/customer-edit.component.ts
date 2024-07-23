@@ -17,6 +17,7 @@ import { configuration } from 'src/app/services/config.provider';
 import { CustomerContactsComponent } from './customer-contacts/customer-contacts.component';
 import { FtpUserComponent } from './ftp-user/ftp-user.component';
 import { PaytraqCustomerComponent } from './paytraq-customer/paytraq-customer.component';
+import { ShippingAddressComponent } from './shipping-address/shipping-address.component';
 
 type CustomerEditable = Omit<Customer, '_id'>;
 type CustomerEditGroup = FormGroup<{
@@ -36,6 +37,7 @@ type CustomerEditGroup = FormGroup<{
     InputUppercaseDirective,
     FtpUserComponent,
     CustomerContactsComponent,
+    ShippingAddressComponent,
     MatFormFieldModule,
     MatCardModule,
     MatDividerModule,
@@ -61,6 +63,7 @@ export class CustomerEditComponent implements CanComponentDeactivate {
       ftpUserData: [null],
       contacts: [],
       insertedFromXmf: [null],
+      shippingAddress: [null],
     },
     {
       validators: [this.validateFtp()],

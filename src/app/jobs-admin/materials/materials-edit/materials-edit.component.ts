@@ -16,6 +16,7 @@ import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { configuration } from 'src/app/services/config.provider';
 import { MaterialsService } from '../services/materials.service';
 import { MaterialsPricesComponent } from './materials-prices/materials-prices.component';
+import { ViewSizeDirective } from 'src/app/library/view-size';
 
 type MaterialForm = {
   [k in keyof Material]-?: FormControl<Material[k]>;
@@ -39,6 +40,7 @@ type MaterialForm = {
     MatButtonModule,
     MatSelectModule,
     MatCheckboxModule,
+    ViewSizeDirective,
   ],
 })
 export class MaterialsEditComponent implements CanComponentDeactivate {

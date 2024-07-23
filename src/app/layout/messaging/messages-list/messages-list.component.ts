@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, Component, TrackByFunction } from '@angular/co
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { DestroyService } from 'src/app/library/rxjs';
 import { JobData, Message, MessageFtpUser } from '../interfaces';
 import { MessageJobDirective } from '../message-job.directive';
 import { MessagingService } from '../services/messaging.service';
@@ -14,7 +13,6 @@ import { RelativeDatePipe } from 'src/app/library/date-services';
   templateUrl: './messages-list.component.html',
   styleUrls: ['./messages-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DestroyService],
   standalone: true,
   imports: [MatButtonModule, MatMenuModule, MatIconModule, MessageJobDirective, AsyncPipe, RelativeDatePipe],
 })

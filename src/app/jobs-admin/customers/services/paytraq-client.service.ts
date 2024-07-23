@@ -13,4 +13,8 @@ export class PaytraqClientService {
   getClients(query: Pt.RequestOptions = {}): Observable<Pt.PaytraqClient[]> {
     return this.api.getClients(query).pipe(map((cl) => cl?.client || []));
   }
+
+  async getClientShippingAddresses(clientId: number): Promise<Pt.PaytraqShippingAddress[]> {
+    return this.api.getClientShippingAddresses(clientId);
+  }
 }

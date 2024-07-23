@@ -12,9 +12,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { addDays, subDays } from 'date-fns';
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs';
+import { ViewSizeDirective } from 'src/app/library/view-size';
 import { CopyClipboardDirective } from 'src/app/library/directives/copy-clipboard.directive';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
-import { ViewSizeModule } from 'src/app/library/view-size/view-size.module';
 import { LoginService } from 'src/app/login';
 import { CustomersService, ProductsService } from 'src/app/services';
 import { configuration } from 'src/app/services/config.provider';
@@ -30,7 +30,7 @@ import { ReproProductsEditorComponent } from '../repro-products-editor/repro-pro
   standalone: true,
   imports: [
     FormsModule,
-    ViewSizeModule,
+    ViewSizeDirective,
     ReactiveFormsModule,
     CustomerInputComponent,
     MatFormFieldModule,

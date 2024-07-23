@@ -1,7 +1,6 @@
 import { Directive, Host, Self, ViewContainerRef } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatDrawer } from '@angular/material/sidenav';
-import { DestroyService } from 'src/app/library/rxjs';
 import { SideButtonComponent } from './side-button.component';
 
 /** adds close/open button to mat-drawer */
@@ -9,7 +8,6 @@ import { SideButtonComponent } from './side-button.component';
   // eslint-disable-next-line @angular-eslint/directive-selector
   selector: 'mat-drawer[button]',
   standalone: true,
-  providers: [DestroyService],
 })
 export class DrawerButtonDirective {
   constructor(viewContainerRef: ViewContainerRef, @Host() @Self() drawer: MatDrawer) {

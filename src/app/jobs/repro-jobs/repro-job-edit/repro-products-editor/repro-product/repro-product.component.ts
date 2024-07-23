@@ -21,7 +21,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CustomerProduct } from 'src/app/interfaces';
 import { JobProduct } from 'src/app/jobs/interfaces';
-import { ViewSizeModule } from 'src/app/library/view-size/view-size.module';
+import { ViewSizeDirective } from 'src/app/library/view-size';
 import { ProductAutocompleteComponent } from '../product-autocomplete/product-autocomplete.component';
 import { JobProductForm } from './job-product-form.interface';
 import { ProductControlDirective } from './product-control.directive';
@@ -33,7 +33,7 @@ import { ProductControlDirective } from './product-control.directive';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    ViewSizeModule,
+    ViewSizeDirective,
     FormsModule,
     ReactiveFormsModule,
     MatButtonModule,

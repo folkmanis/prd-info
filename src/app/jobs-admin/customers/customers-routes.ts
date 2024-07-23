@@ -14,8 +14,8 @@ export default [
         path: 'new',
         component: CustomerEditComponent,
         canDeactivate: [canComponentDeactivate],
-        data: {
-          customer: new Customer(),
+        resolve: {
+          customer: () => new Customer(),
         },
       },
       {

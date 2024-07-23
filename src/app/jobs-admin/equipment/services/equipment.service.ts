@@ -19,7 +19,7 @@ export class EquipmentService {
     return this.api.getAll(filter);
   }
 
-  getOne(id: string): Observable<Equipment> {
+  async getOne(id: string): Promise<Equipment> {
     return this.api.getOne(id);
   }
 

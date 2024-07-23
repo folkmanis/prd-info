@@ -11,9 +11,9 @@ import { Observable, timer } from 'rxjs';
 import { filter, map, mergeMap, share, take, throttleTime } from 'rxjs/operators';
 import { getAppParams } from 'src/app/app-params';
 import { SystemNotification, SystemOperations, User, UserModule } from 'src/app/interfaces';
+import { ViewNotSmallDirective, ViewSmallDirective } from 'src/app/library/view-size';
 import { LoginService } from 'src/app/login';
 import { NotificationsService } from 'src/app/services';
-import { ViewSizeModule } from '../../library/view-size/view-size.module';
 import { MessagesTriggerDirective } from '../messaging/messages-trigger.directive';
 import { MessagingService } from '../messaging/services/messaging.service';
 
@@ -25,7 +25,18 @@ const INITIAL_DELAY = 3000;
   styleUrls: ['./toolbar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [MatToolbarModule, MatButtonModule, MatIconModule, RouterLink, ViewSizeModule, MatBadgeModule, MessagesTriggerDirective, MatMenuModule, AsyncPipe],
+  imports: [
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+    RouterLink,
+    ViewNotSmallDirective,
+    ViewSmallDirective,
+    MatBadgeModule,
+    MessagesTriggerDirective,
+    MatMenuModule,
+    AsyncPipe,
+  ],
 })
 export class ToolbarComponent implements OnInit {
   private messagingService = inject(MessagingService);

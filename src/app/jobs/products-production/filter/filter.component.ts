@@ -9,9 +9,9 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { formatISO, parseISO } from 'date-fns';
 import { isEqual } from 'lodash-es';
+import { ViewSizeDirective } from 'src/app/library/view-size';
 import { DateUtilsService } from 'src/app/library/date-services';
 import { configuration } from 'src/app/services/config.provider';
-import { ViewSizeModule } from '../../../library/view-size/view-size.module';
 import { JobsProductionFilterQuery } from '../../interfaces';
 import { FilterSummaryComponent } from './filter-summary/filter-summary.component';
 
@@ -37,7 +37,7 @@ interface NullableInterval {
   standalone: true,
   imports: [
     MatExpansionModule,
-    ViewSizeModule,
+    ViewSizeDirective,
     FilterSummaryComponent,
     MatFormFieldModule,
     MatSelectModule,

@@ -11,14 +11,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { DrawerButtonDirective } from '../../library/side-button/drawer-button.directive';
-import { ViewSizeModule } from '../../library/view-size/view-size.module';
 import { KastesJob } from '../interfaces';
 import { AddressPackage } from '../interfaces/address-package';
 import { kastesPreferences } from '../services/kastes-preferences.service';
+import { PackingTableService } from '../services/packing-table.service';
 import { KasteDialogComponent, KasteDialogData } from './kaste-dialog/kaste-dialog.component';
 import { LabelStatus, LabelsComponent } from './labels/labels.component';
 import { OrderTotalsComponent } from './order-totals/order-totals.component';
-import { PackingTableService } from '../services/packing-table.service';
 import { TabulaComponent } from './tabula/tabula.component';
 import { TotalsForSelectedSizeComponent } from './totals-for-selected-size/totals-for-selected-size.component';
 
@@ -39,7 +38,6 @@ import { TotalsForSelectedSizeComponent } from './totals-for-selected-size/total
     FormsModule,
     ReactiveFormsModule,
     TabulaComponent,
-    ViewSizeModule,
     DrawerButtonDirective,
     MatDividerModule,
     LabelsComponent,

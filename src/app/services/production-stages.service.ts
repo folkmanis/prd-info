@@ -25,7 +25,7 @@ export class ProductionStagesService {
     this._filter$.next(stagesFilter);
   }
 
-  getOne(id: string): Observable<ProductionStage> {
+  async getOne(id: string): Promise<ProductionStage> {
     return this.api.getOne(id);
   }
 
@@ -42,7 +42,7 @@ export class ProductionStagesService {
   }
 
   getDropFolder(id: string, customerName: string): Observable<DropFolder[]> {
-    return this.getOne(id).pipe(
+    return from(this.getOne(id)).pipe(
       switchMap((stage) => from(stage.dropFolders)),
       filter((stage) => stage.isDefault() || stage.includesCustomer(customerName)),
       toArray(),

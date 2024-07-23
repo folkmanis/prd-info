@@ -39,3 +39,16 @@ export interface PriceGroup {
   priceGroupID: number;
   priceGroupName: string;
 }
+
+export interface PaytraqShippingAddress {
+  addressID: number;
+  shipTo: string;
+  address: string;
+  zip: string;
+  country: string;
+  isDefault: boolean;
+}
+
+export interface PaytraqShippingAddresses {
+  shippingAddresses: { shippingAddress: PaytraqShippingAddress }[];
+}

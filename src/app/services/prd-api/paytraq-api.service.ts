@@ -17,6 +17,11 @@ export class PaytraqApiService {
     return this.http.get<{ clients: Pt.PaytraqClients }>(this.path + 'clients', new HttpOptions(query).cacheable()).pipe(map((data) => data.clients));
   }
 
+  async getClientShippingAddresses(id: number): Promise<Pt.PaytraqShippingAddress[]> {
+    const { shippingAddresses } = await firstValueFrom(this.http.get<Pt.PaytraqShippingAddresses>(this.path + 'client/shippingAddresses/' + id));
+    return shippingAddresses.map((shAddr) => shAddr.shippingAddress);
+  }
+
   getProducts(query: Pt.RequestOptions): Observable<Pt.PaytraqProducts> {
     return this.http.get<{ products: Pt.PaytraqProducts }>(this.path + 'products', new HttpOptions(query).cacheable()).pipe(map((data) => data.products));
   }
