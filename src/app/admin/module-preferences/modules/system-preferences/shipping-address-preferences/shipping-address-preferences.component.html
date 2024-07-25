@@ -1,14 +1,11 @@
-<!-- address: ['', [Validators.required]],
-zip: ['', [Validators.required]],
-country: ['LV', [Validators.required]],
-paytraqId: [null as number | null],
-googleId: [null as string | null], -->
-
 <ng-container [formGroup]="form">
   <section>
     <mat-form-field class="full-width">
       <mat-label> Adrese </mat-label>
       <input matInput formControlName="address" />
+      <button mat-icon-button matIconSuffix (click)="onMap()">
+        <mat-icon> map </mat-icon>
+      </button>
     </mat-form-field>
   </section>
 

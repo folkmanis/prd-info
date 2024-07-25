@@ -6,6 +6,9 @@ googleId: ['']
     <mat-form-field class="full-width">
       <mat-label> Adrese </mat-label>
       <input type="text" matInput formControlName="address" />
+      <button matSuffix mat-icon-button (click)="onAddressMap()">
+        <mat-icon>map</mat-icon>
+      </button>
       <button matSuffix mat-icon-button aria-label="Clear" (click)="form.reset()" [disabled]="!form.controls.address.value">
         <mat-icon>close</mat-icon>
       </button>

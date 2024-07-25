@@ -1,11 +1,11 @@
 import { Colors } from '../kastes/interfaces';
 import { ShippingAddressType } from './shipping-address';
 
-export const MODULES = ['kastes', 'system', 'jobs', 'paytraq', 'shippingAddress'] as const;
+export const MODULES = ['kastes', 'system', 'jobs', 'paytraq'] as const;
 
 export type Modules = (typeof MODULES)[number];
 
-export type ModuleSettings = KastesSettings | SystemSettings | JobsSettings | PaytraqSettings | ShippingAddressSettings;
+export type ModuleSettings = KastesSettings | SystemSettings | JobsSettings | PaytraqSettings;
 
 export interface PreferencesDbModule {
   module: Modules;
@@ -19,7 +19,6 @@ export abstract class SystemPreferences implements SystemPreferencesType {
   kastes: KastesSettings;
   jobs: JobsSettings;
   paytraq: PaytraqSettings;
-  shippingAddress: ShippingAddressSettings;
 }
 
 export interface KastesSettings {
@@ -32,6 +31,7 @@ export interface SystemSettings {
   menuExpandedByDefault: boolean;
   logLevels: [number, string][];
   hostname: string;
+  shippingAddress: ShippingAddressType | null;
 }
 
 export interface ProductCategory {

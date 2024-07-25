@@ -3,6 +3,8 @@ import { ControlValueAccessor, FormBuilder, FormsModule, NG_VALIDATORS, NG_VALUE
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { ShippingAddress } from 'src/app/interfaces';
+import { ShippingAddressPreferencesComponent } from './shipping-address-preferences/shipping-address-preferences.component';
 
 @Component({
   selector: 'app-system-preferences',
@@ -22,12 +24,13 @@ import { MatInputModule } from '@angular/material/input';
     },
   ],
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, MatCheckboxModule, MatFormFieldModule, MatInputModule],
+  imports: [FormsModule, ReactiveFormsModule, MatCheckboxModule, MatFormFieldModule, MatInputModule, ShippingAddressPreferencesComponent],
 })
 export class SystemPreferencesComponent implements ControlValueAccessor, Validator {
   controls = inject(FormBuilder).group({
     menuExpandedByDefault: [true],
     hostname: ['', Validators.required],
+    shippingAddress: [null as null | ShippingAddress],
   });
 
   onTouchFn = () => {};
@@ -56,9 +59,13 @@ export class SystemPreferencesComponent implements ControlValueAccessor, Validat
     if (this.controls.valid) {
       return null;
     } else {
-      return {
-        hostname: this.controls.controls.hostname.errors,
-      };
+      return Object.entries(this.controls.controls).reduce(
+        (acc, [key, control]) => ({
+          ...acc,
+          ...(control.invalid ? { [key]: control.errors } : {}),
+        }),
+        {},
+      );
     }
   }
 }
