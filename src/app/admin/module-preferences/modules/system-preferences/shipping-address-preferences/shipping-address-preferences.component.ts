@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, forwardRef, inject } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, forwardRef, inject } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -8,18 +7,23 @@ import {
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
   ReactiveFormsModule,
+  TouchedChangeEvent,
   ValidationErrors,
   Validator,
   Validators,
 } from '@angular/forms';
+import { MatIconButton } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { filter, firstValueFrom } from 'rxjs';
 import { InputUppercaseDirective } from 'src/app/library/directives/input-uppercase.directive';
+import { LocationSelectService } from 'src/app/library/location-select';
 
 @Component({
   selector: 'app-shipping-address-preferences',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, InputUppercaseDirective],
+  imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, InputUppercaseDirective, MatIcon, MatIconButton],
   templateUrl: './shipping-address-preferences.component.html',
   styleUrl: './shipping-address-preferences.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,7 +41,7 @@ import { InputUppercaseDirective } from 'src/app/library/directives/input-upperc
   ],
 })
 export class ShippingAddressPreferencesComponent implements ControlValueAccessor, Validator {
-  private destroyRef = inject(DestroyRef);
+  private locationSelectService = inject(LocationSelectService);
 
   form = inject(FormBuilder).nonNullable.group({
     address: ['', [Validators.required]],
@@ -47,18 +51,21 @@ export class ShippingAddressPreferencesComponent implements ControlValueAccessor
     googleId: [null as string | null],
   });
 
-  onTouched = () => {};
-
   writeValue(obj: any): void {
     this.form.reset(obj, { emitEvent: false });
   }
 
   registerOnChange(fn: any): void {
-    this.form.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(fn);
+    this.form.valueChanges.subscribe(fn);
   }
 
   registerOnTouched(fn: any): void {
-    this.onTouched = fn;
+    this.form.events
+      .pipe(
+        filter((event) => event instanceof TouchedChangeEvent),
+        filter((event) => event.touched),
+      )
+      .subscribe(fn);
   }
 
   setDisabledState(isDisabled: boolean): void {
@@ -80,6 +87,18 @@ export class ShippingAddressPreferencesComponent implements ControlValueAccessor
         }),
         {},
       );
+    }
+  }
+
+  async onMap() {
+    const marker = await firstValueFrom(this.locationSelectService.getLocation(this.form.value));
+    if (marker) {
+      this.form.patchValue({
+        address: marker.address,
+        googleId: marker.googleId,
+        zip: marker.zip,
+        country: marker.country,
+      });
     }
   }
 }

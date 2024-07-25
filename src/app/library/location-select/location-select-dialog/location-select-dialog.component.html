@@ -1,0 +1,20 @@
+<h2 mat-dialog-title>Norādiet atrašanās vietu</h2>
+
+@let marker = shippingMarker();
+<mat-dialog-content>
+  <google-map [center]="center()" [zoom]="zoom()" width="100%" [options]="mapOptions" (mapClick)="onMapClick($event)">
+    @if (marker) {
+      <map-advanced-marker [position]="marker.location" [gmpDraggable]="true" (mapDragend)="onMarkerDragEnd($event)" />
+    }
+  </google-map>
+  <div>
+    @if (marker) {
+      {{ marker.address }}
+    }
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button [matDialogClose]="marker" [disabled]="!marker">Apstiprināt</button>
+  <button mat-button matDialogClose>Atcelt</button>
+</mat-dialog-actions>

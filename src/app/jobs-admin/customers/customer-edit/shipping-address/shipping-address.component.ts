@@ -18,6 +18,7 @@ import {
   PaytraqShippingAddressSelectDialogComponent,
   PaytraqShippingAddressSelectDialogData,
 } from './paytraq-shipping-address-select-dialog/paytraq-shipping-address-select-dialog.component';
+import { LocationSelectService } from 'src/app/library/location-select';
 
 @Component({
   selector: 'app-shipping-address',
@@ -38,6 +39,7 @@ export class ShippingAddressComponent implements ControlValueAccessor {
   private transformer = inject(AppClassTransformerService);
   private dialog = inject(MatDialog);
   private paytraqService = inject(PaytraqClientService);
+  private locationSelect = inject(LocationSelectService);
 
   paytraqEnabled = configuration('paytraq', 'enabled');
 
@@ -76,6 +78,18 @@ export class ShippingAddressComponent implements ControlValueAccessor {
       this.form.disable();
     } else {
       this.form.enable;
+    }
+  }
+
+  async onAddressMap() {
+    const marker = await firstValueFrom(this.locationSelect.getLocation({ address: this.form.value.address }));
+    if (marker) {
+      this.form.patchValue({
+        address: marker.address,
+        googleId: marker.googleId,
+        zip: marker.zip,
+        country: marker.country,
+      });
     }
   }
 
