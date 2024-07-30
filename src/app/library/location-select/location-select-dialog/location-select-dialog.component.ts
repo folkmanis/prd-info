@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, Inject, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, inject, signal } from '@angular/core';
 import { GoogleMap, MapAdvancedMarker, MapGeocoder } from '@angular/google-maps';
 import { MatButton } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContainer, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
@@ -47,8 +47,6 @@ export class LocationSelectDialogComponent {
     } else if (data.address) {
       this.setMarker({ address: data.address });
     }
-
-    effect(() => console.log(this.shippingMarker()));
   }
 
   onMarkerDragEnd(event: google.maps.MapMouseEvent) {
@@ -70,7 +68,6 @@ export class LocationSelectDialogComponent {
         map((results) => results[0]),
       )
       .subscribe((result) => {
-        //  && result.types.includes('street_address')
         const oldMarker = this.shippingMarker();
         const country = result.address_components.find((component) => component.types.includes('country'))?.short_name;
         const zip = result.address_components.find((component) => component.types.includes('postal_code'))?.long_name;
