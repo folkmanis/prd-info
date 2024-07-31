@@ -1,0 +1,17 @@
+<app-simple-list-container plusButton>
+  <mat-table [dataSource]="drivers()" class="simple-form-table">
+    <mat-header-row *matHeaderRowDef="displayColumns" />
+    <mat-row *matRowDef="let driver; columns: displayColumns" [routerLink]="driver.id" routerLinkActive="selected" [class.disabled]="driver.disabled" />
+
+    <div *matNoDataRow>
+      <span> Nav neviena ieraksta </span>
+    </div>
+
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef> Vārds, uzvārds </mat-header-cell>
+      <mat-cell *matCellDef="let driver">
+        {{ driver.name }}
+      </mat-cell>
+    </ng-container>
+  </mat-table>
+</app-simple-list-container>

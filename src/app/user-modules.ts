@@ -55,4 +55,14 @@ export const USER_MODULES: UserModule[] = [
       { name: 'Žurnāls', route: 'logfile', description: 'Sistēmas žurnāls (logfile)' },
     ],
   },
+  {
+    name: 'Transports',
+    description: 'Transporta pavadzīmes',
+    route: 'transportation',
+    childMenu: [
+      { name: 'Ceļazīmes', route: 'route-sheet', description: 'Maršruta lapas degvielas atskaitei' },
+      { name: 'Autoparks', route: 'vehicles', description: 'Automašīnu iestatījumi' },
+      { name: 'Vadītāji', route: 'drivers', description: 'Šoferu iestatījumi maršruta lapām' },
+    ],
+  },
 ];
