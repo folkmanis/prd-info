@@ -1,5 +1,5 @@
 import { Colors } from '../kastes/interfaces';
-import { ShippingAddress } from './shipping-address';
+import { TransportationSettings } from './module-settings/transportation-settings';
 
 export const MODULES = ['kastes', 'system', 'jobs', 'paytraq', 'transportation'] as const;
 
@@ -68,8 +68,4 @@ export interface PaytraqConnectionParams {
   apiKey: string;
   apiToken: string;
   invoiceUrl: string;
-}
-
-export interface TransportationSettings {
-  shippingAddress: ShippingAddress | null;
 }

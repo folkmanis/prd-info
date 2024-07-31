@@ -11,13 +11,15 @@ import {
   Validator,
 } from '@angular/forms';
 import { filter } from 'rxjs';
-import { ShippingAddress } from 'src/app/interfaces';
+import { FuelTypeInterface, ShippingAddress } from 'src/app/interfaces';
 import { ShippingAddressPreferencesComponent } from './shipping-address-preferences/shipping-address-preferences.component';
+import { SimpleListTableComponent } from 'src/app/library/simple-list-table/simple-list-table.component';
+import { FuelTypeDialogComponent } from './fuel-type-dialog/fuel-type-dialog.component';
 
 @Component({
   selector: 'app-transportation-preferences',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, ShippingAddressPreferencesComponent],
+  imports: [FormsModule, ReactiveFormsModule, ShippingAddressPreferencesComponent, SimpleListTableComponent],
   templateUrl: './transportation-preferences.component.html',
   styleUrl: './transportation-preferences.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,12 +39,15 @@ import { ShippingAddressPreferencesComponent } from './shipping-address-preferen
 export class TransportationPreferencesComponent implements ControlValueAccessor, Validator {
   form = inject(FormBuilder).group({
     shippingAddress: [null as null | ShippingAddress],
+    fuelTypes: [[] as FuelTypeInterface[]],
   });
 
   touch$ = this.form.events.pipe(
     filter((event) => event instanceof TouchedChangeEvent),
     filter((event) => event.touched),
   );
+
+  fuelTypeDialog = FuelTypeDialogComponent;
 
   writeValue(obj: any): void {
     this.form.reset(obj, { emitEvent: false });
