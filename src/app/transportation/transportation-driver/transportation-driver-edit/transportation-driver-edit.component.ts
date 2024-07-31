@@ -3,6 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { AsyncValidatorFn, FormBuilder, FormsModule, ReactiveFormsModule, Validators, ValueChangeEvent } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatCheckbox } from '@angular/material/checkbox';
+import { MatDivider } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { isEqual, omitBy } from 'lodash-es';
@@ -13,7 +14,6 @@ import { CanComponentDeactivate } from 'src/app/library/guards';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { TransportationDriver } from '../../interfaces/transportation-driver';
 import { TransportationDriverService } from '../../services/transportation-driver.service';
-import { MatDivider } from '@angular/material/divider';
 
 type FormValue = Partial<Pick<TransportationDriver, 'name' | 'disabled'>>;
 
@@ -94,6 +94,7 @@ export class TransportationDriverEditComponent implements CanComponentDeactivate
     const confirmed = await this.confirmation.confirmDelete();
     if (confirmed) {
       await this.driverService.delete(id);
+      this.form.markAsPristine();
       this.navigate(['..'], { queryParams: { del: Date.now() } });
     }
   }

@@ -16,8 +16,8 @@ export class TransportationVehicle {
 
   @Type(() => FuelType)
   @Expose()
-  fuelType: FuelType = new FuelType();
+  fuelType: FuelType;
 
   @Expose()
-  disabled = false;
+  disabled: boolean;
 }

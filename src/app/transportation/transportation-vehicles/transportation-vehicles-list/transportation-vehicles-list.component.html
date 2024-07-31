@@ -1,0 +1,30 @@
+<app-simple-list-container plusButton>
+  <mat-table [dataSource]="vehicles()" class="simple-form-table">
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns" [routerLink]="[row.id]" routerLinkActive="active" [class.disabled]="row.disabled"></mat-row>
+
+    <div *matNoDataRow>
+      <span> Nav neviena ieraksta </span>
+    </div>
+
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef> Nosaukums </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{ row.name }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="licencePlate">
+      <mat-header-cell *matHeaderCellDef> Numurs </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{ row.licencePlate }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="consuption">
+      <mat-header-cell *matHeaderCellDef> Patēriņš </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{ row.consuption }} {{ row.fuelType.units }}/100 km </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="fuelType">
+      <mat-header-cell *matHeaderCellDef> Degviela </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{ row.fuelType.description }} </mat-cell>
+    </ng-container>
+  </mat-table>
+</app-simple-list-container>
