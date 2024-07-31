@@ -11,5 +11,9 @@ export default [
     path: 'drivers',
     loadChildren: () => import('./transportation-driver/transportation-driver-routes'),
   },
+  {
+    path: 'vehicles',
+    loadChildren: () => import('./transportation-vehicles/transportation-vehicles-routes'),
+  },
   { path: '**', redirectTo: '' },
 ] as Route[];
