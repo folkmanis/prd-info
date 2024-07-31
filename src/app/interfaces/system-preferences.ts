@@ -1,11 +1,11 @@
 import { Colors } from '../kastes/interfaces';
-import { ShippingAddressType } from './shipping-address';
+import { ShippingAddress } from './shipping-address';
 
-export const MODULES = ['kastes', 'system', 'jobs', 'paytraq'] as const;
+export const MODULES = ['kastes', 'system', 'jobs', 'paytraq', 'transportation'] as const;
 
 export type Modules = (typeof MODULES)[number];
 
-export type ModuleSettings = KastesSettings | SystemSettings | JobsSettings | PaytraqSettings;
+export type ModuleSettings = KastesSettings | SystemSettings | JobsSettings | PaytraqSettings | TransportationSettings;
 
 export interface PreferencesDbModule {
   module: Modules;
@@ -19,6 +19,7 @@ export abstract class SystemPreferences implements SystemPreferencesType {
   kastes: KastesSettings;
   jobs: JobsSettings;
   paytraq: PaytraqSettings;
+  transportation: TransportationSettings;
 }
 
 export interface KastesSettings {
@@ -31,7 +32,6 @@ export interface SystemSettings {
   menuExpandedByDefault: boolean;
   logLevels: [number, string][];
   hostname: string;
-  shippingAddress: ShippingAddressType | null;
 }
 
 export interface ProductCategory {
@@ -61,8 +61,6 @@ export interface PaytraqSettings {
   connectionParams?: PaytraqConnectionParams;
 }
 
-export type ShippingAddressSettings = ShippingAddressType;
-
 export interface PaytraqConnectionParams {
   connectUrl: string;
   connectKey: string;
@@ -70,4 +68,8 @@ export interface PaytraqConnectionParams {
   apiKey: string;
   apiToken: string;
   invoiceUrl: string;
+}
+
+export interface TransportationSettings {
+  shippingAddress: ShippingAddress | null;
 }

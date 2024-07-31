@@ -62,6 +62,11 @@ export const APP_ROUTES: Route[] = [
         loadChildren: () => import('./calculations/calculations-routes'),
       },
       {
+        path: 'transportation',
+        canMatch: [isModuleAllowed],
+        loadChildren: () => import('./transportation/transportation-routes'),
+      },
+      {
         path: '',
         component: MainMenuComponent,
         pathMatch: 'full',

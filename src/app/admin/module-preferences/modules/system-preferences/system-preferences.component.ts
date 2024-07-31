@@ -1,10 +1,20 @@
 import { ChangeDetectionStrategy, Component, forwardRef, inject } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, FormsModule, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator, Validators } from '@angular/forms';
+import {
+  ControlValueAccessor,
+  FormBuilder,
+  FormsModule,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+  TouchedChangeEvent,
+  ValidationErrors,
+  Validator,
+  Validators,
+} from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ShippingAddress } from 'src/app/interfaces';
-import { ShippingAddressPreferencesComponent } from './shipping-address-preferences/shipping-address-preferences.component';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-system-preferences',
@@ -24,16 +34,18 @@ import { ShippingAddressPreferencesComponent } from './shipping-address-preferen
     },
   ],
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, MatCheckboxModule, MatFormFieldModule, MatInputModule, ShippingAddressPreferencesComponent],
+  imports: [FormsModule, ReactiveFormsModule, MatCheckboxModule, MatFormFieldModule, MatInputModule],
 })
 export class SystemPreferencesComponent implements ControlValueAccessor, Validator {
   controls = inject(FormBuilder).group({
     menuExpandedByDefault: [true],
     hostname: ['', Validators.required],
-    shippingAddress: [null as null | ShippingAddress],
   });
 
-  onTouchFn = () => {};
+  touch$ = this.controls.events.pipe(
+    filter((event) => event instanceof TouchedChangeEvent),
+    filter((event) => event.touched),
+  );
 
   writeValue(value: any): void {
     this.controls.patchValue(value, { emitEvent: false });
@@ -44,7 +56,7 @@ export class SystemPreferencesComponent implements ControlValueAccessor, Validat
   }
 
   registerOnTouched(fn: any): void {
-    this.onTouchFn = fn;
+    this.touch$.subscribe(fn);
   }
 
   setDisabledState(isDisabled: boolean): void {
