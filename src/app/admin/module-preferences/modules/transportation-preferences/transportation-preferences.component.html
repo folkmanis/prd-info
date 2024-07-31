@@ -1,0 +1,7 @@
+<ng-container [formGroup]="form">
+  <h3>Noliktavas adrese</h3>
+  <app-shipping-address-preferences formControlName="shippingAddress" />
+  <section>
+    <app-simple-list-table formControlName="fuelTypes" [columns]="['type', 'units', 'description']" [editDialog]="fuelTypeDialog"> Degvielas veidi </app-simple-list-table>
+  </section>
+</ng-container>

@@ -39,6 +39,7 @@ export const PRD_DEFAULTS: AppParams = {
     },
     transportation: {
       shippingAddress: null,
+      fuelTypes: [],
     },
   },
   gmailScope: 'https://www.googleapis.com/auth/gmail.readonly',

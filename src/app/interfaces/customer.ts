@@ -1,5 +1,5 @@
 import { Expose, Type } from 'class-transformer';
-import { ShippingAddress } from './shipping-address';
+import { ShippingAddress } from './module-settings/shipping-address';
 
 export interface CustomerFinancial {
   clientName: string;
