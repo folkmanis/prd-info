@@ -1,0 +1,11 @@
+:host {
+  display: block;
+  padding-block: 16px;
+}
+
+.actions {
+  display: flex;
+  align-items: baseline;
+  column-gap: 16px;
+  margin-top: 16px;
+}

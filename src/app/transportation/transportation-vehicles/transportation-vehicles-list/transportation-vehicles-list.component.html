@@ -1,7 +1,7 @@
 <app-simple-list-container plusButton>
   <mat-table [dataSource]="vehicles()" class="simple-form-table">
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns" [routerLink]="[row.id]" routerLinkActive="active" [class.disabled]="row.disabled"></mat-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns" [routerLink]="[row._id]" routerLinkActive="active" [class.disabled]="row.disabled"></mat-row>
 
     <div *matNoDataRow>
       <span> Nav neviena ieraksta </span>

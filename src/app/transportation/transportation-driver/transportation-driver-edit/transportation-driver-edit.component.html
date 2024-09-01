@@ -1,5 +1,5 @@
 <app-simple-form-container [status]="form.status" buttons [isChanges]="changes()" (save)="onSave()" (reset)="onReset()" [formGroup]="form">
-  @if (initialValue().id; as id) {
+  @if (initialValue()._id; as id) {
     <section>
       <h4>
         {{ id }}

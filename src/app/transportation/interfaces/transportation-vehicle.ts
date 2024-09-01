@@ -2,8 +2,8 @@ import { Expose, Type } from 'class-transformer';
 import { FuelType } from './fuel-type';
 
 export class TransportationVehicle {
-  @Expose({ name: '_id' })
-  id: string;
+  @Expose()
+  _id: string;
 
   @Expose()
   name: string;

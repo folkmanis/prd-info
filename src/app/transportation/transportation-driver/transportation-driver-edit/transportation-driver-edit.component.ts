@@ -37,7 +37,7 @@ export class TransportationDriverEditComponent implements CanComponentDeactivate
 
   initialValue = input.required<TransportationDriver>({ alias: 'driver' });
 
-  isNew = computed(() => !this.initialValue().id);
+  isNew = computed(() => !this.initialValue()._id);
 
   value$ = this.form.events.pipe(
     filter((event) => event instanceof ValueChangeEvent),
@@ -75,19 +75,19 @@ export class TransportationDriverEditComponent implements CanComponentDeactivate
     if (!update) {
       return;
     }
-    let id = this.initialValue().id;
-    if (this.initialValue().id) {
-      await this.driverService.update({ id, ...update });
+    let id = this.initialValue()._id;
+    if (id) {
+      await this.driverService.update({ _id: id, ...update });
     } else {
       const created = await this.driverService.create(update as Omit<TransportationDriver, 'id'>);
-      id = created.id;
+      id = created._id;
     }
     this.form.markAsPristine();
     this.navigate(['..', id], { queryParams: { upd: Date.now() } });
   }
 
   async onDelete() {
-    const id = this.initialValue().id;
+    const id = this.initialValue()._id;
     if (!id) {
       return;
     }

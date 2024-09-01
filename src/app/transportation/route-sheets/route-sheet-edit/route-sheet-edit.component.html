@@ -1,0 +1,17 @@
+<app-simple-form-container buttons [status]="formStatus()" [isChanges]="changes()" (save)="onSave()" (reset)="onReset()" [formGroup]="form">
+  <mat-tab-group dynamicHeight>
+    <mat-tab label="Pamatinformācija">
+      <app-general-setup [drivers]="drivers()" [vehicles]="vehicles()">
+        <mat-divider />
+        <div class="buttons">
+          <button mat-raised-button (click)="onDelete()" [disabled]="!initialValue()._id">Dzēst</button>
+        </div>
+      </app-general-setup>
+    </mat-tab>
+    <mat-tab label="Degvielas pirkumi">
+      <app-fuel-purchases formControlName="fuelPurchases" [defaultFuelType]="form.controls.vehicle.value?.fuelType" />
+    </mat-tab>
+    <mat-tab label="Maršruti"></mat-tab>
+  </mat-tab-group>
+  {{ formStatus() }} // {{ changes() | json }} // {{ form.controls.fuelPurchases.errors | json }}
+</app-simple-form-container>

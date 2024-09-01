@@ -1,8 +1,8 @@
 import { Expose } from 'class-transformer';
 
 export class TransportationDriver {
-  @Expose({ name: '_id' })
-  id: string;
+  @Expose()
+  _id: string;
 
   @Expose()
   name: string = '';

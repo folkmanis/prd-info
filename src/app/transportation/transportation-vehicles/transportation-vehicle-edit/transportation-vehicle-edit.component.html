@@ -38,9 +38,11 @@
     <mat-form-field>
       <mat-label> Patēriņš </mat-label>
       <input matInput type="number" formControlName="consumption" [appDisableControl]="!form.value.fuelType" />
-      @if (form.value.fuelType?.units; as units) {
-        <span matTextSuffix> {{ units }}/100km </span>
-      }
+      <ng-container matTextSuffix>
+        @if (form.value.fuelType?.units; as units) {
+          <span> {{ units }}/100km </span>
+        }
+      </ng-container>
     </mat-form-field>
   </section>
 

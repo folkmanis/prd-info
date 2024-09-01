@@ -1,0 +1,19 @@
+@for (purchaseControl of form.controls; track $index) {
+  <app-single-purchase [formControl]="purchaseControl" [defaultFuelType]="defaultFuelType()">
+    <button mat-raised-button (click)="onRemove($index)" actions>Dzēst</button>
+  </app-single-purchase>
+  <mat-divider />
+}
+
+<div class="actions">
+  <button mat-raised-button (click)="onAppend()" [disabled]="form.invalid">Pievienot</button>
+  <span>
+    @if (totals(); as t) {
+      Kopā: {{ t.amount }}
+      @if (t.units) {
+        {{ t.units }}
+      }
+      Summa: {{ t.total | currency }}
+    }
+  </span>
+</div>

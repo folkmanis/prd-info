@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { TransportationDriverApiService } from './transportation-driver-api.service';
 import { TransportationDriver } from '../interfaces/transportation-driver';
 
@@ -10,6 +10,8 @@ export class TransportationDriverService {
   #drivers = signal<TransportationDriver[]>([]);
 
   drivers = this.#drivers.asReadonly();
+
+  driversActive = computed(() => this.#drivers().filter((driver) => !driver.disabled));
 
   constructor() {
     this.retrieveAll();
@@ -25,8 +27,8 @@ export class TransportationDriverService {
     return result;
   }
 
-  async update(driver: Pick<TransportationDriver, 'id'> & Partial<TransportationDriver>) {
-    const { id, ...rest } = driver;
+  async update(driver: Pick<TransportationDriver, '_id'> & Partial<TransportationDriver>) {
+    const { _id: id, ...rest } = driver;
     const result = await this.api.updateOne(id, rest);
     this.retrieveAll();
     return result;

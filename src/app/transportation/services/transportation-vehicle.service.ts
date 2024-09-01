@@ -13,6 +13,7 @@ export class TransportationVehicleService {
   #vehicles = signal<TransportationVehicle[]>([]);
 
   vehicles = this.#vehicles.asReadonly();
+  vehiclesActive = computed(() => this.#vehicles().filter((v) => !v.disabled));
   fuelTypes = computed(() => [...this.#fuelTypes()].sort((a, b) => a.description.localeCompare(b.description)));
 
   constructor() {
@@ -29,8 +30,8 @@ export class TransportationVehicleService {
     return result;
   }
 
-  async update(vehicle: Pick<TransportationVehicle, 'id'> & Partial<TransportationVehicle>) {
-    const { id, ...rest } = vehicle;
+  async update(vehicle: Pick<TransportationVehicle, '_id'> & Partial<TransportationVehicle>) {
+    const { _id: id, ...rest } = vehicle;
     const result = await this.api.updateOne(id, rest);
     this.retrieveAll();
     return result;

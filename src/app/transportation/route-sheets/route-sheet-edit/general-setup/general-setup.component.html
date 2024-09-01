@@ -1,0 +1,40 @@
+<section id="month-year">
+  <mat-form-field class="full-width">
+    <mat-label> Gads </mat-label>
+    <input matInput type="number" formControlName="year" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label> Mēnesis </mat-label>
+    <input matInput type="number" formControlName="month" />
+  </mat-form-field>
+</section>
+
+<section>
+  <mat-form-field>
+    <mat-label> Degvielas atlikums </mat-label>
+    <input matInput type="number" formControlName="fuelRemainingStartLitres" />
+  </mat-form-field>
+</section>
+
+<mat-form-field class="full-width">
+  <mat-label> Vadītājs </mat-label>
+  <mat-select formControlName="driver" [compareWith]="driverCompareFn">
+    @for (driver of drivers(); track driver._id) {
+      <mat-option [value]="driver">
+        {{ driver.name }}
+      </mat-option>
+    }
+  </mat-select>
+</mat-form-field>
+
+<mat-form-field class="full-width">
+  <mat-label> Auto </mat-label>
+  <mat-select formControlName="vehicle" [compareWith]="vehicleCompareFn">
+    @for (vehicle of vehicles(); track vehicle._id) {
+      <mat-option [value]="vehicle"> {{ vehicle.licencePlate }}, {{ vehicle.name }} </mat-option>
+    }
+  </mat-select>
+</mat-form-field>
+
+<ng-content />
