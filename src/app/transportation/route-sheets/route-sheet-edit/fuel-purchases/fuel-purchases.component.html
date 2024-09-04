@@ -7,13 +7,7 @@
 
 <div class="actions">
   <button mat-raised-button (click)="onAppend()" [disabled]="form.invalid">Pievienot</button>
-  <span>
-    @if (totals(); as t) {
-      Kopā: {{ t.amount }}
-      @if (t.units) {
-        {{ t.units }}
-      }
-      Summa: {{ t.total | currency }}
-    }
-  </span>
+  @if (totals(); as t) {
+    <app-total-amount [totals]="t" />
+  }
 </div>

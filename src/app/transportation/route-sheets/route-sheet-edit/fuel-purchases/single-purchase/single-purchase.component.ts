@@ -1,15 +1,28 @@
 import { ChangeDetectionStrategy, Component, effect, forwardRef, inject, input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ControlValueAccessor, FormBuilder, FormsModule, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator, Validators } from '@angular/forms';
+import {
+  ControlValueAccessor,
+  FormBuilder,
+  FormsModule,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+  TouchedChangeEvent,
+  ValidationErrors,
+  Validator,
+  Validators,
+  ValueChangeEvent,
+} from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { isFinite } from 'lodash-es';
-import { map, merge } from 'rxjs';
+import { filter } from 'rxjs';
 import { ViewSizeDirective } from 'src/app/library/view-size';
 import { configuration } from 'src/app/services/config.provider';
 import { FuelType } from 'src/app/transportation/interfaces/fuel-type';
+import { FuelPurchase } from 'src/app/transportation/interfaces/transportation-route-sheet';
 
 @Component({
   selector: 'app-single-purchase',
@@ -49,13 +62,23 @@ export class SinglePurchaseComponent implements ControlValueAccessor, Validator 
   onTouched = () => {};
 
   constructor() {
-    merge(this.form.controls.amount.valueChanges, this.form.controls.price.valueChanges)
+    this.form.events
       .pipe(
-        map(() => [this.form.controls.amount.value, this.form.controls.price.value]),
-        map(([amount, price]) => (isFinite(amount) && isFinite(price) ? round(amount * price, 2) : null)),
+        filter((event) => event instanceof ValueChangeEvent),
         takeUntilDestroyed(),
       )
-      .subscribe((total) => this.form.controls.total.setValue(total));
+      .subscribe((event) => this.updateTotal(event));
+
+    this.form.events
+      .pipe(
+        filter((event) => event instanceof TouchedChangeEvent && event.touched),
+        takeUntilDestroyed(),
+      )
+      .subscribe(() => {
+        this.onTouched();
+      });
+
+    this.form.valueChanges.subscribe((data) => console.log(data));
 
     this.form.controls.type.valueChanges.pipe(takeUntilDestroyed()).subscribe((type) => this.setUnits(type));
 
@@ -68,10 +91,8 @@ export class SinglePurchaseComponent implements ControlValueAccessor, Validator 
   }
 
   writeValue(obj: any): void {
-    this.form.reset(obj, { emitEvent: false });
-    if (!obj?.type && this.defaultFuelType()) {
-      this.form.patchValue({ type: this.defaultFuelType()?.type });
-    }
+    const purchase = obj ?? new FuelPurchase(this.defaultFuelType());
+    this.form.reset(purchase, { emitEvent: false });
   }
 
   registerOnChange(fn: any): void {
@@ -84,9 +105,9 @@ export class SinglePurchaseComponent implements ControlValueAccessor, Validator 
 
   setDisabledState(isDisabled: boolean): void {
     if (isDisabled) {
-      this.form.disable();
+      this.form.disable({ emitEvent: false });
     } else {
-      this.form.enable();
+      this.form.enable({ emitEvent: false });
     }
   }
 
@@ -107,6 +128,17 @@ export class SinglePurchaseComponent implements ControlValueAccessor, Validator 
   private setUnits(type: string) {
     const units = this.fuelTypes().find((fuelType) => fuelType.type === type)?.units;
     units && this.form.controls.units.setValue(units);
+  }
+
+  private updateTotal(event: ValueChangeEvent<FuelPurchase>) {
+    const {
+      value: { amount, price, total },
+    } = event;
+    const update = isFinite(amount) && isFinite(price) ? round(amount * price, 2) : null;
+    if (update !== total) {
+      this.form.controls.total.setValue(update);
+      console.log('total update', update);
+    }
   }
 }
 

@@ -1,5 +1,5 @@
-import { CurrencyPipe } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, forwardRef, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, input, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   ControlValueAccessor,
   FormArray,
@@ -10,7 +10,7 @@ import {
   ReactiveFormsModule,
   ValidationErrors,
   Validator,
-  Validators,
+  Validators
 } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatDivider } from '@angular/material/divider';
@@ -18,17 +18,12 @@ import { isObject } from 'lodash-es';
 import { FuelType } from 'src/app/transportation/interfaces/fuel-type';
 import { FuelPurchase } from 'src/app/transportation/interfaces/transportation-route-sheet';
 import { SinglePurchaseComponent } from './single-purchase/single-purchase.component';
-
-export interface FuelPurchaseTotals {
-  amount: number;
-  total: number;
-  units: string;
-}
+import { FuelPurchaseTotals, TotalAmountComponent } from './total-amount/total-amount.component';
 
 @Component({
   selector: 'app-fuel-purchases',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, SinglePurchaseComponent, MatDivider, MatButton, CurrencyPipe],
+  imports: [FormsModule, ReactiveFormsModule, SinglePurchaseComponent, MatDivider, MatButton, TotalAmountComponent],
   templateUrl: './fuel-purchases.component.html',
   styleUrl: './fuel-purchases.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -46,7 +41,6 @@ export interface FuelPurchaseTotals {
   ],
 })
 export class FuelPurchasesComponent implements ControlValueAccessor, Validator {
-  private chDetector = inject(ChangeDetectorRef);
   form = new FormArray<FormControl<FuelPurchase>>([]);
 
   defaultFuelType = input<FuelType>();
@@ -56,9 +50,7 @@ export class FuelPurchasesComponent implements ControlValueAccessor, Validator {
   onTouched = () => {};
 
   constructor() {
-    effect(() => {
-      console.log(this.defaultFuelType());
-    });
+    this.form.valueChanges.pipe(takeUntilDestroyed()).subscribe((value) => this.setTotalFuelPurchase(value));
   }
 
   writeValue(obj: FuelPurchase[] | null): void {
@@ -69,14 +61,10 @@ export class FuelPurchasesComponent implements ControlValueAccessor, Validator {
       obj?.forEach((fuelPurchase) => this.form.push(new FormControl(fuelPurchase), { emitEvent: false }));
     }
     this.setTotalFuelPurchase(obj);
-    this.chDetector.markForCheck();
   }
 
   registerOnChange(fn: any): void {
-    this.form.valueChanges.subscribe((purchases) => {
-      this.setTotalFuelPurchase(purchases);
-      fn(purchases);
-    });
+    this.form.valueChanges.subscribe(fn);
   }
 
   registerOnTouched(fn: any): void {
@@ -85,9 +73,9 @@ export class FuelPurchasesComponent implements ControlValueAccessor, Validator {
 
   setDisabledState(isDisabled: boolean): void {
     if (isDisabled) {
-      this.form.disable();
+      this.form.disable({ emitEvent: false });
     } else {
-      this.form.enable();
+      this.form.enable({ emitEvent: false });
     }
   }
 
@@ -102,17 +90,16 @@ export class FuelPurchasesComponent implements ControlValueAccessor, Validator {
   onAppend() {
     const purchaseControl = new FormControl(null, [Validators.required]);
     this.form.push(purchaseControl);
-    this.chDetector.markForCheck();
+    this.onTouched();
   }
 
   onRemove(index: number) {
     this.form.removeAt(index);
-    this.chDetector.markForCheck();
+    this.onTouched();
   }
 
   private setTotalFuelPurchase(fuelPurchases: FuelPurchase[] | null) {
     const totals = { amount: 0, total: 0, units: this.defaultFuelType()?.units || '' };
-    // console.log(totals);
     const validPurchases = fuelPurchases?.filter(isObject);
     if (validPurchases) {
       validPurchases.forEach((fuelPurchase) => {

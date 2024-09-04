@@ -1,6 +1,6 @@
 import { AsyncPipe, JsonPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatDivider } from '@angular/material/divider';
@@ -71,8 +71,6 @@ export class RouteSheetEditComponent implements CanComponentDeactivate {
   });
 
   changes = computed(() => {
-    console.log('changes');
-
     const value = this.formValue();
     const initialValue = this.initialValue();
     const diff = pickBy(value, (v, key) => v !== null && !isEqual(v, initialValue[key]));
@@ -80,13 +78,7 @@ export class RouteSheetEditComponent implements CanComponentDeactivate {
   });
 
   constructor() {
-    effect(
-      () => {
-        console.log('reset');
-        this.form.reset(this.initialValue());
-      },
-      { allowSignalWrites: true },
-    );
+    toObservable(this.initialValue).subscribe((data) => this.form.reset(data));
   }
 
   canDeactivate = () => this.form.pristine;

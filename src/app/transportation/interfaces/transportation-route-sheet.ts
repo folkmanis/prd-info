@@ -1,6 +1,7 @@
 import { Expose, Type } from 'class-transformer';
 import { TransportationVehicle } from './transportation-vehicle';
 import { TransportationDriver } from './transportation-driver';
+import { FuelType } from './fuel-type';
 
 export class TransportationRouteSheet {
   @Expose()
@@ -79,14 +80,21 @@ export class FuelPurchase {
   units: string;
 
   @Expose()
-  amount: number = 0;
+  amount: number = null;
 
   @Expose()
-  price: number;
+  price: number = null;
 
   @Expose()
-  total: number = 0;
+  total: number;
 
   @Expose()
   invoiceId?: string;
+
+  constructor(fuelType?: FuelType) {
+    if (fuelType) {
+      this.type = fuelType.type;
+      this.units = fuelType.units;
+    }
+  }
 }
