@@ -24,6 +24,7 @@ export const PRD_DEFAULTS: AppParams = {
       menuExpandedByDefault: false,
       hostname: '',
       logLevels: [],
+      companyName: '',
     },
     jobs: {
       productCategories: [

@@ -12,7 +12,7 @@ export class TransportationVehicle {
   licencePlate: string;
 
   @Expose()
-  consuption: number; // units
+  consumption: number; // units
 
   @Type(() => FuelType)
   @Expose()

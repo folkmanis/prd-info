@@ -1,6 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { TransportationRouteSheet } from '../interfaces/transportation-route-sheet';
+import { RouteTripStop, TransportationRouteSheet } from '../interfaces/transportation-route-sheet';
 import { RouteSheetApiService } from './route-sheet-api.service';
+import { round } from 'lodash-es';
 
 interface RouteSheetFilter {
   name?: string;
@@ -53,6 +54,11 @@ export class RouteSheetService {
     return updated;
   }
 
+  async getTripLength(stops: RouteTripStop[]): Promise<number> {
+    const { distance } = await this.api.distanceRequest({ tripStops: stops.map(({ address, googleLocationId }) => ({ address, googleLocationId })) });
+    return round(this.randomizeTripLength(distance / 1000));
+  }
+
   private async getAllRouteSheets() {
     const { name, year, month, fuelTypes } = this.filter;
     const routeSheets = await this.api.getAll({
@@ -63,5 +69,9 @@ export class RouteSheetService {
     });
     this.#routeSheets.set(routeSheets);
     return routeSheets;
+  }
+
+  private randomizeTripLength(value: number): number {
+    return value + (value / 10) * Math.random();
   }
 }

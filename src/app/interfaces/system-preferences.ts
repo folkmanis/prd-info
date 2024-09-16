@@ -32,6 +32,7 @@ export interface SystemSettings {
   menuExpandedByDefault: boolean;
   logLevels: [number, string][];
   hostname: string;
+  companyName: string;
 }
 
 export interface ProductCategory {

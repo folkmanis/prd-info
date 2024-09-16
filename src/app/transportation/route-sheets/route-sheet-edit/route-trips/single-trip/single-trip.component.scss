@@ -1,0 +1,25 @@
+:host {
+  display: block;
+}
+
+.flex-inputs {
+  display: flex;
+  row-gap: 8px;
+  column-gap: 16px;
+  margin-block: 8px;
+  flex-direction: column;
+
+  &>* {
+    flex: 1;
+  }
+
+  &.large {
+    flex-direction: row;
+  }
+
+}
+
+.actions {
+  display: flex;
+  column-gap: 16px;
+}

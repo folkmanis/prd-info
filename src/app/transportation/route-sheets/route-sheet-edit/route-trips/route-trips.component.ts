@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, input, output } from '@angular/core';
 import {
   ControlValueAccessor,
   FormArray,
@@ -13,46 +13,49 @@ import {
 } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatDivider } from '@angular/material/divider';
-import { FuelType } from 'src/app/transportation/interfaces/fuel-type';
-import { FuelPurchase } from 'src/app/transportation/interfaces/transportation-route-sheet';
-import { SinglePurchaseComponent } from './single-purchase/single-purchase.component';
-import { TotalAmountComponent } from './total-amount/total-amount.component';
+import { TransportationCustomer } from 'src/app/transportation/interfaces/transportation-customer';
+import { RouteTrip } from 'src/app/transportation/interfaces/transportation-route-sheet';
+import { SingleTripComponent } from './single-trip/single-trip.component';
+import { MatCardModule } from '@angular/material/card';
+import { TransportationVehicle } from 'src/app/transportation/interfaces/transportation-vehicle';
 
 @Component({
-  selector: 'app-fuel-purchases',
+  selector: 'app-route-trips',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, SinglePurchaseComponent, MatDivider, MatButton, TotalAmountComponent],
-  templateUrl: './fuel-purchases.component.html',
-  styleUrl: './fuel-purchases.component.scss',
+  imports: [FormsModule, ReactiveFormsModule, MatButton, SingleTripComponent, MatCardModule],
+  templateUrl: './route-trips.component.html',
+  styleUrl: './route-trips.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => FuelPurchasesComponent),
+      useExisting: RouteTripsComponent,
       multi: true,
     },
     {
       provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => FuelPurchasesComponent),
+      useExisting: RouteTripsComponent,
       multi: true,
     },
   ],
 })
-export class FuelPurchasesComponent implements ControlValueAccessor, Validator {
+export class RouteTripsComponent implements ControlValueAccessor, Validator {
   private chDetector = inject(ChangeDetectorRef);
 
-  form = new FormArray<FormControl<FuelPurchase>>([]);
+  form = new FormArray<FormControl<RouteTrip>>([]);
 
-  defaultFuelType = input<FuelType>();
+  customers = input<TransportationCustomer[]>([]);
+
+  vehicle = input<TransportationVehicle | null>();
 
   onTouched = () => {};
 
-  writeValue(obj: FuelPurchase[] | null): void {
+  writeValue(obj: RouteTrip[] | null): void {
     if (obj?.length === this.form.length) {
       this.form.reset(obj, { emitEvent: false });
     } else {
       this.form.clear({ emitEvent: false });
-      obj?.forEach((fuelPurchase) => this.form.push(new FormControl(fuelPurchase), { emitEvent: false }));
+      obj?.forEach((trip) => this.form.push(new FormControl(trip), { emitEvent: false }));
     }
     this.chDetector.markForCheck();
   }
@@ -82,8 +85,8 @@ export class FuelPurchasesComponent implements ControlValueAccessor, Validator {
   }
 
   onAppend() {
-    const purchaseControl = new FormControl(null, [Validators.required]);
-    this.form.push(purchaseControl);
+    const tripControl = new FormControl(null, [Validators.required]);
+    this.form.push(tripControl);
     this.onTouched();
     this.chDetector.markForCheck();
   }

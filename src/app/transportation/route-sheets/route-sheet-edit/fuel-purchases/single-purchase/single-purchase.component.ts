@@ -17,7 +17,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatOption, MatSelect } from '@angular/material/select';
-import { isFinite } from 'lodash-es';
+import { isFinite, round } from 'lodash-es';
 import { filter } from 'rxjs';
 import { ViewSizeDirective } from 'src/app/library/view-size';
 import { configuration } from 'src/app/services/config.provider';
@@ -74,11 +74,7 @@ export class SinglePurchaseComponent implements ControlValueAccessor, Validator 
         filter((event) => event instanceof TouchedChangeEvent && event.touched),
         takeUntilDestroyed(),
       )
-      .subscribe(() => {
-        this.onTouched();
-      });
-
-    this.form.valueChanges.subscribe((data) => console.log(data));
+      .subscribe(() => this.onTouched());
 
     this.form.controls.type.valueChanges.pipe(takeUntilDestroyed()).subscribe((type) => this.setUnits(type));
 
@@ -137,13 +133,6 @@ export class SinglePurchaseComponent implements ControlValueAccessor, Validator 
     const update = isFinite(amount) && isFinite(price) ? round(amount * price, 2) : null;
     if (update !== total) {
       this.form.controls.total.setValue(update);
-      console.log('total update', update);
     }
   }
-}
-
-function round(num: number, decimalPlaces = 0) {
-  const p = Math.pow(10, decimalPlaces);
-  const n = num * p * (1 + Number.EPSILON);
-  return Math.round(n) / p;
 }

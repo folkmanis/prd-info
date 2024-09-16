@@ -1,5 +1,5 @@
 <app-simple-form-container buttons [status]="formStatus()" [isChanges]="changes()" (save)="onSave()" (reset)="onReset()" [formGroup]="form">
-  <mat-tab-group dynamicHeight>
+  <mat-tab-group dynamicHeight selectedIndex="2">
     <mat-tab label="Pamatinformācija">
       <app-general-setup [drivers]="drivers()" [vehicles]="vehicles()">
         <mat-divider />
@@ -11,7 +11,9 @@
     <mat-tab label="Degvielas pirkumi">
       <app-fuel-purchases formControlName="fuelPurchases" [defaultFuelType]="form.controls.vehicle.value?.fuelType" />
     </mat-tab>
-    <mat-tab label="Maršruti"></mat-tab>
+    <mat-tab label="Maršruti">
+      <app-route-trips formControlName="trips" [customers]="customers$ | async" [vehicle]="form.controls.vehicle.value" />
+    </mat-tab>
   </mat-tab-group>
-  {{ formStatus() }} // {{ changes() | json }} // {{ form.controls.fuelPurchases.errors | json }}
+  {{ formStatus() }} // {{ changes() | json }} // {{ form.controls.trips.errors | json }}
 </app-simple-form-container>

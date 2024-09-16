@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { getAppParams } from 'src/app/app-params';
 import { AppClassTransformerService, HttpOptions } from 'src/app/library';
 import { TransportationCustomer } from '../interfaces/transportation-customer';
-import { TransportationRouteSheet } from '../interfaces/transportation-route-sheet';
+import { RouteTripStop, TransportationRouteSheet } from '../interfaces/transportation-route-sheet';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable({
@@ -44,5 +44,10 @@ export class RouteSheetApiService {
   async getCustomers() {
     const response$ = this.http.get<Record<string, any>[]>(this.path + '/customers', new HttpOptions().cacheable());
     return this.transformer.toInstanceAsync(TransportationCustomer, response$);
+  }
+
+  async distanceRequest(request: { tripStops: Pick<RouteTripStop, 'address' | 'googleLocationId'>[] }): Promise<{ distance: number }> {
+    const response$ = this.http.post<{ distance: number }>(this.path + '/distance-request', request, new HttpOptions());
+    return await firstValueFrom(response$);
   }
 }

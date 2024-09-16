@@ -1,0 +1,14 @@
+@for (control of form.controls; track $index) {
+  <mat-card>
+    <mat-card-content>
+      <app-single-trip [formControl]="control" [customers]="customers()" [fuelConsumption]="vehicle()?.consumption" [fuelUnits]="vehicle()?.fuelType?.units" />
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button mat-raised-button (click)="onRemove($index)" actions>Dzēst braucienu</button>
+    </mat-card-actions>
+  </mat-card>
+}
+<div class="actions">
+  <button mat-raised-button (click)="onAppend()" [disabled]="form.invalid">Pievienot braucienu</button>
+</div>

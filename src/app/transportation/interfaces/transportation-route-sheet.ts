@@ -35,13 +35,13 @@ export class TransportationRouteSheet {
 export class RouteTrip {
   @Expose()
   @Type(() => Date)
-  date: Date;
+  date: Date = new Date();
 
   @Expose()
   tripLengthKm: number;
 
   @Expose()
-  fuelConsumedLitres: number;
+  fuelConsumed: number;
 
   @Expose()
   odoStartKm: number;

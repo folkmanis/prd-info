@@ -40,6 +40,7 @@ export class SystemPreferencesComponent implements ControlValueAccessor, Validat
   controls = inject(FormBuilder).group({
     menuExpandedByDefault: [true],
     hostname: ['', Validators.required],
+    companyName: ['', Validators.required],
   });
 
   touch$ = this.controls.events.pipe(

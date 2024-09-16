@@ -32,7 +32,7 @@
   <mat-label> Auto </mat-label>
   <mat-select formControlName="vehicle" [compareWith]="vehicleCompareFn">
     @for (vehicle of vehicles(); track vehicle._id) {
-      <mat-option [value]="vehicle"> {{ vehicle.licencePlate }}, {{ vehicle.name }} </mat-option>
+      <mat-option [value]="vehicle"> {{ vehicle.licencePlate }}, {{ vehicle.name }}, {{ vehicle.consumption }}&nbsp;{{ vehicle.fuelType.units }}/100&nbsp;km </mat-option>
     }
   </mat-select>
 </mat-form-field>

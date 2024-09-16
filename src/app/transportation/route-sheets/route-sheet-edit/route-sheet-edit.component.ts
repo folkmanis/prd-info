@@ -18,6 +18,7 @@ import { TransportationDriverService } from '../../services/transportation-drive
 import { TransportationVehicleService } from '../../services/transportation-vehicle.service';
 import { FuelPurchasesComponent } from './fuel-purchases/fuel-purchases.component';
 import { GeneralSetupComponent } from './general-setup/general-setup.component';
+import { RouteTripsComponent } from './route-trips/route-trips.component';
 
 @Component({
   selector: 'app-route-sheet-edit',
@@ -33,6 +34,7 @@ import { GeneralSetupComponent } from './general-setup/general-setup.component';
     MatButton,
     GeneralSetupComponent,
     FuelPurchasesComponent,
+    RouteTripsComponent,
   ],
   templateUrl: './route-sheet-edit.component.html',
   styleUrl: './route-sheet-edit.component.scss',
