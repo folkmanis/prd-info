@@ -4,11 +4,13 @@ import { newRouteSheetResolver } from '../services/new-route-sheet.resolver';
 import { routeSheetResolver } from '../services/route-sheet.resolver';
 import { RouteSheetEditComponent } from './route-sheet-edit/route-sheet-edit.component';
 import { RouteSheetListComponent } from './route-sheet-list/route-sheet-list.component';
+import { RouteSheetService } from '../services/route-sheet.service';
 
 export default [
   {
     path: '',
     component: RouteSheetListComponent,
+    providers: [RouteSheetService],
     children: [
       {
         path: 'new',

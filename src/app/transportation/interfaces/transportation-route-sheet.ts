@@ -35,7 +35,7 @@ export class TransportationRouteSheet {
 export class RouteTrip {
   @Expose()
   @Type(() => Date)
-  date: Date = new Date();
+  date: Date;
 
   @Expose()
   tripLengthKm: number;
@@ -48,6 +48,9 @@ export class RouteTrip {
 
   @Expose()
   odoStopKm: number;
+
+  @Expose()
+  description: string;
 
   @Expose()
   @Type(() => RouteTripStop)

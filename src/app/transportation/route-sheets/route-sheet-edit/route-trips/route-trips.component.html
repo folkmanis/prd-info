@@ -1,14 +1,47 @@
-@for (control of form.controls; track $index) {
-  <mat-card>
-    <mat-card-content>
-      <app-single-trip [formControl]="control" [customers]="customers()" [fuelConsumption]="vehicle()?.consumption" [fuelUnits]="vehicle()?.fuelType?.units" />
-    </mat-card-content>
+<mat-accordion app-accordion>
+  @for (control of form.controls; track $index) {
+    <mat-expansion-panel>
+      <mat-expansion-panel-header [class.invalid]="control.invalid">
+        <mat-panel-title>
+          @if (control.value; as value) {
+            <span>
+              {{ value.date | date: 'd. MMMM' }}
+            </span>
+          } @else {
+            <span> Jauns brauciens </span>
+          }
+        </mat-panel-title>
+        <mat-panel-description>
+          <span class="route-description">
+            {{ getDescription(control.value?.stops) }}
+          </span>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
 
-    <mat-card-actions>
-      <button mat-raised-button (click)="onRemove($index)" actions>Dzēst braucienu</button>
-    </mat-card-actions>
-  </mat-card>
-}
+      <ng-template matExpansionPanelContent>
+        <app-single-trip
+          [formControl]="control"
+          [customers]="customers()"
+          [fuelConsumption]="vehicle()?.consumption"
+          [fuelUnits]="vehicle()?.fuelType?.units"
+          [lastOdometer]="lastOdometer($index)()"
+        />
+        <mat-action-row>
+          <button mat-raised-button (click)="onRemove($index)" actions>Dzēst braucienu</button>
+        </mat-action-row>
+      </ng-template>
+    </mat-expansion-panel>
+  }
+</mat-accordion>
+
+<app-trips-total [routeTrips]="form.value" [fuelUnits]="fuelUnits()" />
 <div class="actions">
   <button mat-raised-button (click)="onAppend()" [disabled]="form.invalid">Pievienot braucienu</button>
+  <button mat-icon-button [matMenuTriggerFor]="extraActions">
+    <mat-icon> more_vert </mat-icon>
+  </button>
 </div>
+
+<mat-menu #extraActions>
+  <button mat-menu-item (click)="onSortByDate()" [disabled]="form.length < 2">Kārtot pēc datuma</button>
+</mat-menu>

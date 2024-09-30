@@ -5,6 +5,7 @@ import { AppClassTransformerService, HttpOptions } from 'src/app/library';
 import { TransportationCustomer } from '../interfaces/transportation-customer';
 import { RouteTripStop, TransportationRouteSheet } from '../interfaces/transportation-route-sheet';
 import { firstValueFrom } from 'rxjs';
+import { HistoricalData } from '../interfaces/historical-data';
 
 @Injectable({
   providedIn: 'root',
@@ -49,5 +50,15 @@ export class RouteSheetApiService {
   async distanceRequest(request: { tripStops: Pick<RouteTripStop, 'address' | 'googleLocationId'>[] }): Promise<{ distance: number }> {
     const response$ = this.http.post<{ distance: number }>(this.path + '/distance-request', request, new HttpOptions());
     return await firstValueFrom(response$);
+  }
+
+  async getDescriptions(count?: number): Promise<string[]> {
+    const response$ = this.http.get<string[]>(this.path + '/descriptions', new HttpOptions({ count }).cacheable());
+    return await firstValueFrom(response$);
+  }
+
+  async getHistoricalData(licencePlate: string): Promise<HistoricalData> {
+    const response$ = this.http.get<HistoricalData>(this.path + '/historical-data/' + licencePlate, new HttpOptions());
+    return this.transformer.toInstanceAsync(HistoricalData, response$);
   }
 }

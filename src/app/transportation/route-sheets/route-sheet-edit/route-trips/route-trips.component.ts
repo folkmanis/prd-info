@@ -1,4 +1,6 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, input, output } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, inject, input, viewChild } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {
   ControlValueAccessor,
   FormArray,
@@ -11,18 +13,35 @@ import {
   Validator,
   Validators,
 } from '@angular/forms';
-import { MatButton } from '@angular/material/button';
-import { MatDivider } from '@angular/material/divider';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatAccordion, MatExpansionModule } from '@angular/material/expansion';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { isEqual } from 'lodash-es';
+import { HistoricalData } from 'src/app/transportation/interfaces/historical-data';
 import { TransportationCustomer } from 'src/app/transportation/interfaces/transportation-customer';
-import { RouteTrip } from 'src/app/transportation/interfaces/transportation-route-sheet';
-import { SingleTripComponent } from './single-trip/single-trip.component';
-import { MatCardModule } from '@angular/material/card';
+import { RouteTrip, RouteTripStop } from 'src/app/transportation/interfaces/transportation-route-sheet';
 import { TransportationVehicle } from 'src/app/transportation/interfaces/transportation-vehicle';
+import { AccordionDirective } from 'src/app/transportation/ui/accordion.directive';
+import { SingleTripComponent } from './single-trip/single-trip.component';
+import { TripsTotalComponent } from '../../../ui/trips-total/trips-total.component';
 
 @Component({
   selector: 'app-route-trips',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, MatButton, SingleTripComponent, MatCardModule],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatButton,
+    SingleTripComponent,
+    MatExpansionModule,
+    DatePipe,
+    MatMenuModule,
+    MatIcon,
+    MatIconButton,
+    AccordionDirective,
+    TripsTotalComponent,
+  ],
   templateUrl: './route-trips.component.html',
   styleUrl: './route-trips.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -41,8 +60,11 @@ import { TransportationVehicle } from 'src/app/transportation/interfaces/transpo
 })
 export class RouteTripsComponent implements ControlValueAccessor, Validator {
   private chDetector = inject(ChangeDetectorRef);
+  private accordion = viewChild.required(MatAccordion, { read: AccordionDirective });
 
   form = new FormArray<FormControl<RouteTrip>>([]);
+
+  formValue = toSignal(this.form.valueChanges, { initialValue: this.form.value });
 
   customers = input<TransportationCustomer[]>([]);
 
@@ -50,7 +72,14 @@ export class RouteTripsComponent implements ControlValueAccessor, Validator {
 
   onTouched = () => {};
 
+  historicalData = input<HistoricalData | null>(null);
+
+  fuelUnits = computed(() => this.vehicle()?.fuelType?.units ?? '');
+
   writeValue(obj: RouteTrip[] | null): void {
+    if (obj?.length < this.form.length) {
+      this.accordion().closeAll();
+    }
     if (obj?.length === this.form.length) {
       this.form.reset(obj, { emitEvent: false });
     } else {
@@ -89,11 +118,55 @@ export class RouteTripsComponent implements ControlValueAccessor, Validator {
     this.form.push(tripControl);
     this.onTouched();
     this.chDetector.markForCheck();
+    this.accordion().expandLast();
   }
 
   onRemove(index: number) {
+    this.accordion().closeAll();
     this.form.removeAt(index);
     this.onTouched();
     this.chDetector.markForCheck();
+  }
+
+  getDescription(stops?: RouteTripStop[]): string | null {
+    if (!stops || stops.length < 1) {
+      return null;
+    }
+    return stops
+      .map((stop) => stop.name)
+      .filter(Boolean)
+      .join(' - ');
+  }
+
+  onSortByDate() {
+    const sorted = this.sortTripsByDate(this.form.value);
+    if (!isEqual(this.form.value, sorted)) {
+      this.form.setValue(sorted);
+    }
+  }
+
+  lastOdometer(idx: number) {
+    return computed(() => {
+      const hData = this.historicalData();
+      this.formValue();
+      if (this.form.length === 1 && hData && new Date(hData.lastYear, hData.lastMonth - 1) < this.form.value[idx]?.date) {
+        return this.historicalData()?.lastOdometer || null;
+      }
+      if (this.form.value[idx]?.date) {
+        return this.lastDistance(this.form.value[idx].date) ?? this.historicalData()?.lastOdometer ?? null;
+      }
+      return null;
+    });
+  }
+
+  private sortTripsByDate(unsorted: RouteTrip[]): RouteTrip[] {
+    const sorted = [...unsorted];
+    sorted.sort((a, b) => +a.date - +b.date);
+    return sorted;
+  }
+
+  private lastDistance(date: Date): number {
+    const d = this.form.value.filter((d) => d && d.date < date && d.odoStopKm > 0);
+    return d.map((d) => d.odoStopKm).reduce((acc, curr) => (curr > acc ? curr : acc), 0);
   }
 }

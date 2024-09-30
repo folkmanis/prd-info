@@ -5,15 +5,32 @@
   </mat-form-field>
 
   <mat-form-field>
+    <mat-select formControlName="month">
+      @for (date of months; track $index) {
+        <mat-option [value]="date.getMonth() + 1">
+          {{ date | date: 'LLLL' | titlecase }}
+        </mat-option>
+      }
+    </mat-select>
     <mat-label> Mēnesis </mat-label>
-    <input matInput type="number" formControlName="month" />
   </mat-form-field>
 </section>
 
 <section>
   <mat-form-field>
     <mat-label> Degvielas atlikums </mat-label>
-    <input matInput type="number" formControlName="fuelRemainingStartLitres" />
+    <input matInput type="number" #fuelRemainingStartLitres formControlName="fuelRemainingStartLitres" />
+    <span matIconSuffix>
+      @if (historicalData(); as h) {
+        <button
+          mat-icon-button
+          (click)="setRemainingFuel(h.fuelRemaining)"
+          matTooltip="Atlikums uz {{ h.lastMonth }}.{{ h.lastYear }} beigām: {{ h.fuelRemaining }} {{ vehicle.value?.fuelType.units }}"
+        >
+          <mat-icon> chevron_left </mat-icon>
+        </button>
+      }
+    </span>
   </mat-form-field>
 </section>
 
@@ -30,7 +47,7 @@
 
 <mat-form-field class="full-width">
   <mat-label> Auto </mat-label>
-  <mat-select formControlName="vehicle" [compareWith]="vehicleCompareFn">
+  <mat-select formControlName="vehicle" #vehicle [compareWith]="vehicleCompareFn">
     @for (vehicle of vehicles(); track vehicle._id) {
       <mat-option [value]="vehicle"> {{ vehicle.licencePlate }}, {{ vehicle.name }}, {{ vehicle.consumption }}&nbsp;{{ vehicle.fuelType.units }}/100&nbsp;km </mat-option>
     }

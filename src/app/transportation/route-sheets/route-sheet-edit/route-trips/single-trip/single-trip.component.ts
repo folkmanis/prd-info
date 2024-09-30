@@ -1,5 +1,6 @@
-import { DecimalPipe, JsonPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
+import { TextFieldModule } from '@angular/cdk/text-field';
+import { AsyncPipe, DecimalPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
@@ -18,20 +19,38 @@ import {
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { filter } from 'rxjs';
-import { ViewSizeDirective } from 'src/app/library/view-size';
-import { RouteTrip, RouteTripStop } from 'src/app/transportation/interfaces/transportation-route-sheet';
-import { TripStopsComponent } from './trip-stops/trip-stops.component';
-import { TransportationCustomer } from 'src/app/transportation/interfaces/transportation-customer';
-import { MatCardModule } from '@angular/material/card';
-import { RouteSheetService } from 'src/app/transportation/services/route-sheet.service';
-import { ConfirmationDialogService } from 'src/app/library';
 import { round } from 'lodash-es';
+import { filter } from 'rxjs';
+import { ConfirmationDialogService } from 'src/app/library';
+import { ViewSizeDirective } from 'src/app/library/view-size';
+import { TransportationCustomer } from 'src/app/transportation/interfaces/transportation-customer';
+import { RouteTrip, RouteTripStop } from 'src/app/transportation/interfaces/transportation-route-sheet';
+import { RouteSheetService } from 'src/app/transportation/services/route-sheet.service';
+import { TripStopsComponent } from './trip-stops/trip-stops.component';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-single-trip',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInput, MatDatepickerModule, ViewSizeDirective, TripStopsComponent, DecimalPipe],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatIconButton,
+    MatIcon,
+    MatInput,
+    MatDatepickerModule,
+    ViewSizeDirective,
+    TripStopsComponent,
+    DecimalPipe,
+    TextFieldModule,
+    AsyncPipe,
+    MatMenuModule,
+    MatTooltip,
+  ],
   templateUrl: './single-trip.component.html',
   styleUrl: './single-trip.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -59,6 +78,7 @@ export class SingleTripComponent implements ControlValueAccessor, Validator {
       odoStartKm: [null as number | null, [Validators.required, Validators.min(0)]],
       odoStopKm: [null as number | null, [Validators.required]],
       stops: [[] as RouteTripStop[]],
+      description: [null as string | null, [Validators.required, Validators.maxLength(255)]],
     },
     { validators: [this.validateOdoStop()] },
   );
@@ -68,6 +88,10 @@ export class SingleTripComponent implements ControlValueAccessor, Validator {
   fuelConsumption = input<number | null>(null);
 
   fuelUnits = input<string | null>(null);
+
+  lastOdometer = input<number | null>(null);
+
+  descriptions$ = this.routeService.descriptions();
 
   onTouched = () => {};
 
@@ -125,16 +149,23 @@ export class SingleTripComponent implements ControlValueAccessor, Validator {
       const tripLengthKm = await this.routeService.getTripLength(stops);
       const odoStopKm = (this.form.value.odoStartKm || 0) + tripLengthKm;
       const fuelConsumed = this.fuelConsumption() !== null ? round((this.fuelConsumption() * tripLengthKm) / 100, 1) : null;
-      this.form.patchValue({
-        tripLengthKm,
-        odoStopKm,
-        fuelConsumed,
-      });
+      this.form.patchValue(
+        {
+          tripLengthKm,
+          odoStopKm,
+          fuelConsumed,
+        },
+        { emitEvent: false },
+      );
     } catch (error) {
       this.messageService.confirmDataError(error.message);
     } finally {
-      this.form.enable({ emitEvent: false });
+      this.form.enable();
     }
+  }
+
+  onSetDescription(value: string) {
+    this.form.controls.description.setValue(value);
   }
 
   private validateOdoStop(): ValidatorFn {

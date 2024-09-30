@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef, inject, input } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef, inject, input, viewChild } from '@angular/core';
 import {
   ControlValueAccessor,
   FormArray,
@@ -12,16 +13,18 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
-import { MatDivider } from '@angular/material/divider';
+import { MatAccordion, MatExpansionModule } from '@angular/material/expansion';
+import { configuration } from 'src/app/services/config.provider';
 import { FuelType } from 'src/app/transportation/interfaces/fuel-type';
 import { FuelPurchase } from 'src/app/transportation/interfaces/transportation-route-sheet';
+import { AccordionDirective } from 'src/app/transportation/ui/accordion.directive';
+import { FuelTotalsComponent } from '../../../ui/fuel-totals/fuel-totals.component';
 import { SinglePurchaseComponent } from './single-purchase/single-purchase.component';
-import { TotalAmountComponent } from './total-amount/total-amount.component';
 
 @Component({
   selector: 'app-fuel-purchases',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, SinglePurchaseComponent, MatDivider, MatButton, TotalAmountComponent],
+  imports: [FormsModule, ReactiveFormsModule, SinglePurchaseComponent, MatButton, FuelTotalsComponent, MatExpansionModule, DatePipe, AccordionDirective],
   templateUrl: './fuel-purchases.component.html',
   styleUrl: './fuel-purchases.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,6 +43,9 @@ import { TotalAmountComponent } from './total-amount/total-amount.component';
 })
 export class FuelPurchasesComponent implements ControlValueAccessor, Validator {
   private chDetector = inject(ChangeDetectorRef);
+  private accordion = viewChild.required(MatAccordion, { read: AccordionDirective });
+
+  private fuelTypes = configuration('transportation', 'fuelTypes');
 
   form = new FormArray<FormControl<FuelPurchase>>([]);
 
@@ -47,7 +53,12 @@ export class FuelPurchasesComponent implements ControlValueAccessor, Validator {
 
   onTouched = () => {};
 
+  fuelDescription = (type: string) => this.fuelTypes()?.find((t) => t.type === type)?.description || '';
+
   writeValue(obj: FuelPurchase[] | null): void {
+    if (obj?.length < this.form.length) {
+      this.accordion().closeAll();
+    }
     if (obj?.length === this.form.length) {
       this.form.reset(obj, { emitEvent: false });
     } else {
@@ -86,9 +97,11 @@ export class FuelPurchasesComponent implements ControlValueAccessor, Validator {
     this.form.push(purchaseControl);
     this.onTouched();
     this.chDetector.markForCheck();
+    this.accordion().expandLast();
   }
 
   onRemove(index: number) {
+    this.accordion().closeAll();
     this.form.removeAt(index);
     this.onTouched();
     this.chDetector.markForCheck();

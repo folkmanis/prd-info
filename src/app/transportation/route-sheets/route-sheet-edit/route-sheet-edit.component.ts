@@ -1,11 +1,12 @@
 import { AsyncPipe, JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButton } from '@angular/material/button';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators, ValueChangeEvent } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDivider } from '@angular/material/divider';
 import { MatTabsModule } from '@angular/material/tabs';
 import { isEqual, pickBy } from 'lodash-es';
+import { filter, map, of, switchMap } from 'rxjs';
 import { navigateRelative } from 'src/app/library/common';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { CanComponentDeactivate } from 'src/app/library/guards';
@@ -31,7 +32,7 @@ import { RouteTripsComponent } from './route-trips/route-trips.component';
     ReactiveFormsModule,
     MatTabsModule,
     MatDivider,
-    MatButton,
+    MatButtonModule,
     GeneralSetupComponent,
     FuelPurchasesComponent,
     RouteTripsComponent,
@@ -49,7 +50,6 @@ export class RouteSheetEditComponent implements CanComponentDeactivate {
 
   vehicles = inject(TransportationVehicleService).vehiclesActive;
 
-  // src/app/transportation/route-sheets/route-sheet-edit/route-sheet-edit.component.ts
   customers$ = this.routeSheetService.getCustomers();
 
   form = inject(FormBuilder).group({
@@ -72,6 +72,12 @@ export class RouteSheetEditComponent implements CanComponentDeactivate {
     initialValue: this.form.status,
   });
 
+  generalValid = computed(() => {
+    this.formStatus();
+    const controlNames = ['year', 'month', 'driver', 'vehicle', 'fuelRemainingStartLitres'];
+    return controlNames.every((key) => this.form.controls[key].valid);
+  });
+
   changes = computed(() => {
     const value = this.formValue();
     const initialValue = this.initialValue();
@@ -79,11 +85,17 @@ export class RouteSheetEditComponent implements CanComponentDeactivate {
     return Object.keys(diff).length ? diff : undefined;
   });
 
+  historicalData$ = this.form.controls.vehicle.events.pipe(
+    filter((event) => event instanceof ValueChangeEvent),
+    map((event: ValueChangeEvent<TransportationVehicle>) => event.value?.licencePlate),
+    switchMap((licencePlate) => (licencePlate ? this.routeSheetService.getHistoricalData(licencePlate) : of(null))),
+  );
+
   constructor() {
     toObservable(this.initialValue).subscribe((data) => this.form.reset(data));
   }
 
-  canDeactivate = () => this.form.pristine;
+  canDeactivate = () => this.form.pristine || !this.changes();
 
   async onSave() {
     let id = this.initialValue()._id;

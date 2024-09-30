@@ -2,6 +2,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { RouteTripStop, TransportationRouteSheet } from '../interfaces/transportation-route-sheet';
 import { RouteSheetApiService } from './route-sheet-api.service';
 import { round } from 'lodash-es';
+import { HistoricalData } from '../interfaces/historical-data';
 
 interface RouteSheetFilter {
   name?: string;
@@ -10,9 +11,7 @@ interface RouteSheetFilter {
   month?: number;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class RouteSheetService {
   private api = inject(RouteSheetApiService);
   private filter: RouteSheetFilter = {};
@@ -57,6 +56,25 @@ export class RouteSheetService {
   async getTripLength(stops: RouteTripStop[]): Promise<number> {
     const { distance } = await this.api.distanceRequest({ tripStops: stops.map(({ address, googleLocationId }) => ({ address, googleLocationId })) });
     return round(this.randomizeTripLength(distance / 1000));
+  }
+
+  async descriptions(): Promise<string[]> {
+    try {
+      return await this.api.getDescriptions(10);
+    } catch (error) {
+      return [];
+    }
+  }
+
+  async getHistoricalData(licencePlate: string): Promise<HistoricalData | null> {
+    try {
+      return await this.api.getHistoricalData(licencePlate);
+    } catch (error) {
+      if (error.status === 404) {
+        return null;
+      }
+      throw error;
+    }
   }
 
   private async getAllRouteSheets() {

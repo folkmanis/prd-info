@@ -3,9 +3,23 @@
   padding-block: 16px;
 }
 
+mat-expansion-panel-header.invalid mat-panel-title {
+  color: red;
+}
+
 .actions {
   display: flex;
   align-items: center;
   column-gap: 16px;
   margin-top: 16px;
+}
+
+mat-panel-description {
+  overflow: hidden;
+
+  .description {
+    overflow: hidden;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+  }
 }
