@@ -1,0 +1,37 @@
+<mat-accordion app-accordion>
+  @for (control of form.controls; track $index) {
+    <mat-expansion-panel>
+      <mat-expansion-panel-header [class.invalid]="control.invalid">
+        <mat-panel-title>
+          @if (control.value; as value) {
+            <span>
+              {{ value.date | date: 'd. MMMM' }}
+            </span>
+          } @else {
+            <span> Jauns brauciens </span>
+          }
+        </mat-panel-title>
+
+        <mat-panel-description>
+          <span class="description">
+            @if (control.value; as value) {
+              {{ fuelDescription(value.type) }}, {{ value.amount }} {{ value.units }}
+            }
+          </span>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <ng-template matExpansionPanelContent="">
+        <app-single-purchase [formControl]="control" [defaultFuelType]="defaultFuelType()" />
+        <mat-action-row>
+          <button mat-raised-button (click)="onRemove($index)" actions>Dzēst</button>
+        </mat-action-row>
+      </ng-template>
+    </mat-expansion-panel>
+  }
+</mat-accordion>
+
+<div class="actions">
+  <button mat-raised-button (click)="onAppend()" [disabled]="form.invalid">Pievienot degvielu</button>
+  <app-fuel-totals [defaultUnits]="defaultFuelType()?.units" [fuelPurchases]="form.value" />
+</div>

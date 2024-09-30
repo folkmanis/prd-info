@@ -1,0 +1,85 @@
+<ng-container [formGroup]="form">
+  <div class="flex-inputs" appViewSize>
+    <mat-form-field>
+      <mat-label> Brauciena datums </mat-label>
+      <input matInput [matDatepicker]="datePicker" formControlName="date" />
+      <mat-datepicker-toggle matIconSuffix [for]="datePicker" />
+      <mat-datepicker #datePicker />
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label> Skaitītājs sākumā </mat-label>
+      <input matInput type="number" formControlName="odoStartKm" />
+      <span matTextSuffix> km </span>
+      <span matIconSuffix>
+        @if (lastOdometer()) {
+          <button mat-icon-button (click)="form.patchValue({ odoStartKm: lastOdometer() })" matTooltip="Iepriekšējais rādījums: {{ lastOdometer() }} km">
+            <mat-icon> chevron_left </mat-icon>
+          </button>
+        }
+      </span>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label> Skaitītājs beigās </mat-label>
+      <input matInput type="number" formControlName="odoStopKm" />
+      <span matTextSuffix> km </span>
+      @if (form.hasError('odoStopKm')) {
+        <mat-error> Jābūt lielākam par {{ form.getError('odoStopKm') }} </mat-error>
+      }
+    </mat-form-field>
+  </div>
+
+  <div class="flex-inputs" appViewSize>
+    <mat-form-field>
+      <mat-label> Pavisam nobraukti</mat-label>
+      <input matInput type="number" formControlName="tripLengthKm" />
+      <span matTextSuffix> km </span>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label> Pavisam izlietota degviela </mat-label>
+      <input matInput type="number" formControlName="fuelConsumed" />
+      <span matTextSuffix>
+        @if (fuelUnits(); as units) {
+          {{ units }}
+        }
+      </span>
+      <mat-hint align="start">
+        {{ (form.value.fuelConsumed / form.value.tripLengthKm) * 100 | number: '1.2-2' }}
+        @if (fuelUnits(); as units) {
+          {{ units }}/100&nbsp;km
+        }
+      </mat-hint>
+    </mat-form-field>
+  </div>
+
+  <div class="flex-inputs" appViewSize>
+    <mat-form-field>
+      <mat-label> Pamatojums </mat-label>
+      <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="1" formControlName="description"></textarea>
+      <span matIconSuffix>
+        @let descriptions = descriptions$ | async;
+        @if (descriptions && descriptions.length > 0) {
+          <button mat-icon-button [matMenuTriggerFor]="descriptionsMenu" [matMenuTriggerData]="{ descriptions }" [disabled]="form.controls.description.disabled">
+            <mat-icon> more_vert </mat-icon>
+          </button>
+        }
+      </span>
+      @if (form.controls.description.hasError('maxlength')) {
+        <mat-error> Atļautas ne vairāk kā {{ form.controls.description.getError('maxlength')['requiredLength'] }} zīmes </mat-error>
+      }
+    </mat-form-field>
+  </div>
+
+  <h4>Maršruts:</h4>
+  <app-trip-stops formControlName="stops" [customers]="customers()" (calculateRoute)="onCalculateRoute()" />
+</ng-container>
+
+<mat-menu #descriptionsMenu="matMenu">
+  <ng-template matMenuContent let-descriptions="descriptions">
+    @for (d of descriptions; track $index) {
+      <button mat-menu-item (click)="onSetDescription(d)">{{ d }}</button>
+    }
+  </ng-template>
+</mat-menu>

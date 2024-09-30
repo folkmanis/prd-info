@@ -5,8 +5,13 @@
   </app-preferences-card>
 
   <app-preferences-card>
-    <ng-container appCardTitle> Noliktavas adrese </ng-container>
-    <app-shipping-address-preferences formControlName="shippingAddress" />
+    <ng-container appCardTitle> Darbu uzskaites iestatījumi </ng-container>
+    <app-jobs-preferences formControlName="jobs" />
+  </app-preferences-card>
+
+  <app-preferences-card>
+    <ng-container appCardTitle> PayTraq grāmatvedības savienojums </ng-container>
+    <app-paytraq-preferences formControlName="paytraq" />
   </app-preferences-card>
 
   <app-preferences-card>
@@ -15,12 +20,7 @@
   </app-preferences-card>
 
   <app-preferences-card>
-    <ng-container appCardTitle> Darbu uzskaites iestatījumi </ng-container>
-    <app-jobs-preferences formControlName="jobs" />
-  </app-preferences-card>
-
-  <app-preferences-card>
-    <ng-container appCardTitle> PayTraq grāmatvedības savienojums </ng-container>
-    <app-paytraq-preferences formControlName="paytraq" />
+    <ng-container appCardTitle> Transportēšanas iestatījumi </ng-container>
+    <app-transportation-preferences formControlName="transportation" />
   </app-preferences-card>
 </app-module-group>

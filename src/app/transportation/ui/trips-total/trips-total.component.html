@@ -1,0 +1,11 @@
+<mat-chip-set>
+  <mat-chip>
+    Dienas: <b>{{ daysCount() }}</b>
+  </mat-chip>
+  <mat-chip>
+    Pavisam <b>{{ totalKm() | number: '1.0-0' }} km</b></mat-chip
+  >
+  <mat-chip>
+    Izlietots <b>{{ totalFuel() | number: '1.0-1' }} {{ fuelUnits() }}</b>
+  </mat-chip>
+</mat-chip-set>

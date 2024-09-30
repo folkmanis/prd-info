@@ -1,0 +1,60 @@
+<app-simple-form-container [status]="form.status" buttons [isChanges]="changes()" (save)="onSave()" (reset)="onReset()" [formGroup]="form">
+  <section>
+    <mat-form-field class="full-width">
+      <mat-label> Nosaukums </mat-label>
+      <input matInput formControlName="name" />
+      @if (form.controls.name.hasError('required')) {
+        <mat-error> Nosaukums ir obligāts </mat-error>
+      }
+      @if (form.controls.name.hasError('nameTaken')) {
+        <mat-error> Nosaukums {{ form.controls.name.getError('nameTaken') }} jau ir aizņemts </mat-error>
+      }
+    </mat-form-field>
+  </section>
+
+  <section>
+    <mat-form-field>
+      <mat-label> Numurs </mat-label>
+      <input matInput formControlName="licencePlate" appInputUppercase />
+      @if (form.controls.licencePlate.hasError('required')) {
+        <mat-error> Numurs ir obligāts </mat-error>
+      }
+      @if (form.controls.licencePlate.hasError('licencePlateTaken')) {
+        <mat-error> {{ form.controls.licencePlate.getError('licencePlateTaken') }} jau tiek izmantots </mat-error>
+      }
+    </mat-form-field>
+  </section>
+
+  <section id="consumption">
+    <mat-form-field>
+      <mat-label> Degvielas veids </mat-label>
+      <mat-select formControlName="fuelType" [compareWith]="fuelCompareWith">
+        @for (fuel of fuelTypes(); track $index) {
+          <mat-option [value]="fuel"> {{ fuel.description }} </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label> Patēriņš </mat-label>
+      <input matInput type="number" formControlName="consumption" [appDisableControl]="!form.value.fuelType" />
+      <ng-container matTextSuffix>
+        @if (form.value.fuelType?.units; as units) {
+          <span> {{ units }}/100km </span>
+        }
+      </ng-container>
+    </mat-form-field>
+  </section>
+
+  <section>
+    <mat-checkbox formControlName="disabled"> Neaktīvs </mat-checkbox>
+  </section>
+
+  <mat-divider />
+
+  @if (!isNew()) {
+    <section>
+      <button mat-button (click)="onDelete()">Dzēst!</button>
+    </section>
+  }
+</app-simple-form-container>

@@ -1,5 +1,5 @@
 import { Expose, Type } from 'class-transformer';
-import { ShippingAddressType } from './shipping-address';
+import { ShippingAddress } from './module-settings/shipping-address';
 
 export interface CustomerFinancial {
   clientName: string;
@@ -24,23 +24,6 @@ export class CustomerContact {
   constructor(email: string) {
     this.email = email;
   }
-}
-
-export class ShippingAddress implements ShippingAddressType {
-  @Expose()
-  address: string;
-
-  @Expose()
-  zip: string;
-
-  @Expose()
-  country: string;
-
-  @Expose()
-  paytraqId?: number;
-
-  @Expose()
-  googleId?: string;
 }
 
 export class Customer {

@@ -1,8 +1,20 @@
 import { ChangeDetectionStrategy, Component, forwardRef, inject } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, FormsModule, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator, Validators } from '@angular/forms';
+import {
+  ControlValueAccessor,
+  FormBuilder,
+  FormsModule,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+  TouchedChangeEvent,
+  ValidationErrors,
+  Validator,
+  Validators,
+} from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-system-preferences',
@@ -28,9 +40,13 @@ export class SystemPreferencesComponent implements ControlValueAccessor, Validat
   controls = inject(FormBuilder).group({
     menuExpandedByDefault: [true],
     hostname: ['', Validators.required],
+    companyName: ['', Validators.required],
   });
 
-  onTouchFn = () => {};
+  touch$ = this.controls.events.pipe(
+    filter((event) => event instanceof TouchedChangeEvent),
+    filter((event) => event.touched),
+  );
 
   writeValue(value: any): void {
     this.controls.patchValue(value, { emitEvent: false });
@@ -41,7 +57,7 @@ export class SystemPreferencesComponent implements ControlValueAccessor, Validat
   }
 
   registerOnTouched(fn: any): void {
-    this.onTouchFn = fn;
+    this.touch$.subscribe(fn);
   }
 
   setDisabledState(isDisabled: boolean): void {
@@ -56,9 +72,13 @@ export class SystemPreferencesComponent implements ControlValueAccessor, Validat
     if (this.controls.valid) {
       return null;
     } else {
-      return {
-        hostname: this.controls.controls.hostname.errors,
-      };
+      return Object.entries(this.controls.controls).reduce(
+        (acc, [key, control]) => ({
+          ...acc,
+          ...(control.invalid ? { [key]: control.errors } : {}),
+        }),
+        {},
+      );
     }
   }
 }

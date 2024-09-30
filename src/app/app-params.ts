@@ -24,6 +24,7 @@ export const PRD_DEFAULTS: AppParams = {
       menuExpandedByDefault: false,
       hostname: '',
       logLevels: [],
+      companyName: '',
     },
     jobs: {
       productCategories: [
@@ -37,10 +38,9 @@ export const PRD_DEFAULTS: AppParams = {
     paytraq: {
       enabled: false,
     },
-    shippingAddress: {
-      address: '',
-      zip: '',
-      country: '',
+    transportation: {
+      shippingAddress: null,
+      fuelTypes: [],
     },
   },
   gmailScope: 'https://www.googleapis.com/auth/gmail.readonly',

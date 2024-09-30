@@ -1,17 +1,11 @@
-import { DOCUMENT } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ErrorHandler, Inject, Injectable, NgZone } from '@angular/core';
+import { ErrorHandler, inject, Injectable, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Injectable()
 export class ErrorsService extends ErrorHandler {
-  constructor(
-    private router: Router,
-    private zone: NgZone,
-    @Inject(DOCUMENT) private document: Document,
-  ) {
-    super();
-  }
+  private router = inject(Router);
+  private zone = inject(NgZone);
 
   handleError(error: Error) {
     if (error instanceof HttpErrorResponse) {

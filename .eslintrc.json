@@ -5,6 +5,9 @@
   "rules": {
     "prettier/prettier": "error"
   },
+  "globals": {
+    "google": "readonly"
+  },
   "overrides": [
     {
       "env": {

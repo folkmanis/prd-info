@@ -1,0 +1,26 @@
+<app-simple-list-container plusButton editorWidth="60%">
+  <mat-table [dataSource]="routeSheets()" [trackBy]="trackByFn">
+    <mat-header-row *matHeaderRowDef="displayedColumns" />
+    <mat-row *matRowDef="let routeSheet; columns: displayedColumns" [routerLink]="[routeSheet._id]" routerLinkActive="selected" />
+
+    <ng-container matColumnDef="month-year">
+      <mat-header-cell *matHeaderCellDef> Mēnesis </mat-header-cell>
+      <mat-cell *matCellDef="let routeSheet"> {{ routeSheet.month }}/{{ routeSheet.year }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="driver">
+      <mat-header-cell *matHeaderCellDef> Vadītāja vārds </mat-header-cell>
+      <mat-cell *matCellDef="let routeSheet"> {{ routeSheet.driver.name }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="licencePlate">
+      <mat-header-cell *matHeaderCellDef> T/L numurs </mat-header-cell>
+      <mat-cell *matCellDef="let routeSheet"> {{ routeSheet.vehicle.licencePlate }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="totalKm">
+      <mat-header-cell *matHeaderCellDef> Nobraukti km </mat-header-cell>
+      <mat-cell *matCellDef="let routeSheet"> {{ routeSheet.totalKm }} </mat-cell>
+    </ng-container>
+  </mat-table>
+</app-simple-list-container>

@@ -1,0 +1,30 @@
+<app-simple-form-container [status]="form.status" buttons [isChanges]="changes()" (save)="onSave()" (reset)="onReset()" [formGroup]="form">
+  @if (initialValue()._id; as id) {
+    <section>
+      <h4>
+        {{ id }}
+      </h4>
+    </section>
+  }
+  <section>
+    <mat-form-field class="full-width">
+      <mat-label> Vārds, uzvārds</mat-label>
+      <input matInput formControlName="name" />
+      @if (form.controls.name.hasError('required')) {
+        <mat-error>Obligāts</mat-error>
+      }
+      @if (form.controls.name.hasError('nameTaken')) {
+        <mat-error> Vārds {{ form.controls.name.getError('nameTaken') }} tiek izmantots </mat-error>
+      }
+    </mat-form-field>
+  </section>
+  <section>
+    <mat-checkbox formControlName="disabled"> Atspējots </mat-checkbox>
+  </section>
+  @if (!isNew()) {
+    <mat-divider />
+    <section>
+      <button mat-button (click)="onDelete()">Dzēst!</button>
+    </section>
+  }
+</app-simple-form-container>

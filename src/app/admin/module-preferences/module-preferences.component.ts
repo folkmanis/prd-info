@@ -10,9 +10,9 @@ import { ModuleGroupComponent } from './module-group/module-group.component';
 import { JobsPreferencesComponent } from './modules/jobs-preferences/jobs-preferences.component';
 import { KastesPreferencesComponent } from './modules/kastes-preferences/kastes-preferences.component';
 import { PaytraqPreferencesComponent } from './modules/paytraq-preferences/paytraq-preferences.component';
-import { ShippingAddressPreferencesComponent } from './modules/shipping-address-preferences/shipping-address-preferences.component';
 import { SystemPreferencesComponent } from './modules/system-preferences/system-preferences.component';
 import { PreferencesCardComponent } from './preferences-card/preferences-card.component';
+import { TransportationPreferencesComponent } from './modules/transportation-preferences/transportation-preferences.component';
 
 @Component({
   selector: 'app-module-preferences',
@@ -31,7 +31,7 @@ import { PreferencesCardComponent } from './preferences-card/preferences-card.co
     KastesPreferencesComponent,
     JobsPreferencesComponent,
     PaytraqPreferencesComponent,
-    ShippingAddressPreferencesComponent,
+    TransportationPreferencesComponent,
   ],
 })
 export class ModulePreferencesComponent implements CanComponentDeactivate {
