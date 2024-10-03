@@ -8,7 +8,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EMPTY, Subject, from, map } from 'rxjs';
-import { ViewLargeDirective, ViewNotLargeDirective } from 'src/app/library/view-size';
+import { DrawerSmallDirective, ViewLargeDirective, ViewNotLargeDirective } from 'src/app/library/view-size';
 import { navigateRelative } from 'src/app/library/common';
 import { CopyClipboardDirective } from 'src/app/library/directives/copy-clipboard.directive';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';

@@ -2,7 +2,7 @@
   <app-toolbar [user]="user()" [activeModule]="activeModule()" (sideMenuToggle)="drawer.toggle()" />
 }
 <mat-sidenav-container>
-  <mat-sidenav #drawer class="mat-elevation-z4">
+  <mat-sidenav #drawer appDrawerSmall class="mat-elevation-z4">
     <app-side-menu />
   </mat-sidenav>
 

@@ -4,8 +4,7 @@ import { MatDrawer, MatSidenav } from '@angular/material/sidenav';
 import { LayoutService } from './layout.service';
 
 @Directive({
-  // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: 'mat-drawer,mat-sidenav',
+  selector: 'mat-drawer[appDrawerSmall],mat-sidenav[appDrawerSmall]',
   standalone: true,
 })
 export class DrawerSmallDirective implements OnInit {

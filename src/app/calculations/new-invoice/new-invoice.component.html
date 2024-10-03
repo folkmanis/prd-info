@@ -1,6 +1,6 @@
 @let noInvoices = noInvoices$ | async;
 <mat-drawer-container>
-  <mat-drawer button class="mat-elevation-z4">
+  <mat-drawer appDrawerButton class="mat-elevation-z4">
     @if (noInvoices) {
       <app-jobs-without-invoices [noInvoices]="noInvoices" (customerChange)="onSelectCustomer($event)" />
 
