@@ -1,4 +1,15 @@
+button[appFileDrop] {
+  --mdc-fab-container-color: var(--sys-tertiary);
+  --mat-fab-foreground-color: var(--sys-on-tertiary);
+}
+
+.plus-button {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
 .plus-button.app-file-drop {
-    transform: translate(0px, -56px) scale(300%);
-    background-color: var(--accent-color);
+  transform: translate(0px, -56px) scale(300%);
+  background-color: var(--sys-tertiary);
 }

@@ -1,16 +1,13 @@
-.main-container {
-    display: flex;
-    flex-direction: column;
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
-.main-container-absolute {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+mat-sidenav-container {
+  flex: 1;
 }
 
-.main-container-sidenav-container {
-    flex: 1;
+mat-sidenav {
+  width: 250px;
 }

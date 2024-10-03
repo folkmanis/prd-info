@@ -1,17 +1,33 @@
-import { NestedTreeControl } from '@angular/cdk/tree';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, viewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { MatTreeModule } from '@angular/material/tree';
+import { MatTree, MatTreeModule } from '@angular/material/tree';
 import { RouterLink } from '@angular/router';
-import { combineLatest, Observable } from 'rxjs';
-import { distinctUntilChanged } from 'rxjs/operators';
 import { UserModule } from 'src/app/interfaces';
 import { SystemPreferencesService } from 'src/app/services';
-import { getConfig } from 'src/app/services/config.provider';
-import { MenuDataSource, SideMenuData } from './menu-datasource';
+import { configuration } from 'src/app/services/config.provider';
+
+interface SideMenuNode {
+  name: string;
+  route: string[];
+  routeStr: string;
+  childMenu?: SideMenuNode[];
+}
+
+const TEST_MODULES = [
+  { name: 'XMF arhīvs', description: 'Meklētājs XMF arhīva datubāzē', route: 'xmf-search' },
+  {
+    name: 'Repro darbi',
+    description: 'Ražošanas darbi',
+    route: 'jobs',
+    childMenu: [
+      { name: 'Repro darbi', route: 'repro', description: 'Repro darbu saraksts' },
+      { name: 'Kopsavilkums', route: 'products-production', description: 'Izstrādājumi ražošanā' },
+      { name: 'gmail', route: 'gmail', description: 'Darba izveidošana no Gmail e-pasta' },
+    ],
+  },
+];
 
 @Component({
   selector: 'app-side-menu',
@@ -21,38 +37,50 @@ import { MenuDataSource, SideMenuData } from './menu-datasource';
   standalone: true,
   imports: [MatListModule, MatTreeModule, RouterLink, MatButtonModule, MatIconModule],
 })
-export class SideMenuComponent implements OnInit {
-  private changeDetector = inject(ChangeDetectorRef);
-  private expandedByDefault$: Observable<boolean> = getConfig('system', 'menuExpandedByDefault').pipe(distinctUntilChanged());
-  private activeModules$ = inject(SystemPreferencesService).activeModules$.pipe(takeUntilDestroyed());
+export class SideMenuComponent {
+  private tree = viewChild.required(MatTree);
+  private expandedByDefault = configuration('system', 'menuExpandedByDefault');
 
-  treeControl = new NestedTreeControl<SideMenuData>((node) => node.childMenu);
-  dataSource = new MenuDataSource(inject(SystemPreferencesService).modules$);
-  expandAll$: Observable<[SideMenuData[], boolean]> = combineLatest([this.dataSource.dataChange$, this.expandedByDefault$]).pipe(takeUntilDestroyed());
+  private modules = inject(SystemPreferencesService).modules;
+  private activeModules = inject(SystemPreferencesService).activeModules;
 
-  activeRoute: string;
+  data = computed(() => toSideMenu(this.modules()));
 
-  hasChild = (_: number, node: SideMenuData) => node.childMenu?.length > 0;
+  activeRoute = computed(() =>
+    this.activeModules()
+      .map((mod) => mod.route)
+      .join('/'),
+  );
 
-  ngOnInit(): void {
-    this.expandAll$.subscribe((value) => this.expandAll(value));
-    this.activeModules$.subscribe((mod) => this.setActiveRoute(mod));
+  childrenAccessor = (node: SideMenuNode) => node.childMenu;
+
+  hasChild = (_: number, node: SideMenuNode) => node.childMenu?.length > 0;
+
+  constructor() {
+    effect(() => {
+      if (this.expandedByDefault()) {
+        this.tree().expandAll();
+      } else {
+        this.tree().collapseAll();
+      }
+    });
+    effect(() => {
+      const activeRoute = this.activeModules()[0]?.route;
+      const activeRootItem = this.data().find((data) => data.routeStr === activeRoute);
+      this.tree().expand(activeRootItem);
+    });
   }
+}
 
-  private expandAll([data, expand]: [SideMenuData[], boolean]) {
-    this.treeControl.dataNodes = data;
-    if (expand) {
-      this.treeControl.expandAll();
-    } else {
-      this.treeControl.collapseAll();
-    }
-    this.changeDetector.markForCheck();
-  }
-
-  private setActiveRoute(modules: UserModule[]): void {
-    const active = this.dataSource.data.find((data) => data.routeStr === modules[0]?.route);
-    this.treeControl.expand(active);
-    this.activeRoute = modules.map((mod) => mod.route).join('/');
-    this.changeDetector.markForCheck();
-  }
+function toSideMenu(item: Partial<UserModule>[], rte: string[] = []): SideMenuNode[] {
+  return item.reduce((acc, val) => {
+    const route = [...rte, val.route];
+    const mItem: SideMenuNode = {
+      name: val.name,
+      route,
+      routeStr: route.join('/'),
+      childMenu: val.childMenu && toSideMenu(val.childMenu, route),
+    };
+    return [...acc, mItem];
+  }, []);
 }

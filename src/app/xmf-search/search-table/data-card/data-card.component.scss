@@ -1,0 +1,50 @@
+:host {
+  display: block;
+  padding: 8px;
+  padding-bottom: 12px;
+  background-color: var(--sys-surface-container);
+  border-radius: 12px;
+}
+
+.job-id {
+  font: var(--sys-title-large);
+
+  &.full-match {
+    font-weight: bold;
+  }
+}
+
+app-tagged-string {
+  display: block;
+  font: var(--sys-title-medium);
+  overflow-wrap: anywhere;
+}
+
+.archive-item {
+  margin-block-start: 8px;
+  margin-block-end: 20px;
+  position: relative;
+  border-radius: 12px;
+  padding: 8px;
+  padding-bottom: 20px;
+  background-color: var(--sys-surface-container-high);
+
+  .file-location {
+    overflow-wrap: anywhere;
+    cursor: copy;
+  }
+
+  .archive-info {
+    position: absolute;
+    bottom: -12px;
+    left: 12px;
+    right: 12px;
+    display: flex;
+    column-gap: 16px;
+    color: var(--sys-on-surface-variant);
+    font: var(--sys-label-small);
+    background-color: var(--sys-surface-container-low);
+    padding: 4px;
+    border-radius: 4px;
+  }
+}

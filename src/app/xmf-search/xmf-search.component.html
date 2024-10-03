@@ -10,8 +10,6 @@
       <app-status-count [count]="count$ | async" />
     </div>
 
-    <div class="main">
-      <app-search-table [search]="query()" [data]="data$ | async" />
-    </div>
+    <app-search-table [search]="query()" [data]="data$ | async" />
   </mat-drawer-content>
 </mat-drawer-container>

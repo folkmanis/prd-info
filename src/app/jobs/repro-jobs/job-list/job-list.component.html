@@ -10,7 +10,7 @@
       <app-job-filter [filter]="filter$ | async" (filterChanges)="onJobFilter($event)" [products]="products()"></app-job-filter>
 
       <cdk-virtual-scroll-viewport itemSize="32" class="container" scroll-to-top #scroll="scrollToTop">
-        <table class="simple-form-table">
+        <table class="app-table">
           <thead>
             <tr>
               <th class="column-state"></th>

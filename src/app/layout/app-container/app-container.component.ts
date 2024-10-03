@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { RouterOutlet } from '@angular/router';
 import { map } from 'rxjs';
@@ -15,10 +15,12 @@ import { DrawerSmallDirective } from 'src/app/library/view-size';
   styleUrls: ['./app-container.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [ToolbarComponent, MatSidenavModule, SideMenuComponent, RouterOutlet, AsyncPipe, DrawerSmallDirective],
+  imports: [ToolbarComponent, MatSidenavModule, SideMenuComponent, RouterOutlet, DrawerSmallDirective],
 })
 export class AppContainerComponent {
-  user$ = inject(LoginService).user$;
+  private activeModules = inject(SystemPreferencesService).activeModules;
 
-  activeModule$ = inject(SystemPreferencesService).activeModules$.pipe(map((modules) => modules[0]));
+  user = inject(LoginService).user;
+
+  activeModule = computed(() => this.activeModules()[0]);
 }

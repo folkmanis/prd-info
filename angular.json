@@ -31,8 +31,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/themes.scss",
-              "src/styles.scss"
+              "src/styles/themes.scss"
             ],
             "scripts": [
               "src/assets/google-maps-loader.js"
@@ -126,8 +125,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/themes.scss",
-              "src/styles.scss"
+              "src/styles/themes.scss"
             ],
             "scripts": []
           }

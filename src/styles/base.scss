@@ -1,0 +1,53 @@
+@use "@angular/material" as mat;
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #cccccc;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #aaaaaa;
+}
+
+@mixin base-color($theme) {
+  body {
+    color: mat.get-theme-color($theme, on-surface);
+    background-color: mat.get-theme-color($theme, surface);
+  }
+}
+
+@mixin base-typography($theme) {
+  body {
+    font: mat.get-theme-typography($theme, body-medium, font)
+  }
+}
+
+@mixin theme($theme) {
+  @if(mat.theme-has($theme, color)) {
+    @include base-color($theme);
+  }
+
+  @if(mat.theme-has($theme, typography)) {
+    @include base-typography($theme);
+  }
+}

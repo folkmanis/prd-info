@@ -1,5 +1,5 @@
 <app-simple-list-container #container filterInput [(filter)]="name" editorWidth="70%" hideFilterWhenActive>
-  <mat-table [dataSource]="kastesJobs()" class="simple-form-table">
+  <mat-table [dataSource]="kastesJobs()">
     <mat-header-row *matHeaderRowDef="container.activeStatus() ? columnsActive : columns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: container.activeStatus() ? columnsActive : columns" [routerLink]="row.jobId" routerLinkActive="selected"></mat-row>
 

@@ -4,10 +4,8 @@
       <div class="signal"></div>
 
       <div class="message-text">
-        <span>
-          <small> {{ message.timestamp | relativeDate: 'strict' }} {{ message.data.toAction() }} </small>
-        </span>
-        <span>
+        <span class="message-title"> {{ message.timestamp | relativeDate: 'strict' }} {{ message.data.toAction() }} </span>
+        <span class="message-body">
           {{ message.data.toDescription() }}
         </span>
       </div>

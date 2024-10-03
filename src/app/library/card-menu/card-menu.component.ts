@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, Input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { RouterLink } from '@angular/router';
 import { UserModule } from 'src/app/interfaces';
@@ -12,5 +12,5 @@ import { UserModule } from 'src/app/interfaces';
   imports: [RouterLink, MatCardModule],
 })
 export class CardMenuComponent {
-  @Input({ required: true }) modules: UserModule[] | null;
+  modules = input.required<UserModule[] | null>();
 }

@@ -39,17 +39,7 @@
 
   <!-- Paytraq -->
   @if (pyatraqEnabled()) {
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title> Paytraq pavadzīme </mat-card-title>
-        @if (invoice().customerInfo.financial?.clientName) {
-          <mat-card-subtitle> ({{ invoice().customerInfo.financial.clientName }}) </mat-card-subtitle>
-        }
-      </mat-card-header>
-      <mat-card-content>
-        <app-invoice-paytraq [invoice]="invoice()" [busy]="busy()" />
-      </mat-card-content>
-    </mat-card>
+    <app-invoice-paytraq [invoice]="invoice()" [busy]="busy()" />
   }
 
   <!-- Preces -->

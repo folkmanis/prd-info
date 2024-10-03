@@ -1,5 +1,5 @@
 import { Route } from '@angular/router';
-import { MainMenuComponent } from './main-menu/main-menu.component';
+import { JobsAdminMenuComponent } from './jobs-admin-menu.component';
 
 export default [
   {
@@ -28,7 +28,7 @@ export default [
       {
         path: '',
         pathMatch: 'full',
-        component: MainMenuComponent,
+        component: JobsAdminMenuComponent,
       },
       {
         path: '**',

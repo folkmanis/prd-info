@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { computed, Injectable } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs';
 import { concatMap, filter, map, retry, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
@@ -20,6 +20,13 @@ export class SystemPreferencesService {
     filter((ev) => ev instanceof NavigationEnd),
     map((ev: NavigationEnd) => ev.url),
     startWith(this.router.routerState.snapshot.url),
+  );
+  private url = toSignal(
+    this.router.events.pipe(
+      filter((ev) => ev instanceof NavigationEnd),
+      map((ev: NavigationEnd) => ev.url),
+    ),
+    { initialValue: this.router.routerState.snapshot.url },
   );
 
   defaultPreferences: SystemPreferences = getAppParams('defaultSystemPreferences');
@@ -48,11 +55,12 @@ export class SystemPreferencesService {
       of(this.userModules.filter((mod) => usr && usr.preferences.modules.includes(mod.route))).pipe(map((modules) => (usr.google ? modules : removeGmail(modules)))),
     ),
   );
+  modules = toSignal(this.modules$, { initialValue: [] });
 
   activeModules$: Observable<UserModule[]> = combineLatest([this.url$, this.modules$]).pipe(map(findModule), shareReplay(1));
+  activeModules = computed(() => findModule([this.url(), this.modules()]));
 
-  childMenu$: Observable<UserModule[]> = this.activeModules$.pipe(map((modules) => modules[0]?.childMenu || []));
-  childMenu = toSignal(this.childMenu$, { initialValue: [] });
+  childMenu = computed(() => this.activeModules()[0]?.childMenu || []);
 
   constructor(
     private router: Router,

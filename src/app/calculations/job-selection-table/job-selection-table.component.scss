@@ -1,6 +1,6 @@
 :host {
-    display: block;
-    overflow: auto;
+  display: block;
+  overflow: auto;
 }
 
 // table {
@@ -10,47 +10,48 @@
 .mat-mdc-cell,
 .mat-mdc-header-cell,
 .mat-mdc-footer-cell {
-    padding: 0 4px 0 4px;
-    flex: 1;
+  padding: 0 4px 0 4px;
+  flex: 1;
 
-    &:last-of-type {
-        padding-right: 16px;
-    }
+  &:last-of-type {
+    padding-right: 16px;
+  }
 }
 
 .mat-column-selected {
-    max-width: 48px;
+  max-width: 48px;
 }
 
 .mat-column-jobId {
-    flex: 0 0 56px;
+  flex: 0 0 56px;
 }
 
 .mat-column-receivedDate {
-    flex: 0 0 86px;
+  flex: 0 0 86px;
 }
 
 .mat-column-custCode {
-    flex: 0 0 40px;
+  flex: 0 0 40px;
 
 }
 
 .mat-column-name {
-    flex-grow: 5;
+  flex-grow: 5;
 }
 
 .mat-column-price,
 .mat-column-total {
-    justify-content: end;
+  justify-content: end;
 
-    &.mat-mdc-footer-cell {
-        color: var(--primary-color);
-        font-weight: 700;
-        margin-left: auto;
-        flex: 0 0 auto;
-    }
+  &.mat-mdc-footer-cell {
+    background-color: var(--sys-primary-container);
+    color: var(--sys-on-primary-container);
+    font-weight: 700;
+    margin-left: auto;
+    flex: 0 0 100%;
+  }
 }
 
 .mat-column-productName {
-    flex-grow: 3;
+  flex-grow: 3;
 }

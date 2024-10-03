@@ -1,0 +1,31 @@
+@use "@angular/material" as mat;
+@use "./prd-m3-theme.scss" as theme;
+
+@use "./base.scss" as base;
+
+@use "../app/layout/messaging/messages-pane.scss";
+@use "../app/library/table/table.scss";
+@use "../app/library/dense-list/dense-list.theme";
+@use "../app/library/directives/input";
+@use "../app/library/directives/select";
+
+
+@include mat.core();
+
+:root {
+  @include mat.all-component-themes(theme.$light-theme);
+  @include mat.system-level-colors(theme.$light-theme);
+  @include mat.system-level-typography(theme.$light-theme);
+
+}
+
+@include base.theme(theme.$light-theme);
+
+html {
+  @include table.theme(theme.$light-theme);
+  @include messages-pane.theme(theme.$light-theme);
+  @include dense-list.theme(theme.$light-theme);
+  @include input.theme(theme.$light-theme);
+  @include select.theme(theme.$light-theme);
+
+}

@@ -1,0 +1,52 @@
+@use "@angular/material" as mat;
+
+@mixin app-table-color($theme) {
+  .app-table {
+
+    tbody tr,
+    .mat-mdc-row {
+
+      &:hover {
+
+        td,
+        .mat-mdc-cell {
+          color: mat.get-theme-color($theme, on-secondary-container);
+          background-color: mat.get-theme-color($theme, secondary-container);
+        }
+      }
+
+      &.selected {
+
+        td,
+        .mat-mdc-cell {
+          color: mat.get-theme-color($theme, on-secondary);
+          background-color: mat.get-theme-color($theme, secondary);
+          border-bottom-color: mat.get-theme-color($theme, secondary);
+        }
+      }
+
+      &.disabled {
+        opacity: 0.5;
+      }
+
+    }
+  }
+}
+
+@mixin app-table() {
+
+  .app-table {
+    width: 100%;
+    cursor: pointer;
+  }
+}
+
+@mixin theme($theme) {
+
+  @if(mat.theme-has($theme, color)) {
+    @include app-table-color($theme);
+  }
+
+  @include app-table();
+
+}

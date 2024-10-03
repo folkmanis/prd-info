@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ChangeDetectionStrategy, Component, computed, input, Input } from '@angular/core';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-status-count',
@@ -7,10 +7,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   styleUrls: ['./status-count.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [MatProgressSpinnerModule],
+  imports: [MatProgressSpinner],
 })
 export class StatusCountComponent {
-  @Input() count: number | null;
+  count = input<number | null>(null);
 
   isMultiple(value: number): boolean {
     return value % 10 !== 1 || value === 11;

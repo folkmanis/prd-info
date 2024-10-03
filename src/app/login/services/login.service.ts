@@ -3,6 +3,7 @@ import { BehaviorSubject, catchError, firstValueFrom, map, merge, Observable, of
 import { User } from 'src/app/interfaces';
 import { Login } from '../login.interface';
 import { LoginApiService } from './login-api.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 type UserUpdate = Partial<User>;
 
@@ -19,6 +20,7 @@ export class LoginService {
     catchError(() => of(null)),
     shareReplay(1),
   );
+  user = toSignal(this.user$);
 
   async isLoggedIn(): Promise<boolean> {
     return !!(await firstValueFrom(this.user$));

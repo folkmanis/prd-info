@@ -1,49 +1,135 @@
 @use "@angular/material" as mat;
 
-@mixin messages-pane-color($config-or-theme) {
-    // Extract the color configuration in case a theme has been passed.
-    // This allows consumers to either pass a theme object or a color configuration.
-    $config: mat.m2-get-color-config($config-or-theme);
-    // Extract the palettes you need from the theme definition.
-    $background: map-get($config, background);
+@mixin messages-pane-color($theme) {
+  .app-messages-pane {
+    background-color: mat.get-theme-color($theme, surface-container);
+    color: mat.get-theme-color($theme, on-surface);
 
-    // Define any styles affected by the theme.
-    .app-messages-pane {
-        background-color: map-get($background, "card");
+    app-messages-list .message {
 
-        .mat-mini-fab {
-            background-color: map-get($background, "card");
-        }
+      &:not(:last-of-type) {
+        border-bottom-color: mat.get-theme-color($theme, outline-variant);
+      }
+
+      &:hover,
+      &.selected {
+        background-color: mat.get-theme-color($theme, surface-container-highest);
+      }
+
+      .signal {
+        background-color: mat.get-theme-color($theme, tertiary, 80);
+      }
+
     }
+  }
 }
 
-@mixin messages-pane-typography($config-or-theme) {
-    // Extract the typography configuration in case a theme has been passed.
-    $config: mat.m2-get-typography-config($config-or-theme);
+@mixin messages-pane-typography($theme) {
+  .app-messages-pane {
+
+    .message-title {
+      font: mat.get-theme-typography($theme, label-small, font);
+    }
+
+    .unread .message-title {
+      font-weight: bold;
+    }
+
+    .message-body {
+      font: mat.get-theme-typography($theme, label-medium, font);
+    }
+  }
+
 }
 
 @mixin app-messages-pane() {
-    .app-messages-pane {
-        max-height: calc(100vh - 72px);
-        overflow-x: hidden;
-        overflow-y: auto;
-        border-radius: 4px;
+  .app-messages-pane {
+    max-height: calc(100vh - 72px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-radius: 4px;
+
+    app-messages-list {
+      width: 100%;
+
+      .message {
+        height: 48px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        overflow: hidden;
+
+        &:not(:last-of-type) {
+          border-bottom-width: 1px;
+          border-bottom-style: solid;
+        }
+
+        .signal {
+          flex: 0 0 8px;
+          height: 100%;
+          opacity: 0;
+          transition: all 0.2s ease-in-out;
+        }
+
+        &.unread .signal {
+          opacity: 1;
+        }
+
+        .message-text {
+          padding: 0 8px;
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+          justify-content: center;
+          overflow: hidden;
+          transition: width 1.2s ease-in-out;
+
+          span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+        }
+
+        .message-menu {
+          display: none;
+          width: auto;
+          opacity: 0;
+          transition: all 0.2s ease-in-out;
+          margin-left: auto;
+        }
+
+        &:hover,
+        &.selected {
+          .message-menu {
+            display: flex;
+            opacity: 1;
+          }
+        }
+
+      }
+
+
+
     }
+
+
+  }
 }
 
+
+
 @mixin theme($theme) {
-    // Extracts the color and typography configurations from the theme.
-    $color: mat.m2-get-color-config($theme);
-    $typography: mat.m2-get-typography-config($theme);
 
-    // Do not generate styles if configurations for individual theming
-    // systems have been explicitly set to `null`.
-    @if $color != null {
-        @include messages-pane-color($color);
-    }
-    @if $typography != null {
-        @include messages-pane-typography($typography);
-    }
+  @if (mat.theme-has($theme, color)) {
+    @include messages-pane-color($theme);
+  }
 
-    @include app-messages-pane();
+  @if (mat.theme-has($theme, typography)) {
+    @include messages-pane-typography($theme);
+  }
+
+  @include app-messages-pane();
 }

@@ -1,145 +1,145 @@
 :host {
-    height: 100%;
+  height: 100%;
 }
 
 mat-drawer-container {
-    height: 100%;
+  height: 100%;
 }
 
 mat-drawer-content {
-    height: 100%;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 mat-drawer {
-    width: 240px;
+  width: 240px;
 }
 
 .container {
-    height: 100%;
-    overflow: auto;
+  height: 100%;
+  overflow: auto;
 }
 
 table {
-    width: 100%;
-    table-layout: fixed;
-    overflow: hidden;
-    border-spacing: 0;
-    border-collapse: separate;
+  width: 100%;
+  table-layout: fixed;
+  overflow: hidden;
+  border-spacing: 0;
+  border-collapse: separate;
 }
 
 tbody tr:hover {
-    background-color: rgba(0, 0, 0, 0.08);
-    cursor: pointer;
+  // background-color: rgba(0, 0, 0, 0.08);
+  cursor: pointer;
 }
 
 td,
 th {
-    display: table-cell;
-    padding: 0 4px;
-    font-size: 14px;
-    color: rgba(0, 0, 0, 0.87);
-    border-bottom-color: rgba(0, 0, 0, 0.12);
-    border-bottom-width: 1px;
-    border-bottom-style: solid;
-    text-align: left;
-    height: 41px;
+  display: table-cell;
+  padding: 0 4px;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.87);
+  border-bottom-color: rgba(0, 0, 0, 0.12);
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  text-align: left;
+  height: 41px;
 
-    >* {
-        max-height: 41px;
-    }
+  >* {
+    max-height: 41px;
+  }
 }
 
 .job-completed td {
-    color: rgba(0, 0, 0, 0.5);
+  color: rgba(0, 0, 0, 0.5);
 }
 
 th:first-of-type,
 td:first-of-type {
-    padding-left: 8px;
+  padding-left: 8px;
 }
 
 .column-state {
-    width: 24px;
+  width: 24px;
 }
 
 .column-jobId {
-    width: 2.7em;
+  width: 2.7em;
 }
 
 .column-customer {
-    width: 1.8em;
+  width: 1.8em;
 }
 
 .column-date {
-    width: 5.5em;
+  width: 5.5em;
 }
 
 .column-productsObj-name {
-    width: 25%;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  width: 25%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .column-productsObj-count,
 .column-productsObj-units {
-    width: 4em;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  width: 4em;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .column-productsObj-count {
-    text-align: right;
+  text-align: right;
 }
 
 .column-jobId button[mat-button].mat-button {
-    padding: 0;
+  padding: 0;
 }
 
 .column-name div {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .column-name span.name {
-    flex: 1 1 700px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  flex: 1 1 700px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .column-name span.buttons {
-    display: none;
-    flex: 0 0 40px;
+  display: none;
+  flex: 0 0 40px;
 }
 
 .column-name .mat-icon {
-    font-size: 18px;
+  font-size: 18px;
 }
 
 tr:hover td.column-name span.buttons {
-    display: inherit;
+  display: inherit;
 }
 
 .highlited {
-    background-color: rgba(0, 0, 0, 0.08);
-    transition-duration: 0.5s;
+  background-color: rgba(0, 0, 0, 0.08);
+  transition-duration: 0.5s;
 }
 
 .highlited-product {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 app-new-job-button {
-    z-index: 99;
-    position: absolute;
-    bottom: 20px;
-    right: 80px;
-    transition: all .2s ease-in-out;
+  z-index: 99;
+  position: absolute;
+  bottom: 20px;
+  right: 80px;
+  transition: all .2s ease-in-out;
 
-    &.rised {
-        bottom: 20px + 16px + 56px;
-    }
+  &.rised {
+    bottom: 20px + 16px + 56px;
+  }
 }

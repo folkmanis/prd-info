@@ -1,50 +1,19 @@
 .scroll-container {
-    height: 100%;
-    overflow: auto;
+  height: 100%;
+  overflow: auto;
 }
 
 .item {
-    padding: 0px 16px;
+  min-height: 137px;
+  margin-block: 16px;
+  padding-inline: 8px;
 }
+
 
 .empty-item {
-    height: 137px;
-    width: 100%;
-    background-color: #d0f0f0;
-    display: flex;
-    align-items: center;
-    align-content: center;
-    padding: 32px;
-}
-
-.jobId {
-    margin-top: 16pt;
-    margin-bottom: 0pt;
-    font-size: 16pt;
-}
-
-.match {
-    font-weight: bold;
-}
-
-.search-table {
-    width: 100%;
-    font-size: 12pt;
-    border-collapse: collapse;
-    border: 1px solid var(--primary-color);
-    text-align: left;
-    margin-top: 5px;
-    margin-bottom: 20px;
-}
-
-.table-element {
-    padding: 1px;
-    border: 1px solid var(--primary-color);
-}
-
-.table-location {
-    overflow-wrap: anywhere;
-    background-color: var(--primary-lighter);
-    min-height: 32px;
-    cursor: copy;
+  height: 137px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }

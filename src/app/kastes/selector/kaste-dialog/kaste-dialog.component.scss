@@ -1,53 +1,48 @@
 [mat-dialog-title]>* {
-    text-align: center;
-}
-
-/* TODO(mdc-migration): The following rule targets internal classes of dialog that may no longer apply for the MDC version. */
-mat-dialog-actions>button {
-    margin: auto;
+  text-align: center;
 }
 
 .mat-mdc-dialog-content {
-    text-align: center;
+  text-align: center;
 }
 
 .mat-mdc-dialog-content .colors {
-    min-height: 180px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    font-size: 50px;
-    line-height: 60px;
-    font-weight: 800;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: 50px;
+  line-height: 60px;
+  font-weight: 800;
 }
 
 .kods {
-    font-size: 40px;
-    font-weight: 800;
-    height: 48px;
-    background-color: var(--warn-color);
-    color: var(--primary-darker-contrast);
-    border-radius: 4px;
-    margin: 8px 0;
-    line-height: 48px;
+  font-size: 40px;
+  font-weight: 800;
+  height: 48px;
+  background-color: var(--sys-secondary);
+  color: var(--sys-on-secondary);
+  border-radius: 4px;
+  margin: 8px 0;
+  line-height: 48px;
 }
 
 .kods.gatavs {
-    background-color: var(--primary-color);
+  background-color: var(--sys-primary);
 }
 
 .kods .subs {
-    font-size: 75%;
+  font-size: 75%;
 }
 
 .summary {
-    margin: 8px;
+  margin: 8px;
 }
 
 .summary .kaste.gatavs {
-    font-style: italic;
+  font-style: italic;
 }
 
 .summary .kaste.current {
-    font-weight: 800;
+  font-weight: 800;
 }

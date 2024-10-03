@@ -1,9 +1,9 @@
-<h4>Preces</h4>
+<div class="title">Preces</div>
 
-<mat-list>
+<mat-list dense-list>
   @for (total of invoicesTotals()?.totals; track total._id) {
-    <mat-list-item appDenseList appDenseListHeight="32px">
-      <span>
+    <mat-list-item>
+      <span class="dense-list-data">
         <span>
           {{ total._id }}
         </span>

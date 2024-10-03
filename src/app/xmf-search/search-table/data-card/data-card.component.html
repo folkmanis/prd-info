@@ -1,0 +1,18 @@
+<div class="job-id" [class.full-match]="data().jdfJobId === searchString()">
+  {{ data().jdfJobId }}
+</div>
+
+<app-tagged-string [text]="data().descriptiveName" [styledString]="searchString()" />
+
+@for (row of data().archives; track $index) {
+  <div class="archive-item">
+    <div class="file-location" [appCopyClipboard]="row.location">
+      {{ row.location }}
+    </div>
+    <div class="archive-info">
+      <span>{{ actions[row.action] }}</span>
+      <span>{{ row.date | date }}</span>
+      <span>{{ data().customerName }}</span>
+    </div>
+  </div>
+}

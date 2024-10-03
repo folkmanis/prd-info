@@ -1,60 +1,42 @@
 @use "@angular/material" as mat;
 
-@mixin app-dense-list-color($color) {
-
-  $primary: map-get($color, primary);
-
-  mat-list-item[appDenseList]:hover {
-
-    background-color: mat.m2-get-color-from-palette($primary, "lighter");
-
-  }
+@mixin app-dense-list-typography($theme) {
+  --mdc-list-list-item-label-text-size: mat.get-theme-typography($theme, body-small, font-size);
 }
 
 @mixin app-dense-list() {
 
-  mat-list-item[appdenselist] {
 
-    --mdc-list-list-item-label-text-size: 14px;
-    --mdc-list-list-item-label-text-line-height: 16px;
+  --mdc-list-list-item-one-line-container-height: 32px;
 
-    &.mdc-list-item.mdc-list-item--with-one-line {
-      cursor: default;
+  .dense-list-data {
+
+    display: flex;
+
+    :first-child {
+      padding-right: 8px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
 
-
-    .mat-mdc-list-item-unscoped-content>span {
-
-      display: flex;
-
-      >:first-child {
-        padding-right: 8px;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-      }
-
-      >:last-child {
-        margin-left: auto;
-      }
+    :last-child {
+      margin-left: auto;
     }
-
-    [appDenseListTotal] {
-      color: var(--primary-color);
-      font-weight: 700;
-    }
-
   }
 
 }
 
 @mixin theme($theme) {
 
-  $color: mat.m2-get-color-config($theme);
+  mat-list[dense-list],
+  mat-action-list[dense-list] {
 
-  @if $color !=null {
-    @include app-dense-list-color($color);
+    @if (mat.theme-has($theme, typography)) {
+      @include app-dense-list-typography($theme);
+    }
+
+    @include app-dense-list();
   }
 
-  @include app-dense-list();
 }
