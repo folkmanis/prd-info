@@ -47,9 +47,9 @@
       <mat-card-content>
         <div class="button-row">
           <!-- Paroles maiņa -->
-          <button mat-raised-button appPasswordInput [passwordMinimumLength]="6" (appPasswordChange)="onPasswordChange($event)" color="primary">MAINĪT PAROLI</button>
+          <button mat-raised-button appPasswordInput [passwordMinimumLength]="6" (appPasswordChange)="onPasswordChange($event)">Mainīt paroli</button>
           <!-- Dzēšana -->
-          <button mat-raised-button color="warn" (click)="onDeleteUser()">DZĒST</button>
+          <button mat-raised-button class="tertiary" (click)="onDeleteUser()">Dzēst</button>
         </div>
       </mat-card-content>
     }
@@ -110,7 +110,7 @@
   @if (!isNew()) {
     <mat-card>
       <mat-card-content>
-        <button mat-raised-button (click)="onUploadToFirestore()" [disabled]="changes() !== null">SAGLABĀT LIETOTNĒ</button>
+        <button mat-raised-button (click)="onUploadToFirestore()" [disabled]="changes() !== null">Saglabāt lietotnē</button>
       </mat-card-content>
     </mat-card>
   }

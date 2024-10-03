@@ -39,8 +39,8 @@
 
 <footer>
   @if (form.value.jobId) {
-    <button mat-raised-button color="primary" appKeyPress="ctrlEnter" [disabled]="saveDisabled()" (click)="onUpdate()">SAGLABĀT</button>
+    <button mat-raised-button appKeyPress="ctrlEnter" [disabled]="saveDisabled()" (click)="onUpdate()">SAGLABĀT</button>
   } @else {
-    <button mat-raised-button color="primary" [disabled]="saveDisabled()" appKeyPress="ctrlEnter" (click)="onCreate()">IZVEIDOT</button>
+    <button mat-raised-button [disabled]="saveDisabled()" appKeyPress="ctrlEnter" (click)="onCreate()">IZVEIDOT</button>
   }
 </footer>

@@ -19,8 +19,8 @@
       </mat-card-content>
 
       <mat-card-actions>
-        <button mat-raised-button (click)="onCreateInvoice()" color="primary" [disabled]="selectedJobs().length === 0 || !customer()">APRĒĶINS</button>
-        <button mat-button (click)="onPrintList()" [disabled]="selectedJobs().length === 0">IZDRUKĀT</button>
+        <button mat-raised-button (click)="onCreateInvoice()" [disabled]="selectedJobs().length === 0 || !customer()">Aprēķins</button>
+        <button mat-button (click)="onPrintList()" [disabled]="selectedJobs().length === 0">Izdrukāt</button>
       </mat-card-actions>
     </mat-card>
 

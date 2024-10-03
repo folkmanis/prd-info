@@ -15,7 +15,7 @@
 
           <input type="number" formControlName="fixedAmount" appInput />
 
-          <button mat-icon-button color="warn" (click)="onDeleteStage($index)">
+          <button mat-icon-button class="warn" (click)="onDeleteStage($index)">
             <mat-icon> delete_outline </mat-icon>
           </button>
         </div>
@@ -28,6 +28,6 @@
   }
 </div>
 
-<button mat-mini-fab color="primary" (click)="onNewProductionStage()" [disabled]="!form.valid">
+<button mat-mini-fab (click)="onNewProductionStage()" [disabled]="!form.valid">
   <mat-icon> add </mat-icon>
 </button>

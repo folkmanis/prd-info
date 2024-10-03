@@ -30,7 +30,7 @@
               <!-- statusa indikators -->
               <td class="column-state">
                 @if (job.jobStatus.generalStatus === 20) {
-                  <mat-icon color="primary"> label_important </mat-icon>
+                  <mat-icon> label_important </mat-icon>
                 }
               </td>
               <!-- jobId -->
@@ -65,7 +65,7 @@
                         </button>
                       }
                       @case (10) {
-                        <button mat-icon-button color="primary" matToolTip="Darbs aktīvs" (click)="$event.stopPropagation(); onSetJobStatus(job.jobId, 20)">
+                        <button mat-icon-button matToolTip="Darbs aktīvs" (click)="$event.stopPropagation(); onSetJobStatus(job.jobId, 20)">
                           <mat-icon>label_important</mat-icon>
                         </button>
                       }

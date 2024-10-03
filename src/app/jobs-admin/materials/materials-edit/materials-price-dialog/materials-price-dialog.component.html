@@ -25,6 +25,6 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button mat-raised-button color="primary" [disabled]="!priceControl.valid || priceControl.pristine" [mat-dialog-close]="priceControl.value">SAGLABĀT</button>
-  <button mat-raised-button mat-dialog-close>ATCELT</button>
+  <button mat-raised-button [disabled]="!priceControl.valid || priceControl.pristine" [mat-dialog-close]="priceControl.value">Saglabāt</button>
+  <button mat-raised-button class="tertiary" mat-dialog-close>Atcelt</button>
 </mat-dialog-actions>

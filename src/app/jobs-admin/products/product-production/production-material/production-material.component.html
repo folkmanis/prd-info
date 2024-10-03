@@ -23,7 +23,7 @@
         </span>
       </div>
 
-      <button mat-icon-button color="warn" (click)="onDeleteMaterial($index)">
+      <button mat-icon-button class="warn" (click)="onDeleteMaterial($index)">
         <mat-icon> delete_outline </mat-icon>
       </button>
     </div>
@@ -31,7 +31,7 @@
 </div>
 
 <div>
-  <button mat-icon-button color="primary" (click)="onNewMaterial()" [disabled]="form.valid === false">
+  <button mat-icon-button (click)="onNewMaterial()" [disabled]="form.valid === false">
     <mat-icon> add </mat-icon>
   </button>
 </div>

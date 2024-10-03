@@ -7,7 +7,7 @@
 <div class="chips-bar">
   <mat-chip-set>
     @for (chipName of availableChips(); track $index) {
-      <mat-chip color="primary" [appDragable]="chipName">
+      <mat-chip [appDragable]="chipName">
         {{ chipName }}
       </mat-chip>
     }
@@ -42,7 +42,7 @@
         <div appDragDrop (dropEmitter)="onDrop($event.chipName, column)">
           <mat-chip-set>
             @if (assignedChipName(column); as chipName) {
-              <mat-chip color="primary" [appDragable]="chipName" removable [sourceColumn]="column" (removed)="onChipRemove(column)">
+              <mat-chip [appDragable]="chipName" removable [sourceColumn]="column" (removed)="onChipRemove(column)">
                 {{ chipName }}
                 <mat-icon matChipRemove>cancel</mat-icon>
               </mat-chip>

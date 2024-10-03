@@ -14,7 +14,7 @@
         <a mat-raised-button [href]="paytraqUrl() + paytraq.paytraqId" target="new">
           {{ paytraq.documentRef }}
         </a>
-        <button mat-raised-button color="warn" (click)="onUnlinkPaytraq()" matTooltip="Dzēst savienojumu">Atvienot</button>
+        <button mat-raised-button class="warn" (click)="onUnlinkPaytraq()" matTooltip="Dzēst savienojumu">Atvienot</button>
       </div>
     } @else {
       <button mat-raised-button [disabled]="canCreatePaytraq() === false || busy() === true" (click)="onPaytraq()">

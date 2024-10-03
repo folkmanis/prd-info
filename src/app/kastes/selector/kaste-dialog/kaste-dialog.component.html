@@ -5,9 +5,9 @@
     </span>
     <span class="subs"> /{{ addressPackage.boxSequence + 1 }} </span>
   </div>
-  <h1>
+  <div class="address">
     {{ addressPackage.address | titlecase }}
-  </h1>
+  </div>
 </div>
 
 <mat-dialog-content>
@@ -23,12 +23,12 @@
 
   <div class="summary">
     @for (pack of allAddressPackages; track $index) {
-      <div class="kaste" [class.gatavs]="pack.completed" [class.current]="$index === pack.boxSequence">
+      <div class="kaste" [class.gatavs]="pack.completed" [class.current]="$index === addressPackage.boxSequence">
         <span> {{ $index + 1 }}:&nbsp; </span>
         @for (color of colors; track color) {
           <span [style.color]="colorCodes[color]"> {{ pack[color] }}&nbsp; </span>
         }
-        <span> /{{ pack.total }} </span>
+        <span> ({{ pack.total }}) </span>
       </div>
     }
   </div>
@@ -36,16 +36,16 @@
 
 <mat-dialog-actions>
   @if (addressPackage.completed === false) {
-    <button mat-fab color="primary" [mat-dialog-close]="true">
+    <button mat-icon-button [mat-dialog-close]="true">
       <mat-icon> done </mat-icon>
     </button>
   } @else {
-    <button mat-fab color="warn" [mat-dialog-close]="false">
+    <button mat-icon-button class="warn" [mat-dialog-close]="false">
       <mat-icon> remove_done </mat-icon>
     </button>
   }
 
-  <button mat-fab matDialogClose>
+  <button mat-icon-button matDialogClose>
     <mat-icon> close </mat-icon>
   </button>
 </mat-dialog-actions>

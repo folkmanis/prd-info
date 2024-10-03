@@ -13,9 +13,9 @@
   </mat-card-content>
 
   <mat-card-actions>
-    <button mat-button (click)="fileInput.click()" [disabled]="busy()">ATVĒRT</button>
+    <button mat-button (click)="fileInput.click()" [disabled]="busy()">Atvērt</button>
     <input hidden (change)="onFileSelected($event)" #fileInput type="file" accept=".dbd" />
-    <button mat-raised-button (click)="onUpload()" [disabled]="file === null || busy()" color="primary">APSTRĀDĀT!</button>
+    <button mat-raised-button (click)="onUpload()" [disabled]="file === null || busy()">Apstrādāt!</button>
   </mat-card-actions>
 
   <mat-card-footer>

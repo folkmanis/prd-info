@@ -10,12 +10,12 @@
       <input matInput [(ngModel)]="password" name="password" type="password" autocomplete="current-password" />
     </mat-form-field>
 
-    <button mat-raised-button type="submit" color="primary" [disabled]="!usernameControl.valid || busy()" class="full-width">PIESLĒGTIES</button>
+    <button mat-raised-button type="submit" [disabled]="!usernameControl.valid || busy()" class="full-width">Pieslēgties</button>
   </form>
 
   <hr />
 
   @if (isDemo === false) {
-    <a mat-raised-button href="/data/login/google" [disabled]="busy()" class="full-width"> PIEVIENOTIES AR GOOGLE </a>
+    <a mat-raised-button href="/data/login/google" [disabled]="busy()" class="full-width"> Pievienoties ar Google </a>
   }
 </div>

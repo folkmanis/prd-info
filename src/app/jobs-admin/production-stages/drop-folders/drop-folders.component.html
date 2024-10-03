@@ -1,6 +1,6 @@
 @for (control of form.controls; track $index) {
   <div class="container">
-    <button mat-icon-button color="warn" (click)="delete($index); $event.stopPropagation()">
+    <button mat-icon-button class="tertiary" (click)="delete($index); $event.stopPropagation()">
       <mat-icon> delete_outline </mat-icon>
     </button>
 

@@ -1,6 +1,6 @@
 @if (count === undefined || count === null) {
   <span class="spinner">
-    <mat-spinner color="primary" [diameter]="32"></mat-spinner>
+    <mat-spinner [diameter]="32"></mat-spinner>
   </span>
 } @else {
   <h3>Atrast{{ isMultiple(count()) ? 'i' : 's' }} {{ count() }} ierakst{{ isMultiple(count()) ? 'i' : 's' }}</h3>

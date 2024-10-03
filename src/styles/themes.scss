@@ -3,6 +3,7 @@
 
 @use "./base.scss" as base;
 
+@use "./button.scss";
 @use "../app/layout/messaging/messages-pane.scss";
 @use "../app/library/table/table.scss";
 @use "../app/library/dense-list/dense-list.theme";
@@ -22,6 +23,7 @@
 @include base.theme(theme.$light-theme);
 
 html {
+  @include button.theme(theme.$light-theme);
   @include table.theme(theme.$light-theme);
   @include messages-pane.theme(theme.$light-theme);
   @include dense-list.theme(theme.$light-theme);

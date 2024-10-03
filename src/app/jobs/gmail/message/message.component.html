@@ -4,7 +4,7 @@
 
 @if (message.hasAttachment) {
   <mat-action-row>
-    <button mat-button (click)="markAsRead = true; onCreateJob(attachmentList.selected)" [disabled]="!attachmentList.selected?.length || busy()" color="primary">
+    <button mat-button (click)="markAsRead = true; onCreateJob(attachmentList.selected)" [disabled]="!attachmentList.selected?.length || busy()">
       <mat-icon> drafts </mat-icon>
       <span> UZ DARBU </span>
     </button>

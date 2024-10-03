@@ -1,0 +1,42 @@
+@use "@angular/material" as mat;
+
+@mixin button-color($theme) {
+
+  &[mat-raised-button],
+  &[mat-button] {
+
+    &.tertiary,
+    &.warn {
+      @include mat.button-color($theme, $color-variant: tertiary);
+    }
+
+  }
+
+  &[mat-icon-button] {
+
+    &.tertiary,
+    &.warn {
+      @include mat.icon-button-color($theme, $color-variant: tertiary);
+    }
+  }
+
+  &[mat-mini-fab] {
+
+    &.tertiary,
+    &.warn {
+      @include mat.fab-color($theme, $color-variant: tertiary);
+    }
+  }
+}
+
+@mixin theme($theme) {
+
+  a,
+  button {
+    @if(mat.theme-has($theme, color)) {
+      @include button-color($theme);
+    }
+
+  }
+
+}
