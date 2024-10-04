@@ -37,7 +37,12 @@
 
   .app-table {
     width: 100%;
-    cursor: pointer;
+    cursor: default;
+
+    [router-link],
+    [ng-reflect-router-link] {
+      cursor: pointer;
+    }
   }
 }
 

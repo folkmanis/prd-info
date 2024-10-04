@@ -38,7 +38,19 @@ body {
 
 @mixin base-typography($theme) {
   body {
-    font: mat.get-theme-typography($theme, body-medium, font)
+    font: mat.get-theme-typography($theme, body-medium, font);
+
+    .headline-large {
+      font: mat.get-theme-typography($theme, headline-large, font);
+    }
+
+    .headline-medium {
+      font: mat.get-theme-typography($theme, headline-medium, font);
+    }
+
+    .headline-small {
+      font: mat.get-theme-typography($theme, headline-small, font);
+    }
   }
 }
 

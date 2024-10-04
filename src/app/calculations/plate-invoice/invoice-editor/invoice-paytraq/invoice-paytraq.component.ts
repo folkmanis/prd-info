@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { MatButton, MatButtonModule } from '@angular/material/button';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { MatButton } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { Invoice, InvoiceProduct } from 'src/app/interfaces';
 import { configuration } from 'src/app/services/config.provider';
-import { InvoiceEditor } from '../invoice-editor.component';
-import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-invoice-paytraq',
@@ -19,19 +18,20 @@ export class InvoicePaytraqComponent {
 
   paytraqUrl = configuration('paytraq', 'connectionParams', 'invoiceUrl');
 
+  saveToPaytraq = output<void>();
+  unlinkPaytraq = output<void>();
+
   canCreatePaytraq = computed(() => {
     const { customerInfo, paytraq, products } = this.invoice();
     return !!customerInfo?.financial?.paytraqId && !paytraq && allProductsWithPaytraq(products);
   });
 
-  private invoiceEditor = inject(InvoiceEditor);
-
   onPaytraq(): void {
-    this.invoiceEditor.onSaveToPaytraq();
+    this.saveToPaytraq.emit();
   }
 
   onUnlinkPaytraq(): void {
-    this.invoiceEditor.onUnlinkPaytraq();
+    this.unlinkPaytraq.emit();
   }
 }
 

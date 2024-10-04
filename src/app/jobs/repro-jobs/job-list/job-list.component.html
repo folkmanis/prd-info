@@ -5,10 +5,8 @@
     </mat-drawer>
 
     <mat-drawer-content>
-      <app-new-job-button (fileList)="onFileDrop($event)" [class.rised]="scroll.visible()"> </app-new-job-button>
-
-      <app-job-filter [filter]="filter$ | async" (filterChanges)="onJobFilter($event)" [products]="products()"></app-job-filter>
-
+      <app-job-filter class="mat-elevation-z4" [filter]="filter$ | async" (filterChanges)="onJobFilter($event)" [products]="products()" />
+      <app-new-job-button (fileList)="onFileDrop($event)" [class.rised]="scroll.visible()" />
       <cdk-virtual-scroll-viewport itemSize="32" class="container" scroll-to-top #scroll="scrollToTop">
         <table class="app-table">
           <thead>

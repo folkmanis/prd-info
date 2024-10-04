@@ -7,7 +7,7 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
   styleUrls: ['./status-count.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [MatProgressSpinner],
+  imports: [],
 })
 export class StatusCountComponent {
   count = input<number | null>(null);

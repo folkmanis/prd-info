@@ -12,12 +12,19 @@ mat-drawer-content {
   flex-direction: column;
 }
 
-.search-box {
+.toolbar {
   z-index: 10;
   display: flex;
+  align-items: center;
+  position: relative;
 
-  >*:last-child {
+  .right {
     margin-left: auto;
+  }
+
+  mat-progress-bar {
+    position: absolute;
+    bottom: 0;
   }
 }
 

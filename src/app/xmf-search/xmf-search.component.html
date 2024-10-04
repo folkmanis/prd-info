@@ -4,10 +4,17 @@
   </mat-drawer>
 
   <mat-drawer-content>
-    <div class="search-box mat-elevation-z4">
+    @let count = count$ | async;
+    <div class="toolbar mat-elevation-z4">
+      @if (busy()) {
+        <mat-progress-bar mode="indeterminate" />
+      }
+
       <app-search-input (searchStringChange)="onSearchString($event)" />
 
-      <app-status-count [count]="count$ | async" />
+      @if (busy() === false) {
+        <app-status-count class="right" [count]="count" />
+      }
     </div>
 
     <app-search-table [search]="query()" [data]="data$ | async" />

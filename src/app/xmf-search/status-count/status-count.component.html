@@ -1,7 +1,3 @@
-@if (count === undefined || count === null) {
-  <span class="spinner">
-    <mat-spinner [diameter]="32"></mat-spinner>
-  </span>
-} @else {
-  <h3>Atrast{{ isMultiple(count()) ? 'i' : 's' }} {{ count() }} ierakst{{ isMultiple(count()) ? 'i' : 's' }}</h3>
+@if (count() !== undefined || count() !== null) {
+  <div class="headline-small">Atrast{{ isMultiple(count()) ? 'i' : 's' }} {{ count() }} ierakst{{ isMultiple(count()) ? 'i' : 's' }}</div>
 }

@@ -1,19 +1,19 @@
 .mat-footer-cell,
-td.mat-cell.mat-column-total {
-    font-weight: bold;
+.mat-cell.mat-column-total {
+  font-weight: bold;
 }
 
 .mat-column-count,
 .mat-column-price,
 .mat-column-total {
-    text-align: right;
-    width: 7em;
+  text-align: right;
+  width: 7em;
 }
 
 .mat-column-paytraqId {
-    width: 5em;
+  width: 5em;
 }
 
 .mat-footer-cell.mat-column-_id {
-    text-align: right;
+  text-align: right;
 }

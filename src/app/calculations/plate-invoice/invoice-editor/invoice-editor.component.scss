@@ -1,21 +1,21 @@
 .mat-toolbar {
-    position: sticky;
-    top: 0;
-    z-index: 1;
+  position: sticky;
+  top: 0;
+  z-index: 4;
 }
 
 .container {
-    margin: 16px;
+  margin: 16px;
 }
 
 .spacer {
-    flex: 1 1 auto;
+  flex: 1 1 auto;
 }
 
 mat-card:not(:first-child) {
-    margin-top: 16px;
+  margin-top: 16px;
 }
 
 mat-toolbar>span:first-child {
-    margin-right: 16px;
+  margin-right: 16px;
 }

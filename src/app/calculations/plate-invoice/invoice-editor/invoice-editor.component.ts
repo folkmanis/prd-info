@@ -12,11 +12,10 @@ import { Locale } from 'date-fns';
 import { saveAs } from 'file-saver';
 import { Invoice } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library';
-import { ViewSizeDirective } from 'src/app/library/view-size';
 import { navigateRelative } from 'src/app/library/common';
 import { DATE_FNS_LOCALE } from 'src/app/library/date-services';
+import { ViewSizeDirective } from 'src/app/library/view-size';
 import { LoginService } from 'src/app/login';
-import { ProductsService } from 'src/app/services';
 import { configuration } from 'src/app/services/config.provider';
 import { JobSelectionTableComponent } from '../../job-selection-table/job-selection-table.component';
 import { InvoicesService } from '../../services/invoices.service';
@@ -29,12 +28,6 @@ const errorMessage = (err: Error) => `Radās kļūda: ${err.message}`;
 
 const PAYTRAQ_SAVED_MESSAGE = 'Izveidota pavadzīme Paytraq sistēmā';
 const PAYTRAQ_UNLINK_MESSAGE = 'Paytraq savienojums dzēsts';
-
-export abstract class InvoiceEditor {
-  abstract onSaveToPaytraq(): void;
-  abstract onUnlinkPaytraq(): void;
-  abstract navigateToProduct(name: string): void;
-}
 
 @Component({
   selector: 'app-invoice-editor',
@@ -55,14 +48,12 @@ export abstract class InvoiceEditor {
     MatCardModule,
     DatePipe,
   ],
-  providers: [{ provide: InvoiceEditor, useExisting: InvoiceEditorComponent }],
 })
-export class InvoiceEditorComponent implements InvoiceEditor {
+export class InvoiceEditorComponent {
   private locale?: Locale = inject<Locale>(DATE_FNS_LOCALE, { optional: true });
   private navigate = navigateRelative();
   private snack = inject(MatSnackBar);
   private invoicesService = inject(InvoicesService);
-  private productsService = inject(ProductsService);
   private confirmation = inject(ConfirmationDialogService);
 
   invoice = input.required<Invoice>();
@@ -142,11 +133,6 @@ export class InvoiceEditorComponent implements InvoiceEditor {
     } finally {
       this.busy.set(false);
     }
-  }
-
-  async navigateToProduct(name: string) {
-    const product = await this.productsService.getProductByName(name);
-    this.navigate(['/', 'jobs-admin', 'products', product._id]);
   }
 
   private reload() {
