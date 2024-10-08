@@ -1,47 +1,46 @@
 table {
-    width: 100%;
-    table-layout: fixed;
-    border-spacing: 0;
-    border-collapse: separate;
+  width: 100%;
+  table-layout: fixed;
+  border-spacing: 0;
+  border-collapse: separate;
 }
 
 tr {
-    height: 41px;
+  height: 41px;
 }
 
 td,
 th {
-    display: table-cell;
-    padding: 0 8px;
-    font-size: 14px;
-    color: rgba(0, 0, 0, 0.87);
-    border-bottom-color: rgba(0, 0, 0, 0.12);
-    border-bottom-width: 1px;
-    border-bottom-style: solid;
-    text-align: left;
+  display: table-cell;
+  padding: 0 8px;
+  font-size: 14px;
+  border-bottom-color: var(--sys-outline-variant);
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  text-align: left;
 
-    &:first-of-type {
-        padding-left: 8px;
+  &:first-of-type {
+    padding-left: 8px;
+  }
+
+  &.buttons {
+    width: 32px;
+  }
+
+  &.price {
+    width: 80px;
+
+    input {
+      width: 80px;
     }
-
-    &.buttons {
-        width: 32px;
-    }
-
-    &.price {
-        width: 80px;
-
-        input {
-            width: 80px;
-        }
-    }
+  }
 }
 
 td .mat-form-field {
-    width: 100%;
+  width: 100%;
 }
 
 .error {
-    color: #f44336;
-    font-size: 75%;
+  color: var(--sys-error);
+  font: var(--sys-label-small);
 }

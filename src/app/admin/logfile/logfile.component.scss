@@ -1,23 +1,22 @@
 :host {
-    overflow: auto;
-    height: 100%;
-    display: block;
+  overflow: auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .filter-box {
-    position: absolute;
-    left: 0;
-    right: 0;
-    padding: 16px 16px 0;
-    height: 90px;
-    z-index: 2;
-    background-color: white;
-    overflow: hidden;
-    display: flex;
-    align-items: baseline;
-    gap: 16px;
+  padding: 16px;
 }
 
-.table-container {
-    padding-top: 90px;
+app-logfile-table {
+  overflow: auto;
+}
+
+mat-card-content {
+  display: flex;
+  align-items: center;
+  column-gap: 16px;
+  row-gap: 8px;
+  flex-wrap: wrap;
 }

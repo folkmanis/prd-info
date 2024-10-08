@@ -6,6 +6,16 @@ mat-toolbar {
   flex: 1 1 auto;
 }
 
+.dark-mode-button {
+  display: flex;
+  align-items: center;
+  padding-inline: 8px;
+
+  mat-slide-toggle {
+    padding-left: 4px;
+  }
+}
+
 .avatar {
   display: inline-block;
   width: 24px;

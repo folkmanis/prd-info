@@ -11,6 +11,7 @@ import { LogCalendarComponent } from './log-filter/log-calendar/log-calendar.com
 import { LogLevelComponent } from './log-filter/log-level/log-level.component';
 import { LogLevel } from './log-level.interface';
 import { LogfileTableComponent } from './logfile-table/logfile-table.component';
+import { MatCardModule } from '@angular/material/card';
 
 function maxLevel(levels: LogLevel[]) {
   if (levels.length > 0) {
@@ -26,7 +27,7 @@ function maxLevel(levels: LogLevel[]) {
   styleUrls: ['./logfile.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [LogfileTableComponent, MatButtonModule, MatIconModule, LogLevelComponent, LogCalendarComponent],
+  imports: [LogfileTableComponent, MatButtonModule, MatIconModule, LogLevelComponent, LogCalendarComponent, MatCardModule],
 })
 export class LogfileComponent {
   private api = inject(LogfileApiService);

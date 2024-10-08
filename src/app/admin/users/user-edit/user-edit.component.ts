@@ -66,6 +66,7 @@ export class UserEditComponent implements CanComponentDeactivate {
     last_login: { value: new Date(), disabled: true },
     userDisabled: [false],
     eMail: [''],
+    prefersDarkMode: [false],
     preferences: this.fb.group({
       customers: [[] as string[]],
       modules: [[] as string[]],

@@ -57,9 +57,19 @@ import { ProductControlDirective } from './product-control.directive';
       multi: true,
     },
   ],
+  host: {
+    '[class.disabled]': 'productForm.disabled',
+  },
+  hostDirectives: [
+    {
+      directive: ViewSizeDirective,
+    },
+  ],
 })
 export class ReproProductComponent implements ControlValueAccessor, Validator {
   private productNameControl = viewChild.required(ProductAutocompleteComponent);
+
+  isSmall = inject(ViewSizeDirective, { host: true }).isSmall;
 
   customerProducts = input<CustomerProduct[]>([]);
 

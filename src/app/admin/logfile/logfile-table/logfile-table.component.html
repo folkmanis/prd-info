@@ -1,4 +1,4 @@
-<mat-table multiTemplateDataRows [dataSource]="log()">
+<mat-table multiTemplateDataRows [dataSource]="log()" class="app-table" appViewSize #viewSize="viewSize">
   <!-- Log level -->
   <ng-container matColumnDef="level">
     <mat-header-cell *matHeaderCellDef>Nozīmīgums</mat-header-cell>
@@ -17,7 +17,7 @@
   <!-- Metadata -->
   <ng-container matColumnDef="metadata">
     <mat-header-cell *matHeaderCellDef>Papildus dati</mat-header-cell>
-    <mat-cell *matCellDef="let record">{{ record.metadata | json | shortenText: 70 }}</mat-cell>
+    <mat-cell *matCellDef="let record">{{ record.metadata | json | shortenText: (viewSize.isLarge() ? 70 : 30) }}</mat-cell>
   </ng-container>
   <!-- Izvērsts skats -->
   <ng-container matColumnDef="expandedRecord">
@@ -33,7 +33,7 @@
     </mat-cell>
   </ng-container>
 
-  <mat-header-row *matHeaderRowDef="displayedColumns; sticky: false"></mat-header-row>
+  <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
   <mat-row
     *matRowDef="let record; columns: displayedColumns"
     class="record-row"

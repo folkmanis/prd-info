@@ -1,11 +1,11 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, input, model, output } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatToolbar, MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink } from '@angular/router';
 import { Observable, timer } from 'rxjs';
 import { filter, map, mergeMap, share, take, throttleTime } from 'rxjs/operators';
@@ -16,6 +16,8 @@ import { LoginService } from 'src/app/login';
 import { NotificationsService } from 'src/app/services';
 import { MessagesTriggerDirective } from '../messaging/messages-trigger.directive';
 import { MessagingService } from '../messaging/services/messaging.service';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
+import { FormsModule } from '@angular/forms';
 
 const INITIAL_DELAY = 3000;
 
@@ -26,9 +28,10 @@ const INITIAL_DELAY = 3000;
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    MatToolbarModule,
+    FormsModule,
+    MatToolbar,
     MatButtonModule,
-    MatIconModule,
+    MatIcon,
     RouterLink,
     ViewNotSmallDirective,
     ViewSmallDirective,
@@ -36,6 +39,7 @@ const INITIAL_DELAY = 3000;
     MessagesTriggerDirective,
     MatMenuModule,
     AsyncPipe,
+    MatSlideToggle,
   ],
 })
 export class ToolbarComponent implements OnInit {
@@ -56,6 +60,8 @@ export class ToolbarComponent implements OnInit {
   activeModule = input<UserModule | null>(null);
 
   sideMenuToggle = output();
+
+  darkMode = model(false);
 
   version = getAppParams('version', 'appBuild');
 

@@ -1,34 +1,42 @@
 :host {
-    padding: 16px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+  padding: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 header {
-    height: 40px;
-    display: flex;
-    align-items: center;
-    border-bottom-width: 1px;
-    border-bottom-color: rgba($color: #000000, $alpha: 0.12);
+  height: 40px;
+  display: flex;
+  align-items: center;
 
-    &>*:last-child {
-        margin-left: auto;
-    }
+  &>*:last-child {
+    margin-left: auto;
+  }
 
-    & h4 {
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow-x: hidden;
-    }
+  & .job-name {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+  }
 }
 
-.content {
-    padding: 8px;
-    overflow: auto;
+.large .container-multi {
+  display: flex;
+  gap: 16px;
+
+  &>* {
+    flex: 1;
+  }
 }
+
+.full-width {
+  width: 100%;
+}
+
+
 
 footer {
-    margin-top: auto;
+  margin-top: auto;
 }

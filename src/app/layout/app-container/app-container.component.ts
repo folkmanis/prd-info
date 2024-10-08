@@ -16,11 +16,21 @@ import { DrawerSmallDirective } from 'src/app/library/view-size';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [ToolbarComponent, MatSidenavModule, SideMenuComponent, RouterOutlet, DrawerSmallDirective],
+  host: {
+    '[class.dark-theme]': 'darkTheme()',
+  },
 })
 export class AppContainerComponent {
   private activeModules = inject(SystemPreferencesService).activeModules;
+  private loginService = inject(LoginService);
 
-  user = inject(LoginService).user;
+  user = this.loginService.user;
+
+  darkTheme = computed(() => this.user()?.prefersDarkMode);
 
   activeModule = computed(() => this.activeModules()[0]);
+
+  async setDarkMode(isDark: boolean) {
+    this.loginService.updateUser({ prefersDarkMode: isDark });
+  }
 }

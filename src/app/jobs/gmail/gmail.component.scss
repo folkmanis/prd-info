@@ -1,47 +1,47 @@
 :host {
-    display: flex;
-    flex-direction: column;
-    overflow: auto;
-    height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  height: 100%;
 }
 
 .paginator-container {
-    display: flex;
-    color: rgba($color: #000000, $alpha: 0.54);
-    background: white;
-    font-size: 12px;
+  display: flex;
+  color: var(--sys-on-surface);
+  background-color: var(--sys-surface-container-high);
+  font-size: 12px;
 }
 
 .paginator-container>div:first-of-type {
-    padding-left: 8px;
-    min-height: 56px;
-    display: flex;
-    align-items: center;
+  padding-left: 8px;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
 }
 
 .right-container {
-    justify-content: flex-end;
-    padding: 0 8px;
-    flex-wrap: wrap-reverse;
-    margin-left: auto;
+  justify-content: flex-end;
+  padding: 0 8px;
+  flex-wrap: wrap-reverse;
+  margin-left: auto;
 }
 
 .mat-mdc-table {
-    overflow: auto;
+  overflow: auto;
 }
 
 .mat-column-snippet>div {
-    overflow: hidden;
-    width: 100%;
+  overflow: hidden;
+  width: 100%;
 }
 
 .mat-column-snippet .snippet-text {
-    margin-top: 8px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  margin-top: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .progress-container {
-    height: 4px;
+  height: 4px;
 }

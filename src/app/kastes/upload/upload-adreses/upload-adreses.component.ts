@@ -25,7 +25,7 @@ export class UploadAdresesComponent {
   rowSelection = new SelectionModel<number>(true);
   columnSelection = new SelectionModel<number>(true);
 
-  private selectedRows = toSignal(this.rowSelection.changed.pipe(map((change) => change.source)), { initialValue: this.rowSelection });
+  selectedRows = toSignal(this.rowSelection.changed.pipe(map((change) => change.source)), { initialValue: this.rowSelection });
 
   adreses = model<Array<number | string>[]>([], { alias: 'data' });
 
@@ -55,7 +55,6 @@ export class UploadAdresesComponent {
       () => {
         this.columnSelection.clear();
         this.selectAllRows();
-
         this.resetChips();
       },
       { allowSignalWrites: true },

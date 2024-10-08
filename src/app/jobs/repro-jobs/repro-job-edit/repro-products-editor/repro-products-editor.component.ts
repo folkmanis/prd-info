@@ -8,6 +8,7 @@ import { CustomerProduct } from 'src/app/interfaces';
 import { JobProduct } from 'src/app/jobs';
 import { KeyPressDirective } from '../key-press.directive';
 import { ReproProductComponent } from './repro-product/repro-product.component';
+import { MatDivider } from '@angular/material/divider';
 
 const DEFAULT_PRODUCT: JobProduct = {
   name: null,
@@ -35,7 +36,7 @@ const DEFAULT_PRODUCT: JobProduct = {
     },
   ],
   standalone: true,
-  imports: [MatCardModule, ReproProductComponent, FormsModule, ReactiveFormsModule, MatButtonModule, KeyPressDirective, MatTooltipModule, MatIconModule],
+  imports: [MatCardModule, ReproProductComponent, FormsModule, ReactiveFormsModule, MatButtonModule, KeyPressDirective, MatTooltipModule, MatIconModule, MatDivider],
 })
 export class ReproProductsEditorComponent implements ControlValueAccessor, Validator {
   productComponents = viewChildren(ReproProductComponent);

@@ -1,19 +1,15 @@
 <div class="filter-box">
-  <!-- Reload button -->
-  <button mat-icon-button (click)="onReload()" matTooltip="Atjaunināt">
-    <mat-icon>refresh</mat-icon>
-  </button>
+  <mat-card>
+    <mat-card-content>
+      <button mat-icon-button (click)="onReload()" matTooltip="Atjaunināt">
+        <mat-icon>refresh</mat-icon>
+      </button>
 
-  <!-- Log level selector -->
-  <app-log-level [logLevels]="logLevels()" [(level)]="logLevel" />
+      <app-log-level [logLevels]="logLevels()" [(level)]="logLevel" />
 
-  <!-- Datums -->
-  <app-log-calendar [availableDates]="availableDates()" [(date)]="logDate" />
-
-  <!-- <app-log-filter [validDates]="validDates$ | async" (filter)="setFilter($event)" (levelChange)="onLevel($event)">
-        </app-log-filter> -->
+      <app-log-calendar [availableDates]="availableDates()" [(date)]="logDate" />
+    </mat-card-content>
+  </mat-card>
 </div>
 
-<div class="table-container">
-  <app-logfile-table [log]="log()"></app-logfile-table>
-</div>
+<app-logfile-table [log]="log()" />

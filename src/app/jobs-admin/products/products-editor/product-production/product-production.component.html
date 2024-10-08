@@ -20,14 +20,10 @@
           </button>
         </div>
 
-        <mat-divider></mat-divider>
+        <mat-divider />
 
         <app-production-material [formControl]="control.controls.materials" [materials]="materials()" />
       </mat-card-content>
     </mat-card>
   }
 </div>
-
-<button mat-mini-fab (click)="onNewProductionStage()" [disabled]="!form.valid">
-  <mat-icon> add </mat-icon>
-</button>

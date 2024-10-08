@@ -1,22 +1,27 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { isEqual, pickBy } from 'lodash-es';
-import { Observable, combineLatest, concat, concatMap, distinctUntilChanged, filter, from, map, of, reduce, switchMap, throttleTime } from 'rxjs';
+import { Observable, combineLatest, concat, concatMap, distinctUntilChanged, filter, from, map, merge, of, reduce, switchMap, throttleTime } from 'rxjs';
 import { DropFolder, JobProductionStage } from 'src/app/interfaces';
 import { ProductionStagesService } from 'src/app/services/production-stages.service';
 import { Files, Job, JobCategories, JobProduct } from '../../interfaces';
 import { ReproJobService } from './repro-job.service';
+import { ProductsService } from 'src/app/services';
 
 @Injectable()
 export class JobFormService {
+  private jobService = inject(ReproJobService);
+  private stagesService = inject(ProductionStagesService);
+  private productsService = inject(ProductsService);
+
   form = this.createForm();
 
-  private value$: Observable<Partial<Job>> = this.form.valueChanges.pipe(map(() => this.form.getRawValue() as Partial<Job>));
+  value$: Observable<Partial<Job>> = merge(of(null), this.form.valueChanges).pipe(map(() => this.form.getRawValue() as Partial<Job>));
 
   initialValue = signal<Partial<Job>>({});
 
-  value = toSignal(this.value$, { initialValue: this.form.getRawValue() as Partial<Job> });
+  value = toSignal(this.value$, { requireSync: true });
 
   update = computed(() => this.jobDiff(this.value(), this.initialValue()));
 
@@ -24,10 +29,12 @@ export class JobFormService {
 
   isNew = computed(() => !this.value().jobId);
 
-  constructor(
-    private jobService: ReproJobService,
-    private stagesService: ProductionStagesService,
-  ) {}
+  customerProducts$ = this.value$.pipe(
+    map((value) => value.customer),
+    filter((customer) => !!customer),
+    distinctUntilChanged(),
+    switchMap((customer) => this.productsService.productsCustomer(customer)),
+  );
 
   patchValue(value: Partial<Job>, options?: { onlySelf?: boolean; emitEvent?: boolean }): void {
     this.initialValue.set({

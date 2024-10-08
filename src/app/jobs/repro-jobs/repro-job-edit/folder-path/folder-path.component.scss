@@ -1,12 +1,16 @@
 .path {
-    display: flex;
-    align-items: center;
-    color: rgba(0, 0, 0, 0.54);
+  display: flex;
 
-    &>span:nth-child(2) {
-        margin-left: 8px;
-        flex: 0 1 auto;
-        overflow: hidden;
-    }
+  .folder-icon-container {
+    display: inline-block;
+    text-align: center;
+    min-width: 36px;
+    min-height: 36px;
+  }
+
+  .location {
+    padding-left: 4px;
+    font: var(--sys-label-medium);
+  }
 
 }

@@ -8,9 +8,8 @@
   <tbody>
     @for (control of pricesFormArray.controls; track $index) {
       <tr>
-        <!-- Klients ar labošanu -->
+        <!-- Klients -->
         <td class="customer-name">
-          <!-- <mat-form-field> -->
           <mat-select [formControl]="control.controls.customerName">
             @for (customer of customers(); track customer.CustomerName) {
               <mat-option [value]="customer.CustomerName" [disabled]="customer.disabled">
@@ -18,17 +17,14 @@
               </mat-option>
             }
           </mat-select>
-          <!-- </mat-form-field> -->
         </td>
         <!-- Cena labojama -->
         <td class="price">
-          <!-- <mat-form-field> -->
           <input [formControl]="control.controls.price" type="number" appInput />
-          <!-- </mat-form-field> -->
         </td>
         <!-- Pogas -->
         <td class="buttons">
-          <button mat-icon-button (click)="removePrice($index)" class="warn">
+          <button mat-icon-button (click)="removePrice($index)" class="tertiary">
             <mat-icon>delete_outline</mat-icon>
           </button>
         </td>

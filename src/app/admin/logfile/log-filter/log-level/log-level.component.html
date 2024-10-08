@@ -1,4 +1,4 @@
-<mat-form-field>
+<mat-form-field subscriptSizing="dynamic">
   <mat-label>Log level</mat-label>
   <mat-select [(ngModel)]="level">
     @for (level of logLevels(); track level.key) {

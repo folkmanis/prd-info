@@ -2,10 +2,10 @@ import { AsyncPipe, Location } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, model, signal, viewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterLink } from '@angular/router';
-import { Observable, Subscription, concatMap, of } from 'rxjs';
+import { Observable, Subscription, concatMap, distinctUntilChanged, filter, map, of, switchMap } from 'rxjs';
 import { DropFolder } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library';
 import { navigateRelative } from 'src/app/library/common';
@@ -19,6 +19,15 @@ import { DropFolderComponent } from './drop-folder/drop-folder.component';
 import { FolderPathComponent } from './folder-path/folder-path.component';
 import { JobFormComponent } from './job-form/job-form.component';
 import { KeyPressDirective } from './key-press.directive';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
+import { MatDivider } from '@angular/material/divider';
+import { MatInputModule } from '@angular/material/input';
+import { ReactiveFormsModule } from '@angular/forms';
+import { LoginService } from 'src/app/login';
+import { ProductsService } from 'src/app/services';
+import { ReproProductComponent } from './repro-products-editor/repro-product/repro-product.component';
+import { ReproProductsEditorComponent } from './repro-products-editor/repro-products-editor.component';
 
 @Component({
   selector: 'app-repro-job-edit',
@@ -28,9 +37,10 @@ import { KeyPressDirective } from './key-press.directive';
   providers: [JobFormService],
   standalone: true,
   imports: [
+    ReactiveFormsModule,
     MatButtonModule,
     KeyPressDirective,
-    MatIconModule,
+    MatIcon,
     RouterLink,
     JobFormComponent,
     MatCardModule,
@@ -38,10 +48,19 @@ import { KeyPressDirective } from './key-press.directive';
     UploadProgressComponent,
     DropFolderComponent,
     AsyncPipe,
+    MatFormFieldModule,
+    CdkTextareaAutosize,
+    MatDivider,
+    MatInputModule,
+    ReproProductsEditorComponent,
   ],
 })
 export class ReproJobEditComponent {
+  private snack = inject(MatSnackBar);
   private confirmationDialogService = inject(ConfirmationDialogService);
+  private reproJobService = inject(ReproJobService);
+  private location = inject(Location);
+
   private formService = inject(JobFormService);
 
   private customerInput = viewChild(JobFormComponent);
@@ -55,6 +74,8 @@ export class ReproJobEditComponent {
   update = this.formService.update;
 
   job = input.required<Job>();
+
+  showPrices = inject(LoginService).isModule('calculations');
 
   fileUploadProgress$: Observable<FileUploadMessage[]> = of([]);
 
@@ -84,11 +105,9 @@ export class ReproJobEditComponent {
 
   updatePath = model(false);
 
-  constructor(
-    private reproJobService: ReproJobService,
-    private snack: MatSnackBar,
-    private location: Location,
-  ) {
+  customerProducts$ = this.formService.customerProducts$;
+
+  constructor() {
     effect(
       () => {
         this.formService.setValue(this.job());

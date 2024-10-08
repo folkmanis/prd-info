@@ -1,7 +1,12 @@
 <ng-content></ng-content>
 @if (colorTotals()) {
   @for (color of colors; track color; let last = $last) {
-    <span [style.color]="colorStyles()[color]"> {{ color | titlecase }} {{ colorTotals()[color] }} </span>
+    <span [style.color]="colorStyles()[color]">
+      {{ color | titlecase }}
+      <span class="high">
+        {{ colorTotals()[color] }}
+      </span>
+    </span>
     @if (!last) {
       <span>|</span>
     }

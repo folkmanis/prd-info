@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, Output, Signal, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, Input, Output, Signal, afterNextRender, computed, output, signal, viewChildren } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Observable, map } from 'rxjs';
@@ -21,12 +21,15 @@ type ColorsGroup = FormGroup<{
 })
 export class VeikalsEditComponent {
   private fb = new FormBuilder().nonNullable;
+  private inputElements = viewChildren<ElementRef<HTMLInputElement>>('boxInput');
 
   boxTotals = boxTotals;
 
   colorCodes = kastesPreferences('colors');
 
   colors = COLORS;
+
+  save = output<void>();
 
   @Input() set veikals(value: Veikals) {
     this.initForm(value.kastes);
@@ -53,6 +56,24 @@ export class VeikalsEditComponent {
 
   @Output()
   valueChanges: Observable<Veikals> = toObservable(this.veikalsValueChanges);
+
+  constructor() {
+    afterNextRender({
+      write: () => {
+        const input = this.inputElements()[0]?.nativeElement;
+        if (input) {
+          input.focus();
+          input.select();
+        }
+      },
+    });
+  }
+
+  onSave() {
+    if (this.form.valid) {
+      this.save.emit();
+    }
+  }
 
   private updateKaste(initial: Kaste, update: Record<Colors, number>): Kaste {
     const total = boxTotals(update);

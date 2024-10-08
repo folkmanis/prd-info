@@ -1,17 +1,17 @@
 @if (path()) {
-  <p class="path">
-    <span>
+  <div class="path">
+    <span class="folder-icon-container">
       <mat-icon> folder_open </mat-icon>
     </span>
 
-    <span>
+    <span class="location">
       {{ path() }}
     </span>
-  </p>
+  </div>
 
-  <p>
+  <div>
     <mat-checkbox [(ngModel)]="updatePath" name="updatePath" [disabled]="!enabled()"> Pārvietot folderi </mat-checkbox>
-  </p>
+  </div>
 } @else {
-  <button mat-raised-button (click)="onCreateFolder()">IZVEIDOT FOLDERI</button>
+  <button mat-raised-button (click)="onCreateFolder()">Izveidot folderi</button>
 }

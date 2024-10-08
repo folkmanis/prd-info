@@ -1,7 +1,13 @@
-div.container {
-    display: flex;
-    font-weight: bold;
-    &>div{
-        flex: 1;
-    }
+:host {
+  display: flex;
+
+  &>div {
+    flex: 1;
+  }
+
+  font-weight: bold;
+}
+
+.error {
+  color: var(--sys-error)
 }

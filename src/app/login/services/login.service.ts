@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { computed, inject, Injectable, Signal } from '@angular/core';
 import { BehaviorSubject, catchError, firstValueFrom, map, merge, Observable, of, shareReplay, Subject, switchMap } from 'rxjs';
 import { User } from 'src/app/interfaces';
 import { Login } from '../login.interface';
@@ -21,6 +21,8 @@ export class LoginService {
     shareReplay(1),
   );
   user = toSignal(this.user$);
+
+  isModule = (module: string): Signal<boolean> => computed(() => !!this.user()?.preferences.modules.includes(module));
 
   async isLoggedIn(): Promise<boolean> {
     return !!(await firstValueFrom(this.user$));

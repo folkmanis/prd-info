@@ -11,6 +11,8 @@ import { kastesPreferences } from '../../services/kastes-preferences.service';
 import { VeikalsValidationErrors } from '../services/veikals-validation-errors';
 import { TotalsComponent } from './totals/totals.component';
 import { VeikalsEditComponent } from './veikals-edit/veikals-edit.component';
+import { A11yModule } from '@angular/cdk/a11y';
+import { KeyPressDirective } from 'src/app/jobs/repro-jobs/repro-job-edit/key-press.directive';
 
 @Component({
   selector: 'app-pakosanas-saraksts',
@@ -18,7 +20,7 @@ import { VeikalsEditComponent } from './veikals-edit/veikals-edit.component';
   templateUrl: './pakosanas-saraksts.component.html',
   styleUrls: ['./pakosanas-saraksts.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatTableModule, KastesTotalsComponent, MatIconModule, TotalsComponent, VeikalsEditComponent, MatButtonModule, TitleCasePipe, AsyncPipe],
+  imports: [MatTableModule, KastesTotalsComponent, MatIconModule, TotalsComponent, VeikalsEditComponent, MatButtonModule, TitleCasePipe, AsyncPipe, A11yModule, KeyPressDirective],
 })
 export class PakosanasSarakstsComponent {
   colorCodes = kastesPreferences('colors');
@@ -55,6 +57,6 @@ export class PakosanasSarakstsComponent {
   }
 
   isDisabled(veikals: Veikals): boolean {
-    return this.disabled() || veikals.kastes.every((k) => k.gatavs);
+    return this.disabled() || this.edited !== null || veikals.kastes.every((k) => k.gatavs);
   }
 }

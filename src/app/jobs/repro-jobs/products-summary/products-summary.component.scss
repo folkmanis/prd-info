@@ -1,31 +1,32 @@
 :host {
-    display: block;
-    padding: 16px 0;
+  display: block;
+  padding: 16px 0;
 }
 
 ul {
-    padding: 0;
-    margin: 0;
-    list-style-type: none;
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
 }
 
 li {
-    min-height: 40px;
-    display: flex;
-    align-items: center;
-    padding: 0 8px;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
 
-    cursor: pointer;
+  cursor: pointer;
 
-    &:hover {
-        background-color: rgba($color: #000000, $alpha: 0.2);
+  &:hover {
+    color: var(--sys-on-surface);
+    background-color: var(--sys-surface-container-highest);
+  }
+
+  .amount {
+    margin-left: auto;
+
+    .count {
+      font-weight: bold;
     }
-
-    .amount {
-        margin-left: auto;
-
-        .count {
-            font-weight: 800;
-        }
-    }
+  }
 }

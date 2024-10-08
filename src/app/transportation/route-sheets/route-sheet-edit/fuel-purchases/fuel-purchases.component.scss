@@ -4,7 +4,7 @@
 }
 
 mat-expansion-panel-header.invalid mat-panel-title {
-  color: red;
+  color: var(--sys-error);
 }
 
 .actions {

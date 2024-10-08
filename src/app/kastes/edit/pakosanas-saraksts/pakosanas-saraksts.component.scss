@@ -1,53 +1,51 @@
 .container {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 
-    &>div {
-        margin: 8px;
-    }
+  &>div {
+    margin: 8px;
+  }
 
-    &>div:last-child {
-        overflow: auto;
-        margin: 0;
-    }
+  &>div:last-child {
+    overflow: auto;
+    margin: 0;
+  }
 }
 
 table {
-    width: 100%;
+  width: 100%;
 }
 
-.mat-column-pakas > div,
-.mat-column-editor > div {
-    display: flex;
-    & > div {
-        flex: 1;
-    }
+.mat-column-pakas>div,
+.mat-column-editor>div {
+  display: flex;
+
+  &>div {
+    flex: 1;
+  }
 }
 
 .active {
-    background-color: rgba($color: black, $alpha: 0.08);
-}
-
-.mat-column-editor > div > div {
-    height: 24px;
+  background-color: var(--sys-surface-container-high);
 }
 
 .mat-column-buttons {
-    // vertical-align: top;
-    & > div {
-        height: 100%;
-        display: flex;
-        justify-content: flex-end;
-        padding-right: 16px;
-    }
+
+  &>div {
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 16px;
+  }
 }
 
 .mat-column-editor .numb {
-    width: 3em;
-    margin-right: 3px;
+  width: 3em;
+  margin-right: 3px;
+  height: 24px;
 }
 
 tr:not(.editor) td {
-    border-bottom-width: 0;
+  border-bottom-width: 0;
 }

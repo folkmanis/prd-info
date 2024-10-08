@@ -58,4 +58,6 @@ export class User {
 
   @Type(() => GoogleUser)
   google?: GoogleUser;
+
+  prefersDarkMode: boolean = false;
 }

@@ -1,6 +1,6 @@
 @use "@angular/material" as mat;
 
-@mixin app-table-color($theme) {
+@mixin color($theme) {
   .app-table {
 
     tbody tr,
@@ -10,8 +10,8 @@
 
         td,
         .mat-mdc-cell {
-          color: mat.get-theme-color($theme, on-secondary-container);
-          background-color: mat.get-theme-color($theme, secondary-container);
+          color: mat.get-theme-color($theme, on-surface);
+          background-color: mat.get-theme-color($theme, surface-container-highest);
         }
       }
 
@@ -49,7 +49,7 @@
 @mixin theme($theme) {
 
   @if(mat.theme-has($theme, color)) {
-    @include app-table-color($theme);
+    @include color($theme);
   }
 
   @include app-table();

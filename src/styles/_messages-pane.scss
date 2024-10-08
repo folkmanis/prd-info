@@ -1,6 +1,6 @@
 @use "@angular/material" as mat;
 
-@mixin messages-pane-color($theme) {
+@mixin color($theme) {
   .app-messages-pane {
     background-color: mat.get-theme-color($theme, surface-container);
     color: mat.get-theme-color($theme, on-surface);
@@ -124,7 +124,7 @@
 @mixin theme($theme) {
 
   @if (mat.theme-has($theme, color)) {
-    @include messages-pane-color($theme);
+    @include color($theme);
   }
 
   @if (mat.theme-has($theme, typography)) {

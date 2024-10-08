@@ -20,7 +20,7 @@
 
 <section class="second-row">
   <div>
-    <button mat-raised-button (click)="onSave()" [disabled]="orderId() === null || adresesBox() === null">Saglabāt</button>
+    <button mat-raised-button (click)="onSave()" [disabled]="orderIdSet() === false || adresesBox() === null">Saglabāt</button>
   </div>
   <!-- Kopējie daudzumi -->
   <div>

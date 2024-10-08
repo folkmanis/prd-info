@@ -23,18 +23,24 @@
   <!-- Starpotājs -->
   <span class="spacer"></span>
 
+  <span class="dark-mode-button">
+    <mat-icon>light_mode</mat-icon>
+    <mat-slide-toggle [(ngModel)]="darkMode" aria-label="Dark mode" aria-labelledby="dark-mode-toggle-label" />
+    <mat-icon>dark_mode</mat-icon>
+  </span>
+
   <!-- Ziņojumi -->
   @let count = messagesCount$ | async;
   @let unreadCount = unreadMessagesCount$ | async;
   <span *appViewSmall>
     <a mat-icon-button [disabled]="count === 0" routerLink="/messages">
-      <mat-icon [matBadge]="unreadCount" [matBadgeHidden]="unreadCount === 0" aria-hidden="false"> notifications </mat-icon>
+      <mat-icon [matBadge]="unreadCount" [matBadgeHidden]="unreadCount === 0" aria-hidden="false" matBadgeSize="large"> notifications </mat-icon>
     </a>
   </span>
 
   <span *appViewNotSmall>
     <button mat-icon-button appMessagesTrigger [disabled]="count === 0">
-      <mat-icon [matBadge]="unreadCount" [matBadgeHidden]="unreadCount === 0" aria-hidden="false"> notifications </mat-icon>
+      <mat-icon [matBadge]="unreadCount" [matBadgeHidden]="unreadCount === 0" aria-hidden="false" matBadgeSize="large"> notifications </mat-icon>
     </button>
   </span>
 

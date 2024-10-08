@@ -4,6 +4,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { ShortenTextPipe } from '../../../library/common/shorten-text.pipe';
 import { LogRecord } from '../../services/logfile-record';
+import { ViewSizeDirective } from 'src/app/library/view-size';
 
 @Component({
   selector: 'app-logfile-table',
@@ -18,7 +19,7 @@ import { LogRecord } from '../../services/logfile-record';
     ]),
   ],
   standalone: true,
-  imports: [MatTableModule, JsonPipe, DatePipe, ShortenTextPipe],
+  imports: [MatTableModule, JsonPipe, DatePipe, ShortenTextPipe, ViewSizeDirective],
 })
 export class LogfileTableComponent {
   readonly displayedColumns = ['level', 'timestamp', 'info', 'metadata'];

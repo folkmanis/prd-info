@@ -7,7 +7,7 @@ interface Chunk {
 
 const DEFAULT_STYLE = {
   'font-weight': 'bold',
-  color: 'red',
+  color: 'var(--sys-tertiary)',
 };
 @Component({
   selector: 'app-tagged-string',

@@ -7,6 +7,7 @@ import { kastesPreferences } from '../../services/kastes-preferences.service';
   selector: 'app-color-totals',
   standalone: true,
   templateUrl: './color-totals.component.html',
+  styleUrl: './color-totals.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TitleCasePipe],
 })

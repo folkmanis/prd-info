@@ -1,8 +1,7 @@
+.disabled {
+  --mat-card-subtitle-text-color: color-mix(in srgb, var(--sys-on-surface) 38%, transparent);
+}
+
 app-repro-product {
-    display: block;
-    border-width: 0;
-    border-bottom-width: 1px;
-    border-color: rgba($color: #000000, $alpha: 0.08);
-    border-style: solid;
-    box-sizing: border-box;
+  margin-block: 8px;
 }

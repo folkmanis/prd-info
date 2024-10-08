@@ -1,10 +1,21 @@
 @if (job$ | async; as job) {
   <app-simple-form-container>
-    <h2 appSimpleFormTypedLabel>{{ job.jobId }} / {{ job.name }}</h2>
+    <div class="headline-small">{{ job.jobId }} / {{ job.name }}</div>
 
     <mat-tab-group [selectedIndex]="0">
       <mat-tab label="Informācija">
-        <app-job-info [job]="job" [veikali]="veikali()" [activeJobId]="activeJobId()" />
+        <div class="information-container">
+          <app-job-info [job]="job" [veikali]="veikali()" [activeJobId]="activeJobId()" />
+          <div class="action-row">
+            <button mat-raised-button [disabled]="job.jobId === activeJobId()" (click)="onSetAsActive()">Noteikt kā aktīvo</button>
+            <button mat-button class="tertiary" (click)="onDeleteVeikali()" [disabled]="job.jobStatus.generalStatus >= 30 || veikali().length === 0">Izdzēst pakošanu</button>
+            <a mat-button [routerLink]="['/', 'jobs', 'repro', job.jobId]"> Atvērt darbu </a>
+          </div>
+          <div class="action-row">
+            <button mat-button (click)="onCopyToFirebase()">Uz lietotni</button>
+            <button mat-button class="tertiary" (click)="onCopyFromFirebase()">No lietotnes</button>
+          </div>
+        </div>
       </mat-tab>
 
       <mat-tab label="Pakošanas saraksts" [disabled]="veikali().length === 0">

@@ -1,4 +1,4 @@
-<mat-form-field>
+<mat-form-field subscriptSizing="dynamic">
   <mat-label>Datums</mat-label>
   <input matInput [matDatepicker]="picker" [(ngModel)]="date" name="date" [matDatepickerFilter]="isValiddate" [max]="lastDate()" />
   <mat-datepicker-toggle matSuffix [for]="picker" matTooltip="Kalendārs" />

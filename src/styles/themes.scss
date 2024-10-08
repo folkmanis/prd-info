@@ -4,12 +4,12 @@
 @use "./base.scss" as base;
 
 @use "./button.scss";
-@use "../app/layout/messaging/messages-pane.scss";
-@use "../app/library/table/table.scss";
-@use "../app/library/dense-list/dense-list.theme";
-@use "../app/library/directives/input";
-@use "../app/library/directives/select";
-
+@use "./badge";
+@use "./messages-pane";
+@use "./table";
+@use "./dense-list.theme";
+@use "./input";
+@use "./select";
 
 @include mat.core();
 
@@ -18,16 +18,34 @@
   @include mat.system-level-colors(theme.$light-theme);
   @include mat.system-level-typography(theme.$light-theme);
 
+  .dark-theme {
+    @include mat.all-component-colors(theme.$dark-theme);
+    @include mat.system-level-colors(theme.$dark-theme);
+  }
 }
 
-@include base.theme(theme.$light-theme);
+body {
+  @include base.theme(theme.$light-theme);
+
+  .dark-theme {
+    @include base.color(theme.$dark-theme);
+  }
+}
 
 html {
   @include button.theme(theme.$light-theme);
+  @include badge.theme(theme.$light-theme);
   @include table.theme(theme.$light-theme);
   @include messages-pane.theme(theme.$light-theme);
   @include dense-list.theme(theme.$light-theme);
   @include input.theme(theme.$light-theme);
   @include select.theme(theme.$light-theme);
 
+  .dark-theme {
+    @include button.color(theme.$dark-theme);
+    @include table.color(theme.$dark-theme);
+    @include messages-pane.color(theme.$dark-theme);
+    @include input.color(theme.$dark-theme);
+    @include select.color(theme.$dark-theme);
+  }
 }

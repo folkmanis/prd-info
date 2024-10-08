@@ -1,0 +1,7 @@
+@mixin theme($theme) {
+
+  .mat-badge-large .mat-badge-content {
+    width: unset;
+  }
+
+}

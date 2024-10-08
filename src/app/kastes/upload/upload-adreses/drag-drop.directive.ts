@@ -1,4 +1,4 @@
-import { Directive, Output, ElementRef, HostListener, EventEmitter } from '@angular/core';
+import { Directive, output, signal } from '@angular/core';
 import { ColumnNames } from '../../services/column-names';
 
 export interface DragData {
@@ -9,29 +9,36 @@ export interface DragData {
 @Directive({
   selector: '[appDragDrop]',
   standalone: true,
+  host: {
+    class: 'app-drag-drop',
+    '[class.app-drag-drop-active]': 'dragActive()',
+    '(dragover)': 'onDragOver($event)',
+    '(dragenter)': 'onDragEnter($event)',
+    '(dragleave)': 'onDragLeave($event)',
+    '(drop)': 'onDrop($event)',
+  },
 })
 export class DragDropDirective {
-  @Output() private dropEmitter = new EventEmitter<DragData>();
+  dropEmitter = output<DragData>();
 
-  constructor(private el: ElementRef) {
-    el.nativeElement.draggable = true;
-  }
-  @HostListener('dragover', ['$event']) onDragOver(event: any) {
+  dragActive = signal(false);
+
+  onDragOver(event: any) {
     event.preventDefault();
     event.stopPropagation();
   }
 
-  @HostListener('dragenter', ['$event']) onDragEnter(event: any) {
+  onDragEnter(event: any) {
     event.stopPropagation();
-    this.el.nativeElement.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    this.dragActive.set(true);
   }
 
-  @HostListener('dragleave', ['$event']) onDragLeave(event: any) {
+  onDragLeave(event: any) {
     event.stopPropagation();
-    this.el.nativeElement.style.backgroundColor = null;
+    this.dragActive.set(false);
   }
 
-  @HostListener('drop', ['$event']) onDrop(event: DragEvent) {
+  onDrop(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
 
@@ -40,7 +47,7 @@ export class DragDropDirective {
       sourceColumn: sourceColumn && +sourceColumn,
       chipName: event.dataTransfer.getData('chipName') as ColumnNames,
     };
-    this.el.nativeElement.style.backgroundColor = null;
+    this.dragActive.set(false);
     this.dropEmitter.emit(data);
   }
 }

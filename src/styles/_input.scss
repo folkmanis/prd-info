@@ -1,0 +1,69 @@
+@use '@angular/material' as mat;
+
+@mixin color($theme) {
+  input[appInput] {
+
+    caret-color: mat.get-theme-color($theme, outline);
+    border: none;
+    color: inherit;
+    background-color: inherit;
+
+    border-bottom: {
+      color: mat.get-theme-color($theme, outline-variant);
+      width: 2px;
+      style: solid;
+    }
+
+    &.ng-invalid {
+      border-bottom-color: mat.get-theme-color($theme, error);
+      color: mat.get-theme-color($theme, error);
+    }
+
+
+    &:focus {
+      border-bottom-color: mat.get-theme-color($theme, primary);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+    }
+  }
+}
+
+@mixin input-typograpy($theme) {
+  input[appInput] {
+    font: mat.get-theme-typography($theme, body-medium, font);
+    font-weight: 500;
+  }
+}
+
+
+@mixin input-appearance() {
+
+  input[appInput] {
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    display: none;
+  }
+
+}
+
+@mixin theme($theme) {
+
+  @if(mat.theme-has($theme, color)) {
+    @include color($theme);
+  }
+
+  @if(mat.theme-has($theme, typography)) {
+    @include input-typograpy($theme)
+  }
+
+  @include input-appearance();
+
+}

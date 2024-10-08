@@ -1,0 +1,13 @@
+.map-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  google-map {
+    flex-basis: 100%;
+  }
+
+  .map-address {
+    padding-block-start: 8px;
+  }
+}

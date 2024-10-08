@@ -1,0 +1,57 @@
+@use '@angular/material' as mat;
+
+@mixin color($theme) {
+
+  select[appSelect] {
+
+    border: none;
+
+    border-bottom: {
+      color: mat.get-theme-color($theme, outline-variant);
+      width: 2px;
+      style: solid;
+    }
+
+    &.ng-invalid {
+      border-bottom-color: mat.get-theme-color($theme, error);
+      color: mat.get-theme-color($theme, error);
+    }
+
+
+    &:focus {
+      border-bottom-color: mat.get-theme-color($theme, primary);
+    }
+  }
+}
+
+@mixin select-typograpy($theme) {
+  select[appSelect] {
+    font: mat.get-theme-typography($theme, body-medium, font);
+  }
+}
+
+@mixin select-appearance() {
+  select[appSelect] {
+
+    color: inherit;
+    background-color: inherit;
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+@mixin theme($theme) {
+
+  @if(mat.theme-has($theme, color)) {
+    @include color($theme);
+  }
+
+  @if(mat.theme-has($theme, typography)) {
+    @include select-typograpy($theme)
+  }
+
+  @include select-appearance();
+
+}

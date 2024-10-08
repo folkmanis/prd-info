@@ -1,26 +1,26 @@
 :host {
-    margin: 8px;
+  margin: 8px;
 }
 
 .head {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 
-    &:hover {
-        background-color: rgba(0, 0, 0, 0.08);
-    }
+  &:hover {
+    background-color: var(--sys-surface-container-high);
+  }
 
-    h4 {
-        margin: 0px;
-    }
+  h4 {
+    margin: 0px;
+  }
 
-    :last-child {
-        margin-right: 16px;
-        margin-left: auto;
-    }
+  :last-child {
+    margin-right: 16px;
+    margin-left: auto;
+  }
 
-    :first-child {
-        margin-left: 16px;
-    }
+  :first-child {
+    margin-left: 16px;
+  }
 
 }

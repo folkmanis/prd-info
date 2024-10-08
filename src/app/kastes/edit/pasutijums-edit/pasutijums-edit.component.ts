@@ -12,6 +12,8 @@ import { KastesPasutijumiService } from '../../services/kastes-pasutijumi.servic
 import { KastesPreferencesService, kastesPreferences } from '../../services/kastes-preferences.service';
 import { JobInfoComponent } from '../job-info/job-info.component';
 import { PakosanasSarakstsComponent } from '../pakosanas-saraksts/pakosanas-saraksts.component';
+import { RouterLink } from '@angular/router';
+import { MatButton, MatButtonModule } from '@angular/material/button';
 
 const VEIKALI_DELETED_MESSAGE = 'Pakošanas saraksts izdzēsts';
 const VEIKALI_DELETE_FAILED_MESSAGE = 'Darbība neizdevās';
@@ -27,7 +29,7 @@ const firebaseCopyFromResultMessage = (count: number) => `Saņemti ${count} iera
   templateUrl: './pasutijums-edit.component.html',
   styleUrls: ['./pasutijums-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [SimpleFormContainerComponent, JobInfoComponent, MatTabsModule, PakosanasSarakstsComponent, AsyncPipe],
+  imports: [SimpleFormContainerComponent, JobInfoComponent, MatTabsModule, PakosanasSarakstsComponent, AsyncPipe, RouterLink, MatButtonModule],
 })
 export class PasutijumsEditComponent {
   private pasutijumiService = inject(KastesPasutijumiService);
@@ -62,12 +64,12 @@ export class PasutijumsEditComponent {
     this.pasutijumiService.updateOrderVeikals(veikals).subscribe((veik) => this.veikalsUpdate$.next(veik));
   }
 
-  setAsActive() {
+  onSetAsActive() {
     const pasutijums = this.jobId();
     this.preferencesService.updateUserPreferences({ pasutijums }).subscribe();
   }
 
-  async deleteVeikali() {
+  async onDeleteVeikali() {
     const confirmation = await this.confirmationDialog.confirmDelete();
     if (!confirmation) {
       return;
@@ -85,7 +87,7 @@ export class PasutijumsEditComponent {
     this.jobUpdate$.next(job);
   }
 
-  async copyToFirebase() {
+  async onCopyToFirebase() {
     const jobId = this.jobId();
     if (await this.confirmationDialog.confirm(FIREBASE_COPY_TO_CONFIRMATION)) {
       this.pasutijumiService
@@ -95,7 +97,7 @@ export class PasutijumsEditComponent {
     }
   }
 
-  async copyFromFirebase() {
+  async onCopyFromFirebase() {
     const jobId = this.jobId();
     if (await this.confirmationDialog.confirm(FIREBASE_COPY_FROM_CONFIRMATION)) {
       this.pasutijumiService

@@ -1,6 +1,6 @@
-<mat-checkbox [formControl]="folderActive"> Kopēt mapi uz&nbsp; </mat-checkbox>
+<mat-checkbox [formControl]="folderActive"> Kopēt mapi uz </mat-checkbox>
 
-<mat-form-field>
+<mat-form-field subscriptSizing="dynamic">
   <mat-select [formControl]="folderControl" [compareWith]="compareFn">
     @for (folder of folders; track $index) {
       <mat-option [value]="folder">

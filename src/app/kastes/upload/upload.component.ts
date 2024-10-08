@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, model, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, model, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -39,6 +39,9 @@ import { UploadAdresesComponent } from './upload-adreses/upload-adreses.componen
 })
 export class UploadComponent {
   private navigate = navigateRelative();
+  private pasutijumiService = inject(KastesPasutijumiService);
+  private preferences = inject(KastesPreferencesService);
+  private matDialog = inject(MatDialog);
 
   colors = COLORS;
 
@@ -53,20 +56,17 @@ export class UploadComponent {
 
   totals = computed(() => this.adresesBox() && totalsFromAddresesWithPackages(this.adresesBox()));
 
-  constructor(
-    private pasutijumiService: KastesPasutijumiService,
-    private preferences: KastesPreferencesService,
-    private matDialog: MatDialog,
-  ) {
+  orderIdSet = computed(() => typeof this.orderId() === 'number' && isFinite(this.orderId()));
+
+  constructor() {
     effect(
       async () => {
-        const id = this.orderId();
-        if (typeof id !== 'number') {
+        if (this.orderIdSet()) {
+          const { products } = await this.pasutijumiService.getKastesJob(this.orderId());
+          this.plannedTotals.set(jobProductsToColorTotals(products || []));
+        } else {
           this.plannedTotals.set(null);
-          return;
         }
-        const { products } = await this.pasutijumiService.getKastesJob(id);
-        this.plannedTotals.set(jobProductsToColorTotals(products || []));
       },
       { allowSignalWrites: true },
     );

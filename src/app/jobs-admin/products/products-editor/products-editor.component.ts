@@ -19,11 +19,12 @@ import { CustomersService } from 'src/app/services';
 import { configuration } from 'src/app/services/config.provider';
 import { ProductionStagesService } from 'src/app/services/production-stages.service';
 import { MaterialsService } from '../../materials/services/materials.service';
-import { ProductProductionComponent } from '../product-production/product-production.component';
+import { ProductProductionComponent } from './product-production/product-production.component';
 import { ProductsListComponent } from '../products-list/products-list.component';
 import { ProductsFormService } from '../services/products-form.service';
 import { PaytraqProductComponent } from './paytraq-product/paytraq-product.component';
 import { ProductPricesComponent } from './product-prices/product-prices.component';
+import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 
 @Component({
   selector: 'app-products-editor',
@@ -57,6 +58,7 @@ export class ProductsEditorComponent implements CanComponentDeactivate {
   private productsList = inject(ProductsListComponent, { optional: true });
 
   private navigate = navigateRelative();
+  private dialog = inject(ConfirmationDialogService);
 
   form = this.formService.form;
 
@@ -90,7 +92,7 @@ export class ProductsEditorComponent implements CanComponentDeactivate {
       await this.productsList?.reload();
       await this.navigate(['..', product._id]);
     } catch (error) {
-      // Ignore error
+      this.dialog.confirmDataError(error.message);
     }
   }
 

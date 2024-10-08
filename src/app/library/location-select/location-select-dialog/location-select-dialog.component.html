@@ -2,19 +2,21 @@
 
 @let marker = shippingMarker();
 <mat-dialog-content>
-  <google-map [center]="center()" [zoom]="zoom()" width="100%" [options]="mapOptions" (mapClick)="onMapClick($event)">
-    @if (marker) {
-      <map-advanced-marker [position]="marker.location" [gmpDraggable]="true" (mapDragend)="onMarkerDragEnd($event)" />
-    }
-  </google-map>
-  <div>
-    @if (marker) {
-      {{ marker.address }}
-    }
+  <div class="map-container">
+    <google-map [center]="center()" [zoom]="zoom()" width="100%" height="100%" [options]="mapOptions" (mapClick)="onMapClick($event)">
+      @if (marker) {
+        <map-advanced-marker [position]="marker.location" [gmpDraggable]="true" (mapDragend)="onMarkerDragEnd($event)" />
+      }
+    </google-map>
+    <div class="map-address">
+      @if (marker) {
+        {{ marker.address }}
+      }
+    </div>
   </div>
 </mat-dialog-content>
 
 <mat-dialog-actions>
   <button mat-button [matDialogClose]="marker" [disabled]="!marker">Apstiprināt</button>
-  <button mat-button matDialogClose>Atcelt</button>
+  <button mat-button class="tertiary" matDialogClose>Atcelt</button>
 </mat-dialog-actions>

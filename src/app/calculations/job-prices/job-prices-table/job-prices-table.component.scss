@@ -76,7 +76,7 @@
 
   & .mat-column-products-price,
   & .mat-column-products-total {
-    color: red;
+    color: var(--sys-tertiary);
     font-weight: bold;
   }
 }

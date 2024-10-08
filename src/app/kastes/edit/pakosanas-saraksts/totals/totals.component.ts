@@ -1,9 +1,8 @@
-import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { Veikals } from 'src/app/kastes/interfaces';
-import { getKastesPreferences } from 'src/app/kastes/services/kastes-preferences.service';
-import { colorTotalsFromVeikalsBoxs } from '../../../common/color-totals-from-veikali';
-import { PlusSignPipe } from '../../../../library/common/plus-sign.pipe';
+import { kastesPreferences } from 'src/app/kastes/services/kastes-preferences.service';
+import { PlusSignPipe } from 'src/app/library/common/plus-sign.pipe';
+import { colorTotalsFromVeikalsBoxs } from 'src/app/kastes/common/color-totals-from-veikali';
 import { VeikalsValidationErrors } from '../../services/veikals-validation-errors';
 
 @Component({
@@ -12,20 +11,21 @@ import { VeikalsValidationErrors } from '../../services/veikals-validation-error
   templateUrl: './totals.component.html',
   styleUrls: ['./totals.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [PlusSignPipe, AsyncPipe],
+  imports: [PlusSignPipe],
 })
 export class TotalsComponent {
-  colors$ = getKastesPreferences('colors');
+  colors = kastesPreferences('colors');
 
-  @Input() veikals: Veikals | null;
+  veikals = input<Veikals | null>(null);
 
-  @Input() errors: VeikalsValidationErrors | null;
+  errors = input<VeikalsValidationErrors | null>(null);
 
-  totals() {
-    return this.veikals ? colorTotalsFromVeikalsBoxs(this.veikals.kastes) : [];
-  }
+  colorTotals = computed(() => {
+    const v = this.veikals();
+    return v ? colorTotalsFromVeikalsBoxs(v.kastes) : [];
+  });
 
-  veikalsTotal() {
-    return this.totals().reduce((acc, curr) => acc + curr.total, 0);
-  }
+  veikalsTotal = computed(() => this.colorTotals().reduce((acc, curr) => acc + curr.total, 0));
+
+  errorDiff = computed(() => this.errors()?.diff ?? {});
 }

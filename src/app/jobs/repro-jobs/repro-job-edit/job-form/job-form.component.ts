@@ -7,7 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { addDays, subDays } from 'date-fns';
@@ -30,26 +30,23 @@ import { ReproProductsEditorComponent } from '../repro-products-editor/repro-pro
   standalone: true,
   imports: [
     FormsModule,
-    ViewSizeDirective,
     ReactiveFormsModule,
+    ViewSizeDirective,
     CustomerInputComponent,
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
     MatButtonModule,
-    MatIconModule,
+    MatIcon,
     MatSelectModule,
     MatOptionModule,
     ReproProductsEditorComponent,
-    MatCardModule,
-    TextFieldModule,
     CopyClipboardDirective,
   ],
+  hostDirectives: [ViewSizeDirective],
 })
 export class JobFormComponent {
-  private productsService = inject(ProductsService);
   private sanitize = inject(SanitizeService);
-  private loginService = inject(LoginService);
   private formService = inject(JobFormService);
 
   private customerInput = viewChild.required(CustomerInputComponent);
@@ -74,17 +71,6 @@ export class JobFormComponent {
     const name = this.sanitize.sanitizeFileName(job.name);
     return `${job.jobId}-${name}`;
   });
-
-  customerProducts$ = toObservable(this.formService.value).pipe(
-    map((value) => value.customer),
-    filter((customer) => !!customer),
-    distinctUntilChanged(),
-    switchMap((customer) => this.productsService.productsCustomer(customer)),
-  );
-
-  customerProducts = toSignal(this.customerProducts$);
-
-  showPrices = toSignal(this.loginService.isModuleAvailable('calculations'), { initialValue: false });
 
   get nameControl() {
     return this.formService.form.controls.name;

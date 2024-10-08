@@ -1,16 +1,15 @@
-.large .container-multi {
+:host {
+
+  &.large .container-multi {
     display: flex;
     gap: 16px;
 
     &>* {
-        flex: 1;
+      flex: 1;
     }
+  }
 }
 
 .full-width {
-    width: 100%;
-}
-
-mat-card {
-    margin-top: 8px;
+  width: 100%;
 }

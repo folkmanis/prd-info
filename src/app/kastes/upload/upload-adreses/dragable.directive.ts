@@ -1,20 +1,20 @@
-import { Directive, ElementRef, HostListener, Input } from '@angular/core';
+import { Directive, input } from '@angular/core';
 
 @Directive({
   selector: '[appDragable]',
   standalone: true,
+  host: {
+    draggable: 'true',
+    '(dragstart)': 'onDragStart($event)',
+  },
 })
 export class DragableDirective {
-  @Input('appDragable') itemContent: string;
+  itemContent = input<string>('', { alias: 'appDragable' });
 
-  @Input() sourceColumn: number | null = null;
+  sourceColumn = input<number | null>();
 
-  constructor(el: ElementRef) {
-    el.nativeElement.draggable = true;
-  }
-
-  @HostListener('dragstart', ['$event']) onDragStart(event: DragEvent) {
-    event.dataTransfer.setData('chipName', this.itemContent);
-    event.dataTransfer.setData('sourceColumn', this.sourceColumn?.toString());
+  onDragStart(event: DragEvent) {
+    event.dataTransfer.setData('chipName', this.itemContent());
+    event.dataTransfer.setData('sourceColumn', this.sourceColumn()?.toString());
   }
 }

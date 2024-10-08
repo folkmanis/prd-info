@@ -1,11 +1,12 @@
 import { Directive, ElementRef, HostListener, Input } from '@angular/core';
 
-export type Events = 'escape' | 'ctrlPlus' | 'ctrlEnter';
+export type Events = 'escape' | 'ctrlPlus' | 'ctrlEnter' | 'enter';
 
 const KEYS = new Map<Events, Partial<KeyboardEvent>>([
   ['escape', { key: 'Escape' }],
   ['ctrlPlus', { key: '+', ctrlKey: true, altKey: false }],
   ['ctrlEnter', { key: 'Enter', ctrlKey: true }],
+  ['enter', { key: 'Enter', ctrlKey: false }],
 ]);
 
 @Directive({

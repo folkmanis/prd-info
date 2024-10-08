@@ -27,11 +27,19 @@ mat-table {
   overflow: auto;
 }
 
-[appDragDrop] {
+mat-chip {
+  --mdc-chip-elevated-container-color: var(--sys-surface-container);
+}
+
+.app-drag-drop {
   height: 36px;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: var(--sys-secondary-container);
   border-radius: 8px;
+}
+
+.app-drag-drop-active {
+  background-color: var(--sys-secondary);
 }
 
 .column-check {

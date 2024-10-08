@@ -12,19 +12,13 @@ div.container {
   overflow: auto;
 }
 
-.selected mat-cell {
-  background-color: rgba(0, 0, 0, 0.1);
-  border-bottom-color: var(--sys-outline);
-  transition: all 100ms;
-}
-
 .mat-column-label {
 
   flex: 0 0 4px;
   padding: 0;
 
   .has-label & {
-    background-color: var(--sys-outline);
+    background-color: var(--sys-primary);
   }
 
   .activated & {

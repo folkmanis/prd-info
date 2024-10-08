@@ -29,34 +29,30 @@ body {
   background: #aaaaaa;
 }
 
-@mixin base-color($theme) {
-  body {
-    color: mat.get-theme-color($theme, on-surface);
-    background-color: mat.get-theme-color($theme, surface);
-  }
+@mixin color($theme) {
+  color: mat.get-theme-color($theme, on-surface);
+  background-color: mat.get-theme-color($theme, surface);
 }
 
 @mixin base-typography($theme) {
-  body {
-    font: mat.get-theme-typography($theme, body-medium, font);
+  font: mat.get-theme-typography($theme, body-medium, font);
 
-    .headline-large {
-      font: mat.get-theme-typography($theme, headline-large, font);
-    }
+  .headline-large {
+    font: mat.get-theme-typography($theme, headline-large, font);
+  }
 
-    .headline-medium {
-      font: mat.get-theme-typography($theme, headline-medium, font);
-    }
+  .headline-medium {
+    font: mat.get-theme-typography($theme, headline-medium, font);
+  }
 
-    .headline-small {
-      font: mat.get-theme-typography($theme, headline-small, font);
-    }
+  .headline-small {
+    font: mat.get-theme-typography($theme, headline-small, font);
   }
 }
 
 @mixin theme($theme) {
   @if(mat.theme-has($theme, color)) {
-    @include base-color($theme);
+    @include color($theme);
   }
 
   @if(mat.theme-has($theme, typography)) {

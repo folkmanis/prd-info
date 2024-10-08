@@ -1,6 +1,6 @@
 <app-simple-form-container buttons [status]="form.status" [isChanges]="changes" (save)="onSave()" (reset)="onReset()">
   <form [formGroup]="form">
-    <h2>
+    <div class="headline-medium">
       @if (form.value._id === null) {
         <!-- Nosaukums labojams -->
         <mat-form-field>
@@ -17,7 +17,7 @@
         <!-- Nosaukums nelabojams -->
         {{ form.controls.name.value }}
       }
-    </h2>
+    </div>
 
     <mat-accordion multi>
       <mat-expansion-panel expanded hideToggle>
@@ -64,6 +64,24 @@
         </section>
       </mat-expansion-panel>
 
+      <!-- Prices -->
+      <mat-expansion-panel expanded>
+        <mat-expansion-panel-header>
+          <mat-panel-title> Pārdošanas cenas </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <!-- Cenu tabula -->
+        <section>
+          <app-product-prices formControlName="prices" [customers]="customers()" #prices />
+        </section>
+
+        <mat-action-row>
+          <button mat-mini-fab (click)="prices.addPrice()" [disabled]="form.invalid">
+            <mat-icon> add </mat-icon>
+          </button>
+        </mat-action-row>
+      </mat-expansion-panel>
+
       <!-- Paytraq -->
       <mat-expansion-panel #paytraqPanel [disabled]="paytraqEnabled() === false">
         <mat-expansion-panel-header>
@@ -78,34 +96,20 @@
         <app-paytraq-product formControlName="paytraqId" [productName]="form.value.name"> </app-paytraq-product>
       </mat-expansion-panel>
 
-      <!-- <mat-expansion-panel expanded> -->
-      @if (customers()) {
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title> Pārdošanas cenas </mat-panel-title>
-          </mat-expansion-panel-header>
-
-          <!-- Cenu tabula -->
-          <section>
-            <app-product-prices formControlName="prices" [customers]="customers()" #prices> </app-product-prices>
-          </section>
-
-          <mat-action-row>
-            <button mat-mini-fab (click)="prices.addPrice()" [disabled]="form.invalid">
-              <mat-icon> add </mat-icon>
-            </button>
-          </mat-action-row>
-        </mat-expansion-panel>
-      }
-
-      <mat-expansion-panel expanded>
+      <mat-expansion-panel>
         <mat-expansion-panel-header>
           <mat-panel-title> Ražošanas procesi </mat-panel-title>
         </mat-expansion-panel-header>
 
         <section>
-          <app-product-production formControlName="productionStages" [materials]="materials$ | async" [productionStages]="productionStages$ | async" />
+          <app-product-production formControlName="productionStages" [materials]="materials$ | async" [productionStages]="productionStages$ | async" #production />
         </section>
+
+        <mat-action-row>
+          <button mat-mini-fab (click)="production.onNewProductionStage()" [disabled]="!form.valid">
+            <mat-icon> add </mat-icon>
+          </button>
+        </mat-action-row>
       </mat-expansion-panel>
     </mat-accordion>
   </form>
