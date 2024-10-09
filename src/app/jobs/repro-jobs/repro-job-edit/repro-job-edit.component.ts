@@ -1,14 +1,21 @@
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { AsyncPipe, Location } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, model, signal, viewChild } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatIcon, MatIconModule } from '@angular/material/icon';
+import { MatDivider } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterLink } from '@angular/router';
-import { Observable, Subscription, concatMap, distinctUntilChanged, filter, map, of, switchMap } from 'rxjs';
+import { Observable, Subscription, concatMap, of } from 'rxjs';
 import { DropFolder } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library';
 import { navigateRelative } from 'src/app/library/common';
+import { ViewSizeDirective } from 'src/app/library/view-size';
+import { LoginService } from 'src/app/login';
 import { FileUploadMessage, Job } from '../../interfaces';
 import { JobFormService } from '../services/job-form.service';
 import { ReproJobService } from '../services/repro-job.service';
@@ -19,14 +26,6 @@ import { DropFolderComponent } from './drop-folder/drop-folder.component';
 import { FolderPathComponent } from './folder-path/folder-path.component';
 import { JobFormComponent } from './job-form/job-form.component';
 import { KeyPressDirective } from './key-press.directive';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { MatDivider } from '@angular/material/divider';
-import { MatInputModule } from '@angular/material/input';
-import { ReactiveFormsModule } from '@angular/forms';
-import { LoginService } from 'src/app/login';
-import { ProductsService } from 'src/app/services';
-import { ReproProductComponent } from './repro-products-editor/repro-product/repro-product.component';
 import { ReproProductsEditorComponent } from './repro-products-editor/repro-products-editor.component';
 
 @Component({
@@ -54,6 +53,7 @@ import { ReproProductsEditorComponent } from './repro-products-editor/repro-prod
     MatInputModule,
     ReproProductsEditorComponent,
   ],
+  hostDirectives: [ViewSizeDirective],
 })
 export class ReproJobEditComponent {
   private snack = inject(MatSnackBar);

@@ -26,7 +26,7 @@
   <app-repro-products-editor [customerProducts]="customerProducts" [formControl]="form.controls.products" [showPrices]="showPrices()" />
 }
 
-<div class="container-multi">
+<div class="container-multi-column">
   <!-- Papildus apraksts -->
   <mat-card>
     <mat-card-content>
@@ -58,8 +58,8 @@
 
 <footer>
   @if (form.value.jobId) {
-    <button mat-raised-button appKeyPress="ctrlEnter" [disabled]="saveDisabled()" (click)="onUpdate()">SAGLABĀT</button>
+    <button mat-raised-button appKeyPress="ctrlEnter" [disabled]="saveDisabled()" (click)="onUpdate()">Saglabāt</button>
   } @else {
-    <button mat-raised-button [disabled]="saveDisabled()" appKeyPress="ctrlEnter" (click)="onCreate()">IZVEIDOT</button>
+    <button mat-raised-button [disabled]="saveDisabled()" appKeyPress="ctrlEnter" (click)="onCreate()">Izveidot</button>
   }
 </footer>

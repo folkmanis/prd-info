@@ -4,6 +4,21 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+
+  .container-multi-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    &>* {
+      flex: 1;
+    }
+  }
+
+  &.large .container-multi-column {
+    flex-direction: row;
+  }
+
 }
 
 header {
@@ -22,14 +37,6 @@ header {
   }
 }
 
-.large .container-multi {
-  display: flex;
-  gap: 16px;
-
-  &>* {
-    flex: 1;
-  }
-}
 
 .full-width {
   width: 100%;
