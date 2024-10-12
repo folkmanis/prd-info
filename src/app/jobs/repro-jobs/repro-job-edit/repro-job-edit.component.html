@@ -10,56 +10,39 @@
   }
 
   <div class="headline-small job-name">
-    @if (form.value.jobId) {
-      <span> {{ form.value.jobId }}&nbsp;-&nbsp; </span>
+    @if (jobId()) {
+      <span> {{ jobId() }} - </span>
     }
-    {{ form.value.name }}
+    {{ value().name }}
   </div>
 </header>
 
 <mat-divider />
 
-<app-job-form />
-
-<!-- Preces apakšforma -->
-@if (customerProducts$ | async; as customerProducts) {
-  <app-repro-products-editor [customerProducts]="customerProducts" [formControl]="form.controls.products" [showPrices]="showPrices()" />
-}
-
-<div class="container-multi-column">
-  <!-- Papildus apraksts -->
-  <mat-card>
+<app-job-form [formControl]="form" [jobId]="jobId()">
+  <mat-card column-content>
     <mat-card-content>
-      <mat-form-field class="full-width">
-        <mat-label>Piezīmes</mat-label>
-        <textarea matInput [formControl]="form.controls.comment" cdkTextareaAutosize [cdkAutosizeMaxRows]="12"></textarea>
-      </mat-form-field>
-    </mat-card-content>
-  </mat-card>
+      <app-upload-progress [progress]="fileUploadProgress$ | async" />
 
-  <mat-card>
-    <mat-card-content>
       <!-- Folderis -->
-      @if (form.value.jobId) {
+      @if (jobId()) {
         <app-folder-path [path]="folderPath()" (createFolder)="onCreateFolder()" [(updatePath)]="updatePath" [enabled]="updateFolderLocationEnabled()" />
       }
 
-      <app-upload-progress [progress]="fileUploadProgress$ | async" />
-
       <app-drop-folder
-        [folders]="dropFolders$ | async"
-        [defaultEnabled]="isUpload"
-        (folderChanges)="onDropFolder($event)"
-        [disabled]="isUpload === false && form.value.files === null"
+        [folders]="dropFolders()"
+        [(folder)]="dropFolder"
+        [(folderActive)]="dropFolderActive"
+        [disabled]="(isUpload() === false && value().files === null) || dropFolders().length === 0"
       />
     </mat-card-content>
   </mat-card>
-</div>
+</app-job-form>
 
 <footer>
-  @if (form.value.jobId) {
-    <button mat-raised-button appKeyPress="ctrlEnter" [disabled]="saveDisabled()" (click)="onUpdate()">Saglabāt</button>
+  @if (jobId()) {
+    <button mat-flat-button appKeyPress="ctrlEnter" [disabled]="saveDisabled()" (click)="onUpdate()">Saglabāt</button>
   } @else {
-    <button mat-raised-button [disabled]="saveDisabled()" appKeyPress="ctrlEnter" (click)="onCreate()">Izveidot</button>
+    <button mat-flat-button [disabled]="saveDisabled()" appKeyPress="ctrlEnter" (click)="onCreate()">Izveidot</button>
   }
 </footer>

@@ -1,8 +1,8 @@
-<mat-checkbox [formControl]="folderActive"> Kopēt mapi uz </mat-checkbox>
+<mat-checkbox [(ngModel)]="folderActive" [disabled]="disabled()"> Kopēt mapi uz </mat-checkbox>
 
 <mat-form-field subscriptSizing="dynamic">
-  <mat-select [formControl]="folderControl" [compareWith]="compareFn">
-    @for (folder of folders; track $index) {
+  <mat-select [(ngModel)]="folder" [compareWith]="compareFn" [disabled]="disabled()">
+    @for (folder of folders(); track $index) {
       <mat-option [value]="folder">
         {{ folder.path.join('/') }}
       </mat-option>

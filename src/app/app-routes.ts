@@ -10,6 +10,7 @@ export const APP_ROUTES: Route[] = [
   {
     path: 'login',
     loadComponent: () => import('./login/login.component').then((c) => c.LoginComponent),
+    title: 'Pieslēgšanās darbu meklētājam',
   },
   {
     path: '',

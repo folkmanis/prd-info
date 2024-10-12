@@ -1,11 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { flatten } from 'lodash-es';
-import { Observable, firstValueFrom, map } from 'rxjs';
+import { Observable, OperatorFunction, concatMap, distinctUntilChanged, filter, firstValueFrom, from, map, pipe, reduce, switchMap } from 'rxjs';
 import { JobFilesService } from 'src/app/filesystem';
-import { JobProductionStage } from 'src/app/interfaces';
+import { CustomerProduct, DropFolder, JobProductionStage } from 'src/app/interfaces';
 import { ProductsService } from 'src/app/services';
 import { Job, JobProduct } from '../../interfaces';
 import { JobService } from '../../services/job.service';
+import { ProductionStagesService } from 'src/app/services/production-stages.service';
 
 export type PartialJob = Pick<Job, 'jobId'> & Partial<Job>;
 
@@ -20,6 +21,7 @@ export class ReproJobService {
   private productsService = inject(ProductsService);
   private jobService = inject(JobService);
   private jobFilesService = inject(JobFilesService);
+  private stagesService = inject(ProductionStagesService);
 
   private jobTemplate: JobTemplate | null = null;
 
@@ -79,6 +81,26 @@ export class ReproJobService {
     return this.jobService.createFolder(jobId);
   }
 
+  customerProducts(): OperatorFunction<string | null, CustomerProduct[] | null> {
+    return pipe(
+      filter((customer) => !!customer),
+      distinctUntilChanged(),
+      switchMap((customer) => this.productsService.productsCustomer(customer)),
+    );
+  }
+
+  getDropFolders(products: JobProduct[], customer: string): Observable<DropFolder[]> {
+    return from(this.productionStages(products)).pipe(
+      switchMap((stages) =>
+        from(stages).pipe(
+          concatMap((stage) => this.stagesService.getDropFolder(stage.productionStageId, customer)),
+          reduce((acc, value) => [...acc, ...value], [] as DropFolder[]),
+        ),
+      ),
+      map((folders) => dropFolderSort(folders)),
+    );
+  }
+
   private async updateFilesLocation(job: Job): Promise<string[]> {
     return firstValueFrom(this.jobFilesService.updateFolderLocation(job.jobId));
   }
@@ -108,4 +130,18 @@ export class ReproJobService {
       })),
     };
   }
+}
+
+function dropFolderSort(dropFolders: DropFolder[]): DropFolder[] {
+  const sorted = [...dropFolders];
+  sorted.sort((a: DropFolder, b: DropFolder) => {
+    if (a.isDefault()) {
+      return 1;
+    }
+    if (b.isDefault()) {
+      return -1;
+    }
+    return 0;
+  });
+  return sorted;
 }

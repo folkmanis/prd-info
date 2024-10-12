@@ -1,5 +1,5 @@
 @if (path()) {
-  <div class="path">
+  <div class="path" [class.app-disabled]="disabled()">
     <span class="folder-icon-container">
       <mat-icon> folder_open </mat-icon>
     </span>

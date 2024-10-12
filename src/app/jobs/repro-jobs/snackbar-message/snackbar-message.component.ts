@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_SNACK_BAR_DATA, MatSnackBarRef } from '@angular/material/snack-bar';
 import { Observable, delay, finalize, of } from 'rxjs';
@@ -7,7 +7,8 @@ import { FileUploadMessage, Job } from '../../interfaces';
 import { UploadProgressComponent } from '../upload-progress/upload-progress.component';
 
 export interface SnackBarMessageData {
-  job?: Job;
+  jobId?: number;
+  name?: string;
   progress: Observable<FileUploadMessage[]>;
   error?: Error;
 }
@@ -20,19 +21,18 @@ export interface SnackBarMessageData {
   standalone: true,
   imports: [MatButtonModule, UploadProgressComponent, AsyncPipe],
 })
-export class SnackbarMessageComponent implements OnInit {
-  job: Job | undefined = this.data.job;
+export class SnackbarMessageComponent {
+  private data = inject<SnackBarMessageData>(MAT_SNACK_BAR_DATA);
+  private snackbarRef = inject<MatSnackBarRef<SnackbarMessageComponent>>(MatSnackBarRef);
+
+  jobId = this.data.jobId;
+  name = this.data.name;
 
   progress$: Observable<FileUploadMessage[]> = this.data.progress || of([]);
 
   err = this.data.error;
 
-  constructor(
-    @Inject(MAT_SNACK_BAR_DATA) private data: SnackBarMessageData,
-    private snackbarRef: MatSnackBarRef<SnackbarMessageComponent>,
-  ) {}
-
-  ngOnInit(): void {
+  constructor() {
     this.progress$
       .pipe(
         delay(3000),

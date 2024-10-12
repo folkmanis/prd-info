@@ -7,7 +7,7 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideRouter, withComponentInputBinding, withRouterConfig } from '@angular/router';
+import { provideRouter, TitleStrategy, withComponentInputBinding, withRouterConfig } from '@angular/router';
 import { ClassTransformer } from 'class-transformer';
 import { lv } from 'date-fns/locale';
 import { APP_ROUTES } from './app/app-routes';
@@ -17,6 +17,7 @@ import { DATE_FNS_LOCALE } from './app/library/date-services';
 import { ErrorsService } from './app/library/errors/errors.service';
 import { httpInterceptors } from './app/library/http/http-interceptors';
 import { environment } from './environments/environment';
+import { ModulePageTitleStrategy } from './app/services/module-page-title.strategy';
 
 if (environment.production) {
   enableProdMode();
@@ -36,6 +37,7 @@ bootstrapApplication(AppComponent, {
     },
     { provide: ErrorHandler, useClass: ErrorsService },
     { provide: ClassTransformer, useExisting: AppClassTransformerService },
+    { provide: TitleStrategy, useClass: ModulePageTitleStrategy },
     provideRouter(APP_ROUTES, withComponentInputBinding(), withRouterConfig({ onSameUrlNavigation: 'reload' })),
     provideHttpClient(withInterceptors(httpInterceptors)),
     provideAnimationsAsync(),

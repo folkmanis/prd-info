@@ -1,5 +1,5 @@
 <ng-container [formGroup]="form">
-  <div class="container-multi">
+  <div class="container-multi block-container">
     <!-- Klients -->
     <app-customer-input formControlName="customer" [listItems]="customersEnabled()"> Klients </app-customer-input>
 
@@ -25,16 +25,16 @@
     <mat-form-field class="full-width">
       <mat-label>Darba nosaukums</mat-label>
       <input type="text" matInput formControlName="name" required />
-      @if (nameControl.hasError('required')) {
+      @if (form.controls.name.hasError('required')) {
         <mat-error> Jānorāda obligāti </mat-error>
       }
-      <button matIconSuffix mat-icon-button [appCopyClipboard]="jobIdAndName()" tabindex="-1" [disabled]="form.disabled">
+      <button matIconSuffix mat-icon-button tabindex="-1" [disabled]="form.disabled" (click)="copyJobName()">
         <mat-icon>filter_none</mat-icon>
       </button>
     </mat-form-field>
   </div>
 
-  <div class="container-multi">
+  <div class="container-multi block-container">
     <!-- Darba kategorija -->
     <ng-container formGroupName="production">
       <mat-form-field>
@@ -67,5 +67,24 @@
       <mat-label>Klienta darba numurs</mat-label>
       <input matInput formControlName="customerJobId" />
     </mat-form-field>
+  </div>
+
+  <!-- Preces apakšforma -->
+  @if (customerProducts$ | async; as customerProducts) {
+    <app-repro-products-editor [customerProducts]="customerProducts" formControlName="products" class="block-container" />
+  }
+
+  <div class="container-multi block-container">
+    <!-- Papildus apraksts -->
+    <mat-card>
+      <mat-card-content>
+        <mat-form-field class="full-width">
+          <mat-label>Piezīmes</mat-label>
+          <textarea matInput [formControl]="form.controls.comment" cdkTextareaAutosize [cdkAutosizeMaxRows]="12"></textarea>
+        </mat-form-field>
+      </mat-card-content>
+    </mat-card>
+
+    <ng-content [column-content]></ng-content>
   </div>
 </ng-container>

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, booleanAttribute, input, viewChildren } from '@angular/core';
+import { ChangeDetectionStrategy, Component, booleanAttribute, inject, input, viewChildren } from '@angular/core';
 import { ControlValueAccessor, FormArray, FormControl, FormsModule, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -9,6 +9,7 @@ import { JobProduct } from 'src/app/jobs';
 import { KeyPressDirective } from '../key-press.directive';
 import { ReproProductComponent } from './repro-product/repro-product.component';
 import { MatDivider } from '@angular/material/divider';
+import { LoginService } from 'src/app/login';
 
 const DEFAULT_PRODUCT: JobProduct = {
   name: null,
@@ -43,7 +44,7 @@ export class ReproProductsEditorComponent implements ControlValueAccessor, Valid
 
   customerProducts = input.required<CustomerProduct[]>();
 
-  showPrices = input(false, { transform: booleanAttribute });
+  showPrices = inject(LoginService).isModule('calculations');
 
   productsControl = new FormArray<FormControl<JobProduct>>([]);
 

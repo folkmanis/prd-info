@@ -1,5 +1,5 @@
 import { animate, style, transition, trigger } from '@angular/animations';
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, Input } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { FileUploadEventType, FileUploadMessage } from '../../interfaces/file-upload-message';
@@ -21,7 +21,7 @@ import { FileUploadEventType, FileUploadMessage } from '../../interfaces/file-up
 export class UploadProgressComponent {
   readonly types = FileUploadEventType;
 
-  @Input() progress: FileUploadMessage[] = [];
+  progress = input<FileUploadMessage[]>([]);
 
   progressPercent(message: FileUploadMessage): number {
     switch (message.type) {

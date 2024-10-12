@@ -1,26 +1,24 @@
-import { computed, Injectable } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
-import { combineLatest, merge, Observable, of, Subject } from 'rxjs';
-import { concatMap, filter, map, retry, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
+import { computed, inject, Injectable } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router, UrlSegment } from '@angular/router';
+import { merge, Observable, of, Subject } from 'rxjs';
+import { concatMap, filter, map, retry, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { LoginService } from 'src/app/login';
 import { getAppParams } from '../app-params';
 import { MODULES, PreferencesDbModule, SystemPreferences, UserModule } from '../interfaces';
 import { SystemPreferencesApiService } from './system-preferences-api';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SystemPreferencesService {
   private _reloadFromServer$: Subject<void> = new Subject();
+  private router = inject(Router);
+  private loginService = inject(LoginService);
+  private api = inject(SystemPreferencesApiService);
 
   private readonly _preferencesUpdate$ = new Subject<PreferencesDbModule[]>();
 
-  private url$: Observable<string> = this.router.events.pipe(
-    filter((ev) => ev instanceof NavigationEnd),
-    map((ev: NavigationEnd) => ev.url),
-    startWith(this.router.routerState.snapshot.url),
-  );
   private url = toSignal(
     this.router.events.pipe(
       filter((ev) => ev instanceof NavigationEnd),
@@ -57,16 +55,9 @@ export class SystemPreferencesService {
   );
   modules = toSignal(this.modules$, { initialValue: [] });
 
-  activeModules$: Observable<UserModule[]> = combineLatest([this.url$, this.modules$]).pipe(map(findModule), shareReplay(1));
-  activeModules = computed(() => findModule([this.url(), this.modules()]));
+  activeModules = computed(() => findModulesPath(this.url(), this.modules()));
 
   childMenu = computed(() => this.activeModules()[0]?.childMenu || []);
-
-  constructor(
-    private router: Router,
-    private loginService: LoginService,
-    private api: SystemPreferencesApiService,
-  ) {}
 
   updatePreferences(pref: SystemPreferences) {
     this._preferencesUpdate$.next(
@@ -82,13 +73,19 @@ export class SystemPreferencesService {
   }
 }
 
-function findModule([url, modules]: [string, UserModule[]]): UserModule[] {
-  const [, ...path] = url.split(/[/;?]/);
+export function findModulesPath(url: string | UrlSegment[], modules: UserModule[]): UserModule[] {
+  let segments: string[];
+  if (typeof url === 'string') {
+    const [, ...path] = url.split(/[/;?]/);
+    segments = path;
+  } else {
+    segments = url.map((segm) => segm.path);
+  }
 
   let userModules: UserModule[] | undefined = [...modules];
   const activeModules: UserModule[] = [];
 
-  for (const segm of path) {
+  for (const segm of segments) {
     const module = userModules?.find((mod) => mod.route === segm);
 
     if (!module) {

@@ -21,6 +21,8 @@ export class FolderPathComponent {
 
   createFolder = output();
 
+  disabled = input(false);
+
   onCreateFolder() {
     this.createFolder.emit();
   }

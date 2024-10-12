@@ -10,7 +10,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EMPTY, Subject, from, map } from 'rxjs';
 import { DrawerSmallDirective, ViewLargeDirective, ViewNotLargeDirective } from 'src/app/library/view-size';
 import { navigateRelative } from 'src/app/library/common';
-import { CopyClipboardDirective } from 'src/app/library/directives/copy-clipboard.directive';
+import { CopyClipboardDirective } from 'src/app/library/clipboard/copy-clipboard.directive';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { ProductsService } from 'src/app/services/products.service';
 import { ScrollTopDirective } from '../../../library/scroll-to-top/scroll-top.directive';

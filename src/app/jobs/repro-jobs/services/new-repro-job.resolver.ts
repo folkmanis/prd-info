@@ -4,15 +4,21 @@ import { JobTemplate, ReproJobService } from './repro-job.service';
 
 const defaultReproJob: () => JobTemplate = () => ({
   name: '',
+  customer: null,
   receivedDate: new Date(),
   dueDate: new Date(),
   production: {
     category: 'repro' as const,
   },
+  comment: null,
+  customerJobId: null,
   jobStatus: {
     generalStatus: 20,
     timestamp: new Date(),
   },
+  products: [],
+  files: null,
+  productionStages: [],
 });
 
 export const newReproJob: ResolveFn<JobTemplate> = () => {
@@ -22,6 +28,5 @@ export const newReproJob: ResolveFn<JobTemplate> = () => {
     ...defaultReproJob(),
     ...jobTemplate,
   };
-
   return job;
 };

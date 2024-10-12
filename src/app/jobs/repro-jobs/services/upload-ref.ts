@@ -9,6 +9,14 @@ export class UploadRef {
   private readonly fileNames$: Observable<string[]>;
   private readonly addedToJob$ = new Subject<Job>();
 
+  private _waiting = true;
+  protected set waiting(value: boolean) {
+    this._waiting = value;
+  }
+  public get waiting() {
+    return this._waiting;
+  }
+
   constructor(
     messages$: Observable<FileUploadMessage[]>,
     private addToJobFn: (jobId: number, files: string[]) => Observable<Job>,
@@ -29,6 +37,7 @@ export class UploadRef {
         concatMap((files) => this.addToJobFn(jobId, files)),
       )
       .subscribe(this.addedToJob$);
+    this.waiting = false;
   }
 
   onAddedToJob(): Observable<Job> {

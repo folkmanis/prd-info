@@ -1,0 +1,28 @@
+@use "@angular/material" as mat;
+
+@mixin color($theme) {
+  mat-progress-bar {
+
+    &.secondary {
+      @include mat.progress-bar-color($theme, $color-variant: secondary);
+    }
+
+    &.tertiary {
+      @include mat.progress-bar-color($theme, $color-variant: tertiary);
+    }
+
+    &.warn,
+    &.error {
+      @include mat.progress-bar-color($theme, $color-variant: error);
+    }
+
+  }
+}
+
+@mixin theme($theme) {
+
+  @if(mat.theme-has($theme, color)) {
+    @include color($theme);
+  }
+
+}

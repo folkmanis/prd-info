@@ -17,6 +17,10 @@ export default [
       uploadRef: () => inject(UploadRefService).retrieveUploadRef(),
     },
     canDeactivate: [canJobDeactivate],
+    data: {
+      jobId: null,
+    },
+    title: 'Jauns repro darbs',
   },
   {
     path: ':jobId',
@@ -25,6 +29,7 @@ export default [
       job: resolveReproJob,
     },
     canDeactivate: [canJobDeactivate],
+    title: (route) => `Repro darbs ${route.paramMap.get('jobId')}`,
   },
   {
     path: '',
@@ -32,6 +37,7 @@ export default [
     pathMatch: 'full',
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     canActivate: [appendJobStatus],
+    title: 'Repro darbu saraksts',
   },
   {
     path: '**',

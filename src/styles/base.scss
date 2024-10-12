@@ -32,6 +32,10 @@ body {
 @mixin color($theme) {
   color: mat.get-theme-color($theme, on-surface);
   background-color: mat.get-theme-color($theme, surface);
+
+  .app-disabled {
+    color: color-mix(in srgb, mat.get-theme-color($theme, on-surface) 38%, transparent);
+  }
 }
 
 @mixin base-typography($theme) {

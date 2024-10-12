@@ -1,7 +1,7 @@
 <div class="container">
-  @if (job) {
+  @if (jobId || name) {
     <span>
-      <span> Darbs {{ job.jobId }}-{{ job.name }} saglabāts! </span>
+      <span> Darbs {{ jobId }}-{{ name }} saglabāts! </span>
       @if (err) {
         <span>
           {{ err.message }}

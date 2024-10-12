@@ -1,4 +1,25 @@
+@use "@angular/material" as mat;
+
+@mixin color($theme) {
+
+  .mat-badge-primary {
+    @include mat.badge-color($theme, $color-variant: primary);
+  }
+
+  .mat-badge-secondary {
+    @include mat.badge-color($theme, $color-variant: secondary);
+  }
+
+  .mat-badge-tertiary {
+    @include mat.badge-color($theme, $color-variant: tertiary);
+  }
+}
+
 @mixin theme($theme) {
+
+  @if(mat.theme-has($theme, color)) {
+    @include color($theme);
+  }
 
   .mat-badge-large .mat-badge-content {
     width: unset;

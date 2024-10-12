@@ -1,13 +1,23 @@
 :host {
 
-  &.large .container-multi {
+  .container-multi {
     display: flex;
+    flex-direction: column;
     gap: 16px;
 
     &>* {
       flex: 1;
     }
   }
+
+  &.large .container-multi {
+    flex-direction: row;
+  }
+
+  .block-container {
+    margin-block: 16px;
+  }
+
 }
 
 .full-width {
