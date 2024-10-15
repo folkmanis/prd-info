@@ -1,4 +1,4 @@
-import { booleanAttribute, ChangeDetectionStrategy, Component, input, model } from '@angular/core';
+import { booleanAttribute, ChangeDetectionStrategy, Component, computed, input, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatOptionModule } from '@angular/material/core';
@@ -21,7 +21,8 @@ export class DropFolderComponent {
 
   folder = model.required<DropFolder | null>();
 
-  disabled = input(false, { transform: booleanAttribute });
+  enabled = input(true, { transform: booleanAttribute });
+  disabled = computed(() => !this.enabled());
 
   compareFn: (o1: DropFolder, o2: DropFolder) => boolean = (o1, o2) => o1?.path.join('/') === o2?.path.join('/');
 }

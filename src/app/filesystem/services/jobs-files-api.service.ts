@@ -1,6 +1,6 @@
 import { HttpClient, HttpEvent, HttpRequest } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { concatMap, from, map, Observable, reduce } from 'rxjs';
+import { concatMap, firstValueFrom, from, map, Observable, reduce } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { Job } from 'src/app/jobs';
 import { AppClassTransformerService } from 'src/app/library';
@@ -67,8 +67,10 @@ export class JobsFilesApiService {
       .pipe(map((data) => this.transformer.plainToInstance(FileElement, data, { exposeDefaultValues: true })));
   }
 
-  updateFilesLocation(jobId: number): Observable<string[]> {
-    return this.http.patch<{ path: string[] }>(this.path + jobId + '/update-files-location', new HttpOptions()).pipe(map((resp) => resp.path));
+  async updateFilesLocation(jobId: number): Promise<string[]> {
+    const result$ = this.http.patch<{ path: string[] }>(this.path + jobId + '/update-files-location', new HttpOptions());
+    const result = await firstValueFrom(result$);
+    return result.path;
   }
 
   copyFile(srcType: FileLocationTypes, dstType: FileLocationTypes, srcPath: string, dstPath: string): Observable<number> {

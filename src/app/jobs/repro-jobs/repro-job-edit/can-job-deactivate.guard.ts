@@ -5,6 +5,7 @@ import { ReproJobEditComponent } from './repro-job-edit.component';
 
 export const canJobDeactivate: CanDeactivateFn<ReproJobEditComponent> = async (component) => {
   const uploadRef = component.uploadRef();
+  console.log(uploadRef);
   if (uploadRef && uploadRef.waiting) {
     if (await inject(ConfirmationDialogService).discardChanges()) {
       component.uploadRef()?.cancel();
@@ -14,6 +15,7 @@ export const canJobDeactivate: CanDeactivateFn<ReproJobEditComponent> = async (c
     }
   }
 
+  console.log(component.form.pristine, component.changes());
   if (component.form.pristine || component.changes() === null) {
     return true;
   }

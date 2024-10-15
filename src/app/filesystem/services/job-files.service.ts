@@ -1,20 +1,19 @@
 import { HttpEvent } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { catchError, Observable, of, tap, map } from 'rxjs';
 import { JobsFilesApiService } from 'src/app/filesystem';
 import { Job } from '../../jobs';
 import { FileElement } from '../interfaces/file-element';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { FileLocationTypes } from '../interfaces/file-location-types';
+import { last } from 'lodash-es';
 
 @Injectable({
   providedIn: 'root',
 })
 export class JobFilesService {
-  constructor(
-    private filesApi: JobsFilesApiService,
-    private sanitize: SanitizeService,
-  ) {}
+  private filesApi = inject(JobsFilesApiService);
+  private sanitize = inject(SanitizeService);
 
   moveUserFilesToJob(jobId: number, fileNames: string[]): Observable<Job> {
     return this.filesApi.transferUserfilesToJob(jobId, fileNames);
@@ -24,14 +23,8 @@ export class JobFilesService {
     return this.filesApi.transferFtpFilesToJob(jobId, files);
   }
 
-  updateFolderLocation(jobId: number) {
-    return this.filesApi.updateFilesLocation(jobId).pipe(
-      catchError((err) => {
-        // eslint-disable-next-line no-console
-        console.error(err);
-        return of(null);
-      }),
-    );
+  async updateFolderLocation(jobId: number): Promise<string[]> {
+    return this.filesApi.updateFilesLocation(jobId);
   }
 
   listJobFolder(path: string[]): Observable<FileElement[]> {
@@ -67,6 +60,7 @@ export class JobFilesService {
   }
 
   copyJobFolderToDropFolder(path: string[], dropFolder: string[]): Observable<number> {
-    return this.filesApi.copyFile(FileLocationTypes.JOB, FileLocationTypes.DROPFOLDER, path.join('/'), dropFolder.join('/'));
+    const dstPath = dropFolder.join('/') + '/' + last(path);
+    return this.filesApi.copyFile(FileLocationTypes.JOB, FileLocationTypes.DROPFOLDER, path.join('/'), dstPath);
   }
 }

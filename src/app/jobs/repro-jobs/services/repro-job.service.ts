@@ -35,17 +35,10 @@ export class ReproJobService {
     return template;
   }
 
-  async updateJob(jobUpdate: PartialJob, params: { updatePath?: boolean } = {}): Promise<Job> {
-    const { updatePath } = params;
-
+  async updateJob(jobUpdate: PartialJob): Promise<Job> {
     const update = await this.addProductionStages(jobUpdate);
 
-    const updatedJob = await this.jobService.updateJob(update.jobId, update);
-    if (updatePath) {
-      await this.updateFilesLocation(updatedJob);
-    }
-
-    return updatedJob;
+    return this.jobService.updateJob(update.jobId, update);
   }
 
   async createJob(jobUpdate: Omit<Partial<Job>, 'jobId'>): Promise<Job> {
@@ -101,8 +94,8 @@ export class ReproJobService {
     );
   }
 
-  private async updateFilesLocation(job: Job): Promise<string[]> {
-    return firstValueFrom(this.jobFilesService.updateFolderLocation(job.jobId));
+  async updateFilesLocation(jobId: number): Promise<string[]> {
+    return this.jobFilesService.updateFolderLocation(jobId);
   }
 
   private async addProductionStages<T extends Partial<Job>>(job: T): Promise<T> {

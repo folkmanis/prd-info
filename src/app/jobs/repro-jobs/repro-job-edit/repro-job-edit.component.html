@@ -1,13 +1,7 @@
 <header>
-  @if (history.length > 2) {
-    <button mat-icon-button appKeyPress="escape" tabindex="-1" (click)="onBack()">
-      <mat-icon> arrow_back </mat-icon>
-    </button>
-  } @else {
-    <a mat-icon-button routerLink="..">
-      <mat-icon> arrow_upward </mat-icon>
-    </a>
-  }
+  <a mat-icon-button routerLink=".." appKeyPress="escape">
+    <mat-icon> arrow_upward </mat-icon>
+  </a>
 
   <div class="headline-small job-name">
     @if (jobId()) {
@@ -26,14 +20,14 @@
 
       <!-- Folderis -->
       @if (jobId()) {
-        <app-folder-path [path]="folderPath()" (createFolder)="onCreateFolder()" [(updatePath)]="updatePath" [enabled]="updateFolderLocationEnabled()" />
+        <app-folder-path [path]="folderPath()" (createFolder)="onCreateFolder()" [(updatePath)]="mustUpdatePath" [enabled]="updateFolderLocationEnabled()" />
       }
 
       <app-drop-folder
         [folders]="dropFolders()"
-        [(folder)]="dropFolder"
+        [(folder)]="selectedDropFolder"
         [(folderActive)]="dropFolderActive"
-        [disabled]="(isUpload() === false && value().files === null) || dropFolders().length === 0"
+        [enabled]="dropFolders().length > 0 && (!!uploadRef() || value().files !== null)"
       />
     </mat-card-content>
   </mat-card>
