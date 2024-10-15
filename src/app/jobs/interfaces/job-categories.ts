@@ -12,8 +12,6 @@ export interface ReproProduction extends ProductionCategory {
 
 export interface KastesProduction extends ProductionCategory {
   category: 'perforated paper';
-
-  isLocked: boolean; // ir izveidots pakošanas saraksts
 }
 
 export interface PrintProduction extends ProductionCategory {
