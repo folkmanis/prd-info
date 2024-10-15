@@ -1,6 +1,6 @@
 import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { AsyncPipe, DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -22,6 +22,7 @@ import { ProductsSummaryComponent } from '../products-summary/products-summary.c
 import { ReproJobService } from '../services/repro-job.service';
 import { UploadRefService } from '../services/upload-ref.service';
 import { NewJobButtonComponent } from './new-job-button/new-job-button.component';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-job-list',
@@ -62,11 +63,11 @@ export class JobListComponent {
 
   isLarge = false;
 
-  filter$ = inject(ActivatedRoute).queryParams.pipe(map((query) => this.jobService.normalizeFilter(query)));
+  filter = input.required<JobQueryFilter>();
 
   reload$ = new Subject<void>();
 
-  jobs$ = this.jobService.getJobsObserver(this.filter$, this.reload$);
+  jobs$ = this.jobService.getJobsObserver(toObservable(this.filter), this.reload$);
 
   products = inject(ProductsService).activeProducts;
 

@@ -3,7 +3,7 @@ import { Route } from '@angular/router';
 import { JobListComponent } from './job-list/job-list.component';
 import { canJobDeactivate } from './repro-job-edit/can-job-deactivate.guard';
 import { ReproJobEditComponent } from './repro-job-edit/repro-job-edit.component';
-import { appendJobStatus } from './services/job-list.guard';
+import { jobFilterResolver } from './services/job-filter.resolver';
 import { newReproJob } from './services/new-repro-job.resolver';
 import { resolveReproJob } from './services/repro-job-resolver';
 import { UploadRefService } from './services/upload-ref.service';
@@ -36,7 +36,9 @@ export default [
     component: JobListComponent,
     pathMatch: 'full',
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
-    canActivate: [appendJobStatus],
+    resolve: {
+      filter: jobFilterResolver,
+    },
     title: 'Repro darbu saraksts',
   },
   {

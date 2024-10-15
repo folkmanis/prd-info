@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { ClassTransformer } from 'class-transformer';
 import { endOfDay } from 'date-fns';
 import { firstValueFrom, map, Observable, switchMap } from 'rxjs';
+import { AppClassTransformerService } from 'src/app/library';
 import { combineReload } from 'src/app/library/rxjs';
 import { NotificationsService } from '../../services';
 import { Job, JobPartial, JobQueryFilter, JobQueryFilterOptions, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
@@ -14,7 +14,7 @@ export class JobService {
   constructor(
     private notificatinsService: NotificationsService,
     private api: JobsApiService,
-    private transformer: ClassTransformer,
+    private transformer: AppClassTransformerService,
   ) {}
 
   getJobsObserver(filter$: Observable<JobQueryFilter>, reload$: Observable<void>) {
@@ -60,18 +60,14 @@ export class JobService {
   }
 
   getJobList(filter: Partial<JobQueryFilterOptions> = {}): Observable<JobPartial[]> {
-    return this.api.getAll(this.normalizeFilter(filter), false);
+    return this.api.getAll(this.transformer.plainToInstance(JobQueryFilter, filter), false);
   }
 
   getJobListUnwinded(filter: Partial<JobQueryFilterOptions> = {}): Observable<JobUnwindedPartial[]> {
-    return this.api.getAll(this.normalizeFilter(filter), true);
+    return this.api.getAll(this.transformer.plainToInstance(JobQueryFilter, filter), true);
   }
 
   getJobsWithoutInvoicesTotals(): Observable<JobsWithoutInvoicesTotals[]> {
     return this.api.jobsWithoutInvoicesTotals();
-  }
-
-  normalizeFilter(jobFilter: Record<string, any>): JobQueryFilter {
-    return this.transformer.plainToInstance(JobQueryFilter, jobFilter);
   }
 }

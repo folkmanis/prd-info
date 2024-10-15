@@ -10,8 +10,8 @@
   </div>
 
   <div>
-    <mat-checkbox [(ngModel)]="updatePath" name="updatePath" [disabled]="!enabled()"> Pārvietot folderi </mat-checkbox>
+    <mat-checkbox [(ngModel)]="updatePath" name="updatePath" [disabled]="disabled()"> Pārvietot folderi </mat-checkbox>
   </div>
 } @else {
-  <button mat-raised-button (click)="onCreateFolder()">Izveidot folderi</button>
+  <button mat-raised-button (click)="createFolder.emit()" [disabled]="disabled()">Izveidot folderi</button>
 }
