@@ -6,7 +6,7 @@
     <!-- Izveidošanas Datums -->
     <mat-form-field>
       <mat-label>Izveidošanas datums</mat-label>
-      <input matInput formControlName="receivedDate" [matDatepicker]="datePicker" required [min]="receivedDate.min" [max]="receivedDate.max" />
+      <input matInput formControlName="receivedDate" [matDatepicker]="datePicker" required />
       <mat-datepicker-toggle matIconSuffix [for]="datePicker" tabindex="-1"></mat-datepicker-toggle>
       <mat-datepicker #datePicker></mat-datepicker>
     </mat-form-field>

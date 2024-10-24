@@ -8,7 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { isEqual, isNull, omitBy } from 'lodash-es';
 import { Customer, NewCustomer } from 'src/app/interfaces';
-import { navigateRelative } from 'src/app/library/common';
+import { navigateRelative } from 'src/app/library/navigation';
 import { InputUppercaseDirective } from 'src/app/library/directives/input-uppercase.directive';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';

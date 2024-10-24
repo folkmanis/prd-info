@@ -13,7 +13,7 @@ import { getAppParams } from 'src/app/app-params';
 import { User, UserSession } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library';
 import { AppClassTransformerService } from 'src/app/library/class-transformer/app-class-transformer.service';
-import { navigateRelative } from 'src/app/library/common';
+import { navigateRelative } from 'src/app/library/navigation';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { PasswordInputDirective } from 'src/app/library/password-input';
 import { PasswordInputGroupComponent } from 'src/app/library/password-input/password-input-group/password-input-group.component';

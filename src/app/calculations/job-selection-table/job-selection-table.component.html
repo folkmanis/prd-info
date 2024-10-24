@@ -32,8 +32,10 @@
   <!-- Darba nosaukums -->
   <ng-container matColumnDef="name">
     <mat-header-cell *matHeaderCellDef> Darba nosaukums </mat-header-cell>
-    <mat-cell *matCellDef="let job" [routerLink]="['/', 'jobs', 'repro', job.jobId]">
-      {{ job.name }}
+    <mat-cell *matCellDef="let job">
+      <a mat-button [appRouterLinkWithReturn]="['/', 'jobs', 'repro', job.jobId]">
+        {{ job.name }}
+      </a>
     </mat-cell>
   </ng-container>
   <!-- Prece -->

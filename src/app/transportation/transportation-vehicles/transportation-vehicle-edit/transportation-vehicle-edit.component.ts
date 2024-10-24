@@ -11,7 +11,7 @@ import { isEqual, omitBy } from 'lodash-es';
 import { filter, map } from 'rxjs';
 import { FuelTypeInterface } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library';
-import { navigateRelative } from 'src/app/library/common';
+import { navigateRelative } from 'src/app/library/navigation';
 import { DisableControlDirective } from 'src/app/library/directives/disable-control.directive';
 import { InputUppercaseDirective } from 'src/app/library/directives/input-uppercase.directive';
 import { CanComponentDeactivate } from 'src/app/library/guards';

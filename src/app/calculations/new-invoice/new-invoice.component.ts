@@ -11,7 +11,7 @@ import { switchMap, tap } from 'rxjs';
 import { InvoiceForReport, ProductTotals } from 'src/app/interfaces';
 import { JobUnwindedPartial } from 'src/app/jobs';
 import { ViewSizeDirective } from 'src/app/library/view-size';
-import { navigateRelative } from 'src/app/library/common';
+import { navigateRelative } from 'src/app/library/navigation';
 import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
 import { DrawerButtonDirective } from 'src/app/library/side-button/drawer-button.directive';
 import { InvoicesTotals } from '../interfaces';

@@ -1,17 +1,18 @@
 import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { EMPTY, Subject, from, map } from 'rxjs';
-import { DrawerSmallDirective, ViewLargeDirective, ViewNotLargeDirective } from 'src/app/library/view-size';
-import { navigateRelative } from 'src/app/library/common';
+import { Router, RouterLink } from '@angular/router';
+import { EMPTY, Subject, from } from 'rxjs';
 import { CopyClipboardDirective } from 'src/app/library/clipboard/copy-clipboard.directive';
+import { navigateRelative } from 'src/app/library/navigation';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
+import { ViewLargeDirective, ViewNotLargeDirective } from 'src/app/library/view-size';
 import { ProductsService } from 'src/app/services/products.service';
 import { ScrollTopDirective } from '../../../library/scroll-to-top/scroll-top.directive';
 import { DrawerButtonDirective } from '../../../library/side-button/drawer-button.directive';
@@ -22,7 +23,6 @@ import { ProductsSummaryComponent } from '../products-summary/products-summary.c
 import { ReproJobService } from '../services/repro-job.service';
 import { UploadRefService } from '../services/upload-ref.service';
 import { NewJobButtonComponent } from './new-job-button/new-job-button.component';
-import { toObservable } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-job-list',

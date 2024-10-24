@@ -10,7 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { isEqual, pickBy } from 'lodash-es';
 import { Material } from 'src/app/interfaces';
-import { navigateRelative } from 'src/app/library/common';
+import { navigateRelative } from 'src/app/library/navigation';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { configuration } from 'src/app/services/config.provider';

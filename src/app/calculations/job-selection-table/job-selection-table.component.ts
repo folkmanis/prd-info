@@ -1,9 +1,10 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { booleanAttribute, ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTableModule } from '@angular/material/table';
-import { RouterLink } from '@angular/router';
 import { JobUnwindedPartial } from 'src/app/jobs';
+import { RouterLinkWithReturnDirective } from 'src/app/library/navigation';
 
 const TABLE_COLUMNS = ['selected', 'jobId', 'receivedDate', 'custCode', 'name', 'productName', 'count', 'price', 'total'];
 
@@ -13,7 +14,7 @@ const TABLE_COLUMNS = ['selected', 'jobId', 'receivedDate', 'custCode', 'name', 
   templateUrl: './job-selection-table.component.html',
   styleUrls: ['./job-selection-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatTableModule, MatCheckboxModule, DatePipe, RouterLink, CurrencyPipe],
+  imports: [MatTableModule, MatCheckboxModule, DatePipe, CurrencyPipe, MatButtonModule, RouterLinkWithReturnDirective],
 })
 export class JobSelectionTableComponent {
   selected = input<JobUnwindedPartial[]>([] as JobUnwindedPartial[]);

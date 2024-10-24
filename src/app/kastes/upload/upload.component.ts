@@ -8,7 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { firstValueFrom } from 'rxjs';
-import { navigateRelative } from 'src/app/library/common';
+import { navigateRelative } from 'src/app/library/navigation';
 import { jobProductsToColorTotals } from '../common/color-totals-from-veikali';
 import { ColorTotalsComponent } from '../common/color-totals/color-totals.component';
 import { COLORS, Colors } from '../interfaces';

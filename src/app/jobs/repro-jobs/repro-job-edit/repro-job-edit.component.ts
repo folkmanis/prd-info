@@ -15,7 +15,7 @@ import { isEqual, pickBy } from 'lodash-es';
 import { combineLatest, concat, concatMap, distinctUntilChanged, filter, map, merge, Observable, of, Subscription, switchMap, throttleTime } from 'rxjs';
 import { DropFolder } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library';
-import { navigateRelative } from 'src/app/library/common';
+import { navigateToReturn, RouterLinkToReturnDirective } from 'src/app/library/navigation';
 import { ViewSizeDirective } from 'src/app/library/view-size';
 import { Files, FileUploadMessage, Job } from '../../interfaces';
 import { parseJobId } from '../services/parse-job-id';
@@ -51,6 +51,7 @@ import { KeyPressDirective } from './key-press.directive';
     CdkTextareaAutosize,
     MatDivider,
     MatInputModule,
+    RouterLinkToReturnDirective,
   ],
   hostDirectives: [ViewSizeDirective],
   host: {
@@ -65,7 +66,7 @@ export class ReproJobEditComponent {
 
   private customerInput = viewChild(JobFormComponent);
 
-  private navigate = navigateRelative();
+  private navigate = navigateToReturn();
 
   jobId = input<number | null, unknown>(null, { transform: parseJobId });
   initialValue = input.required<Omit<Job, 'jobId'>>({ alias: 'job' });
@@ -171,7 +172,7 @@ export class ReproJobEditComponent {
       }
     } catch (error) {}
     this.saveSuccessMessage({ jobId, name: updatedJob.name });
-    this.navigate(['..']);
+    this.navigate();
   }
 
   async onCreate() {
@@ -181,7 +182,7 @@ export class ReproJobEditComponent {
       this.form.markAsPristine();
       this.uploadFiles(createdJob);
       this.saveSuccessMessage(createdJob);
-      this.navigate(['..']);
+      this.navigate();
     } catch (error) {
       this.saveErrorMessage(error);
     }
@@ -196,7 +197,7 @@ export class ReproJobEditComponent {
       }
       await this.jobService.createFolder(jobId);
       this.form.markAsPristine();
-      this.navigate(['..']);
+      this.navigate();
     } catch (error) {
       this.confirmationDialogService.confirmDataError();
     }

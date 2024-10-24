@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Job, JobService, JobsWithoutInvoicesTotals } from 'src/app/jobs';
-import { navigateRelative } from 'src/app/library/common';
+import { navigateRelative } from 'src/app/library/navigation';
 import { CustomerSelectorComponent } from './customer-selector/customer-selector.component';
 import { JobData } from './interfaces';
 import { JobPricesTableComponent } from './job-prices-table/job-prices-table.component';

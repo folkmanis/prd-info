@@ -7,7 +7,7 @@ import { MatDivider } from '@angular/material/divider';
 import { MatTabsModule } from '@angular/material/tabs';
 import { isEqual, pickBy } from 'lodash-es';
 import { filter, map, of, switchMap } from 'rxjs';
-import { navigateRelative } from 'src/app/library/common';
+import { navigateRelative } from 'src/app/library/navigation';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { CanComponentDeactivate } from 'src/app/library/guards';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';

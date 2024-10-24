@@ -20,7 +20,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { addDays, subDays } from 'date-fns';
 import { filter } from 'rxjs';
 import { JobProductionStage } from 'src/app/interfaces';
 import { Files, JobCategories, JobProduct } from 'src/app/jobs/interfaces';
@@ -81,11 +80,6 @@ export class JobFormComponent implements ControlValueAccessor, Validator {
   jobId = input<number | null>(null);
 
   customerProducts$ = this.form.controls.customer.valueChanges.pipe(this.jobService.customerProducts());
-
-  receivedDate = {
-    min: subDays(Date.now(), 5),
-    max: addDays(Date.now(), 3),
-  };
 
   writeValue(obj: any): void {
     this.form.reset(obj, { emitEvent: false });

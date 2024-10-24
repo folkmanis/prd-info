@@ -12,7 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Product } from 'src/app/interfaces';
-import { navigateRelative } from 'src/app/library/common';
+import { navigateRelative } from 'src/app/library/navigation';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { CustomersService } from 'src/app/services';
