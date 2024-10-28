@@ -1,24 +1,21 @@
 <mat-nav-list>
   <mat-tree #tree [dataSource]="data()" [childrenAccessor]="childrenAccessor">
-    <mat-tree-node *matTreeNodeDef="let node">
+    <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding matTreeNodePaddingIndent="16px">
       <a mat-list-item [routerLink]="node.route" [activated]="node.routeStr === activeRoute()">
         {{ node.name }}
       </a>
     </mat-tree-node>
-    <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild" [cdkTreeNodeTypeaheadLabel]="node.name">
+    <mat-tree-node *matTreeNodeDef="let node; when: hasChild" [cdkTreeNodeTypeaheadLabel]="node.name" matTreeNodeToggle>
       <mat-list-item class="mat-tree-node" [activated]="node.routeStr === activeRoute()">
-        <a matListItemTitle [routerLink]="node.route" matTreeNodeToggle>
+        <a matListItemTitle [routerLink]="node.route">
           {{ node.name }}
         </a>
-        <button matListItemMeta mat-icon-button matTreeNodeToggle>
+        <button matListItemMeta mat-icon-button>
           <mat-icon class="mat-icon-rtl-mirror">
             {{ tree.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
           </mat-icon>
         </button>
       </mat-list-item>
-      <div [class.tree-invisible]="!tree.isExpanded(node)" class="tree-indent" role="group">
-        <ng-container matTreeNodeOutlet></ng-container>
-      </div>
-    </mat-nested-tree-node>
+    </mat-tree-node>
   </mat-tree>
 </mat-nav-list>

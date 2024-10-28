@@ -15,20 +15,6 @@ interface SideMenuNode {
   childMenu?: SideMenuNode[];
 }
 
-const TEST_MODULES = [
-  { name: 'XMF arhīvs', description: 'Meklētājs XMF arhīva datubāzē', route: 'xmf-search' },
-  {
-    name: 'Repro darbi',
-    description: 'Ražošanas darbi',
-    route: 'jobs',
-    childMenu: [
-      { name: 'Repro darbi', route: 'repro', description: 'Repro darbu saraksts' },
-      { name: 'Kopsavilkums', route: 'products-production', description: 'Izstrādājumi ražošanā' },
-      { name: 'gmail', route: 'gmail', description: 'Darba izveidošana no Gmail e-pasta' },
-    ],
-  },
-];
-
 @Component({
   selector: 'app-side-menu',
   templateUrl: './side-menu.component.html',
