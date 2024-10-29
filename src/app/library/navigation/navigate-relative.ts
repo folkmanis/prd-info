@@ -12,7 +12,7 @@ export function navigateRelative(): (commands: CommandsType, extras?: ExtrasType
 
   return (commands, extras = {}) => {
     extras.state = extras.state ?? {};
-    extras.state = { returnUrl: this.localRouter.url, ...extras.state };
+    extras.state = { returnUrl: router.url, ...extras.state };
     return router.navigate(commands, { relativeTo: route, ...extras });
   };
 }

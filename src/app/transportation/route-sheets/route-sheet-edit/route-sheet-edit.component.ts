@@ -27,7 +27,6 @@ import { RouteTripsComponent } from './route-trips/route-trips.component';
   imports: [
     AsyncPipe,
     SimpleFormContainerComponent,
-    JsonPipe,
     FormsModule,
     ReactiveFormsModule,
     MatTabsModule,

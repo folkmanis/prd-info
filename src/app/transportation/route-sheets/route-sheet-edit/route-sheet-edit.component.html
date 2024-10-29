@@ -6,7 +6,7 @@
       <app-general-setup [drivers]="drivers()" [vehicles]="vehicles()" [historicalData]="historicalData">
         <mat-divider />
         <div class="buttons">
-          <button mat-raised-button (click)="onDelete()" [disabled]="!initialValue()._id">Dzēst</button>
+          <button mat-raised-button class="tertiary" (click)="onDelete()" [disabled]="!initialValue()._id">Dzēst</button>
           @if (initialValue()._id; as id) {
             <a mat-raised-button href="/data/transportation/report_{{ id }}.pdf" target="new"> Izdrukāt </a>
           }
@@ -20,5 +20,4 @@
       <app-route-trips formControlName="trips" [customers]="customers$ | async" [vehicle]="form.controls.vehicle.value" [historicalData]="historicalData" />
     </mat-tab>
   </mat-tab-group>
-  {{ formStatus() }} // {{ changes() | json }} // {{ form.controls.trips.errors | json }}
 </app-simple-form-container>
