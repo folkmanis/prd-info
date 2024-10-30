@@ -6,6 +6,10 @@ import { getAppParams } from 'src/app/app-params';
 import * as Pt from 'src/app/interfaces/paytraq';
 import { HttpOptions } from 'src/app/library/http';
 
+function asArray<T>(val: T | T[]): T[] {
+  return Array.isArray(val) ? val : [val];
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -19,7 +23,7 @@ export class PaytraqApiService {
 
   async getClientShippingAddresses(id: number): Promise<Pt.PaytraqShippingAddress[]> {
     const { shippingAddresses } = await firstValueFrom(this.http.get<Pt.PaytraqShippingAddresses>(this.path + 'client/shippingAddresses/' + id));
-    return shippingAddresses.map((shAddr) => shAddr.shippingAddress);
+    return shippingAddresses.length > 0 ? asArray(shippingAddresses[0].shippingAddress) : [];
   }
 
   getProducts(query: Pt.RequestOptions): Observable<Pt.PaytraqProducts> {

@@ -1,6 +1,6 @@
 <h2 mat-dialog-title>Piegādes adrese no PayTraq sistēmas</h2>
 <mat-dialog-content>
-  @if (data.paytraqAddresses | async; as addresses) {
+  @if (addressesAsync | async; as addresses) {
     @if (addresses.length === 0) {
       <p>Nav atrasta neviena piegādes adrese.</p>
     } @else {

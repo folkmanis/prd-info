@@ -18,5 +18,7 @@ export interface PaytraqShippingAddressSelectDialogData {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaytraqShippingAddressSelectDialogComponent {
-  data: PaytraqShippingAddressSelectDialogData = inject(MAT_DIALOG_DATA);
+  private data: PaytraqShippingAddressSelectDialogData = inject(MAT_DIALOG_DATA);
+
+  addressesAsync = this.data.paytraqAddresses;
 }

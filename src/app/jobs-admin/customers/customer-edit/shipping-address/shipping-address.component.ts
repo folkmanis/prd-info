@@ -75,9 +75,9 @@ export class ShippingAddressComponent implements ControlValueAccessor {
 
   setDisabledState(isDisabled: boolean): void {
     if (isDisabled) {
-      this.form.disable();
+      this.form.disable({ emitEvent: false });
     } else {
-      this.form.enable;
+      this.form.enable({ emitEvent: false });
     }
   }
 
