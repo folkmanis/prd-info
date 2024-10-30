@@ -1,6 +1,6 @@
 <app-simple-form-container buttons [status]="form.status" [isChanges]="changes()" (save)="onSave()" (reset)="onReset()">
   <form [formGroup]="form">
-    @if (customer()._id === null) {
+    @if (!customer()._id) {
       <mat-form-field class="customer-name full-width">
         <mat-label>Klienta nosaukums</mat-label>
         <input matInput formControlName="CustomerName" placeholder="Nosaukums" autocomplete="off" required />
