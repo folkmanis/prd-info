@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
-import { MatButton } from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { Invoice, InvoiceProduct } from 'src/app/interfaces';
 import { configuration } from 'src/app/services/config.provider';
@@ -10,7 +10,7 @@ import { configuration } from 'src/app/services/config.provider';
   templateUrl: './invoice-paytraq.component.html',
   styleUrls: ['./invoice-paytraq.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatCardModule, MatButton],
+  imports: [MatCardModule, MatButtonModule],
 })
 export class InvoicePaytraqComponent {
   invoice = input.required<Invoice>();
