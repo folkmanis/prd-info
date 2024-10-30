@@ -87,7 +87,7 @@ export class JobFilterComponent {
   }
 
   onReset<T extends keyof JobFilter>(key?: T) {
-    const def = new JobQueryFilter().toPlain();
+    const def = JobQueryFilter.default().toPlain();
     if (key) {
       this.filterForm.controls[key].reset(def[key]);
     } else {

@@ -42,7 +42,7 @@ export class JobQueryFilter {
   unwindProducts: 0 | 1;
 
   @Transform(({ value }) => (Array.isArray(value) ? value : [value]).map((n) => +n), { toClassOnly: true })
-  jobStatus: number[] = [10, 20];
+  jobStatus?: number[];
 
   @Transform(({ value }) => (value ? (Array.isArray(value) ? value : [value]).map((n) => +n) : undefined), { toClassOnly: true })
   @Transform(({ value }) => (Array.isArray(value) ? value.join(',') : undefined), { toPlainOnly: true })
@@ -64,6 +64,12 @@ export class JobQueryFilter {
 
   toPlain(): JobFilter {
     return instanceToPlain(this) as JobFilter;
+  }
+
+  static default(): JobQueryFilter {
+    const filter = new JobQueryFilter();
+    filter.jobStatus = [10, 20];
+    return filter;
   }
 }
 

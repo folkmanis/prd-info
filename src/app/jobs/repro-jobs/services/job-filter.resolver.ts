@@ -5,5 +5,9 @@ import { JobQueryFilter } from '../../interfaces';
 
 export const jobFilterResolver: ResolveFn<JobQueryFilter> = (route) => {
   const transformer = inject(AppClassTransformerService);
-  return transformer.plainToInstance(JobQueryFilter, route.queryParams);
+  const filter = transformer.plainToInstance(JobQueryFilter, route.queryParams);
+  if (!filter.jobStatus) {
+    filter.jobStatus = JobQueryFilter.default().jobStatus;
+  }
+  return filter;
 };
