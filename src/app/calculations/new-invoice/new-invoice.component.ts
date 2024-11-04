@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input, signal, viewChild } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, computed, inject, Injector, input, signal, viewChild } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -47,6 +47,7 @@ export class NewInvoiceComponent {
   private navigate = navigateRelative();
   private router = inject(Router);
   private snack = inject(MatSnackBar);
+  private injector = inject(Injector);
 
   private scroll = viewChild(ScrollTopDirective);
 
@@ -87,7 +88,7 @@ export class NewInvoiceComponent {
       invoiceId: '',
     };
     const data = await this.invoicesService.getReport(invoice);
-    window.open(URL.createObjectURL(data), 'new');
+    afterNextRender(() => window.open(URL.createObjectURL(data), 'new'), { injector: this.injector });
   }
 
   onSelectCustomer(customer: string) {
