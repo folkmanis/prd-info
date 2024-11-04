@@ -31,6 +31,11 @@
     </mat-form-field>
 
     <mat-form-field>
+      <mat-label> Summa (EUR) </mat-label>
+      <input matInput type="number" formControlName="total" />
+    </mat-form-field>
+
+    <mat-form-field>
       <mat-label>
         Cena
         @if (units) {
@@ -38,11 +43,6 @@
         }
       </mat-label>
       <input matInput type="number" formControlName="price" />
-    </mat-form-field>
-
-    <mat-form-field>
-      <mat-label> Summa (EUR) </mat-label>
-      <input matInput type="number" formControlName="total" />
     </mat-form-field>
   </div>
 

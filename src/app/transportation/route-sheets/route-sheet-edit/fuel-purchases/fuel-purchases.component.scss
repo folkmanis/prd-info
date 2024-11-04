@@ -12,6 +12,11 @@ mat-expansion-panel-header.invalid mat-panel-title {
   align-items: center;
   column-gap: 16px;
   margin-top: 16px;
+
+  :last-child {
+    margin-left: auto;
+  }
+
 }
 
 mat-panel-description {

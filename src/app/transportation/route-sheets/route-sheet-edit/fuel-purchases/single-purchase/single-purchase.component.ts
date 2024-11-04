@@ -130,9 +130,9 @@ export class SinglePurchaseComponent implements ControlValueAccessor, Validator 
     const {
       value: { amount, price, total },
     } = event;
-    const update = isFinite(amount) && isFinite(price) ? round(amount * price, 2) : null;
-    if (update !== total) {
-      this.form.controls.total.setValue(update);
+    const update = isFinite(amount) && isFinite(total) && amount > 0 ? round(total / amount, 3) : null;
+    if (update !== price) {
+      this.form.controls.price.setValue(update);
     }
   }
 }

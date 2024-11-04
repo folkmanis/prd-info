@@ -34,4 +34,11 @@
 <div class="actions">
   <button mat-raised-button (click)="onAppend()" [disabled]="form.invalid">Pievienot degvielu</button>
   <app-fuel-totals [defaultUnits]="defaultFuelType()?.units" [fuelPurchases]="form.value" />
+  <button mat-icon-button [matMenuTriggerFor]="extraActions">
+    <mat-icon> more_vert </mat-icon>
+  </button>
 </div>
+
+<mat-menu #extraActions>
+  <button mat-menu-item (click)="onSortByDate()" [disabled]="form.length < 2 || !form.valid">Kārtot pēc datuma</button>
+</mat-menu>

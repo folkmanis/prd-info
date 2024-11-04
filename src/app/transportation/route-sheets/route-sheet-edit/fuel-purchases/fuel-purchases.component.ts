@@ -12,7 +12,7 @@ import {
   Validator,
   Validators,
 } from '@angular/forms';
-import { MatButton } from '@angular/material/button';
+import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatAccordion, MatExpansionModule } from '@angular/material/expansion';
 import { configuration } from 'src/app/services/config.provider';
 import { FuelType } from 'src/app/transportation/interfaces/fuel-type';
@@ -20,11 +20,26 @@ import { FuelPurchase } from 'src/app/transportation/interfaces/transportation-r
 import { AccordionDirective } from 'src/app/transportation/ui/accordion.directive';
 import { FuelTotalsComponent } from '../../../ui/fuel-totals/fuel-totals.component';
 import { SinglePurchaseComponent } from './single-purchase/single-purchase.component';
+import { isEqual } from 'lodash-es';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-fuel-purchases',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, SinglePurchaseComponent, MatButton, FuelTotalsComponent, MatExpansionModule, DatePipe, AccordionDirective],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    SinglePurchaseComponent,
+    MatButton,
+    FuelTotalsComponent,
+    MatExpansionModule,
+    DatePipe,
+    AccordionDirective,
+    MatMenuModule,
+    MatIcon,
+    MatIconButton,
+  ],
   templateUrl: './fuel-purchases.component.html',
   styleUrl: './fuel-purchases.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -105,5 +120,22 @@ export class FuelPurchasesComponent implements ControlValueAccessor, Validator {
     this.form.removeAt(index);
     this.onTouched();
     this.chDetector.markForCheck();
+  }
+
+  onSortByDate() {
+    if (this.form.length < 2 || !this.form.valid) {
+      return;
+    }
+
+    const update = this.sortByDate(this.form.value);
+    if (!isEqual(this.form.value, update)) {
+      this.form.setValue(update);
+    }
+  }
+
+  private sortByDate(values: FuelPurchase[]): FuelPurchase[] {
+    const update = [...values];
+    update.sort((a, b) => a.date.getTime() - b.date.getTime());
+    return update;
   }
 }
