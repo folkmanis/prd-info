@@ -14,10 +14,16 @@
       </app-general-setup>
     </mat-tab>
     <mat-tab label="Degvielas pirkumi" [disabled]="generalValid() === false">
-      <app-fuel-purchases formControlName="fuelPurchases" [defaultFuelType]="form.controls.vehicle.value?.fuelType" />
+      <app-fuel-purchases formControlName="fuelPurchases" [defaultFuelType]="form.controls.vehicle.value?.fuelType" [startDate]="startDate()" />
     </mat-tab>
     <mat-tab label="Maršruti" [disabled]="generalValid() === false">
-      <app-route-trips formControlName="trips" [customers]="customers$ | async" [vehicle]="form.controls.vehicle.value" [historicalData]="historicalData" />
+      <app-route-trips
+        formControlName="trips"
+        [customers]="customers$ | async"
+        [vehicle]="form.controls.vehicle.value"
+        [historicalData]="historicalData"
+        [startDate]="startDate()"
+      />
     </mat-tab>
   </mat-tab-group>
 </app-simple-form-container>

@@ -25,6 +25,7 @@
           [fuelConsumption]="vehicle()?.consumption"
           [fuelUnits]="vehicle()?.fuelType?.units"
           [lastOdometer]="lastOdometer($index)()"
+          [startDate]="startDate()"
         />
         <mat-action-row>
           <button mat-raised-button (click)="onRemove($index)" actions>Dzēst braucienu</button>

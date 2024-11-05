@@ -59,6 +59,8 @@ export class SinglePurchaseComponent implements ControlValueAccessor, Validator 
 
   defaultFuelType = input<FuelType>();
 
+  startDate = input<Date>();
+
   onTouched = () => {};
 
   constructor() {

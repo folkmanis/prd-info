@@ -62,6 +62,8 @@ export class FuelPurchasesComponent implements ControlValueAccessor, Validator {
 
   private fuelTypes = configuration('transportation', 'fuelTypes');
 
+  startDate = input<Date>();
+
   form = new FormArray<FormControl<FuelPurchase>>([]);
 
   defaultFuelType = input<FuelType>();

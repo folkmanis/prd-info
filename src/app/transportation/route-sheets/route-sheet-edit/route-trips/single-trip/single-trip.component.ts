@@ -91,6 +91,8 @@ export class SingleTripComponent implements ControlValueAccessor, Validator {
 
   lastOdometer = input<number | null>(null);
 
+  startDate = input<Date>();
+
   descriptions$ = this.routeService.descriptions();
 
   onTouched = () => {};

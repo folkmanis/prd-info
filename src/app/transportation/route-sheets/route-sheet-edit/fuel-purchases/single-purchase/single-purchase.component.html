@@ -6,7 +6,7 @@
       <mat-label> Uzpildes datums </mat-label>
       <input matInput [matDatepicker]="datePicker" formControlName="date" />
       <mat-datepicker-toggle matIconSuffix [for]="datePicker" />
-      <mat-datepicker #datePicker />
+      <mat-datepicker #datePicker [startAt]="startDate()" />
     </mat-form-field>
 
     <mat-form-field>

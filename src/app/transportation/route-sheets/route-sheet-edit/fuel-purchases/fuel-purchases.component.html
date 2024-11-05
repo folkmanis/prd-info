@@ -8,7 +8,7 @@
               {{ value.date | date: 'd. MMMM' }}
             </span>
           } @else {
-            <span> Jauns brauciens </span>
+            <span> Jauna uzpilde </span>
           }
         </mat-panel-title>
 
@@ -22,7 +22,7 @@
       </mat-expansion-panel-header>
 
       <ng-template matExpansionPanelContent="">
-        <app-single-purchase [formControl]="control" [defaultFuelType]="defaultFuelType()" />
+        <app-single-purchase [formControl]="control" [defaultFuelType]="defaultFuelType()" [startDate]="startDate()" />
         <mat-action-row>
           <button mat-raised-button (click)="onRemove($index)" actions>Dzēst</button>
         </mat-action-row>

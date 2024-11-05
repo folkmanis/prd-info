@@ -76,6 +76,8 @@ export class RouteTripsComponent implements ControlValueAccessor, Validator {
 
   fuelUnits = computed(() => this.vehicle()?.fuelType?.units ?? '');
 
+  startDate = input<Date>();
+
   writeValue(obj: RouteTrip[] | null): void {
     if (obj?.length < this.form.length) {
       this.accordion().closeAll();

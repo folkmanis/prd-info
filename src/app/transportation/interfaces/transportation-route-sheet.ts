@@ -74,7 +74,7 @@ export class RouteTripStop {
 export class FuelPurchase {
   @Expose()
   @Type(() => Date)
-  date: Date = new Date();
+  date: Date;
 
   @Expose()
   type: string;

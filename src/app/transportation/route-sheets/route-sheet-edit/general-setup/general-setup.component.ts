@@ -7,6 +7,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { MatTooltip } from '@angular/material/tooltip';
+import { round } from 'lodash-es';
 import { HistoricalData } from 'src/app/transportation/interfaces/historical-data';
 import { TransportationDriver } from 'src/app/transportation/interfaces/transportation-driver';
 import { TransportationVehicle } from 'src/app/transportation/interfaces/transportation-vehicle';

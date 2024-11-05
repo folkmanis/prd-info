@@ -20,6 +20,7 @@ import { TransportationVehicleService } from '../../services/transportation-vehi
 import { FuelPurchasesComponent } from './fuel-purchases/fuel-purchases.component';
 import { GeneralSetupComponent } from './general-setup/general-setup.component';
 import { RouteTripsComponent } from './route-trips/route-trips.component';
+import { isValid } from 'date-fns';
 
 @Component({
   selector: 'app-route-sheet-edit',
@@ -82,6 +83,15 @@ export class RouteSheetEditComponent implements CanComponentDeactivate {
     const initialValue = this.initialValue();
     const diff = pickBy(value, (v, key) => v !== null && !isEqual(v, initialValue[key]));
     return Object.keys(diff).length ? diff : undefined;
+  });
+
+  startDate = computed(() => {
+    if (this.generalValid()) {
+      const { year, month } = this.formValue();
+      return new Date(year, month - 1);
+    } else {
+      return null;
+    }
   });
 
   historicalData$ = this.form.controls.vehicle.events.pipe(

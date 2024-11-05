@@ -1,4 +1,5 @@
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
+import { round } from 'lodash-es';
 
 export class HistoricalData {
   @Expose()
@@ -8,6 +9,7 @@ export class HistoricalData {
   lastYear: number;
 
   @Expose()
+  @Transform(({ value }) => round(value, 2))
   fuelRemaining: number;
 
   @Expose()
