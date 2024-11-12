@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { Veikals } from 'src/app/kastes/interfaces';
 import { kastesPreferences } from 'src/app/kastes/services/kastes-preferences.service';
-import { PlusSignPipe } from 'src/app/library/common/plus-sign.pipe';
+import { PlusSignPipe } from 'prd-cdk';
 import { colorTotalsFromVeikalsBoxs } from 'src/app/kastes/common/color-totals-from-veikali';
 import { VeikalsValidationErrors } from '../../services/veikals-validation-errors';
 

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, ViewChild } from '@angular/core';
 import { MatListModule, MatSelectionList } from '@angular/material/list';
 import { isEqual } from 'lodash-es';
-import { FilesizePipe } from 'src/app/library/common';
+import { FilesizePipe } from 'prd-cdk';
 import { Attachment } from '../interfaces';
 
 @Component({

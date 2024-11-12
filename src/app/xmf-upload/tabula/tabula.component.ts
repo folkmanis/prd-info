@@ -2,7 +2,7 @@ import { Input, Component, ChangeDetectionStrategy } from '@angular/core';
 import { XmfUploadProgress } from '../interfaces/xmf-upload-progress';
 import { ReplaySubject } from 'rxjs';
 import { MatTableModule } from '@angular/material/table';
-import { FilesizePipe } from 'src/app/library/common';
+import { FilesizePipe } from 'prd-cdk';
 import { DatePipe } from '@angular/common';
 
 @Component({

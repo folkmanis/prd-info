@@ -5,7 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Observable, Subject, finalize } from 'rxjs';
 import { cacheWithUpdate } from 'src/app/library/rxjs';
-import { FilesizePipe } from '../library/common';
+import { FilesizePipe } from 'prd-cdk';
 import { FileDropDirective } from '../library/directives/file-drop.directive';
 import { XmfUploadProgress } from './interfaces/xmf-upload-progress';
 import { XmfUploadService } from './services/xmf-upload.service';

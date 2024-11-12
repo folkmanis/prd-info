@@ -5,7 +5,7 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { COLORS } from 'src/app/kastes/interfaces';
-import { HideZeroPipe } from 'src/app/library/common/hide-zero.pipe';
+import { HideZeroPipe } from 'prd-cdk';
 import { AddressPackage } from '../../interfaces/address-package';
 import { kastesPreferences } from '../../services/kastes-preferences.service';
 

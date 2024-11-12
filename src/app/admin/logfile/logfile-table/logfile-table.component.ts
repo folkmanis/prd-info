@@ -2,7 +2,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { DatePipe, JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
-import { ShortenTextPipe } from '../../../library/common/shorten-text.pipe';
+import { ShortenTextPipe } from 'prd-cdk';
 import { LogRecord } from '../../services/logfile-record';
 import { ViewSizeDirective } from 'src/app/library/view-size';
 

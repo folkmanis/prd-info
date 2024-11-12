@@ -3,7 +3,7 @@ import { TitleCasePipe, UpperCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, model, output, viewChild, viewChildren } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
-import { HideZeroPipe } from '../../../library/common/hide-zero.pipe';
+import { HideZeroPipe } from 'prd-cdk';
 import { COLORS } from '../../interfaces';
 import { AddressPackage } from '../../interfaces/address-package';
 import { kastesPreferences } from '../../services/kastes-preferences.service';
