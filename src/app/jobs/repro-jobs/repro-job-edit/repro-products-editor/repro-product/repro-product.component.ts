@@ -25,6 +25,7 @@ import { ViewSizeDirective } from 'src/app/library/view-size';
 import { ProductAutocompleteComponent } from '../product-autocomplete/product-autocomplete.component';
 import { JobProductForm } from './job-product-form.interface';
 import { ProductControlDirective } from './product-control.directive';
+import { ExpressionInputDirective } from 'prd-cdk';
 
 @Component({
   selector: 'app-repro-product',
@@ -44,6 +45,7 @@ import { ProductControlDirective } from './product-control.directive';
     MatTooltipModule,
     CurrencyPipe,
     ProductControlDirective,
+    ExpressionInputDirective,
   ],
   providers: [
     {

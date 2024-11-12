@@ -31,6 +31,7 @@ import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltip } from '@angular/material/tooltip';
+import { ExpressionInputDirective } from 'prd-cdk';
 
 @Component({
   selector: 'app-single-trip',
@@ -50,6 +51,7 @@ import { MatTooltip } from '@angular/material/tooltip';
     AsyncPipe,
     MatMenuModule,
     MatTooltip,
+    ExpressionInputDirective,
   ],
   templateUrl: './single-trip.component.html',
   styleUrl: './single-trip.component.scss',
