@@ -57,7 +57,10 @@
         "@typescript-eslint/no-shadow": "error",
         // force usage of @typescript-eslint/no-unused-vars instead
         "no-unused-vars": "off",
-        "@typescript-eslint/no-unused-vars": ["error", { "args": "none" }], // allow unused args in callbacks
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          { "args": "none", "caughtErrors": "none", "argsIgnorePattern": "^_", "destructuredArrayIgnorePattern": "^_", "ignoreRestSiblings": true }
+        ], // allow unused args in callbacks and errors
         "@typescript-eslint/member-ordering": "off",
         "linebreak-style": "off",
         "new-cap": "off",
@@ -65,6 +68,7 @@
         "no-debugger": "error",
         "no-invalid-this": "off",
         "require-jsdoc": "off",
+        "no-empty": "off",
         "valid-jsdoc": [
           "off",
           {

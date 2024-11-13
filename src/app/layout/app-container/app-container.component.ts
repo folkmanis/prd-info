@@ -1,13 +1,11 @@
-import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { RouterOutlet } from '@angular/router';
-import { map } from 'rxjs';
+import { DrawerSmallDirective } from 'src/app/library/view-size';
 import { LoginService } from 'src/app/login';
 import { SystemPreferencesService } from 'src/app/services';
 import { SideMenuComponent } from '../side-menu/side-menu.component';
 import { ToolbarComponent } from '../toolbar/toolbar.component';
-import { DrawerSmallDirective } from 'src/app/library/view-size';
 
 @Component({
   selector: 'app-app-container',

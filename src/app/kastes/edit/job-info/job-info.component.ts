@@ -1,7 +1,5 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { RouterLink } from '@angular/router';
 import { KastesJob, Veikals } from 'src/app/kastes/interfaces';
 import { jobProductsToColorTotals } from '../../common/color-totals-from-veikali';
 import { ColorTotalsComponent } from '../../common/color-totals/color-totals.component';

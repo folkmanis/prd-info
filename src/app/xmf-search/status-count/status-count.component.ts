@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, Input } from '@angular/core';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-status-count',

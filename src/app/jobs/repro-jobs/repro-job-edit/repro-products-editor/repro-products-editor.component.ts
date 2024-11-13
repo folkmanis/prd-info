@@ -1,15 +1,15 @@
-import { ChangeDetectionStrategy, Component, booleanAttribute, inject, input, viewChildren } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, viewChildren } from '@angular/core';
 import { ControlValueAccessor, FormArray, FormControl, FormsModule, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatDivider } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CustomerProduct } from 'src/app/interfaces';
 import { JobProduct } from 'src/app/jobs';
+import { LoginService } from 'src/app/login';
 import { KeyPressDirective } from '../key-press.directive';
 import { ReproProductComponent } from './repro-product/repro-product.component';
-import { MatDivider } from '@angular/material/divider';
-import { LoginService } from 'src/app/login';
 
 const DEFAULT_PRODUCT: JobProduct = {
   name: null,

@@ -1,9 +1,9 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_SNACK_BAR_DATA, MatSnackBarRef } from '@angular/material/snack-bar';
-import { Observable, delay, finalize, of } from 'rxjs';
-import { FileUploadMessage, Job } from '../../interfaces';
+import { delay, finalize, Observable, of } from 'rxjs';
+import { FileUploadMessage } from '../../interfaces';
 import { UploadProgressComponent } from '../upload-progress/upload-progress.component';
 
 export interface SnackBarMessageData {

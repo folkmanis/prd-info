@@ -1,4 +1,4 @@
-import { AsyncPipe, JsonPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators, ValueChangeEvent } from '@angular/forms';
@@ -7,9 +7,9 @@ import { MatDivider } from '@angular/material/divider';
 import { MatTabsModule } from '@angular/material/tabs';
 import { isEqual, pickBy } from 'lodash-es';
 import { filter, map, of, switchMap } from 'rxjs';
-import { navigateRelative } from 'src/app/library/navigation';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { CanComponentDeactivate } from 'src/app/library/guards';
+import { navigateRelative } from 'src/app/library/navigation';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { TransportationDriver } from '../../interfaces/transportation-driver';
 import { FuelPurchase, RouteTrip, TransportationRouteSheet } from '../../interfaces/transportation-route-sheet';
@@ -20,7 +20,6 @@ import { TransportationVehicleService } from '../../services/transportation-vehi
 import { FuelPurchasesComponent } from './fuel-purchases/fuel-purchases.component';
 import { GeneralSetupComponent } from './general-setup/general-setup.component';
 import { RouteTripsComponent } from './route-trips/route-trips.component';
-import { isValid } from 'date-fns';
 
 @Component({
   selector: 'app-route-sheet-edit',

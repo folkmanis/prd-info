@@ -1,3 +1,4 @@
+import { NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, untracked } from '@angular/core';
 import { outputFromObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -17,7 +18,6 @@ import { ViewSizeDirective } from 'src/app/library/view-size';
 import { CustomersService } from 'src/app/services';
 import { configuration } from 'src/app/services/config.provider';
 import { JobFilter, JobQueryFilter } from '../../interfaces';
-import { NgIf } from '@angular/common';
 
 export type FilterFormType = {
   [k in keyof JobFilter]: FormControl<JobFilter[k]>;
@@ -62,8 +62,8 @@ export class JobFilterComponent {
   customerControlValue = toSignal(this.filterForm.controls.customer.valueChanges);
 
   customersFiltered = computed(() => {
-    const input = this.customerControlValue()?.toUpperCase() || '';
-    return this.customers().filter((c) => c.CustomerName.toUpperCase().includes(input));
+    const value = this.customerControlValue()?.toUpperCase() || '';
+    return this.customers().filter((c) => c.CustomerName.toUpperCase().includes(value));
   });
 
   filter = input.required<JobQueryFilter>();
@@ -79,9 +79,9 @@ export class JobFilterComponent {
 
   constructor() {
     effect(() => {
-      const filter = this.filter().toPlain();
+      const queryFilter = this.filter().toPlain();
       untracked(() => {
-        this.filterForm.reset(filter, { emitEvent: false });
+        this.filterForm.reset(queryFilter, { emitEvent: false });
       });
     });
   }

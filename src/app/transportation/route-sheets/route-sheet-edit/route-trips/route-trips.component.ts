@@ -168,7 +168,9 @@ export class RouteTripsComponent implements ControlValueAccessor, Validator {
   }
 
   private lastDistance(date: Date): number {
-    const d = this.form.value.filter((d) => d && d.date < date && d.odoStopKm > 0);
-    return d.map((d) => d.odoStopKm).reduce((acc, curr) => (curr > acc ? curr : acc), 0);
+    return this.form.value
+      .filter((d) => d && d.date < date && d.odoStopKm > 0)
+      .map((d) => d.odoStopKm)
+      .reduce((acc, curr) => (curr > acc ? curr : acc), 0);
   }
 }

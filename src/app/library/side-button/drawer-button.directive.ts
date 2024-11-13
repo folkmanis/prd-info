@@ -1,8 +1,8 @@
-import { afterNextRender, afterRender, Directive, Host, Injector, Self, ViewContainerRef } from '@angular/core';
+import { afterNextRender, Directive, Host, Injector, Self, ViewContainerRef } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatDrawer } from '@angular/material/sidenav';
-import { SideButtonComponent } from './side-button.component';
 import { DrawerSmallDirective } from '../view-size';
+import { SideButtonComponent } from './side-button.component';
 
 /** adds close/open button to mat-drawer */
 @Directive({

@@ -1,8 +1,8 @@
-import { afterNextRender, contentChildren, Directive, inject, Injector, viewChildren } from '@angular/core';
+import { afterNextRender, contentChildren, Directive, inject, Injector } from '@angular/core';
 import { MatAccordion, MatExpansionPanel } from '@angular/material/expansion';
 
 @Directive({
-  selector: 'mat-accordion[app-accordion]',
+  selector: 'mat-accordion[appAccordion]',
   standalone: true,
 })
 export class AccordionDirective {

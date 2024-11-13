@@ -1,16 +1,15 @@
+import { CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ChangeDetectionStrategy, Component, computed, forwardRef, inject, input, output, Signal, signal } from '@angular/core';
 import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
+import { MatIconButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatDivider } from '@angular/material/divider';
+import { MatIcon } from '@angular/material/icon';
+import { firstValueFrom } from 'rxjs';
+import { configuration } from 'src/app/services/config.provider';
 import { TransportationCustomer } from 'src/app/transportation/interfaces/transportation-customer';
 import { RouteTripStop } from 'src/app/transportation/interfaces/transportation-route-sheet';
 import { TripStopDialogComponent, TripStopDialogData } from './trip-stop-dialog/trip-stop-dialog.component';
-import { firstValueFrom } from 'rxjs';
-import { MatIcon } from '@angular/material/icon';
-import { MatIconButton } from '@angular/material/button';
-import { MatDivider } from '@angular/material/divider';
-import { configuration } from 'src/app/services/config.provider';
-import { ShippingAddress } from 'src/app/interfaces';
-import { CdkDropList, CdkDrag, moveItemInArray, CdkDragDrop, CdkDragHandle } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-trip-stops',

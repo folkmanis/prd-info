@@ -1,12 +1,12 @@
 import { HttpEvent } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { catchError, Observable, of, tap, map } from 'rxjs';
+import { last } from 'lodash-es';
+import { map, Observable, tap } from 'rxjs';
 import { JobsFilesApiService } from 'src/app/filesystem';
+import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { Job } from '../../jobs';
 import { FileElement } from '../interfaces/file-element';
-import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { FileLocationTypes } from '../interfaces/file-location-types';
-import { last } from 'lodash-es';
 
 @Injectable({
   providedIn: 'root',

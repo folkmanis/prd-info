@@ -1,6 +1,6 @@
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { AsyncPipe, DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
@@ -16,10 +16,15 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
+import { MatIconButton } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltip } from '@angular/material/tooltip';
 import { round } from 'lodash-es';
+import { ExpressionInputDirective } from 'prd-cdk';
 import { filter } from 'rxjs';
 import { ConfirmationDialogService } from 'src/app/library';
 import { ViewSizeDirective } from 'src/app/library/view-size';
@@ -27,11 +32,6 @@ import { TransportationCustomer } from 'src/app/transportation/interfaces/transp
 import { RouteTrip, RouteTripStop } from 'src/app/transportation/interfaces/transportation-route-sheet';
 import { RouteSheetService } from 'src/app/transportation/services/route-sheet.service';
 import { TripStopsComponent } from './trip-stops/trip-stops.component';
-import { MatIconButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatTooltip } from '@angular/material/tooltip';
-import { ExpressionInputDirective } from 'prd-cdk';
 
 @Component({
   selector: 'app-single-trip',

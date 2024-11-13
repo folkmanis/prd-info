@@ -1,8 +1,10 @@
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, input, numberAttribute } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
+import { RouterLink } from '@angular/router';
 import { Subject, merge, mergeMap, shareReplay, switchMap, tap } from 'rxjs';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { cacheWithUpdate } from 'src/app/library/rxjs';
@@ -12,8 +14,6 @@ import { KastesPasutijumiService } from '../../services/kastes-pasutijumi.servic
 import { KastesPreferencesService, kastesPreferences } from '../../services/kastes-preferences.service';
 import { JobInfoComponent } from '../job-info/job-info.component';
 import { PakosanasSarakstsComponent } from '../pakosanas-saraksts/pakosanas-saraksts.component';
-import { RouterLink } from '@angular/router';
-import { MatButton, MatButtonModule } from '@angular/material/button';
 
 const VEIKALI_DELETED_MESSAGE = 'Pakošanas saraksts izdzēsts';
 const VEIKALI_DELETE_FAILED_MESSAGE = 'Darbība neizdevās';
