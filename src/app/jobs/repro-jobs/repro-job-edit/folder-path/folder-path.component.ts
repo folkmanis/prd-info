@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, booleanAttribute, input, model, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, booleanAttribute, computed, input, model, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -21,9 +21,5 @@ export class FolderPathComponent {
 
   createFolder = output();
 
-  disabled = input(false);
-
-  onCreateFolder() {
-    this.createFolder.emit();
-  }
+  disabled = computed(() => !this.enabled());
 }

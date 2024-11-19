@@ -1,23 +1,34 @@
 :host {
-    display: block;
-    padding: 16px;
+  display: block;
+  padding: 16px;
 }
 
-div.container.large {
-    display: flex;
+.container {
+  display: flex;
+  column-gap: 16px;
+  flex-direction: column;
+
+  .large & {
+    flex-direction: row-reverse;
+  }
 }
 
-div.container.large> :first-child {
-    margin-right: 16px;
-    margin-top: 8px;
+.small .container mat-form-field {
+  width: 100%;
 }
 
-span.spacer {
-    margin: 8px;
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 16px;
 }
 
-mat-panel-description>span:not(:first-of-type) {
-    padding-left: 4px;
-    margin-left: 4px;
-    border-left: 2px solid;
+ul.filter-description {
+  li {
+    display: inline;
+
+    &:not(:last-child)::after {
+      content: '+';
+    }
+  }
 }

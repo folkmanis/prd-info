@@ -1,5 +1,5 @@
 import { JobCategories } from './job-categories';
-import { Type, Transform } from 'class-transformer';
+import { Type, Transform, instanceToPlain } from 'class-transformer';
 
 export interface JobQueryFilterOptions {
   start: number;
@@ -39,12 +39,13 @@ export class JobQueryFilter {
   invoice?: 0 | 1;
 
   @Type(() => Number)
-  unwindProducts: 0 | 1 = 0;
+  unwindProducts: 0 | 1;
 
-  @Transform(({ value }) => (Array.isArray(value) ? value : [value]).map((n) => +n))
-  jobStatus?: number[];
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]).map((n) => +n), { toClassOnly: true })
+  jobStatus: number[] = [10, 20];
 
-  @Transform(({ value }) => (value ? (Array.isArray(value) ? value : [value]).map((n) => +n) : undefined))
+  @Transform(({ value }) => (value ? (Array.isArray(value) ? value : [value]).map((n) => +n) : undefined), { toClassOnly: true })
+  @Transform(({ value }) => (Array.isArray(value) ? value.join(',') : undefined), { toPlainOnly: true })
   jobsId?: number[];
 
   @Transform(({ value }) => value || undefined)
@@ -60,6 +61,10 @@ export class JobQueryFilter {
         return obj;
       }, {});
   }
+
+  toPlain(): JobFilter {
+    return instanceToPlain(this) as JobFilter;
+  }
 }
 
 export const JOB_FILTER_KEYS = ['customer', 'jobsId', 'name', 'jobStatus', 'productsName'] as const;
@@ -73,11 +78,3 @@ export interface JobFilter {
   productsName: string;
   jobStatus: number[];
 }
-
-export const DEFAULT_FILTER: JobFilter = {
-  jobsId: null,
-  name: null,
-  customer: null,
-  jobStatus: [10, 20],
-  productsName: null,
-};

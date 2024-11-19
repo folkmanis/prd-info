@@ -14,7 +14,7 @@ export interface Files {
 
 export interface Job {
   _id?: string;
-  _v?: 3;
+  _v?: number;
   jobId: number;
   customer: string;
   name: string;

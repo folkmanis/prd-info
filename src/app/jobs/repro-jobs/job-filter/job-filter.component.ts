@@ -1,6 +1,5 @@
-import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, Output, computed, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, untracked } from '@angular/core';
+import { outputFromObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,11 +12,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Observable, debounceTime, filter, map } from 'rxjs';
 import { ProductPartial } from 'src/app/interfaces';
+import { AppClassTransformerService } from 'src/app/library';
 import { ViewSizeDirective } from 'src/app/library/view-size';
 import { CustomersService } from 'src/app/services';
-import { getConfig } from 'src/app/services/config.provider';
-import { DEFAULT_FILTER, JobFilter, JobQueryFilter } from '../../interfaces';
-import { JobService } from '../../services/job.service';
+import { configuration } from 'src/app/services/config.provider';
+import { JobFilter, JobQueryFilter } from '../../interfaces';
+import { NgIf } from '@angular/common';
 
 export type FilterFormType = {
   [k in keyof JobFilter]: FormControl<JobFilter[k]>;
@@ -30,25 +30,26 @@ export type FilterFormType = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
+    FormsModule,
+    ReactiveFormsModule,
     MatExpansionModule,
     ViewSizeDirective,
     MatButtonModule,
     MatTooltipModule,
     MatIconModule,
-    FormsModule,
-    ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatAutocompleteModule,
     MatSelectModule,
     MatOptionModule,
-    AsyncPipe,
+    NgIf,
   ],
 })
 export class JobFilterComponent {
-  jobStates$ = getConfig('jobs', 'jobStates');
+  private customers = inject(CustomersService).customersEnabled;
+  private transformer = inject(AppClassTransformerService);
 
-  filterForm: FormGroup<FilterFormType> = this.fb.group({
+  filterForm: FormGroup<FilterFormType> = inject(FormBuilder).group({
     name: [null],
     jobsId: ['', [Validators.pattern(/^[0-9]+$/)]],
     customer: [''],
@@ -56,42 +57,41 @@ export class JobFilterComponent {
     productsName: [null],
   });
 
-  private customers = inject(CustomersService).customersEnabled;
-  private customerControlValue = toSignal(this.filterForm.controls.customer.valueChanges);
+  jobStates = configuration('jobs', 'jobStates');
+
+  customerControlValue = toSignal(this.filterForm.controls.customer.valueChanges);
+
   customersFiltered = computed(() => {
     const input = this.customerControlValue()?.toUpperCase() || '';
     return this.customers().filter((c) => c.CustomerName.toUpperCase().includes(input));
   });
 
-  @Input()
-  set filter(value: JobQueryFilter) {
-    this.filterForm.reset(undefined, { emitEvent: false });
-    if (value instanceof JobQueryFilter) {
-      this.filterForm.patchValue(value.jobListFilter(), { emitEvent: false });
-    }
-  }
-  get filter() {
-    return this.jobService.normalizeFilter(this.filterForm.value);
-  }
+  filter = input.required<JobQueryFilter>();
 
-  @Input() products: ProductPartial[] | null = null;
+  products = input<ProductPartial[] | null>(null);
 
-  @Output() filterChanges: Observable<JobQueryFilter> = this.filterForm.valueChanges.pipe(
+  filterChange$: Observable<JobQueryFilter> = this.filterForm.valueChanges.pipe(
     filter((_) => this.filterForm.valid),
     debounceTime(300),
-    map(() => this.filter),
+    map((value) => this.transformer.plainToInstance(JobQueryFilter, value)),
   );
+  filterChange = outputFromObservable(this.filterChange$);
 
-  constructor(
-    private jobService: JobService,
-    private fb: FormBuilder,
-  ) {}
+  constructor() {
+    effect(() => {
+      const filter = this.filter().toPlain();
+      untracked(() => {
+        this.filterForm.reset(filter, { emitEvent: false });
+      });
+    });
+  }
 
   onReset<T extends keyof JobFilter>(key?: T) {
+    const def = new JobQueryFilter().toPlain();
     if (key) {
-      this.filterForm.controls[key].reset(DEFAULT_FILTER[key]);
+      this.filterForm.controls[key].reset(def[key]);
     } else {
-      this.filterForm.reset(DEFAULT_FILTER);
+      this.filterForm.reset(def);
     }
   }
 }
