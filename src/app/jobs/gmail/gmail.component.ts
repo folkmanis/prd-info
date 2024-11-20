@@ -22,12 +22,11 @@ const DEFAULT_FILTER: ThreadsFilterQuery = {
 };
 
 @Component({
-  selector: 'app-gmail',
-  templateUrl: './gmail.component.html',
-  styleUrls: ['./gmail.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [MatButtonModule, MatIconModule, ThreadsFilterComponent, GmailPaginatorComponent, MatProgressBarModule, MatTableModule, ScrollTopDirective, RouterLink],
+    selector: 'app-gmail',
+    templateUrl: './gmail.component.html',
+    styleUrls: ['./gmail.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [MatButtonModule, MatIconModule, ThreadsFilterComponent, GmailPaginatorComponent, MatProgressBarModule, MatTableModule, ScrollTopDirective, RouterLink]
 })
 export class GmailComponent {
   private gmailService = inject(GmailService);

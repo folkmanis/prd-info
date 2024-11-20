@@ -4,12 +4,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
-  selector: 'app-gmail-paginator',
-  templateUrl: './gmail-paginator.component.html',
-  styleUrls: ['./gmail-paginator.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [MatButtonModule, MatMenuModule, MatIconModule],
+    selector: 'app-gmail-paginator',
+    templateUrl: './gmail-paginator.component.html',
+    styleUrls: ['./gmail-paginator.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [MatButtonModule, MatMenuModule, MatIconModule]
 })
 export class GmailPaginatorComponent {
   activePage = input(0);

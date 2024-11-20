@@ -32,36 +32,35 @@ import { CustomerInputComponent } from '../customer-input/customer-input.compone
 import { ReproProductsEditorComponent } from '../repro-products-editor/repro-products-editor.component';
 
 @Component({
-  selector: 'app-job-form',
-  templateUrl: './job-form.component.html',
-  styleUrls: ['./job-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    AsyncPipe,
-    ViewSizeDirective,
-    CustomerInputComponent,
-    MatFormFieldModule,
-    MatInputModule,
-    MatDatepickerModule,
-    MatButtonModule,
-    MatIcon,
-    MatSelectModule,
-    MatOptionModule,
-    ReproProductsEditorComponent,
-    MatCardModule,
-  ],
-  hostDirectives: [ViewSizeDirective],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: JobFormComponent,
-      multi: true,
-    },
-    { provide: NG_VALIDATORS, useExisting: JobFormComponent, multi: true },
-  ],
+    selector: 'app-job-form',
+    templateUrl: './job-form.component.html',
+    styleUrls: ['./job-form.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        AsyncPipe,
+        ViewSizeDirective,
+        CustomerInputComponent,
+        MatFormFieldModule,
+        MatInputModule,
+        MatDatepickerModule,
+        MatButtonModule,
+        MatIcon,
+        MatSelectModule,
+        MatOptionModule,
+        ReproProductsEditorComponent,
+        MatCardModule,
+    ],
+    hostDirectives: [ViewSizeDirective],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: JobFormComponent,
+            multi: true,
+        },
+        { provide: NG_VALIDATORS, useExisting: JobFormComponent, multi: true },
+    ]
 })
 export class JobFormComponent implements ControlValueAccessor, Validator {
   private clipboard = inject(ClipboardService);

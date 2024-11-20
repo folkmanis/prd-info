@@ -12,12 +12,11 @@ import { AttachmentsComponent } from '../attachments/attachments.component';
 import { Attachment, Message } from '../interfaces';
 
 @Component({
-  selector: 'app-message',
-  templateUrl: './message.component.html',
-  styleUrls: ['./message.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [AttachmentsComponent, MatExpansionModule, MatButtonModule, MatIconModule, MatMenuModule, MatCardModule, MatProgressBarModule, AsyncPipe],
+    selector: 'app-message',
+    templateUrl: './message.component.html',
+    styleUrls: ['./message.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [AttachmentsComponent, MatExpansionModule, MatButtonModule, MatIconModule, MatMenuModule, MatCardModule, MatProgressBarModule, AsyncPipe]
 })
 export class MessageComponent {
   @ViewChild(AttachmentsComponent) attachmentsList: AttachmentsComponent;

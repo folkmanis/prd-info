@@ -7,12 +7,11 @@ import { ProductionStagesService } from 'src/app/services/production-stages.serv
 import { EquipmentService } from '../../equipment/services/equipment.service';
 
 @Component({
-  selector: 'app-production-stages-list',
-  standalone: true,
-  templateUrl: './production-stages-list.component.html',
-  styleUrls: ['./production-stages-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [SimpleListContainerComponent, RouterLink, RouterLinkActive, MatTableModule],
+    selector: 'app-production-stages-list',
+    templateUrl: './production-stages-list.component.html',
+    styleUrls: ['./production-stages-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [SimpleListContainerComponent, RouterLink, RouterLinkActive, MatTableModule]
 })
 export class ProductionStagesListComponent {
   private productionStagesService = inject(ProductionStagesService);

@@ -12,18 +12,17 @@ import { TransportationDriver } from 'src/app/transportation/interfaces/transpor
 import { TransportationVehicle } from 'src/app/transportation/interfaces/transportation-vehicle';
 
 @Component({
-  selector: 'app-general-setup',
-  standalone: true,
-  imports: [MatFormFieldModule, MatInput, MatSelect, FormsModule, ReactiveFormsModule, MatOption, MatIconButton, MatIcon, MatTooltip, DatePipe, TitleCasePipe],
-  templateUrl: './general-setup.component.html',
-  styleUrl: './general-setup.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  viewProviders: [
-    {
-      provide: ControlContainer,
-      useFactory: (): ControlContainer => inject(ControlContainer, { skipSelf: true }),
-    },
-  ],
+    selector: 'app-general-setup',
+    imports: [MatFormFieldModule, MatInput, MatSelect, FormsModule, ReactiveFormsModule, MatOption, MatIconButton, MatIcon, MatTooltip, DatePipe, TitleCasePipe],
+    templateUrl: './general-setup.component.html',
+    styleUrl: './general-setup.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    viewProviders: [
+        {
+            provide: ControlContainer,
+            useFactory: (): ControlContainer => inject(ControlContainer, { skipSelf: true }),
+        },
+    ]
 })
 export class GeneralSetupComponent {
   private controlContainer = inject(ControlContainer, { skipSelf: true });

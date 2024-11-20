@@ -10,19 +10,18 @@ import { JobFilesService } from 'src/app/filesystem';
 import { FtpUserData } from 'src/app/interfaces';
 
 @Component({
-  selector: 'app-ftp-user',
-  standalone: true,
-  templateUrl: './ftp-user.component.html',
-  styleUrls: ['./ftp-user.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      multi: true,
-      useExisting: FtpUserComponent,
-    },
-  ],
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatOptionModule, MatSelectModule, MatInputModule],
+    selector: 'app-ftp-user',
+    templateUrl: './ftp-user.component.html',
+    styleUrls: ['./ftp-user.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            multi: true,
+            useExisting: FtpUserComponent,
+        },
+    ],
+    imports: [ReactiveFormsModule, MatFormFieldModule, MatOptionModule, MatSelectModule, MatInputModule]
 })
 export class FtpUserComponent implements ControlValueAccessor {
   private filesApi = inject(JobFilesService);

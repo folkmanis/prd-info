@@ -13,12 +13,11 @@ import { configuration } from 'src/app/services/config.provider';
 import { MaterialsFilter } from '../../services/materials.service';
 
 @Component({
-  selector: 'app-materials-filter',
-  templateUrl: './materials-filter.component.html',
-  styleUrls: ['./materials-filter.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, MatFormFieldModule, MatIcon, MatOptionModule, MatInputModule, IfViewSizeDirective, MatSelectModule, MatButtonModule],
+    selector: 'app-materials-filter',
+    templateUrl: './materials-filter.component.html',
+    styleUrls: ['./materials-filter.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [ReactiveFormsModule, FormsModule, MatFormFieldModule, MatIcon, MatOptionModule, MatInputModule, IfViewSizeDirective, MatSelectModule, MatButtonModule]
 })
 export class MaterialsFilterComponent {
   filterGroup = inject(FormBuilder).nonNullable.group({

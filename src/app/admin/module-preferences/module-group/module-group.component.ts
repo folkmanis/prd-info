@@ -3,12 +3,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
-  selector: 'app-module-group',
-  templateUrl: './module-group.component.html',
-  styleUrls: ['./module-group.component.scss'],
-  standalone: true,
-  imports: [MatToolbarModule, MatButtonModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-module-group',
+    templateUrl: './module-group.component.html',
+    styleUrls: ['./module-group.component.scss'],
+    imports: [MatToolbarModule, MatButtonModule],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ModuleGroupComponent {
   pristine = input(true, { transform: booleanAttribute });

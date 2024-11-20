@@ -5,11 +5,10 @@ import { isObject } from 'lodash-es';
 import { RouteTrip } from 'src/app/transportation/interfaces/transportation-route-sheet';
 
 @Component({
-  selector: 'app-trips-total',
-  standalone: true,
-  imports: [MatChipsModule, DecimalPipe],
-  templateUrl: './trips-total.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-trips-total',
+    imports: [MatChipsModule, DecimalPipe],
+    templateUrl: './trips-total.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TripsTotalComponent {
   private validTrips = computed(() => this.routeTrips().filter(isObject));

@@ -8,19 +8,18 @@ import { PaytraqClientService } from '../../services/paytraq-client.service';
 import { PaytraqCustomerTableComponent } from './paytraq-customer-table/paytraq-customer-table.component';
 
 @Component({
-  selector: 'app-paytraq-customer',
-  standalone: true,
-  templateUrl: './paytraq-customer.component.html',
-  styleUrls: ['./paytraq-customer.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: PaytraqCustomerComponent,
-      multi: true,
-    },
-  ],
-  imports: [PaytraqCustomerTableComponent, ReactiveFormsModule, PaytraqSearchHeaderComponent, MatButtonModule],
+    selector: 'app-paytraq-customer',
+    templateUrl: './paytraq-customer.component.html',
+    styleUrls: ['./paytraq-customer.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: PaytraqCustomerComponent,
+            multi: true,
+        },
+    ],
+    imports: [PaytraqCustomerTableComponent, ReactiveFormsModule, PaytraqSearchHeaderComponent, MatButtonModule]
 })
 export class PaytraqCustomerComponent implements ControlValueAccessor {
   private paytraqService = inject(PaytraqClientService);

@@ -18,12 +18,11 @@ import { TransportationDriverService } from '../../services/transportation-drive
 type FormValue = Partial<Pick<TransportationDriver, 'name' | 'disabled'>>;
 
 @Component({
-  selector: 'app-transportation-driver-edit',
-  standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInput, MatCheckbox, SimpleFormContainerComponent, MatButton, MatDivider],
-  templateUrl: './transportation-driver-edit.component.html',
-  styleUrl: './transportation-driver-edit.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-transportation-driver-edit',
+    imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInput, MatCheckbox, SimpleFormContainerComponent, MatButton, MatDivider],
+    templateUrl: './transportation-driver-edit.component.html',
+    styleUrl: './transportation-driver-edit.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TransportationDriverEditComponent implements CanComponentDeactivate {
   private driverService = inject(TransportationDriverService);

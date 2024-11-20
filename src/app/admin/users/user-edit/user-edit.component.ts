@@ -25,26 +25,25 @@ import { UsersListComponent } from '../users-list/users-list.component';
 import { SessionsComponent } from './sessions/sessions.component';
 
 @Component({
-  selector: 'app-user-edit',
-  standalone: true,
-  templateUrl: './user-edit.component.html',
-  styleUrls: ['./user-edit.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    SessionsComponent,
-    PasswordInputDirective,
-    SimpleFormContainerComponent,
-    PasswordInputGroupComponent,
-    MatFormFieldModule,
-    MatSelect,
-    MatOption,
-    MatCardModule,
-    MatButtonModule,
-    MatInput,
-    MatCheckbox,
-  ],
+    selector: 'app-user-edit',
+    templateUrl: './user-edit.component.html',
+    styleUrls: ['./user-edit.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        SessionsComponent,
+        PasswordInputDirective,
+        SimpleFormContainerComponent,
+        PasswordInputGroupComponent,
+        MatFormFieldModule,
+        MatSelect,
+        MatOption,
+        MatCardModule,
+        MatButtonModule,
+        MatInput,
+        MatCheckbox,
+    ]
 })
 export class UserEditComponent implements CanComponentDeactivate {
   private navigate = navigateRelative();

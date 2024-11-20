@@ -27,30 +27,29 @@ import { ProductPricesComponent } from './product-prices/product-prices.componen
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 
 @Component({
-  selector: 'app-products-editor',
-  standalone: true,
-  templateUrl: './products-editor.component.html',
-  styleUrls: ['./products-editor.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [ProductsFormService],
-  imports: [
-    SimpleFormContainerComponent,
-    FormsModule,
-    ReactiveFormsModule,
-    PaytraqProductComponent,
-    ProductPricesComponent,
-    ProductProductionComponent,
-    RouterLink,
-    AsyncPipe,
-    MatFormFieldModule,
-    MatInputModule,
-    MatExpansionModule,
-    MatOptionModule,
-    MatCheckboxModule,
-    MatIconModule,
-    MatButtonModule,
-    MatSelectModule,
-  ],
+    selector: 'app-products-editor',
+    templateUrl: './products-editor.component.html',
+    styleUrls: ['./products-editor.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [ProductsFormService],
+    imports: [
+        SimpleFormContainerComponent,
+        FormsModule,
+        ReactiveFormsModule,
+        PaytraqProductComponent,
+        ProductPricesComponent,
+        ProductProductionComponent,
+        RouterLink,
+        AsyncPipe,
+        MatFormFieldModule,
+        MatInputModule,
+        MatExpansionModule,
+        MatOptionModule,
+        MatCheckboxModule,
+        MatIconModule,
+        MatButtonModule,
+        MatSelectModule,
+    ]
 })
 export class ProductsEditorComponent implements CanComponentDeactivate {
   private formService = inject(ProductsFormService);

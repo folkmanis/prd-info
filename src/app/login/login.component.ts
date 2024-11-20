@@ -10,12 +10,11 @@ import { DEMO_MODE } from '../services/app-mode.provider';
 import { LoginService } from './services/login.service';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [FormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, FocusedDirective],
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [FormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, FocusedDirective]
 })
 export class LoginComponent {
   private router = inject(Router);

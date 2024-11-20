@@ -24,26 +24,25 @@ export type FilterFormType = {
 };
 
 @Component({
-  selector: 'app-job-filter',
-  templateUrl: './job-filter.component.html',
-  styleUrls: ['./job-filter.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    MatExpansionModule,
-    ViewSizeDirective,
-    MatButtonModule,
-    MatTooltipModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatAutocompleteModule,
-    MatSelectModule,
-    MatOptionModule,
-    NgIf,
-  ],
+    selector: 'app-job-filter',
+    templateUrl: './job-filter.component.html',
+    styleUrls: ['./job-filter.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatExpansionModule,
+        ViewSizeDirective,
+        MatButtonModule,
+        MatTooltipModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatAutocompleteModule,
+        MatSelectModule,
+        MatOptionModule,
+        NgIf,
+    ]
 })
 export class JobFilterComponent {
   private customers = inject(CustomersService).customersEnabled;

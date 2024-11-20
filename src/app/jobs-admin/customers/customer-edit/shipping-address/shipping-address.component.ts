@@ -21,19 +21,18 @@ import {
 import { LocationSelectService } from 'src/app/library/location-select';
 
 @Component({
-  selector: 'app-shipping-address',
-  standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInput, MatSelectModule, InputUppercaseDirective, MatButton, MatIconButton, MatIcon],
-  templateUrl: './shipping-address.component.html',
-  styleUrl: './shipping-address.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: ShippingAddressComponent,
-      multi: true,
-    },
-  ],
+    selector: 'app-shipping-address',
+    imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInput, MatSelectModule, InputUppercaseDirective, MatButton, MatIconButton, MatIcon],
+    templateUrl: './shipping-address.component.html',
+    styleUrl: './shipping-address.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: ShippingAddressComponent,
+            multi: true,
+        },
+    ]
 })
 export class ShippingAddressComponent implements ControlValueAccessor {
   private transformer = inject(AppClassTransformerService);

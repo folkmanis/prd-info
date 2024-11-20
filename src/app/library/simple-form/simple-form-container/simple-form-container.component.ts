@@ -8,16 +8,15 @@ import { RouterLink } from '@angular/router';
 import { ScrollTopDirective } from '../../scroll-to-top/scroll-top.directive';
 
 @Component({
-  selector: 'app-simple-form-container',
-  standalone: true,
-  templateUrl: './simple-form-container.component.html',
-  styleUrls: ['./simple-form-container.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, ScrollTopDirective, MatToolbarModule, MatIconModule, MatButtonModule],
-  providers: [{ provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher }],
-  host: {
-    '(window:keyup)': 'keyEvent($event)',
-  },
+    selector: 'app-simple-form-container',
+    templateUrl: './simple-form-container.component.html',
+    styleUrls: ['./simple-form-container.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [RouterLink, ScrollTopDirective, MatToolbarModule, MatIconModule, MatButtonModule],
+    providers: [{ provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher }],
+    host: {
+        '(window:keyup)': 'keyEvent($event)',
+    }
 })
 export class SimpleFormContainerComponent {
   status = input<FormControlStatus>('PENDING');

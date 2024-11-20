@@ -16,26 +16,25 @@ export interface TripStopDialogData {
 }
 
 @Component({
-  selector: 'app-trip-stop-dialog',
-  standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    MatDialogTitle,
-    MatDialogContent,
-    MatDialogActions,
-    MatDialogClose,
-    MatButton,
-    MatFormFieldModule,
-    MatInput,
-    MatAutocomplete,
-    MatOption,
-    MatAutocompleteTrigger,
-    AsyncPipe,
-  ],
-  templateUrl: './trip-stop-dialog.component.html',
-  styleUrl: './trip-stop-dialog.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-trip-stop-dialog',
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatDialogTitle,
+        MatDialogContent,
+        MatDialogActions,
+        MatDialogClose,
+        MatButton,
+        MatFormFieldModule,
+        MatInput,
+        MatAutocomplete,
+        MatOption,
+        MatAutocompleteTrigger,
+        AsyncPipe,
+    ],
+    templateUrl: './trip-stop-dialog.component.html',
+    styleUrl: './trip-stop-dialog.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TripStopDialogComponent {
   private data = inject<TripStopDialogData>(MAT_DIALOG_DATA);

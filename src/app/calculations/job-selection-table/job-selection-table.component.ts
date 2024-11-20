@@ -9,12 +9,11 @@ import { RouterLinkWithReturnDirective } from 'src/app/library/navigation';
 const TABLE_COLUMNS = ['selected', 'jobId', 'receivedDate', 'custCode', 'name', 'productName', 'count', 'price', 'total'];
 
 @Component({
-  selector: 'app-job-selection-table',
-  standalone: true,
-  templateUrl: './job-selection-table.component.html',
-  styleUrls: ['./job-selection-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatTableModule, MatCheckboxModule, DatePipe, CurrencyPipe, MatButtonModule, RouterLinkWithReturnDirective],
+    selector: 'app-job-selection-table',
+    templateUrl: './job-selection-table.component.html',
+    styleUrls: ['./job-selection-table.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [MatTableModule, MatCheckboxModule, DatePipe, CurrencyPipe, MatButtonModule, RouterLinkWithReturnDirective]
 })
 export class JobSelectionTableComponent {
   selected = input<JobUnwindedPartial[]>([] as JobUnwindedPartial[]);

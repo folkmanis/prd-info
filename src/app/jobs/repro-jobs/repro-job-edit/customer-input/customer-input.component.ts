@@ -24,24 +24,23 @@ import { map, startWith } from 'rxjs/operators';
 import { CustomerPartial } from 'src/app/interfaces';
 
 @Component({
-  selector: 'app-customer-input',
-  templateUrl: './customer-input.component.html',
-  styleUrls: ['./customer-input.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      multi: true,
-      useExisting: CustomerInputComponent,
-    },
-    {
-      provide: NG_VALIDATORS,
-      multi: true,
-      useExisting: CustomerInputComponent,
-    },
-  ],
-  standalone: true,
-  imports: [MatFormFieldModule, MatInputModule, FormsModule, MatAutocompleteModule, ReactiveFormsModule, MatButtonModule, MatIconModule, MatOptionModule, AsyncPipe],
+    selector: 'app-customer-input',
+    templateUrl: './customer-input.component.html',
+    styleUrls: ['./customer-input.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            multi: true,
+            useExisting: CustomerInputComponent,
+        },
+        {
+            provide: NG_VALIDATORS,
+            multi: true,
+            useExisting: CustomerInputComponent,
+        },
+    ],
+    imports: [MatFormFieldModule, MatInputModule, FormsModule, MatAutocompleteModule, ReactiveFormsModule, MatButtonModule, MatIconModule, MatOptionModule, AsyncPipe]
 })
 export class CustomerInputComponent implements OnDestroy, AfterViewInit, ControlValueAccessor, Validator {
   @ViewChild('customerInput') private input: ElementRef<HTMLInputElement>;

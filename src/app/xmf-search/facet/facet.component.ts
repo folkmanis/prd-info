@@ -4,12 +4,11 @@ import { ArchiveFacet, FacetFilter } from '../interfaces';
 import { FacetCheckerComponent } from './facet-checker/facet-checker.component';
 
 @Component({
-  selector: 'app-facet',
-  templateUrl: './facet.component.html',
-  styleUrls: ['./facet.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [FacetCheckerComponent, MatDividerModule],
+    selector: 'app-facet',
+    templateUrl: './facet.component.html',
+    styleUrls: ['./facet.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [FacetCheckerComponent, MatDividerModule]
 })
 export class FacetComponent {
   private blocks = viewChildren(FacetCheckerComponent);

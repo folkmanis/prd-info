@@ -21,12 +21,11 @@ type UserUpdate = Pick<User, 'name' | 'eMail'>;
 const NO_USER: UserUpdate = { name: '', eMail: '' };
 
 @Component({
-  selector: 'app-user-settings',
-  standalone: true,
-  templateUrl: './user-settings.component.html',
-  styleUrls: ['./user-settings.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, GoogleInfoComponent, MatDividerModule, MatButtonModule, PasswordInputDirective],
+    selector: 'app-user-settings',
+    templateUrl: './user-settings.component.html',
+    styleUrls: ['./user-settings.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [FormsModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, GoogleInfoComponent, MatDividerModule, MatButtonModule, PasswordInputDirective]
 })
 export class UserSettingsComponent implements CanComponentDeactivate {
   private loginService = inject(LoginService);

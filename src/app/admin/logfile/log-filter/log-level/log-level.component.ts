@@ -6,11 +6,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { LogLevel } from '../../log-level.interface';
 
 @Component({
-  selector: 'app-log-level',
-  templateUrl: './log-level.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [FormsModule, MatFormFieldModule, MatSelectModule, MatOptionModule],
+    selector: 'app-log-level',
+    templateUrl: './log-level.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [FormsModule, MatFormFieldModule, MatSelectModule, MatOptionModule]
 })
 export class LogLevelComponent {
   logLevels = input.required<LogLevel[]>();

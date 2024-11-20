@@ -6,12 +6,11 @@ import { FilesizePipe } from 'prd-cdk';
 import { DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-tabula',
-  templateUrl: './tabula.component.html',
-  styleUrls: ['./tabula.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [MatTableModule, FilesizePipe, DatePipe],
+    selector: 'app-tabula',
+    templateUrl: './tabula.component.html',
+    styleUrls: ['./tabula.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [MatTableModule, FilesizePipe, DatePipe]
 })
 export class TabulaComponent {
   dataSource$ = new ReplaySubject<XmfUploadProgress[]>(1);

@@ -7,12 +7,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { DropFolder } from 'src/app/interfaces';
 
 @Component({
-  selector: 'app-drop-folder',
-  templateUrl: './drop-folder.component.html',
-  styleUrls: ['./drop-folder.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [MatCheckbox, FormsModule, MatFormFieldModule, MatSelectModule, MatOptionModule],
+    selector: 'app-drop-folder',
+    templateUrl: './drop-folder.component.html',
+    styleUrls: ['./drop-folder.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [MatCheckbox, FormsModule, MatFormFieldModule, MatSelectModule, MatOptionModule]
 })
 export class DropFolderComponent {
   folderActive = model.required<boolean>();

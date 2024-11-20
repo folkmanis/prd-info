@@ -6,19 +6,18 @@ import { CategoryDialogComponent } from './category-dialog/category-dialog.compo
 import { UnitsDialogComponent } from './units-dialog/units-dialog.component';
 
 @Component({
-  selector: 'app-jobs-preferences',
-  templateUrl: './jobs-preferences.component.html',
-  styleUrls: ['./jobs-preferences.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => JobsPreferencesComponent),
-      multi: true,
-    },
-  ],
-  standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, SimpleListTableComponent],
+    selector: 'app-jobs-preferences',
+    templateUrl: './jobs-preferences.component.html',
+    styleUrls: ['./jobs-preferences.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => JobsPreferencesComponent),
+            multi: true,
+        },
+    ],
+    imports: [FormsModule, ReactiveFormsModule, SimpleListTableComponent]
 })
 export class JobsPreferencesComponent implements ControlValueAccessor {
   controls = inject(FormBuilder).group({

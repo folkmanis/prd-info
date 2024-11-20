@@ -8,12 +8,11 @@ import { FocusedDirective } from 'src/app/library/directives/focused.directive';
 import { InputTrimDirective } from 'src/app/library/directives/input-trim.directive';
 
 @Component({
-  selector: 'app-search-input',
-  templateUrl: './search-input.component.html',
-  styleUrls: ['./search-input.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [MatFormFieldModule, MatInputModule, FocusedDirective, FormsModule, MatButtonModule, MatIconModule, InputTrimDirective],
+    selector: 'app-search-input',
+    templateUrl: './search-input.component.html',
+    styleUrls: ['./search-input.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [MatFormFieldModule, MatInputModule, FocusedDirective, FormsModule, MatButtonModule, MatIconModule, InputTrimDirective]
 })
 export class SearchInputComponent {
   searchString = model('');

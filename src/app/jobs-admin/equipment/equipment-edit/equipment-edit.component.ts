@@ -17,12 +17,11 @@ type EquipmentForm = FormGroup<{
 }>;
 
 @Component({
-  selector: 'app-equipment-edit',
-  standalone: true,
-  templateUrl: './equipment-edit.component.html',
-  styleUrls: ['./equipment-edit.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, SimpleFormContainerComponent, MatFormFieldModule, MatInputModule, MatCardModule],
+    selector: 'app-equipment-edit',
+    templateUrl: './equipment-edit.component.html',
+    styleUrls: ['./equipment-edit.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [ReactiveFormsModule, SimpleFormContainerComponent, MatFormFieldModule, MatInputModule, MatCardModule]
 })
 export class EquipmentEditComponent implements CanComponentDeactivate {
   form: EquipmentForm = this.fb.group({

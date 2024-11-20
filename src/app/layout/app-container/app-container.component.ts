@@ -8,15 +8,14 @@ import { SideMenuComponent } from '../side-menu/side-menu.component';
 import { ToolbarComponent } from '../toolbar/toolbar.component';
 
 @Component({
-  selector: 'app-app-container',
-  templateUrl: './app-container.component.html',
-  styleUrls: ['./app-container.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [ToolbarComponent, MatSidenavModule, SideMenuComponent, RouterOutlet, DrawerSmallDirective],
-  host: {
-    '[class.dark-theme]': 'darkTheme()',
-  },
+    selector: 'app-app-container',
+    templateUrl: './app-container.component.html',
+    styleUrls: ['./app-container.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [ToolbarComponent, MatSidenavModule, SideMenuComponent, RouterOutlet, DrawerSmallDirective],
+    host: {
+        '[class.dark-theme]': 'darkTheme()',
+    }
 })
 export class AppContainerComponent {
   private activeModules = inject(SystemPreferencesService).activeModules;

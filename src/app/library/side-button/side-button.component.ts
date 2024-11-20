@@ -5,11 +5,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDrawer } from '@angular/material/sidenav';
 
 @Component({
-  templateUrl: './side-button.component.html',
-  standalone: true,
-  styleUrls: ['./side-button.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, MatIconModule, MatButtonModule],
+    templateUrl: './side-button.component.html',
+    styleUrls: ['./side-button.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [CommonModule, MatIconModule, MatButtonModule]
 })
 export class SideButtonComponent {
   opened: Signal<boolean> = signal(false);

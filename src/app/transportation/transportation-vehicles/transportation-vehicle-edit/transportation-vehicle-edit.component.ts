@@ -22,25 +22,24 @@ import { TransportationVehicleService } from '../../services/transportation-vehi
 type FormValue = Partial<Omit<TransportationVehicle, 'id'>>;
 
 @Component({
-  selector: 'app-transportation-vehicle-edit',
-  standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    SimpleFormContainerComponent,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButton,
-    MatCheckbox,
-    InputUppercaseDirective,
-    MatSelect,
-    MatOption,
-    MatDivider,
-    DisableControlDirective,
-  ],
-  templateUrl: './transportation-vehicle-edit.component.html',
-  styleUrl: './transportation-vehicle-edit.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-transportation-vehicle-edit',
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        SimpleFormContainerComponent,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButton,
+        MatCheckbox,
+        InputUppercaseDirective,
+        MatSelect,
+        MatOption,
+        MatDivider,
+        DisableControlDirective,
+    ],
+    templateUrl: './transportation-vehicle-edit.component.html',
+    styleUrl: './transportation-vehicle-edit.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TransportationVehicleEditComponent implements CanComponentDeactivate {
   private vehicleService = inject(TransportationVehicleService);

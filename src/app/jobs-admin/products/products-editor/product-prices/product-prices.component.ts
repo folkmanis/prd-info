@@ -23,24 +23,23 @@ import { InputDirective } from 'src/app/library/directives/input.directive';
 type PricesForm = ReturnType<typeof productPriceGroup>;
 
 @Component({
-  selector: 'app-product-prices',
-  standalone: true,
-  templateUrl: './product-prices.component.html',
-  styleUrls: ['./product-prices.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, FormsModule, MatSelectModule, MatOptionModule, MatIconModule, MatButtonModule, InputDirective],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: ProductPricesComponent,
-      multi: true,
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: ProductPricesComponent,
-      multi: true,
-    },
-  ],
+    selector: 'app-product-prices',
+    templateUrl: './product-prices.component.html',
+    styleUrls: ['./product-prices.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [ReactiveFormsModule, FormsModule, MatSelectModule, MatOptionModule, MatIconModule, MatButtonModule, InputDirective],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: ProductPricesComponent,
+            multi: true,
+        },
+        {
+            provide: NG_VALIDATORS,
+            useExisting: ProductPricesComponent,
+            multi: true,
+        },
+    ]
 })
 export class ProductPricesComponent implements ControlValueAccessor, Validator {
   private chDetector = inject(ChangeDetectorRef);

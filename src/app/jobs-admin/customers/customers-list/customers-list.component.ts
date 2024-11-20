@@ -5,12 +5,11 @@ import { SimpleListContainerComponent } from 'src/app/library/simple-form';
 import { CustomersService } from 'src/app/services';
 
 @Component({
-  standalone: true,
-  selector: 'app-customers-list',
-  templateUrl: './customers-list.component.html',
-  styleUrls: ['./customers-list.component.scss'],
-  imports: [MatTableModule, RouterLink, RouterLinkActive, SimpleListContainerComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-customers-list',
+    templateUrl: './customers-list.component.html',
+    styleUrls: ['./customers-list.component.scss'],
+    imports: [MatTableModule, RouterLink, RouterLinkActive, SimpleListContainerComponent],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomersListComponent {
   name = signal('');

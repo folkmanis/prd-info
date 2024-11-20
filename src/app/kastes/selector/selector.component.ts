@@ -22,29 +22,28 @@ import { TabulaComponent } from './tabula/tabula.component';
 import { TotalsForSelectedSizeComponent } from './totals-for-selected-size/totals-for-selected-size.component';
 
 @Component({
-  selector: 'app-selector',
-  templateUrl: './selector.component.html',
-  styleUrls: ['./selector.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    MatSidenavModule,
-    MatTabsModule,
-    RouterLink,
-    MatButtonModule,
-    MatIconModule,
-    MatSlideToggleModule,
-    MatTooltipModule,
-    FormsModule,
-    ReactiveFormsModule,
-    TabulaComponent,
-    DrawerButtonDirective,
-    MatDividerModule,
-    LabelsComponent,
-    OrderTotalsComponent,
-    KasteDialogComponent,
-    TotalsForSelectedSizeComponent,
-  ],
+    selector: 'app-selector',
+    templateUrl: './selector.component.html',
+    styleUrls: ['./selector.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        MatSidenavModule,
+        MatTabsModule,
+        RouterLink,
+        MatButtonModule,
+        MatIconModule,
+        MatSlideToggleModule,
+        MatTooltipModule,
+        FormsModule,
+        ReactiveFormsModule,
+        TabulaComponent,
+        DrawerButtonDirective,
+        MatDividerModule,
+        LabelsComponent,
+        OrderTotalsComponent,
+        KasteDialogComponent,
+        TotalsForSelectedSizeComponent,
+    ]
 })
 export class SelectorComponent {
   private tabulaService = inject(PackingTableService);

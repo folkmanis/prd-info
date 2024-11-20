@@ -14,13 +14,12 @@ import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.dir
 import { COLUMNS, COLUMNS_SMALL, JobData, JobWithUpdate } from '../interfaces';
 
 @Component({
-  selector: 'app-job-prices-table',
-  standalone: true,
-  templateUrl: './job-prices-table.component.html',
-  styleUrls: ['./job-prices-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatTableModule, ScrollTopDirective, MatCheckboxModule, MatButtonModule, MatIconModule, RouterLink, CurrencyPipe, ViewSizeDirective],
-  hostDirectives: [ScrollTopDirective],
+    selector: 'app-job-prices-table',
+    templateUrl: './job-prices-table.component.html',
+    styleUrls: ['./job-prices-table.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [MatTableModule, ScrollTopDirective, MatCheckboxModule, MatButtonModule, MatIconModule, RouterLink, CurrencyPipe, ViewSizeDirective],
+    hostDirectives: [ScrollTopDirective]
 })
 export class JobPricesTableComponent {
   jobs = input([] as JobData[]);

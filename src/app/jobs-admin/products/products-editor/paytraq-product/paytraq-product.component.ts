@@ -7,19 +7,18 @@ import { PaytraqProductsService } from '../../services/paytraq-products.service'
 import { PaytraqProductTableComponent } from './paytraq-product-table/paytraq-product-table.component';
 
 @Component({
-  selector: 'app-paytraq-product',
-  standalone: true,
-  templateUrl: './paytraq-product.component.html',
-  styleUrls: ['./paytraq-product.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [PaytraqProductTableComponent, PaytraqSearchHeaderComponent, MatButtonModule],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: PaytraqProductComponent,
-      multi: true,
-    },
-  ],
+    selector: 'app-paytraq-product',
+    templateUrl: './paytraq-product.component.html',
+    styleUrls: ['./paytraq-product.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [PaytraqProductTableComponent, PaytraqSearchHeaderComponent, MatButtonModule],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: PaytraqProductComponent,
+            multi: true,
+        },
+    ]
 })
 export class PaytraqProductComponent implements ControlValueAccessor {
   private paytraqService = inject(PaytraqProductsService);

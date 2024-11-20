@@ -28,45 +28,44 @@ import { ProductControlDirective } from './product-control.directive';
 import { ExpressionInputDirective } from 'prd-cdk';
 
 @Component({
-  selector: 'app-repro-product',
-  templateUrl: './repro-product.component.html',
-  styleUrls: ['./repro-product.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    ViewSizeDirective,
-    FormsModule,
-    ReactiveFormsModule,
-    MatButtonModule,
-    MatIconModule,
-    ProductAutocompleteComponent,
-    MatFormFieldModule,
-    MatInputModule,
-    MatTooltipModule,
-    CurrencyPipe,
-    ProductControlDirective,
-    ExpressionInputDirective,
-  ],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: ReproProductComponent,
-      multi: true,
+    selector: 'app-repro-product',
+    templateUrl: './repro-product.component.html',
+    styleUrls: ['./repro-product.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        ViewSizeDirective,
+        FormsModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+        MatIconModule,
+        ProductAutocompleteComponent,
+        MatFormFieldModule,
+        MatInputModule,
+        MatTooltipModule,
+        CurrencyPipe,
+        ProductControlDirective,
+        ExpressionInputDirective,
+    ],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: ReproProductComponent,
+            multi: true,
+        },
+        {
+            provide: NG_VALIDATORS,
+            useExisting: ReproProductComponent,
+            multi: true,
+        },
+    ],
+    host: {
+        '[class.disabled]': 'productForm.disabled',
     },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: ReproProductComponent,
-      multi: true,
-    },
-  ],
-  host: {
-    '[class.disabled]': 'productForm.disabled',
-  },
-  hostDirectives: [
-    {
-      directive: ViewSizeDirective,
-    },
-  ],
+    hostDirectives: [
+        {
+            directive: ViewSizeDirective,
+        },
+    ]
 })
 export class ReproProductComponent implements ControlValueAccessor, Validator {
   private productNameControl = viewChild.required(ProductAutocompleteComponent);

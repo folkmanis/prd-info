@@ -20,22 +20,21 @@ import { KastesTabulaDropDirective } from './kastes-tabula-drop.directive';
 import { UploadAdresesComponent } from './upload-adreses/upload-adreses.component';
 
 @Component({
-  selector: 'app-upload',
-  templateUrl: './upload.component.html',
-  styleUrls: ['./upload.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    FormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatCardModule,
-    MatButtonModule,
-    KastesTabulaDropDirective,
-    ColorTotalsComponent,
-    UploadAdresesComponent,
-  ],
+    selector: 'app-upload',
+    templateUrl: './upload.component.html',
+    styleUrls: ['./upload.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        FormsModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatCardModule,
+        MatButtonModule,
+        KastesTabulaDropDirective,
+        ColorTotalsComponent,
+        UploadAdresesComponent,
+    ]
 })
 export class UploadComponent {
   private navigate = navigateRelative();

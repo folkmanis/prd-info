@@ -8,23 +8,22 @@ import { MatInputModule } from '@angular/material/input';
 import { ProductUnit } from 'src/app/interfaces';
 
 @Component({
-  selector: 'app-units-dialog',
-  templateUrl: './units-dialog.component.html',
-  styleUrls: ['./units-dialog.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatDialogTitle,
-    MatDialogContent,
-    MatDialogActions,
-    MatDialogClose,
-    MatInputModule,
-    MatCheckboxModule,
-    MatButtonModule,
-  ],
+    selector: 'app-units-dialog',
+    templateUrl: './units-dialog.component.html',
+    styleUrls: ['./units-dialog.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatDialogTitle,
+        MatDialogContent,
+        MatDialogActions,
+        MatDialogClose,
+        MatInputModule,
+        MatCheckboxModule,
+        MatButtonModule,
+    ]
 })
 export class UnitsDialogComponent {
   private data = inject<ProductUnit>(MAT_DIALOG_DATA, { optional: true });

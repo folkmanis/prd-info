@@ -23,24 +23,23 @@ import { map } from 'rxjs';
 const MIN_LENGTH = 6;
 
 @Component({
-  selector: 'app-password-input-group',
-  standalone: true,
-  templateUrl: './password-input-group.component.html',
-  styleUrls: ['./password-input-group.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, FormsModule, A11yModule, MatFormFieldModule, MatIconModule, MatButtonModule, MatInputModule],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: PasswordInputGroupComponent,
-      multi: true,
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: PasswordInputGroupComponent,
-      multi: true,
-    },
-  ],
+    selector: 'app-password-input-group',
+    templateUrl: './password-input-group.component.html',
+    styleUrls: ['./password-input-group.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [ReactiveFormsModule, FormsModule, A11yModule, MatFormFieldModule, MatIconModule, MatButtonModule, MatInputModule],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: PasswordInputGroupComponent,
+            multi: true,
+        },
+        {
+            provide: NG_VALIDATORS,
+            useExisting: PasswordInputGroupComponent,
+            multi: true,
+        },
+    ]
 })
 export class PasswordInputGroupComponent implements OnInit, ControlValueAccessor, Validator {
   hide = true;

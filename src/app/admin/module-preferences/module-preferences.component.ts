@@ -15,24 +15,23 @@ import { PreferencesCardComponent } from './preferences-card/preferences-card.co
 import { TransportationPreferencesComponent } from './modules/transportation-preferences/transportation-preferences.component';
 
 @Component({
-  selector: 'app-module-preferences',
-  templateUrl: './module-preferences.component.html',
-  styleUrls: ['./module-preferences.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [],
-  standalone: true,
-  imports: [
-    ModuleGroupComponent,
-    FormsModule,
-    ReactiveFormsModule,
-    PreferencesCardComponent,
-    CardTitleDirective,
-    SystemPreferencesComponent,
-    KastesPreferencesComponent,
-    JobsPreferencesComponent,
-    PaytraqPreferencesComponent,
-    TransportationPreferencesComponent,
-  ],
+    selector: 'app-module-preferences',
+    templateUrl: './module-preferences.component.html',
+    styleUrls: ['./module-preferences.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [],
+    imports: [
+        ModuleGroupComponent,
+        FormsModule,
+        ReactiveFormsModule,
+        PreferencesCardComponent,
+        CardTitleDirective,
+        SystemPreferencesComponent,
+        KastesPreferencesComponent,
+        JobsPreferencesComponent,
+        PaytraqPreferencesComponent,
+        TransportationPreferencesComponent,
+    ]
 })
 export class ModulePreferencesComponent implements CanComponentDeactivate {
   private systemPreferencesService = inject(SystemPreferencesService);

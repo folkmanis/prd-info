@@ -29,24 +29,23 @@ type DropFolderForm = FormGroup<{
 }>;
 
 @Component({
-  selector: 'app-drop-folders',
-  standalone: true,
-  templateUrl: './drop-folders.component.html',
-  styleUrls: ['./drop-folders.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, FormsModule, MatIconModule, MatButtonModule, MatFormFieldModule, MatSelectModule, MatOptionModule],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: DropFoldersComponent,
-      multi: true,
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: DropFoldersComponent,
-      multi: true,
-    },
-  ],
+    selector: 'app-drop-folders',
+    templateUrl: './drop-folders.component.html',
+    styleUrls: ['./drop-folders.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [ReactiveFormsModule, FormsModule, MatIconModule, MatButtonModule, MatFormFieldModule, MatSelectModule, MatOptionModule],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: DropFoldersComponent,
+            multi: true,
+        },
+        {
+            provide: NG_VALIDATORS,
+            useExisting: DropFoldersComponent,
+            multi: true,
+        },
+    ]
 })
 export class DropFoldersComponent implements ControlValueAccessor, Validator {
   private transformer = inject(AppClassTransformerService);

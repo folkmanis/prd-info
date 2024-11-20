@@ -9,11 +9,10 @@ import { MessagingService } from '../services/messaging.service';
 import { RelativeDatePipe } from 'src/app/library/date-services';
 
 @Component({
-  selector: 'app-messages-list',
-  templateUrl: './messages-list.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [MatButtonModule, MatMenuModule, MatIconModule, MessageJobDirective, AsyncPipe, RelativeDatePipe],
+    selector: 'app-messages-list',
+    templateUrl: './messages-list.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [MatButtonModule, MatMenuModule, MatIconModule, MessageJobDirective, AsyncPipe, RelativeDatePipe]
 })
 export class MessagesListComponent {
   private messaging = inject(MessagingService);

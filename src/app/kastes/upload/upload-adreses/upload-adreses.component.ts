@@ -14,12 +14,11 @@ import { DragDropDirective } from './drag-drop.directive';
 import { DragableDirective } from './dragable.directive';
 
 @Component({
-  selector: 'app-upload-adreses',
-  templateUrl: './upload-adreses.component.html',
-  styleUrls: ['./upload-adreses.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [MatButtonModule, MatCheckboxModule, MatChipsModule, DragableDirective, MatTableModule, DragDropDirective, MatIconModule, ScrollTopDirective],
+    selector: 'app-upload-adreses',
+    templateUrl: './upload-adreses.component.html',
+    styleUrls: ['./upload-adreses.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [MatButtonModule, MatCheckboxModule, MatChipsModule, DragableDirective, MatTableModule, DragDropDirective, MatIconModule, ScrollTopDirective]
 })
 export class UploadAdresesComponent {
   rowSelection = new SelectionModel<number>(true);

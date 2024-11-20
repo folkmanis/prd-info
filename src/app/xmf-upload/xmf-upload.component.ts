@@ -12,12 +12,11 @@ import { XmfUploadService } from './services/xmf-upload.service';
 import { TabulaComponent } from './tabula/tabula.component';
 
 @Component({
-  selector: 'app-xmf-upload',
-  templateUrl: './xmf-upload.component.html',
-  styleUrls: ['./xmf-upload.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [MatCardModule, FilesizePipe, AsyncPipe, MatProgressBarModule, FileDropDirective, TabulaComponent, MatButtonModule],
+    selector: 'app-xmf-upload',
+    templateUrl: './xmf-upload.component.html',
+    styleUrls: ['./xmf-upload.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [MatCardModule, FilesizePipe, AsyncPipe, MatProgressBarModule, FileDropDirective, TabulaComponent, MatButtonModule]
 })
 export class XmfUploadComponent {
   private historyUpdate$ = new Subject<XmfUploadProgress>();

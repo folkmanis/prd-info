@@ -13,12 +13,11 @@ export interface KasteDialogData {
 }
 
 @Component({
-  selector: 'app-kaste-dialog',
-  templateUrl: './kaste-dialog.component.html',
-  styleUrls: ['./kaste-dialog.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatIcon, MatDialogClose, TitleCasePipe, MatIconButton],
+    selector: 'app-kaste-dialog',
+    templateUrl: './kaste-dialog.component.html',
+    styleUrls: ['./kaste-dialog.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatIcon, MatDialogClose, TitleCasePipe, MatIconButton]
 })
 export class KasteDialogComponent {
   addressPackage = inject<KasteDialogData>(MAT_DIALOG_DATA).addressPackage;

@@ -5,12 +5,11 @@ import { FilesizePipe } from 'prd-cdk';
 import { Attachment } from '../interfaces';
 
 @Component({
-  selector: 'app-attachments',
-  templateUrl: './attachments.component.html',
-  styleUrls: ['./attachments.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [MatListModule, FilesizePipe],
+    selector: 'app-attachments',
+    templateUrl: './attachments.component.html',
+    styleUrls: ['./attachments.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [MatListModule, FilesizePipe]
 })
 export class AttachmentsComponent {
   @ViewChild(MatSelectionList) private list: MatSelectionList;

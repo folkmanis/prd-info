@@ -5,19 +5,18 @@ import { MatSlider, MatSliderModule } from '@angular/material/slider';
 import { hslToString, stringToHsl } from './hsl-color';
 
 @Component({
-  selector: 'app-color-slider',
-  templateUrl: './color-slider.component.html',
-  styleUrls: ['./color-slider.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => ColorSliderComponent),
-      multi: true,
-    },
-  ],
-  standalone: true,
-  imports: [MatSliderModule, FormsModule],
+    selector: 'app-color-slider',
+    templateUrl: './color-slider.component.html',
+    styleUrls: ['./color-slider.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => ColorSliderComponent),
+            multi: true,
+        },
+    ],
+    imports: [MatSliderModule, FormsModule]
 })
 export class ColorSliderComponent implements ControlValueAccessor {
   private slider = viewChild(MatSlider, { read: ElementRef });

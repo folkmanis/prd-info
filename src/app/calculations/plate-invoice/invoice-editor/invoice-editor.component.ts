@@ -30,24 +30,23 @@ const PAYTRAQ_SAVED_MESSAGE = 'Izveidota pavadzīme Paytraq sistēmā';
 const PAYTRAQ_UNLINK_MESSAGE = 'Paytraq savienojums dzēsts';
 
 @Component({
-  selector: 'app-invoice-editor',
-  standalone: true,
-  templateUrl: './invoice-editor.component.html',
-  styleUrls: ['./invoice-editor.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    MatMenuModule,
-    MatIconModule,
-    MatToolbarModule,
-    ViewSizeDirective,
-    InvoicePaytraqComponent,
-    InvoiceProductsComponent,
-    JobSelectionTableComponent,
-    MatButtonModule,
-    RouterLink,
-    MatCardModule,
-    DatePipe,
-  ],
+    selector: 'app-invoice-editor',
+    templateUrl: './invoice-editor.component.html',
+    styleUrls: ['./invoice-editor.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        MatMenuModule,
+        MatIconModule,
+        MatToolbarModule,
+        ViewSizeDirective,
+        InvoicePaytraqComponent,
+        InvoiceProductsComponent,
+        JobSelectionTableComponent,
+        MatButtonModule,
+        RouterLink,
+        MatCardModule,
+        DatePipe,
+    ]
 })
 export class InvoiceEditorComponent {
   private locale?: Locale = inject<Locale>(DATE_FNS_LOCALE, { optional: true });

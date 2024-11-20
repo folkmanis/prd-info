@@ -9,24 +9,23 @@ import { MatIcon } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'app-customer-contacts',
-  standalone: true,
-  templateUrl: './customer-contacts.component.html',
-  styleUrls: ['./customer-contacts.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      multi: true,
-      useExisting: CustomerContactsComponent,
-    },
-    {
-      provide: NG_VALIDATORS,
-      multi: true,
-      useExisting: CustomerContactsComponent,
-    },
-  ],
-  imports: [ReactiveFormsModule, CustomerContactEditorComponent, MatListModule, MatIcon, MatButtonModule],
+    selector: 'app-customer-contacts',
+    templateUrl: './customer-contacts.component.html',
+    styleUrls: ['./customer-contacts.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            multi: true,
+            useExisting: CustomerContactsComponent,
+        },
+        {
+            provide: NG_VALIDATORS,
+            multi: true,
+            useExisting: CustomerContactsComponent,
+        },
+    ],
+    imports: [ReactiveFormsModule, CustomerContactEditorComponent, MatListModule, MatIcon, MatButtonModule]
 })
 export class CustomerContactsComponent implements ControlValueAccessor, Validator {
   private fb = inject(FormBuilder);

@@ -21,23 +21,22 @@ type ProductionStageControl = {
 };
 
 @Component({
-  selector: 'app-production-stages-edit',
-  standalone: true,
-  templateUrl: './production-stages-edit.component.html',
-  styleUrls: ['./production-stages-edit.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    SimpleFormContainerComponent,
-    ReactiveFormsModule,
-    FormsModule,
-    DropFoldersComponent,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatOptionModule,
-    MatSelectModule,
-  ],
+    selector: 'app-production-stages-edit',
+    templateUrl: './production-stages-edit.component.html',
+    styleUrls: ['./production-stages-edit.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        SimpleFormContainerComponent,
+        ReactiveFormsModule,
+        FormsModule,
+        DropFoldersComponent,
+        MatCardModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatOptionModule,
+        MatSelectModule,
+    ]
 })
 export class ProductionStagesEditComponent implements CanComponentDeactivate {
   form: FormGroup<ProductionStageControl> = inject(FormBuilder).group({

@@ -6,12 +6,11 @@ import { MatListModule } from '@angular/material/list';
 import { UserSession } from 'src/app/interfaces';
 
 @Component({
-  selector: 'app-sessions',
-  standalone: true,
-  templateUrl: './sessions.component.html',
-  styleUrls: ['./sessions.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DatePipe, MatListModule, MatButtonModule, MatIconModule],
+    selector: 'app-sessions',
+    templateUrl: './sessions.component.html',
+    styleUrls: ['./sessions.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [DatePipe, MatListModule, MatButtonModule, MatIconModule]
 })
 export class SessionsComponent {
   sessions = input([] as UserSession[]);

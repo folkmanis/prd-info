@@ -10,12 +10,11 @@ import { MatInputModule } from '@angular/material/input';
 import { CustomerProduct } from 'src/app/interfaces';
 
 @Component({
-  selector: 'app-product-autocomplete',
-  templateUrl: './product-autocomplete.component.html',
-  styleUrls: ['./product-autocomplete.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [MatFormFieldModule, MatInputModule, FormsModule, MatAutocompleteModule, ReactiveFormsModule, MatButtonModule, MatIconModule, MatOptionModule],
+    selector: 'app-product-autocomplete',
+    templateUrl: './product-autocomplete.component.html',
+    styleUrls: ['./product-autocomplete.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [MatFormFieldModule, MatInputModule, FormsModule, MatAutocompleteModule, ReactiveFormsModule, MatButtonModule, MatIconModule, MatOptionModule]
 })
 export class ProductAutocompleteComponent implements OnInit {
   @ViewChild('name') private inputElement: ElementRef<HTMLInputElement>;

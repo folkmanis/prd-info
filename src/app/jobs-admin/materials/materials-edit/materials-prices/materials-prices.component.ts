@@ -12,24 +12,23 @@ import { DialogData, MaterialsPriceDialogComponent } from '../materials-price-di
 import { MaterialsPricesDataSource } from './materials-prices-data-source';
 
 @Component({
-  selector: 'app-materials-prices',
-  standalone: true,
-  templateUrl: './materials-prices.component.html',
-  styleUrls: ['./materials-prices.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatTableModule, MatButtonModule, MatIconModule, CurrencyPipe],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: MaterialsPricesComponent,
-      multi: true,
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: MaterialsPricesComponent,
-      multi: true,
-    },
-  ],
+    selector: 'app-materials-prices',
+    templateUrl: './materials-prices.component.html',
+    styleUrls: ['./materials-prices.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [MatTableModule, MatButtonModule, MatIconModule, CurrencyPipe],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: MaterialsPricesComponent,
+            multi: true,
+        },
+        {
+            provide: NG_VALIDATORS,
+            useExisting: MaterialsPricesComponent,
+            multi: true,
+        },
+    ]
 })
 export class MaterialsPricesComponent implements ControlValueAccessor, Validator {
   private dialogService = inject(MatDialog);

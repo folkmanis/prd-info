@@ -16,12 +16,11 @@ interface SideMenuNode {
 }
 
 @Component({
-  selector: 'app-side-menu',
-  templateUrl: './side-menu.component.html',
-  styleUrls: ['./side-menu.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [MatListModule, MatTreeModule, RouterLink, MatButtonModule, MatIconModule],
+    selector: 'app-side-menu',
+    templateUrl: './side-menu.component.html',
+    styleUrls: ['./side-menu.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [MatListModule, MatTreeModule, RouterLink, MatButtonModule, MatIconModule]
 })
 export class SideMenuComponent {
   private tree = viewChild.required(MatTree);

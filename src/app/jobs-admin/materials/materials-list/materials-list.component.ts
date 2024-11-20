@@ -7,12 +7,11 @@ import { MaterialsFilter, MaterialsService, MaterialWithDescription } from '../s
 import { MaterialsFilterComponent } from './materials-filter/materials-filter.component';
 
 @Component({
-  selector: 'app-materials-list',
-  standalone: true,
-  templateUrl: './materials-list.component.html',
-  styleUrls: ['./materials-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatTableModule, MaterialsFilterComponent, SimpleListContainerComponent, MatCardModule, RouterLink, RouterLinkActive],
+    selector: 'app-materials-list',
+    templateUrl: './materials-list.component.html',
+    styleUrls: ['./materials-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [MatTableModule, MaterialsFilterComponent, SimpleListContainerComponent, MatCardModule, RouterLink, RouterLinkActive]
 })
 export class MaterialsListComponent {
   #materials = inject(MaterialsService).materialsWithDescriptions;

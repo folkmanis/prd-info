@@ -11,24 +11,23 @@ import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.dir
 import { ViewSizeDirective } from 'src/app/library/view-size';
 
 @Component({
-  selector: 'app-simple-list-container',
-  standalone: true,
-  templateUrl: './simple-list-container.component.html',
-  styleUrls: ['./simple-list-container.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    FormsModule,
-    RouterOutlet,
-    ScrollTopDirective,
-    RouterLink,
-    MatButtonModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatToolbarModule,
-    ViewSizeDirective,
-    NgTemplateOutlet,
-  ],
+    selector: 'app-simple-list-container',
+    templateUrl: './simple-list-container.component.html',
+    styleUrls: ['./simple-list-container.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        FormsModule,
+        RouterOutlet,
+        ScrollTopDirective,
+        RouterLink,
+        MatButtonModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatToolbarModule,
+        ViewSizeDirective,
+        NgTemplateOutlet,
+    ]
 })
 export class SimpleListContainerComponent {
   filterTemplate: TemplateRef<any> | null = null;

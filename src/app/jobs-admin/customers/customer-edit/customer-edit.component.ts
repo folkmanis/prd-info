@@ -25,25 +25,24 @@ type CustomerEditGroup = FormGroup<{
 }>;
 
 @Component({
-  selector: 'app-customer-edit',
-  standalone: true,
-  templateUrl: './customer-edit.component.html',
-  styleUrls: ['./customer-edit.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    ReactiveFormsModule,
-    SimpleFormContainerComponent,
-    PaytraqCustomerComponent,
-    InputUppercaseDirective,
-    FtpUserComponent,
-    CustomerContactsComponent,
-    ShippingAddressComponent,
-    MatFormFieldModule,
-    MatCardModule,
-    MatDividerModule,
-    MatCheckboxModule,
-    MatInput,
-  ],
+    selector: 'app-customer-edit',
+    templateUrl: './customer-edit.component.html',
+    styleUrls: ['./customer-edit.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        ReactiveFormsModule,
+        SimpleFormContainerComponent,
+        PaytraqCustomerComponent,
+        InputUppercaseDirective,
+        FtpUserComponent,
+        CustomerContactsComponent,
+        ShippingAddressComponent,
+        MatFormFieldModule,
+        MatCardModule,
+        MatDividerModule,
+        MatCheckboxModule,
+        MatInput,
+    ]
 })
 export class CustomerEditComponent implements CanComponentDeactivate {
   private customersService = inject(CustomersService);

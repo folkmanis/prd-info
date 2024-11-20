@@ -22,12 +22,11 @@ function maxLevel(levels: LogLevel[]) {
 }
 
 @Component({
-  selector: 'app-logfile',
-  templateUrl: './logfile.component.html',
-  styleUrls: ['./logfile.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [LogfileTableComponent, MatButtonModule, MatIconModule, LogLevelComponent, LogCalendarComponent, MatCardModule],
+    selector: 'app-logfile',
+    templateUrl: './logfile.component.html',
+    styleUrls: ['./logfile.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [LogfileTableComponent, MatButtonModule, MatIconModule, LogLevelComponent, LogCalendarComponent, MatCardModule]
 })
 export class LogfileComponent {
   private api = inject(LogfileApiService);

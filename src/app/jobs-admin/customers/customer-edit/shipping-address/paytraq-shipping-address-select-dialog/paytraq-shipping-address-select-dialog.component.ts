@@ -11,11 +11,10 @@ export interface PaytraqShippingAddressSelectDialogData {
 }
 
 @Component({
-  standalone: true,
-  imports: [MatButtonModule, MatDialogModule, MatListModule, AsyncPipe, MatIcon],
-  templateUrl: './paytraq-shipping-address-select-dialog.component.html',
-  styleUrl: './paytraq-shipping-address-select-dialog.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [MatButtonModule, MatDialogModule, MatListModule, AsyncPipe, MatIcon],
+    templateUrl: './paytraq-shipping-address-select-dialog.component.html',
+    styleUrl: './paytraq-shipping-address-select-dialog.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PaytraqShippingAddressSelectDialogComponent {
   private data: PaytraqShippingAddressSelectDialogData = inject(MAT_DIALOG_DATA);

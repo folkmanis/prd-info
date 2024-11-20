@@ -5,12 +5,11 @@ import { ApiVersionService } from 'src/app/library/http/api-version.service';
 import { getAppParams } from './app-params';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [RouterOutlet],
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [RouterOutlet]
 })
 export class AppComponent {
   private appBuild = getAppParams('version', 'appBuild');

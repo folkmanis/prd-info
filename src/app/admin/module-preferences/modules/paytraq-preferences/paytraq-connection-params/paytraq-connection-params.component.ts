@@ -20,24 +20,23 @@ function isMissingParams(controlValue: Record<string, any>): boolean {
 }
 
 @Component({
-  selector: 'app-paytraq-connection-params',
-  templateUrl: './paytraq-connection-params.component.html',
-  styleUrls: ['./paytraq-connection-params.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => PaytraqConnectionParamsComponent),
-      multi: true,
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => PaytraqConnectionParamsComponent),
-      multi: true,
-    },
-  ],
-  standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule],
+    selector: 'app-paytraq-connection-params',
+    templateUrl: './paytraq-connection-params.component.html',
+    styleUrls: ['./paytraq-connection-params.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => PaytraqConnectionParamsComponent),
+            multi: true,
+        },
+        {
+            provide: NG_VALIDATORS,
+            useExisting: forwardRef(() => PaytraqConnectionParamsComponent),
+            multi: true,
+        },
+    ],
+    imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule]
 })
 export class PaytraqConnectionParamsComponent implements ControlValueAccessor, Validator {
   private containerEl = viewChild<HTMLDivElement>('container');

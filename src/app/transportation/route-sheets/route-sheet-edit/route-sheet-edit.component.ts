@@ -22,23 +22,22 @@ import { GeneralSetupComponent } from './general-setup/general-setup.component';
 import { RouteTripsComponent } from './route-trips/route-trips.component';
 
 @Component({
-  selector: 'app-route-sheet-edit',
-  standalone: true,
-  imports: [
-    AsyncPipe,
-    SimpleFormContainerComponent,
-    FormsModule,
-    ReactiveFormsModule,
-    MatTabsModule,
-    MatDivider,
-    MatButtonModule,
-    GeneralSetupComponent,
-    FuelPurchasesComponent,
-    RouteTripsComponent,
-  ],
-  templateUrl: './route-sheet-edit.component.html',
-  styleUrl: './route-sheet-edit.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-route-sheet-edit',
+    imports: [
+        AsyncPipe,
+        SimpleFormContainerComponent,
+        FormsModule,
+        ReactiveFormsModule,
+        MatTabsModule,
+        MatDivider,
+        MatButtonModule,
+        GeneralSetupComponent,
+        FuelPurchasesComponent,
+        RouteTripsComponent,
+    ],
+    templateUrl: './route-sheet-edit.component.html',
+    styleUrl: './route-sheet-edit.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RouteSheetEditComponent implements CanComponentDeactivate {
   private readonly routeSheetService = inject(RouteSheetService);

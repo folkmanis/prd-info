@@ -12,12 +12,11 @@ type ColorsGroup = FormGroup<{
 }>;
 
 @Component({
-  selector: 'app-veikals-edit',
-  standalone: true,
-  templateUrl: './veikals-edit.component.html',
-  styleUrls: ['./veikals-edit.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, ReactiveFormsModule, InputDirective],
+    selector: 'app-veikals-edit',
+    templateUrl: './veikals-edit.component.html',
+    styleUrls: ['./veikals-edit.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [FormsModule, ReactiveFormsModule, InputDirective]
 })
 export class VeikalsEditComponent {
   private fb = new FormBuilder().nonNullable;

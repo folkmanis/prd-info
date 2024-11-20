@@ -29,34 +29,33 @@ import { JobFormComponent } from './job-form/job-form.component';
 import { KeyPressDirective } from './key-press.directive';
 
 @Component({
-  selector: 'app-repro-job-edit',
-  templateUrl: './repro-job-edit.component.html',
-  styleUrls: ['./repro-job-edit.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [],
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    MatButtonModule,
-    KeyPressDirective,
-    MatIcon,
-    RouterLink,
-    JobFormComponent,
-    MatCardModule,
-    FolderPathComponent,
-    UploadProgressComponent,
-    DropFolderComponent,
-    AsyncPipe,
-    MatFormFieldModule,
-    CdkTextareaAutosize,
-    MatDivider,
-    MatInputModule,
-    RouterLinkToReturnDirective,
-  ],
-  hostDirectives: [ViewSizeDirective],
-  host: {
-    '[class.app-disabled]': 'form.disabled',
-  },
+    selector: 'app-repro-job-edit',
+    templateUrl: './repro-job-edit.component.html',
+    styleUrls: ['./repro-job-edit.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [],
+    imports: [
+        ReactiveFormsModule,
+        MatButtonModule,
+        KeyPressDirective,
+        MatIcon,
+        RouterLink,
+        JobFormComponent,
+        MatCardModule,
+        FolderPathComponent,
+        UploadProgressComponent,
+        DropFolderComponent,
+        AsyncPipe,
+        MatFormFieldModule,
+        CdkTextareaAutosize,
+        MatDivider,
+        MatInputModule,
+        RouterLinkToReturnDirective,
+    ],
+    hostDirectives: [ViewSizeDirective],
+    host: {
+        '[class.app-disabled]': 'form.disabled',
+    }
 })
 export class ReproJobEditComponent {
   private snack = inject(MatSnackBar);

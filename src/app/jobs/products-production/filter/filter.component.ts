@@ -30,23 +30,22 @@ interface NullableInterval {
 }
 
 @Component({
-  selector: 'app-filter',
-  templateUrl: './filter.component.html',
-  styleUrls: ['./filter.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    MatExpansionModule,
-    ViewSizeDirective,
-    FilterSummaryComponent,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatDatepickerModule,
-    MatButtonModule,
-    MatIconModule,
-    MatMenuModule,
-  ],
+    selector: 'app-filter',
+    templateUrl: './filter.component.html',
+    styleUrls: ['./filter.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        MatExpansionModule,
+        ViewSizeDirective,
+        FilterSummaryComponent,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatDatepickerModule,
+        MatButtonModule,
+        MatIconModule,
+        MatMenuModule,
+    ]
 })
 export class FilterComponent {
   private dateUtils = inject(DateUtilsService);

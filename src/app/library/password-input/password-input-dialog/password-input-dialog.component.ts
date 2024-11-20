@@ -11,12 +11,11 @@ export interface PasswordDialogData {
 }
 
 @Component({
-  selector: 'app-password-input-dialog',
-  standalone: true,
-  templateUrl: './password-input-dialog.component.html',
-  styleUrls: ['./password-input-dialog.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatButtonModule, PasswordInputGroupComponent],
+    selector: 'app-password-input-dialog',
+    templateUrl: './password-input-dialog.component.html',
+    styleUrls: ['./password-input-dialog.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatButtonModule, PasswordInputGroupComponent]
 })
 export class PasswordInputDialogComponent implements OnInit {
   passwordControl = new FormControl<string>('');

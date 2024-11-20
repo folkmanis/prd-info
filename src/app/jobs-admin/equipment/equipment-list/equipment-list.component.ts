@@ -9,12 +9,11 @@ import { SimpleListContainerComponent } from 'src/app/library/simple-form';
 import { EquipmentService } from '../services/equipment.service';
 
 @Component({
-  selector: 'app-equipment-list',
-  standalone: true,
-  templateUrl: './equipment-list.component.html',
-  styleUrls: ['./equipment-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [SimpleListContainerComponent, RouterLink, RouterLinkActive, MatTableModule],
+    selector: 'app-equipment-list',
+    templateUrl: './equipment-list.component.html',
+    styleUrls: ['./equipment-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [SimpleListContainerComponent, RouterLink, RouterLinkActive, MatTableModule]
 })
 export class EquipmentListComponent {
   private equipmentService = inject(EquipmentService);

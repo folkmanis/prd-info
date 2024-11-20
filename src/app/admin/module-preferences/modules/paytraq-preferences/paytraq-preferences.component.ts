@@ -7,24 +7,23 @@ import { PaytraqConnectionParams } from 'src/app/interfaces';
 import { PaytraqConnectionParamsComponent } from './paytraq-connection-params/paytraq-connection-params.component';
 
 @Component({
-  selector: 'app-paytraq-preferences',
-  templateUrl: './paytraq-preferences.component.html',
-  styleUrls: ['./paytraq-preferences.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => PaytraqPreferencesComponent),
-      multi: true,
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => PaytraqPreferencesComponent),
-      multi: true,
-    },
-  ],
-  standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, MatCheckboxModule, MatDividerModule, PaytraqConnectionParamsComponent],
+    selector: 'app-paytraq-preferences',
+    templateUrl: './paytraq-preferences.component.html',
+    styleUrls: ['./paytraq-preferences.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => PaytraqPreferencesComponent),
+            multi: true,
+        },
+        {
+            provide: NG_VALIDATORS,
+            useExisting: forwardRef(() => PaytraqPreferencesComponent),
+            multi: true,
+        },
+    ],
+    imports: [FormsModule, ReactiveFormsModule, MatCheckboxModule, MatDividerModule, PaytraqConnectionParamsComponent]
 })
 export class PaytraqPreferencesComponent implements ControlValueAccessor, Validator {
   onTouchFn = () => {};

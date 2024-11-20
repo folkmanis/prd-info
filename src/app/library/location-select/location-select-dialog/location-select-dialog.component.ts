@@ -20,12 +20,11 @@ export interface ShippingMarker {
 const MAP_ID = 'ef56afe33b02cace';
 
 @Component({
-  selector: 'app-location-select-dialog',
-  standalone: true,
-  imports: [MatDialogContent, MatDialogTitle, MatDialogContainer, GoogleMap, MapAdvancedMarker, MatButton, MatDialogClose, MatDialogActions],
-  templateUrl: './location-select-dialog.component.html',
-  styleUrl: './location-select-dialog.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-location-select-dialog',
+    imports: [MatDialogContent, MatDialogTitle, MatDialogContainer, GoogleMap, MapAdvancedMarker, MatButton, MatDialogClose, MatDialogActions],
+    templateUrl: './location-select-dialog.component.html',
+    styleUrl: './location-select-dialog.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LocationSelectDialogComponent {
   private geoCoder = inject(MapGeocoder);

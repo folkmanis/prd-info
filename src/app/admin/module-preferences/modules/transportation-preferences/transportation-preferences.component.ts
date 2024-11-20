@@ -17,24 +17,23 @@ import { SimpleListTableComponent } from 'src/app/library/simple-list-table/simp
 import { FuelTypeDialogComponent } from './fuel-type-dialog/fuel-type-dialog.component';
 
 @Component({
-  selector: 'app-transportation-preferences',
-  standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, ShippingAddressPreferencesComponent, SimpleListTableComponent],
-  templateUrl: './transportation-preferences.component.html',
-  styleUrl: './transportation-preferences.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => TransportationPreferencesComponent),
-      multi: true,
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => TransportationPreferencesComponent),
-      multi: true,
-    },
-  ],
+    selector: 'app-transportation-preferences',
+    imports: [FormsModule, ReactiveFormsModule, ShippingAddressPreferencesComponent, SimpleListTableComponent],
+    templateUrl: './transportation-preferences.component.html',
+    styleUrl: './transportation-preferences.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => TransportationPreferencesComponent),
+            multi: true,
+        },
+        {
+            provide: NG_VALIDATORS,
+            useExisting: forwardRef(() => TransportationPreferencesComponent),
+            multi: true,
+        },
+    ]
 })
 export class TransportationPreferencesComponent implements ControlValueAccessor, Validator {
   form = inject(FormBuilder).group({

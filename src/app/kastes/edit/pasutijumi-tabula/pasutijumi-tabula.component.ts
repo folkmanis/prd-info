@@ -11,12 +11,11 @@ import { KastesPasutijumiService } from '../../services/kastes-pasutijumi.servic
 import { kastesPreferences } from '../../services/kastes-preferences.service';
 
 @Component({
-  selector: 'app-pasutijumi-tabula',
-  standalone: true,
-  templateUrl: './pasutijumi-tabula.component.html',
-  styleUrls: ['./pasutijumi-tabula.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatTableModule, MatIconModule, SimpleListContainerComponent, RouterLink, RouterLinkActive, DatePipe],
+    selector: 'app-pasutijumi-tabula',
+    templateUrl: './pasutijumi-tabula.component.html',
+    styleUrls: ['./pasutijumi-tabula.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [MatTableModule, MatIconModule, SimpleListContainerComponent, RouterLink, RouterLinkActive, DatePipe]
 })
 export class PasutijumiTabulaComponent {
   private kastesPasutijumiService = inject(KastesPasutijumiService);

@@ -26,24 +26,23 @@ type JobProductionStageControlType = FormGroup<{
 }>;
 
 @Component({
-  selector: 'app-product-production',
-  standalone: true,
-  templateUrl: './product-production.component.html',
-  styleUrls: ['./product-production.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [SimpleFormContainerComponent, ReactiveFormsModule, ProductionMaterialComponent, SelectDirective, MatDividerModule, MatCardModule, MatIconModule, MatButtonModule],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: ProductProductionComponent,
-      multi: true,
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: ProductProductionComponent,
-      multi: true,
-    },
-  ],
+    selector: 'app-product-production',
+    templateUrl: './product-production.component.html',
+    styleUrls: ['./product-production.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [SimpleFormContainerComponent, ReactiveFormsModule, ProductionMaterialComponent, SelectDirective, MatDividerModule, MatCardModule, MatIconModule, MatButtonModule],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: ProductProductionComponent,
+            multi: true,
+        },
+        {
+            provide: NG_VALIDATORS,
+            useExisting: ProductProductionComponent,
+            multi: true,
+        },
+    ]
 })
 export class ProductProductionComponent implements ControlValueAccessor, Validator {
   private chDetector = inject(ChangeDetectorRef);

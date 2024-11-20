@@ -15,12 +15,11 @@ import { A11yModule } from '@angular/cdk/a11y';
 import { KeyPressDirective } from 'src/app/jobs/repro-jobs/repro-job-edit/key-press.directive';
 
 @Component({
-  selector: 'app-pakosanas-saraksts',
-  standalone: true,
-  templateUrl: './pakosanas-saraksts.component.html',
-  styleUrls: ['./pakosanas-saraksts.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatTableModule, KastesTotalsComponent, MatIconModule, TotalsComponent, VeikalsEditComponent, MatButtonModule, TitleCasePipe, AsyncPipe, A11yModule, KeyPressDirective],
+    selector: 'app-pakosanas-saraksts',
+    templateUrl: './pakosanas-saraksts.component.html',
+    styleUrls: ['./pakosanas-saraksts.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [MatTableModule, KastesTotalsComponent, MatIconModule, TotalsComponent, VeikalsEditComponent, MatButtonModule, TitleCasePipe, AsyncPipe, A11yModule, KeyPressDirective]
 })
 export class PakosanasSarakstsComponent {
   colorCodes = kastesPreferences('colors');

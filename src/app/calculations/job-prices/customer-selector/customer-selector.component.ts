@@ -6,12 +6,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { JobsWithoutInvoicesTotals } from 'src/app/jobs';
 
 @Component({
-  selector: 'app-customer-selector',
-  standalone: true,
-  templateUrl: './customer-selector.component.html',
-  styleUrls: ['./customer-selector.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatFormFieldModule, MatSelectModule, MatOptionModule, FormsModule],
+    selector: 'app-customer-selector',
+    templateUrl: './customer-selector.component.html',
+    styleUrls: ['./customer-selector.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [MatFormFieldModule, MatSelectModule, MatOptionModule, FormsModule]
 })
 export class CustomerSelectorComponent {
   customers = input([] as JobsWithoutInvoicesTotals[]);

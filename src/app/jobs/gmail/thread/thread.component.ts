@@ -15,12 +15,11 @@ import { MessageComponent } from '../message/message.component';
 import { GmailService } from '../services/gmail.service';
 
 @Component({
-  selector: 'app-thread',
-  templateUrl: './thread.component.html',
-  styleUrls: ['./thread.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [MatCardModule, MatButtonModule, RouterLink, MatProgressBarModule, MatExpansionModule, MatIconModule, MessageComponent],
+    selector: 'app-thread',
+    templateUrl: './thread.component.html',
+    styleUrls: ['./thread.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [MatCardModule, MatButtonModule, RouterLink, MatProgressBarModule, MatExpansionModule, MatIconModule, MessageComponent]
 })
 export class ThreadComponent {
   private gmailService = inject(GmailService);
