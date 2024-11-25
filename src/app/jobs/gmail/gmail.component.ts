@@ -22,11 +22,11 @@ const DEFAULT_FILTER: ThreadsFilterQuery = {
 };
 
 @Component({
-    selector: 'app-gmail',
-    templateUrl: './gmail.component.html',
-    styleUrls: ['./gmail.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatButtonModule, MatIconModule, ThreadsFilterComponent, GmailPaginatorComponent, MatProgressBarModule, MatTableModule, ScrollTopDirective, RouterLink]
+  selector: 'app-gmail',
+  templateUrl: './gmail.component.html',
+  styleUrls: ['./gmail.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatButtonModule, MatIconModule, ThreadsFilterComponent, GmailPaginatorComponent, MatProgressBarModule, MatTableModule, ScrollTopDirective, RouterLink],
 })
 export class GmailComponent {
   private gmailService = inject(GmailService);
@@ -90,23 +90,26 @@ export class GmailComponent {
     this.pageIdx.set(idx);
   }
 
-  private getThreadsPage(fltr: ThreadsFilterQuery, idx: number): Observable<Threads> {
+  private async getThreadsPage(fltr: ThreadsFilterQuery, idx: number): Promise<Threads> {
     if (idx === 0) {
-      this.threadsCache = [];
-      return this.gmailService.getThreads(fltr).pipe(tap((data) => this.threadsCache.push(data)));
+      const data = await this.gmailService.getThreads(fltr);
+      this.threadsCache = [data];
+      return data;
     }
 
     if (this.threadsCache[idx]) {
-      return of(this.threadsCache[idx]);
+      return this.threadsCache[idx];
     }
 
     const pageToken = this.threadsCache[idx - 1]?.nextPageToken;
 
     if (!pageToken) {
       this.pageIdx.set(0);
-      return EMPTY;
+      return;
     }
 
-    return this.gmailService.getThreads({ ...fltr, pageToken }).pipe(tap((data) => this.threadsCache.push(data)));
+    const data = await this.gmailService.getThreads({ ...fltr, pageToken });
+    this.threadsCache.push(data);
+    return data;
   }
 }

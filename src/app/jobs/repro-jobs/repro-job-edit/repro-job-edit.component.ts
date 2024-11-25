@@ -1,4 +1,3 @@
-import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { AsyncPipe } from '@angular/common';
 import { afterNextRender, ChangeDetectionStrategy, Component, computed, effect, inject, Injector, input, model, untracked, viewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -29,33 +28,31 @@ import { JobFormComponent } from './job-form/job-form.component';
 import { KeyPressDirective } from './key-press.directive';
 
 @Component({
-    selector: 'app-repro-job-edit',
-    templateUrl: './repro-job-edit.component.html',
-    styleUrls: ['./repro-job-edit.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [],
-    imports: [
-        ReactiveFormsModule,
-        MatButtonModule,
-        KeyPressDirective,
-        MatIcon,
-        RouterLink,
-        JobFormComponent,
-        MatCardModule,
-        FolderPathComponent,
-        UploadProgressComponent,
-        DropFolderComponent,
-        AsyncPipe,
-        MatFormFieldModule,
-        CdkTextareaAutosize,
-        MatDivider,
-        MatInputModule,
-        RouterLinkToReturnDirective,
-    ],
-    hostDirectives: [ViewSizeDirective],
-    host: {
-        '[class.app-disabled]': 'form.disabled',
-    }
+  selector: 'app-repro-job-edit',
+  templateUrl: './repro-job-edit.component.html',
+  styleUrls: ['./repro-job-edit.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    ReactiveFormsModule,
+    MatButtonModule,
+    KeyPressDirective,
+    MatIcon,
+    RouterLink,
+    JobFormComponent,
+    MatCardModule,
+    FolderPathComponent,
+    UploadProgressComponent,
+    DropFolderComponent,
+    AsyncPipe,
+    MatFormFieldModule,
+    MatDivider,
+    MatInputModule,
+    RouterLinkToReturnDirective,
+  ],
+  hostDirectives: [ViewSizeDirective],
+  host: {
+    '[class.app-disabled]': 'form.disabled',
+  },
 })
 export class ReproJobEditComponent {
   private snack = inject(MatSnackBar);
@@ -102,20 +99,17 @@ export class ReproJobEditComponent {
   });
 
   constructor() {
-    effect(
-      () => {
-        const initial = this.initialValue();
-        this.form.reset(initial);
-        this.updateDisabledState(initial);
-        afterNextRender(
-          () => {
-            initial.customer || this.customerInput().focusCustomer();
-          },
-          { injector: this.injector },
-        );
-      },
-      { allowSignalWrites: true },
-    );
+    effect(() => {
+      const initial = this.initialValue();
+      this.form.reset(initial);
+      this.updateDisabledState(initial);
+      afterNextRender(
+        () => {
+          initial.customer || this.customerInput().focusCustomer();
+        },
+        { injector: this.injector },
+      );
+    });
 
     effect((onCleanup) => {
       const uploadRef = this.uploadRef();
@@ -134,17 +128,14 @@ export class ReproJobEditComponent {
       onCleanup(() => subs?.unsubscribe());
     });
 
-    effect(
-      () => {
-        const defaultFolder = this.dropFolders()[0] || null;
-        const active = this.uploadRef() && defaultFolder !== null;
-        untracked(() => {
-          this.selectedDropFolder.set(defaultFolder);
-          this.dropFolderActive.set(active);
-        });
-      },
-      { allowSignalWrites: true },
-    );
+    effect(() => {
+      const defaultFolder = this.dropFolders()[0] || null;
+      const active = this.uploadRef() && defaultFolder !== null;
+      untracked(() => {
+        this.selectedDropFolder.set(defaultFolder);
+        this.dropFolderActive.set(active);
+      });
+    });
   }
 
   async onUpdate() {

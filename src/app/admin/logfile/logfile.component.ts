@@ -22,11 +22,11 @@ function maxLevel(levels: LogLevel[]) {
 }
 
 @Component({
-    selector: 'app-logfile',
-    templateUrl: './logfile.component.html',
-    styleUrls: ['./logfile.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [LogfileTableComponent, MatButtonModule, MatIconModule, LogLevelComponent, LogCalendarComponent, MatCardModule]
+  selector: 'app-logfile',
+  templateUrl: './logfile.component.html',
+  styleUrls: ['./logfile.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [LogfileTableComponent, MatButtonModule, MatIconModule, LogLevelComponent, LogCalendarComponent, MatCardModule],
 })
 export class LogfileComponent {
   private api = inject(LogfileApiService);
@@ -58,43 +58,31 @@ export class LogfileComponent {
   availableDates = signal<Date[]>([]);
 
   constructor() {
-    effect(
-      () => {
-        const level = maxLevel(this.logLevels());
-        this.logLevel.set(level);
-      },
-      { allowSignalWrites: true },
-    );
+    effect(() => {
+      const level = maxLevel(this.logLevels());
+      this.logLevel.set(level);
+    });
 
-    effect(
-      (onCleanup) => {
-        const subscription = this.getLog(this.logFilter());
-        onCleanup(() => subscription?.unsubscribe());
-      },
-      { allowSignalWrites: true },
-    );
+    effect((onCleanup) => {
+      const subscription = this.getLog(this.logFilter());
+      onCleanup(() => subscription?.unsubscribe());
+    });
 
-    effect(
-      (onCleanup) => {
-        const logLevel = this.logLevel();
-        if (typeof logLevel !== 'number') {
-          return;
-        }
-        const subscription = this.api.getDatesGroups(logLevel).subscribe((dates) => this.availableDates.set(dates));
+    effect((onCleanup) => {
+      const logLevel = this.logLevel();
+      if (typeof logLevel !== 'number') {
+        return;
+      }
+      const subscription = this.api.getDatesGroups(logLevel).subscribe((dates) => this.availableDates.set(dates));
 
-        onCleanup(() => subscription?.unsubscribe());
-      },
-      { allowSignalWrites: true },
-    );
+      onCleanup(() => subscription?.unsubscribe());
+    });
 
-    effect(
-      () => {
-        const availableDates = this.availableDates();
-        const logDate = untracked(this.logDate);
-        this.logDate.set(validDate(logDate, availableDates));
-      },
-      { allowSignalWrites: true },
-    );
+    effect(() => {
+      const availableDates = this.availableDates();
+      const logDate = untracked(this.logDate);
+      this.logDate.set(validDate(logDate, availableDates));
+    });
   }
 
   onReload() {

@@ -22,28 +22,27 @@ import { TabulaComponent } from './tabula/tabula.component';
 import { TotalsForSelectedSizeComponent } from './totals-for-selected-size/totals-for-selected-size.component';
 
 @Component({
-    selector: 'app-selector',
-    templateUrl: './selector.component.html',
-    styleUrls: ['./selector.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        MatSidenavModule,
-        MatTabsModule,
-        RouterLink,
-        MatButtonModule,
-        MatIconModule,
-        MatSlideToggleModule,
-        MatTooltipModule,
-        FormsModule,
-        ReactiveFormsModule,
-        TabulaComponent,
-        DrawerButtonDirective,
-        MatDividerModule,
-        LabelsComponent,
-        OrderTotalsComponent,
-        KasteDialogComponent,
-        TotalsForSelectedSizeComponent,
-    ]
+  selector: 'app-selector',
+  templateUrl: './selector.component.html',
+  styleUrls: ['./selector.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    MatSidenavModule,
+    MatTabsModule,
+    RouterLink,
+    MatButtonModule,
+    MatIconModule,
+    MatSlideToggleModule,
+    MatTooltipModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TabulaComponent,
+    DrawerButtonDirective,
+    MatDividerModule,
+    LabelsComponent,
+    OrderTotalsComponent,
+    TotalsForSelectedSizeComponent,
+  ],
 })
 export class SelectorComponent {
   private tabulaService = inject(PackingTableService);
@@ -76,34 +75,25 @@ export class SelectorComponent {
   labelStatus = signal<LabelStatus>({ type: 'none' });
 
   constructor() {
-    effect(
-      async () => {
-        if (this.jobId()) {
-          const packages = await this.tabulaService.getAddressPackages(this.jobId());
-          this.allAddressPackages.set(packages);
-        }
-      },
-      { allowSignalWrites: true },
-    );
+    effect(async () => {
+      if (this.jobId()) {
+        const packages = await this.tabulaService.getAddressPackages(this.jobId());
+        this.allAddressPackages.set(packages);
+      }
+    });
 
-    effect(
-      async () => {
-        if (this.jobId()) {
-          this.boxSizes.set(await this.tabulaService.getBoxSizeQuantities(this.jobId()));
-        }
-      },
-      { allowSignalWrites: true },
-    );
+    effect(async () => {
+      if (this.jobId()) {
+        this.boxSizes.set(await this.tabulaService.getBoxSizeQuantities(this.jobId()));
+      }
+    });
 
-    effect(
-      async () => {
-        if (this.jobId()) {
-          const job = await this.tabulaService.getKastesJob(this.jobId());
-          this.packagesJob.set(job);
-        }
-      },
-      { allowSignalWrites: true },
-    );
+    effect(async () => {
+      if (this.jobId()) {
+        const job = await this.tabulaService.getKastesJob(this.jobId());
+        this.packagesJob.set(job);
+      }
+    });
 
     effect(() => {
       this.activeBoxSize();

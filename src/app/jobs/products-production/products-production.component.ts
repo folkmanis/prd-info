@@ -9,11 +9,11 @@ import { ProductsProductionService } from './services/products-production.servic
 import { Totals } from './services/totals';
 
 @Component({
-    selector: 'app-products-production',
-    templateUrl: './products-production.component.html',
-    styleUrls: ['./products-production.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [FilterComponent, ProductsTableComponent, ScrollTopDirective]
+  selector: 'app-products-production',
+  templateUrl: './products-production.component.html',
+  styleUrls: ['./products-production.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [FilterComponent, ProductsTableComponent, ScrollTopDirective],
 })
 export class ProductsProductionComponent {
   private productsService = inject(ProductsProductionService);
@@ -35,12 +35,9 @@ export class ProductsProductionComponent {
   });
 
   constructor() {
-    effect(
-      () => {
-        this.selection.set(this.data());
-      },
-      { allowSignalWrites: true },
-    );
+    effect(() => {
+      this.selection.set(this.data());
+    });
   }
 
   async onSort(sort: string) {

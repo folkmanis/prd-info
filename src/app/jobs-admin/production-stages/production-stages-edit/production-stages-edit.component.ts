@@ -21,22 +21,22 @@ type ProductionStageControl = {
 };
 
 @Component({
-    selector: 'app-production-stages-edit',
-    templateUrl: './production-stages-edit.component.html',
-    styleUrls: ['./production-stages-edit.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        SimpleFormContainerComponent,
-        ReactiveFormsModule,
-        FormsModule,
-        DropFoldersComponent,
-        MatCardModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule,
-        MatOptionModule,
-        MatSelectModule,
-    ]
+  selector: 'app-production-stages-edit',
+  templateUrl: './production-stages-edit.component.html',
+  styleUrls: ['./production-stages-edit.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    SimpleFormContainerComponent,
+    ReactiveFormsModule,
+    FormsModule,
+    DropFoldersComponent,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatOptionModule,
+    MatSelectModule,
+  ],
 })
 export class ProductionStagesEditComponent implements CanComponentDeactivate {
   form: FormGroup<ProductionStageControl> = inject(FormBuilder).group({
@@ -88,13 +88,10 @@ export class ProductionStagesEditComponent implements CanComponentDeactivate {
     private route: ActivatedRoute,
     private router: Router,
   ) {
-    effect(
-      () => {
-        const stage = this.data().productionStage || new ProductionStage();
-        this.setInitialValue(stage);
-      },
-      { allowSignalWrites: true },
-    );
+    effect(() => {
+      const stage = this.data().productionStage || new ProductionStage();
+      this.setInitialValue(stage);
+    });
   }
 
   onReset(): void {

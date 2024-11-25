@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { ClassTransformer } from 'class-transformer';
+import { inject, Injectable } from '@angular/core';
 import { pickBy } from 'lodash-es';
 import { firstValueFrom, map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
+import { AppClassTransformerService } from 'src/app/library';
 import { HttpOptions } from 'src/app/library/http';
 import { Job, JobPartial, JobQueryFilter, JobsProduction, JobsProductionQuery, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
 import { JobsUserPreferences } from '../interfaces/jobs-user-preferences';
@@ -21,17 +21,15 @@ export function pickNotNull<T extends object>(obj: T): Partial<T> {
 })
 export class JobsApiService {
   private path = getAppParams('apiPath') + 'jobs/';
+  private http = inject(HttpClient);
+  private transformer = inject(AppClassTransformerService);
 
-  constructor(
-    private http: HttpClient,
-    private transformer: ClassTransformer,
-  ) {}
-
-  getAll(filter: JobQueryFilter, unwind: true): Observable<JobUnwindedPartial[]>;
-  getAll(filter: JobQueryFilter, unwind: false): Observable<JobPartial[]>;
+  getAll(filter: JobQueryFilter, unwind: true): Promise<JobUnwindedPartial[]>;
+  getAll(filter: JobQueryFilter, unwind: false): Promise<JobPartial[]>;
   getAll(filter: JobQueryFilter, unwind: boolean = false) {
     filter.unwindProducts = unwind ? 1 : 0;
-    return this.http.get(this.path, new HttpOptions(filter));
+    const response$ = this.http.get(this.path, new HttpOptions(filter));
+    return firstValueFrom(response$);
   }
 
   async updateMany(jobs: Partial<Job>[], params?: JobUpdateParams): Promise<number> {

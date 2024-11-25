@@ -9,7 +9,7 @@ import { GmailApiService } from './gmail-api.service';
 export class GmailService {
   private api = inject(GmailApiService);
 
-  getThreads(filter: ThreadsFilterQuery): Observable<Threads> {
+  getThreads(filter: ThreadsFilterQuery): Promise<Threads> {
     return this.api.getThreads(filter);
   }
 

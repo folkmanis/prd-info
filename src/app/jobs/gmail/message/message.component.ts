@@ -1,50 +1,39 @@
-import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, Output, ViewChild, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output, signal, viewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { MatIconModule } from '@angular/material/icon';
+import { MatIcon } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Subject } from 'rxjs';
 import { AttachmentsComponent } from '../attachments/attachments.component';
 import { Attachment, Message } from '../interfaces';
 
 @Component({
-    selector: 'app-message',
-    templateUrl: './message.component.html',
-    styleUrls: ['./message.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [AttachmentsComponent, MatExpansionModule, MatButtonModule, MatIconModule, MatMenuModule, MatCardModule, MatProgressBarModule, AsyncPipe]
+  selector: 'app-message',
+  templateUrl: './message.component.html',
+  styleUrls: ['./message.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [AttachmentsComponent, MatExpansionModule, MatButtonModule, MatIcon, MatMenuModule, MatCardModule, MatProgressBarModule],
 })
 export class MessageComponent {
-  @ViewChild(AttachmentsComponent) attachmentsList: AttachmentsComponent;
+  private sanitizer = inject(DomSanitizer);
 
-  private _message: Message;
-  @Input() set message(value: Message) {
-    if (value instanceof Message) {
-      this._message = value;
-    }
-  }
-  get message() {
-    return this._message;
-  }
+  attachmentsList = viewChild(AttachmentsComponent);
 
-  @Output()
-  attachmentsConfirm = new Subject<Attachment[]>();
+  message = input.required<Message>();
+
+  attachmentsConfirm = output<Attachment[]>();
 
   busy = signal(false);
 
   markAsRead = true;
-
-  constructor(private sanitizer: DomSanitizer) {}
 
   replaceBr(str: string) {
     return this.sanitizer.bypassSecurityTrustHtml(str?.replace(/\r\n/g, '<br />'));
   }
 
   onCreateJob(attachments: Attachment[]) {
-    this.attachmentsConfirm.next(attachments);
+    this.attachmentsConfirm.emit(attachments);
   }
 }

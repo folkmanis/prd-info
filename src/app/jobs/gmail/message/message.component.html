@@ -1,8 +1,8 @@
-<div [innerHTML]="replaceBr(message.html || message.plain)"></div>
+<div [innerHTML]="replaceBr(message().html || message().plain)"></div>
 
-<app-attachments [attachments]="message.attachments" #attachmentList> </app-attachments>
+<app-attachments [attachments]="message().attachments" #attachmentList />
 
-@if (message.hasAttachment) {
+@if (message().hasAttachment) {
   <mat-action-row>
     <button mat-button (click)="markAsRead = true; onCreateJob(attachmentList.selected)" [disabled]="!attachmentList.selected?.length || busy()">
       <mat-icon> drafts </mat-icon>

@@ -11,28 +11,27 @@ import { distinctUntilChanged, filter, firstValueFrom, map } from 'rxjs';
 import { ShippingAddress } from 'src/app/interfaces';
 import { PaytraqShippingAddress } from 'src/app/interfaces/paytraq';
 import { AppClassTransformerService } from 'src/app/library';
-import { InputUppercaseDirective } from 'src/app/library/directives/input-uppercase.directive';
+import { LocationSelectService } from 'src/app/library/location-select';
 import { configuration } from 'src/app/services/config.provider';
 import { PaytraqClientService } from '../../services/paytraq-client.service';
 import {
   PaytraqShippingAddressSelectDialogComponent,
   PaytraqShippingAddressSelectDialogData,
 } from './paytraq-shipping-address-select-dialog/paytraq-shipping-address-select-dialog.component';
-import { LocationSelectService } from 'src/app/library/location-select';
 
 @Component({
-    selector: 'app-shipping-address',
-    imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInput, MatSelectModule, InputUppercaseDirective, MatButton, MatIconButton, MatIcon],
-    templateUrl: './shipping-address.component.html',
-    styleUrl: './shipping-address.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: ShippingAddressComponent,
-            multi: true,
-        },
-    ]
+  selector: 'app-shipping-address',
+  imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInput, MatSelectModule, MatButton, MatIconButton, MatIcon],
+  templateUrl: './shipping-address.component.html',
+  styleUrl: './shipping-address.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: ShippingAddressComponent,
+      multi: true,
+    },
+  ],
 })
 export class ShippingAddressComponent implements ControlValueAccessor {
   private transformer = inject(AppClassTransformerService);

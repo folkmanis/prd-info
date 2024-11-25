@@ -30,22 +30,22 @@ interface NullableInterval {
 }
 
 @Component({
-    selector: 'app-filter',
-    templateUrl: './filter.component.html',
-    styleUrls: ['./filter.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        MatExpansionModule,
-        ViewSizeDirective,
-        FilterSummaryComponent,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatDatepickerModule,
-        MatButtonModule,
-        MatIconModule,
-        MatMenuModule,
-    ]
+  selector: 'app-filter',
+  templateUrl: './filter.component.html',
+  styleUrls: ['./filter.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    MatExpansionModule,
+    ViewSizeDirective,
+    FilterSummaryComponent,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatDatepickerModule,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+  ],
 })
 export class FilterComponent {
   private dateUtils = inject(DateUtilsService);
@@ -84,12 +84,9 @@ export class FilterComponent {
   filterChange = output<JobsProductionFilterQuery>();
 
   constructor() {
-    effect(
-      () => {
-        this.writeValue(this.filter());
-      },
-      { allowSignalWrites: true },
-    );
+    effect(() => {
+      this.writeValue(this.filter());
+    });
   }
 
   onChangeJobStatus(value: number[]) {

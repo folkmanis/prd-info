@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -12,23 +12,23 @@ import { DialogData, MaterialsPriceDialogComponent } from '../materials-price-di
 import { MaterialsPricesDataSource } from './materials-prices-data-source';
 
 @Component({
-    selector: 'app-materials-prices',
-    templateUrl: './materials-prices.component.html',
-    styleUrls: ['./materials-prices.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatTableModule, MatButtonModule, MatIconModule, CurrencyPipe],
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: MaterialsPricesComponent,
-            multi: true,
-        },
-        {
-            provide: NG_VALIDATORS,
-            useExisting: MaterialsPricesComponent,
-            multi: true,
-        },
-    ]
+  selector: 'app-materials-prices',
+  templateUrl: './materials-prices.component.html',
+  styleUrls: ['./materials-prices.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatTableModule, MatButtonModule, MatIconModule, CurrencyPipe],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: MaterialsPricesComponent,
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: MaterialsPricesComponent,
+      multi: true,
+    },
+  ],
 })
 export class MaterialsPricesComponent implements ControlValueAccessor, Validator {
   private dialogService = inject(MatDialog);
@@ -40,7 +40,7 @@ export class MaterialsPricesComponent implements ControlValueAccessor, Validator
 
   disabled = false;
 
-  @Input() units: string = '';
+  readonly units = input<string>('');
 
   onTouchFn: () => void = () => {};
 
@@ -89,7 +89,7 @@ export class MaterialsPricesComponent implements ControlValueAccessor, Validator
   private openEditor(price: MaterialPrice): Observable<MaterialPrice> {
     const data: DialogData = {
       value: price,
-      units: this.units,
+      units: this.units(),
     };
     return this.dialogService
       .open<MaterialsPriceDialogComponent, DialogData, Record<string, any>>(MaterialsPriceDialogComponent, { data })

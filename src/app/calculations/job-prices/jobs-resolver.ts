@@ -16,11 +16,10 @@ export const resolveJobData: ResolveFn<JobData[]> = async (route) => {
     products = (await productsService.productsCustomer(customer)).filter((prod) => prod.price !== undefined);
   }
 
-  const jobs$ = jobService.getJobListUnwinded({
+  const jobs = await jobService.getJobListUnwinded({
     invoice: 0,
     customer,
   });
-  const jobs = await firstValueFrom(jobs$);
 
   return jobs
     .filter((job) => !!job.products)

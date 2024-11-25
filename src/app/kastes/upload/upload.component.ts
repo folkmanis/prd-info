@@ -20,21 +20,21 @@ import { KastesTabulaDropDirective } from './kastes-tabula-drop.directive';
 import { UploadAdresesComponent } from './upload-adreses/upload-adreses.component';
 
 @Component({
-    selector: 'app-upload',
-    templateUrl: './upload.component.html',
-    styleUrls: ['./upload.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        FormsModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatCardModule,
-        MatButtonModule,
-        KastesTabulaDropDirective,
-        ColorTotalsComponent,
-        UploadAdresesComponent,
-    ]
+  selector: 'app-upload',
+  templateUrl: './upload.component.html',
+  styleUrls: ['./upload.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    FormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatCardModule,
+    MatButtonModule,
+    KastesTabulaDropDirective,
+    ColorTotalsComponent,
+    UploadAdresesComponent,
+  ],
 })
 export class UploadComponent {
   private navigate = navigateRelative();
@@ -58,17 +58,14 @@ export class UploadComponent {
   orderIdSet = computed(() => typeof this.orderId() === 'number' && isFinite(this.orderId()));
 
   constructor() {
-    effect(
-      async () => {
-        if (this.orderIdSet()) {
-          const { products } = await this.pasutijumiService.getKastesJob(this.orderId());
-          this.plannedTotals.set(jobProductsToColorTotals(products || []));
-        } else {
-          this.plannedTotals.set(null);
-        }
-      },
-      { allowSignalWrites: true },
-    );
+    effect(async () => {
+      if (this.orderIdSet()) {
+        const { products } = await this.pasutijumiService.getKastesJob(this.orderId());
+        this.plannedTotals.set(jobProductsToColorTotals(products || []));
+      } else {
+        this.plannedTotals.set(null);
+      }
+    });
   }
 
   async onXlsDrop(file: File | undefined) {

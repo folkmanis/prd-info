@@ -19,53 +19,52 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ExpressionInputDirective } from 'prd-cdk';
 import { CustomerProduct } from 'src/app/interfaces';
 import { JobProduct } from 'src/app/jobs/interfaces';
 import { ViewSizeDirective } from 'src/app/library/view-size';
 import { ProductAutocompleteComponent } from '../product-autocomplete/product-autocomplete.component';
 import { JobProductForm } from './job-product-form.interface';
 import { ProductControlDirective } from './product-control.directive';
-import { ExpressionInputDirective } from 'prd-cdk';
 
 @Component({
-    selector: 'app-repro-product',
-    templateUrl: './repro-product.component.html',
-    styleUrls: ['./repro-product.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        ViewSizeDirective,
-        FormsModule,
-        ReactiveFormsModule,
-        MatButtonModule,
-        MatIconModule,
-        ProductAutocompleteComponent,
-        MatFormFieldModule,
-        MatInputModule,
-        MatTooltipModule,
-        CurrencyPipe,
-        ProductControlDirective,
-        ExpressionInputDirective,
-    ],
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: ReproProductComponent,
-            multi: true,
-        },
-        {
-            provide: NG_VALIDATORS,
-            useExisting: ReproProductComponent,
-            multi: true,
-        },
-    ],
-    host: {
-        '[class.disabled]': 'productForm.disabled',
+  selector: 'app-repro-product',
+  templateUrl: './repro-product.component.html',
+  styleUrls: ['./repro-product.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatIconModule,
+    ProductAutocompleteComponent,
+    MatFormFieldModule,
+    MatInputModule,
+    MatTooltipModule,
+    CurrencyPipe,
+    ProductControlDirective,
+    ExpressionInputDirective,
+  ],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: ReproProductComponent,
+      multi: true,
     },
-    hostDirectives: [
-        {
-            directive: ViewSizeDirective,
-        },
-    ]
+    {
+      provide: NG_VALIDATORS,
+      useExisting: ReproProductComponent,
+      multi: true,
+    },
+  ],
+  host: {
+    '[class.disabled]': 'productForm.disabled',
+  },
+  hostDirectives: [
+    {
+      directive: ViewSizeDirective,
+    },
+  ],
 })
 export class ReproProductComponent implements ControlValueAccessor, Validator {
   private productNameControl = viewChild.required(ProductAutocompleteComponent);

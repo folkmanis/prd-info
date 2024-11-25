@@ -14,11 +14,11 @@ import { DragDropDirective } from './drag-drop.directive';
 import { DragableDirective } from './dragable.directive';
 
 @Component({
-    selector: 'app-upload-adreses',
-    templateUrl: './upload-adreses.component.html',
-    styleUrls: ['./upload-adreses.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatButtonModule, MatCheckboxModule, MatChipsModule, DragableDirective, MatTableModule, DragDropDirective, MatIconModule, ScrollTopDirective]
+  selector: 'app-upload-adreses',
+  templateUrl: './upload-adreses.component.html',
+  styleUrls: ['./upload-adreses.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatButtonModule, MatCheckboxModule, MatChipsModule, DragableDirective, MatTableModule, DragDropDirective, MatIconModule, ScrollTopDirective],
 })
 export class UploadAdresesComponent {
   rowSelection = new SelectionModel<number>(true);
@@ -50,14 +50,11 @@ export class UploadAdresesComponent {
   displayCheckboxColumns = computed(() => this.displayColumns().map((column) => 'checkBox-' + column));
 
   constructor() {
-    effect(
-      () => {
-        this.columnSelection.clear();
-        this.selectAllRows();
-        this.resetChips();
-      },
-      { allowSignalWrites: true },
-    );
+    effect(() => {
+      this.columnSelection.clear();
+      this.selectAllRows();
+      this.resetChips();
+    });
   }
 
   assignedChipName = (column: number) => this.assignedChips().find(([idx]) => idx === column)?.[1];

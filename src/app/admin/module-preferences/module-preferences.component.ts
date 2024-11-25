@@ -15,23 +15,23 @@ import { PreferencesCardComponent } from './preferences-card/preferences-card.co
 import { TransportationPreferencesComponent } from './modules/transportation-preferences/transportation-preferences.component';
 
 @Component({
-    selector: 'app-module-preferences',
-    templateUrl: './module-preferences.component.html',
-    styleUrls: ['./module-preferences.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [],
-    imports: [
-        ModuleGroupComponent,
-        FormsModule,
-        ReactiveFormsModule,
-        PreferencesCardComponent,
-        CardTitleDirective,
-        SystemPreferencesComponent,
-        KastesPreferencesComponent,
-        JobsPreferencesComponent,
-        PaytraqPreferencesComponent,
-        TransportationPreferencesComponent,
-    ]
+  selector: 'app-module-preferences',
+  templateUrl: './module-preferences.component.html',
+  styleUrls: ['./module-preferences.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [],
+  imports: [
+    ModuleGroupComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    PreferencesCardComponent,
+    CardTitleDirective,
+    SystemPreferencesComponent,
+    KastesPreferencesComponent,
+    JobsPreferencesComponent,
+    PaytraqPreferencesComponent,
+    TransportationPreferencesComponent,
+  ],
 })
 export class ModulePreferencesComponent implements CanComponentDeactivate {
   private systemPreferencesService = inject(SystemPreferencesService);
@@ -41,13 +41,10 @@ export class ModulePreferencesComponent implements CanComponentDeactivate {
   prefForm = inject(FormBuilder).group<SystemPreferences>(Object.assign({}, ...MODULES.map((mod) => ({ [mod]: [{}] }))));
 
   constructor() {
-    effect(
-      () => {
-        this.prefForm.reset(this.savedConfiguration());
-        this.prefForm.markAsPristine();
-      },
-      { allowSignalWrites: true },
-    );
+    effect(() => {
+      this.prefForm.reset(this.savedConfiguration());
+      this.prefForm.markAsPristine();
+    });
   }
 
   canDeactivate(): boolean | Observable<boolean> {

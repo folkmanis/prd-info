@@ -9,17 +9,17 @@ import { MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 import { Job } from 'src/app/jobs';
-import { ViewSizeDirective } from 'src/app/library/view-size';
 import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
+import { ViewSizeDirective } from 'src/app/library/view-size';
 import { COLUMNS, COLUMNS_SMALL, JobData, JobWithUpdate } from '../interfaces';
 
 @Component({
-    selector: 'app-job-prices-table',
-    templateUrl: './job-prices-table.component.html',
-    styleUrls: ['./job-prices-table.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatTableModule, ScrollTopDirective, MatCheckboxModule, MatButtonModule, MatIconModule, RouterLink, CurrencyPipe, ViewSizeDirective],
-    hostDirectives: [ScrollTopDirective]
+  selector: 'app-job-prices-table',
+  templateUrl: './job-prices-table.component.html',
+  styleUrls: ['./job-prices-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatTableModule, MatCheckboxModule, MatButtonModule, MatIconModule, RouterLink, CurrencyPipe, ViewSizeDirective],
+  hostDirectives: [ScrollTopDirective],
 })
 export class JobPricesTableComponent {
   jobs = input([] as JobData[]);

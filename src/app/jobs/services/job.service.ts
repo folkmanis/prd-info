@@ -1,9 +1,7 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { endOfDay } from 'date-fns';
-import { firstValueFrom, map, Observable, switchMap } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { AppClassTransformerService } from 'src/app/library';
-import { combineReload } from 'src/app/library/rxjs';
-import { NotificationsService } from '../../services';
 import { Job, JobPartial, JobQueryFilter, JobQueryFilterOptions, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
 import { JobsApiService, JobUpdateParams } from './jobs-api.service';
 
@@ -11,15 +9,8 @@ import { JobsApiService, JobUpdateParams } from './jobs-api.service';
   providedIn: 'root',
 })
 export class JobService {
-  constructor(
-    private notificatinsService: NotificationsService,
-    private api: JobsApiService,
-    private transformer: AppClassTransformerService,
-  ) {}
-
-  getJobsObserver(filter$: Observable<JobQueryFilter>, reload$: Observable<void>) {
-    return combineReload(filter$, reload$, this.notificatinsService.wsMultiplex('jobs').pipe(map(() => undefined))).pipe(switchMap((filter) => this.getJobList(filter)));
-  }
+  private api = inject(JobsApiService);
+  private transformer = inject(AppClassTransformerService);
 
   async newJob(job: Partial<Job>, params: JobUpdateParams = {}): Promise<Job> {
     return firstValueFrom(this.api.insertOne(job, params));
@@ -59,11 +50,11 @@ export class JobService {
     return this.api.getOne(jobId);
   }
 
-  getJobList(filter: Partial<JobQueryFilterOptions> = {}): Observable<JobPartial[]> {
+  getJobList(filter: Partial<JobQueryFilterOptions> = {}): Promise<JobPartial[]> {
     return this.api.getAll(this.transformer.plainToInstance(JobQueryFilter, filter), false);
   }
 
-  getJobListUnwinded(filter: Partial<JobQueryFilterOptions> = {}): Observable<JobUnwindedPartial[]> {
+  getJobListUnwinded(filter: Partial<JobQueryFilterOptions> = {}): Promise<JobUnwindedPartial[]> {
     return this.api.getAll(this.transformer.plainToInstance(JobQueryFilter, filter), true);
   }
 

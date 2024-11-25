@@ -19,7 +19,7 @@ export class InvoicesService {
     return this.jobService.getJobsWithoutInvoicesTotals();
   }
 
-  getJobsUnwinded(filter: Partial<JobQueryFilterOptions>): Observable<JobUnwindedPartial[]> {
+  getJobsUnwinded(filter: Partial<JobQueryFilterOptions>): Promise<JobUnwindedPartial[]> {
     return this.jobService.getJobListUnwinded(filter);
   }
 

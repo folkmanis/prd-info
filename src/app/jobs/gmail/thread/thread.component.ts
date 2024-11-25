@@ -15,11 +15,11 @@ import { MessageComponent } from '../message/message.component';
 import { GmailService } from '../services/gmail.service';
 
 @Component({
-    selector: 'app-thread',
-    templateUrl: './thread.component.html',
-    styleUrls: ['./thread.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatCardModule, MatButtonModule, RouterLink, MatProgressBarModule, MatExpansionModule, MatIconModule, MessageComponent]
+  selector: 'app-thread',
+  templateUrl: './thread.component.html',
+  styleUrls: ['./thread.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatCardModule, MatButtonModule, RouterLink, MatProgressBarModule, MatExpansionModule, MatIconModule, MessageComponent],
 })
 export class ThreadComponent {
   private gmailService = inject(GmailService);
@@ -42,7 +42,7 @@ export class ThreadComponent {
   async onCreateFromThread(thread: Thread) {
     this.busy.set(true);
 
-    const selected = this.messageList().filter((item) => item.attachmentsList?.selected.length > 0);
+    const selected = this.messageList().filter((item) => item.attachmentsList()?.selected.length > 0);
 
     if (selected.length === 0) {
       const customer = await this.resolveCustomer(thread.from);
@@ -56,8 +56,8 @@ export class ThreadComponent {
       const attachments: { messageId: string; attachment: Attachment }[] = selected.reduce(
         (acc, curr) => [
           ...acc,
-          ...curr.attachmentsList.selected.map((item) => ({
-            messageId: curr.message.id,
+          ...curr.attachmentsList().selected.map((item) => ({
+            messageId: curr.message().id,
             attachment: item,
           })),
         ],
@@ -69,8 +69,8 @@ export class ThreadComponent {
 
   onCreateFromMessage(component: MessageComponent) {
     component.busy.set(true);
-    const message = component.message;
-    const attachments = component.attachmentsList.selected.map((attachment) => ({ messageId: message.id, attachment }));
+    const message = component.message();
+    const attachments = component.attachmentsList().selected.map((attachment) => ({ messageId: message.id, attachment }));
 
     this.createJobWithAttachments(attachments, message, this.markAsRead(component)).subscribe(() => this.navigateToNew());
   }
@@ -95,7 +95,7 @@ export class ThreadComponent {
   }
 
   private markAsRead(component: MessageComponent): Observable<unknown> {
-    return component.markAsRead ? this.gmailService.markAsRead(component.message) : EMPTY;
+    return component.markAsRead ? this.gmailService.markAsRead(component.message()) : EMPTY;
   }
 
   private async resolveCustomer(from: string): Promise<string | undefined> {
