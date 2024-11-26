@@ -1,22 +1,26 @@
 <div [innerHTML]="replaceBr(message().html || message().plain)"></div>
 
-<app-attachments [attachments]="message().attachments" #attachmentList />
-
 @if (message().hasAttachment) {
+  <mat-selection-list [(ngModel)]="attachmentsSelection" [compareWith]="attachmentCompareFn">
+    @for (attachment of attachments(); track attachment.attachmentId) {
+      <mat-list-option [value]="attachment" checkboxPosition="before"> {{ attachment.filename }} - {{ attachment.size | filesize }} </mat-list-option>
+    }
+  </mat-selection-list>
+
   <mat-action-row>
-    <button mat-button (click)="markAsRead = true; onCreateJob(attachmentList.selected)" [disabled]="!attachmentList.selected?.length || busy()">
+    <button mat-button (click)="markAsRead = true; onCreateJob()" [disabled]="attachmentsSelection().length === 0 || busy()">
       <mat-icon> drafts </mat-icon>
-      <span> UZ DARBU </span>
+      <span> Uz darbu </span>
     </button>
 
-    <button mat-icon-button [matMenuTriggerFor]="saveMenu" [disabled]="!attachmentList.selected?.length || busy()">
+    <button mat-icon-button [matMenuTriggerFor]="saveMenu" [disabled]="attachmentsSelection().length === 0 || busy()">
       <mat-icon> more_vert </mat-icon>
     </button>
 
     <mat-menu #saveMenu>
-      <button mat-menu-item (click)="markAsRead = false; onCreateJob(attachmentList.selected)">
+      <button mat-menu-item (click)="markAsRead = false; onCreateJob()">
         <mat-icon> mark_as_unread </mat-icon>
-        <span> UZ DARBU, atstāt kā nelasītu </span>
+        <span> Uz darbu, atstāt kā nelasītu </span>
       </button>
     </mat-menu>
   </mat-action-row>

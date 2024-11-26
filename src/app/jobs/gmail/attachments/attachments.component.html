@@ -1,5 +1,0 @@
-<mat-selection-list>
-  @for (attachment of attachments(); track attachment.attachmentId) {
-    <mat-list-option [value]="attachment" checkboxPosition="before" [selected]="attachment.isPdf"> {{ attachment.filename }} - {{ attachment.size | filesize }} </mat-list-option>
-  }
-</mat-selection-list>

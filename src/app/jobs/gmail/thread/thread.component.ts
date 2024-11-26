@@ -42,7 +42,7 @@ export class ThreadComponent {
   async onCreateFromThread(thread: Thread) {
     this.busy.set(true);
 
-    const selected = this.messageList().filter((item) => item.attachmentsList()?.selected.length > 0);
+    const selected = this.messageList().filter((item) => item.attachmentsSelection().length > 0);
 
     if (selected.length === 0) {
       const customer = await this.resolveCustomer(thread.from);
@@ -56,7 +56,7 @@ export class ThreadComponent {
       const attachments: { messageId: string; attachment: Attachment }[] = selected.reduce(
         (acc, curr) => [
           ...acc,
-          ...curr.attachmentsList().selected.map((item) => ({
+          ...curr.attachmentsSelection().map((item) => ({
             messageId: curr.message().id,
             attachment: item,
           })),
@@ -70,7 +70,7 @@ export class ThreadComponent {
   onCreateFromMessage(component: MessageComponent) {
     component.busy.set(true);
     const message = component.message();
-    const attachments = component.attachmentsList().selected.map((attachment) => ({ messageId: message.id, attachment }));
+    const attachments = component.attachmentsSelection().map((attachment) => ({ messageId: message.id, attachment }));
 
     this.createJobWithAttachments(attachments, message, this.markAsRead(component)).subscribe(() => this.navigateToNew());
   }

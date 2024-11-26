@@ -1,12 +1,14 @@
-import { ChangeDetectionStrategy, Component, inject, input, output, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, linkedSignal, output, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIcon } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DomSanitizer } from '@angular/platform-browser';
-import { AttachmentsComponent } from '../attachments/attachments.component';
+import { FilesizePipe } from 'prd-cdk';
 import { Attachment, Message } from '../interfaces';
 
 @Component({
@@ -14,16 +16,20 @@ import { Attachment, Message } from '../interfaces';
   templateUrl: './message.component.html',
   styleUrls: ['./message.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AttachmentsComponent, MatExpansionModule, MatButtonModule, MatIcon, MatMenuModule, MatCardModule, MatProgressBarModule],
+  imports: [MatExpansionModule, MatButtonModule, MatIcon, MatMenuModule, MatCardModule, MatProgressBarModule, MatListModule, FilesizePipe, FormsModule],
 })
 export class MessageComponent {
   private sanitizer = inject(DomSanitizer);
 
-  attachmentsList = viewChild(AttachmentsComponent);
-
   message = input.required<Message>();
 
   attachmentsConfirm = output<Attachment[]>();
+
+  attachments = computed(() => this.message().attachments);
+
+  attachmentsSelection = linkedSignal(() => this.attachments().filter((a) => a.isPdf));
+
+  attachmentCompareFn = (a: Attachment, b: Attachment) => a.attachmentId === b.attachmentId;
 
   busy = signal(false);
 
@@ -33,7 +39,7 @@ export class MessageComponent {
     return this.sanitizer.bypassSecurityTrustHtml(str?.replace(/\r\n/g, '<br />'));
   }
 
-  onCreateJob(attachments: Attachment[]) {
-    this.attachmentsConfirm.emit(attachments);
+  onCreateJob() {
+    this.attachmentsConfirm.emit(this.attachmentsSelection());
   }
 }
