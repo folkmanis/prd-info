@@ -64,11 +64,9 @@ export class JobListComponent {
   filter = input.required<JobQueryFilter>();
 
   jobsRef = resource({
-    request: () => ({
-      filter: this.filter(),
-    }),
+    request: () => this.filter(),
     loader: ({ request }) => {
-      return this.jobService.getJobList(request.filter);
+      return this.jobService.getJobList(request);
     },
   });
 
