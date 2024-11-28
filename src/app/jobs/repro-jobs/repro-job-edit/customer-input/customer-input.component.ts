@@ -1,7 +1,6 @@
-import { AsyncPipe } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnDestroy, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, ElementRef, input, viewChild } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {
-  AbstractControl,
   ControlValueAccessor,
   FormControl,
   FormsModule,
@@ -19,54 +18,55 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
 import { CustomerPartial } from 'src/app/interfaces';
 
 @Component({
-    selector: 'app-customer-input',
-    templateUrl: './customer-input.component.html',
-    styleUrls: ['./customer-input.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            multi: true,
-            useExisting: CustomerInputComponent,
-        },
-        {
-            provide: NG_VALIDATORS,
-            multi: true,
-            useExisting: CustomerInputComponent,
-        },
-    ],
-    imports: [MatFormFieldModule, MatInputModule, FormsModule, MatAutocompleteModule, ReactiveFormsModule, MatButtonModule, MatIconModule, MatOptionModule, AsyncPipe]
+  selector: 'app-customer-input',
+  templateUrl: './customer-input.component.html',
+  styleUrls: ['./customer-input.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      multi: true,
+      useExisting: CustomerInputComponent,
+    },
+    {
+      provide: NG_VALIDATORS,
+      multi: true,
+      useExisting: CustomerInputComponent,
+    },
+  ],
+  imports: [MatFormFieldModule, MatInputModule, FormsModule, ReactiveFormsModule, MatAutocompleteModule, MatButtonModule, MatIconModule, MatOptionModule],
 })
-export class CustomerInputComponent implements OnDestroy, AfterViewInit, ControlValueAccessor, Validator {
-  @ViewChild('customerInput') private input: ElementRef<HTMLInputElement>;
+export class CustomerInputComponent implements ControlValueAccessor, Validator {
+  private inputElement = viewChild.required<ElementRef<HTMLInputElement>>('customerInput');
 
-  private values$ = new BehaviorSubject<CustomerPartial[]>([]);
-  @Input('listItems') set values(value: CustomerPartial[]) {
-    this.values$.next(value || []);
-  }
-  get values() {
-    return this.values$.value;
-  }
+  customers = input.required<CustomerPartial[]>();
 
-  control = new FormControl('', {
-    validators: [Validators.required, this.validatorFn()],
-  });
+  customerNames = computed(() => this.customers().map((c) => c.CustomerName));
 
-  filtered$: Observable<CustomerPartial[]> = combineLatest([this.values$, this.control.valueChanges.pipe(startWith(''))]).pipe(map(this.filterCustomer));
+  control = new FormControl('', [Validators.required, this.nameValidator()]);
+
+  inputValue = toSignal(this.control.valueChanges, { initialValue: '' });
+
+  customersFiltered = computed(() => this.filterCustomer(this.customers(), this.inputValue()));
 
   onTouched: () => void = () => {};
   onValidationChange: () => void = () => {};
+
+  constructor() {
+    effect(() => {
+      this.customers();
+      this.onValidationChange();
+    });
+  }
 
   writeValue(obj: any): void {
     this.control.setValue(obj, { emitEvent: false });
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (value: string) => void): void {
     this.control.valueChanges.subscribe(fn);
   }
 
@@ -76,9 +76,9 @@ export class CustomerInputComponent implements OnDestroy, AfterViewInit, Control
 
   setDisabledState(isDisabled: boolean): void {
     if (isDisabled) {
-      this.control.disable();
+      this.control.disable({ emitEvent: false });
     } else {
-      this.control.enable();
+      this.control.enable({ emitEvent: false });
     }
   }
 
@@ -90,31 +90,19 @@ export class CustomerInputComponent implements OnDestroy, AfterViewInit, Control
     this.onValidationChange = fn;
   }
 
-  ngAfterViewInit(): void {
-    this.input.nativeElement.onfocus = this.onTouched;
-    this.values$.subscribe(() => {
-      this.control.updateValueAndValidity({ emitEvent: false });
-      this.onValidationChange();
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.values$.complete();
-  }
-
   focus() {
-    this.input.nativeElement.focus();
+    this.inputElement().nativeElement.focus();
   }
 
-  private filterCustomer([customers, value]: [CustomerPartial[], string]): CustomerPartial[] {
+  private filterCustomer(customers: CustomerPartial[], value: string): CustomerPartial[] {
     const filterValue = new RegExp(value || '', 'i');
     return customers.filter((customer) => filterValue.test(customer.CustomerName));
   }
 
-  private validatorFn(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
+  private nameValidator(): ValidatorFn {
+    return (control) => {
       const value: string = control.value;
-      const isValid = value && this.values.some((customer) => customer.CustomerName === value);
+      const isValid = value && this.customerNames().includes(value);
       return isValid ? null : { notFound: value };
     };
   }

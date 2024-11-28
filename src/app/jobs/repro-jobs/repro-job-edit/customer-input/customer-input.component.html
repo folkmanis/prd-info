@@ -2,7 +2,7 @@
   <mat-label>
     <ng-content></ng-content>
   </mat-label>
-  <input #customerInput type="text" matInput [formControl]="control" [matAutocomplete]="auto" required />
+  <input #customerInput type="text" matInput [formControl]="control" [matAutocomplete]="auto" />
   <button matIconSuffix mat-icon-button (click)="control.reset()" [disabled]="control.disabled">
     <mat-icon> clear </mat-icon>
   </button>
@@ -15,7 +15,7 @@
 </mat-form-field>
 
 <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
-  @for (customer of filtered$ | async; track customer.CustomerName) {
+  @for (customer of customersFiltered(); track customer.CustomerName) {
     <mat-option [value]="customer.CustomerName">
       {{ customer.CustomerName }}
     </mat-option>

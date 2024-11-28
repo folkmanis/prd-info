@@ -1,4 +1,4 @@
-import { Directive, ElementRef, HostListener, Input } from '@angular/core';
+import { computed, Directive, ElementRef, inject, input } from '@angular/core';
 
 export type Events = 'escape' | 'ctrlPlus' | 'ctrlEnter' | 'enter';
 
@@ -12,19 +12,19 @@ const KEYS = new Map<Events, Partial<KeyboardEvent>>([
 @Directive({
   selector: 'button[appKeyPress],a[appKeyPress]',
   standalone: true,
+  host: {
+    '(window:keydown)': 'keyEvent($event)',
+  },
 })
 export class KeyPressDirective {
-  @Input() set appKeyPress(value: Events) {
-    this.eventToListen = KEYS.get(value as Events) || {};
-  }
+  private elRef = inject<ElementRef<HTMLButtonElement>>(ElementRef);
 
-  eventToListen: Partial<KeyboardEvent> = {};
+  appKeyPress = input.required<Events>();
 
-  constructor(private elRef: ElementRef<HTMLButtonElement>) {}
+  eventToListen = computed(() => KEYS.get(this.appKeyPress()) || {});
 
-  @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
-    if (isEqual(this.eventToListen, event)) {
+    if (isEqual(this.eventToListen(), event)) {
       this.elRef.nativeElement.click();
       event.preventDefault();
       event.stopPropagation();
