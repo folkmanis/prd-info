@@ -33,8 +33,6 @@
   </mat-card>
 </app-job-form>
 
-{{ form.valid }}
-
 <footer>
   @if (jobId()) {
     <button mat-flat-button appKeyPress="ctrlEnter" [disabled]="saveDisabled()" (click)="onUpdate()">Saglabāt</button>

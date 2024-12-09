@@ -133,8 +133,9 @@ export class ReproProductComponent implements ControlValueAccessor, Validator {
     if (units && this.productForm.value.units !== units) {
       this.productForm.controls.units.setValue(units);
     }
-    if (price && this.productForm.value.price !== price) {
-      this.productForm.controls.price.setValue(price);
+    const priceControl = this.productForm.controls.price;
+    if (price && (priceControl.value === null || priceControl.value === 0) && priceControl.value !== price) {
+      priceControl.setValue(price);
     }
   }
 }

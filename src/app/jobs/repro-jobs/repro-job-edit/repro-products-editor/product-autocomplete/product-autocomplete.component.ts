@@ -58,7 +58,7 @@ export class ProductAutocompleteComponent implements ControlValueAccessor, Valid
   onTouchFn = () => {};
 
   writeValue(obj: any): void {
-    this.control.reset(obj, { emitEvent: false });
+    this.control.reset(obj || '', { emitEvent: false });
   }
 
   registerOnChange(fn: any): void {
