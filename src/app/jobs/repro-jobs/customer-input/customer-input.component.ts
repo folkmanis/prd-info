@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, ElementRef, input, viewChild } from '@angular/core';
+import { booleanAttribute, ChangeDetectionStrategy, Component, computed, effect, ElementRef, input, viewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   ControlValueAccessor,
@@ -19,6 +19,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { CustomerPartial } from 'src/app/interfaces';
+
+function emptyArray<T>(value: T[] | undefined | null): T[] {
+  return Array.isArray(value) ? value : [];
+}
 
 @Component({
   selector: 'app-customer-input',
@@ -42,11 +46,11 @@ import { CustomerPartial } from 'src/app/interfaces';
 export class CustomerInputComponent implements ControlValueAccessor, Validator {
   private inputElement = viewChild.required<ElementRef<HTMLInputElement>>('customerInput');
 
-  customers = input.required<CustomerPartial[]>();
+  customers = input.required({ transform: emptyArray<CustomerPartial> });
 
   customerNames = computed(() => this.customers().map((c) => c.CustomerName));
 
-  control = new FormControl('', [Validators.required, this.nameValidator()]);
+  control = new FormControl('', [this.nameValidator()]);
 
   inputValue = toSignal(this.control.valueChanges, { initialValue: '' });
 
@@ -55,10 +59,16 @@ export class CustomerInputComponent implements ControlValueAccessor, Validator {
   onTouched: () => void = () => {};
   onValidationChange: () => void = () => {};
 
+  required = input(false, { transform: booleanAttribute });
+
   constructor() {
     effect(() => {
       this.customers();
+      this.control.updateValueAndValidity({ emitEvent: false });
       this.onValidationChange();
+    });
+    effect(() => {
+      this.setValidators(this.required());
     });
   }
 
@@ -102,8 +112,18 @@ export class CustomerInputComponent implements ControlValueAccessor, Validator {
   private nameValidator(): ValidatorFn {
     return (control) => {
       const value: string = control.value;
-      const isValid = value && this.customerNames().includes(value);
+      const isValid = !value || this.customerNames().includes(value);
       return isValid ? null : { notFound: value };
     };
+  }
+
+  private setValidators(required: boolean) {
+    const validators = [this.nameValidator()];
+    if (required) {
+      validators.push(Validators.required);
+    }
+    this.control.setValidators(validators);
+    this.control.updateValueAndValidity({ emitEvent: false });
+    this.onValidationChange();
   }
 }

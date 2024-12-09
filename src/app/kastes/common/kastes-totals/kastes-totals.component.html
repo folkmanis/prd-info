@@ -1,8 +1,8 @@
 <div>
   <ng-content></ng-content>
-  @for (tot of totals; track $index) {
+  @for (total of totals(); track $index) {
     <span>
-      {{ tot[0] }} - {{ tot[1] }}
+      {{ total[0] }} - {{ total[1] }}
       @if (!$last) {
         <b> | </b>
       }

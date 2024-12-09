@@ -17,23 +17,23 @@ import { MatInputModule } from '@angular/material/input';
 import { filter } from 'rxjs';
 
 @Component({
-    selector: 'app-system-preferences',
-    templateUrl: './system-preferences.component.html',
-    styleUrls: ['./system-preferences.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => SystemPreferencesComponent),
-            multi: true,
-        },
-        {
-            provide: NG_VALIDATORS,
-            useExisting: forwardRef(() => SystemPreferencesComponent),
-            multi: true,
-        },
-    ],
-    imports: [FormsModule, ReactiveFormsModule, MatCheckboxModule, MatFormFieldModule, MatInputModule]
+  selector: 'app-system-preferences',
+  templateUrl: './system-preferences.component.html',
+  styleUrls: ['./system-preferences.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => SystemPreferencesComponent),
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => SystemPreferencesComponent),
+      multi: true,
+    },
+  ],
+  imports: [FormsModule, ReactiveFormsModule, MatCheckboxModule, MatFormFieldModule, MatInputModule],
 })
 export class SystemPreferencesComponent implements ControlValueAccessor, Validator {
   controls = inject(FormBuilder).group({
@@ -61,9 +61,9 @@ export class SystemPreferencesComponent implements ControlValueAccessor, Validat
 
   setDisabledState(isDisabled: boolean): void {
     if (isDisabled) {
-      this.controls.disable();
+      this.controls.disable({ emitEvent: false });
     } else {
-      this.controls.enable();
+      this.controls.enable({ emitEvent: false });
     }
   }
 

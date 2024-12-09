@@ -25,25 +25,25 @@ import { UsersListComponent } from '../users-list/users-list.component';
 import { SessionsComponent } from './sessions/sessions.component';
 
 @Component({
-    selector: 'app-user-edit',
-    templateUrl: './user-edit.component.html',
-    styleUrls: ['./user-edit.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        SessionsComponent,
-        PasswordInputDirective,
-        SimpleFormContainerComponent,
-        PasswordInputGroupComponent,
-        MatFormFieldModule,
-        MatSelect,
-        MatOption,
-        MatCardModule,
-        MatButtonModule,
-        MatInput,
-        MatCheckbox,
-    ]
+  selector: 'app-user-edit',
+  templateUrl: './user-edit.component.html',
+  styleUrls: ['./user-edit.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    SessionsComponent,
+    PasswordInputDirective,
+    SimpleFormContainerComponent,
+    PasswordInputGroupComponent,
+    MatFormFieldModule,
+    MatSelect,
+    MatOption,
+    MatCardModule,
+    MatButtonModule,
+    MatInput,
+    MatCheckbox,
+  ],
 })
 export class UserEditComponent implements CanComponentDeactivate {
   private navigate = navigateRelative();
@@ -103,19 +103,14 @@ export class UserEditComponent implements CanComponentDeactivate {
     private confirmationDialog: ConfirmationDialogService,
     private transformer: AppClassTransformerService,
   ) {
-    effect(
-      () => {
-        const initialValue = this.initialValue();
-        this.sessions.set(initialValue.sessions);
-        this.form.reset(initialValue);
-        if (initialValue.username) {
-          this.form.controls.password.disable();
-        }
-      },
-      {
-        allowSignalWrites: true,
-      },
-    );
+    effect(() => {
+      const initialValue = this.initialValue();
+      this.sessions.set(initialValue.sessions);
+      this.form.reset(initialValue);
+      if (initialValue.username) {
+        this.form.controls.password.disable();
+      }
+    });
   }
 
   canDeactivate(): boolean {

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, linkedSignal, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AsyncValidatorFn, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,15 +6,18 @@ import { MatCardModule } from '@angular/material/card';
 import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ActivatedRoute, Router } from '@angular/router';
-import { isEqual, pickBy } from 'lodash-es';
-import { map, of } from 'rxjs';
-import { CustomerPartial, EquipmentPartial, ProductionStage } from 'src/app/interfaces';
-import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
-import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
-import { ProductionStagesService } from 'src/app/services/production-stages.service';
-import { DropFoldersComponent } from '../drop-folders/drop-folders.component';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { isEqual, pickBy } from 'lodash-es';
+import { JobFilesService } from 'src/app/filesystem';
+import { ProductionStage } from 'src/app/interfaces';
+import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
+import { navigateRelative } from 'src/app/library/navigation';
+import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
+import { CustomersService } from 'src/app/services';
+import { ProductionStagesService } from 'src/app/services/production-stages.service';
+import { EquipmentService } from '../../equipment/services/equipment.service';
+import { DropFoldersComponent } from '../drop-folders/drop-folders.component';
 
 type ProductionStageControl = {
   [key in keyof Required<ProductionStage>]: FormControl<ProductionStage[key]>;
@@ -39,6 +42,12 @@ type ProductionStageControl = {
   ],
 })
 export class ProductionStagesEditComponent implements CanComponentDeactivate {
+  private readonly equipmentService = inject(EquipmentService);
+  private readonly jobFilesService = inject(JobFilesService);
+  private readonly customersService = inject(CustomersService);
+  private readonly snack = inject(MatSnackBar);
+  private readonly navigate = navigateRelative();
+
   form: FormGroup<ProductionStageControl> = inject(FormBuilder).group({
     _id: [''],
     name: [
@@ -53,17 +62,16 @@ export class ProductionStagesEditComponent implements CanComponentDeactivate {
     dropFolders: [],
   });
 
-  private data = toSignal(this.route.data);
+  equipment = this.equipmentService.equipment;
+  dropFolders = signal<{ value: string[]; name: string }[]>([]);
 
-  equipment = computed(() => this.data().equipment as EquipmentPartial[]);
-  dropFolders = computed(() => this.data().dropFolders as { value: string[]; name: string }[]);
-  customers = computed(() => this.data().customers as CustomerPartial[]);
+  customers = this.customersService.customers;
 
-  private initialValue = new ProductionStage();
+  productionStage = input.required<ProductionStage>();
 
-  private get isNew() {
-    return !this.initialValue._id;
-  }
+  private initialValue = linkedSignal(() => this.productionStage());
+
+  isNew = computed(() => !this.initialValue()._id);
 
   private value = toSignal(this.form.valueChanges, {
     initialValue: this.form.value,
@@ -75,60 +83,64 @@ export class ProductionStagesEditComponent implements CanComponentDeactivate {
 
   changes = computed(() => {
     const value = this.value();
-    if (this.isNew) {
+    if (this.isNew()) {
       return value;
     } else {
-      const diff = pickBy(value, (v, key) => !isEqual(v, this.initialValue[key]));
-      return Object.keys(diff).length ? diff : undefined;
+      const initial = this.initialValue();
+      const diff = pickBy(value, (v, key) => !isEqual(v, initial[key]));
+      return Object.keys(diff).length ? diff : null;
     }
   });
 
-  constructor(
-    private productionStagesService: ProductionStagesService,
-    private route: ActivatedRoute,
-    private router: Router,
-  ) {
+  constructor(private productionStagesService: ProductionStagesService) {
+    this.equipmentService.filter.set({});
     effect(() => {
-      const stage = this.data().productionStage || new ProductionStage();
-      this.setInitialValue(stage);
+      this.form.reset(this.initialValue());
     });
+    this.setDropFolderNames();
+    this.customersService.setFilter({ disabled: false });
   }
 
   onReset(): void {
-    this.form.reset(this.initialValue);
+    this.form.reset(this.initialValue());
   }
 
-  onSave(): void {
-    if (this.isNew) {
-      this.productionStagesService.insertOne(this.form.getRawValue()).subscribe((stage) => {
-        this.form.markAsPristine();
-        this.router.navigate(['..', stage._id], { relativeTo: this.route });
-      });
-    } else {
-      const update = { ...this.changes(), _id: this.initialValue._id };
-      this.productionStagesService.updateOne(update).subscribe((stage) => this.setInitialValue(stage));
-    }
+  async onUpdateStage() {
+    const update = { ...this.changes(), _id: this.initialValue()._id };
+    const result = await this.productionStagesService.updateOne(update);
+    this.snack.open(`Atjaunots ${result.name}`, 'OK');
+    this.initialValue.set(result);
+  }
+
+  async onCreateStage() {
+    const result = await this.productionStagesService.insertOne(this.form.getRawValue());
+    this.form.markAsPristine();
+    this.snack.open(`Izveidots ${result.name}`, 'OK');
+    this.navigate(['..', result._id]);
   }
 
   canDeactivate(): boolean {
     return this.form.pristine || !this.changes();
   }
 
-  private setInitialValue(stage: ProductionStage) {
-    this.initialValue = stage;
-    this.form.reset(this.initialValue);
+  private nameValidator(): AsyncValidatorFn {
+    return async (control) => {
+      const value: string = control.value;
+      if (value === this.initialValue().name) {
+        return null;
+      }
+      return (await this.productionStagesService.validateName(value)) ? null : { occupied: value };
+    };
   }
 
-  private nameValidator(): AsyncValidatorFn {
-    return (control) => {
-      const nameCtrl: string = (control.value as string).trim().toUpperCase();
-      if (nameCtrl === this.initialValue.name?.toUpperCase()) {
-        return of(null);
-      }
-      return this.productionStagesService.names().pipe(
-        map((names) => names.some((name) => name.toUpperCase() === nameCtrl)),
-        map((invalid) => (invalid ? { occupied: nameCtrl } : null)),
-      );
-    };
+  private async setDropFolderNames() {
+    const elements = await this.jobFilesService.dropFolders();
+    const folderNames = elements
+      .filter((el) => el.isFolder)
+      .map((el) => ({
+        value: [...el.parent, el.name],
+        name: [...el.parent, el.name].join('/'),
+      }));
+    this.dropFolders.set(folderNames);
   }
 }

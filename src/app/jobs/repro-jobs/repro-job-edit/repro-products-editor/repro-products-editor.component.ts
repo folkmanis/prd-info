@@ -20,23 +20,23 @@ const DEFAULT_PRODUCT: JobProduct = {
 };
 
 @Component({
-    selector: 'app-repro-products-editor',
-    templateUrl: './repro-products-editor.component.html',
-    styleUrls: ['./repro-products-editor.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            multi: true,
-            useExisting: ReproProductsEditorComponent,
-        },
-        {
-            provide: NG_VALIDATORS,
-            multi: true,
-            useExisting: ReproProductsEditorComponent,
-        },
-    ],
-    imports: [MatCardModule, ReproProductComponent, FormsModule, ReactiveFormsModule, MatButtonModule, KeyPressDirective, MatTooltipModule, MatIconModule, MatDivider]
+  selector: 'app-repro-products-editor',
+  templateUrl: './repro-products-editor.component.html',
+  styleUrls: ['./repro-products-editor.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      multi: true,
+      useExisting: ReproProductsEditorComponent,
+    },
+    {
+      provide: NG_VALIDATORS,
+      multi: true,
+      useExisting: ReproProductsEditorComponent,
+    },
+  ],
+  imports: [MatCardModule, ReproProductComponent, FormsModule, ReactiveFormsModule, MatButtonModule, KeyPressDirective, MatTooltipModule, MatIconModule, MatDivider],
 })
 export class ReproProductsEditorComponent implements ControlValueAccessor, Validator {
   productComponents = viewChildren(ReproProductComponent);
@@ -68,9 +68,9 @@ export class ReproProductsEditorComponent implements ControlValueAccessor, Valid
 
   setDisabledState(isDisabled: boolean): void {
     if (isDisabled) {
-      this.productsControl.disable();
+      this.productsControl.disable({ emitEvent: false });
     } else {
-      this.productsControl.enable();
+      this.productsControl.enable({ emitEvent: false });
     }
   }
 

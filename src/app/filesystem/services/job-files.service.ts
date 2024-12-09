@@ -55,7 +55,7 @@ export class JobFilesService {
     return this.filesApi.readFtp(path?.join('/'));
   }
 
-  dropFolders(path?: string[]): Observable<FileElement[]> {
+  async dropFolders(path?: string[]): Promise<FileElement[]> {
     return this.filesApi.readDropFolders(path?.join('/'));
   }
 

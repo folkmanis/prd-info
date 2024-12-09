@@ -1,11 +1,9 @@
 import { Route } from '@angular/router';
-import { ProductionStagesListComponent } from './production-stages-list/production-stages-list.component';
-import { ProductionStagesEditComponent } from './production-stages-edit/production-stages-edit.component';
+import { ProductionStage } from 'src/app/interfaces';
 import { canComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
+import { ProductionStagesEditComponent } from './production-stages-edit/production-stages-edit.component';
+import { ProductionStagesListComponent } from './production-stages-list/production-stages-list.component';
 import { resolveProductionStage } from './services/production-stages-resolver';
-import { resolveEquipmentList } from './services/equipment-resolver';
-import { resolveDropFolders } from './services/drop-folders-resolver';
-import { resolveCustomers } from './services/customers-resolver';
 
 export default [
   {
@@ -17,9 +15,7 @@ export default [
         component: ProductionStagesEditComponent,
         canDeactivate: [canComponentDeactivate],
         resolve: {
-          equipment: resolveEquipmentList,
-          dropFolders: resolveDropFolders,
-          customers: resolveCustomers,
+          productionStage: () => new ProductionStage(),
         },
       },
       {
@@ -28,9 +24,6 @@ export default [
         canDeactivate: [canComponentDeactivate],
         resolve: {
           productionStage: resolveProductionStage,
-          equipment: resolveEquipmentList,
-          dropFolders: resolveDropFolders,
-          customers: resolveCustomers,
         },
       },
     ],

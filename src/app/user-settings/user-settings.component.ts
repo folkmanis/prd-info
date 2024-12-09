@@ -21,11 +21,11 @@ type UserUpdate = Pick<User, 'name' | 'eMail'>;
 const NO_USER: UserUpdate = { name: '', eMail: '' };
 
 @Component({
-    selector: 'app-user-settings',
-    templateUrl: './user-settings.component.html',
-    styleUrls: ['./user-settings.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [FormsModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, GoogleInfoComponent, MatDividerModule, MatButtonModule, PasswordInputDirective]
+  selector: 'app-user-settings',
+  templateUrl: './user-settings.component.html',
+  styleUrls: ['./user-settings.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [FormsModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, GoogleInfoComponent, MatDividerModule, MatButtonModule, PasswordInputDirective],
 })
 export class UserSettingsComponent implements CanComponentDeactivate {
   private loginService = inject(LoginService);
@@ -40,7 +40,7 @@ export class UserSettingsComponent implements CanComponentDeactivate {
 
   isDemo = inject(DEMO_MODE);
 
-  user = toSignal(this.loginService.user$);
+  user = this.loginService.user;
 
   formValue = toSignal(this.userForm.valueChanges, { initialValue: this.userForm.value });
 

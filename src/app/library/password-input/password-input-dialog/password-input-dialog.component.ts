@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
-import { FormControl, ReactiveFormsModule, ValidatorFn } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, inject, Inject, OnInit } from '@angular/core';
+import { FormControl, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { PasswordInputGroupComponent } from '../password-input-group/password-input-group.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,23 +11,19 @@ export interface PasswordDialogData {
 }
 
 @Component({
-    selector: 'app-password-input-dialog',
-    templateUrl: './password-input-dialog.component.html',
-    styleUrls: ['./password-input-dialog.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatButtonModule, PasswordInputGroupComponent]
+  selector: 'app-password-input-dialog',
+  templateUrl: './password-input-dialog.component.html',
+  styleUrls: ['./password-input-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatButtonModule, PasswordInputGroupComponent],
+  standalone: true,
 })
-export class PasswordInputDialogComponent implements OnInit {
-  passwordControl = new FormControl<string>('');
+export class PasswordInputDialogComponent {
+  private data: PasswordDialogData = inject(MAT_DIALOG_DATA);
 
-  minLength: number | null;
+  passwordControl = new FormControl<string>('', { validators: Validators.required });
 
-  validatorFn: ValidatorFn | null;
+  minLength: number | null = this.data.minLength;
 
-  constructor(@Inject(MAT_DIALOG_DATA) private data: PasswordDialogData) {}
-
-  ngOnInit(): void {
-    this.minLength = this.data.minLength;
-    this.validatorFn = this.data.validatorFn;
-  }
+  validatorFn: ValidatorFn | null = this.data.validatorFn;
 }

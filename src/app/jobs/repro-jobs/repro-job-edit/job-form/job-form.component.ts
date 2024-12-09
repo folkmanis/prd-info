@@ -28,7 +28,7 @@ import { ViewSizeDirective } from 'src/app/library/view-size';
 import { CustomersService } from 'src/app/services';
 import { configuration } from 'src/app/services/config.provider';
 import { ReproJobService } from '../../services/repro-job.service';
-import { CustomerInputComponent } from '../customer-input/customer-input.component';
+import { CustomerInputComponent } from '../../customer-input/customer-input.component';
 import { ReproProductsEditorComponent } from '../repro-products-editor/repro-products-editor.component';
 
 @Component({
@@ -69,7 +69,7 @@ export class JobFormComponent implements ControlValueAccessor, Validator {
 
   private allJobStates = configuration('jobs', 'jobStates');
 
-  customersEnabled = inject(CustomersService).customersEnabled;
+  customersEnabled = inject(CustomersService).getCustomerList({ disabled: false });
   jobStates = computed(() => this.allJobStates().filter((st) => st.state < 50));
   categories = configuration('jobs', 'productCategories');
 
@@ -103,13 +103,14 @@ export class JobFormComponent implements ControlValueAccessor, Validator {
     if (this.form.valid) {
       return null;
     } else {
-      return Object.entries(this.form.controls).reduce(
+      const errors = Object.entries(this.form.controls).reduce(
         (acc, [key, control]) => ({
           ...acc,
           ...(control.invalid ? { [key]: control.errors } : {}),
         }),
         {},
       );
+      return errors;
     }
   }
 

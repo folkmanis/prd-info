@@ -61,10 +61,9 @@ export class JobsFilesApiService {
     return this.transformer.toInstanceAsync(FileElement, this.http.get<Record<string, any>[]>(this.path + 'read/ftp', new HttpOptions({ path }).cacheable()));
   }
 
-  readDropFolders(path?: string): Observable<FileElement[]> {
-    return this.http
-      .get<Record<string, any>[]>(this.path + 'read/drop-folder', new HttpOptions({ path }).cacheable())
-      .pipe(map((data) => this.transformer.plainToInstance(FileElement, data, { exposeDefaultValues: true })));
+  async readDropFolders(path?: string): Promise<FileElement[]> {
+    const request$ = this.http.get<Record<string, any>[]>(this.path + 'read/drop-folder', new HttpOptions({ path }).cacheable());
+    return this.transformer.toInstanceAsync(FileElement, request$);
   }
 
   async updateFilesLocation(jobId: number): Promise<string[]> {

@@ -1,5 +1,6 @@
 import { Route } from '@angular/router';
 import { JobsComponent } from './jobs.component';
+import { ProductionStagesService } from '../services/production-stages.service';
 
 export default [
   {

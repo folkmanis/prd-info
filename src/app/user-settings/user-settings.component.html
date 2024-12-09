@@ -58,9 +58,9 @@
       <mat-divider></mat-divider>
 
       <mat-card-actions>
-        <a mat-button href="/data/login/google?redirect=/{{ returnPath }}" [disabled]="staticUser.google"> SAVIENOT </a>
+        <a mat-button href="/data/login/google?redirect=/{{ returnPath }}" [disabled]="staticUser.google"> Savienot </a>
 
-        <button mat-button (click)="onDeleteGoogle()" [disabled]="!staticUser.google">ATVIENOT</button>
+        <button mat-button (click)="onDeleteGoogle()" [disabled]="!staticUser.google">Atvienot</button>
       </mat-card-actions>
     </mat-card>
   }

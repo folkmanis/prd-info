@@ -74,14 +74,14 @@ export class ReproProductComponent implements ControlValueAccessor, Validator {
   customerProducts = input<CustomerProduct[]>([]);
 
   productForm: JobProductForm = inject(FormBuilder).nonNullable.group({
-    name: [null as string | null, [this.productNameValidatorFn(this.customerProducts)]],
+    name: [null as string | null, Validators.required],
     price: [null as number | null, [Validators.required, Validators.min(0)]],
     count: [null as number | null, [Validators.required, Validators.min(0)]],
     units: [null as string | null, Validators.required],
     comment: [''],
   });
 
-  productFormValueChanges = toSignal(this.productForm.valueChanges);
+  productFormValueChanges = toSignal(this.productForm.valueChanges, { initialValue: this.productForm.value });
 
   name = computed(() => this.productFormValueChanges().name);
 
@@ -105,9 +105,9 @@ export class ReproProductComponent implements ControlValueAccessor, Validator {
 
   setDisabledState(isDisabled: boolean): void {
     if (isDisabled) {
-      this.productForm.disable();
+      this.productForm.disable({ emitEvent: false });
     } else {
-      this.productForm.enable();
+      this.productForm.enable({ emitEvent: false });
     }
   }
 
@@ -136,12 +136,5 @@ export class ReproProductComponent implements ControlValueAccessor, Validator {
     if (price && this.productForm.value.price !== price) {
       this.productForm.controls.price.setValue(price);
     }
-  }
-
-  private productNameValidatorFn(products: Signal<CustomerProduct[]>): ValidatorFn {
-    const err = { invalidProduct: 'Prece nav atrasta katalogā' };
-    return (control: AbstractControl<string>) => {
-      return products().some((prod) => prod.productName === control.value) ? null : err;
-    };
   }
 }

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { firstValueFrom, map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { Equipment } from 'src/app/interfaces';
 import { AppClassTransformerService } from 'src/app/library';
@@ -18,23 +18,29 @@ export class EquipmentApiService {
     return this.transformer.toInstanceAsync(Equipment, this.http.get(this.path + id, new HttpOptions().cacheable()));
   }
 
-  getAll(filter: Record<string, any>): Observable<Equipment[]> {
-    return this.http.get<Record<string, any>[]>(this.path, new HttpOptions(filter).cacheable()).pipe(this.transformer.toClass(Equipment));
+  async getAll(filter: Record<string, any>): Promise<Equipment[]> {
+    const data$ = this.http.get<Record<string, any>[]>(this.path, new HttpOptions(filter).cacheable());
+    return this.transformer.toInstanceAsync(Equipment, data$);
   }
 
-  updateOne(id: string, data: Partial<Equipment>): Observable<Equipment> {
-    return this.http.patch<Record<string, any>>(this.path + id, data, new HttpOptions()).pipe(this.transformer.toClass(Equipment));
+  async updateOne(id: string, data: Partial<Equipment>): Promise<Equipment> {
+    const response$ = this.http.patch<Record<string, any>>(this.path + id, data, new HttpOptions());
+    return this.transformer.toInstanceAsync(Equipment, response$);
   }
 
-  insertOne(data: Omit<Equipment, '_id'>): Observable<Equipment> {
-    return this.http.put<Record<string, any>>(this.path, data, new HttpOptions()).pipe(this.transformer.toClass(Equipment));
+  async insertOne(data: Omit<Equipment, '_id'>): Promise<Equipment> {
+    const response$ = this.http.put<Record<string, any>>(this.path, data, new HttpOptions());
+    return this.transformer.toInstanceAsync(Equipment, response$);
   }
 
-  deleteOne(id: string): Observable<number> {
-    return this.http.delete<{ deletedCount: number }>(this.path + id, new HttpOptions()).pipe(map((data) => data.deletedCount));
+  async deleteOne(id: string): Promise<number> {
+    const response$ = this.http.delete<{ deletedCount: number }>(this.path + id, new HttpOptions());
+    const data = await firstValueFrom(response$);
+    return data.deletedCount;
   }
 
-  validatorData<K extends keyof Equipment>(key: K): Observable<Equipment[K][]> {
-    return this.http.get<Equipment[K][]>(this.path + 'validate/' + key, new HttpOptions().cacheable());
+  async validatorData<K extends keyof Equipment>(key: K): Promise<Equipment[K][]> {
+    const response$ = this.http.get<Equipment[K][]>(this.path + 'validate/' + key, new HttpOptions().cacheable());
+    return firstValueFrom(response$);
   }
 }

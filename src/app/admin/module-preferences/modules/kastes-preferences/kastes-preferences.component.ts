@@ -11,18 +11,18 @@ type ColorsGroup = {
 };
 
 @Component({
-    selector: 'app-kastes-preferences',
-    templateUrl: './kastes-preferences.component.html',
-    styleUrls: ['./kastes-preferences.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => KastesPreferencesComponent),
-            multi: true,
-        },
-    ],
-    imports: [FormsModule, ReactiveFormsModule, TitleCasePipe, ColorSliderComponent]
+  selector: 'app-kastes-preferences',
+  templateUrl: './kastes-preferences.component.html',
+  styleUrls: ['./kastes-preferences.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => KastesPreferencesComponent),
+      multi: true,
+    },
+  ],
+  imports: [FormsModule, ReactiveFormsModule, TitleCasePipe, ColorSliderComponent],
 })
 export class KastesPreferencesComponent implements ControlValueAccessor {
   readonly colors = [...COLORS];
@@ -51,9 +51,9 @@ export class KastesPreferencesComponent implements ControlValueAccessor {
 
   setDisabledState(isDisabled: boolean): void {
     if (isDisabled) {
-      this.preferencesControls.disable();
+      this.preferencesControls.disable({ emitEvent: false });
     } else {
-      this.preferencesControls.enable();
+      this.preferencesControls.enable({ emitEvent: false });
     }
   }
 }

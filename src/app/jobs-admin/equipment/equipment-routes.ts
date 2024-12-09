@@ -1,6 +1,7 @@
 import { Route } from '@angular/router';
-import { EquipmentListComponent } from './equipment-list/equipment-list.component';
+import { Equipment } from 'src/app/interfaces';
 import { EquipmentEditComponent } from './equipment-edit/equipment-edit.component';
+import { EquipmentListComponent } from './equipment-list/equipment-list.component';
 import { resolveEquipment } from './services/equipment-resolver';
 
 export default [
@@ -11,8 +12,8 @@ export default [
       {
         path: 'new',
         component: EquipmentEditComponent,
-        data: {
-          equipment: null,
+        resolve: {
+          equipment: () => new Equipment(),
         },
       },
       {

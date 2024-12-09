@@ -1,4 +1,4 @@
-import { NgIf } from '@angular/common';
+import { AsyncPipe, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, untracked } from '@angular/core';
 import { outputFromObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -18,34 +18,36 @@ import { ViewSizeDirective } from 'src/app/library/view-size';
 import { CustomersService } from 'src/app/services';
 import { configuration } from 'src/app/services/config.provider';
 import { JobFilter, JobQueryFilter } from '../../interfaces';
+import { CustomerInputComponent } from '../customer-input/customer-input.component';
 
 export type FilterFormType = {
   [k in keyof JobFilter]: FormControl<JobFilter[k]>;
 };
 
 @Component({
-    selector: 'app-job-filter',
-    templateUrl: './job-filter.component.html',
-    styleUrls: ['./job-filter.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        MatExpansionModule,
-        ViewSizeDirective,
-        MatButtonModule,
-        MatTooltipModule,
-        MatIconModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatAutocompleteModule,
-        MatSelectModule,
-        MatOptionModule,
-        NgIf,
-    ]
+  selector: 'app-job-filter',
+  templateUrl: './job-filter.component.html',
+  styleUrls: ['./job-filter.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatExpansionModule,
+    ViewSizeDirective,
+    MatButtonModule,
+    MatTooltipModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    MatSelectModule,
+    MatOptionModule,
+    NgIf,
+    CustomerInputComponent,
+    AsyncPipe,
+  ],
 })
 export class JobFilterComponent {
-  private customers = inject(CustomersService).customersEnabled;
   private transformer = inject(AppClassTransformerService);
 
   filterForm: FormGroup<FilterFormType> = inject(FormBuilder).group({
@@ -56,14 +58,8 @@ export class JobFilterComponent {
     productsName: [null],
   });
 
+  customers = inject(CustomersService).getCustomerList({ disabled: false });
   jobStates = configuration('jobs', 'jobStates');
-
-  customerControlValue = toSignal(this.filterForm.controls.customer.valueChanges);
-
-  customersFiltered = computed(() => {
-    const value = this.customerControlValue()?.toUpperCase() || '';
-    return this.customers().filter((c) => c.CustomerName.toUpperCase().includes(value));
-  });
 
   filter = input.required<JobQueryFilter>();
 

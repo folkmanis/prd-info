@@ -1,4 +1,4 @@
-<app-simple-form-container buttons [status]="formStatus()" [isChanges]="changes()" (save)="onSave()" (reset)="onReset()">
+<app-simple-form-container buttons [status]="formStatus()" [isChanges]="changes()" (save)="isNew() ? onCreateStage() : onUpdateStage()" (reset)="onReset()">
   <form [formGroup]="form">
     <h2>
       <mat-form-field class="full-width">
@@ -16,7 +16,7 @@
           <mat-form-field class="full-width">
             <mat-label> Iekārtas </mat-label>
             <mat-select multiple formControlName="equipmentIds">
-              @for (option of equipment(); track option._id) {
+              @for (option of equipment.value(); track option._id) {
                 <mat-option [value]="option._id">
                   {{ option.name }}
                 </mat-option>
@@ -40,7 +40,7 @@
       </mat-card-header>
 
       <mat-card-content>
-        <app-drop-folders #dropControl formControlName="dropFolders" [dropFolders]="dropFolders()" [customers]="customers()"></app-drop-folders>
+        <app-drop-folders #dropControl formControlName="dropFolders" [dropFolders]="dropFolders()" [customers]="customers.value()" />
       </mat-card-content>
 
       <mat-card-actions>

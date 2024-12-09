@@ -23,23 +23,23 @@ type MaterialGroup = FormGroup<{
 }>;
 
 @Component({
-    selector: 'app-production-material',
-    templateUrl: './production-material.component.html',
-    styleUrls: ['./production-material.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [ReactiveFormsModule, MaterialUnitsDirective, SelectDirective, MatIcon, MatButtonModule],
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: ProductionMaterialComponent,
-            multi: true,
-        },
-        {
-            provide: NG_VALIDATORS,
-            useExisting: ProductionMaterialComponent,
-            multi: true,
-        },
-    ]
+  selector: 'app-production-material',
+  templateUrl: './production-material.component.html',
+  styleUrls: ['./production-material.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ReactiveFormsModule, MaterialUnitsDirective, SelectDirective, MatIcon, MatButtonModule],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: ProductionMaterialComponent,
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: ProductionMaterialComponent,
+      multi: true,
+    },
+  ],
 })
 export class ProductionMaterialComponent implements ControlValueAccessor, Validator {
   form = new FormArray<MaterialGroup>([]);
@@ -68,9 +68,9 @@ export class ProductionMaterialComponent implements ControlValueAccessor, Valida
 
   setDisabledState(isDisabled: boolean): void {
     if (isDisabled) {
-      this.form.disable();
+      this.form.disable({ emitEvent: false });
     } else {
-      this.form.enable();
+      this.form.enable({ emitEvent: false });
     }
   }
 

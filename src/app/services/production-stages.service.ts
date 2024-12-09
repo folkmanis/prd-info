@@ -1,5 +1,6 @@
-import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, filter, from, Observable, switchMap, tap, toArray } from 'rxjs';
+import { inject, Injectable, resource, signal } from '@angular/core';
+import { isEqual } from 'lodash-es';
+import { filter, from, Observable, switchMap, toArray } from 'rxjs';
 import { CreateProductionStage, DropFolder, ProductionStage, UpdateProductionStage } from 'src/app/interfaces';
 import { ProductionStageApiService } from './prd-api/production-stage-api.service';
 
@@ -13,32 +14,34 @@ interface ProductionStagesFilter {
 export class ProductionStagesService {
   private api = inject(ProductionStageApiService);
 
-  private _filter$ = new BehaviorSubject<ProductionStagesFilter>({});
+  filter = signal<ProductionStagesFilter>({});
 
-  productionStages$ = this._filter$.pipe(switchMap((f) => this.getProductionStages(f)));
-
-  reload() {
-    this.setFilter(this._filter$.value);
-  }
-
-  setFilter(stagesFilter: ProductionStagesFilter) {
-    this._filter$.next(stagesFilter);
-  }
+  productionStages = resource({
+    request: () => this.filter(),
+    loader: ({ request }) => this.getProductionStages(request),
+    equal: isEqual,
+  });
 
   async getOne(id: string): Promise<ProductionStage> {
     return this.api.getOne(id);
   }
 
-  insertOne(stage: CreateProductionStage): Observable<ProductionStage> {
-    return this.api.insertOne(stage).pipe(tap((_) => this.reload()));
+  async insertOne(stage: CreateProductionStage): Promise<ProductionStage> {
+    const data = await this.api.insertOne(stage);
+    this.productionStages.reload();
+    return data;
   }
 
-  updateOne(stage: UpdateProductionStage): Observable<ProductionStage> {
-    return this.api.updateOne(stage).pipe(tap((_) => this.reload()));
+  async updateOne(stage: UpdateProductionStage): Promise<ProductionStage> {
+    const data = this.api.updateOne(stage);
+    this.productionStages.reload();
+    return data;
   }
 
-  names(): Observable<string[]> {
-    return this.api.validatorData('name');
+  async validateName(value: string): Promise<boolean> {
+    value = value.trim().toUpperCase();
+    const names = await this.api.validatorData('name');
+    return names.every((name) => name.toUpperCase() !== value);
   }
 
   getDropFolder(id: string, customerName: string): Observable<DropFolder[]> {
@@ -49,7 +52,7 @@ export class ProductionStagesService {
     );
   }
 
-  getProductionStages(stagesFilter?: ProductionStagesFilter): Observable<ProductionStage[]> {
+  async getProductionStages(stagesFilter?: ProductionStagesFilter): Promise<ProductionStage[]> {
     return this.api.getAll(stagesFilter);
   }
 }

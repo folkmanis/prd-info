@@ -1,5 +1,5 @@
 <app-simple-list-container plusButton>
-  <table mat-table [dataSource]="stages$">
+  <table mat-table [dataSource]="stages()">
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>Nosaukums</th>
       <td mat-cell *matCellDef="let stage">

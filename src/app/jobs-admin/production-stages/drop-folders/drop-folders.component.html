@@ -6,7 +6,7 @@
 
     <mat-form-field>
       <mat-select [formControl]="control.controls.path" required [compareWith]="pathCompare">
-        @for (folder of dropFolders; track $index) {
+        @for (folder of dropFolders(); track $index) {
           <mat-option [value]="folder.value">
             {{ folder.name }}
           </mat-option>
@@ -17,7 +17,7 @@
     <mat-form-field>
       <mat-select [formControl]="control.controls.customers" multiple #customerSelection (selectionChange)="onCustomerSelection($event)">
         <mat-option value="**"> Noklusējuma </mat-option>
-        @for (customer of customers; track $index) {
+        @for (customer of customers(); track $index) {
           <mat-option [value]="customer.CustomerName" [disabled]="customerSelection.value[0] === '**'">
             {{ customer.CustomerName }}
           </mat-option>

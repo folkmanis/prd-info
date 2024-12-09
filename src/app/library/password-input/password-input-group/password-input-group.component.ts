@@ -1,6 +1,6 @@
 import { A11yModule } from '@angular/cdk/a11y';
 import { coerceNumberProperty } from '@angular/cdk/coercion';
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, Input, numberAttribute, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import {
   ControlValueAccessor,
   FormControl,
@@ -23,31 +23,31 @@ import { map } from 'rxjs';
 const MIN_LENGTH = 6;
 
 @Component({
-    selector: 'app-password-input-group',
-    templateUrl: './password-input-group.component.html',
-    styleUrls: ['./password-input-group.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [ReactiveFormsModule, FormsModule, A11yModule, MatFormFieldModule, MatIconModule, MatButtonModule, MatInputModule],
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: PasswordInputGroupComponent,
-            multi: true,
-        },
-        {
-            provide: NG_VALIDATORS,
-            useExisting: PasswordInputGroupComponent,
-            multi: true,
-        },
-    ]
+  selector: 'app-password-input-group',
+  templateUrl: './password-input-group.component.html',
+  styleUrls: ['./password-input-group.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ReactiveFormsModule, FormsModule, A11yModule, MatFormFieldModule, MatIconModule, MatButtonModule, MatInputModule],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: PasswordInputGroupComponent,
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: PasswordInputGroupComponent,
+      multi: true,
+    },
+  ],
 })
-export class PasswordInputGroupComponent implements OnInit, ControlValueAccessor, Validator {
+export class PasswordInputGroupComponent implements ControlValueAccessor, Validator, OnChanges {
   hide = true;
 
   passwordForm = new FormGroup(
     {
-      password1: new FormControl<string>(null),
-      password2: new FormControl<string>(null),
+      password: new FormControl<string>(null),
+      confirmation: new FormControl<string>(null),
     },
     {
       validators: equalityValidator(),
@@ -56,36 +56,20 @@ export class PasswordInputGroupComponent implements OnInit, ControlValueAccessor
 
   onTouchFn: () => void = () => {};
 
-  private _validatorFn: ValidatorFn | null;
-  @Input('passwordValidatorFn') set validatorFn(value: ValidatorFn) {
-    this._validatorFn = value;
+  passwordValidatorFn = input<ValidatorFn>();
+
+  passwordMinimumLength = input(MIN_LENGTH, { transform: numberAttribute });
+
+  ngOnChanges(): void {
     this.setValidators();
   }
-  get validatorFn() {
-    return this._validatorFn;
-  }
 
-  private _minLength = MIN_LENGTH;
-  @Input('passwordMinimumLength') set minLength(value: number) {
-    value = coerceNumberProperty(value);
-    if (isNaN(value) || value < 1) {
-      value = MIN_LENGTH;
-    }
-    this._minLength = value;
-    this.setValidators();
-  }
-  get minLength() {
-    return this._minLength;
-  }
-
-  constructor() {}
-
-  writeValue(): void {
-    this.passwordForm.reset();
+  writeValue(value: any): void {
+    this.passwordForm.reset({ password: value, confirmation: value }, { emitEvent: false });
   }
 
   registerOnChange(fn: any): void {
-    this.passwordForm.valueChanges.pipe(map((val) => val.password1)).subscribe(fn);
+    this.passwordForm.valueChanges.subscribe((value) => fn(value.password));
   }
 
   registerOnTouched(fn: any): void {
@@ -94,35 +78,32 @@ export class PasswordInputGroupComponent implements OnInit, ControlValueAccessor
 
   setDisabledState(isDisabled: boolean): void {
     if (isDisabled) {
-      this.passwordForm.disable();
+      this.passwordForm.disable({ emitEvent: false });
     } else {
-      this.passwordForm.enable();
+      this.passwordForm.enable({ emitEvent: false });
     }
   }
 
   validate(): ValidationErrors {
-    return this.passwordForm.errors;
-  }
-
-  ngOnInit(): void {
-    this.setValidators();
+    return this.passwordForm.valid ? null : { invalid: 'password invalid' };
   }
 
   private setValidators() {
-    const validators: ValidatorFn[] = [Validators.required, Validators.minLength(this.minLength)];
+    const validators: ValidatorFn[] = [Validators.required, Validators.minLength(this.passwordMinimumLength())];
 
-    if (typeof this.validatorFn === 'function') {
-      validators.push(this.validatorFn);
+    if (typeof this.passwordValidatorFn() === 'function') {
+      validators.push(this.passwordValidatorFn());
     }
-    this.passwordForm.controls.password1.setValidators(validators);
+
+    this.passwordForm.controls.password.setValidators(validators);
   }
 }
 
 function equalityValidator(): ValidatorFn {
   return (control: FormGroup) => {
-    const isEqual = control.value.password1 === control.value.password2;
-    const error = !isEqual ? { notEqual: 'Parolēm jāsakrīt' } : null;
-    control.controls.password2.setErrors(error);
+    const isEqual = control.value.password === control.value.confirmation;
+    const error = !isEqual ? { notEqual: true } : null;
+    control.controls.confirmation.setErrors(error);
     return error;
   };
 }

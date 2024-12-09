@@ -21,23 +21,23 @@ import { InputUppercaseDirective } from 'src/app/library/directives/input-upperc
 import { LocationSelectService } from 'src/app/library/location-select';
 
 @Component({
-    selector: 'app-shipping-address-preferences',
-    imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, InputUppercaseDirective, MatIcon, MatIconButton],
-    templateUrl: './shipping-address-preferences.component.html',
-    styleUrl: './shipping-address-preferences.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => ShippingAddressPreferencesComponent),
-            multi: true,
-        },
-        {
-            provide: NG_VALIDATORS,
-            useExisting: forwardRef(() => ShippingAddressPreferencesComponent),
-            multi: true,
-        },
-    ]
+  selector: 'app-shipping-address-preferences',
+  imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, InputUppercaseDirective, MatIcon, MatIconButton],
+  templateUrl: './shipping-address-preferences.component.html',
+  styleUrl: './shipping-address-preferences.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => ShippingAddressPreferencesComponent),
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => ShippingAddressPreferencesComponent),
+      multi: true,
+    },
+  ],
 })
 export class ShippingAddressPreferencesComponent implements ControlValueAccessor, Validator {
   private locationSelectService = inject(LocationSelectService);
@@ -69,9 +69,9 @@ export class ShippingAddressPreferencesComponent implements ControlValueAccessor
 
   setDisabledState(isDisabled: boolean): void {
     if (isDisabled) {
-      this.form.disable();
+      this.form.disable({ emitEvent: false });
     } else {
-      this.form.enable();
+      this.form.enable({ emitEvent: false });
     }
   }
 

@@ -1,4 +1,4 @@
-import { Directive, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { Directive, inject, input, output } from '@angular/core';
 import { ValidatorFn } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { filter } from 'rxjs';
@@ -7,24 +7,23 @@ import { PasswordDialogData, PasswordInputDialogComponent } from './password-inp
 @Directive({
   selector: 'button[appPasswordInput]',
   standalone: true,
+  host: {
+    '(click)': 'onClick()',
+  },
 })
 export class PasswordInputDirective {
-  @Input('passwordMinimumLength')
-  minLength: number | undefined;
+  private dialog = inject(MatDialog);
 
-  @Input('passwordValidatorFn')
-  validatorFn: ValidatorFn | undefined;
+  minLength = input<number>(null, { alias: 'passwordMinimumLength' });
 
-  @Output('appPasswordChange')
-  passwordEvent = new EventEmitter<string>();
+  validatorFn = input<ValidatorFn>(null, { alias: 'passwordValidatorFn' });
 
-  constructor(private dialog: MatDialog) {}
+  passwordEvent = output<string>({ alias: 'appPasswordChange' });
 
-  @HostListener('click')
   onClick() {
     const config: MatDialogConfig<PasswordDialogData> = {
       data: {
-        minLength: this.minLength,
+        minLength: this.minLength(),
         validatorFn: this.validatorFn,
       },
     };

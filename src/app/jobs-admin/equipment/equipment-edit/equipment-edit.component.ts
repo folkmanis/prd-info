@@ -1,14 +1,14 @@
-import { ChangeDetectionStrategy, Component, computed, effect } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, model } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AsyncValidatorFn, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ActivatedRoute, Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { isEqual, pickBy } from 'lodash-es';
-import { map, of } from 'rxjs';
 import { Equipment } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
+import { navigateRelative } from 'src/app/library/navigation';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { EquipmentService } from '../services/equipment.service';
 
@@ -17,14 +17,19 @@ type EquipmentForm = FormGroup<{
 }>;
 
 @Component({
-    selector: 'app-equipment-edit',
-    templateUrl: './equipment-edit.component.html',
-    styleUrls: ['./equipment-edit.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [ReactiveFormsModule, SimpleFormContainerComponent, MatFormFieldModule, MatInputModule, MatCardModule]
+  selector: 'app-equipment-edit',
+  templateUrl: './equipment-edit.component.html',
+  styleUrls: ['./equipment-edit.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ReactiveFormsModule, SimpleFormContainerComponent, MatFormFieldModule, MatInputModule, MatCardModule],
 })
 export class EquipmentEditComponent implements CanComponentDeactivate {
-  form: EquipmentForm = this.fb.group({
+  private equipmentService = inject(EquipmentService);
+  private snack = inject(MatSnackBar);
+
+  private navigate = navigateRelative();
+
+  form: EquipmentForm = inject(FormBuilder).group({
     _id: [null],
     name: [
       '',
@@ -36,22 +41,11 @@ export class EquipmentEditComponent implements CanComponentDeactivate {
     description: [''],
   });
 
-  private _initialValue = new Equipment();
-  set initialValue(value: Equipment) {
-    this._initialValue = value;
-    this.form.reset(this.initialValue);
-  }
-  get initialValue() {
-    return this._initialValue;
-  }
+  initialValue = model.required<Equipment>({ alias: 'equipment' });
 
-  private get isNew() {
-    return !this.initialValue._id;
-  }
+  isNew = computed(() => !this.initialValue()._id);
 
-  private routerData = toSignal(this.route.data);
-
-  private value = toSignal(this.form.valueChanges, {
+  value = toSignal(this.form.valueChanges, {
     initialValue: this.form.value,
   });
 
@@ -61,55 +55,59 @@ export class EquipmentEditComponent implements CanComponentDeactivate {
 
   changes = computed(() => {
     const value = this.value();
-    if (this.isNew) {
+    if (this.isNew()) {
       return value;
     } else {
-      const diff = pickBy(value, (v, key) => !isEqual(v, this.initialValue[key]));
-      return Object.keys(diff).length ? diff : undefined;
+      const diff = pickBy(value, (v, key) => !isEqual(v, this.initialValue()[key]));
+      return Object.keys(diff).length ? diff : null;
     }
   });
 
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private equipmentService: EquipmentService,
-    private fb: FormBuilder,
-  ) {
-    effect(() => (this.initialValue = this.routerData().equipment || new Equipment()), { allowSignalWrites: true });
+  constructor() {
+    effect(() => {
+      this.form.reset(this.initialValue());
+    });
   }
 
   onReset() {
-    this.form.reset(this.initialValue);
+    this.form.reset(this.initialValue());
   }
 
-  onSave() {
-    if (this.isNew) {
-      return this.equipmentService.insertOne(this.form.getRawValue()).subscribe((equipment) => {
-        this.form.markAsPristine();
-        this.router.navigate(['..', equipment._id], {
-          relativeTo: this.route,
-        });
-      });
+  async onSave() {
+    if (this.isNew()) {
+      this.onCreateEquipment();
     } else {
-      const update = { ...this.changes(), _id: this.initialValue._id };
-      return this.equipmentService.updateOne(update).subscribe((equipment) => (this.initialValue = equipment));
+      this.onUpdateEquipment();
     }
   }
 
-  canDeactivate(): boolean {
-    return this.form.pristine;
+  private async onCreateEquipment() {
+    const created = await this.equipmentService.insertOne(this.form.getRawValue());
+    this.snack.open(`${created.name} izveidots`, 'OK');
+    this.form.markAsPristine();
+    this.navigate(['..', created._id]);
   }
 
+  private async onUpdateEquipment() {
+    const update = { ...this.changes(), _id: this.initialValue()._id };
+    const updated = await this.equipmentService.updateOne(update);
+    this.initialValue.set(updated);
+    this.snack.open(`${updated.name} atjaunināts`, 'OK');
+  }
+
+  canDeactivate = () => this.form.pristine || this.changes() === null;
+
   private nameValidator(): AsyncValidatorFn {
-    return (control) => {
-      const name = (control.value as string).trim().toUpperCase();
-      if (name === this.initialValue.name.toUpperCase()) {
-        return of(null);
+    return async (control) => {
+      if (control.value === this.initialValue().name) {
+        return null;
       }
-      return this.equipmentService.names().pipe(
-        map((names) => names.map((n) => n.toUpperCase()).includes(name)),
-        map((invalid) => (invalid ? { occupied: name } : null)),
-      );
+      try {
+        const name = (control.value as string).trim().toUpperCase();
+        return (await this.equipmentService.validateName(name)) ? null : { occupied: name };
+      } catch (error) {
+        return { checkFailed: error.message };
+      }
     };
   }
 }

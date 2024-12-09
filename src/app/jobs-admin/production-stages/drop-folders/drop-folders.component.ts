@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, input } from '@angular/core';
 import {
   ControlValueAccessor,
   FormArray,
@@ -29,31 +29,31 @@ type DropFolderForm = FormGroup<{
 }>;
 
 @Component({
-    selector: 'app-drop-folders',
-    templateUrl: './drop-folders.component.html',
-    styleUrls: ['./drop-folders.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [ReactiveFormsModule, FormsModule, MatIconModule, MatButtonModule, MatFormFieldModule, MatSelectModule, MatOptionModule],
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: DropFoldersComponent,
-            multi: true,
-        },
-        {
-            provide: NG_VALIDATORS,
-            useExisting: DropFoldersComponent,
-            multi: true,
-        },
-    ]
+  selector: 'app-drop-folders',
+  templateUrl: './drop-folders.component.html',
+  styleUrls: ['./drop-folders.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ReactiveFormsModule, FormsModule, MatIconModule, MatButtonModule, MatFormFieldModule, MatSelectModule, MatOptionModule],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: DropFoldersComponent,
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: DropFoldersComponent,
+      multi: true,
+    },
+  ],
 })
 export class DropFoldersComponent implements ControlValueAccessor, Validator {
   private transformer = inject(AppClassTransformerService);
   private chDetector = inject(ChangeDetectorRef);
 
-  @Input({ required: true }) dropFolders: { value: string[]; name: string }[] = [];
+  dropFolders = input.required<{ value: string[]; name: string }[]>();
 
-  @Input({ required: true }) customers: CustomerPartial[] = [];
+  customers = input.required<CustomerPartial[]>();
 
   form = new FormArray<DropFolderForm>([], {
     validators: [this.duplicateDefaultValidator()],
@@ -84,9 +84,9 @@ export class DropFoldersComponent implements ControlValueAccessor, Validator {
 
   setDisabledState(isDisabled: boolean): void {
     if (isDisabled) {
-      this.form.disable();
+      this.form.disable({ emitEvent: false });
     } else {
-      this.form.enable();
+      this.form.enable({ emitEvent: false });
     }
   }
 

@@ -1,6 +1,13 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, resource, signal } from '@angular/core';
 import { Customer, CustomerPartial, CustomerUpdate, NewCustomer } from 'src/app/interfaces';
 import { CustomersApiService } from './prd-api/customers-api.service';
+import { isEqual } from 'lodash-es';
+
+export interface CustomerRequestFilter {
+  name?: string;
+  email?: string;
+  disabled?: boolean;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -8,23 +15,19 @@ import { CustomersApiService } from './prd-api/customers-api.service';
 export class CustomersService {
   private api = inject(CustomersApiService);
 
-  readonly #customers = signal([] as CustomerPartial[]);
+  readonly #filter = signal<CustomerRequestFilter>({ disabled: true }, { equal: isEqual });
 
-  customers = this.#customers.asReadonly();
-
-  customersEnabled = computed(() => this.#customers().filter((customer) => !customer.disabled));
-
-  constructor() {
-    this.reload();
-  }
+  customers = resource({
+    request: () => ({ filter: this.#filter() }),
+    loader: ({ request }) => this.getCustomerList(request.filter),
+  });
 
   async reload() {
-    try {
-      const data = await this.api.getAll({ disabled: true });
-      this.#customers.set(data);
-    } catch (error) {
-      this.#customers.set([]);
-    }
+    this.customers.reload();
+  }
+
+  setFilter(filter: CustomerRequestFilter) {
+    this.#filter.set(filter);
   }
 
   async updateCustomer({ _id, ...rest }: CustomerUpdate): Promise<Customer> {
@@ -48,8 +51,8 @@ export class CustomersService {
     return updated;
   }
 
-  async getCustomerList(filter: { name?: string; email?: string; disabled?: boolean } = {}): Promise<CustomerPartial[]> {
-    return this.api.getAll({ disabled: true, ...filter });
+  async getCustomerList(filter: CustomerRequestFilter = {}): Promise<CustomerPartial[]> {
+    return this.api.getAll(filter);
   }
 
   async isNameAvailable(name?: string): Promise<boolean> {

@@ -23,24 +23,24 @@ type MaterialForm = {
 };
 
 @Component({
-    selector: 'app-materials-edit',
-    templateUrl: './materials-edit.component.html',
-    styleUrls: ['./materials-edit.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        SimpleFormContainerComponent,
-        FormsModule,
-        ReactiveFormsModule,
-        MaterialsPricesComponent,
-        MatFormFieldModule,
-        MatInputModule,
-        MatCardModule,
-        MatOptionModule,
-        MatButtonModule,
-        MatSelectModule,
-        MatCheckboxModule,
-        ViewSizeDirective,
-    ]
+  selector: 'app-materials-edit',
+  templateUrl: './materials-edit.component.html',
+  styleUrls: ['./materials-edit.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    SimpleFormContainerComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    MaterialsPricesComponent,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCardModule,
+    MatOptionModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatCheckboxModule,
+    ViewSizeDirective,
+  ],
 })
 export class MaterialsEditComponent implements CanComponentDeactivate {
   #materialsService = inject(MaterialsService);
@@ -87,7 +87,7 @@ export class MaterialsEditComponent implements CanComponentDeactivate {
   });
 
   constructor() {
-    effect(() => this.form.reset(this.material()), { allowSignalWrites: true });
+    effect(() => this.form.reset(this.material()));
   }
 
   onReset() {

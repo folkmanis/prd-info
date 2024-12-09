@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { tap, Observable, Subject } from 'rxjs';
-import { Equipment, EquipmentPartial } from 'src/app/interfaces';
+import { inject, Injectable, resource, signal } from '@angular/core';
+import { isEqual } from 'lodash-es';
+import { Equipment } from 'src/app/interfaces';
 import { EquipmentApiService } from 'src/app/services/prd-api/equipment-api.service';
 
 export interface EquipmentFilter {
@@ -11,28 +11,41 @@ export interface EquipmentFilter {
   providedIn: 'root',
 })
 export class EquipmentService {
-  reload$ = new Subject<void>();
+  private api = inject(EquipmentApiService);
 
-  constructor(private api: EquipmentApiService) {}
+  filter = signal<EquipmentFilter>({});
 
-  getList(filter: EquipmentFilter = {}): Observable<EquipmentPartial[]> {
-    return this.api.getAll(filter);
-  }
+  equipment = resource({
+    request: () => ({ filter: this.filter() }),
+    loader: ({ request }) => this.api.getAll(request.filter),
+    equal: isEqual,
+  });
 
   async getOne(id: string): Promise<Equipment> {
     return this.api.getOne(id);
   }
 
-  insertOne(equipment: Omit<Equipment, '_id'>): Observable<Equipment> {
-    return this.api.insertOne(equipment).pipe(tap(() => this.reload$.next()));
+  async insertOne(equipment: Omit<Equipment, '_id'>): Promise<Equipment> {
+    return this.runWithReload(() => this.api.insertOne(equipment));
   }
 
-  updateOne(equipment: Pick<Equipment, '_id'> & Partial<Equipment>): Observable<Equipment> {
-    const { _id, ...update } = equipment;
-    return this.api.updateOne(_id, update).pipe(tap(() => this.reload$.next()));
+  async updateOne(equipmentUpdate: Pick<Equipment, '_id'> & Partial<Equipment>): Promise<Equipment> {
+    const { _id, ...update } = equipmentUpdate;
+    return this.runWithReload(() => this.api.updateOne(_id, update));
   }
 
-  names(): Observable<string[]> {
-    return this.api.validatorData('name');
+  async delete(id: string): Promise<number> {
+    return this.runWithReload(() => this.api.deleteOne(id));
+  }
+
+  async validateName(value: string): Promise<boolean> {
+    const names = await this.api.validatorData('name');
+    return names.map((name) => name.toUpperCase()).includes(value) === false;
+  }
+
+  private async runWithReload<T>(reqFn: () => Promise<T>): Promise<T> {
+    const resp = await reqFn();
+    this.equipment.reload();
+    return resp;
   }
 }

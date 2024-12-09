@@ -18,6 +18,7 @@ import { ErrorsService } from './app/library/errors/errors.service';
 import { httpInterceptors } from './app/library/http/http-interceptors';
 import { environment } from './environments/environment';
 import { ModulePageTitleStrategy } from './app/services/module-page-title.strategy';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 
 if (environment.production) {
   enableProdMode();
@@ -34,6 +35,14 @@ bootstrapApplication(AppComponent, {
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: { appearance: 'outline' },
+    },
+    {
+      provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
+      useValue: {
+        duration: 5000,
+        horizontalPosition: 'center',
+        verticalPosition: 'bottom',
+      },
     },
     { provide: ErrorHandler, useClass: ErrorsService },
     { provide: ClassTransformer, useExisting: AppClassTransformerService },
