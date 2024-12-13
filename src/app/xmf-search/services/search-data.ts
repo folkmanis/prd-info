@@ -1,6 +1,5 @@
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
-import { Observable } from 'rxjs/index';
-import { debounceTime, startWith, switchMap } from 'rxjs/operators';
+import { debounceTime, Observable, startWith, switchMap } from 'rxjs';
 import { ArchiveRecord } from '../interfaces';
 import { PagedCache } from './paged-cache';
 
