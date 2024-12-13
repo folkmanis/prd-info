@@ -1,7 +1,7 @@
 import { registerLocaleData } from '@angular/common';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import localeLv from '@angular/common/locales/lv';
-import { DEFAULT_CURRENCY_CODE, ErrorHandler, LOCALE_ID, enableProdMode } from '@angular/core';
+import { DEFAULT_CURRENCY_CODE, ErrorHandler, LOCALE_ID, enableProdMode, provideExperimentalZonelessChangeDetection } from '@angular/core';
 import { provideDateFnsAdapter } from '@angular/material-date-fns-adapter';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
@@ -28,6 +28,7 @@ registerLocaleData(localeLv);
 
 bootstrapApplication(AppComponent, {
   providers: [
+    provideExperimentalZonelessChangeDetection(),
     { provide: LOCALE_ID, useValue: 'lv' },
     { provide: DATE_FNS_LOCALE, useValue: lv },
     { provide: MAT_DATE_LOCALE, useExisting: DATE_FNS_LOCALE },
