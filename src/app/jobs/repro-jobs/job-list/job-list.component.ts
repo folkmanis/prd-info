@@ -1,11 +1,13 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, inject, input, resource } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, resource } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBar } from '@angular/material/progress-bar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterLink } from '@angular/router';
+import { isEqual } from 'lodash-es';
 import { EMPTY, from } from 'rxjs';
 import { CopyClipboardDirective } from 'src/app/library/clipboard/copy-clipboard.directive';
 import { navigateRelative } from 'src/app/library/navigation';
@@ -22,7 +24,6 @@ import { ProductsSummaryComponent } from '../products-summary/products-summary.c
 import { ReproJobService } from '../services/repro-job.service';
 import { UploadRefService } from '../services/upload-ref.service';
 import { NewJobButtonComponent } from './new-job-button/new-job-button.component';
-import { MatProgressBar } from '@angular/material/progress-bar';
 
 @Component({
   selector: 'app-job-list',
@@ -62,9 +63,10 @@ export class JobListComponent {
   isLarge = false;
 
   filter = input.required<JobQueryFilter>();
+  private filterChanges = computed(() => this.filter(), { equal: isEqual });
 
   jobsRef = resource({
-    request: () => this.filter(),
+    request: () => this.filterChanges(),
     loader: ({ request }) => {
       return this.jobService.getJobList(request);
     },
@@ -76,7 +78,9 @@ export class JobListComponent {
 
   constructor() {
     effect((onCleanup) => {
-      const subs = this.notifications$.subscribe(() => this.jobsRef.reload());
+      const subs = this.notifications$.subscribe(() => {
+        this.jobsRef.reload();
+      });
       onCleanup(() => subs.unsubscribe());
     });
   }

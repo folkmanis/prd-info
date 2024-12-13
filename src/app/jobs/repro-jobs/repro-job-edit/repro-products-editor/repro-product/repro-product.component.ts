@@ -1,19 +1,7 @@
 import { CurrencyPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Signal, computed, inject, input, output, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, viewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import {
-  AbstractControl,
-  ControlValueAccessor,
-  FormBuilder,
-  FormsModule,
-  NG_VALIDATORS,
-  NG_VALUE_ACCESSOR,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validator,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
+import { ControlValueAccessor, FormBuilder, FormsModule, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -90,6 +78,15 @@ export class ReproProductComponent implements ControlValueAccessor, Validator {
   remove = output<void>();
 
   onTouched: () => void = () => {};
+  onValidatorChange = () => {};
+
+  constructor() {
+    effect(() => {
+      this.customerProducts();
+      this.productForm.updateValueAndValidity();
+      this.onValidatorChange();
+    });
+  }
 
   writeValue(value: JobProduct): void {
     this.productForm.reset(value, { emitEvent: false });
@@ -116,6 +113,10 @@ export class ReproProductComponent implements ControlValueAccessor, Validator {
       .filter(([, control]) => control.errors)
       .map(([name, control]) => [name, control.errors]);
     return Object.fromEntries(errors);
+  }
+
+  registerOnValidatorChange(fn: () => void): void {
+    this.onValidatorChange = fn;
   }
 
   focus() {
