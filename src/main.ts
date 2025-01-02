@@ -6,7 +6,7 @@ import { provideDateFnsAdapter } from '@angular/material-date-fns-adapter';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { bootstrapApplication } from '@angular/platform-browser';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, TitleStrategy, withComponentInputBinding, withRouterConfig } from '@angular/router';
 import { ClassTransformer } from 'class-transformer';
 import { lv } from 'date-fns/locale';
@@ -50,8 +50,8 @@ bootstrapApplication(AppComponent, {
     { provide: TitleStrategy, useClass: ModulePageTitleStrategy },
     provideRouter(APP_ROUTES, withComponentInputBinding(), withRouterConfig({ onSameUrlNavigation: 'reload' })),
     provideHttpClient(withInterceptors(httpInterceptors)),
-    provideAnimationsAsync(),
     provideDateFnsAdapter(),
+    provideAnimations(),
   ],
   // eslint-disable-next-line no-console
 }).catch((err) => console.error(err));
