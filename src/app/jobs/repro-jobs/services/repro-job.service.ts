@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { flatten } from 'lodash-es';
-import { Observable, OperatorFunction, concatMap, distinctUntilChanged, filter, from, map, pipe, reduce, switchMap } from 'rxjs';
+import { flatten, pick } from 'lodash-es';
+import { Observable, OperatorFunction, concatMap, distinctUntilChanged, filter, from, map, of, pipe, reduce, switchMap } from 'rxjs';
 import { JobFilesService } from 'src/app/filesystem';
 import { CustomerProduct, DropFolder, JobProductionStage } from 'src/app/interfaces';
 import { ProductsService } from 'src/app/services';
@@ -29,10 +29,10 @@ export class ReproJobService {
     this.jobTemplate = template;
   }
 
-  retrieveJobTemplate(): JobTemplate | null {
+  retrieveJobTemplate(): JobTemplate {
     const template = this.jobTemplate;
     this.jobTemplate = null;
-    return template;
+    return template ?? {};
   }
 
   async updateJob(jobUpdate: PartialJob): Promise<Job> {
@@ -94,7 +94,7 @@ export class ReproJobService {
     );
   }
 
-  async updateFilesLocation(jobId: number): Promise<string[]> {
+  async updateFilesLocation(jobId: number): Promise<Job> {
     return this.jobFilesService.updateFolderLocation(jobId);
   }
 

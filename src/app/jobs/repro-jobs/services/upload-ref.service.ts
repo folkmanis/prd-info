@@ -1,8 +1,7 @@
 import { HttpEvent, HttpEventType } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { last } from 'lodash-es';
-import { merge, Observable, of, OperatorFunction, partition, pipe } from 'rxjs';
-import { concatMap, filter, map, mergeMap, scan, share, switchMap, throttleTime } from 'rxjs/operators';
+import { concatMap, EMPTY, filter, map, merge, mergeMap, Observable, of, OperatorFunction, partition, pipe, scan, share, switchMap, throttleTime } from 'rxjs';
 import { JobFilesService } from 'src/app/filesystem';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { Job } from '../../interfaces';
@@ -97,6 +96,26 @@ export class UploadRefService {
     this.uploadRef = uploadRef;
   }
 
+  setJobFolderCopy(oldJobId: number, fileNames: string[], afterAddedToJob: Observable<unknown> = EMPTY) {
+    const messages: FileUploadMessage[] = fileNames.map((name) => ({
+      type: FileUploadEventType.UploadFinish,
+      id: name,
+      name,
+      size: 0,
+      fileNames: [name],
+    }));
+
+    const progress$: Observable<FileUploadMessage[]> = of(messages);
+    const uploadRef = new UploadRef(progress$, this.copyJobFilesToJobFn(oldJobId));
+
+    uploadRef
+      .onAddedToJob()
+      .pipe(switchMap(() => afterAddedToJob))
+      .subscribe();
+
+    this.uploadRef = uploadRef;
+  }
+
   private uploadFile(file: File): Observable<FileUploadMessage> {
     const messageBase: UploadMessageBase = {
       id: uploadId(file),
@@ -172,5 +191,9 @@ export class UploadRefService {
         jobId,
         fileNames.map((name) => [...basePath, name]),
       );
+  }
+
+  private copyJobFilesToJobFn(oldJobId: number): (newJobId: number, fileNames: string[]) => Observable<Job> {
+    return (newJobId) => this.jobFilesService.copyJobFilesToJobFiles(oldJobId, newJobId);
   }
 }

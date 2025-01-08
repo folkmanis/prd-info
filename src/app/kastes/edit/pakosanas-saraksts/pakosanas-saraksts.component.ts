@@ -12,14 +12,14 @@ import { VeikalsValidationErrors } from '../services/veikals-validation-errors';
 import { TotalsComponent } from './totals/totals.component';
 import { VeikalsEditComponent } from './veikals-edit/veikals-edit.component';
 import { A11yModule } from '@angular/cdk/a11y';
-import { KeyPressDirective } from 'src/app/jobs/repro-jobs/repro-job-edit/key-press.directive';
+import { KeyPressDirective } from 'src/app/library/directives/key-press.directive';
 
 @Component({
-    selector: 'app-pakosanas-saraksts',
-    templateUrl: './pakosanas-saraksts.component.html',
-    styleUrls: ['./pakosanas-saraksts.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatTableModule, KastesTotalsComponent, MatIconModule, TotalsComponent, VeikalsEditComponent, MatButtonModule, TitleCasePipe, AsyncPipe, A11yModule, KeyPressDirective]
+  selector: 'app-pakosanas-saraksts',
+  templateUrl: './pakosanas-saraksts.component.html',
+  styleUrls: ['./pakosanas-saraksts.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatTableModule, KastesTotalsComponent, MatIconModule, TotalsComponent, VeikalsEditComponent, MatButtonModule, TitleCasePipe, AsyncPipe, A11yModule, KeyPressDirective],
 })
 export class PakosanasSarakstsComponent {
   colorCodes = kastesPreferences('colors');

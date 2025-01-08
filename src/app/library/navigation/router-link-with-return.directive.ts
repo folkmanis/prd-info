@@ -12,9 +12,12 @@ export class RouterLinkWithReturnDirective extends RouterLink implements OnChang
     this.routerLink = commandsOrUrlTree;
   }
 
+  @Input()
+  returnUrl: string;
+
   onClick(...args: [number, boolean, boolean, boolean, boolean]): boolean {
     this.state = this.state ?? {};
-    this.state.returnUrl = this.localRouter.url;
+    this.state.returnUrl = this.returnUrl ?? this.localRouter.url;
     return super.onClick(...args);
   }
 }

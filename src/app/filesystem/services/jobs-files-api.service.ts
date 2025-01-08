@@ -16,17 +16,6 @@ export class JobsFilesApiService {
   private transformer = inject(AppClassTransformerService);
   private http = inject(HttpClient);
 
-  readJobFolder(path: string[]): Observable<FileElement[]> {
-    return this.http
-      .get<Record<string, any>[]>(
-        this.path + 'read/job/',
-        new HttpOptions({
-          path: path.join('/'),
-        }),
-      )
-      .pipe(map((data) => this.transformer.plainToInstance(FileElement, data, { exposeDefaultValues: true })));
-  }
-
   fileUpload(jobId: number, form: FormData): Observable<HttpEvent<Job>> {
     const request = new HttpRequest('PUT', this.path + jobId + '/upload', form, { reportProgress: true });
     return this.http.request<Job>(request);
@@ -66,10 +55,13 @@ export class JobsFilesApiService {
     return this.transformer.toInstanceAsync(FileElement, request$);
   }
 
-  async updateFilesLocation(jobId: number): Promise<string[]> {
-    const result$ = this.http.patch<{ path: string[] }>(this.path + jobId + '/update-files-location', new HttpOptions());
-    const result = await firstValueFrom(result$);
-    return result.path;
+  async updateFilesLocation(jobId: number): Promise<Job> {
+    const result$ = this.http.patch<Job>(this.path + jobId + '/update-files-location', new HttpOptions());
+    return firstValueFrom(result$);
+  }
+
+  copyFromJobToJob(srcJobId: number, dstJobId: number): Observable<Job> {
+    return this.http.put<Job>(this.path + srcJobId + '/copy/' + dstJobId, {}, new HttpOptions());
   }
 
   copyFile(srcType: FileLocationTypes, dstType: FileLocationTypes, srcPath: string, dstPath: string): Observable<number> {

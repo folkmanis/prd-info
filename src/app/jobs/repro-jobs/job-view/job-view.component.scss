@@ -1,0 +1,52 @@
+@use '@angular/material' as mat;
+
+:host {
+    display: block;
+
+    .container {
+        padding-inline: 16px;
+        margin-block: 16px;
+    }
+
+    .container-multi {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        &>* {
+            flex: 1;
+        }
+
+
+
+    }
+
+    mat-card-content {
+        font: var(--sys-title-medium);
+    }
+
+    @include mat.card-overrides((title-text-size: var(--sys-body-large-size)));
+
+    &.large .container-multi {
+        flex-direction: row;
+    }
+
+
+}
+
+#job-name #job-id {
+    font-weight: bold;
+}
+
+header {
+
+    padding: 16px;
+
+    .actions {
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        column-gap: 16px;
+    }
+
+}

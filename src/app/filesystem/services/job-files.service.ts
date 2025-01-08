@@ -23,12 +23,8 @@ export class JobFilesService {
     return this.filesApi.transferFtpFilesToJob(jobId, files);
   }
 
-  async updateFolderLocation(jobId: number): Promise<string[]> {
+  async updateFolderLocation(jobId: number): Promise<Job> {
     return this.filesApi.updateFilesLocation(jobId);
-  }
-
-  listJobFolder(path: string[]): Observable<FileElement[]> {
-    return this.filesApi.readJobFolder(path);
   }
 
   uploadUserFile(file: File, name?: string): Observable<HttpEvent<{ names: string[] }>> {
@@ -62,5 +58,9 @@ export class JobFilesService {
   copyJobFolderToDropFolder(path: string[], dropFolder: string[]): Observable<number> {
     const dstPath = dropFolder.join('/') + '/' + last(path);
     return this.filesApi.copyFile(FileLocationTypes.JOB, FileLocationTypes.DROPFOLDER, path.join('/'), dstPath);
+  }
+
+  copyJobFilesToJobFiles(oldJobId: number, newJobId: number): Observable<Job> {
+    return this.filesApi.copyFromJobToJob(oldJobId, newJobId);
   }
 }

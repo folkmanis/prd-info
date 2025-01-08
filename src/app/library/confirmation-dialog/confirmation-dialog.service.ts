@@ -14,8 +14,8 @@ export class ConfirmationDialogService {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       ...config,
       data: {
-        yes: 'JĀ!',
-        no: 'NĒ!',
+        yes: 'Jā!',
+        no: 'Nē!',
         ...(config.data || {}),
         prompt,
       },

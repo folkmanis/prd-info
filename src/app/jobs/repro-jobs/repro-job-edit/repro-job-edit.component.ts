@@ -25,7 +25,8 @@ import { UploadProgressComponent } from '../upload-progress/upload-progress.comp
 import { DropFolderComponent } from './drop-folder/drop-folder.component';
 import { FolderPathComponent } from './folder-path/folder-path.component';
 import { JobFormComponent } from './job-form/job-form.component';
-import { KeyPressDirective } from './key-press.directive';
+import { KeyPressDirective } from 'src/app/library/directives';
+import { UploadRefService } from '../services/upload-ref.service';
 
 @Component({
   selector: 'app-repro-job-edit',
@@ -79,7 +80,7 @@ export class ReproJobEditComponent {
     return Object.keys(diff).length ? diff : null;
   });
 
-  uploadRef = input<UploadRef>();
+  uploadRef = inject(UploadRefService).retrieveUploadRef();
 
   selectedDropFolder = model<DropFolder | null>(null);
   dropFolderActive = model(false);
@@ -95,7 +96,7 @@ export class ReproJobEditComponent {
   });
 
   saveDisabled = computed(() => {
-    return (this.status() !== 'VALID' || this.changes() === null) && !this.dropFolderActive();
+    return (this.status() !== 'VALID' || (this.changes() === null && !!this.jobId())) && !this.dropFolderActive();
   });
 
   constructor() {
@@ -112,12 +113,11 @@ export class ReproJobEditComponent {
     });
 
     effect((onCleanup) => {
-      const uploadRef = this.uploadRef();
       let subs: Subscription;
 
-      if (uploadRef) {
-        this.fileUploadProgress$ = uploadRef.onMessages();
-        subs = uploadRef.onAddedToJob().subscribe({
+      if (this.uploadRef) {
+        this.fileUploadProgress$ = this.uploadRef.onMessages();
+        subs = this.uploadRef.onAddedToJob().subscribe({
           error: (error) =>
             this.snack.openFromComponent(SnackbarMessageComponent, {
               data: { progress: this.fileUploadProgress$, error },
@@ -130,7 +130,7 @@ export class ReproJobEditComponent {
 
     effect(() => {
       const defaultFolder = this.dropFolders()[0] || null;
-      const active = this.uploadRef() && defaultFolder !== null;
+      const active = this.uploadRef && defaultFolder !== null;
       untracked(() => {
         this.selectedDropFolder.set(defaultFolder);
         this.dropFolderActive.set(active);
@@ -153,7 +153,7 @@ export class ReproJobEditComponent {
     }
     if (this.mustUpdatePath() && this.updateFolderLocationEnabled()) {
       try {
-        updatedJob.files.path = await this.jobService.updateFilesLocation(this.jobId());
+        updatedJob = await this.jobService.updateFilesLocation(this.jobId());
       } catch (error) {}
     }
     try {
@@ -194,7 +194,7 @@ export class ReproJobEditComponent {
   }
 
   private async uploadFiles({ jobId, files }: Pick<Job, 'jobId' | 'files'>) {
-    this.uploadRef()?.addToJob(jobId);
+    this.uploadRef?.addToJob(jobId);
 
     if (this.dropFolderActive() && this.selectedDropFolder() !== null) {
       this.copyToDropfolder(files).subscribe();
@@ -203,10 +203,9 @@ export class ReproJobEditComponent {
 
   private copyToDropfolder(files: Files): Observable<boolean> {
     const dropFolder = this.selectedDropFolder();
-    const uploadRef = this.uploadRef();
 
-    if (uploadRef) {
-      return uploadRef.onAddedToJob().pipe(concatMap((job) => job.files && this.jobService.copyToDropFolder(job.files.path, dropFolder.path)));
+    if (this.uploadRef) {
+      return this.uploadRef.onAddedToJob().pipe(concatMap((job) => job.files && this.jobService.copyToDropFolder(job.files.path, dropFolder.path)));
     } else {
       return this.jobService.copyToDropFolder(files.path, dropFolder.path);
     }

@@ -1,0 +1,137 @@
+<header>
+  <div class="actions">
+    <a mat-icon-button appRouterLinkToReturn appKeyPress="escape">
+      <mat-icon>arrow_back</mat-icon>
+    </a>
+    <a mat-flat-button appRouterLinkWithReturn="edit" returnUrl="/jobs/repro" [disabled]="editDisabled()">Labot</a>
+    <button mat-button [appJobCopy]="jobWithId()">Kopēt</button>
+    @if (job().invoiceId) {
+      <a mat-button [appRouterLinkWithReturn]="['/calculations', 'plate-invoice', job().invoiceId]"> Rēķins {{ job().invoiceId }} </a>
+    }
+  </div>
+</header>
+
+<mat-divider />
+
+<div class="container">
+  <mat-card>
+    <mat-card-content>
+      <div class="headline-small" id="job-name">
+        <span id="job-id">{{ jobId() }}</span>
+        - {{ job().name }}
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div class="container container-multi">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title> Klients </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      {{ job().customer }}
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title> Izveidošanas datums </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      {{ job().receivedDate | date: 'dd.MM.yyyy' }}
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title> Nodošanas datums </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      {{ job().dueDate | date: 'dd.MM.yyyy' }}
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div class="container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title> Darba nosaukums </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      {{ job().name }}
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div class="container container-multi">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title> Kategorija </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      {{ productionCategory() }}
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title> Statuss </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      {{ generalStatus() }}
+    </mat-card-content>
+  </mat-card>
+
+  @if (job().customerJobId; as customerJobId) {
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title> Klienta darba numurs </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        {{ customerJobId }}
+      </mat-card-content>
+    </mat-card>
+  }
+</div>
+
+<div class="container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title> Preces </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      @for (product of job().products; track $index) {
+        <app-job-product [jobProduct]="product" [showPrices]="showPrices()" />
+      }
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div class="container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title> Piezīmes </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      {{ job().comment }}
+    </mat-card-content>
+  </mat-card>
+</div>
+
+@if (job().files; as files) {
+  <div class="container">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title> Darba mape </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        {{ files.path | jobPath }}
+      </mat-card-content>
+    </mat-card>
+  </div>
+}
+
+<div>
+  <pre>{{ job() | json }}</pre>
+</div>

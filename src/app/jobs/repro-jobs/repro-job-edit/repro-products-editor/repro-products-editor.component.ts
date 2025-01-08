@@ -8,7 +8,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CustomerProduct } from 'src/app/interfaces';
 import { JobProduct } from 'src/app/jobs';
 import { LoginService } from 'src/app/login';
-import { KeyPressDirective } from '../key-press.directive';
+import { KeyPressDirective } from 'src/app/library/directives';
 import { ReproProductComponent } from './repro-product/repro-product.component';
 
 const DEFAULT_PRODUCT: JobProduct = {

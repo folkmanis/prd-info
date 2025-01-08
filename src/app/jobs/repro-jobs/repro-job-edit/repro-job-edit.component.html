@@ -27,7 +27,7 @@
         [folders]="dropFolders()"
         [(folder)]="selectedDropFolder"
         [(folderActive)]="dropFolderActive"
-        [enabled]="dropFolders().length > 0 && (!!uploadRef() || value().files !== null)"
+        [enabled]="dropFolders().length > 0 && (!!uploadRef || value().files !== null)"
       />
     </mat-card-content>
   </mat-card>

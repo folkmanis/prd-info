@@ -1,0 +1,10 @@
+<span>
+  {{ jobProduct().name }}
+</span>
+<span> {{ jobProduct().count }} {{ jobProduct().units }} </span>
+@if (showPrices()) {
+  <span> {{ jobProduct().price | currency }}/{{ jobProduct().units }} </span>
+  <span>
+    {{ total() | currency }}
+  </span>
+}

@@ -7,9 +7,8 @@ import { tap } from 'rxjs';
 export const canJobDeactivate: CanDeactivateFn<ReproJobEditComponent> = (component) => {
   const dialog = inject(ConfirmationDialogService);
 
-  const uploadRef = component.uploadRef();
-  if (uploadRef && uploadRef.waiting) {
-    return dialog.discardChanges().pipe(tap((resp) => resp && component.uploadRef()?.cancel()));
+  if (component.uploadRef?.waiting) {
+    return dialog.discardChanges().pipe(tap((resp) => resp && component.uploadRef?.cancel()));
   }
 
   if (component.form.pristine || component.changes() === null) {
