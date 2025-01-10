@@ -19,12 +19,12 @@ export class NoopErrorStateMatcher implements ErrorStateMatcher {
 }
 
 @Component({
-    selector: 'app-labels',
-    templateUrl: './labels.component.html',
-    styleUrls: ['./labels.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [{ provide: ErrorStateMatcher, useClass: NoopErrorStateMatcher }],
-    imports: [FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, HideZeroPipe]
+  selector: 'app-labels',
+  templateUrl: './labels.component.html',
+  styleUrls: ['./labels.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [{ provide: ErrorStateMatcher, useClass: NoopErrorStateMatcher }],
+  imports: [FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, HideZeroPipe],
 })
 export class LabelsComponent {
   private kodsInput = viewChild.required<ElementRef<HTMLInputElement>>('kodsInputElement');

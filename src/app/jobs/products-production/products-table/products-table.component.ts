@@ -11,11 +11,11 @@ import { Totals } from '../services/totals';
 import { ProductsSortDirective } from './products-sort.directive';
 
 @Component({
-    selector: 'app-products-table',
-    templateUrl: './products-table.component.html',
-    styleUrls: ['./products-table.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatTableModule, ProductsSortDirective, MatCheckboxModule, MatSortModule, DecimalPipe, CurrencyPipe]
+  selector: 'app-products-table',
+  templateUrl: './products-table.component.html',
+  styleUrls: ['./products-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatTableModule, ProductsSortDirective, MatCheckboxModule, MatSortModule, DecimalPipe, CurrencyPipe],
 })
 export class ProductsTableComponent {
   selector = new SelectionModel<JobsProduction>(true);

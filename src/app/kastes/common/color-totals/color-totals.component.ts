@@ -4,11 +4,11 @@ import { COLORS, Colors } from 'src/app/kastes/interfaces';
 import { kastesPreferences } from '../../services/kastes-preferences.service';
 
 @Component({
-    selector: 'app-color-totals',
-    templateUrl: './color-totals.component.html',
-    styleUrl: './color-totals.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [TitleCasePipe]
+  selector: 'app-color-totals',
+  templateUrl: './color-totals.component.html',
+  styleUrl: './color-totals.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [TitleCasePipe],
 })
 export class ColorTotalsComponent {
   colors = COLORS;

@@ -6,11 +6,11 @@ import { FacetCount } from '../../interfaces';
 import { FacetPipe } from './facet.pipe';
 
 @Component({
-    selector: 'app-facet-checker',
-    templateUrl: './facet-checker.component.html',
-    styleUrls: ['./facet-checker.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatButtonModule, MatIconModule, MatListModule, FacetPipe]
+  selector: 'app-facet-checker',
+  templateUrl: './facet-checker.component.html',
+  styleUrls: ['./facet-checker.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatButtonModule, MatIconModule, MatListModule, FacetPipe],
 })
 export class FacetCheckerComponent {
   selection = viewChild.required(MatSelectionList);

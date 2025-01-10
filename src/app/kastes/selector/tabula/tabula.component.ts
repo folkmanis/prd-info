@@ -12,11 +12,11 @@ import { RowIdDirective } from './row-id.directive';
 const COLUMNS = ['label', 'kods', 'adrese'];
 
 @Component({
-    selector: 'app-tabula',
-    templateUrl: './tabula.component.html',
-    styleUrls: ['./tabula.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [ScrollTopDirective, MatTableModule, RowIdDirective, UpperCasePipe, TitleCasePipe, HideZeroPipe, CdkScrollable]
+  selector: 'app-tabula',
+  templateUrl: './tabula.component.html',
+  styleUrls: ['./tabula.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ScrollTopDirective, MatTableModule, RowIdDirective, UpperCasePipe, TitleCasePipe, HideZeroPipe, CdkScrollable],
 })
 export class TabulaComponent {
   private scrollTopDirective = viewChild.required(ScrollTopDirective);

@@ -1,6 +1,5 @@
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
-import { firstValueFrom } from 'rxjs';
 import { CustomerProduct } from 'src/app/interfaces';
 import { JobService, JobUnwindedPartial } from 'src/app/jobs';
 import { ProductsService } from 'src/app/services/products.service';

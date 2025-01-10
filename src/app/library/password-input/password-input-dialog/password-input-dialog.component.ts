@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { PasswordInputGroupComponent } from '../password-input-group/password-input-group.component';
-import { MatButtonModule } from '@angular/material/button';
 
 export interface PasswordDialogData {
   minLength?: number;

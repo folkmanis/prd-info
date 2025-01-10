@@ -6,11 +6,11 @@ import { SimpleListContainerComponent } from 'src/app/library/simple-form';
 import { TransportationRouteSheet } from '../../interfaces/transportation-route-sheet';
 
 @Component({
-    selector: 'app-route-sheet-list',
-    imports: [MatTableModule, RouterLink, RouterLinkActive, SimpleListContainerComponent],
-    templateUrl: './route-sheet-list.component.html',
-    styleUrl: './route-sheet-list.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-route-sheet-list',
+  imports: [MatTableModule, RouterLink, RouterLinkActive, SimpleListContainerComponent],
+  templateUrl: './route-sheet-list.component.html',
+  styleUrl: './route-sheet-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RouteSheetListComponent {
   private routeSheetService = inject(RouteSheetService);

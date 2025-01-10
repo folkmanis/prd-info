@@ -14,19 +14,18 @@ import { isEqual, pickBy } from 'lodash-es';
 import { combineLatest, concat, concatMap, distinctUntilChanged, filter, map, merge, Observable, of, Subscription, switchMap, throttleTime } from 'rxjs';
 import { DropFolder } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library';
+import { KeyPressDirective } from 'src/app/library/directives';
 import { navigateToReturn, RouterLinkToReturnDirective } from 'src/app/library/navigation';
 import { ViewSizeDirective } from 'src/app/library/view-size';
 import { Files, FileUploadMessage, Job } from '../../interfaces';
 import { parseJobId } from '../services/parse-job-id';
 import { ReproJobService } from '../services/repro-job.service';
-import { UploadRef } from '../services/upload-ref';
+import { UploadRefService } from '../services/upload-ref.service';
 import { SnackbarMessageComponent } from '../snackbar-message/snackbar-message.component';
 import { UploadProgressComponent } from '../upload-progress/upload-progress.component';
 import { DropFolderComponent } from './drop-folder/drop-folder.component';
 import { FolderPathComponent } from './folder-path/folder-path.component';
 import { JobFormComponent } from './job-form/job-form.component';
-import { KeyPressDirective } from 'src/app/library/directives';
-import { UploadRefService } from '../services/upload-ref.service';
 
 @Component({
   selector: 'app-repro-job-edit',

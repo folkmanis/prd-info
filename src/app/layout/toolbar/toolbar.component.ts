@@ -22,24 +22,24 @@ import { MessagingService } from '../messaging/services/messaging.service';
 const INITIAL_DELAY = 3000;
 
 @Component({
-    selector: 'app-toolbar',
-    templateUrl: './toolbar.component.html',
-    styleUrls: ['./toolbar.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        FormsModule,
-        MatToolbar,
-        MatButtonModule,
-        MatIcon,
-        RouterLink,
-        ViewNotSmallDirective,
-        ViewSmallDirective,
-        MatBadgeModule,
-        MessagesTriggerDirective,
-        MatMenuModule,
-        AsyncPipe,
-        MatSlideToggle,
-    ]
+  selector: 'app-toolbar',
+  templateUrl: './toolbar.component.html',
+  styleUrls: ['./toolbar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    FormsModule,
+    MatToolbar,
+    MatButtonModule,
+    MatIcon,
+    RouterLink,
+    ViewNotSmallDirective,
+    ViewSmallDirective,
+    MatBadgeModule,
+    MessagesTriggerDirective,
+    MatMenuModule,
+    AsyncPipe,
+    MatSlideToggle,
+  ],
 })
 export class ToolbarComponent implements OnInit {
   private messagingService = inject(MessagingService);

@@ -7,11 +7,11 @@ import { InvoicesService } from '../../services/invoices.service';
 const COLUMNS = ['invoiceId', 'customer', 'createdDate', 'totalSum'];
 
 @Component({
-    selector: 'app-invoices-list',
-    templateUrl: './invoices-list.component.html',
-    styleUrls: ['./invoices-list.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatTableModule, DatePipe, CurrencyPipe, RouterLink]
+  selector: 'app-invoices-list',
+  templateUrl: './invoices-list.component.html',
+  styleUrls: ['./invoices-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatTableModule, DatePipe, CurrencyPipe, RouterLink],
 })
 export class InvoicesListComponent {
   datasource = inject(InvoicesService).getInvoicesHttp({});

@@ -13,11 +13,11 @@ export interface DialogData {
 }
 
 @Component({
-    selector: 'app-materials-price-dialog',
-    templateUrl: './materials-price-dialog.component.html',
-    styleUrls: ['./materials-price-dialog.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CommonModule, MatDialogModule, MatFormFieldModule, ReactiveFormsModule, MatButtonModule, MatInputModule]
+  selector: 'app-materials-price-dialog',
+  templateUrl: './materials-price-dialog.component.html',
+  styleUrls: ['./materials-price-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CommonModule, MatDialogModule, MatFormFieldModule, ReactiveFormsModule, MatButtonModule, MatInputModule],
 })
 export class MaterialsPriceDialogComponent {
   private value: MaterialPrice = this.data.value;

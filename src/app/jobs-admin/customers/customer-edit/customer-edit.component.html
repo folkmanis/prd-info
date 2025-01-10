@@ -1,4 +1,4 @@
-<app-simple-form-container buttons [status]="form.status" [isChanges]="changes()" (save)="onSave()" (reset)="onReset()">
+<app-simple-form-container buttons [status]="form.status" [isChanges]="changes()" (save)="onSave()" (resetForm)="onReset()">
   <form [formGroup]="form">
     @if (!customer()._id) {
       <mat-form-field class="customer-name full-width">

@@ -6,11 +6,11 @@ import { colorTotalsFromVeikalsBoxs } from 'src/app/kastes/common/color-totals-f
 import { VeikalsValidationErrors } from '../../services/veikals-validation-errors';
 
 @Component({
-    selector: 'app-totals',
-    templateUrl: './totals.component.html',
-    styleUrls: ['./totals.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [PlusSignPipe]
+  selector: 'app-totals',
+  templateUrl: './totals.component.html',
+  styleUrls: ['./totals.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [PlusSignPipe],
 })
 export class TotalsComponent {
   colors = kastesPreferences('colors');

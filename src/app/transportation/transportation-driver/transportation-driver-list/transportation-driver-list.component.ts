@@ -5,11 +5,11 @@ import { MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
-    selector: 'app-transportation-driver',
-    imports: [SimpleListContainerComponent, MatTableModule, RouterLink, RouterLinkActive],
-    templateUrl: './transportation-driver-list.component.html',
-    styleUrl: './transportation-driver-list.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-transportation-driver',
+  imports: [SimpleListContainerComponent, MatTableModule, RouterLink, RouterLinkActive],
+  templateUrl: './transportation-driver-list.component.html',
+  styleUrl: './transportation-driver-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransportationDriverListComponent {
   drivers = inject(TransportationDriverService).drivers;

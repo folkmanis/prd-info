@@ -25,35 +25,35 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIcon } from '@angular/material/icon';
 
 @Component({
-    selector: 'app-fuel-purchases',
-    imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        SinglePurchaseComponent,
-        MatButton,
-        FuelTotalsComponent,
-        MatExpansionModule,
-        DatePipe,
-        AccordionDirective,
-        MatMenuModule,
-        MatIcon,
-        MatIconButton,
-    ],
-    templateUrl: './fuel-purchases.component.html',
-    styleUrl: './fuel-purchases.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => FuelPurchasesComponent),
-            multi: true,
-        },
-        {
-            provide: NG_VALIDATORS,
-            useExisting: forwardRef(() => FuelPurchasesComponent),
-            multi: true,
-        },
-    ]
+  selector: 'app-fuel-purchases',
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    SinglePurchaseComponent,
+    MatButton,
+    FuelTotalsComponent,
+    MatExpansionModule,
+    DatePipe,
+    AccordionDirective,
+    MatMenuModule,
+    MatIcon,
+    MatIconButton,
+  ],
+  templateUrl: './fuel-purchases.component.html',
+  styleUrl: './fuel-purchases.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => FuelPurchasesComponent),
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => FuelPurchasesComponent),
+      multi: true,
+    },
+  ],
 })
 export class FuelPurchasesComponent implements ControlValueAccessor, Validator {
   private chDetector = inject(ChangeDetectorRef);

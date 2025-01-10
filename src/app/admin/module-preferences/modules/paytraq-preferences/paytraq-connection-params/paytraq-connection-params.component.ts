@@ -51,14 +51,14 @@ export class PaytraqConnectionParamsComponent implements ControlValueAccessor, V
     invoiceUrl: ['', Validators.required],
   });
 
-  focus = output<void>();
+  focusInput = output<void>();
 
   constructor(focusMonitor: FocusMonitor) {
     effect((onCleanup) => {
       const container = this.containerEl();
       focusMonitor.monitor(container, true).subscribe(() => {
         this.onTouched();
-        this.focus.emit();
+        this.focusInput.emit();
       });
       onCleanup(() => {
         focusMonitor.stopMonitoring(container);

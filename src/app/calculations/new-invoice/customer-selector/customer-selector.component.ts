@@ -5,11 +5,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 
 @Component({
-    selector: 'app-customer-selector',
-    templateUrl: './customer-selector.component.html',
-    styleUrls: ['./customer-selector.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [FormsModule, MatFormFieldModule, MatSelectModule, MatOptionModule]
+  selector: 'app-customer-selector',
+  templateUrl: './customer-selector.component.html',
+  styleUrls: ['./customer-selector.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [FormsModule, MatFormFieldModule, MatSelectModule, MatOptionModule],
 })
 export class CustomerSelectorComponent {
   customers = input.required<{ _id: string }[]>();

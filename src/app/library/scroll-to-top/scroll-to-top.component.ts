@@ -4,10 +4,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { ScrollTopDirective } from './scroll-top.directive';
 
 @Component({
-    templateUrl: './scroll-to-top.component.html',
-    styleUrls: ['./scroll-to-top.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatIconModule, MatButtonModule]
+  templateUrl: './scroll-to-top.component.html',
+  styleUrls: ['./scroll-to-top.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatIconModule, MatButtonModule],
 })
 export class ScrollToTopComponent {
   private scrollable = inject(ScrollTopDirective);

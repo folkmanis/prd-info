@@ -4,23 +4,23 @@ import { map } from 'rxjs';
 import { CustomerContact } from 'src/app/interfaces';
 
 @Component({
-    selector: 'app-customer-contact-editor',
-    templateUrl: './customer-contact-editor.component.html',
-    styleUrls: ['./customer-contact-editor.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            multi: true,
-            useExisting: CustomerContactEditorComponent,
-        },
-        {
-            provide: NG_VALIDATORS,
-            multi: true,
-            useExisting: CustomerContactEditorComponent,
-        },
-    ],
-    imports: [ReactiveFormsModule]
+  selector: 'app-customer-contact-editor',
+  templateUrl: './customer-contact-editor.component.html',
+  styleUrls: ['./customer-contact-editor.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      multi: true,
+      useExisting: CustomerContactEditorComponent,
+    },
+    {
+      provide: NG_VALIDATORS,
+      multi: true,
+      useExisting: CustomerContactEditorComponent,
+    },
+  ],
+  imports: [ReactiveFormsModule],
 })
 export class CustomerContactEditorComponent implements ControlValueAccessor, Validator {
   private emailInput = viewChild.required<ElementRef<HTMLInputElement>>('email');

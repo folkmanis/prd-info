@@ -1,7 +1,7 @@
-import { computed, inject, Injectable, resource, signal } from '@angular/core';
+import { inject, Injectable, resource, signal } from '@angular/core';
+import { isEqual } from 'lodash-es';
 import { Customer, CustomerPartial, CustomerUpdate, NewCustomer } from 'src/app/interfaces';
 import { CustomersApiService } from './prd-api/customers-api.service';
-import { isEqual } from 'lodash-es';
 
 export interface CustomerRequestFilter {
   name?: string;

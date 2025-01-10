@@ -1,4 +1,4 @@
-<app-simple-form-container buttons [status]="form.status" [isChanges]="changes" (save)="onSave()" (reset)="onReset()">
+<app-simple-form-container buttons [status]="form.status" [isChanges]="changes" (save)="onSave()" (resetForm)="onReset()">
   <form [formGroup]="form">
     <div class="headline-medium">
       @if (form.value._id === null) {

@@ -1,4 +1,4 @@
-<app-module-group [formGroup]="prefForm" (reset)="onResetAll()" (save)="onSaveAll()" [pristine]="prefForm.pristine" [valid]="prefForm.valid">
+<app-module-group [formGroup]="prefForm" (resetForm)="onResetAll()" (save)="onSaveAll()" [pristine]="prefForm.pristine" [valid]="prefForm.valid">
   <app-preferences-card>
     <ng-container appCardTitle> Vispārīgie iestatījumi </ng-container>
     <app-system-preferences formControlName="system" />

@@ -1,6 +1,6 @@
 @let historicalData = historicalData$ | async;
 
-<app-simple-form-container buttons [status]="formStatus()" [isChanges]="changes()" (save)="onSave()" (reset)="onReset()" [formGroup]="form">
+<app-simple-form-container buttons [status]="formStatus()" [isChanges]="changes()" (save)="onSave()" (resetForm)="onReset()" [formGroup]="form">
   <mat-tab-group dynamicHeight>
     <mat-tab label="Pamatinformācija">
       <app-general-setup [drivers]="drivers()" [vehicles]="vehicles()" [historicalData]="historicalData">

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { firstValueFrom, map, Observable } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { Equipment } from 'src/app/interfaces';
 import { AppClassTransformerService } from 'src/app/library';

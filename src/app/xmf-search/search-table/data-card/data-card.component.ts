@@ -5,11 +5,11 @@ import { ArchiveRecord } from '../../interfaces';
 import { DatePipe } from '@angular/common';
 
 @Component({
-    selector: 'app-data-card',
-    imports: [CopyClipboardDirective, TaggedStringComponent, DatePipe],
-    templateUrl: './data-card.component.html',
-    styleUrl: './data-card.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-data-card',
+  imports: [CopyClipboardDirective, TaggedStringComponent, DatePipe],
+  templateUrl: './data-card.component.html',
+  styleUrl: './data-card.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DataCardComponent {
   data = input.required<ArchiveRecord>();

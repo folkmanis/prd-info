@@ -5,10 +5,10 @@ import { isObject } from 'lodash-es';
 import { FuelPurchase } from 'src/app/transportation/interfaces/transportation-route-sheet';
 
 @Component({
-    selector: 'app-fuel-totals',
-    imports: [CurrencyPipe, MatChipsModule],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    templateUrl: './fuel-totals.component.html'
+  selector: 'app-fuel-totals',
+  imports: [CurrencyPipe, MatChipsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './fuel-totals.component.html',
 })
 export class FuelTotalsComponent {
   private validPurchases = computed(() => this.fuelPurchases().filter(isObject));

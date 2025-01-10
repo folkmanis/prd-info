@@ -5,11 +5,11 @@ import { SimpleListContainerComponent } from 'src/app/library/simple-form';
 import { ProductsService } from 'src/app/services';
 
 @Component({
-    selector: 'app-products-list',
-    templateUrl: './products-list.component.html',
-    styleUrls: ['./products-list.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [SimpleListContainerComponent, MatTableModule, RouterLink, RouterLinkActive]
+  selector: 'app-products-list',
+  templateUrl: './products-list.component.html',
+  styleUrls: ['./products-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [SimpleListContainerComponent, MatTableModule, RouterLink, RouterLinkActive],
 })
 export class ProductsListComponent {
   private productsService = inject(ProductsService);

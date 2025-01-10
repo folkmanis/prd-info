@@ -6,11 +6,11 @@ import { RouterLink } from '@angular/router';
 import { FileDropDirective } from 'src/app/library/directives/file-drop.directive';
 
 @Component({
-    selector: 'app-new-job-button',
-    templateUrl: './new-job-button.component.html',
-    styleUrls: ['./new-job-button.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatButtonModule, MatMenuModule, MatIconModule, RouterLink, FileDropDirective]
+  selector: 'app-new-job-button',
+  templateUrl: './new-job-button.component.html',
+  styleUrls: ['./new-job-button.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatButtonModule, MatMenuModule, MatIconModule, RouterLink, FileDropDirective],
 })
 export class NewJobButtonComponent {
   @Output() fileList = new EventEmitter<FileList>();

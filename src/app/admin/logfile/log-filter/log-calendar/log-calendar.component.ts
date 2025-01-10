@@ -9,10 +9,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { isFirstDate, isLastDate, isValidDate, lastDate, shiftDate, validDate } from '../../log-dates-utils';
 
 @Component({
-    selector: 'app-log-calendar',
-    templateUrl: './log-calendar.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [FormsModule, MatFormFieldModule, MatInputModule, MatDatepickerModule, MatTooltipModule, MatButtonModule, MatIconModule]
+  selector: 'app-log-calendar',
+  templateUrl: './log-calendar.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [FormsModule, MatFormFieldModule, MatInputModule, MatDatepickerModule, MatTooltipModule, MatButtonModule, MatIconModule],
 })
 export class LogCalendarComponent {
   date = model.required<Date>();

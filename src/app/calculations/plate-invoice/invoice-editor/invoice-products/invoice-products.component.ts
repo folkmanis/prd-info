@@ -8,11 +8,11 @@ import { Invoice } from 'src/app/interfaces';
 const COLUMNS = ['_id', 'count', 'price', 'total'];
 
 @Component({
-    selector: 'app-invoice-products',
-    templateUrl: './invoice-products.component.html',
-    styleUrls: ['./invoice-products.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatTableModule, CurrencyPipe, MatButtonModule, RouterLink]
+  selector: 'app-invoice-products',
+  templateUrl: './invoice-products.component.html',
+  styleUrls: ['./invoice-products.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatTableModule, CurrencyPipe, MatButtonModule, RouterLink],
 })
 export class InvoiceProductsComponent {
   invoice = input.required<Invoice>();

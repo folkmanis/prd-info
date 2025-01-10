@@ -24,11 +24,11 @@ const firebaseCopyToResultMessage = (count: number) => `Uzkopēti ${count} ierak
 const firebaseCopyFromResultMessage = (count: number) => `Saņemti ${count} ieraksti no lietotnes.`;
 
 @Component({
-    selector: 'app-pasutijums-edit',
-    templateUrl: './pasutijums-edit.component.html',
-    styleUrls: ['./pasutijums-edit.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [SimpleFormContainerComponent, JobInfoComponent, MatTabsModule, PakosanasSarakstsComponent, AsyncPipe, RouterLink, MatButtonModule]
+  selector: 'app-pasutijums-edit',
+  templateUrl: './pasutijums-edit.component.html',
+  styleUrls: ['./pasutijums-edit.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [SimpleFormContainerComponent, JobInfoComponent, MatTabsModule, PakosanasSarakstsComponent, AsyncPipe, RouterLink, MatButtonModule],
 })
 export class PasutijumsEditComponent {
   private pasutijumiService = inject(KastesPasutijumiService);

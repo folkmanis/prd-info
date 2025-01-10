@@ -34,39 +34,39 @@ import { RouteSheetService } from 'src/app/transportation/services/route-sheet.s
 import { TripStopsComponent } from './trip-stops/trip-stops.component';
 
 @Component({
-    selector: 'app-single-trip',
-    imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatIconButton,
-        MatIcon,
-        MatInput,
-        MatDatepickerModule,
-        ViewSizeDirective,
-        TripStopsComponent,
-        DecimalPipe,
-        TextFieldModule,
-        AsyncPipe,
-        MatMenuModule,
-        MatTooltip,
-        ExpressionInputDirective,
-    ],
-    templateUrl: './single-trip.component.html',
-    styleUrl: './single-trip.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: SingleTripComponent,
-            multi: true,
-        },
-        {
-            provide: NG_VALIDATORS,
-            useExisting: SingleTripComponent,
-            multi: true,
-        },
-    ]
+  selector: 'app-single-trip',
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatIconButton,
+    MatIcon,
+    MatInput,
+    MatDatepickerModule,
+    ViewSizeDirective,
+    TripStopsComponent,
+    DecimalPipe,
+    TextFieldModule,
+    AsyncPipe,
+    MatMenuModule,
+    MatTooltip,
+    ExpressionInputDirective,
+  ],
+  templateUrl: './single-trip.component.html',
+  styleUrl: './single-trip.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: SingleTripComponent,
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: SingleTripComponent,
+      multi: true,
+    },
+  ],
 })
 export class SingleTripComponent implements ControlValueAccessor, Validator {
   private routeService = inject(RouteSheetService);

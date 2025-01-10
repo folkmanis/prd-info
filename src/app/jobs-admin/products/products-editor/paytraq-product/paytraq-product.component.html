@@ -1,4 +1,4 @@
-<app-paytraq-search-header [(search)]="search" (submit)="onSearchProducts()" [disabled]="disabled()">
+<app-paytraq-search-header [(search)]="search" (submitSearch)="onSearchProducts()" [disabled]="disabled()">
   <button mat-button (click)="onClearValue()" [disabled]="!value() || disabled()">ATVIENOT</button>
 </app-paytraq-search-header>
 

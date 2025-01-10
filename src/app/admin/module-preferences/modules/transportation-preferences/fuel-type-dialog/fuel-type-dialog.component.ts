@@ -7,11 +7,11 @@ import { MatInput } from '@angular/material/input';
 import { FuelTypeInterface } from 'src/app/interfaces';
 
 @Component({
-    selector: 'app-fuel-type-dialog',
-    imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatInput, MatButton],
-    templateUrl: './fuel-type-dialog.component.html',
-    styleUrl: './fuel-type-dialog.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-fuel-type-dialog',
+  imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatInput, MatButton],
+  templateUrl: './fuel-type-dialog.component.html',
+  styleUrl: './fuel-type-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FuelTypeDialogComponent {
   private data = inject<FuelTypeInterface>(MAT_DIALOG_DATA, { optional: true });

@@ -6,7 +6,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { DomSanitizer } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
-import { EMPTY, Observable, combineLatest, concatMap, filter, map, of, scan, shareReplay, tap } from 'rxjs';
+import { Observable, combineLatest, concatMap, filter, map, scan, shareReplay, tap } from 'rxjs';
 import { ScrollTopDirective } from '../../library/scroll-to-top/scroll-top.directive';
 import { JobsUserPreferencesService } from '../services/jobs-user-preferences.service';
 import { GmailPaginatorComponent } from './gmail-paginator/gmail-paginator.component';

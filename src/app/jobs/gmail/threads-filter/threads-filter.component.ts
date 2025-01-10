@@ -14,11 +14,11 @@ export interface ThreadsFilterData {
 }
 
 @Component({
-    selector: 'app-threads-filter',
-    templateUrl: './threads-filter.component.html',
-    styleUrls: ['./threads-filter.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatButtonModule, MatMenuModule, MatIconModule, MatProgressSpinnerModule]
+  selector: 'app-threads-filter',
+  templateUrl: './threads-filter.component.html',
+  styleUrls: ['./threads-filter.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatButtonModule, MatMenuModule, MatIconModule, MatProgressSpinnerModule],
 })
 export class ThreadsFilterComponent {
   private labels = toSignal(inject(GmailService).labels(), { initialValue: [] });

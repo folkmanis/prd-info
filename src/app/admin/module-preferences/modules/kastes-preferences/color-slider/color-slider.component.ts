@@ -5,18 +5,18 @@ import { MatSlider, MatSliderModule } from '@angular/material/slider';
 import { hslToString, stringToHsl } from './hsl-color';
 
 @Component({
-    selector: 'app-color-slider',
-    templateUrl: './color-slider.component.html',
-    styleUrls: ['./color-slider.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => ColorSliderComponent),
-            multi: true,
-        },
-    ],
-    imports: [MatSliderModule, FormsModule]
+  selector: 'app-color-slider',
+  templateUrl: './color-slider.component.html',
+  styleUrls: ['./color-slider.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => ColorSliderComponent),
+      multi: true,
+    },
+  ],
+  imports: [MatSliderModule, FormsModule],
 })
 export class ColorSliderComponent implements ControlValueAccessor {
   private slider = viewChild(MatSlider, { read: ElementRef });
@@ -34,14 +34,14 @@ export class ColorSliderComponent implements ControlValueAccessor {
 
   displayColor = computed(() => hslToString(this.hue(), this.saturation(), this.lightness()));
 
-  focus = output<void>();
+  focusInput = output<void>();
 
   constructor(focusMonitor: FocusMonitor) {
     effect((onCleanup) => {
       const element = this.slider().nativeElement;
       focusMonitor.monitor(element, true).subscribe(() => {
         this.onTouchedFn();
-        this.focus.emit();
+        this.focusInput.emit();
       });
       onCleanup(() => {
         focusMonitor.stopMonitoring(element);

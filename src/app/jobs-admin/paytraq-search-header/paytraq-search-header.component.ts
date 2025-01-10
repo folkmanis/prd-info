@@ -6,20 +6,20 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 
 @Component({
-    selector: 'app-paytraq-search-header',
-    templateUrl: './paytraq-search-header.component.html',
-    styleUrls: ['./paytraq-search-header.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatFormFieldModule, MatIconModule, MatInputModule, FormsModule, MatButtonModule]
+  selector: 'app-paytraq-search-header',
+  templateUrl: './paytraq-search-header.component.html',
+  styleUrls: ['./paytraq-search-header.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatFormFieldModule, MatIconModule, MatInputModule, FormsModule, MatButtonModule],
 })
 export class PaytraqSearchHeaderComponent {
   search = model.required<string>();
 
   disabled = input(false, { transform: booleanAttribute });
 
-  submit = output();
+  submitSearch = output();
 
   onSubmit() {
-    this.submit.emit();
+    this.submitSearch.emit();
   }
 }

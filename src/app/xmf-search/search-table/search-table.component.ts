@@ -7,11 +7,11 @@ import { SearchData } from '../services/search-data';
 import { DataCardComponent } from './data-card/data-card.component';
 
 @Component({
-    selector: 'app-search-table',
-    templateUrl: './search-table.component.html',
-    styleUrls: ['./search-table.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, ScrollTopDirective, CdkVirtualForOf, MatProgressSpinnerModule, DataCardComponent]
+  selector: 'app-search-table',
+  templateUrl: './search-table.component.html',
+  styleUrls: ['./search-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, ScrollTopDirective, CdkVirtualForOf, MatProgressSpinnerModule, DataCardComponent],
 })
 export class SearchTableComponent {
   private content = viewChild(CdkVirtualScrollViewport);

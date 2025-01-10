@@ -5,11 +5,11 @@ import { Invoice, InvoiceProduct } from 'src/app/interfaces';
 import { configuration } from 'src/app/services/config.provider';
 
 @Component({
-    selector: 'app-invoice-paytraq',
-    templateUrl: './invoice-paytraq.component.html',
-    styleUrls: ['./invoice-paytraq.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatCardModule, MatButtonModule]
+  selector: 'app-invoice-paytraq',
+  templateUrl: './invoice-paytraq.component.html',
+  styleUrls: ['./invoice-paytraq.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatCardModule, MatButtonModule],
 })
 export class InvoicePaytraqComponent {
   invoice = input.required<Invoice>();

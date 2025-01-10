@@ -14,11 +14,11 @@ export interface SnackBarMessageData {
 }
 
 @Component({
-    selector: 'app-snackbar-message',
-    templateUrl: './snackbar-message.component.html',
-    styleUrls: ['./snackbar-message.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatButtonModule, UploadProgressComponent, AsyncPipe]
+  selector: 'app-snackbar-message',
+  templateUrl: './snackbar-message.component.html',
+  styleUrls: ['./snackbar-message.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatButtonModule, UploadProgressComponent, AsyncPipe],
 })
 export class SnackbarMessageComponent {
   private data = inject<SnackBarMessageData>(MAT_SNACK_BAR_DATA);

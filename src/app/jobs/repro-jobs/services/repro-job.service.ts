@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { flatten, pick } from 'lodash-es';
-import { Observable, OperatorFunction, concatMap, distinctUntilChanged, filter, from, map, of, pipe, reduce, switchMap } from 'rxjs';
+import { flatten } from 'lodash-es';
+import { Observable, OperatorFunction, concatMap, distinctUntilChanged, filter, from, map, pipe, reduce, switchMap } from 'rxjs';
 import { JobFilesService } from 'src/app/filesystem';
 import { CustomerProduct, DropFolder, JobProductionStage } from 'src/app/interfaces';
 import { ProductsService } from 'src/app/services';

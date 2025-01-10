@@ -14,21 +14,21 @@ import { StatusCountComponent } from './status-count/status-count.component';
 import { MatProgressBar } from '@angular/material/progress-bar';
 
 @Component({
-    selector: 'app-xmf-search',
-    templateUrl: './xmf-search.component.html',
-    styleUrls: ['./xmf-search.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        MatSidenavModule,
-        DrawerSmallDirective,
-        DrawerButtonDirective,
-        FacetComponent,
-        SearchInputComponent,
-        StatusCountComponent,
-        SearchTableComponent,
-        AsyncPipe,
-        MatProgressBar,
-    ]
+  selector: 'app-xmf-search',
+  templateUrl: './xmf-search.component.html',
+  styleUrls: ['./xmf-search.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    MatSidenavModule,
+    DrawerSmallDirective,
+    DrawerButtonDirective,
+    FacetComponent,
+    SearchInputComponent,
+    StatusCountComponent,
+    SearchTableComponent,
+    AsyncPipe,
+    MatProgressBar,
+  ],
 })
 export class XmfSearchComponent {
   private facetComponent = viewChild.required(FacetComponent);

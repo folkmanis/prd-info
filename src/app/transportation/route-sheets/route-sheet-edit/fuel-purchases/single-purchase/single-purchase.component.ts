@@ -25,23 +25,23 @@ import { FuelType } from 'src/app/transportation/interfaces/fuel-type';
 import { FuelPurchase } from 'src/app/transportation/interfaces/transportation-route-sheet';
 
 @Component({
-    selector: 'app-single-purchase',
-    imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInput, MatDatepickerModule, MatSelect, MatOption, ViewSizeDirective],
-    templateUrl: './single-purchase.component.html',
-    styleUrl: './single-purchase.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => SinglePurchaseComponent),
-            multi: true,
-        },
-        {
-            provide: NG_VALIDATORS,
-            useExisting: forwardRef(() => SinglePurchaseComponent),
-            multi: true,
-        },
-    ]
+  selector: 'app-single-purchase',
+  imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInput, MatDatepickerModule, MatSelect, MatOption, ViewSizeDirective],
+  templateUrl: './single-purchase.component.html',
+  styleUrl: './single-purchase.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => SinglePurchaseComponent),
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => SinglePurchaseComponent),
+      multi: true,
+    },
+  ],
 })
 export class SinglePurchaseComponent implements ControlValueAccessor, Validator {
   form = inject(FormBuilder).group({

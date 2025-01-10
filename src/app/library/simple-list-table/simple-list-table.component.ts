@@ -8,18 +8,18 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
-    selector: 'app-simple-list-table',
-    templateUrl: './simple-list-table.component.html',
-    styleUrls: ['./simple-list-table.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: SimpleListTableComponent,
-            multi: true,
-        },
-    ],
-    imports: [MatTableModule, MatButtonModule, MatTooltipModule, MatIconModule]
+  selector: 'app-simple-list-table',
+  templateUrl: './simple-list-table.component.html',
+  styleUrls: ['./simple-list-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: SimpleListTableComponent,
+      multi: true,
+    },
+  ],
+  imports: [MatTableModule, MatButtonModule, MatTooltipModule, MatIconModule],
 })
 export class SimpleListTableComponent<T, K extends keyof T & string> implements ControlValueAccessor {
   private dialog = inject(MatDialog);

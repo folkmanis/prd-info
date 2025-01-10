@@ -7,11 +7,11 @@ import { KastesTotalsComponent } from '../../common/kastes-totals/kastes-totals.
 import { totalsFromAddresesWithPackages } from '../../services/item-packing.utilities';
 
 @Component({
-    selector: 'app-job-info',
-    templateUrl: './job-info.component.html',
-    styleUrls: ['./job-info.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [ColorTotalsComponent, KastesTotalsComponent, DatePipe]
+  selector: 'app-job-info',
+  templateUrl: './job-info.component.html',
+  styleUrls: ['./job-info.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ColorTotalsComponent, KastesTotalsComponent, DatePipe],
 })
 export class JobInfoComponent {
   job = input.required<KastesJob>();

@@ -5,11 +5,11 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-    selector: 'app-folder-path',
-    templateUrl: './folder-path.component.html',
-    styleUrls: ['./folder-path.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [FormsModule, MatIconModule, MatCheckboxModule, MatButtonModule]
+  selector: 'app-folder-path',
+  templateUrl: './folder-path.component.html',
+  styleUrls: ['./folder-path.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [FormsModule, MatIconModule, MatCheckboxModule, MatButtonModule],
 })
 export class FolderPathComponent {
   path = input('');

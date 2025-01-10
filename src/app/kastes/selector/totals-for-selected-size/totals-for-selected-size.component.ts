@@ -10,11 +10,11 @@ type TotalsInput = Record<Colors, number> & {
 };
 
 @Component({
-    selector: 'app-totals-for-selected-size',
-    imports: [TitleCasePipe],
-    templateUrl: './totals-for-selected-size.component.html',
-    styleUrl: './totals-for-selected-size.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-totals-for-selected-size',
+  imports: [TitleCasePipe],
+  templateUrl: './totals-for-selected-size.component.html',
+  styleUrl: './totals-for-selected-size.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TotalsForSelectedSizeComponent {
   readonly colors = COLORS;

@@ -1,4 +1,4 @@
-<app-simple-form-container buttons [status]="formStatus()" [isChanges]="changes()" (save)="isNew() ? onCreateStage() : onUpdateStage()" (reset)="onReset()">
+<app-simple-form-container buttons [status]="formStatus()" [isChanges]="changes()" (save)="isNew() ? onCreateStage() : onUpdateStage()" (resetForm)="onReset()">
   <form [formGroup]="form">
     <h2>
       <mat-form-field class="full-width">

@@ -22,24 +22,24 @@ import { JobsWithoutInvoicesComponent } from './jobs-without-invoices/jobs-witho
 import { SelectionTotalsComponent } from './selection-totals/selection-totals.component';
 
 @Component({
-    selector: 'app-new-invoice',
-    templateUrl: './new-invoice.component.html',
-    styleUrls: ['./new-invoice.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        CustomerSelectorComponent,
-        MatSidenavModule,
-        DrawerButtonDirective,
-        MatDividerModule,
-        MatCardModule,
-        SelectionTotalsComponent,
-        JobsWithoutInvoicesComponent,
-        ViewSizeDirective,
-        JobSelectionTableComponent,
-        ScrollTopDirective,
-        MatButtonModule,
-        AsyncPipe,
-    ]
+  selector: 'app-new-invoice',
+  templateUrl: './new-invoice.component.html',
+  styleUrls: ['./new-invoice.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CustomerSelectorComponent,
+    MatSidenavModule,
+    DrawerButtonDirective,
+    MatDividerModule,
+    MatCardModule,
+    SelectionTotalsComponent,
+    JobsWithoutInvoicesComponent,
+    ViewSizeDirective,
+    JobSelectionTableComponent,
+    ScrollTopDirective,
+    MatButtonModule,
+    AsyncPipe,
+  ],
 })
 export class NewInvoiceComponent {
   private invoicesService = inject(InvoicesService);

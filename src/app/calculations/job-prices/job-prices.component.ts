@@ -12,11 +12,11 @@ import { JobPricesTableComponent } from './job-prices-table/job-prices-table.com
 const updateMessage = (n: number) => `Izmainīti ${n} ieraksti.`;
 
 @Component({
-    selector: 'app-job-prices',
-    templateUrl: './job-prices.component.html',
-    styleUrls: ['./job-prices.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CustomerSelectorComponent, MatButtonModule, MatBadgeModule, MatCardModule, JobPricesTableComponent]
+  selector: 'app-job-prices',
+  templateUrl: './job-prices.component.html',
+  styleUrls: ['./job-prices.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CustomerSelectorComponent, MatButtonModule, MatBadgeModule, MatCardModule, JobPricesTableComponent],
 })
 export class JobPricesComponent {
   private snack = inject(MatSnackBar);

@@ -27,35 +27,35 @@ import { SingleTripComponent } from './single-trip/single-trip.component';
 import { TripsTotalComponent } from '../../../ui/trips-total/trips-total.component';
 
 @Component({
-    selector: 'app-route-trips',
-    imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        MatButton,
-        SingleTripComponent,
-        MatExpansionModule,
-        DatePipe,
-        MatMenuModule,
-        MatIcon,
-        MatIconButton,
-        AccordionDirective,
-        TripsTotalComponent,
-    ],
-    templateUrl: './route-trips.component.html',
-    styleUrl: './route-trips.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: RouteTripsComponent,
-            multi: true,
-        },
-        {
-            provide: NG_VALIDATORS,
-            useExisting: RouteTripsComponent,
-            multi: true,
-        },
-    ]
+  selector: 'app-route-trips',
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatButton,
+    SingleTripComponent,
+    MatExpansionModule,
+    DatePipe,
+    MatMenuModule,
+    MatIcon,
+    MatIconButton,
+    AccordionDirective,
+    TripsTotalComponent,
+  ],
+  templateUrl: './route-trips.component.html',
+  styleUrl: './route-trips.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: RouteTripsComponent,
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: RouteTripsComponent,
+      multi: true,
+    },
+  ],
 })
 export class RouteTripsComponent implements ControlValueAccessor, Validator {
   private chDetector = inject(ChangeDetectorRef);

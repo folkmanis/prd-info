@@ -6,11 +6,11 @@ import { GoogleUser } from 'src/app/interfaces';
 const FIELDS_FOR_DISPLAY: (keyof GoogleUser)[] = ['id', 'email', 'name', 'given_name', 'family_name', 'gender', 'locale'];
 
 @Component({
-    selector: 'app-google-info',
-    templateUrl: './google-info.component.html',
-    styleUrls: ['./google-info.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatListModule, TitleCasePipe]
+  selector: 'app-google-info',
+  templateUrl: './google-info.component.html',
+  styleUrls: ['./google-info.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatListModule, TitleCasePipe],
 })
 export class GoogleInfoComponent {
   values = computed(() => {

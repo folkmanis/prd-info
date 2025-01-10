@@ -12,23 +12,23 @@ import { RouteTripStop } from 'src/app/transportation/interfaces/transportation-
 import { TripStopDialogComponent, TripStopDialogData } from './trip-stop-dialog/trip-stop-dialog.component';
 
 @Component({
-    selector: 'app-trip-stops',
-    imports: [MatIcon, MatIconButton, MatDivider, CdkDropList, CdkDrag, CdkDragHandle],
-    templateUrl: './trip-stops.component.html',
-    styleUrl: './trip-stops.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => TripStopsComponent),
-            multi: true,
-        },
-        {
-            provide: NG_VALIDATORS,
-            useExisting: forwardRef(() => TripStopsComponent),
-            multi: true,
-        },
-    ]
+  selector: 'app-trip-stops',
+  imports: [MatIcon, MatIconButton, MatDivider, CdkDropList, CdkDrag, CdkDragHandle],
+  templateUrl: './trip-stops.component.html',
+  styleUrl: './trip-stops.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => TripStopsComponent),
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => TripStopsComponent),
+      multi: true,
+    },
+  ],
 })
 export class TripStopsComponent implements ControlValueAccessor, Validator {
   private dialog = inject(MatDialog);

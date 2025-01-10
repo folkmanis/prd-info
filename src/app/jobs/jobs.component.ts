@@ -3,9 +3,9 @@ import { SystemPreferencesService } from '../services/system-preferences.service
 import { CardMenuComponent } from '../library/card-menu/card-menu.component';
 
 @Component({
-    template: `<app-card-menu [modules]="modules()"></app-card-menu>`,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CardMenuComponent]
+  template: `<app-card-menu [modules]="modules()"></app-card-menu>`,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CardMenuComponent],
 })
 export class JobsComponent {
   modules = inject(SystemPreferencesService).childMenu;

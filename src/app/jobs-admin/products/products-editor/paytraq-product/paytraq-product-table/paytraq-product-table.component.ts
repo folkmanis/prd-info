@@ -3,11 +3,11 @@ import { MatTableModule } from '@angular/material/table';
 import { PaytraqProduct } from 'src/app/interfaces/paytraq';
 
 @Component({
-    selector: 'app-paytraq-product-table',
-    templateUrl: './paytraq-product-table.component.html',
-    styleUrls: ['./paytraq-product-table.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatTableModule]
+  selector: 'app-paytraq-product-table',
+  templateUrl: './paytraq-product-table.component.html',
+  styleUrls: ['./paytraq-product-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatTableModule],
 })
 export class PaytraqProductTableComponent {
   products = input<PaytraqProduct[]>([]);

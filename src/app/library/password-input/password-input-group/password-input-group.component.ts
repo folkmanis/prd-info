@@ -1,6 +1,5 @@
 import { A11yModule } from '@angular/cdk/a11y';
-import { coerceNumberProperty } from '@angular/cdk/coercion';
-import { ChangeDetectionStrategy, Component, input, Input, numberAttribute, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, numberAttribute, OnChanges } from '@angular/core';
 import {
   ControlValueAccessor,
   FormControl,
@@ -18,7 +17,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { map } from 'rxjs';
 
 const MIN_LENGTH = 6;
 
