@@ -16,9 +16,6 @@
         &>* {
             flex: 1;
         }
-
-
-
     }
 
     mat-card-content {
@@ -29,6 +26,11 @@
 
     &.large .container-multi {
         flex-direction: row;
+    }
+
+    &.small #job-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
 

@@ -1,0 +1,5 @@
+<app-job-products-small *appIfViewSize="'small'; else largeProducts" [products]="products()" [showPrices]="showPrices()" [jobCount]="jobCount()" [jobTotal]="jobTotal()" />
+
+<ng-template #largeProducts>
+  <app-job-products-large [products]="products()" [showPrices]="showPrices()" [jobCount]="jobCount()" [jobTotal]="jobTotal()" />
+</ng-template>

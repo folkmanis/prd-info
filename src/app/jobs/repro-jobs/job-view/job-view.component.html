@@ -53,17 +53,6 @@
   </mat-card>
 </div>
 
-<div class="container">
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title> Darba nosaukums </mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      {{ job().name }}
-    </mat-card-content>
-  </mat-card>
-</div>
-
 <div class="container container-multi">
   <mat-card>
     <mat-card-header>
@@ -97,13 +86,11 @@
 
 <div class="container">
   <mat-card>
-    <mat-card-header>
+    <mat-card-header *appViewSmall>
       <mat-card-title> Preces </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      @for (product of job().products; track $index) {
-        <app-job-product [jobProduct]="product" [showPrices]="showPrices()" />
-      }
+      <app-job-products [products]="job().products" [showPrices]="showPrices()" />
     </mat-card-content>
   </mat-card>
 </div>
@@ -131,7 +118,3 @@
     </mat-card>
   </div>
 }
-
-<div>
-  <pre>{{ job() | json }}</pre>
-</div>

@@ -1,0 +1,30 @@
+@for (product of products(); track $index) {
+  <div class="product-row">
+    <div id="name">
+      {{ product.name }}
+    </div>
+    <div id="count" class="data-row">
+      <span> {{ product.count }} {{ product.units }} </span>
+      @if (showPrices()) {
+        <span id="price">{{ product.price | currency }}/{{ product.units }}</span>
+        <span id="total">
+          {{ product.price * product.count | currency }}
+        </span>
+      }
+    </div>
+  </div>
+}
+<mat-divider />
+<div class="product-row">
+  <div>Kopā:</div>
+  <div id="total" class="data-row">
+    <span>
+      {{ jobCount() }}
+    </span>
+    @if (showPrices()) {
+      <span>
+        {{ jobTotal() | currency }}
+      </span>
+    }
+  </div>
+</div>

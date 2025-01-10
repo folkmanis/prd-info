@@ -1,0 +1,35 @@
+<mat-table [dataSource]="products()" class="app-table">
+  <!-- Name Column -->
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef> Prece </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{ element.name }} </mat-cell>
+    <mat-footer-cell *matFooterCellDef> Kopā </mat-footer-cell>
+  </ng-container>
+
+  <!-- Count Column -->
+  <ng-container matColumnDef="count">
+    <mat-header-cell *matHeaderCellDef> Skaits </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{ element.count }} {{ element.units }} </mat-cell>
+    <mat-footer-cell *matFooterCellDef>
+      {{ jobCount() }}
+    </mat-footer-cell>
+  </ng-container>
+
+  <!-- Price Column -->
+  <ng-container matColumnDef="price">
+    <mat-header-cell *matHeaderCellDef> Cena </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{ element.price | currency }}/{{ element.units }} </mat-cell>
+    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+  </ng-container>
+
+  <!-- Total Column -->
+  <ng-container matColumnDef="total">
+    <mat-header-cell *matHeaderCellDef> Summa </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{ element.price * element.count | currency }} </mat-cell>
+    <mat-footer-cell *matFooterCellDef> {{ jobTotal() | currency }} </mat-footer-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns()" />
+  <mat-row *matRowDef="let row; columns: displayedColumns()" />
+  <mat-footer-row *matFooterRowDef="displayedColumns()" />
+</mat-table>

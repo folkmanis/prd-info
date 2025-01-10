@@ -1,28 +1,23 @@
-import { DatePipe, JsonPipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MAT_CARD_CONFIG, MatCardModule } from '@angular/material/card';
+import { MatDivider } from '@angular/material/divider';
 import { MatIcon } from '@angular/material/icon';
-import { RouterLink } from '@angular/router';
 import { KeyPressDirective } from 'src/app/library/directives';
+import { RouterLinkToReturnDirective, RouterLinkWithReturnDirective } from 'src/app/library/navigation';
+import { ViewSizeDirective, ViewSmallDirective } from 'src/app/library/view-size';
+import { LoginService } from 'src/app/login';
+import { configuration } from 'src/app/services/config.provider';
 import { Job } from '../../interfaces';
 import { parseJobId } from '../services/parse-job-id';
-import { MatDivider } from '@angular/material/divider';
-import { ViewSizeDirective } from 'src/app/library/view-size';
-import { MAT_CARD_CONFIG, MatCardModule } from '@angular/material/card';
-import { configuration } from 'src/app/services/config.provider';
-import { JobProductComponent } from './job-product/job-product.component';
-import { LoginService } from 'src/app/login';
-import { ConfirmationDialogService } from 'src/app/library';
-import { firstValueFrom } from 'rxjs';
 import { JobCopyDirective } from './job-copy.directive';
-import { RouterLinkToReturnDirective, RouterLinkWithReturnDirective } from 'src/app/library/navigation';
 import { JobPathPipe } from './job-path.pipe';
+import { JobProductsComponent } from './job-products/job-products.component';
 
 @Component({
   selector: 'app-job-view',
   imports: [
-    JobProductComponent,
-    JsonPipe,
     DatePipe,
     MatButtonModule,
     MatIcon,
@@ -33,6 +28,8 @@ import { JobPathPipe } from './job-path.pipe';
     RouterLinkWithReturnDirective,
     RouterLinkToReturnDirective,
     JobPathPipe,
+    JobProductsComponent,
+    ViewSmallDirective,
   ],
   templateUrl: './job-view.component.html',
   styleUrl: './job-view.component.scss',
