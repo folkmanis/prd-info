@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { AsyncValidatorFn, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ClassTransformer } from 'class-transformer';
 import { isEqual, pickBy } from 'lodash-es';
@@ -8,6 +8,9 @@ import { ProductsService } from 'src/app/services';
 
 @Injectable()
 export class ProductsFormService {
+  private productService = inject(ProductsService);
+  private transformer = inject(ClassTransformer);
+
   initialValue: Product | null = null;
 
   form = this.createForm();
@@ -30,11 +33,6 @@ export class ProductsFormService {
       return Object.keys(diff).length ? diff : undefined;
     }
   }
-
-  constructor(
-    private productService: ProductsService,
-    private transformer: ClassTransformer,
-  ) {}
 
   setInitial(value: Product | null) {
     if (value._id) {
