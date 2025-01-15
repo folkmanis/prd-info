@@ -106,15 +106,19 @@
   </mat-card>
 </div>
 
-@if (job().files; as files) {
-  <div class="container">
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title> Darba mape </mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
+<div class="container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title> Darba mape </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      @if (job().files; as files) {
         {{ files.path | jobPath }}
-      </mat-card-content>
-    </mat-card>
-  </div>
-}
+      }
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button (click)="onCreateFolder()" [disabled]="editDisabled()">Izveidot mapi</button>
+      <button mat-button (click)="onUpdateFolderLocation()" [disabled]="!job().files || editDisabled()">Atjaunot mapes atrašanās vietu</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

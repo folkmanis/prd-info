@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { afterNextRender, ChangeDetectionStrategy, Component, computed, effect, inject, Injector, input, model, untracked, viewChild } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, computed, effect, inject, Injector, input, linkedSignal, model, untracked, viewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,7 +13,6 @@ import { RouterLink } from '@angular/router';
 import { isEqual, pickBy } from 'lodash-es';
 import { combineLatest, concat, concatMap, distinctUntilChanged, filter, map, merge, Observable, of, Subscription, switchMap, throttleTime } from 'rxjs';
 import { DropFolder } from 'src/app/interfaces';
-import { ConfirmationDialogService } from 'src/app/library';
 import { KeyPressDirective } from 'src/app/library/directives';
 import { navigateToReturn, RouterLinkToReturnDirective } from 'src/app/library/navigation';
 import { ViewSizeDirective } from 'src/app/library/view-size';
@@ -56,7 +55,6 @@ import { JobFormComponent } from './job-form/job-form.component';
 })
 export class ReproJobEditComponent {
   private snack = inject(MatSnackBar);
-  private confirmationDialogService = inject(ConfirmationDialogService);
   private jobService = inject(ReproJobService);
   private injector = inject(Injector);
 
@@ -81,18 +79,12 @@ export class ReproJobEditComponent {
 
   uploadRef = inject(UploadRefService).retrieveUploadRef();
 
-  selectedDropFolder = model<DropFolder | null>(null);
-  dropFolderActive = model(false);
-  mustUpdatePath = model(false);
+  selectedDropFolder = linkedSignal(() => this.dropFolders()[0] || null);
+  dropFolderActive = linkedSignal(() => this.uploadRef && this.selectedDropFolder() !== null);
 
   fileUploadProgress$: Observable<FileUploadMessage[]> = of([]);
   folderPath = computed(() => this.value().files?.path?.join('/') || '');
   dropFolders = toSignal(this.getDropFolders(), { initialValue: [] });
-
-  updateFolderLocationEnabled = computed<boolean>(() => {
-    const update = this.changes();
-    return update && Boolean(update.customer || update.name || update.receivedDate);
-  });
 
   saveDisabled = computed(() => {
     return (this.status() !== 'VALID' || (this.changes() === null && !!this.jobId())) && !this.dropFolderActive();
@@ -126,15 +118,6 @@ export class ReproJobEditComponent {
 
       onCleanup(() => subs?.unsubscribe());
     });
-
-    effect(() => {
-      const defaultFolder = this.dropFolders()[0] || null;
-      const active = this.uploadRef && defaultFolder !== null;
-      untracked(() => {
-        this.selectedDropFolder.set(defaultFolder);
-        this.dropFolderActive.set(active);
-      });
-    });
   }
 
   async onUpdate() {
@@ -149,11 +132,6 @@ export class ReproJobEditComponent {
         this.saveErrorMessage(error);
         return;
       }
-    }
-    if (this.mustUpdatePath() && this.updateFolderLocationEnabled()) {
-      try {
-        updatedJob = await this.jobService.updateFilesLocation(this.jobId());
-      } catch (error) {}
     }
     try {
       if (this.dropFolderActive() && this.selectedDropFolder() !== null) {
@@ -174,21 +152,6 @@ export class ReproJobEditComponent {
       this.navigate();
     } catch (error) {
       this.saveErrorMessage(error);
-    }
-  }
-
-  async onCreateFolder() {
-    const jobId = this.jobId();
-    const jobUpdate = this.changes();
-    try {
-      if (jobUpdate) {
-        await this.jobService.updateJob({ jobId, ...jobUpdate });
-      }
-      await this.jobService.createFolder(jobId);
-      this.form.markAsPristine();
-      this.navigate();
-    } catch (error) {
-      this.confirmationDialogService.confirmDataError();
     }
   }
 

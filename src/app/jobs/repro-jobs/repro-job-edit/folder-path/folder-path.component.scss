@@ -1,15 +1,13 @@
 .path {
   display: flex;
+  align-items: center;
+  column-gap: 8px;
 
   .folder-icon-container {
     display: inline-block;
-    text-align: center;
-    min-width: 36px;
-    min-height: 36px;
   }
 
   .location {
-    padding-left: 4px;
     font: var(--sys-label-medium);
   }
 

@@ -19,8 +19,8 @@
       <app-upload-progress [progress]="fileUploadProgress$ | async" />
 
       <!-- Folderis -->
-      @if (jobId()) {
-        <app-folder-path [path]="folderPath()" (createFolder)="onCreateFolder()" [(updatePath)]="mustUpdatePath" [enabled]="updateFolderLocationEnabled()" />
+      @if (jobId() && folderPath()) {
+        <app-folder-path [path]="folderPath()" />
       }
 
       <app-drop-folder
