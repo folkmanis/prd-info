@@ -19,7 +19,6 @@ import { CustomersService } from 'src/app/services';
 import { configuration } from 'src/app/services/config.provider';
 import { ProductionStagesService } from 'src/app/services/production-stages.service';
 import { MaterialsService } from '../../materials/services/materials.service';
-import { ProductsListComponent } from '../products-list/products-list.component';
 import { ProductsFormService } from '../services/products-form.service';
 import { PaytraqProductComponent } from './paytraq-product/paytraq-product.component';
 import { ProductPricesComponent } from './product-prices/product-prices.component';
@@ -52,8 +51,6 @@ import { ProductProductionComponent } from './product-production/product-product
 export class ProductsEditorComponent implements CanComponentDeactivate {
   private formService = inject(ProductsFormService);
 
-  private productsList = inject(ProductsListComponent, { optional: true });
-
   private navigate = navigateRelative();
   private dialog = inject(ConfirmationDialogService);
 
@@ -83,7 +80,6 @@ export class ProductsEditorComponent implements CanComponentDeactivate {
   async onSave() {
     try {
       const product = await this.formService.save();
-      await this.productsList?.reload();
       await this.navigate(['..', product._id]);
     } catch (error) {
       this.dialog.confirmDataError(error.message);

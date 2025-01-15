@@ -13,20 +13,14 @@ import { ProductsService } from 'src/app/services';
 })
 export class ProductsListComponent {
   private productsService = inject(ProductsService);
-  private allProducts = this.productsService.products;
-
-  private filter = computed(() => this.name()?.trim().toLowerCase() || '');
 
   displayedColumns = ['name', 'category'];
 
-  name = signal('');
+  name = this.productsService.name;
 
-  products = computed(() => {
-    const filter = this.filter();
-    return this.allProducts().filter((product) => product.name.toLowerCase().includes(filter));
-  });
+  products = this.productsService.productsResource;
 
-  async reload() {
-    this.productsService.reload();
+  constructor() {
+    this.name.set('');
   }
 }

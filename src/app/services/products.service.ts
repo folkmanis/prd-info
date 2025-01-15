@@ -1,6 +1,7 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
-import { CustomerProduct, JobProductionStage, NewProduct, Product, ProductPartial } from 'src/app/interfaces';
-import { ProductsApiService } from 'src/app/services/prd-api/products-api.service';
+import { computed, inject, Injectable, linkedSignal, resource, signal } from '@angular/core';
+import { isEqual } from 'lodash-es';
+import { CustomerProduct, JobProductionStage, NewProduct, Product } from 'src/app/interfaces';
+import { ProductsApiService, ProductsFilter } from 'src/app/services/prd-api/products-api.service';
 
 @Injectable({
   providedIn: 'root',
@@ -8,19 +9,26 @@ import { ProductsApiService } from 'src/app/services/prd-api/products-api.servic
 export class ProductsService {
   private api = inject(ProductsApiService);
 
-  readonly #products = signal<ProductPartial[]>([]);
+  readonly filter = linkedSignal<ProductsFilter>(
+    () => {
+      const filter: ProductsFilter = {};
+      if (this.name()) {
+        filter.name = this.name();
+      }
+      return filter;
+    },
+    { equal: isEqual },
+  );
 
-  products = this.#products.asReadonly();
+  name = signal('');
 
-  activeProducts = computed(() => this.#products().filter((product) => !product.inactive));
+  productsResource = resource({
+    request: () => this.filter(),
+    loader: ({ request }) => this.api.getAll(request),
+  });
 
-  constructor() {
-    this.reload();
-  }
-
-  async reload() {
-    this.#products.set(await this.api.getAll());
-  }
+  products = computed(() => this.productsResource.value() ?? []);
+  activeProducts = computed(() => this.products().filter((product) => !product.inactive));
 
   async getProduct(id: string): Promise<Product> {
     return this.api.getOne(id);
@@ -53,20 +61,14 @@ export class ProductsService {
 
   async updateProduct({ _id, ...rest }: Partial<Product>): Promise<Product> {
     const updated = await this.api.updateOne(_id, rest);
-    const products = this.#products();
-    const idx = products.findIndex((p) => p._id, updated._id);
-    if (idx > -1) {
-      this.#products.set([...products.slice(0, idx), updated, ...products.slice(idx + 1)]);
-    } else {
-      this.#products.set([updated, ...products]);
-    }
+    this.productsResource.reload();
     return updated;
   }
 
   async deleteProduct(id: string): Promise<boolean> {
     const count = await this.api.deleteOne(id);
     if (count > 0) {
-      this.reload();
+      this.productsResource.reload();
     }
     return count > 0;
   }
@@ -74,7 +76,7 @@ export class ProductsService {
   async insertProduct(prod: NewProduct): Promise<Product> {
     const inserted = await this.api.insertOne(prod);
     if (inserted) {
-      this.reload();
+      this.productsResource.reload();
     }
     return inserted;
   }

@@ -1,5 +1,5 @@
 <app-simple-list-container [(filter)]="name" plusButton filterInput hideFilterWhenActive editorWidth="60%">
-  <mat-table [dataSource]="products()" class="app-table">
+  <mat-table [dataSource]="products.value()" class="app-table">
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let prod; columns: displayedColumns" [routerLink]="[prod._id]" routerLinkActive="selected" [class.disabled]="prod.inactive"></mat-row>
 

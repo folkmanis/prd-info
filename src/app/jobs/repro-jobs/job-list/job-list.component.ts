@@ -77,6 +77,7 @@ export class JobListComponent {
   highlited: string | null = null;
 
   constructor() {
+    inject(ProductsService).filter.set({});
     effect((onCleanup) => {
       const subs = this.notifications$.subscribe(() => {
         this.jobsRef.reload();

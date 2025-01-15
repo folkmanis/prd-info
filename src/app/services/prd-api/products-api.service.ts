@@ -6,6 +6,12 @@ import { CustomerProduct, JobProductionStage, Product, ProductPartial } from 'sr
 import { AppClassTransformerService } from 'src/app/library';
 import { HttpOptions } from 'src/app/library/http';
 
+export interface ProductsFilter {
+  name?: string;
+  start?: number;
+  limit?: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -14,19 +20,19 @@ export class ProductsApiService {
   private http = inject(HttpClient);
   private transformer = inject(AppClassTransformerService);
 
-  async getAll(): Promise<ProductPartial[]> {
-    const data = await firstValueFrom(this.http.get<Record<string, any>[]>(this.path, new HttpOptions().cacheable()));
-    return this.transformer.plainToInstance(Product, data);
+  async getAll(filter: ProductsFilter): Promise<ProductPartial[]> {
+    const data$ = this.http.get<Record<string, any>[]>(this.path, new HttpOptions(filter).cacheable());
+    return this.transformer.toInstanceAsync(Product, data$);
   }
 
   async getOne(id: string): Promise<Product> {
-    const data = await firstValueFrom(this.http.get<Record<string, any>>(this.path + id, new HttpOptions().cacheable()));
-    return this.transformer.plainToInstance(Product, data);
+    const data$ = this.http.get<Record<string, any>>(this.path + id, new HttpOptions().cacheable());
+    return this.transformer.toInstanceAsync(Product, data$);
   }
 
   async getOneByName(name: string): Promise<Product> {
     const data$ = this.http.get<Record<string, any>>(this.path + 'name/' + name, new HttpOptions());
-    return this.transformer.plainToInstance(Product, await firstValueFrom(data$));
+    return this.transformer.toInstanceAsync(Product, data$);
   }
 
   async deleteOne(id: string): Promise<number> {
@@ -36,12 +42,12 @@ export class ProductsApiService {
 
   async updateOne(id: string, data: Partial<Product>): Promise<Product> {
     const update$ = this.http.patch<Record<string, any>>(this.path + id, data, new HttpOptions());
-    return this.transformer.plainToInstance(Product, await firstValueFrom(update$));
+    return this.transformer.toInstanceAsync(Product, update$);
   }
 
   async insertOne(data: Partial<Product>): Promise<Product> {
     const update$ = this.http.put<Record<string, any>>(this.path, data, new HttpOptions());
-    return this.transformer.plainToInstance(Product, await firstValueFrom(update$));
+    return this.transformer.toInstanceAsync(Product, update$);
   }
 
   async validatorData<K extends keyof Product & string>(key: K): Promise<Product[K][]> {
