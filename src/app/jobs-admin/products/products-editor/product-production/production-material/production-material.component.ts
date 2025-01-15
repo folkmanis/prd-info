@@ -17,6 +17,7 @@ import { MatIcon } from '@angular/material/icon';
 import { JobProductionStageMaterial, Material } from 'src/app/interfaces';
 import { SelectDirective } from 'src/app/library/directives/select.directive';
 import { MaterialUnitsDirective } from './material-units.directive';
+import { MatTooltip } from '@angular/material/tooltip';
 
 type MaterialGroup = FormGroup<{
   [key in keyof JobProductionStageMaterial]: FormControl<JobProductionStageMaterial[key]>;
@@ -27,7 +28,7 @@ type MaterialGroup = FormGroup<{
   templateUrl: './production-material.component.html',
   styleUrls: ['./production-material.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, MaterialUnitsDirective, SelectDirective, MatIcon, MatButtonModule],
+  imports: [ReactiveFormsModule, MaterialUnitsDirective, SelectDirective, MatIcon, MatButtonModule, MatTooltip],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

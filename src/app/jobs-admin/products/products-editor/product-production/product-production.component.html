@@ -11,9 +11,9 @@
             }
           </select>
 
-          <input type="number" formControlName="amount" appInput />
+          <input type="number" formControlName="amount" appInput matTooltip="Daudzums vienai vienībai" />
 
-          <input type="number" formControlName="fixedAmount" appInput />
+          <input type="number" formControlName="fixedAmount" appInput matTooltip="Nemainīgais daudzums" />
 
           <button mat-icon-button class="warn" (click)="onDeleteStage($index)">
             <mat-icon> delete_outline </mat-icon>

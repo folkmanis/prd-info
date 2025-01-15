@@ -19,6 +19,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { JobProductionStage, Material, ProductionStage } from 'src/app/interfaces';
 import { SelectDirective } from 'src/app/library/directives/select.directive';
 import { ProductionMaterialComponent } from './production-material/production-material.component';
+import { MatTooltip } from '@angular/material/tooltip';
 
 type JobProductionStageControlType = FormGroup<{
   [key in keyof JobProductionStage]: FormControl<JobProductionStage[key]>;
@@ -29,7 +30,7 @@ type JobProductionStageControlType = FormGroup<{
   templateUrl: './product-production.component.html',
   styleUrls: ['./product-production.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, ProductionMaterialComponent, SelectDirective, MatDividerModule, MatCardModule, MatIconModule, MatButtonModule],
+  imports: [ReactiveFormsModule, ProductionMaterialComponent, SelectDirective, MatDividerModule, MatCardModule, MatIconModule, MatButtonModule, MatTooltip],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
