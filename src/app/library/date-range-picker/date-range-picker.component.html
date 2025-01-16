@@ -1,0 +1,18 @@
+<mat-form-field>
+  <mat-label> Laiks </mat-label>
+  <mat-date-range-input [rangePicker]="picker" [disabled]="disabled()">
+    <input matStartDate [value]="interval().start" (dateChange)="onChangeStart($event)" [disabled]="disabled()" />
+    <input matEndDate [value]="interval().end" (dateChange)="onChangeEnd($event)" [disabled]="disabled()" />
+  </mat-date-range-input>
+  <mat-datepicker-toggle matIconSuffix [for]="picker" [disabled]="disabled()" />
+  <button mat-icon-button matIconSuffix [matMenuTriggerFor]="intervalMenu" [disabled]="disabled()">
+    <mat-icon> more_vert </mat-icon>
+  </button>
+  <mat-date-range-picker #picker></mat-date-range-picker>
+  <mat-menu #intervalMenu="matMenu">
+    <button mat-menu-item (click)="onThisWeek()">Nedēļa</button>
+    <button mat-menu-item (click)="onThisMonth()">Mēnesis</button>
+    <button mat-menu-item (click)="onThisYear()">Gads</button>
+    <button mat-menu-item (click)="onPastYear()">Iepriekšējais gads</button>
+  </mat-menu>
+</mat-form-field>
