@@ -6,7 +6,6 @@ const SNACKBAR_TEXT = (txt: string) => `"${txt}" izkopēts!`;
 
 @Directive({
   selector: '[appCopyClipboard]',
-  standalone: true,
   hostDirectives: [
     {
       directive: CdkCopyToClipboard,
