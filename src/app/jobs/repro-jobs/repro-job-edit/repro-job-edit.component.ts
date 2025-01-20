@@ -84,7 +84,19 @@ export class ReproJobEditComponent {
 
   fileUploadProgress$: Observable<FileUploadMessage[]> = of([]);
   folderPath = computed(() => this.value().files?.path?.join('/') || '');
-  dropFolders = toSignal(this.getDropFolders(), { initialValue: [] });
+
+  private dropFolders$: Observable<DropFolder[]> = combineLatest({
+    status: this.form.statusChanges,
+    value: concat(of(this.form.value), this.form.valueChanges),
+  }).pipe(
+    filter(({ status }) => status === 'VALID'),
+    map(({ value }) => value),
+    distinctUntilChanged(isProductChanged),
+    throttleTime(200),
+    switchMap((job) => this.jobService.getDropFolders(job.products, job.customer)),
+  );
+
+  dropFolders = toSignal(this.dropFolders$, { initialValue: [] });
 
   saveDisabled = computed(() => {
     return (this.status() !== 'VALID' || (this.changes() === null && !!this.jobId())) && !this.dropFolderActive();
@@ -185,21 +197,6 @@ export class ReproJobEditComponent {
     });
   }
 
-  private getDropFolders(): Observable<DropFolder[]> {
-    const form = this.form;
-
-    return combineLatest({
-      status: form.statusChanges,
-      value: concat(of(form.value), form.valueChanges),
-    }).pipe(
-      filter(({ status }) => status === 'VALID'),
-      map(({ value }) => value),
-      distinctUntilChanged((j1, j2) => j1.customer === j2.customer && isEqual(j1.products, j2.products)),
-      throttleTime(200),
-      switchMap((job) => this.jobService.getDropFolders(job.products, job.customer)),
-    );
-  }
-
   private updateDisabledState(value: Partial<Job>) {
     if (value.invoiceId) {
       this.form.disable({ emitEvent: false });
@@ -207,4 +204,14 @@ export class ReproJobEditComponent {
       this.form.enable({ emitEvent: false });
     }
   }
+}
+
+function isProductChanged<T extends Pick<Job, 'customer' | 'products'>>(previous: T, current: T): boolean {
+  return (
+    previous.customer === current.customer &&
+    isEqual(
+      previous.products.map((p) => p.name),
+      current.products.map((p) => p.name),
+    )
+  );
 }

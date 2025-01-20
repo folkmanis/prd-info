@@ -3,7 +3,7 @@ import { AsyncValidatorFn, FormControl, FormGroup, Validators } from '@angular/f
 import { ClassTransformer } from 'class-transformer';
 import { isEqual, pickBy } from 'lodash-es';
 import { map } from 'rxjs';
-import { JobProductionStage, NewProduct, Product, ProductPrice } from 'src/app/interfaces';
+import { NewProduct, Product, ProductPrice, ProductProductionStage } from 'src/app/interfaces';
 import { ProductsService } from 'src/app/services';
 
 @Injectable()
@@ -79,7 +79,7 @@ export class ProductsFormService {
       units: new FormControl<string>(undefined, [Validators.required]),
       prices: new FormControl<ProductPrice[]>([], { nonNullable: true }),
       paytraqId: new FormControl<number>(null),
-      productionStages: new FormControl<JobProductionStage[]>([], { nonNullable: true }),
+      productionStages: new FormControl<ProductProductionStage[]>([], { nonNullable: true }),
     });
   }
 

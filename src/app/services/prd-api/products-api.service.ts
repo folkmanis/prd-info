@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
-import { CustomerProduct, JobProductionStage, Product, ProductPartial } from 'src/app/interfaces';
+import { CustomerProduct, Product, ProductionStage, ProductPartial, ProductProductionStage } from 'src/app/interfaces';
 import { AppClassTransformerService } from 'src/app/library';
 import { HttpOptions } from 'src/app/library/http';
 
@@ -59,8 +59,8 @@ export class ProductsApiService {
     return this.transformer.plainToInstance(CustomerProduct, await firstValueFrom(data$));
   }
 
-  async productionStages(productName: string): Promise<JobProductionStage[]> {
+  async productionStages(productName: string): Promise<ProductProductionStage[]> {
     const data$ = this.http.get<Record<string, any>[]>(this.path + productName + '/productionStages', new HttpOptions().cacheable());
-    return this.transformer.plainToInstance(JobProductionStage, await firstValueFrom(data$));
+    return this.transformer.plainToInstance(ProductProductionStage, await firstValueFrom(data$));
   }
 }

@@ -2,11 +2,22 @@ import { Injectable, inject } from '@angular/core';
 import { flatten } from 'lodash-es';
 import { Observable, OperatorFunction, concatMap, distinctUntilChanged, filter, from, map, pipe, reduce, switchMap } from 'rxjs';
 import { JobFilesService } from 'src/app/filesystem';
-import { CustomerProduct, DropFolder, JobProductionStage } from 'src/app/interfaces';
+import {
+  CustomerProduct,
+  DropFolder,
+  JobProductionStage,
+  JobProductionStageMaterial,
+  Material,
+  MaterialPrice,
+  ProductionStage,
+  ProductProductionStage,
+  ProductProductionStageMaterial,
+} from 'src/app/interfaces';
 import { ProductsService } from 'src/app/services';
 import { ProductionStagesService } from 'src/app/services/production-stages.service';
 import { Job, JobProduct } from '../../interfaces';
 import { JobService } from '../../services/job.service';
+import { MaterialsService } from 'src/app/jobs-admin/materials/services/materials.service';
 
 export type PartialJob = Pick<Job, 'jobId'> & Partial<Job>;
 
@@ -22,6 +33,7 @@ export class ReproJobService {
   private jobService = inject(JobService);
   private jobFilesService = inject(JobFilesService);
   private stagesService = inject(ProductionStagesService);
+  private materialsService = inject(MaterialsService);
 
   private jobTemplate: JobTemplate | null = null;
 
@@ -60,7 +72,7 @@ export class ReproJobService {
       }
 
       const stages = await this.productsService.productionStages(product.name);
-      return stages.map((stage) => this.jobProductionStage(stage, product));
+      return await Promise.all(stages.map((stage) => this.jobProductionStage(stage, product)));
     });
     const allStages = await Promise.all(productStages);
     return flatten(allStages);
@@ -110,18 +122,35 @@ export class ReproJobService {
     };
   }
 
-  private jobProductionStage(stage: JobProductionStage, product: JobProduct): JobProductionStage {
+  private async jobProductionStage(stage: ProductProductionStage, product: JobProduct): Promise<JobProductionStage> {
+    const fixedAmount = stage.fixedAmount ?? 0;
+    const amount = stage.amount * product.count;
+
+    const materials = await Promise.all(stage.materials.map((m) => this.productionStageMaterial(m, product.count)));
     return {
       productionStageId: stage.productionStageId,
-      fixedAmount: stage.fixedAmount || 0,
-      amount: stage.amount * product.count + stage.fixedAmount,
+      fixedAmount,
+      amount,
       productionStatus: 10,
-      materials: stage.materials.map((material) => ({
-        materialId: material.materialId,
-        amount: material.amount * stage.amount * product.count + material.fixedAmount,
-        fixedAmount: material.fixedAmount,
-      })),
+      materials,
     };
+  }
+
+  private async productionStageMaterial(stageMaterial: ProductProductionStageMaterial, productCount: number): Promise<JobProductionStageMaterial> {
+    const material = await this.materialsService.getMaterial(stageMaterial.materialId);
+    const amount = stageMaterial.amount * productCount;
+    const cost = this.getMaterialCost(material, amount + stageMaterial.fixedAmount);
+    return {
+      materialId: stageMaterial.materialId,
+      amount,
+      fixedAmount: stageMaterial.fixedAmount,
+      cost,
+    };
+  }
+
+  private getMaterialCost({ prices, fixedPrice }: Material, amount: number): number {
+    const price = [...prices].sort((a, b) => b.price - a.price).find((p) => amount >= p.min)?.price ?? 0;
+    return price * amount + fixedPrice;
   }
 }
 

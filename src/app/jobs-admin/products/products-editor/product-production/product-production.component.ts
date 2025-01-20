@@ -16,13 +16,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
-import { JobProductionStage, Material, ProductionStage } from 'src/app/interfaces';
+import { MatTooltip } from '@angular/material/tooltip';
+import { Material, ProductionStage } from 'src/app/interfaces';
+import { ProductProductionStage } from 'src/app/interfaces/product-production-stage';
 import { SelectDirective } from 'src/app/library/directives/select.directive';
 import { ProductionMaterialComponent } from './production-material/production-material.component';
-import { MatTooltip } from '@angular/material/tooltip';
 
-type JobProductionStageControlType = FormGroup<{
-  [key in keyof JobProductionStage]: FormControl<JobProductionStage[key]>;
+type ProductProductionStageControlType = FormGroup<{
+  [key in keyof ProductProductionStage]: FormControl<ProductProductionStage[key]>;
 }>;
 
 @Component({
@@ -49,18 +50,18 @@ export class ProductProductionComponent implements ControlValueAccessor, Validat
 
   private fb = new FormBuilder();
 
-  form = new FormArray<JobProductionStageControlType>([]);
+  form = new FormArray<ProductProductionStageControlType>([]);
 
   materials = input<Material[]>([]);
   productionStages = input<ProductionStage[]>([]);
 
   onTouched: () => void = () => {};
 
-  writeValue(obj: JobProductionStage[]): void {
+  writeValue(obj: ProductProductionStage[]): void {
     this.setProductionStages(obj);
   }
 
-  registerOnChange(fn: (value: Partial<JobProductionStage>[]) => void): void {
+  registerOnChange(fn: (value: Partial<ProductProductionStage>[]) => void): void {
     this.form.valueChanges.subscribe(fn);
   }
 
@@ -96,7 +97,7 @@ export class ProductProductionComponent implements ControlValueAccessor, Validat
     this.chDetector.markForCheck();
   }
 
-  private setProductionStages(stages?: JobProductionStage[]): void {
+  private setProductionStages(stages?: ProductProductionStage[]): void {
     stages = stages instanceof Array ? stages : [];
 
     if (stages.length === this.form.length) {
@@ -108,7 +109,7 @@ export class ProductProductionComponent implements ControlValueAccessor, Validat
     }
   }
 
-  private stageControl(stage: JobProductionStage = new JobProductionStage()): JobProductionStageControlType {
+  private stageControl(stage: ProductProductionStage = new ProductProductionStage()): ProductProductionStageControlType {
     return this.fb.nonNullable.group({
       productionStageId: [stage.productionStageId, [Validators.required]],
       amount: [stage.amount],

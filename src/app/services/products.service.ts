@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, linkedSignal, resource, signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
-import { CustomerProduct, JobProductionStage, NewProduct, Product } from 'src/app/interfaces';
+import { CustomerProduct, JobProductionStage, NewProduct, Product, ProductionStage, ProductProductionStage } from 'src/app/interfaces';
 import { ProductsApiService, ProductsFilter } from 'src/app/services/prd-api/products-api.service';
 
 @Injectable({
@@ -46,7 +46,7 @@ export class ProductsService {
     }
   }
 
-  async productionStages(product: string): Promise<JobProductionStage[]> {
+  async productionStages(product: string): Promise<ProductProductionStage[]> {
     return this.api.productionStages(product);
   }
 

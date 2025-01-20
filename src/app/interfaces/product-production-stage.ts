@@ -1,6 +1,6 @@
 import { Expose, Type } from 'class-transformer';
 
-export class JobProductionStageMaterial {
+export class ProductProductionStageMaterial {
   @Expose()
   materialId: string = '';
 
@@ -9,25 +9,19 @@ export class JobProductionStageMaterial {
 
   @Expose()
   fixedAmount: number = 0;
-
-  @Expose()
-  cost: number = 0;
 }
 
-export class JobProductionStage {
+export class ProductProductionStage {
   @Expose()
   productionStageId: string = '';
 
   @Expose()
-  @Type(() => JobProductionStageMaterial)
-  materials: JobProductionStageMaterial[] = [];
+  @Type(() => ProductProductionStageMaterial)
+  materials: ProductProductionStageMaterial[] = [];
 
   @Expose()
   amount: number = 0;
 
   @Expose()
   fixedAmount: number = 0;
-
-  @Expose()
-  productionStatus: number = 10;
 }

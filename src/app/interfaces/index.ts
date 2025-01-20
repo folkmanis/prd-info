@@ -12,3 +12,4 @@ export * from './system-preferences';
 export * from './user';
 export * from './user-module';
 export * from './module-settings';
+export * from './product-production-stage';

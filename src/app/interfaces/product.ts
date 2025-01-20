@@ -1,5 +1,5 @@
-import { JobProductionStage } from './job-production-stage';
 import { Expose, Transform, Type } from 'class-transformer';
+import { ProductProductionStage } from './product-production-stage';
 
 export class CustomerProduct {
   @Expose()
@@ -49,8 +49,8 @@ export class Product {
   prices: ProductPrice[] = [];
 
   @Expose()
-  @Type(() => JobProductionStage)
-  productionStages: JobProductionStage[] = [];
+  @Type(() => ProductProductionStage)
+  productionStages: ProductProductionStage[] = [];
 }
 
 export type ProductPartial = Pick<Product, '_id' | 'name' | 'category' | 'inactive'>;

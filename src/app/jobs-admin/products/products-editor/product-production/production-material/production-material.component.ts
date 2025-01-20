@@ -14,13 +14,13 @@ import {
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { JobProductionStageMaterial, Material } from 'src/app/interfaces';
+import { MatTooltip } from '@angular/material/tooltip';
+import { Material, ProductProductionStageMaterial } from 'src/app/interfaces';
 import { SelectDirective } from 'src/app/library/directives/select.directive';
 import { MaterialUnitsDirective } from './material-units.directive';
-import { MatTooltip } from '@angular/material/tooltip';
 
 type MaterialGroup = FormGroup<{
-  [key in keyof JobProductionStageMaterial]: FormControl<JobProductionStageMaterial[key]>;
+  [key in keyof ProductProductionStageMaterial]: FormControl<ProductProductionStageMaterial[key]>;
 }>;
 
 @Component({
@@ -54,12 +54,12 @@ export class ProductionMaterialComponent implements ControlValueAccessor, Valida
 
   touchFn = () => {};
 
-  writeValue(obj: JobProductionStageMaterial[]): void {
+  writeValue(obj: ProductProductionStageMaterial[]): void {
     this.initControl(obj);
     this.chDetector.markForCheck();
   }
 
-  registerOnChange(fn: (obj: JobProductionStageMaterial[]) => void): void {
+  registerOnChange(fn: (obj: ProductProductionStageMaterial[]) => void): void {
     this.form.valueChanges.subscribe(fn);
   }
 
@@ -95,7 +95,7 @@ export class ProductionMaterialComponent implements ControlValueAccessor, Valida
     this.chDetector.markForCheck();
   }
 
-  private initControl(materials: JobProductionStageMaterial[]) {
+  private initControl(materials: ProductProductionStageMaterial[]) {
     if (this.form.length === materials.length) {
       this.form.setValue(materials, { emitEvent: false });
     } else {
@@ -104,7 +104,7 @@ export class ProductionMaterialComponent implements ControlValueAccessor, Valida
     }
   }
 
-  private materialGroup(material = new JobProductionStageMaterial()): MaterialGroup {
+  private materialGroup(material = new ProductProductionStageMaterial()): MaterialGroup {
     return this.fb.group({
       materialId: [material.materialId, [Validators.required]],
       amount: [material.amount, [Validators.required, Validators.min(0)]],
