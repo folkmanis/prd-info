@@ -1,34 +1,26 @@
 import { CdkCopyToClipboard } from '@angular/cdk/clipboard';
-import { Directive, inject, input, output } from '@angular/core';
+import { Directive, inject, Input } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 const SNACKBAR_TEXT = (txt: string) => `"${txt}" izkopēts!`;
 
 @Directive({
   selector: '[appCopyClipboard]',
-  hostDirectives: [
-    {
-      directive: CdkCopyToClipboard,
-      inputs: ['cdkCopyToClipboard: appCopyClipboard'],
-      outputs: ['cdkCopyToClipboardCopied'],
-    },
-  ],
   host: {
     class: 'app-copy-clipboard',
     '(cdkCopyToClipboardCopied)': 'onComplete($event)',
   },
 })
-export class CopyClipboardDirective {
+export class CopyClipboardDirective extends CdkCopyToClipboard {
   private snack = inject(MatSnackBar);
 
-  payload = input.required<string>({ alias: 'appCopyClipboard' });
-
-  copied = output<boolean>({ alias: 'appCopyClipboardCopied' });
+  @Input({ alias: 'appCopyClipboard' }) set strText(value: string) {
+    this.text = value;
+  }
 
   onComplete(result: boolean) {
     if (result === true) {
-      this.snack.open(SNACKBAR_TEXT(this.payload()), 'OK', { duration: 2000 });
+      this.snack.open(SNACKBAR_TEXT(this.text), 'OK', { duration: 2000 });
     }
-    this.copied.emit(result);
   }
 }

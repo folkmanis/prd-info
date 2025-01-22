@@ -6,12 +6,11 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBar } from '@angular/material/progress-bar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { isEqual } from 'lodash-es';
 import { EMPTY, from } from 'rxjs';
-import { CopyClipboardDirective } from 'src/app/library/clipboard/copy-clipboard.directive';
-import { navigateRelative } from 'src/app/library/navigation';
-import { SanitizeService } from 'src/app/library/services/sanitize.service';
+import { CopyJobIdAndNameDirective } from 'src/app/library';
+import { navigateRelative, RouterLinkWithReturnDirective } from 'src/app/library/navigation';
 import { ViewLargeDirective, ViewNotLargeDirective } from 'src/app/library/view-size';
 import { NotificationsService } from 'src/app/services';
 import { ProductsService } from 'src/app/services/products.service';
@@ -38,15 +37,15 @@ import { NewJobButtonComponent } from './new-job-button/new-job-button.component
     NewJobButtonComponent,
     JobFilterComponent,
     ScrollTopDirective,
-    RouterLink,
     MatIconModule,
     MatButtonModule,
     MatTooltipModule,
     MatMenuModule,
     DatePipe,
-    CopyClipboardDirective,
     ViewNotLargeDirective,
     MatProgressBar,
+    CopyJobIdAndNameDirective,
+    RouterLinkWithReturnDirective,
   ],
 })
 export class JobListComponent {
@@ -54,7 +53,6 @@ export class JobListComponent {
   private router = inject(Router);
   private uploadRefService = inject(UploadRefService);
   private reproJobService = inject(ReproJobService);
-  private sanitize = inject(SanitizeService);
 
   private notifications$ = inject(NotificationsService).wsMultiplex('jobs');
 
@@ -84,10 +82,6 @@ export class JobListComponent {
       });
       onCleanup(() => subs.unsubscribe());
     });
-  }
-
-  copyJobIdAndName({ name, jobId }: Pick<JobPartial, 'jobId' | 'name'>) {
-    return `${jobId}-${this.sanitize.sanitizeFileName(name)}`;
   }
 
   onJobFilter(filter: JobQueryFilter) {

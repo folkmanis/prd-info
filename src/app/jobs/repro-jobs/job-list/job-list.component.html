@@ -29,7 +29,7 @@
         </thead>
         <tbody>
           @for (job of jobsRef.value(); track job.jobId; let idx = $index) {
-            <tr [class.job-completed]="job.invoiceId" [routerLink]="[job.jobId]" [class.highlited]="hasProduct(job, highlited)">
+            <tr [class.job-completed]="job.invoiceId" [appRouterLinkWithReturn]="[job.jobId]" [class.highlited]="hasProduct(job, highlited)">
               <!-- statusa indikators -->
               <td class="column-state">
                 @if (job.jobStatus.generalStatus === 20) {
@@ -58,7 +58,7 @@
                     {{ job.name }}
                   </span>
                   <span *appViewLarge class="buttons">
-                    <button mat-icon-button [appCopyClipboard]="copyJobIdAndName(job)" (click)="$event.stopPropagation()" matTooltip="Kopēt nosaukumu">
+                    <button mat-icon-button [appCopyJobIdAndName]="job" (click)="$event.stopPropagation()" matTooltip="Kopēt nosaukumu">
                       <mat-icon>filter_none</mat-icon>
                     </button>
                     @switch (job.jobStatus.generalStatus) {
@@ -108,7 +108,7 @@
 
 <mat-menu #jobMenu="matMenu">
   <ng-template matMenuContent let-job="job">
-    <button mat-menu-item (click)="copyJobIdAndName(job)">
+    <button mat-menu-item [appCopyJobIdAndName]="job">
       <mat-icon>filter_none</mat-icon>
       <span>Kopēt nosaukumu</span>
     </button>
