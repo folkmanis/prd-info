@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { Directive } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Directive({
   selector: '[appRouterLinkToReturn]',
@@ -8,10 +8,10 @@ import { RouterLink } from '@angular/router';
   hostDirectives: [RouterLink],
 })
 export class RouterLinkToReturnDirective {
-  constructor(location: Location, routerLink: RouterLink) {
+  constructor(location: Location, routerLink: RouterLink, router: Router) {
     const state = location.getState();
     if (typeof state['returnUrl'] === 'string') {
-      routerLink.routerLink = state['returnUrl'];
+      routerLink.routerLink = router.parseUrl(state['returnUrl']);
     } else {
       routerLink.routerLink = '..';
     }

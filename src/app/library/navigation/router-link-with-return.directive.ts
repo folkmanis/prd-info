@@ -7,6 +7,7 @@ import { Router, RouterLink, UrlTree } from '@angular/router';
 })
 export class RouterLinkWithReturnDirective extends RouterLink implements OnChanges, OnDestroy {
   private localRouter = inject(Router);
+
   @Input('appRouterLinkWithReturn')
   set appRouterLinkWithReturn(commandsOrUrlTree: any[] | string | UrlTree | null | undefined) {
     this.routerLink = commandsOrUrlTree;
