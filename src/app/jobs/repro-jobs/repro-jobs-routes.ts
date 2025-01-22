@@ -26,6 +26,7 @@ export default [
       job: resolveReproJob,
     },
     title: (route) => `Repro darbs ${route.paramMap.get('jobId')}`,
+    runGuardsAndResolvers: 'always',
     children: [
       {
         path: 'edit',

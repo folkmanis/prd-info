@@ -2,22 +2,12 @@ import { Injectable, inject } from '@angular/core';
 import { flatten } from 'lodash-es';
 import { Observable, OperatorFunction, concatMap, distinctUntilChanged, filter, from, map, pipe, reduce, switchMap } from 'rxjs';
 import { JobFilesService } from 'src/app/filesystem';
-import {
-  CustomerProduct,
-  DropFolder,
-  JobProductionStage,
-  JobProductionStageMaterial,
-  Material,
-  MaterialPrice,
-  ProductionStage,
-  ProductProductionStage,
-  ProductProductionStageMaterial,
-} from 'src/app/interfaces';
+import { CustomerProduct, DropFolder, JobProductionStage, JobProductionStageMaterial, Material, ProductProductionStage, ProductProductionStageMaterial } from 'src/app/interfaces';
+import { MaterialsService } from 'src/app/jobs-admin/materials/services/materials.service';
 import { ProductsService } from 'src/app/services';
 import { ProductionStagesService } from 'src/app/services/production-stages.service';
 import { Job, JobProduct } from '../../interfaces';
 import { JobService } from '../../services/job.service';
-import { MaterialsService } from 'src/app/jobs-admin/materials/services/materials.service';
 
 export type PartialJob = Pick<Job, 'jobId'> & Partial<Job>;
 

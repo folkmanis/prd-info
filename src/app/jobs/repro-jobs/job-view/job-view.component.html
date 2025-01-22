@@ -3,10 +3,13 @@
     <a mat-icon-button appRouterLinkToReturn appKeyPress="escape">
       <mat-icon>arrow_back</mat-icon>
     </a>
-    <a mat-flat-button appRouterLinkWithReturn="edit" returnUrl="/jobs/repro" [disabled]="editDisabled()">Labot</a>
+    <a mat-flat-button appRouterLinkWithReturn="edit" [disabled]="editDisabled()">Labot</a>
     <button mat-button [appJobCopy]="jobWithId()">Kopēt</button>
     @if (job().invoiceId) {
       <a mat-button [appRouterLinkWithReturn]="['/calculations', 'plate-invoice', job().invoiceId]"> Rēķins {{ job().invoiceId }} </a>
+    }
+    @if (job().jobStatus.generalStatus <= 20) {
+      <button mat-raised-button (click)="onSetGatavs()" [disabled]="editDisabled()">Pabeigts!</button>
     }
   </div>
 </header>
@@ -19,6 +22,9 @@
       <div class="headline-small" id="job-name">
         <span id="job-id">{{ jobId() }}</span>
         - {{ job().name }}
+        <button mat-icon-button [appCopyJobIdAndName]="jobWithId()" matTooltip="Kopēt nosaukumu">
+          <mat-icon>filter_none</mat-icon>
+        </button>
       </div>
     </mat-card-content>
   </mat-card>
@@ -84,16 +90,18 @@
   }
 </div>
 
-<div class="container">
-  <mat-card>
-    <mat-card-header *appViewSmall>
-      <mat-card-title> Preces </mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <app-job-products [products]="job().products" [showPrices]="showPrices()" />
-    </mat-card-content>
-  </mat-card>
-</div>
+@if (job().products?.length > 0) {
+  <div class="container">
+    <mat-card>
+      <mat-card-header *appViewSmall>
+        <mat-card-title> Preces </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <app-job-products [products]="job().products" [showPrices]="showPrices()" />
+      </mat-card-content>
+    </mat-card>
+  </div>
+}
 
 <div class="container">
   <mat-card>

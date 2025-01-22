@@ -4,20 +4,21 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_CARD_CONFIG, MatCardModule } from '@angular/material/card';
 import { MatDivider } from '@angular/material/divider';
 import { MatIcon } from '@angular/material/icon';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { firstValueFrom } from 'rxjs';
+import { ConfirmationDialogService, CopyJobIdAndNameDirective } from 'src/app/library';
 import { KeyPressDirective } from 'src/app/library/directives';
-import { RouterLinkToReturnDirective, RouterLinkWithReturnDirective } from 'src/app/library/navigation';
+import { navigateRelative, RouterLinkToReturnDirective, RouterLinkWithReturnDirective } from 'src/app/library/navigation';
 import { ViewSizeDirective, ViewSmallDirective } from 'src/app/library/view-size';
 import { LoginService } from 'src/app/login';
 import { configuration } from 'src/app/services/config.provider';
 import { Job } from '../../interfaces';
 import { parseJobId } from '../services/parse-job-id';
+import { ReproJobService } from '../services/repro-job.service';
 import { JobCopyDirective } from './job-copy.directive';
 import { JobPathPipe } from './job-path.pipe';
 import { JobProductsComponent } from './job-products/job-products.component';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ReproJobService } from '../services/repro-job.service';
-import { ConfirmationDialogService } from 'src/app/library';
-import { firstValueFrom } from 'rxjs';
 
 const FOLDER_CREATE_CONFIRMATION = 'Iespējams, darba mape jau pastāv. Vai tiešām vēlreiz izveidot mapi?';
 
@@ -36,6 +37,8 @@ const FOLDER_CREATE_CONFIRMATION = 'Iespējams, darba mape jau pastāv. Vai tie�
     JobPathPipe,
     JobProductsComponent,
     ViewSmallDirective,
+    CopyJobIdAndNameDirective,
+    MatTooltipModule,
   ],
   templateUrl: './job-view.component.html',
   styleUrl: './job-view.component.scss',
@@ -54,6 +57,7 @@ export class JobViewComponent {
   private confirm = inject(ConfirmationDialogService);
   private jobService = inject(ReproJobService);
   private snack = inject(MatSnackBar);
+  private navigate = navigateRelative();
 
   initialValue = input.required<Omit<Job, 'jobId'>>({ alias: 'job' });
   job = linkedSignal(this.initialValue);
@@ -84,6 +88,17 @@ export class JobViewComponent {
     } catch (error) {
       this.snack.open(`Mape nevar tikt pārvietota: ${error.error?.message ?? error.message}`, 'OK');
     }
+  }
+
+  async onSetGatavs() {
+    await this.jobService.updateJob({
+      jobId: this.jobId(),
+      jobStatus: {
+        generalStatus: 30,
+        timestamp: new Date(),
+      },
+    });
+    this.navigate(['..']);
   }
 
   private getJobCategoryName(category: string): string {
