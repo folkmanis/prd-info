@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, httpResource } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
@@ -6,6 +6,10 @@ import { COLORS, KastesJob, KastesUserPreferences, Veikals, VeikalsKaste, Veikal
 import { HttpOptions } from 'src/app/library/http';
 import { KastesJobPartial } from '../interfaces';
 import { AddressPackage } from '../interfaces/address-package';
+
+export const DEFAULT_USER_PREFERENCES: KastesUserPreferences = {
+  pasutijums: null,
+};
 
 @Injectable({
   providedIn: 'root',
@@ -27,8 +31,8 @@ export class KastesApiService {
     return this.http.get<number[]>(this.path + jobId + '/apjomi', new HttpOptions());
   }
 
-  getUserPreferences(): Observable<KastesUserPreferences> {
-    return this.http.get<KastesUserPreferences>(this.path + 'preferences', new HttpOptions());
+  userPreferences() {
+    return httpResource<KastesUserPreferences>(this.path + 'preferences', { defaultValue: DEFAULT_USER_PREFERENCES });
   }
 
   setUserPreferences(prefs: Partial<KastesUserPreferences>): Observable<KastesUserPreferences> {

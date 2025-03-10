@@ -1,31 +1,21 @@
-import { inject, Injectable, Signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { computed, effect, inject, Injectable, Signal } from '@angular/core';
 import { get } from 'lodash-es';
-import { catchError, combineLatest, map, merge, Observable, of, shareReplay, Subject, tap } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { KastesSettings, KastesUserPreferences } from 'src/app/kastes/interfaces';
-import { SystemPreferencesService } from 'src/app/services';
-import { KastesApiService } from './kastes-api.service';
-
-const DEFAULT_USER_PREFERENCES: KastesUserPreferences = {
-  pasutijums: null,
-};
+import { configuration } from 'src/app/services/config.provider';
+import { DEFAULT_USER_PREFERENCES, KastesApiService } from './kastes-api.service';
 
 type P = KastesUserPreferences & KastesSettings;
 // KastesPreferencesService['preferences$'] extends Observable<infer K> ? K : never;
-
-export function getKastesPreferences(): Observable<P>;
-export function getKastesPreferences<K1 extends keyof P>(k1: K1): Observable<P[K1]>;
-export function getKastesPreferences<K1 extends keyof P, K2 extends keyof P[K1]>(k1: K1, k2: K2): Observable<P[K1][K2]>;
-export function getKastesPreferences(...path: string[]): Observable<any> {
-  return inject(KastesPreferencesService).preferences$.pipe(map((pr) => get(pr, path, pr)));
-}
 
 export function kastesPreferences(): Signal<P>;
 export function kastesPreferences<K1 extends keyof P>(k1: K1): Signal<P[K1]>;
 export function kastesPreferences<K1 extends keyof P, K2 extends keyof P[K1]>(k1: K1, k2: K2): Signal<P[K1][K2]>;
 export function kastesPreferences(...path: string[]): Signal<any> {
-  return toSignal(inject(KastesPreferencesService).preferences$.pipe(map((preferences) => (path.length ? get(preferences, path, preferences) : preferences))), {
-    requireSync: true,
+  const preferences = inject(KastesPreferencesService).preferences;
+  return computed(() => {
+    const value = preferences();
+    return path.length ? get(value, path, value) : value;
   });
 }
 
@@ -35,18 +25,26 @@ export function kastesPreferences(...path: string[]): Signal<any> {
 export class KastesPreferencesService {
   private api = inject(KastesApiService);
 
-  private reload$ = new Subject<KastesUserPreferences>();
+  private kastesSystemPreferences = configuration('kastes');
 
-  private kastesSystemPreferences$ = inject(SystemPreferencesService).preferences$.pipe(map((preferences) => preferences['kastes']));
+  private userPreferencesResource = this.api.userPreferences();
 
-  private kastesUserPreferences$: Observable<KastesUserPreferences> = merge(this.reload$, this.api.getUserPreferences(), of(DEFAULT_USER_PREFERENCES)).pipe(
-    catchError(() => this.updateUserPreferences(DEFAULT_USER_PREFERENCES)),
-    shareReplay(1),
-  );
+  constructor() {
+    effect((onCleanup) => {
+      if (this.userPreferencesResource.error()?.['status'] === 404) {
+        const subs = this.updateUserPreferences(DEFAULT_USER_PREFERENCES).subscribe();
+        onCleanup(() => subs?.unsubscribe());
+      }
+    });
+  }
 
-  preferences$ = combineLatest([this.kastesSystemPreferences$, this.kastesUserPreferences$]).pipe(map(([sys, usr]) => ({ ...sys, ...usr })));
+  preferences = computed(() => {
+    const sys = this.kastesSystemPreferences();
+    const usr = this.userPreferencesResource.value();
+    return { ...sys, ...usr };
+  });
 
   updateUserPreferences(prefs: Partial<KastesUserPreferences>): Observable<KastesUserPreferences> {
-    return this.api.setUserPreferences(prefs).pipe(tap((newPreferences) => this.reload$.next(newPreferences)));
+    return this.api.setUserPreferences(prefs).pipe(tap((newPreferences) => this.userPreferencesResource.set(newPreferences)));
   }
 }

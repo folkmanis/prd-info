@@ -1,9 +1,9 @@
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { HttpClient, httpResource } from '@angular/common/http';
+import { inject, Injectable, Signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { Customer, NewCustomer } from 'src/app/interfaces';
-import { AppClassTransformerService } from 'src/app/library';
+import { AppClassTransformerService, httpResponseRequest } from 'src/app/library';
 import { HttpOptions } from 'src/app/library/http/http-options';
 
 @Injectable({
@@ -16,6 +16,13 @@ export class CustomersApiService {
 
   async getAll(params?: Record<string, any>): Promise<Customer[]> {
     return this.transformer.toInstanceAsync(Customer, this.http.get<Record<string, any>[]>(this.path, new HttpOptions(params).cacheable()), { exposeDefaultValues: false });
+  }
+
+  getCustomers(params: Signal<Record<string, any>>) {
+    return httpResource(() => httpResponseRequest(this.path, new HttpOptions(params).cacheable()), {
+      defaultValue: [],
+      parse: (data: Record<string, any>[]) => this.transformer.plainToInstance(Customer, data),
+    });
   }
 
   async getOne(idOrName: string, params?: Record<string, any>): Promise<Customer> {
