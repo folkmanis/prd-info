@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, resource } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, resource, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -70,12 +70,12 @@ export class JobListComponent {
     },
   });
 
-  products = inject(ProductsService).activeProducts;
+  private products = inject(ProductsService).getProductsResource().asReadonly();
+  activeProducts = computed(() => this.products.value().filter((product) => !product.inactive));
 
   highlited: string | null = null;
 
   constructor() {
-    inject(ProductsService).filter.set({});
     effect((onCleanup) => {
       const subs = this.notifications$.subscribe(() => {
         this.jobsRef.reload();

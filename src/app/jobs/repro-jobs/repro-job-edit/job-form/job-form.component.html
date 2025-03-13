@@ -1,7 +1,7 @@
 <ng-container [formGroup]="form">
   <div class="container-multi block-container">
     <!-- Klients -->
-    <app-customer-input formControlName="customer" [customers]="customersEnabled | async"> Klients </app-customer-input>
+    <app-customer-input formControlName="customer" [customers]="customersEnabled.value()"> Klients </app-customer-input>
 
     <!-- Izveidošanas Datums -->
     <mat-form-field>

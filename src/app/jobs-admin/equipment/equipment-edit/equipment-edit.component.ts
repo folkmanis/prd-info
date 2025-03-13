@@ -11,6 +11,7 @@ import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.gu
 import { navigateRelative } from 'src/app/library/navigation';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { EquipmentService } from '../services/equipment.service';
+import { EquipmentListComponent } from '../equipment-list/equipment-list.component';
 
 type EquipmentForm = FormGroup<{
   [key in keyof Equipment]: FormControl<Equipment[key]>;
@@ -28,6 +29,8 @@ export class EquipmentEditComponent implements CanComponentDeactivate {
   private snack = inject(MatSnackBar);
 
   private navigate = navigateRelative();
+
+  private listComponent = inject(EquipmentListComponent);
 
   form: EquipmentForm = inject(FormBuilder).group({
     _id: [null],
@@ -84,6 +87,7 @@ export class EquipmentEditComponent implements CanComponentDeactivate {
   private async onCreateEquipment() {
     const created = await this.equipmentService.insertOne(this.form.getRawValue());
     this.snack.open(`${created.name} izveidots`, 'OK');
+    this.listComponent.onReload();
     this.form.markAsPristine();
     this.navigate(['..', created._id]);
   }
@@ -92,6 +96,7 @@ export class EquipmentEditComponent implements CanComponentDeactivate {
     const update = { ...this.changes(), _id: this.initialValue()._id };
     const updated = await this.equipmentService.updateOne(update);
     this.initialValue.set(updated);
+    this.listComponent.onReload();
     this.snack.open(`${updated.name} atjaunināts`, 'OK');
   }
 

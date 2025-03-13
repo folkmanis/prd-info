@@ -46,7 +46,7 @@
       </mat-form-field>
 
       <!-- Klients -->
-      <app-customer-input formControlName="customer" [customers]="customers | async"> Klients </app-customer-input>
+      <app-customer-input formControlName="customer" [customers]="customers.value()"> Klients </app-customer-input>
       <!-- <mat-form-field>
         <mat-label>Klients</mat-label>
         <input matInput type="text" formControlName="customer" [matAutocomplete]="auto" />

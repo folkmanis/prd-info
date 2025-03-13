@@ -17,6 +17,7 @@ import { configuration } from 'src/app/services/config.provider';
 import { MaterialsService } from '../services/materials.service';
 import { MaterialsPricesComponent } from './materials-prices/materials-prices.component';
 import { ViewSizeDirective } from 'src/app/library/view-size';
+import { MaterialsListComponent } from '../materials-list/materials-list.component';
 
 type MaterialForm = {
   [k in keyof Material]-?: FormControl<Material[k]>;
@@ -44,6 +45,8 @@ type MaterialForm = {
 })
 export class MaterialsEditComponent implements CanComponentDeactivate {
   #materialsService = inject(MaterialsService);
+
+  #listComppoent = inject(MaterialsListComponent);
 
   #navigate = navigateRelative();
 
@@ -100,11 +103,11 @@ export class MaterialsEditComponent implements CanComponentDeactivate {
       const update = { ...this.changes(), _id: id };
       await this.#materialsService.updateMaterial(update);
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { _id, ...newMaterial } = this.form.getRawValue();
       const created = await this.#materialsService.insertMaterial(newMaterial);
       id = created._id;
     }
+    this.#listComppoent.onReload();
     this.form.markAsPristine();
     await this.#navigate(['..', id], { queryParams: { upd: Date.now() } });
   }

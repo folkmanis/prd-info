@@ -11,8 +11,8 @@ export class UsersService {
   private api = inject(UsersApiService);
   private xmfApi = inject(XmfArchiveApiService);
 
-  async getAllUsers() {
-    return this.api.getAll();
+  getUsersResource() {
+    return this.api.usersResource();
   }
 
   async getXmfCustomers(): Promise<XmfCustomer[]> {
@@ -20,31 +20,31 @@ export class UsersService {
     return customer.map((cust) => ({ name: cust || 'Nenoteikts', value: cust }));
   }
 
-  async getUser(username: string): Promise<User> {
+  getUser(username: string): Promise<User> {
     return this.api.getOne(username);
   }
 
-  async updateUser({ username, ...update }: Partial<User>): Promise<User> {
+  updateUser({ username, ...update }: Partial<User>): Promise<User> {
     return this.api.updateOne(username, update);
   }
 
-  async updatePassword(username: string, password: string): Promise<User> {
+  updatePassword(username: string, password: string): Promise<User> {
     return this.api.passwordUpdate(username, password);
   }
 
-  async addUser(data: Partial<User>): Promise<User> {
+  addUser(data: Partial<User>): Promise<User> {
     return this.api.insertOne(data);
   }
 
-  async deleteUser(username: string): Promise<boolean> {
+  deleteUser(username: string): Promise<boolean> {
     return this.api.deleteOne(username);
   }
 
-  async deleteSessions(username: string, sessionIds: string[]): Promise<number> {
+  deleteSessions(username: string, sessionIds: string[]): Promise<number> {
     return this.api.deleteSessions(username, sessionIds);
   }
 
-  async uploadToFirestore(username: string) {
+  uploadToFirestore(username: string) {
     return this.api.uploadToFirestore(username);
   }
 

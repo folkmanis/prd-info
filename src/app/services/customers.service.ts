@@ -1,6 +1,6 @@
-import { inject, Injectable, resource, signal } from '@angular/core';
-import { isEqual } from 'lodash-es';
+import { inject, Injectable } from '@angular/core';
 import { Customer, CustomerPartial, CustomerUpdate, NewCustomer } from 'src/app/interfaces';
+import { FilterInput, toFilterSignal } from 'src/app/library';
 import { CustomersApiService } from './prd-api/customers-api.service';
 
 export interface CustomerRequestFilter {
@@ -15,43 +15,28 @@ export interface CustomerRequestFilter {
 export class CustomersService {
   private api = inject(CustomersApiService);
 
-  readonly #filter = signal<CustomerRequestFilter>({ disabled: true }, { equal: isEqual });
-
-  customers = resource({
-    request: () => ({ filter: this.#filter() }),
-    loader: ({ request }) => this.getCustomerList(request.filter),
-  });
-
-  async reload() {
-    this.customers.reload();
+  getCustomersResource(filterSignal: FilterInput<CustomerRequestFilter>) {
+    return this.api.customersResource(toFilterSignal(filterSignal));
   }
 
-  setFilter(filter: CustomerRequestFilter) {
-    this.#filter.set(filter);
+  updateCustomer({ _id, ...rest }: CustomerUpdate): Promise<Customer> {
+    return this.api.updateOne(_id, rest);
   }
 
-  async updateCustomer({ _id, ...rest }: CustomerUpdate): Promise<Customer> {
-    const updated = await this.api.updateOne(_id, rest);
-    await this.reload();
-    return updated;
-  }
-
-  async getCustomer(id: string): Promise<Customer | never> {
+  getCustomer(id: string): Promise<Customer | never> {
     this.isValidId(id);
     return this.api.getOne(id);
   }
 
-  async getCustomerByName(name: string): Promise<Customer> {
+  getCustomerByName(name: string): Promise<Customer> {
     return this.api.getOne(name);
   }
 
-  async saveNewCustomer(customer: NewCustomer): Promise<Customer> {
-    const updated = await this.api.insertOne(customer);
-    await this.reload();
-    return updated;
+  saveNewCustomer(customer: NewCustomer): Promise<Customer> {
+    return this.api.insertOne(customer);
   }
 
-  async getCustomerList(filter: CustomerRequestFilter = {}): Promise<CustomerPartial[]> {
+  getCustomerList(filter: CustomerRequestFilter = {}): Promise<CustomerPartial[]> {
     return this.api.getAll(filter);
   }
 

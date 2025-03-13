@@ -102,7 +102,7 @@
         </mat-expansion-panel-header>
 
         <section>
-          <app-product-production formControlName="productionStages" [materials]="materials$ | async" [productionStages]="productionStages$ | async" #production />
+          <app-product-production formControlName="productionStages" [materials]="materials.value()" [productionStages]="productionStages.value()" #production />
         </section>
 
         <mat-action-row>

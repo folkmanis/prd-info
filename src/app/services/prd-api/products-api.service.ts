@@ -1,10 +1,11 @@
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http';
+import { inject, Injectable, Signal } from '@angular/core';
+import { isEqual } from 'lodash-es';
+import { firstValueFrom, map } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { CustomerProduct, Product, ProductionStage, ProductPartial, ProductProductionStage } from 'src/app/interfaces';
 import { AppClassTransformerService } from 'src/app/library';
-import { HttpOptions } from 'src/app/library/http';
+import { HttpOptions, httpResponseRequest } from 'src/app/library/http';
 
 export interface ProductsFilter {
   name?: string;
@@ -20,47 +21,50 @@ export class ProductsApiService {
   private http = inject(HttpClient);
   private transformer = inject(AppClassTransformerService);
 
-  async getAll(filter: ProductsFilter): Promise<ProductPartial[]> {
-    const data$ = this.http.get<Record<string, any>[]>(this.path, new HttpOptions(filter).cacheable());
-    return this.transformer.toInstanceAsync(Product, data$);
+  productsResource(filterSignal: Signal<ProductsFilter>): HttpResourceRef<ProductPartial[]> {
+    return httpResource(() => httpResponseRequest(this.path, new HttpOptions(filterSignal()).cacheable()), {
+      defaultValue: [],
+      parse: (data: Record<string, any>[]) => this.transformer.plainToInstance(Product, data),
+      equal: isEqual,
+    });
   }
 
-  async getOne(id: string): Promise<Product> {
+  getOne(id: string): Promise<Product> {
     const data$ = this.http.get<Record<string, any>>(this.path + id, new HttpOptions().cacheable());
     return this.transformer.toInstanceAsync(Product, data$);
   }
 
-  async getOneByName(name: string): Promise<Product> {
+  getOneByName(name: string): Promise<Product> {
     const data$ = this.http.get<Record<string, any>>(this.path + 'name/' + name, new HttpOptions());
     return this.transformer.toInstanceAsync(Product, data$);
   }
 
-  async deleteOne(id: string): Promise<number> {
-    const response$ = this.http.delete<{ deletedCount: number }>(this.path + id, new HttpOptions());
-    return (await firstValueFrom(response$)).deletedCount;
+  deleteOne(id: string): Promise<number> {
+    const data$ = this.http.delete<{ deletedCount: number }>(this.path + id, new HttpOptions()).pipe(map((data) => data.deletedCount));
+    return firstValueFrom(data$);
   }
 
-  async updateOne(id: string, data: Partial<Product>): Promise<Product> {
+  updateOne(id: string, data: Partial<Product>): Promise<Product> {
     const update$ = this.http.patch<Record<string, any>>(this.path + id, data, new HttpOptions());
     return this.transformer.toInstanceAsync(Product, update$);
   }
 
-  async insertOne(data: Partial<Product>): Promise<Product> {
+  insertOne(data: Partial<Product>): Promise<Product> {
     const update$ = this.http.put<Record<string, any>>(this.path, data, new HttpOptions());
     return this.transformer.toInstanceAsync(Product, update$);
   }
 
-  async validatorData<K extends keyof Product & string>(key: K): Promise<Product[K][]> {
+  validatorData<K extends keyof Product & string>(key: K): Promise<Product[K][]> {
     return firstValueFrom(this.http.get<Product[K][]>(this.path + 'validate/' + key, new HttpOptions().cacheable()));
   }
 
-  async productsCustomer(customer: string): Promise<CustomerProduct[]> {
+  productsCustomer(customer: string): Promise<CustomerProduct[]> {
     const data$ = this.http.get<Record<string, any>[]>(this.path + 'prices/customer/' + customer, new HttpOptions().cacheable());
-    return this.transformer.plainToInstance(CustomerProduct, await firstValueFrom(data$));
+    return this.transformer.toInstanceAsync(CustomerProduct, data$);
   }
 
-  async productionStages(productName: string): Promise<ProductProductionStage[]> {
+  productionStages(productName: string): Promise<ProductProductionStage[]> {
     const data$ = this.http.get<Record<string, any>[]>(this.path + productName + '/productionStages', new HttpOptions().cacheable());
-    return this.transformer.plainToInstance(ProductProductionStage, await firstValueFrom(data$));
+    return this.transformer.toInstanceAsync(ProductProductionStage, data$);
   }
 }

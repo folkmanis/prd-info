@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { SimpleListContainerComponent } from 'src/app/library/simple-form';
@@ -12,19 +12,18 @@ import { EquipmentService } from '../services/equipment.service';
   imports: [SimpleListContainerComponent, RouterLink, RouterLinkActive, MatTableModule],
 })
 export class EquipmentListComponent {
-  private equipmentService = inject(EquipmentService);
-
   name = signal('');
 
-  equipment = this.equipmentService.equipment;
+  filter = computed(() => {
+    const name = this.name()?.trim() || '';
+    return name.length > 0 ? { name } : {};
+  });
+
+  equipment = inject(EquipmentService).getEquipmentResource(this.filter);
 
   displayedColumns = ['name'];
 
-  constructor() {
-    effect(() => {
-      const name = this.name()?.trim() || '';
-      const filter = name.length > 0 ? { name } : {};
-      this.equipmentService.filter.set(filter);
-    });
+  onReload() {
+    this.equipment.reload();
   }
 }

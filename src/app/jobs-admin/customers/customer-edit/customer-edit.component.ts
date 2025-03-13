@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AsyncValidatorFn, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -18,6 +18,7 @@ import { CustomerContactsComponent } from './customer-contacts/customer-contacts
 import { FtpUserComponent } from './ftp-user/ftp-user.component';
 import { PaytraqCustomerComponent } from './paytraq-customer/paytraq-customer.component';
 import { ShippingAddressComponent } from './shipping-address/shipping-address.component';
+import { CustomersListComponent } from '../customers-list/customers-list.component';
 
 type CustomerEditable = Omit<Customer, '_id'>;
 type CustomerEditGroup = FormGroup<{
@@ -71,6 +72,8 @@ export class CustomerEditComponent implements CanComponentDeactivate {
 
   customer = input.required<Customer>();
 
+  customersListComponent = inject(CustomersListComponent);
+
   formValue = toSignal(this.form.valueChanges, {
     initialValue: this.form.value,
   });
@@ -97,10 +100,12 @@ export class CustomerEditComponent implements CanComponentDeactivate {
     if (id) {
       const update = { ...this.changes(), _id: this.customer()._id };
       await this.customersService.updateCustomer(update);
+      this.onReload();
     } else {
       const customer = omitBy(this.formValue(), isNull) as NewCustomer;
       const createdCustomer = await this.customersService.saveNewCustomer(customer);
       id = createdCustomer._id;
+      this.onReload();
     }
 
     this.form.markAsPristine();
@@ -135,5 +140,9 @@ export class CustomerEditComponent implements CanComponentDeactivate {
     return (control: CustomerEditGroup) => {
       return control.value.ftpUser === false || !!control.value.ftpUserData ? null : { ftpUserData: 'ftp data not set' };
     };
+  }
+
+  private onReload() {
+    this.customersListComponent.onReload();
   }
 }

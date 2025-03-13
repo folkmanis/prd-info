@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal, viewChild } from '@angular/core';
 import {
   ControlValueAccessor,
   FormBuilder,
@@ -69,7 +69,7 @@ export class JobFormComponent implements ControlValueAccessor, Validator {
 
   private allJobStates = configuration('jobs', 'jobStates');
 
-  customersEnabled = inject(CustomersService).getCustomerList({ disabled: false });
+  customersEnabled = inject(CustomersService).getCustomersResource({ disabled: false }).asReadonly();
   jobStates = computed(() => this.allJobStates().filter((st) => st.state < 50));
   categories = configuration('jobs', 'productCategories');
 

@@ -1,7 +1,7 @@
-import { computed, inject, Injectable, linkedSignal, resource, signal } from '@angular/core';
-import { isEqual } from 'lodash-es';
-import { CustomerProduct, JobProductionStage, NewProduct, Product, ProductionStage, ProductProductionStage } from 'src/app/interfaces';
+import { inject, Injectable } from '@angular/core';
+import { CustomerProduct, NewProduct, Product, ProductProductionStage } from 'src/app/interfaces';
 import { ProductsApiService, ProductsFilter } from 'src/app/services/prd-api/products-api.service';
+import { FilterInput, toFilterSignal } from '../library';
 
 @Injectable({
   providedIn: 'root',
@@ -9,32 +9,15 @@ import { ProductsApiService, ProductsFilter } from 'src/app/services/prd-api/pro
 export class ProductsService {
   private api = inject(ProductsApiService);
 
-  readonly filter = linkedSignal<ProductsFilter>(
-    () => {
-      const filter: ProductsFilter = {};
-      if (this.name()) {
-        filter.name = this.name();
-      }
-      return filter;
-    },
-    { equal: isEqual },
-  );
+  getProductsResource(filterSignal?: FilterInput<ProductsFilter>) {
+    return this.api.productsResource(toFilterSignal(filterSignal));
+  }
 
-  name = signal('');
-
-  productsResource = resource({
-    request: () => this.filter(),
-    loader: ({ request }) => this.api.getAll(request),
-  });
-
-  products = computed(() => this.productsResource.value() ?? []);
-  activeProducts = computed(() => this.products().filter((product) => !product.inactive));
-
-  async getProduct(id: string): Promise<Product> {
+  getProduct(id: string): Promise<Product> {
     return this.api.getOne(id);
   }
 
-  async getProductByName(name: string): Promise<Product> {
+  getProductByName(name: string): Promise<Product> {
     return this.api.getOneByName(name);
   }
 
@@ -46,7 +29,7 @@ export class ProductsService {
     }
   }
 
-  async productionStages(product: string): Promise<ProductProductionStage[]> {
+  productionStages(product: string): Promise<ProductProductionStage[]> {
     return this.api.productionStages(product);
   }
 
@@ -59,25 +42,11 @@ export class ProductsService {
     }
   }
 
-  async updateProduct({ _id, ...rest }: Partial<Product>): Promise<Product> {
-    const updated = await this.api.updateOne(_id, rest);
-    this.productsResource.reload();
-    return updated;
+  updateProduct({ _id, ...rest }: Partial<Product>): Promise<Product> {
+    return this.api.updateOne(_id, rest);
   }
 
-  async deleteProduct(id: string): Promise<boolean> {
-    const count = await this.api.deleteOne(id);
-    if (count > 0) {
-      this.productsResource.reload();
-    }
-    return count > 0;
-  }
-
-  async insertProduct(prod: NewProduct): Promise<Product> {
-    const inserted = await this.api.insertOne(prod);
-    if (inserted) {
-      this.productsResource.reload();
-    }
-    return inserted;
+  insertProduct(prod: NewProduct): Promise<Product> {
+    return this.api.insertOne(prod);
   }
 }

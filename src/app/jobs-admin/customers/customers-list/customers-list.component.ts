@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { isEqual } from 'lodash-es';
 import { SimpleListContainerComponent } from 'src/app/library/simple-form';
-import { CustomersService } from 'src/app/services';
+import { CustomerRequestFilter, CustomersService } from 'src/app/services';
 
 @Component({
   selector: 'app-customers-list',
@@ -16,13 +17,23 @@ export class CustomersListComponent {
 
   name = signal('');
 
-  customers = this.customersService.customers;
+  filter = computed(
+    () => {
+      const filter: CustomerRequestFilter = { disabled: true };
+      const name = this.name().trim();
+      if (name) {
+        filter.name = name;
+      }
+      return filter;
+    },
+    { equal: isEqual },
+  );
 
-  customersFiltered = computed(() => this.customers.value()?.filter((cust) => cust.CustomerName.toUpperCase().includes(this.name().toUpperCase())));
+  customers = this.customersService.getCustomersResource(this.filter).asReadonly();
 
   displayedColumns = ['CustomerName'];
 
-  constructor() {
-    this.customersService.setFilter({ disabled: true });
+  onReload() {
+    this.customers.reload();
   }
 }

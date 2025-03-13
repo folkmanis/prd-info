@@ -4,7 +4,7 @@
   </mat-drawer>
 
   <mat-drawer-content>
-    <app-job-filter class="mat-elevation-z4" [filter]="filter()" (filterChange)="onJobFilter($event)" [products]="products()" />
+    <app-job-filter class="mat-elevation-z4" [filter]="filter()" (filterChange)="onJobFilter($event)" [products]="activeProducts()" />
     <app-new-job-button (fileList)="onFileDrop($event)" [class.rised]="scroll.visible()" />
     <div class="progress-container">
       @if (jobsRef.isLoading()) {

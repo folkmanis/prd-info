@@ -1,5 +1,4 @@
-import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -19,6 +18,7 @@ import { CustomersService } from 'src/app/services';
 import { configuration } from 'src/app/services/config.provider';
 import { ProductionStagesService } from 'src/app/services/production-stages.service';
 import { MaterialsService } from '../../materials/services/materials.service';
+import { ProductsListComponent } from '../products-list/products-list.component';
 import { ProductsFormService } from '../services/products-form.service';
 import { PaytraqProductComponent } from './paytraq-product/paytraq-product.component';
 import { ProductPricesComponent } from './product-prices/product-prices.component';
@@ -37,7 +37,6 @@ import { ProductProductionComponent } from './product-production/product-product
     PaytraqProductComponent,
     ProductPricesComponent,
     ProductProductionComponent,
-    AsyncPipe,
     MatFormFieldModule,
     MatInputModule,
     MatExpansionModule,
@@ -54,6 +53,8 @@ export class ProductsEditorComponent implements CanComponentDeactivate {
   private navigate = navigateRelative();
   private dialog = inject(ConfirmationDialogService);
 
+  private listComponent = inject(ProductsListComponent);
+
   form = this.formService.form;
 
   product = input.required<Product>();
@@ -62,10 +63,11 @@ export class ProductsEditorComponent implements CanComponentDeactivate {
   units = configuration('jobs', 'productUnits');
   categories = configuration('jobs', 'productCategories');
 
-  customers = inject(CustomersService).customers;
-  materials$ = inject(MaterialsService).getMaterials();
+  customers = inject(CustomersService).getCustomersResource({ disabled: false }).asReadonly();
 
-  productionStages$ = inject(ProductionStagesService).getProductionStages();
+  materials = inject(MaterialsService).getMaterialsResource(signal({})).asReadonly();
+
+  productionStages = inject(ProductionStagesService).getProductionStagesResource();
 
   get changes(): Partial<Product> | null {
     return this.formService.changes;
@@ -79,8 +81,9 @@ export class ProductsEditorComponent implements CanComponentDeactivate {
 
   async onSave() {
     try {
-      const product = await this.formService.save();
-      await this.navigate(['..', product._id]);
+      const { _id: id } = await this.formService.save();
+      this.listComponent.onReload();
+      await this.navigate(['..', id]);
     } catch (error) {
       this.dialog.confirmDataError(error.message);
     }

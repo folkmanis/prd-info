@@ -1,8 +1,8 @@
-import { inject, Injectable, resource, signal } from '@angular/core';
-import { isEqual } from 'lodash-es';
+import { inject, Injectable, signal, Signal } from '@angular/core';
 import { filter, from, Observable, switchMap, toArray } from 'rxjs';
 import { CreateProductionStage, DropFolder, ProductionStage, UpdateProductionStage } from 'src/app/interfaces';
 import { ProductionStageApiService } from './prd-api/production-stage-api.service';
+import { FilterInput, toFilterSignal } from '../library';
 
 interface ProductionStagesFilter {
   name?: string;
@@ -14,28 +14,20 @@ interface ProductionStagesFilter {
 export class ProductionStagesService {
   private api = inject(ProductionStageApiService);
 
-  filter = signal<ProductionStagesFilter>({});
+  getProductionStagesResource(filterSignal?: FilterInput<ProductionStagesFilter>) {
+    return this.api.productionStageResource(toFilterSignal(filterSignal));
+  }
 
-  productionStages = resource({
-    request: () => this.filter(),
-    loader: ({ request }) => this.getProductionStages(request),
-    equal: isEqual,
-  });
-
-  async getOne(id: string): Promise<ProductionStage> {
+  getOne(id: string): Promise<ProductionStage> {
     return this.api.getOne(id);
   }
 
-  async insertOne(stage: CreateProductionStage): Promise<ProductionStage> {
-    const data = await this.api.insertOne(stage);
-    this.productionStages.reload();
-    return data;
+  insertOne(stage: CreateProductionStage): Promise<ProductionStage> {
+    return this.api.insertOne(stage);
   }
 
-  async updateOne(stage: UpdateProductionStage): Promise<ProductionStage> {
-    const data = this.api.updateOne(stage);
-    this.productionStages.reload();
-    return data;
+  updateOne(stage: UpdateProductionStage): Promise<ProductionStage> {
+    return this.api.updateOne(stage);
   }
 
   async validateName(value: string): Promise<boolean> {
@@ -50,9 +42,5 @@ export class ProductionStagesService {
       filter((stage) => stage.isDefault() || stage.includesCustomer(customerName)),
       toArray(),
     );
-  }
-
-  async getProductionStages(stagesFilter?: ProductionStagesFilter): Promise<ProductionStage[]> {
-    return this.api.getAll(stagesFilter);
   }
 }

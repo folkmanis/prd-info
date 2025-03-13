@@ -18,6 +18,7 @@ import { CustomersService } from 'src/app/services';
 import { ProductionStagesService } from 'src/app/services/production-stages.service';
 import { EquipmentService } from '../../equipment/services/equipment.service';
 import { DropFoldersComponent } from '../drop-folders/drop-folders.component';
+import { ProductionStagesListComponent } from '../production-stages-list/production-stages-list.component';
 
 type ProductionStageControl = {
   [key in keyof Required<ProductionStage>]: FormControl<ProductionStage[key]>;
@@ -42,11 +43,10 @@ type ProductionStageControl = {
   ],
 })
 export class ProductionStagesEditComponent implements CanComponentDeactivate {
-  private readonly equipmentService = inject(EquipmentService);
   private readonly jobFilesService = inject(JobFilesService);
-  private readonly customersService = inject(CustomersService);
   private readonly snack = inject(MatSnackBar);
   private readonly navigate = navigateRelative();
+  private listComponent = inject(ProductionStagesListComponent);
 
   form: FormGroup<ProductionStageControl> = inject(FormBuilder).group({
     _id: [''],
@@ -62,10 +62,10 @@ export class ProductionStagesEditComponent implements CanComponentDeactivate {
     dropFolders: [],
   });
 
-  equipment = this.equipmentService.equipment;
+  equipment = inject(EquipmentService).getEquipmentResource().asReadonly();
   dropFolders = signal<{ value: string[]; name: string }[]>([]);
 
-  customers = this.customersService.customers;
+  customers = inject(CustomersService).getCustomersResource({ disabled: false }).asReadonly();
 
   productionStage = input.required<ProductionStage>();
 
@@ -93,12 +93,10 @@ export class ProductionStagesEditComponent implements CanComponentDeactivate {
   });
 
   constructor(private productionStagesService: ProductionStagesService) {
-    this.equipmentService.filter.set({});
     effect(() => {
       this.form.reset(this.initialValue());
     });
     this.setDropFolderNames();
-    this.customersService.setFilter({ disabled: false });
   }
 
   onReset(): void {
@@ -108,6 +106,7 @@ export class ProductionStagesEditComponent implements CanComponentDeactivate {
   async onUpdateStage() {
     const update = { ...this.changes(), _id: this.initialValue()._id };
     const result = await this.productionStagesService.updateOne(update);
+    this.listComponent.onReload();
     this.snack.open(`Atjaunots ${result.name}`, 'OK');
     this.initialValue.set(result);
   }
@@ -115,6 +114,7 @@ export class ProductionStagesEditComponent implements CanComponentDeactivate {
   async onCreateStage() {
     const result = await this.productionStagesService.insertOne(this.form.getRawValue());
     this.form.markAsPristine();
+    this.listComponent.onReload();
     this.snack.open(`Izveidots ${result.name}`, 'OK');
     this.navigate(['..', result._id]);
   }

@@ -1,5 +1,5 @@
-import { AsyncPipe, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, inject, input, untracked } from '@angular/core';
+import { NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, effect, inject, input, signal, untracked } from '@angular/core';
 import { outputFromObservable } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -44,7 +44,6 @@ export type FilterFormType = {
     MatOptionModule,
     NgIf,
     CustomerInputComponent,
-    AsyncPipe,
   ],
 })
 export class JobFilterComponent {
@@ -58,7 +57,7 @@ export class JobFilterComponent {
     productsName: [null],
   });
 
-  customers = inject(CustomersService).getCustomerList({ disabled: false });
+  customers = inject(CustomersService).getCustomersResource({ disabled: false }).asReadonly();
   jobStates = configuration('jobs', 'jobStates');
 
   filter = input.required<JobQueryFilter>();

@@ -5,7 +5,7 @@
     </mat-card-content>
   </mat-card>
 
-  <table mat-table [dataSource]="materialsFiltered()" [trackBy]="trackByFn">
+  <table mat-table [dataSource]="materialsWithDescriptions()" [trackBy]="trackByFn">
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let material; columns: displayedColumns" [routerLink]="[material._id]" routerLinkActive="selected" [class.disabled]="material.inactive"></tr>
 
