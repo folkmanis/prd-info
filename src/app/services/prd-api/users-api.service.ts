@@ -1,12 +1,12 @@
 import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, Signal } from '@angular/core';
+import { isEqual } from 'lodash-es';
 import { firstValueFrom, map } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { User } from 'src/app/interfaces';
 import { AppClassTransformerService } from 'src/app/library';
-import { HttpOptions, httpResponseRequest } from 'src/app/library/http';
+import { HttpOptions, httpResponseRequest, toFilterSignal } from 'src/app/library/http';
 import { DEMO_MODE } from '../app-mode.provider';
-import { isEqual } from 'lodash-es';
 
 type Params = Record<string, any>;
 
@@ -24,8 +24,8 @@ export class UsersApiService {
     return this.transformer.toInstanceAsync(User, this.http.get(this.path + name, new HttpOptions().cacheable()));
   }
 
-  usersResource(): HttpResourceRef<User[]> {
-    return httpResource(httpResponseRequest(this.path, new HttpOptions().cacheable()), {
+  usersResource(filterSignal: Signal<Record<string, any>>): HttpResourceRef<User[]> {
+    return httpResource(() => httpResponseRequest(this.path, new HttpOptions(filterSignal()).cacheable()), {
       defaultValue: [],
       parse: (data: Record<string, any>[]) => this.transformer.plainToInstance(User, data),
       equal: isEqual,

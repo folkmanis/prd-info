@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { SimpleListContainerComponent } from 'src/app/library/simple-form';
-import { UsersService } from '../../services/users.service';
+import { UsersFilter, UsersService } from '../../services/users.service';
 
 @Component({
   selector: 'app-users-list',
@@ -15,14 +15,17 @@ import { UsersService } from '../../services/users.service';
 export class UsersListComponent {
   displayedColumns = ['username', 'name', 'last_login'];
 
-  filter = signal('');
+  name = signal('');
 
-  private users = inject(UsersService).getUsersResource();
-
-  usersFiltered = computed(() => {
-    const filterUpperStr = this.filter()?.toUpperCase() || '';
-    return this.users.value().filter((user) => user.name.toUpperCase().includes(filterUpperStr) || user.username.toUpperCase().includes(filterUpperStr));
+  filter = computed(() => {
+    const filter: UsersFilter = {};
+    if (this.name()) {
+      filter.name = this.name().trim();
+    }
+    return filter;
   });
+
+  users = inject(UsersService).getUsersResource(this.filter);
 
   onReload() {
     this.users.reload();

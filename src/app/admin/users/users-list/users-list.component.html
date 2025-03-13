@@ -1,5 +1,5 @@
-<app-simple-list-container [(filter)]="filter" plusButton filterInput>
-  <table mat-table [dataSource]="usersFiltered()">
+<app-simple-list-container [(filter)]="name" plusButton filterInput>
+  <table mat-table [dataSource]="users.value()">
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let user; columns: displayedColumns" [routerLink]="user.username" [class.disabled]="user.userDisabled" routerLinkActive="selected"></tr>
 

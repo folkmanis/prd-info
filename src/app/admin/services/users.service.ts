@@ -1,8 +1,13 @@
 import { inject, Injectable } from '@angular/core';
 import { User } from 'src/app/interfaces';
+import { FilterInput, toFilterSignal } from 'src/app/library';
 import { UsersApiService } from 'src/app/services/prd-api/users-api.service';
 import { XmfCustomer } from 'src/app/xmf-search/interfaces';
 import { XmfArchiveApiService } from 'src/app/xmf-search/services/xmf-archive-api.service';
+
+export type UsersFilter = {
+  name?: string;
+};
 
 @Injectable({
   providedIn: 'root',
@@ -11,8 +16,8 @@ export class UsersService {
   private api = inject(UsersApiService);
   private xmfApi = inject(XmfArchiveApiService);
 
-  getUsersResource() {
-    return this.api.usersResource();
+  getUsersResource(filterSignal?: FilterInput<UsersFilter>) {
+    return this.api.usersResource(toFilterSignal(filterSignal));
   }
 
   async getXmfCustomers(): Promise<XmfCustomer[]> {
