@@ -5,7 +5,7 @@ import { firstValueFrom, map } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { User } from 'src/app/interfaces';
 import { AppClassTransformerService } from 'src/app/library';
-import { HttpOptions, httpResponseRequest, toFilterSignal } from 'src/app/library/http';
+import { HttpOptions, httpResponseRequest } from 'src/app/library/http';
 import { DEMO_MODE } from '../app-mode.provider';
 
 type Params = Record<string, any>;
