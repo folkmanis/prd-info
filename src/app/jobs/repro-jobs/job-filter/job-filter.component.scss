@@ -22,13 +22,3 @@
   flex-wrap: wrap;
   column-gap: 16px;
 }
-
-ul.filter-description {
-  li {
-    display: inline;
-
-    &:not(:last-child)::after {
-      content: '+';
-    }
-  }
-}

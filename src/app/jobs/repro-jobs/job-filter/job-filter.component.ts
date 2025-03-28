@@ -1,7 +1,6 @@
-import { NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, inject, input, signal, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, untracked } from '@angular/core';
 import { outputFromObservable } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -19,6 +18,7 @@ import { CustomersService } from 'src/app/services';
 import { configuration } from 'src/app/services/config.provider';
 import { JobFilter, JobQueryFilter } from '../../interfaces';
 import { CustomerInputComponent } from '../customer-input/customer-input.component';
+import { FilterSummaryComponent } from './filter-summary/filter-summary.component';
 
 export type FilterFormType = {
   [k in keyof JobFilter]: FormControl<JobFilter[k]>;
@@ -30,7 +30,6 @@ export type FilterFormType = {
   styleUrls: ['./job-filter.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
     ReactiveFormsModule,
     MatExpansionModule,
     ViewSizeDirective,
@@ -42,8 +41,8 @@ export type FilterFormType = {
     MatAutocompleteModule,
     MatSelectModule,
     MatOptionModule,
-    NgIf,
     CustomerInputComponent,
+    FilterSummaryComponent,
   ],
 })
 export class JobFilterComponent {

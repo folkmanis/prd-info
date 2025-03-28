@@ -5,23 +5,7 @@
     }
 
     <mat-panel-description>
-      <ul class="filter-description">
-        <li *ngIf="filterForm.value.jobsId">
-          {{ filterForm.value.jobsId }}
-        </li>
-        <li *ngIf="filterForm.value.name">
-          {{ filterForm.value.name }}
-        </li>
-        <li *ngIf="filterForm.value.customer">
-          {{ filterForm.value.customer }}
-        </li>
-        <li *ngIf="statesSelect.triggerValue">
-          {{ statesSelect.triggerValue }}
-        </li>
-        <li *ngIf="filterForm.value.productsName">
-          {{ filterForm.value.productsName }}
-        </li>
-      </ul>
+      <app-filter-summary [summary]="filterForm.value" [selectedStates]="statesSelect.triggerValue" />
     </mat-panel-description>
   </mat-expansion-panel-header>
 

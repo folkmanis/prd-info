@@ -1,0 +1,28 @@
+<ul class="filter-description">
+  @if (summary().jobsId; as jobsId) {
+    <li>
+      {{ jobsId }}
+    </li>
+  }
+
+  @if (summary().name; as name) {
+    <li>
+      {{ name }}
+    </li>
+  }
+  @if (summary().customer; as customer) {
+    <li>
+      {{ customer }}
+    </li>
+  }
+  @if (selectedStates(); as states) {
+    <li>
+      {{ states }}
+    </li>
+  }
+  @if (summary().productsName; as productsName) {
+    <li>
+      {{ productsName }}
+    </li>
+  }
+</ul>

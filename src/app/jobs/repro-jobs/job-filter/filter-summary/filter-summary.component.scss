@@ -1,0 +1,9 @@
+ul.filter-description {
+    li {
+        display: inline;
+
+        &:not(:last-child)::after {
+            content: '+';
+        }
+    }
+}
