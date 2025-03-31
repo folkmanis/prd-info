@@ -1,9 +1,11 @@
-import { inject, Injectable } from '@angular/core';
+import { HttpResourceRef } from '@angular/common/http';
+import { computed, inject, Injectable } from '@angular/core';
 import { pick } from 'lodash-es';
 import { Observable } from 'rxjs';
 import { Invoice, INVOICE_UPDATE_FIELDS, InvoiceForReport, InvoicesFilter, InvoiceTable, InvoiceUpdate } from 'src/app/interfaces';
 import { PaytraqInvoice, Sale } from 'src/app/interfaces/paytraq';
-import { JobQueryFilterOptions, JobService, JobsWithoutInvoicesTotals, JobUnwindedPartial } from 'src/app/jobs';
+import { JobQueryFilter, JobQueryFilterOptions, JobService, JobsWithoutInvoicesTotals, JobUnwindedPartial } from 'src/app/jobs';
+import { AppClassTransformerService, FilterInput, toFilterSignal } from 'src/app/library';
 import { InvoicesApiService } from 'src/app/services/prd-api/invoices-api.service';
 import { PaytraqApiService } from 'src/app/services/prd-api/paytraq-api.service';
 
@@ -14,6 +16,7 @@ export class InvoicesService {
   private api = inject(InvoicesApiService);
   private paytraqApi = inject(PaytraqApiService);
   private jobService = inject(JobService);
+  private transformer = inject(AppClassTransformerService);
 
   getJobsWithoutInvoicesTotals(): Observable<JobsWithoutInvoicesTotals[]> {
     return this.jobService.getJobsWithoutInvoicesTotals();
@@ -21,6 +24,12 @@ export class InvoicesService {
 
   getJobsUnwinded(filter: Partial<JobQueryFilterOptions>): Promise<JobUnwindedPartial[]> {
     return this.jobService.getJobListUnwinded(filter);
+  }
+
+  jobsUnwindedResource(filter: FilterInput<Partial<JobQueryFilterOptions>>): HttpResourceRef<JobUnwindedPartial[]> {
+    const filterSignal = toFilterSignal(filter);
+    const query = computed(() => this.transformer.plainToInstance(JobQueryFilter, filterSignal()));
+    return this.jobService.getJobsUnwindedResource(query);
   }
 
   createInvoice(params: { jobIds: number[]; customerId: string }): Promise<Invoice> {

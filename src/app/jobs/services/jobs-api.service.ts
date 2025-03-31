@@ -1,11 +1,11 @@
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
-import { pickBy } from 'lodash-es';
+import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http';
+import { computed, inject, Injectable, Signal } from '@angular/core';
+import { isEqual, pickBy } from 'lodash-es';
 import { firstValueFrom, map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { AppClassTransformerService } from 'src/app/library';
-import { HttpOptions } from 'src/app/library/http';
-import { Job, JobPartial, JobQueryFilter, JobsProduction, JobsProductionQuery, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
+import { HttpOptions, httpResponseRequest } from 'src/app/library/http';
+import { Job, JobPartial, JobQueryFilter, JobQueryFilterOptions, JobsProduction, JobsProductionQuery, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
 import { JobsUserPreferences } from '../interfaces/jobs-user-preferences';
 
 export interface JobUpdateParams {
@@ -27,9 +27,27 @@ export class JobsApiService {
   getAll(filter: JobQueryFilter, unwind: true): Promise<JobUnwindedPartial[]>;
   getAll(filter: JobQueryFilter, unwind: false): Promise<JobPartial[]>;
   getAll(filter: JobQueryFilter, unwind: boolean = false) {
-    filter.unwindProducts = unwind ? 1 : 0;
-    const response$ = this.http.get(this.path, new HttpOptions(filter));
+    const response$ = this.http.get(this.path, new HttpOptions({ ...filter, unwindProducts: unwind ? 1 : 0 }));
     return firstValueFrom(response$);
+  }
+
+  jobsResource(filter: Signal<Partial<JobQueryFilterOptions>>): HttpResourceRef<JobPartial[]> {
+    return this.#jobsResource(filter, 0);
+  }
+
+  jobsUnwindedResource(filter: Signal<Partial<JobQueryFilterOptions>>): HttpResourceRef<JobUnwindedPartial[]> {
+    return this.#jobsResource(filter, 1);
+  }
+
+  #jobsResource<P extends 0 | 1>(filter: Signal<Partial<JobQueryFilterOptions>>, unwindProducts: P): HttpResourceRef<P extends 0 ? JobPartial[] : JobUnwindedPartial[]> {
+    const params = computed(() => ({
+      ...filter(),
+      unwindProducts,
+    }));
+    return httpResource(() => httpResponseRequest(this.path, new HttpOptions(params()).cacheable()), {
+      defaultValue: [],
+      equal: isEqual,
+    });
   }
 
   async updateMany(jobs: Partial<Job>[], params?: JobUpdateParams): Promise<number> {

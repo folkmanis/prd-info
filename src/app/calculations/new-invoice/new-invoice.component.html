@@ -24,7 +24,7 @@
       </mat-card-actions>
     </mat-card>
 
-    @if (jobs$ | async; as jobs) {
+    @if (jobs.value(); as jobs) {
       <!-- Darbu atlase -->
       <app-job-selection-table
         [jobs]="jobs"

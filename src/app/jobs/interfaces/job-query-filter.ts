@@ -38,9 +38,6 @@ export class JobQueryFilter {
 
   invoice?: 0 | 1;
 
-  @Type(() => Number)
-  unwindProducts: 0 | 1;
-
   @Transform(({ value }) => (Array.isArray(value) ? value : [value]).map((n) => +n), { toClassOnly: true })
   jobStatus?: number[];
 

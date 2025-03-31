@@ -63,12 +63,7 @@ export class JobListComponent {
   filter = input.required<JobQueryFilter>();
   private filterChanges = computed(() => this.filter(), { equal: isEqual });
 
-  jobsRef = resource({
-    request: () => this.filterChanges(),
-    loader: ({ request }) => {
-      return this.jobService.getJobList(request);
-    },
-  });
+  jobsRef = this.jobService.getJobsResource(this.filterChanges);
 
   private products = inject(ProductsService).getProductsResource().asReadonly();
   activeProducts = computed(() => this.products.value().filter((product) => !product.inactive));

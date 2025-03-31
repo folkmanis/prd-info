@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { afterNextRender, ChangeDetectionStrategy, Component, computed, inject, Injector, input, signal, viewChild } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, computed, effect, inject, Injector, input, signal, viewChild } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -54,11 +54,13 @@ export class NewInvoiceComponent {
 
   customer = input('');
 
-  jobs$ = toObservable(this.customer).pipe(
-    switchMap((customer) => this.invoicesService.getJobsUnwinded({ customer, invoice: 0, limit: 1000 })),
-    tap((jobs) => this.selectedJobs.set(jobs)),
-    tap(() => this.scroll()?.scrollToTop()),
-  );
+  filter = computed(() => ({
+    customer: this.customer(),
+    invoice: 0 as 0,
+    limit: 1000,
+  }));
+
+  jobs = this.invoicesService.jobsUnwindedResource(this.filter);
 
   selectedJobs = signal<JobUnwindedPartial[]>([]);
 
@@ -66,6 +68,13 @@ export class NewInvoiceComponent {
 
   invoicesTotals = computed(() => this.jobTotalsFromJobs(this.selectedJobs()));
   grandTotal = computed(() => this.invoicesTotals().grandTotal);
+
+  constructor() {
+    effect(() => {
+      this.selectedJobs.set(this.jobs.value() ?? []);
+      this.scroll()?.scrollToTop();
+    });
+  }
 
   async onCreateInvoice() {
     try {

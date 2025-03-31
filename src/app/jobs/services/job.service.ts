@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { endOfDay } from 'date-fns';
 import { firstValueFrom, Observable } from 'rxjs';
-import { AppClassTransformerService } from 'src/app/library';
-import { Job, JobPartial, JobQueryFilter, JobQueryFilterOptions, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
+import { AppClassTransformerService, FilterInput, toFilterSignal } from 'src/app/library';
+import { Job, JobQueryFilter, JobQueryFilterOptions, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
 import { JobsApiService, JobUpdateParams } from './jobs-api.service';
 
 @Injectable({
@@ -50,8 +50,12 @@ export class JobService {
     return this.api.getOne(jobId);
   }
 
-  getJobList(filter: Partial<JobQueryFilterOptions> = {}): Promise<JobPartial[]> {
-    return this.api.getAll(this.transformer.plainToInstance(JobQueryFilter, filter), false);
+  getJobsResource(filter: FilterInput<JobQueryFilter>) {
+    return this.api.jobsResource(toFilterSignal(filter));
+  }
+
+  getJobsUnwindedResource(filter: FilterInput<JobQueryFilter>) {
+    return this.api.jobsUnwindedResource(toFilterSignal(filter));
   }
 
   getJobListUnwinded(filter: Partial<JobQueryFilterOptions> = {}): Promise<JobUnwindedPartial[]> {
