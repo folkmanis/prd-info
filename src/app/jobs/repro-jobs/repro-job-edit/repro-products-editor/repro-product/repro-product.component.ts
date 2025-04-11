@@ -12,7 +12,6 @@ import { CustomerProduct } from 'src/app/interfaces';
 import { JobProduct } from 'src/app/jobs/interfaces';
 import { ViewSizeDirective } from 'src/app/library/view-size';
 import { ProductAutocompleteComponent } from '../product-autocomplete/product-autocomplete.component';
-import { JobProductForm } from './job-product-form.interface';
 import { ProductControlDirective } from './product-control.directive';
 
 @Component({
@@ -61,7 +60,7 @@ export class ReproProductComponent implements ControlValueAccessor, Validator {
 
   customerProducts = input<CustomerProduct[]>([]);
 
-  productForm: JobProductForm = inject(FormBuilder).nonNullable.group({
+  productForm = inject(FormBuilder).nonNullable.group({
     name: [null as string | null, Validators.required],
     price: [null as number | null, [Validators.required, Validators.min(0)]],
     count: [null as number | null, [Validators.required, Validators.min(0)]],

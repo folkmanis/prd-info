@@ -39,6 +39,6 @@ export class GeneralSetupComponent {
   historicalData = input<HistoricalData | null>(null);
 
   setRemainingFuel(value: number) {
-    this.controlContainer.control.patchValue({ fuelRemainingStartLitres: value });
+    this.controlContainer.control?.patchValue({ fuelRemainingStartLitres: value });
   }
 }

@@ -1,5 +1,6 @@
 import { Directive, output, signal } from '@angular/core';
 import { ColumnNames } from '../../services/column-names';
+import { notNullOrThrow } from 'src/app/library';
 
 export interface DragData {
   chipName: ColumnNames;
@@ -42,12 +43,19 @@ export class DragDropDirective {
     event.preventDefault();
     event.stopPropagation();
 
-    const sourceColumn = event.dataTransfer.getData('sourceColumn');
-    const data: DragData = {
-      sourceColumn: sourceColumn && +sourceColumn,
-      chipName: event.dataTransfer.getData('chipName') as ColumnNames,
-    };
     this.dragActive.set(false);
+
+    const dataTransfer = notNullOrThrow(event.dataTransfer);
+    const data: DragData = {
+      chipName: dataTransfer.getData('chipName') as ColumnNames,
+      sourceColumn: null,
+    };
+
+    const sourceColumn = dataTransfer.getData('sourceColumn');
+    if (sourceColumn) {
+      data.sourceColumn = +sourceColumn;
+    }
+
     this.dropEmitter.emit(data);
   }
 }

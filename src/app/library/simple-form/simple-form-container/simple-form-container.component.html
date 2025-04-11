@@ -1,6 +1,6 @@
 <div class="container" scroll-to-top>
   <mat-toolbar>
-    @if (buttons) {
+    @if (buttons()) {
       <span>
         <button mat-raised-button (click)="onSave()" [disabled]="this.status() !== 'VALID' || this.isChanges() === false">Saglabāt</button>
         <button mat-button class="tertiary" (click)="onReset()" [disabled]="this.isChanges() === false">Atiestatīt</button>

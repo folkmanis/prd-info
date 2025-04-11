@@ -21,7 +21,7 @@ import { CustomerInputComponent } from '../customer-input/customer-input.compone
 import { FilterSummaryComponent } from './filter-summary/filter-summary.component';
 
 export type FilterFormType = {
-  [k in keyof JobFilter]: FormControl<JobFilter[k]>;
+  [k in keyof JobFilter]: FormControl<JobFilter[k] | null>;
 };
 
 @Component({
@@ -49,11 +49,11 @@ export class JobFilterComponent {
   private transformer = inject(AppClassTransformerService);
 
   filterForm: FormGroup<FilterFormType> = inject(FormBuilder).group({
-    name: [null],
+    name: [null as string | null],
     jobsId: ['', [Validators.pattern(/^[0-9]+$/)]],
     customer: [''],
     jobStatus: [[] as number[]],
-    productsName: [null],
+    productsName: [null as string | null],
   });
 
   customers = inject(CustomersService).getCustomersResource({ disabled: false }).asReadonly();

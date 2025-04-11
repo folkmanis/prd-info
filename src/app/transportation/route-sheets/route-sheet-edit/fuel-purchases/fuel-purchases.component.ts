@@ -23,6 +23,7 @@ import { SinglePurchaseComponent } from './single-purchase/single-purchase.compo
 import { isEqual } from 'lodash-es';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIcon } from '@angular/material/icon';
+import { assertArrayOfNotNull } from 'src/app/library';
 
 @Component({
   selector: 'app-fuel-purchases',
@@ -61,9 +62,9 @@ export class FuelPurchasesComponent implements ControlValueAccessor, Validator {
 
   private fuelTypes = configuration('transportation', 'fuelTypes');
 
-  startDate = input<Date>();
+  startDate = input<Date | null>();
 
-  form = new FormArray<FormControl<FuelPurchase>>([]);
+  form = new FormArray<FormControl<FuelPurchase | null>>([]);
 
   defaultFuelType = input<FuelType>();
 
@@ -72,14 +73,15 @@ export class FuelPurchasesComponent implements ControlValueAccessor, Validator {
   fuelDescription = (type: string) => this.fuelTypes()?.find((t) => t.type === type)?.description || '';
 
   writeValue(obj: FuelPurchase[] | null): void {
-    if (obj?.length < this.form.length) {
+    obj = Array.isArray(obj) ? obj : [];
+    if (obj.length < this.form.length) {
       this.accordion().closeAll();
     }
-    if (obj?.length === this.form.length) {
+    if (obj.length === this.form.length) {
       this.form.reset(obj, { emitEvent: false });
     } else {
       this.form.clear({ emitEvent: false });
-      obj?.forEach((fuelPurchase) => this.form.push(new FormControl(fuelPurchase), { emitEvent: false }));
+      obj.forEach((fuelPurchase) => this.form.push(new FormControl(fuelPurchase), { emitEvent: false }));
     }
     this.chDetector.markForCheck();
   }
@@ -128,8 +130,10 @@ export class FuelPurchasesComponent implements ControlValueAccessor, Validator {
       return;
     }
 
-    const update = this.sortByDate(this.form.value);
-    if (!isEqual(this.form.value, update)) {
+    const value = this.form.value;
+    assertArrayOfNotNull(value);
+    const update = this.sortByDate(value);
+    if (!isEqual(value, update)) {
       this.form.setValue(update);
     }
   }

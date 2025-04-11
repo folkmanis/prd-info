@@ -1,16 +1,14 @@
 import { inject } from '@angular/core';
-import { RedirectCommand, ResolveFn, Router } from '@angular/router';
+import { ResolveFn } from '@angular/router';
 import { Invoice } from 'src/app/interfaces';
+import { notNullOrThrow } from 'src/app/library';
+import { resolveCatching } from 'src/app/library/guards';
 import { InvoicesService } from '../services/invoices.service';
 
 export const resolveInvoice: ResolveFn<Invoice> = async (route) => {
   const invoicesService = inject(InvoicesService);
-  const router = inject(Router);
-  const invoiceId = route.paramMap.get('invoiceId');
-  try {
-    return await invoicesService.getInvoice(invoiceId);
-  } catch (error) {
-    const url = router.createUrlTree(['calculations', 'plate-invoice']);
-    return new RedirectCommand(url);
-  }
+
+  const invoiceId = notNullOrThrow(route.paramMap.get('invoiceId'));
+
+  return resolveCatching('calculations/plate-invoice', () => invoicesService.getInvoice(invoiceId));
 };

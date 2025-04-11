@@ -53,14 +53,15 @@ export class UploadComponent {
 
   orders = toSignal(this.pasutijumiService.getKastesJobs({}), { initialValue: [] });
 
-  totals = computed(() => this.adresesBox() && totalsFromAddresesWithPackages(this.adresesBox()));
+  totals = computed(() => totalsFromAddresesWithPackages(this.adresesBox() ?? []));
 
-  orderIdSet = computed(() => typeof this.orderId() === 'number' && isFinite(this.orderId()));
+  orderIdSet = computed(() => isValidOrderId(this.orderId()));
 
   constructor() {
     effect(async () => {
-      if (this.orderIdSet()) {
-        const { products } = await this.pasutijumiService.getKastesJob(this.orderId());
+      const orderId = this.orderId();
+      if (isValidOrderId(orderId)) {
+        const { products } = await this.pasutijumiService.getKastesJob(orderId);
         this.plannedTotals.set(jobProductsToColorTotals(products || []));
       } else {
         this.plannedTotals.set(null);
@@ -75,10 +76,11 @@ export class UploadComponent {
 
   async onSave() {
     const orderId = this.orderId();
-    if (!orderId || !this.adresesBox()) {
+    const adreses = this.adresesBox();
+    if (!orderId || !adreses) {
       return;
     }
-    const uploadData = addOrderId(this.adresesBox(), orderId);
+    const uploadData = addOrderId(adreses, orderId);
     const affectedRows = await firstValueFrom(this.pasutijumiService.addKastes(uploadData));
 
     await firstValueFrom(this.preferences.updateUserPreferences({ pasutijums: orderId }));
@@ -87,4 +89,8 @@ export class UploadComponent {
 
     this.navigate(['/', 'kastes', 'edit', orderId]);
   }
+}
+
+function isValidOrderId(orderId: number | null): orderId is number {
+  return typeof orderId === 'number' && isFinite(orderId);
 }

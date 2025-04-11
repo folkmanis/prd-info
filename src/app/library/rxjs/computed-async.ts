@@ -1,14 +1,21 @@
 import { assertInInjectionContext, effect, signal, Signal, untracked, WritableSignal } from '@angular/core';
+import { assertPromise } from '../assert-utils';
 
 export interface ComputedAsyncOptions<T> {
   initialValue?: T;
 }
 
-export function promiseToSignal<T>(asyncValue: Promise<T>, options?: ComputedAsyncOptions<T>): Signal<T> {
+export function promiseToSignal<T>(
+  asyncValue: Promise<T>,
+  options?: ComputedAsyncOptions<T>,
+): Signal<typeof options extends ComputedAsyncOptions<T> ? ((typeof options)['initialValue'] extends T ? T : T | undefined) : T | undefined> {
   return promiseToWritableSignal(asyncValue, options).asReadonly();
 }
 
-export function promiseToWritableSignal<T>(asyncValue: Promise<T>, options?: ComputedAsyncOptions<T>): WritableSignal<T> {
+export function promiseToWritableSignal<T>(
+  asyncValue: Promise<T>,
+  options?: ComputedAsyncOptions<T>,
+): WritableSignal<typeof options extends ComputedAsyncOptions<T> ? ((typeof options)['initialValue'] extends T ? T : T | undefined) : T | undefined> {
   assertInInjectionContext(promiseToSignal);
   assertPromise(asyncValue);
 
@@ -22,13 +29,10 @@ export function promiseToWritableSignal<T>(asyncValue: Promise<T>, options?: Com
   return sourceValue;
 }
 
-export function computedAsync<T>(computation: () => Promise<T>, options?: ComputedAsyncOptions<T>): Signal<T> {
+export function computedAsync<T>(
+  computation: () => Promise<T>,
+  options?: ComputedAsyncOptions<T>,
+): Signal<typeof options extends ComputedAsyncOptions<T> ? ((typeof options)['initialValue'] extends T ? T : T | undefined) : T | undefined> {
   const asyncValue = computation();
-  return promiseToSignal(asyncValue);
-}
-
-function assertPromise<T>(value: any): asserts value is Promise<T> {
-  if (!value || typeof value.then !== 'function') {
-    throw new Error('Promise required');
-  }
+  return promiseToSignal(asyncValue, options);
 }

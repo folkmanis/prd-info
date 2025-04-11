@@ -13,6 +13,7 @@ import { PaytraqPreferencesComponent } from './modules/paytraq-preferences/paytr
 import { SystemPreferencesComponent } from './modules/system-preferences/system-preferences.component';
 import { PreferencesCardComponent } from './preferences-card/preferences-card.component';
 import { TransportationPreferencesComponent } from './modules/transportation-preferences/transportation-preferences.component';
+import { assertNoNullProperties } from 'src/app/library';
 
 @Component({
   selector: 'app-module-preferences',
@@ -52,7 +53,9 @@ export class ModulePreferencesComponent implements CanComponentDeactivate {
   }
 
   onSaveAll() {
-    this.systemPreferencesService.updatePreferences(this.prefForm.getRawValue());
+    const preferences = this.prefForm.getRawValue();
+    assertNoNullProperties(preferences);
+    this.systemPreferencesService.updatePreferences(preferences);
   }
 
   onResetAll() {

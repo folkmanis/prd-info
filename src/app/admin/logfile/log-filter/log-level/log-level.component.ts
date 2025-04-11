@@ -14,5 +14,5 @@ import { LogLevel } from '../../log-level.interface';
 export class LogLevelComponent {
   logLevels = input.required<LogLevel[]>();
 
-  level = model.required<number>();
+  level = model.required<number | null>();
 }

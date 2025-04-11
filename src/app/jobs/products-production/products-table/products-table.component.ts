@@ -35,7 +35,7 @@ export class ProductsTableComponent {
 
   selectionChange = outputFromObservable(this.selectionChange$);
 
-  sortString = model('name,1');
+  sortString = model<string>('name,1');
 
   isAllSelected = computed(() => {
     return this.data().length > 0 && this.selection().length === this.data().length;

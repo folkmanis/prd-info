@@ -20,6 +20,7 @@ import { TransportationVehicleService } from '../../services/transportation-vehi
 import { FuelPurchasesComponent } from './fuel-purchases/fuel-purchases.component';
 import { GeneralSetupComponent } from './general-setup/general-setup.component';
 import { RouteTripsComponent } from './route-trips/route-trips.component';
+import { assertNoNullProperties, assertNotNull, notNullOrThrow } from 'src/app/library';
 
 @Component({
   selector: 'app-route-sheet-edit',
@@ -86,6 +87,8 @@ export class RouteSheetEditComponent implements CanComponentDeactivate {
   startDate = computed(() => {
     if (this.generalValid()) {
       const { year, month } = this.formValue();
+      assertNotNull(year);
+      assertNotNull(month);
       return new Date(year, month - 1);
     } else {
       return null;
@@ -109,9 +112,11 @@ export class RouteSheetEditComponent implements CanComponentDeactivate {
     try {
       if (!id) {
         const data = this.form.getRawValue();
+        assertNoNullProperties(data);
         id = (await this.routeSheetService.createRouteSheet(data))._id;
       } else {
-        const data = this.changes();
+        const data = notNullOrThrow(this.changes());
+        assertNoNullProperties(data);
         await this.routeSheetService.updateRouteSheet(id, data);
       }
       this.form.markAsPristine();

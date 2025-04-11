@@ -10,6 +10,7 @@ import { FileDropDirective } from '../library/directives/file-drop.directive';
 import { XmfUploadProgress } from './interfaces/xmf-upload-progress';
 import { XmfUploadService } from './services/xmf-upload.service';
 import { TabulaComponent } from './tabula/tabula.component';
+import { notNullOrThrow } from '../library';
 
 @Component({
   selector: 'app-xmf-upload',
@@ -34,13 +35,15 @@ export class XmfUploadComponent {
   }
 
   onFileDropped(ev: FileList): void {
-    this.setFile(ev.item(0));
+    const file = notNullOrThrow(ev.item(0), 'Filelist empty');
+    this.setFile(file);
   }
 
   onUpload(): void {
+    const file = notNullOrThrow(this.file, 'Filelist empty');
     this.busy.set(true);
     const formData: FormData = new FormData();
-    formData.append('archive', this.file, this.file.name);
+    formData.append('archive', file, file.name);
 
     this.uploadService
       .postFile(formData)

@@ -39,10 +39,10 @@ export class Product {
   units: string;
 
   @Expose()
-  paytraqId?: number = null;
+  paytraqId?: number;
 
   @Expose()
-  description?: string = null;
+  description?: string;
 
   @Expose()
   @Type(() => ProductPrice)
@@ -64,7 +64,7 @@ export class ProductPrice {
 
   @Type(() => Date)
   @Transform(({ value }) => new Date(value))
-  lastUsed: Date = null;
+  lastUsed: Date | null = null;
 }
 
 export interface PriceChange {

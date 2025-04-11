@@ -18,7 +18,7 @@ export class JobInfoComponent {
 
   veikali = input.required<Veikals[]>();
 
-  activeJobId = input.required<number>();
+  activeJobId = input.required<number | null>();
 
   plannedTotals = computed(() => jobProductsToColorTotals(this.job().products || []));
 

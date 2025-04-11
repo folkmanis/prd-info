@@ -24,9 +24,11 @@ export class MaterialUnitsDirective {
   }
 
   private _id: string;
-  @Input('appMaterialUnitsId') set id(value: string) {
-    this._id = value;
-    this.createView();
+  @Input('appMaterialUnitsId') set id(value: string | null) {
+    if (typeof value === 'string' && value.length > 0) {
+      this._id = value;
+      this.createView();
+    }
   }
   get id() {
     return this._id;

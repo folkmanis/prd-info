@@ -33,7 +33,7 @@ export class SimpleFormContainerComponent {
 
   /** Ctrl-Enter triggers save */
   keyEvent(event: KeyboardEvent) {
-    if (event.key === 'Enter' && event.ctrlKey && this.isSaveEnabled) {
+    if (event.key === 'Enter' && event.ctrlKey && this.isSaveEnabled()) {
       event.stopPropagation();
       event.preventDefault();
       this.save.emit();

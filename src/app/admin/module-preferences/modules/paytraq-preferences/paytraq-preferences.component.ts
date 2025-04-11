@@ -53,7 +53,7 @@ export class PaytraqPreferencesComponent implements ControlValueAccessor, Valida
     }
   }
 
-  validate(): ValidationErrors {
+  validate(): ValidationErrors | null {
     if (!this.controls.value.enabled || this.controls.valid) {
       return null;
     } else {

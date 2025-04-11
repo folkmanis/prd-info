@@ -1,4 +1,5 @@
 import { Directive, input } from '@angular/core';
+import { assertNotNull } from 'src/app/library';
 
 @Directive({
   selector: '[appDragable]',
@@ -14,7 +15,11 @@ export class DragableDirective {
   sourceColumn = input<number | null>();
 
   onDragStart(event: DragEvent) {
+    assertNotNull(event.dataTransfer);
     event.dataTransfer.setData('chipName', this.itemContent());
-    event.dataTransfer.setData('sourceColumn', this.sourceColumn()?.toString());
+    const sourceColumn = this.sourceColumn();
+    if (sourceColumn) {
+      event.dataTransfer.setData('sourceColumn', sourceColumn.toString());
+    }
   }
 }

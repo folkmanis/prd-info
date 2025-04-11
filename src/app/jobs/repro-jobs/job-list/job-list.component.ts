@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, resource, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -93,7 +93,7 @@ export class JobListComponent {
     this.jobsRef.reload();
   }
 
-  hasProduct(job: JobPartial, productName: string): boolean {
+  hasProduct(job: JobPartial, productName: string | null | undefined): boolean {
     return job.products?.some((product) => product.name === productName);
   }
 

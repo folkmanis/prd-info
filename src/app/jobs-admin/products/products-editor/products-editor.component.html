@@ -93,7 +93,7 @@
           </mat-panel-description>
         </mat-expansion-panel-header>
 
-        <app-paytraq-product formControlName="paytraqId" [productName]="form.value.name"> </app-paytraq-product>
+        <app-paytraq-product formControlName="paytraqId" [productName]="form.value.name ?? ''"> </app-paytraq-product>
       </mat-expansion-panel>
 
       <mat-expansion-panel>

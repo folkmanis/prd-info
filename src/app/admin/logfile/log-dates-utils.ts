@@ -1,12 +1,12 @@
 import { addDays, endOfDay, isSameDay, isWithinInterval, max, min, startOfDay } from 'date-fns';
 
-export function isValidDate(date: Date, availableDates: Date[]): boolean {
-  return date && availableDates.some((d) => isSameDay(date, d));
+export function isValidDate(date: Date | null, availableDates: Date[]): boolean {
+  return !!date && availableDates.some((d) => isSameDay(date, d));
 }
 
-export function validDate(date: Date, availableDates: Date[]): Date | null {
-  if (availableDates.length === 0) {
-    return null;
+export function validDate(date: Date | null, availableDates: Date[]): Date {
+  if (date === null || availableDates.length === 0) {
+    return new Date();
   }
   if (isValidDate(date, availableDates)) {
     return date;

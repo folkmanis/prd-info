@@ -44,8 +44,8 @@ export class PasswordInputGroupComponent implements ControlValueAccessor, Valida
 
   passwordForm = new FormGroup(
     {
-      password: new FormControl<string>(null),
-      confirmation: new FormControl<string>(null),
+      password: new FormControl(''),
+      confirmation: new FormControl(''),
     },
     {
       validators: equalityValidator(),
@@ -82,7 +82,7 @@ export class PasswordInputGroupComponent implements ControlValueAccessor, Valida
     }
   }
 
-  validate(): ValidationErrors {
+  validate(): ValidationErrors | null {
     return this.passwordForm.valid ? null : { invalid: 'password invalid' };
   }
 
@@ -90,7 +90,9 @@ export class PasswordInputGroupComponent implements ControlValueAccessor, Valida
     const validators: ValidatorFn[] = [Validators.required, Validators.minLength(this.passwordMinimumLength())];
 
     if (typeof this.passwordValidatorFn() === 'function') {
-      validators.push(this.passwordValidatorFn());
+      if (this.passwordValidatorFn()) {
+        validators.push(this.passwordValidatorFn() as ValidatorFn);
+      }
     }
 
     this.passwordForm.controls.password.setValidators(validators);

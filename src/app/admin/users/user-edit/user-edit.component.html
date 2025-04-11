@@ -6,16 +6,16 @@
         <mat-label> Lietotājvārds </mat-label>
         <input formControlName="username" matInput autocomplete="off" required />
         @if (unameCtrl.hasError('minlength') && !unameCtrl.hasError('symbol')) {
-          <mat-error> Jābūt vismaz {{ unameCtrl.errors.minlength.requiredLength }} simboliem </mat-error>
+          <mat-error> Jābūt vismaz {{ unameCtrl.errors!.minlength.requiredLength }} simboliem </mat-error>
         }
         @if (unameCtrl.hasError('symbol')) {
           <mat-error>
-            {{ unameCtrl.errors.symbol }}
+            {{ unameCtrl.errors!.symbol }}
           </mat-error>
         }
         @if (unameCtrl.hasError('existing')) {
           <mat-error>
-            {{ unameCtrl.errors.existing }}
+            {{ unameCtrl.errors!.existing }}
           </mat-error>
         }
       </mat-form-field>
@@ -119,14 +119,14 @@
     </mat-card>
   }
 
-  @if (sessions()) {
+  @if (sessions(); as sessions) {
     <mat-card>
       <mat-card-header>
         <mat-card-title> Aktīvās sesijas </mat-card-title>
       </mat-card-header>
 
       <mat-card-content>
-        <app-sessions [sessions]="sessions()" [currentSession]="currentSessionId()" (deleteSession)="onDeleteSessions($event)" />
+        <app-sessions [sessions]="sessions" [currentSession]="currentSessionId()" (deleteSession)="onDeleteSessions($event)" />
       </mat-card-content>
 
       <mat-card-actions>

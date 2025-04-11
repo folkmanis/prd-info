@@ -84,7 +84,7 @@ export class SingleTripComponent implements ControlValueAccessor, Validator {
     { validators: [this.validateOdoStop()] },
   );
 
-  customers = input<TransportationCustomer[]>([]);
+  customers = input<TransportationCustomer[] | null>([]);
 
   fuelConsumption = input<number | null>(null);
 
@@ -92,7 +92,7 @@ export class SingleTripComponent implements ControlValueAccessor, Validator {
 
   lastOdometer = input<number | null>(null);
 
-  startDate = input<Date>();
+  startDate = input<Date | null>();
 
   descriptions$ = this.routeService.descriptions();
 
@@ -143,15 +143,16 @@ export class SingleTripComponent implements ControlValueAccessor, Validator {
   }
 
   async onCalculateRoute() {
-    if (this.form.controls.stops.valid === false) {
+    const stops = this.form.controls.stops.value;
+    if (this.form.controls.stops.valid === false || !stops || stops.length === 0) {
       return;
     }
     this.form.disable({ emitEvent: false });
-    const stops = this.form.controls.stops.value;
     try {
       const tripLengthKm = await this.routeService.getTripLength(stops);
       const odoStopKm = (this.form.value.odoStartKm || 0) + tripLengthKm;
-      const fuelConsumed = this.fuelConsumption() !== null ? round((this.fuelConsumption() * tripLengthKm) / 100, 1) : null;
+      const fuelConsumptionValue = this.fuelConsumption();
+      const fuelConsumed = fuelConsumptionValue !== null ? round((fuelConsumptionValue * tripLengthKm) / 100, 1) : null;
       this.form.patchValue(
         {
           tripLengthKm,

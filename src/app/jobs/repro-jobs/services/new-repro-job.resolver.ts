@@ -9,20 +9,20 @@ import { UploadRefService } from './upload-ref.service';
 
 const defaultReproJob: (template?: Partial<Job>) => JobTemplate = (template) => ({
   name: template?.name ?? '',
-  customer: template?.customer ?? null,
+  customer: template?.customer,
   receivedDate: new Date(),
   dueDate: new Date(),
   production: template?.production ?? {
     category: 'repro' as const,
   },
-  comment: template ? `[${template.jobId}] ${template.comment ?? ''}` : null,
-  customerJobId: template?.customerJobId ?? null,
+  comment: template ? `[${template.jobId}] ${template.comment ?? ''}` : undefined,
+  customerJobId: template?.customerJobId,
   jobStatus: {
     generalStatus: 20,
     timestamp: new Date(),
   },
   products: template?.products ?? [],
-  files: null,
+  files: undefined,
   productionStages: [],
 });
 
@@ -35,7 +35,7 @@ export const newReproJob: ResolveFn<JobTemplate> = (route) => {
     return inject(JobService)
       .getJob(oldJobId)
       .pipe(
-        tap((job) => route.queryParams.copyFiles === 'true' && uploadRefService.setJobFolderCopy(job.jobId, job.files.fileNames ?? [])),
+        tap((job) => route.queryParams.copyFiles === 'true' && uploadRefService.setJobFolderCopy(job.jobId, job.files?.fileNames ?? [])),
         map((job) => defaultReproJob(job)),
       );
   } else {

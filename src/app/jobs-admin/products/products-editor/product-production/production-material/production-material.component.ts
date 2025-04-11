@@ -75,7 +75,7 @@ export class ProductionMaterialComponent implements ControlValueAccessor, Valida
     }
   }
 
-  validate(): ValidationErrors {
+  validate(): ValidationErrors | null {
     if (this.form.valid) {
       return null;
     } else {

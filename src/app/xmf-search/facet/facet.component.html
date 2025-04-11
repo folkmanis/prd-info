@@ -1,4 +1,4 @@
-@if (facet) {
+@if (facet()) {
   <app-facet-checker title="Gads" [data]="facet().year" (filterValue)="onSelect($event, 'year')" />
 
   <mat-divider />

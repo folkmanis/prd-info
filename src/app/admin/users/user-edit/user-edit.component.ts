@@ -11,7 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { isEqual, pickBy } from 'lodash-es';
 import { getAppParams } from 'src/app/app-params';
 import { User, UserSession } from 'src/app/interfaces';
-import { ConfirmationDialogService } from 'src/app/library';
+import { ConfirmationDialogService, stringOrThrow } from 'src/app/library';
 import { AppClassTransformerService } from 'src/app/library/class-transformer/app-class-transformer.service';
 import { navigateRelative } from 'src/app/library/navigation';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
@@ -134,7 +134,7 @@ export class UserEditComponent implements CanComponentDeactivate {
   }
 
   async onPasswordChange(password: string) {
-    const username = this.form.value.username;
+    const username = stringOrThrow(this.form.value.username);
     try {
       await this.usersService.updatePassword(username, password);
       this.snackBar.open(`Lietotāja ${username} parole nomainita!`, 'OK', { duration: 3000 });
@@ -144,7 +144,7 @@ export class UserEditComponent implements CanComponentDeactivate {
   }
 
   async onDeleteUser() {
-    const username = this.form.value.username;
+    const username = stringOrThrow(this.form.value.username);
     const confirmation = await this.confirmationDialog.confirmDelete();
     if (!confirmation) {
       return;
@@ -162,7 +162,7 @@ export class UserEditComponent implements CanComponentDeactivate {
   }
 
   async onDeleteSessions(sessionIds: string[]) {
-    const username = this.form.value.username;
+    const username = stringOrThrow(this.form.value.username);
     if ((await this.confirmationDialog.confirmDelete()) !== true) {
       return;
     }
@@ -178,7 +178,7 @@ export class UserEditComponent implements CanComponentDeactivate {
   }
 
   async onUploadToFirestore() {
-    const username = this.form.value.username;
+    const username = stringOrThrow(this.form.value.username);
     try {
       await this.usersService.uploadToFirestore(username);
       this.snackBar.open('Dati saglabāti lietotnē', 'OK', { duration: 5000 });
@@ -199,7 +199,7 @@ export class UserEditComponent implements CanComponentDeactivate {
   }
 }
 
-function usernamePatternValidator(control: AbstractControl): ValidationErrors {
+function usernamePatternValidator(control: AbstractControl): ValidationErrors | null {
   const val: string = control.value || '';
   if (val.match(/ /)) {
     return { symbol: 'Atstarpi nedrīkst izmantot' };

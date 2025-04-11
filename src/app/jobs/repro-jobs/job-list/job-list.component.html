@@ -82,12 +82,12 @@
 
               <ng-container *appViewLarge>
                 <!-- Izstrādājums -->
-                <td class="column-productsObj-name" [colSpan]="job.products?.length === 1 ? 0 : 3">
+                <td class="column-productsObj-name" [colSpan]="job.products.length === 1 ? 0 : 3">
                   @for (product of job.products; track $index) {
                     <span [class.highlited-product]="product.name === highlited"> {{ product.name }}{{ $last ? '' : ',' }} </span>
                   }
                 </td>
-                @if (job.products?.length === 1) {
+                @if (job.products.length === 1) {
                   <!-- Skaits -->
                   <td class="column-productsObj-count">
                     {{ job.products[0].count }}

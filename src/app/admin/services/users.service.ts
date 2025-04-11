@@ -29,7 +29,7 @@ export class UsersService {
     return this.api.getOne(username);
   }
 
-  updateUser({ username, ...update }: Partial<User>): Promise<User> {
+  updateUser({ username, ...update }: Partial<User> & Pick<User, 'username'>): Promise<User> {
     return this.api.updateOne(username, update);
   }
 

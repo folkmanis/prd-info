@@ -11,10 +11,10 @@ import { RouteTrip } from 'src/app/transportation/interfaces/transportation-rout
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TripsTotalComponent {
-  private validTrips = computed(() => this.routeTrips().filter(isObject));
+  private validTrips = computed(() => this.routeTrips().filter(isObject) as RouteTrip[]);
 
   fuelUnits = input('');
-  routeTrips = input.required<RouteTrip[]>();
+  routeTrips = input.required<(RouteTrip | null)[]>();
 
   daysCount = computed(() => new Set(this.validTrips().map((t) => t.date?.getDate())).size);
 

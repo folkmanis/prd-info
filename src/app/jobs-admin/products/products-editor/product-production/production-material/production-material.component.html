@@ -11,14 +11,14 @@
 
       <div class="number-input">
         <input type="number" appInput formControlName="amount" matTooltip="Daudzums vienai vienībai" />
-        <span *appMaterialUnits="let unit of materials(); id: control.value.materialId">
+        <span *appMaterialUnits="let unit of materials(); id: control.value.materialId ?? null">
           {{ unit }}
         </span>
       </div>
 
       <div class="number-input">
         <input type="number" appInput formControlName="fixedAmount" matTooltip="Nemainīgais daudzums" />
-        <span *appMaterialUnits="let unit of materials(); id: control.value.materialId">
+        <span *appMaterialUnits="let unit of materials(); id: control.value.materialId ?? null">
           {{ unit }}
         </span>
       </div>

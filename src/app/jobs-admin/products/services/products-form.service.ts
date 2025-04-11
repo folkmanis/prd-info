@@ -25,17 +25,17 @@ export class ProductsFormService {
     return this.transformer.plainToInstance(Product, this.form.value, { exposeDefaultValues: true });
   }
 
-  get changes(): Partial<Product> | undefined {
+  get changes(): Partial<Product> | null {
     if (this.isNew) {
       return pickBy(this.value, (value) => value !== null);
     } else {
-      const diff = pickBy(this.value, (value, key) => !isEqual(value, this.initialValue[key]));
-      return Object.keys(diff).length ? diff : undefined;
+      const diff = pickBy(this.value, (value, key) => !isEqual(value, this.initialValue?.[key]));
+      return Object.keys(diff).length ? diff : null;
     }
   }
 
   setInitial(value: Product | null) {
-    if (value._id) {
+    if (value?._id) {
       this.initialValue = value;
     } else {
       this.initialValue = new Product();
@@ -63,22 +63,22 @@ export class ProductsFormService {
   }
 
   reset(): void {
-    this.form.reset(this.initialValue);
+    this.form.reset(this.initialValue ?? undefined);
   }
 
   private createForm() {
     return new FormGroup({
       _id: new FormControl<string>(''),
       inactive: new FormControl(false, { nonNullable: true }),
-      category: new FormControl<string>(undefined, [Validators.required]),
-      name: new FormControl<string>(undefined, {
+      category: new FormControl<string>('', [Validators.required]),
+      name: new FormControl<string>('', {
         validators: [Validators.required],
         asyncValidators: [this.nameAsyncValidator()],
       }),
       description: new FormControl<string>(''),
-      units: new FormControl<string>(undefined, [Validators.required]),
+      units: new FormControl<string>('', [Validators.required]),
       prices: new FormControl<ProductPrice[]>([], { nonNullable: true }),
-      paytraqId: new FormControl<number>(null),
+      paytraqId: new FormControl<number | null>(null),
       productionStages: new FormControl<ProductProductionStage[]>([], { nonNullable: true }),
     });
   }

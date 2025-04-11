@@ -57,7 +57,7 @@ export class User {
   sessions: UserSession[];
 
   @Type(() => GoogleUser)
-  google?: GoogleUser;
+  google?: GoogleUser | null;
 
   prefersDarkMode: boolean = false;
 }

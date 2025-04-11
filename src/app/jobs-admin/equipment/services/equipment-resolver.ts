@@ -3,7 +3,9 @@ import { Equipment } from 'src/app/interfaces';
 import { EquipmentService } from './equipment.service';
 import { inject } from '@angular/core';
 import { resolveCatching } from 'src/app/library/guards';
+import { notNullOrThrow } from 'src/app/library';
 
 export const resolveEquipment: ResolveFn<Equipment> = (route, state) => {
-  return resolveCatching(state.url, () => inject(EquipmentService).getOne(route.paramMap.get('id')));
+  const id = notNullOrThrow(route.paramMap.get('id'));
+  return resolveCatching(state.url, () => inject(EquipmentService).getOne(id));
 };

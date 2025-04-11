@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { filter, from, Observable, switchMap, toArray } from 'rxjs';
 import { CreateProductionStage, DropFolder, ProductionStage, UpdateProductionStage } from 'src/app/interfaces';
-import { FilterInput, toFilterSignal } from '../library';
+import { assertNotNull, FilterInput, toFilterSignal } from '../library';
 import { ProductionStageApiService } from './prd-api/production-stage-api.service';
 
 interface ProductionStagesFilter {
@@ -26,8 +26,9 @@ export class ProductionStagesService {
     return this.api.insertOne(stage);
   }
 
-  updateOne(stage: UpdateProductionStage): Promise<ProductionStage> {
-    return this.api.updateOne(stage);
+  updateOne({ _id, ...update }: Partial<UpdateProductionStage>): Promise<ProductionStage> {
+    assertNotNull(_id);
+    return this.api.updateOne(_id, update);
   }
 
   async validateName(value: string): Promise<boolean> {

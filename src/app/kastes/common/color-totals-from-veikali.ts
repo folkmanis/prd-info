@@ -4,14 +4,14 @@ import { COLORS, ColorTotals, Colors, Kaste, Veikals } from '../interfaces';
 export const colorTotalsFromVeikalsBoxs = (kastes: Kaste[]): ColorTotals[] => {
   const tot = new Map<Colors, number>(COLORS.map((col) => [col, 0]));
   for (const k of kastes) {
-    COLORS.forEach((c) => tot.set(c, tot.get(c) + k[c]));
+    COLORS.forEach((c) => tot.set(c, (tot.get(c) ?? 0) + k[c]));
   }
   return [...tot.entries()].map(([color, total]) => ({ color, total }));
 };
 
 export const kastesTotalsFromVeikali = (veikali: Veikals[]): [number, number][] => {
   const tot = new Map<number, number>();
-  const kastes: Kaste[] = [].concat(...veikali.map((veik) => veik.kastes));
+  const kastes = ([] as Kaste[]).concat(...veikali.map((veik) => veik.kastes));
   for (const k of kastes) {
     tot.set(k.total, (tot.get(k.total) || 0) + 1);
   }

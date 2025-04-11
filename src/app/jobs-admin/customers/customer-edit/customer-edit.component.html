@@ -82,10 +82,11 @@
       <mat-card>
         <mat-card-header>
           <mat-card-title> Sasaiste ar Paytraq </mat-card-title>
-          @if (formValue().financial?.paytraqId) {
+          @let financial = formValue().financial;
+          @if (financial?.paytraqId) {
             <mat-card-subtitle>
-              {{ formValue().financial.paytraqId }} /
-              {{ formValue().financial.clientName }}
+              {{ financial!.paytraqId }} /
+              {{ financial!.clientName }}
             </mat-card-subtitle>
           }
         </mat-card-header>

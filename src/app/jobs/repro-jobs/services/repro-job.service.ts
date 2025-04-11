@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { flatten } from 'lodash-es';
-import { Observable, OperatorFunction, concatMap, distinctUntilChanged, filter, from, map, pipe, reduce, switchMap } from 'rxjs';
+import { Observable, OperatorFunction, concatMap, distinctUntilChanged, filter, from, map, of, pipe, reduce, switchMap } from 'rxjs';
 import { JobFilesService } from 'src/app/filesystem';
 import { CustomerProduct, DropFolder, JobProductionStage, JobProductionStageMaterial, Material, ProductProductionStage, ProductProductionStageMaterial } from 'src/app/interfaces';
 import { MaterialsService } from 'src/app/jobs-admin/materials/services/materials.service';
@@ -78,13 +78,16 @@ export class ReproJobService {
 
   customerProducts(): OperatorFunction<string | null, CustomerProduct[] | null> {
     return pipe(
-      filter((customer) => !!customer),
       distinctUntilChanged(),
+      filter((customer) => customer !== null && customer !== undefined),
       switchMap((customer) => this.productsService.productsCustomer(customer)),
     );
   }
 
-  getDropFolders(products: JobProduct[], customer: string): Observable<DropFolder[]> {
+  getDropFolders(products?: JobProduct[], customer?: string): Observable<DropFolder[]> {
+    if (!products || products.length === 0 || !customer) {
+      return of([] as DropFolder[]);
+    }
     return from(this.productionStages(products)).pipe(
       switchMap((stages) =>
         from(stages).pipe(

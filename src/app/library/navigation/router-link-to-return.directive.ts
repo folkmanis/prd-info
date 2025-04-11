@@ -10,7 +10,7 @@ import { Router, RouterLink } from '@angular/router';
 export class RouterLinkToReturnDirective {
   constructor(location: Location, routerLink: RouterLink, router: Router) {
     const state = location.getState();
-    if (typeof state['returnUrl'] === 'string') {
+    if (typeof state?.['returnUrl'] === 'string') {
       routerLink.routerLink = router.parseUrl(state['returnUrl']);
     } else {
       routerLink.routerLink = '..';

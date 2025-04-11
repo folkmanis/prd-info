@@ -15,7 +15,8 @@ export class InvoicePaytraqComponent {
   invoice = input.required<Invoice>();
   busy = input(false);
 
-  paytraqUrl = configuration('paytraq', 'connectionParams', 'invoiceUrl');
+  #connectionParams = configuration('paytraq', 'connectionParams');
+  paytraqUrl = computed(() => (this.#connectionParams() ?? {}).invoiceUrl);
 
   saveToPaytraq = output<void>();
   unlinkPaytraq = output<void>();

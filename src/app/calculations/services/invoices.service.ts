@@ -5,9 +5,12 @@ import { Observable } from 'rxjs';
 import { Invoice, INVOICE_UPDATE_FIELDS, InvoiceForReport, InvoicesFilter, InvoiceTable, InvoiceUpdate } from 'src/app/interfaces';
 import { PaytraqInvoice, Sale } from 'src/app/interfaces/paytraq';
 import { JobQueryFilter, JobQueryFilterOptions, JobService, JobsWithoutInvoicesTotals, JobUnwindedPartial } from 'src/app/jobs';
-import { AppClassTransformerService, FilterInput, toFilterSignal } from 'src/app/library';
+import { AppClassTransformerService, FilterInput, numberOrDefaultZero, numberOrThrow, toFilterSignal } from 'src/app/library';
 import { InvoicesApiService } from 'src/app/services/prd-api/invoices-api.service';
 import { PaytraqApiService } from 'src/app/services/prd-api/paytraq-api.service';
+
+const WAREHOUSE_ID = 213;
+const LOADING_AREA_ID = 301;
 
 @Injectable({
   providedIn: 'root',
@@ -74,23 +77,33 @@ export class InvoicesService {
 }
 
 function invoiceToPaytraqInvoice(invoice: Invoice): PaytraqInvoice {
+  const clientID = numberOrThrow(invoice.customerInfo?.financial?.paytraqId);
   const sale: Sale = {
     header: {
       document: {
         client: {
-          clientID: invoice.customerInfo.financial.paytraqId,
+          clientID,
         },
       },
       saleType: 'sales_invoice',
       operation: 'sell_goods',
+      shippingData: {
+        shippingType: 1,
+        warehouse: {
+          warehouseID: WAREHOUSE_ID,
+        },
+        loadingArea: {
+          loadingAreaID: LOADING_AREA_ID,
+        },
+      },
     },
     lineItems: {
       lineItem: invoice.products.map((product) => ({
         item: {
-          itemID: product.paytraqId,
+          itemID: numberOrThrow(product.paytraqId),
         },
         qty: product.count,
-        price: product.price,
+        price: numberOrDefaultZero(product.price),
       })),
     },
   };

@@ -84,7 +84,7 @@ export class UploadAdresesComponent {
 
     this.columnSelection.sort();
     const selected = this.columnSelection.selected;
-    const updated = [];
+    const updated = [] as (string | number)[][];
 
     this.adreses().forEach((row) => {
       const joinedCell = selected.map((idx) => row[idx]).join(' ');

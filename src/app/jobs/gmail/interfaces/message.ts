@@ -47,7 +47,7 @@ export class Message {
   }
 
   get subject(): string {
-    return this.payload.getHeader('Subject');
+    return this.payload.getHeader('Subject') ?? '';
   }
 
   hasLabel(label: string): boolean {

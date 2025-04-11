@@ -46,7 +46,7 @@ export class MaterialsPricesComponent implements ControlValueAccessor, Validator
 
   isDuplicate = (price: number): boolean => {
     const dup: number[] | undefined = this.dataSource.errors?.duplicates;
-    return dup && dup.includes(price);
+    return !!dup && dup.includes(price);
   };
 
   writeValue(obj: MaterialPrice[]): void {
@@ -65,7 +65,7 @@ export class MaterialsPricesComponent implements ControlValueAccessor, Validator
     this.disabled = isDisabled;
   }
 
-  validate(): ValidationErrors {
+  validate(): ValidationErrors | null {
     return this.dataSource.errors;
   }
 

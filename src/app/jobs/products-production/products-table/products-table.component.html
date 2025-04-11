@@ -44,7 +44,7 @@
     <td mat-cell *matCellDef="let product">
       {{ product.count | number }}
     </td>
-    <td mat-footer-cell *matFooterCellDef>{{ totals()?.count | number }}</td>
+    <td mat-footer-cell *matFooterCellDef>{{ totals().count | number }}</td>
   </ng-container>
 
   <ng-container matColumnDef="sum">
@@ -52,7 +52,7 @@
     <td mat-cell *matCellDef="let product">
       {{ product.sum | number }}
     </td>
-    <td mat-footer-cell *matFooterCellDef>{{ totals()?.sum | number }}</td>
+    <td mat-footer-cell *matFooterCellDef>{{ totals().sum | number }}</td>
   </ng-container>
 
   <ng-container matColumnDef="total">
@@ -60,7 +60,7 @@
     <td mat-cell *matCellDef="let product">
       {{ product.total | currency }}
     </td>
-    <td mat-footer-cell *matFooterCellDef>{{ totals()?.total | currency }}</td>
+    <td mat-footer-cell *matFooterCellDef>{{ totals().total | currency }}</td>
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="isAdmin() ? adminColumns : columns; sticky: true"></tr>

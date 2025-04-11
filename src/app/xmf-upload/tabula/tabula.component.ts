@@ -12,7 +12,7 @@ import { XmfUploadProgress } from '../interfaces/xmf-upload-progress';
   imports: [MatTableModule, FilesizePipe, DatePipe],
 })
 export class TabulaComponent {
-  history = input<XmfUploadProgress[]>([]);
+  history = input<XmfUploadProgress[] | null>([]);
 
   displayedColumns = ['started', 'fileName', 'fileSize', 'count.processed', 'count.upserted', 'count.modified'];
 }

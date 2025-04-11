@@ -1,5 +1,5 @@
 import { from, merge, Observable, OperatorFunction, pipe, Subject } from 'rxjs';
-import { concatMap, filter, map, mergeMap, scan, shareReplay, takeUntil, tap, toArray } from 'rxjs/operators';
+import { concatMap, filter, mergeMap, scan, shareReplay, takeUntil, tap, toArray } from 'rxjs/operators';
 import { Job } from '../../interfaces';
 import { FileUploadEventType, FileUploadMessage, UploadFinishMessage } from '../../interfaces/file-upload-message';
 
@@ -64,9 +64,6 @@ export class UploadRef {
   }
 
   private cancelMessageWhen(messages$: Observable<FileUploadMessage[]>, canceller$: Observable<void>): Observable<FileUploadMessage[]> {
-    return merge(messages$, canceller$).pipe(
-      scan((acc, messages) => messages || acc.map((msg) => ({ ...msg, type: FileUploadEventType.UploadAbort })), []),
-      map((messages) => messages as FileUploadMessage[]),
-    );
+    return merge(messages$, canceller$).pipe(scan((acc, messages) => messages || acc.map((msg) => ({ ...msg, type: FileUploadEventType.UploadAbort })), [] as FileUploadMessage[]));
   }
 }

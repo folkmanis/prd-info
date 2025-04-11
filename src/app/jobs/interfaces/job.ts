@@ -1,6 +1,7 @@
 import { KastesProduction, PrintProduction, Production, ReproProduction } from './job-categories';
 import { JobProduct } from './job-product';
 import { JobProductionStage } from 'src/app/interfaces';
+import { z } from 'zod';
 
 export interface JobStatus {
   generalStatus: number;
@@ -49,9 +50,11 @@ export type JobPartial = Pick<Job, 'jobId' | 'customer' | 'name' | 'customerJobI
   production: Pick<Production, 'category'>;
 };
 
-export interface JobsWithoutInvoicesTotals {
-  _id: string;
-  jobs: number;
-  totals: number;
-  noPrice: number;
-}
+export const JobsWithoutInvoicesTotals = z.object({
+  _id: z.string(),
+  jobs: z.number(),
+  totals: z.number(),
+  noPrice: z.number(),
+});
+
+export type JobsWithoutInvoicesTotals = z.infer<typeof JobsWithoutInvoicesTotals>;

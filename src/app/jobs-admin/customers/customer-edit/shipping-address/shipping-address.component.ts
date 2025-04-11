@@ -10,7 +10,7 @@ import { isEqual } from 'lodash-es';
 import { distinctUntilChanged, filter, firstValueFrom, map } from 'rxjs';
 import { ShippingAddress } from 'src/app/interfaces';
 import { PaytraqShippingAddress } from 'src/app/interfaces/paytraq';
-import { AppClassTransformerService } from 'src/app/library';
+import { AppClassTransformerService, notNullOrThrow } from 'src/app/library';
 import { LocationSelectService } from 'src/app/library/location-select';
 import { configuration } from 'src/app/services/config.provider';
 import { PaytraqClientService } from '../../services/paytraq-client.service';
@@ -80,7 +80,8 @@ export class ShippingAddressComponent implements ControlValueAccessor {
   }
 
   async onAddressMap() {
-    const marker = await firstValueFrom(this.locationSelect.getLocation({ address: this.form.value.address }));
+    const address = notNullOrThrow(this.form.value.address);
+    const marker = await firstValueFrom(this.locationSelect.getLocation({ address }));
     if (marker) {
       this.form.patchValue({
         address: marker.address,

@@ -77,7 +77,7 @@ export class ProductProductionComponent implements ControlValueAccessor, Validat
     }
   }
 
-  validate(): ValidationErrors {
+  validate(): ValidationErrors | null {
     if (this.form.valid) {
       return null;
     } else {

@@ -24,7 +24,7 @@ export class FilterSummaryComponent {
     const query = this.query();
     if (Array.isArray(query?.jobStatus)) {
       return this.states()
-        .filter((state) => query.jobStatus.includes(state.state))
+        .filter((state) => query.jobStatus!.includes(state.state))
         .map((state) => state.description)
         .join(', ');
     } else {
@@ -36,7 +36,7 @@ export class FilterSummaryComponent {
     const query = this.query();
     if (Array.isArray(query?.category)) {
       return this.categories()
-        .filter((ctg) => query.category.includes(ctg.category))
+        .filter((ctg) => query.category!.includes(ctg.category))
         .map((ctg) => ctg.description)
         .join(', ');
     } else {

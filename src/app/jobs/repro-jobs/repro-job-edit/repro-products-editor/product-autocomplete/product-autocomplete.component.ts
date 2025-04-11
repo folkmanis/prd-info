@@ -77,7 +77,7 @@ export class ProductAutocompleteComponent implements ControlValueAccessor, Valid
     }
   }
 
-  validate(): ValidationErrors {
+  validate(): ValidationErrors | null {
     return this.control.errors;
   }
 
@@ -85,8 +85,8 @@ export class ProductAutocompleteComponent implements ControlValueAccessor, Valid
     this.inputElement().nativeElement.focus();
   }
 
-  private filterProducts(controlValue: string, products: CustomerProduct[]): CustomerProduct[] {
-    const name = controlValue?.toUpperCase();
+  private filterProducts(controlValue: string | null, products: CustomerProduct[]): CustomerProduct[] {
+    const name = controlValue?.toUpperCase() || '';
     return products.filter((pr) => pr.productName.toUpperCase().includes(name));
   }
 

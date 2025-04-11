@@ -14,9 +14,9 @@ export class LoginService {
   private api = inject(LoginApiService);
 
   private loginUpdate$ = new Subject<User | null>();
-  private reload$ = new BehaviorSubject<void>(null);
+  private reload$ = new BehaviorSubject<void>(undefined);
 
-  user$: Observable<User> = merge(this.reload$.pipe(switchMap(() => this.api.getLogin())), this.loginUpdate$).pipe(
+  user$: Observable<User | null> = merge(this.reload$.pipe(switchMap(() => this.api.getLogin())), this.loginUpdate$).pipe(
     catchError(() => of(null)),
     shareReplay(1),
   );
@@ -43,8 +43,8 @@ export class LoginService {
     this.loginUpdate$.next(null);
   }
 
-  isModuleAvailable(module: string): Observable<boolean> {
-    return this.user$.pipe(map((user) => !!user?.preferences.modules.includes(module)));
+  isModuleAvailable(module?: string): Observable<boolean> {
+    return this.user$.pipe(map((user) => !!module && !!user?.preferences.modules.includes(module)));
   }
 
   sessionToken(): Observable<string> {

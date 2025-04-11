@@ -10,7 +10,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { isEqual, pickBy } from 'lodash-es';
 import { JobFilesService } from 'src/app/filesystem';
-import { ProductionStage } from 'src/app/interfaces';
+import { CreateProductionStage, DropFolder, ProductionStage, UpdateProductionStage } from 'src/app/interfaces';
+import { notNullOrThrow } from 'src/app/library';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { navigateRelative } from 'src/app/library/navigation';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
@@ -21,7 +22,7 @@ import { DropFoldersComponent } from '../drop-folders/drop-folders.component';
 import { ProductionStagesListComponent } from '../production-stages-list/production-stages-list.component';
 
 type ProductionStageControl = {
-  [key in keyof Required<ProductionStage>]: FormControl<ProductionStage[key]>;
+  [key in keyof Required<ProductionStage>]: FormControl<ProductionStage[key] | null>;
 };
 
 @Component({
@@ -57,9 +58,9 @@ export class ProductionStagesEditComponent implements CanComponentDeactivate {
         asyncValidators: [this.nameValidator()],
       },
     ],
-    description: [null],
-    equipmentIds: [],
-    dropFolders: [],
+    description: [null as string | null],
+    equipmentIds: [[] as string[]],
+    dropFolders: [[] as DropFolder[]],
   });
 
   equipment = inject(EquipmentService).getEquipmentResource().asReadonly();
@@ -87,7 +88,7 @@ export class ProductionStagesEditComponent implements CanComponentDeactivate {
       return value;
     } else {
       const initial = this.initialValue();
-      const diff = pickBy(value, (v, key) => !isEqual(v, initial[key]));
+      const diff = pickBy(value, (v, key) => !isEqual(v, initial[key])) as Partial<ProductionStage>;
       return Object.keys(diff).length ? diff : null;
     }
   });
@@ -104,7 +105,8 @@ export class ProductionStagesEditComponent implements CanComponentDeactivate {
   }
 
   async onUpdateStage() {
-    const update = { ...this.changes(), _id: this.initialValue()._id };
+    const changes = notNullOrThrow(this.changes());
+    const update = { ...changes, _id: this.initialValue()._id } as UpdateProductionStage;
     const result = await this.productionStagesService.updateOne(update);
     this.listComponent.onReload();
     this.snack.open(`Atjaunots ${result.name}`, 'OK');
@@ -112,7 +114,7 @@ export class ProductionStagesEditComponent implements CanComponentDeactivate {
   }
 
   async onCreateStage() {
-    const result = await this.productionStagesService.insertOne(this.form.getRawValue());
+    const result = await this.productionStagesService.insertOne(this.form.getRawValue() as CreateProductionStage);
     this.form.markAsPristine();
     this.listComponent.onReload();
     this.snack.open(`Izveidots ${result.name}`, 'OK');

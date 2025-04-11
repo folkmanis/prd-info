@@ -58,7 +58,7 @@ export class SinglePurchaseComponent implements ControlValueAccessor, Validator 
 
   defaultFuelType = input<FuelType>();
 
-  startDate = input<Date>();
+  startDate = input<Date | null>();
 
   onTouched = () => {};
 
@@ -122,7 +122,10 @@ export class SinglePurchaseComponent implements ControlValueAccessor, Validator 
     }
   }
 
-  private setUnits(type: string) {
+  private setUnits(type: string | null) {
+    if (type === null) {
+      return;
+    }
     const units = this.fuelTypes().find((fuelType) => fuelType.type === type)?.units;
     units && this.form.controls.units.setValue(units);
   }

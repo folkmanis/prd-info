@@ -37,6 +37,7 @@ export const PRD_DEFAULTS: AppParams = {
     },
     paytraq: {
       enabled: false,
+      connectionParams: null,
     },
     transportation: {
       shippingAddress: null,

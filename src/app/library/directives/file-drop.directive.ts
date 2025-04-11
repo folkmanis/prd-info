@@ -1,4 +1,5 @@
 import { Directive, output, signal } from '@angular/core';
+import { notNullOrThrow } from '../assert-utils';
 
 @Directive({
   selector: '[appFileDrop]',
@@ -37,7 +38,8 @@ export class FileDropDirective {
     event.preventDefault();
     event.stopPropagation();
     this.dragOver.set(false);
-    const files: FileList = event.dataTransfer.files;
+
+    const files: FileList = notNullOrThrow(event.dataTransfer?.files);
     if (files.length > 0) {
       this.filesEmitter.emit(files);
     }

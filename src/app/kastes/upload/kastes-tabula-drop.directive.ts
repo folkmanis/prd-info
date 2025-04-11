@@ -1,6 +1,6 @@
 import { Directive, inject, signal } from '@angular/core';
 import { outputFromObservable, outputToObservable } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs';
+import { filter, map } from 'rxjs';
 import { FileDropDirective } from 'src/app/library/directives/file-drop.directive';
 
 const enum StatusText {
@@ -18,7 +18,10 @@ const enum StatusText {
 export class KastesTabulaDropDirective extends FileDropDirective {
   private fileDropDirective = inject(FileDropDirective, { self: true });
 
-  private fileDrop$ = outputToObservable(this.fileDropDirective.filesEmitter).pipe(map((filelist) => this.onFileDrop(filelist)));
+  private fileDrop$ = outputToObservable(this.fileDropDirective.filesEmitter).pipe(
+    map((filelist) => this.onFileDrop(filelist)),
+    filter((file) => file !== null),
+  );
 
   xlsFile = outputFromObservable(this.fileDrop$);
 
@@ -39,6 +42,7 @@ export class KastesTabulaDropDirective extends FileDropDirective {
       return file;
     }
     this.status.set(StatusText.DefaultText);
+    return null;
   }
 
   private fileStatus = (file: File) => `${file.name} / ${file.size} bytes`;

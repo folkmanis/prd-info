@@ -22,7 +22,7 @@
 
   <span class="distancer"></span>
 
-  <span> {{ invoice().invoiceId }} {{ invoice().customerInfo.CustomerName }} </span>
+  <span> {{ invoice().invoiceId }} {{ invoice().customerInfo?.CustomerName ?? '' }} </span>
 
   <span class="spacer"></span>
 
@@ -58,7 +58,7 @@
       <mat-card-title> Darbi </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <app-job-selection-table [jobs]="invoice().jobs" disabled [large]="viewSize.isLarge()" [total]="invoice().total" />
+      <app-job-selection-table [jobs]="invoice().jobs ?? []" disabled [large]="viewSize.isLarge()" [total]="invoice().total ?? 0" />
     </mat-card-content>
   </mat-card>
 </div>

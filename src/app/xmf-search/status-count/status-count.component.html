@@ -1,3 +1,4 @@
-@if (count() !== undefined || count() !== null) {
-  <div class="headline-small">Atrast{{ isMultiple(count()) ? 'i' : 's' }} {{ count() }} ierakst{{ isMultiple(count()) ? 'i' : 's' }}</div>
+@let c = count();
+@if (c !== null) {
+  <div class="headline-small">Atrast{{ isMultiple(c) ? 'i' : 's' }} {{ c }} ierakst{{ isMultiple(c) ? 'i' : 's' }}</div>
 }

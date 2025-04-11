@@ -31,7 +31,7 @@ export class ViewSizeBase implements OnInit, OnDestroy {
   }
 
   setElseTemplate(value: TemplateRef<any> | null) {
-    if (value == null || value.createEmbeddedView) {
+    if (value instanceof TemplateRef) {
       this.elseTemplate$.next(value);
     }
   }

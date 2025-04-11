@@ -1,5 +1,6 @@
 import { Directive } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
+import { assertNotNull } from '../assert-utils';
 
 @Directive({
   selector: 'input[appInputTrim]',
@@ -11,7 +12,8 @@ export class InputTrimDirective {
   }
 }
 
-function trimValueAccessor(valueAccessor: ControlValueAccessor) {
+function trimValueAccessor(valueAccessor: ControlValueAccessor | null) {
+  assertNotNull(valueAccessor);
   const original = valueAccessor.registerOnChange;
 
   valueAccessor.registerOnChange = (fn: (_: unknown) => void) => {

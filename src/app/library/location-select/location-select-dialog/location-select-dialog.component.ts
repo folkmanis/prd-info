@@ -5,8 +5,8 @@ import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, Ma
 import { filter, map } from 'rxjs';
 
 export interface LocationSelectDialogData {
-  address?: string;
-  googleId?: string;
+  address?: string | null;
+  googleId?: string | null;
 }
 
 export interface ShippingMarker {

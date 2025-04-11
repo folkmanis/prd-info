@@ -67,7 +67,7 @@ export class SystemPreferencesComponent implements ControlValueAccessor, Validat
     }
   }
 
-  validate(): ValidationErrors {
+  validate(): ValidationErrors | null {
     if (this.controls.valid) {
       return null;
     } else {

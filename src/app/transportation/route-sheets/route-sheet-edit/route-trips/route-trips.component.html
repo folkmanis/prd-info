@@ -22,8 +22,8 @@
         <app-single-trip
           [formControl]="control"
           [customers]="customers()"
-          [fuelConsumption]="vehicle()?.consumption"
-          [fuelUnits]="vehicle()?.fuelType?.units"
+          [fuelConsumption]="vehicle()?.consumption || null"
+          [fuelUnits]="vehicle()?.fuelType?.units || null"
           [lastOdometer]="lastOdometer($index)()"
           [startDate]="startDate()"
         />

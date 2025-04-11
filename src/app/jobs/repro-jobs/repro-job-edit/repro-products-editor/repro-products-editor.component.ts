@@ -10,8 +10,9 @@ import { JobProduct } from 'src/app/jobs';
 import { LoginService } from 'src/app/login';
 import { KeyPressDirective } from 'src/app/library/directives';
 import { ReproProductComponent } from './repro-product/repro-product.component';
+import { NullableType } from 'src/app/library';
 
-const DEFAULT_PRODUCT: JobProduct = {
+const DEFAULT_PRODUCT: NullableType<JobProduct> = {
   name: null,
   price: null,
   units: null,
@@ -45,7 +46,7 @@ export class ReproProductsEditorComponent implements ControlValueAccessor, Valid
 
   showPrices = inject(LoginService).isModule('calculations');
 
-  productsControl = new FormArray<FormControl<JobProduct>>([]);
+  productsControl = new FormArray<FormControl<NullableType<JobProduct> | null>>([]);
 
   onTouched: () => void = () => {};
 
@@ -74,7 +75,7 @@ export class ReproProductsEditorComponent implements ControlValueAccessor, Valid
     }
   }
 
-  validate(): ValidationErrors {
+  validate(): ValidationErrors | null {
     if (this.productsControl.valid) {
       return null;
     }

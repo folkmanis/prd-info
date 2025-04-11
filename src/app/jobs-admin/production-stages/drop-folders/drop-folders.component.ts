@@ -24,8 +24,8 @@ import { CustomerPartial, DropFolder } from 'src/app/interfaces';
 import { AppClassTransformerService } from 'src/app/library';
 
 type DropFolderForm = FormGroup<{
-  path: FormControl<string[]>;
-  customers: FormControl<string[]>;
+  path: FormControl<string[] | null>;
+  customers: FormControl<string[] | null>;
 }>;
 
 @Component({
@@ -90,7 +90,7 @@ export class DropFoldersComponent implements ControlValueAccessor, Validator {
     }
   }
 
-  validate(): ValidationErrors {
+  validate(): ValidationErrors | null {
     return this.form.valid ? null : { dropFolders: this.folderErrors };
   }
 

@@ -24,7 +24,7 @@ export class FacetComponent {
     this.blocks().forEach((block) => block.deselect());
   }
 
-  onSelect(selected: (string | number)[], key: keyof FacetFilter) {
+  onSelect(selected: (string | number)[] | null, key: keyof FacetFilter) {
     this.facetFilter[key] = selected;
     this.filter.emit(this.facetFilter);
   }

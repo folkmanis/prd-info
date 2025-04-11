@@ -71,7 +71,7 @@
         </section>
 
         <section>
-          <app-materials-prices #prices formControlName="prices" [units]="form.value.units"> </app-materials-prices>
+          <app-materials-prices #prices formControlName="prices" [units]="form.value.units ?? ''"> </app-materials-prices>
         </section>
       </mat-card-content>
 

@@ -40,7 +40,7 @@ export class Invoice {
   customerInfo?: Customer;
 
   @Type(() => PaytraqInvoice)
-  paytraq?: PaytraqInvoice;
+  paytraq?: PaytraqInvoice | null;
 }
 
 export type InvoiceForReport = Pick<Invoice, 'invoiceId' | 'customer' | 'createdDate' | 'jobs' | 'products' | 'total' | 'customerInfo'>;

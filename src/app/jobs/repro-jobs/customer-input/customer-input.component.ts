@@ -92,7 +92,7 @@ export class CustomerInputComponent implements ControlValueAccessor, Validator {
     }
   }
 
-  validate(): ValidationErrors {
+  validate(): ValidationErrors | null {
     return this.control.errors;
   }
 
@@ -104,7 +104,7 @@ export class CustomerInputComponent implements ControlValueAccessor, Validator {
     this.inputElement().nativeElement.focus();
   }
 
-  private filterCustomer(customers: CustomerPartial[], value: string): CustomerPartial[] {
+  private filterCustomer(customers: CustomerPartial[], value: string | null): CustomerPartial[] {
     const filterValue = new RegExp(value || '', 'i');
     return customers.filter((customer) => filterValue.test(customer.CustomerName));
   }

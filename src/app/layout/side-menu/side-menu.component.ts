@@ -37,9 +37,9 @@ export class SideMenuComponent {
       .join('/'),
   );
 
-  childrenAccessor = (node: SideMenuNode) => node.childMenu;
+  childrenAccessor = (node: SideMenuNode) => node.childMenu ?? [];
 
-  hasChild = (_: number, node: SideMenuNode) => node.childMenu?.length > 0;
+  hasChild = (_: number, node: SideMenuNode) => node.childMenu && node.childMenu?.length > 0;
 
   constructor() {
     effect(() => {
@@ -57,14 +57,14 @@ export class SideMenuComponent {
   }
 }
 
-function toSideMenu(item: Partial<UserModule>[], rte: string[] = []): SideMenuNode[] {
-  return item.reduce((acc, val) => {
-    const route = [...rte, val.route];
+function toSideMenu(item: UserModule[], rte: string[] = []): SideMenuNode[] {
+  return item.reduce((acc, userModule) => {
+    const route = [...rte, userModule.route];
     const mItem: SideMenuNode = {
-      name: val.name,
+      name: userModule.name,
       route,
       routeStr: route.join('/'),
-      childMenu: val.childMenu && toSideMenu(val.childMenu, route),
+      childMenu: userModule.childMenu && toSideMenu(userModule.childMenu, route),
     };
     return [...acc, mItem];
   }, []);

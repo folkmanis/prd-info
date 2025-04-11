@@ -24,7 +24,7 @@ export class MaterialsPriceDialogComponent {
   priceControl = new FormGroup({
     min: new FormControl<number>(this.value.min, [Validators.required, Validators.min(0)]),
     price: new FormControl<number>(this.value.price, [Validators.required, Validators.min(0)]),
-    description: new FormControl<string>(this.value.description),
+    description: new FormControl<string>(this.value.description ?? ''),
   });
 
   units: string = this.data.units;

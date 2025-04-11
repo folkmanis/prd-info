@@ -11,9 +11,9 @@ import { FuelPurchase } from 'src/app/transportation/interfaces/transportation-r
   templateUrl: './fuel-totals.component.html',
 })
 export class FuelTotalsComponent {
-  private validPurchases = computed(() => this.fuelPurchases().filter(isObject));
+  private validPurchases = computed(() => filterValidPurchases(this.fuelPurchases()));
 
-  fuelPurchases = input.required<FuelPurchase[]>();
+  fuelPurchases = input.required<(FuelPurchase | null)[] | null>();
 
   defaultUnits = input<string>();
 
@@ -30,4 +30,8 @@ export class FuelTotalsComponent {
       .map((fuelPurchase) => fuelPurchase.total)
       .reduce((total, cost) => total + cost, 0),
   );
+}
+
+function filterValidPurchases(fuelPurchases: (FuelPurchase | null)[] | null): FuelPurchase[] {
+  return (fuelPurchases?.filter(isObject) || []) as FuelPurchase[];
 }

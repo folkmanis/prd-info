@@ -15,7 +15,7 @@ import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { TransportationDriver } from '../../interfaces/transportation-driver';
 import { TransportationDriverService } from '../../services/transportation-driver.service';
 
-type FormValue = Partial<Pick<TransportationDriver, 'name' | 'disabled'>>;
+type FormValue = { [K in 'name' | 'disabled']?: TransportationDriver[K] | null };
 
 @Component({
   selector: 'app-transportation-driver-edit',

@@ -43,7 +43,11 @@ export class CustomerContactEditorComponent implements ControlValueAccessor, Val
   }
 
   writeValue(obj: CustomerContact | null): void {
-    this.emailControl.setValue(obj?.email, { emitEvent: false });
+    if (obj?.email) {
+      this.emailControl.setValue(obj.email, { emitEvent: false });
+    } else {
+      this.emailControl.setValue(null, { emitEvent: false });
+    }
   }
 
   registerOnChange(fn: (value: CustomerContact) => void): void {
@@ -62,7 +66,7 @@ export class CustomerContactEditorComponent implements ControlValueAccessor, Val
     }
   }
 
-  validate(): ValidationErrors {
+  validate(): ValidationErrors | null {
     if (this.emailControl.valid) {
       return null;
     }

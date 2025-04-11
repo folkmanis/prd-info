@@ -59,7 +59,7 @@ export interface JobsSettings {
 
 export interface PaytraqSettings {
   enabled: boolean;
-  connectionParams?: PaytraqConnectionParams;
+  connectionParams: PaytraqConnectionParams | null;
 }
 
 export interface PaytraqConnectionParams {

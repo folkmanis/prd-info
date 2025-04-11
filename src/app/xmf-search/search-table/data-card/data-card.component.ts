@@ -14,7 +14,7 @@ import { DatePipe } from '@angular/common';
 export class DataCardComponent {
   data = input.required<ArchiveRecord>();
 
-  searchString = input<string>();
+  searchString = input.required<string>();
 
   actions: string[] = ['', 'Archive', 'Restore', 'Skip', 'Delete'];
 }

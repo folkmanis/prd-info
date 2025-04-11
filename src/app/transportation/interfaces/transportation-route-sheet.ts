@@ -83,10 +83,10 @@ export class FuelPurchase {
   units: string;
 
   @Expose()
-  amount: number = null;
+  amount: number = 0;
 
   @Expose()
-  price: number = null;
+  price: number = 0;
 
   @Expose()
   total: number;

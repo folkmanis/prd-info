@@ -1,29 +1,24 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AsyncValidatorFn, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import { AsyncValidatorFn, FormBuilder, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { isEqual, isNull, omitBy } from 'lodash-es';
-import { Customer, NewCustomer } from 'src/app/interfaces';
+import { Customer, CustomerContact, CustomerFinancial, FtpUserData, NewCustomer, ShippingAddress } from 'src/app/interfaces';
 import { InputUppercaseDirective } from 'src/app/library/directives/input-uppercase.directive';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { navigateRelative } from 'src/app/library/navigation';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { CustomersService } from 'src/app/services';
 import { configuration } from 'src/app/services/config.provider';
+import { CustomersListComponent } from '../customers-list/customers-list.component';
 import { CustomerContactsComponent } from './customer-contacts/customer-contacts.component';
 import { FtpUserComponent } from './ftp-user/ftp-user.component';
 import { PaytraqCustomerComponent } from './paytraq-customer/paytraq-customer.component';
 import { ShippingAddressComponent } from './shipping-address/shipping-address.component';
-import { CustomersListComponent } from '../customers-list/customers-list.component';
-
-type CustomerEditable = Omit<Customer, '_id'>;
-type CustomerEditGroup = FormGroup<{
-  [key in keyof CustomerEditable]-?: FormControl<CustomerEditable[key]>;
-}>;
 
 @Component({
   selector: 'app-customer-edit',
@@ -52,18 +47,18 @@ export class CustomerEditComponent implements CanComponentDeactivate {
 
   paytraqEnabled = configuration('paytraq', 'enabled');
 
-  form: CustomerEditGroup = inject(FormBuilder).group(
+  form = inject(FormBuilder).group(
     {
-      CustomerName: ['', [Validators.required, Validators.minLength(3)], [this.validateName()]],
-      code: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(3)], [this.validateCode()]],
-      disabled: [false],
-      description: [''],
-      financial: [null],
-      ftpUser: [false],
-      ftpUserData: [null],
-      contacts: [],
-      insertedFromXmf: [null],
-      shippingAddress: [null],
+      CustomerName: [null as string | null, [Validators.required, Validators.minLength(3)], [this.validateName()]],
+      code: [null as string | null, [Validators.required, Validators.minLength(2), Validators.maxLength(3)], [this.validateCode()]],
+      disabled: [false as boolean | null],
+      description: [null as string | null],
+      financial: [null as CustomerFinancial | null],
+      ftpUser: [false as boolean | null],
+      ftpUserData: [null as FtpUserData | null],
+      contacts: [[] as CustomerContact[]],
+      insertedFromXmf: [null as Date | null],
+      shippingAddress: [null as ShippingAddress | null],
     },
     {
       validators: [this.validateFtp()],
@@ -137,7 +132,7 @@ export class CustomerEditComponent implements CanComponentDeactivate {
   }
 
   private validateFtp(): ValidatorFn {
-    return (control: CustomerEditGroup) => {
+    return (control) => {
       return control.value.ftpUser === false || !!control.value.ftpUserData ? null : { ftpUserData: 'ftp data not set' };
     };
   }

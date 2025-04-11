@@ -19,7 +19,8 @@ import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { TransportationVehicle } from '../../interfaces/transportation-vehicle';
 import { TransportationVehicleService } from '../../services/transportation-vehicle.service';
 
-type FormValue = Partial<Omit<TransportationVehicle, 'id'>>;
+type FormValue = { [P in keyof Omit<TransportationVehicle, '_id'>]?: TransportationVehicle[P] | null };
+// type FormValue = Partial<Omit<TransportationVehicle, 'id'>>;
 
 @Component({
   selector: 'app-transportation-vehicle-edit',

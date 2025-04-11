@@ -47,7 +47,7 @@ export class FtpUserComponent implements ControlValueAccessor {
 
   writeValue(obj: FtpUserData | null): void {
     this.getFtpFolders();
-    this.form.reset(obj, { emitEvent: false });
+    this.form.reset(obj ?? undefined, { emitEvent: false });
   }
 
   registerOnChange(fn: (data: FtpUserData | null) => void): void {

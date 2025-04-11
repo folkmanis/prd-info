@@ -11,7 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterLink } from '@angular/router';
 import { isEqual, pickBy } from 'lodash-es';
-import { combineLatest, concat, concatMap, distinctUntilChanged, filter, map, merge, Observable, of, Subscription, switchMap, throttleTime } from 'rxjs';
+import { combineLatest, concat, concatMap, distinctUntilChanged, EMPTY, filter, map, merge, Observable, of, Subscription, switchMap, throttleTime } from 'rxjs';
 import { DropFolder } from 'src/app/interfaces';
 import { KeyPressDirective } from 'src/app/library/directives';
 import { navigateToReturn, RouterLinkToReturnDirective } from 'src/app/library/navigation';
@@ -25,6 +25,7 @@ import { UploadProgressComponent } from '../upload-progress/upload-progress.comp
 import { DropFolderComponent } from './drop-folder/drop-folder.component';
 import { FolderPathComponent } from './folder-path/folder-path.component';
 import { JobFormComponent } from './job-form/job-form.component';
+import { notNullOrThrow } from 'src/app/library';
 
 @Component({
   selector: 'app-repro-job-edit',
@@ -80,7 +81,7 @@ export class ReproJobEditComponent {
   uploadRef = inject(UploadRefService).retrieveUploadRef();
 
   selectedDropFolder = linkedSignal(() => this.dropFolders()[0] || null);
-  dropFolderActive = linkedSignal(() => this.uploadRef && this.selectedDropFolder() !== null);
+  dropFolderActive = linkedSignal(() => !!this.uploadRef && this.selectedDropFolder() !== null);
 
   fileUploadProgress$: Observable<FileUploadMessage[]> = of([]);
   folderPath = computed(() => this.value().files?.path?.join('/') || '');
@@ -93,7 +94,7 @@ export class ReproJobEditComponent {
     map(({ value }) => value),
     distinctUntilChanged(isProductChanged),
     throttleTime(200),
-    switchMap((job) => this.jobService.getDropFolders(job.products, job.customer)),
+    switchMap((job) => this.jobService.getDropFolders(job?.products, job?.customer)),
   );
 
   dropFolders = toSignal(this.dropFolders$, { initialValue: [] });
@@ -109,7 +110,7 @@ export class ReproJobEditComponent {
       this.updateDisabledState(initial);
       afterNextRender(
         () => {
-          initial.customer || this.customerInput().focusCustomer();
+          initial.customer || this.customerInput()?.focusCustomer();
         },
         { injector: this.injector },
       );
@@ -133,7 +134,7 @@ export class ReproJobEditComponent {
   }
 
   async onUpdate() {
-    const jobId = this.jobId();
+    const jobId = notNullOrThrow(this.jobId());
     const jobUpdate = this.changes();
     let updatedJob = { ...this.initialValue() };
     if (jobUpdate) {
@@ -147,7 +148,8 @@ export class ReproJobEditComponent {
     }
     try {
       if (this.dropFolderActive() && this.selectedDropFolder() !== null) {
-        this.copyToDropfolder(updatedJob.files).subscribe();
+        const files = notNullOrThrow(updatedJob.files);
+        this.copyToDropfolder(files).subscribe();
       }
     } catch (error) {}
     this.saveSuccessMessage({ jobId, name: updatedJob.name });
@@ -170,7 +172,7 @@ export class ReproJobEditComponent {
   private async uploadFiles({ jobId, files }: Pick<Job, 'jobId' | 'files'>) {
     this.uploadRef?.addToJob(jobId);
 
-    if (this.dropFolderActive() && this.selectedDropFolder() !== null) {
+    if (files && this.dropFolderActive() && this.selectedDropFolder() !== null) {
       this.copyToDropfolder(files).subscribe();
     }
   }
@@ -179,7 +181,7 @@ export class ReproJobEditComponent {
     const dropFolder = this.selectedDropFolder();
 
     if (this.uploadRef) {
-      return this.uploadRef.onAddedToJob().pipe(concatMap((job) => job.files && this.jobService.copyToDropFolder(job.files.path, dropFolder.path)));
+      return this.uploadRef.onAddedToJob().pipe(concatMap((job) => (job.files ? this.jobService.copyToDropFolder(job.files.path, dropFolder.path) : EMPTY)));
     } else {
       return this.jobService.copyToDropFolder(files.path, dropFolder.path);
     }

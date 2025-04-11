@@ -4,6 +4,7 @@ import { isEqual } from 'lodash-es';
 import { firstValueFrom } from 'rxjs';
 import { DEFAULT_JOBS_USER_PREFERENCES, JobsUserPreferences } from '../interfaces/jobs-user-preferences';
 import { JobsApiService } from './jobs-api.service';
+import { notNullOrThrow } from 'src/app/library';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +20,7 @@ export class JobsUserPreferencesService {
 
   patchUserPreferences(patch: Partial<JobsUserPreferences>) {
     const update = {
-      ...this.assertUserPreferences(),
+      ...notNullOrThrow(this.userPreferences()),
       ...patch,
     };
     return this.setUserPreferences(update);
@@ -45,12 +46,5 @@ export class JobsUserPreferencesService {
       return this.setUserPreferences(DEFAULT_JOBS_USER_PREFERENCES);
     }
     throw error;
-  }
-
-  private assertUserPreferences(): JobsUserPreferences {
-    if (!this.userPreferences()) {
-      throw new Error('User preferences empty');
-    }
-    return this.userPreferences();
   }
 }

@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, viewChild } from '@angular/core';
 import {
   ControlValueAccessor,
   FormBuilder,
@@ -27,8 +27,8 @@ import { ClipboardService } from 'src/app/library/clipboard';
 import { ViewSizeDirective } from 'src/app/library/view-size';
 import { CustomersService } from 'src/app/services';
 import { configuration } from 'src/app/services/config.provider';
-import { ReproJobService } from '../../services/repro-job.service';
 import { CustomerInputComponent } from '../../customer-input/customer-input.component';
+import { ReproJobService } from '../../services/repro-job.service';
 import { ReproProductsEditorComponent } from '../repro-products-editor/repro-products-editor.component';
 
 @Component({
@@ -127,19 +127,19 @@ export class JobFormComponent implements ControlValueAccessor, Validator {
     return fb.group({
       customer: ['', [Validators.required]],
       name: ['', [Validators.required]],
-      receivedDate: [null as Date, Validators.required],
-      dueDate: [null as Date, Validators.required],
+      receivedDate: [null as Date | null, Validators.required],
+      dueDate: [null as Date | null, Validators.required],
       production: fb.group({
-        category: [null as JobCategories, Validators.required],
+        category: [null as JobCategories | null, Validators.required],
       }),
       comment: [null as string | null],
       customerJobId: [null as string | null],
       jobStatus: fb.group({
         generalStatus: [10],
-        timestamp: [null as Date],
+        timestamp: [null as Date | null],
       }),
       products: [[] as JobProduct[]],
-      files: [null as Files],
+      files: [null as Files | null],
       productionStages: [[] as JobProductionStage[]],
     });
   }

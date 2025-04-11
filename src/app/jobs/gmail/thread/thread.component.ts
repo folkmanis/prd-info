@@ -9,6 +9,7 @@ import { Router, RouterLink } from '@angular/router';
 import { EMPTY, Observable, tap, withLatestFrom } from 'rxjs';
 import { ReproJobService } from 'src/app/jobs/repro-jobs/services/repro-job.service';
 import { UploadRefService } from 'src/app/jobs/repro-jobs/services/upload-ref.service';
+import { assertNoNullProperties } from 'src/app/library';
 import { CustomersService } from 'src/app/services/customers.service';
 import { Attachment, Message, Thread } from '../interfaces';
 import { MessageComponent } from '../message/message.component';
@@ -40,6 +41,7 @@ export class ThreadComponent {
   isExpanded = (msg: Message) => msg.hasPdf && msg.labelIds.every((label) => label !== 'SENT');
 
   async onCreateFromThread(thread: Thread) {
+    assertNoNullProperties(thread);
     this.busy.set(true);
 
     const selected = this.messageList().filter((item) => item.attachmentsSelection().length > 0);
@@ -70,6 +72,7 @@ export class ThreadComponent {
   onCreateFromMessage(component: MessageComponent) {
     component.busy.set(true);
     const message = component.message();
+    assertNoNullProperties(message);
     const attachments = component.attachmentsSelection().map((attachment) => ({ messageId: message.id, attachment }));
 
     this.createJobWithAttachments(attachments, message, this.markAsRead(component)).subscribe(() => this.navigateToNew());
@@ -113,5 +116,5 @@ export class ThreadComponent {
 function extractEmail(text: string): string {
   return text.match(
     /(?:[a-z0-9+!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/gi,
-  )[0];
+  )![0];
 }

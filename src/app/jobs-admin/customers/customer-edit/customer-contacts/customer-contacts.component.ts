@@ -33,7 +33,7 @@ export class CustomerContactsComponent implements ControlValueAccessor, Validato
 
   contactsArray = this.fb.array<CustomerContact>([]);
 
-  active: FormControl<CustomerContact> | null = null;
+  active: FormControl<CustomerContact | null> | null = null;
 
   private onTouchFn: () => void = () => {};
 
@@ -59,7 +59,7 @@ export class CustomerContactsComponent implements ControlValueAccessor, Validato
     }
   }
 
-  validate(): ValidationErrors {
+  validate(): ValidationErrors | null {
     if (this.contactsArray.valid) {
       return null;
     } else {
@@ -80,7 +80,7 @@ export class CustomerContactsComponent implements ControlValueAccessor, Validato
 
   onFinishEditing(idx: number) {
     this.active = null;
-    if (!this.contactsArray.at(idx).value.email) {
+    if (!this.contactsArray.at(idx).value?.email) {
       this.contactsArray.removeAt(idx);
     }
   }

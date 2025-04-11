@@ -81,7 +81,7 @@ export class ProductPricesComponent implements ControlValueAccessor, Validator {
     }
   }
 
-  validate(): ValidationErrors {
+  validate(): ValidationErrors | null {
     if (this.pricesFormArray.valid) {
       return null;
     }
@@ -108,11 +108,11 @@ export class ProductPricesComponent implements ControlValueAccessor, Validator {
   }
 }
 
-function productPriceGroup(price: ProductPrice) {
+function productPriceGroup(price?: ProductPrice) {
   return new FormGroup({
     customerName: new FormControl(price?.customerName, [Validators.required]),
     price: new FormControl(price?.price, [Validators.required, Validators.pattern(/[0-9]{1,}(((,|\.)[0-9]{0,2})?)/)]),
-    lastUsed: new FormControl<Date>({
+    lastUsed: new FormControl<Date | null>({
       value: null,
       disabled: true,
     }),

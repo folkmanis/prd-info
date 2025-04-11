@@ -18,7 +18,7 @@ export class FacetCheckerComponent {
   title = input('');
   data = input.required<FacetCount[]>();
 
-  filterValue = output<Array<number | string>>();
+  filterValue = output<Array<number | string> | null>();
 
   deselect() {
     this.selection().deselectAll();
@@ -31,7 +31,7 @@ export class FacetCheckerComponent {
 
   onSelectionChange(): void {
     const { selected } = this.selection().selectedOptions; // event.source.selectedOptions.selected;
-    const filter = selected.length ? selected.map((element) => element.value as number | string) : undefined; // Ja nekas nav atzīmēts, tad vispār nav
+    const filter = selected.length ? selected.map((element) => element.value as number | string) : null; // Ja nekas nav atzīmēts, tad vispār nav
     this.filterValue.emit(filter);
   }
 }

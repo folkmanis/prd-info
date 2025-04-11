@@ -19,7 +19,7 @@ import { hslToString, stringToHsl } from './hsl-color';
   imports: [MatSliderModule, FormsModule],
 })
 export class ColorSliderComponent implements ControlValueAccessor {
-  private slider = viewChild(MatSlider, { read: ElementRef });
+  private slider = viewChild.required(MatSlider, { read: ElementRef });
   private onChangeFn: (obj: string) => void = () => {};
   private onTouchedFn: () => void = () => {};
 

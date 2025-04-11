@@ -23,9 +23,9 @@
     </mat-drawer-content>
 
     <mat-drawer appDrawerButton>
-      @if (packagesJob()) {
+      @if (packagesJob(); as packagesJob) {
         <div>
-          <h4>{{ packagesJob().jobId }} - {{ packagesJob().name }}</h4>
+          <h4>{{ packagesJob.jobId }} - {{ packagesJob.name }}</h4>
           @if (activeBoxSize() === 0) {
             <div>
               <mat-divider></mat-divider>

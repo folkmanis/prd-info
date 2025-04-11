@@ -8,6 +8,7 @@ import { ReproJobService } from 'src/app/jobs/repro-jobs/services/repro-job.serv
 import { UploadRefService } from 'src/app/jobs/repro-jobs/services/upload-ref.service';
 import { JobData, Message, MessageFtpUser } from './interfaces';
 import { MessagingService } from './services/messaging.service';
+import { notNullOrThrow } from 'src/app/library';
 
 export interface UserFile {
   name: string;
@@ -41,8 +42,8 @@ export class MessageJobDirective {
       this.overlayRef?.detach();
 
       const path = message.data.path;
-
-      const name = this.reproJobService.jobNameFromFiles([last(path)]);
+      const filename = notNullOrThrow(last(path), 'Filename is null');
+      const name = this.reproJobService.jobNameFromFiles([filename]);
 
       const afterAddedToJob = this.setMessageRead(message);
 

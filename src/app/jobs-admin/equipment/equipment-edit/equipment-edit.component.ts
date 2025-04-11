@@ -14,7 +14,7 @@ import { EquipmentService } from '../services/equipment.service';
 import { EquipmentListComponent } from '../equipment-list/equipment-list.component';
 
 type EquipmentForm = FormGroup<{
-  [key in keyof Equipment]: FormControl<Equipment[key]>;
+  [key in keyof Equipment]: FormControl<Equipment[key] | null>;
 }>;
 
 @Component({
@@ -33,7 +33,7 @@ export class EquipmentEditComponent implements CanComponentDeactivate {
   private listComponent = inject(EquipmentListComponent);
 
   form: EquipmentForm = inject(FormBuilder).group({
-    _id: [null],
+    _id: [null as string | null],
     name: [
       '',
       {
@@ -85,7 +85,7 @@ export class EquipmentEditComponent implements CanComponentDeactivate {
   }
 
   private async onCreateEquipment() {
-    const created = await this.equipmentService.insertOne(this.form.getRawValue());
+    const created = await this.equipmentService.insertOne(this.form.getRawValue() as Omit<Equipment, '_id'>);
     this.snack.open(`${created.name} izveidots`, 'OK');
     this.listComponent.onReload();
     this.form.markAsPristine();
@@ -94,7 +94,7 @@ export class EquipmentEditComponent implements CanComponentDeactivate {
 
   private async onUpdateEquipment() {
     const update = { ...this.changes(), _id: this.initialValue()._id };
-    const updated = await this.equipmentService.updateOne(update);
+    const updated = await this.equipmentService.updateOne(update as Pick<Equipment, '_id'> & Partial<Equipment>);
     this.initialValue.set(updated);
     this.listComponent.onReload();
     this.snack.open(`${updated.name} atjaunināts`, 'OK');

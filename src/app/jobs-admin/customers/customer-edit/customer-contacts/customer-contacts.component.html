@@ -10,7 +10,7 @@
           <app-customer-contact-editor [formControl]="contact" (complete)="onFinishEditing($index)" />
         } @else {
           <span (click)="active = contact" class="email">
-            {{ contact.value.email }}
+            {{ contact.value?.email }}
           </span>
         }
       </div>

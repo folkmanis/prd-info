@@ -1,4 +1,7 @@
-export function parseJobId(value: unknown): number | null {
-  const isNumberValue = !isNaN(parseFloat(value as any)) && !isNaN(Number(value));
-  return isNumberValue ? Number(value) : null;
+import { assertNumber } from 'src/app/library';
+
+export function parseJobId(value: unknown): number {
+  const numberValue = parseFloat(value as any) || Number(value);
+  assertNumber(numberValue, 'Job ID must be a number');
+  return numberValue;
 }

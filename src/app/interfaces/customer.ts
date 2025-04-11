@@ -41,10 +41,10 @@ export class Customer {
 
   @Expose()
   @Type(() => Date)
-  insertedFromXmf: Date = null;
+  insertedFromXmf: Date | null = null;
 
   @Expose()
-  description?: string = null;
+  description?: string;
 
   @Expose()
   financial?: CustomerFinancial | null = null;
@@ -54,7 +54,7 @@ export class Customer {
 
   @Expose()
   @Type(() => FtpUserData)
-  ftpUserData: FtpUserData = null;
+  ftpUserData: FtpUserData | null = null;
 
   @Expose()
   @Type(() => CustomerContact)

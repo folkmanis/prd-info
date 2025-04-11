@@ -49,7 +49,7 @@ const PAYTRAQ_UNLINK_MESSAGE = 'Paytraq savienojums dzēsts';
   ],
 })
 export class InvoiceEditorComponent {
-  private locale?: Locale = inject<Locale>(DATE_FNS_LOCALE, { optional: true });
+  private locale = inject<Locale>(DATE_FNS_LOCALE, { optional: true });
   private navigate = navigateRelative();
   private snack = inject(MatSnackBar);
   private invoicesService = inject(InvoicesService);

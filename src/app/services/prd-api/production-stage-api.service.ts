@@ -3,7 +3,7 @@ import { inject, Injectable, Signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
 import { firstValueFrom, map } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
-import { CreateProductionStage, ProductionStage, UpdateProductionStage } from 'src/app/interfaces';
+import { CreateProductionStage, ProductionStage } from 'src/app/interfaces';
 import { AppClassTransformerService, httpResponseRequest } from 'src/app/library';
 import { HttpOptions } from 'src/app/library/http/http-options';
 
@@ -28,8 +28,8 @@ export class ProductionStageApiService {
     return this.transformer.toInstanceAsync(ProductionStage, response$);
   }
 
-  updateOne({ _id, ...data }: UpdateProductionStage): Promise<ProductionStage> {
-    const response$ = this.http.patch<Record<string, any>>(this.path + _id, data, new HttpOptions());
+  updateOne(id: string, update: Partial<Omit<ProductionStage, '_id'>>): Promise<ProductionStage> {
+    const response$ = this.http.patch<Record<string, any>>(this.path + id, update, new HttpOptions());
     return this.transformer.toInstanceAsync(ProductionStage, response$);
   }
 

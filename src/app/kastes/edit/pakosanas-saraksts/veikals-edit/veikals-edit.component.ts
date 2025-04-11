@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, ElementRef, Input, Output, Signal, afterNextRender, computed, output, signal, viewChildren } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { Observable, map } from 'rxjs';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import { Observable, filter, map } from 'rxjs';
 import { COLORS, Colors, Kaste, MAX_ITEMS_BOX, Veikals } from 'src/app/kastes/interfaces';
 import { InputDirective } from 'src/app/library/directives/input.directive';
 import { kastesPreferences } from '../../../services/kastes-preferences.service';
@@ -41,12 +41,14 @@ export class VeikalsEditComponent {
 
   private formValue = toSignal(this.form.valueChanges, { initialValue: [] });
 
-  private veikalsValueChanges: Signal<Veikals> = computed(() => {
+  private veikalsValueChanges: Signal<Veikals | null> = computed(() => {
     const veikals = this.veikalsInitial();
     if (veikals) {
       this.formValue();
       const kastes = veikals.kastes.map((kaste, idx) => this.updateKaste(kaste, this.form.getRawValue()[idx]));
       return { ...veikals, kastes };
+    } else {
+      return null;
     }
   });
 
@@ -54,7 +56,7 @@ export class VeikalsEditComponent {
   errors: Observable<null | VeikalsValidationErrors> = this.form.valueChanges.pipe(map((_) => (this.form.valid ? null : this.form.errors || {})));
 
   @Output()
-  valueChanges: Observable<Veikals> = toObservable(this.veikalsValueChanges);
+  valueChanges: Observable<Veikals> = toObservable(this.veikalsValueChanges).pipe(filter((value) => value !== null));
 
   constructor() {
     afterNextRender({
@@ -120,7 +122,7 @@ function colorTotals(kastes: Record<Colors, number>[]): Record<Colors, number> {
 }
 
 function totalsValidator(kastes: Record<Colors, number>[]): ValidatorFn {
-  return (control: FormArray<ColorsGroup>): ValidationErrors => {
+  return (control) => {
     if (control.value.length === 0) {
       return null;
     }
@@ -139,7 +141,7 @@ function totalsValidator(kastes: Record<Colors, number>[]): ValidatorFn {
 }
 
 function maxItemsValidator(maxItemsBox: number): ValidatorFn {
-  return (control: AbstractControl<Kaste>): ValidationErrors => {
+  return (control) => {
     const items = boxTotals(control.getRawValue());
     return items > maxItemsBox ? { maxItemsBox, items } : null;
   };

@@ -39,7 +39,7 @@ function isMissingParams(controlValue: Record<string, any>): boolean {
   imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule],
 })
 export class PaytraqConnectionParamsComponent implements ControlValueAccessor, Validator {
-  private containerEl = viewChild<HTMLDivElement>('container');
+  private containerEl = viewChild.required<HTMLDivElement>('container');
   private onTouched: () => void = () => {};
 
   controls = inject(FormBuilder).group({
@@ -86,7 +86,7 @@ export class PaytraqConnectionParamsComponent implements ControlValueAccessor, V
     }
   }
 
-  validate(): ValidationErrors {
+  validate(): ValidationErrors | null {
     const values = this.controls.value;
     if (isMissingParams(values)) {
       return {

@@ -72,8 +72,8 @@ export class FilterComponent {
     return {
       fromDate: fromDate && formatISO(fromDate, { representation: 'date' }),
       toDate: toDate && formatISO(toDate, { representation: 'date' }),
-      jobStatus: jobStatus.length > 0 ? jobStatus : undefined,
-      category: category.length > 0 ? category : undefined,
+      jobStatus: jobStatus.length > 0 ? jobStatus : null,
+      category: category.length > 0 ? category : null,
     };
   });
 

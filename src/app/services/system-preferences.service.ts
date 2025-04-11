@@ -50,7 +50,7 @@ export class SystemPreferencesService {
 
   modules$ = this.loginService.user$.pipe(
     switchMap((usr) =>
-      of(this.userModules.filter((mod) => usr && usr.preferences.modules.includes(mod.route))).pipe(map((modules) => (usr.google ? modules : removeGmail(modules)))),
+      of(this.userModules.filter((mod) => usr && usr.preferences.modules.includes(mod.route))).pipe(map((modules) => (usr?.google ? modules : removeGmail(modules)))),
     ),
   );
   modules = toSignal(this.modules$, { initialValue: [] });

@@ -30,7 +30,7 @@ export class MaterialsFilterComponent {
     map(({ name, categories }) => {
       return {
         name: name?.trim() || undefined,
-        categories: categories?.length > 0 ? categories : undefined,
+        categories: categories && categories.length > 0 ? categories : undefined,
       };
     }),
   );

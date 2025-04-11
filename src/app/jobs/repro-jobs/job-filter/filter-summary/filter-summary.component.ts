@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { NullableType } from 'src/app/library';
 
 export interface FilterSummary {
   jobsId: string;
@@ -15,7 +16,7 @@ export interface FilterSummary {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FilterSummaryComponent {
-  summary = input.required<Partial<FilterSummary>>();
+  summary = input.required<Partial<NullableType<FilterSummary>>>();
 
   selectedStates = input.required<string>();
 }

@@ -3,7 +3,7 @@ import { inject, Injectable, Signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
 import { firstValueFrom, map } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
-import { CustomerProduct, Product, ProductionStage, ProductPartial, ProductProductionStage } from 'src/app/interfaces';
+import { CustomerProduct, Product, ProductPartial, ProductProductionStage } from 'src/app/interfaces';
 import { AppClassTransformerService } from 'src/app/library';
 import { HttpOptions, httpResponseRequest } from 'src/app/library/http';
 

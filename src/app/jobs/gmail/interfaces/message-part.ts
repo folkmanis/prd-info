@@ -37,7 +37,7 @@ export class MessagePart {
     }
     let filename = this.filename;
     if (!filename) {
-      filename = this.headers.find((header) => header.name === 'Content-Disposition')?.value.match(/filename="(.+)"/)[1];
+      filename = this.headers?.find((header) => header.name === 'Content-Disposition')?.value.match(/filename="(.+)"/)?.[1];
     }
     const attachment = new Attachment(filename, this.body.attachmentId, this.body.size);
     return [...partsAttachments, attachment];
@@ -56,7 +56,7 @@ export class MessagePart {
     if (this.mimeType !== mimeType) {
       return partsMsgs;
     }
-    if (this.body.decoded) {
+    if (this.body?.decoded) {
       return [...partsMsgs, this.body.decoded];
     }
     return partsMsgs;

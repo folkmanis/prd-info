@@ -12,12 +12,14 @@
 <p>
   @switch (status().type) {
     @case ('kaste') {
-      <span>
-        @for (color of colors; track $index) {
-          <div class="item" [style.color]="colorCodes()[color]">{{ status().addressPackage[color] | hideZero }}</div>
-        }
-        <div class="adrese">{{ status().addressPackage.addressId }}-{{ status().addressPackage.address }}</div>
-      </span>
+      @if (status().addressPackage; as addressPackage) {
+        <span>
+          @for (color of colors; track $index) {
+            <div class="item" [style.color]="colorCodes()[color]">{{ addressPackage[color] | hideZero }}</div>
+          }
+          <div class="adrese">{{ addressPackage.addressId }}-{{ addressPackage.address }}</div>
+        </span>
+      }
     }
     @case ('empty') {
       <span class="warn"> Nav atrasts! </span>

@@ -7,7 +7,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { firstValueFrom } from 'rxjs';
-import { ConfirmationDialogService, CopyJobIdAndNameDirective } from 'src/app/library';
+import { assertArray, ConfirmationDialogService, CopyJobIdAndNameDirective, notNullOrThrow } from 'src/app/library';
 import { KeyPressDirective } from 'src/app/library/directives';
 import { navigateRelative, RouterLinkToReturnDirective, RouterLinkWithReturnDirective } from 'src/app/library/navigation';
 import { ViewSizeDirective, ViewSmallDirective } from 'src/app/library/view-size';
@@ -75,15 +75,20 @@ export class JobViewComponent {
     if (Array.isArray(this.job().files?.path) && (await this.confirmFolderCreation()) === false) {
       return;
     }
-    const update = await this.jobService.createFolder(this.jobId());
+    const jobId = notNullOrThrow(this.jobId());
+    const update = await this.jobService.createFolder(jobId);
     this.job.set(update);
+    assertArray(update?.files?.path);
     this.snack.open(`Izveidota mape ${update.files.path.join('/')}`, 'OK');
   }
 
   async onUpdateFolderLocation() {
     try {
-      const update = await this.jobService.updateFilesLocation(this.jobId());
+      const jobId = notNullOrThrow(this.jobId());
+      const update = await this.jobService.updateFilesLocation(jobId);
       this.job.set(update);
+
+      assertArray(update?.files?.path);
       this.snack.open(`Mape pārvietota uz ${update.files.path.join('/')}`, 'OK');
     } catch (error) {
       this.snack.open(`Mape nevar tikt pārvietota: ${error.error?.message ?? error.message}`, 'OK');
@@ -91,8 +96,9 @@ export class JobViewComponent {
   }
 
   async onSetGatavs() {
+    const jobId = notNullOrThrow(this.jobId());
     await this.jobService.updateJob({
-      jobId: this.jobId(),
+      jobId,
       jobStatus: {
         generalStatus: 30,
         timestamp: new Date(),

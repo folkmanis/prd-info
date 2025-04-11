@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatDivider } from '@angular/material/divider';
 import { MatIcon } from '@angular/material/icon';
 import { firstValueFrom } from 'rxjs';
+import { notNullOrThrow } from 'src/app/library';
 import { configuration } from 'src/app/services/config.provider';
 import { TransportationCustomer } from 'src/app/transportation/interfaces/transportation-customer';
 import { RouteTripStop } from 'src/app/transportation/interfaces/transportation-route-sheet';
@@ -35,11 +36,11 @@ export class TripStopsComponent implements ControlValueAccessor, Validator {
   private homeAddress = configuration('transportation', 'shippingAddress');
   private homeName = configuration('system', 'companyName');
 
-  customers = input<TransportationCustomer[]>([]);
+  customers = input<TransportationCustomer[] | null>([]);
 
   isDisabled = signal(false);
 
-  validationErrors: Signal<ValidationErrors> = computed(() => {
+  validationErrors: Signal<ValidationErrors | null> = computed(() => {
     if (this.tripStops().length < 2) {
       return { count: 'too few stops' };
     }
@@ -90,8 +91,9 @@ export class TripStopsComponent implements ControlValueAccessor, Validator {
   }
 
   async onAddStop() {
+    const customers = notNullOrThrow(this.customers());
     const data: TripStopDialogData = {
-      customers: this.customers(),
+      customers,
     };
     const result$ = this.dialog.open(TripStopDialogComponent, { data, autoFocus: 'first-tabbable' }).afterClosed();
     const result = await firstValueFrom(result$);
@@ -102,8 +104,9 @@ export class TripStopsComponent implements ControlValueAccessor, Validator {
   }
 
   async onEditStop(idx: number) {
+    const customers = notNullOrThrow(this.customers());
     const data: TripStopDialogData = {
-      customers: this.customers(),
+      customers,
       tripStop: this.tripStops()[idx],
     };
     const result$ = this.dialog.open(TripStopDialogComponent, { data, autoFocus: 'dialog' }).afterClosed();

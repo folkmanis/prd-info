@@ -15,7 +15,7 @@ export class RouteSheetApiService {
   private http = inject(HttpClient);
   private transformer = inject(AppClassTransformerService);
 
-  async getAll(filter: Record<string, string>): Promise<TransportationRouteSheet[]> {
+  async getAll(filter: Record<string, string | undefined>): Promise<TransportationRouteSheet[]> {
     const response$ = this.http.get<Record<string, any>[]>(this.path, new HttpOptions(filter));
     return this.transformer.toInstanceAsync(TransportationRouteSheet, response$);
   }

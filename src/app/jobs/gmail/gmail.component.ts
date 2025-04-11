@@ -60,6 +60,7 @@ export class GmailComponent {
   }).pipe(
     tap(() => this.loading.set(true)),
     concatMap(({ fltr, idx }) => this.getThreadsPage(fltr, idx)),
+    filter((threads) => !!threads),
     shareReplay(1),
   );
 
@@ -90,7 +91,7 @@ export class GmailComponent {
     this.pageIdx.set(idx);
   }
 
-  private async getThreadsPage(fltr: ThreadsFilterQuery, idx: number): Promise<Threads> {
+  private async getThreadsPage(fltr: ThreadsFilterQuery, idx: number): Promise<Threads | null> {
     if (idx === 0) {
       const data = await this.gmailService.getThreads(fltr);
       this.threadsCache = [data];
@@ -105,7 +106,7 @@ export class GmailComponent {
 
     if (!pageToken) {
       this.pageIdx.set(0);
-      return;
+      return null;
     }
 
     const data = await this.gmailService.getThreads({ ...fltr, pageToken });

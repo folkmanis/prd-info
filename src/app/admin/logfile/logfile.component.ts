@@ -42,7 +42,7 @@ export class LogfileComponent {
 
   logLevel = model<number | null>(null);
 
-  logDate = model<Date | null>(null);
+  logDate = model<Date>(new Date());
 
   logFilter = computed(() => {
     const logLevel = this.logLevel();

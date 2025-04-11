@@ -23,7 +23,7 @@ export class PasswordInputDialogComponent {
 
   passwordControl = new FormControl<string>('', { validators: Validators.required });
 
-  minLength: number | null = this.data.minLength;
+  minLength = this.data.minLength;
 
-  validatorFn: ValidatorFn | null = this.data.validatorFn;
+  validatorFn = this.data.validatorFn;
 }

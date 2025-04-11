@@ -34,8 +34,8 @@ export class JobPricesComponent {
 
   saveEnabled = computed(() => this.jobUpdate().length > 0);
 
-  onCustomerSelected(value: string) {
-    this.navigate([], { queryParams: { customer: value || undefined } });
+  onCustomerSelected(customer?: string | null) {
+    this.navigate([], { queryParams: { customer } });
   }
 
   onJobsSelected(value: Partial<Job>[]) {

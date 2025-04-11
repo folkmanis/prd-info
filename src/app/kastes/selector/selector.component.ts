@@ -20,6 +20,7 @@ import { LabelStatus, LabelsComponent } from './labels/labels.component';
 import { OrderTotalsComponent } from './order-totals/order-totals.component';
 import { TabulaComponent } from './tabula/tabula.component';
 import { TotalsForSelectedSizeComponent } from './totals-for-selected-size/totals-for-selected-size.component';
+import { notNullOrThrow } from 'src/app/library';
 
 @Component({
   selector: 'app-selector',
@@ -76,21 +77,24 @@ export class SelectorComponent {
 
   constructor() {
     effect(async () => {
-      if (this.jobId()) {
-        const packages = await this.tabulaService.getAddressPackages(this.jobId());
+      const jobId = this.jobId();
+      if (jobId) {
+        const packages = await this.tabulaService.getAddressPackages(jobId);
         this.allAddressPackages.set(packages);
       }
     });
 
     effect(async () => {
-      if (this.jobId()) {
-        this.boxSizes.set(await this.tabulaService.getBoxSizeQuantities(this.jobId()));
+      const jobId = this.jobId();
+      if (jobId) {
+        this.boxSizes.set(await this.tabulaService.getBoxSizeQuantities(jobId));
       }
     });
 
     effect(async () => {
-      if (this.jobId()) {
-        const job = await this.tabulaService.getKastesJob(this.jobId());
+      const jobId = this.jobId();
+      if (jobId) {
+        const job = await this.tabulaService.getKastesJob(jobId);
         this.packagesJob.set(job);
       }
     });
@@ -101,7 +105,10 @@ export class SelectorComponent {
     });
   }
 
-  async onSelection(addressPackage: AddressPackage) {
+  async onSelection(addressPackage?: AddressPackage) {
+    if (!addressPackage) {
+      return;
+    }
     const config: MatDialogConfig<KasteDialogData> = {
       data: {
         addressPackage,
@@ -126,10 +133,11 @@ export class SelectorComponent {
 
   async onSetLabel(addressId: number) {
     try {
-      const updatedPackage = await this.tabulaService.setHaslabel(this.jobId(), addressId);
+      const jobId = notNullOrThrow(this.jobId());
+      const updatedPackage = await this.tabulaService.setHaslabel(jobId, addressId);
       this.replacePackage(updatedPackage);
       this.labelStatus.set({ type: 'kaste', addressPackage: updatedPackage });
-      this.table().scrollToId(updatedPackage.documentId, updatedPackage.boxSequence);
+      this.table()?.scrollToId(updatedPackage.documentId, updatedPackage.boxSequence);
     } catch (error) {
       this.labelStatus.set({ type: 'empty' });
     }

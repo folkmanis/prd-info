@@ -25,6 +25,7 @@ import { TransportationVehicle } from 'src/app/transportation/interfaces/transpo
 import { AccordionDirective } from 'src/app/transportation/ui/accordion.directive';
 import { SingleTripComponent } from './single-trip/single-trip.component';
 import { TripsTotalComponent } from '../../../ui/trips-total/trips-total.component';
+import { assertArrayOfNotNull, numberOrDefaultZero } from 'src/app/library';
 
 @Component({
   selector: 'app-route-trips',
@@ -61,11 +62,11 @@ export class RouteTripsComponent implements ControlValueAccessor, Validator {
   private chDetector = inject(ChangeDetectorRef);
   private accordion = viewChild.required(MatAccordion, { read: AccordionDirective });
 
-  form = new FormArray<FormControl<RouteTrip>>([]);
+  form = new FormArray<FormControl<RouteTrip | null>>([]);
 
   formValue = toSignal(this.form.valueChanges, { initialValue: this.form.value });
 
-  customers = input<TransportationCustomer[]>([]);
+  customers = input<TransportationCustomer[] | null>([]);
 
   vehicle = input<TransportationVehicle | null>();
 
@@ -75,10 +76,10 @@ export class RouteTripsComponent implements ControlValueAccessor, Validator {
 
   fuelUnits = computed(() => this.vehicle()?.fuelType?.units ?? '');
 
-  startDate = input<Date>();
+  startDate = input<Date | null>();
 
   writeValue(obj: RouteTrip[] | null): void {
-    if (obj?.length < this.form.length) {
+    if ((obj?.length ?? 0) < this.form.length) {
       this.accordion().closeAll();
     }
     if (obj?.length === this.form.length) {
@@ -140,6 +141,7 @@ export class RouteTripsComponent implements ControlValueAccessor, Validator {
   }
 
   onSortByDate() {
+    assertArrayOfNotNull(this.form.value);
     const sorted = this.sortTripsByDate(this.form.value);
     if (!isEqual(this.form.value, sorted)) {
       this.form.setValue(sorted);
@@ -150,7 +152,7 @@ export class RouteTripsComponent implements ControlValueAccessor, Validator {
     return computed(() => {
       const hData = this.historicalData();
       this.formValue();
-      if (this.form.length === 1 && hData && new Date(hData.lastYear, hData.lastMonth - 1) < this.form.value[idx]?.date) {
+      if (this.form.length === 1 && hData && this.form.value[idx]?.date && new Date(hData.lastYear, hData.lastMonth - 1) < this.form.value[idx]?.date) {
         return this.historicalData()?.lastOdometer || null;
       }
       if (this.form.value[idx]?.date) {
@@ -169,7 +171,7 @@ export class RouteTripsComponent implements ControlValueAccessor, Validator {
   private lastDistance(date: Date): number {
     return this.form.value
       .filter((d) => d && d.date < date && d.odoStopKm > 0)
-      .map((d) => d.odoStopKm)
+      .map((d) => numberOrDefaultZero(d?.odoStopKm))
       .reduce((acc, curr) => (curr > acc ? curr : acc), 0);
   }
 }

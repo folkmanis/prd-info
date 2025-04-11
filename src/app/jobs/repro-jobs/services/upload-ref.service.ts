@@ -7,6 +7,7 @@ import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { Job } from '../../interfaces';
 import { FileUploadEventType, FileUploadMessage, UploadMessageBase, UploadWaitingMessage } from '../../interfaces/file-upload-message';
 import { UploadRef } from './upload-ref';
+import { notNullOrDefault, stringOrThrow } from 'src/app/library';
 
 const SIMULTANEOUS_UPLOADS = 2;
 const PERCENT_REPORT_INTERVAL = 500;
@@ -51,7 +52,7 @@ export class UploadRefService {
   }
 
   setFtpUpload(path: string[], afterAddedToJob: Observable<unknown>) {
-    const fileName = last(path);
+    const fileName = stringOrThrow(last(path));
     const message: FileUploadMessage = {
       type: FileUploadEventType.UploadFinish,
       id: fileName,
@@ -144,11 +145,12 @@ export class UploadRefService {
     }
 
     if (event.type === HttpEventType.UploadProgress) {
+      const percentDone = typeof event.total === 'number' ? Math.round((100 * event.loaded) / event.total) : 0;
       return {
         ...messageBase,
         type: FileUploadEventType.UploadProgress,
         done: event.loaded,
-        percentDone: Math.round((100 * event.loaded) / event.total),
+        percentDone,
       };
     }
 
@@ -156,7 +158,7 @@ export class UploadRefService {
       return {
         ...messageBase,
         type: FileUploadEventType.UploadFinish,
-        fileNames: event.body.names,
+        fileNames: notNullOrDefault(event.body?.names, []),
       };
     }
 

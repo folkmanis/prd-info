@@ -50,7 +50,7 @@ export class TripStopDialogComponent {
   filteredCustomers$ = this.form.controls.name.valueChanges.pipe(
     debounceTime(100),
     startWith(''),
-    map((value) => this.filterCustomers(value)),
+    map((value) => this.filterCustomers(value || '')),
   );
 
   onSetCustomer(event: MatAutocompleteSelectedEvent) {

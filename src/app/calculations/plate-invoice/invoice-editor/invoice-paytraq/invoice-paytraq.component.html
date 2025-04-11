@@ -3,27 +3,29 @@
     <mat-card-title> Paytraq pavadzīme </mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    @if (invoice().customerInfo.financial?.clientName; as name) {
+    @if (invoice().customerInfo?.financial?.clientName; as name) {
       {{ name }}
     }
   </mat-card-content>
 
   <mat-card-actions>
-    @if (invoice().paytraq; as paytraq) {
-      <div class="button-row">
-        <a mat-raised-button [href]="paytraqUrl() + paytraq.paytraqId" target="new">
-          {{ paytraq.documentRef }}
-        </a>
-        <button mat-raised-button class="warn" (click)="onUnlinkPaytraq()" matTooltip="Dzēst savienojumu">Atvienot</button>
-      </div>
-    } @else {
-      <button mat-raised-button [disabled]="canCreatePaytraq() === false || busy() === true" (click)="onPaytraq()">
-        @if (busy()) {
-          <span> Saglabā... </span>
-        } @else {
-          <span> Uz PayTraq </span>
-        }
-      </button>
+    @if (paytraqUrl(); as paytraqUrl) {
+      @if (invoice().paytraq; as paytraq) {
+        <div class="button-row">
+          <a mat-raised-button [href]="paytraqUrl + paytraq.paytraqId" target="new">
+            {{ paytraq.documentRef }}
+          </a>
+          <button mat-raised-button class="warn" (click)="onUnlinkPaytraq()" matTooltip="Dzēst savienojumu">Atvienot</button>
+        </div>
+      } @else {
+        <button mat-raised-button [disabled]="canCreatePaytraq() === false || busy() === true" (click)="onPaytraq()">
+          @if (busy()) {
+            <span> Saglabā... </span>
+          } @else {
+            <span> Uz PayTraq </span>
+          }
+        </button>
+      }
     }
   </mat-card-actions>
 </mat-card>

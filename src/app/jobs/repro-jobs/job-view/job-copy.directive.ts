@@ -17,7 +17,7 @@ export class JobCopyDirective {
   job = input.required<Job>({ alias: 'appJobCopy' });
 
   async onCopy() {
-    const queryParams = { copyId: this.job().jobId, copyFiles: null };
+    const queryParams = { copyId: this.job().jobId, copyFiles: null as boolean | null };
     if (this.hasFolder()) {
       const shouldCopyFiles$ = this.dialog.confirm('Vai kopēt arī visus failus?', { data: { title: 'Kopēt darbu' } });
       queryParams.copyFiles = await firstValueFrom(shouldCopyFiles$);

@@ -8,7 +8,7 @@ import { CustomerProduct } from 'src/app/interfaces';
   standalone: true,
 })
 export class ProductControlDirective {
-  selectedName = input<string>('', { alias: 'appProductControl' });
+  selectedName = input<string | null | undefined>('', { alias: 'appProductControl' });
 
   customerProducts = input<CustomerProduct[]>([]);
 

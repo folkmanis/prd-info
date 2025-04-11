@@ -20,7 +20,7 @@ import { FileUploadEventType, FileUploadMessage } from '../../interfaces/file-up
 export class UploadProgressComponent {
   readonly types = FileUploadEventType;
 
-  progress = input<FileUploadMessage[]>([]);
+  progress = input<FileUploadMessage[] | null>([]);
 
   progressPercent(message: FileUploadMessage): number {
     switch (message.type) {

@@ -14,16 +14,16 @@ import { PasswordDialogData, PasswordInputDialogComponent } from './password-inp
 export class PasswordInputDirective {
   private dialog = inject(MatDialog);
 
-  minLength = input<number>(null, { alias: 'passwordMinimumLength' });
+  minLength = input<number | null>(null, { alias: 'passwordMinimumLength' });
 
-  validatorFn = input<ValidatorFn>(null, { alias: 'passwordValidatorFn' });
+  validatorFn = input<ValidatorFn | null>(null, { alias: 'passwordValidatorFn' });
 
   passwordEvent = output<string>({ alias: 'appPasswordChange' });
 
   onClick() {
     const config: MatDialogConfig<PasswordDialogData> = {
       data: {
-        minLength: this.minLength(),
+        minLength: this.minLength() || undefined,
         validatorFn: this.validatorFn,
       },
     };

@@ -1,4 +1,4 @@
-import { HttpClient, httpResource, HttpResourceRef, HttpResourceRequest } from '@angular/common/http';
+import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http';
 import { inject, Injectable, Signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
 import { firstValueFrom } from 'rxjs';

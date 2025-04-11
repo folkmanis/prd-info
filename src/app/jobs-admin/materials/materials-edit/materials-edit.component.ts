@@ -9,7 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { isEqual, pickBy } from 'lodash-es';
-import { Material } from 'src/app/interfaces';
+import { Material, MaterialPrice } from 'src/app/interfaces';
 import { navigateRelative } from 'src/app/library/navigation';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
@@ -20,7 +20,7 @@ import { ViewSizeDirective } from 'src/app/library/view-size';
 import { MaterialsListComponent } from '../materials-list/materials-list.component';
 
 type MaterialForm = {
-  [k in keyof Material]-?: FormControl<Material[k]>;
+  [k in keyof Material]-?: FormControl<Material[k] | null>;
 };
 
 @Component({
@@ -68,7 +68,7 @@ export class MaterialsEditComponent implements CanComponentDeactivate {
     units: ['', [Validators.required]],
     category: ['', [Validators.required]],
     inactive: [false],
-    prices: [],
+    prices: [[] as MaterialPrice[]],
     fixedPrice: [0],
   });
 
@@ -104,7 +104,7 @@ export class MaterialsEditComponent implements CanComponentDeactivate {
       await this.#materialsService.updateMaterial(update);
     } else {
       const { _id, ...newMaterial } = this.form.getRawValue();
-      const created = await this.#materialsService.insertMaterial(newMaterial);
+      const created = await this.#materialsService.insertMaterial(newMaterial as Partial<Material>);
       id = created._id;
     }
     this.#listComppoent.onReload();

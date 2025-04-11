@@ -35,7 +35,9 @@
 
       <!-- Summa -->
       <div class="total">
-        {{ productForm.value.count * productForm.value.price | currency }}
+        @if (productForm.value.count && productForm.value.price) {
+          {{ productForm.value.count * productForm.value.price | currency }}
+        }
       </div>
     }
   </div>

@@ -2,7 +2,7 @@
   <div [formGroup]="control" class="container">
     @for (color of colors; track color) {
       <div>
-        <input appInput type="number" [formControlName]="color" [style.color]="control.get(color).valid ? colorCodes()[color] : undefined" #boxInput />
+        <input appInput type="number" [formControlName]="color" [style.color]="control.get(color)?.valid ? colorCodes()[color] : undefined" #boxInput />
       </div>
     }
     <div [class.invalid]="control.invalid">

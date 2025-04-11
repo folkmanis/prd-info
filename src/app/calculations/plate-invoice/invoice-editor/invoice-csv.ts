@@ -20,10 +20,13 @@ const REPORT_FIELDS: string[] = ['Datums', 'Klients', 'Numurs', 'Nosaukums', 'Ve
 const stringify = (r: string[][], separator: string): string => r.map((row) => row.map(wrapField).join(separator)).join('\n');
 
 export class InvoiceCsv {
-  constructor(
-    private invoice: Invoice,
-    private params: { separator: string; locale?: Locale } = { separator: ',' },
-  ) {}
+  private params: { separator: string; locale?: Locale };
+  private invoice: Invoice;
+
+  constructor(invoice: Invoice, { separator, locale }: { separator: string; locale?: Locale | null } = { separator: ',' }) {
+    this.params = { separator, locale: locale ?? undefined };
+    this.invoice = invoice;
+  }
 
   toCsvInvoice(): string {
     if (!this.invoice.jobs) {
@@ -35,31 +38,26 @@ export class InvoiceCsv {
 
     const data: string[] = [
       format(new Date(this.invoice.createdDate), 'P', { locale: this.params.locale }),
-      this.invoice.customerInfo.financial?.clientName || this.invoice.customer,
+      this.invoice.customerInfo?.financial?.clientName || this.invoice.customer,
       '1',
       this.invoice.comment || '',
     ];
 
     return stringify(
-      [head, this.invoice.products.reduce((acc, curr) => [...acc, curr._id, curr.comment || '', curr.count.toFixed(6), curr.price.toFixed(6)], data)],
+      [head, this.invoice.products.reduce((acc, curr) => [...acc, curr._id, curr.comment || '', curr.count.toFixed(6), curr?.price?.toFixed(6) ?? ''], data)],
       this.params.separator,
     );
   }
 
   toCsvReport(): string {
     const data: string[][] = [REPORT_FIELDS];
-    this.invoice.jobs.forEach((job) => {
-      const pr = job.products instanceof Array ? undefined : job.products;
-      data.push([
-        format(new Date(job.receivedDate), 'P', { locale: this.params.locale }),
-        this.invoice.customer,
-        job.jobId.toString(),
-        job.name,
-        pr.name,
-        pr.count.toFixed(2).replace('.', ','),
-        pr.price.toFixed(2).replace('.', ','),
-        (pr.count * pr.price).toFixed(2).replace('.', ','),
-      ]);
+    this.invoice.jobs?.forEach((job) => {
+      const row = [format(new Date(job.receivedDate), 'P', { locale: this.params.locale }), this.invoice.customer, job.jobId.toString(), job.name];
+      if (job.products instanceof Array) {
+        const pr = job.products;
+        row.push(pr.name, pr.count.toFixed(2).replace('.', ','), pr.price.toFixed(2).replace('.', ','), (pr.count * pr.price).toFixed(2).replace('.', ','));
+      }
+      data.push(row);
     });
     return stringify(data, this.params.separator);
   }

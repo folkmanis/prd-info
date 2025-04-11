@@ -24,7 +24,7 @@ export class ProductionStage {
   name: string = '';
 
   @Expose()
-  description?: string = null;
+  description: string | null = null;
 
   @Expose()
   equipmentIds: string[] = [];

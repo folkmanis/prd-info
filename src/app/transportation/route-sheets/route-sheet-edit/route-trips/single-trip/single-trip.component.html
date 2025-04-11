@@ -4,7 +4,7 @@
       <mat-label> Brauciena datums </mat-label>
       <input matInput [matDatepicker]="datePicker" formControlName="date" />
       <mat-datepicker-toggle matIconSuffix [for]="datePicker" />
-      <mat-datepicker #datePicker [startAt]="startDate()" />
+      <mat-datepicker #datePicker [startAt]="startDate() || null" />
     </mat-form-field>
 
     <mat-form-field>
@@ -55,7 +55,7 @@
         }
       </span>
       <mat-hint align="start">
-        {{ (form.value.fuelConsumed / form.value.tripLengthKm) * 100 | number: '1.2-2' }}
+        {{ ((form.value.fuelConsumed || 0) / (form.value.tripLengthKm || 1)) * 100 | number: '1.2-2' }}
         @if (fuelUnits(); as units) {
           {{ units }}/100&nbsp;km
         }

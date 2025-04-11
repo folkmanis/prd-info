@@ -6,6 +6,7 @@ import { PaytraqClient } from 'src/app/interfaces/paytraq';
 import { PaytraqSearchHeaderComponent } from 'src/app/jobs-admin/paytraq-search-header/paytraq-search-header.component';
 import { PaytraqClientService } from '../../services/paytraq-client.service';
 import { PaytraqCustomerTableComponent } from './paytraq-customer-table/paytraq-customer-table.component';
+import { NullableType } from 'src/app/library';
 
 @Component({
   selector: 'app-paytraq-customer',
@@ -27,7 +28,7 @@ export class PaytraqCustomerComponent implements ControlValueAccessor {
   private onChanges: (obj: CustomerFinancial | null) => void;
   private onTouched: () => void;
 
-  customer = input.required<Partial<Customer> | null>();
+  customer = input.required<Partial<NullableType<Customer>> | null>();
 
   search = model('');
 
@@ -44,7 +45,9 @@ export class PaytraqCustomerComponent implements ControlValueAccessor {
     });
     effect(() => {
       const customer = this.customer();
-      this.search.set(customer.financial?.clientName || customer.CustomerName || null);
+      if (customer) {
+        this.search.set(customer.financial?.clientName || customer.CustomerName || '');
+      }
     });
   }
 
