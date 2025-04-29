@@ -2,11 +2,12 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@
 import { ControlValueAccessor, FormBuilder, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator } from '@angular/forms';
 import { plainToInstance } from 'class-transformer';
 import { map } from 'rxjs';
-import { CustomerContact } from 'src/app/interfaces';
+import { CustomerContact, newCustomerContact } from 'src/app/interfaces';
 import { CustomerContactEditorComponent } from './customer-contact-editor/customer-contact-editor.component';
 import { MatListModule } from '@angular/material/list';
 import { MatIcon } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { ValidatorService } from 'src/app/library';
 
 @Component({
   selector: 'app-customer-contacts',
@@ -30,6 +31,7 @@ import { MatButtonModule } from '@angular/material/button';
 export class CustomerContactsComponent implements ControlValueAccessor, Validator {
   private fb = inject(FormBuilder);
   private changeDetector = inject(ChangeDetectorRef);
+  #validator = inject(ValidatorService);
 
   contactsArray = this.fb.array<CustomerContact>([]);
 
@@ -44,7 +46,7 @@ export class CustomerContactsComponent implements ControlValueAccessor, Validato
   }
 
   registerOnChange(fn: (val: CustomerContact[]) => void): void {
-    this.contactsArray.valueChanges.pipe(map((value) => plainToInstance(CustomerContact, value))).subscribe(fn);
+    this.contactsArray.valueChanges.pipe(map((value) => value)).subscribe(fn);
   }
 
   registerOnTouched(fn: any): void {
@@ -72,7 +74,7 @@ export class CustomerContactsComponent implements ControlValueAccessor, Validato
   }
 
   addContact() {
-    const newContact = this.fb.control(new CustomerContact(''));
+    const newContact = this.fb.control(newCustomerContact(''));
     this.contactsArray.push(newContact, { emitEvent: false });
     newContact.setErrors({ required: true }, { emitEvent: false });
     this.active = newContact;

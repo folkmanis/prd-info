@@ -1,8 +1,9 @@
-import { inject, Injectable, signal } from '@angular/core';
-import { RouteTripStop, TransportationRouteSheet } from '../interfaces/transportation-route-sheet';
-import { RouteSheetApiService } from './route-sheet-api.service';
+import { computed, inject, Injectable } from '@angular/core';
 import { round } from 'lodash-es';
+import { FilterInput, toFilterSignal } from 'src/app/library';
 import { HistoricalData } from '../interfaces/historical-data';
+import { RouteStop, TransportationRouteSheet, TransportationRouteSheetCreate, TransportationRouteSheetUpdate } from '../interfaces/transportation-route-sheet';
+import { RouteSheetApiService } from './route-sheet-api.service';
 
 interface RouteSheetFilter {
   name?: string;
@@ -13,54 +14,55 @@ interface RouteSheetFilter {
 
 @Injectable()
 export class RouteSheetService {
-  private api = inject(RouteSheetApiService);
-  private filter: RouteSheetFilter = {};
-  #routeSheets = signal<TransportationRouteSheet[]>([]);
-  routeSheets = this.#routeSheets.asReadonly();
+  #api = inject(RouteSheetApiService);
 
-  async setFilter(filter: RouteSheetFilter) {
-    this.filter = filter;
-    await this.getAllRouteSheets();
+  getRouteSheetsResource(filter: FilterInput<RouteSheetFilter>) {
+    const filterSignal = toFilterSignal(filter);
+    const params = computed(() => {
+      const { name, year, month, fuelTypes } = filterSignal();
+      return {
+        name,
+        year: year?.toString(),
+        month: month?.toString(),
+        fuelTypes: fuelTypes ? fuelTypes.join(',') : undefined,
+      };
+    });
+    return this.#api.routeSheetResource(params);
   }
 
   async getRouteSheet(id: string) {
-    return this.api.getOne(id);
+    return this.#api.getOne(id);
   }
 
   async getCustomers() {
-    return await this.api.getCustomers();
+    return await this.#api.getCustomers();
   }
 
-  async createRouteSheet(routeSheet: Omit<TransportationRouteSheet, '_id'>): Promise<TransportationRouteSheet> {
-    const created = await this.api.createOne(routeSheet);
-    this.getAllRouteSheets();
-    return created;
+  createRouteSheet(routeSheet: TransportationRouteSheetCreate): Promise<TransportationRouteSheet> {
+    return this.#api.createOne(routeSheet);
   }
 
   async deleteRouteSheet(id: string): Promise<number> {
-    const deletedCount = await this.api.deleteOne(id);
+    const deletedCount = await this.#api.deleteOne(id);
     if (deletedCount > 0) {
-      this.getAllRouteSheets();
       return deletedCount;
     } else {
       throw new Error(`${id} not found`);
     }
   }
 
-  async updateRouteSheet(_id: string, routeSheet: Omit<Partial<TransportationRouteSheet>, 'id'>): Promise<TransportationRouteSheet> {
-    const updated = await this.api.updateOne({ _id, ...routeSheet });
-    this.getAllRouteSheets();
-    return updated;
+  updateRouteSheet(_id: string, routeSheet: TransportationRouteSheetUpdate): Promise<TransportationRouteSheet> {
+    return this.#api.updateOne(_id, routeSheet);
   }
 
-  async getTripLength(stops: RouteTripStop[]): Promise<number> {
-    const { distance } = await this.api.distanceRequest({ tripStops: stops.map(({ address, googleLocationId }) => ({ address, googleLocationId })) });
+  async getTripLength(stops: RouteStop[]): Promise<number> {
+    const { distance } = await this.#api.distanceRequest({ tripStops: stops.map(({ address, googleLocationId }) => ({ address, googleLocationId })) });
     return round(this.randomizeTripLength(distance / 1000));
   }
 
   async descriptions(): Promise<string[]> {
     try {
-      return await this.api.getDescriptions(10);
+      return await this.#api.getDescriptions(10);
     } catch (error) {
       return [];
     }
@@ -68,25 +70,13 @@ export class RouteSheetService {
 
   async getHistoricalData(licencePlate: string): Promise<HistoricalData | null> {
     try {
-      return await this.api.getHistoricalData(licencePlate);
+      return await this.#api.getHistoricalData(licencePlate);
     } catch (error) {
       if (error.status === 404) {
         return null;
       }
       throw error;
     }
-  }
-
-  private async getAllRouteSheets() {
-    const { name, year, month, fuelTypes } = this.filter;
-    const routeSheets = await this.api.getAll({
-      name,
-      year: year?.toString(),
-      month: month?.toString(),
-      fuelTypes: fuelTypes ? fuelTypes.join(',') : undefined,
-    });
-    this.#routeSheets.set(routeSheets);
-    return routeSheets;
   }
 
   private randomizeTripLength(value: number): number {

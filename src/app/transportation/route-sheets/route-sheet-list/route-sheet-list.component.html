@@ -1,5 +1,5 @@
 <app-simple-list-container plusButton editorWidth="60%">
-  <mat-table [dataSource]="routeSheets()" [trackBy]="trackByFn">
+  <mat-table [dataSource]="routeSheets.value()" [trackBy]="trackByFn">
     <mat-header-row *matHeaderRowDef="displayedColumns" />
     <mat-row *matRowDef="let routeSheet; columns: displayedColumns" [routerLink]="[routeSheet._id]" routerLinkActive="selected" />
 

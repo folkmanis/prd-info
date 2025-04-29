@@ -19,6 +19,7 @@ import { CustomerContactsComponent } from './customer-contacts/customer-contacts
 import { FtpUserComponent } from './ftp-user/ftp-user.component';
 import { PaytraqCustomerComponent } from './paytraq-customer/paytraq-customer.component';
 import { ShippingAddressComponent } from './shipping-address/shipping-address.component';
+import { assertNotNull } from 'src/app/library';
 
 @Component({
   selector: 'app-customer-edit',
@@ -93,8 +94,9 @@ export class CustomerEditComponent implements CanComponentDeactivate {
   async onSave() {
     let id = this.customer()._id;
     if (id) {
-      const update = { ...this.changes(), _id: this.customer()._id };
-      await this.customersService.updateCustomer(update);
+      const changes = this.changes();
+      assertNotNull(changes);
+      await this.customersService.updateCustomer(id, changes);
       this.onReload();
     } else {
       const customer = omitBy(this.formValue(), isNull) as NewCustomer;

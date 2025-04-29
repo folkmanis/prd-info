@@ -10,7 +10,7 @@ import { isEqual } from 'lodash-es';
 import { distinctUntilChanged, filter, firstValueFrom, map } from 'rxjs';
 import { ShippingAddress } from 'src/app/interfaces';
 import { PaytraqShippingAddress } from 'src/app/interfaces/paytraq';
-import { AppClassTransformerService, notNullOrThrow } from 'src/app/library';
+import { notNullOrThrow } from 'src/app/library';
 import { LocationSelectService } from 'src/app/library/location-select';
 import { configuration } from 'src/app/services/config.provider';
 import { PaytraqClientService } from '../../services/paytraq-client.service';
@@ -34,7 +34,6 @@ import {
   ],
 })
 export class ShippingAddressComponent implements ControlValueAccessor {
-  private transformer = inject(AppClassTransformerService);
   private dialog = inject(MatDialog);
   private paytraqService = inject(PaytraqClientService);
   private locationSelect = inject(LocationSelectService);
@@ -55,7 +54,7 @@ export class ShippingAddressComponent implements ControlValueAccessor {
 
   value$ = this.form.events.pipe(
     filter((event) => event instanceof ValueChangeEvent),
-    map((event: ValueChangeEvent<ShippingAddress>) => (event.source.valid ? this.transformer.plainToInstance(ShippingAddress, event.value) : null)),
+    map((event: ValueChangeEvent<ShippingAddress>) => (event.source.valid ? event.value : null)),
     distinctUntilChanged(isEqual),
   );
 

@@ -14,16 +14,16 @@ import {
 } from '@angular/forms';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatAccordion, MatExpansionModule } from '@angular/material/expansion';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { isEqual } from 'lodash-es';
+import { FuelType } from 'src/app/interfaces';
+import { assertArrayOfNotNull } from 'src/app/library';
 import { configuration } from 'src/app/services/config.provider';
-import { FuelType } from 'src/app/transportation/interfaces/fuel-type';
-import { FuelPurchase } from 'src/app/transportation/interfaces/transportation-route-sheet';
 import { AccordionDirective } from 'src/app/transportation/ui/accordion.directive';
+import { FuelPurchase } from '../../../interfaces/fuel-purchase';
 import { FuelTotalsComponent } from '../../../ui/fuel-totals/fuel-totals.component';
 import { SinglePurchaseComponent } from './single-purchase/single-purchase.component';
-import { isEqual } from 'lodash-es';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatIcon } from '@angular/material/icon';
-import { assertArrayOfNotNull } from 'src/app/library';
 
 @Component({
   selector: 'app-fuel-purchases',

@@ -1,103 +1,73 @@
-import { Expose, Type } from 'class-transformer';
-import { TransportationVehicle } from './transportation-vehicle';
-import { TransportationDriver } from './transportation-driver';
-import { FuelType } from './fuel-type';
+import { z } from 'zod';
+import { newTransportationDriver, transportationDriverSchema } from './transportation-driver';
+import { newTransportationVehicle, transportationVehicleSchema } from './transportation-vehicle';
+import { fuelPurchaseSchema } from './fuel-purchase';
 
-export class TransportationRouteSheet {
-  @Expose()
-  _id: string;
+export const RouteStop = z.object({
+  customerId: z.string().nullish(),
+  name: z.string(),
+  address: z.string(),
+  googleLocationId: z.string().nullish(),
+});
+export type RouteStop = z.infer<typeof RouteStop>;
 
-  @Expose()
-  year: number;
+export const RouteTrip = z.object({
+  date: z
+    .string()
+    .datetime()
+    .transform((date) => new Date(date)),
+  tripLengthKm: z.number(),
+  fuelConsumed: z.number(),
+  odoStartKm: z.number(),
+  odoStopKm: z.number(),
+  description: z.string(),
+  stops: z.array(RouteStop),
+});
+export type RouteTrip = z.infer<typeof RouteTrip>;
 
-  @Expose()
-  month: number;
-
-  @Expose()
-  fuelRemainingStartLitres: number;
-
-  @Expose()
-  driver: TransportationDriver;
-
-  @Expose()
-  @Type(() => TransportationVehicle)
-  vehicle: TransportationVehicle;
-
-  @Expose()
-  @Type(() => RouteTrip)
-  trips: RouteTrip[] = [];
-
-  @Expose()
-  @Type(() => FuelPurchase)
-  fuelPurchases: FuelPurchase[] = [];
+export function newRouteTrip(): RouteTrip {
+  return {
+    date: new Date(),
+    tripLengthKm: 0,
+    fuelConsumed: 0,
+    odoStartKm: 0,
+    odoStopKm: 0,
+    description: '',
+    stops: [],
+  };
 }
 
-export class RouteTrip {
-  @Expose()
-  @Type(() => Date)
-  date: Date;
+export const TransportationRouteSheet = z.object({
+  _id: z.string(),
+  year: z.number(),
+  month: z.number(),
+  fuelRemainingStartLitres: z.number(),
+  driver: transportationDriverSchema,
+  vehicle: transportationVehicleSchema,
+  trips: z.array(RouteTrip),
+  fuelPurchases: z.array(fuelPurchaseSchema),
+});
+export type TransportationRouteSheet = z.infer<typeof TransportationRouteSheet>;
 
-  @Expose()
-  tripLengthKm: number;
-
-  @Expose()
-  fuelConsumed: number;
-
-  @Expose()
-  odoStartKm: number;
-
-  @Expose()
-  odoStopKm: number;
-
-  @Expose()
-  description: string;
-
-  @Expose()
-  @Type(() => RouteTripStop)
-  stops: RouteTripStop[] = [];
+export function newTransportationRouteSheet(): TransportationRouteSheet {
+  return {
+    _id: '',
+    year: new Date().getFullYear(),
+    month: new Date().getMonth() + 1,
+    fuelRemainingStartLitres: 0,
+    driver: newTransportationDriver(),
+    vehicle: newTransportationVehicle(),
+    trips: [],
+    fuelPurchases: [],
+  };
 }
 
-export class RouteTripStop {
-  @Expose()
-  customerId?: string;
+export const transportationRouteSheetSchemaCrate = TransportationRouteSheet.omit({
+  _id: true,
+});
+export type TransportationRouteSheetCreate = z.infer<typeof transportationRouteSheetSchemaCrate>;
 
-  @Expose()
-  name: string;
-
-  @Expose()
-  address: string;
-
-  @Expose()
-  googleLocationId?: string;
-}
-
-export class FuelPurchase {
-  @Expose()
-  @Type(() => Date)
-  date: Date;
-
-  @Expose()
-  type: string;
-
-  @Expose()
-  units: string;
-
-  @Expose()
-  amount: number = 0;
-
-  @Expose()
-  price: number = 0;
-
-  @Expose()
-  total: number;
-
-  @Expose()
-  invoiceId?: string;
-
-  constructor(fuelType?: FuelType) {
-    if (fuelType) {
-      this.type = fuelType.type;
-      this.units = fuelType.units;
-    }
-  }
-}
+export const transportationRouteSheetSchemaUpdate = TransportationRouteSheet.omit({
+  _id: true,
+}).partial();
+export type TransportationRouteSheetUpdate = z.infer<typeof transportationRouteSheetSchemaUpdate>;

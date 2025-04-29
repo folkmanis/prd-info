@@ -29,7 +29,7 @@ import { filter } from 'rxjs';
 import { ConfirmationDialogService } from 'src/app/library';
 import { ViewSizeDirective } from 'src/app/library/view-size';
 import { TransportationCustomer } from 'src/app/transportation/interfaces/transportation-customer';
-import { RouteTrip, RouteTripStop } from 'src/app/transportation/interfaces/transportation-route-sheet';
+import { RouteTrip, RouteStop, newRouteTrip } from 'src/app/transportation/interfaces/transportation-route-sheet';
 import { RouteSheetService } from 'src/app/transportation/services/route-sheet.service';
 import { TripStopsComponent } from './trip-stops/trip-stops.component';
 
@@ -78,7 +78,7 @@ export class SingleTripComponent implements ControlValueAccessor, Validator {
       fuelConsumed: [null as number | null, [Validators.required, Validators.min(0)]],
       odoStartKm: [null as number | null, [Validators.required, Validators.min(0)]],
       odoStopKm: [null as number | null, [Validators.required]],
-      stops: [[] as RouteTripStop[]],
+      stops: [[] as RouteStop[]],
       description: [null as string | null, [Validators.required, Validators.maxLength(255)]],
     },
     { validators: [this.validateOdoStop()] },
@@ -108,7 +108,7 @@ export class SingleTripComponent implements ControlValueAccessor, Validator {
   }
 
   writeValue(obj: RouteTrip | null): void {
-    const trip = obj ?? new RouteTrip();
+    const trip = obj ?? newRouteTrip();
     this.form.reset(trip, { emitEvent: false });
   }
 

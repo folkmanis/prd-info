@@ -1,72 +1,76 @@
-import { Expose, Type } from 'class-transformer';
-import { ShippingAddress } from './module-settings/shipping-address';
+import { z } from 'zod';
+import { shippingAddressSchema } from './module-settings/shipping-address';
 
-export interface CustomerFinancial {
-  clientName: string;
-  paytraqId?: number;
+export const customerFinancialSchema = z.object({
+  clientName: z.string(),
+  paytraqId: z.number().optional(),
+});
+
+export const ftpUserDataSchema = z.object({
+  folder: z.string(),
+  username: z.string().catch(''),
+  password: z.string().catch(''),
+});
+
+export const customerContactSchema = z.object({
+  email: z.string().email(),
+});
+
+export const customerSchema = z.object({
+  _id: z.string(),
+  code: z.string().min(2).max(3).toUpperCase(),
+  CustomerName: z.string(),
+  disabled: z.boolean().default(false),
+  insertedFromXmf: z.coerce.date().nullish().default(null),
+  description: z.string().nullish(),
+  financial: customerFinancialSchema.nullable().catch(null),
+  ftpUser: z.boolean().default(false),
+  ftpUserData: ftpUserDataSchema.nullable().catch(null),
+  contacts: z.array(customerContactSchema).default([]),
+  shippingAddress: shippingAddressSchema.nullish().default(null),
+});
+
+export const customerPartialSchema = customerSchema.pick({
+  _id: true,
+  CustomerName: true,
+  code: true,
+  disabled: true,
+});
+
+export const newCustomerSchema = customerSchema.pick({
+  CustomerName: true,
+  disabled: true,
+  code: true,
+  description: true,
+  ftpUser: true,
+  contacts: true,
+});
+
+export const customerUpdateSchema = customerSchema
+  .omit({
+    _id: true,
+  })
+  .partial();
+
+export type CustomerPartial = z.infer<typeof customerPartialSchema>;
+export type NewCustomer = z.infer<typeof newCustomerSchema>;
+export type CustomerUpdate = z.infer<typeof customerUpdateSchema>;
+export type CustomerFinancial = z.infer<typeof customerFinancialSchema>;
+export type FtpUserData = z.infer<typeof ftpUserDataSchema>;
+export type CustomerContact = z.infer<typeof customerContactSchema>;
+export type Customer = z.infer<typeof customerSchema>;
+
+export function newCustomerContact(email: string): CustomerContact {
+  return { email };
 }
 
-export class FtpUserData {
-  @Expose()
-  folder: string = '';
-
-  @Expose()
-  username: string = '';
-
-  @Expose()
-  password: string = '';
+export function newCustomer(): NewCustomer {
+  return {
+    CustomerName: '',
+    code: '',
+    disabled: false,
+    description: '',
+    ftpUser: false,
+    contacts: [],
+  };
 }
-
-export class CustomerContact {
-  @Expose()
-  email: string;
-
-  constructor(email: string) {
-    this.email = email;
-  }
-}
-
-export class Customer {
-  @Expose()
-  _id: string;
-
-  @Expose()
-  code: string = '';
-
-  @Expose()
-  CustomerName: string = '';
-
-  @Expose()
-  disabled: boolean = false;
-
-  @Expose()
-  @Type(() => Date)
-  insertedFromXmf: Date | null = null;
-
-  @Expose()
-  description?: string;
-
-  @Expose()
-  financial?: CustomerFinancial | null = null;
-
-  @Expose()
-  ftpUser: boolean = false;
-
-  @Expose()
-  @Type(() => FtpUserData)
-  ftpUserData: FtpUserData | null = null;
-
-  @Expose()
-  @Type(() => CustomerContact)
-  contacts: CustomerContact[] = [];
-
-  @Expose()
-  @Type(() => ShippingAddress)
-  shippingAddress: ShippingAddress | null = null;
-}
-
-export type CustomerPartial = Pick<Customer, '_id' | 'CustomerName' | 'code' | 'disabled'>;
-
-export type NewCustomer = Pick<Customer, 'CustomerName' | 'disabled' | 'code' | 'description' | 'ftpUser' | 'contacts'>;
-
-export type CustomerUpdate = Pick<Customer, '_id'> & Partial<Customer>;

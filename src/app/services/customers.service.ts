@@ -13,31 +13,31 @@ export interface CustomerRequestFilter {
   providedIn: 'root',
 })
 export class CustomersService {
-  private api = inject(CustomersApiService);
+  #api = inject(CustomersApiService);
 
   getCustomersResource(filterSignal: FilterInput<CustomerRequestFilter>) {
-    return this.api.customersResource(toFilterSignal(filterSignal));
+    return this.#api.customersResource(toFilterSignal(filterSignal));
   }
 
-  updateCustomer({ _id, ...rest }: CustomerUpdate): Promise<Customer> {
-    return this.api.updateOne(_id, rest);
+  updateCustomer(id: string, update: CustomerUpdate): Promise<Customer> {
+    return this.#api.updateOne(id, update);
   }
 
   getCustomer(id: string): Promise<Customer | never> {
     this.isValidId(id);
-    return this.api.getOne(id);
+    return this.#api.getOne(id);
   }
 
   getCustomerByName(name: string): Promise<Customer> {
-    return this.api.getOne(name);
+    return this.#api.getOne(name);
   }
 
   saveNewCustomer(customer: NewCustomer): Promise<Customer> {
-    return this.api.insertOne(customer);
+    return this.#api.insertOne(customer);
   }
 
   getCustomerList(filter: CustomerRequestFilter = {}): Promise<CustomerPartial[]> {
-    return this.api.getAll(filter);
+    return this.#api.getAll(filter);
   }
 
   async isNameAvailable(name?: string): Promise<boolean> {
@@ -45,7 +45,7 @@ export class CustomersService {
       return true;
     }
     name = name.toUpperCase();
-    const values = await this.api.validatorData('CustomerName');
+    const values = await this.#api.validatorData('CustomerName');
     return values.every((value) => value.toUpperCase() !== name);
   }
 
@@ -54,7 +54,7 @@ export class CustomersService {
       return true;
     }
     code = code.toUpperCase();
-    const values = await this.api.validatorData('code');
+    const values = await this.#api.validatorData('code');
     return values.every((value) => value.toUpperCase() !== code);
   }
 

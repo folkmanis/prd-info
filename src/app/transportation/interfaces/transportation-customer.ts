@@ -1,14 +1,9 @@
-import { Expose, Type } from 'class-transformer';
-import { Customer, ShippingAddress } from 'src/app/interfaces';
+import { customerSchema } from 'src/app/interfaces';
+import { z } from 'zod';
 
-export class TransportationCustomer implements NonNullable<Pick<Customer, '_id' | 'CustomerName' | 'shippingAddress'>> {
-  @Expose()
-  _id: string;
-
-  @Expose()
-  CustomerName: string;
-
-  @Expose()
-  @Type(() => ShippingAddress)
-  shippingAddress: ShippingAddress;
-}
+export const transportationCustomerSchema = customerSchema.pick({
+  _id: true,
+  CustomerName: true,
+  shippingAddress: true,
+});
+export type TransportationCustomer = z.infer<typeof transportationCustomerSchema>;

@@ -1,5 +1,5 @@
 <app-simple-list-container plusButton>
-  <mat-table [dataSource]="drivers()">
+  <mat-table [dataSource]="drivers.value()">
     <mat-header-row *matHeaderRowDef="displayColumns" />
     <mat-row *matRowDef="let driver; columns: displayColumns" [routerLink]="driver._id" routerLinkActive="selected" [class.disabled]="driver.disabled" />
 

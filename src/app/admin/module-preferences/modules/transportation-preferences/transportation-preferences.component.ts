@@ -11,7 +11,7 @@ import {
   Validator,
 } from '@angular/forms';
 import { filter } from 'rxjs';
-import { FuelTypeInterface, ShippingAddress } from 'src/app/interfaces';
+import { FuelType, ShippingAddress } from 'src/app/interfaces';
 import { ShippingAddressPreferencesComponent } from './shipping-address-preferences/shipping-address-preferences.component';
 import { SimpleListTableComponent } from 'src/app/library/simple-list-table/simple-list-table.component';
 import { FuelTypeDialogComponent } from './fuel-type-dialog/fuel-type-dialog.component';
@@ -38,7 +38,7 @@ import { FuelTypeDialogComponent } from './fuel-type-dialog/fuel-type-dialog.com
 export class TransportationPreferencesComponent implements ControlValueAccessor, Validator {
   form = inject(FormBuilder).group({
     shippingAddress: [null as null | ShippingAddress],
-    fuelTypes: [[] as FuelTypeInterface[]],
+    fuelTypes: [[] as FuelType[]],
   });
 
   touch$ = this.form.events.pipe(

@@ -1,9 +1,9 @@
 import { Route } from '@angular/router';
-import { CustomersListComponent } from './customers-list/customers-list.component';
-import { CustomerEditComponent } from './customer-edit/customer-edit.component';
+import { newCustomer } from 'src/app/interfaces';
 import { canComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
+import { CustomerEditComponent } from './customer-edit/customer-edit.component';
+import { CustomersListComponent } from './customers-list/customers-list.component';
 import { resolveCustomer } from './services/customer-resolver';
-import { Customer } from 'src/app/interfaces';
 
 export default [
   {
@@ -15,7 +15,7 @@ export default [
         component: CustomerEditComponent,
         canDeactivate: [canComponentDeactivate],
         resolve: {
-          customer: () => new Customer(),
+          customer: () => newCustomer(),
         },
       },
       {

@@ -9,7 +9,7 @@ import { firstValueFrom } from 'rxjs';
 import { notNullOrThrow } from 'src/app/library';
 import { configuration } from 'src/app/services/config.provider';
 import { TransportationCustomer } from 'src/app/transportation/interfaces/transportation-customer';
-import { RouteTripStop } from 'src/app/transportation/interfaces/transportation-route-sheet';
+import { RouteStop } from 'src/app/transportation/interfaces/transportation-route-sheet';
 import { TripStopDialogComponent, TripStopDialogData } from './trip-stop-dialog/trip-stop-dialog.component';
 
 @Component({
@@ -47,13 +47,13 @@ export class TripStopsComponent implements ControlValueAccessor, Validator {
     return null;
   });
 
-  tripStops = signal<RouteTripStop[]>([]);
+  tripStops = signal<RouteStop[]>([]);
 
   canCalculateRoute = computed(() => this.validationErrors() == null && !this.isDisabled());
 
   calculateRoute = output<void>();
 
-  onChange = (_: RouteTripStop[]) => {};
+  onChange = (_: RouteStop[]) => {};
   onTouched = () => {};
 
   writeValue(obj: any): void {
@@ -81,7 +81,7 @@ export class TripStopsComponent implements ControlValueAccessor, Validator {
     if (!home) {
       return;
     }
-    const data: RouteTripStop = {
+    const data: RouteStop = {
       name: this.homeName(),
       address: home.address,
       googleLocationId: home.googleId,
@@ -122,7 +122,7 @@ export class TripStopsComponent implements ControlValueAccessor, Validator {
     this.onChange(this.tripStops());
   }
 
-  onDrop(event: CdkDragDrop<RouteTripStop[]>) {
+  onDrop(event: CdkDragDrop<RouteStop[]>) {
     if (event.previousIndex === event.currentIndex) {
       return;
     }

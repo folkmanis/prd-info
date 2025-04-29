@@ -12,6 +12,10 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransportationDriverListComponent {
-  drivers = inject(TransportationDriverService).drivers;
+  drivers = inject(TransportationDriverService).getDriversResource({});
   displayColumns = ['name'];
+
+  onReload() {
+    this.drivers.reload();
+  }
 }

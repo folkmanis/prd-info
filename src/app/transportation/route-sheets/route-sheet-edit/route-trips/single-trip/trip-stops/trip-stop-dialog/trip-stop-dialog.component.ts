@@ -8,11 +8,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { debounceTime, map, startWith } from 'rxjs';
 import { TransportationCustomer } from 'src/app/transportation/interfaces/transportation-customer';
-import { RouteTripStop } from 'src/app/transportation/interfaces/transportation-route-sheet';
+import { RouteStop } from 'src/app/transportation/interfaces/transportation-route-sheet';
 
 export interface TripStopDialogData {
   customers: TransportationCustomer[];
-  tripStop?: RouteTripStop;
+  tripStop?: RouteStop;
 }
 
 @Component({
@@ -38,7 +38,6 @@ export interface TripStopDialogData {
 })
 export class TripStopDialogComponent {
   private data = inject<TripStopDialogData>(MAT_DIALOG_DATA);
-  private dialogRef = inject(MatDialogRef);
 
   form = inject(FormBuilder).group({
     customerId: [this.data.tripStop?.customerId as string | null],
@@ -58,8 +57,8 @@ export class TripStopDialogComponent {
     if (customer) {
       this.form.patchValue({
         customerId: customer._id,
-        address: customer.shippingAddress.address,
-        googleLocationId: customer.shippingAddress.googleId,
+        address: customer.shippingAddress?.address ?? null,
+        googleLocationId: customer.shippingAddress?.googleId ?? null,
       });
     }
   }

@@ -14,12 +14,12 @@ import { TransportationRouteSheet } from '../../interfaces/transportation-route-
 })
 export class RouteSheetListComponent {
   private routeSheetService = inject(RouteSheetService);
-  routeSheets = this.routeSheetService.routeSheets;
+  routeSheets = this.routeSheetService.getRouteSheetsResource({});
 
   displayedColumns = ['month-year', 'driver', 'licencePlate']; // , 'totalKm'
   trackByFn: TrackByFunction<TransportationRouteSheet> = (_, route) => route._id;
 
-  constructor() {
-    this.routeSheetService.setFilter({});
+  onReload() {
+    this.routeSheets.reload();
   }
 }

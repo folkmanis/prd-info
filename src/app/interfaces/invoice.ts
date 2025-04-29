@@ -36,7 +36,6 @@ export class Invoice {
 
   comment?: string;
 
-  @Type(() => Customer)
   customerInfo?: Customer;
 
   @Type(() => PaytraqInvoice)

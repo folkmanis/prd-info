@@ -4,7 +4,6 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { plainToInstance } from 'class-transformer';
 import { filter, map } from 'rxjs';
 import { JobFilesService } from 'src/app/filesystem';
 import { FtpUserData } from 'src/app/interfaces';
@@ -54,7 +53,7 @@ export class FtpUserComponent implements ControlValueAccessor {
     this.form.events
       .pipe(
         filter((event) => event instanceof ValueChangeEvent),
-        map(({ source, value }: ValueChangeEvent<FtpUserData>) => (source.valid ? plainToInstance(FtpUserData, value) : null)),
+        map(({ source, value }: ValueChangeEvent<FtpUserData>) => (source.valid ? value : null)),
       )
       .subscribe(fn);
   }

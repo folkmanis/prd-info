@@ -2,7 +2,7 @@ import { CurrencyPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { isObject } from 'lodash-es';
-import { FuelPurchase } from 'src/app/transportation/interfaces/transportation-route-sheet';
+import { FuelPurchase } from '../../interfaces/fuel-purchase';
 
 @Component({
   selector: 'app-fuel-totals',

@@ -20,7 +20,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { isEqual } from 'lodash-es';
 import { HistoricalData } from 'src/app/transportation/interfaces/historical-data';
 import { TransportationCustomer } from 'src/app/transportation/interfaces/transportation-customer';
-import { RouteTrip, RouteTripStop } from 'src/app/transportation/interfaces/transportation-route-sheet';
+import { RouteTrip, RouteStop } from 'src/app/transportation/interfaces/transportation-route-sheet';
 import { TransportationVehicle } from 'src/app/transportation/interfaces/transportation-vehicle';
 import { AccordionDirective } from 'src/app/transportation/ui/accordion.directive';
 import { SingleTripComponent } from './single-trip/single-trip.component';
@@ -130,7 +130,7 @@ export class RouteTripsComponent implements ControlValueAccessor, Validator {
     this.chDetector.markForCheck();
   }
 
-  getDescription(stops?: RouteTripStop[]): string | null {
+  getDescription(stops?: RouteStop[]): string | null {
     if (!stops || stops.length < 1) {
       return null;
     }

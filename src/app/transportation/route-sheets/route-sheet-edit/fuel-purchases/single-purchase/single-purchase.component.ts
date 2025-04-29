@@ -19,10 +19,10 @@ import { MatInput } from '@angular/material/input';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { isFinite, round } from 'lodash-es';
 import { filter } from 'rxjs';
+import { FuelType } from 'src/app/interfaces';
 import { ViewSizeDirective } from 'src/app/library/view-size';
 import { configuration } from 'src/app/services/config.provider';
-import { FuelType } from 'src/app/transportation/interfaces/fuel-type';
-import { FuelPurchase } from 'src/app/transportation/interfaces/transportation-route-sheet';
+import { FuelPurchase, newFuelPurchase } from '../../../../interfaces/fuel-purchase';
 
 @Component({
   selector: 'app-single-purchase',
@@ -88,7 +88,7 @@ export class SinglePurchaseComponent implements ControlValueAccessor, Validator 
   }
 
   writeValue(obj: any): void {
-    const purchase = obj ?? new FuelPurchase(this.defaultFuelType());
+    const purchase = obj ?? newFuelPurchase(this.defaultFuelType());
     this.form.reset(purchase, { emitEvent: false });
   }
 

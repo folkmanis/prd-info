@@ -4,7 +4,7 @@ import { MatButton } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { FuelTypeInterface } from 'src/app/interfaces';
+import { FuelType } from 'src/app/interfaces';
 
 @Component({
   selector: 'app-fuel-type-dialog',
@@ -14,7 +14,7 @@ import { FuelTypeInterface } from 'src/app/interfaces';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FuelTypeDialogComponent {
-  private data = inject<FuelTypeInterface>(MAT_DIALOG_DATA, { optional: true });
+  private data = inject<FuelType>(MAT_DIALOG_DATA, { optional: true });
   private dialogRef = inject(MatDialogRef);
 
   form = inject(FormBuilder).nonNullable.group({

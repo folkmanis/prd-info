@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { isEqual, omitBy } from 'lodash-es';
 import { filter, map } from 'rxjs';
-import { FuelTypeInterface } from 'src/app/interfaces';
+import { FuelType } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library';
 import { navigateRelative } from 'src/app/library/navigation';
 import { DisableControlDirective } from 'src/app/library/directives/disable-control.directive';
@@ -53,7 +53,7 @@ export class TransportationVehicleEditComponent implements CanComponentDeactivat
     name: [null as string | null, [Validators.required], [this.nameValidator()]],
     licencePlate: [null as string | null, [Validators.required], [this.licencePlateValidator()]],
     consumption: [null as null | number, [Validators.required, Validators.min(0)]],
-    fuelType: [null as null | FuelTypeInterface, [Validators.required]],
+    fuelType: [null as null | FuelType, [Validators.required]],
     disabled: [false],
   });
 
@@ -75,7 +75,7 @@ export class TransportationVehicleEditComponent implements CanComponentDeactivat
     return Object.keys(diff).length ? diff : null;
   });
 
-  fuelCompareWith = (o1: FuelTypeInterface, o2: FuelTypeInterface) => o1 && o2 && o1.type === o2.type;
+  fuelCompareWith = (o1: FuelType, o2: FuelType) => o1 && o2 && o1.type === o2.type;
 
   constructor() {
     effect(() => {

@@ -1,9 +1,9 @@
 import { Route } from '@angular/router';
-import { TransportationVehiclesListComponent } from './transportation-vehicles-list/transportation-vehicles-list.component';
-import { TransportationVehicleEditComponent } from './transportation-vehicle-edit/transportation-vehicle-edit.component';
-import { TransportationVehicle } from '../interfaces/transportation-vehicle';
-import { transportationVehicleResolver } from '../services/transportation-vehicle.resolver';
 import { canComponentDeactivate } from 'src/app/library/guards';
+import { newTransportationVehicle } from '../interfaces/transportation-vehicle';
+import { transportationVehicleResolver } from '../services/transportation-vehicle.resolver';
+import { TransportationVehicleEditComponent } from './transportation-vehicle-edit/transportation-vehicle-edit.component';
+import { TransportationVehiclesListComponent } from './transportation-vehicles-list/transportation-vehicles-list.component';
 
 export default [
   {
@@ -14,7 +14,7 @@ export default [
         path: 'new',
         component: TransportationVehicleEditComponent,
         resolve: {
-          vehicle: () => new TransportationVehicle(),
+          vehicle: () => newTransportationVehicle(),
         },
         canDeactivate: [canComponentDeactivate],
       },

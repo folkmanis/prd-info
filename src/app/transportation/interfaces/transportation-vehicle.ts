@@ -1,23 +1,27 @@
-import { Expose, Type } from 'class-transformer';
-import { FuelType } from './fuel-type';
+import { fuelTypeSchema } from 'src/app/interfaces';
+import { z } from 'zod';
 
-export class TransportationVehicle {
-  @Expose()
-  _id: string;
+export const transportationVehicleSchema = z.object({
+  _id: z.string(),
+  name: z.string(),
+  licencePlate: z.string(),
+  consumption: z.number(), // units
+  fuelType: fuelTypeSchema,
+  disabled: z.boolean().default(false),
+});
+export type TransportationVehicle = z.infer<typeof transportationVehicleSchema>;
 
-  @Expose()
-  name: string;
-
-  @Expose()
-  licencePlate: string;
-
-  @Expose()
-  consumption: number; // units
-
-  @Type(() => FuelType)
-  @Expose()
-  fuelType: FuelType;
-
-  @Expose()
-  disabled: boolean;
+export function newTransportationVehicle(): TransportationVehicle {
+  return {
+    _id: '',
+    name: '',
+    licencePlate: '',
+    consumption: 0,
+    fuelType: {
+      type: '',
+      description: '',
+      units: '',
+    },
+    disabled: false,
+  };
 }

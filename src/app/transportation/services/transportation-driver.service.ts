@@ -1,54 +1,42 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { FilterInput, toFilterSignal } from 'src/app/library';
+import { TransportationDriverCreate, TransportationDriverUpdate } from '../interfaces/transportation-driver';
 import { TransportationDriverApiService } from './transportation-driver-api.service';
-import { TransportationDriver } from '../interfaces/transportation-driver';
+
+export interface TransportationDriverRequestFilter {
+  name?: string;
+  email?: string;
+  disabled?: boolean;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class TransportationDriverService {
-  private api = inject(TransportationDriverApiService);
-  #drivers = signal<TransportationDriver[]>([]);
+  #api = inject(TransportationDriverApiService);
 
-  drivers = this.#drivers.asReadonly();
-
-  driversActive = computed(() => this.#drivers().filter((driver) => !driver.disabled));
-
-  constructor() {
-    this.retrieveAll();
+  getDriversResource(filter: FilterInput<TransportationDriverRequestFilter>) {
+    return this.#api.driversResource(toFilterSignal(filter));
   }
 
-  async getDriver(id: string) {
-    return this.api.getOne(id);
+  getDriver(id: string) {
+    return this.#api.getOne(id);
   }
 
-  async create(driver: Omit<TransportationDriver, 'id'>) {
-    const result = await this.api.createOne(driver);
-    this.retrieveAll();
-    return result;
+  create(driver: TransportationDriverCreate) {
+    return this.#api.createOne(driver);
   }
 
-  async update(driver: Pick<TransportationDriver, '_id'> & Partial<TransportationDriver>) {
-    const { _id: id, ...rest } = driver;
-    const result = await this.api.updateOne(id, rest);
-    this.retrieveAll();
-    return result;
+  update(id: string, update: TransportationDriverUpdate) {
+    return this.#api.updateOne(id, update);
   }
 
-  async delete(id: string) {
-    const result = await this.api.deleteOne(id);
-    if (result > 0) {
-      this.retrieveAll();
-    }
-    return result;
+  delete(id: string) {
+    return this.#api.deleteOne(id);
   }
 
   async validateName(name: string): Promise<boolean> {
-    const names = await this.api.validate('name');
+    const names = await this.#api.validate('name');
     return names.every((n) => n.toUpperCase() !== name.toUpperCase());
-  }
-
-  private async retrieveAll() {
-    const drivers = await this.api.getAll();
-    this.#drivers.set(drivers);
   }
 }

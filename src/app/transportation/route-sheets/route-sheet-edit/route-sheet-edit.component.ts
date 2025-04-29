@@ -12,7 +12,8 @@ import { CanComponentDeactivate } from 'src/app/library/guards';
 import { navigateRelative } from 'src/app/library/navigation';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { TransportationDriver } from '../../interfaces/transportation-driver';
-import { FuelPurchase, RouteTrip, TransportationRouteSheet } from '../../interfaces/transportation-route-sheet';
+import { RouteTrip, TransportationRouteSheet } from '../../interfaces/transportation-route-sheet';
+import { FuelPurchase } from '../../interfaces/fuel-purchase';
 import { TransportationVehicle } from '../../interfaces/transportation-vehicle';
 import { RouteSheetService } from '../../services/route-sheet.service';
 import { TransportationDriverService } from '../../services/transportation-driver.service';
@@ -21,6 +22,7 @@ import { FuelPurchasesComponent } from './fuel-purchases/fuel-purchases.componen
 import { GeneralSetupComponent } from './general-setup/general-setup.component';
 import { RouteTripsComponent } from './route-trips/route-trips.component';
 import { assertNoNullProperties, assertNotNull, notNullOrThrow } from 'src/app/library';
+import { RouteSheetListComponent } from '../route-sheet-list/route-sheet-list.component';
 
 @Component({
   selector: 'app-route-sheet-edit',
@@ -41,15 +43,16 @@ import { assertNoNullProperties, assertNotNull, notNullOrThrow } from 'src/app/l
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RouteSheetEditComponent implements CanComponentDeactivate {
-  private readonly routeSheetService = inject(RouteSheetService);
-  private navigate = navigateRelative();
-  private readonly confirmation = inject(ConfirmationDialogService);
+  readonly #routeSheetService = inject(RouteSheetService);
+  #navigate = navigateRelative();
+  readonly #confirmation = inject(ConfirmationDialogService);
+  #listComponent = inject(RouteSheetListComponent);
 
-  drivers = inject(TransportationDriverService).driversActive;
+  drivers = inject(TransportationDriverService).getDriversResource({ disabled: false });
 
   vehicles = inject(TransportationVehicleService).vehiclesActive;
 
-  customers$ = this.routeSheetService.getCustomers();
+  customers$ = this.#routeSheetService.getCustomers();
 
   form = inject(FormBuilder).group({
     year: [null as number | null, { validators: [Validators.required, Validators.min(1990)] }],
@@ -98,7 +101,7 @@ export class RouteSheetEditComponent implements CanComponentDeactivate {
   historicalData$ = this.form.controls.vehicle.events.pipe(
     filter((event) => event instanceof ValueChangeEvent),
     map((event: ValueChangeEvent<TransportationVehicle>) => event.value?.licencePlate),
-    switchMap((licencePlate) => (licencePlate ? this.routeSheetService.getHistoricalData(licencePlate) : of(null))),
+    switchMap((licencePlate) => (licencePlate ? this.#routeSheetService.getHistoricalData(licencePlate) : of(null))),
   );
 
   constructor() {
@@ -113,16 +116,17 @@ export class RouteSheetEditComponent implements CanComponentDeactivate {
       if (!id) {
         const data = this.form.getRawValue();
         assertNoNullProperties(data);
-        id = (await this.routeSheetService.createRouteSheet(data))._id;
+        id = (await this.#routeSheetService.createRouteSheet(data))._id;
       } else {
         const data = notNullOrThrow(this.changes());
         assertNoNullProperties(data);
-        await this.routeSheetService.updateRouteSheet(id, data);
+        await this.#routeSheetService.updateRouteSheet(id, data);
       }
+      this.#listComponent.onReload();
       this.form.markAsPristine();
-      this.navigate(['..', id], { queryParams: { upd: Date.now() } });
+      this.#navigate(['..', id], { queryParams: { upd: Date.now() } });
     } catch (error) {
-      this.confirmation.confirmDataError(error.message);
+      this.#confirmation.confirmDataError(error.message);
     }
   }
 
@@ -132,13 +136,15 @@ export class RouteSheetEditComponent implements CanComponentDeactivate {
 
   async onDelete() {
     const id = this.initialValue()._id;
-    if (id && (await this.confirmation.confirmDelete())) {
+    if (id && (await this.#confirmation.confirmDelete())) {
       try {
-        await this.routeSheetService.deleteRouteSheet(id);
+        await this.#routeSheetService.deleteRouteSheet(id);
         this.form.markAsPristine();
-        this.navigate(['..']);
+        this.#navigate(['..']);
       } catch (error) {
-        this.confirmation.confirmDataError(error.message);
+        this.#confirmation.confirmDataError(error.message);
+      } finally {
+        this.#listComponent.onReload();
       }
     }
   }

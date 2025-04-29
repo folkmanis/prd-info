@@ -14,6 +14,7 @@ import { CanComponentDeactivate } from 'src/app/library/guards';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { TransportationDriver } from '../../interfaces/transportation-driver';
 import { TransportationDriverService } from '../../services/transportation-driver.service';
+import { TransportationDriverListComponent } from '../transportation-driver-list/transportation-driver-list.component';
 
 type FormValue = { [K in 'name' | 'disabled']?: TransportationDriver[K] | null };
 
@@ -25,9 +26,10 @@ type FormValue = { [K in 'name' | 'disabled']?: TransportationDriver[K] | null }
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransportationDriverEditComponent implements CanComponentDeactivate {
-  private driverService = inject(TransportationDriverService);
-  private navigate = navigateRelative();
-  private confirmation = inject(ConfirmationDialogService);
+  #driverService = inject(TransportationDriverService);
+  #navigate = navigateRelative();
+  #confirmation = inject(ConfirmationDialogService);
+  #listComponent = inject(TransportationDriverListComponent);
 
   form = inject(FormBuilder).group({
     name: ['', [Validators.required], [this.nameValidator()]],
@@ -73,13 +75,15 @@ export class TransportationDriverEditComponent implements CanComponentDeactivate
     }
     let id = this.initialValue()._id;
     if (id) {
-      await this.driverService.update({ _id: id, ...update });
+      await this.#driverService.update(id, update);
+      this.#listComponent.onReload();
     } else {
-      const created = await this.driverService.create(update as Omit<TransportationDriver, 'id'>);
+      const created = await this.#driverService.create(update as Omit<TransportationDriver, 'id'>);
       id = created._id;
+      this.#listComponent.onReload();
     }
     this.form.markAsPristine();
-    this.navigate(['..', id], { queryParams: { upd: Date.now() } });
+    this.#navigate(['..', id], { queryParams: { upd: Date.now() } });
   }
 
   async onDelete() {
@@ -87,11 +91,12 @@ export class TransportationDriverEditComponent implements CanComponentDeactivate
     if (!id) {
       return;
     }
-    const confirmed = await this.confirmation.confirmDelete();
+    const confirmed = await this.#confirmation.confirmDelete();
     if (confirmed) {
-      await this.driverService.delete(id);
+      await this.#driverService.delete(id);
+      this.#listComponent.onReload();
       this.form.markAsPristine();
-      this.navigate(['..'], { queryParams: { del: Date.now() } });
+      this.#navigate(['..'], { queryParams: { del: Date.now() } });
     }
   }
 
@@ -102,7 +107,7 @@ export class TransportationDriverEditComponent implements CanComponentDeactivate
         return null;
       }
 
-      return (await this.driverService.validateName(name)) ? null : { nameTaken: name };
+      return (await this.#driverService.validateName(name)) ? null : { nameTaken: name };
     };
   }
 }
