@@ -1,27 +1,33 @@
-import { Expose, Type } from 'class-transformer';
+import { z } from 'zod';
 
-export class ProductProductionStageMaterial {
-  @Expose()
-  materialId: string = '';
+export const ProductProductionStageMaterial = z.object({
+  materialId: z.string(),
+  amount: z.number(),
+  fixedAmount: z.number(),
+});
+export type ProductProductionStageMaterial = z.infer<typeof ProductProductionStageMaterial>;
 
-  @Expose()
-  amount: number = 0;
-
-  @Expose()
-  fixedAmount: number = 0;
+export function newProductProductionStageMaterial(): ProductProductionStageMaterial {
+  return {
+    materialId: '',
+    amount: 0,
+    fixedAmount: 0,
+  };
 }
 
-export class ProductProductionStage {
-  @Expose()
-  productionStageId: string = '';
+export const ProductProductionStage = z.object({
+  productionStageId: z.string(),
+  amount: z.number(),
+  fixedAmount: z.number(),
+  materials: z.array(ProductProductionStageMaterial),
+});
+export type ProductProductionStage = z.infer<typeof ProductProductionStage>;
 
-  @Expose()
-  @Type(() => ProductProductionStageMaterial)
-  materials: ProductProductionStageMaterial[] = [];
-
-  @Expose()
-  amount: number = 0;
-
-  @Expose()
-  fixedAmount: number = 0;
+export function newProductProductionStage(): ProductProductionStage {
+  return {
+    productionStageId: '',
+    amount: 0,
+    fixedAmount: 0,
+    materials: [],
+  };
 }

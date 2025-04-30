@@ -1,7 +1,7 @@
-<app-simple-form-container buttons [status]="form.status" [isChanges]="changes" (save)="onSave()" (resetForm)="onReset()">
+<app-simple-form-container buttons [status]="form.status" [isChanges]="changes()" (save)="onSave()" (resetForm)="onReset()">
   <form [formGroup]="form">
     <div class="headline-medium">
-      @if (form.value._id === null) {
+      @if (id() === null || id() === undefined) {
         <!-- Nosaukums labojams -->
         <mat-form-field>
           <mat-label>Nosaukums</mat-label>

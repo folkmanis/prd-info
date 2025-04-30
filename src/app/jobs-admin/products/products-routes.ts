@@ -3,6 +3,7 @@ import { canComponentDeactivate } from 'src/app/library/guards/can-deactivate.gu
 import { ProductsEditorComponent } from './products-editor/products-editor.component';
 import { ProductsListComponent } from './products-list/products-list.component';
 import { resolveProduct } from './services/product-resolver';
+import { newProduct } from 'src/app/interfaces';
 
 export default [
   {
@@ -13,8 +14,8 @@ export default [
         path: 'new',
         component: ProductsEditorComponent,
         canDeactivate: [canComponentDeactivate],
-        data: {
-          product: {},
+        resolve: {
+          product: newProduct,
         },
       },
       {

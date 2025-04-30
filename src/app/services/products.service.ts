@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { CustomerProduct, NewProduct, Product, ProductProductionStage } from 'src/app/interfaces';
+import { CustomerProduct, NewProduct, Product, ProductProductionStage, ProductUpdate } from 'src/app/interfaces';
 import { ProductsApiService, ProductsFilter } from 'src/app/services/prd-api/products-api.service';
 import { assertNotNull, FilterInput, toFilterSignal } from '../library';
 
@@ -42,9 +42,9 @@ export class ProductsService {
     }
   }
 
-  updateProduct({ _id, ...rest }: Partial<Product>): Promise<Product> {
-    assertNotNull(_id, 'Product ID is required');
-    return this.api.updateOne(_id, rest);
+  updateProduct(id: string, update: ProductUpdate): Promise<Product> {
+    assertNotNull(id, 'Product ID is required');
+    return this.api.updateOne(id, update);
   }
 
   insertProduct(prod: NewProduct): Promise<Product> {

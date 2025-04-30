@@ -1,75 +1,72 @@
-import { Expose, Transform, Type } from 'class-transformer';
+import { z } from 'zod';
 import { ProductProductionStage } from './product-production-stage';
 
-export class CustomerProduct {
-  @Expose()
-  category: string;
+export const CustomerProduct = z.object({
+  category: z.string(),
+  description: z.string(),
+  productName: z.string(),
+  customerName: z.string(),
+  price: z.number(),
+  units: z.string(),
+});
+export type CustomerProduct = z.infer<typeof CustomerProduct>;
 
-  @Expose()
-  description: string;
+export const ProductPrice = z.object({
+  customerName: z.string(),
+  price: z.number(),
+  lastUsed: z
+    .string()
+    .datetime()
+    .transform((value) => new Date(value))
+    .nullable(),
+});
+export type ProductPrice = z.infer<typeof ProductPrice>;
 
-  @Expose()
-  productName: string;
+export const Product = z.object({
+  _id: z.string(),
+  inactive: z.any().transform(Boolean),
+  category: z.string(),
+  name: z.string(),
+  units: z.string().default(''),
+  paytraqId: z.number().nullish(),
+  description: z.string().nullish(),
+  prices: z.array(ProductPrice).default([]),
+  productionStages: z.array(ProductProductionStage).default([]),
+});
+export type Product = z.infer<typeof Product>;
 
-  @Expose()
-  customerName: string;
+export const ProductUpdate = Product.omit({
+  _id: true,
+}).partial();
+export type ProductUpdate = z.infer<typeof ProductUpdate>;
 
-  @Expose()
-  price: number;
+export const ProductPartial = Product.pick({
+  _id: true,
+  name: true,
+  category: true,
+  inactive: true,
+});
+export type ProductPartial = z.infer<typeof ProductPartial>;
 
-  @Expose()
-  units: string;
+export const NewProduct = Product.omit({
+  _id: true,
+});
+export type NewProduct = z.infer<typeof NewProduct>;
+
+export function newProduct(): NewProduct {
+  return {
+    inactive: false,
+    category: '',
+    name: '',
+    units: '',
+    paytraqId: null,
+    description: null,
+    prices: [],
+    productionStages: [],
+  };
 }
 
-export class Product {
-  @Expose()
-  _id: string;
-
-  @Expose()
-  @Transform(({ value }) => !!value)
-  inactive: boolean = false;
-
-  @Expose()
-  category: string;
-
-  @Expose()
-  name: string;
-
-  @Expose()
-  units: string;
-
-  @Expose()
-  paytraqId?: number;
-
-  @Expose()
-  description?: string;
-
-  @Expose()
-  @Type(() => ProductPrice)
-  prices: ProductPrice[] = [];
-
-  @Expose()
-  @Type(() => ProductProductionStage)
-  productionStages: ProductProductionStage[] = [];
-}
-
-export type ProductPartial = Pick<Product, '_id' | 'name' | 'category' | 'inactive'>;
-
-export class ProductPrice {
-  @Expose()
-  customerName: string;
-
-  @Expose()
-  price: number;
-
-  @Type(() => Date)
-  @Transform(({ value }) => new Date(value))
-  lastUsed: Date | null = null;
-}
-
-export interface PriceChange {
-  customerName: string;
-  price: number | undefined;
-}
-
-export type NewProduct = Omit<Product, '_id'>;
+export const PriceChange = z.object({
+  customerName: z.string(),
+  price: z.number().optional(),
+});

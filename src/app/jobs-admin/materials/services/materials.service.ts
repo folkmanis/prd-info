@@ -1,5 +1,6 @@
 import { inject, Injectable, Signal } from '@angular/core';
 import { Material } from 'src/app/interfaces';
+import { FilterInput, toFilterSignal } from 'src/app/library';
 import { MaterialsApiService } from 'src/app/services/prd-api/materials-api.service';
 
 export type MaterialWithDescription = Material & {
@@ -17,8 +18,8 @@ export interface MaterialsFilter {
 export class MaterialsService {
   private api = inject(MaterialsApiService);
 
-  getMaterialsResource(filterSignal: Signal<MaterialsFilter>) {
-    return this.api.materialsResource(filterSignal);
+  getMaterialsResource(filter?: FilterInput<MaterialsFilter>) {
+    return this.api.materialsResource(toFilterSignal(filter));
   }
 
   getMaterial(id: string): Promise<Material> {

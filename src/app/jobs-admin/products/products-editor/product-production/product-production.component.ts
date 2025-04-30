@@ -18,7 +18,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { Material, ProductionStage } from 'src/app/interfaces';
-import { ProductProductionStage } from 'src/app/interfaces/product-production-stage';
+import { newProductProductionStage, ProductProductionStage } from 'src/app/interfaces/product-production-stage';
 import { SelectDirective } from 'src/app/library/directives/select.directive';
 import { ProductionMaterialComponent } from './production-material/production-material.component';
 
@@ -109,7 +109,7 @@ export class ProductProductionComponent implements ControlValueAccessor, Validat
     }
   }
 
-  private stageControl(stage: ProductProductionStage = new ProductProductionStage()): ProductProductionStageControlType {
+  private stageControl(stage: ProductProductionStage = newProductProductionStage()): ProductProductionStageControlType {
     return this.fb.nonNullable.group({
       productionStageId: [stage.productionStageId, [Validators.required]],
       amount: [stage.amount],

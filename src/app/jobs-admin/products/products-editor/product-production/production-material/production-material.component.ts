@@ -15,7 +15,7 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
-import { Material, ProductProductionStageMaterial } from 'src/app/interfaces';
+import { Material, newProductProductionStageMaterial, ProductProductionStageMaterial } from 'src/app/interfaces';
 import { SelectDirective } from 'src/app/library/directives/select.directive';
 import { MaterialUnitsDirective } from './material-units.directive';
 
@@ -104,7 +104,7 @@ export class ProductionMaterialComponent implements ControlValueAccessor, Valida
     }
   }
 
-  private materialGroup(material = new ProductProductionStageMaterial()): MaterialGroup {
+  private materialGroup(material = newProductProductionStageMaterial()): MaterialGroup {
     return this.fb.group({
       materialId: [material.materialId, [Validators.required]],
       amount: [material.amount, [Validators.required, Validators.min(0)]],
