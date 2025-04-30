@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const shippingAddressSchema = z.object({
+export const ShippingAddress = z.object({
   address: z.string(),
   zip: z.string(),
   country: z.string(),
@@ -8,4 +8,4 @@ export const shippingAddressSchema = z.object({
   googleId: z.string().optional(),
 });
 
-export type ShippingAddress = z.infer<typeof shippingAddressSchema>;
+export type ShippingAddress = z.infer<typeof ShippingAddress>;

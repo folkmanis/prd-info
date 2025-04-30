@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { newTransportationDriver, transportationDriverSchema } from './transportation-driver';
-import { newTransportationVehicle, transportationVehicleSchema } from './transportation-vehicle';
-import { fuelPurchaseSchema } from './fuel-purchase';
+import { newTransportationDriver, TransportationDriver } from './transportation-driver';
+import { newTransportationVehicle, TransportationVehicle } from './transportation-vehicle';
+import { FuelPurchase } from './fuel-purchase';
 
 export const RouteStop = z.object({
   customerId: z.string().nullish(),
@@ -42,10 +42,10 @@ export const TransportationRouteSheet = z.object({
   year: z.number(),
   month: z.number(),
   fuelRemainingStartLitres: z.number(),
-  driver: transportationDriverSchema,
-  vehicle: transportationVehicleSchema,
+  driver: TransportationDriver,
+  vehicle: TransportationVehicle,
   trips: z.array(RouteTrip),
-  fuelPurchases: z.array(fuelPurchaseSchema),
+  fuelPurchases: z.array(FuelPurchase),
 });
 export type TransportationRouteSheet = z.infer<typeof TransportationRouteSheet>;
 
@@ -62,12 +62,12 @@ export function newTransportationRouteSheet(): TransportationRouteSheet {
   };
 }
 
-export const transportationRouteSheetSchemaCrate = TransportationRouteSheet.omit({
+export const TransportationRouteSheetCrate = TransportationRouteSheet.omit({
   _id: true,
 });
-export type TransportationRouteSheetCreate = z.infer<typeof transportationRouteSheetSchemaCrate>;
+export type TransportationRouteSheetCreate = z.infer<typeof TransportationRouteSheetCrate>;
 
-export const transportationRouteSheetSchemaUpdate = TransportationRouteSheet.omit({
+export const TransportationRouteSheetUpdate = TransportationRouteSheet.omit({
   _id: true,
 }).partial();
-export type TransportationRouteSheetUpdate = z.infer<typeof transportationRouteSheetSchemaUpdate>;
+export type TransportationRouteSheetUpdate = z.infer<typeof TransportationRouteSheetUpdate>;

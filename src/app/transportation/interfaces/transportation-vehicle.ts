@@ -1,15 +1,25 @@
-import { fuelTypeSchema } from 'src/app/interfaces';
+import { FuelType } from 'src/app/interfaces';
 import { z } from 'zod';
 
-export const transportationVehicleSchema = z.object({
+export const TransportationVehicle = z.object({
   _id: z.string(),
   name: z.string(),
   licencePlate: z.string(),
   consumption: z.number(), // units
-  fuelType: fuelTypeSchema,
+  fuelType: FuelType,
   disabled: z.boolean().default(false),
 });
-export type TransportationVehicle = z.infer<typeof transportationVehicleSchema>;
+export type TransportationVehicle = z.infer<typeof TransportationVehicle>;
+
+export const TransportationVehicleUpdate = TransportationVehicle.omit({
+  _id: true,
+}).partial();
+export type TransportationVehicleUpdate = z.infer<typeof TransportationVehicleUpdate>;
+
+export const TransportationVehicleCreate = TransportationVehicle.omit({
+  _id: true,
+});
+export type TransportationVehicleCreate = z.infer<typeof TransportationVehicleCreate>;
 
 export function newTransportationVehicle(): TransportationVehicle {
   return {

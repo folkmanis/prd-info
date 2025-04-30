@@ -1,7 +1,7 @@
 import { FuelType } from 'src/app/interfaces';
 import { z } from 'zod';
 
-export const fuelPurchaseSchema = z.object({
+export const FuelPurchase = z.object({
   date: z
     .string()
     .datetime()
@@ -13,7 +13,7 @@ export const fuelPurchaseSchema = z.object({
   total: z.number(),
   invoiceId: z.string().nullish(),
 });
-export type FuelPurchase = z.infer<typeof fuelPurchaseSchema>;
+export type FuelPurchase = z.infer<typeof FuelPurchase>;
 
 export function newFuelPurchase(fuelType?: FuelType): FuelPurchase {
   const purchase: FuelPurchase = {

@@ -12,6 +12,10 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransportationVehiclesListComponent {
-  vehicles = inject(TransportationVehicleService).vehicles;
+  vehicles = inject(TransportationVehicleService).getVehiclesResource({});
   displayedColumns = ['name', 'licencePlate', 'fuelType', 'consuption'];
+
+  onReload() {
+    this.vehicles.reload();
+  }
 }

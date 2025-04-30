@@ -16,8 +16,9 @@ import { DisableControlDirective } from 'src/app/library/directives/disable-cont
 import { InputUppercaseDirective } from 'src/app/library/directives/input-uppercase.directive';
 import { CanComponentDeactivate } from 'src/app/library/guards';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
-import { TransportationVehicle } from '../../interfaces/transportation-vehicle';
+import { TransportationVehicle, TransportationVehicleCreate, TransportationVehicleUpdate } from '../../interfaces/transportation-vehicle';
 import { TransportationVehicleService } from '../../services/transportation-vehicle.service';
+import { TransportationDriverListComponent } from '../../transportation-driver/transportation-driver-list/transportation-driver-list.component';
 
 type FormValue = { [P in keyof Omit<TransportationVehicle, '_id'>]?: TransportationVehicle[P] | null };
 // type FormValue = Partial<Omit<TransportationVehicle, 'id'>>;
@@ -43,11 +44,12 @@ type FormValue = { [P in keyof Omit<TransportationVehicle, '_id'>]?: Transportat
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransportationVehicleEditComponent implements CanComponentDeactivate {
-  private vehicleService = inject(TransportationVehicleService);
-  private navigate = navigateRelative();
-  private confirmation = inject(ConfirmationDialogService);
+  #vehicleService = inject(TransportationVehicleService);
+  #navigate = navigateRelative();
+  #confirmation = inject(ConfirmationDialogService);
+  #listComponent = inject(TransportationDriverListComponent);
 
-  fuelTypes = this.vehicleService.fuelTypes;
+  fuelTypes = this.#vehicleService.fuelTypes;
 
   form = inject(FormBuilder).group({
     name: [null as string | null, [Validators.required], [this.nameValidator()]],
@@ -98,13 +100,14 @@ export class TransportationVehicleEditComponent implements CanComponentDeactivat
     }
     let id = this.initialValue()._id;
     if (id) {
-      await this.vehicleService.update({ _id: id, ...update });
+      await this.#vehicleService.update(id, update);
     } else {
-      const created = await this.vehicleService.create(update as Omit<TransportationVehicle, 'id'>);
+      const created = await this.#vehicleService.create(update as TransportationVehicleCreate);
       id = created._id;
     }
+    this.#listComponent.onReload();
     this.form.markAsPristine();
-    this.navigate(['..', id], { queryParams: { upd: Date.now() } });
+    this.#navigate(['..', id], { queryParams: { upd: Date.now() } });
   }
 
   async onDelete() {
@@ -112,11 +115,12 @@ export class TransportationVehicleEditComponent implements CanComponentDeactivat
     if (!id) {
       return;
     }
-    const confirmed = await this.confirmation.confirmDelete();
+    const confirmed = await this.#confirmation.confirmDelete();
     if (confirmed) {
-      await this.vehicleService.delete(id);
+      await this.#vehicleService.delete(id);
+      this.#listComponent.onReload();
       this.form.markAsPristine();
-      this.navigate(['..'], { queryParams: { del: Date.now() } });
+      this.#navigate(['..'], { queryParams: { del: Date.now() } });
     }
   }
 
@@ -127,7 +131,7 @@ export class TransportationVehicleEditComponent implements CanComponentDeactivat
         return null;
       }
 
-      return (await this.vehicleService.validateName(name)) ? null : { nameTaken: name };
+      return (await this.#vehicleService.validateName(name)) ? null : { nameTaken: name };
     };
   }
 
@@ -138,7 +142,7 @@ export class TransportationVehicleEditComponent implements CanComponentDeactivat
         return null;
       }
 
-      return (await this.vehicleService.validateLicencePlate(licencePlate)) ? null : { licencePlateTaken: licencePlate };
+      return (await this.#vehicleService.validateLicencePlate(licencePlate)) ? null : { licencePlateTaken: licencePlate };
     };
   }
 }

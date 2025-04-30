@@ -4,7 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { HttpOptions, httpResponseRequest, ValidatorService } from 'src/app/library';
 import { HistoricalData } from '../interfaces/historical-data';
-import { transportationCustomerSchema } from '../interfaces/transportation-customer';
+import { TransportationCustomer } from '../interfaces/transportation-customer';
 import { RouteStop, TransportationRouteSheetCreate, TransportationRouteSheet, TransportationRouteSheetUpdate } from '../interfaces/transportation-route-sheet';
 import { isEqual } from 'lodash-es';
 
@@ -22,11 +22,6 @@ export class RouteSheetApiService {
       defaultValue: [],
       equal: isEqual,
     });
-  }
-
-  getAll(filter: Record<string, any>): Promise<TransportationRouteSheet[]> {
-    const response$ = this.#http.get<Record<string, any>[]>(this.#path, new HttpOptions(filter));
-    return this.#validator.validateArrayAsync(TransportationRouteSheet, response$);
   }
 
   getOne(id: string): Promise<TransportationRouteSheet> {
@@ -52,7 +47,7 @@ export class RouteSheetApiService {
 
   async getCustomers() {
     const response$ = this.#http.get<Record<string, any>[]>(this.#path + '/customers', new HttpOptions().cacheable());
-    return this.#validator.validateArrayAsync(transportationCustomerSchema, response$);
+    return this.#validator.validateArrayAsync(TransportationCustomer, response$);
   }
 
   async distanceRequest(request: { tripStops: Pick<RouteStop, 'address' | 'googleLocationId'>[] }): Promise<{ distance: number }> {
