@@ -11,14 +11,14 @@ import { isEqual, omitBy } from 'lodash-es';
 import { filter, map } from 'rxjs';
 import { FuelType } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library';
-import { navigateRelative } from 'src/app/library/navigation';
 import { DisableControlDirective } from 'src/app/library/directives/disable-control.directive';
 import { InputUppercaseDirective } from 'src/app/library/directives/input-uppercase.directive';
 import { CanComponentDeactivate } from 'src/app/library/guards';
+import { navigateRelative } from 'src/app/library/navigation';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
-import { TransportationVehicle, TransportationVehicleCreate, TransportationVehicleUpdate } from '../../interfaces/transportation-vehicle';
+import { TransportationVehicle, TransportationVehicleCreate } from '../../interfaces/transportation-vehicle';
 import { TransportationVehicleService } from '../../services/transportation-vehicle.service';
-import { TransportationDriverListComponent } from '../../transportation-driver/transportation-driver-list/transportation-driver-list.component';
+import { TransportationVehiclesListComponent } from '../transportation-vehicles-list/transportation-vehicles-list.component';
 
 type FormValue = { [P in keyof Omit<TransportationVehicle, '_id'>]?: TransportationVehicle[P] | null };
 // type FormValue = Partial<Omit<TransportationVehicle, 'id'>>;
@@ -47,7 +47,7 @@ export class TransportationVehicleEditComponent implements CanComponentDeactivat
   #vehicleService = inject(TransportationVehicleService);
   #navigate = navigateRelative();
   #confirmation = inject(ConfirmationDialogService);
-  #listComponent = inject(TransportationDriverListComponent);
+  #listComponent = inject(TransportationVehiclesListComponent);
 
   fuelTypes = this.#vehicleService.fuelTypes;
 
