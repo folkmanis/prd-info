@@ -12,10 +12,7 @@ export const RouteStop = z.object({
 export type RouteStop = z.infer<typeof RouteStop>;
 
 export const RouteTrip = z.object({
-  date: z
-    .string()
-    .datetime()
-    .transform((date) => new Date(date)),
+  date: z.coerce.date(),
   tripLengthKm: z.number(),
   fuelConsumed: z.number(),
   odoStartKm: z.number(),

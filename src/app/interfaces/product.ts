@@ -14,11 +14,7 @@ export type CustomerProduct = z.infer<typeof CustomerProduct>;
 export const ProductPrice = z.object({
   customerName: z.string(),
   price: z.number(),
-  lastUsed: z
-    .string()
-    .datetime()
-    .transform((value) => new Date(value))
-    .nullable(),
+  lastUsed: z.coerce.date().nullable(),
 });
 export type ProductPrice = z.infer<typeof ProductPrice>;
 

@@ -2,10 +2,7 @@ import { FuelType } from 'src/app/interfaces';
 import { z } from 'zod';
 
 export const FuelPurchase = z.object({
-  date: z
-    .string()
-    .datetime()
-    .transform((date) => new Date(date)),
+  date: z.coerce.date(),
   type: z.string(),
   units: z.string(),
   amount: z.number().default(0),
