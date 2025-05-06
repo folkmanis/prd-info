@@ -57,18 +57,3 @@ export type CustomerFinancial = z.infer<typeof CustomerFinancial>;
 export type FtpUserData = z.infer<typeof FtpUserData>;
 export type CustomerContact = z.infer<typeof CustomerContact>;
 export type Customer = z.infer<typeof Customer>;
-
-export function newCustomerContact(email: string): CustomerContact {
-  return { email };
-}
-
-export function newCustomer(): NewCustomer {
-  return {
-    CustomerName: '',
-    code: '',
-    disabled: false,
-    description: '',
-    ftpUser: false,
-    contacts: [],
-  };
-}

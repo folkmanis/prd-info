@@ -7,14 +7,6 @@ export const ProductProductionStageMaterial = z.object({
 });
 export type ProductProductionStageMaterial = z.infer<typeof ProductProductionStageMaterial>;
 
-export function newProductProductionStageMaterial(): ProductProductionStageMaterial {
-  return {
-    materialId: '',
-    amount: 0,
-    fixedAmount: 0,
-  };
-}
-
 export const ProductProductionStage = z.object({
   productionStageId: z.string(),
   amount: z.number(),
@@ -22,12 +14,3 @@ export const ProductProductionStage = z.object({
   materials: z.array(ProductProductionStageMaterial),
 });
 export type ProductProductionStage = z.infer<typeof ProductProductionStage>;
-
-export function newProductProductionStage(): ProductProductionStage {
-  return {
-    productionStageId: '',
-    amount: 0,
-    fixedAmount: 0,
-    materials: [],
-  };
-}

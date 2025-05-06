@@ -53,19 +53,6 @@ export const NewProduct = Product.omit({
 });
 export type NewProduct = z.infer<typeof NewProduct>;
 
-export function newProduct(): NewProduct {
-  return {
-    inactive: false,
-    category: '',
-    name: '',
-    units: '',
-    paytraqId: null,
-    description: null,
-    prices: [],
-    productionStages: [],
-  };
-}
-
 export const PriceChange = z.object({
   customerName: z.string(),
   price: z.number().optional(),

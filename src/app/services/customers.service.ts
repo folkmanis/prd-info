@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Customer, CustomerPartial, CustomerUpdate, NewCustomer } from 'src/app/interfaces';
+import { Customer, CustomerContact, CustomerPartial, CustomerUpdate, NewCustomer } from 'src/app/interfaces';
 import { FilterInput, toFilterSignal } from 'src/app/library';
 import { CustomersApiService } from './prd-api/customers-api.service';
 
@@ -56,6 +56,21 @@ export class CustomersService {
     code = code.toUpperCase();
     const values = await this.#api.validatorData('code');
     return values.every((value) => value.toUpperCase() !== code);
+  }
+
+  newCustomerContact(email: string): CustomerContact {
+    return { email };
+  }
+
+  newCustomer(): NewCustomer {
+    return {
+      CustomerName: '',
+      code: '',
+      disabled: false,
+      description: '',
+      ftpUser: false,
+      contacts: [],
+    };
   }
 
   private isValidId(str: any): asserts str is string {

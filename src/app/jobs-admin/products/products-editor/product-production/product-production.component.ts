@@ -18,9 +18,10 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { Material, ProductionStage } from 'src/app/interfaces';
-import { newProductProductionStage, ProductProductionStage } from 'src/app/interfaces/product-production-stage';
+import { ProductProductionStage } from 'src/app/interfaces/product-production-stage';
 import { SelectDirective } from 'src/app/library/directives/select.directive';
 import { ProductionMaterialComponent } from './production-material/production-material.component';
+import { ProductsService } from 'src/app/services';
 
 type ProductProductionStageControlType = FormGroup<{
   [key in keyof ProductProductionStage]: FormControl<ProductProductionStage[key]>;
@@ -46,11 +47,12 @@ type ProductProductionStageControlType = FormGroup<{
   ],
 })
 export class ProductProductionComponent implements ControlValueAccessor, Validator {
-  private chDetector = inject(ChangeDetectorRef);
+  #chDetector = inject(ChangeDetectorRef);
 
-  private fb = new FormBuilder();
+  #fb = inject(FormBuilder);
+  #productsService = inject(ProductsService);
 
-  form = new FormArray<ProductProductionStageControlType>([]);
+  form = this.#fb.array<ProductProductionStageControlType>([]);
 
   materials = input<Material[]>([]);
   productionStages = input<ProductionStage[]>([]);
@@ -89,12 +91,12 @@ export class ProductProductionComponent implements ControlValueAccessor, Validat
 
   onDeleteStage(idx: number) {
     this.form.removeAt(idx);
-    this.chDetector.markForCheck();
+    this.#chDetector.markForCheck();
   }
 
   onNewProductionStage(): void {
     this.form.push(this.stageControl());
-    this.chDetector.markForCheck();
+    this.#chDetector.markForCheck();
   }
 
   private setProductionStages(stages?: ProductProductionStage[]): void {
@@ -105,12 +107,12 @@ export class ProductProductionComponent implements ControlValueAccessor, Validat
     } else {
       this.form.clear({ emitEvent: false });
       stages.forEach((st) => this.form.push(this.stageControl(st), { emitEvent: false }));
-      this.chDetector.markForCheck();
+      this.#chDetector.markForCheck();
     }
   }
 
-  private stageControl(stage: ProductProductionStage = newProductProductionStage()): ProductProductionStageControlType {
-    return this.fb.nonNullable.group({
+  private stageControl(stage: ProductProductionStage = this.#productsService.newProductProductionStage()): ProductProductionStageControlType {
+    return this.#fb.nonNullable.group({
       productionStageId: [stage.productionStageId, [Validators.required]],
       amount: [stage.amount],
       fixedAmount: [stage.fixedAmount],

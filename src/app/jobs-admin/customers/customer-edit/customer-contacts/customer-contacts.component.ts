@@ -1,13 +1,12 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator } from '@angular/forms';
-import { plainToInstance } from 'class-transformer';
-import { map } from 'rxjs';
-import { CustomerContact, newCustomerContact } from 'src/app/interfaces';
-import { CustomerContactEditorComponent } from './customer-contact-editor/customer-contact-editor.component';
-import { MatListModule } from '@angular/material/list';
-import { MatIcon } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { ValidatorService } from 'src/app/library';
+import { MatIcon } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { map } from 'rxjs';
+import { CustomerContact } from 'src/app/interfaces';
+import { CustomersService } from 'src/app/services';
+import { CustomerContactEditorComponent } from './customer-contact-editor/customer-contact-editor.component';
 
 @Component({
   selector: 'app-customer-contacts',
@@ -29,15 +28,15 @@ import { ValidatorService } from 'src/app/library';
   imports: [ReactiveFormsModule, CustomerContactEditorComponent, MatListModule, MatIcon, MatButtonModule],
 })
 export class CustomerContactsComponent implements ControlValueAccessor, Validator {
-  private fb = inject(FormBuilder);
-  private changeDetector = inject(ChangeDetectorRef);
-  #validator = inject(ValidatorService);
+  #fb = inject(FormBuilder);
+  #changeDetector = inject(ChangeDetectorRef);
+  #customersService = inject(CustomersService);
 
-  contactsArray = this.fb.array<CustomerContact>([]);
+  contactsArray = this.#fb.array<CustomerContact>([]);
 
   active: FormControl<CustomerContact | null> | null = null;
 
-  private onTouchFn: () => void = () => {};
+  #onTouchFn: () => void = () => {};
 
   writeValue(obj: CustomerContact[]): void {
     obj = obj instanceof Array ? obj : [];
@@ -50,7 +49,7 @@ export class CustomerContactsComponent implements ControlValueAccessor, Validato
   }
 
   registerOnTouched(fn: any): void {
-    this.onTouchFn = fn;
+    this.#onTouchFn = fn;
   }
 
   setDisabledState(isDisabled: boolean): void {
@@ -70,11 +69,11 @@ export class CustomerContactsComponent implements ControlValueAccessor, Validato
   }
 
   onTouch() {
-    this.onTouchFn();
+    this.#onTouchFn();
   }
 
   addContact() {
-    const newContact = this.fb.control(newCustomerContact(''));
+    const newContact = this.#fb.control(this.#customersService.newCustomerContact(''));
     this.contactsArray.push(newContact, { emitEvent: false });
     newContact.setErrors({ required: true }, { emitEvent: false });
     this.active = newContact;
@@ -96,6 +95,6 @@ export class CustomerContactsComponent implements ControlValueAccessor, Validato
       this.contactsArray.push(new FormControl(), { emitEvent: false });
     }
 
-    this.changeDetector.markForCheck();
+    this.#changeDetector.markForCheck();
   }
 }

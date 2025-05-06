@@ -3,7 +3,8 @@ import { canComponentDeactivate } from 'src/app/library/guards/can-deactivate.gu
 import { ProductsEditorComponent } from './products-editor/products-editor.component';
 import { ProductsListComponent } from './products-list/products-list.component';
 import { resolveProduct } from './services/product-resolver';
-import { newProduct } from 'src/app/interfaces';
+import { inject } from '@angular/core';
+import { ProductsService } from 'src/app/services';
 
 export default [
   {
@@ -15,7 +16,7 @@ export default [
         component: ProductsEditorComponent,
         canDeactivate: [canComponentDeactivate],
         resolve: {
-          product: newProduct,
+          product: () => inject(ProductsService).newProduct(),
         },
       },
       {

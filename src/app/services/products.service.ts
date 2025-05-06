@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { CustomerProduct, NewProduct, Product, ProductProductionStage, ProductUpdate } from 'src/app/interfaces';
+import { CustomerProduct, NewProduct, Product, ProductProductionStage, ProductProductionStageMaterial, ProductUpdate } from 'src/app/interfaces';
 import { ProductsApiService, ProductsFilter } from 'src/app/services/prd-api/products-api.service';
 import { assertNotNull, FilterInput, toFilterSignal } from '../library';
 
@@ -49,5 +49,35 @@ export class ProductsService {
 
   insertProduct(prod: NewProduct): Promise<Product> {
     return this.api.insertOne(prod);
+  }
+
+  newProduct(): NewProduct {
+    return {
+      inactive: false,
+      category: '',
+      name: '',
+      units: '',
+      paytraqId: null,
+      description: null,
+      prices: [],
+      productionStages: [],
+    };
+  }
+
+  newProductProductionStageMaterial(): ProductProductionStageMaterial {
+    return {
+      materialId: '',
+      amount: 0,
+      fixedAmount: 0,
+    };
+  }
+
+  newProductProductionStage(): ProductProductionStage {
+    return {
+      productionStageId: '',
+      amount: 0,
+      fixedAmount: 0,
+      materials: [],
+    };
   }
 }

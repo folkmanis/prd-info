@@ -15,9 +15,10 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
-import { Material, newProductProductionStageMaterial, ProductProductionStageMaterial } from 'src/app/interfaces';
+import { Material, ProductProductionStageMaterial } from 'src/app/interfaces';
 import { SelectDirective } from 'src/app/library/directives/select.directive';
 import { MaterialUnitsDirective } from './material-units.directive';
+import { ProductsService } from 'src/app/services';
 
 type MaterialGroup = FormGroup<{
   [key in keyof ProductProductionStageMaterial]: FormControl<ProductProductionStageMaterial[key]>;
@@ -43,10 +44,11 @@ type MaterialGroup = FormGroup<{
   ],
 })
 export class ProductionMaterialComponent implements ControlValueAccessor, Validator {
-  form = new FormArray<MaterialGroup>([]);
-  private fb = new FormBuilder().nonNullable;
+  #fb = inject(FormBuilder).nonNullable;
+  #chDetector = inject(ChangeDetectorRef);
+  #productsService = inject(ProductsService);
 
-  private chDetector = inject(ChangeDetectorRef);
+  form = this.#fb.array<MaterialGroup>([]);
 
   materials = input<Material[]>([]);
 
@@ -56,7 +58,7 @@ export class ProductionMaterialComponent implements ControlValueAccessor, Valida
 
   writeValue(obj: ProductProductionStageMaterial[]): void {
     this.initControl(obj);
-    this.chDetector.markForCheck();
+    this.#chDetector.markForCheck();
   }
 
   registerOnChange(fn: (obj: ProductProductionStageMaterial[]) => void): void {
@@ -87,12 +89,12 @@ export class ProductionMaterialComponent implements ControlValueAccessor, Valida
 
   onNewMaterial() {
     this.form.push(this.materialGroup());
-    this.chDetector.markForCheck();
+    this.#chDetector.markForCheck();
   }
 
   onDeleteMaterial(idx: number) {
     this.form.removeAt(idx);
-    this.chDetector.markForCheck();
+    this.#chDetector.markForCheck();
   }
 
   private initControl(materials: ProductProductionStageMaterial[]) {
@@ -104,8 +106,8 @@ export class ProductionMaterialComponent implements ControlValueAccessor, Valida
     }
   }
 
-  private materialGroup(material = newProductProductionStageMaterial()): MaterialGroup {
-    return this.fb.group({
+  private materialGroup(material = this.#productsService.newProductProductionStageMaterial()): MaterialGroup {
+    return this.#fb.group({
       materialId: [material.materialId, [Validators.required]],
       amount: [material.amount, [Validators.required, Validators.min(0)]],
       fixedAmount: [material.fixedAmount, [Validators.required, Validators.min(0)]],

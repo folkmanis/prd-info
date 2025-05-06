@@ -1,7 +1,8 @@
 import { afterNextRender, ChangeDetectionStrategy, Component, ElementRef, inject, output, viewChild } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator, Validators } from '@angular/forms';
 import { map } from 'rxjs';
-import { CustomerContact, newCustomerContact } from 'src/app/interfaces';
+import { CustomerContact } from 'src/app/interfaces';
+import { CustomersService } from 'src/app/services';
 
 @Component({
   selector: 'app-customer-contact-editor',
@@ -23,7 +24,9 @@ import { CustomerContact, newCustomerContact } from 'src/app/interfaces';
   imports: [ReactiveFormsModule],
 })
 export class CustomerContactEditorComponent implements ControlValueAccessor, Validator {
-  private emailInput = viewChild.required<ElementRef<HTMLInputElement>>('email');
+  emailInput = viewChild.required<ElementRef<HTMLInputElement>>('email');
+
+  #customersService = inject(CustomersService);
 
   emailControl = inject(FormBuilder).control(null as string | null, {
     validators: [Validators.required, Validators.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)],
@@ -31,13 +34,13 @@ export class CustomerContactEditorComponent implements ControlValueAccessor, Val
 
   complete = output<void>();
 
-  private onTouchFn: () => void = () => {};
+  #onTouchFn: () => void = () => {};
 
   constructor() {
     afterNextRender({
       write: () => {
         this.emailInput().nativeElement.focus();
-        this.onTouchFn();
+        this.#onTouchFn();
       },
     });
   }
@@ -51,11 +54,11 @@ export class CustomerContactEditorComponent implements ControlValueAccessor, Val
   }
 
   registerOnChange(fn: (value: CustomerContact) => void): void {
-    this.emailControl.valueChanges.pipe(map((value) => (value ? newCustomerContact(value) : null))).subscribe(fn);
+    this.emailControl.valueChanges.pipe(map((value) => (value ? this.#customersService.newCustomerContact(value) : null))).subscribe(fn);
   }
 
   registerOnTouched(fn: () => void): void {
-    this.onTouchFn = fn;
+    this.#onTouchFn = fn;
   }
 
   setDisabledState(isDisabled: boolean): void {
