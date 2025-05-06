@@ -1,39 +1,27 @@
-import { Expose, Type } from 'class-transformer';
+import { z } from 'zod';
 
-export class DropFolder {
-  @Expose()
-  path: string[];
+export const DropFolder = z.object({
+  path: z.array(z.string()),
 
-  @Expose()
-  customers: string[];
+  customers: z.array(z.string()),
+});
+export type DropFolder = z.infer<typeof DropFolder>;
 
-  isDefault(): boolean {
-    return this.customers.includes('**');
-  }
+export const ProductionStage = z.object({
+  _id: z.string(),
 
-  includesCustomer(customerName: string): boolean {
-    return this.customers.includes(customerName);
-  }
-}
+  name: z.string(),
 
-export class ProductionStage {
-  @Expose()
-  _id: string = '';
+  description: z.string().nullish(),
 
-  @Expose()
-  name: string = '';
+  equipmentIds: z.array(z.string()).default([]),
 
-  @Expose()
-  description: string | null = null;
+  dropFolders: z.array(DropFolder).default([]),
+});
+export type ProductionStage = z.infer<typeof ProductionStage>;
 
-  @Expose()
-  equipmentIds: string[] = [];
+export const CreateProductionStage = ProductionStage.omit({ _id: true });
+export type CreateProductionStage = z.infer<typeof CreateProductionStage>;
 
-  @Expose()
-  @Type(() => DropFolder)
-  dropFolders: DropFolder[] = [];
-}
-
-export type CreateProductionStage = Omit<ProductionStage, '_id'>;
-
-export type UpdateProductionStage = Pick<ProductionStage, '_id'> & Partial<ProductionStage>;
+export const UpdateProductionStage = ProductionStage.omit({ _id: true }).partial();
+export type UpdateProductionStage = z.infer<typeof UpdateProductionStage>;

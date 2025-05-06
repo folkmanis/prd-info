@@ -22,6 +22,7 @@ import { isEqual } from 'lodash-es';
 import { map } from 'rxjs';
 import { CustomerPartial, DropFolder } from 'src/app/interfaces';
 import { AppClassTransformerService } from 'src/app/library';
+import { ProductionStagesService } from 'src/app/services/production-stages.service';
 
 type DropFolderForm = FormGroup<{
   path: FormControl<string[] | null>;
@@ -48,8 +49,8 @@ type DropFolderForm = FormGroup<{
   ],
 })
 export class DropFoldersComponent implements ControlValueAccessor, Validator {
-  private transformer = inject(AppClassTransformerService);
-  private chDetector = inject(ChangeDetectorRef);
+  #chDetector = inject(ChangeDetectorRef);
+  #productionStagesService = inject(ProductionStagesService);
 
   dropFolders = input.required<{ value: string[]; name: string }[]>();
 
@@ -71,11 +72,11 @@ export class DropFoldersComponent implements ControlValueAccessor, Validator {
       this.form.clear({ emitEvent: false });
       obj.forEach((o) => this.form.push(this.dropFolderForm(o), { emitEvent: false }));
     }
-    this.chDetector.markForCheck();
+    this.#chDetector.markForCheck();
   }
 
   registerOnChange(fn: any): void {
-    this.form.valueChanges.pipe(map((value) => this.transformer.plainToInstance(DropFolder, value))).subscribe(fn);
+    this.form.valueChanges.subscribe(fn);
   }
 
   registerOnTouched(fn: () => void): void {
@@ -101,13 +102,13 @@ export class DropFoldersComponent implements ControlValueAccessor, Validator {
   }
 
   append() {
-    this.form.push(this.dropFolderForm(new DropFolder()));
-    this.chDetector.markForCheck();
+    this.form.push(this.dropFolderForm(this.#productionStagesService.newDropFolder()));
+    this.#chDetector.markForCheck();
   }
 
   delete(idx: number) {
     this.form.removeAt(idx);
-    this.chDetector.markForCheck();
+    this.#chDetector.markForCheck();
   }
 
   private folderErrors() {

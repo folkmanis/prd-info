@@ -26,9 +26,19 @@ export class ProductionStagesService {
     return this.api.insertOne(stage);
   }
 
-  updateOne({ _id, ...update }: Partial<UpdateProductionStage>): Promise<ProductionStage> {
-    assertNotNull(_id);
-    return this.api.updateOne(_id, update);
+  updateOne(id: string, update: UpdateProductionStage): Promise<ProductionStage> {
+    assertNotNull(id);
+    return this.api.updateOne(id, update);
+  }
+
+  newProductionStage(): ProductionStage {
+    return {
+      _id: '',
+      name: '',
+      description: '',
+      equipmentIds: [],
+      dropFolders: [],
+    };
   }
 
   async validateName(value: string): Promise<boolean> {
@@ -40,8 +50,23 @@ export class ProductionStagesService {
   getDropFolder(id: string, customerName: string): Observable<DropFolder[]> {
     return from(this.getOne(id)).pipe(
       switchMap((stage) => from(stage.dropFolders)),
-      filter((stage) => stage.isDefault() || stage.includesCustomer(customerName)),
+      filter((stage) => this.isDefault(stage) || this.#includesCustomer(stage, customerName)),
       toArray(),
     );
+  }
+
+  newDropFolder(): DropFolder {
+    return {
+      path: [],
+      customers: [],
+    };
+  }
+
+  isDefault(dropFolder: DropFolder): boolean {
+    return dropFolder.customers.includes('**');
+  }
+
+  #includesCustomer(dropFolder: DropFolder, customerName: string): boolean {
+    return dropFolder.customers.includes(customerName);
   }
 }

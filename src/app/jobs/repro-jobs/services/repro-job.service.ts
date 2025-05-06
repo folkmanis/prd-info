@@ -19,33 +19,33 @@ const MAX_JOB_NAME_LENGTH = 100; // TODO take from global config
   providedIn: 'root',
 })
 export class ReproJobService {
-  private productsService = inject(ProductsService);
-  private jobService = inject(JobService);
-  private jobFilesService = inject(JobFilesService);
-  private stagesService = inject(ProductionStagesService);
-  private materialsService = inject(MaterialsService);
+  #productsService = inject(ProductsService);
+  #jobService = inject(JobService);
+  #jobFilesService = inject(JobFilesService);
+  #stagesService = inject(ProductionStagesService);
+  #materialsService = inject(MaterialsService);
 
-  private jobTemplate: JobTemplate | null = null;
+  #jobTemplate: JobTemplate | null = null;
 
   setJobTemplate(template: JobTemplate) {
-    this.jobTemplate = template;
+    this.#jobTemplate = template;
   }
 
   retrieveJobTemplate(): JobTemplate {
-    const template = this.jobTemplate;
-    this.jobTemplate = null;
+    const template = this.#jobTemplate;
+    this.#jobTemplate = null;
     return template ?? {};
   }
 
   async updateJob(jobUpdate: PartialJob): Promise<Job> {
     const update = await this.addProductionStages(jobUpdate);
 
-    return this.jobService.updateJob(update.jobId, update);
+    return this.#jobService.updateJob(update.jobId, update);
   }
 
   async createJob(jobUpdate: Omit<Partial<Job>, 'jobId'>): Promise<Job> {
     const update = await this.addProductionStages(jobUpdate);
-    return this.jobService.newJob(update);
+    return this.#jobService.newJob(update);
   }
 
   jobNameFromFiles(fileNames: string[]): string {
@@ -61,7 +61,7 @@ export class ReproJobService {
         return [];
       }
 
-      const stages = await this.productsService.productionStages(product.name);
+      const stages = await this.#productsService.productionStages(product.name);
       return await Promise.all(stages.map((stage) => this.jobProductionStage(stage, product)));
     });
     const allStages = await Promise.all(productStages);
@@ -69,18 +69,18 @@ export class ReproJobService {
   }
 
   copyToDropFolder(jobFilesPath: string[], dropFolder: string[]): Observable<boolean> {
-    return this.jobFilesService.copyJobFolderToDropFolder(jobFilesPath, dropFolder).pipe(map(() => true));
+    return this.#jobFilesService.copyJobFolderToDropFolder(jobFilesPath, dropFolder).pipe(map(() => true));
   }
 
   createFolder(jobId: number) {
-    return this.jobService.createFolder(jobId);
+    return this.#jobService.createFolder(jobId);
   }
 
   customerProducts(): OperatorFunction<string | null, CustomerProduct[] | null> {
     return pipe(
       distinctUntilChanged(),
       filter((customer) => customer !== null && customer !== undefined),
-      switchMap((customer) => this.productsService.productsCustomer(customer)),
+      switchMap((customer) => this.#productsService.productsCustomer(customer)),
     );
   }
 
@@ -91,16 +91,16 @@ export class ReproJobService {
     return from(this.productionStages(products)).pipe(
       switchMap((stages) =>
         from(stages).pipe(
-          concatMap((stage) => this.stagesService.getDropFolder(stage.productionStageId, customer)),
+          concatMap((stage) => this.#stagesService.getDropFolder(stage.productionStageId, customer)),
           reduce((acc, value) => [...acc, ...value], [] as DropFolder[]),
         ),
       ),
-      map((folders) => dropFolderSort(folders)),
+      map((folders) => this.#dropFolderSort(folders)),
     );
   }
 
   async updateFilesLocation(jobId: number): Promise<Job> {
-    return this.jobFilesService.updateFolderLocation(jobId);
+    return this.#jobFilesService.updateFolderLocation(jobId);
   }
 
   private async addProductionStages<T extends Partial<Job>>(job: T): Promise<T> {
@@ -130,7 +130,7 @@ export class ReproJobService {
   }
 
   private async productionStageMaterial(stageMaterial: ProductProductionStageMaterial, productCount: number): Promise<JobProductionStageMaterial> {
-    const material = await this.materialsService.getMaterial(stageMaterial.materialId);
+    const material = await this.#materialsService.getMaterial(stageMaterial.materialId);
     const amount = stageMaterial.amount * productCount;
     const cost = this.getMaterialCost(material, amount + stageMaterial.fixedAmount);
     return {
@@ -145,18 +145,18 @@ export class ReproJobService {
     const price = [...prices].sort((a, b) => b.price - a.price).find((p) => amount >= p.min)?.price ?? 0;
     return price * amount + fixedPrice;
   }
-}
 
-function dropFolderSort(dropFolders: DropFolder[]): DropFolder[] {
-  const sorted = [...dropFolders];
-  sorted.sort((a: DropFolder, b: DropFolder) => {
-    if (a.isDefault()) {
-      return 1;
-    }
-    if (b.isDefault()) {
-      return -1;
-    }
-    return 0;
-  });
-  return sorted;
+  #dropFolderSort(dropFolders: DropFolder[]): DropFolder[] {
+    const sorted = [...dropFolders];
+    sorted.sort((a: DropFolder, b: DropFolder) => {
+      if (this.#stagesService.isDefault(a)) {
+        return 1;
+      }
+      if (this.#stagesService.isDefault(b)) {
+        return -1;
+      }
+      return 0;
+    });
+    return sorted;
+  }
 }

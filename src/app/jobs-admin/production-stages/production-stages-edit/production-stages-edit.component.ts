@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, linkedSignal, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AsyncValidatorFn, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AsyncValidatorFn, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatOptionModule } from '@angular/material/core';
@@ -21,10 +21,6 @@ import { EquipmentService } from '../../equipment/services/equipment.service';
 import { DropFoldersComponent } from '../drop-folders/drop-folders.component';
 import { ProductionStagesListComponent } from '../production-stages-list/production-stages-list.component';
 
-type ProductionStageControl = {
-  [key in keyof Required<ProductionStage>]: FormControl<ProductionStage[key] | null>;
-};
-
 @Component({
   selector: 'app-production-stages-edit',
   templateUrl: './production-stages-edit.component.html',
@@ -33,7 +29,6 @@ type ProductionStageControl = {
   imports: [
     SimpleFormContainerComponent,
     ReactiveFormsModule,
-    FormsModule,
     DropFoldersComponent,
     MatCardModule,
     MatFormFieldModule,
@@ -44,12 +39,12 @@ type ProductionStageControl = {
   ],
 })
 export class ProductionStagesEditComponent implements CanComponentDeactivate {
-  private readonly jobFilesService = inject(JobFilesService);
-  private readonly snack = inject(MatSnackBar);
-  private readonly navigate = navigateRelative();
-  private listComponent = inject(ProductionStagesListComponent);
+  #jobFilesService = inject(JobFilesService);
+  #snack = inject(MatSnackBar);
+  #navigate = navigateRelative();
+  #listComponent = inject(ProductionStagesListComponent);
 
-  form: FormGroup<ProductionStageControl> = inject(FormBuilder).group({
+  form = inject(FormBuilder).group({
     _id: [''],
     name: [
       '',
@@ -70,11 +65,11 @@ export class ProductionStagesEditComponent implements CanComponentDeactivate {
 
   productionStage = input.required<ProductionStage>();
 
-  private initialValue = linkedSignal(() => this.productionStage());
+  #initialValue = linkedSignal(() => this.productionStage());
 
-  isNew = computed(() => !this.initialValue()._id);
+  isNew = computed(() => !this.#initialValue()._id);
 
-  private value = toSignal(this.form.valueChanges, {
+  #value = toSignal(this.form.valueChanges, {
     initialValue: this.form.value,
   });
 
@@ -83,11 +78,11 @@ export class ProductionStagesEditComponent implements CanComponentDeactivate {
   });
 
   changes = computed(() => {
-    const value = this.value();
+    const value = this.#value();
     if (this.isNew()) {
       return value;
     } else {
-      const initial = this.initialValue();
+      const initial = this.#initialValue();
       const diff = pickBy(value, (v, key) => !isEqual(v, initial[key])) as Partial<ProductionStage>;
       return Object.keys(diff).length ? diff : null;
     }
@@ -95,30 +90,30 @@ export class ProductionStagesEditComponent implements CanComponentDeactivate {
 
   constructor(private productionStagesService: ProductionStagesService) {
     effect(() => {
-      this.form.reset(this.initialValue());
+      this.form.reset(this.#initialValue());
     });
     this.setDropFolderNames();
   }
 
   onReset(): void {
-    this.form.reset(this.initialValue());
+    this.form.reset(this.#initialValue());
   }
 
   async onUpdateStage() {
     const changes = notNullOrThrow(this.changes());
-    const update = { ...changes, _id: this.initialValue()._id } as UpdateProductionStage;
-    const result = await this.productionStagesService.updateOne(update);
-    this.listComponent.onReload();
-    this.snack.open(`Atjaunots ${result.name}`, 'OK');
-    this.initialValue.set(result);
+    const id = notNullOrThrow(this.#initialValue()._id);
+    const result = await this.productionStagesService.updateOne(id, changes as UpdateProductionStage);
+    this.#listComponent.onReload();
+    this.#snack.open(`Atjaunots ${result.name}`, 'OK');
+    this.#initialValue.set(result);
   }
 
   async onCreateStage() {
     const result = await this.productionStagesService.insertOne(this.form.getRawValue() as CreateProductionStage);
     this.form.markAsPristine();
-    this.listComponent.onReload();
-    this.snack.open(`Izveidots ${result.name}`, 'OK');
-    this.navigate(['..', result._id]);
+    this.#listComponent.onReload();
+    this.#snack.open(`Izveidots ${result.name}`, 'OK');
+    this.#navigate(['..', result._id]);
   }
 
   canDeactivate(): boolean {
@@ -128,7 +123,7 @@ export class ProductionStagesEditComponent implements CanComponentDeactivate {
   private nameValidator(): AsyncValidatorFn {
     return async (control) => {
       const value: string = control.value;
-      if (value === this.initialValue().name) {
+      if (value === this.#initialValue().name) {
         return null;
       }
       return (await this.productionStagesService.validateName(value)) ? null : { occupied: value };
@@ -136,7 +131,7 @@ export class ProductionStagesEditComponent implements CanComponentDeactivate {
   }
 
   private async setDropFolderNames() {
-    const elements = await this.jobFilesService.dropFolders();
+    const elements = await this.#jobFilesService.dropFolders();
     const folderNames = elements
       .filter((el) => el.isFolder)
       .map((el) => ({
