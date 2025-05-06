@@ -20,18 +20,3 @@ export const TransportationVehicleCreate = TransportationVehicle.omit({
   _id: true,
 });
 export type TransportationVehicleCreate = z.infer<typeof TransportationVehicleCreate>;
-
-export function newTransportationVehicle(): TransportationVehicle {
-  return {
-    _id: '',
-    name: '',
-    licencePlate: '',
-    consumption: 0,
-    fuelType: {
-      type: '',
-      description: '',
-      units: '',
-    },
-    disabled: false,
-  };
-}

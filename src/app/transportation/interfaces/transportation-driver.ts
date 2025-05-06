@@ -12,11 +12,3 @@ export type TransportationDriverUpdate = z.infer<typeof transportationDriverUpda
 
 export const transportationDriverCreate = TransportationDriver.omit({ _id: true });
 export type TransportationDriverCreate = z.infer<typeof transportationDriverCreate>;
-
-export function newTransportationDriver(): TransportationDriver {
-  return {
-    _id: '',
-    name: '',
-    disabled: false,
-  };
-}

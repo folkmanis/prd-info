@@ -4,6 +4,8 @@ import { FilterInput, toFilterSignal } from 'src/app/library';
 import { HistoricalData } from '../interfaces/historical-data';
 import { RouteStop, TransportationRouteSheet, TransportationRouteSheetCreate, TransportationRouteSheetUpdate } from '../interfaces/transportation-route-sheet';
 import { RouteSheetApiService } from './route-sheet-api.service';
+import { TransportationDriverService } from './transportation-driver.service';
+import { TransportationVehicleService } from './transportation-vehicle.service';
 
 interface RouteSheetFilter {
   name?: string;
@@ -15,6 +17,8 @@ interface RouteSheetFilter {
 @Injectable()
 export class RouteSheetService {
   #api = inject(RouteSheetApiService);
+  #driverService = inject(TransportationDriverService);
+  #vehicleService = inject(TransportationVehicleService);
 
   getRouteSheetsResource(filter: FilterInput<RouteSheetFilter>) {
     const filterSignal = toFilterSignal(filter);
@@ -81,5 +85,18 @@ export class RouteSheetService {
 
   private randomizeTripLength(value: number): number {
     return value + (value / 10) * Math.random();
+  }
+
+  newTransportationRouteSheet(): TransportationRouteSheet {
+    return {
+      _id: '',
+      year: new Date().getFullYear(),
+      month: new Date().getMonth() + 1,
+      fuelRemainingStartLitres: 0,
+      driver: this.#driverService.newTransportationDriver(),
+      vehicle: this.#vehicleService.newTransportationVehicle(),
+      trips: [],
+      fuelPurchases: [],
+    };
   }
 }

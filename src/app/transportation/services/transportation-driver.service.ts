@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { FilterInput, toFilterSignal } from 'src/app/library';
-import { TransportationDriverCreate, TransportationDriverUpdate } from '../interfaces/transportation-driver';
+import { TransportationDriver, TransportationDriverCreate, TransportationDriverUpdate } from '../interfaces/transportation-driver';
 import { TransportationDriverApiService } from './transportation-driver-api.service';
 
 export interface TransportationDriverRequestFilter {
@@ -38,5 +38,13 @@ export class TransportationDriverService {
   async validateName(name: string): Promise<boolean> {
     const names = await this.#api.validate('name');
     return names.every((n) => n.toUpperCase() !== name.toUpperCase());
+  }
+
+  newTransportationDriver(): TransportationDriver {
+    return {
+      _id: '',
+      name: '',
+      disabled: false,
+    };
   }
 }

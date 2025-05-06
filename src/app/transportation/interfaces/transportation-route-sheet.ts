@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { newTransportationDriver, TransportationDriver } from './transportation-driver';
-import { newTransportationVehicle, TransportationVehicle } from './transportation-vehicle';
+import { TransportationDriver } from './transportation-driver';
+import { TransportationVehicle } from './transportation-vehicle';
 import { FuelPurchase } from './fuel-purchase';
 
 export const RouteStop = z.object({
@@ -48,19 +48,6 @@ export const TransportationRouteSheet = z.object({
   fuelPurchases: z.array(FuelPurchase),
 });
 export type TransportationRouteSheet = z.infer<typeof TransportationRouteSheet>;
-
-export function newTransportationRouteSheet(): TransportationRouteSheet {
-  return {
-    _id: '',
-    year: new Date().getFullYear(),
-    month: new Date().getMonth() + 1,
-    fuelRemainingStartLitres: 0,
-    driver: newTransportationDriver(),
-    vehicle: newTransportationVehicle(),
-    trips: [],
-    fuelPurchases: [],
-  };
-}
 
 export const TransportationRouteSheetCrate = TransportationRouteSheet.omit({
   _id: true,

@@ -49,4 +49,19 @@ export class TransportationVehicleService {
     const plates = await this.#api.validate('licencePlate');
     return plates.every((p) => p !== plate);
   }
+
+  newTransportationVehicle(): TransportationVehicle {
+    return {
+      _id: '',
+      name: '',
+      licencePlate: '',
+      consumption: 0,
+      fuelType: {
+        type: '',
+        description: '',
+        units: '',
+      },
+      disabled: false,
+    };
+  }
 }
