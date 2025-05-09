@@ -1,21 +1,18 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, model } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AsyncValidatorFn, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AsyncValidatorFn, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { isEqual, pickBy } from 'lodash-es';
-import { Equipment } from 'src/app/interfaces';
+import { Equipment, EquipmentCreate, EquipmentUpdate } from 'src/app/interfaces';
+import { notNullOrThrow } from 'src/app/library';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { navigateRelative } from 'src/app/library/navigation';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
-import { EquipmentService } from '../services/equipment.service';
 import { EquipmentListComponent } from '../equipment-list/equipment-list.component';
-
-type EquipmentForm = FormGroup<{
-  [key in keyof Equipment]: FormControl<Equipment[key] | null>;
-}>;
+import { EquipmentService } from '../services/equipment.service';
 
 @Component({
   selector: 'app-equipment-edit',
@@ -32,7 +29,7 @@ export class EquipmentEditComponent implements CanComponentDeactivate {
 
   private listComponent = inject(EquipmentListComponent);
 
-  form: EquipmentForm = inject(FormBuilder).group({
+  form = inject(FormBuilder).group({
     _id: [null as string | null],
     name: [
       '',
@@ -85,7 +82,7 @@ export class EquipmentEditComponent implements CanComponentDeactivate {
   }
 
   private async onCreateEquipment() {
-    const created = await this.equipmentService.insertOne(this.form.getRawValue() as Omit<Equipment, '_id'>);
+    const created = await this.equipmentService.insertOne(this.form.getRawValue() as EquipmentCreate);
     this.snack.open(`${created.name} izveidots`, 'OK');
     this.listComponent.onReload();
     this.form.markAsPristine();
@@ -93,8 +90,9 @@ export class EquipmentEditComponent implements CanComponentDeactivate {
   }
 
   private async onUpdateEquipment() {
-    const update = { ...this.changes(), _id: this.initialValue()._id };
-    const updated = await this.equipmentService.updateOne(update as Pick<Equipment, '_id'> & Partial<Equipment>);
+    const update = notNullOrThrow(this.changes());
+    const id = notNullOrThrow(this.initialValue()._id);
+    const updated = await this.equipmentService.updateOne(id, update as EquipmentUpdate);
     this.initialValue.set(updated);
     this.listComponent.onReload();
     this.snack.open(`${updated.name} atjaunināts`, 'OK');

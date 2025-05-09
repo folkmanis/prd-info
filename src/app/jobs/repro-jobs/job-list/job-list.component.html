@@ -52,7 +52,7 @@
               </td>
 
               <!-- 'name' -->
-              <td class="column-name">
+              <td class="column-name" [colSpan]="job.products.length > 0 ? 0 : 4">
                 <div>
                   <span class="name">
                     {{ job.name }}
@@ -82,20 +82,23 @@
 
               <ng-container *appViewLarge>
                 <!-- Izstrādājums -->
-                <td class="column-productsObj-name" [colSpan]="job.products.length === 1 ? 0 : 3">
-                  @for (product of job.products; track $index) {
-                    <span [class.highlited-product]="product.name === highlited"> {{ product.name }}{{ $last ? '' : ',' }} </span>
+                @let products = job.products;
+                @if (products.length > 0) {
+                  <td class="column-productsObj-name" [colSpan]="products.length === 1 ? 0 : 3">
+                    @for (product of products; track $index) {
+                      <span [class.highlited-product]="product.name === highlited"> {{ product.name }}{{ $last ? '' : ',' }} </span>
+                    }
+                  </td>
+                  @if (products.length === 1) {
+                    <!-- Skaits -->
+                    <td class="column-productsObj-count">
+                      {{ products[0].count }}
+                    </td>
+                    <!-- Mērvienības! -->
+                    <td class="column-productsObj-units">
+                      {{ products[0].units }}
+                    </td>
                   }
-                </td>
-                @if (job.products.length === 1) {
-                  <!-- Skaits -->
-                  <td class="column-productsObj-count">
-                    {{ job.products[0].count }}
-                  </td>
-                  <!-- Mērvienības! -->
-                  <td class="column-productsObj-units">
-                    {{ job.products[0].units }}
-                  </td>
                 }
               </ng-container>
             </tr>

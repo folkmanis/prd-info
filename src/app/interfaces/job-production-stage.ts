@@ -1,33 +1,39 @@
-import { Expose, Type } from 'class-transformer';
+import { z } from 'zod';
 
-export class JobProductionStageMaterial {
-  @Expose()
-  materialId: string = '';
+export const JobProductionStageMaterial = z.object({
+  materialId: z.string(),
+  amount: z.number(),
+  fixedAmount: z.number(),
+  cost: z.number().default(0),
+});
 
-  @Expose()
-  amount: number = 0;
+export type JobProductionStageMaterial = z.infer<typeof JobProductionStageMaterial>;
 
-  @Expose()
-  fixedAmount: number = 0;
+export const JobProductionStage = z.object({
+  productionStageId: z.string(),
+  materials: z.array(JobProductionStageMaterial).default([]),
+  amount: z.number(),
+  fixedAmount: z.number(),
+  productionStatus: z.number().default(10),
+});
 
-  @Expose()
-  cost: number = 0;
+export type JobProductionStage = z.infer<typeof JobProductionStage>;
+
+export function newJobProductionStage(): JobProductionStage {
+  return {
+    productionStageId: '',
+    materials: [],
+    amount: 0,
+    fixedAmount: 0,
+    productionStatus: 10,
+  };
 }
 
-export class JobProductionStage {
-  @Expose()
-  productionStageId: string = '';
-
-  @Expose()
-  @Type(() => JobProductionStageMaterial)
-  materials: JobProductionStageMaterial[] = [];
-
-  @Expose()
-  amount: number = 0;
-
-  @Expose()
-  fixedAmount: number = 0;
-
-  @Expose()
-  productionStatus: number = 10;
+export function newJobProductionStageMaterial(): JobProductionStageMaterial {
+  return {
+    materialId: '',
+    amount: 0,
+    fixedAmount: 0,
+    cost: 0,
+  };
 }

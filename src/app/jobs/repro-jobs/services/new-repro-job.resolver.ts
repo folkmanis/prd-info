@@ -1,6 +1,5 @@
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
-import { map, tap } from 'rxjs';
 import { Job } from '../../interfaces';
 import { JobService } from '../../services/job.service';
 import { parseJobId } from './parse-job-id';
@@ -26,18 +25,17 @@ const defaultReproJob: (template?: Partial<Job>) => JobTemplate = (template) => 
   productionStages: [],
 });
 
-export const newReproJob: ResolveFn<JobTemplate> = (route) => {
+export const newReproJob: ResolveFn<JobTemplate> = async (route) => {
   const oldJobId = parseJobId(route.queryParams.copyId);
 
   if (typeof oldJobId === 'number') {
     const uploadRefService = inject(UploadRefService);
 
-    return inject(JobService)
-      .getJob(oldJobId)
-      .pipe(
-        tap((job) => route.queryParams.copyFiles === 'true' && uploadRefService.setJobFolderCopy(job.jobId, job.files?.fileNames ?? [])),
-        map((job) => defaultReproJob(job)),
-      );
+    const oldJob = await inject(JobService).getJob(oldJobId);
+    if (route.queryParams.copyFiles === 'true') {
+      uploadRefService.setJobFolderCopy(oldJob.jobId, oldJob.files?.fileNames ?? []);
+    }
+    return defaultReproJob(oldJob);
   } else {
     return {
       ...defaultReproJob(),

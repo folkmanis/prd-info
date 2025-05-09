@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, input } from '@angular/core';
 import {
   ControlValueAccessor,
-  FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
@@ -17,8 +16,8 @@ import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { Material, ProductProductionStageMaterial } from 'src/app/interfaces';
 import { SelectDirective } from 'src/app/library/directives/select.directive';
-import { MaterialUnitsDirective } from './material-units.directive';
 import { ProductsService } from 'src/app/services';
+import { MaterialUnitsDirective } from './material-units.directive';
 
 type MaterialGroup = FormGroup<{
   [key in keyof ProductProductionStageMaterial]: FormControl<ProductProductionStageMaterial[key]>;

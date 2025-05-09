@@ -65,7 +65,7 @@ export class ReproProductComponent implements ControlValueAccessor, Validator {
     price: [null as number | null, [Validators.required, Validators.min(0)]],
     count: [null as number | null, [Validators.required, Validators.min(0)]],
     units: [null as string | null, Validators.required],
-    comment: [''],
+    comment: [null as string | null],
   });
 
   productFormValueChanges = toSignal(this.productForm.valueChanges, { initialValue: this.productForm.value });

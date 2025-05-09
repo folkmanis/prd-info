@@ -1,11 +1,19 @@
-export interface JobsProductionQuery {
-  start: number;
-  limit: number;
-  sort: string;
-  fromDate: string | null;
-  toDate: string | null;
-  jobStatus: number[] | null;
-  category: string[] | null;
-}
+import { z } from 'zod';
 
-export type JobsProductionFilterQuery = Omit<JobsProductionQuery, 'start' | 'limit' | 'sort'>;
+export const JobsProductionQuery = z.object({
+  start: z.number(),
+  limit: z.number(),
+  sort: z.string(),
+  fromDate: z.string().nullable(),
+  toDate: z.string().nullable(),
+  jobStatus: z.number().array().nullable(),
+  category: z.string().array().nullable(),
+});
+export type JobsProductionQuery = z.infer<typeof JobsProductionQuery>;
+
+export const JobsProductionFilterQuery = JobsProductionQuery.omit({
+  start: true,
+  limit: true,
+  sort: true,
+});
+export type JobsProductionFilterQuery = z.infer<typeof JobsProductionFilterQuery>;

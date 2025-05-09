@@ -44,13 +44,15 @@ function addProductPrice(job: JobUnwindedPartial, cProducts: CustomerProduct[]):
 }
 
 function addColumnData(job: JobWithUpdate): JobData {
-  const product = job.products;
+  const products = job.products;
+  const price = products?.price || 0;
+  const count = products?.count || 0;
   return {
     ...job,
-    'products.name': product?.name || '',
-    'products.price': product?.price || 0,
-    'products.count': product?.count || 0,
-    'products.total': (job['products.priceUpdate'] !== undefined ? job['products.priceUpdate'] : product?.price) * product?.count,
-    'products.units': product?.units || '',
+    'products.name': products?.name || '',
+    'products.price': price,
+    'products.count': count,
+    'products.total': (job?.['products.priceUpdate'] !== undefined ? job?.['products.priceUpdate'] : price) * count,
+    'products.units': products?.units || '',
   };
 }

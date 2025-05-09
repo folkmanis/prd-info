@@ -1,7 +1,11 @@
-export interface JobProduct {
-  name: string;
-  units: string;
-  price: number;
-  count: number;
-  comment?: string;
-}
+import { z } from 'zod';
+
+export const JobProduct = z.object({
+  name: z.string(),
+  units: z.string(),
+  price: z.number(),
+  count: z.number(),
+  comment: z.string().nullable().default(''),
+});
+
+export type JobProduct = z.infer<typeof JobProduct>;

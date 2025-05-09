@@ -19,9 +19,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { isEqual } from 'lodash-es';
-import { map } from 'rxjs';
 import { CustomerPartial, DropFolder } from 'src/app/interfaces';
-import { AppClassTransformerService } from 'src/app/library';
 import { ProductionStagesService } from 'src/app/services/production-stages.service';
 
 type DropFolderForm = FormGroup<{

@@ -1,36 +1,16 @@
-import { Expose, Type } from 'class-transformer';
 import { Product } from 'src/app/interfaces';
+import { z } from 'zod';
 
-type ProductionProduct = Pick<Product, 'name' | 'units' | 'category' | 'description' | 'inactive'>;
-
-export class JobsProduction implements ProductionProduct {
-  @Expose()
-  _id: string;
-
-  @Expose()
-  name: string;
-
-  @Expose()
-  units: string;
-
-  @Expose()
-  category: string;
-
-  @Expose()
-  description?: string;
-
-  @Type(() => Boolean)
-  inactive: boolean;
-
-  @Expose()
-  @Type(() => Number)
-  sum: number;
-
-  @Expose()
-  @Type(() => Number)
-  count: number;
-
-  @Expose()
-  @Type(() => Number)
-  total: number;
-}
+export const JobsProduction = Product.pick({
+  _id: true,
+  name: true,
+  units: true,
+  category: true,
+  description: true,
+  inactive: true,
+}).extend({
+  sum: z.coerce.number(),
+  count: z.coerce.number(),
+  total: z.coerce.number(),
+});
+export type JobsProduction = z.infer<typeof JobsProduction>;

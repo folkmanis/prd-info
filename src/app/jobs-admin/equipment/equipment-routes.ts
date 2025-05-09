@@ -1,8 +1,9 @@
+import { inject } from '@angular/core';
 import { Route } from '@angular/router';
-import { Equipment } from 'src/app/interfaces';
 import { EquipmentEditComponent } from './equipment-edit/equipment-edit.component';
 import { EquipmentListComponent } from './equipment-list/equipment-list.component';
 import { resolveEquipment } from './services/equipment-resolver';
+import { EquipmentService } from './services/equipment.service';
 
 export default [
   {
@@ -13,7 +14,7 @@ export default [
         path: 'new',
         component: EquipmentEditComponent,
         resolve: {
-          equipment: () => new Equipment(),
+          equipment: () => inject(EquipmentService).newEquipment(),
         },
       },
       {

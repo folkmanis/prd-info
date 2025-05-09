@@ -2,27 +2,27 @@ import { JobCategories } from './job-categories';
 import { Type, Transform, instanceToPlain } from 'class-transformer';
 
 export interface JobQueryFilterOptions {
-  start: number;
-  limit: number;
+  start?: number;
+  limit?: number;
 
-  fromDate: Date;
+  fromDate?: Date;
 
-  customer: string;
+  customer?: string;
 
-  name: string;
+  name?: string;
 
-  invoice: 0 | 1;
+  invoice?: 0 | 1;
 
-  unwindProducts: 0 | 1;
+  unwindProducts?: 0 | 1;
 
-  jobStatus: number[];
+  jobStatus?: number[];
 
-  jobsId: number[];
+  jobsId?: number[];
 
-  category: JobCategories;
+  category?: JobCategories;
 }
 
-export class JobQueryFilter {
+export class JobQueryFilter implements JobQueryFilterOptions {
   start?: number;
 
   limit?: number;
@@ -49,15 +49,6 @@ export class JobQueryFilter {
   productsName?: string;
 
   category?: JobCategories;
-
-  jobListFilter(): Partial<JobFilter> {
-    return Object.keys(this)
-      .filter((key) => JOB_FILTER_KEYS.includes(key as JobFilterKeys))
-      .reduce((obj, key) => {
-        obj[key] = this[key];
-        return obj;
-      }, {});
-  }
 
   toPlain(): JobFilter {
     return instanceToPlain(this) as JobFilter;

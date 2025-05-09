@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, input } from '@angular/core';
 import {
   ControlValueAccessor,
-  FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
@@ -20,8 +19,8 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { Material, ProductionStage } from 'src/app/interfaces';
 import { ProductProductionStage } from 'src/app/interfaces/product-production-stage';
 import { SelectDirective } from 'src/app/library/directives/select.directive';
-import { ProductionMaterialComponent } from './production-material/production-material.component';
 import { ProductsService } from 'src/app/services';
+import { ProductionMaterialComponent } from './production-material/production-material.component';
 
 type ProductProductionStageControlType = FormGroup<{
   [key in keyof ProductProductionStage]: FormControl<ProductProductionStage[key]>;

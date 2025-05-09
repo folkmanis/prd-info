@@ -1,54 +1,65 @@
-import { KastesProduction, PrintProduction, Production, ReproProduction } from './job-categories';
-import { JobProduct } from './job-product';
 import { JobProductionStage } from 'src/app/interfaces';
 import { z } from 'zod';
+import { JOB_CATEGORIES, KastesProduction } from './job-categories';
+import { JobProduct } from './job-product';
 
-export interface JobStatus {
-  generalStatus: number;
-  timestamp: Date;
-}
+export const JobStatus = z.object({
+  generalStatus: z.number(),
+  timestamp: z.coerce.date(),
+});
+export type JobStatus = z.infer<typeof JobStatus>;
 
-export interface Files {
-  path: string[];
-  fileNames?: string[];
-}
+export const Files = z.object({
+  path: z.array(z.string()),
+  fileNames: z.array(z.string()).optional(),
+});
+export type Files = z.infer<typeof Files>;
 
-export interface Job {
-  _id?: string;
-  _v?: number;
-  jobId: number;
-  customer: string;
-  name: string;
-  customerJobId?: string;
-  receivedDate: Date;
-  dueDate: Date;
-  comment?: string;
-  invoiceId?: string;
-  products: JobProduct[];
-  jobStatus: JobStatus;
-  files?: Files;
+export const Job = z.object({
+  _id: z.string().optional(),
+  _v: z.number().optional(),
+  jobId: z.number(),
+  customer: z.string(),
+  name: z.string(),
+  customerJobId: z.string().nullish(),
+  receivedDate: z.coerce.date(),
+  dueDate: z.coerce.date(),
+  comment: z.string().nullish(),
+  invoiceId: z.string().nullish(),
+  products: JobProduct.array()
+    .nullish()
+    .transform((val) => val ?? []),
+  jobStatus: JobStatus,
+  files: Files.optional(),
+  production: z.object({
+    category: JOB_CATEGORIES,
+  }),
+  productionStages: JobProductionStage.array().optional(),
+});
+export type Job = z.infer<typeof Job>;
 
-  production: Production;
+export const KastesJob = Job.extend({
+  production: KastesProduction,
+});
+export type KastesJob = z.infer<typeof KastesJob>;
 
-  productionStages?: JobProductionStage[];
-}
-
-export interface KastesJob extends Job {
-  production: KastesProduction;
-}
-
-export interface ReproJob extends Job {
-  production: ReproProduction;
-}
-
-export interface PrintJob extends Job {
-  production: PrintProduction;
-}
-
-export type JobPartial = Pick<Job, 'jobId' | 'customer' | 'name' | 'customerJobId' | 'receivedDate' | 'dueDate' | 'products' | 'invoiceId' | 'jobStatus'> & {
-  custCode: string;
-  production: Pick<Production, 'category'>;
-};
+export const JobPartial = Job.pick({
+  jobId: true,
+  customer: true,
+  name: true,
+  customerJobId: true,
+  receivedDate: true,
+  dueDate: true,
+  products: true,
+  invoiceId: true,
+  jobStatus: true,
+}).extend({
+  production: z.object({
+    category: JOB_CATEGORIES,
+  }),
+  custCode: z.string(),
+});
+export type JobPartial = z.infer<typeof JobPartial>;
 
 export const JobsWithoutInvoicesTotals = z.object({
   _id: z.string(),
@@ -56,5 +67,4 @@ export const JobsWithoutInvoicesTotals = z.object({
   totals: z.number(),
   noPrice: z.number(),
 });
-
 export type JobsWithoutInvoicesTotals = z.infer<typeof JobsWithoutInvoicesTotals>;

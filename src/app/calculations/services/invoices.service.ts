@@ -21,12 +21,8 @@ export class InvoicesService {
   private jobService = inject(JobService);
   private transformer = inject(AppClassTransformerService);
 
-  getJobsWithoutInvoicesTotals(): Observable<JobsWithoutInvoicesTotals[]> {
+  getJobsWithoutInvoicesTotals(): Promise<JobsWithoutInvoicesTotals[]> {
     return this.jobService.getJobsWithoutInvoicesTotals();
-  }
-
-  getJobsUnwinded(filter: Partial<JobQueryFilterOptions>): Promise<JobUnwindedPartial[]> {
-    return this.jobService.getJobListUnwinded(filter);
   }
 
   jobsUnwindedResource(filter: FilterInput<Partial<JobQueryFilterOptions>>): HttpResourceRef<JobUnwindedPartial[]> {

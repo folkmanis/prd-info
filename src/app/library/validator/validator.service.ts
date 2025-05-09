@@ -38,7 +38,6 @@ export class ValidatorService {
       return result.data;
     } else {
       const message = result.error.format();
-      console.error(message);
       throw new Error('Validation failed: ' + JSON.stringify(message));
     }
   }

@@ -1,6 +1,5 @@
 import { inject, Injectable } from '@angular/core';
 import { endOfDay } from 'date-fns';
-import { firstValueFrom, Observable } from 'rxjs';
 import { AppClassTransformerService, FilterInput, toFilterSignal } from 'src/app/library';
 import { Job, JobQueryFilter, JobQueryFilterOptions, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
 import { JobsApiService, JobUpdateParams } from './jobs-api.service';
@@ -13,7 +12,7 @@ export class JobService {
   private transformer = inject(AppClassTransformerService);
 
   async newJob(job: Partial<Job>, params: JobUpdateParams = {}): Promise<Job> {
-    return firstValueFrom(this.api.insertOne(job, params));
+    return this.api.insertOne(job, params);
   }
 
   async updateJob(jobId: number, job: Partial<Job>, params: JobUpdateParams = {}): Promise<Job> {
@@ -23,7 +22,7 @@ export class JobService {
     if (job.jobStatus) {
       job.jobStatus.timestamp = new Date();
     }
-    const jobUpdate$ = this.api.updateOne(
+    return this.api.updateOne(
       jobId,
       {
         ...job,
@@ -32,11 +31,10 @@ export class JobService {
       },
       params,
     );
-    return firstValueFrom(jobUpdate$);
   }
 
-  async createFolder(jobId: number): Promise<Job> {
-    return firstValueFrom(this.api.createFolder(jobId));
+  createFolder(jobId: number): Promise<Job> {
+    return this.api.createFolder(jobId);
   }
 
   async updateJobs(jobs: Partial<Job>[], params?: JobUpdateParams): Promise<number> {
@@ -46,7 +44,7 @@ export class JobService {
     return this.api.updateMany(jobs, params);
   }
 
-  getJob(jobId: number): Observable<Job> {
+  getJob(jobId: number): Promise<Job> {
     return this.api.getOne(jobId);
   }
 
@@ -59,10 +57,10 @@ export class JobService {
   }
 
   getJobListUnwinded(filter: Partial<JobQueryFilterOptions> = {}): Promise<JobUnwindedPartial[]> {
-    return this.api.getAll(this.transformer.plainToInstance(JobQueryFilter, filter), true);
+    return this.api.getAllUnwinded(this.transformer.plainToInstance(JobQueryFilter, filter));
   }
 
-  getJobsWithoutInvoicesTotals(): Observable<JobsWithoutInvoicesTotals[]> {
+  getJobsWithoutInvoicesTotals(): Promise<JobsWithoutInvoicesTotals[]> {
     return this.api.jobsWithoutInvoicesTotals();
   }
 }

@@ -1,6 +1,5 @@
 import { inject } from '@angular/core';
 import { RedirectCommand, ResolveFn, Router } from '@angular/router';
-import { firstValueFrom } from 'rxjs';
 import { Job } from 'src/app/jobs/interfaces';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { JobService } from '../../services/job.service';
@@ -21,7 +20,7 @@ export const resolveReproJob: ResolveFn<Omit<Job, 'jobId'>> = async (route) => {
   }
 
   try {
-    const { jobId: _, ...job } = await firstValueFrom(inject(JobService).getJob(jobId));
+    const { jobId: _, ...job } = await inject(JobService).getJob(jobId);
     return job;
   } catch (error) {
     dialog.confirmDataError(notFoundMessage(jobId, error));

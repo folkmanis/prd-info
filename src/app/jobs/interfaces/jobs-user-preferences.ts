@@ -1,19 +1,24 @@
-export interface SavedJobsProductionQuery {
-  sort: string;
-  fromDate: string | null;
-  toDate: string | null;
-  jobStatus: number[] | null;
-  category: string[] | null;
-}
+import { z } from 'zod';
 
-export interface GmailUserSettings {
-  activeLabelId: string[];
-}
+export const SavedJobsProductionQuery = z.object({
+  sort: z.string(),
+  fromDate: z.string().nullable(),
+  toDate: z.string().nullable(),
+  jobStatus: z.number().array().nullable(),
+  category: z.string().array().nullable(),
+});
+export type SavedJobsProductionQuery = z.infer<typeof SavedJobsProductionQuery>;
 
-export interface JobsUserPreferences {
-  jobsProductionQuery: SavedJobsProductionQuery;
-  gmail: GmailUserSettings;
-}
+export const GmailUserSettings = z.object({
+  activeLabelId: z.string().array().default(['CATEGORY_PERSONAL']),
+});
+export type GmailUserSettings = z.infer<typeof GmailUserSettings>;
+
+export const JobsUserPreferences = z.object({
+  jobsProductionQuery: SavedJobsProductionQuery,
+  gmail: GmailUserSettings,
+});
+export type JobsUserPreferences = z.infer<typeof JobsUserPreferences>;
 
 export const DEFAULT_JOBS_USER_PREFERENCES: JobsUserPreferences = {
   jobsProductionQuery: {

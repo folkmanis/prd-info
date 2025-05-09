@@ -1,5 +1,5 @@
 import { inject, Injectable, signal, Signal } from '@angular/core';
-import { Equipment } from 'src/app/interfaces';
+import { Equipment, EquipmentCreate, EquipmentUpdate } from 'src/app/interfaces';
 import { EquipmentApiService } from 'src/app/services/prd-api/equipment-api.service';
 
 export interface EquipmentFilter {
@@ -10,31 +10,38 @@ export interface EquipmentFilter {
   providedIn: 'root',
 })
 export class EquipmentService {
-  private api = inject(EquipmentApiService);
+  #api = inject(EquipmentApiService);
 
   getEquipmentResource(filterSignal?: Signal<EquipmentFilter>) {
-    return this.api.equipmentResource(filterSignal ?? signal({}));
+    return this.#api.equipmentResource(filterSignal ?? signal({}));
   }
 
   getOne(id: string): Promise<Equipment> {
-    return this.api.getOne(id);
+    return this.#api.getOne(id);
   }
 
-  insertOne(equipment: Omit<Equipment, '_id'>): Promise<Equipment> {
-    return this.api.insertOne(equipment);
+  insertOne(equipment: EquipmentCreate): Promise<Equipment> {
+    return this.#api.insertOne(equipment);
   }
 
-  updateOne(equipmentUpdate: Pick<Equipment, '_id'> & Partial<Equipment>): Promise<Equipment> {
-    const { _id, ...update } = equipmentUpdate;
-    return this.api.updateOne(_id, update);
+  updateOne(id: string, update: EquipmentUpdate): Promise<Equipment> {
+    return this.#api.updateOne(id, update);
   }
 
   delete(id: string): Promise<number> {
-    return this.api.deleteOne(id);
+    return this.#api.deleteOne(id);
+  }
+
+  newEquipment(): Equipment {
+    return {
+      _id: '',
+      name: '',
+      description: '',
+    };
   }
 
   async validateName(value: string): Promise<boolean> {
-    const names = await this.api.validatorData('name');
+    const names = await this.#api.validatorData('name');
     return names.map((name) => name.toUpperCase()).includes(value) === false;
   }
 }

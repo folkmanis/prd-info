@@ -1,4 +1,4 @@
-import { inject, Injectable, Signal } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Material } from 'src/app/interfaces';
 import { FilterInput, toFilterSignal } from 'src/app/library';
 import { MaterialsApiService } from 'src/app/services/prd-api/materials-api.service';

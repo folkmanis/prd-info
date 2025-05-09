@@ -1,21 +1,24 @@
-export const JOB_CATEGORIES = ['repro', 'perforated paper', 'print'] as const;
+import { z } from 'zod';
 
-export type JobCategories = (typeof JOB_CATEGORIES)[number];
+export const JOB_CATEGORIES = z.enum(['repro', 'perforated paper', 'print']);
 
-export interface ProductionCategory {
-  category: JobCategories;
-}
+export type JobCategories = z.infer<typeof JOB_CATEGORIES>;
 
-export interface ReproProduction extends ProductionCategory {
-  category: 'repro';
-}
+export const ProductionCategory = z.object({
+  category: JOB_CATEGORIES,
+});
+export type ProductionCategory = z.infer<typeof ProductionCategory>;
 
-export interface KastesProduction extends ProductionCategory {
-  category: 'perforated paper';
-}
+export const ReproProduction = ProductionCategory.extend({
+  category: JOB_CATEGORIES.extract(['repro']),
+});
+export type ReproProduction = z.infer<typeof ReproProduction>;
 
-export interface PrintProduction extends ProductionCategory {
-  category: 'print';
-}
+export const KastesProduction = ProductionCategory.extend({
+  category: JOB_CATEGORIES.extract(['perforated paper']),
+});
 
-export type Production = ReproProduction | KastesProduction | PrintProduction;
+export const PrintProduction = ProductionCategory.extend({
+  category: JOB_CATEGORIES.extract(['print']),
+});
+export type PrintProduction = z.infer<typeof PrintProduction>;
