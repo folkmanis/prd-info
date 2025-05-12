@@ -5,7 +5,7 @@ export const Equipment = z.object({
 
   name: z.string(),
 
-  description: z.string().optional(),
+  description: z.string().nullable(),
 });
 export type Equipment = z.infer<typeof Equipment>;
 

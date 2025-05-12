@@ -3,10 +3,10 @@ import { ProductProductionStage } from './product-production-stage';
 
 export const CustomerProduct = z.object({
   category: z.string(),
-  description: z.string(),
+  description: z.string().nullish(),
   productName: z.string(),
-  customerName: z.string(),
-  price: z.number(),
+  customerName: z.string().optional(),
+  price: z.number().optional(),
   units: z.string(),
 });
 export type CustomerProduct = z.infer<typeof CustomerProduct>;

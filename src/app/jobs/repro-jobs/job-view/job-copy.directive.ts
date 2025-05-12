@@ -14,7 +14,7 @@ export class JobCopyDirective {
   private dialog = inject(ConfirmationDialogService);
   private navigate = navigateRelative();
 
-  job = input.required<Job>({ alias: 'appJobCopy' });
+  job = input.required<Pick<Job, 'files' | 'jobId'>>({ alias: 'appJobCopy' });
 
   async onCopy() {
     const queryParams = { copyId: this.job().jobId, copyFiles: null as boolean | null };

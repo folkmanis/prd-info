@@ -14,7 +14,7 @@ import { ViewSizeDirective, ViewSmallDirective } from 'src/app/library/view-size
 import { LoginService } from 'src/app/login';
 import { configuration } from 'src/app/services/config.provider';
 import { Job } from '../../interfaces';
-import { parseJobId } from '../services/parse-job-id';
+import { parseJobIdRequired } from '../services/parse-job-id';
 import { ReproJobService } from '../services/repro-job.service';
 import { JobCopyDirective } from './job-copy.directive';
 import { JobPathPipe } from './job-path.pipe';
@@ -61,7 +61,7 @@ export class JobViewComponent {
 
   initialValue = input.required<Omit<Job, 'jobId'>>({ alias: 'job' });
   job = linkedSignal(this.initialValue);
-  jobId = input.required({ transform: parseJobId });
+  jobId = input.required({ transform: parseJobIdRequired });
   jobWithId = computed(() => ({ ...this.job(), jobId: this.jobId() }));
 
   showPrices = inject(LoginService).isModule('calculations');

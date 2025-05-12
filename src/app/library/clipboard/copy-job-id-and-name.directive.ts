@@ -13,7 +13,11 @@ import { CopyClipboardDirective } from './copy-clipboard.directive';
 export class CopyJobIdAndNameDirective extends CopyClipboardDirective {
   private sanitize = inject(SanitizeService);
 
-  @Input({ alias: 'appCopyJobIdAndName', required: true }) set job(value: Pick<Job, 'jobId' | 'name'>) {
-    this.text = `${value.jobId}-${this.sanitize.sanitizeFileName(value.name)}`;
+  @Input({ alias: 'appCopyJobIdAndName', required: true }) set job(value: Pick<Job, 'name'> & { jobId: number | null }) {
+    if (value.jobId === null) {
+      this.text = `${this.sanitize.sanitizeFileName(value.name)}`;
+    } else {
+      this.text = `${value.jobId}-${this.sanitize.sanitizeFileName(value.name)}`;
+    }
   }
 }

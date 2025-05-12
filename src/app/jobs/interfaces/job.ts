@@ -30,7 +30,7 @@ export const Job = z.object({
     .nullish()
     .transform((val) => val ?? []),
   jobStatus: JobStatus,
-  files: Files.optional(),
+  files: Files.nullish(),
   production: z.object({
     category: JOB_CATEGORIES,
   }),
