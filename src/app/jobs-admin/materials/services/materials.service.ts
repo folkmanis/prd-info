@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Material } from 'src/app/interfaces';
+import { Material, MaterialPrice } from 'src/app/interfaces';
 import { FilterInput, toFilterSignal } from 'src/app/library';
 import { MaterialsApiService } from 'src/app/services/prd-api/materials-api.service';
 
@@ -41,5 +41,25 @@ export class MaterialsService {
   insertMaterial(material: Partial<Material>): Promise<Material> {
     const { _id, ...data } = material;
     return this.api.insertOne(data);
+  }
+
+  newMaterialPrice(): MaterialPrice {
+    return {
+      min: 0,
+      price: 0,
+      description: '',
+    };
+  }
+
+  newMaterial(): Material {
+    return {
+      _id: '',
+      name: '',
+      units: '',
+      category: '',
+      inactive: false,
+      prices: [],
+      fixedPrice: 0,
+    };
   }
 }

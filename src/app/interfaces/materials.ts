@@ -1,39 +1,20 @@
-import { Expose, Type } from 'class-transformer';
+import { z } from 'zod';
 
-export class MaterialPrice {
-  @Expose()
-  min: number;
+export const MaterialPrice = z.object({
+  min: z.number(),
+  price: z.number().default(0),
+  description: z.string().nullish(),
+});
+export type MaterialPrice = z.infer<typeof MaterialPrice>;
 
-  @Expose()
-  price: number = 0;
-
-  @Expose()
-  description?: string;
-}
-
-export class Material {
-  @Expose()
-  _id: string = '';
-
-  @Expose()
-  name: string = '';
-
-  @Expose()
-  units: string = '';
-
-  @Expose()
-  category: string = '';
-
-  @Expose()
-  inactive: boolean = false;
-
-  @Expose()
-  @Type(() => MaterialPrice)
-  prices: MaterialPrice[] = [];
-
-  @Expose()
-  fixedPrice: number = 0;
-
-  @Expose()
-  description: string | null = null;
-}
+export const Material = z.object({
+  _id: z.string(),
+  name: z.string(),
+  units: z.string(),
+  category: z.string(),
+  inactive: z.coerce.boolean().default(false),
+  prices: MaterialPrice.array().default([]),
+  fixedPrice: z.coerce.number().default(0),
+  description: z.string().nullish(),
+});
+export type Material = z.infer<typeof Material>;

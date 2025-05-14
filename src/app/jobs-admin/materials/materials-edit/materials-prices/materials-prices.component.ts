@@ -5,9 +5,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-import { filter, map, Observable } from 'rxjs';
+import { filter, Observable } from 'rxjs';
 import { MaterialPrice } from 'src/app/interfaces';
-import { AppClassTransformerService } from 'src/app/library';
+import { MaterialsService } from '../../services/materials.service';
 import { DialogData, MaterialsPriceDialogComponent } from '../materials-price-dialog/materials-price-dialog.component';
 import { MaterialsPricesDataSource } from './materials-prices-data-source';
 
@@ -31,8 +31,8 @@ import { MaterialsPricesDataSource } from './materials-prices-data-source';
   ],
 })
 export class MaterialsPricesComponent implements ControlValueAccessor, Validator {
-  private dialogService = inject(MatDialog);
-  private transformer = inject(AppClassTransformerService);
+  #dialogService = inject(MatDialog);
+  #materialsService = inject(MaterialsService);
 
   dataSource = new MaterialsPricesDataSource();
 
@@ -71,7 +71,7 @@ export class MaterialsPricesComponent implements ControlValueAccessor, Validator
 
   onAddPrice() {
     this.onTouchFn();
-    this.openEditor(new MaterialPrice()).subscribe((data) => {
+    this.openEditor(this.#materialsService.newMaterialPrice()).subscribe((data) => {
       this.dataSource.addPrice(data);
     });
   }
@@ -91,12 +91,9 @@ export class MaterialsPricesComponent implements ControlValueAccessor, Validator
       value: price,
       units: this.units(),
     };
-    return this.dialogService
-      .open<MaterialsPriceDialogComponent, DialogData, Record<string, any>>(MaterialsPriceDialogComponent, { data })
+    return this.#dialogService
+      .open<MaterialsPriceDialogComponent, DialogData, MaterialPrice>(MaterialsPriceDialogComponent, { data })
       .afterClosed()
-      .pipe(
-        filter((response) => !!response),
-        map((response) => this.transformer.plainToInstance(MaterialPrice, response)),
-      );
+      .pipe(filter((response) => !!response));
   }
 }

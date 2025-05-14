@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AbstractControl, AsyncValidatorFn, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -10,18 +10,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { isEqual, pickBy } from 'lodash-es';
 import { Material, MaterialPrice } from 'src/app/interfaces';
-import { navigateRelative } from 'src/app/library/navigation';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
+import { navigateRelative } from 'src/app/library/navigation';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
+import { ViewSizeDirective } from 'src/app/library/view-size';
 import { configuration } from 'src/app/services/config.provider';
+import { MaterialsListComponent } from '../materials-list/materials-list.component';
 import { MaterialsService } from '../services/materials.service';
 import { MaterialsPricesComponent } from './materials-prices/materials-prices.component';
-import { ViewSizeDirective } from 'src/app/library/view-size';
-import { MaterialsListComponent } from '../materials-list/materials-list.component';
-
-type MaterialForm = {
-  [k in keyof Material]-?: FormControl<Material[k] | null>;
-};
 
 @Component({
   selector: 'app-materials-edit',
@@ -55,7 +51,7 @@ export class MaterialsEditComponent implements CanComponentDeactivate {
 
   categories = configuration('jobs', 'productCategories');
 
-  form: FormGroup<MaterialForm> = inject(FormBuilder).group({
+  form = inject(FormBuilder).group({
     _id: [''],
     name: [
       '',

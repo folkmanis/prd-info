@@ -1,8 +1,9 @@
+import { inject } from '@angular/core';
 import { Route } from '@angular/router';
-import { MaterialsListComponent } from './materials-list/materials-list.component';
 import { MaterialsEditComponent } from './materials-edit/materials-edit.component';
+import { MaterialsListComponent } from './materials-list/materials-list.component';
 import { resolveMaterial } from './services/material-resolver';
-import { Material } from 'src/app/interfaces';
+import { MaterialsService } from './services/materials.service';
 
 export default [
   {
@@ -13,7 +14,7 @@ export default [
         path: 'new',
         component: MaterialsEditComponent,
         resolve: {
-          material: () => new Material(),
+          material: () => inject(MaterialsService).newMaterial(),
         },
       },
       {
