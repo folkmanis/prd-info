@@ -1,18 +1,19 @@
+import { A11yModule } from '@angular/cdk/a11y';
 import { AsyncPipe, TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, booleanAttribute, input, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { BehaviorSubject, Observable, map } from 'rxjs';
+import { COLORS } from 'src/app/interfaces';
+import { KeyPressDirective } from 'src/app/library/directives/key-press.directive';
 import { kastesTotalsFromVeikali } from '../../common/color-totals-from-veikali';
 import { KastesTotalsComponent } from '../../common/kastes-totals/kastes-totals.component';
-import { COLORS, Veikals } from '../../interfaces';
+import { Veikals } from '../../interfaces';
 import { kastesPreferences } from '../../services/kastes-preferences.service';
 import { VeikalsValidationErrors } from '../services/veikals-validation-errors';
 import { TotalsComponent } from './totals/totals.component';
 import { VeikalsEditComponent } from './veikals-edit/veikals-edit.component';
-import { A11yModule } from '@angular/cdk/a11y';
-import { KeyPressDirective } from 'src/app/library/directives/key-press.directive';
 
 @Component({
   selector: 'app-pakosanas-saraksts',

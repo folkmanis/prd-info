@@ -1,5 +1,6 @@
+import { Colors, COLORS } from 'src/app/interfaces';
 import { JobProduct } from 'src/app/jobs';
-import { COLORS, ColorTotals, Colors, Kaste, Veikals } from '../interfaces';
+import { ColorTotals, Kaste, Veikals } from '../interfaces';
 
 export const colorTotalsFromVeikalsBoxs = (kastes: Kaste[]): ColorTotals[] => {
   const tot = new Map<Colors, number>(COLORS.map((col) => [col, 0]));

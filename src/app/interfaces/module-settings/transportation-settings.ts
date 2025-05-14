@@ -1,7 +1,9 @@
+import { z } from 'zod';
 import { FuelType } from './fuel-type';
 import { ShippingAddress } from './shipping-address';
 
-export interface TransportationSettings {
-  shippingAddress: ShippingAddress | null;
-  fuelTypes: FuelType[];
-}
+export const TransportationSettings = z.object({
+  shippingAddress: ShippingAddress.nullable(),
+  fuelTypes: FuelType.array(),
+});
+export type TransportationSettings = z.infer<typeof TransportationSettings>;

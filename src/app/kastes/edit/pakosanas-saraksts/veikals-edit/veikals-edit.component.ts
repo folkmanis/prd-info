@@ -2,7 +2,8 @@ import { ChangeDetectionStrategy, Component, ElementRef, Input, Output, Signal, 
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { Observable, filter, map } from 'rxjs';
-import { COLORS, Colors, Kaste, MAX_ITEMS_BOX, Veikals } from 'src/app/kastes/interfaces';
+import { COLORS, Colors } from 'src/app/interfaces';
+import { Kaste, MAX_ITEMS_BOX, Veikals } from 'src/app/kastes/interfaces';
 import { InputDirective } from 'src/app/library/directives/input.directive';
 import { kastesPreferences } from '../../../services/kastes-preferences.service';
 import { VeikalsValidationErrors } from '../../services/veikals-validation-errors';

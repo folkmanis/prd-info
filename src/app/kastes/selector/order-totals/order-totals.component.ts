@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { COLORS, Colors } from '../../interfaces';
+import { Colors, COLORS } from 'src/app/interfaces';
 import { totalsByColor, totalsBySize } from '../../services/item-packing.utilities';
 import { kastesPreferences } from '../../services/kastes-preferences.service';
 

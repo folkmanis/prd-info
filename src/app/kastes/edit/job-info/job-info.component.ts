@@ -1,10 +1,11 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { KastesJob, Veikals } from 'src/app/kastes/interfaces';
+import { Veikals } from 'src/app/kastes/interfaces';
 import { jobProductsToColorTotals } from '../../common/color-totals-from-veikali';
 import { ColorTotalsComponent } from '../../common/color-totals/color-totals.component';
 import { KastesTotalsComponent } from '../../common/kastes-totals/kastes-totals.component';
 import { totalsFromAddresesWithPackages } from '../../services/item-packing.utilities';
+import { KastesJob } from 'src/app/jobs';
 
 @Component({
   selector: 'app-job-info',

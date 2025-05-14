@@ -1,7 +1,7 @@
 import { TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
 import { ControlValueAccessor, FormControl, FormGroup, FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
-import { COLORS, Colors, KastesSettings } from 'src/app/kastes/interfaces';
+import { Colors, COLORS, KastesSettings } from 'src/app/interfaces';
 import { ColorSliderComponent } from './color-slider/color-slider.component';
 
 type ColorSettings = KastesSettings['colors'];
@@ -33,7 +33,7 @@ export class KastesPreferencesComponent implements ControlValueAccessor {
     colors: new FormGroup<ColorsGroup>(Object.assign({}, ...COLORS.map((col) => ({ [col]: new FormControl('') })))),
   });
 
-  colorControl(color: Colors): FormControl {
+  colorControl(color: Colors): FormControl<string> {
     return this.preferencesControls.controls.colors.controls[color];
   }
 

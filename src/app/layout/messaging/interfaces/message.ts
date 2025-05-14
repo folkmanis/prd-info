@@ -2,7 +2,7 @@ import { JobData } from './job-data';
 import { MessageData } from './message-data';
 import { XmfUploadData } from './xmf-upload-data';
 import { Type } from 'class-transformer';
-import { Modules } from '../../../interfaces/system-preferences';
+import { MODULES } from '../../../interfaces/system-preferences';
 
 export class Message {
   _id: string;
@@ -14,7 +14,7 @@ export class Message {
 
   deleted: boolean;
 
-  module: Modules;
+  module: (typeof MODULES)[number];
 
   @Type(() => MessageData, {
     discriminator: {

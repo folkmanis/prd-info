@@ -1,8 +1,9 @@
 import { computed, effect, inject, Injectable, Signal } from '@angular/core';
 import { get } from 'lodash-es';
 import { Observable, tap } from 'rxjs';
-import { KastesSettings, KastesUserPreferences } from 'src/app/kastes/interfaces';
+import { KastesSettings } from 'src/app/interfaces';
 import { configuration } from 'src/app/services/config.provider';
+import { KastesUserPreferences } from '../interfaces';
 import { DEFAULT_USER_PREFERENCES, KastesApiService } from './kastes-api.service';
 
 type P = KastesUserPreferences & KastesSettings;

@@ -1,4 +1,5 @@
-import { COLORS, Colors, MAX_ITEMS_BOX, SINGLE_ITEM_CONTENTS } from '../interfaces';
+import { Colors, COLORS } from 'src/app/interfaces';
+import { MAX_ITEMS_BOX, SINGLE_ITEM_CONTENTS } from '../interfaces';
 import { ColumnNames } from './column-names';
 
 export interface AddressWithPackages {

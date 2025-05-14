@@ -11,7 +11,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { DrawerButtonDirective } from '../../library/side-button/drawer-button.directive';
-import { KastesJob } from '../interfaces';
 import { AddressPackage } from '../interfaces/address-package';
 import { kastesPreferences } from '../services/kastes-preferences.service';
 import { PackingTableService } from '../services/packing-table.service';
@@ -21,6 +20,7 @@ import { OrderTotalsComponent } from './order-totals/order-totals.component';
 import { TabulaComponent } from './tabula/tabula.component';
 import { TotalsForSelectedSizeComponent } from './totals-for-selected-size/totals-for-selected-size.component';
 import { notNullOrThrow } from 'src/app/library';
+import { KastesJob } from 'src/app/jobs';
 
 @Component({
   selector: 'app-selector',

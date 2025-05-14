@@ -2,10 +2,12 @@ import { HttpClient, httpResource } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
-import { COLORS, KastesJob, KastesUserPreferences, Veikals, VeikalsKaste, VeikalsUpload } from 'src/app/kastes/interfaces';
+import { KastesUserPreferences, Veikals, VeikalsKaste, VeikalsUpload } from 'src/app/kastes/interfaces';
+import { COLORS } from 'src/app/interfaces';
 import { HttpOptions } from 'src/app/library/http';
 import { KastesJobPartial } from '../interfaces';
 import { AddressPackage } from '../interfaces/address-package';
+import { KastesJob } from 'src/app/jobs';
 
 export const DEFAULT_USER_PREFERENCES: KastesUserPreferences = {
   pasutijums: null,

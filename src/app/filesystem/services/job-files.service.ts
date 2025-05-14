@@ -1,7 +1,7 @@
 import { HttpEvent } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { last } from 'lodash-es';
-import { map, Observable, tap } from 'rxjs';
+import { firstValueFrom, map, Observable, tap } from 'rxjs';
 import { JobsFilesApiService } from 'src/app/filesystem';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { Job } from '../../jobs';
@@ -55,9 +55,9 @@ export class JobFilesService {
     return this.filesApi.readDropFolders(path?.join('/'));
   }
 
-  copyJobFolderToDropFolder(path: string[], dropFolder: string[]): Observable<number> {
+  copyJobFolderToDropFolder(path: string[], dropFolder: string[]): Promise<number> {
     const dstPath = dropFolder.join('/') + '/' + last(path);
-    return this.filesApi.copyFile(FileLocationTypes.JOB, FileLocationTypes.DROPFOLDER, path.join('/'), dstPath);
+    return firstValueFrom(this.filesApi.copyFile(FileLocationTypes.JOB, FileLocationTypes.DROPFOLDER, path.join('/'), dstPath));
   }
 
   copyJobFilesToJobFiles(oldJobId: number, newJobId: number): Observable<Job> {

@@ -13,10 +13,11 @@ import { RouterLink } from '@angular/router';
 import { isEqual, pickBy } from 'lodash-es';
 import { combineLatest, concat, concatMap, distinctUntilChanged, EMPTY, filter, map, merge, Observable, of, Subscription, switchMap, throttleTime } from 'rxjs';
 import { DropFolder } from 'src/app/interfaces';
+import { notNullOrThrow } from 'src/app/library';
 import { KeyPressDirective } from 'src/app/library/directives';
 import { navigateToReturn, RouterLinkToReturnDirective } from 'src/app/library/navigation';
 import { ViewSizeDirective } from 'src/app/library/view-size';
-import { Files, FileUploadMessage, Job } from '../../interfaces';
+import { FileUploadMessage, Job } from '../../interfaces';
 import { parseJobId } from '../services/parse-job-id';
 import { ReproJobService } from '../services/repro-job.service';
 import { UploadRefService } from '../services/upload-ref.service';
@@ -25,7 +26,6 @@ import { UploadProgressComponent } from '../upload-progress/upload-progress.comp
 import { DropFolderComponent } from './drop-folder/drop-folder.component';
 import { FolderPathComponent } from './folder-path/folder-path.component';
 import { JobFormComponent } from './job-form/job-form.component';
-import { notNullOrThrow } from 'src/app/library';
 
 @Component({
   selector: 'app-repro-job-edit',
@@ -146,12 +146,11 @@ export class ReproJobEditComponent {
         return;
       }
     }
-    try {
-      if (this.dropFolderActive() && this.selectedDropFolder() !== null) {
-        const files = notNullOrThrow(updatedJob.files);
-        this.copyToDropfolder(files).subscribe();
-      }
-    } catch (error) {}
+    const dropFolder = this.selectedDropFolder();
+    if (this.dropFolderActive() && dropFolder !== null) {
+      const files = notNullOrThrow(updatedJob.files);
+      this.jobService.copyToDropFolder(files.path, dropFolder.path);
+    }
     this.saveSuccessMessage({ jobId, name: updatedJob.name });
     this.navigate();
   }
@@ -161,29 +160,22 @@ export class ReproJobEditComponent {
     try {
       const createdJob = await this.jobService.createJob(jobUpdate);
       this.form.markAsPristine();
-      this.uploadFiles(createdJob);
+
+      const dropFolder = this.selectedDropFolder();
+      if (this.uploadRef && this.dropFolderActive() && dropFolder !== null) {
+        this.uploadRef
+          .onAddedToJob()
+          .pipe(concatMap((job) => (job.files ? this.jobService.copyToDropFolder(job.files.path, dropFolder.path) : EMPTY)))
+          .subscribe();
+      }
+      if (this.uploadRef) {
+        this.uploadRef.addToJob(createdJob.jobId);
+      }
+
       this.saveSuccessMessage(createdJob);
       this.navigate();
     } catch (error) {
       this.saveErrorMessage(error);
-    }
-  }
-
-  private async uploadFiles({ jobId, files }: Pick<Job, 'jobId' | 'files'>) {
-    this.uploadRef?.addToJob(jobId);
-
-    if (files && this.dropFolderActive() && this.selectedDropFolder() !== null) {
-      this.copyToDropfolder(files).subscribe();
-    }
-  }
-
-  private copyToDropfolder(files: Files): Observable<boolean> {
-    const dropFolder = this.selectedDropFolder();
-
-    if (this.uploadRef) {
-      return this.uploadRef.onAddedToJob().pipe(concatMap((job) => (job.files ? this.jobService.copyToDropFolder(job.files.path, dropFolder.path) : EMPTY)));
-    } else {
-      return this.jobService.copyToDropFolder(files.path, dropFolder.path);
     }
   }
 

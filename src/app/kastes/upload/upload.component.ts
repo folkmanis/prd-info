@@ -11,7 +11,7 @@ import { firstValueFrom } from 'rxjs';
 import { navigateRelative } from 'src/app/library/navigation';
 import { jobProductsToColorTotals } from '../common/color-totals-from-veikali';
 import { ColorTotalsComponent } from '../common/color-totals/color-totals.component';
-import { COLORS, Colors } from '../interfaces';
+import { COLORS, Colors } from 'src/app/interfaces';
 import { AddressWithPackages, addOrderId, totalsFromAddresesWithPackages } from '../services/item-packing.utilities';
 import { KastesPasutijumiService } from '../services/kastes-pasutijumi.service';
 import { KastesPreferencesService } from '../services/kastes-preferences.service';

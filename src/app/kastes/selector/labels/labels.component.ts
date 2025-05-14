@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Output, effect, input, model, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, ElementRef, EventEmitter, input, model, Output, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { COLORS } from 'src/app/kastes/interfaces';
 import { HideZeroPipe } from 'prd-cdk';
+import { COLORS } from 'src/app/interfaces';
 import { AddressPackage } from '../../interfaces/address-package';
 import { kastesPreferences } from '../../services/kastes-preferences.service';
 

@@ -1,4 +1,4 @@
-import { Colors } from './kastes-colors';
+import { Colors } from 'src/app/interfaces';
 
 export interface Veikals {
   _id: string;

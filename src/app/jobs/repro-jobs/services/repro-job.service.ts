@@ -68,8 +68,13 @@ export class ReproJobService {
     return flatten(allStages);
   }
 
-  copyToDropFolder(jobFilesPath: string[], dropFolder: string[]): Observable<boolean> {
-    return this.#jobFilesService.copyJobFolderToDropFolder(jobFilesPath, dropFolder).pipe(map(() => true));
+  async copyToDropFolder(jobFilesPath: string[], dropFolder: string[]): Promise<boolean> {
+    try {
+      await this.#jobFilesService.copyJobFolderToDropFolder(jobFilesPath, dropFolder);
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 
   createFolder(jobId: number) {
@@ -79,7 +84,7 @@ export class ReproJobService {
   customerProducts(): OperatorFunction<string | null, CustomerProduct[] | null> {
     return pipe(
       distinctUntilChanged(),
-      filter((customer) => customer !== null && customer !== undefined),
+      filter(Boolean),
       switchMap((customer) => this.#productsService.productsCustomer(customer)),
     );
   }

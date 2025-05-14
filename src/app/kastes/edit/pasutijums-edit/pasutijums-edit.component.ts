@@ -9,11 +9,12 @@ import { Subject, merge, mergeMap, shareReplay, switchMap, tap } from 'rxjs';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { cacheWithUpdate } from 'src/app/library/rxjs';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
-import { KastesJob, Veikals } from '../../interfaces';
+import { Veikals } from '../../interfaces';
 import { KastesPasutijumiService } from '../../services/kastes-pasutijumi.service';
 import { KastesPreferencesService, kastesPreferences } from '../../services/kastes-preferences.service';
 import { JobInfoComponent } from '../job-info/job-info.component';
 import { PakosanasSarakstsComponent } from '../pakosanas-saraksts/pakosanas-saraksts.component';
+import { KastesJob } from 'src/app/jobs';
 
 const VEIKALI_DELETED_MESSAGE = 'Pakošanas saraksts izdzēsts';
 const VEIKALI_DELETE_FAILED_MESSAGE = 'Darbība neizdevās';

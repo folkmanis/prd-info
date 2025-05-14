@@ -1,6 +1,6 @@
 import { TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { COLORS, Colors } from 'src/app/kastes/interfaces';
+import { Colors, COLORS } from 'src/app/interfaces';
 import { kastesPreferences } from '../../services/kastes-preferences.service';
 
 @Component({

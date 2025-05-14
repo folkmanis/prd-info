@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { TitleCasePipe } from '@angular/common';
-import { COLORS, Colors } from '../../interfaces';
-import { kastesPreferences } from '../../services/kastes-preferences.service';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { Colors, COLORS } from 'src/app/interfaces';
 import { totalsByColor } from '../../services/item-packing.utilities';
+import { kastesPreferences } from '../../services/kastes-preferences.service';
 
 type TotalsInput = Record<Colors, number> & {
   hasLabel: boolean;

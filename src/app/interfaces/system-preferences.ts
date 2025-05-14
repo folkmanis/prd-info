@@ -1,72 +1,46 @@
-import { Colors } from '../kastes/interfaces';
-import { TransportationSettings } from './module-settings/transportation-settings';
+import { z } from 'zod';
+import { JobsSettings, KastesSettings, PaytraqSettings, SystemSettings, TransportationSettings } from './module-settings';
 
-export const MODULES = ['kastes', 'system', 'jobs', 'paytraq', 'transportation'] as const;
+export const SystemPreferences = z.object({
+  system: SystemSettings,
+  kastes: KastesSettings,
+  jobs: JobsSettings,
+  paytraq: PaytraqSettings,
+  transportation: TransportationSettings,
+});
+export type SystemPreferences = z.infer<typeof SystemPreferences>;
 
-export type Modules = (typeof MODULES)[number];
+export const PreferencesDbModules = z.discriminatedUnion('module', [
+  z.object({
+    module: z.literal('system'),
+    settings: SystemSettings,
+  }),
+  z.object({
+    module: z.literal('kastes'),
+    settings: KastesSettings,
+  }),
+  z.object({
+    module: z.literal('jobs'),
+    settings: JobsSettings,
+  }),
+  z.object({
+    module: z.literal('paytraq'),
+    settings: PaytraqSettings,
+  }),
+  z.object({
+    module: z.literal('transportation'),
+    settings: TransportationSettings,
+  }),
+]);
+export type PreferencesDbModules = z.infer<typeof PreferencesDbModules>;
 
-export type ModuleSettings = KastesSettings | SystemSettings | JobsSettings | PaytraqSettings | TransportationSettings;
+export const MODULES = PreferencesDbModules.options.map((obj) => obj.shape.module.value);
+// export const MODULES = SystemPreferences.keyof();
+// export type Modules = z.infer<typeof MODULES>;
 
-export interface PreferencesDbModule {
-  module: Modules;
-  settings: ModuleSettings;
-}
+// export type ModuleSettings = KastesSettings | SystemSettings | JobsSettings | PaytraqSettings | TransportationSettings;
 
-export type SystemPreferencesType = { [key in Modules]: ModuleSettings };
-
-export abstract class SystemPreferences implements SystemPreferencesType {
-  system: SystemSettings;
-  kastes: KastesSettings;
-  jobs: JobsSettings;
-  paytraq: PaytraqSettings;
-  transportation: TransportationSettings;
-}
-
-export interface KastesSettings {
-  colors: {
-    [key in Colors]: string;
-  };
-}
-
-export interface SystemSettings {
-  menuExpandedByDefault: boolean;
-  logLevels: [number, string][];
-  hostname: string;
-  companyName: string;
-}
-
-export interface ProductCategory {
-  category: string;
-  description: string;
-}
-
-export interface JobState {
-  state: number;
-  description: string;
-}
-
-export interface ProductUnit {
-  shortName: string;
-  description: string;
-  disabled: boolean;
-}
-
-export interface JobsSettings {
-  productCategories: ProductCategory[];
-  jobStates: JobState[];
-  productUnits: ProductUnit[];
-}
-
-export interface PaytraqSettings {
-  enabled: boolean;
-  connectionParams: PaytraqConnectionParams | null;
-}
-
-export interface PaytraqConnectionParams {
-  connectUrl: string;
-  connectKey: string;
-  apiUrl: string;
-  apiKey: string;
-  apiToken: string;
-  invoiceUrl: string;
-}
+// export interface PreferencesDbModule {
+//   module: Modules;
+//   settings: ModuleSettings;
+// }

@@ -1,43 +1,42 @@
 import { computed, inject, Injectable } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, UrlSegment } from '@angular/router';
-import { merge, Observable, of, Subject } from 'rxjs';
-import { concatMap, filter, map, retry, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { concatMap, filter, map, merge, Observable, of, retry, shareReplay, Subject, switchMap, tap } from 'rxjs';
 import { LoginService } from 'src/app/login';
 import { getAppParams } from '../app-params';
-import { MODULES, PreferencesDbModule, SystemPreferences, UserModule } from '../interfaces';
+import { MODULES, PreferencesDbModules, SystemPreferences, UserModule } from '../interfaces';
 import { SystemPreferencesApiService } from './system-preferences-api';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SystemPreferencesService {
-  private _reloadFromServer$: Subject<void> = new Subject();
-  private router = inject(Router);
-  private loginService = inject(LoginService);
-  private api = inject(SystemPreferencesApiService);
+  #reloadFromServer$: Subject<void> = new Subject();
+  #router = inject(Router);
+  #loginService = inject(LoginService);
+  #api = inject(SystemPreferencesApiService);
 
-  private readonly _preferencesUpdate$ = new Subject<PreferencesDbModule[]>();
+  readonly #preferencesUpdate$ = new Subject<PreferencesDbModules[]>();
 
-  private url = toSignal(
-    this.router.events.pipe(
+  #url = toSignal(
+    this.#router.events.pipe(
       filter((ev) => ev instanceof NavigationEnd),
       map((ev: NavigationEnd) => ev.url),
     ),
-    { initialValue: this.router.routerState.snapshot.url },
+    { initialValue: this.#router.routerState.snapshot.url },
   );
 
   defaultPreferences: SystemPreferences = getAppParams('defaultSystemPreferences');
 
   preferences$: Observable<SystemPreferences> = merge(
     of(this.defaultPreferences),
-    this.loginService.user$.pipe(
+    this.#loginService.user$.pipe(
       // mainoties user, ielādē no servera
       switchMap((usr) => (usr ? this._systemPreferences() : of(this.defaultPreferences))),
     ),
-    this._reloadFromServer$.pipe(switchMap((_) => this._systemPreferences())),
-    this._preferencesUpdate$.pipe(
-      concatMap((pref) => this.api.updateMany(pref)),
+    this.#reloadFromServer$.pipe(switchMap((_) => this._systemPreferences())),
+    this.#preferencesUpdate$.pipe(
+      concatMap((pref) => this.#api.updateMany(pref)),
       retry(3),
       switchMap((_) => this._systemPreferences()),
     ),
@@ -48,28 +47,29 @@ export class SystemPreferencesService {
 
   private readonly userModules = getAppParams('userModules');
 
-  modules$ = this.loginService.user$.pipe(
+  modules$ = this.#loginService.user$.pipe(
     switchMap((usr) =>
       of(this.userModules.filter((mod) => usr && usr.preferences.modules.includes(mod.route))).pipe(map((modules) => (usr?.google ? modules : removeGmail(modules)))),
     ),
   );
   modules = toSignal(this.modules$, { initialValue: [] });
 
-  activeModules = computed(() => findModulesPath(this.url(), this.modules()));
+  activeModules = computed(() => findModulesPath(this.#url(), this.modules()));
 
   childMenu = computed(() => this.activeModules()[0]?.childMenu || []);
 
   updatePreferences(pref: SystemPreferences) {
-    this._preferencesUpdate$.next(
+    this.#preferencesUpdate$.next(
       MODULES.map((module) => ({
         module,
         settings: pref[module],
-      })),
+      })) as PreferencesDbModules[],
     );
   }
 
-  private _systemPreferences(): Observable<SystemPreferences> {
-    return this.api.getAll().pipe(map((dbpref) => Object.assign({}, ...dbpref.map((mod) => ({ [mod.module]: mod.settings })))));
+  private async _systemPreferences(): Promise<SystemPreferences> {
+    const dbPreferences = await this.#api.getAll();
+    return Object.assign({}, ...dbPreferences.map((mod) => ({ [mod.module]: mod.settings })));
   }
 }
 

@@ -1,9 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, firstValueFrom, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { KastesJob, Veikals, VeikalsUpload } from '../interfaces';
+import { Veikals, VeikalsUpload } from '../interfaces';
 import { KastesJobPartial } from '../interfaces/kastes-job-partial';
 import { KastesApiService } from './kastes-api.service';
+import { KastesJob } from 'src/app/jobs';
 
 export interface KastesJobFilter {
   name?: string;
