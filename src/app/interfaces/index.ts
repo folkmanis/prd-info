@@ -5,7 +5,6 @@ export * from './invoice';
 export * from './job-production-stage';
 export * from './materials';
 export * from './notification';
-export * from './panel-component';
 export * from './product';
 export * from './production-stage';
 export * from './system-preferences';
