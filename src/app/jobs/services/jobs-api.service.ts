@@ -5,7 +5,7 @@ import { firstValueFrom } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { ValidatorService } from 'src/app/library';
 import { HttpOptions, httpResponseRequest } from 'src/app/library/http';
-import { Job, JobPartial, JobQueryFilter, JobQueryFilterOptions, JobsProduction, JobsProductionQuery, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
+import { Job, JobPartial, JobsProduction, JobsProductionQuery, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
 import { JobsUserPreferences } from '../interfaces/jobs-user-preferences';
 
 export interface JobUpdateParams {
@@ -24,21 +24,21 @@ export class JobsApiService {
   #http = inject(HttpClient);
   #validator = inject(ValidatorService);
 
-  getAllUnwinded(filter: JobQueryFilter) {
+  getAllUnwinded(filter: Record<string, any>): Promise<JobUnwindedPartial[]> {
     const response$ = this.#http.get<Record<string, any>[]>(this.#path, new HttpOptions({ ...filter, unwindProducts: 1 }));
     return this.#validator.validateArrayAsync(JobUnwindedPartial, response$);
   }
 
-  jobsResource(filter: Signal<Partial<JobQueryFilterOptions>>): HttpResourceRef<JobPartial[]> {
+  jobsResource(filter: Signal<Record<string, any>>): HttpResourceRef<JobPartial[]> {
     return this.#jobsResource(filter, 0, this.#validator.arrayValidatorFn(JobPartial));
   }
 
-  jobsUnwindedResource(filter: Signal<Partial<JobQueryFilterOptions>>): HttpResourceRef<JobUnwindedPartial[]> {
+  jobsUnwindedResource(filter: Signal<Record<string, any>>): HttpResourceRef<JobUnwindedPartial[]> {
     return this.#jobsResource(filter, 1, this.#validator.arrayValidatorFn(JobUnwindedPartial));
   }
 
   #jobsResource<P extends 0 | 1, Result = P extends 0 ? JobPartial : JobUnwindedPartial>(
-    filter: Signal<Partial<JobQueryFilterOptions>>,
+    filter: Signal<Record<string, any>>,
     unwindProducts: P,
     parse: (value: Record<string, any>[]) => Result[],
   ): HttpResourceRef<Result[]> {

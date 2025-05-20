@@ -1,18 +1,22 @@
-import { inject, Injectable } from '@angular/core';
+import { computed, inject, Injectable, Signal } from '@angular/core';
 import { endOfDay } from 'date-fns';
-import { AppClassTransformerService, FilterInput, toFilterSignal } from 'src/app/library';
-import { Job, JobQueryFilter, JobQueryFilterOptions, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
+import { FilterInput, toFilterSignal } from 'src/app/library';
+import { Job, JobFilter, jobFilterToRequestQuery, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
 import { JobsApiService, JobUpdateParams } from './jobs-api.service';
+
+function filterInputToRequestQuery(filter: FilterInput<JobFilter>): Signal<Record<string, any>> {
+  const filterSignal = toFilterSignal(filter);
+  return computed(() => jobFilterToRequestQuery(filterSignal()));
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class JobService {
-  private api = inject(JobsApiService);
-  private transformer = inject(AppClassTransformerService);
+  #api = inject(JobsApiService);
 
   async newJob(job: Partial<Job>, params: JobUpdateParams = {}): Promise<Job> {
-    return this.api.insertOne(job, params);
+    return this.#api.insertOne(job, params);
   }
 
   async updateJob(jobId: number, job: Partial<Job>, params: JobUpdateParams = {}): Promise<Job> {
@@ -22,7 +26,7 @@ export class JobService {
     if (job.jobStatus) {
       job.jobStatus.timestamp = new Date();
     }
-    return this.api.updateOne(
+    return this.#api.updateOne(
       jobId,
       {
         ...job,
@@ -34,33 +38,33 @@ export class JobService {
   }
 
   createFolder(jobId: number): Promise<Job> {
-    return this.api.createFolder(jobId);
+    return this.#api.createFolder(jobId);
   }
 
   async updateJobs(jobs: Partial<Job>[], params?: JobUpdateParams): Promise<number> {
     if (jobs.some((job) => !job.jobId)) {
       return 0;
     }
-    return this.api.updateMany(jobs, params);
+    return this.#api.updateMany(jobs, params);
   }
 
   getJob(jobId: number): Promise<Job> {
-    return this.api.getOne(jobId);
+    return this.#api.getOne(jobId);
   }
 
-  getJobsResource(filter: FilterInput<JobQueryFilter>) {
-    return this.api.jobsResource(toFilterSignal(filter));
+  getJobsResource(filter: FilterInput<JobFilter>) {
+    return this.#api.jobsResource(filterInputToRequestQuery(filter));
   }
 
-  getJobsUnwindedResource(filter: FilterInput<JobQueryFilter>) {
-    return this.api.jobsUnwindedResource(toFilterSignal(filter));
+  getJobsUnwindedResource(filter: FilterInput<JobFilter>) {
+    return this.#api.jobsUnwindedResource(filterInputToRequestQuery(filter));
   }
 
-  getJobListUnwinded(filter: Partial<JobQueryFilterOptions> = {}): Promise<JobUnwindedPartial[]> {
-    return this.api.getAllUnwinded(this.transformer.plainToInstance(JobQueryFilter, filter));
+  getJobListUnwinded(filter: FilterInput<JobFilter> = {}): Promise<JobUnwindedPartial[]> {
+    return this.#api.getAllUnwinded(filterInputToRequestQuery(filter));
   }
 
   getJobsWithoutInvoicesTotals(): Promise<JobsWithoutInvoicesTotals[]> {
-    return this.api.jobsWithoutInvoicesTotals();
+    return this.#api.jobsWithoutInvoicesTotals();
   }
 }

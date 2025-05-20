@@ -1,8 +1,9 @@
+import { ParamMap } from '@angular/router';
 import { JobCategories } from './job-categories';
-import { Type, Transform, instanceToPlain } from 'class-transformer';
 
-export interface JobQueryFilterOptions {
+export interface JobFilter {
   start?: number;
+
   limit?: number;
 
   fromDate?: Date;
@@ -13,62 +14,60 @@ export interface JobQueryFilterOptions {
 
   invoice?: 0 | 1;
 
-  unwindProducts?: 0 | 1;
-
   jobStatus?: number[];
 
   jobsId?: number[];
 
-  category?: JobCategories;
-}
-
-export class JobQueryFilter implements JobQueryFilterOptions {
-  start?: number;
-
-  limit?: number;
-
-  @Type(() => Date)
-  fromDate?: Date;
-
-  @Transform(({ value }) => value || undefined)
-  customer?: string;
-
-  @Transform(({ value }) => value || undefined)
-  name?: string;
-
-  invoice?: 0 | 1;
-
-  @Transform(({ value }) => (Array.isArray(value) ? value : [value]).map((n) => +n), { toClassOnly: true })
-  jobStatus?: number[];
-
-  @Transform(({ value }) => (value ? (Array.isArray(value) ? value : [value]).map((n) => +n) : undefined), { toClassOnly: true })
-  @Transform(({ value }) => (Array.isArray(value) ? value.join(',') : undefined), { toPlainOnly: true })
-  jobsId?: number[];
-
-  @Transform(({ value }) => value || undefined)
   productsName?: string;
 
   category?: JobCategories;
-
-  toPlain(): JobFilter {
-    return instanceToPlain(this) as JobFilter;
-  }
-
-  static default(): JobQueryFilter {
-    const filter = new JobQueryFilter();
-    filter.jobStatus = [10, 20];
-    return filter;
-  }
 }
 
-export const JOB_FILTER_KEYS = ['customer', 'jobsId', 'name', 'jobStatus', 'productsName'] as const;
+export function queryParamsToJobFilter(queryParams: ParamMap): JobFilter {
+  const filter: JobFilter = {
+    jobStatus: [10, 20],
+  };
 
-export type JobFilterKeys = (typeof JOB_FILTER_KEYS)[number];
+  if (queryParams.has('start')) {
+    filter.start = +queryParams.get('start')!;
+  }
+  if (queryParams.has('limit')) {
+    filter.limit = +queryParams.get('limit')!;
+  }
+  if (queryParams.has('fromDate')) {
+    filter.fromDate = new Date(queryParams.get('fromDate')!);
+  }
+  if (queryParams.has('customer')) {
+    filter.customer = queryParams.get('customer')!;
+  }
+  if (queryParams.has('name')) {
+    filter.name = queryParams.get('name')!;
+  }
+  if (queryParams.has('category')) {
+    filter.category = queryParams.get('category') as JobCategories;
+  }
+  if (queryParams.has('jobsId')) {
+    const jobsId = queryParams.getAll('jobsId');
+    filter.jobsId = [jobsId].map((n) => +n).filter((n) => !isNaN(n));
+  }
+  if (queryParams.has('productsName')) {
+    filter.productsName = queryParams.get('productsName')!;
+  }
+  if (queryParams.has('invoice')) {
+    filter.invoice = queryParams.get('invoice') ? 1 : 0;
+  }
+  if (queryParams.has('jobStatus')) {
+    const jobStatus = queryParams.getAll('jobStatus');
+    filter.jobStatus = jobStatus.map((n) => +n).filter((n) => !isNaN(n));
+  }
+  return filter;
+}
 
-export interface JobFilter {
-  customer: string;
-  jobsId: string;
-  name: string;
-  productsName: string;
-  jobStatus: number[];
+export function jobFilterToRequestQuery(filter: JobFilter): Record<string, any> {
+  return {
+    ...filter,
+    jobsId: filter.jobsId ? filter.jobsId.join(',') : undefined,
+    jobStatus: filter.jobStatus ? filter.jobStatus.join(',') : undefined,
+    fromDate: filter.fromDate ? new Date(filter.fromDate).toISOString() : undefined,
+  };
 }

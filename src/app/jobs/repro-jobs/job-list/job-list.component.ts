@@ -16,7 +16,7 @@ import { NotificationsService } from 'src/app/services';
 import { ProductsService } from 'src/app/services/products.service';
 import { ScrollTopDirective } from '../../../library/scroll-to-top/scroll-top.directive';
 import { DrawerButtonDirective } from '../../../library/side-button/drawer-button.directive';
-import { JobPartial, JobQueryFilter } from '../../interfaces';
+import { JobPartial, JobFilter } from '../../interfaces';
 import { JobService } from '../../services/job.service';
 import { JobFilterComponent } from '../job-filter/job-filter.component';
 import { ProductsSummaryComponent } from '../products-summary/products-summary.component';
@@ -60,7 +60,7 @@ export class JobListComponent {
 
   isLarge = false;
 
-  filter = input.required<JobQueryFilter>();
+  filter = input.required<JobFilter>();
   private filterChanges = computed(() => this.filter(), { equal: isEqual });
 
   jobsRef = this.jobService.getJobsResource(this.filterChanges);
@@ -79,7 +79,7 @@ export class JobListComponent {
     });
   }
 
-  onJobFilter(filter: JobQueryFilter) {
+  onJobFilter(filter: JobFilter) {
     this.navigate(['.'], { queryParams: filter });
   }
 

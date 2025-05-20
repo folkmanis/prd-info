@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, untracked } from '@angular/core';
 import { outputFromObservable } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators, ValueChangeEvent } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -10,18 +10,25 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Observable, debounceTime, filter, map } from 'rxjs';
+import { debounceTime, filter, map } from 'rxjs';
 import { ProductPartial } from 'src/app/interfaces';
-import { AppClassTransformerService } from 'src/app/library';
 import { ViewSizeDirective } from 'src/app/library/view-size';
 import { CustomersService } from 'src/app/services';
 import { configuration } from 'src/app/services/config.provider';
-import { JobFilter, JobQueryFilter } from '../../interfaces';
+import { JobFilter } from '../../interfaces';
 import { CustomerInputComponent } from '../customer-input/customer-input.component';
 import { FilterSummaryComponent } from './filter-summary/filter-summary.component';
 
+export interface JobFilterSelections {
+  customer: string;
+  jobsId: string;
+  name: string;
+  productsName: string;
+  jobStatus: number[];
+}
+
 export type FilterFormType = {
-  [k in keyof JobFilter]: FormControl<JobFilter[k] | null>;
+  [k in keyof JobFilterSelections]: FormControl<JobFilterSelections[k] | null>;
 };
 
 @Component({
@@ -46,8 +53,6 @@ export type FilterFormType = {
   ],
 })
 export class JobFilterComponent {
-  private transformer = inject(AppClassTransformerService);
-
   filterForm: FormGroup<FilterFormType> = inject(FormBuilder).group({
     name: [null as string | null],
     jobsId: ['', [Validators.pattern(/^[0-9]+$/)]],
@@ -58,33 +63,61 @@ export class JobFilterComponent {
 
   customers = inject(CustomersService).getCustomersResource({ disabled: false }).asReadonly();
   jobStates = configuration('jobs', 'jobStates');
-
-  filter = input.required<JobQueryFilter>();
-
   products = input<ProductPartial[] | null>(null);
 
-  filterChange$: Observable<JobQueryFilter> = this.filterForm.valueChanges.pipe(
-    filter((_) => this.filterForm.valid),
+  filter = input.required<JobFilter>();
+
+  #filterChange$ = this.filterForm.events.pipe(
+    filter((event) => event instanceof ValueChangeEvent && event.source.valid),
     debounceTime(300),
-    map((value) => this.transformer.plainToInstance(JobQueryFilter, value)),
+    map((event: ValueChangeEvent<FilterFormType>) => this.#applyFilterChanges(event.value)),
   );
-  filterChange = outputFromObservable(this.filterChange$);
+  filterChange = outputFromObservable(this.#filterChange$);
 
   constructor() {
     effect(() => {
-      const queryFilter = this.filter().toPlain();
+      const queryFilter = this.#toJobsFilterOptions(this.filter());
       untracked(() => {
         this.filterForm.reset(queryFilter, { emitEvent: false });
       });
     });
   }
 
-  onReset<T extends keyof JobFilter>(key?: T) {
-    const def = JobQueryFilter.default().toPlain();
+  onReset<T extends keyof JobFilterSelections>(key?: T) {
     if (key) {
-      this.filterForm.controls[key].reset(def[key]);
+      this.filterForm.controls[key].reset(this.#defaultFilter[key]);
     } else {
-      this.filterForm.reset(def);
+      this.filterForm.reset(this.#defaultFilter);
     }
   }
+
+  #applyFilterChanges(value: Record<string, any>): JobFilter {
+    return {
+      ...this.filter(),
+      customer: value.customer ? value.customer : undefined,
+      jobsId: value.jobsId ? [+value.jobsId] : undefined,
+      name: value.name ? value.name : undefined,
+      productsName: value.productsName ? value.productsName : undefined,
+      jobStatus: value.jobStatus,
+    };
+  }
+
+  #toJobsFilterOptions(jobFilter: JobFilter): JobFilterSelections {
+    const { customer, jobsId, name, productsName, jobStatus } = jobFilter;
+    return {
+      customer: customer ?? '',
+      jobsId: jobsId ? jobsId.join(',') : '',
+      name: name || '',
+      productsName: productsName || '',
+      jobStatus: jobStatus || [],
+    };
+  }
+
+  #defaultFilter: JobFilterSelections = {
+    customer: '',
+    jobsId: '',
+    name: '',
+    productsName: '',
+    jobStatus: [10, 20],
+  };
 }

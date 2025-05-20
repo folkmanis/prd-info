@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
 import { CustomerProduct } from 'src/app/interfaces';
-import { JobQueryFilterOptions, JobService, JobUnwindedPartial } from 'src/app/jobs';
+import { JobFilter, JobService, JobUnwindedPartial } from 'src/app/jobs';
 import { ProductsService } from 'src/app/services/products.service';
 import { JobData, JobWithUpdate } from './interfaces';
 
@@ -15,9 +15,9 @@ export const resolveJobData: ResolveFn<JobData[]> = async (route) => {
     products = (await productsService.productsCustomer(customer)).filter((prod) => prod.price !== undefined);
   }
 
-  const filterQuery = {
+  const filterQuery: JobFilter = {
     invoice: 0,
-  } as Partial<JobQueryFilterOptions>;
+  };
   if (customer) {
     filterQuery.customer = customer;
   }
