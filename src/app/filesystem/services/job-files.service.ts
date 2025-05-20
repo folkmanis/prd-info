@@ -12,32 +12,32 @@ import { FileLocationTypes } from '../interfaces/file-location-types';
   providedIn: 'root',
 })
 export class JobFilesService {
-  private filesApi = inject(JobsFilesApiService);
-  private sanitize = inject(SanitizeService);
+  #api = inject(JobsFilesApiService);
+  #sanitize = inject(SanitizeService);
 
   moveUserFilesToJob(jobId: number, fileNames: string[]): Observable<Job> {
-    return this.filesApi.transferUserfilesToJob(jobId, fileNames);
+    return this.#api.transferUserfilesToJob(jobId, fileNames);
   }
 
   copyFtpFilesToJob(jobId: number, files: string[][]): Observable<Job> {
-    return this.filesApi.transferFtpFilesToJob(jobId, files);
+    return this.#api.transferFtpFilesToJob(jobId, files);
   }
 
   async updateFolderLocation(jobId: number): Promise<Job> {
-    return this.filesApi.updateFilesLocation(jobId);
+    return this.#api.updateFilesLocation(jobId);
   }
 
   uploadUserFile(file: File, name?: string): Observable<HttpEvent<{ names: string[] }>> {
     const formData = new FormData();
-    name = this.sanitize.sanitizeFileName(name || file.name);
+    name = this.#sanitize.sanitizeFileName(name || file.name);
 
     formData.append('fileUpload', file, name);
 
-    return this.filesApi.userFileUpload(formData);
+    return this.#api.userFileUpload(formData);
   }
 
   deleteUserUploads(fileNames: string[]): Observable<null> {
-    return this.filesApi.deleteUserFiles(fileNames).pipe(
+    return this.#api.deleteUserFiles(fileNames).pipe(
       tap((count) => {
         if (count !== fileNames.length) {
           throw new Error('Not all uploads deleted');
@@ -48,19 +48,19 @@ export class JobFilesService {
   }
 
   ftpFolders(path?: string[]): Promise<FileElement[]> {
-    return this.filesApi.readFtp(path?.join('/'));
+    return this.#api.readFtp(path?.join('/'));
   }
 
   async dropFolders(path?: string[]): Promise<FileElement[]> {
-    return this.filesApi.readDropFolders(path?.join('/'));
+    return this.#api.readDropFolders(path?.join('/'));
   }
 
   copyJobFolderToDropFolder(path: string[], dropFolder: string[]): Promise<number> {
     const dstPath = dropFolder.join('/') + '/' + last(path);
-    return firstValueFrom(this.filesApi.copyFile(FileLocationTypes.JOB, FileLocationTypes.DROPFOLDER, path.join('/'), dstPath));
+    return firstValueFrom(this.#api.copyFile(FileLocationTypes.JOB, FileLocationTypes.DROPFOLDER, path.join('/'), dstPath));
   }
 
   copyJobFilesToJobFiles(oldJobId: number, newJobId: number): Observable<Job> {
-    return this.filesApi.copyFromJobToJob(oldJobId, newJobId);
+    return this.#api.copyFromJobToJob(oldJobId, newJobId);
   }
 }

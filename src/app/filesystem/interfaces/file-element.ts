@@ -1,15 +1,9 @@
-import { Expose } from 'class-transformer';
+import { z } from 'zod';
 
-export class FileElement {
-  @Expose()
-  id?: string | null = null;
-
-  @Expose()
-  isFolder: boolean = false;
-
-  @Expose()
-  name: string;
-
-  @Expose()
-  parent: string[] = [];
-}
+export const FileElement = z.object({
+  id: z.string().nullish(),
+  isFolder: z.boolean().default(false),
+  name: z.string(),
+  parent: z.string().array().default([]),
+});
+export type FileElement = z.infer<typeof FileElement>;
