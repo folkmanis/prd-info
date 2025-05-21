@@ -32,6 +32,11 @@ export class ValidatorService {
     return this.validateArray(schema, data);
   }
 
+  async valdateStringArrayAsync(data$: Observable<string[]>): Promise<string[]> {
+    const data = await firstValueFrom(data$);
+    return z.string().array().parse(data);
+  }
+
   #parse<T, V extends Record<string, any>>(schema: z.Schema<V>, data: T): z.SafeParseSuccess<V>['data'] {
     const result = schema.safeParse(data);
     if (result.success) {

@@ -1,6 +1,3 @@
-import { forkJoin, Observable, of } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-
 export interface Range {
   start: number;
   end: number;
@@ -21,7 +18,7 @@ export class PagedCache<T> {
    */
   constructor(
     private _length: number,
-    private _fetchFunction: (start: number, limit: number) => Observable<T[]>,
+    private _fetchFunction: (start: number, limit: number) => Promise<T[]>,
     firstPage?: T[],
   ) {
     this._cachedData = Array.from({ length: this._length });
@@ -31,26 +28,24 @@ export class PagedCache<T> {
     }
   }
 
-  fetchRange(range: Range): Observable<Array<T | undefined>> {
+  async fetchRange(range: Range): Promise<Array<T | undefined>> {
     const startPage = this.getPageForIndex(range.start);
     const endPage = this.getPageForIndex(range.end);
-    const fetch$: Observable<Array<T>>[] = [];
+    const fetch$: Promise<void>[] = [];
     for (let idx = startPage; idx <= endPage; idx++) {
-      const f = this.fetchPage(idx);
-      if (f) {
-        fetch$.push(f);
+      if (this._cachedPages.has(idx) === false) {
+        fetch$.push(this.fetchPage(idx));
       }
     }
-    return fetch$.length ? forkJoin(fetch$).pipe(map(() => this._cachedData)) : of(this._cachedData);
+    await Promise.all(fetch$);
+    return this._cachedData;
   }
 
-  private fetchPage(page: number): Observable<T[]> | undefined {
-    if (this._cachedPages.has(page)) {
-      return undefined;
-    }
+  private async fetchPage(page: number) {
     this._cachedPages.add(page);
     const start = page * this._pageSize;
-    return this._fetchFunction(start, this._pageSize).pipe(tap((data) => this._cachedData.splice(start, data.length, ...data)));
+    const data = await this._fetchFunction(start, this._pageSize);
+    this._cachedData.splice(start, data.length, ...data);
   }
 
   private getPageForIndex(idx: number): number {

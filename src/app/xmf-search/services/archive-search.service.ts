@@ -27,12 +27,12 @@ export class ArchiveSearchService {
   getData(query$: Observable<SearchQuery>, count$: Observable<number>): Observable<SearchData> {
     return count$.pipe(
       withLatestFrom(query$),
-      map(([count, query]) => new PagedCache<ArchiveRecord>(count, this.fetchRecords(query))),
+      map(([count, query]) => new PagedCache<ArchiveRecord>(count, this.fetchRecordsFn(query))),
       map((cache) => new SearchData(cache)),
     );
   }
 
-  private fetchRecords(query: SearchQuery): (start: number, limit: number) => Observable<ArchiveRecord[]> {
+  private fetchRecordsFn(query: SearchQuery): (start: number, limit: number) => Promise<ArchiveRecord[]> {
     return (start, limit) => this.api.getArchive(query, start, limit);
   }
 }

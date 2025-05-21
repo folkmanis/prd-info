@@ -1,28 +1,31 @@
-import { Type, Expose, Transform } from 'class-transformer';
+import { KeysMap } from 'src/app/library';
+import { z } from 'zod';
 
-export class Archive {
-  @Expose({ name: 'Location' })
-  @Transform(({ value }) => value.replace(/\//g, '\\'), { toClassOnly: true })
-  location: string;
+export const archiveRecordKeysMap: KeysMap = {
+  JDFJobID: 'jdfJobId',
+  DescriptiveName: 'descriptiveName',
+  CustomerName: 'customerName',
+  Archives: {
+    name: 'archives',
+    keysMap: {
+      Location: 'location',
+      Date: 'date',
+      Action: 'action',
+    },
+  },
+};
 
-  @Expose({ name: 'Date' })
-  date: string;
+export const Archive = z.object({
+  location: z.string().transform((val) => val.replace(/\//g, '\\')),
+  date: z.string(),
+  action: z.number(),
+});
+export type Archive = z.infer<typeof Archive>;
 
-  @Expose({ name: 'Action' })
-  action: number;
-}
-
-export class ArchiveRecord {
-  @Expose({ name: 'JDFJobID' })
-  jdfJobId: string;
-
-  @Expose({ name: 'DescriptiveName' })
-  descriptiveName: string;
-
-  @Expose({ name: 'CustomerName' })
-  customerName: string;
-
-  @Expose({ name: 'Archives' })
-  @Type(() => Archive)
-  archives: Archive[];
-}
+export const ArchiveRecord = z.object({
+  jdfJobId: z.string(),
+  descriptiveName: z.string(),
+  customerName: z.string(),
+  archives: z.array(Archive),
+});
+export type ArchiveRecord = z.infer<typeof ArchiveRecord>;

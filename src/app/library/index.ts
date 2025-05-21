@@ -5,3 +5,4 @@ export * from './class-transformer/app-class-transformer.service';
 export * from './clipboard';
 export * from './assert-utils';
 export * from './validator';
+export * from './rename-keys/rename-keys';

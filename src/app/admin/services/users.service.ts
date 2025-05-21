@@ -21,8 +21,8 @@ export class UsersService {
   }
 
   async getXmfCustomers(): Promise<XmfCustomer[]> {
-    const customer = await this.xmfApi.getXmfCustomer();
-    return customer.map((cust) => ({ name: cust || 'Nenoteikts', value: cust }));
+    const customers = await this.xmfApi.getXmfCustomers();
+    return customers.map((cust) => ({ name: cust || 'Nenoteikts', value: cust }));
   }
 
   getUser(username: string): Promise<User> {
