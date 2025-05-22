@@ -30,17 +30,19 @@
   </span>
 
   <!-- Ziņojumi -->
-  @let count = messagesCount$ | async;
-  @let unreadCount = unreadMessagesCount$ | async;
   <span *appViewSmall>
-    <a mat-icon-button [disabled]="count === 0" routerLink="/messages">
-      <mat-icon [matBadge]="unreadCount" [matBadgeHidden]="unreadCount === 0" aria-hidden="false" matBadgeSize="large" class="mat-badge-tertiary"> notifications </mat-icon>
+    <a mat-icon-button [disabled]="messagesCount() === 0" routerLink="/messages">
+      <mat-icon [matBadge]="unreadMessagesCount()" [matBadgeHidden]="unreadMessagesCount() === 0" aria-hidden="false" matBadgeSize="large" class="mat-badge-tertiary">
+        notifications
+      </mat-icon>
     </a>
   </span>
 
   <span *appViewNotSmall>
-    <button mat-icon-button appMessagesTrigger [disabled]="count === 0">
-      <mat-icon [matBadge]="unreadCount" [matBadgeHidden]="unreadCount === 0" aria-hidden="false" matBadgeSize="large" class="mat-badge-tertiary"> notifications </mat-icon>
+    <button mat-icon-button appMessagesTrigger [disabled]="messagesCount() === 0">
+      <mat-icon [matBadge]="unreadMessagesCount()" [matBadgeHidden]="unreadMessagesCount() === 0" aria-hidden="false" matBadgeSize="large" class="mat-badge-tertiary">
+        notifications
+      </mat-icon>
     </button>
   </span>
 

@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject, input, model, output } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -37,7 +36,6 @@ const INITIAL_DELAY = 3000;
     MatBadgeModule,
     MessagesTriggerDirective,
     MatMenuModule,
-    AsyncPipe,
     MatSlideToggle,
   ],
 })
@@ -64,8 +62,8 @@ export class ToolbarComponent implements OnInit {
 
   version = getAppParams('version', 'appBuild');
 
-  messagesCount$: Observable<number> = this.messagingService.messagesCount$;
-  unreadMessagesCount$: Observable<number> = this.messagingService.unreadCount$;
+  messagesCount = this.messagingService.messagesCount;
+  unreadMessagesCount = this.messagingService.unreadCount;
 
   ngOnInit(): void {
     this.systemNotifications$.subscribe(() => this.messagingService.reload());
