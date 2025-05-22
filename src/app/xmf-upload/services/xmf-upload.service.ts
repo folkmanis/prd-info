@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { XmfUploadProgress } from '../interfaces/xmf-upload-progress';
 import { XmfArchiveUploadApiService } from './xmf-archive-upload-api.service';
 
@@ -9,11 +8,11 @@ import { XmfArchiveUploadApiService } from './xmf-archive-upload-api.service';
 export class XmfUploadService {
   constructor(private api: XmfArchiveUploadApiService) {}
 
-  getHistory(): Observable<XmfUploadProgress[]> {
+  getHistory(): Promise<XmfUploadProgress[]> {
     return this.api.getHistory();
   }
 
-  postFile(formData: FormData): Observable<XmfUploadProgress> {
+  postFile(formData: FormData): Promise<XmfUploadProgress> {
     return this.api.uploadArchive(formData);
   }
 

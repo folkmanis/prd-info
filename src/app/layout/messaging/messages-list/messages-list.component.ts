@@ -3,10 +3,10 @@ import { ChangeDetectionStrategy, Component, inject, TrackByFunction } from '@an
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { RelativeDatePipe } from 'src/app/library/date-services';
 import { JobData, Message, MessageFtpUser } from '../interfaces';
 import { MessageJobDirective } from '../message-job.directive';
 import { MessagingService } from '../services/messaging.service';
-import { RelativeDatePipe } from 'src/app/library/date-services';
 
 @Component({
   selector: 'app-messages-list',
@@ -23,15 +23,22 @@ export class MessagesListComponent {
 
   trackByFn: TrackByFunction<Message> = (_, msg) => msg._id;
 
-  ftpUsers({ data }: Message): MessageFtpUser[] {
-    return (data instanceof JobData && data.operation === 'add' && data.ftpUsers) || [];
+  ftpUsers({ data }: Message): MessageFtpUser[] | null {
+    if (data instanceof JobData && data.operation === 'add') {
+      return data.ftpUsers;
+    }
+    return null;
+  }
+
+  isFtpUploadMessage({ data }: Message): boolean {
+    return data instanceof JobData && data.operation === 'add';
   }
 
   onDelete(id: string) {
-    this.messaging.deleteMessage(id).subscribe();
+    this.messaging.deleteMessage(id);
   }
 
   onMarkAsRead(id: string) {
-    this.messaging.markOneRead(id).subscribe();
+    this.messaging.markOneRead(id);
   }
 }

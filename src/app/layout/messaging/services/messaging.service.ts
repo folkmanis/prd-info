@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { map, shareReplay, switchMap } from 'rxjs/operators';
 import { cacheWithUpdate, combineReload } from 'src/app/library/rxjs';
 import { LoginService } from 'src/app/login';
 import { Message } from '../interfaces';
@@ -15,7 +15,7 @@ export class MessagingService {
   private update$ = new Subject<Message>();
 
   messages$: Observable<Message[]> = combineReload(this.login.user$, this.reload$).pipe(
-    switchMap((user) => (user ? this.messagesApi.messages() : [])),
+    switchMap((user) => (user ? this.messagesApi.getAllMessages() : [])),
     cacheWithUpdate(this.update$, (m1, m2) => m1._id === m2._id),
     shareReplay(1),
   );
@@ -40,24 +40,24 @@ export class MessagingService {
     this.update$.next(message);
   }
 
-  markOneRead(id: string): Observable<boolean> {
-    return this.messagesApi.setOneMessageRead(id).pipe(
-      tap((message) => this.replaceOne(message)),
-      map(() => true),
-    );
+  async markOneRead(id: string): Promise<void> {
+    const message = await this.messagesApi.setOneMessageRead(id);
+    this.replaceOne(message);
   }
 
-  markAllAsRead(): Observable<boolean> {
-    return this.messagesApi.setAllMessagesRead().pipe(
-      map((n) => n > 0),
-      tap((resp) => resp && this.reload()),
-    );
+  async markAllAsRead(): Promise<boolean> {
+    const count = await this.messagesApi.setAllMessagesRead();
+    if (count > 0) {
+      this.reload();
+    }
+    return count > 0;
   }
 
-  deleteMessage(id: string): Observable<boolean> {
-    return this.messagesApi.deleteMessage(id).pipe(
-      map((n) => n > 0),
-      tap((resp) => resp && this.reload()),
-    );
+  async deleteMessage(id: string): Promise<boolean> {
+    const count = await this.messagesApi.deleteMessage(id);
+    if (count > 0) {
+      this.reload();
+    }
+    return count > 0;
   }
 }

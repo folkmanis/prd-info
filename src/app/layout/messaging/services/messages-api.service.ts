@@ -1,51 +1,57 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { ClassTransformer } from 'class-transformer';
-import { map, Observable } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
+import { ValidatorService } from 'src/app/library';
 import { HttpOptions } from 'src/app/library/http';
-import { Message } from '../interfaces';
-
-function addDataType(message: Record<string, any>) {
-  return {
-    ...message,
-    data: {
-      ...message.data,
-      _type: message.module,
-    },
-  };
-}
+import { z } from 'zod';
+import { JobData, Message, XmfUploadData } from '../interfaces';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MessagesApiService {
-  private readonly path = getAppParams('apiPath') + 'messages/';
+  #path = getAppParams('apiPath') + 'messages/';
+  #validator = inject(ValidatorService);
+  #http = inject(HttpClient);
 
-  constructor(
-    private http: HttpClient,
-    private transformer: ClassTransformer,
-  ) {}
-
-  messages(): Observable<Message[]> {
-    return this.http.get<Record<string, any>[]>(this.path, new HttpOptions()).pipe(
-      map((messages) => messages.map((m) => addDataType(m))),
-      map((resp) => this.transformer.plainToInstance(Message, resp)),
-    );
+  async getAllMessages(): Promise<Message[]> {
+    const data = await firstValueFrom(this.#http.get<Record<string, any>[]>(this.#path, new HttpOptions()));
+    const messages = data.map((message) => this.#addDataType(message));
+    return this.#validator.validateArray(Message, messages);
   }
 
-  setOneMessageRead(id: string): Observable<Message> {
-    return this.http.patch<Record<string, any>>(this.path + 'read/' + id, new HttpOptions()).pipe(
-      map((message) => addDataType(message)),
-      map((resp) => this.transformer.plainToInstance(Message, resp)),
-    );
+  async setOneMessageRead(id: string): Promise<Message> {
+    const data = await firstValueFrom(this.#http.patch<Record<string, any>>(this.#path + 'read/' + id, new HttpOptions()));
+    const message = this.#addDataType(data);
+    return this.#validator.validate(Message, message);
   }
 
-  setAllMessagesRead(): Observable<number> {
-    return this.http.patch<{ modifiedCount: number }>(this.path + 'read', new HttpOptions()).pipe(map((data) => data.modifiedCount));
+  async setAllMessagesRead(): Promise<number> {
+    const data$ = this.#http.patch<{ modifiedCount: number }>(this.#path + 'read', new HttpOptions());
+    const obj = await this.#validator.validateAsync(z.object({ modifiedCount: z.number() }), data$);
+    return obj.modifiedCount;
   }
 
-  deleteMessage(id: string): Observable<number> {
-    return this.http.delete<{ deletedCount: 0 | 1 }>(this.path + id, new HttpOptions()).pipe(map((data) => data.deletedCount));
+  async deleteMessage(id: string): Promise<number> {
+    const data$ = this.#http.delete<{ deletedCount: 0 | 1 }>(this.#path + id, new HttpOptions());
+    const obj = await this.#validator.validateAsync(z.object({ deletedCount: z.number() }), data$);
+    return obj.deletedCount;
+  }
+
+  #addDataType(message: Record<string, any>) {
+    switch (message.module) {
+      case 'jobs':
+        return {
+          ...message,
+          data: new JobData(message.data),
+        };
+      case 'xmf-upload':
+        return {
+          ...message,
+          data: new XmfUploadData(message.data),
+        };
+    }
+    return message;
   }
 }

@@ -35,12 +35,3 @@ export const PreferencesDbModules = z.discriminatedUnion('module', [
 export type PreferencesDbModules = z.infer<typeof PreferencesDbModules>;
 
 export const MODULES = PreferencesDbModules.options.map((obj) => obj.shape.module.value);
-// export const MODULES = SystemPreferences.keyof();
-// export type Modules = z.infer<typeof MODULES>;
-
-// export type ModuleSettings = KastesSettings | SystemSettings | JobsSettings | PaytraqSettings | TransportationSettings;
-
-// export interface PreferencesDbModule {
-//   module: Modules;
-//   settings: ModuleSettings;
-// }

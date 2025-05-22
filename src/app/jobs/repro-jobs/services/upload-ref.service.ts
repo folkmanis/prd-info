@@ -3,11 +3,11 @@ import { inject, Injectable } from '@angular/core';
 import { last } from 'lodash-es';
 import { concatMap, EMPTY, filter, map, merge, mergeMap, Observable, of, OperatorFunction, partition, pipe, scan, share, switchMap, throttleTime } from 'rxjs';
 import { JobFilesService } from 'src/app/filesystem';
+import { notNullOrDefault, stringOrThrow } from 'src/app/library';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { Job } from '../../interfaces';
 import { FileUploadEventType, FileUploadMessage, UploadMessageBase, UploadWaitingMessage } from '../../interfaces/file-upload-message';
 import { UploadRef } from './upload-ref';
-import { notNullOrDefault, stringOrThrow } from 'src/app/library';
 
 const SIMULTANEOUS_UPLOADS = 2;
 const PERCENT_REPORT_INTERVAL = 500;
@@ -51,7 +51,7 @@ export class UploadRefService {
     this.uploadRef = uploadRef;
   }
 
-  setFtpUpload(path: string[], afterAddedToJob: Observable<unknown>) {
+  setFtpUpload(path: string[], afterAddedToJob: () => void) {
     const fileName = stringOrThrow(last(path));
     const message: FileUploadMessage = {
       type: FileUploadEventType.UploadFinish,
@@ -64,10 +64,7 @@ export class UploadRefService {
     const progress$: Observable<FileUploadMessage[]> = of([message]);
     const uploadRef = new UploadRef(progress$, this.addFtpFilesToJobFn(path.slice(0, -1)));
 
-    uploadRef
-      .onAddedToJob()
-      .pipe(switchMap(() => afterAddedToJob))
-      .subscribe();
+    uploadRef.onAddedToJob().subscribe(() => afterAddedToJob());
 
     this.uploadRef = uploadRef;
   }

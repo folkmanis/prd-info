@@ -43,6 +43,7 @@ export class ValidatorService {
       return result.data;
     } else {
       const message = result.error.format();
+      // eslint-disable-next-line no-console
       console.error('Validation error:', message);
       throw new Error('Validation failed: ' + JSON.stringify(message));
     }

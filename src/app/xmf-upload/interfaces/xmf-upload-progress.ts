@@ -1,22 +1,18 @@
-import { Type } from 'class-transformer';
+import { z } from 'zod';
 
-export class XmfUploadProgress {
-  _id: string;
-
-  @Type(() => Date)
-  started: Date;
-
-  fileName: string;
-  fileSize: number;
-  username: string;
-  state: 'uploading' | 'parsing' | 'saving' | 'finished';
-  count: {
-    processed: number;
-    modified: number;
-    upserted: number;
-    lines: number;
-  };
-
-  @Type(() => Date)
-  finished: Date;
-}
+export const XmfUploadProgress = z.object({
+  _id: z.string(),
+  started: z.coerce.date(),
+  fileName: z.string(),
+  fileSize: z.number(),
+  username: z.string(),
+  state: z.enum(['uploading', 'parsing', 'saving', 'finished']),
+  count: z.object({
+    processed: z.number(),
+    modified: z.number(),
+    upserted: z.number(),
+    lines: z.number(),
+  }),
+  finished: z.coerce.date(),
+});
+export type XmfUploadProgress = z.infer<typeof XmfUploadProgress>;

@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { z } from 'zod';
 import { MessageData } from './message-data';
 
 const FS_ACTIONS: {
@@ -11,22 +11,34 @@ const FS_ACTIONS: {
   { operation: 'unlink', action: 'Izdzēsts fails' },
 ];
 
-export class MessageFtpUser {
-  _id: string;
-  CustomerName: string;
-  code: string;
-  folder: string;
-}
+export const MessageFtpUser = z.object({
+  _id: z.string(),
+  CustomerName: z.string(),
+  code: z.string(),
+  folder: z.string(),
+});
+export type MessageFtpUser = z.infer<typeof MessageFtpUser>;
 
-export type FsOperations = 'add' | 'addDir' | 'change' | 'unlink' | 'ready';
+export const FsOperationsEnum = z.enum(['add', 'addDir', 'change', 'unlink', 'ready']);
+export type FsOperations = z.infer<typeof FsOperationsEnum>;
 
-export class JobData extends MessageData {
-  action: 'ftpUpload';
-  operation: FsOperations;
-  path: string[];
+export const jobDataSchema = z.object({
+  action: z.literal('ftpUpload'),
+  operation: FsOperationsEnum,
+  path: z.string().array(),
+  ftpUsers: MessageFtpUser.array(),
+});
 
-  @Type(() => MessageFtpUser)
-  ftpUsers: MessageFtpUser[];
+export class JobData implements MessageData, z.infer<typeof jobDataSchema> {
+  action: 'ftpUpload' = 'ftpUpload';
+  operation: FsOperations = 'add';
+  path: string[] = [];
+
+  ftpUsers: MessageFtpUser[] = [];
+
+  constructor(obj: Record<string, any> = {}) {
+    Object.assign(this, obj);
+  }
 
   toAction() {
     if (this.action === 'ftpUpload') {

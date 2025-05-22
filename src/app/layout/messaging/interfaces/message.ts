@@ -1,29 +1,14 @@
+import { z } from 'zod';
 import { JobData } from './job-data';
-import { MessageData } from './message-data';
 import { XmfUploadData } from './xmf-upload-data';
-import { Type } from 'class-transformer';
-import { MODULES } from '../../../interfaces/system-preferences';
 
-export class Message {
-  _id: string;
+export const Message = z.object({
+  _id: z.string(),
+  timestamp: z.coerce.date(),
+  seen: z.boolean(),
+  deleted: z.boolean(),
+  module: z.enum(['xmf-upload', 'jobs']),
+  data: z.union([z.instanceof(JobData), z.instanceof(XmfUploadData)]),
+});
 
-  @Type(() => Date)
-  timestamp: Date;
-
-  seen: boolean;
-
-  deleted: boolean;
-
-  module: (typeof MODULES)[number];
-
-  @Type(() => MessageData, {
-    discriminator: {
-      property: '_type',
-      subTypes: [
-        { value: JobData, name: 'jobs' },
-        { value: XmfUploadData, name: 'xmf-upload' },
-      ],
-    },
-  })
-  data: JobData | XmfUploadData;
-}
+export type Message = z.infer<typeof Message>;

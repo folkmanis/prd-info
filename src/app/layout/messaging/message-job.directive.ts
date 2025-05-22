@@ -2,13 +2,12 @@ import { OverlayRef } from '@angular/cdk/overlay';
 import { Directive, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 import { last } from 'lodash-es';
-import { EMPTY, Observable } from 'rxjs';
 import { JobFilesService } from 'src/app/filesystem';
 import { ReproJobService } from 'src/app/jobs/repro-jobs/services/repro-job.service';
 import { UploadRefService } from 'src/app/jobs/repro-jobs/services/upload-ref.service';
+import { notNullOrThrow } from 'src/app/library';
 import { JobData, Message, MessageFtpUser } from './interfaces';
 import { MessagingService } from './services/messaging.service';
-import { notNullOrThrow } from 'src/app/library';
 
 export interface UserFile {
   name: string;
@@ -23,12 +22,12 @@ export interface UserFile {
   },
 })
 export class MessageJobDirective {
-  private router = inject(Router);
-  private messaging = inject(MessagingService);
-  private overlayRef = inject(OverlayRef, { optional: true });
-  private reproJobService = inject(ReproJobService);
-  private uploadRefService = inject(UploadRefService);
-  private filesService = inject(JobFilesService);
+  #router = inject(Router);
+  #messaging = inject(MessagingService);
+  #overlayRef = inject(OverlayRef, { optional: true });
+  #reproJobService = inject(ReproJobService);
+  #uploadRefService = inject(UploadRefService);
+  #filesService = inject(JobFilesService);
 
   message = input<Message | null>(null, { alias: 'appMessageJob' });
 
@@ -36,24 +35,22 @@ export class MessageJobDirective {
 
   async onClick() {
     const message = this.message();
-    const ftpUser = this.ftpUser();
+    const ftpUser = MessageFtpUser.nullable().parse(this.ftpUser());
 
-    if (message?.data instanceof JobData && message.data.operation === 'add' && ftpUser instanceof MessageFtpUser) {
-      this.overlayRef?.detach();
+    if (message?.data instanceof JobData && message.data.operation === 'add') {
+      this.#overlayRef?.detach();
 
       const path = message.data.path;
       const filename = notNullOrThrow(last(path), 'Filename is null');
-      const name = this.reproJobService.jobNameFromFiles([filename]);
+      const name = this.#reproJobService.jobNameFromFiles([filename]);
 
-      const afterAddedToJob = this.setMessageRead(message);
-
-      if (await this.fileExists(path)) {
-        this.uploadRefService.setFtpUpload(path, afterAddedToJob);
-        this.reproJobService.setJobTemplate({
+      if (await this.#checkFileExists(path)) {
+        this.#uploadRefService.setFtpUpload(path, this.#setMessageReadFn(message));
+        this.#reproJobService.setJobTemplate({
           name,
           customer: ftpUser?.CustomerName,
         });
-        await this.router.navigate(['/', 'jobs', 'repro', 'new']);
+        await this.#router.navigate(['/', 'jobs', 'repro', 'new']);
       } else {
         // eslint-disable-next-line no-console
         console.error(`File missing: ${name}`);
@@ -61,13 +58,14 @@ export class MessageJobDirective {
     }
   }
 
-  private async fileExists(path: string[]): Promise<boolean> {
+  async #checkFileExists(path: string[]): Promise<boolean> {
     const fileName = last(path);
+    const folders = await this.#filesService.ftpFolders(path.slice(0, -1));
 
-    return (await this.filesService.ftpFolders(path.slice(0, -1))).filter((element) => !element.isFolder).some((file) => file.name === fileName);
+    return folders.filter((element) => !element.isFolder).some((file) => file.name === fileName);
   }
 
-  private setMessageRead(message: Message): Observable<unknown> {
-    return message.seen ? EMPTY : this.messaging.markOneRead(message._id);
+  #setMessageReadFn({ seen, _id }: Message): () => void {
+    return () => !seen && this.#messaging.markOneRead(_id);
   }
 }
