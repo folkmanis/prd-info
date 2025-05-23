@@ -5,7 +5,7 @@ import { getAppParams } from 'src/app/app-params';
 import { ValidatorService } from 'src/app/library';
 import { HttpOptions } from 'src/app/library/http';
 import { z } from 'zod';
-import { JobData, Message, XmfUploadData } from '../interfaces';
+import { JobMessageData, Message, XmfUploadMessageData } from '../interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -44,12 +44,12 @@ export class MessagesApiService {
       case 'jobs':
         return {
           ...message,
-          data: new JobData(message.data),
+          data: new JobMessageData(message.data),
         };
       case 'xmf-upload':
         return {
           ...message,
-          data: new XmfUploadData(message.data),
+          data: new XmfUploadMessageData(message.data),
         };
     }
     return message;

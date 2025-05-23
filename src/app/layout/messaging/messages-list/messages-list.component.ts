@@ -3,7 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { RelativeDatePipe } from 'src/app/library/date-services';
-import { JobData, Message, MessageFtpUser } from '../interfaces';
+import { JobMessageData, Message, MessageFtpUser } from '../interfaces';
 import { MessageJobDirective } from '../message-job.directive';
 import { MessagingService } from '../services/messaging.service';
 
@@ -23,14 +23,14 @@ export class MessagesListComponent {
   trackByFn: TrackByFunction<Message> = (_, msg) => msg._id;
 
   ftpUsers({ data }: Message): MessageFtpUser[] | null {
-    if (data instanceof JobData && data.operation === 'add') {
+    if (data instanceof JobMessageData && data.operation === 'add') {
       return data.ftpUsers;
     }
     return null;
   }
 
   isFtpUploadMessage({ data }: Message): boolean {
-    return data instanceof JobData && data.operation === 'add';
+    return data instanceof JobMessageData && data.operation === 'add';
   }
 
   onDelete(id: string) {
