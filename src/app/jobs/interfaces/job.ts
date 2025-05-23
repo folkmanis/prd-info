@@ -34,7 +34,7 @@ export const Job = z.object({
   production: z.object({
     category: JOB_CATEGORIES,
   }),
-  productionStages: JobProductionStage.array().optional(),
+  productionStages: JobProductionStage.array().nullish(),
 });
 export type Job = z.infer<typeof Job>;
 
