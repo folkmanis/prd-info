@@ -2,7 +2,7 @@ import { XmfUploadProgress } from 'src/app/xmf-upload/interfaces/xmf-upload-prog
 import { MessageData } from './message-data';
 import { filesize } from 'filesize';
 
-export class XmfUploadData implements MessageData, XmfUploadProgress {
+export class XmfUploadMessageData implements MessageData, XmfUploadProgress {
   _id = '';
   started = new Date();
   fileName = '';

@@ -22,14 +22,14 @@ export type MessageFtpUser = z.infer<typeof MessageFtpUser>;
 export const FsOperationsEnum = z.enum(['add', 'addDir', 'change', 'unlink', 'ready']);
 export type FsOperations = z.infer<typeof FsOperationsEnum>;
 
-export const jobDataSchema = z.object({
+export const jobMesageDataSchema = z.object({
   action: z.literal('ftpUpload'),
   operation: FsOperationsEnum,
   path: z.string().array(),
   ftpUsers: MessageFtpUser.array(),
 });
 
-export class JobData implements MessageData, z.infer<typeof jobDataSchema> {
+export class JobMessageData implements MessageData, z.infer<typeof jobMesageDataSchema> {
   action: 'ftpUpload' = 'ftpUpload';
   operation: FsOperations = 'add';
   path: string[] = [];

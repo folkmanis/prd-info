@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { JobData } from './job-data';
-import { XmfUploadData } from './xmf-upload-data';
+import { JobMessageData } from './job-data';
+import { XmfUploadMessageData } from './xmf-upload-data';
 
 export const Message = z.object({
   _id: z.string(),
@@ -8,7 +8,7 @@ export const Message = z.object({
   seen: z.boolean(),
   deleted: z.boolean(),
   module: z.enum(['xmf-upload', 'jobs']),
-  data: z.union([z.instanceof(JobData), z.instanceof(XmfUploadData)]),
+  data: z.union([z.instanceof(JobMessageData), z.instanceof(XmfUploadMessageData)]),
 });
 
 export type Message = z.infer<typeof Message>;

@@ -6,7 +6,7 @@ import { JobFilesService } from 'src/app/filesystem';
 import { ReproJobService } from 'src/app/jobs/repro-jobs/services/repro-job.service';
 import { UploadRefService } from 'src/app/jobs/repro-jobs/services/upload-ref.service';
 import { notNullOrThrow } from 'src/app/library';
-import { JobData, Message, MessageFtpUser } from './interfaces';
+import { JobMessageData, Message, MessageFtpUser } from './interfaces';
 import { MessagingService } from './services/messaging.service';
 
 export interface UserFile {
@@ -37,7 +37,7 @@ export class MessageJobDirective {
     const message = this.message();
     const ftpUser = MessageFtpUser.nullable().parse(this.ftpUser());
 
-    if (message?.data instanceof JobData && message.data.operation === 'add') {
+    if (message?.data instanceof JobMessageData && message.data.operation === 'add') {
       this.#overlayRef?.detach();
 
       const path = message.data.path;
