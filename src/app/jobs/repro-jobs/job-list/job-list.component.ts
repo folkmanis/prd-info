@@ -65,8 +65,7 @@ export class JobListComponent {
 
   jobsRef = this.jobService.getJobsResource(this.filterChanges);
 
-  private products = inject(ProductsService).getProductsResource().asReadonly();
-  activeProducts = computed(() => this.products.value().filter((product) => !product.inactive));
+  protected activeProducts = inject(ProductsService).getProductsResource({ disabled: false }).asReadonly();
 
   highlited: string | null = null;
 

@@ -11,6 +11,7 @@ export interface ProductsFilter {
   name?: string;
   start?: number;
   limit?: number;
+  disabled?: boolean;
 }
 
 @Injectable({
