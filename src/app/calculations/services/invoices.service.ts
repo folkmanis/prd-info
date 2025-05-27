@@ -24,7 +24,7 @@ export class InvoicesService {
     return this.#jobService.getJobsWithoutInvoicesTotals();
   }
 
-  jobsUnwindedResource(filter: FilterInput<JobFilter>): HttpResourceRef<JobUnwindedPartial[]> {
+  jobsUnwindedResource(filter: FilterInput<JobFilter>): HttpResourceRef<JobUnwindedPartial[] | undefined> {
     return this.#jobService.getJobsUnwindedResource(filter);
   }
 

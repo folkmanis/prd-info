@@ -29,11 +29,11 @@ export class JobsApiService {
     return this.#validator.validateArrayAsync(JobUnwindedPartial, response$);
   }
 
-  jobsResource(filter: Signal<Record<string, any>>): HttpResourceRef<JobPartial[]> {
+  jobsResource(filter: Signal<Record<string, any>>): HttpResourceRef<JobPartial[] | undefined> {
     return this.#jobsResource(filter, 0, this.#validator.arrayValidatorFn(JobPartial));
   }
 
-  jobsUnwindedResource(filter: Signal<Record<string, any>>): HttpResourceRef<JobUnwindedPartial[]> {
+  jobsUnwindedResource(filter: Signal<Record<string, any>>): HttpResourceRef<JobUnwindedPartial[] | undefined> {
     return this.#jobsResource(filter, 1, this.#validator.arrayValidatorFn(JobUnwindedPartial));
   }
 
@@ -41,13 +41,12 @@ export class JobsApiService {
     filter: Signal<Record<string, any>>,
     unwindProducts: P,
     parse: (value: Record<string, any>[]) => Result[],
-  ): HttpResourceRef<Result[]> {
+  ): HttpResourceRef<Result[] | undefined> {
     const params = computed(() => ({
       ...filter(),
       unwindProducts,
     }));
     return httpResource(() => httpResponseRequest(this.#path, new HttpOptions(params()).cacheable()), {
-      defaultValue: [],
       equal: isEqual,
       parse,
     });
