@@ -16,7 +16,6 @@ import { PartialJob, ReproJobService } from '../services/repro-job.service';
 import { UploadRefService } from '../services/upload-ref.service';
 import { JobTableComponent } from './job-table/job-table.component';
 import { NewJobButtonComponent } from './new-job-button/new-job-button.component';
-import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-job-list',
