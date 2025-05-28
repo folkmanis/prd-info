@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { ShippingAddress } from './module-settings/shipping-address';
 
 export const CustomerFinancial = z.object({

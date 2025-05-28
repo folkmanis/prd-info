@@ -22,7 +22,7 @@ export class XmfArchiveApiService {
 
   async getXmfCustomers(): Promise<string[]> {
     const data$ = this.#http.get<string[]>(this.#path + 'customers', new HttpOptions());
-    return this.#validator.valdateStringArrayAsync(data$);
+    return this.#validator.validateStringArrayAsync(data$);
   }
 
   async getArchive(query: SearchQuery, start?: number, limit?: number): Promise<ArchiveRecord[]> {

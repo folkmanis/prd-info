@@ -1,5 +1,5 @@
 import { JobProductionStage } from 'src/app/interfaces';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { JOB_CATEGORIES, KastesProduction } from './job-categories';
 import { JobProduct } from './job-product';
 
@@ -26,7 +26,8 @@ export const Job = z.object({
   dueDate: z.coerce.date(),
   comment: z.string().nullish(),
   invoiceId: z.string().nullish(),
-  products: JobProduct.array()
+  products: z
+    .array(JobProduct)
     .nullish()
     .transform((val) => val ?? []),
   jobStatus: JobStatus,
@@ -34,7 +35,7 @@ export const Job = z.object({
   production: z.object({
     category: JOB_CATEGORIES,
   }),
-  productionStages: JobProductionStage.array().nullish(),
+  productionStages: z.array(JobProductionStage).nullish(),
 });
 export type Job = z.infer<typeof Job>;
 

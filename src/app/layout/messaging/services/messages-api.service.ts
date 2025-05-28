@@ -4,7 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { ValidatorService } from 'src/app/library';
 import { HttpOptions } from 'src/app/library/http';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { JobMessageData, Message, XmfUploadMessageData } from '../interfaces';
 
 @Injectable({

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { MessageData } from './message-data';
 
 const FS_ACTIONS: {
@@ -25,8 +25,8 @@ export type FsOperations = z.infer<typeof FsOperationsEnum>;
 export const jobMesageDataSchema = z.object({
   action: z.literal('ftpUpload'),
   operation: FsOperationsEnum,
-  path: z.string().array(),
-  ftpUsers: MessageFtpUser.array(),
+  path: z.array(z.string()),
+  ftpUsers: z.array(MessageFtpUser),
 });
 
 export class JobMessageData implements MessageData, z.infer<typeof jobMesageDataSchema> {

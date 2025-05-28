@@ -1,14 +1,14 @@
 import { Job, JobPartial } from './job';
 import { JobProduct } from './job-product';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 export const UnwindedIndex = z.object({
   products: JobProduct,
   productsIdx: z.number(),
 });
 
-export const JobUnwinded = Job.merge(UnwindedIndex);
+export const JobUnwinded = z.object({ ...Job.shape, ...UnwindedIndex.shape });
 export type JobUnwinded = z.infer<typeof JobUnwinded>;
 
-export const JobUnwindedPartial = JobPartial.merge(UnwindedIndex);
+export const JobUnwindedPartial = z.object({ ...JobPartial.shape, ...UnwindedIndex.shape });
 export type JobUnwindedPartial = z.infer<typeof JobUnwindedPartial>;

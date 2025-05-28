@@ -1,16 +1,16 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 export const SavedJobsProductionQuery = z.object({
   sort: z.string(),
   fromDate: z.string().nullable(),
   toDate: z.string().nullable(),
-  jobStatus: z.number().array().nullable(),
-  category: z.string().array().nullable(),
+  jobStatus: z.array(z.number()).nullable(),
+  category: z.array(z.string()).nullable(),
 });
 export type SavedJobsProductionQuery = z.infer<typeof SavedJobsProductionQuery>;
 
 export const GmailUserSettings = z.object({
-  activeLabelId: z.string().array().default(['CATEGORY_PERSONAL']),
+  activeLabelId: z.array(z.string()).default(['CATEGORY_PERSONAL']),
 });
 export type GmailUserSettings = z.infer<typeof GmailUserSettings>;
 

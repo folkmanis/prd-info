@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { TransportationDriver } from './transportation-driver';
 import { TransportationVehicle } from './transportation-vehicle';
 import { FuelPurchase } from './fuel-purchase';

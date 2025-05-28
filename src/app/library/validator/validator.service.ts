@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { firstValueFrom, Observable } from 'rxjs';
-import { z } from 'zod';
+import { z } from 'zod/v4';
+import { ValidationError } from './validation-error.class';
 
 @Injectable({
   providedIn: 'root',
@@ -32,20 +33,20 @@ export class ValidatorService {
     return this.validateArray(schema, data);
   }
 
-  async valdateStringArrayAsync(data$: Observable<string[]>): Promise<string[]> {
+  async validateStringArrayAsync(data$: Observable<string[]>): Promise<string[]> {
     const data = await firstValueFrom(data$);
-    return z.string().array().parse(data);
+    return z.array(z.string()).parse(data);
   }
 
-  #parse<T, V extends Record<string, any>>(schema: z.Schema<V>, data: T): z.SafeParseSuccess<V>['data'] {
+  #parse<T, V extends Record<string, any>>(schema: z.Schema<V>, data: T): z.infer<typeof schema> {
     const result = schema.safeParse(data);
     if (result.success) {
       return result.data;
     } else {
-      const message = result.error.format();
+      const err = result.error;
       // eslint-disable-next-line no-console
-      console.error('Validation error:', message);
-      throw new Error('Validation failed: ' + JSON.stringify(message));
+      console.error('Validation error:', z.treeifyError(err));
+      throw new ValidationError(err);
     }
   }
 }

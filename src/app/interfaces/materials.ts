@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 export const MaterialPrice = z.object({
   min: z.number(),
@@ -13,7 +13,7 @@ export const Material = z.object({
   units: z.string(),
   category: z.string(),
   inactive: z.coerce.boolean().default(false),
-  prices: MaterialPrice.array().default([]),
+  prices: z.array(MaterialPrice).default([]),
   fixedPrice: z.coerce.number().default(0),
   description: z.string().nullish(),
 });

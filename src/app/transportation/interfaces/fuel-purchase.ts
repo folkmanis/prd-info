@@ -1,5 +1,5 @@
 import { FuelType } from 'src/app/interfaces';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 export const FuelPurchase = z.object({
   date: z.coerce.date(),

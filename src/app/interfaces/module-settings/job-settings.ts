@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 export const ProductCategory = z.object({
   category: z.string(),
@@ -20,8 +20,8 @@ export const ProductUnit = z.object({
 export type ProductUnit = z.infer<typeof ProductUnit>;
 
 export const JobsSettings = z.object({
-  productCategories: ProductCategory.array(),
-  jobStates: JobState.array(),
-  productUnits: ProductUnit.array(),
+  productCategories: z.array(ProductCategory),
+  jobStates: z.array(JobState),
+  productUnits: z.array(ProductUnit),
 });
 export type JobsSettings = z.infer<typeof JobsSettings>;
