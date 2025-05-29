@@ -33,8 +33,8 @@ export class KastesApiService {
     return this.http.get<number[]>(this.path + jobId + '/apjomi', new HttpOptions());
   }
 
-  userPreferences() {
-    return httpResource<KastesUserPreferences>(this.path + 'preferences', { defaultValue: DEFAULT_USER_PREFERENCES });
+  userPreferencesResource() {
+    return httpResource<KastesUserPreferences>(() => this.path + 'preferences', { defaultValue: DEFAULT_USER_PREFERENCES });
   }
 
   setUserPreferences(prefs: Partial<KastesUserPreferences>): Observable<KastesUserPreferences> {

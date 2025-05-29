@@ -28,7 +28,7 @@ export class KastesPreferencesService {
 
   private kastesSystemPreferences = configuration('kastes');
 
-  private userPreferencesResource = this.api.userPreferences();
+  private userPreferencesResource = this.api.userPreferencesResource();
 
   constructor() {
     effect((onCleanup) => {
