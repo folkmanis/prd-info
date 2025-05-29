@@ -36,7 +36,7 @@
     "sanitize-filename": "^1.6.3",
     "tslib": "^2.3.0",
     "uuid": "^11.0.3",
-    "zod": "^3.25.30"
+    "zod": "^3.25.36"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^19.2.13",
@@ -50,7 +50,7 @@
     "@types/file-saver": "^2.0.5",
     "@types/jasmine": "^5.1.4",
     "@types/lodash-es": "^4.17.12",
-    "@types/node": "^22.10.2",
+    "@types/node": "^22.15.24",
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
