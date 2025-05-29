@@ -1,5 +1,5 @@
-import { DOCUMENT } from '@angular/common';
-import { inject, Injectable } from '@angular/core';
+
+import { inject, Injectable, DOCUMENT } from '@angular/core';
 import { ReplaySubject, retry, timer } from 'rxjs';
 import { ModulesWithNotifications, Notification } from 'src/app/interfaces';
 import { MultiplexConfig, WsAuthSubject } from 'src/app/library/ws-token/ws-auth-subject';

@@ -1,6 +1,6 @@
-import { DOCUMENT } from '@angular/common';
+
 import { HttpErrorResponse, HttpEvent, HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
+import { inject, DOCUMENT } from '@angular/core';
 import { MonoTypeOperatorFunction, catchError } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 
