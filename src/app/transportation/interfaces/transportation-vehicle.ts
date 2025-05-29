@@ -5,6 +5,7 @@ export const TransportationVehicle = z.object({
   _id: z.string(),
   name: z.string(),
   licencePlate: z.string(),
+  passportNumber: z.string().optional(),
   consumption: z.number(), // units
   fuelType: FuelType,
   disabled: z.boolean().default(false),

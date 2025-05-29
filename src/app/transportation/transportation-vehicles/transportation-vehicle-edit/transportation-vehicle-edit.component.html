@@ -12,15 +12,22 @@
     </mat-form-field>
   </section>
 
-  <section>
+  <section id="licence-plate">
     <mat-form-field>
       <mat-label> Numurs </mat-label>
-      <input matInput formControlName="licencePlate" appInputUppercase />
+      <input appInputUppercase matInput formControlName="licencePlate" />
       @if (form.controls.licencePlate.hasError('required')) {
         <mat-error> Numurs ir obligāts </mat-error>
       }
       @if (form.controls.licencePlate.hasError('licencePlateTaken')) {
         <mat-error> {{ form.controls.licencePlate.getError('licencePlateTaken') }} jau tiek izmantots </mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label> Apliecības numurs </mat-label>
+      <input appInputUppercase matInput formControlName="passportNumber" />
+      @if (form.controls.passportNumber.hasError('passportNumberTaken')) {
+        <mat-error> {{ form.controls.passportNumber.getError('passportNumberTaken') }} jau tiek izmantots </mat-error>
       }
     </mat-form-field>
   </section>

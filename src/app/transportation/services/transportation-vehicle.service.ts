@@ -50,6 +50,11 @@ export class TransportationVehicleService {
     return plates.every((p) => p !== plate);
   }
 
+  async validatePassportNumber(passportNumber: string): Promise<boolean> {
+    const passportNumbers = await this.#api.validate('passportNumber');
+    return passportNumbers.every((p) => p !== passportNumber);
+  }
+
   newTransportationVehicle(): TransportationVehicle {
     return {
       _id: '',

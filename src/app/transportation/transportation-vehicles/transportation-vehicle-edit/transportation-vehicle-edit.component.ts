@@ -21,7 +21,6 @@ import { TransportationVehicleService } from '../../services/transportation-vehi
 import { TransportationVehiclesListComponent } from '../transportation-vehicles-list/transportation-vehicles-list.component';
 
 type FormValue = { [P in keyof Omit<TransportationVehicle, '_id'>]?: TransportationVehicle[P] | null };
-// type FormValue = Partial<Omit<TransportationVehicle, 'id'>>;
 
 @Component({
   selector: 'app-transportation-vehicle-edit',
@@ -54,6 +53,7 @@ export class TransportationVehicleEditComponent implements CanComponentDeactivat
   form = inject(FormBuilder).group({
     name: [null as string | null, [Validators.required], [this.nameValidator()]],
     licencePlate: [null as string | null, [Validators.required], [this.licencePlateValidator()]],
+    passportNumber: [null as string | null, [], [this.passportNumberValidator()]],
     consumption: [null as null | number, [Validators.required, Validators.min(0)]],
     fuelType: [null as null | FuelType, [Validators.required]],
     disabled: [false],
@@ -143,6 +143,17 @@ export class TransportationVehicleEditComponent implements CanComponentDeactivat
       }
 
       return (await this.#vehicleService.validateLicencePlate(licencePlate)) ? null : { licencePlateTaken: licencePlate };
+    };
+  }
+
+  private passportNumberValidator(): AsyncValidatorFn {
+    return async (control) => {
+      const passportNumber = control.value;
+      if (!passportNumber || passportNumber === this.initialValue().passportNumber) {
+        return null;
+      }
+
+      return (await this.#vehicleService.validatePassportNumber(passportNumber)) ? null : { passportNumberTaken: passportNumber };
     };
   }
 }
