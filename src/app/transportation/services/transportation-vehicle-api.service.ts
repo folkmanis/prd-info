@@ -17,7 +17,6 @@ export class TransportationVehicleApiService {
   vehiclesResource(params: Signal<Record<string, any>>) {
     return httpResource(() => httpResponseRequest(this.#path, new HttpOptions(params()).cacheable()), {
       parse: this.#validator.arrayValidatorFn(TransportationVehicle),
-      defaultValue: [],
       equal: isEqual,
     });
   }

@@ -15,7 +15,7 @@ export interface TransportationDriverRequestFilter {
 export class TransportationDriverService {
   #api = inject(TransportationDriverApiService);
 
-  getDriversResource(filter: FilterInput<TransportationDriverRequestFilter>) {
+  getDriversResource(filter?: FilterInput<TransportationDriverRequestFilter>) {
     return this.#api.driversResource(toFilterSignal(filter));
   }
 

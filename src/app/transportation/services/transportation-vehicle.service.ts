@@ -20,7 +20,7 @@ export class TransportationVehicleService {
   #fuelTypes = configuration('transportation', 'fuelTypes');
   fuelTypes = computed(() => [...this.#fuelTypes()].sort((a, b) => a.description.localeCompare(b.description)));
 
-  getVehiclesResource(filter: FilterInput<VehiclesFilter>) {
+  getVehiclesResource(filter?: FilterInput<VehiclesFilter>) {
     return this.#api.vehiclesResource(toFilterSignal(filter));
   }
 

@@ -3,7 +3,7 @@
 <app-simple-form-container buttons [status]="formStatus()" [isChanges]="changes()" (save)="onSave()" (resetForm)="onReset()" [formGroup]="form">
   <mat-tab-group dynamicHeight>
     <mat-tab label="Pamatinformācija">
-      <app-general-setup [drivers]="drivers.value()" [vehicles]="vehicles.value()" [historicalData]="historicalData">
+      <app-general-setup [drivers]="drivers.value() ?? []" [vehicles]="vehicles.value() ?? []" [historicalData]="historicalData">
         <mat-divider />
         <div class="buttons">
           <button mat-raised-button class="tertiary" (click)="onDelete()" [disabled]="!initialValue()._id">Dzēst</button>

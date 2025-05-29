@@ -48,9 +48,9 @@ export class RouteSheetEditComponent implements CanComponentDeactivate {
   readonly #confirmation = inject(ConfirmationDialogService);
   #listComponent = inject(RouteSheetListComponent);
 
-  drivers = inject(TransportationDriverService).getDriversResource({ disabled: false });
+  drivers = inject(TransportationDriverService).getDriversResource();
 
-  vehicles = inject(TransportationVehicleService).getVehiclesResource({ disabled: false });
+  vehicles = inject(TransportationVehicleService).getVehiclesResource();
 
   customers$ = this.#routeSheetService.getCustomers();
 
