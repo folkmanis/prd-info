@@ -21,7 +21,6 @@ export class CustomersApiService {
 
   customersResource(params: Signal<Record<string, any>>) {
     return httpResource(() => httpResponseRequest(this.#path, new HttpOptions(params()).cacheable()), {
-      defaultValue: [],
       parse: this.#validator.arrayValidatorFn(Customer),
       equal: isEqual,
     });

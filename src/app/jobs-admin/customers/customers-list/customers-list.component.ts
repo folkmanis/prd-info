@@ -29,7 +29,7 @@ export class CustomersListComponent {
     { equal: isEqual },
   );
 
-  customers = this.customersService.getCustomersResource(this.filter).asReadonly();
+  customers = this.customersService.getCustomersResource(this.filter);
 
   displayedColumns = ['CustomerName'];
 
