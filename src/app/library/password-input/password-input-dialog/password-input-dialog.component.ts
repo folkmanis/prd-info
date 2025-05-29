@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,7 +15,7 @@ export interface PasswordDialogData {
   templateUrl: './password-input-dialog.component.html',
   styleUrls: ['./password-input-dialog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatButtonModule, PasswordInputGroupComponent],
+  imports: [ReactiveFormsModule, MatDialogModule, MatButtonModule, PasswordInputGroupComponent],
   standalone: true,
 })
 export class PasswordInputDialogComponent {
