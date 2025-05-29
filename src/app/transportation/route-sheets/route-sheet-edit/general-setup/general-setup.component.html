@@ -37,8 +37,13 @@
 <mat-form-field class="full-width">
   <mat-label> Vadītājs </mat-label>
   <mat-select formControlName="driver" [compareWith]="driverCompareFn">
-    @for (driver of drivers(); track driver._id) {
+    @for (driver of activeDrivers(); track driver._id) {
       <mat-option [value]="driver">
+        {{ driver.name }}
+      </mat-option>
+    }
+    @for (driver of disabledDrivers(); track driver._id) {
+      <mat-option [value]="driver" disabled>
         {{ driver.name }}
       </mat-option>
     }
@@ -48,8 +53,11 @@
 <mat-form-field class="full-width">
   <mat-label> Auto </mat-label>
   <mat-select formControlName="vehicle" #vehicle [compareWith]="vehicleCompareFn">
-    @for (vehicle of vehicles(); track vehicle._id) {
+    @for (vehicle of activeVehicles(); track vehicle._id) {
       <mat-option [value]="vehicle"> {{ vehicle.licencePlate }}, {{ vehicle.name }}, {{ vehicle.consumption }}&nbsp;{{ vehicle.fuelType.units }}/100&nbsp;km </mat-option>
+    }
+    @for (vehicle of disabledVehicles(); track vehicle._id) {
+      <mat-option [value]="vehicle" disabled> {{ vehicle.licencePlate }}, {{ vehicle.name }}, {{ vehicle.consumption }}&nbsp;{{ vehicle.fuelType.units }}/100&nbsp;km </mat-option>
     }
   </mat-select>
 </mat-form-field>

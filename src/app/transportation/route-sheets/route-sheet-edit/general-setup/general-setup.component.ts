@@ -1,5 +1,5 @@
 import { DatePipe, TitleCasePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { ControlContainer, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -33,8 +33,14 @@ export class GeneralSetupComponent {
   drivers = input<TransportationDriver[]>([]);
   driverCompareFn = (d1: TransportationDriver, d2: TransportationDriver) => d1?._id === d2?._id;
 
+  activeDrivers = computed(() => this.drivers()?.filter((d) => !d.disabled) ?? []);
+  disabledDrivers = computed(() => this.drivers()?.filter((d) => d.disabled) ?? []);
+
   vehicles = input<TransportationVehicle[]>([]);
   vehicleCompareFn = (v1: TransportationVehicle, v2: TransportationVehicle) => v1?._id === v2?._id;
+
+  activeVehicles = computed(() => this.vehicles()?.filter((v) => !v.disabled) ?? []);
+  disabledVehicles = computed(() => this.vehicles()?.filter((v) => v.disabled) ?? []);
 
   historicalData = input<HistoricalData | null>(null);
 
