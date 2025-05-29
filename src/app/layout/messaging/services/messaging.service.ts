@@ -10,9 +10,9 @@ export class MessagingService {
   #login = inject(LoginService);
 
   messagesResource = resource({
-    request: () => ({ user: this.#login.user() }),
-    loader: ({ request }) => {
-      if (request.user) {
+    params: () => ({ user: this.#login.user() }),
+    loader: ({ params }) => {
+      if (params.user) {
         return this.#api.getAllMessages();
       } else {
         return Promise.resolve([]);
