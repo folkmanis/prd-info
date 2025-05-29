@@ -8,7 +8,7 @@ import { assertNotNull } from '../assert-utils';
   selector: 'input[appInputUppercase]',
   standalone: true,
   host: {
-    ['style.text-transform']: 'uppercase',
+    style: 'text-transform: uppercase',
   },
 })
 export class InputUppercaseDirective {
