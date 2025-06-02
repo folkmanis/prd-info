@@ -44,7 +44,7 @@ type PricesForm = ReturnType<typeof productPriceGroup>;
 export class ProductPricesComponent implements ControlValueAccessor, Validator {
   private chDetector = inject(ChangeDetectorRef);
 
-  customers = input<CustomerPartial[]>([]);
+  customers = input<CustomerPartial[] | undefined | null>([]);
 
   pricesFormArray = new FormArray<PricesForm>([], [this.duplicateCustomersValidator]);
 

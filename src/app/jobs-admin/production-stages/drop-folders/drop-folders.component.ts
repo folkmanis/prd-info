@@ -52,7 +52,7 @@ export class DropFoldersComponent implements ControlValueAccessor, Validator {
 
   dropFolders = input.required<{ value: string[]; name: string }[]>();
 
-  customers = input.required<CustomerPartial[]>();
+  customers = input.required<CustomerPartial[] | undefined | null>();
 
   form = new FormArray<DropFolderForm>([], {
     validators: [this.duplicateDefaultValidator()],
