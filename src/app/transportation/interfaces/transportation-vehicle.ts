@@ -9,6 +9,7 @@ export const TransportationVehicle = z.object({
   consumption: z.number(), // units
   fuelType: FuelType,
   disabled: z.boolean().default(false),
+  vin: z.string().optional(),
 });
 export type TransportationVehicle = z.infer<typeof TransportationVehicle>;
 

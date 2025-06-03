@@ -54,6 +54,7 @@ export class TransportationVehicleEditComponent implements CanComponentDeactivat
     name: [null as string | null, [Validators.required], [this.nameValidator()]],
     licencePlate: [null as string | null, [Validators.required], [this.licencePlateValidator()]],
     passportNumber: [null as string | null, [], [this.passportNumberValidator()]],
+    vin: [null as string | null],
     consumption: [null as null | number, [Validators.required, Validators.min(0)]],
     fuelType: [null as null | FuelType, [Validators.required]],
     disabled: [false],

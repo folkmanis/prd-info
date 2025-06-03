@@ -67,6 +67,7 @@ export class TransportationVehicleService {
         units: '',
       },
       disabled: false,
+      vin: '',
     };
   }
 }
