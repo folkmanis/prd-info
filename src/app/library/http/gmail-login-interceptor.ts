@@ -1,4 +1,3 @@
-
 import { HttpErrorResponse, HttpEvent, HttpInterceptorFn } from '@angular/common/http';
 import { inject, DOCUMENT } from '@angular/core';
 import { MonoTypeOperatorFunction, catchError } from 'rxjs';

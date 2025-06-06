@@ -1,4 +1,3 @@
-
 import { inject, Injectable, DOCUMENT } from '@angular/core';
 import { ReplaySubject, retry, timer } from 'rxjs';
 import { ModulesWithNotifications, Notification } from 'src/app/interfaces';
