@@ -1,6 +1,12 @@
 import { FuelType } from 'src/app/interfaces';
 import { z } from 'zod/v4';
 
+export const OdometerReading = z.object({
+  value: z.number().positive(),
+  date: z.coerce.date(),
+});
+export type OdometerReading = z.infer<typeof OdometerReading>;
+
 export const TransportationVehicle = z.object({
   _id: z.string(),
   name: z.string(),
@@ -10,6 +16,7 @@ export const TransportationVehicle = z.object({
   fuelType: FuelType,
   disabled: z.boolean().default(false),
   vin: z.string().optional(),
+  odometerReadings: z.array(OdometerReading).default([]),
 });
 export type TransportationVehicle = z.infer<typeof TransportationVehicle>;
 

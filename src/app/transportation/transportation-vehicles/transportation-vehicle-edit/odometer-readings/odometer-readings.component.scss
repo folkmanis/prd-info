@@ -1,0 +1,38 @@
+:host {
+    display: block;
+    width: 100%;
+}
+
+.record,
+.empty {
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    min-height: 48px;
+    font: var(--sys-body-medium);
+
+    &>* {
+        flex: 1;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        border-color: var(--sys-outline);
+        border-width: 1px;
+        border-style: none;
+
+        border-bottom-style: solid;
+    }
+
+    &:first-child>* {
+        border-top-style: solid;
+    }
+
+    .date {
+        flex: 2;
+    }
+
+    .actions {
+        flex: 0 0 72px;
+        margin-left: auto;
+    }
+}

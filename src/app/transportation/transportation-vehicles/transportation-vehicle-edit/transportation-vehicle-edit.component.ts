@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, input } f
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AsyncValidatorFn, FormBuilder, FormsModule, ReactiveFormsModule, Validators, ValueChangeEvent } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatDivider } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -16,9 +17,11 @@ import { InputUppercaseDirective } from 'src/app/library/directives/input-upperc
 import { CanComponentDeactivate } from 'src/app/library/guards';
 import { navigateRelative } from 'src/app/library/navigation';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
-import { TransportationVehicle, TransportationVehicleCreate } from '../../interfaces/transportation-vehicle';
+import { OdometerReading, TransportationVehicle, TransportationVehicleCreate } from '../../interfaces/transportation-vehicle';
 import { TransportationVehicleService } from '../../services/transportation-vehicle.service';
 import { TransportationVehiclesListComponent } from '../transportation-vehicles-list/transportation-vehicles-list.component';
+import { OdometerReadingsDialogComponent } from './odometer-readings-dialog/odometer-readings-dialog.component';
+import { OdometerReadingsComponent } from './odometer-readings/odometer-readings.component';
 
 type FormValue = { [P in keyof Omit<TransportationVehicle, '_id'>]?: TransportationVehicle[P] | null };
 
@@ -37,6 +40,8 @@ type FormValue = { [P in keyof Omit<TransportationVehicle, '_id'>]?: Transportat
     MatOption,
     MatDivider,
     DisableControlDirective,
+    OdometerReadingsComponent,
+    MatCardModule,
   ],
   templateUrl: './transportation-vehicle-edit.component.html',
   styleUrl: './transportation-vehicle-edit.component.scss',
@@ -57,6 +62,7 @@ export class TransportationVehicleEditComponent implements CanComponentDeactivat
     vin: [null as string | null],
     consumption: [null as null | number, [Validators.required, Validators.min(0)]],
     fuelType: [null as null | FuelType, [Validators.required]],
+    odometerReadings: [[] as OdometerReading[]],
     disabled: [false],
   });
 
@@ -70,6 +76,8 @@ export class TransportationVehicleEditComponent implements CanComponentDeactivat
   );
 
   value = toSignal(this.value$, { initialValue: this.form.value });
+
+  odometerEditDialog = OdometerReadingsDialogComponent;
 
   changes = computed(() => {
     const value = this.value();
