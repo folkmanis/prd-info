@@ -14,10 +14,13 @@ const FIELDS_FOR_DISPLAY: (keyof GoogleUser)[] = ['id', 'email', 'name', 'given_
 })
 export class GoogleInfoComponent {
   values = computed(() => {
-    return Object.entries(this.googleInfo() || {}).filter((val) => FIELDS_FOR_DISPLAY.includes(val[0] as keyof GoogleUser));
+    return Object.entries(this.googleInfo() || {}).filter((val) => FIELDS_FOR_DISPLAY.includes(val[0] as keyof GoogleUser)) as [
+      (typeof FIELDS_FOR_DISPLAY)[number],
+      string | boolean,
+    ][];
   });
 
   googleInfo = input<GoogleUser>();
 
-  clickEvent = output<[string, string]>({ alias: 'valueClicked' });
+  clickEvent = output<[(typeof FIELDS_FOR_DISPLAY)[number], string | boolean]>({ alias: 'valueClicked' });
 }

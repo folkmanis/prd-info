@@ -1,9 +1,9 @@
 import { Route } from '@angular/router';
-import { UsersListComponent } from './users-list/users-list.component';
+import { newUser } from 'src/app/interfaces';
+import { canComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { resolveUser } from './user-resolver';
-import { canComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
-import { User } from 'src/app/interfaces';
+import { UsersListComponent } from './users-list/users-list.component';
 
 export default [
   {
@@ -13,8 +13,8 @@ export default [
       {
         path: 'new',
         component: UserEditComponent,
-        data: {
-          user: new User(),
+        resolve: {
+          user: () => newUser(),
         },
         canDeactivate: [canComponentDeactivate],
       },

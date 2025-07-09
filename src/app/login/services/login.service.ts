@@ -1,11 +1,9 @@
 import { computed, inject, Injectable, Signal } from '@angular/core';
 import { BehaviorSubject, catchError, firstValueFrom, map, merge, Observable, of, shareReplay, Subject, switchMap } from 'rxjs';
-import { User } from 'src/app/interfaces';
+import { LoginUser, LoginUserUpdate } from 'src/app/interfaces';
 import { Login } from '../login.interface';
 import { LoginApiService } from './login-api.service';
 import { toSignal } from '@angular/core/rxjs-interop';
-
-type UserUpdate = Partial<User>;
 
 @Injectable({
   providedIn: 'root',
@@ -13,10 +11,10 @@ type UserUpdate = Partial<User>;
 export class LoginService {
   private api = inject(LoginApiService);
 
-  private loginUpdate$ = new Subject<User | null>();
+  private loginUpdate$ = new Subject<LoginUser | null>();
   private reload$ = new BehaviorSubject<void>(undefined);
 
-  user$: Observable<User | null> = merge(this.reload$.pipe(switchMap(() => this.api.getLogin())), this.loginUpdate$).pipe(
+  user$: Observable<LoginUser | null> = merge(this.reload$.pipe(switchMap(() => this.api.getLogin())), this.loginUpdate$).pipe(
     catchError(() => of(null)),
     shareReplay(1),
   );
@@ -28,7 +26,7 @@ export class LoginService {
     return !!(await firstValueFrom(this.user$));
   }
 
-  async logIn(login: Login): Promise<User> {
+  async logIn(login: Login): Promise<LoginUser> {
     const user = await this.api.login(login);
     this.loginUpdate$.next(user);
     return user;
@@ -51,7 +49,7 @@ export class LoginService {
     return this.api.getSessionToken();
   }
 
-  async updateUser(update: UserUpdate): Promise<User> {
+  async updateUser(update: LoginUserUpdate): Promise<LoginUser> {
     const user = await this.api.patchUser(update);
     this.loginUpdate$.next(user);
     return user;

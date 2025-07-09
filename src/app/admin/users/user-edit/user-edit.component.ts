@@ -12,9 +12,8 @@ import { isEqual, pickBy } from 'lodash-es';
 import { getAppParams } from 'src/app/app-params';
 import { User, UserSession } from 'src/app/interfaces';
 import { ConfirmationDialogService, stringOrThrow } from 'src/app/library';
-import { AppClassTransformerService } from 'src/app/library/class-transformer/app-class-transformer.service';
-import { navigateRelative } from 'src/app/library/navigation';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
+import { navigateRelative } from 'src/app/library/navigation';
 import { PasswordInputDirective } from 'src/app/library/password-input';
 import { PasswordInputGroupComponent } from 'src/app/library/password-input/password-input-group/password-input-group.component';
 import { promiseToSignal } from 'src/app/library/rxjs';
@@ -49,6 +48,9 @@ export class UserEditComponent implements CanComponentDeactivate {
   private navigate = navigateRelative();
   private fb = inject(FormBuilder).nonNullable;
   private usersList = inject(UsersListComponent);
+  private snackBar = inject(MatSnackBar);
+  private usersService = inject(UsersService);
+  private confirmationDialog = inject(ConfirmationDialogService);
 
   customers = promiseToSignal(this.usersService.getXmfCustomers());
 
@@ -62,9 +64,8 @@ export class UserEditComponent implements CanComponentDeactivate {
     username: ['', [Validators.required, usernamePatternValidator], [this.existingUsernameValidator()]],
     name: ['', [Validators.required]],
     password: ['', [Validators.required]],
-    last_login: { value: new Date(), disabled: true },
     userDisabled: [false],
-    eMail: [''],
+    eMail: [null as string | null, [Validators.required]],
     prefersDarkMode: [false],
     preferences: this.fb.group({
       customers: [[] as string[]],
@@ -72,9 +73,7 @@ export class UserEditComponent implements CanComponentDeactivate {
     }),
   });
 
-  user = input.required<User>();
-
-  initialValue = computed(() => this.transformer.instanceToPlain(this.user()) as User);
+  initialValue = input.required<User>({ alias: 'user' });
 
   private formValue = toSignal(this.form.valueChanges, {
     initialValue: this.form.value,
@@ -97,12 +96,7 @@ export class UserEditComponent implements CanComponentDeactivate {
     return this.form.controls.username;
   }
 
-  constructor(
-    private snackBar: MatSnackBar,
-    private usersService: UsersService,
-    private confirmationDialog: ConfirmationDialogService,
-    private transformer: AppClassTransformerService,
-  ) {
+  constructor() {
     effect(() => {
       const initialValue = this.initialValue();
       this.sessions.set(initialValue.sessions);
