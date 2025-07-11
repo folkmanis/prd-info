@@ -8,11 +8,9 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, TitleStrategy, withComponentInputBinding, withRouterConfig } from '@angular/router';
-import { ClassTransformer } from 'class-transformer';
 import { lv } from 'date-fns/locale';
 import { APP_ROUTES } from './app/app-routes';
 import { AppComponent } from './app/app.component';
-import { AppClassTransformerService } from './app/library';
 import { DATE_FNS_LOCALE } from './app/library/date-services';
 import { ErrorsService } from './app/library/errors/errors.service';
 import { httpInterceptors } from './app/library/http/http-interceptors';
@@ -46,7 +44,6 @@ bootstrapApplication(AppComponent, {
       },
     },
     { provide: ErrorHandler, useClass: ErrorsService },
-    { provide: ClassTransformer, useExisting: AppClassTransformerService },
     { provide: TitleStrategy, useClass: ModulePageTitleStrategy },
     provideRouter(APP_ROUTES, withComponentInputBinding(), withRouterConfig({ onSameUrlNavigation: 'reload' })),
     provideHttpClient(withInterceptors(httpInterceptors)),

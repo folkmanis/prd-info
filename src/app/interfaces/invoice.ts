@@ -1,46 +1,60 @@
-import { Type } from 'class-transformer';
-import { JobUnwindedPartial } from 'src/app/jobs';
+import { Job, JobProduct } from 'src/app/jobs';
+import { z } from 'zod/v4';
 import { Customer } from './customer';
 
-export class InvoiceProduct {
-  _id: string;
-  total: number;
-  jobsCount: number;
-  count: number;
-  price?: number;
-  comment?: string;
-  paytraqId?: number;
-}
+export const InvoiceJobSchema = Job.pick({
+  jobId: true,
+  customer: true,
+  name: true,
+  customerJobId: true,
+  receivedDate: true,
+  dueDate: true,
+  products: true,
+  invoiceId: true,
+  jobStatus: true,
+}).extend({
+  products: JobProduct.optional(),
+});
 
-export class PaytraqInvoice {
-  paytraqId: number;
-  documentRef?: string;
-}
+export const InvoiceProductSchema = z.object({
+  _id: z.string(),
+  total: z.number(),
+  jobsCount: z.number(),
+  count: z.number(),
+  price: z.number().nullish(),
+  comment: z.string().nullish(),
+  paytraqId: z.number().nullish(),
+});
+export type InvoiceProduct = z.infer<typeof InvoiceProductSchema>;
 
-export class Invoice {
-  invoiceId: string;
+export const PaytraqInvoiceSchema = z.object({
+  paytraqId: z.number(),
+  documentRef: z.string().nullish(),
+});
+export type PaytraqInvoice = z.infer<typeof PaytraqInvoiceSchema>;
 
-  customer: string;
+export const InvoiceSchema = z.object({
+  invoiceId: z.string(),
 
-  @Type(() => Date)
-  createdDate: Date;
+  customer: z.string(),
 
-  jobsId: number[];
+  createdDate: z.coerce.date(),
 
-  jobs?: JobUnwindedPartial[];
+  jobsId: z.array(z.number()),
 
-  @Type(() => InvoiceProduct)
-  products: InvoiceProduct[];
+  jobs: z.array(InvoiceJobSchema).optional(),
 
-  total?: number;
+  products: z.array(InvoiceProductSchema),
 
-  comment?: string;
+  total: z.number().nullish(),
 
-  customerInfo?: Customer;
+  comment: z.string().nullish(),
 
-  @Type(() => PaytraqInvoice)
-  paytraq?: PaytraqInvoice | null;
-}
+  customerInfo: Customer.nullish(),
+
+  paytraq: PaytraqInvoiceSchema.nullish(),
+});
+export type Invoice = z.infer<typeof InvoiceSchema>;
 
 export type InvoiceForReport = Pick<Invoice, 'invoiceId' | 'customer' | 'createdDate' | 'jobs' | 'products' | 'total' | 'customerInfo'>;
 
@@ -48,12 +62,17 @@ export const INVOICE_UPDATE_FIELDS = ['comment', 'paytraq'] as const;
 
 export type InvoiceUpdate = Partial<Pick<Invoice, (typeof INVOICE_UPDATE_FIELDS)[number]>>;
 
-export type InvoiceTable = Pick<Invoice, 'invoiceId' | 'customer' | 'createdDate'> & {
-  totals: {
-    count: number;
-    sum: number;
-  };
-};
+export const InvoiceTableSchema = InvoiceSchema.pick({
+  invoiceId: true,
+  customer: true,
+  createdDate: true,
+}).extend({
+  totals: z.object({
+    count: z.number(),
+    sum: z.number(),
+  }),
+});
+export type InvoiceTable = z.infer<typeof InvoiceTableSchema>;
 
 export interface InvoicesFilter {
   customer?: string;

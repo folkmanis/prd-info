@@ -3,10 +3,19 @@ import { booleanAttribute, ChangeDetectionStrategy, Component, computed, input, 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTableModule } from '@angular/material/table';
-import { JobUnwindedPartial } from 'src/app/jobs';
+import { JobUnwinded } from 'src/app/jobs';
 import { RouterLinkWithReturnDirective } from 'src/app/library/navigation';
+import { z } from 'zod/v4';
 
 const TABLE_COLUMNS = ['selected', 'jobId', 'receivedDate', 'custCode', 'name', 'productName', 'count', 'price', 'total'];
+
+export const JobSelectionTableDataScheme = JobUnwinded.pick({
+  jobId: true,
+  receivedDate: true,
+  products: true,
+  name: true,
+}).partial({ products: true });
+export type JobSelectionTableData = z.infer<typeof JobSelectionTableDataScheme>;
 
 @Component({
   selector: 'app-job-selection-table',
@@ -15,16 +24,16 @@ const TABLE_COLUMNS = ['selected', 'jobId', 'receivedDate', 'custCode', 'name', 
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatTableModule, MatCheckboxModule, DatePipe, CurrencyPipe, MatButtonModule, RouterLinkWithReturnDirective],
 })
-export class JobSelectionTableComponent {
-  selected = input<JobUnwindedPartial[]>([] as JobUnwindedPartial[]);
-  selectedChange = output<JobUnwindedPartial[]>();
+export class JobSelectionTableComponent<D extends JobSelectionTableData> {
+  selected = input<D[]>([] as D[]);
+  selectedChange = output<D[]>();
 
   selectedUniqueIds = computed(() => this.toUniqueIds(this.selected()));
 
   isAllSelected = computed(() => this.uniqueJobIds().length > 0 && this.uniqueJobIds().length === this.selectedUniqueIds().length);
   isSelection = computed(() => this.selectedUniqueIds().length > 0);
 
-  jobs = input.required<JobUnwindedPartial[]>();
+  jobs = input.required<D[]>();
   uniqueJobIds = computed(() => this.toUniqueIds(this.jobs()));
 
   disabled = input(false, { transform: booleanAttribute });
@@ -63,7 +72,7 @@ export class JobSelectionTableComponent {
     return large ? cols : cols.filter((col) => ['selected', 'jobId', 'customer', 'name', 'total'].includes(col));
   }
 
-  private toUniqueIds(jobs: JobUnwindedPartial[]): number[] {
+  private toUniqueIds(jobs: D[]): number[] {
     const ids = jobs.map((job) => job.jobId);
     const uniqueIds = [...new Set(ids)];
     return uniqueIds;

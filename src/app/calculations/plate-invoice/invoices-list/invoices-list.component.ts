@@ -14,6 +14,6 @@ const COLUMNS = ['invoiceId', 'customer', 'createdDate', 'totalSum'];
   imports: [MatTableModule, DatePipe, CurrencyPipe, RouterLink],
 })
 export class InvoicesListComponent {
-  datasource = inject(InvoicesService).getInvoicesHttp({});
+  datasource = inject(InvoicesService).getInvoicesResource();
   displayedColumns: string[] = COLUMNS;
 }

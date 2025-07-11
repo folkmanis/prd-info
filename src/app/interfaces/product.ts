@@ -18,7 +18,7 @@ export const ProductPrice = z.object({
 });
 export type ProductPrice = z.infer<typeof ProductPrice>;
 
-export const Product = z.object({
+export const ProductSchema = z.object({
   _id: z.string(),
   inactive: z.any().transform(Boolean),
   category: z.string(),
@@ -29,14 +29,14 @@ export const Product = z.object({
   prices: z.array(ProductPrice).default([]),
   productionStages: z.array(ProductProductionStage).default([]),
 });
-export type Product = z.infer<typeof Product>;
+export type Product = z.infer<typeof ProductSchema>;
 
-export const ProductUpdate = Product.omit({
+export const ProductUpdate = ProductSchema.omit({
   _id: true,
 }).partial();
 export type ProductUpdate = z.infer<typeof ProductUpdate>;
 
-export const ProductPartial = Product.pick({
+export const ProductPartial = ProductSchema.pick({
   _id: true,
   name: true,
   category: true,
@@ -44,7 +44,7 @@ export const ProductPartial = Product.pick({
 });
 export type ProductPartial = z.infer<typeof ProductPartial>;
 
-export const NewProduct = Product.omit({
+export const NewProduct = ProductSchema.omit({
   _id: true,
 });
 export type NewProduct = z.infer<typeof NewProduct>;

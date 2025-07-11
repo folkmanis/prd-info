@@ -1,7 +1,7 @@
-import { Product } from 'src/app/interfaces';
+import { ProductSchema } from 'src/app/interfaces/product';
 import { z } from 'zod/v4';
 
-export const JobsProduction = Product.pick({
+export const JobsProduction = ProductSchema.pick({
   _id: true,
   name: true,
   units: true,

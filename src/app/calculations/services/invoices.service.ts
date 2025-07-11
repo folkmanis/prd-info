@@ -1,11 +1,10 @@
 import { HttpResourceRef } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { pick } from 'lodash-es';
-import { Observable } from 'rxjs';
-import { Invoice, INVOICE_UPDATE_FIELDS, InvoiceForReport, InvoicesFilter, InvoiceTable, InvoiceUpdate } from 'src/app/interfaces';
+import { Invoice, INVOICE_UPDATE_FIELDS, InvoiceForReport, InvoicesFilter, InvoiceUpdate } from 'src/app/interfaces';
 import { PaytraqInvoice, Sale } from 'src/app/interfaces/paytraq';
 import { JobFilter, JobService, JobsWithoutInvoicesTotals, JobUnwindedPartial } from 'src/app/jobs';
-import { FilterInput, numberOrDefaultZero, numberOrThrow } from 'src/app/library';
+import { FilterInput, numberOrDefaultZero, numberOrThrow, toFilterSignal } from 'src/app/library';
 import { InvoicesApiService } from 'src/app/services/prd-api/invoices-api.service';
 import { PaytraqApiService } from 'src/app/services/prd-api/paytraq-api.service';
 
@@ -45,8 +44,8 @@ export class InvoicesService {
     return this.#api.updateOne(id, update);
   }
 
-  getInvoicesHttp(params: InvoicesFilter): Observable<InvoiceTable[]> {
-    return this.#api.getAll(params);
+  getInvoicesResource(params?: FilterInput<InvoicesFilter>) {
+    return this.#api.invoicesResource(toFilterSignal(params));
   }
 
   async getPaytraqInvoiceRef(id: number): Promise<string> {

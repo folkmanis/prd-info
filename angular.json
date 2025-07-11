@@ -22,9 +22,7 @@
               "base": "dist"
             },
             "index": "src/index.html",
-            "polyfills": [
-              "reflect-metadata"
-            ],
+            "polyfills": [],
             "tsConfig": "tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
@@ -117,9 +115,7 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "src/test.ts",
-            "polyfills": [
-              "reflect-metadata"
-            ],
+            "polyfills": [],
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "assets": [
