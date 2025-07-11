@@ -1,3 +1,5 @@
+import { z } from 'zod/v4';
+
 const labelMap: Map<string, string> = new Map([
   ['IMPORTANT', 'Svarīgi'],
   ['TRASH', 'Miskaste'],
@@ -11,24 +13,29 @@ export function getLabelDisplayName(id: string) {
   return labelMap.get(id) || id;
 }
 
-export class Label {
-  id: string;
-  name: string;
-  messageListVisibility: 'show' | 'hide';
-  labelListVisibility: 'labelShow' | 'labelShowIfUnread' | 'labelHide';
-  type: 'system' | 'user';
-  messagesTotal: number;
-  messagesUnread: number;
-  threadsTotal: number;
-  threadsUnread: number;
-  color: {
-    textColor: string;
-    backgroundColor: string;
-  };
+export const LabelSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  // messageListVisibility: z.enum(['show', 'hide']),
+  // labelListVisibility: z.enum(['labelShow', 'labelShowIfUnread', 'labelHide']),
+  type: z.enum(['system', 'user']),
+  messagesTotal: z.number(),
+  messagesUnread: z.number(),
+  threadsTotal: z.number(),
+  threadsUnread: z.number(),
+  color: z.object({
+    textColor: z.string(),
+    backgroundColor: z.string(),
+  }),
+});
 
-  get displayName(): string {
-    return getLabelDisplayName(this.name);
-  }
-}
+export type Label = z.infer<typeof LabelSchema>;
 
-export type LabelListItem = Pick<Label, 'id' | 'name' | 'messageListVisibility' | 'labelListVisibility' | 'displayName'>;
+export const LabelListItemSchema = LabelSchema.pick({
+  id: true,
+  name: true,
+  // messageListVisibility: true,
+  // labelListVisibility: true,
+});
+
+export type LabelListItem = z.infer<typeof LabelListItemSchema>;

@@ -1,11 +1,10 @@
-import { Thread } from './thread';
-import { Type } from 'class-transformer';
+import { z } from 'zod/v4';
+import { ThreadSchema } from './thread';
 
-export class Threads {
-  @Type(() => Thread)
-  threads: Pick<Thread, 'id' | 'historyId' | 'snippet'>[] = [];
+export const ThreadsSchema = z.object({
+  threads: z.array(ThreadSchema.pick({ id: true, historyId: true, snippet: true })).default([]),
+  nextPageToken: z.string().optional(),
+  resultSizeEstimate: z.number().default(0),
+});
 
-  nextPageToken?: string;
-
-  resultSizeEstimate: number = 0;
-}
+export type Threads = z.infer<typeof ThreadsSchema>;

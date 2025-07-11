@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { XmfUploadProgress } from '../interfaces/xmf-upload-progress';
 import { XmfArchiveUploadApiService } from './xmf-archive-upload-api.service';
 
@@ -6,7 +6,7 @@ import { XmfArchiveUploadApiService } from './xmf-archive-upload-api.service';
   providedIn: 'root',
 })
 export class XmfUploadService {
-  constructor(private api: XmfArchiveUploadApiService) {}
+  private api = inject(XmfArchiveUploadApiService);
 
   getHistory(): Promise<XmfUploadProgress[]> {
     return this.api.getHistory();

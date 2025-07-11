@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output, resource } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -21,17 +20,23 @@ export interface ThreadsFilterData {
   imports: [MatButtonModule, MatMenuModule, MatIconModule, MatProgressSpinnerModule],
 })
 export class ThreadsFilterComponent {
-  private labels = toSignal(inject(GmailService).labels(), { initialValue: [] });
+  #gmailService = inject(GmailService);
+
+  protected labels = resource({
+    loader: async () => {
+      const labels = await this.#gmailService.labels();
+      return labels
+        .map((label) => ({
+          ...label,
+          displayName: getLabelDisplayName(label.name),
+        }))
+        .sort((a, b) => (a.displayName.toUpperCase() > b.displayName.toUpperCase() ? 1 : -1));
+    },
+  });
 
   labelIds = input<string[] | null>();
 
   labelIdsChange = output<string[]>();
-
-  labelItems = computed(() => {
-    const sorted = [...this.labels()];
-    sorted.sort((a, b) => (a.displayName.toUpperCase() > b.displayName.toUpperCase() ? 1 : -1));
-    return sorted;
-  });
 
   isLabelActive = (label: LabelListItem) => this.labelIds()?.includes(label.id);
 

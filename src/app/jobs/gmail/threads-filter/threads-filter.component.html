@@ -5,14 +5,16 @@
 
 <mat-menu #labelsMenu="matMenu">
   <ng-template matMenuContent>
-    @for (item of labelItems(); track $index) {
-      <button mat-menu-item (click)="onActivateLabel(item)">
-        @if (isLabelActive(item)) {
-          <mat-icon>check</mat-icon>
-        }
-        <span> {{ item.displayName }} </span>
-      </button>
-    } @empty {
+    @if (labels.hasValue()) {
+      @for (item of labels.value(); track $index) {
+        <button mat-menu-item (click)="onActivateLabel(item)">
+          @if (isLabelActive(item)) {
+            <mat-icon>check</mat-icon>
+          }
+          <span> {{ item.displayName }} </span>
+        </button>
+      }
+    } @else {
       <mat-spinner class="loading" [diameter]="150" />
     }
   </ng-template>

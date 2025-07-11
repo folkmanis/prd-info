@@ -1,10 +1,9 @@
 import { inject } from '@angular/core';
 import { RedirectCommand, ResolveFn, Router } from '@angular/router';
-import { firstValueFrom } from 'rxjs';
+import { notNullOrThrow } from 'src/app/library';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { Thread } from '../interfaces';
 import { GmailService } from './gmail.service';
-import { notNullOrThrow } from 'src/app/library';
 
 const NOT_FOUND_MESSAGE = 'Ieraksts nav atrasts';
 
@@ -13,8 +12,7 @@ export const resolveThread: ResolveFn<Thread> = async (route) => {
 
   try {
     const id = notNullOrThrow(route.paramMap.get('id'));
-    const thread = await firstValueFrom(inject(GmailService).thread(id));
-    return thread;
+    return await inject(GmailService).thread(id);
   } catch (error) {
     dialog.confirmDataError(NOT_FOUND_MESSAGE);
   }

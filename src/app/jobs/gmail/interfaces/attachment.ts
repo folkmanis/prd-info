@@ -1,4 +1,12 @@
-export class Attachment {
+import { z } from 'zod/v4';
+
+export const AttachmentSchema = z.object({
+  filename: z.string().default('unnamed'),
+  attachmentId: z.string(),
+  size: z.number(),
+});
+
+export class Attachment implements z.infer<typeof AttachmentSchema> {
   get isPdf(): boolean {
     const extension = this.filename.slice(this.filename.lastIndexOf('.'));
     return extension.toLowerCase() === '.pdf';

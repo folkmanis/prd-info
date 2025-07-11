@@ -1,5 +1,4 @@
 import { inject, Injectable } from '@angular/core';
-import { concatMap, from, map, Observable, of, toArray } from 'rxjs';
 import { Attachment, Message, Threads, ThreadsFilterQuery } from '../interfaces';
 import { GmailApiService } from './gmail-api.service';
 
@@ -29,19 +28,20 @@ export class GmailService {
     return this.api.getLabel(id);
   }
 
-  markAsRead(message: Message): Observable<Message> {
+  markAsRead(message: Message): Promise<Message> {
     if (message.hasLabel('UNREAD')) {
       return this.api.modifyMessage(message.id, { removeLabelIds: ['UNREAD'] });
     } else {
-      return of(message);
+      return Promise.resolve(message);
     }
   }
 
-  saveAttachments(attachments: { messageId: string; attachment: Attachment }[]): Observable<string[]> {
-    return from(attachments).pipe(
-      concatMap((att) => this.api.attachmentToUserStorage(att.messageId, att.attachment)),
-      map(({ names }) => names[0]),
-      toArray(),
-    );
+  async saveAttachments(attachments: { messageId: string; attachment: Attachment }[]): Promise<string[]> {
+    const result = [] as string[];
+    for await (const att of attachments) {
+      const data = await this.api.attachmentToUserStorage(att.messageId, att.attachment);
+      result.push(data.names[0]);
+    }
+    return result;
   }
 }

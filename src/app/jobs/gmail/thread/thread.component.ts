@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router, RouterLink } from '@angular/router';
-import { EMPTY, Observable, tap, withLatestFrom } from 'rxjs';
+import { defer, EMPTY, Observable } from 'rxjs';
 import { ReproJobService } from 'src/app/jobs/repro-jobs/services/repro-job.service';
 import { UploadRefService } from 'src/app/jobs/repro-jobs/services/upload-ref.service';
 import { assertNoNullProperties } from 'src/app/library';
@@ -53,7 +53,6 @@ export class ThreadComponent {
         customer,
         comment: thread.plain,
       });
-      this.navigateToNew();
     } else {
       const attachments: { messageId: string; attachment: Attachment }[] = selected.reduce(
         (acc, curr) => [
@@ -65,40 +64,47 @@ export class ThreadComponent {
         ],
         [],
       );
-      this.createJobWithAttachments(attachments, thread, EMPTY, thread.subject).subscribe(() => this.navigateToNew());
+      await this.createJobWithAttachments(attachments, thread, EMPTY, thread.subject);
     }
+    this.navigateToNew();
   }
 
-  onCreateFromMessage(component: MessageComponent) {
+  async onCreateFromMessage(component: MessageComponent) {
     component.busy.set(true);
     const message = component.message();
     assertNoNullProperties(message);
     const attachments = component.attachmentsSelection().map((attachment) => ({ messageId: message.id, attachment }));
 
-    this.createJobWithAttachments(attachments, message, this.markAsRead(component)).subscribe(() => this.navigateToNew());
+    await this.createJobWithAttachments(attachments, message, this.markAsRead(component));
+    this.navigateToNew();
   }
 
-  private createJobWithAttachments(
+  private async createJobWithAttachments(
     attachments: { messageId: string; attachment: Attachment }[],
     messageOrThread: { from: string; plain: string },
     afterAddedToJob: Observable<unknown>,
     name?: string,
   ) {
-    return this.gmailService.saveAttachments(attachments).pipe(
-      withLatestFrom(this.resolveCustomer(messageOrThread.from)),
-      tap(([fileNames, customer]) => {
-        this.reproJobService.setJobTemplate({
-          customer,
-          name: name || this.reproJobService.jobNameFromFiles(fileNames),
-          comment: messageOrThread.plain,
-        });
-        this.userFileUploadService.setSavedFile(fileNames, afterAddedToJob);
-      }),
-    );
+    const fileNames = await this.gmailService.saveAttachments(attachments);
+    const customer = await this.resolveCustomer(messageOrThread.from);
+    this.reproJobService.setJobTemplate({
+      customer,
+      name: name || this.reproJobService.jobNameFromFiles(fileNames),
+      comment: messageOrThread.plain,
+    });
+    this.userFileUploadService.setSavedFile(fileNames, afterAddedToJob);
+
+    this.reproJobService.setJobTemplate({
+      customer,
+      name: name || this.reproJobService.jobNameFromFiles(fileNames),
+      comment: messageOrThread.plain,
+    });
+
+    this.userFileUploadService.setSavedFile(fileNames, afterAddedToJob);
   }
 
   private markAsRead(component: MessageComponent): Observable<unknown> {
-    return component.markAsRead ? this.gmailService.markAsRead(component.message()) : EMPTY;
+    return component.markAsRead ? defer(() => this.gmailService.markAsRead(component.message())) : EMPTY;
   }
 
   private async resolveCustomer(from: string): Promise<string | undefined> {

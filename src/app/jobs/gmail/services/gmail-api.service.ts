@@ -1,56 +1,76 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
-import { AppClassTransformerService } from 'src/app/library/class-transformer/app-class-transformer.service';
+import { ValidatorService } from 'src/app/library';
 import { HttpOptions } from 'src/app/library/http';
-import { Attachment, Label, LabelListItem, Message, MessageModifyDto, Thread, Threads, ThreadsFilterQuery } from '../interfaces';
+import { z } from 'zod/v4';
+import {
+  Attachment,
+  Label,
+  LabelListItem,
+  LabelListItemSchema,
+  LabelSchema,
+  Message,
+  MessageModifyDto,
+  MessageSchema,
+  Thread,
+  Threads,
+  ThreadSchema,
+  ThreadsFilterQuery,
+  ThreadsSchema,
+} from '../interfaces';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GmailApiService {
-  private readonly http = inject(HttpClient);
-  private readonly transformer = inject(AppClassTransformerService);
+  readonly #http = inject(HttpClient);
+  readonly #path = getAppParams('apiPath') + 'google/gmail/';
+  #validator = inject(ValidatorService);
 
-  private readonly path = getAppParams('apiPath') + 'google/gmail/';
-
-  getMessage(id: string): Observable<Message> {
-    return this.http.get<Record<string, any>>(this.path + 'message/' + id, new HttpOptions().cacheable()).pipe(this.transformer.toClass(Message));
+  async getMessage(id: string): Promise<Message> {
+    const data$ = this.#http.get<Record<string, any>>(this.#path + 'message/' + id, new HttpOptions().cacheable());
+    const data = await this.#validator.validateAsync(MessageSchema, data$);
+    return new Message(data);
   }
 
-  modifyMessage(id: string, messageModify: MessageModifyDto): Observable<Message> {
-    return this.http.patch<Record<string, any>>(this.path + 'message/' + id, messageModify, new HttpOptions()).pipe(this.transformer.toClass(Message));
+  async modifyMessage(id: string, messageModify: MessageModifyDto): Promise<Message> {
+    const data$ = this.#http.patch<Record<string, any>>(this.#path + 'message/' + id, messageModify, new HttpOptions());
+    const data = await this.#validator.validateAsync(MessageSchema, data$);
+    return new Message(data);
   }
 
   getThreads(query: ThreadsFilterQuery): Promise<Threads> {
-    const data$ = this.http.get<Record<string, any>>(this.path + 'threads', new HttpOptions(query));
-    return this.transformer.toInstanceAsync(Threads, data$);
+    const data$ = this.#http.get<Record<string, any>>(this.#path + 'threads', new HttpOptions(query));
+    return this.#validator.validateAsync(ThreadsSchema, data$);
   }
 
-  getThread(id: string): Observable<Thread> {
-    return this.http.get<Record<string, any>>(this.path + 'thread/' + id, new HttpOptions()).pipe(this.transformer.toClass(Thread));
+  async getThread(id: string): Promise<Thread> {
+    const data$ = this.#http.get<Record<string, any>>(this.#path + 'thread/' + id, new HttpOptions());
+    const data = await this.#validator.validateAsync(ThreadSchema, data$);
+    return new Thread(data);
   }
 
-  getLabels(): Observable<LabelListItem[]> {
-    return this.http.get<Record<string, any>>(this.path + 'labels', new HttpOptions().cacheable()).pipe(
-      map((data) => data['labels']),
-      this.transformer.toClass(Label),
-    );
+  async getLabels(): Promise<LabelListItem[]> {
+    const data$ = this.#http.get<Record<string, any>>(this.#path + 'labels', new HttpOptions().cacheable());
+    const { labels } = await this.#validator.validateAsync(z.object({ labels: z.array(LabelListItemSchema) }), data$);
+    return labels;
   }
 
-  getLabel(id: string): Observable<Label> {
-    return this.http.get<Record<string, any>>(this.path + 'label/' + id, new HttpOptions()).pipe(this.transformer.toClass(Label));
+  getLabel(id: string): Promise<Label> {
+    const data$ = this.#http.get<Record<string, any>>(this.#path + 'label/' + id, new HttpOptions());
+    return this.#validator.validateAsync(LabelSchema, data$);
   }
 
-  attachmentToUserStorage(messageId: string, attachment: Attachment): Observable<{ names: string[] }> {
-    return this.http.put<{ names: string[] }>(
-      this.path + 'message/attachment',
+  attachmentToUserStorage(messageId: string, attachment: Attachment): Promise<{ names: string[] }> {
+    const data$ = this.#http.put<{ names: string[] }>(
+      this.#path + 'message/attachment',
       {
         messageId,
         attachment,
       },
       new HttpOptions(),
     );
+    return this.#validator.validateAsync(z.object({ names: z.array(z.string()) }), data$);
   }
 }

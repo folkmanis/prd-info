@@ -11,7 +11,7 @@ import { RouterLink } from '@angular/router';
 import { Observable, timer } from 'rxjs';
 import { filter, map, mergeMap, share, take, throttleTime } from 'rxjs/operators';
 import { getAppParams } from 'src/app/app-params';
-import { SystemNotification, SystemOperations, User, UserModule } from 'src/app/interfaces';
+import { LoginUser, SystemNotification, SystemOperations, UserModule } from 'src/app/interfaces';
 import { ViewNotSmallDirective, ViewSmallDirective } from 'src/app/library/view-size';
 import { LoginService } from 'src/app/login';
 import { NotificationsService } from 'src/app/services';
@@ -52,7 +52,7 @@ export class ToolbarComponent implements OnInit {
     share(),
   );
 
-  user = input.required<User>();
+  user = input.required<LoginUser>();
 
   activeModule = input<UserModule | null>(null);
 

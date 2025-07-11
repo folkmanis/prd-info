@@ -1,4 +1,4 @@
-import { afterNextRender, Directive, Host, Injector, Self, ViewContainerRef } from '@angular/core';
+import { afterNextRender, Directive, Injector, ViewContainerRef, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatDrawer } from '@angular/material/sidenav';
 import { DrawerSmallDirective } from '../view-size';
@@ -11,7 +11,11 @@ import { SideButtonComponent } from './side-button.component';
   hostDirectives: [DrawerSmallDirective],
 })
 export class DrawerButtonDirective {
-  constructor(viewContainerRef: ViewContainerRef, @Host() @Self() drawer: MatDrawer, injector: Injector) {
+  constructor() {
+    const viewContainerRef = inject(ViewContainerRef);
+    const drawer = inject(MatDrawer, { host: true, self: true });
+    const injector = inject(Injector);
+
     afterNextRender({
       write() {
         const buttonRef = viewContainerRef.createComponent(SideButtonComponent);

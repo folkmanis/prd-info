@@ -1,23 +1,39 @@
-import { Type } from 'class-transformer';
-import { Header } from './header';
-import { MessagePartBody } from './message-part-body';
+import { z } from 'zod/v4';
 import { Attachment } from './attachment';
+import { Header, HeaderSchema } from './header';
+import { MessagePartBody, MessagePartBodySchema } from './message-part-body';
 
-export class MessagePart {
+export const MessagePartSchema = z.object({
+  partId: z.string(),
+
+  mimeType: z.string(),
+
+  filename: z.string().optional(),
+  headers: HeaderSchema.array(),
+
+  body: MessagePartBodySchema.optional(),
+
+  get parts() {
+    return MessagePartSchema.array().optional();
+  },
+});
+
+export class MessagePart implements z.infer<typeof MessagePartSchema> {
   partId: string;
-
   mimeType: string;
-
   filename?: string;
-
-  @Type(() => Header)
   headers: Header[];
-
-  @Type(() => MessagePartBody)
   body?: MessagePartBody;
-
-  @Type(() => MessagePart)
   parts?: MessagePart[];
+
+  constructor(part: z.infer<typeof MessagePartSchema>) {
+    this.partId = part.partId;
+    this.mimeType = part.mimeType;
+    this.filename = part.filename;
+    this.headers = part.headers;
+    this.body = part.body;
+    this.parts = part.parts?.map((p) => new MessagePart(p));
+  }
 
   getHeader(name: string): string | undefined {
     return this.headers.find((h) => h.name.toUpperCase() === name.toUpperCase())?.value;

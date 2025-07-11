@@ -1,4 +1,4 @@
-import { Directive, EmbeddedViewRef, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Directive, EmbeddedViewRef, OnDestroy, OnInit, TemplateRef, ViewContainerRef, inject } from '@angular/core';
 import { BehaviorSubject, Subscription, combineLatest, map, switchMap } from 'rxjs';
 import { AppBreakpoints, BREAKPOINTS, LayoutService } from '../layout.service';
 
@@ -9,6 +9,10 @@ interface ViewSize {
 
 @Directive()
 export class ViewSizeBase implements OnInit, OnDestroy {
+  private templateRef = inject<TemplateRef<any>>(TemplateRef);
+  private viewContainer = inject(ViewContainerRef);
+  private layout = inject(LayoutService);
+
   private readonly viewSize$ = new BehaviorSubject<ViewSize>({ breakPoint: 'large', not: false });
 
   private readonly elseTemplate$ = new BehaviorSubject<TemplateRef<any> | null>(null);
@@ -17,12 +21,6 @@ export class ViewSizeBase implements OnInit, OnDestroy {
   private elseViewRef: EmbeddedViewRef<any> | null;
 
   private subs: Subscription;
-
-  constructor(
-    private templateRef: TemplateRef<any>,
-    private viewContainer: ViewContainerRef,
-    private layout: LayoutService,
-  ) {}
 
   setViewSize(breakPoint: AppBreakpoints, not = false) {
     if (typeof breakPoint === 'string' && BREAKPOINTS.includes(breakPoint)) {

@@ -64,13 +64,13 @@ export class GmailComponent {
     shareReplay(1),
   );
 
-  threads = toSignal(this.threads$, { initialValue: new Threads() });
+  threads = toSignal(this.threads$);
 
-  lastPage = computed(() => !this.threads().nextPageToken);
+  lastPage = computed(() => !this.threads()?.nextPageToken);
 
-  loadedCount = computed(() => this.threads().threads.length);
+  loadedCount = computed(() => this.threads()?.threads.length ?? 0);
 
-  datasource = computed(() => this.threads().threads);
+  datasource = computed(() => this.threads()?.threads ?? []);
 
   sanitize = (snippet: string) => this.sanitizer.bypassSecurityTrustHtml(snippet);
 

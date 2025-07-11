@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { cloneDeep } from 'lodash-es';
 import { Observable, OperatorFunction, pipe } from 'rxjs';
 import { map, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators';
@@ -11,7 +11,7 @@ import { XmfArchiveApiService } from './xmf-archive-api.service';
   providedIn: 'root',
 })
 export class ArchiveSearchService {
-  constructor(private api: XmfArchiveApiService) {}
+  private api = inject(XmfArchiveApiService);
 
   getCount(query: Observable<SearchQuery>): Observable<number> {
     return query.pipe(
