@@ -40,7 +40,10 @@ export class ScrollTopDirective {
   bottom = input('20px', { alias: 'scrollToTopBottom' });
   right = input('80px', { alias: 'scrollToTopRight' });
 
-  constructor(container: ViewContainerRef, injector: Injector) {
+  constructor() {
+    const container = inject(ViewContainerRef);
+    const injector = inject(Injector);
+
     afterNextRender(() => {
       container.createComponent(ScrollToTopComponent, { injector });
     });

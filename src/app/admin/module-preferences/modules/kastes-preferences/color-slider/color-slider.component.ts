@@ -1,5 +1,5 @@
 import { FocusMonitor } from '@angular/cdk/a11y';
-import { ChangeDetectionStrategy, Component, ElementRef, computed, effect, forwardRef, input, model, output, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, computed, effect, forwardRef, input, model, output, signal, viewChild, inject } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatSlider, MatSliderModule } from '@angular/material/slider';
 import { hslToString, stringToHsl } from './hsl-color';
@@ -36,7 +36,9 @@ export class ColorSliderComponent implements ControlValueAccessor {
 
   focusInput = output<void>();
 
-  constructor(focusMonitor: FocusMonitor) {
+  constructor() {
+    const focusMonitor = inject(FocusMonitor);
+
     effect((onCleanup) => {
       const element = this.slider().nativeElement;
       focusMonitor.monitor(element, true).subscribe(() => {

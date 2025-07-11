@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 
@@ -9,13 +9,10 @@ import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfirmationDialogComponent {
-  constructor(
-    @Inject(MAT_DIALOG_DATA)
-    public data: {
-      prompt: string;
-      title?: string;
-      yes?: string;
-      no?: string;
-    },
-  ) {}
+  data = inject<{
+    prompt: string;
+    title?: string;
+    yes?: string;
+    no?: string;
+  }>(MAT_DIALOG_DATA);
 }

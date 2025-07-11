@@ -1,4 +1,4 @@
-import { Directive } from '@angular/core';
+import { Directive, inject } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { assertNotNull } from '../assert-utils';
 
@@ -7,7 +7,8 @@ import { assertNotNull } from '../assert-utils';
   standalone: true,
 })
 export class InputTrimDirective {
-  constructor(ngControl: NgControl) {
+  constructor() {
+    const ngControl = inject(NgControl);
     trimValueAccessor(ngControl.valueAccessor);
   }
 }

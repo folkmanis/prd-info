@@ -1,11 +1,13 @@
-import { Directive, ElementRef, afterNextRender } from '@angular/core';
+import { Directive, ElementRef, afterNextRender, inject } from '@angular/core';
 
 @Directive({
   selector: 'input[appFocused]',
   standalone: true,
 })
 export class FocusedDirective {
-  constructor(private elementRef: ElementRef<HTMLInputElement>) {
+  private elementRef = inject<ElementRef<HTMLInputElement>>(ElementRef);
+
+  constructor() {
     afterNextRender({
       write: () => {
         this.focus();

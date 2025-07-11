@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform, inject } from '@angular/core';
 import { DateUtilsService } from './date-utils.service';
 
 @Pipe({
@@ -7,7 +7,7 @@ import { DateUtilsService } from './date-utils.service';
   standalone: true,
 })
 export class RelativeDatePipe implements PipeTransform {
-  constructor(private dateUtils: DateUtilsService) {}
+  private dateUtils = inject(DateUtilsService);
 
   transform(value: Date | string | number, strict?: 'strict'): unknown {
     const params = {

@@ -1,4 +1,4 @@
-import { Directive } from '@angular/core';
+import { Directive, inject } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { assertNotNull } from '../assert-utils';
 
@@ -12,7 +12,8 @@ import { assertNotNull } from '../assert-utils';
   },
 })
 export class InputUppercaseDirective {
-  constructor(ngControl: NgControl) {
+  constructor() {
+    const ngControl = inject(NgControl);
     upperCaseAccessor(ngControl.valueAccessor);
   }
 }

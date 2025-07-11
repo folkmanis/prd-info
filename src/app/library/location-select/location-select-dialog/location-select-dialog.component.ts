@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { GoogleMap, MapAdvancedMarker, MapGeocoder } from '@angular/google-maps';
 import { MatButton } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
@@ -40,7 +40,9 @@ export class LocationSelectDialogComponent {
 
   shippingMarker = signal<ShippingMarker | null>(null);
 
-  constructor(@Inject(MAT_DIALOG_DATA) data: LocationSelectDialogData) {
+  constructor() {
+    const data = inject<LocationSelectDialogData>(MAT_DIALOG_DATA);
+
     if (data.googleId) {
       this.setMarker({ placeId: data.googleId });
     } else if (data.address) {

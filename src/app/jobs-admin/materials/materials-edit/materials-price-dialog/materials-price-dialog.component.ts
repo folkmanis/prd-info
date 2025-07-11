@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -19,6 +19,8 @@ export interface DialogData {
   imports: [MatDialogModule, MatFormFieldModule, ReactiveFormsModule, MatButtonModule, MatInputModule],
 })
 export class MaterialsPriceDialogComponent {
+  private data = inject<DialogData>(MAT_DIALOG_DATA);
+
   private value: MaterialPrice = this.data.value;
   priceControl = new FormGroup({
     min: new FormControl<number>(this.value.min, [Validators.required, Validators.min(0)]),
@@ -27,6 +29,4 @@ export class MaterialsPriceDialogComponent {
   });
 
   units: string = this.data.units;
-
-  constructor(@Inject(MAT_DIALOG_DATA) private data: DialogData) {}
 }

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { parse } from 'date-fns';
 import { map, Observable, withLatestFrom } from 'rxjs';
 import { LogQueryFilter, LogRecord, LogRecordHttp } from 'src/app/admin/services/logfile-record';
@@ -11,11 +11,11 @@ import { getConfig } from 'src/app/services/config.provider';
   providedIn: 'root',
 })
 export class LogfileApiService {
+  private http = inject(HttpClient);
+
   private levelMap$ = getConfig('system', 'logLevels').pipe(map((levels) => new Map<number, string>(levels)));
 
   private path = getAppParams().apiPath + 'logging/';
-
-  constructor(private http: HttpClient) {}
 
   getLog(filter: LogQueryFilter): Observable<LogRecord[]> {
     return this.http.get<LogRecordHttp[]>(this.path, new HttpOptions(filter).cacheable()).pipe(

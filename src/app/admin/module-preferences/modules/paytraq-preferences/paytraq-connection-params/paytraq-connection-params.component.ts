@@ -53,7 +53,9 @@ export class PaytraqConnectionParamsComponent implements ControlValueAccessor, V
 
   focusInput = output<void>();
 
-  constructor(focusMonitor: FocusMonitor) {
+  constructor() {
+    const focusMonitor = inject(FocusMonitor);
+
     effect((onCleanup) => {
       const container = this.containerEl();
       focusMonitor.monitor(container, true).subscribe(() => {

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { firstValueFrom, Observable } from 'rxjs';
 import { ConfirmDeleteComponent } from './confirm-delete/confirm-delete.component';
@@ -8,7 +8,7 @@ import { ConfirmationDialogComponent } from './confirmation-dialog.component';
   providedIn: 'root',
 })
 export class ConfirmationDialogService {
-  constructor(private dialog: MatDialog) {}
+  private dialog = inject(MatDialog);
 
   confirm(prompt: string, config: MatDialogConfig = {}): Observable<boolean> {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {

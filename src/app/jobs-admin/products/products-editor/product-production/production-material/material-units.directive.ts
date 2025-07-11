@@ -1,4 +1,4 @@
-import { Directive, Input, ViewContainerRef, TemplateRef, EmbeddedViewRef } from '@angular/core';
+import { Directive, Input, ViewContainerRef, TemplateRef, EmbeddedViewRef, inject } from '@angular/core';
 
 interface DataWithUnits {
   _id: string;
@@ -14,6 +14,9 @@ class UnitsDirectiveContext {
   standalone: true,
 })
 export class MaterialUnitsDirective {
+  private templateRef = inject<TemplateRef<UnitsDirectiveContext>>(TemplateRef);
+  private containerRef = inject(ViewContainerRef);
+
   private _units: DataWithUnits[] = [];
   @Input('appMaterialUnitsOf') set units(value: DataWithUnits[]) {
     this._units = Array.isArray(value) ? value : [];
@@ -35,11 +38,6 @@ export class MaterialUnitsDirective {
   }
 
   private view: EmbeddedViewRef<UnitsDirectiveContext> | undefined;
-
-  constructor(
-    private templateRef: TemplateRef<UnitsDirectiveContext>,
-    private containerRef: ViewContainerRef,
-  ) {}
 
   private createView() {
     if (!this.units || !this.id) {

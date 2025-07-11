@@ -39,6 +39,8 @@ import { ProductionStagesListComponent } from '../production-stages-list/product
   ],
 })
 export class ProductionStagesEditComponent implements CanComponentDeactivate {
+  private productionStagesService = inject(ProductionStagesService);
+
   #jobFilesService = inject(JobFilesService);
   #snack = inject(MatSnackBar);
   #navigate = navigateRelative();
@@ -88,7 +90,7 @@ export class ProductionStagesEditComponent implements CanComponentDeactivate {
     }
   });
 
-  constructor(private productionStagesService: ProductionStagesService) {
+  constructor() {
     effect(() => {
       this.form.reset(this.#initialValue());
     });
