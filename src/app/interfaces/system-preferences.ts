@@ -1,4 +1,4 @@
-import { z } from 'zod/v4';
+import { z } from 'zod';
 import { JobsSettings, KastesSettings, PaytraqSettings, SystemSettings, TransportationSettings } from './module-settings';
 
 export const SystemPreferences = z.object({

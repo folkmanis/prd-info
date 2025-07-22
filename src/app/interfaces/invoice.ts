@@ -1,5 +1,5 @@
 import { Job, JobProduct } from 'src/app/jobs';
-import { z } from 'zod/v4';
+import { z } from 'zod';
 import { Customer } from './customer';
 
 export const InvoiceJobSchema = Job.pick({

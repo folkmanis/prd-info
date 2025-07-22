@@ -1,6 +1,6 @@
 import { Job, JobPartial } from './job';
 import { JobProduct } from './job-product';
-import { z } from 'zod/v4';
+import { z } from 'zod';
 
 export const UnwindedIndex = z.object({
   products: JobProduct,

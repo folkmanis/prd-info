@@ -5,7 +5,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTableModule } from '@angular/material/table';
 import { JobUnwinded } from 'src/app/jobs/interfaces/job-unwinded';
 import { RouterLinkWithReturnDirective } from 'src/app/library/navigation';
-import { z } from 'zod/v4';
+import { z } from 'zod';
 
 const TABLE_COLUMNS = ['selected', 'jobId', 'receivedDate', 'custCode', 'name', 'productName', 'count', 'price', 'total'];
 

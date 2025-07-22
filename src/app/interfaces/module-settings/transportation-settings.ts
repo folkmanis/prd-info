@@ -1,4 +1,4 @@
-import { z } from 'zod/v4';
+import { z } from 'zod';
 import { FuelType } from './fuel-type';
 import { ShippingAddress } from './shipping-address';
 

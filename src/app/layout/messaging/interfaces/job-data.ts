@@ -1,4 +1,4 @@
-import { z } from 'zod/v4';
+import { z } from 'zod';
 import { MessageData } from './message-data';
 
 const FS_ACTIONS: {

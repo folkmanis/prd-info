@@ -1,4 +1,4 @@
-import { z } from 'zod/v4';
+import { z } from 'zod';
 import { Message, MessageSchema } from './message';
 
 export const ThreadSchema = z.object({

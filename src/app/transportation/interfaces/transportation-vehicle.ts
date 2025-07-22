@@ -1,5 +1,5 @@
 import { FuelType } from 'src/app/interfaces';
-import { z } from 'zod/v4';
+import { z } from 'zod';
 
 export const OdometerReading = z.object({
   value: z.number().positive(),

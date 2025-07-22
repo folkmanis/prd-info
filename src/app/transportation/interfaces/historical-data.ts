@@ -1,5 +1,5 @@
 import { round } from 'lodash-es';
-import { z } from 'zod/v4';
+import { z } from 'zod';
 
 export const HistoricalData = z.object({
   lastMonth: z.number(),

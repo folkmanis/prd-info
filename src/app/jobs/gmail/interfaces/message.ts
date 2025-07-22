@@ -1,6 +1,6 @@
 import { MessagePart, MessagePartSchema } from './message-part';
 import { Attachment } from './attachment';
-import { z } from 'zod/v4';
+import { z } from 'zod';
 
 export const MessageSchema = z.object({
   id: z.string(),

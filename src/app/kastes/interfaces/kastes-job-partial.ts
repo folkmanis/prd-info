@@ -1,5 +1,5 @@
 import { KastesJob } from 'src/app/jobs';
-import { z } from 'zod/v4';
+import { z } from 'zod';
 
 export const KastesJobPartial = KastesJob.pick({
   jobId: true,

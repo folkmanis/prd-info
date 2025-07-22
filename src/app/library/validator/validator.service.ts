@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { firstValueFrom, Observable } from 'rxjs';
-import { z } from 'zod/v4';
+import { z } from 'zod';
 import { ValidationError } from './validation-error.class';
 
 @Injectable({

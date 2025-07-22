@@ -1,4 +1,4 @@
-import { z } from 'zod/v4';
+import { z } from 'zod';
 import { ProductProductionStage } from './product-production-stage';
 
 export const CustomerProduct = z.object({

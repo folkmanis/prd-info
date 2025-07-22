@@ -1,4 +1,4 @@
-import { z } from 'zod/v4';
+import { z } from 'zod';
 
 export const DropFolder = z.object({
   path: z.array(z.string()),

@@ -1,4 +1,4 @@
-import { z } from 'zod/v4';
+import { z } from 'zod';
 import { JobMessageData } from './job-data';
 import { XmfUploadMessageData } from './xmf-upload-data';
 

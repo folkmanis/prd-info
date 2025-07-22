@@ -1,4 +1,4 @@
-import { z } from 'zod/v4';
+import { z } from 'zod';
 import { ThreadSchema } from './thread';
 
 export const ThreadsSchema = z.object({

@@ -1,4 +1,4 @@
-import { z } from 'zod/v4';
+import { z } from 'zod';
 import { Attachment } from './attachment';
 import { Header, HeaderSchema } from './header';
 import { MessagePartBody, MessagePartBodySchema } from './message-part-body';

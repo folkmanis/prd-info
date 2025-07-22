@@ -1,5 +1,5 @@
 import { KeysMap } from 'src/app/library';
-import { z } from 'zod/v4';
+import { z } from 'zod';
 
 export const archiveRecordKeysMap: KeysMap = {
   JDFJobID: 'jdfJobId',

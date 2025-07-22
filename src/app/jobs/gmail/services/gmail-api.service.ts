@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { getAppParams } from 'src/app/app-params';
 import { ValidatorService } from 'src/app/library';
 import { HttpOptions } from 'src/app/library/http';
-import { z } from 'zod/v4';
+import { z } from 'zod';
 import {
   Attachment,
   Label,

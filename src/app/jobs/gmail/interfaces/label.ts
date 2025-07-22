@@ -1,4 +1,4 @@
-import { z } from 'zod/v4';
+import { z } from 'zod';
 
 const labelMap: Map<string, string> = new Map([
   ['IMPORTANT', 'Svarīgi'],
