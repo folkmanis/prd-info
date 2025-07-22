@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AbstractControl, AsyncValidatorFn, FormBuilder, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormBuilder, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckbox } from '@angular/material/checkbox';
@@ -46,22 +46,22 @@ import { SessionsComponent } from './sessions/sessions.component';
 })
 export class UserEditComponent implements CanComponentDeactivate {
   private navigate = navigateRelative();
-  private fb = inject(FormBuilder).nonNullable;
   private usersList = inject(UsersListComponent);
   private snackBar = inject(MatSnackBar);
   private usersService = inject(UsersService);
   private confirmationDialog = inject(ConfirmationDialogService);
 
-  customers = promiseToSignal(this.usersService.getXmfCustomers());
+  protected customers = promiseToSignal(this.usersService.getXmfCustomers());
 
-  userModules = getAppParams('userModules');
+  protected userModules = getAppParams('userModules');
 
-  sessions = signal<UserSession[] | null>(null);
+  protected sessions = signal<UserSession[] | null>(null);
 
-  currentSessionId = promiseToSignal(inject(LoginService).getSessionId());
+  protected currentSessionId = promiseToSignal(inject(LoginService).getSessionId());
 
-  form = this.fb.group({
-    username: ['', [Validators.required, usernamePatternValidator], [this.existingUsernameValidator()]],
+  private fb = inject(FormBuilder).nonNullable;
+  protected form = this.fb.group({
+    username: ['', [Validators.required, this.usernamePatternValidator()], [this.existingUsernameValidator()]],
     name: ['', [Validators.required]],
     password: ['', [Validators.required]],
     userDisabled: [false],
@@ -79,18 +79,18 @@ export class UserEditComponent implements CanComponentDeactivate {
     initialValue: this.form.value,
   });
 
-  formStatus = toSignal(this.form.statusChanges, {
+  protected formStatus = toSignal(this.form.statusChanges, {
     initialValue: this.form.status,
   });
 
-  changes = computed(() => {
+  protected changes = computed(() => {
     const value = this.formValue();
     const initialValue = this.initialValue();
     const diff = pickBy(value, (v, key) => !isEqual(v, initialValue[key]));
     return Object.keys(diff).length ? diff : undefined;
   });
 
-  isNew = computed(() => !this.initialValue().username);
+  protected isNew = computed(() => !this.initialValue().username);
 
   get unameCtrl() {
     return this.form.controls.username;
@@ -111,11 +111,11 @@ export class UserEditComponent implements CanComponentDeactivate {
     return this.form.pristine || !this.changes();
   }
 
-  onReset() {
+  protected onReset() {
     this.form.reset(this.initialValue());
   }
 
-  async onSave() {
+  protected async onSave() {
     if (this.isNew()) {
       const newUser = pickBy(this.form.getRawValue(), (val) => val !== null);
       const { username } = await this.usersService.addUser(newUser);
@@ -127,7 +127,7 @@ export class UserEditComponent implements CanComponentDeactivate {
     }
   }
 
-  async onPasswordChange(password: string) {
+  protected async onPasswordChange(password: string) {
     const username = stringOrThrow(this.form.value.username);
     try {
       await this.usersService.updatePassword(username, password);
@@ -137,7 +137,7 @@ export class UserEditComponent implements CanComponentDeactivate {
     }
   }
 
-  async onDeleteUser() {
+  protected async onDeleteUser() {
     const username = stringOrThrow(this.form.value.username);
     const confirmation = await this.confirmationDialog.confirmDelete();
     if (!confirmation) {
@@ -155,7 +155,7 @@ export class UserEditComponent implements CanComponentDeactivate {
     }
   }
 
-  async onDeleteSessions(sessionIds: string[]) {
+  protected async onDeleteSessions(sessionIds: string[]) {
     const username = stringOrThrow(this.form.value.username);
     if ((await this.confirmationDialog.confirmDelete()) !== true) {
       return;
@@ -171,7 +171,7 @@ export class UserEditComponent implements CanComponentDeactivate {
     }
   }
 
-  async onUploadToFirestore() {
+  protected async onUploadToFirestore() {
     const username = stringOrThrow(this.form.value.username);
     try {
       await this.usersService.uploadToFirestore(username);
@@ -191,12 +191,11 @@ export class UserEditComponent implements CanComponentDeactivate {
     return async ({ value }: AbstractControl<string>) =>
       value === this.initialValue()?.username || (await this.usersService.validateUsername(value)) ? null : { existing: 'Esošs lietotājvārds' };
   }
-}
 
-function usernamePatternValidator(control: AbstractControl): ValidationErrors | null {
-  const val: string = control.value || '';
-  if (val.match(/ /)) {
-    return { symbol: 'Atstarpi nedrīkst izmantot' };
+  private usernamePatternValidator(): ValidatorFn {
+    return (control) => {
+      const val: string = control.value || '';
+      return val.match(/ /) ? { symbol: 'Atstarpi nedrīkst izmantot' } : null;
+    };
   }
-  return null;
 }
