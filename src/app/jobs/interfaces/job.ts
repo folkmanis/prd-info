@@ -1,4 +1,4 @@
-import { JobProductionStage } from 'src/app/interfaces';
+import { JobProductionStage } from 'src/app/interfaces/job-production-stage';
 import { z } from 'zod/v4';
 import { JOB_CATEGORIES, KastesProduction } from './job-categories';
 import { JobProduct } from './job-product';

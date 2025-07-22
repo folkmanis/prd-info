@@ -3,7 +3,7 @@ import { booleanAttribute, ChangeDetectionStrategy, Component, computed, input, 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTableModule } from '@angular/material/table';
-import { JobUnwinded } from 'src/app/jobs';
+import { JobUnwinded } from 'src/app/jobs/interfaces/job-unwinded';
 import { RouterLinkWithReturnDirective } from 'src/app/library/navigation';
 import { z } from 'zod/v4';
 
