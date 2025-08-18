@@ -19,9 +19,9 @@ export class SessionsComponent {
 
   deleteSession = output<string[]>();
 
-  deleteAllDisabled = computed(() => this.sessions().length === 0 || this.sessions().every((s) => s._id === this.currentSession()));
+  protected deleteAllDisabled = computed(() => this.sessions().length === 0 || this.sessions().every((s) => s._id === this.currentSession()));
 
-  onDeleteAll() {
+  protected onDeleteAll() {
     const currentSession = this.currentSession();
     this.deleteSession.emit(
       this.sessions()

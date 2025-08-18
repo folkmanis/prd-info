@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AbstractControl, AsyncValidatorFn, FormBuilder, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormBuilder, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckbox } from '@angular/material/checkbox';
@@ -19,7 +19,7 @@ import { PasswordInputGroupComponent } from 'src/app/library/password-input/pass
 import { promiseToSignal } from 'src/app/library/rxjs';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { LoginService } from 'src/app/login';
-import { UsersService } from '../../services/users.service';
+import { UsersService } from '../users.service';
 import { UsersListComponent } from '../users-list/users-list.component';
 import { SessionsComponent } from './sessions/sessions.component';
 
@@ -181,7 +181,7 @@ export class UserEditComponent implements CanComponentDeactivate {
     }
   }
 
-  private async afterUserSaved(username: string) {
+  private afterUserSaved(username: string) {
     this.usersList.onReload();
     this.form.markAsPristine();
     this.navigate(['..', username]);

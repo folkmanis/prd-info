@@ -1,6 +1,6 @@
 import { ResolveFn } from '@angular/router';
 import { User } from 'src/app/interfaces';
-import { UsersService } from '../services/users.service';
+import { UsersService } from './users.service';
 import { inject } from '@angular/core';
 import { notNullOrThrow } from 'src/app/library';
 
