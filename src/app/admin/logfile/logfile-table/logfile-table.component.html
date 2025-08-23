@@ -22,23 +22,18 @@
   <!-- Izvērsts skats -->
   <ng-container matColumnDef="expandedRecord">
     <mat-cell *matCellDef="let record" [attr.colspan]="displayedColumns.length">
-      <div [@detailExpand]="record === expandedRecord ? 'expanded' : 'collapsed'" class="record-detail">
-        <!-- Izvērstā skata apraksts -->
-        @if (record === expandedRecord) {
-          <div class="json-display">
+      <!-- Izvērstā skata apraksts -->
+      @if (record === expandedRecord) {
+        <div class="record-detail-wrapper" animate.leave="record-detail-leave">
+          <div class="record-detail-content">
             {{ record.metadata | json }}
           </div>
-        }
-      </div>
+        </div>
+      }
     </mat-cell>
   </ng-container>
 
   <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
-  <mat-row
-    *matRowDef="let record; columns: displayedColumns"
-    class="record-row"
-    (click)="expandedRecord = expandedRecord === record ? null : record"
-    [class.expanded-row]="expandedRecord === record"
-  ></mat-row>
-  <mat-row *matRowDef="let row; columns: ['expandedRecord']" class="detail-row"></mat-row>
+  <mat-row *matRowDef="let record; columns: displayedColumns" class="record-row" (click)="expandedRecord = expandedRecord === record ? null : record"></mat-row>
+  <mat-row *matRowDef="let record; columns: ['expandedRecord']" class="detail-row" [class.expanded-row]="expandedRecord === record"></mat-row>
 </mat-table>

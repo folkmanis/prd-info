@@ -7,20 +7,6 @@ mat-table {
   overflow: auto;
 }
 
-.record-row {
-  cursor: pointer;
-}
-
-.mat-mdc-cell {
-  padding: 0 8px;
-}
-
-.mat-column-level,
-.mat-column-timestamp {
-  flex: 1;
-}
-
-
 .mat-column-info {
   flex: 2;
 }
@@ -29,26 +15,34 @@ mat-table {
   flex: 3;
 }
 
-.mat-column-info {
-  padding: 0 8px;
-}
-
-.detail-row {
-  min-height: 0;
-
-  .mat-mdc-cell {
-    min-height: 0;
-  }
-}
-
 .record-row .mat-mdc-cell {
+  cursor: pointer;
   border-bottom-width: 0;
 }
 
-.record-detail {
-  overflow: hidden;
-}
+mat-table mat-row.detail-row {
 
-.json-display {
-  padding-bottom: 8px;
+  min-height: 0;
+
+  .record-detail-wrapper {
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 100%;
+    transition: grid-template-rows 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    @starting-style {
+      grid-template-rows: 0fr;
+    }
+
+    .record-detail-content {
+      min-height: 0;
+    }
+
+    &.record-detail-leave {
+      grid-template-rows: 0fr;
+    }
+  }
+
+
 }
