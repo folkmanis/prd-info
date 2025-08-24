@@ -125,6 +125,7 @@ export class ReproJobEditComponent {
           error: (error) =>
             this.snack.openFromComponent(SnackbarMessageComponent, {
               data: { progress: this.fileUploadProgress$, error },
+              duration: Infinity,
             }),
         });
       }
@@ -182,12 +183,14 @@ export class ReproJobEditComponent {
   private saveSuccessMessage({ jobId, name }: { jobId: number; name: string }) {
     this.snack.openFromComponent(SnackbarMessageComponent, {
       data: { jobId, name, progress: this.fileUploadProgress$ },
+      duration: Infinity,
     });
   }
 
   private saveErrorMessage(error: unknown) {
     this.snack.openFromComponent(SnackbarMessageComponent, {
       data: { progress: this.fileUploadProgress$, error },
+      duration: Infinity,
     });
   }
 

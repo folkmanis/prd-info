@@ -2,7 +2,7 @@
   @for (progr of progress(); track progr.id) {
     @let progress = progressPercent(progr);
 
-    <li @collapseAnimation>
+    <li animate.leave="item-collapse">
       <div class="filename">
         {{ progr.name }}
       </div>
