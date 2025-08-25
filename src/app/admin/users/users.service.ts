@@ -29,16 +29,19 @@ export class UsersService {
     return this.api.getOne(username);
   }
 
-  updateUser({ username, ...update }: Partial<User> & Pick<User, 'username'>): Promise<User> {
-    return this.api.updateOne(username, update);
+  async updateUser({ username, ...update }: Partial<User> & Pick<User, 'username'>): Promise<User> {
+    await this.api.updateOne(username, update);
+    return this.getUser(username);
   }
 
-  updatePassword(username: string, password: string): Promise<User> {
-    return this.api.passwordUpdate(username, password);
+  async updatePassword(username: string, password: string): Promise<User> {
+    await this.api.passwordUpdate(username, password);
+    return this.getUser(username);
   }
 
-  addUser(data: Partial<User>): Promise<User> {
-    return this.api.insertOne(data);
+  async addUser(data: Partial<User>): Promise<User> {
+    const user = await this.api.insertOne(data);
+    return this.getUser(user.username);
   }
 
   deleteUser(username: string): Promise<boolean> {

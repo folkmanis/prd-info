@@ -3,7 +3,7 @@ import { inject, Injectable, Signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
 import { firstValueFrom, map } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
-import { User, UserList, UserListSchema, UserSchema } from 'src/app/interfaces';
+import { User, UserCreate, UserCreateSchema, UserList, UserListSchema, UserSchema, UserUpdate, UserUpdateSchema } from 'src/app/interfaces';
 import { ValidatorService } from 'src/app/library';
 import { HttpOptions, httpResponseRequest } from 'src/app/library/http';
 import { DEMO_MODE } from '../app-mode.provider';
@@ -33,16 +33,16 @@ export class UsersApiService {
     });
   }
 
-  updateOne(id: string | number, data: Partial<User>, params?: Params): Promise<User> {
+  updateOne(id: string | number, data: Partial<User>, params?: Params): Promise<UserUpdate> {
     this.#checkDemoMode();
     const data$ = this.#http.patch(this.#path + id, data, new HttpOptions(params));
-    return this.#validator.validateAsync(UserSchema, data$);
+    return this.#validator.validateAsync(UserUpdateSchema, data$);
   }
 
-  insertOne(data: Partial<User>, params?: Params): Promise<User> {
+  insertOne(data: Partial<User>, params?: Params): Promise<UserCreate> {
     this.#checkDemoMode();
     const data$ = this;
-    return this.#validator.validateAsync(UserSchema, data$.#http.put(this.#path, data, new HttpOptions(params)));
+    return this.#validator.validateAsync(UserCreateSchema, data$.#http.put(this.#path, data, new HttpOptions(params)));
   }
 
   async deleteOne(id: string): Promise<boolean> {
@@ -61,10 +61,10 @@ export class UsersApiService {
     return firstValueFrom(data$);
   }
 
-  passwordUpdate(username: string, password: string): Promise<User> {
+  passwordUpdate(username: string, password: string): Promise<UserUpdate> {
     this.#checkDemoMode();
     const data$ = this.#http.patch(this.#path + username + '/password', { password });
-    return this.#validator.validateAsync(UserSchema, data$);
+    return this.#validator.validateAsync(UserUpdateSchema, data$);
   }
 
   async deleteSessions(username: string, sessionIds: string[]): Promise<number> {
