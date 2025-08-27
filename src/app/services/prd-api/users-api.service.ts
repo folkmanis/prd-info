@@ -3,7 +3,7 @@ import { inject, Injectable, Signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
 import { firstValueFrom, map } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
-import { User, UserCreate, UserCreateSchema, UserList, UserListSchema, UserSchema, UserUpdate, UserUpdateSchema } from 'src/app/interfaces';
+import { User, UserCreate, UserCreateSchema, UserList, UserListSchema, UserSchema, UserSession, UserSessionSchema, UserUpdate, UserUpdateSchema } from 'src/app/interfaces';
 import { ValidatorService } from 'src/app/library';
 import { HttpOptions, httpResponseRequest } from 'src/app/library/http';
 import { DEMO_MODE } from '../app-mode.provider';
@@ -33,6 +33,13 @@ export class UsersApiService {
     });
   }
 
+  userSessionsResource(username: Signal<string>): HttpResourceRef<UserSession[] | undefined> {
+    return httpResource(() => (username() ? httpResponseRequest(this.#path + username() + '/sessions', new HttpOptions().cacheable()) : undefined), {
+      parse: this.#validator.arrayValidatorFn(UserSessionSchema),
+      equal: isEqual,
+    });
+  }
+
   updateOne(id: string | number, data: Partial<User>, params?: Params): Promise<UserUpdate> {
     this.#checkDemoMode();
     const data$ = this.#http.patch(this.#path + id, data, new HttpOptions(params));
@@ -41,8 +48,7 @@ export class UsersApiService {
 
   insertOne(data: Partial<User>, params?: Params): Promise<UserCreate> {
     this.#checkDemoMode();
-    const data$ = this;
-    return this.#validator.validateAsync(UserCreateSchema, data$.#http.put(this.#path, data, new HttpOptions(params)));
+    return this.#validator.validateAsync(UserCreateSchema, this.#http.put(this.#path, data, new HttpOptions(params)));
   }
 
   async deleteOne(id: string): Promise<boolean> {

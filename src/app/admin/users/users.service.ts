@@ -1,5 +1,5 @@
-import { inject, Injectable } from '@angular/core';
-import { User } from 'src/app/interfaces';
+import { inject, Injectable, Signal } from '@angular/core';
+import { User, UserSession } from 'src/app/interfaces';
 import { FilterInput, toFilterSignal } from 'src/app/library';
 import { UsersApiService } from 'src/app/services/prd-api/users-api.service';
 import { XmfCustomer } from 'src/app/xmf-search/interfaces';
@@ -46,6 +46,10 @@ export class UsersService {
 
   deleteUser(username: string): Promise<boolean> {
     return this.api.deleteOne(username);
+  }
+
+  getUserSessionsResource(username: Signal<string>) {
+    return this.api.userSessionsResource(username);
   }
 
   deleteSessions(username: string, sessionIds: string[]): Promise<number> {

@@ -43,7 +43,6 @@ export const UserSchema = z.object({
   eMail: z.email({ pattern: z.regexes.html5Email }).nullish(),
   last_login: z.coerce.date().optional(),
   preferences: UserPreferencesSchema,
-  sessions: UserSessionSchema.array(),
   google: GoogleUserSchema.nullish(),
   prefersDarkMode: z.coerce.boolean().default(false),
 });
@@ -75,13 +74,11 @@ export const LoginUserUpdateSchema = LoginUserSchema.partial()
 export type LoginUserUpdate = z.infer<typeof LoginUserUpdateSchema>;
 
 export const UserUpdateSchema = UserSchema.partial().omit({
-  sessions: true,
   last_login: true,
 });
 export type UserUpdate = z.infer<typeof UserUpdateSchema>;
 
 export const UserCreateSchema = UserSchema.omit({
-  sessions: true,
   last_login: true,
 }).extend({
   password: z.string().min(6).max(100),
@@ -110,7 +107,6 @@ export function newUser(): User {
       customers: [],
       modules: [],
     },
-    sessions: [],
     google: null,
     prefersDarkMode: false,
   };

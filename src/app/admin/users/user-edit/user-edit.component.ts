@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AbstractControl, AsyncValidatorFn, FormBuilder, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,11 +6,12 @@ import { MatCardModule } from '@angular/material/card';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { isEqual, pickBy } from 'lodash-es';
 import { getAppParams } from 'src/app/app-params';
-import { User, UserSession } from 'src/app/interfaces';
+import { User } from 'src/app/interfaces';
 import { ConfirmationDialogService, stringOrThrow } from 'src/app/library';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { navigateRelative } from 'src/app/library/navigation';
@@ -19,8 +20,8 @@ import { PasswordInputGroupComponent } from 'src/app/library/password-input/pass
 import { promiseToSignal } from 'src/app/library/rxjs';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { LoginService } from 'src/app/login';
-import { UsersService } from '../users.service';
 import { UsersListComponent } from '../users-list/users-list.component';
+import { UsersService } from '../users.service';
 import { SessionsComponent } from './sessions/sessions.component';
 
 @Component({
@@ -42,6 +43,7 @@ import { SessionsComponent } from './sessions/sessions.component';
     MatButtonModule,
     MatInput,
     MatCheckbox,
+    MatProgressSpinner,
   ],
 })
 export class UserEditComponent implements CanComponentDeactivate {
@@ -51,11 +53,13 @@ export class UserEditComponent implements CanComponentDeactivate {
   private usersService = inject(UsersService);
   private confirmationDialog = inject(ConfirmationDialogService);
 
+  private username = computed(() => this.initialValue().username);
+
   protected customers = promiseToSignal(this.usersService.getXmfCustomers());
 
   protected userModules = getAppParams('userModules');
 
-  protected sessions = signal<UserSession[] | null>(null);
+  protected sessions = this.usersService.getUserSessionsResource(this.username);
 
   protected currentSessionId = promiseToSignal(inject(LoginService).getSessionId());
 
@@ -99,7 +103,6 @@ export class UserEditComponent implements CanComponentDeactivate {
   constructor() {
     effect(() => {
       const initialValue = this.initialValue();
-      this.sessions.set(initialValue.sessions);
       this.form.reset(initialValue);
       if (initialValue.username) {
         this.form.controls.password.disable();
@@ -163,8 +166,7 @@ export class UserEditComponent implements CanComponentDeactivate {
 
     try {
       const deletedSessionsCount = await this.usersService.deleteSessions(username, sessionIds);
-      const user = await this.usersService.getUser(username);
-      this.sessions.set(user.sessions);
+      this.sessions.reload();
       this.snackBar.open(`Deleted ${deletedSessionsCount} sessions`, 'OK', { duration: 5000 });
     } catch (err) {
       this.snackBar.open(`Neizdevās izdzēst`, 'OK', { duration: 5000 });
