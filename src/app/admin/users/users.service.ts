@@ -1,5 +1,5 @@
 import { inject, Injectable, Signal } from '@angular/core';
-import { User, UserSession } from 'src/app/interfaces';
+import { User } from 'src/app/interfaces';
 import { FilterInput, toFilterSignal } from 'src/app/library';
 import { UsersApiService } from 'src/app/services/prd-api/users-api.service';
 import { XmfCustomer } from 'src/app/xmf-search/interfaces';
