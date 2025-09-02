@@ -1,25 +1,15 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, model, signal, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, model, Signal, untracked } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { Subscription } from 'rxjs';
-import { HttpCacheService } from 'src/app/library/http/http-cache.service';
+import { isEqual } from 'lodash-es';
 import { configuration } from 'src/app/services/config.provider';
-import { LogfileApiService } from '../services/logfile-api.service';
-import { LogQueryFilter, LogRecord } from '../services/logfile-record';
-import { validDate } from './log-dates-utils';
 import { LogCalendarComponent } from './log-filter/log-calendar/log-calendar.component';
 import { LogLevelComponent } from './log-filter/log-level/log-level.component';
-import { LogLevel } from './log-level.interface';
 import { LogfileTableComponent } from './logfile-table/logfile-table.component';
-import { MatCardModule } from '@angular/material/card';
-
-function maxLevel(levels: LogLevel[]) {
-  if (levels.length > 0) {
-    return Math.max(...levels.map(({ key }) => key));
-  } else {
-    return null;
-  }
-}
+import { validDate } from './services/log-dates-utils';
+import { createLogQueryFilter, LogQueryFilter } from './services/logfile-record';
+import { LogfileService } from './services/logfile.service';
 
 @Component({
   selector: 'app-logfile',
@@ -29,72 +19,54 @@ function maxLevel(levels: LogLevel[]) {
   imports: [LogfileTableComponent, MatButtonModule, MatIconModule, LogLevelComponent, LogCalendarComponent, MatCardModule],
 })
 export class LogfileComponent {
-  private api = inject(LogfileApiService);
-  private cacheService = inject(HttpCacheService);
+  #service = inject(LogfileService);
 
-  private levelsMap = configuration('system', 'logLevels');
+  #levelsMap = configuration('system', 'logLevels');
 
-  logLevels = computed(() => {
-    const levelObj = this.levelsMap().map(([key, value]) => ({ key, value }));
-    levelObj.sort((a, b) => a.key - b.key);
-    return levelObj;
-  });
+  protected logLevel = model<number | null>(null);
 
-  logLevel = model<number | null>(null);
+  protected logDate = model<Date>(new Date());
 
-  logDate = model<Date>(new Date());
+  protected logFilter: Signal<LogQueryFilter | null> = computed(
+    () => {
+      const logLevel = this.logLevel();
+      const logDate = this.logDate();
+      if (typeof logLevel !== 'number' || !(logDate instanceof Date)) {
+        return null;
+      } else {
+        return createLogQueryFilter(logLevel, logDate);
+      }
+    },
+    { equal: isEqual },
+  );
 
-  logFilter = computed(() => {
-    const logLevel = this.logLevel();
-    const logDate = this.logDate();
-    if (typeof logLevel !== 'number' || !(logDate instanceof Date)) {
-      return null;
-    }
-    return new LogQueryFilter(logLevel, logDate);
-  });
+  protected log = this.#service.getLogfileResource(this.logFilter);
 
-  log = signal<LogRecord[]>([]);
-
-  availableDates = signal<Date[]>([]);
+  protected availableDates = this.#service.getDatesGroupResource(this.logLevel);
 
   constructor() {
     effect(() => {
-      const level = maxLevel(this.logLevels());
-      this.logLevel.set(level);
-    });
-
-    effect((onCleanup) => {
-      const subscription = this.getLog(this.logFilter());
-      onCleanup(() => subscription?.unsubscribe());
-    });
-
-    effect((onCleanup) => {
-      const logLevel = this.logLevel();
-      if (typeof logLevel !== 'number') {
-        return;
+      const levels = this.#levelsMap();
+      if (levels.length > 0) {
+        this.logLevel.set(Math.max(...levels.map((level) => level[0])));
+      } else {
+        this.logLevel.set(null);
       }
-      const subscription = this.api.getDatesGroups(logLevel).subscribe((dates) => this.availableDates.set(dates));
-
-      onCleanup(() => subscription?.unsubscribe());
     });
 
     effect(() => {
-      const availableDates = this.availableDates();
+      const availableDates = this.availableDates.value();
       const logDate = untracked(this.logDate);
       this.logDate.set(validDate(logDate, availableDates));
     });
+
+    effect(() => {
+      this.logLevel();
+      this.availableDates.reload();
+    });
   }
 
-  onReload() {
-    this.getLog(this.logFilter());
-  }
-
-  private getLog(logFilter: LogQueryFilter | null): Subscription | undefined {
-    if (logFilter == null) {
-      return;
-    }
-
-    this.cacheService.clear();
-    return this.api.getLog(logFilter).subscribe((log) => this.log.set(log));
+  protected onReload() {
+    this.log.reload();
   }
 }

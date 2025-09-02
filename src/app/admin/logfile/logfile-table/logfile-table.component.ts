@@ -1,9 +1,10 @@
 import { DatePipe, JsonPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { ShortenTextPipe } from 'prd-cdk';
-import { LogRecord } from '../../services/logfile-record';
 import { ViewSizeDirective } from 'src/app/library/view-size';
+import { configuration } from 'src/app/services/config.provider';
+import { LogRecord } from '../services/logfile-record';
 
 @Component({
   selector: 'app-logfile-table',
@@ -14,8 +15,18 @@ import { ViewSizeDirective } from 'src/app/library/view-size';
 })
 export class LogfileTableComponent {
   protected readonly displayedColumns = ['level', 'timestamp', 'info', 'metadata'];
-
   protected expandedRecord: LogRecord | null = null;
 
-  log = input<LogRecord[]>([]);
+  private levelsMap = configuration('system', 'logLevels');
+  protected logLevels = computed(() => {
+    return this.levelsMap().reduce(
+      (acc, curr) => {
+        acc[curr[0]] = curr[1];
+        return acc;
+      },
+      {} as Record<number, string>,
+    );
+  });
+
+  log = input<LogRecord[] | undefined>();
 }

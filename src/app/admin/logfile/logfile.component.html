@@ -5,11 +5,11 @@
         <mat-icon>refresh</mat-icon>
       </button>
 
-      <app-log-level [logLevels]="logLevels()" [(level)]="logLevel" />
+      <app-log-level [(level)]="logLevel" />
 
-      <app-log-calendar [availableDates]="availableDates()" [(date)]="logDate" />
+      <app-log-calendar [availableDates]="availableDates.value()" [(date)]="logDate" />
     </mat-card-content>
   </mat-card>
 </div>
 
-<app-logfile-table [log]="log()" />
+<app-logfile-table [log]="log.value()" />

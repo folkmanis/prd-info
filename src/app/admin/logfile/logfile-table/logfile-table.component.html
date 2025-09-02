@@ -1,39 +1,43 @@
-<mat-table multiTemplateDataRows [dataSource]="log()" class="app-table" appViewSize #viewSize="viewSize">
-  <!-- Log level -->
-  <ng-container matColumnDef="level">
-    <mat-header-cell *matHeaderCellDef>Nozīmīgums</mat-header-cell>
-    <mat-cell *matCellDef="let record">{{ record.levelVerb }}</mat-cell>
-  </ng-container>
-  <!-- Date -->
-  <ng-container matColumnDef="timestamp">
-    <mat-header-cell *matHeaderCellDef>Laiks</mat-header-cell>
-    <mat-cell *matCellDef="let record">{{ record.timestamp | date: 'HH:mm:ss.SSS z' }}</mat-cell>
-  </ng-container>
-  <!-- Info -->
-  <ng-container matColumnDef="info">
-    <mat-header-cell *matHeaderCellDef>Apraksts</mat-header-cell>
-    <mat-cell *matCellDef="let record">{{ record.info }}</mat-cell>
-  </ng-container>
-  <!-- Metadata -->
-  <ng-container matColumnDef="metadata">
-    <mat-header-cell *matHeaderCellDef>Papildus dati</mat-header-cell>
-    <mat-cell *matCellDef="let record">{{ record.metadata | json | shortenText: (viewSize.isLarge() ? 70 : 30) }}</mat-cell>
-  </ng-container>
-  <!-- Izvērsts skats -->
-  <ng-container matColumnDef="expandedRecord">
-    <mat-cell *matCellDef="let record" [attr.colspan]="displayedColumns.length">
-      <!-- Izvērstā skata apraksts -->
-      @if (record === expandedRecord) {
-        <div class="record-detail-wrapper" animate.leave="record-detail-leave">
-          <div class="record-detail-content">
-            {{ record.metadata | json }}
-          </div>
-        </div>
-      }
-    </mat-cell>
-  </ng-container>
+@let levels = logLevels();
 
-  <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
-  <mat-row *matRowDef="let record; columns: displayedColumns" class="record-row" (click)="expandedRecord = expandedRecord === record ? null : record"></mat-row>
-  <mat-row *matRowDef="let record; columns: ['expandedRecord']" class="detail-row" [class.expanded-row]="expandedRecord === record"></mat-row>
-</mat-table>
+@if (log(); as log) {
+  <mat-table multiTemplateDataRows [dataSource]="log" class="app-table" appViewSize #viewSize="viewSize">
+    <!-- Log level -->
+    <ng-container matColumnDef="level">
+      <mat-header-cell *matHeaderCellDef>Nozīmīgums</mat-header-cell>
+      <mat-cell *matCellDef="let record">{{ levels[record.level] || record.level }}</mat-cell>
+    </ng-container>
+    <!-- Date -->
+    <ng-container matColumnDef="timestamp">
+      <mat-header-cell *matHeaderCellDef>Laiks</mat-header-cell>
+      <mat-cell *matCellDef="let record">{{ record.timestamp | date: 'HH:mm:ss.SSS z' }}</mat-cell>
+    </ng-container>
+    <!-- Info -->
+    <ng-container matColumnDef="info">
+      <mat-header-cell *matHeaderCellDef>Apraksts</mat-header-cell>
+      <mat-cell *matCellDef="let record">{{ record.info }}</mat-cell>
+    </ng-container>
+    <!-- Metadata -->
+    <ng-container matColumnDef="metadata">
+      <mat-header-cell *matHeaderCellDef>Papildus dati</mat-header-cell>
+      <mat-cell *matCellDef="let record">{{ record.metadata | json | shortenText: (viewSize.isLarge() ? 70 : 30) }}</mat-cell>
+    </ng-container>
+    <!-- Izvērsts skats -->
+    <ng-container matColumnDef="expandedRecord">
+      <mat-cell *matCellDef="let record" [attr.colspan]="displayedColumns.length">
+        <!-- Izvērstā skata apraksts -->
+        @if (record === expandedRecord) {
+          <div class="record-detail-wrapper" animate.leave="record-detail-leave">
+            <div class="record-detail-content">
+              {{ record.metadata | json }}
+            </div>
+          </div>
+        }
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+    <mat-row *matRowDef="let record; columns: displayedColumns" class="record-row" (click)="expandedRecord = expandedRecord === record ? null : record"></mat-row>
+    <mat-row *matRowDef="let record; columns: ['expandedRecord']" class="detail-row" [class.expanded-row]="expandedRecord === record"></mat-row>
+  </mat-table>
+}

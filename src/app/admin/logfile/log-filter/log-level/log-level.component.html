@@ -1,9 +1,9 @@
 <mat-form-field subscriptSizing="dynamic">
   <mat-label>Log level</mat-label>
   <mat-select [(ngModel)]="level">
-    @for (level of logLevels(); track level.key) {
-      <mat-option [value]="level.key">
-        {{ level.value }}
+    @for (level of levelsSorted(); track level[0]) {
+      <mat-option [value]="level[0]">
+        {{ level[1] }}
       </mat-option>
     }
   </mat-select>

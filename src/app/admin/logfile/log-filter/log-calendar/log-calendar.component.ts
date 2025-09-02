@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { isFirstDate, isLastDate, isValidDate, lastDate, shiftDate, validDate } from '../../log-dates-utils';
+import { isFirstDate, isLastDate, isValidDate, lastDate, shiftDate, validDate } from '../../services/log-dates-utils';
 
 @Component({
   selector: 'app-log-calendar',
