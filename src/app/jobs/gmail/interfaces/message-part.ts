@@ -9,7 +9,7 @@ export const MessagePartSchema = z.object({
   mimeType: z.string(),
 
   filename: z.string().optional(),
-  headers: HeaderSchema.array(),
+  headers: HeaderSchema.array().optional(),
 
   body: MessagePartBodySchema.optional(),
 
@@ -22,7 +22,7 @@ export class MessagePart implements z.infer<typeof MessagePartSchema> {
   partId: string;
   mimeType: string;
   filename?: string;
-  headers: Header[];
+  headers?: Header[];
   body?: MessagePartBody;
   parts?: MessagePart[];
 
@@ -36,7 +36,7 @@ export class MessagePart implements z.infer<typeof MessagePartSchema> {
   }
 
   getHeader(name: string): string | undefined {
-    return this.headers.find((h) => h.name.toUpperCase() === name.toUpperCase())?.value;
+    return this.headers?.find((h) => h.name.toUpperCase() === name.toUpperCase())?.value;
   }
 
   get hasAttachment(): boolean {
