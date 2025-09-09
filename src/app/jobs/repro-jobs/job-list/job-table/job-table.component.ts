@@ -7,22 +7,12 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { JobPartial } from 'src/app/jobs/interfaces';
 import { CopyJobIdAndNameDirective } from 'src/app/library';
 import { RouterLinkWithReturnDirective } from 'src/app/library/navigation';
-import { ViewLargeDirective, ViewNotLargeDirective } from 'src/app/library/view-size';
+import { ViewSizeDirective } from 'src/app/library/view-size';
 import { PartialJob } from '../../services/repro-job.service';
 
 @Component({
   selector: 'app-job-table',
-  imports: [
-    MatMenuModule,
-    MatIconModule,
-    ViewLargeDirective,
-    ViewNotLargeDirective,
-    DatePipe,
-    CopyJobIdAndNameDirective,
-    RouterLinkWithReturnDirective,
-    MatButtonModule,
-    MatTooltipModule,
-  ],
+  imports: [MatMenuModule, MatIconModule, DatePipe, CopyJobIdAndNameDirective, RouterLinkWithReturnDirective, MatButtonModule, MatTooltipModule, ViewSizeDirective],
   templateUrl: './job-table.component.html',
   styleUrl: './job-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
