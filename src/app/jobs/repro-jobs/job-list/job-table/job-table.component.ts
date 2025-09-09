@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -12,23 +12,26 @@ import { PartialJob } from '../../services/repro-job.service';
 
 @Component({
   selector: 'app-job-table',
-  imports: [MatMenuModule, MatIconModule, DatePipe, CopyJobIdAndNameDirective, RouterLinkWithReturnDirective, MatButtonModule, MatTooltipModule, ViewSizeDirective],
+  imports: [MatMenuModule, MatIconModule, DatePipe, CopyJobIdAndNameDirective, RouterLinkWithReturnDirective, MatButtonModule, MatTooltipModule],
   templateUrl: './job-table.component.html',
   styleUrl: './job-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  hostDirectives: [ViewSizeDirective],
 })
 export class JobTableComponent {
+  protected isLarge = inject(ViewSizeDirective).isLarge;
+
   jobs = input.required<JobPartial[]>();
 
   highlitedJobId = input<string | null | undefined>(null);
 
   jobChange = output<PartialJob>();
 
-  hasProduct(job: JobPartial, productName: string | null | undefined): boolean {
+  protected hasProduct(job: JobPartial, productName: string | null | undefined): boolean {
     return job.products?.some((product) => product.name === productName);
   }
 
-  async onSetJobStatus(jobId: number, status: number) {
+  protected async onSetJobStatus(jobId: number, status: number) {
     const update = {
       jobId,
       jobStatus: {
