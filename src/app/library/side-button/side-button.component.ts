@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, Component, Signal, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, Signal, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDrawer } from '@angular/material/sidenav';
 
 @Component({
   templateUrl: './side-button.component.html',
@@ -10,10 +9,7 @@ import { MatDrawer } from '@angular/material/sidenav';
   imports: [MatIconModule, MatButtonModule],
 })
 export class SideButtonComponent {
-  opened: Signal<boolean> = signal(false);
-  drawer?: MatDrawer;
+  opened = input(false);
 
-  onClick() {
-    this.drawer?.toggle();
-  }
+  click = output();
 }
