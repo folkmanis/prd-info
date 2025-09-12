@@ -1,4 +1,4 @@
-import { afterNextRender, Directive, Injector, ViewContainerRef, inject, outputBinding, inputBinding } from '@angular/core';
+import { afterNextRender, Directive, inject, inputBinding, outputBinding, ViewContainerRef } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatDrawer } from '@angular/material/sidenav';
 import { DrawerSmallDirective } from '../view-size';
