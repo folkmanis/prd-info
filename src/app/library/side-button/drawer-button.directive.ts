@@ -26,7 +26,7 @@ export class DrawerButtonDirective {
         viewContainerRef.createComponent(SideButtonComponent, {
           bindings: [
             inputBinding('opened', opened),
-            outputBinding('click', () => {
+            outputBinding('toggleDrawer', () => {
               drawer.toggle();
             }),
           ],

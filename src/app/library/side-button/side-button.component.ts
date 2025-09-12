@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output, Signal, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -11,5 +11,5 @@ import { MatIconModule } from '@angular/material/icon';
 export class SideButtonComponent {
   opened = input(false);
 
-  click = output();
+  toggleDrawer = output();
 }
