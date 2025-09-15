@@ -15,7 +15,7 @@ import { UserSession } from 'src/app/interfaces';
 export class SessionsComponent {
   sessions = input([] as UserSession[]);
 
-  currentSession = input<string>();
+  currentSession = input<string | null>();
 
   deleteSession = output<string[]>();
 

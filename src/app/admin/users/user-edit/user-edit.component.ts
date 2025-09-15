@@ -1,3 +1,4 @@
+import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AbstractControl, AsyncValidatorFn, FormBuilder, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
@@ -17,7 +18,6 @@ import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.gu
 import { navigateRelative } from 'src/app/library/navigation';
 import { PasswordInputDirective } from 'src/app/library/password-input';
 import { PasswordInputGroupComponent } from 'src/app/library/password-input/password-input-group/password-input-group.component';
-import { promiseToSignal } from 'src/app/library/rxjs';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { LoginService } from 'src/app/login';
 import { UsersListComponent } from '../users-list/users-list.component';
@@ -44,6 +44,7 @@ import { SessionsComponent } from './sessions/sessions.component';
     MatInput,
     MatCheckbox,
     MatProgressSpinner,
+    AsyncPipe,
   ],
 })
 export class UserEditComponent implements CanComponentDeactivate {
@@ -55,13 +56,13 @@ export class UserEditComponent implements CanComponentDeactivate {
 
   private username = computed(() => this.initialValue().username);
 
-  protected customers = promiseToSignal(this.usersService.getXmfCustomers());
+  protected customers = this.usersService.getXmfCustomers();
 
   protected userModules = getAppParams('userModules');
 
   protected sessions = this.usersService.getUserSessionsResource(this.username);
 
-  protected currentSessionId = promiseToSignal(inject(LoginService).getSessionId());
+  protected currentSessionId = inject(LoginService).getSessionId();
 
   private fb = inject(FormBuilder).nonNullable;
   protected form = this.fb.group({

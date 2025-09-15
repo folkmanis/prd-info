@@ -99,7 +99,7 @@
           <mat-form-field>
             <mat-label>Pieejamie XMF klienti</mat-label>
             <mat-select formControlName="customers" multiple>
-              @for (customer of customers(); track $index) {
+              @for (customer of customers | async; track $index) {
                 <mat-option [value]="customer.value">
                   {{ customer.name }}
                 </mat-option>
@@ -126,7 +126,7 @@
       </mat-card-header>
 
       <mat-card-content>
-        <app-sessions [sessions]="sessions.value()" [currentSession]="currentSessionId()" (deleteSession)="onDeleteSessions($event)" />
+        <app-sessions [sessions]="sessions.value()" [currentSession]="currentSessionId | async" (deleteSession)="onDeleteSessions($event)" />
       </mat-card-content>
 
       <mat-card-actions>
