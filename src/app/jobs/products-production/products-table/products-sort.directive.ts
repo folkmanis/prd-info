@@ -12,8 +12,8 @@ import { MatSort, Sort } from '@angular/material/sort';
     },
   ],
   host: {
-    '[matSortActive]': 'sort().active',
-    '[matSortDirection]': 'sort().direction',
+    matSortActive: 'sort().active',
+    matSortDirection: 'sort().direction',
     '(matSortChange)': 'onSortChange($event)',
   },
 })
