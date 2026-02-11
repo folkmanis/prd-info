@@ -1,8 +1,9 @@
-import { computed, inject, Injectable } from '@angular/core';
+import { computed, inject, Injectable, Signal } from '@angular/core';
 import { FilterInput, toFilterSignal } from 'src/app/library';
 import { configuration } from 'src/app/services/config.provider';
 import { TransportationVehicle, TransportationVehicleCreate, TransportationVehicleUpdate } from '../interfaces/transportation-vehicle';
 import { TransportationVehicleApiService } from './transportation-vehicle-api.service';
+import { applyWhen, SchemaPath } from '@angular/forms/signals';
 
 export interface VehiclesFilter {
   name?: string;
@@ -40,19 +41,16 @@ export class TransportationVehicleService {
     return this.#api.deleteOne(id);
   }
 
-  async validateName(name: string): Promise<boolean> {
-    const names = await this.#api.validate('name');
-    return names.every((n) => n.toUpperCase() !== name.toUpperCase());
-  }
-
-  async validateLicencePlate(plate: string): Promise<boolean> {
-    const plates = await this.#api.validate('licencePlate');
-    return plates.every((p) => p !== plate);
-  }
-
-  async validatePassportNumber(passportNumber: string): Promise<boolean> {
-    const passportNumbers = await this.#api.validate('passportNumber');
-    return passportNumbers.every((p) => p !== passportNumber);
+  async validate<K extends Parameters<TransportationVehicleApiService['validate']>[1]>(
+    path: SchemaPath<TransportationVehicle[K]>,
+    field: K,
+    initialValue: Signal<TransportationVehicle>,
+  ) {
+    applyWhen(
+      path,
+      ({ value }) => !!value() && value() !== initialValue()[field],
+      (p) => this.#api.validate(p as SchemaPath<TransportationVehicle[K]>, field),
+    );
   }
 
   newTransportationVehicle(): TransportationVehicle {

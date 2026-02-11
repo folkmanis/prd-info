@@ -1,4 +1,4 @@
-@for (record of data(); track $index) {
+@for (record of odometerReadings(); track $index) {
   <div class="record">
     <span class="value"> {{ record.value }} </span>
     <span class="date"> {{ record.date | date: 'mediumDate' }} </span>

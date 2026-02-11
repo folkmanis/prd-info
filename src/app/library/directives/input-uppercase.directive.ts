@@ -13,12 +13,14 @@ import { assertNotNull } from '../assert-utils';
 })
 export class InputUppercaseDirective {
   constructor() {
-    const ngControl = inject(NgControl);
-    upperCaseAccessor(ngControl.valueAccessor);
+    const ngControl = inject(NgControl, { optional: true });
+    if (ngControl?.valueAccessor) {
+      upperCaseAccessor(ngControl.valueAccessor);
+    }
   }
 }
 
-function upperCaseAccessor(valueAccessor: ControlValueAccessor | null) {
+function upperCaseAccessor(valueAccessor: ControlValueAccessor) {
   assertNotNull(valueAccessor);
 
   const original = valueAccessor.registerOnChange;

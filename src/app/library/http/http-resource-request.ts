@@ -1,7 +1,7 @@
 import { HttpResourceRequest } from '@angular/common/http';
 import { HttpOptions } from './http-options';
 
-export function httpResponseRequest(url: string, options: HttpOptions): HttpResourceRequest {
+export function httpResponseRequest(url: string, options: HttpOptions = new HttpOptions()): HttpResourceRequest {
   const request: HttpResourceRequest = {
     url,
     headers: options.headers,

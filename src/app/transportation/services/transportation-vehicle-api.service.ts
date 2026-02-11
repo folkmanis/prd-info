@@ -5,6 +5,9 @@ import { firstValueFrom } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { HttpOptions, httpResponseRequest, ValidatorService } from 'src/app/library';
 import { TransportationVehicle, TransportationVehicleCreate, TransportationVehicleUpdate } from '../interfaces/transportation-vehicle';
+import { SchemaPath, validateHttp, ValidationError } from '@angular/forms/signals';
+
+const NETWORK_ERROR: ValidationError = { kind: 'network_error', message: 'Tīkla kļūda' };
 
 @Injectable({
   providedIn: 'root',
@@ -41,8 +44,19 @@ export class TransportationVehicleApiService {
     return deletedCount;
   }
 
-  validate<K extends keyof TransportationVehicle>(key: K) {
-    const data = this.#http.get<TransportationVehicle[K][]>(`${this.#path}/validate/${key}`, new HttpOptions().cacheable());
-    return firstValueFrom(data);
+  validate<K extends keyof Pick<TransportationVehicle, 'name' | 'licencePlate' | 'passportNumber' | 'vin'>>(path: SchemaPath<TransportationVehicle[K]>, key: K) {
+    validateHttp(path, {
+      request: () => httpResponseRequest(`${this.#path}/validate/${key}`, new HttpOptions().cacheable()),
+      onSuccess: (response: TransportationVehicle[K][], { value }) => {
+        const current = value()?.toUpperCase();
+        if (response.some((r) => r && r.toUpperCase() === current)) {
+          return {
+            kind: 'used',
+            message: `"${value()}" jau tiek izmantots!`,
+          };
+        }
+      },
+      onError: () => NETWORK_ERROR,
+    });
   }
 }

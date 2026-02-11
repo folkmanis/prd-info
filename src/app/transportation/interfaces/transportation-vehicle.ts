@@ -11,11 +11,11 @@ export const TransportationVehicle = z.object({
   _id: z.string(),
   name: z.string(),
   licencePlate: z.string(),
-  passportNumber: z.string().optional(),
+  passportNumber: z.string().nullish(),
   consumption: z.number(), // units
   fuelType: FuelType,
   disabled: z.boolean().default(false),
-  vin: z.string().optional(),
+  vin: z.string().nullish(),
   odometerReadings: z.array(OdometerReading).default([]),
 });
 export type TransportationVehicle = z.infer<typeof TransportationVehicle>;

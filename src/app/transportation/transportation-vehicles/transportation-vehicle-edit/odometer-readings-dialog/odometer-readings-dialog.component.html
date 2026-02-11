@@ -1,17 +1,17 @@
 <h2 mat-dialog-title>Odometra rādījums</h2>
-<form [formGroup]="form" (submit)="onSubmit()">
+<form (submit)="$event.preventDefault(); onSubmit()">
   <mat-dialog-content>
     <section>
       <mat-form-field class="full-width">
         <mat-label> Rādījums </mat-label>
-        <input matInput type="number" formControlName="value" />
+        <input matInput type="number" [formField]="odometerForm.value" />
       </mat-form-field>
     </section>
 
     <section>
       <mat-form-field class="full-width">
         <mat-label> Datums </mat-label>
-        <input matInput [matDatepicker]="picker" formControlName="date" />
+        <input matInput [matDatepicker]="picker" [formField]="odometerForm.date" />
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
@@ -19,7 +19,7 @@
   </mat-dialog-content>
 
   <mat-dialog-actions>
-    <button mat-raised-button [disabled]="!form.valid || form.pristine" type="submit">Saglabāt</button>
-    <button mat-button mat-dialog-close class="warn">Atcelt</button>
+    <button matButton="elevated" [disabled]="odometerForm().valid() === false || odometerForm().dirty() === false" type="submit">Saglabāt</button>
+    <button matButton mat-dialog-close class="warn">Atcelt</button>
   </mat-dialog-actions>
 </form>
