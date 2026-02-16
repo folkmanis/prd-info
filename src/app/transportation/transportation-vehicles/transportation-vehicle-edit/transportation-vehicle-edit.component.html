@@ -1,6 +1,10 @@
 <app-simple-content-container>
   <mat-card>
-    <form (submit)="$event.preventDefault(); onSave()" (reset)="$event.preventDefault(); onReset()">
+    <form
+      (submit)="$event.preventDefault(); onSave()"
+      (reset)="$event.preventDefault(); onReset()"
+      class="app-disabled-view"
+    >
       <mat-card-content>
         <section>
           <mat-form-field class="full-width">
@@ -104,7 +108,7 @@
         } @else {
           <button matButton="outlined" type="button" (click)="editActive.set(true)">Labot</button>
           @if (isNew() === false) {
-            <button mat-button="outlined" type="button" (click)="onDelete()" class="tertiary" [disabled]="busy()">
+            <button matButton="outlined" type="button" (click)="onDelete()" class="tertiary" [disabled]="busy()">
               Dzēst!
             </button>
           }
@@ -126,7 +130,7 @@
       ></app-odometer-readings>
     </mat-card-content>
     <mat-card-actions>
-      <button mat-button [disabled]="editActive() || busy()" (click)="odometerReadingsComponent.onAdd()">
+      <button matButton [disabled]="editActive() || busy()" (click)="odometerReadingsComponent.onAdd()">
         Pievienot
       </button>
     </mat-card-actions>

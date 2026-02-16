@@ -28,7 +28,7 @@
           [startDate]="startDate()"
         />
         <mat-action-row>
-          <button mat-raised-button (click)="onRemove($index)" actions>Dzēst braucienu</button>
+          <button matButton="elevated" (click)="onRemove($index)" actions>Dzēst braucienu</button>
         </mat-action-row>
       </ng-template>
     </mat-expansion-panel>
@@ -37,8 +37,8 @@
 
 <app-trips-total [routeTrips]="form.value" [fuelUnits]="fuelUnits()" />
 <div class="actions">
-  <button mat-raised-button (click)="onAppend()" [disabled]="form.invalid">Pievienot braucienu</button>
-  <button mat-icon-button [matMenuTriggerFor]="extraActions">
+  <button matButton="elevated" (click)="onAppend()" [disabled]="form.invalid">Pievienot braucienu</button>
+  <button matIconButton [matMenuTriggerFor]="extraActions">
     <mat-icon> more_vert </mat-icon>
   </button>
 </div>

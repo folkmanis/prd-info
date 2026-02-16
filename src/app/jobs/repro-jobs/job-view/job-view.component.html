@@ -1,15 +1,17 @@
 <header>
   <div class="actions">
-    <a mat-icon-button appRouterLinkToReturn appKeyPress="escape">
+    <a matIconButton appRouterLinkToReturn appKeyPress="escape">
       <mat-icon>arrow_back</mat-icon>
     </a>
     <a mat-flat-button appRouterLinkWithReturn="edit" [disabled]="editDisabled()">Labot</a>
-    <button mat-button [appJobCopy]="jobWithId()">Kopēt</button>
+    <button matButton [appJobCopy]="jobWithId()">Kopēt</button>
     @if (job().invoiceId) {
-      <a mat-button [appRouterLinkWithReturn]="['/calculations', 'plate-invoice', job().invoiceId]"> Rēķins {{ job().invoiceId }} </a>
+      <a matButton [appRouterLinkWithReturn]="['/calculations', 'plate-invoice', job().invoiceId]">
+        Rēķins {{ job().invoiceId }}
+      </a>
     }
     @if (job().jobStatus.generalStatus <= 20) {
-      <button mat-raised-button (click)="onSetGatavs()" [disabled]="editDisabled()">Pabeigts!</button>
+      <button matButton="elevated" (click)="onSetGatavs()" [disabled]="editDisabled()">Pabeigts!</button>
     }
   </div>
 </header>
@@ -22,7 +24,7 @@
       <div class="headline-small" id="job-name">
         <span id="job-id">{{ jobId() }}</span>
         - {{ job().name }}
-        <button mat-icon-button [appCopyJobIdAndName]="jobWithId()" matTooltip="Kopēt nosaukumu">
+        <button matIconButton [appCopyJobIdAndName]="jobWithId()" matTooltip="Kopēt nosaukumu">
           <mat-icon>filter_none</mat-icon>
         </button>
       </div>
@@ -125,8 +127,10 @@
       }
     </mat-card-content>
     <mat-card-actions>
-      <button mat-raised-button (click)="onCreateFolder()" [disabled]="editDisabled()">Izveidot mapi</button>
-      <button mat-button (click)="onUpdateFolderLocation()" [disabled]="!job().files || editDisabled()">Atjaunot mapes atrašanās vietu</button>
+      <button matButton="elevated" (click)="onCreateFolder()" [disabled]="editDisabled()">Izveidot mapi</button>
+      <button matButton (click)="onUpdateFolderLocation()" [disabled]="!job().files || editDisabled()">
+        Atjaunot mapes atrašanās vietu
+      </button>
     </mat-card-actions>
   </mat-card>
 </div>

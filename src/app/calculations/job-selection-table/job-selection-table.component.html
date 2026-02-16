@@ -2,10 +2,21 @@
   <!-- Izvēles ķeksis -->
   <ng-container matColumnDef="selected">
     <mat-header-cell *matHeaderCellDef>
-      <mat-checkbox [checked]="isAllSelected()" [indeterminate]="isSelection() && !isAllSelected()" (change)="toggleAll()" [disabled]="jobs().length === 0"> </mat-checkbox>
+      <mat-checkbox
+        [checked]="isAllSelected()"
+        [indeterminate]="isSelection() && !isAllSelected()"
+        (change)="toggleAll()"
+        [disabled]="jobs().length === 0"
+      >
+      </mat-checkbox>
     </mat-header-cell>
     <mat-cell *matCellDef="let job">
-      <mat-checkbox (click)="$event.stopPropagation()" (change)="toggle(job.jobId)" [checked]="selectedUniqueIds().includes(job.jobId)"> </mat-checkbox>
+      <mat-checkbox
+        (click)="$event.stopPropagation()"
+        (change)="toggle(job.jobId)"
+        [checked]="selectedUniqueIds().includes(job.jobId)"
+      >
+      </mat-checkbox>
     </mat-cell>
   </ng-container>
   <!-- Darba numurs -->
@@ -33,7 +44,7 @@
   <ng-container matColumnDef="name">
     <mat-header-cell *matHeaderCellDef> Darba nosaukums </mat-header-cell>
     <mat-cell *matCellDef="let job">
-      <a mat-button [appRouterLinkWithReturn]="['/', 'jobs', 'repro', job.jobId]">
+      <a matButton [appRouterLinkWithReturn]="['/', 'jobs', 'repro', job.jobId]">
         {{ job.name }}
       </a>
     </mat-cell>

@@ -34,7 +34,7 @@
           {{ job.name }}
         </span>
         <span class="buttons">
-          <a mat-icon-button routerLink="/jobs/repro/{{ job.jobId }}">
+          <a matIconButton routerLink="/jobs/repro/{{ job.jobId }}">
             <mat-icon> edit </mat-icon>
           </a>
         </span>
@@ -56,7 +56,9 @@
     <mat-header-cell *matHeaderCellDef>Cena</mat-header-cell>
     <mat-cell *matCellDef="let job">
       <span>
-        {{ (job['products.priceUpdate'] !== undefined ? job['products.priceUpdate'] : job['products.price']) | currency }}
+        {{
+          (job['products.priceUpdate'] !== undefined ? job['products.priceUpdate'] : job['products.price']) | currency
+        }}
       </span>
     </mat-cell>
   </ng-container>
@@ -89,7 +91,7 @@
   <ng-container matColumnDef="edit">
     <mat-header-cell *matHeaderCellDef></mat-header-cell>
     <mat-cell *matCellDef="let job">
-      <a mat-icon-button routerLink="/jobs/repro/{{ job.jobId }}">
+      <a matIconButton routerLink="/jobs/repro/{{ job.jobId }}">
         <mat-icon> chevron_right </mat-icon>
       </a>
     </mat-cell>

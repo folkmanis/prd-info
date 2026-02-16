@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, inject, input, model, outpu
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
-import { MatButtonModule } from '@angular/material/button';
+import { MatButton, MatButtonModule, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
@@ -26,9 +26,7 @@ const INITIAL_DELAY = 3000;
   styleUrls: ['./toolbar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
     MatToolbar,
-    MatButtonModule,
     MatIcon,
     RouterLink,
     ViewNotSmallDirective,
@@ -36,7 +34,8 @@ const INITIAL_DELAY = 3000;
     MatBadgeModule,
     MessagesTriggerDirective,
     MatMenuModule,
-    MatSlideToggle,
+    MatIconButton,
+    MatButton,
   ],
 })
 export class ToolbarComponent implements OnInit {

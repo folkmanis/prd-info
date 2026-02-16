@@ -3,17 +3,23 @@
 @if (message().hasAttachment) {
   <mat-selection-list [(ngModel)]="attachmentsSelection" [compareWith]="attachmentCompareFn">
     @for (attachment of attachments(); track attachment.attachmentId) {
-      <mat-list-option [value]="attachment" checkboxPosition="before"> {{ attachment.filename }} - {{ attachment.size | filesize }} </mat-list-option>
+      <mat-list-option [value]="attachment" checkboxPosition="before">
+        {{ attachment.filename }} - {{ attachment.size | filesize }}
+      </mat-list-option>
     }
   </mat-selection-list>
 
   <mat-action-row>
-    <button mat-button (click)="markAsRead = true; onCreateJob()" [disabled]="attachmentsSelection().length === 0 || busy()">
+    <button
+      matButton
+      (click)="markAsRead = true; onCreateJob()"
+      [disabled]="attachmentsSelection().length === 0 || busy()"
+    >
       <mat-icon> drafts </mat-icon>
       <span> Uz darbu </span>
     </button>
 
-    <button mat-icon-button [matMenuTriggerFor]="saveMenu" [disabled]="attachmentsSelection().length === 0 || busy()">
+    <button matIconButton [matMenuTriggerFor]="saveMenu" [disabled]="attachmentsSelection().length === 0 || busy()">
       <mat-icon> more_vert </mat-icon>
     </button>
 

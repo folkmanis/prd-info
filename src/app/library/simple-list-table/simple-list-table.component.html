@@ -1,7 +1,12 @@
 <mat-table [dataSource]="data()" class="app-table" fixedLayout [class.disabled]="disabled()">
   @for (col of columns(); track $index) {
     <ng-container [matColumnDef]="col">
-      <mat-cell *matCellDef="let rowData; index as idx" class="data-cell" [class.record-disabled]="rowData.disabled" (click)="onEditRow(rowData, idx)">
+      <mat-cell
+        *matCellDef="let rowData; index as idx"
+        class="data-cell"
+        [class.record-disabled]="rowData.disabled"
+        (click)="onEditRow(rowData, idx)"
+      >
         <span>
           {{ rowData[col] }}
         </span>
@@ -11,12 +16,12 @@
 
   <ng-container matColumnDef="button">
     <mat-header-cell *matHeaderCellDef>
-      <button mat-icon-button (click)="onAddRow()" matTooltip="Pievienot jaunu" [disabled]="disabled()">
+      <button matIconButton (click)="onAddRow()" matTooltip="Pievienot jaunu" [disabled]="disabled()">
         <mat-icon> add_circle_outline </mat-icon>
       </button>
     </mat-header-cell>
     <mat-cell *matCellDef="let row; index as idx">
-      <button mat-icon-button (click)="onRemoveRow(idx)" [disabled]="disabled()" matTooltip="Dzēst">
+      <button matIconButton (click)="onRemoveRow(idx)" [disabled]="disabled()" matTooltip="Dzēst">
         <mat-icon> delete_outline </mat-icon>
       </button>
     </mat-cell>

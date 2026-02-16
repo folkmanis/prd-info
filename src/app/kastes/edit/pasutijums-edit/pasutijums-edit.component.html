@@ -7,20 +7,33 @@
         <div class="information-container">
           <app-job-info [job]="job" [veikali]="veikali()" [activeJobId]="activeJobId()" />
           <div class="action-row">
-            <button mat-raised-button [disabled]="job.jobId === activeJobId()" (click)="onSetAsActive()">Noteikt kā aktīvo</button>
-            <button mat-button class="tertiary" (click)="onDeleteVeikali()" [disabled]="job.jobStatus.generalStatus >= 30 || veikali().length === 0">Izdzēst pakošanu</button>
-            <a mat-button [routerLink]="['/', 'jobs', 'repro', job.jobId]"> Atvērt darbu </a>
+            <button matButton="elevated" [disabled]="job.jobId === activeJobId()" (click)="onSetAsActive()">
+              Noteikt kā aktīvo
+            </button>
+            <button
+              matButton
+              class="tertiary"
+              (click)="onDeleteVeikali()"
+              [disabled]="job.jobStatus.generalStatus >= 30 || veikali().length === 0"
+            >
+              Izdzēst pakošanu
+            </button>
+            <a matButton [routerLink]="['/', 'jobs', 'repro', job.jobId]"> Atvērt darbu </a>
           </div>
           <div class="action-row">
-            <button mat-button (click)="onCopyToFirebase()">Uz lietotni</button>
-            <button mat-button class="tertiary" (click)="onCopyFromFirebase()">No lietotnes</button>
+            <button matButton (click)="onCopyToFirebase()">Uz lietotni</button>
+            <button matButton class="tertiary" (click)="onCopyFromFirebase()">No lietotnes</button>
           </div>
         </div>
       </mat-tab>
 
       <mat-tab label="Pakošanas saraksts" [disabled]="veikali().length === 0">
         <ng-template matTabContent>
-          <app-pakosanas-saraksts [veikali]="veikali()" [disabled]="job.jobStatus.generalStatus >= 30" (veikalsChange)="onUpdateVeikals($event)" />
+          <app-pakosanas-saraksts
+            [veikali]="veikali()"
+            [disabled]="job.jobStatus.generalStatus >= 30"
+            (veikalsChange)="onUpdateVeikals($event)"
+          />
         </ng-template>
       </mat-tab>
     </mat-tab-group>

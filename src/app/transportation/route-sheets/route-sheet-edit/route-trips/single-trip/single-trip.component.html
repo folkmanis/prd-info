@@ -13,7 +13,11 @@
       <span matTextSuffix> km </span>
       <span matIconSuffix>
         @if (lastOdometer()) {
-          <button mat-icon-button (click)="form.patchValue({ odoStartKm: lastOdometer() })" matTooltip="Iepriekšējais rādījums: {{ lastOdometer() }} km">
+          <button
+            matIconButton
+            (click)="form.patchValue({ odoStartKm: lastOdometer() })"
+            matTooltip="Iepriekšējais rādījums: {{ lastOdometer() }} km"
+          >
             <mat-icon> chevron_left </mat-icon>
           </button>
         }
@@ -70,13 +74,20 @@
       <span matIconSuffix>
         @let descriptions = descriptions$ | async;
         @if (descriptions && descriptions.length > 0) {
-          <button mat-icon-button [matMenuTriggerFor]="descriptionsMenu" [matMenuTriggerData]="{ descriptions }" [disabled]="form.controls.description.disabled">
+          <button
+            matIconButton
+            [matMenuTriggerFor]="descriptionsMenu"
+            [matMenuTriggerData]="{ descriptions }"
+            [disabled]="form.controls.description.disabled"
+          >
             <mat-icon> more_vert </mat-icon>
           </button>
         }
       </span>
       @if (form.controls.description.hasError('maxlength')) {
-        <mat-error> Atļautas ne vairāk kā {{ form.controls.description.getError('maxlength')['requiredLength'] }} zīmes </mat-error>
+        <mat-error>
+          Atļautas ne vairāk kā {{ form.controls.description.getError('maxlength')['requiredLength'] }} zīmes
+        </mat-error>
       }
     </mat-form-field>
   </div>

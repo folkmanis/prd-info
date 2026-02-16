@@ -25,6 +25,12 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button mat-raised-button [disabled]="!priceControl.valid || priceControl.pristine" [mat-dialog-close]="priceControl.value">Saglabāt</button>
-  <button mat-raised-button class="tertiary" mat-dialog-close>Atcelt</button>
+  <button
+    matButton="elevated"
+    [disabled]="!priceControl.valid || priceControl.pristine"
+    [mat-dialog-close]="priceControl.value"
+  >
+    Saglabāt
+  </button>
+  <button matButton="elevated" class="tertiary" mat-dialog-close>Atcelt</button>
 </mat-dialog-actions>

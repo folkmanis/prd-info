@@ -6,10 +6,16 @@ googleId: ['']
     <mat-form-field class="full-width">
       <mat-label> Adrese </mat-label>
       <input type="text" matInput formControlName="address" />
-      <button matSuffix mat-icon-button (click)="onAddressMap()">
+      <button matSuffix matIconButton (click)="onAddressMap()">
         <mat-icon>map</mat-icon>
       </button>
-      <button matSuffix mat-icon-button aria-label="Clear" (click)="form.reset()" [disabled]="!form.controls.address.value">
+      <button
+        matSuffix
+        matIconButton
+        aria-label="Clear"
+        (click)="form.reset()"
+        [disabled]="!form.controls.address.value"
+      >
         <mat-icon>close</mat-icon>
       </button>
     </mat-form-field>
@@ -35,7 +41,7 @@ googleId: ['']
 
   @if (paytraqEnabled()) {
     <section class="flex-row">
-      <button mat-raised-button (click)="onPaytraq()" [disabled]="!paytraqClientId()">No PayTraq</button>
+      <button matButton="elevated" (click)="onPaytraq()" [disabled]="!paytraqClientId()">No PayTraq</button>
       @if (form.value.paytraqId; as id) {
         <span> Paytraq ID: {{ id }} </span>
       }

@@ -23,9 +23,11 @@
     <span matIconSuffix>
       @if (historicalData(); as h) {
         <button
-          mat-icon-button
+          matIconButton
           (click)="setRemainingFuel(h.fuelRemaining)"
-          matTooltip="Atlikums uz {{ h.lastMonth }}.{{ h.lastYear }} beigām: {{ h.fuelRemaining }} {{ vehicle.value?.fuelType.units }}"
+          matTooltip="Atlikums uz {{ h.lastMonth }}.{{ h.lastYear }} beigām: {{ h.fuelRemaining }} {{
+            vehicle.value?.fuelType.units
+          }}"
         >
           <mat-icon> chevron_left </mat-icon>
         </button>
@@ -54,10 +56,18 @@
   <mat-label> Auto </mat-label>
   <mat-select formControlName="vehicle" #vehicle [compareWith]="vehicleCompareFn">
     @for (vehicle of activeVehicles(); track vehicle._id) {
-      <mat-option [value]="vehicle"> {{ vehicle.licencePlate }}, {{ vehicle.name }}, {{ vehicle.consumption }}&nbsp;{{ vehicle.fuelType.units }}/100&nbsp;km </mat-option>
+      <mat-option [value]="vehicle">
+        {{ vehicle.licencePlate }}, {{ vehicle.name }}, {{ vehicle.consumption }}&nbsp;{{
+          vehicle.fuelType.units
+        }}/100&nbsp;km
+      </mat-option>
     }
     @for (vehicle of disabledVehicles(); track vehicle._id) {
-      <mat-option [value]="vehicle" disabled> {{ vehicle.licencePlate }}, {{ vehicle.name }}, {{ vehicle.consumption }}&nbsp;{{ vehicle.fuelType.units }}/100&nbsp;km </mat-option>
+      <mat-option [value]="vehicle" disabled>
+        {{ vehicle.licencePlate }}, {{ vehicle.name }}, {{ vehicle.consumption }}&nbsp;{{
+          vehicle.fuelType.units
+        }}/100&nbsp;km
+      </mat-option>
     }
   </mat-select>
 </mat-form-field>

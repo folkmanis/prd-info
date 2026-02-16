@@ -17,7 +17,7 @@
     <mat-header-cell *matHeaderCellDef>Prece</mat-header-cell>
     <mat-cell *matCellDef="let product">
       @if (isJobsAdmin()) {
-        <a mat-button routerLink="/jobs-admin/products/{{ product._id }}">
+        <a matButton routerLink="/jobs-admin/products/{{ product._id }}">
           {{ product._id }}
         </a>
       } @else {

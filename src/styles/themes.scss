@@ -1,5 +1,6 @@
 @use "@angular/material" as mat;
-@use "./prd-m3-theme.scss" as theme;
+
+@use "./theme-colors" as palette;
 
 @use "./base.scss" as base;
 
@@ -11,45 +12,43 @@
 @use "./input";
 @use "./select";
 @use "./progress-bar";
+@use "./form-field";
+@use "./checkbox";
 
-@include mat.elevation-classes();
-@include mat.app-background();
 
-:root {
-  @include mat.all-component-themes(theme.$light-theme);
-  @include mat.system-level-colors(theme.$light-theme);
-  @include mat.system-level-typography(theme.$light-theme);
+html {
 
-  .dark-theme {
-    @include mat.all-component-colors(theme.$dark-theme);
-    @include mat.system-level-colors(theme.$dark-theme);
-  }
+  color-scheme: light dark;
+  @include mat.theme((color: (primary: palette.$primary-palette,
+        tertiary: palette.$tertiary-palette,
+      ),
+      density: (scale: -1),
+      typography: (plain-family: 'Roboto',
+        brand-family: 'Roboto',
+        regular-weight: 400,
+        medium-weight: 500,
+        bold-weight: 700,
+      )));
+
+  @include mat.system-classes();
+
 }
 
 body {
-  @include base.theme(theme.$light-theme);
 
-  .dark-theme {
-    @include base.color(theme.$dark-theme);
-  }
-}
+  @include mat.elevation-classes();
 
-html {
-  @include button.theme(theme.$light-theme);
-  @include badge.theme(theme.$light-theme);
-  @include table.theme(theme.$light-theme);
-  @include messages-pane.theme(theme.$light-theme);
-  @include dense-list.theme(theme.$light-theme);
-  @include input.theme(theme.$light-theme);
-  @include select.theme(theme.$light-theme);
-  @include progress-bar.theme(theme.$light-theme);
+  @include base.theme();
+  @include button.theme();
+  @include form-field.theme();
+  @include checkbox.theme();
+  @include table.theme();
+  @include messages-pane.theme();
+  @include badge.theme();
+  @include select.theme();
+  @include input.theme();
+  @include dense-list.theme();
+  @include progress-bar.theme();
 
-  .dark-theme {
-    @include button.color(theme.$dark-theme);
-    @include table.color(theme.$dark-theme);
-    @include messages-pane.color(theme.$dark-theme);
-    @include input.color(theme.$dark-theme);
-    @include select.color(theme.$dark-theme);
-    @include progress-bar.color(theme.$dark-theme);
-  }
+
 }

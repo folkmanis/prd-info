@@ -1,8 +1,18 @@
 <mat-card>
   <mat-card-content>
-    <app-customer-selector [customers]="customers()" (customerChange)="onCustomerSelected($event)" [customer]="customerWithDefault()" />
+    <app-customer-selector
+      [customers]="customers()"
+      (customerChange)="onCustomerSelected($event)"
+      [customer]="customerWithDefault()"
+    />
 
-    <button mat-raised-button [matBadge]="jobUpdate().length" [matBadgeHidden]="saveEnabled() === false" (click)="onSavePrices()" [disabled]="saveEnabled() === false">
+    <button
+      matButton="elevated"
+      [matBadge]="jobUpdate().length"
+      [matBadgeHidden]="saveEnabled() === false"
+      (click)="onSavePrices()"
+      [disabled]="saveEnabled() === false"
+    >
       SAGLABĀT
     </button>
   </mat-card-content>

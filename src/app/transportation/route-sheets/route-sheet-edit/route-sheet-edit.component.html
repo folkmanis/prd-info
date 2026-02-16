@@ -1,20 +1,37 @@
 @let historicalData = historicalData$ | async;
 
-<app-simple-form-container buttons [status]="formStatus()" [isChanges]="changes()" (save)="onSave()" (resetForm)="onReset()" [formGroup]="form">
+<app-simple-form-container
+  buttons
+  [status]="formStatus()"
+  [isChanges]="changes()"
+  (save)="onSave()"
+  (resetForm)="onReset()"
+  [formGroup]="form"
+>
   <mat-tab-group dynamicHeight>
     <mat-tab label="Pamatinformācija">
-      <app-general-setup [drivers]="drivers.value() ?? []" [vehicles]="vehicles.value() ?? []" [historicalData]="historicalData">
+      <app-general-setup
+        [drivers]="drivers.value() ?? []"
+        [vehicles]="vehicles.value() ?? []"
+        [historicalData]="historicalData"
+      >
         <mat-divider />
         <div class="buttons">
-          <button mat-raised-button class="tertiary" (click)="onDelete()" [disabled]="!initialValue()._id">Dzēst</button>
+          <button matButton="elevated" class="tertiary" (click)="onDelete()" [disabled]="!initialValue()._id">
+            Dzēst
+          </button>
           @if (initialValue()._id; as id) {
-            <a mat-raised-button href="/data/transportation/report_{{ id }}.pdf" target="new"> Izdrukāt </a>
+            <a matButton="elevated" href="/data/transportation/report_{{ id }}.pdf" target="new"> Izdrukāt </a>
           }
         </div>
       </app-general-setup>
     </mat-tab>
     <mat-tab label="Degvielas pirkumi" [disabled]="generalValid() === false">
-      <app-fuel-purchases formControlName="fuelPurchases" [defaultFuelType]="form.controls.vehicle.value?.fuelType" [startDate]="startDate()" />
+      <app-fuel-purchases
+        formControlName="fuelPurchases"
+        [defaultFuelType]="form.controls.vehicle.value?.fuelType"
+        [startDate]="startDate()"
+      />
     </mat-tab>
     <mat-tab label="Maršruti" [disabled]="generalValid() === false">
       <app-route-trips

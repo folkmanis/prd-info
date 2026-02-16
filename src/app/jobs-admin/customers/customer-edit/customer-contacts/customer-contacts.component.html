@@ -2,7 +2,7 @@
   @for (contact of contactsArray.controls; track $index) {
     <mat-list-item [class.invalid]="contact.invalid">
       <div class="email-row">
-        <button mat-icon-button (click)="contactsArray.removeAt($index)">
+        <button matIconButton (click)="contactsArray.removeAt($index)">
           <mat-icon> delete </mat-icon>
         </button>
 
@@ -18,7 +18,7 @@
   }
 
   <mat-list-item>
-    <button mat-icon-button [disabled]="contactsArray.valid === false" (click)="addContact()">
+    <button matIconButton [disabled]="contactsArray.valid === false" (click)="addContact()">
       <mat-icon> add </mat-icon>
     </button>
   </mat-list-item>

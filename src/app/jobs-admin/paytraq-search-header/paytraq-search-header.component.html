@@ -2,10 +2,16 @@
   <mat-form-field>
     <mat-label> Meklēt paytraq </mat-label>
     <input matInput [(ngModel)]="search" [disabled]="disabled()" #searchInput="ngModel" />
-    <button matIconSuffix mat-icon-button (click)="search.set('')" [disabled]="!searchInput.value || disabled()">
+    <button matIconSuffix matIconButton (click)="search.set('')" [disabled]="!searchInput.value || disabled()">
       <mat-icon> clear </mat-icon>
     </button>
-    <button matIconSuffix mat-icon-button [disabled]="!searchInput.value || disabled()" #searchButton (click)="onSubmit()">
+    <button
+      matIconSuffix
+      matIconButton
+      [disabled]="!searchInput.value || disabled()"
+      #searchButton
+      (click)="onSubmit()"
+    >
       <mat-icon> search </mat-icon>
     </button>
   </mat-form-field>

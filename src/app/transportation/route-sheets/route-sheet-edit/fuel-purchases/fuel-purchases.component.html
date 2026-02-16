@@ -24,7 +24,7 @@
       <ng-template matExpansionPanelContent="">
         <app-single-purchase [formControl]="control" [defaultFuelType]="defaultFuelType()" [startDate]="startDate()" />
         <mat-action-row>
-          <button mat-raised-button (click)="onRemove($index)" actions>Dzēst</button>
+          <button matButton="elevated" (click)="onRemove($index)" actions>Dzēst</button>
         </mat-action-row>
       </ng-template>
     </mat-expansion-panel>
@@ -32,9 +32,9 @@
 </mat-accordion>
 
 <div class="actions">
-  <button mat-raised-button (click)="onAppend()" [disabled]="form.invalid">Pievienot degvielu</button>
+  <button matButton="elevated" (click)="onAppend()" [disabled]="form.invalid">Pievienot degvielu</button>
   <app-fuel-totals [defaultUnits]="defaultFuelType()?.units" [fuelPurchases]="form.value" />
-  <button mat-icon-button [matMenuTriggerFor]="extraActions">
+  <button matIconButton [matMenuTriggerFor]="extraActions">
     <mat-icon> more_vert </mat-icon>
   </button>
 </div>

@@ -5,13 +5,24 @@
 
   <mat-card-content>
     @for (control of productsControl.controls; track $index) {
-      <app-repro-product (remove)="onRemoveProduct($index)" [customerProducts]="customerProducts()" [showPrices]="showPrices()" [formControl]="productsControl.controls[$index]" />
+      <app-repro-product
+        (remove)="onRemoveProduct($index)"
+        [customerProducts]="customerProducts()"
+        [showPrices]="showPrices()"
+        [formControl]="productsControl.controls[$index]"
+      />
       <mat-divider />
     }
   </mat-card-content>
 
   <mat-card-actions>
-    <button mat-icon-button (click)="onAddProduct()" [disabled]="productsControl.disabled || productsControl.invalid" matTooltip="Ctrl +" appKeyPress="ctrlPlus">
+    <button
+      matIconButton
+      (click)="onAddProduct()"
+      [disabled]="productsControl.disabled || productsControl.invalid"
+      matTooltip="Ctrl +"
+      appKeyPress="ctrlPlus"
+    >
       <mat-icon>add</mat-icon>
     </button>
   </mat-card-actions>

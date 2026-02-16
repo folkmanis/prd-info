@@ -3,7 +3,7 @@
     <ng-content></ng-content>
   </mat-label>
   <input #customerInput type="text" matInput [formControl]="control" [matAutocomplete]="auto" />
-  <button matIconSuffix mat-icon-button (click)="control.reset()" [disabled]="control.disabled">
+  <button matIconSuffix matIconButton (click)="control.reset()" [disabled]="control.disabled">
     <mat-icon> clear </mat-icon>
   </button>
   @if (control.hasError('required')) {

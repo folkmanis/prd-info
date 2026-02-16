@@ -31,6 +31,6 @@
 
     <app-date-range-picker [ngModel]="interval()" (ngModelChange)="setInterval($event)" />
 
-    <button mat-raised-button (click)="onSetRepro()" [disabled]="disabled()">REPRO</button>
+    <button matButton="elevated" (click)="onSetRepro()" [disabled]="disabled()">REPRO</button>
   </section>
 </mat-expansion-panel>

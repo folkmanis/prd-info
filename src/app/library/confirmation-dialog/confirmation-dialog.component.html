@@ -6,12 +6,12 @@
 
 <mat-dialog-actions>
   @if (data.yes; as yes) {
-    <button mat-raised-button [mat-dialog-close]="true">
+    <button matButton="elevated" [mat-dialog-close]="true">
       {{ yes }}
     </button>
   }
   @if (data.no; as no) {
-    <button mat-button [mat-dialog-close]="false">
+    <button matButton [mat-dialog-close]="false">
       {{ no }}
     </button>
   }

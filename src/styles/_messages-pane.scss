@@ -1,34 +1,34 @@
 @use "@angular/material" as mat;
 
-@mixin color($theme) {
+@mixin color() {
   .app-messages-pane {
-    background-color: mat.get-theme-color($theme, surface-container);
-    color: mat.get-theme-color($theme, on-surface);
+    background-color: var(--mat-sys-surface-container);
+    color: var(--mat-sys-on-surface);
 
     app-messages-list .message {
 
       &:not(:last-of-type) {
-        border-bottom-color: mat.get-theme-color($theme, outline-variant);
+        border-bottom-color: var(--mat-sys-outline-variant);
       }
 
       &:hover,
       &.selected {
-        background-color: mat.get-theme-color($theme, surface-container-highest);
+        background-color: var(--mat-sys-surface-container-highest);
       }
 
       .signal {
-        background-color: mat.get-theme-color($theme, tertiary, 80);
+        background-color: color-mix(in srgb, var(--mat-sys-tertiary) 80%, transparent);
       }
 
     }
   }
 }
 
-@mixin messages-pane-typography($theme) {
+@mixin messages-pane-typography() {
   .app-messages-pane {
 
     .message-title {
-      font: mat.get-theme-typography($theme, label-small, font);
+      font: var(--mat-sys-label-small);
     }
 
     .unread .message-title {
@@ -36,7 +36,7 @@
     }
 
     .message-body {
-      font: mat.get-theme-typography($theme, label-medium, font);
+      font: var(--mat-sys-label-medium);
     }
   }
 
@@ -48,6 +48,7 @@
     overflow-x: hidden;
     overflow-y: auto;
     border-radius: 4px;
+    box-shadow: var(--mat-menu-container-elevation-shadow, 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12));
 
     app-messages-list {
       width: 100%;
@@ -121,15 +122,11 @@
 
 
 
-@mixin theme($theme) {
+@mixin theme() {
 
-  @if (mat.theme-has($theme, color)) {
-    @include color($theme);
-  }
+  @include color();
 
-  @if (mat.theme-has($theme, typography)) {
-    @include messages-pane-typography($theme);
-  }
+  @include messages-pane-typography();
 
   @include app-messages-pane();
 }

@@ -1,4 +1,10 @@
-<app-simple-form-container buttons [status]="form.status" [isChanges]="changes()" (save)="onSave()" (resetForm)="onReset()">
+<app-simple-form-container
+  buttons
+  [status]="form.status"
+  [isChanges]="changes()"
+  (save)="onSave()"
+  (resetForm)="onReset()"
+>
   <form [formGroup]="form">
     <div class="headline-medium">
       @if (id() === null || id() === undefined) {
@@ -76,7 +82,7 @@
         </section>
 
         <mat-action-row>
-          <button mat-mini-fab (click)="prices.addPrice()" [disabled]="form.invalid">
+          <button matMiniFab (click)="prices.addPrice()" [disabled]="form.invalid">
             <mat-icon> add </mat-icon>
           </button>
         </mat-action-row>
@@ -102,11 +108,16 @@
         </mat-expansion-panel-header>
 
         <section>
-          <app-product-production formControlName="productionStages" [materials]="materials.value()" [productionStages]="productionStages.value()" #production />
+          <app-product-production
+            formControlName="productionStages"
+            [materials]="materials.value()"
+            [productionStages]="productionStages.value()"
+            #production
+          />
         </section>
 
         <mat-action-row>
-          <button mat-mini-fab (click)="production.onNewProductionStage()" [disabled]="!form.valid">
+          <button matMiniFab (click)="production.onNewProductionStage()" [disabled]="!form.valid">
             <mat-icon> add </mat-icon>
           </button>
         </mat-action-row>

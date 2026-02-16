@@ -19,7 +19,11 @@
   </thead>
   <tbody>
     @for (job of jobs(); track job.jobId; let idx = $index) {
-      <tr [class.job-completed]="job.invoiceId" [appRouterLinkWithReturn]="[job.jobId]" [class.highlited]="hasProduct(job, highlited)">
+      <tr
+        [class.job-completed]="job.invoiceId"
+        [appRouterLinkWithReturn]="[job.jobId]"
+        [class.highlited]="hasProduct(job, highlited)"
+      >
         <!-- statusa indikators -->
         <td class="column-state">
           @if (job.jobStatus.generalStatus === 20) {
@@ -51,24 +55,42 @@
             </span>
             @if (large) {
               <span class="buttons">
-                <button mat-icon-button [appCopyJobIdAndName]="job" (click)="$event.stopPropagation()" matTooltip="Kopēt nosaukumu">
+                <button
+                  matIconButton
+                  [appCopyJobIdAndName]="job"
+                  (click)="$event.stopPropagation()"
+                  matTooltip="Kopēt nosaukumu"
+                >
                   <mat-icon>filter_none</mat-icon>
                 </button>
                 @switch (job.jobStatus.generalStatus) {
                   @case (20) {
-                    <button mat-icon-button matToolTip="Atzīmēt pabeigtu" (click)="$event.stopPropagation(); onSetJobStatus(job.jobId, 30)">
+                    <button
+                      matIconButton
+                      matToolTip="Atzīmēt pabeigtu"
+                      (click)="$event.stopPropagation(); onSetJobStatus(job.jobId, 30)"
+                    >
                       <mat-icon>check</mat-icon>
                     </button>
                   }
                   @case (10) {
-                    <button mat-icon-button matToolTip="Darbs aktīvs" (click)="$event.stopPropagation(); onSetJobStatus(job.jobId, 20)">
+                    <button
+                      matIconButton
+                      matToolTip="Darbs aktīvs"
+                      (click)="$event.stopPropagation(); onSetJobStatus(job.jobId, 20)"
+                    >
                       <mat-icon>label_important</mat-icon>
                     </button>
                   }
                 }
               </span>
             } @else {
-              <button mat-icon-button [matMenuTriggerFor]="jobMenu" (click)="$event.stopPropagation()" [matMenuTriggerData]="{ job }">
+              <button
+                matIconButton
+                [matMenuTriggerFor]="jobMenu"
+                (click)="$event.stopPropagation()"
+                [matMenuTriggerData]="{ job }"
+              >
                 <mat-icon> more_vert </mat-icon>
               </button>
             }
@@ -81,7 +103,9 @@
           @if (products.length > 0) {
             <td class="column-productsObj-name" [colSpan]="products.length === 1 ? 0 : 3">
               @for (product of products; track $index) {
-                <span [class.highlited-product]="product.name === highlited"> {{ product.name }}{{ $last ? '' : ',' }} </span>
+                <span [class.highlited-product]="product.name === highlited">
+                  {{ product.name }}{{ $last ? '' : ',' }}
+                </span>
               }
             </td>
             @if (products.length === 1) {

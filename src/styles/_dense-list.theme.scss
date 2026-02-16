@@ -1,10 +1,11 @@
 @use "@angular/material" as mat;
 
-@mixin app-dense-list-typography($theme) {
+@mixin app-dense-list-typography() {
 
   mat-list[dense-list],
   mat-action-list[dense-list] {
-    --mdc-list-list-item-label-text-size: mat.get-theme-typography($theme, body-small, font-size);
+    @include mat.list-overrides((list-item-label-text-size: var(--mat-sys-label-small),
+      ));
   }
 }
 
@@ -13,7 +14,8 @@
   mat-list[dense-list],
   mat-action-list[dense-list] {
 
-    --mdc-list-list-item-one-line-container-height: 32px;
+    @include mat.list-overrides((list-item-one-line-container-height: 32px,
+      ));
 
     .dense-list-data {
 
@@ -33,12 +35,10 @@
   }
 }
 
-@mixin theme($theme) {
+@mixin theme() {
 
 
-  @if (mat.theme-has($theme, typography)) {
-    @include app-dense-list-typography($theme);
-  }
+  @include app-dense-list-typography();
 
   @include app-dense-list();
 

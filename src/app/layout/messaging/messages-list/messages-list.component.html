@@ -3,7 +3,9 @@
     <div class="signal"></div>
 
     <div class="message-text">
-      <span class="message-title"> {{ message.timestamp | relativeDate: 'strict' }} {{ message.data.toAction() }} </span>
+      <span class="message-title">
+        {{ message.timestamp | relativeDate: 'strict' }} {{ message.data.toAction() }}
+      </span>
       <span class="message-body">
         {{ message.data.toDescription() }}
       </span>
@@ -12,7 +14,7 @@
     <div class="message-menu">
       @if (isFtpUploadMessage(message)) {
         <button
-          mat-icon-button
+          matIconButton
           [matMenuTriggerFor]="ftpSave"
           [matMenuTriggerData]="{ users: ftpUsers(message), message }"
           (menuOpened)="selected = message"
@@ -23,12 +25,12 @@
       }
 
       @if (!message.seen) {
-        <button mat-icon-button (click)="onMarkAsRead(message._id)">
+        <button matIconButton (click)="onMarkAsRead(message._id)">
           <mat-icon> done </mat-icon>
         </button>
       }
 
-      <button mat-icon-button (click)="onDelete(message._id)">
+      <button matIconButton (click)="onDelete(message._id)">
         <mat-icon> delete </mat-icon>
       </button>
     </div>

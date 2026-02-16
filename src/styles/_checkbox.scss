@@ -1,0 +1,17 @@
+@use "@angular/material" as mat;
+
+
+@mixin color() {
+    .app-disabled-view {
+        @include mat.checkbox-overrides((disabled-label-color: color-mix(in srgb, var(--mat-sys-on-surface) 80%, transparent),
+                disabled-selected-icon-color: color-mix(in srgb, var(--mat-sys-on-surface) 70%, transparent),
+                disabled-unselected-icon-color: color-mix(in srgb, var(--mat-sys-on-surface) 70%, transparent),
+            ));
+    }
+}
+
+@mixin theme() {
+
+    @include color();
+
+}

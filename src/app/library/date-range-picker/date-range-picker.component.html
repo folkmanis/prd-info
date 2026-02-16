@@ -5,7 +5,7 @@
     <input matEndDate [value]="interval().end" (dateChange)="onChangeEnd($event)" [disabled]="disabled()" />
   </mat-date-range-input>
   <mat-datepicker-toggle matIconSuffix [for]="picker" [disabled]="disabled()" />
-  <button mat-icon-button matIconSuffix [matMenuTriggerFor]="intervalMenu" [disabled]="disabled()">
+  <button matIconButton matIconSuffix [matMenuTriggerFor]="intervalMenu" [disabled]="disabled()">
     <mat-icon> more_vert </mat-icon>
   </button>
   <mat-date-range-picker #picker></mat-date-range-picker>

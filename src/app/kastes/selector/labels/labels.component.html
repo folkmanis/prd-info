@@ -1,11 +1,21 @@
 <form (submit)="onLabelSubmit()">
   <p>
     <mat-form-field>
-      <input matInput [(ngModel)]="kods" name="kods" type="text" placeholder="Adreses kods" autocomplete="off" #kodsInput="ngModel" required #kodsInputElement />
+      <input
+        matInput
+        [(ngModel)]="kods"
+        name="kods"
+        type="text"
+        placeholder="Adreses kods"
+        autocomplete="off"
+        #kodsInput="ngModel"
+        required
+        #kodsInputElement
+      />
     </mat-form-field>
   </p>
   <p>
-    <button mat-raised-button type="submit" #submitButton [disabled]="kodsInput.invalid">Apstiprināt</button>
+    <button matButton="elevated" type="submit" #submitButton [disabled]="kodsInput.invalid">Apstiprināt</button>
   </p>
 </form>
 

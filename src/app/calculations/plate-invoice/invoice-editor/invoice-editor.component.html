@@ -15,7 +15,7 @@
 
 <mat-toolbar class="mat-elevation-z4">
   <span>
-    <a mat-icon-button routerLink="..">
+    <a matIconButton routerLink="..">
       <mat-icon> arrow_back </mat-icon>
     </a>
   </span>
@@ -26,10 +26,10 @@
 
   <span class="spacer"></span>
 
-  <a mat-icon-button href="/data/invoices/report_{{ invoice().invoiceId }}.pdf" target="new" matTooltip="Atvērt PDF">
+  <a matIconButton href="/data/invoices/report_{{ invoice().invoiceId }}.pdf" target="new" matTooltip="Atvērt PDF">
     <mat-icon> picture_as_pdf </mat-icon>
   </a>
-  <button mat-icon-button [matMenuTriggerFor]="menu">
+  <button matIconButton [matMenuTriggerFor]="menu">
     <mat-icon> more_vert </mat-icon>
   </button>
 </mat-toolbar>
@@ -39,7 +39,12 @@
 
   <!-- Paytraq -->
   @if (pyatraqEnabled()) {
-    <app-invoice-paytraq [invoice]="invoice()" [busy]="busy()" (saveToPaytraq)="onSaveToPaytraq()" (unlinkPaytraq)="onUnlinkPaytraq()" />
+    <app-invoice-paytraq
+      [invoice]="invoice()"
+      [busy]="busy()"
+      (saveToPaytraq)="onSaveToPaytraq()"
+      (unlinkPaytraq)="onUnlinkPaytraq()"
+    />
   }
 
   <!-- Preces -->
@@ -58,7 +63,12 @@
       <mat-card-title> Darbi </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <app-job-selection-table [jobs]="invoice().jobs ?? []" disabled [large]="viewSize.isLarge()" [total]="invoice().total ?? 0" />
+      <app-job-selection-table
+        [jobs]="invoice().jobs ?? []"
+        disabled
+        [large]="viewSize.isLarge()"
+        [total]="invoice().total ?? 0"
+      />
     </mat-card-content>
   </mat-card>
 </div>

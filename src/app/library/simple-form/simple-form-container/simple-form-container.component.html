@@ -2,8 +2,16 @@
   <ng-container appSimpleContentContainerToolbar>
     @if (buttons()) {
       <span>
-        <button mat-raised-button (click)="onSave()" [disabled]="this.status() !== 'VALID' || this.isChanges() === false">Saglabāt</button>
-        <button mat-button class="tertiary" (click)="onReset()" [disabled]="this.isChanges() === false">Atiestatīt</button>
+        <button
+          matButton="elevated"
+          (click)="onSave()"
+          [disabled]="this.status() !== 'VALID' || this.isChanges() === false"
+        >
+          Saglabāt
+        </button>
+        <button matButton class="tertiary" (click)="onReset()" [disabled]="this.isChanges() === false">
+          Atiestatīt
+        </button>
       </span>
     }
   </ng-container>

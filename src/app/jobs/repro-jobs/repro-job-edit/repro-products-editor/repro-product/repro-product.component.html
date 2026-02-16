@@ -1,8 +1,13 @@
-<ng-container [formGroup]="productForm" [appProductControl]="name()" (selectedProduct)="onProductSelected($event)" [customerProducts]="customerProducts()">
+<ng-container
+  [formGroup]="productForm"
+  [appProductControl]="name()"
+  (selectedProduct)="onProductSelected($event)"
+  [customerProducts]="customerProducts()"
+>
   <!-- Prece -->
   @if (isSmall() === false) {
     <div>
-      <button mat-icon-button class="tertiary" (click)="remove.emit()" [disabled]="productForm.disabled">
+      <button matIconButton class="tertiary" (click)="remove.emit()" [disabled]="productForm.disabled">
         <mat-icon>delete_outline</mat-icon>
       </button>
     </div>
@@ -25,7 +30,13 @@
       <mat-form-field class="price">
         <input matInput formControlName="price" prdExpressionInput #priceExpr="prdExpressionInput" />
         <span matTextSuffix class="text-suffix"> &nbsp;&euro; </span>
-        <button matIconSuffix mat-icon-button matTooltip="Pievienot no cenrāža" (click)="onSetPrice()" [disabled]="productForm.valid !== true || productForm.disabled === true">
+        <button
+          matIconSuffix
+          matIconButton
+          matTooltip="Pievienot no cenrāža"
+          (click)="onSetPrice()"
+          [disabled]="productForm.valid !== true || productForm.disabled === true"
+        >
           <mat-icon> keyboard_arrow_left </mat-icon>
         </button>
         <mat-hint align="end">
@@ -44,7 +55,7 @@
 
   @if (isSmall()) {
     <div>
-      <button mat-button class="tertiary" (click)="remove.emit()" [disabled]="productForm.disabled">Dzēst</button>
+      <button matButton class="tertiary" (click)="remove.emit()" [disabled]="productForm.disabled">Dzēst</button>
     </div>
   }
 </ng-container>

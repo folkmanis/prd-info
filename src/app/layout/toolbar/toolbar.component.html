@@ -1,20 +1,20 @@
 <mat-toolbar>
   <!-- Side menu poga -->
   <span>
-    <button mat-icon-button (click)="sideMenuToggle.emit()">
+    <button matIconButton (click)="sideMenuToggle.emit()">
       <mat-icon>menu</mat-icon>
     </button>
   </span>
 
   <span>
-    <a mat-icon-button routerLink="">
+    <a matIconButton routerLink="">
       <mat-icon>home</mat-icon>
     </a>
   </span>
 
   @if (activeModule(); as mod) {
     <span>
-      <a mat-button [routerLink]="mod.route">
+      <a matButton [routerLink]="mod.route">
         {{ mod.name }}
       </a>
     </span>
@@ -24,23 +24,37 @@
   <span class="spacer"></span>
 
   <span class="dark-mode-button">
-    <mat-icon>light_mode</mat-icon>
-    <mat-slide-toggle [(ngModel)]="darkMode" hideIcon aria-label="Dark mode" aria-labelledby="dark-mode-toggle-label" />
-    <mat-icon>dark_mode</mat-icon>
+    <button matIconButton (click)="darkMode.set(!darkMode())">
+      <mat-icon>
+        {{ darkMode() ? 'light_mode' : 'dark_mode' }}
+      </mat-icon>
+    </button>
   </span>
 
   <!-- Ziņojumi -->
   <span *appViewSmall>
-    <a mat-icon-button [disabled]="messagesCount() === 0" routerLink="/messages">
-      <mat-icon [matBadge]="unreadMessagesCount()" [matBadgeHidden]="unreadMessagesCount() === 0" aria-hidden="false" matBadgeSize="large" class="mat-badge-tertiary">
+    <a matIconButton [disabled]="messagesCount() === 0" routerLink="/messages">
+      <mat-icon
+        [matBadge]="unreadMessagesCount()"
+        [matBadgeHidden]="unreadMessagesCount() === 0"
+        aria-hidden="false"
+        matBadgeSize="large"
+        class="tertiary"
+      >
         notifications
       </mat-icon>
     </a>
   </span>
 
   <span *appViewNotSmall>
-    <button mat-icon-button appMessagesTrigger [disabled]="messagesCount() === 0">
-      <mat-icon [matBadge]="unreadMessagesCount()" [matBadgeHidden]="unreadMessagesCount() === 0" aria-hidden="false" matBadgeSize="large" class="mat-badge-tertiary">
+    <button matIconButton appMessagesTrigger [disabled]="messagesCount() === 0">
+      <mat-icon
+        [matBadge]="unreadMessagesCount()"
+        [matBadgeHidden]="unreadMessagesCount() === 0"
+        aria-hidden="false"
+        matBadgeSize="large"
+        class="tertiary"
+      >
         notifications
       </mat-icon>
     </button>
@@ -48,7 +62,7 @@
 
   <!-- Mazais lietotāja menu -->
   <span>
-    <button mat-icon-button [matMenuTriggerFor]="userMenu">
+    <button matIconButton [matMenuTriggerFor]="userMenu">
       @if (user().google?.picture) {
         <span class="avatar"> </span>
       } @else {

@@ -14,13 +14,23 @@
     <mat-card>
       <mat-card-content>
         @if (noInvoices) {
-          <app-customer-selector [customers]="noInvoices" [customer]="customer()" (customerChange)="onSelectCustomer($event)" />
+          <app-customer-selector
+            [customers]="noInvoices"
+            [customer]="customer()"
+            (customerChange)="onSelectCustomer($event)"
+          />
         }
       </mat-card-content>
 
       <mat-card-actions>
-        <button mat-raised-button (click)="onCreateInvoice()" [disabled]="selectedJobs().length === 0 || !customer()">Aprēķins</button>
-        <button mat-button (click)="onPrintList()" [disabled]="selectedJobs().length === 0">Izdrukāt</button>
+        <button
+          matButton="elevated"
+          (click)="onCreateInvoice()"
+          [disabled]="selectedJobs().length === 0 || !customer()"
+        >
+          Aprēķins
+        </button>
+        <button matButton (click)="onPrintList()" [disabled]="selectedJobs().length === 0">Izdrukāt</button>
       </mat-card-actions>
     </mat-card>
 

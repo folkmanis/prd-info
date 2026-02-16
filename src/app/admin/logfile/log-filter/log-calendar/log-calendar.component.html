@@ -1,15 +1,22 @@
 <mat-form-field subscriptSizing="dynamic">
   <mat-label>Datums</mat-label>
-  <input matInput [matDatepicker]="picker" [(ngModel)]="date" name="date" [matDatepickerFilter]="isValiddate" [max]="lastDate()" />
+  <input
+    matInput
+    [matDatepicker]="picker"
+    [(ngModel)]="date"
+    name="date"
+    [matDatepickerFilter]="isValiddate"
+    [max]="lastDate()"
+  />
   <mat-datepicker-toggle matSuffix [for]="picker" matTooltip="Kalendārs" />
-  <button mat-icon-button matSuffix (click)="onDateShift(-1)" [disabled]="isMinDate()" matTooltip="Iepriekšējā diena">
+  <button matIconButton matSuffix (click)="onDateShift(-1)" [disabled]="isMinDate()" matTooltip="Iepriekšējā diena">
     <mat-icon>navigate_before</mat-icon>
   </button>
-  <button mat-icon-button matSuffix (click)="onDateShift(+1)" [disabled]="isMaxDate()" matTooltip="Nākamā diena">
+  <button matIconButton matSuffix (click)="onDateShift(+1)" [disabled]="isMaxDate()" matTooltip="Nākamā diena">
     <mat-icon>navigate_next</mat-icon>
   </button>
   <!-- Šodiena -->
-  <button mat-icon-button matSuffix (click)="onToday()" matTooltip="Šodiena">
+  <button matIconButton matSuffix (click)="onToday()" matTooltip="Šodiena">
     <mat-icon>calendar_today</mat-icon>
   </button>
   <mat-datepicker #picker />

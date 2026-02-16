@@ -1,42 +1,32 @@
 @use "@angular/material" as mat;
 
-@mixin color($theme) {
+@mixin color() {
 
-  a,
-  button {
+  .tertiary,
+  .warn {
+    @include mat.button-overrides((text-label-text-color: var(--mat-sys-tertiary),
+        outlined-label-text-color: var(--mat-sys-tertiary),
+        filled-label-text-color: var(--mat-sys-tertiary),
+        tonal-label-text-color: var(--mat-sys-tertiary),
+        protected-label-text-color: var(--mat-sys-tertiary),
+      ));
 
-    &[mat-raised-button],
-    &[mat-button] {
+    @include mat.icon-button-overrides((icon-color: var(--mat-sys-tertiary),
+      ));
 
-      &.tertiary,
-      &.warn {
-        @include mat.button-color($theme, $color-variant: tertiary);
-      }
-
-    }
-
-    &[mat-icon-button] {
-
-      &.tertiary,
-      &.warn {
-        @include mat.icon-button-color($theme, $color-variant: tertiary);
-      }
-    }
-
-    &[mat-mini-fab] {
-
-      &.tertiary,
-      &.warn {
-        @include mat.fab-color($theme, $color-variant: tertiary);
-      }
-    }
+    @include mat.fab-overrides((foreground-color: var(--mat-sys-on-tertiary-container),
+        container-color: var(--mat-sys-tertiary-container),
+        small-foreground-color: var(--mat-sys-on-tertiary-container),
+        small-container-color: var(--mat-sys-tertiary-container),
+      ));
   }
+
+
+
 }
 
-@mixin theme($theme) {
+@mixin theme() {
 
-  @if(mat.theme-has($theme, color)) {
-    @include color($theme);
-  }
+  @include color();
 
 }

@@ -2,7 +2,16 @@
   <form (submit)="onLogin()">
     <mat-form-field class="full-width">
       <mat-label> Lietotājs </mat-label>
-      <input matInput [(ngModel)]="username" name="username" autocomplete="username" #usernameControl="ngModel" autocapitalize="none" appFocused required />
+      <input
+        matInput
+        [(ngModel)]="username"
+        name="username"
+        autocomplete="username"
+        #usernameControl="ngModel"
+        autocapitalize="none"
+        appFocused
+        required
+      />
     </mat-form-field>
 
     <mat-form-field class="full-width">
@@ -10,12 +19,16 @@
       <input matInput [(ngModel)]="password" name="password" type="password" autocomplete="current-password" />
     </mat-form-field>
 
-    <button mat-raised-button type="submit" [disabled]="!usernameControl.valid || busy()" class="full-width">Pieslēgties</button>
+    <button matButton="elevated" type="submit" [disabled]="!usernameControl.valid || busy()" class="full-width">
+      Pieslēgties
+    </button>
   </form>
 
   <hr />
 
   @if (isDemo === false) {
-    <a mat-raised-button href="/data/login/google" [disabled]="busy()" class="full-width"> Pievienoties ar Google </a>
+    <a matButton="elevated" href="/data/login/google" [disabled]="busy()" class="full-width">
+      Pievienoties ar Google
+    </a>
   }
 </div>

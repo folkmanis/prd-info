@@ -1,7 +1,7 @@
 <ng-container *appIfViewSize="'large'" [formGroup]="filterGroup">
   <mat-form-field class="name" subscriptSizing="dynamic">
     <input matInput formControlName="name" />
-    <button mat-icon-button disabled matIconSuffix>
+    <button matIconButton disabled matIconSuffix>
       <mat-icon>search</mat-icon>
     </button>
   </mat-form-field>
@@ -17,7 +17,7 @@
     </mat-select>
   </mat-form-field>
 
-  <button mat-icon-button (click)="clear()">
+  <button matIconButton (click)="clear()">
     <mat-icon>clear</mat-icon>
   </button>
 </ng-container>

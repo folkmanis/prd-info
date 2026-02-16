@@ -1,4 +1,11 @@
-<app-simple-form-container buttons appViewSize [status]="formStatus()" [isChanges]="changes()" (save)="onSave()" (resetForm)="onReset()">
+<app-simple-form-container
+  buttons
+  appViewSize
+  [status]="formStatus()"
+  [isChanges]="changes()"
+  (save)="onSave()"
+  (resetForm)="onReset()"
+>
   <form [formGroup]="form">
     <h2>
       <mat-form-field class="full-width">
@@ -71,12 +78,13 @@
         </section>
 
         <section>
-          <app-materials-prices #prices formControlName="prices" [units]="form.value.units ?? ''"> </app-materials-prices>
+          <app-materials-prices #prices formControlName="prices" [units]="form.value.units ?? ''">
+          </app-materials-prices>
         </section>
       </mat-card-content>
 
       <mat-card-actions>
-        <button mat-raised-button (click)="prices.onAddPrice()" [disabled]="!form.valid">Pievienot</button>
+        <button matButton="elevated" (click)="prices.onAddPrice()" [disabled]="!form.valid">Pievienot</button>
       </mat-card-actions>
     </mat-card>
   </form>

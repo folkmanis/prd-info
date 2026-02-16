@@ -15,7 +15,7 @@
       <mat-form-field>
         <mat-label>Darba numurs</mat-label>
         <input matInput type="text" formControlName="jobsId" />
-        <button mat-icon-button matSuffix (click)="onReset('jobsId')">
+        <button matIconButton matSuffix (click)="onReset('jobsId')">
           <mat-icon>clear</mat-icon>
         </button>
       </mat-form-field>
@@ -24,7 +24,7 @@
       <mat-form-field class="search">
         <mat-label>Nosaukums</mat-label>
         <input matInput type="text" formControlName="name" />
-        <button mat-icon-button matSuffix (click)="onReset('name')">
+        <button matIconButton matSuffix (click)="onReset('name')">
           <mat-icon>clear</mat-icon>
         </button>
       </mat-form-field>
@@ -34,7 +34,7 @@
       <!-- <mat-form-field>
         <mat-label>Klients</mat-label>
         <input matInput type="text" formControlName="customer" [matAutocomplete]="auto" />
-        <button mat-icon-button matSuffix (click)="onReset('customer')">
+        <button matIconButton matSuffix (click)="onReset('customer')">
           <mat-icon>clear</mat-icon>
         </button>
       </mat-form-field> -->
@@ -67,7 +67,7 @@
 
     <div>
       <!-- Atiestatīt formu -->
-      <button mat-mini-fab (click)="onReset()" matTooltip="Atiestatīt">
+      <button matMiniFab (click)="onReset()" matTooltip="Atiestatīt">
         <mat-icon> clear </mat-icon>
       </button>
     </div>

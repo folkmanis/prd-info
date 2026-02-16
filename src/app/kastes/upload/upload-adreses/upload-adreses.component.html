@@ -1,7 +1,11 @@
 <div class="buttons-bar">
-  <button mat-raised-button (click)="addEmptyColumn()" [disabled]="adreses().length === 0">Pievienot tukšu sleju</button>
-  <button mat-raised-button (click)="deleteColumns()" [disabled]="columnSelection.isEmpty()">Dzēst slejas</button>
-  <button mat-raised-button (click)="joinColumns()" [disabled]="columnSelection.selected.length < 2">Apvienot slejas</button>
+  <button matButton="elevated" (click)="addEmptyColumn()" [disabled]="adreses().length === 0">
+    Pievienot tukšu sleju
+  </button>
+  <button matButton="elevated" (click)="deleteColumns()" [disabled]="columnSelection.isEmpty()">Dzēst slejas</button>
+  <button matButton="elevated" (click)="joinColumns()" [disabled]="columnSelection.selected.length < 2">
+    Apvienot slejas
+  </button>
 </div>
 
 <div class="chips-bar">

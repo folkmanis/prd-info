@@ -13,17 +13,12 @@ import { ToolbarComponent } from '../toolbar/toolbar.component';
   styleUrls: ['./app-container.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ToolbarComponent, MatSidenavModule, SideMenuComponent, RouterOutlet, DrawerSmallDirective],
-  host: {
-    '[class.dark-theme]': 'darkTheme()',
-  },
 })
 export class AppContainerComponent {
   private activeModules = inject(SystemPreferencesService).activeModules;
   private loginService = inject(LoginService);
 
   user = this.loginService.user;
-
-  darkTheme = computed(() => this.user()?.prefersDarkMode);
 
   activeModule = computed(() => this.activeModules()[0]);
 

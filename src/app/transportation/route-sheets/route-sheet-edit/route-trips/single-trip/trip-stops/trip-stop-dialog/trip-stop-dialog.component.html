@@ -20,8 +20,8 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button mat-button [mat-dialog-close]="form.getRawValue()" [disabled]="form.valid === false">Saglabāt</button>
-  <button mat-button mat-dialog-close>Atcelt</button>
+  <button matButton [mat-dialog-close]="form.getRawValue()" [disabled]="form.valid === false">Saglabāt</button>
+  <button matButton mat-dialog-close>Atcelt</button>
 </mat-dialog-actions>
 
 <mat-autocomplete #customerAuto="matAutocomplete" (optionSelected)="onSetCustomer($event)">

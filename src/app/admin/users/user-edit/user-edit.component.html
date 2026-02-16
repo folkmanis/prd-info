@@ -1,4 +1,11 @@
-<app-simple-form-container buttons [status]="formStatus()" [isChanges]="changes()" (save)="onSave()" (resetForm)="onReset()" [formGroup]="form">
+<app-simple-form-container
+  buttons
+  [status]="formStatus()"
+  [isChanges]="changes()"
+  (save)="onSave()"
+  (resetForm)="onReset()"
+  [formGroup]="form"
+>
   <!-- Lietotājvārds -->
   <h2>
     @if (isNew()) {
@@ -47,9 +54,16 @@
       <mat-card-content>
         <div class="button-row">
           <!-- Paroles maiņa -->
-          <button mat-raised-button appPasswordInput [passwordMinimumLength]="6" (appPasswordChange)="onPasswordChange($event)">Mainīt paroli</button>
+          <button
+            matButton="elevated"
+            appPasswordInput
+            [passwordMinimumLength]="6"
+            (appPasswordChange)="onPasswordChange($event)"
+          >
+            Mainīt paroli
+          </button>
           <!-- Dzēšana -->
-          <button mat-raised-button class="tertiary" (click)="onDeleteUser()">Dzēst</button>
+          <button matButton="elevated" class="tertiary" (click)="onDeleteUser()">Dzēst</button>
         </div>
       </mat-card-content>
     }
@@ -114,7 +128,9 @@
   @if (!isNew()) {
     <mat-card>
       <mat-card-content>
-        <button mat-raised-button (click)="onUploadToFirestore()" [disabled]="changes() !== null">Saglabāt lietotnē</button>
+        <button matButton="elevated" (click)="onUploadToFirestore()" [disabled]="changes() !== null">
+          Saglabāt lietotnē
+        </button>
       </mat-card-content>
     </mat-card>
   }
@@ -126,7 +142,11 @@
       </mat-card-header>
 
       <mat-card-content>
-        <app-sessions [sessions]="sessions.value()" [currentSession]="currentSessionId | async" (deleteSession)="onDeleteSessions($event)" />
+        <app-sessions
+          [sessions]="sessions.value()"
+          [currentSession]="currentSessionId | async"
+          (deleteSession)="onDeleteSessions($event)"
+        />
       </mat-card-content>
 
       <mat-card-actions>

@@ -3,10 +3,10 @@
     <span class="value"> {{ record.value }} </span>
     <span class="date"> {{ record.date | date: 'mediumDate' }} </span>
     <span class="actions">
-      <button mat-icon-button (click)="onEdit($index)" [disabled]="disabled()">
+      <button matIconButton (click)="onEdit($index)" [disabled]="disabled()">
         <mat-icon>edit</mat-icon>
       </button>
-      <button mat-icon-button class="warn" (click)="onRemove($index)" [disabled]="disabled()">
+      <button matIconButton class="warn" (click)="onRemove($index)" [disabled]="disabled()">
         <mat-icon>delete</mat-icon>
       </button>
     </span>
