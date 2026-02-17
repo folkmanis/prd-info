@@ -108,9 +108,7 @@
         } @else {
           <button matButton="outlined" type="button" (click)="editActive.set(true)">Labot</button>
           @if (isNew() === false) {
-            <button matButton="outlined" type="button" (click)="onDelete()" class="tertiary" [disabled]="busy()">
-              Dzēst!
-            </button>
+            <button matButton type="button" (click)="onDelete()" class="tertiary" [disabled]="busy()">Dzēst!</button>
           }
         }
       </mat-card-actions>

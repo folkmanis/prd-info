@@ -2,7 +2,12 @@
   @if (vehicles.hasValue()) {
     <mat-table [dataSource]="vehicles.value()">
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns" [routerLink]="[row._id]" routerLinkActive="active" [class.disabled]="row.disabled"></mat-row>
+      <mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        [routerLink]="[row._id]"
+        routerLinkActive="selected"
+        [class.disabled]="row.disabled"
+      ></mat-row>
 
       <div *matNoDataRow>
         <span> Nav neviena ieraksta </span>
