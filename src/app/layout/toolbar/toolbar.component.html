@@ -23,8 +23,9 @@
   <!-- Starpotājs -->
   <span class="spacer"></span>
 
+  <!-- Tumšais režīms -->
   <span class="dark-mode-button">
-    <button matIconButton (click)="darkMode.set(!darkMode())">
+    <button matIconButton (click)="darkMode.set(!darkMode())" class="tertiary">
       <mat-icon>
         {{ darkMode() ? 'light_mode' : 'dark_mode' }}
       </mat-icon>
