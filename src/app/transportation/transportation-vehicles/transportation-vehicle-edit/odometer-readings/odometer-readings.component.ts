@@ -7,6 +7,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { firstValueFrom } from 'rxjs';
 import { OdometerReading } from 'src/app/transportation/interfaces/transportation-vehicle';
 import { OdometerReadingsDialogComponent } from '../odometer-readings-dialog/odometer-readings-dialog.component';
+import { ConfirmationDialogService } from 'src/app/library';
 
 @Component({
   selector: 'app-odometer-readings',
@@ -24,6 +25,7 @@ export class OdometerReadingsComponent {
 
   #dialog = inject(MatDialog);
   #snack = inject(MatSnackBar);
+  #confirmation = inject(ConfirmationDialogService);
 
   async onAdd() {
     const dialogRef = this.#dialog.open(OdometerReadingsDialogComponent, {
@@ -57,9 +59,12 @@ export class OdometerReadingsComponent {
     this.odometerReadingsChange.emit(sorted);
   }
 
-  onRemove(index: number) {
-    const updated = this.odometerReadings().filter((_, i) => i !== index);
-    this.odometerReadingsChange.emit(updated);
+  async onRemove(index: number) {
+    const resp = await this.#confirmation.confirmDelete();
+    if (resp) {
+      const updated = this.odometerReadings().filter((_, i) => i !== index);
+      this.odometerReadingsChange.emit(updated);
+    }
   }
 
   #sortByDate = (readings: OdometerReading[]) => [...readings].sort((a, b) => a.date.getTime() - b.date.getTime());
@@ -69,7 +74,9 @@ export class OdometerReadingsComponent {
       return true;
     }
     const initialReading = readings[0].value;
-    const isAsc = readings.every((reading) => OdometerReading.safeParse(reading).success && reading.value >= initialReading);
+    const isAsc = readings.every(
+      (reading) => OdometerReading.safeParse(reading).success && reading.value >= initialReading,
+    );
     if (isAsc === false) {
       this.#snack.open('Nepareizi dati. Rādījumiem jābūt augošā secībā.', 'OK');
       return false;
