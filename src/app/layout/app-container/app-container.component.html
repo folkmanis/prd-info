@@ -1,8 +1,14 @@
 @if (user(); as user) {
-  <app-toolbar [user]="user" [darkMode]="user.prefersDarkMode" (darkModeChange)="setDarkMode($event)" [activeModule]="activeModule()" (sideMenuToggle)="drawer.toggle()" />
+  <app-toolbar
+    [user]="user"
+    [darkMode]="user.prefersDarkMode"
+    (darkModeChange)="setDarkMode($event)"
+    [activeModule]="activeModule()"
+    (sideMenuToggle)="drawer.toggle()"
+  />
 }
 <mat-sidenav-container>
-  <mat-sidenav #drawer appDrawerSmall class="mat-elevation-z4">
+  <mat-sidenav #drawer appDrawerSmall appDrawerClose>
     <app-side-menu />
   </mat-sidenav>
 
