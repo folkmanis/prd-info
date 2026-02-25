@@ -41,7 +41,11 @@ export const USER_MODULES: UserModule[] = [
     route: 'kastes',
     childMenu: [
       { name: 'Pakošanas saraksts', route: 'selector', description: 'Darbs ar iepakojumiem' },
-      { name: 'Saraksta pievienošana', route: 'upload', description: 'Jauna pakošanas saraksta izveide no pakošanas tabulas' },
+      {
+        name: 'Saraksta pievienošana',
+        route: 'upload',
+        description: 'Jauna pakošanas saraksta izveide no pakošanas tabulas',
+      },
       { name: 'Saraksta labošana', route: 'edit', description: 'Pakošanas saraksta un sadalījuma pa kastēm labošana' },
     ],
   },
@@ -53,6 +57,7 @@ export const USER_MODULES: UserModule[] = [
       { name: 'Ceļazīmes', route: 'route-sheets', description: 'Maršruta lapas degvielas atskaitei' },
       { name: 'Autoparks', route: 'vehicles', description: 'Automašīnu iestatījumi' },
       { name: 'Vadītāji', route: 'drivers', description: 'Šoferu iestatījumi maršruta lapām' },
+      { name: 'Patēriņš', route: 'monthly-consumption', description: 'Mēneša vidējais degvielas patēriņš' },
     ],
   },
   {
@@ -60,7 +65,11 @@ export const USER_MODULES: UserModule[] = [
     description: 'Sistēmas iestatījumi',
     route: 'admin',
     childMenu: [
-      { name: 'Lietotāji', route: 'users', description: 'Sistēmas lietotāji: izveide, paroles maiņa, pieejamie moduļi' },
+      {
+        name: 'Lietotāji',
+        route: 'users',
+        description: 'Sistēmas lietotāji: izveide, paroles maiņa, pieejamie moduļi',
+      },
       { name: 'Sistēmas iestatījumi', route: 'module-preferences', description: 'Moduļu iestatījumi' },
       { name: 'Žurnāls', route: 'logfile', description: 'Sistēmas žurnāls (logfile)' },
     ],

@@ -2,7 +2,12 @@ import { computed, inject, Injectable } from '@angular/core';
 import { round } from 'lodash-es';
 import { FilterInput, toFilterSignal } from 'src/app/library';
 import { HistoricalData } from '../interfaces/historical-data';
-import { RouteStop, TransportationRouteSheet, TransportationRouteSheetCreate, TransportationRouteSheetUpdate } from '../interfaces/transportation-route-sheet';
+import {
+  RouteStop,
+  TransportationRouteSheet,
+  TransportationRouteSheetCreate,
+  TransportationRouteSheetUpdate,
+} from '../interfaces/transportation-route-sheet';
 import { RouteSheetApiService } from './route-sheet-api.service';
 import { TransportationDriverService } from './transportation-driver.service';
 import { TransportationVehicleService } from './transportation-vehicle.service';
@@ -12,9 +17,10 @@ interface RouteSheetFilter {
   fuelTypes?: string[];
   year?: number;
   month?: number;
+  vehicleId?: string;
 }
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class RouteSheetService {
   #api = inject(RouteSheetApiService);
   #driverService = inject(TransportationDriverService);
@@ -34,12 +40,16 @@ export class RouteSheetService {
     return this.#api.routeSheetResource(params);
   }
 
+  getRouteSheets(filter: RouteSheetFilter = {}): Promise<TransportationRouteSheet[]> {
+    return this.#api.getRouteSheets(filter);
+  }
+
   async getRouteSheet(id: string) {
     return this.#api.getOne(id);
   }
 
-  async getCustomers() {
-    return await this.#api.getCustomers();
+  getCustomers() {
+    return this.#api.getCustomers();
   }
 
   createRouteSheet(routeSheet: TransportationRouteSheetCreate): Promise<TransportationRouteSheet> {
@@ -60,7 +70,9 @@ export class RouteSheetService {
   }
 
   async getTripLength(stops: RouteStop[]): Promise<number> {
-    const { distance } = await this.#api.distanceRequest({ tripStops: stops.map(({ address, googleLocationId }) => ({ address, googleLocationId })) });
+    const { distance } = await this.#api.distanceRequest({
+      tripStops: stops.map(({ address, googleLocationId }) => ({ address, googleLocationId })),
+    });
     return round(this.randomizeTripLength(distance / 1000));
   }
 

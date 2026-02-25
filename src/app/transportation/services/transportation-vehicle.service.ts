@@ -1,7 +1,11 @@
 import { computed, inject, Injectable, Signal } from '@angular/core';
 import { FilterInput, toFilterSignal } from 'src/app/library';
 import { configuration } from 'src/app/services/config.provider';
-import { TransportationVehicle, TransportationVehicleCreate, TransportationVehicleUpdate } from '../interfaces/transportation-vehicle';
+import {
+  TransportationVehicle,
+  TransportationVehicleCreate,
+  TransportationVehicleUpdate,
+} from '../interfaces/transportation-vehicle';
 import { TransportationVehicleApiService } from './transportation-vehicle-api.service';
 import { applyWhen, SchemaPath } from '@angular/forms/signals';
 
@@ -27,6 +31,10 @@ export class TransportationVehicleService {
 
   getVehicle(id: string): Promise<TransportationVehicle> {
     return this.#api.getOne(id);
+  }
+
+  getVehicleResource(id: Signal<string>) {
+    return this.#api.vehicleResource(id);
   }
 
   create(vehicle: TransportationVehicleCreate) {

@@ -5,7 +5,12 @@ import { getAppParams } from 'src/app/app-params';
 import { HttpOptions, httpResponseRequest, ValidatorService } from 'src/app/library';
 import { HistoricalData } from '../interfaces/historical-data';
 import { TransportationCustomer } from '../interfaces/transportation-customer';
-import { RouteStop, TransportationRouteSheetCreate, TransportationRouteSheet, TransportationRouteSheetUpdate } from '../interfaces/transportation-route-sheet';
+import {
+  RouteStop,
+  TransportationRouteSheetCreate,
+  TransportationRouteSheet,
+  TransportationRouteSheetUpdate,
+} from '../interfaces/transportation-route-sheet';
 import { isEqual } from 'lodash-es';
 
 @Injectable({
@@ -22,6 +27,11 @@ export class RouteSheetApiService {
       defaultValue: [],
       equal: isEqual,
     });
+  }
+
+  getRouteSheets(params: Record<string, any>): Promise<TransportationRouteSheet[]> {
+    const response$ = this.#http.get<Record<string, any>[]>(this.#path, new HttpOptions(params));
+    return this.#validator.validateArrayAsync(TransportationRouteSheet, response$);
   }
 
   getOne(id: string): Promise<TransportationRouteSheet> {
@@ -50,8 +60,14 @@ export class RouteSheetApiService {
     return this.#validator.validateArrayAsync(TransportationCustomer, response$);
   }
 
-  async distanceRequest(request: { tripStops: Pick<RouteStop, 'address' | 'googleLocationId'>[] }): Promise<{ distance: number }> {
-    const response$ = this.#http.post<{ distance: number }>(this.#path + '/distance-request', request, new HttpOptions());
+  async distanceRequest(request: {
+    tripStops: Pick<RouteStop, 'address' | 'googleLocationId'>[];
+  }): Promise<{ distance: number }> {
+    const response$ = this.#http.post<{ distance: number }>(
+      this.#path + '/distance-request',
+      request,
+      new HttpOptions(),
+    );
     return await firstValueFrom(response$);
   }
 
@@ -61,7 +77,10 @@ export class RouteSheetApiService {
   }
 
   async getHistoricalData(licencePlate: string): Promise<HistoricalData> {
-    const response$ = this.#http.get<HistoricalData>(this.#path + '/historical-data/' + licencePlate, new HttpOptions());
+    const response$ = this.#http.get<HistoricalData>(
+      this.#path + '/historical-data/' + licencePlate,
+      new HttpOptions(),
+    );
     return this.#validator.validateAsync(HistoricalData, response$);
   }
 }

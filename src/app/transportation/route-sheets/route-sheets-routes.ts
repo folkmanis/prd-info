@@ -10,7 +10,6 @@ export default [
   {
     path: '',
     component: RouteSheetListComponent,
-    providers: [RouteSheetService],
     children: [
       {
         path: 'new',

@@ -1,0 +1,26 @@
+:host {
+    display: block;
+    max-width: 560px;
+    padding: 16px;
+}
+
+.selection {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+
+    #vehicle {
+        flex: 2;
+        min-width: 240px;
+    }
+
+    #year {
+        flex: 1;
+        min-width: 180px;
+    }
+}
+
+.vehicle-info {
+    min-height: 32px;
+    color: var(--mat-sys-primary)
+}

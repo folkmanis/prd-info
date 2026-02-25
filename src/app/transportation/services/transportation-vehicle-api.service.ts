@@ -4,7 +4,11 @@ import { isEqual } from 'lodash-es';
 import { firstValueFrom } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { HttpOptions, httpResponseRequest, ValidatorService } from 'src/app/library';
-import { TransportationVehicle, TransportationVehicleCreate, TransportationVehicleUpdate } from '../interfaces/transportation-vehicle';
+import {
+  TransportationVehicle,
+  TransportationVehicleCreate,
+  TransportationVehicleUpdate,
+} from '../interfaces/transportation-vehicle';
 import { SchemaPath, validateHttp, ValidationError } from '@angular/forms/signals';
 
 const NETWORK_ERROR: ValidationError = { kind: 'network_error', message: 'Tīkla kļūda' };
@@ -24,8 +28,14 @@ export class TransportationVehicleApiService {
     });
   }
 
+  vehicleResource(id: Signal<string | undefined>) {
+    return httpResource(() => (id() ? httpResponseRequest(`${this.#path}/${id()}`) : undefined), {
+      parse: this.#validator.validatorFn(TransportationVehicle),
+    });
+  }
+
   getOne(id: string): Promise<TransportationVehicle> {
-    const response = this.#http.get<Record<string, any>>(`${this.#path}/${id}`, new HttpOptions().cacheable());
+    const response = this.#http.get<Record<string, any>>(`${this.#path}/${id}`, new HttpOptions());
     return this.#validator.validateAsync(TransportationVehicle, response);
   }
 
@@ -40,11 +50,16 @@ export class TransportationVehicleApiService {
   }
 
   async deleteOne(id: string): Promise<number> {
-    const { deletedCount } = await firstValueFrom(this.#http.delete<{ deletedCount: number }>(`${this.#path}/${id}`, new HttpOptions()));
+    const { deletedCount } = await firstValueFrom(
+      this.#http.delete<{ deletedCount: number }>(`${this.#path}/${id}`, new HttpOptions()),
+    );
     return deletedCount;
   }
 
-  validate<K extends keyof Pick<TransportationVehicle, 'name' | 'licencePlate' | 'passportNumber' | 'vin'>>(path: SchemaPath<TransportationVehicle[K]>, key: K) {
+  validate<K extends keyof Pick<TransportationVehicle, 'name' | 'licencePlate' | 'passportNumber' | 'vin'>>(
+    path: SchemaPath<TransportationVehicle[K]>,
+    key: K,
+  ) {
     validateHttp(path, {
       request: () => httpResponseRequest(`${this.#path}/validate/${key}`, new HttpOptions().cacheable()),
       onSuccess: (response: TransportationVehicle[K][], { value }) => {

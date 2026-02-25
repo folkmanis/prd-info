@@ -19,5 +19,10 @@ export default [
     path: 'route-sheets',
     loadChildren: () => import('./route-sheets/route-sheets-routes'),
   },
+  {
+    path: 'monthly-consumption',
+    loadComponent: () =>
+      import('./monthly-consumption/monthly-consumption.component').then((c) => c.MonthlyConsumptionComponent),
+  },
   { path: '**', redirectTo: '' },
 ] as Route[];

@@ -1,0 +1,46 @@
+<mat-card>
+  <mat-card-content>
+    <section class="selection">
+      <mat-form-field id="vehicle">
+        <mat-label> Automašīna </mat-label>
+        <mat-select [formField]="selectionForm.vehicle">
+          @if (vehicles.hasValue()) {
+            @for (vehicle of vehicles.value(); track vehicle._id) {
+              <mat-option [value]="vehicle._id">
+                {{ vehicle.name }}
+              </mat-option>
+            }
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field id="year">
+        <mat-label> Gads </mat-label>
+        <mat-select [formField]="selectionForm.year">
+          @for (year of years(); track year) {
+            <mat-option [value]="year">
+              {{ year }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </section>
+    <section class="vehicle-info">
+      <span class="label-large">
+        @if (vehicleResource.hasValue()) {
+          {{ vehicleResource.value().consumption | number: '1.1-1' }} {{ consumptionUnits() }}
+        }
+      </span>
+    </section>
+  </mat-card-content>
+</mat-card>
+
+@if (vehicleResource.hasValue()) {
+  @if (consumption(); as consumption) {
+    <app-consumption-table
+      [consumptionData]="consumption"
+      [units]="consumptionUnits()"
+      [average]="vehicleResource.value().consumption"
+    />
+  }
+}

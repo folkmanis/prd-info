@@ -1,0 +1,9 @@
+:host {
+    display: block;
+    margin-block: 16px;
+}
+
+.over-average .mat-column-consumptionRate {
+    color: var(--mat-sys-error);
+    font-weight: 800;
+}

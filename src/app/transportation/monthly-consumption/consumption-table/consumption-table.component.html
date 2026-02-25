@@ -1,0 +1,28 @@
+<mat-table [dataSource]="consumptionData()" class="app-table">
+  <!-- Month Column -->
+  <ng-container matColumnDef="month">
+    <mat-header-cell *matHeaderCellDef>Mēnesis</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{ element.month }}</mat-cell>
+  </ng-container>
+
+  <!-- Mileage Column -->
+  <ng-container matColumnDef="mileage">
+    <mat-header-cell *matHeaderCellDef>Nobraukums</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{ element.mileage | number: '1.0-0' }}</mat-cell>
+  </ng-container>
+
+  <!-- Consumed Column -->
+  <ng-container matColumnDef="consumed">
+    <mat-header-cell *matHeaderCellDef>Patērēts</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{ element.consumed | number: '1.1' }}</mat-cell>
+  </ng-container>
+
+  <!-- consumptionRate Column -->
+  <ng-container matColumnDef="consumptionRate">
+    <mat-header-cell *matHeaderCellDef>Vidējais patēriņš {{ units() }} </mat-header-cell>
+    <mat-cell *matCellDef="let element">{{ element.consumptionRate | number: '1.1-1' }}</mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="columns" />
+  <mat-row *matRowDef="let row; columns: columns" [class.over-average]="row.consumptionRate > average()" />
+</mat-table>
