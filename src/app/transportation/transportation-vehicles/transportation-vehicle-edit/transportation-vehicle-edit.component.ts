@@ -1,4 +1,14 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, linkedSignal, signal, untracked } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  linkedSignal,
+  signal,
+  untracked,
+} from '@angular/core';
 import { debounce, disabled, form, FormField, min, required, submit, validate } from '@angular/forms/signals';
 import { MatButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -7,21 +17,37 @@ import { MatDivider } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatOption, MatSelect } from '@angular/material/select';
-import { isEqual, omitBy } from 'lodash-es';
 import { FuelType } from 'src/app/interfaces';
 import { assertNotNull, ConfirmationDialogService } from 'src/app/library';
 import { InputUppercaseDirective } from 'src/app/library/directives/input-uppercase.directive';
 import { CanComponentDeactivate } from 'src/app/library/guards';
 import { navigateRelative } from 'src/app/library/navigation';
+import { computedSignalChanges } from 'src/app/library/signals';
 import { SimpleContentContainerComponent } from 'src/app/library/simple-form/simple-content-container/simple-content-container.component';
-import { OdometerReading, TransportationVehicle, TransportationVehicleCreate, TransportationVehicleUpdate } from '../../interfaces/transportation-vehicle';
+import {
+  OdometerReading,
+  TransportationVehicle,
+  TransportationVehicleCreate,
+  TransportationVehicleUpdate,
+} from '../../interfaces/transportation-vehicle';
 import { TransportationVehicleService } from '../../services/transportation-vehicle.service';
 import { TransportationVehiclesListComponent } from '../transportation-vehicles-list/transportation-vehicles-list.component';
 import { OdometerReadingsComponent } from './odometer-readings/odometer-readings.component';
-import { computedSignalChanges } from 'src/app/library/signals';
 
-const EDITABLE_PROPERTIES = ['name', 'licencePlate', 'passportNumber', 'vin', 'consumption', 'fuelType', 'disabled'] as const;
-type FormValue = { [P in keyof Pick<TransportationVehicle, (typeof EDITABLE_PROPERTIES)[number]>]-?: NonNullable<TransportationVehicle[P]> };
+const EDITABLE_PROPERTIES = [
+  'name',
+  'licencePlate',
+  'passportNumber',
+  'vin',
+  'consumption',
+  'fuelType',
+  'disabled',
+] as const;
+type FormValue = {
+  [P in keyof Pick<TransportationVehicle, (typeof EDITABLE_PROPERTIES)[number]>]-?: NonNullable<
+    TransportationVehicle[P]
+  >;
+};
 
 @Component({
   selector: 'app-transportation-vehicle-edit',
@@ -99,11 +125,11 @@ export class TransportationVehicleEditComponent implements CanComponentDeactivat
   protected busy = signal(false);
   protected editActive = signal(false);
 
-  isNew = computed(() => !this.initialValue()._id);
+  protected isNew = computed(() => !this.initialValue()._id);
 
-  changes = computedSignalChanges(this.#vehicleModel, this.#initialModel);
+  protected changes = computedSignalChanges(this.#vehicleModel, this.#initialModel);
 
-  fuelCompareWith = (o1: FuelType, o2: FuelType) => o1 && o2 && o1.type === o2.type;
+  protected fuelCompareWith = (o1: FuelType, o2: FuelType) => o1 && o2 && o1.type === o2.type;
 
   constructor() {
     effect(() => {
@@ -130,7 +156,10 @@ export class TransportationVehicleEditComponent implements CanComponentDeactivat
   }
 
   protected onSave() {
-    submit(this.vehicleForm, async () => {
+    submit(this.vehicleForm, async (f) => {
+      if (f().valid() == false) {
+        return;
+      }
       const id = this.initialValue()._id;
       this.busy.set(true);
       if (id) {
@@ -203,7 +232,6 @@ export class TransportationVehicleEditComponent implements CanComponentDeactivat
   }
 
   #toVehicleUpdate(value: Partial<FormValue>): TransportationVehicleUpdate {
-    console.log(value);
     const update: TransportationVehicleUpdate = { ...value };
     for (const key of ['licencePlate', 'passportNumber', 'vin']) {
       if (value[key] !== undefined) {

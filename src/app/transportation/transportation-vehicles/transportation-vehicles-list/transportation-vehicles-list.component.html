@@ -25,7 +25,9 @@
 
       <ng-container matColumnDef="consuption">
         <mat-header-cell *matHeaderCellDef> Patēriņš </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{ row.consuption }} {{ row.fuelType.units }}/100 km </mat-cell>
+        <mat-cell *matCellDef="let row">
+          {{ row.consumption | number: '1.1-1' }} {{ row.fuelType.units }}/100&nbsp;km
+        </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="fuelType">

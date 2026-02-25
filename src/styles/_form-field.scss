@@ -4,6 +4,8 @@
     .app-disabled-view {
         @include mat.form-field-overrides((outlined-disabled-input-text-color: color-mix(in srgb, var(--mat-sys-on-surface) 70%, transparent),
                 outlined-disabled-label-text-color: color-mix(in srgb, var(--mat-sys-on-surface) 70%, transparent),
+                disabled-trailing-icon-color: color-mix(in srgb, var(--mat-sys-on-surface) 70%, transparent),
+                disabled-leading-icon-color: color-mix(in srgb, var(--mat-sys-on-surface) 70%, transparent),
             ));
     }
 }

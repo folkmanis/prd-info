@@ -79,11 +79,11 @@
           <mat-form-field>
             <mat-label> Patēriņš </mat-label>
             <input matInput type="number" step="any" [formField]="vehicleForm.consumption" />
-            <ng-container matTextSuffix>
+            <span matSuffix>
               @if (vehicleForm.fuelType().value().units; as units) {
-                <span> {{ units }}/100km </span>
+                {{ units }}/100&nbsp;km
               }
-            </ng-container>
+            </span>
           </mat-form-field>
         </section>
 
@@ -103,7 +103,7 @@
             Saglabāt
           </button>
           @if (isNew() === false) {
-            <button matButton="outlined" type="reset" [disabled]="busy()">Atcelt</button>
+            <button matButton type="reset" [disabled]="busy()">Atcelt</button>
           }
         } @else {
           <button matButton="outlined" type="button" (click)="editActive.set(true)">Labot</button>
@@ -115,22 +115,24 @@
     </form>
   </mat-card>
 
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Odometra rādījumi</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <app-odometer-readings
-        #odometerReadingsComponent
-        [odometerReadings]="odometerReadings()"
-        (odometerReadingsChange)="onOdometerUpdate($event)"
-        [disabled]="editActive() || busy()"
-      ></app-odometer-readings>
-    </mat-card-content>
-    <mat-card-actions>
-      <button matButton [disabled]="editActive() || busy()" (click)="odometerReadingsComponent.onAdd()">
-        Pievienot
-      </button>
-    </mat-card-actions>
-  </mat-card>
+  @if (isNew() === false) {
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Odometra rādījumi</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <app-odometer-readings
+          #odometerReadingsComponent
+          [odometerReadings]="odometerReadings()"
+          (odometerReadingsChange)="onOdometerUpdate($event)"
+          [disabled]="editActive() || busy()"
+        ></app-odometer-readings>
+      </mat-card-content>
+      <mat-card-actions>
+        <button matButton [disabled]="editActive() || busy()" (click)="odometerReadingsComponent.onAdd()">
+          Pievienot
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  }
 </app-simple-content-container>

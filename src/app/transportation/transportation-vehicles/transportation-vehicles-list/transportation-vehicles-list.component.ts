@@ -3,10 +3,11 @@ import { TransportationVehicleService } from '../../services/transportation-vehi
 import { MatTableModule } from '@angular/material/table';
 import { SimpleListContainerComponent } from 'src/app/library/simple-form';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-transportation-vehicles-list',
-  imports: [SimpleListContainerComponent, MatTableModule, RouterLink, RouterLinkActive],
+  imports: [SimpleListContainerComponent, MatTableModule, RouterLink, RouterLinkActive, DecimalPipe],
   templateUrl: './transportation-vehicles-list.component.html',
   styleUrl: './transportation-vehicles-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
