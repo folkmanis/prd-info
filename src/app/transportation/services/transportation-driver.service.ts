@@ -1,6 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { FilterInput, toFilterSignal } from 'src/app/library';
-import { TransportationDriver, TransportationDriverCreate, TransportationDriverUpdate } from '../interfaces/transportation-driver';
+import {
+  TransportationDriver,
+  TransportationDriverCreate,
+  TransportationDriverUpdate,
+} from '../interfaces/transportation-driver';
 import { TransportationDriverApiService } from './transportation-driver-api.service';
 
 export interface TransportationDriverRequestFilter {
@@ -21,6 +25,10 @@ export class TransportationDriverService {
 
   getDriver(id: string) {
     return this.#api.getOne(id);
+  }
+
+  getDrivers(filter: TransportationDriverRequestFilter = {}): Promise<TransportationDriver[]> {
+    return this.#api.getDrivers(filter);
   }
 
   create(driver: TransportationDriverCreate) {

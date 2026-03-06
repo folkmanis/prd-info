@@ -1,142 +1,125 @@
-import { ChangeDetectionStrategy, Component, effect, forwardRef, inject, input } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  ControlValueAccessor,
-  FormBuilder,
-  FormsModule,
-  NG_VALIDATORS,
-  NG_VALUE_ACCESSOR,
-  ReactiveFormsModule,
-  TouchedChangeEvent,
-  ValidationErrors,
-  Validator,
-  Validators,
-  ValueChangeEvent,
-} from '@angular/forms';
+import { ChangeDetectionStrategy, Component, inject, Signal, signal } from '@angular/core';
+import { form, FormField, min, required, submit, validate } from '@angular/forms/signals';
+import { MatButton } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatOption, MatSelect } from '@angular/material/select';
+import { endOfMonth, startOfMonth } from 'date-fns';
 import { isFinite, round } from 'lodash-es';
-import { filter } from 'rxjs';
 import { FuelType } from 'src/app/interfaces';
+import { computedSignalChanges } from 'src/app/library/signals';
 import { ViewSizeDirective } from 'src/app/library/view-size';
 import { configuration } from 'src/app/services/config.provider';
-import { FuelPurchase, newFuelPurchase } from '../../../../interfaces/fuel-purchase';
+import { FuelPurchase } from '../../../../interfaces/fuel-purchase';
+
+export interface FuelPurchaseDialogData {
+  fuelPurchase: FuelPurchase;
+  defaultFuelType: FuelType;
+  year: number;
+  month: number;
+}
+
+interface FuelModel {
+  date: Date;
+  type: string;
+  units: string;
+  amount: number;
+  price: number;
+  total: number;
+  invoiceId: string;
+}
 
 @Component({
   selector: 'app-single-purchase',
-  imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInput, MatDatepickerModule, MatSelect, MatOption, ViewSizeDirective],
+  imports: [
+    MatFormFieldModule,
+    MatInput,
+    MatDatepickerModule,
+    MatSelect,
+    MatOption,
+    ViewSizeDirective,
+    FormField,
+    MatButton,
+    MatDialogModule,
+  ],
   templateUrl: './single-purchase.component.html',
   styleUrl: './single-purchase.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => SinglePurchaseComponent),
-      multi: true,
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => SinglePurchaseComponent),
-      multi: true,
-    },
-  ],
 })
-export class SinglePurchaseComponent implements ControlValueAccessor, Validator {
-  form = inject(FormBuilder).group({
-    date: [null as Date | null, [Validators.required]],
-    type: [null as string | null, [Validators.required]],
-    units: [null as string | null, [Validators.required]],
-    amount: [null as null | number, [Validators.required, Validators.min(0)]],
-    price: [null as null | number, [Validators.required]],
-    total: [null as null | number, [Validators.required, Validators.min(0)]],
-    invoiceId: [null as null | string],
-  });
+export class SinglePurchaseComponent {
+  #dialogRef = inject(MatDialogRef);
+
+  #data = inject<FuelPurchaseDialogData>(MAT_DIALOG_DATA);
 
   fuelTypes = configuration('transportation', 'fuelTypes');
 
-  defaultFuelType = input<FuelType>();
+  protected startDate = startOfMonth(new Date(this.#data.year, this.#data.month - 1));
+  protected endDate = endOfMonth(new Date(this.#data.year, this.#data.month - 1));
 
-  startDate = input<Date | null>();
+  #fuelModel = signal<FuelModel>(this.#toModel(this.#data.fuelPurchase));
 
-  onTouched = () => {};
+  protected fuelForm = form(this.#fuelModel, (schema) => {
+    required(schema.date);
+    validate(schema.date, ({ value }) =>
+      value() >= this.startDate && value() <= this.endDate
+        ? null
+        : { kind: 'invalid_date', message: `Datumam jābūt atskaites mēnesī` },
+    );
 
-  constructor() {
-    this.form.events
-      .pipe(
-        filter((event) => event instanceof ValueChangeEvent),
-        takeUntilDestroyed(),
-      )
-      .subscribe((event) => this.updateTotal(event));
+    required(schema.type);
+    required(schema.units);
 
-    this.form.events
-      .pipe(
-        filter((event) => event instanceof TouchedChangeEvent && event.touched),
-        takeUntilDestroyed(),
-      )
-      .subscribe(() => this.onTouched());
+    required(schema.amount);
+    min(schema.amount, 0);
 
-    this.form.controls.type.valueChanges.pipe(takeUntilDestroyed()).subscribe((type) => this.setUnits(type));
+    required(schema.price);
+    min(schema.price, 0);
 
-    effect(() => {
-      const type = this.defaultFuelType()?.type;
-      if (!this.form.value.type && type) {
-        this.form.patchValue({ type });
+    required(schema.total);
+    min(schema.total, 0);
+  });
+
+  protected changes = computedSignalChanges(
+    this.#fuelModel as Signal<Record<string, any>>,
+    signal(this.#toModel(this.#data.fuelPurchase)).asReadonly(),
+  );
+
+  onSave() {
+    submit(this.fuelForm, async (f) => {
+      if (f().valid() === false) {
+        return;
       }
+      this.#dialogRef.close(this.#fromModel(this.#fuelModel()));
     });
   }
 
-  writeValue(obj: any): void {
-    const purchase = obj ?? newFuelPurchase(this.defaultFuelType());
-    this.form.reset(purchase, { emitEvent: false });
+  #toModel(fp: FuelPurchase): FuelModel {
+    return {
+      ...fp,
+      invoiceId: fp.invoiceId ?? '',
+    };
   }
 
-  registerOnChange(fn: any): void {
-    this.form.valueChanges.subscribe(fn);
+  #fromModel(fm: FuelModel): FuelPurchase {
+    return {
+      ...fm,
+      invoiceId: fm.invoiceId || undefined,
+    };
   }
 
-  registerOnTouched(fn: any): void {
-    this.onTouched = fn;
+  protected onTotalChange() {
+    this.#updatePrice();
   }
 
-  setDisabledState(isDisabled: boolean): void {
-    if (isDisabled) {
-      this.form.disable({ emitEvent: false });
-    } else {
-      this.form.enable({ emitEvent: false });
-    }
+  protected onAmountChange() {
+    this.#updatePrice();
   }
 
-  validate(): ValidationErrors | null {
-    if (this.form.valid) {
-      return null;
-    } else {
-      return Object.entries(this.form.controls).reduce(
-        (acc, [key, control]) => ({
-          ...acc,
-          ...(control.invalid ? { [key]: control.errors } : {}),
-        }),
-        {},
-      );
-    }
-  }
-
-  private setUnits(type: string | null) {
-    if (type === null) {
-      return;
-    }
-    const units = this.fuelTypes().find((fuelType) => fuelType.type === type)?.units;
-    units && this.form.controls.units.setValue(units);
-  }
-
-  private updateTotal(event: ValueChangeEvent<FuelPurchase>) {
-    const {
-      value: { amount, price, total },
-    } = event;
-    const update = isFinite(amount) && isFinite(total) && amount > 0 ? round(total / amount, 3) : null;
-    if (update !== price) {
-      this.form.controls.price.setValue(update);
-    }
+  #updatePrice() {
+    const { amount, total } = this.#fuelModel();
+    const priceUpdate = isFinite(amount) && isFinite(total) && amount > 0 ? round(total / amount, 3) : NaN;
+    this.fuelForm.price().value.set(priceUpdate);
   }
 }

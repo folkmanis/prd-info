@@ -1,42 +1,36 @@
-import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators, ValueChangeEvent } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDivider } from '@angular/material/divider';
 import { MatTabsModule } from '@angular/material/tabs';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { isEqual, pickBy } from 'lodash-es';
 import { filter, map, of, switchMap } from 'rxjs';
+import { assertNoNullProperties, assertNotNull, notNullOrThrow } from 'src/app/library';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { CanComponentDeactivate } from 'src/app/library/guards';
 import { navigateRelative } from 'src/app/library/navigation';
-import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
+import { SimpleContentContainerComponent } from 'src/app/library/simple-form/simple-content-container/simple-content-container.component';
+import { FuelPurchase } from '../../interfaces/fuel-purchase';
 import { TransportationDriver } from '../../interfaces/transportation-driver';
 import { RouteTrip, TransportationRouteSheet } from '../../interfaces/transportation-route-sheet';
-import { FuelPurchase } from '../../interfaces/fuel-purchase';
 import { TransportationVehicle } from '../../interfaces/transportation-vehicle';
 import { RouteSheetService } from '../../services/route-sheet.service';
 import { TransportationDriverService } from '../../services/transportation-driver.service';
 import { TransportationVehicleService } from '../../services/transportation-vehicle.service';
-import { FuelPurchasesComponent } from './fuel-purchases/fuel-purchases.component';
-import { GeneralSetupComponent } from './general-setup/general-setup.component';
-import { RouteTripsComponent } from './route-trips/route-trips.component';
-import { assertNoNullProperties, assertNotNull, notNullOrThrow } from 'src/app/library';
 import { RouteSheetListComponent } from '../route-sheet-list/route-sheet-list.component';
 
 @Component({
   selector: 'app-route-sheet-edit',
   imports: [
-    AsyncPipe,
-    SimpleFormContainerComponent,
+    SimpleContentContainerComponent,
     FormsModule,
     ReactiveFormsModule,
     MatTabsModule,
-    MatDivider,
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
     MatButtonModule,
-    GeneralSetupComponent,
-    FuelPurchasesComponent,
-    RouteTripsComponent,
   ],
   templateUrl: './route-sheet-edit.component.html',
   styleUrl: './route-sheet-edit.component.scss',

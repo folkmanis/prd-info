@@ -1,177 +1,175 @@
-import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, inject, input, viewChild } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import {
-  ControlValueAccessor,
-  FormArray,
-  FormControl,
-  FormsModule,
-  NG_VALIDATORS,
-  NG_VALUE_ACCESSOR,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validator,
-  Validators,
-} from '@angular/forms';
+import { DatePipe, DecimalPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, input, linkedSignal, signal } from '@angular/core';
 import { MatButton, MatIconButton } from '@angular/material/button';
-import { MatAccordion, MatExpansionModule } from '@angular/material/expansion';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
+import { MatDivider, MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
+import { addBusinessDays, clamp, endOfMonth } from 'date-fns';
 import { isEqual } from 'lodash-es';
+import { firstValueFrom, map } from 'rxjs';
+import { numberOrDefaultZero } from 'src/app/library';
+import { ConfirmationDirective } from 'src/app/library/confirmation-dialog';
+import { updateCatching } from 'src/app/library/update-catching';
 import { HistoricalData } from 'src/app/transportation/interfaces/historical-data';
-import { TransportationCustomer } from 'src/app/transportation/interfaces/transportation-customer';
-import { RouteTrip, RouteStop } from 'src/app/transportation/interfaces/transportation-route-sheet';
-import { TransportationVehicle } from 'src/app/transportation/interfaces/transportation-vehicle';
-import { AccordionDirective } from 'src/app/transportation/ui/accordion.directive';
-import { SingleTripComponent } from './single-trip/single-trip.component';
+import {
+  RouteStop,
+  RouteTrip,
+  TransportationRouteSheet,
+} from 'src/app/transportation/interfaces/transportation-route-sheet';
+import { RouteSheetService } from 'src/app/transportation/services/route-sheet.service';
 import { TripsTotalComponent } from '../../../ui/trips-total/trips-total.component';
-import { assertArrayOfNotNull, numberOrDefaultZero } from 'src/app/library';
+import { SingleTripComponent, TripDialogData } from './single-trip/single-trip.component';
 
 @Component({
   selector: 'app-route-trips',
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    MatButton,
-    SingleTripComponent,
-    MatExpansionModule,
     DatePipe,
+    DecimalPipe,
+    MatButton,
     MatMenuModule,
     MatIcon,
     MatIconButton,
-    AccordionDirective,
     TripsTotalComponent,
+    MatListModule,
+    MatDivider,
+    ConfirmationDirective,
   ],
   templateUrl: './route-trips.component.html',
   styleUrl: './route-trips.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: RouteTripsComponent,
-      multi: true,
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: RouteTripsComponent,
-      multi: true,
-    },
-  ],
 })
-export class RouteTripsComponent implements ControlValueAccessor, Validator {
-  private chDetector = inject(ChangeDetectorRef);
-  private accordion = viewChild.required(MatAccordion, { read: AccordionDirective });
+export class RouteTripsComponent {
+  readonly #routeSheetService = inject(RouteSheetService);
+  readonly #dialog = inject(MatDialog);
 
-  form = new FormArray<FormControl<RouteTrip | null>>([]);
+  routeSheet = input.required<TransportationRouteSheet>();
+  protected trips = linkedSignal(() => this.routeSheet().trips);
+  protected busy = signal(false);
+  readonly #updateFn = updateCatching(this.busy);
+  #descriptions$ = this.#routeSheetService.descriptions();
 
-  formValue = toSignal(this.form.valueChanges, { initialValue: this.form.value });
-
-  customers = input<TransportationCustomer[] | null>([]);
-
-  vehicle = input<TransportationVehicle | null>();
-
-  onTouched = () => {};
-
-  historicalData = input<HistoricalData | null>(null);
-
-  fuelUnits = computed(() => this.vehicle()?.fuelType?.units ?? '');
-
-  startDate = input<Date | null>();
-
-  writeValue(obj: RouteTrip[] | null): void {
-    if ((obj?.length ?? 0) < this.form.length) {
-      this.accordion().closeAll();
-    }
-    if (obj?.length === this.form.length) {
-      this.form.reset(obj, { emitEvent: false });
-    } else {
-      this.form.clear({ emitEvent: false });
-      obj?.forEach((trip) => this.form.push(new FormControl(trip), { emitEvent: false }));
-    }
-    this.chDetector.markForCheck();
-  }
-
-  registerOnChange(fn: any): void {
-    this.form.valueChanges.subscribe(fn);
-  }
-
-  registerOnTouched(fn: any): void {
-    this.onTouched = fn;
-  }
-
-  setDisabledState(isDisabled: boolean): void {
-    if (isDisabled) {
-      this.form.disable({ emitEvent: false });
-    } else {
-      this.form.enable({ emitEvent: false });
+  protected sortByDate() {
+    const trips = this.trips();
+    const sorted = this.#sortTripsByDate(trips);
+    if (isEqual(trips, sorted) === false) {
+      this.trips.set(sorted);
+      this.#saveRouteTrips();
     }
   }
 
-  validate(): ValidationErrors | null {
-    if (this.form.valid) {
-      return null;
-    } else {
-      return this.form.controls.reduce((errors, control, idx) => (control.invalid ? { ...errors, [idx]: control.errors } : errors), {});
-    }
-  }
-
-  onAppend() {
-    const tripControl = new FormControl(null, [Validators.required]);
-    this.form.push(tripControl);
-    this.onTouched();
-    this.chDetector.markForCheck();
-    this.accordion().expandLast();
-  }
-
-  onRemove(index: number) {
-    this.accordion().closeAll();
-    this.form.removeAt(index);
-    this.onTouched();
-    this.chDetector.markForCheck();
-  }
-
-  getDescription(stops?: RouteStop[]): string | null {
-    if (!stops || stops.length < 1) {
-      return null;
-    }
-    return stops
+  protected getDescription = (stops: RouteStop[]) =>
+    stops
       .map((stop) => stop.name)
       .filter(Boolean)
       .join(' - ');
-  }
 
-  onSortByDate() {
-    assertArrayOfNotNull(this.form.value);
-    const sorted = this.sortTripsByDate(this.form.value);
-    if (!isEqual(this.form.value, sorted)) {
-      this.form.setValue(sorted);
+  protected async editTrip(idx: number) {
+    const dialogRef = this.#dialog.open(SingleTripComponent, { data: this.#getTripDialogData(this.trips()[idx]) });
+    const result = await firstValueFrom(dialogRef.afterClosed());
+    if (result) {
+      this.trips.update((ts) => ts.map((t, i) => (i === idx ? result : t)));
+      this.#saveRouteTrips();
     }
   }
 
-  lastOdometer(idx: number) {
-    return computed(() => {
-      const hData = this.historicalData();
-      this.formValue();
-      if (this.form.length === 1 && hData && this.form.value[idx]?.date && new Date(hData.lastYear, hData.lastMonth - 1) < this.form.value[idx]?.date) {
-        return this.historicalData()?.lastOdometer || null;
-      }
-      if (this.form.value[idx]?.date) {
-        return this.lastDistance(this.form.value[idx].date) ?? this.historicalData()?.lastOdometer ?? null;
-      }
-      return null;
+  protected deleteTrip(idx: number) {}
+
+  protected async appendTrip() {
+    const trip = {
+      date: this.#getNextTripDay(),
+      tripLengthKm: 0,
+      fuelConsumed: 0,
+      odoStartKm: 0,
+      odoStopKm: 0,
+      description: '',
+      stops: [],
+    };
+
+    const dialogRef = this.#dialog.open(SingleTripComponent, { data: this.#getTripDialogData(trip) });
+    const result = await firstValueFrom(dialogRef.afterClosed());
+    if (result) {
+      this.trips.update((ts) => [...ts, result]);
+      this.#saveRouteTrips();
+    }
+  }
+
+  #sortTripsByDate = (trips: RouteTrip[]) => [...trips].sort((a, b) => a.date.getTime() - b.date.getTime());
+
+  async #saveRouteTrips() {
+    const { _id: id } = this.routeSheet();
+    const update = { trips: this.trips() };
+
+    this.#updateFn(async (message) => {
+      const { trips } = await this.#routeSheetService.updateRouteSheet(id, update);
+      this.trips.set(trips);
+      message(`Izmaiņas saglabātas`);
     });
   }
 
-  private sortTripsByDate(unsorted: RouteTrip[]): RouteTrip[] {
-    const sorted = [...unsorted];
-    sorted.sort((a, b) => +a.date - +b.date);
-    return sorted;
+  #getTripDialogData(trip: RouteTrip): TripDialogData {
+    const {
+      month,
+      year,
+      vehicle: {
+        consumption: fuelConsumption,
+        fuelType: { units: fuelUnits },
+        licencePlate,
+      },
+    } = this.routeSheet();
+
+    const lastOdometer$ = this.#routeSheetService
+      .getHistoricalData(licencePlate)
+      .pipe(map((h) => h?.lastOdometer ?? null));
+
+    const customers$ = this.#routeSheetService.getCustomers();
+
+    return {
+      tripLengthCalculator: (stops) => this.#routeSheetService.getTripLength(stops),
+      trip,
+      month,
+      year,
+      fuelConsumption,
+      fuelUnits,
+      descriptions$: this.#descriptions$,
+      lastOdometer$,
+      customers$,
+    };
   }
 
-  private lastDistance(date: Date): number {
-    return this.form.value
+  #lastOdometer(hData: HistoricalData, trips: RouteTrip[], idx: number) {
+    if (!hData) {
+      return null;
+    }
+    if (trips.length === 1 && trips[idx].date && new Date(hData.lastYear, hData.lastMonth - 1) < trips[idx].date) {
+      return hData.lastOdometer;
+    }
+    if (trips[idx]?.date) {
+      return this.#lastDistance(trips, trips[idx].date) ?? hData.lastOdometer ?? null;
+    }
+    return null;
+  }
+
+  #lastDistance(trips: RouteTrip[], date: Date): number {
+    return trips
       .filter((d) => d && d.date < date && d.odoStopKm > 0)
       .map((d) => numberOrDefaultZero(d?.odoStopKm))
       .reduce((acc, curr) => (curr > acc ? curr : acc), 0);
+  }
+
+  #getNextTripDay(): Date {
+    const { year, month } = this.routeSheet();
+    let date = 1;
+    for (const trip of this.trips()) {
+      const d = trip.date.getDate();
+      console.log(d);
+      if (d > date) {
+        date = d;
+      }
+    }
+    return clamp(addBusinessDays(new Date(year, month - 1, date), 1), {
+      start: new Date(year, month - 1),
+      end: endOfMonth(new Date(year, month - 1)),
+    });
   }
 }

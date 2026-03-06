@@ -1,46 +1,16 @@
-@let historicalData = historicalData$ | async;
+<app-simple-content-container>
+  <nav mat-tab-nav-bar dynamicHeight [tabPanel]="tabPanel">
+    <a mat-tab-link routerLink="general-setup" routerLinkActive #rlaG="routerLinkActive" [active]="rlaG.isActive">
+      Pamatinformācija
+    </a>
 
-<app-simple-form-container
-  buttons
-  [status]="formStatus()"
-  [isChanges]="changes()"
-  (save)="onSave()"
-  (resetForm)="onReset()"
-  [formGroup]="form"
->
-  <mat-tab-group dynamicHeight>
-    <mat-tab label="Pamatinformācija">
-      <app-general-setup
-        [drivers]="drivers.value() ?? []"
-        [vehicles]="vehicles.value() ?? []"
-        [historicalData]="historicalData"
-      >
-        <mat-divider />
-        <div class="buttons">
-          <button matButton="elevated" class="tertiary" (click)="onDelete()" [disabled]="!initialValue()._id">
-            Dzēst
-          </button>
-          @if (initialValue()._id; as id) {
-            <a matButton="elevated" href="/data/transportation/report_{{ id }}.pdf" target="new"> Izdrukāt </a>
-          }
-        </div>
-      </app-general-setup>
-    </mat-tab>
-    <mat-tab label="Degvielas pirkumi" [disabled]="generalValid() === false">
-      <app-fuel-purchases
-        formControlName="fuelPurchases"
-        [defaultFuelType]="form.controls.vehicle.value?.fuelType"
-        [startDate]="startDate()"
-      />
-    </mat-tab>
-    <mat-tab label="Maršruti" [disabled]="generalValid() === false">
-      <app-route-trips
-        formControlName="trips"
-        [customers]="customers$ | async"
-        [vehicle]="form.controls.vehicle.value"
-        [historicalData]="historicalData"
-        [startDate]="startDate()"
-      />
-    </mat-tab>
-  </mat-tab-group>
-</app-simple-form-container>
+    <a mat-tab-link routerLink="fuel-purchases" routerLinkActive #rlaP="routerLinkActive" [active]="rlaP.isActive">
+      Degviela
+    </a>
+
+    <a mat-tab-link routerLink="trips" routerLinkActive #rlaT="routerLinkActive" [active]="rlaT.isActive"> Maršruti </a>
+  </nav>
+  <mat-tab-nav-panel #tabPanel>
+    <router-outlet />
+  </mat-tab-nav-panel>
+</app-simple-content-container>

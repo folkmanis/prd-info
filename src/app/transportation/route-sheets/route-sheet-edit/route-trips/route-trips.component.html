@@ -1,4 +1,47 @@
-<mat-accordion appAccordion>
+@let vehicle = routeSheet().vehicle;
+
+<mat-list>
+  @for (trip of trips(); track $index) {
+    <mat-list-item>
+      <div matListItemMeta>
+        <button matIconButton [disabled]="busy()" (click)="editTrip($index)">
+          <mat-icon> edit </mat-icon>
+        </button>
+        <button
+          matIconButton
+          [disabled]="busy()"
+          class="tertiary"
+          appConfirmation="delete"
+          (appConfirmedClick)="deleteTrip($index)"
+        >
+          <mat-icon> delete </mat-icon>
+        </button>
+      </div>
+      <span matListItemTitle>
+        {{ trip.date | date: 'd. MMMM' }}, {{ trip.tripLengthKm | number: '1.0-1' }}&nbsp;km,
+        {{ trip.fuelConsumed | number: '1.1-1' }}&nbsp;{{ vehicle.fuelType.units }}
+      </span>
+      <span matListItemLine class="route-description">
+        {{ getDescription(trip.stops) }}
+      </span>
+    </mat-list-item>
+    <mat-divider />
+  }
+</mat-list>
+
+<div class="actions">
+  <button matButton (click)="appendTrip()" [disabled]="busy()">Pievienot</button>
+  <app-trips-total [routeTrips]="trips()" [fuelUnits]="vehicle.fuelType.units" />
+  <button matIconButton [matMenuTriggerFor]="extraActions">
+    <mat-icon> more_vert </mat-icon>
+  </button>
+</div>
+
+<mat-menu #extraActions>
+  <button mat-menu-item (click)="sortByDate()" [disabled]="trips().length < 2 || busy()">Kārtot pēc datuma</button>
+</mat-menu>
+
+<!-- <mat-accordion appAccordion>
   @for (control of form.controls; track $index) {
     <mat-expansion-panel>
       <mat-expansion-panel-header [class.invalid]="control.invalid">
@@ -34,15 +77,4 @@
     </mat-expansion-panel>
   }
 </mat-accordion>
-
-<app-trips-total [routeTrips]="form.value" [fuelUnits]="fuelUnits()" />
-<div class="actions">
-  <button matButton="elevated" (click)="onAppend()" [disabled]="form.invalid">Pievienot braucienu</button>
-  <button matIconButton [matMenuTriggerFor]="extraActions">
-    <mat-icon> more_vert </mat-icon>
-  </button>
-</div>
-
-<mat-menu #extraActions>
-  <button mat-menu-item (click)="onSortByDate()" [disabled]="form.length < 2">Kārtot pēc datuma</button>
-</mat-menu>
+ -->

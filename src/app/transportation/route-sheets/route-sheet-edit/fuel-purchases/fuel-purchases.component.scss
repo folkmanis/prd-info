@@ -1,10 +1,6 @@
 :host {
   display: block;
-  padding-block: 16px;
-}
-
-mat-expansion-panel-header.invalid mat-panel-title {
-  color: var(--sys-error);
+  padding: 16px;
 }
 
 .actions {
@@ -19,12 +15,8 @@ mat-expansion-panel-header.invalid mat-panel-title {
 
 }
 
-mat-panel-description {
+.description {
   overflow: hidden;
-
-  .description {
-    overflow: hidden;
-    text-wrap: nowrap;
-    text-overflow: ellipsis;
-  }
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
 }

@@ -1,7 +1,13 @@
 import { registerLocaleData } from '@angular/common';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import localeLv from '@angular/common/locales/lv';
-import { DEFAULT_CURRENCY_CODE, ErrorHandler, LOCALE_ID, enableProdMode, provideZonelessChangeDetection } from '@angular/core';
+import {
+  DEFAULT_CURRENCY_CODE,
+  ErrorHandler,
+  LOCALE_ID,
+  enableProdMode,
+  provideZonelessChangeDetection,
+} from '@angular/core';
 import { provideDateFnsAdapter } from '@angular/material-date-fns-adapter';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
@@ -44,7 +50,11 @@ bootstrapApplication(AppComponent, {
     },
     { provide: ErrorHandler, useClass: ErrorsService },
     { provide: TitleStrategy, useClass: ModulePageTitleStrategy },
-    provideRouter(APP_ROUTES, withComponentInputBinding(), withRouterConfig({ onSameUrlNavigation: 'reload' })),
+    provideRouter(
+      APP_ROUTES,
+      withComponentInputBinding(),
+      withRouterConfig({ onSameUrlNavigation: 'reload', paramsInheritanceStrategy: 'always' }),
+    ),
     provideHttpClient(withInterceptors(httpInterceptors)),
     provideDateFnsAdapter(),
   ],

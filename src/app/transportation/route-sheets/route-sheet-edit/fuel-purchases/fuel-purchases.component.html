@@ -1,44 +1,45 @@
-<mat-accordion appAccordion>
-  @for (control of form.controls; track $index) {
-    <mat-expansion-panel>
-      <mat-expansion-panel-header [class.invalid]="control.invalid">
-        <mat-panel-title>
-          @if (control.value; as value) {
-            <span>
-              {{ value.date | date: 'd. MMMM' }}
-            </span>
-          } @else {
-            <span> Jauna uzpilde </span>
-          }
-        </mat-panel-title>
-
-        <mat-panel-description>
-          <span class="description">
-            @if (control.value; as value) {
-              {{ fuelDescription(value.type) }}, {{ value.amount }} {{ value.units }}
-            }
-          </span>
-        </mat-panel-description>
-      </mat-expansion-panel-header>
-
-      <ng-template matExpansionPanelContent="">
-        <app-single-purchase [formControl]="control" [defaultFuelType]="defaultFuelType()" [startDate]="startDate()" />
-        <mat-action-row>
-          <button matButton="elevated" (click)="onRemove($index)" actions>Dzēst</button>
-        </mat-action-row>
-      </ng-template>
-    </mat-expansion-panel>
+<mat-list>
+  @for (purchase of fuelPurchases(); track $index) {
+    <mat-list-item>
+      <div matListItemMeta>
+        <button matIconButton (click)="editFuelPurchase($index)" [disabled]="busy()">
+          <mat-icon> edit </mat-icon>
+        </button>
+        <button
+          matIconButton
+          class="tertiary"
+          appConfirmation="delete"
+          (appConfirmedClick)="deleteFuelPurchase($index)"
+          [disabled]="busy()"
+        >
+          <mat-icon> delete </mat-icon>
+        </button>
+      </div>
+      <span matListItemTitle>
+        {{ purchase.date | date: 'd. MMMM' }}
+      </span>
+      <div matListItemLine class="description">
+        {{ fuelDescription(purchase.type) }}, {{ purchase.amount | number: '1.0-1' }} {{ purchase.units }}
+      </div>
+      <div matListItemLine>
+        <span> Cena: {{ purchase.price | currency }}/{{ purchase.units }} </span>
+        <span> Summa: {{ purchase.total | currency }} </span>
+      </div>
+    </mat-list-item>
+    <mat-divider />
   }
-</mat-accordion>
+</mat-list>
 
 <div class="actions">
-  <button matButton="elevated" (click)="onAppend()" [disabled]="form.invalid">Pievienot degvielu</button>
-  <app-fuel-totals [defaultUnits]="defaultFuelType()?.units" [fuelPurchases]="form.value" />
-  <button matIconButton [matMenuTriggerFor]="extraActions">
+  <button matButton (click)="appendFuelPurchase()" [disabled]="busy()">Pievienot degvielu</button>
+  <app-fuel-totals [defaultUnits]="routeSheet().vehicle.fuelType.units" [fuelPurchases]="fuelPurchases()" />
+  <button matIconButton [matMenuTriggerFor]="extraActions" [disabled]="busy()">
     <mat-icon> more_vert </mat-icon>
   </button>
 </div>
 
 <mat-menu #extraActions>
-  <button mat-menu-item (click)="onSortByDate()" [disabled]="form.length < 2 || !form.valid">Kārtot pēc datuma</button>
+  <button mat-menu-item (click)="onSortByDate()" [disabled]="fuelPurchases().length < 2 || busy()">
+    Kārtot pēc datuma
+  </button>
 </mat-menu>
