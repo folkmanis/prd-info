@@ -29,6 +29,10 @@ export class TransportationVehicleService {
     return this.#api.vehiclesResource(toFilterSignal(filter));
   }
 
+  getVehicles(filter: VehiclesFilter = {}): Promise<TransportationVehicle[]> {
+    return this.#api.getVehicles(filter);
+  }
+
   getVehicle(id: string): Promise<TransportationVehicle> {
     return this.#api.getOne(id);
   }

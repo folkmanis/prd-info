@@ -1,55 +1,70 @@
-<ng-container [formGroup]="form">
-  @let units = form.controls.units.value;
+<h3 mat-dialog-title>Degvielas pirkums</h3>
+<form (submit)="$event.preventDefault(); onSave()">
+  <mat-dialog-content>
+    @let units = fuelForm.units().value();
 
-  <div class="flex-inputs" appViewSize>
-    <mat-form-field>
-      <mat-label> Uzpildes datums </mat-label>
-      <input matInput [matDatepicker]="datePicker" formControlName="date" />
-      <mat-datepicker-toggle matIconSuffix [for]="datePicker" />
-      <mat-datepicker #datePicker [startAt]="startDate() || null" />
-    </mat-form-field>
+    <div class="flex-inputs" appViewSize>
+      <mat-form-field>
+        <mat-label> Uzpildes datums </mat-label>
+        <input matInput [matDatepicker]="datePicker" [formField]="fuelForm.date" [min]="startDate" [max]="endDate" />
+        <mat-datepicker-toggle matIconSuffix [for]="datePicker" />
+        <mat-datepicker #datePicker />
+        <mat-error>
+          @for (error of fuelForm.date().errors(); track $index) {
+            {{ error.message }}
+          }
+        </mat-error>
+      </mat-form-field>
 
-    <mat-form-field>
-      <mat-label> Degvielas veids </mat-label>
-      <mat-select formControlName="type">
-        @for (fuelType of fuelTypes(); track $index) {
-          <mat-option [value]="fuelType.type"> {{ fuelType.description }}, {{ fuelType.units }} </mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-  </div>
+      <mat-form-field>
+        <mat-label> Degvielas veids </mat-label>
+        <mat-select [formField]="fuelForm.type">
+          @for (fuelType of fuelTypes(); track $index) {
+            <mat-option [value]="fuelType.type"> {{ fuelType.description }}, {{ fuelType.units }} </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
 
-  <div class="flex-inputs" appViewSize>
-    <mat-form-field>
-      <mat-label>
-        Daudzums
-        @if (units) {
-          <span>({{ form.value.units }})</span>
-        }
-      </mat-label>
-      <input matInput type="number" formControlName="amount" />
-    </mat-form-field>
+    <div class="flex-inputs" appViewSize>
+      <mat-form-field>
+        <mat-label>
+          Daudzums
+          @if (units) {
+            <span>({{ units }})</span>
+          }
+        </mat-label>
+        <input matInput type="number" step="any" [formField]="fuelForm.amount" (change)="onAmountChange()" />
+      </mat-form-field>
 
-    <mat-form-field>
-      <mat-label> Summa (EUR) </mat-label>
-      <input matInput type="number" formControlName="total" />
-    </mat-form-field>
+      <mat-form-field>
+        <mat-label> Summa (EUR) </mat-label>
+        <input matInput type="number" step="any" [formField]="fuelForm.total" (change)="onTotalChange()" />
+      </mat-form-field>
 
-    <mat-form-field>
-      <mat-label>
-        Cena
-        @if (units) {
-          <span> (EUR/{{ form.value.units }}) </span>
-        }
-      </mat-label>
-      <input matInput type="number" formControlName="price" />
-    </mat-form-field>
-  </div>
+      <mat-form-field>
+        <mat-label>
+          Cena
+          @if (units) {
+            <span> (EUR/{{ units }}) </span>
+          }
+        </mat-label>
+        <input matInput type="number" [formField]="fuelForm.price" step="any" />
+      </mat-form-field>
+    </div>
 
-  <div class="flex-inputs" appViewSize>
-    <mat-form-field>
-      <mat-label> Rēķina (čeka) numurs </mat-label>
-      <input matInput formControlName="invoiceId" />
-    </mat-form-field>
-  </div>
-</ng-container>
+    <div class="flex-inputs" appViewSize>
+      <mat-form-field>
+        <mat-label> Rēķina (čeka) numurs </mat-label>
+        <input matInput [formField]="fuelForm.invoiceId" />
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button matButton="outlined" type="submit" [disabled]="changes() === null || fuelForm().valid() === false">
+      Saglabāt
+    </button>
+    <button matButton type="button" class="tertiary" matDialogClose>Atcelt</button>
+  </mat-dialog-actions>
+</form>

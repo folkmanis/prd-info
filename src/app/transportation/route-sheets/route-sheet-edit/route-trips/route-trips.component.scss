@@ -4,23 +4,15 @@
   padding-inline: 8px;
 }
 
-mat-expansion-panel-header.invalid mat-panel-title {
-  color: var(--sys-error);
-}
-
 app-trips-total {
   display: block;
-}
-
-.actions,
-app-trips-total {
-  margin-block-start: 16px;
 }
 
 .actions {
   display: flex;
   align-items: center;
   column-gap: 16px;
+  margin-top: 16px;
 
   :last-child {
     margin-left: auto;
@@ -31,12 +23,8 @@ app-single-trip {
   margin-block-start: 16px;
 }
 
-mat-panel-description {
+.route-description {
   overflow: hidden;
-
-  .route-description {
-    overflow: hidden;
-    text-wrap: nowrap;
-    text-overflow: ellipsis;
-  }
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
 }

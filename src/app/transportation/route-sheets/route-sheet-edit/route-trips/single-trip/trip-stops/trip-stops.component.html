@@ -1,11 +1,11 @@
 <mat-divider />
 <div
   cdkDropList
-  [cdkDropListDisabled]="isDisabled() === true"
+  [cdkDropListDisabled]="disabled() === true"
   (cdkDropListDropped)="onDrop($event)"
   class="trip-stop-list"
 >
-  @for (stop of tripStops(); track $index) {
+  @for (stop of value(); track $index) {
     <div class="trip-stop button-row" cdkDrag [cdkDragData]="stop">
       <div cdkDragHandle>
         <mat-icon>reorder</mat-icon>
@@ -19,10 +19,10 @@
         </span>
       </div>
       <div class="stop-actions">
-        <button matIconButton (click)="onEditStop($index)" [disabled]="isDisabled() === true">
+        <button matIconButton type="button" (click)="onEditStop($index)" [disabled]="disabled() === true">
           <mat-icon> edit </mat-icon>
         </button>
-        <button matIconButton (click)="onDeleteStop($index)" [disabled]="isDisabled() === true">
+        <button matIconButton type="button" (click)="onDeleteStop($index)" [disabled]="disabled() === true">
           <mat-icon> delete </mat-icon>
         </button>
       </div>
@@ -31,15 +31,20 @@
 </div>
 
 <div class="button-row">
-  <button matIconButton (click)="onAddStop()" [disabled]="isDisabled() === true">
+  <button matIconButton type="button" (click)="onAddStop()" [disabled]="disabled() === true || invalid() === true">
     <mat-icon> add </mat-icon>
   </button>
 
-  <button matIconButton (click)="onAddHome()" [disabled]="isDisabled() === true">
+  <button matIconButton type="button" (click)="onAddHome()" [disabled]="disabled() === true || invalid() === true">
     <mat-icon> add_home </mat-icon>
   </button>
 
-  <button matIconButton (click)="calculateRoute.emit()" [disabled]="canCalculateRoute() === false">
+  <button
+    matIconButton
+    type="button"
+    (click)="calculateRoute.emit()"
+    [disabled]="value().length < 2 || disabled() === true || invalid() === true"
+  >
     <mat-icon> route </mat-icon>
   </button>
 </div>

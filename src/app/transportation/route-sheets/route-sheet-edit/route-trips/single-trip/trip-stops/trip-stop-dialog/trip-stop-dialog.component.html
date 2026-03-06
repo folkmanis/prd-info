@@ -1,31 +1,31 @@
 <h2 mat-dialog-title>Maršruta punkts</h2>
 
-<mat-dialog-content [formGroup]="form">
+<mat-dialog-content>
   <div class="input-fields">
     <mat-form-field>
       <mat-label> Nosaukums </mat-label>
-      <input matInput formControlName="name" [matAutocomplete]="customerAuto" />
+      <input matInput [formField]="tripStopForm.name" [matAutocomplete]="customerAuto" />
     </mat-form-field>
 
     <mat-form-field>
       <mat-label> Adrese </mat-label>
-      <input matInput formControlName="address" />
+      <input matInput [formField]="tripStopForm.address" />
     </mat-form-field>
 
     <mat-form-field>
       <mat-label> Google Id</mat-label>
-      <input matInput formControlName="googleLocationId" />
+      <input matInput [formField]="tripStopForm.googleLocationId" />
     </mat-form-field>
   </div>
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button matButton [mat-dialog-close]="form.getRawValue()" [disabled]="form.valid === false">Saglabāt</button>
-  <button matButton mat-dialog-close>Atcelt</button>
+  <button matButton (click)="onSubmit()" [disabled]="tripStopForm().valid() === false">Saglabāt</button>
+  <button matButton mat-dialog-close class="tertiary">Atcelt</button>
 </mat-dialog-actions>
 
 <mat-autocomplete #customerAuto="matAutocomplete" (optionSelected)="onSetCustomer($event)">
-  @for (customer of filteredCustomers$ | async; track customer._id) {
+  @for (customer of filteredCustomers(); track customer._id) {
     <mat-option [value]="customer.CustomerName">
       {{ customer.CustomerName }}
     </mat-option>

@@ -1,47 +1,72 @@
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { AsyncPipe, DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import {
-  AbstractControl,
-  ControlValueAccessor,
-  FormBuilder,
-  FormsModule,
-  NG_VALIDATORS,
-  NG_VALUE_ACCESSOR,
-  ReactiveFormsModule,
-  TouchedChangeEvent,
-  ValidationErrors,
-  Validator,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
-import { MatIconButton } from '@angular/material/button';
+  applyEach,
+  disabled,
+  form,
+  FormField,
+  maxLength,
+  min,
+  required,
+  submit,
+  validate,
+} from '@angular/forms/signals';
+import { MatAnchor, MatButton, MatIconButton } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltip } from '@angular/material/tooltip';
+import { endOfMonth, startOfMonth } from 'date-fns';
 import { round } from 'lodash-es';
 import { ExpressionInputDirective } from 'prd-cdk';
-import { filter } from 'rxjs';
-import { ConfirmationDialogService } from 'src/app/library';
+import { Observable } from 'rxjs';
+import { computedChanges } from 'src/app/library/signals';
 import { ViewSizeDirective } from 'src/app/library/view-size';
 import { TransportationCustomer } from 'src/app/transportation/interfaces/transportation-customer';
-import { RouteTrip, RouteStop, newRouteTrip } from 'src/app/transportation/interfaces/transportation-route-sheet';
+import { RouteStop, RouteTrip } from 'src/app/transportation/interfaces/transportation-route-sheet';
 import { RouteSheetService } from 'src/app/transportation/services/route-sheet.service';
 import { TripStopsComponent } from './trip-stops/trip-stops.component';
+
+export interface TripDialogData {
+  trip: RouteTrip;
+  month: number;
+  year: number;
+  fuelConsumption: number;
+  fuelUnits: string;
+  descriptions$: Observable<string[]>;
+  lastOdometer$: Observable<number | null>;
+  customers$: Observable<TransportationCustomer[]>;
+  tripLengthCalculator: (stops: RouteStop[]) => Promise<number>;
+}
+
+interface TripModel {
+  date: Date;
+  tripLengthKm: string;
+  fuelConsumed: number;
+  odoStartKm: string;
+  odoStopKm: string;
+  description: string;
+  stops: {
+    customerId: string;
+    name: string;
+    address: string;
+    googleLocationId: string;
+  }[];
+}
 
 @Component({
   selector: 'app-single-trip',
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
     MatFormFieldModule,
     MatIconButton,
     MatIcon,
     MatInput,
+    MatButton,
     MatDatepickerModule,
     ViewSizeDirective,
     TripStopsComponent,
@@ -51,135 +76,139 @@ import { TripStopsComponent } from './trip-stops/trip-stops.component';
     MatMenuModule,
     MatTooltip,
     ExpressionInputDirective,
+    MatDialogModule,
+    FormField,
+    MatAnchor,
   ],
   templateUrl: './single-trip.component.html',
   styleUrl: './single-trip.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: SingleTripComponent,
-      multi: true,
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: SingleTripComponent,
-      multi: true,
-    },
-  ],
 })
-export class SingleTripComponent implements ControlValueAccessor, Validator {
-  private routeService = inject(RouteSheetService);
-  private messageService = inject(ConfirmationDialogService);
-  form = inject(FormBuilder).group(
-    {
-      date: [null as Date | null, [Validators.required]],
-      tripLengthKm: [null as number | null, [Validators.required, Validators.min(0)]],
-      fuelConsumed: [null as number | null, [Validators.required, Validators.min(0)]],
-      odoStartKm: [null as number | null, [Validators.required, Validators.min(0)]],
-      odoStopKm: [null as number | null, [Validators.required]],
-      stops: [[] as RouteStop[]],
-      description: [null as string | null, [Validators.required, Validators.maxLength(255)]],
-    },
-    { validators: [this.validateOdoStop()] },
+export class SingleTripComponent {
+  #routeService = inject(RouteSheetService);
+  #data = inject<TripDialogData>(MAT_DIALOG_DATA);
+  #dialogRef = inject(MatDialogRef);
+  #snack = inject(MatSnackBar);
+
+  protected busy = signal(false);
+
+  protected lastOdometer$ = this.#data.lastOdometer$;
+  protected fuelUnits = this.#data.fuelUnits;
+  protected descriptions$ = this.#data.descriptions$;
+  protected customers$ = this.#data.customers$;
+
+  protected startDate = startOfMonth(new Date(this.#data.year, this.#data.month - 1));
+  protected endDate = endOfMonth(new Date(this.#data.year, this.#data.month - 1));
+
+  #initialModel = this.#toModel(this.#data.trip);
+  #tripModel = signal(this.#initialModel);
+  protected tripForm = form(this.#tripModel, (s) => {
+    disabled(s, () => this.busy());
+
+    required(s.date);
+    validate(s.date, ({ value }) =>
+      value() >= this.startDate && value() <= this.endDate
+        ? null
+        : { kind: 'invalid_date', message: `Jābūt atskaites mēnesī` },
+    );
+
+    required(s.tripLengthKm);
+    min(s.tripLengthKm, 0);
+
+    required(s.fuelConsumed);
+    min(s.fuelConsumed, 0);
+
+    required(s.odoStartKm);
+    min(s.odoStartKm, 0);
+
+    required(s.odoStopKm);
+    validate(s.odoStopKm, ({ value, valueOf }) => {
+      const odoStartKm = Number(valueOf(s.odoStartKm));
+      const tripLengthKm = Number(valueOf(s.tripLengthKm));
+      return Number(value()) < odoStartKm + tripLengthKm
+        ? {
+            kind: 'invalid_odo',
+            message: `Min. ${odoStartKm + tripLengthKm} km`,
+          }
+        : null;
+    });
+
+    applyEach(s.stops, (stopS) => {
+      required(stopS.name);
+      required(stopS.address);
+    });
+
+    required(s.description);
+    maxLength(s.description, 255);
+  });
+
+  protected changes = computed(() => computedChanges(this.#tripModel() as Record<string, any>, this.#initialModel));
+
+  protected consumptionRate = computed(
+    () => ((+this.#tripModel().fuelConsumed || 0) / (+this.#tripModel().tripLengthKm || 1)) * 100,
   );
 
-  customers = input<TransportationCustomer[] | null>([]);
-
-  fuelConsumption = input<number | null>(null);
-
-  fuelUnits = input<string | null>(null);
-
-  lastOdometer = input<number | null>(null);
-
-  startDate = input<Date | null>();
-
-  descriptions$ = this.routeService.descriptions();
-
-  onTouched = () => {};
-
-  constructor() {
-    this.form.events
-      .pipe(
-        filter((event) => event instanceof TouchedChangeEvent && event.touched),
-        takeUntilDestroyed(),
-      )
-      .subscribe(() => this.onTouched());
+  protected async saveTrip() {
+    submit(this.tripForm, async (s) => {
+      if (s().valid() === false) {
+        return;
+      }
+      this.#dialogRef.close(this.#fromModel(s().value()));
+    });
   }
 
-  writeValue(obj: RouteTrip | null): void {
-    const trip = obj ?? newRouteTrip();
-    this.form.reset(trip, { emitEvent: false });
+  #toModel(trip: RouteTrip): TripModel {
+    return {
+      ...trip,
+      odoStartKm: trip.odoStartKm.toString(),
+      odoStopKm: trip.odoStopKm.toString(),
+      tripLengthKm: trip.tripLengthKm.toString(),
+      stops: trip.stops.map((s) => ({
+        ...s,
+        customerId: s.customerId ?? '',
+        googleLocationId: s.googleLocationId ?? '',
+      })),
+    };
   }
 
-  registerOnChange(fn: any): void {
-    this.form.valueChanges.subscribe(fn);
+  #fromModel(model: TripModel): RouteTrip {
+    return {
+      ...model,
+      tripLengthKm: Number(model.tripLengthKm),
+      odoStartKm: Number(model.odoStartKm),
+      odoStopKm: Number(model.odoStopKm),
+      stops: model.stops.map((s) => ({
+        ...s,
+        customerId: s.customerId || null,
+        googleLocationId: s.googleLocationId || null,
+      })),
+    };
   }
 
-  registerOnTouched(fn: any): void {
-    this.onTouched = fn;
-  }
-
-  setDisabledState(isDisabled: boolean): void {
-    if (isDisabled) {
-      this.form.disable({ emitEvent: false });
-    } else {
-      this.form.enable({ emitEvent: false });
-    }
-  }
-
-  validate(): ValidationErrors | null {
-    if (this.form.valid) {
-      return null;
-    } else {
-      return Object.entries(this.form.controls).reduce(
-        (acc, [key, control]) => ({
-          ...acc,
-          ...(control.invalid ? { [key]: control.errors } : {}),
-        }),
-        {},
-      );
-    }
-  }
-
-  async onCalculateRoute() {
-    const stops = this.form.controls.stops.value;
-    if (this.form.controls.stops.valid === false || !stops || stops.length === 0) {
+  protected async calculateRoute() {
+    if (this.tripForm.stops().valid() === false) {
       return;
     }
-    this.form.disable({ emitEvent: false });
+
+    this.busy.set(true);
+
+    const { stops, odoStartKm } = this.#tripModel();
+
     try {
-      const tripLengthKm = await this.routeService.getTripLength(stops);
-      const odoStopKm = (this.form.value.odoStartKm || 0) + tripLengthKm;
-      const fuelConsumptionValue = this.fuelConsumption();
-      const fuelConsumed = fuelConsumptionValue !== null ? round((fuelConsumptionValue * tripLengthKm) / 100, 1) : null;
-      this.form.patchValue(
-        {
-          tripLengthKm,
-          odoStopKm,
-          fuelConsumed,
-        },
-        { emitEvent: false },
-      );
+      const tripLengthKm = await this.#routeService.getTripLength(stops);
+      const odoStopKm = Number(odoStartKm) + tripLengthKm;
+      const { fuelConsumption } = this.#data;
+      const fuelConsumed = round((fuelConsumption * tripLengthKm) / 100, 1);
+      this.#tripModel.update((trip) => ({
+        ...trip,
+        tripLengthKm: tripLengthKm.toString(),
+        odoStopKm: odoStopKm.toString(),
+        fuelConsumed,
+      }));
     } catch (error) {
-      this.messageService.confirmDataError(error.message);
+      this.#snack.open(`Neizdevās aprēķināt ceļu: ${error.message}`, 'OK');
     } finally {
-      this.form.enable();
+      this.busy.set(false);
     }
-  }
-
-  onSetDescription(value: string) {
-    this.form.controls.description.setValue(value);
-  }
-
-  private validateOdoStop(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const { odoStartKm, odoStopKm, tripLengthKm } = control.value;
-      if (odoStartKm && odoStopKm && odoStartKm + (tripLengthKm || 0) > odoStopKm) {
-        this.form.controls.odoStopKm.setErrors({ odoStopKm: odoStartKm });
-        return { odoStopKm: odoStartKm + (tripLengthKm || 0) };
-      }
-      return null;
-    };
   }
 }

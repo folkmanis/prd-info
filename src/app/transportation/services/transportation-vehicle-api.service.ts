@@ -34,6 +34,11 @@ export class TransportationVehicleApiService {
     });
   }
 
+  getVehicles(params: Record<string, any>): Promise<TransportationVehicle[]> {
+    const response$ = this.#http.get<Record<string, any>[]>(this.#path, new HttpOptions(params).cacheable());
+    return this.#validator.validateArrayAsync(TransportationVehicle, response$);
+  }
+
   getOne(id: string): Promise<TransportationVehicle> {
     const response = this.#http.get<Record<string, any>>(`${this.#path}/${id}`, new HttpOptions());
     return this.#validator.validateAsync(TransportationVehicle, response);

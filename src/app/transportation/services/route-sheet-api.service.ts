@@ -1,6 +1,6 @@
-import { HttpClient, httpResource } from '@angular/common/http';
+import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http';
 import { inject, Injectable, Signal } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { HttpOptions, httpResponseRequest, ValidatorService } from 'src/app/library';
 import { HistoricalData } from '../interfaces/historical-data';
@@ -55,9 +55,10 @@ export class RouteSheetApiService {
     return deletedCount;
   }
 
-  async getCustomers() {
-    const response$ = this.#http.get<Record<string, any>[]>(this.#path + '/customers', new HttpOptions().cacheable());
-    return this.#validator.validateArrayAsync(TransportationCustomer, response$);
+  getCustomers() {
+    return this.#http
+      .get<Record<string, any>[]>(this.#path + '/customers', new HttpOptions().cacheable())
+      .pipe(map(this.#validator.arrayValidatorFn(TransportationCustomer)));
   }
 
   async distanceRequest(request: {
@@ -71,16 +72,22 @@ export class RouteSheetApiService {
     return await firstValueFrom(response$);
   }
 
-  async getDescriptions(count?: number): Promise<string[]> {
-    const response$ = this.#http.get<string[]>(this.#path + '/descriptions', new HttpOptions({ count }).cacheable());
-    return await firstValueFrom(response$);
+  getDescriptions(count?: number): Observable<string[]> {
+    return this.#http.get<string[]>(this.#path + '/descriptions', new HttpOptions({ count }).cacheable());
   }
 
-  async getHistoricalData(licencePlate: string): Promise<HistoricalData> {
-    const response$ = this.#http.get<HistoricalData>(
-      this.#path + '/historical-data/' + licencePlate,
-      new HttpOptions(),
+  getHistoricalDataResource(licencePlate: Signal<string | null | undefined>) {
+    return httpResource(
+      () => (licencePlate() ? httpResponseRequest(this.#path + '/historical-data/' + licencePlate()) : undefined),
+      {
+        parse: this.#validator.validatorFn(HistoricalData),
+      },
     );
-    return this.#validator.validateAsync(HistoricalData, response$);
+  }
+
+  getHistoricalData(licencePlate: string): Observable<HistoricalData> {
+    return this.#http
+      .get<HistoricalData>(this.#path + '/historical-data/' + licencePlate, new HttpOptions())
+      .pipe(map(this.#validator.validatorFn(HistoricalData)));
   }
 }

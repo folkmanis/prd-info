@@ -1,4 +1,4 @@
-import { computed, inject, Injectable } from '@angular/core';
+import { computed, inject, Injectable, Signal } from '@angular/core';
 import { round } from 'lodash-es';
 import { FilterInput, toFilterSignal } from 'src/app/library';
 import { HistoricalData } from '../interfaces/historical-data';
@@ -11,6 +11,7 @@ import {
 import { RouteSheetApiService } from './route-sheet-api.service';
 import { TransportationDriverService } from './transportation-driver.service';
 import { TransportationVehicleService } from './transportation-vehicle.service';
+import { catchError, Observable, of } from 'rxjs';
 
 interface RouteSheetFilter {
   name?: string;
@@ -42,6 +43,10 @@ export class RouteSheetService {
 
   getRouteSheets(filter: RouteSheetFilter = {}): Promise<TransportationRouteSheet[]> {
     return this.#api.getRouteSheets(filter);
+  }
+
+  getHistoricalDataResource(licencePlate: Signal<string | undefined | null>) {
+    return this.#api.getHistoricalDataResource(licencePlate);
   }
 
   async getRouteSheet(id: string) {
@@ -76,23 +81,12 @@ export class RouteSheetService {
     return round(this.randomizeTripLength(distance / 1000));
   }
 
-  async descriptions(): Promise<string[]> {
-    try {
-      return await this.#api.getDescriptions(10);
-    } catch (error) {
-      return [];
-    }
+  descriptions(): Observable<string[]> {
+    return this.#api.getDescriptions(10);
   }
 
-  async getHistoricalData(licencePlate: string): Promise<HistoricalData | null> {
-    try {
-      return await this.#api.getHistoricalData(licencePlate);
-    } catch (error) {
-      if (error.status === 404) {
-        return null;
-      }
-      throw error;
-    }
+  getHistoricalData(licencePlate: string): Observable<HistoricalData | null> {
+    return this.#api.getHistoricalData(licencePlate).pipe(catchError(() => of(null)));
   }
 
   private randomizeTripLength(value: number): number {

@@ -3,7 +3,11 @@ import { inject, Injectable, Signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { HttpOptions, httpResponseRequest, ValidatorService } from 'src/app/library';
-import { TransportationDriver, TransportationDriverCreate, TransportationDriverUpdate } from '../interfaces/transportation-driver';
+import {
+  TransportationDriver,
+  TransportationDriverCreate,
+  TransportationDriverUpdate,
+} from '../interfaces/transportation-driver';
 import { isEqual } from 'lodash-es';
 
 @Injectable({
@@ -19,6 +23,11 @@ export class TransportationDriverApiService {
       parse: this.#validator.arrayValidatorFn(TransportationDriver),
       equal: isEqual,
     });
+  }
+
+  async getDrivers(params: Record<string, any>): Promise<TransportationDriver[]> {
+    const response$ = this.#http.get<Record<string, any>[]>(this.#path, new HttpOptions(params).cacheable());
+    return this.#validator.validateArrayAsync(TransportationDriver, response$);
   }
 
   async getOne(id: string): Promise<TransportationDriver> {
@@ -37,12 +46,17 @@ export class TransportationDriverApiService {
   }
 
   async deleteOne(id: string): Promise<number> {
-    const { deletedCount } = await firstValueFrom(this.#http.delete<{ deletedCount: number }>(`${this.#path}/${id}`, new HttpOptions()));
+    const { deletedCount } = await firstValueFrom(
+      this.#http.delete<{ deletedCount: number }>(`${this.#path}/${id}`, new HttpOptions()),
+    );
     return deletedCount;
   }
 
   async validate<K extends keyof TransportationDriver>(key: K) {
-    const data = this.#http.get<TransportationDriver[K][]>(`${this.#path}/validate/${key}`, new HttpOptions().cacheable());
+    const data = this.#http.get<TransportationDriver[K][]>(
+      `${this.#path}/validate/${key}`,
+      new HttpOptions().cacheable(),
+    );
     return firstValueFrom(data);
   }
 }
