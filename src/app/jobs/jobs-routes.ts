@@ -8,11 +8,16 @@ export default [
   },
   {
     path: 'products-production',
-    loadComponent: () => import('./products-production/products-production.component').then((c) => c.ProductsProductionComponent),
+    loadComponent: () =>
+      import('./products-production/products-production.component').then((c) => c.ProductsProductionComponent),
   },
   {
     path: 'gmail',
     loadChildren: () => import('./gmail/gmail-routes'),
+  },
+  {
+    path: 'quick-create',
+    loadChildren: () => import('./quick-create/quick-create.routes'),
   },
   {
     path: '',

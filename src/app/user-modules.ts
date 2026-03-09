@@ -11,6 +11,7 @@ export const USER_MODULES: UserModule[] = [
       { name: 'Repro darbi', route: 'repro', description: 'Repro darbu saraksts' },
       { name: 'Kopsavilkums', route: 'products-production', description: 'Izstrādājumi ražošanā' },
       { name: 'gmail', route: 'gmail', description: 'Darba izveidošana no Gmail e-pasta' },
+      { name: 'Formu darbs', route: 'quick-create', description: 'Ātra formu pievienošana' },
     ],
   },
   {

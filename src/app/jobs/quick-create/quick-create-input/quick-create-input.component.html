@@ -1,0 +1,85 @@
+<form (submit)="$event.preventDefault()">
+  <mat-card>
+    <mat-card-content>
+      <mat-form-field id="customer">
+        <mat-label> Klients </mat-label>
+        <input
+          matInput
+          [formField]="jobForm.customer"
+          [matAutocomplete]="autoC"
+          [appAutocompleteFilter]="customerOptions()"
+          #filterC="appAutocompleteFilter"
+        />
+        <button type="button" matIconSuffix matIconButton (click)="jobForm.customer().reset('')">
+          <mat-icon>close</mat-icon>
+        </button>
+        <mat-autocomplete
+          #autoC="matAutocomplete"
+          requireSelection
+          autoActiveFirstOption
+          (optionSelected)="filterC.reset()"
+          hideSingleSelectionIndicator
+        >
+          @for (customer of filterC.options(); track customer) {
+            <mat-option [value]="customer">
+              {{ customer }}
+            </mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <mat-form-field id="product">
+        <mat-label>Izstrādājums</mat-label>
+        <input
+          matInput
+          [formField]="jobForm.product"
+          [matAutocomplete]="autoP"
+          [appAutocompleteFilter]="productOptions()"
+          #filterP="appAutocompleteFilter"
+        />
+        <button type="button" matIconSuffix matIconButton (click)="jobForm.product().reset('')">
+          <mat-icon> close </mat-icon>
+        </button>
+        <mat-autocomplete
+          #autoP="matAutocomplete"
+          requireSelection
+          autoActiveFirstOption
+          (optionSelected)="filterP.reset()"
+          hideSingleSelectionIndicator
+        >
+          @for (product of filterP.options(); track $index) {
+            <mat-option [value]="product">
+              {{ product }}
+            </mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <mat-form-field id="receivedDate">
+        <mat-label> Datums </mat-label>
+        <input matInput [matDatepicker]="receivedPicker" [formField]="jobForm.receivedDate" />
+        <mat-datepicker-toggle matIconSuffix [for]="receivedPicker" />
+        <mat-datepicker #receivedPicker />
+      </mat-form-field>
+
+      <mat-form-field id="count">
+        <mat-label> Skaits </mat-label>
+        <input matInput type="number" [formField]="jobForm.count" />
+      </mat-form-field>
+
+      <mat-form-field id="name">
+        <mat-label> Nosaukums </mat-label>
+        <input matInput [formField]="jobForm.name" />
+      </mat-form-field>
+
+      <mat-form-field id="comment">
+        <mat-label> Komentārs </mat-label>
+        <textarea matInput [formField]="jobForm.comment" rows="2"></textarea>
+      </mat-form-field>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button matButton type="submit" [disabled]="jobForm().valid() === false">Saglabāt</button>
+    </mat-card-actions>
+  </mat-card>
+</form>

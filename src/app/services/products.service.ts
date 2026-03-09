@@ -1,7 +1,16 @@
-import { inject, Injectable } from '@angular/core';
-import { CustomerProduct, NewProduct, Product, ProductProductionStage, ProductProductionStageMaterial, ProductUpdate } from 'src/app/interfaces';
+import { inject, Injectable, Signal } from '@angular/core';
+import {
+  CustomerProduct,
+  NewProduct,
+  Product,
+  ProductPartial,
+  ProductProductionStage,
+  ProductProductionStageMaterial,
+  ProductUpdate,
+} from 'src/app/interfaces';
 import { ProductsApiService, ProductsFilter } from 'src/app/services/prd-api/products-api.service';
 import { assertNotNull, FilterInput, toFilterSignal } from '../library';
+import { HttpResourceRef } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -13,8 +22,20 @@ export class ProductsService {
     return this.api.productsResource(toFilterSignal(filterSignal));
   }
 
+  getProducts(filter: ProductsFilter = {}): Promise<ProductPartial[]> {
+    return this.api.getProducts(filter);
+  }
+
   getProduct(id: string): Promise<Product> {
     return this.api.getOne(id);
+  }
+
+  getProductByNameResource(name: Signal<string | undefined>): HttpResourceRef<Product | undefined> {
+    return this.api.productByNameResource(name);
+  }
+
+  getProductResource(id: Signal<string | undefined>): HttpResourceRef<Product | undefined> {
+    return this.api.productResource(id);
   }
 
   getProductByName(name: string): Promise<Product> {
@@ -27,6 +48,10 @@ export class ProductsService {
     } catch (error) {
       return [];
     }
+  }
+
+  productsCustomerResource(name: Signal<string | undefined>) {
+    return this.api.productsCustomerResource(name);
   }
 
   productionStages(product: string): Promise<ProductProductionStage[]> {

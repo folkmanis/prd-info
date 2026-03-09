@@ -4,7 +4,7 @@ import { FilterInput, toFilterSignal } from 'src/app/library';
 import { Job, JobFilter, jobFilterToRequestQuery, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
 import { JobsApiService, JobUpdateParams } from './jobs-api.service';
 
-function filterInputToRequestQuery(filter: FilterInput<JobFilter>): Signal<Record<string, any>> {
+export function filterInputToRequestQuery(filter: FilterInput<JobFilter>): Signal<Record<string, any>> {
   const filterSignal = toFilterSignal(filter);
   return computed(() => jobFilterToRequestQuery(filterSignal()));
 }

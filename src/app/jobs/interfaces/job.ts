@@ -39,6 +39,13 @@ export const Job = z.object({
 });
 export type Job = z.infer<typeof Job>;
 
+export const JobCreate = Job.omit({
+  _id: true,
+  _v: true,
+  jobId: true,
+});
+export type JobCreate = z.infer<typeof JobCreate>;
+
 export const KastesJob = Job.extend({
   production: KastesProduction,
 });
