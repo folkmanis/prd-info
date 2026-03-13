@@ -23,7 +23,7 @@ export class ProductsTableComponent {
   columns = ['selection', 'name', 'category', 'units', 'count', 'sum'];
   adminColumns = [...this.columns, 'total'];
 
-  data = input<JobsProduction[]>([]);
+  data = input.required<JobsProduction[]>();
 
   isAdmin = input(false);
 
@@ -44,6 +44,9 @@ export class ProductsTableComponent {
   constructor() {
     effect(() => {
       this.selector.setSelection(...this.selection());
+    });
+    effect(() => {
+      // console.log(this.data());
     });
   }
 

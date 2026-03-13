@@ -1,0 +1,27 @@
+:host {
+    display: block;
+}
+
+.mat-column-receivedDate {
+    flex: 96px 0;
+}
+
+.mat-column-custCode {
+    flex: 48px 0;
+}
+
+.mat-column-jobId {
+    flex: 64px 0;
+}
+
+.mat-column-name {
+    flex: 3;
+}
+
+.mat-column-productsName {
+    flex: 2;
+}
+
+.mat-column-productsCount {
+    flex: 72px 0;
+}

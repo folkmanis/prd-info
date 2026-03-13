@@ -1,19 +1,20 @@
 import { z } from 'zod';
 
-export const JobsProductionQuery = z.object({
+export const jobsProductionQuerySchema = z.object({
   start: z.number(),
   limit: z.number(),
   sort: z.string(),
-  fromDate: z.string().nullable(),
-  toDate: z.string().nullable(),
-  jobStatus: z.array(z.number()).nullable(),
-  category: z.array(z.string()).nullable(),
+  fromDate: z.date(),
+  toDate: z.date(),
+  jobStatus: z.array(z.number()),
+  category: z.array(z.string()),
+  customer: z.string().nullable(),
 });
-export type JobsProductionQuery = z.infer<typeof JobsProductionQuery>;
+export type JobsProductionQuery = z.infer<typeof jobsProductionQuerySchema>;
 
-export const JobsProductionFilterQuery = JobsProductionQuery.omit({
+export const jobsProductionFilterQuerySchema = jobsProductionQuerySchema.omit({
   start: true,
   limit: true,
   sort: true,
 });
-export type JobsProductionFilterQuery = z.infer<typeof JobsProductionFilterQuery>;
+export type JobsProductionFilterQuery = z.infer<typeof jobsProductionFilterQuerySchema>;

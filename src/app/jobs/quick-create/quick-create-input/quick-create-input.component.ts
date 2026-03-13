@@ -1,22 +1,34 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
-import { form, FormField, required, submit } from '@angular/forms/signals';
-import { MatCardModule } from '@angular/material/card';
-import { Job, JobCreate, JobStatus } from '../../interfaces';
-import { CustomerPartial, ProductPartial } from 'src/app/interfaces';
-import { QuickCreateService } from '../quick-create.service';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
-import { MatButton, MatIconButton } from '@angular/material/button';
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  linkedSignal,
+  output,
+} from '@angular/core';
+import { disabled, form, FormField, FormRoot, min, required } from '@angular/forms/signals';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { AutocompleteFilterDirective } from './autocomplete-filter.directive';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { CustomerPartial, ProductPartial } from 'src/app/interfaces';
+import { AutocompleteFilterDirective } from 'src/app/library/autocomplete';
+import { JobCategories, JobCreate } from '../../interfaces';
+import { QuickCreateJob } from '../../interfaces/jobs-user-preferences';
+import { QuickCreateService } from '../quick-create.service';
 
 @Component({
   selector: 'app-quick-create-input',
   imports: [
     MatCardModule,
     FormField,
+    FormRoot,
     MatFormFieldModule,
     MatInput,
     MatButton,
@@ -25,6 +37,7 @@ import { MatIcon } from '@angular/material/icon';
     MatAutocompleteModule,
     MatDatepickerModule,
     AutocompleteFilterDirective,
+    CdkTextareaAutosize,
   ],
   templateUrl: './quick-create-input.component.html',
   styleUrl: './quick-create-input.component.scss',
@@ -35,6 +48,15 @@ export class QuickCreateInputComponent {
 
   products = input.required<ProductPartial[]>();
   customers = input.required<CustomerPartial[]>();
+  initialJob = input.required<QuickCreateJob>();
+
+  updated = output<void>();
+
+  customerNameSelected = output<string | null>();
+
+  protected customerNames = computed(() => this.customers().map((c) => c.CustomerName));
+
+  protected productNames = computed(() => this.products().map((p) => p.name));
 
   #customerName = computed(() => {
     const name = this.#jobModel().customer?.toUpperCase();
@@ -57,49 +79,65 @@ export class QuickCreateInputComponent {
 
   #product = this.#service.productResource(this.#productId);
 
-  #jobModel = signal({
-    customer: '',
-    name: '',
-    count: NaN,
-    receivedDate: new Date(),
-    comment: '',
-    product: '',
+  #jobModel = linkedSignal(() => {
+    const initialJob = this.initialJob();
+    return {
+      receivedDate: new Date(),
+      customer: initialJob.customerName,
+      product: initialJob.productName,
+      name: '',
+      count: NaN,
+      comment: '',
+    };
   });
-  protected jobForm = form(this.#jobModel, (s) => {
-    required(s.customer);
-    required(s.name);
-    required(s.count);
-    required(s.receivedDate);
-    required(s.product);
-  });
+  protected jobForm = form(
+    this.#jobModel,
+    (s) => {
+      required(s.receivedDate);
 
-  protected customerOptions = computed(() => this.customers().map((c) => c.CustomerName));
+      required(s.customer, { message: `Jānorāda obligāti` });
 
-  protected productOptions = computed(() => this.products().map((p) => p.name));
+      required(s.product, { message: `Jānorāda obligāti` });
+      disabled(s.product, ({ stateOf }) => stateOf(s.customer).valid() !== true);
 
-  jobCreate = output<JobCreate>();
+      required(s.name, { message: `Jānorāda obligāti` });
 
-  onSubmit() {
-    submit(this.jobForm, async (s) => {
-      if (s().valid() === false) {
-        return;
-      }
-      const job = this.#fromModel();
-      if (job) {
-        this.jobCreate.emit(job);
-        this.jobForm().reset();
-        this.#jobModel.update((j) => ({ ...j, name: '', count: NaN, comment: '' }));
-        this.jobForm.name().focusBoundControl();
-      }
+      required(s.count, { message: `Jānorāda obligāti` });
+      min(s.count, 0);
+    },
+    {
+      submission: {
+        action: async (f) => {
+          const job = this.#fromModel();
+          if (job) {
+            await this.#service.saveJob(job);
+            this.updated.emit();
+            f.name().focusBoundControl();
+            f().reset();
+            f().value.update((j) => ({ ...j, name: '', count: NaN, comment: '' }));
+          }
+        },
+      },
+    },
+  );
+
+  constructor() {
+    effect(() => {
+      this.customerNameSelected.emit(this.#customerName() || null);
     });
   }
 
+  protected jobNameEnter() {
+    if (this.jobForm.name().valid()) {
+      this.jobForm.count().focusBoundControl();
+    }
+  }
+
   #fromModel(): JobCreate | null {
-    if (this.#product.hasValue() === false) {
+    const cProduct = this.#customerProduct();
+    if (!cProduct) {
       return null;
     }
-    const product = this.#product.value();
-    const cProduct = this.#customerProduct();
 
     const m = this.#jobModel();
 
@@ -109,24 +147,22 @@ export class QuickCreateInputComponent {
       customerJobId: m.name,
       receivedDate: m.receivedDate,
       dueDate: m.receivedDate,
-      comment: m.comment || null,
-      invoiceId: null,
+      comment: m.comment,
       products: [
         {
-          name: product.name,
-          units: product.units,
-          comment: null,
+          name: cProduct.productName,
+          units: cProduct.units,
+          comment: '',
           count: m.count,
-          price: m.count * (cProduct?.price ?? 0),
+          price: m.count * (cProduct.price ?? 0),
         },
       ],
       jobStatus: {
-        generalStatus: 40,
+        generalStatus: 30,
         timestamp: new Date(),
       },
-      files: null,
       production: {
-        category: 'repro',
+        category: cProduct.category as JobCategories,
       },
       productionStages: [],
     };

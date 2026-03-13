@@ -5,7 +5,15 @@ import { firstValueFrom } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { ValidatorService } from 'src/app/library';
 import { HttpOptions, httpResponseRequest } from 'src/app/library/http';
-import { Job, JobPartial, JobsProduction, JobsProductionQuery, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
+import {
+  Job,
+  JobPartial,
+  JobsProduction,
+  JobsProductionQuery,
+  jobsProductionQuerySchema,
+  JobsWithoutInvoicesTotals,
+  JobUnwindedPartial,
+} from '../interfaces';
 import { JobsUserPreferences } from '../interfaces/jobs-user-preferences';
 
 export interface JobUpdateParams {
@@ -25,35 +33,49 @@ export class JobsApiService {
   #validator = inject(ValidatorService);
 
   getAllUnwinded(filter: Record<string, any>): Promise<JobUnwindedPartial[]> {
-    const response$ = this.#http.get<Record<string, any>[]>(this.#path, new HttpOptions({ ...filter, unwindProducts: 1 }));
+    const response$ = this.#http.get<Record<string, any>[]>(
+      this.#path,
+      new HttpOptions({ ...filter, unwindProducts: 1 }),
+    );
     return this.#validator.validateArrayAsync(JobUnwindedPartial, response$);
   }
 
-  jobsResource(filter: Signal<Record<string, any>>): HttpResourceRef<JobPartial[] | undefined> {
+  jobsResource(filter: Signal<Record<string, any> | undefined>): HttpResourceRef<JobPartial[] | undefined> {
     return this.#jobsResource(filter, 0, this.#validator.arrayValidatorFn(JobPartial));
   }
 
-  jobsUnwindedResource(filter: Signal<Record<string, any>>): HttpResourceRef<JobUnwindedPartial[] | undefined> {
+  jobsUnwindedResource(
+    filter: Signal<Record<string, any> | undefined>,
+  ): HttpResourceRef<JobUnwindedPartial[] | undefined> {
     return this.#jobsResource(filter, 1, this.#validator.arrayValidatorFn(JobUnwindedPartial));
   }
 
   #jobsResource<P extends 0 | 1, Result = P extends 0 ? JobPartial : JobUnwindedPartial>(
-    filter: Signal<Record<string, any>>,
+    filter: Signal<Record<string, any> | undefined>,
     unwindProducts: P,
     parse: (value: Record<string, any>[]) => Result[],
   ): HttpResourceRef<Result[] | undefined> {
-    const params = computed(() => ({
-      ...filter(),
-      unwindProducts,
-    }));
-    return httpResource(() => httpResponseRequest(this.#path, new HttpOptions(params()).cacheable()), {
-      equal: isEqual,
-      parse,
-    });
+    const params = computed(() =>
+      filter()
+        ? {
+            ...filter(),
+            unwindProducts,
+          }
+        : undefined,
+    );
+    return httpResource(
+      () => (params() ? httpResponseRequest(this.#path, new HttpOptions(params()).cacheable()) : undefined),
+      {
+        equal: isEqual,
+        parse,
+      },
+    );
   }
 
   async updateMany(jobs: Partial<Job>[], params?: JobUpdateParams): Promise<number> {
-    const response = await firstValueFrom(this.#http.patch<{ count: number }>(this.#path, jobs, new HttpOptions(params)));
+    const response = await firstValueFrom(
+      this.#http.patch<{ count: number }>(this.#path, jobs, new HttpOptions(params)),
+    );
     return response.count;
   }
 
@@ -78,14 +100,21 @@ export class JobsApiService {
   }
 
   jobsWithoutInvoicesTotals(): Promise<JobsWithoutInvoicesTotals[]> {
-    const data$ = this.#http.get<Record<string, any>[]>(this.#path + 'jobs-without-invoices-totals', new HttpOptions().cacheable());
+    const data$ = this.#http.get<Record<string, any>[]>(
+      this.#path + 'jobs-without-invoices-totals',
+      new HttpOptions().cacheable(),
+    );
     return this.#validator.validateArrayAsync(JobsWithoutInvoicesTotals, data$);
   }
 
-  getJobsProduction(query: JobsProductionQuery): Promise<JobsProduction[]> {
-    const httpOptions = new HttpOptions(pickNotNull(query));
-    const data$ = this.#http.get<Record<string, any>[]>(this.#path + 'products', httpOptions);
-    return this.#validator.validateArrayAsync(JobsProduction, data$);
+  getJobsProductionResource(query: Signal<Record<string, any> | undefined>) {
+    return httpResource(
+      () => (query() ? httpResponseRequest(this.#path + 'products', new HttpOptions(query())) : undefined),
+      {
+        parse: this.#validator.arrayValidatorFn(JobsProduction),
+        equal: isEqual,
+      },
+    );
   }
 
   getUserPreferences(): Promise<JobsUserPreferences> {

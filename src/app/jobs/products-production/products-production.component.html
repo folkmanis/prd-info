@@ -1,13 +1,18 @@
-@if (query(); as savedQuery) {
-  <app-filter [filter]="savedQuery" (filterChange)="onFilter($event)" />
+@if (query(); as query) {
+  <app-filter [filter]="query" (filterChange)="onFilter($event)" [customers]="customers | async" />
 
-  <app-products-table
-    [data]="data()"
-    [sortString]="savedQuery.sort"
-    (sortStringChange)="onSort($event)"
-    [totals]="totals()"
-    [(selection)]="selection"
-    scroll-to-top
-    [isAdmin]="isAdmin()"
-  />
+  @if (data.hasValue() && data.value(); as value) {
+    <div>
+      <button matButton (click)="openPrintReport()">Izdrukāt</button>
+    </div>
+    <app-products-table
+      [data]="value"
+      [sortString]="query.sort"
+      (sortStringChange)="onSort($event)"
+      [totals]="totals()"
+      [(selection)]="selection"
+      scroll-to-top
+      [isAdmin]="isAdmin()"
+    />
+  }
 }

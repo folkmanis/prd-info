@@ -1,0 +1,46 @@
+<mat-table [dataSource]="jobs()" [trackBy]="jobsTrack">
+  <ng-container matColumnDef="receivedDate">
+    <mat-header-cell *matHeaderCellDef> Datums </mat-header-cell>
+    <mat-cell *matCellDef="let job">
+      {{ job.receivedDate | date: 'shortDate' }}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="jobId">
+    <mat-header-cell *matHeaderCellDef> nr. </mat-header-cell>
+    <mat-cell *matCellDef="let job">
+      {{ job.jobId }}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef> Nosaukums </mat-header-cell>
+    <mat-cell *matCellDef="let job">
+      {{ job.name }}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="custCode">
+    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+    <mat-cell *matCellDef="let job">
+      {{ job.custCode }}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="productsName">
+    <mat-header-cell *matHeaderCellDef> Izstrādājums </mat-header-cell>
+    <mat-cell *matCellDef="let job">
+      {{ job.products.name }}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="productsCount">
+    <mat-header-cell *matHeaderCellDef> Skaits </mat-header-cell>
+    <mat-cell *matCellDef="let job">
+      {{ job.products.count }}
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns" />
+  <mat-row *matRowDef="let job; columns: displayedColumns" />
+</mat-table>

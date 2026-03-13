@@ -1,68 +1,50 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
-import { pickBy } from 'lodash-es';
-import { debounceTime, filter, map, switchMap } from 'rxjs';
-import { combineReload } from 'src/app/library/rxjs';
-import { NotificationsService } from 'src/app/services';
-import { JobsProductionFilterQuery, JobsProductionQuery } from '../../interfaces';
-import { SavedJobsProductionQuery } from '../../interfaces/jobs-user-preferences';
-import { JobsApiService } from '../../services/jobs-api.service';
+import { Injectable, Signal, computed, inject } from '@angular/core';
+import { JobsUserPreferences } from '../../interfaces/jobs-user-preferences';
+import { JobsApiService, pickNotNull } from '../../services/jobs-api.service';
 import { JobsUserPreferencesService } from '../../services/jobs-user-preferences.service';
+import { formatISO } from 'date-fns';
+import { notNullOrThrow } from 'src/app/library';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductsProductionService {
-  private preferencesService = inject(JobsUserPreferencesService);
-  private notifications = inject(NotificationsService);
-  private api = inject(JobsApiService);
+  #preferencesService = inject(JobsUserPreferencesService);
+  #api = inject(JobsApiService);
 
-  private start = signal(0);
-
-  private limit = signal(1000);
-
-  query = computed(() => {
-    const userPreferences = this.preferencesService.userPreferences();
-    if (userPreferences) {
-      const query = pickBy(userPreferences.jobsProductionQuery);
-      return {
-        ...query,
-        start: this.start(),
-        limit: this.limit(),
-      } as JobsProductionQuery;
-    } else {
-      return null;
-    }
-  });
-
-  dataFlow() {
-    const wsUpdates$ = this.notifications.wsMultiplex('jobs').pipe(map(() => undefined));
-    return combineReload(toObservable(this.query), wsUpdates$).pipe(
-      filter(Boolean),
-      debounceTime(300),
-      switchMap((query) => this.api.getJobsProduction(query)),
-    );
+  getJobsProductionResource(filter: Signal<JobsUserPreferences['jobsProductionQuery'] | null>) {
+    const params = computed(() => this.#savedQueryToRequest(filter()));
+    return this.#api.getJobsProductionResource(params);
   }
 
-  async setFilter(jobsFilter: JobsProductionFilterQuery) {
-    const userPreferences = this.preferencesService.userPreferences();
-    if (userPreferences) {
-      const jobsProductionQuery: SavedJobsProductionQuery = {
-        sort: userPreferences.jobsProductionQuery.sort,
-        ...jobsFilter,
-      };
-      return this.preferencesService.patchUserPreferences({ jobsProductionQuery });
-    }
+  getSavedQuery(): Signal<JobsUserPreferences['jobsProductionQuery'] | null> {
+    return computed(() => this.#preferencesService.userPreferences()?.jobsProductionQuery ?? null);
   }
 
-  async setSort(sort: string) {
-    const userPreferences = this.preferencesService.userPreferences();
-    if (userPreferences) {
-      const jobsProductionQuery: SavedJobsProductionQuery = {
-        ...userPreferences.jobsProductionQuery,
-        sort,
-      };
-      return this.preferencesService.patchUserPreferences({ jobsProductionQuery });
+  async setSavedQuery(jobsProductionQuery: JobsUserPreferences['jobsProductionQuery']) {
+    return this.#preferencesService.patchUserPreferences({ jobsProductionQuery });
+  }
+
+  getReportURL(query: JobsUserPreferences['jobsProductionQuery'] | null): URL {
+    notNullOrThrow(query);
+    const url = new URL('/data/jobs/products/report', window.location.origin);
+    const params = new URLSearchParams(this.#savedQueryToRequest(query));
+
+    url.search = params.toString();
+    return url;
+  }
+
+  #savedQueryToRequest(query: JobsUserPreferences['jobsProductionQuery'] | null): Record<string, any> | undefined {
+    if (!query) {
+      return undefined;
     }
+    const params = pickNotNull(query) as Record<string, any>;
+    if (query.fromDate) {
+      params.fromDate = formatISO(query.fromDate, { representation: 'date' });
+    }
+    if (query.toDate) {
+      params.toDate = formatISO(query.toDate, { representation: 'date' });
+    }
+    return params;
   }
 }

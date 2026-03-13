@@ -63,11 +63,13 @@ export function queryParamsToJobFilter(queryParams: ParamMap): JobFilter {
   return filter;
 }
 
-export function jobFilterToRequestQuery(filter: JobFilter): Record<string, any> {
-  return {
-    ...filter,
-    jobsId: filter.jobsId ? filter.jobsId.join(',') : undefined,
-    jobStatus: filter.jobStatus ? filter.jobStatus.join(',') : undefined,
-    fromDate: filter.fromDate ? new Date(filter.fromDate).toISOString() : undefined,
-  };
+export function jobFilterToRequestQuery<T extends JobFilter | undefined>(filter: T): Record<string, any> | undefined {
+  return filter
+    ? {
+        ...filter,
+        jobsId: filter.jobsId ? filter.jobsId.join(',') : undefined,
+        jobStatus: filter.jobStatus ? filter.jobStatus.join(',') : undefined,
+        fromDate: filter.fromDate ? new Date(filter.fromDate).toISOString() : undefined,
+      }
+    : undefined;
 }

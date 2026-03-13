@@ -2,6 +2,7 @@ import { Route } from '@angular/router';
 import { QuickCreateComponent } from './quick-create.component';
 import { productsResolver } from './products.resolver';
 import { customersResolver } from './customers.resolver';
+import { initialJobResolver } from './initial-job.resolver';
 
 export default [
   {
@@ -11,6 +12,7 @@ export default [
     resolve: {
       products: productsResolver,
       customers: customersResolver,
+      initialJob: initialJobResolver,
     },
   },
   {

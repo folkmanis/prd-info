@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
 import { notNullOrThrow } from 'src/app/library';
-import { DEFAULT_JOBS_USER_PREFERENCES, JobsUserPreferences } from '../interfaces/jobs-user-preferences';
+import { defaultJobsUserPreferences, JobsUserPreferences } from '../interfaces/jobs-user-preferences';
 import { JobsApiService } from './jobs-api.service';
 
 @Injectable({
@@ -32,7 +32,7 @@ export class JobsUserPreferencesService {
     return updatedPreferences;
   }
 
-  private async getUserPreferences(): Promise<JobsUserPreferences> {
+  async getUserPreferences(): Promise<JobsUserPreferences> {
     try {
       return await this.api.getUserPreferences();
     } catch (error) {
@@ -42,7 +42,7 @@ export class JobsUserPreferencesService {
 
   private setMissingPreferences(error: Error): Promise<JobsUserPreferences> {
     if (error instanceof HttpErrorResponse && error.status === 404) {
-      return this.setUserPreferences(DEFAULT_JOBS_USER_PREFERENCES);
+      return this.setUserPreferences(defaultJobsUserPreferences());
     }
     throw error;
   }

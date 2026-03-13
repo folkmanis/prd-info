@@ -1,33 +1,34 @@
+import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { LoginService } from 'src/app/login';
+import { CustomersService } from 'src/app/services';
 import { ScrollTopDirective } from '../../library/scroll-to-top/scroll-top.directive';
-import { JobsProduction, JobsProductionFilterQuery } from '../interfaces';
-import { FilterComponent } from './filter/filter.component';
+import { JobsProduction } from '../interfaces';
+import { FilterComponent, JobsProductionFilter } from './filter/filter.component';
 import { ProductsTableComponent } from './products-table/products-table.component';
 import { ProductsProductionService } from './services/products-production.service';
 import { Totals } from './services/totals';
+import { MatAnchor, MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'app-products-production',
   templateUrl: './products-production.component.html',
   styleUrls: ['./products-production.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FilterComponent, ProductsTableComponent, ScrollTopDirective],
+  imports: [FilterComponent, ProductsTableComponent, ScrollTopDirective, AsyncPipe, MatAnchor, MatButton],
 })
 export class ProductsProductionComponent {
-  private productsService = inject(ProductsProductionService);
-  private loginService = inject(LoginService);
+  #service = inject(ProductsProductionService);
 
-  private data$ = this.productsService.dataFlow();
+  protected query = this.#service.getSavedQuery();
+  protected data = this.#service.getJobsProductionResource(this.query);
 
-  isAdmin = toSignal(this.loginService.isModuleAvailable('jobs-admin'), { initialValue: false });
+  protected customers = inject(CustomersService).getCustomerList({ disabled: false });
 
-  query = this.productsService.query;
+  isAdmin = toSignal(inject(LoginService).isModuleAvailable('jobs-admin'), { initialValue: false });
 
   selection = signal<JobsProduction[]>([]);
-
-  data = toSignal(this.data$, { initialValue: [] });
 
   totals = computed(() => {
     const selection = this.selection();
@@ -36,15 +37,33 @@ export class ProductsProductionComponent {
 
   constructor() {
     effect(() => {
-      this.selection.set(this.data());
+      if (this.data.hasValue()) {
+        this.selection.set(this.data.value());
+      }
     });
   }
 
-  async onSort(sort: string) {
-    this.productsService.setSort(sort);
+  onSort(sort: string) {
+    const query = this.query();
+    if (query) {
+      this.#service.setSavedQuery({
+        ...query,
+        sort,
+      });
+    }
   }
 
-  async onFilter(filter: JobsProductionFilterQuery) {
-    this.productsService.setFilter(filter);
+  async onFilter(filter: JobsProductionFilter | undefined) {
+    const query = this.query();
+    if (query && filter) {
+      this.#service.setSavedQuery({
+        ...query,
+        ...filter,
+      });
+    }
+  }
+
+  openPrintReport() {
+    window.open(this.#service.getReportURL(this.query()), '_blank', 'noopener,noreferrer');
   }
 }

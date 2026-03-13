@@ -2,14 +2,16 @@
   <mat-expansion-panel-header>
     <mat-panel-title> Atlase </mat-panel-title>
     <mat-panel-description>
-      <app-filter-summary [states]="jobStates()" [categories]="categories()" [query]="query()" />
+      @if (filter(); as filter) {
+        <app-filter-summary [states]="jobStates()" [categories]="categories()" [query]="filter" />
+      }
     </mat-panel-description>
   </mat-expansion-panel-header>
 
   <section class="container">
     <mat-form-field>
       <mat-label> Ražošanas stadija </mat-label>
-      <mat-select [value]="jobStatus()" (valueChange)="onChangeJobStatus($event)" multiple [disabled]="disabled()">
+      <mat-select [formField]="filterForm.jobStatus" multiple>
         @for (state of jobStates(); track state.state) {
           <mat-option [value]="state.state">
             {{ state.description }}
@@ -20,7 +22,7 @@
 
     <mat-form-field>
       <mat-label> Materiālu grupa </mat-label>
-      <mat-select [value]="category()" (valueChange)="onChangeCategory($event)" multiple [disabled]="disabled()">
+      <mat-select [formField]="filterForm.category" multiple>
         @for (category of categories(); track category.category) {
           <mat-option [value]="category.category">
             {{ category.description }}
@@ -29,7 +31,35 @@
       </mat-select>
     </mat-form-field>
 
-    <app-date-range-picker [ngModel]="interval()" (ngModelChange)="setInterval($event)" />
+    @if (customerNames(); as customers) {
+      <mat-form-field>
+        <mat-label> Klients </mat-label>
+        <input
+          matInput
+          [formField]="filterForm.customer"
+          [matAutocomplete]="autoC"
+          [appAutocompleteFilter]="customers"
+          #filterC="appAutocompleteFilter"
+        />
+        <button matIconSuffix matIconButton tabindex="-1" (click)="filterForm.customer().value.set('')">
+          <mat-icon> clear </mat-icon>
+        </button>
+        <mat-autocomplete
+          #autoC="matAutocomplete"
+          requireSelection
+          (optionSelected)="filterC.reset()"
+          hideSingleSelectionIndicator
+        >
+          @for (customer of filterC.options(); track customer) {
+            <mat-option [value]="customer">
+              {{ customer }}
+            </mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+    }
+
+    <app-date-range-picker [formField]="filterForm.interval" />
 
     <button matButton="elevated" (click)="onSetRepro()" [disabled]="disabled()">REPRO</button>
   </section>

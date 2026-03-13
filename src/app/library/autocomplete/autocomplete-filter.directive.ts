@@ -7,7 +7,6 @@ import { computed, Directive, input, signal } from '@angular/core';
     '(input)': 'onInput($event)',
   },
 })
-// '(change)': 'onBlur()',
 export class AutocompleteFilterDirective {
   values = input.required<string[]>({ alias: 'appAutocompleteFilter' });
 

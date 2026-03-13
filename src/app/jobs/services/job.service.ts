@@ -4,7 +4,9 @@ import { FilterInput, toFilterSignal } from 'src/app/library';
 import { Job, JobFilter, jobFilterToRequestQuery, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
 import { JobsApiService, JobUpdateParams } from './jobs-api.service';
 
-export function filterInputToRequestQuery(filter: FilterInput<JobFilter>): Signal<Record<string, any>> {
+export function filterInputToRequestQuery(
+  filter: FilterInput<JobFilter | undefined>,
+): Signal<Record<string, any> | undefined> {
   const filterSignal = toFilterSignal(filter);
   return computed(() => jobFilterToRequestQuery(filterSignal()));
 }
@@ -52,11 +54,11 @@ export class JobService {
     return this.#api.getOne(jobId);
   }
 
-  getJobsResource(filter: FilterInput<JobFilter>) {
+  getJobsResource(filter: FilterInput<JobFilter | undefined>) {
     return this.#api.jobsResource(filterInputToRequestQuery(filter));
   }
 
-  getJobsUnwindedResource(filter: FilterInput<JobFilter>) {
+  getJobsUnwindedResource(filter: FilterInput<JobFilter | undefined>) {
     return this.#api.jobsUnwindedResource(filterInputToRequestQuery(filter));
   }
 
