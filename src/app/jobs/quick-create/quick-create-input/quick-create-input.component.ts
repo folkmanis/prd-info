@@ -1,10 +1,12 @@
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import {
+  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   computed,
   effect,
   inject,
+  Injector,
   input,
   linkedSignal,
   output,
@@ -45,6 +47,7 @@ import { QuickCreateService } from '../quick-create.service';
 })
 export class QuickCreateInputComponent {
   #service = inject(QuickCreateService);
+  #injector = inject(Injector);
 
   products = input.required<ProductPartial[]>();
   customers = input.required<CustomerPartial[]>();
@@ -131,6 +134,19 @@ export class QuickCreateInputComponent {
     if (this.jobForm.name().valid()) {
       this.jobForm.count().focusBoundControl();
     }
+  }
+
+  protected productSelected() {
+    afterNextRender(
+      {
+        write: () => {
+          if (this.jobForm.product().valid()) {
+            this.jobForm.name().focusBoundControl();
+          }
+        },
+      },
+      { injector: this.#injector },
+    );
   }
 
   #fromModel(): JobCreate | null {

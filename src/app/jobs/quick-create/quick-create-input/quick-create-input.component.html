@@ -52,7 +52,7 @@
             #autoP="matAutocomplete"
             requireSelection
             autoActiveFirstOption
-            (optionSelected)="filterP.reset()"
+            (optionSelected)="filterP.reset(); productSelected()"
             hideSingleSelectionIndicator
           >
             @for (product of filterP.options(); track $index) {
