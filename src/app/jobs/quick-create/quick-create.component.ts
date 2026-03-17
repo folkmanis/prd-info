@@ -5,6 +5,7 @@ import { QuickCreateJob } from '../interfaces/jobs-user-preferences';
 import { JobsTableComponent } from './jobs-table/jobs-table.component';
 import { QuickCreateInputComponent } from './quick-create-input/quick-create-input.component';
 import { QuickCreateService } from './quick-create.service';
+import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
 
 const DEFAULT_FILTER = { limit: 100, jobStatus: [30] };
 
@@ -14,6 +15,7 @@ const DEFAULT_FILTER = { limit: 100, jobStatus: [30] };
   templateUrl: './quick-create.component.html',
   styleUrl: './quick-create.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  hostDirectives: [ScrollTopDirective],
 })
 export class QuickCreateComponent {
   #filter = linkedSignal<JobFilter | undefined>(() =>

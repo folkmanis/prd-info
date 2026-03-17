@@ -1,3 +1,12 @@
 :host {
     display: block;
+    overflow: auto;
+    height: 100%;
+}
+
+.input-container {
+    display: block;
+    position: sticky;
+    top: 0;
+    background-color: var(--mat-sys-surface);
 }

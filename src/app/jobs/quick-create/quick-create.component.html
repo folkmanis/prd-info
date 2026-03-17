@@ -4,6 +4,7 @@
   (customerNameSelected)="onSetCustomer($event)"
   (updated)="onReload()"
   [initialJob]="initialJob()"
+  class="input-container"
 />
 @if (jobs.hasValue()) {
   <app-jobs-table [jobs]="jobs.value()" />
