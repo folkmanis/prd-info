@@ -1,6 +1,7 @@
 import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, input, linkedSignal, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatDivider, MatListModule } from '@angular/material/list';
@@ -8,10 +9,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { isEqual } from 'lodash-es';
 import { firstValueFrom } from 'rxjs';
 import { ConfirmationDirective } from 'src/app/library/confirmation-dialog';
-import { updateCatching } from 'src/app/library/update-catching';
 import { configuration } from 'src/app/services/config.provider';
 import { TransportationRouteSheet } from 'src/app/transportation/interfaces/transportation-route-sheet';
-import { RouteSheetService } from 'src/app/transportation/services/route-sheet.service';
 import { FuelPurchase } from '../../../interfaces/fuel-purchase';
 import { FuelTotalsComponent } from '../../../ui/fuel-totals/fuel-totals.component';
 import { FuelPurchaseDialogData, SinglePurchaseComponent } from './single-purchase/single-purchase.component';
@@ -25,6 +24,7 @@ function sortByDate(values: FuelPurchase[]): FuelPurchase[] {
 @Component({
   selector: 'app-fuel-purchases',
   imports: [
+    MatCardModule,
     MatButton,
     FuelTotalsComponent,
     DatePipe,
@@ -42,16 +42,18 @@ function sortByDate(values: FuelPurchase[]): FuelPurchase[] {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FuelPurchasesComponent {
-  readonly #routeSheetService = inject(RouteSheetService);
   readonly #dialog = inject(MatDialog);
 
   #fuelTypes = configuration('transportation', 'fuelTypes');
 
   routeSheet = input.required<TransportationRouteSheet>();
-  protected fuelPurchases = linkedSignal(() => this.routeSheet().fuelPurchases, { equal: isEqual });
+  protected fuelPurchases = computed(() => this.routeSheet().fuelPurchases);
 
-  protected busy = signal(false);
-  readonly #updateFn = updateCatching(this.busy);
+  update = output<FuelPurchase[]>();
+
+  busy = input(false);
+
+  disabled = input(false);
 
   protected fuelDescription = (type: string) => this.#fuelTypes()?.find((t) => t.type === type)?.description || '';
 
@@ -62,8 +64,7 @@ export class FuelPurchasesComponent {
 
     const update = sortByDate(this.fuelPurchases());
     if (!isEqual(this.fuelPurchases(), update)) {
-      this.fuelPurchases.set(update);
-      this.#saveFuelPurchases();
+      this.update.emit(update);
     }
   }
 
@@ -72,8 +73,7 @@ export class FuelPurchasesComponent {
 
     const result = await firstValueFrom(this.#dialog.open(SinglePurchaseComponent, { data }).afterClosed());
     if (result) {
-      this.fuelPurchases.update((fps) => fps.map((fp, i) => (i === idx ? result : fp)));
-      await this.#saveFuelPurchases();
+      this.update.emit(this.fuelPurchases().map((fp, i) => (i === idx ? result : fp)));
     }
   }
 
@@ -95,24 +95,12 @@ export class FuelPurchasesComponent {
     });
     const result = await firstValueFrom(this.#dialog.open(SinglePurchaseComponent, { data }).afterClosed());
     if (result) {
-      this.fuelPurchases.update((fps) => [...fps, result]);
-      await this.#saveFuelPurchases();
+      this.update.emit([...this.fuelPurchases(), result]);
     }
   }
 
   async deleteFuelPurchase(idx: number) {
-    this.fuelPurchases.update((fps) => fps.filter((_, i) => i !== idx));
-    await this.#saveFuelPurchases();
-  }
-
-  async #saveFuelPurchases() {
-    const { _id: id } = this.routeSheet();
-    const update = { fuelPurchases: this.fuelPurchases() };
-    this.#updateFn(async (message) => {
-      const { fuelPurchases } = await this.#routeSheetService.updateRouteSheet(id, update);
-      this.fuelPurchases.set(fuelPurchases);
-      message(`Izmaiņas saglabātas`);
-    });
+    this.update.emit(this.fuelPurchases().filter((_, i) => i !== idx));
   }
 
   #createDialogData(fuelPurchase: FuelPurchase): FuelPurchaseDialogData {

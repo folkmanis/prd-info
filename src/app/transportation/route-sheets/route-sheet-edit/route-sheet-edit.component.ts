@@ -1,36 +1,31 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators, ValueChangeEvent } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, inject, input, linkedSignal, signal, viewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTabsModule } from '@angular/material/tabs';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { isEqual, pickBy } from 'lodash-es';
-import { filter, map, of, switchMap } from 'rxjs';
-import { assertNoNullProperties, assertNotNull, notNullOrThrow } from 'src/app/library';
-import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
+import { assertNotNull } from 'src/app/library';
 import { CanComponentDeactivate } from 'src/app/library/guards';
 import { navigateRelative } from 'src/app/library/navigation';
 import { SimpleContentContainerComponent } from 'src/app/library/simple-form/simple-content-container/simple-content-container.component';
-import { FuelPurchase } from '../../interfaces/fuel-purchase';
-import { TransportationDriver } from '../../interfaces/transportation-driver';
-import { RouteTrip, TransportationRouteSheet } from '../../interfaces/transportation-route-sheet';
-import { TransportationVehicle } from '../../interfaces/transportation-vehicle';
+import { updateCatching } from 'src/app/library/update-catching';
+import {
+  TransportationRouteSheet,
+  TransportationRouteSheetCreate,
+  TransportationRouteSheetUpdate,
+} from '../../interfaces/transportation-route-sheet';
 import { RouteSheetService } from '../../services/route-sheet.service';
-import { TransportationDriverService } from '../../services/transportation-driver.service';
-import { TransportationVehicleService } from '../../services/transportation-vehicle.service';
 import { RouteSheetListComponent } from '../route-sheet-list/route-sheet-list.component';
+import { FuelPurchasesComponent } from './fuel-purchases/fuel-purchases.component';
+import { GeneralInfoComponent } from './general-info/general-info.component';
+import { GeneralSetupComponent } from './general-setup/general-setup.component';
+import { RouteTripsComponent } from './route-trips/route-trips.component';
 
 @Component({
   selector: 'app-route-sheet-edit',
   imports: [
     SimpleContentContainerComponent,
-    FormsModule,
-    ReactiveFormsModule,
-    MatTabsModule,
-    RouterOutlet,
-    RouterLink,
-    RouterLinkActive,
     MatButtonModule,
+    FuelPurchasesComponent,
+    GeneralSetupComponent,
+    RouteTripsComponent,
+    GeneralInfoComponent,
   ],
   templateUrl: './route-sheet-edit.component.html',
   styleUrl: './route-sheet-edit.component.scss',
@@ -39,107 +34,46 @@ import { RouteSheetListComponent } from '../route-sheet-list/route-sheet-list.co
 export class RouteSheetEditComponent implements CanComponentDeactivate {
   readonly #routeSheetService = inject(RouteSheetService);
   #navigate = navigateRelative();
-  readonly #confirmation = inject(ConfirmationDialogService);
   #listComponent = inject(RouteSheetListComponent);
+  protected generalSetup = viewChild(GeneralSetupComponent);
 
-  drivers = inject(TransportationDriverService).getDriversResource();
+  protected busy = signal(false);
+  readonly #updateFn = updateCatching(this.busy);
 
-  vehicles = inject(TransportationVehicleService).getVehiclesResource();
+  routeSheet = input.required<TransportationRouteSheet>();
+  protected initialValue = linkedSignal(() => this.routeSheet());
 
-  customers$ = this.#routeSheetService.getCustomers();
+  protected editActive = linkedSignal(() => (this.initialValue()._id ? false : true));
 
-  form = inject(FormBuilder).group({
-    year: [null as number | null, { validators: [Validators.required, Validators.min(1990)] }],
-    month: [null as number | null, { validators: [Validators.required, Validators.min(1), Validators.max(12)] }],
-    fuelRemainingStartLitres: [0, { validators: [Validators.required, Validators.min(0)] }],
-    driver: [null as TransportationDriver | null, { validators: [Validators.required] }],
-    vehicle: [null as TransportationVehicle | null, { validators: [Validators.required] }],
-    trips: [[] as RouteTrip[]],
-    fuelPurchases: [[] as FuelPurchase[]],
-  });
+  canDeactivate = () => this.editActive() === false || this.generalSetup()!.canDeactivate();
 
-  initialValue = input.required<TransportationRouteSheet>({ alias: 'routeSheet' });
-
-  formValue = toSignal(this.form.valueChanges, {
-    initialValue: this.form.value,
-  });
-
-  formStatus = toSignal(this.form.statusChanges, {
-    initialValue: this.form.status,
-  });
-
-  generalValid = computed(() => {
-    this.formStatus();
-    const controlNames = ['year', 'month', 'driver', 'vehicle', 'fuelRemainingStartLitres'];
-    return controlNames.every((key) => this.form.controls[key].valid);
-  });
-
-  changes = computed(() => {
-    const value = this.formValue();
-    const initialValue = this.initialValue();
-    const diff = pickBy(value, (v, key) => v !== null && !isEqual(v, initialValue[key]));
-    return Object.keys(diff).length ? diff : undefined;
-  });
-
-  startDate = computed(() => {
-    if (this.generalValid()) {
-      const { year, month } = this.formValue();
-      assertNotNull(year);
-      assertNotNull(month);
-      return new Date(year, month - 1);
-    } else {
-      return null;
-    }
-  });
-
-  historicalData$ = this.form.controls.vehicle.events.pipe(
-    filter((event) => event instanceof ValueChangeEvent),
-    map((event: ValueChangeEvent<TransportationVehicle>) => event.value?.licencePlate),
-    switchMap((licencePlate) => (licencePlate ? this.#routeSheetService.getHistoricalData(licencePlate) : of(null))),
-  );
-
-  constructor() {
-    toObservable(this.initialValue).subscribe((data) => this.form.reset(data));
-  }
-
-  canDeactivate = () => this.form.pristine || !this.changes();
-
-  async onSave() {
-    let id = this.initialValue()._id;
-    try {
-      if (!id) {
-        const data = this.form.getRawValue();
-        assertNoNullProperties(data);
-        id = (await this.#routeSheetService.createRouteSheet(data))._id;
-      } else {
-        const data = notNullOrThrow(this.changes());
-        assertNoNullProperties(data);
-        await this.#routeSheetService.updateRouteSheet(id, data);
-      }
+  async onCreate(create: TransportationRouteSheetCreate) {
+    await this.#updateFn(async (message) => {
+      const created = await this.#routeSheetService.createRouteSheet(create);
+      message(`Ieraksts izveidots!`);
+      this.#navigate(['..', created._id]);
       this.#listComponent.onReload();
-      this.form.markAsPristine();
-      this.#navigate(['..', id], { queryParams: { upd: Date.now() } });
-    } catch (error) {
-      this.#confirmation.confirmDataError(error.message);
-    }
+    });
   }
 
-  onReset() {
-    this.form.reset(this.initialValue());
+  async onUpdate(update: TransportationRouteSheetUpdate) {
+    await this.#updateFn(async (message) => {
+      const { _id: id } = this.initialValue();
+      const updated = await this.#routeSheetService.updateRouteSheet(id, update);
+      this.initialValue.set(updated);
+      message(`Dati saglabāti!`);
+      this.#listComponent.onReload();
+    });
   }
 
   async onDelete() {
-    const id = this.initialValue()._id;
-    if (id && (await this.#confirmation.confirmDelete())) {
-      try {
-        await this.#routeSheetService.deleteRouteSheet(id);
-        this.form.markAsPristine();
-        this.#navigate(['..']);
-      } catch (error) {
-        this.#confirmation.confirmDataError(error.message);
-      } finally {
-        this.#listComponent.onReload();
-      }
-    }
+    this.#updateFn(async (message) => {
+      const { _id: id } = this.initialValue();
+      assertNotNull(id);
+      await this.#routeSheetService.deleteRouteSheet(id);
+      message(`Ieraksts izdzēsts!`);
+      this.#navigate(['..']);
+      this.#listComponent.onReload();
+    });
   }
 }

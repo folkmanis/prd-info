@@ -1,18 +1,5 @@
-:host {
-  display: block;
-  padding: 16px;
-}
-
-.actions {
-  display: flex;
-  align-items: center;
-  column-gap: 16px;
-  margin-top: 16px;
-
-  :last-child {
-    margin-left: auto;
-  }
-
+.actions :last-child {
+  margin-left: auto;
 }
 
 .description {

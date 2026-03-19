@@ -1,16 +1,35 @@
 <app-simple-content-container>
-  <nav mat-tab-nav-bar dynamicHeight [tabPanel]="tabPanel">
-    <a mat-tab-link routerLink="general-setup" routerLinkActive #rlaG="routerLinkActive" [active]="rlaG.isActive">
-      Pamatinformācija
-    </a>
+  <div id="content">
+    @if (editActive()) {
+      <app-general-setup
+        #generalSetup
+        [routeSheet]="initialValue()"
+        (update)="onUpdate($event)"
+        (create)="onCreate($event)"
+        (cancel)="editActive.set(false)"
+      />
+    } @else {
+      <app-general-info
+        [routeSheet]="initialValue()"
+        (edit)="editActive.set(true)"
+        (delete)="onDelete()"
+        [busy]="busy()"
+      />
+    }
 
-    <a mat-tab-link routerLink="fuel-purchases" routerLinkActive #rlaP="routerLinkActive" [active]="rlaP.isActive">
-      Degviela
-    </a>
-
-    <a mat-tab-link routerLink="trips" routerLinkActive #rlaT="routerLinkActive" [active]="rlaT.isActive"> Maršruti </a>
-  </nav>
-  <mat-tab-nav-panel #tabPanel>
-    <router-outlet />
-  </mat-tab-nav-panel>
+    @if (initialValue()._id) {
+      <app-fuel-purchases
+        [routeSheet]="initialValue()"
+        (update)="onUpdate({ fuelPurchases: $event })"
+        [busy]="busy()"
+        [disabled]="editActive()"
+      />
+      <app-route-trips
+        [routeSheet]="initialValue()"
+        (update)="onUpdate({ trips: $event })"
+        [busy]="busy()"
+        [disabled]="editActive()"
+      />
+    }
+  </div>
 </app-simple-content-container>

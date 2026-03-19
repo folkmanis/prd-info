@@ -1,45 +1,52 @@
-<mat-list>
-  @for (purchase of fuelPurchases(); track $index) {
-    <mat-list-item>
-      <div matListItemMeta>
-        <button matIconButton (click)="editFuelPurchase($index)" [disabled]="busy()">
-          <mat-icon> edit </mat-icon>
-        </button>
-        <button
-          matIconButton
-          class="tertiary"
-          appConfirmation="delete"
-          (appConfirmedClick)="deleteFuelPurchase($index)"
-          [disabled]="busy()"
-        >
-          <mat-icon> delete </mat-icon>
-        </button>
-      </div>
-      <span matListItemTitle>
-        {{ purchase.date | date: 'd. MMMM' }}
-      </span>
-      <div matListItemLine class="description">
-        {{ fuelDescription(purchase.type) }}, {{ purchase.amount | number: '1.0-1' }} {{ purchase.units }}
-      </div>
-      <div matListItemLine>
-        <span> Cena: {{ purchase.price | currency }}/{{ purchase.units }} </span>
-        <span> Summa: {{ purchase.total | currency }} </span>
-      </div>
-    </mat-list-item>
-    <mat-divider />
-  }
-</mat-list>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title> Degvielas pirkumi </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-list>
+      @for (purchase of fuelPurchases(); track $index) {
+        <mat-list-item>
+          <div matListItemMeta>
+            <button matIconButton (click)="editFuelPurchase($index)" [disabled]="busy() || disabled()">
+              <mat-icon> edit </mat-icon>
+            </button>
+            <button
+              matIconButton
+              class="tertiary"
+              appConfirmation="delete"
+              (appConfirmedClick)="deleteFuelPurchase($index)"
+              [disabled]="busy() || disabled()"
+            >
+              <mat-icon> delete </mat-icon>
+            </button>
+          </div>
+          <span matListItemTitle>
+            {{ purchase.date | date: 'd. MMMM' }}
+          </span>
+          <div matListItemLine class="description">
+            {{ fuelDescription(purchase.type) }}, {{ purchase.amount | number: '1.0-1' }} {{ purchase.units }}
+          </div>
+          <div matListItemLine>
+            <span> Cena: {{ purchase.price | currency }}/{{ purchase.units }} </span>
+            <span> Summa: {{ purchase.total | currency }} </span>
+          </div>
+        </mat-list-item>
+        <mat-divider />
+      }
+    </mat-list>
 
-<div class="actions">
-  <button matButton (click)="appendFuelPurchase()" [disabled]="busy()">Pievienot degvielu</button>
-  <app-fuel-totals [defaultUnits]="routeSheet().vehicle.fuelType.units" [fuelPurchases]="fuelPurchases()" />
-  <button matIconButton [matMenuTriggerFor]="extraActions" [disabled]="busy()">
-    <mat-icon> more_vert </mat-icon>
-  </button>
-</div>
+    <mat-card-actions class="actions">
+      <button matButton (click)="appendFuelPurchase()" [disabled]="busy() || disabled()">Pievienot degvielu</button>
+      <app-fuel-totals [defaultUnits]="routeSheet().vehicle.fuelType.units" [fuelPurchases]="fuelPurchases()" />
+      <button matIconButton [matMenuTriggerFor]="extraActions" [disabled]="busy() || disabled()">
+        <mat-icon> more_vert </mat-icon>
+      </button>
+    </mat-card-actions>
 
-<mat-menu #extraActions>
-  <button mat-menu-item (click)="onSortByDate()" [disabled]="fuelPurchases().length < 2 || busy()">
-    Kārtot pēc datuma
-  </button>
-</mat-menu>
+    <mat-menu #extraActions>
+      <button mat-menu-item (click)="onSortByDate()" [disabled]="fuelPurchases().length < 2 || busy()">
+        Kārtot pēc datuma
+      </button>
+    </mat-menu>
+  </mat-card-content>
+</mat-card>

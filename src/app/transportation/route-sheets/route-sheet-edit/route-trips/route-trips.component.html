@@ -1,80 +1,48 @@
 @let vehicle = routeSheet().vehicle;
+<mat-card>
+  <mat-card-header>
+    <mat-card-title> Ceļazīmes </mat-card-title>
+  </mat-card-header>
 
-<mat-list>
-  @for (trip of trips(); track $index) {
-    <mat-list-item>
-      <div matListItemMeta>
-        <button matIconButton [disabled]="busy()" (click)="editTrip($index)">
-          <mat-icon> edit </mat-icon>
-        </button>
-        <button
-          matIconButton
-          [disabled]="busy()"
-          class="tertiary"
-          appConfirmation="delete"
-          (appConfirmedClick)="deleteTrip($index)"
-        >
-          <mat-icon> delete </mat-icon>
-        </button>
-      </div>
-      <span matListItemTitle>
-        {{ trip.date | date: 'd. MMMM' }}, {{ trip.tripLengthKm | number: '1.0-1' }}&nbsp;km,
-        {{ trip.fuelConsumed | number: '1.1-1' }}&nbsp;{{ vehicle.fuelType.units }}
-      </span>
-      <span matListItemLine class="route-description">
-        {{ getDescription(trip.stops) }}
-      </span>
-    </mat-list-item>
-    <mat-divider />
-  }
-</mat-list>
-
-<div class="actions">
-  <button matButton (click)="appendTrip()" [disabled]="busy()">Pievienot</button>
-  <app-trips-total [routeTrips]="trips()" [fuelUnits]="vehicle.fuelType.units" />
-  <button matIconButton [matMenuTriggerFor]="extraActions">
-    <mat-icon> more_vert </mat-icon>
-  </button>
-</div>
-
-<mat-menu #extraActions>
-  <button mat-menu-item (click)="sortByDate()" [disabled]="trips().length < 2 || busy()">Kārtot pēc datuma</button>
-</mat-menu>
-
-<!-- <mat-accordion appAccordion>
-  @for (control of form.controls; track $index) {
-    <mat-expansion-panel>
-      <mat-expansion-panel-header [class.invalid]="control.invalid">
-        <mat-panel-title>
-          @if (control.value; as value) {
-            <span>
-              {{ value.date | date: 'd. MMMM' }}
-            </span>
-          } @else {
-            <span> Jauns brauciens </span>
-          }
-        </mat-panel-title>
-        <mat-panel-description>
-          <span class="route-description">
-            {{ getDescription(control.value?.stops) }}
+  <mat-card-content>
+    <mat-list>
+      @for (trip of trips(); track $index) {
+        <mat-list-item>
+          <div matListItemMeta>
+            <button matIconButton [disabled]="busy() || disabled()" (click)="editTrip($index)">
+              <mat-icon> edit </mat-icon>
+            </button>
+            <button
+              matIconButton
+              [disabled]="busy() || disabled()"
+              class="tertiary"
+              appConfirmation="delete"
+              (appConfirmedClick)="deleteTrip($index)"
+            >
+              <mat-icon> delete </mat-icon>
+            </button>
+          </div>
+          <span matListItemTitle>
+            {{ trip.date | date: 'd. MMMM' }}, {{ trip.tripLengthKm | number: '1.0-1' }}&nbsp;km,
+            {{ trip.fuelConsumed | number: '1.1-1' }}&nbsp;{{ vehicle.fuelType.units }}
           </span>
-        </mat-panel-description>
-      </mat-expansion-panel-header>
+          <span matListItemLine class="route-description">
+            {{ getDescription(trip.stops) }}
+          </span>
+        </mat-list-item>
+        <mat-divider />
+      }
+    </mat-list>
+  </mat-card-content>
 
-      <ng-template matExpansionPanelContent>
-        <app-single-trip
-          [formControl]="control"
-          [customers]="customers()"
-          [fuelConsumption]="vehicle()?.consumption || null"
-          [fuelUnits]="vehicle()?.fuelType?.units || null"
-          [lastOdometer]="lastOdometer($index)()"
-          [startDate]="startDate()"
-        />
-        <mat-action-row>
-          <button matButton="elevated" (click)="onRemove($index)" actions>Dzēst braucienu</button>
-        </mat-action-row>
-      </ng-template>
-    </mat-expansion-panel>
-  }
-</mat-accordion>
- -->
+  <mat-card-actions class="actions">
+    <button matButton (click)="appendTrip()" [disabled]="busy() || disabled()">Pievienot braucienu</button>
+    <app-trips-total [routeTrips]="trips()" [fuelUnits]="vehicle.fuelType.units" />
+    <button matIconButton [matMenuTriggerFor]="extraActions" [disabled]="busy() || disabled()">
+      <mat-icon> more_vert </mat-icon>
+    </button>
+  </mat-card-actions>
+  <mat-menu #extraActions>
+    <button mat-menu-item (click)="sortByDate()" [disabled]="trips().length < 2 || busy()">Kārtot pēc datuma</button>
+  </mat-menu>
+</mat-card>

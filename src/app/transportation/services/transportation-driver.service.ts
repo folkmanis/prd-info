@@ -27,10 +27,6 @@ export class TransportationDriverService {
     return this.#api.getOne(id);
   }
 
-  getDrivers(filter: TransportationDriverRequestFilter = {}): Promise<TransportationDriver[]> {
-    return this.#api.getDrivers(filter);
-  }
-
   create(driver: TransportationDriverCreate) {
     return this.#api.createOne(driver);
   }

@@ -1,22 +1,9 @@
-:host {
-  display: block;
-  padding-block: 16px;
-  padding-inline: 8px;
-}
-
 app-trips-total {
   display: block;
 }
 
-.actions {
-  display: flex;
-  align-items: center;
-  column-gap: 16px;
-  margin-top: 16px;
-
-  :last-child {
-    margin-left: auto;
-  }
+.actions :last-child {
+  margin-left: auto;
 }
 
 app-single-trip {

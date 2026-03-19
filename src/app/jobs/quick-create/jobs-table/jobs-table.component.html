@@ -1,4 +1,4 @@
-<mat-table [dataSource]="jobs()" [trackBy]="jobsTrack">
+<mat-table [dataSource]="jobs()" [trackBy]="jobsTrack" class="app-table">
   <ng-container matColumnDef="receivedDate">
     <mat-header-cell *matHeaderCellDef> Datums </mat-header-cell>
     <mat-cell *matCellDef="let job">
@@ -9,7 +9,9 @@
   <ng-container matColumnDef="jobId">
     <mat-header-cell *matHeaderCellDef> nr. </mat-header-cell>
     <mat-cell *matCellDef="let job">
-      {{ job.jobId }}
+      <a matButton [appRouterLinkWithReturn]="['/', 'jobs', 'repro', job.jobId]">
+        {{ job.jobId }}
+      </a>
     </mat-cell>
   </ng-container>
 

@@ -1,6 +1,7 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, input, linkedSignal, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatDivider, MatListModule } from '@angular/material/list';
@@ -8,10 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { addBusinessDays, clamp, endOfMonth } from 'date-fns';
 import { isEqual } from 'lodash-es';
 import { firstValueFrom, map } from 'rxjs';
-import { numberOrDefaultZero } from 'src/app/library';
 import { ConfirmationDirective } from 'src/app/library/confirmation-dialog';
-import { updateCatching } from 'src/app/library/update-catching';
-import { HistoricalData } from 'src/app/transportation/interfaces/historical-data';
 import {
   RouteStop,
   RouteTrip,
@@ -24,6 +22,7 @@ import { SingleTripComponent, TripDialogData } from './single-trip/single-trip.c
 @Component({
   selector: 'app-route-trips',
   imports: [
+    MatCardModule,
     DatePipe,
     DecimalPipe,
     MatButton,
@@ -44,17 +43,21 @@ export class RouteTripsComponent {
   readonly #dialog = inject(MatDialog);
 
   routeSheet = input.required<TransportationRouteSheet>();
-  protected trips = linkedSignal(() => this.routeSheet().trips);
-  protected busy = signal(false);
-  readonly #updateFn = updateCatching(this.busy);
+  protected trips = computed(() => this.routeSheet().trips);
+
+  busy = input(false);
+
+  disabled = input(false);
+
+  update = output<RouteTrip[]>();
+
   #descriptions$ = this.#routeSheetService.descriptions();
 
   protected sortByDate() {
     const trips = this.trips();
     const sorted = this.#sortTripsByDate(trips);
     if (isEqual(trips, sorted) === false) {
-      this.trips.set(sorted);
-      this.#saveRouteTrips();
+      this.update.emit(sorted);
     }
   }
 
@@ -68,12 +71,13 @@ export class RouteTripsComponent {
     const dialogRef = this.#dialog.open(SingleTripComponent, { data: this.#getTripDialogData(this.trips()[idx]) });
     const result = await firstValueFrom(dialogRef.afterClosed());
     if (result) {
-      this.trips.update((ts) => ts.map((t, i) => (i === idx ? result : t)));
-      this.#saveRouteTrips();
+      this.update.emit(this.trips().map((t, i) => (i === idx ? result : t)));
     }
   }
 
-  protected deleteTrip(idx: number) {}
+  protected deleteTrip(idx: number) {
+    this.update.emit(this.trips().filter((_, i) => i !== idx));
+  }
 
   protected async appendTrip() {
     const trip = {
@@ -89,23 +93,11 @@ export class RouteTripsComponent {
     const dialogRef = this.#dialog.open(SingleTripComponent, { data: this.#getTripDialogData(trip) });
     const result = await firstValueFrom(dialogRef.afterClosed());
     if (result) {
-      this.trips.update((ts) => [...ts, result]);
-      this.#saveRouteTrips();
+      this.update.emit([...this.trips(), result]);
     }
   }
 
   #sortTripsByDate = (trips: RouteTrip[]) => [...trips].sort((a, b) => a.date.getTime() - b.date.getTime());
-
-  async #saveRouteTrips() {
-    const { _id: id } = this.routeSheet();
-    const update = { trips: this.trips() };
-
-    this.#updateFn(async (message) => {
-      const { trips } = await this.#routeSheetService.updateRouteSheet(id, update);
-      this.trips.set(trips);
-      message(`Izmaiņas saglabātas`);
-    });
-  }
 
   #getTripDialogData(trip: RouteTrip): TripDialogData {
     const {
@@ -135,26 +127,6 @@ export class RouteTripsComponent {
       lastOdometer$,
       customers$,
     };
-  }
-
-  #lastOdometer(hData: HistoricalData, trips: RouteTrip[], idx: number) {
-    if (!hData) {
-      return null;
-    }
-    if (trips.length === 1 && trips[idx].date && new Date(hData.lastYear, hData.lastMonth - 1) < trips[idx].date) {
-      return hData.lastOdometer;
-    }
-    if (trips[idx]?.date) {
-      return this.#lastDistance(trips, trips[idx].date) ?? hData.lastOdometer ?? null;
-    }
-    return null;
-  }
-
-  #lastDistance(trips: RouteTrip[], date: Date): number {
-    return trips
-      .filter((d) => d && d.date < date && d.odoStopKm > 0)
-      .map((d) => numberOrDefaultZero(d?.odoStopKm))
-      .reduce((acc, curr) => (curr > acc ? curr : acc), 0);
   }
 
   #getNextTripDay(): Date {

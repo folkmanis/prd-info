@@ -1,5 +1,8 @@
-.buttons {
-  margin-top: 16px;
-  display: flex;
-  column-gap: 16px;
+#content {
+  padding: 16px;
+
+  &>* {
+    display: block;
+    margin-block: 16px;
+  }
 }

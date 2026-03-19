@@ -1,5 +1,6 @@
-import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http';
+import { HttpClient, httpResource } from '@angular/common/http';
 import { inject, Injectable, Signal } from '@angular/core';
+import { isEqual } from 'lodash-es';
 import { firstValueFrom, map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { HttpOptions, httpResponseRequest, ValidatorService } from 'src/app/library';
@@ -7,11 +8,10 @@ import { HistoricalData } from '../interfaces/historical-data';
 import { TransportationCustomer } from '../interfaces/transportation-customer';
 import {
   RouteStop,
-  TransportationRouteSheetCreate,
   TransportationRouteSheet,
+  TransportationRouteSheetCreate,
   TransportationRouteSheetUpdate,
 } from '../interfaces/transportation-route-sheet';
-import { isEqual } from 'lodash-es';
 
 @Injectable({
   providedIn: 'root',

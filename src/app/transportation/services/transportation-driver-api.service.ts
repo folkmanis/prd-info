@@ -1,14 +1,15 @@
 import { HttpClient, httpResource } from '@angular/common/http';
 import { inject, Injectable, Signal } from '@angular/core';
+import { isEqual } from 'lodash-es';
 import { firstValueFrom } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { HttpOptions, httpResponseRequest, ValidatorService } from 'src/app/library';
 import {
   TransportationDriver,
   TransportationDriverCreate,
+  TransportationDriverSchema,
   TransportationDriverUpdate,
 } from '../interfaces/transportation-driver';
-import { isEqual } from 'lodash-es';
 
 @Injectable({
   providedIn: 'root',
@@ -20,29 +21,24 @@ export class TransportationDriverApiService {
 
   driversResource(params: Signal<Record<string, any>>) {
     return httpResource(() => httpResponseRequest(this.#path, new HttpOptions(params()).cacheable()), {
-      parse: this.#validator.arrayValidatorFn(TransportationDriver),
+      parse: this.#validator.arrayValidatorFn(TransportationDriverSchema),
       equal: isEqual,
     });
   }
 
-  async getDrivers(params: Record<string, any>): Promise<TransportationDriver[]> {
-    const response$ = this.#http.get<Record<string, any>[]>(this.#path, new HttpOptions(params).cacheable());
-    return this.#validator.validateArrayAsync(TransportationDriver, response$);
-  }
-
   async getOne(id: string): Promise<TransportationDriver> {
     const response = this.#http.get<Record<string, any>>(`${this.#path}/${id}`, new HttpOptions().cacheable());
-    return this.#validator.validateAsync(TransportationDriver, response);
+    return this.#validator.validateAsync(TransportationDriverSchema, response);
   }
 
   async createOne(data: TransportationDriverCreate): Promise<TransportationDriver> {
     const response = this.#http.put(this.#path, data, new HttpOptions());
-    return this.#validator.validateAsync(TransportationDriver, response);
+    return this.#validator.validateAsync(TransportationDriverSchema, response);
   }
 
   async updateOne(id: string, data: TransportationDriverUpdate): Promise<TransportationDriver> {
     const response = this.#http.patch(`${this.#path}/${id}`, data, new HttpOptions());
-    return this.#validator.validateAsync(TransportationDriver, response);
+    return this.#validator.validateAsync(TransportationDriverSchema, response);
   }
 
   async deleteOne(id: string): Promise<number> {

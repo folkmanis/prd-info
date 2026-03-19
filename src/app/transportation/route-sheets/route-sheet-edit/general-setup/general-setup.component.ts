@@ -6,11 +6,11 @@ import {
   effect,
   inject,
   input,
-  linkedSignal,
+  output,
   signal,
   untracked,
 } from '@angular/core';
-import { disabled, form, FormField, max, min, required, submit } from '@angular/forms/signals';
+import { disabled, form, FormField, FormRoot, max, min, required } from '@angular/forms/signals';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -20,11 +20,8 @@ import { MatOption, MatSelect } from '@angular/material/select';
 import { MatTooltip } from '@angular/material/tooltip';
 import { pick } from 'lodash-es';
 import { assertNotNull, notNullOrThrow } from 'src/app/library/assert-utils';
-import { ConfirmationDirective } from 'src/app/library/confirmation-dialog';
 import { CanComponentDeactivate } from 'src/app/library/guards';
-import { navigateRelative } from 'src/app/library/navigation';
 import { computedSignalChanges } from 'src/app/library/signals';
-import { updateCatching } from 'src/app/library/update-catching';
 import { TransportationDriver } from 'src/app/transportation/interfaces/transportation-driver';
 import {
   TransportationRouteSheet,
@@ -33,7 +30,8 @@ import {
 } from 'src/app/transportation/interfaces/transportation-route-sheet';
 import { TransportationVehicle } from 'src/app/transportation/interfaces/transportation-vehicle';
 import { RouteSheetService } from 'src/app/transportation/services/route-sheet.service';
-import { RouteSheetListComponent } from '../../route-sheet-list/route-sheet-list.component';
+import { TransportationDriverService } from 'src/app/transportation/services/transportation-driver.service';
+import { TransportationVehicleService } from 'src/app/transportation/services/transportation-vehicle.service';
 
 interface RouteSheetModel {
   year: number;
@@ -58,7 +56,7 @@ interface RouteSheetModel {
     FormField,
     MatCardModule,
     MatButton,
-    ConfirmationDirective,
+    FormRoot,
   ],
   templateUrl: './general-setup.component.html',
   styleUrl: './general-setup.component.scss',
@@ -66,61 +64,84 @@ interface RouteSheetModel {
 })
 export class GeneralSetupComponent implements CanComponentDeactivate {
   readonly #routeSheetService = inject(RouteSheetService);
-  readonly #navigate = navigateRelative();
-  readonly #listComponent = inject(RouteSheetListComponent);
 
   #year = new Date().getFullYear();
   protected months = Array.from({ length: 12 }, (_, k) => k).map((month) => new Date(this.#year, month));
 
-  protected busy = signal(false);
-  protected editActive = linkedSignal(() => (this.initialValue()._id ? false : true));
+  busy = input(false);
 
-  readonly #updateFn = updateCatching(this.busy);
+  create = output<TransportationRouteSheetCreate>();
+  update = output<TransportationRouteSheetUpdate>();
+  cancel = output<void>();
 
   routeSheet = input.required<TransportationRouteSheet>();
-  protected initialValue = linkedSignal(() => this.routeSheet());
-  #initialModel = computed(() => this.#toFormModel(this.initialValue()));
+  #initialModel = computed(() => this.#toFormModel(this.routeSheet()));
 
   #routeSheetModel = signal({
     year: this.#year,
     month: new Date().getMonth() + 1,
     fuelRemainingStartLitres: 0,
-    driverId: '',
     vehicleId: '',
+    driverId: '',
   });
-  protected routeSheetForm = form(this.#routeSheetModel, (schema) => {
-    disabled(schema, () => this.busy() || this.editActive() === false);
+  protected routeSheetForm = form(
+    this.#routeSheetModel,
+    (schema) => {
+      disabled(schema, () => this.busy());
 
-    required(schema.year);
-    min(schema.year, 1990);
+      required(schema.year);
+      min(schema.year, 1990);
 
-    required(schema.month);
-    min(schema.month, 1);
-    max(schema.month, 12);
+      required(schema.month);
+      min(schema.month, 1);
+      max(schema.month, 12);
 
-    required(schema.fuelRemainingStartLitres);
-    min(schema.fuelRemainingStartLitres, 0);
+      required(schema.fuelRemainingStartLitres);
+      min(schema.fuelRemainingStartLitres, 0);
 
-    required(schema.driverId);
-    required(schema.vehicleId);
-  });
+      required(schema.vehicleId);
+      required(schema.driverId);
+    },
+    {
+      submission: {
+        action: async () => {
+          const { _id: id } = this.routeSheet();
+          if (id) {
+            this.update.emit(this.#toUpdate(notNullOrThrow(this.changes())));
+          } else {
+            this.create.emit(this.#toCreate(this.#routeSheetModel()));
+            this.routeSheetForm().reset();
+          }
+        },
+      },
+    },
+  );
 
   protected changes = computedSignalChanges(this.#routeSheetModel, this.#initialModel);
 
-  drivers = input<TransportationDriver[]>([]);
-  activeDrivers = computed(() => this.drivers()?.filter((d) => !d.disabled) ?? []);
-  disabledDrivers = computed(() => this.drivers()?.filter((d) => d.disabled) ?? []);
+  #drivers = inject(TransportationDriverService).getDriversResource();
+  protected activeDrivers = computed(() =>
+    this.#drivers.hasValue() ? this.#drivers.value().filter((d) => !d.disabled) : [],
+  );
+  protected disabledDrivers = computed(() =>
+    this.#drivers.hasValue() ? this.#drivers.value().filter((d) => d.disabled) : [],
+  );
 
-  vehicles = input<TransportationVehicle[]>([]);
-  activeVehicles = computed(() => this.vehicles().filter((v) => !v.disabled));
-  disabledVehicles = computed(() => this.vehicles().filter((v) => v.disabled));
+  #vehicles = inject(TransportationVehicleService).getVehiclesResource();
+  protected activeVehicles = computed(() =>
+    this.#vehicles.hasValue() ? this.#vehicles.value().filter((v) => !v.disabled) : [],
+  );
+  protected disabledVehicles = computed(() =>
+    this.#vehicles.hasValue() ? this.#vehicles.value().filter((v) => v.disabled) : [],
+  );
 
   protected vehicle = computed(() => {
-    if (this.editActive() === false) {
+    if (this.#vehicles.hasValue()) {
+      const { vehicleId } = this.#routeSheetModel();
+      return this.#vehicles.value().find((v) => v._id === vehicleId);
+    } else {
       return undefined;
     }
-    const { vehicleId } = this.#routeSheetModel();
-    return this.vehicles().find((v) => v._id === vehicleId);
   });
   #licencePlate = computed(() => this.vehicle()?.licencePlate);
   historicalData = this.#routeSheetService.getHistoricalDataResource(this.#licencePlate);
@@ -138,43 +159,6 @@ export class GeneralSetupComponent implements CanComponentDeactivate {
     this.#routeSheetModel.update((m) => ({ ...m, fuelRemainingStartLitres: value }));
   }
 
-  protected async onSubmit() {
-    submit(this.routeSheetForm, async () => {
-      await this.#updateFn(async (message) => {
-        const { _id: id } = this.initialValue();
-        if (id) {
-          const updated = await this.#updateRouteSheet(id);
-          this.initialValue.set(updated);
-          message(`Dati saglabāti!`);
-        } else {
-          const created = await this.#createRouteSheet();
-          this.routeSheetForm().reset();
-          message(`Ieraksts izveidots!`);
-          this.#navigate(['..', created._id]);
-        }
-      });
-      this.#listComponent.onReload();
-    });
-  }
-
-  onReset() {
-    this.#routeSheetModel.set(this.#initialModel());
-    this.routeSheetForm().reset();
-    this.editActive.set(false);
-  }
-
-  async onDelete() {
-    this.#updateFn(async (message) => {
-      const { _id: id } = this.initialValue();
-      assertNotNull(id);
-      await this.#routeSheetService.deleteRouteSheet(id);
-      this.routeSheetForm().reset();
-      message(`Ieraksts izdzēsts!`);
-      this.#navigate(['../..']);
-      this.#listComponent.onReload();
-    });
-  }
-
   canDeactivate = () => this.routeSheetForm().touched() === false || this.changes() === null;
 
   #toFormModel(data: TransportationRouteSheet) {
@@ -182,19 +166,9 @@ export class GeneralSetupComponent implements CanComponentDeactivate {
       year: data.year,
       month: data.month,
       fuelRemainingStartLitres: data.fuelRemainingStartLitres,
-      driverId: data.driver._id,
       vehicleId: data.vehicle._id,
+      driverId: data.driver._id,
     };
-  }
-
-  async #updateRouteSheet(id: string): Promise<TransportationRouteSheet> {
-    const update = this.#toUpdate(notNullOrThrow(this.changes()));
-    return this.#routeSheetService.updateRouteSheet(id, update);
-  }
-
-  async #createRouteSheet(): Promise<TransportationRouteSheet> {
-    const create = this.#toCreate(this.#routeSheetModel());
-    return this.#routeSheetService.createRouteSheet(create);
   }
 
   #toUpdate(model: Partial<RouteSheetModel>): TransportationRouteSheetUpdate {
@@ -219,13 +193,13 @@ export class GeneralSetupComponent implements CanComponentDeactivate {
   }
 
   #findDriver(id: string): TransportationDriver {
-    const driver = this.drivers().find((d) => d._id === id);
+    const driver = this.#drivers.hasValue() ? this.#drivers.value().find((d) => d._id === id) : null;
     assertNotNull(driver);
     return driver;
   }
 
   #findVehicle(id: string): TransportationVehicle {
-    const vehicle = this.vehicles().find((v) => v._id === id);
+    const vehicle = this.#vehicles.hasValue() ? this.#vehicles.value().find((v) => v._id === id) : null;
     assertNotNull(vehicle);
     return vehicle;
   }

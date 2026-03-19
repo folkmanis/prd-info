@@ -1,0 +1,37 @@
+@let route = routeSheet();
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      {{ date() | date: "yyyy'. gada 'MMMM" }}
+    </mat-card-title>
+    <mat-card-subtitle> {{ route.vehicle.name }}, {{ route.vehicle.licencePlate }} </mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <p>
+      Vadītājs:
+      <b>
+        {{ route.driver.name }}
+      </b>
+    </p>
+    <p>
+      Degvielas atlikums sākumā:
+      <b> {{ route.fuelRemainingStartLitres }} </b>
+      {{ route.vehicle.fuelType.units }}
+    </p>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button matButton (click)="edit.emit()">Labot</button>
+    <button
+      matButton
+      [disabled]="busy()"
+      type="button"
+      class="tertiary"
+      appConfirmation="delete"
+      (appConfirmedClick)="delete.emit()"
+    >
+      Dzēst
+    </button>
+    <a matButton href="/data/transportation/report_{{ route._id }}.pdf" target="new" class="right-align"> Izdrukāt </a>
+  </mat-card-actions>
+</mat-card>
