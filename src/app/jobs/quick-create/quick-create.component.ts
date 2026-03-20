@@ -1,11 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject, input, linkedSignal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, linkedSignal } from '@angular/core';
 import { CustomerPartial, ProductPartial } from 'src/app/interfaces';
+import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
 import { JobFilter } from '../interfaces';
-import { QuickCreateJob } from '../interfaces/jobs-user-preferences';
+import { JobsUserPreferencesService } from '../services/jobs-user-preferences.service';
 import { JobsTableComponent } from './jobs-table/jobs-table.component';
 import { QuickCreateInputComponent } from './quick-create-input/quick-create-input.component';
 import { QuickCreateService } from './quick-create.service';
-import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
+import { isEqual } from 'lodash-es';
 
 const DEFAULT_FILTER = { limit: 100, jobStatus: [30] };
 
@@ -18,8 +19,17 @@ const DEFAULT_FILTER = { limit: 100, jobStatus: [30] };
   hostDirectives: [ScrollTopDirective],
 })
 export class QuickCreateComponent {
-  #filter = linkedSignal<JobFilter | undefined>(() =>
-    this.initialJob().customerName ? { ...DEFAULT_FILTER, customer: this.initialJob().customerName } : undefined,
+  #preferences = inject(JobsUserPreferencesService).userPreferences;
+  #filter = linkedSignal<JobFilter | undefined>(
+    () => {
+      const customer = this.initialJob()?.customerName;
+      if (customer) {
+        return { ...DEFAULT_FILTER, customer };
+      } else {
+        return undefined;
+      }
+    },
+    { equal: isEqual },
   );
 
   protected jobs = inject(QuickCreateService).jobsResource(this.#filter);
@@ -27,7 +37,7 @@ export class QuickCreateComponent {
   products = input.required<ProductPartial[]>();
   customers = input.required<CustomerPartial[]>();
 
-  initialJob = input.required<QuickCreateJob>();
+  initialJob = computed(() => this.#preferences()?.quickCreateJob);
 
   onSetCustomer(customer: string | undefined | null) {
     if (customer) {

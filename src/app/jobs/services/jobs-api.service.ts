@@ -5,15 +5,7 @@ import { firstValueFrom } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { ValidatorService } from 'src/app/library';
 import { HttpOptions, httpResponseRequest } from 'src/app/library/http';
-import {
-  Job,
-  JobPartial,
-  JobsProduction,
-  JobsProductionQuery,
-  jobsProductionQuerySchema,
-  JobsWithoutInvoicesTotals,
-  JobUnwindedPartial,
-} from '../interfaces';
+import { Job, JobPartial, JobsProduction, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
 import { JobsUserPreferences } from '../interfaces/jobs-user-preferences';
 
 export interface JobUpdateParams {

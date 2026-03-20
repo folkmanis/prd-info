@@ -1,11 +1,13 @@
-<app-quick-create-input
-  [customers]="customers()"
-  [products]="products()"
-  (customerNameSelected)="onSetCustomer($event)"
-  (updated)="onReload()"
-  [initialJob]="initialJob()"
-  class="input-container"
-/>
+@if (initialJob(); as initialJob) {
+  <app-quick-create-input
+    [customers]="customers()"
+    [products]="products()"
+    (customerNameSelected)="onSetCustomer($event)"
+    (updated)="onReload()"
+    [initialJob]="initialJob"
+    class="input-container"
+  />
+}
 @if (jobs.hasValue()) {
   <app-jobs-table [jobs]="jobs.value()" />
 }
