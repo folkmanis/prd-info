@@ -1,9 +1,9 @@
 import { inject, Injectable, Signal } from '@angular/core';
+import { assertNotNull, FilterInput } from 'src/app/library';
 import { ProductsService } from 'src/app/services';
-import { JobsApiService } from '../services/jobs-api.service';
 import { JobCreate, JobFilter } from '../interfaces';
-import { FilterInput } from 'src/app/library';
 import { filterInputToRequestQuery } from '../services/job.service';
+import { JobsApiService } from '../services/jobs-api.service';
 import { JobsUserPreferencesService } from '../services/jobs-user-preferences.service';
 
 @Injectable({
@@ -28,12 +28,23 @@ export class QuickCreateService {
 
   async saveJob(job: JobCreate) {
     const inserted = await this.#jobsApi.insertOne(job, {});
-    await this.#preferencesService.patchUserPreferences({
-      quickCreateJob: {
-        customerName: job.customer,
-        productName: job.products[0].name,
-      },
-    });
+    this.#updatePreferences(job);
     return inserted;
+  }
+
+  async #updatePreferences(job: JobCreate) {
+    const preferences = this.#preferencesService.userPreferences();
+    assertNotNull(preferences);
+    const {
+      quickCreateJob: { customerName, productName },
+    } = preferences;
+    if (job.customer !== customerName || job.products[0].name !== productName) {
+      return this.#preferencesService.patchUserPreferences({
+        quickCreateJob: {
+          customerName: job.customer,
+          productName: job.products[0].name,
+        },
+      });
+    }
   }
 }

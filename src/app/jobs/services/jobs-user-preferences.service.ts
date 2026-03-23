@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, resource } from '@angular/core';
 import { isEqual } from 'lodash-es';
 import { notNullOrThrow } from 'src/app/library';
 import { defaultJobsUserPreferences, JobsUserPreferences } from '../interfaces/jobs-user-preferences';
@@ -9,40 +9,44 @@ import { JobsApiService } from './jobs-api.service';
   providedIn: 'root',
 })
 export class JobsUserPreferencesService {
-  private api = inject(JobsApiService);
+  readonly #api = inject(JobsApiService);
+  #preferencesResource = resource<JobsUserPreferences, void>({
+    loader: () => {
+      return this.#getUserPreferences();
+    },
+    equal: isEqual,
+  });
 
-  userPreferences = signal<JobsUserPreferences | null>(null, { equal: isEqual });
-
-  constructor() {
-    this.getUserPreferences().then((preferences) => this.userPreferences.set(preferences));
-  }
+  readonly userPreferences = this.#preferencesResource.value.asReadonly();
 
   patchUserPreferences(patch: Partial<JobsUserPreferences>) {
     const update = {
       ...notNullOrThrow(this.userPreferences()),
       ...patch,
     };
-    return this.setUserPreferences(update);
+    return this.#setUserPreferences(update);
   }
 
-  async setUserPreferences(preferences: JobsUserPreferences): Promise<JobsUserPreferences> {
-    this.userPreferences.set(preferences);
-    const updatedPreferences = await this.api.setUserPreferences(preferences);
-    this.userPreferences.set(updatedPreferences);
+  async #setUserPreferences(preferences: JobsUserPreferences): Promise<JobsUserPreferences> {
+    this.#preferencesResource.set(preferences);
+    const updatedPreferences = await this.#api.setUserPreferences(preferences);
+    if (isEqual(preferences, updatedPreferences) === false) {
+      this.#preferencesResource.set(updatedPreferences);
+    }
     return updatedPreferences;
   }
 
-  async getUserPreferences(): Promise<JobsUserPreferences> {
+  async #getUserPreferences(): Promise<JobsUserPreferences> {
     try {
-      return await this.api.getUserPreferences();
+      return await this.#api.getUserPreferences();
     } catch (error) {
-      return this.setMissingPreferences(error);
+      return this.#setMissingPreferences(error);
     }
   }
 
-  private setMissingPreferences(error: Error): Promise<JobsUserPreferences> {
+  #setMissingPreferences(error: Error): Promise<JobsUserPreferences> {
     if (error instanceof HttpErrorResponse && error.status === 404) {
-      return this.setUserPreferences(defaultJobsUserPreferences());
+      return this.#setUserPreferences(defaultJobsUserPreferences());
     }
     throw error;
   }
