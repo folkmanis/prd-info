@@ -3,7 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 type MessageFn = (message: string) => void;
 type UpdateFn = (messageFn: MessageFn) => Promise<void>;
-type ErrorFn = (messageFn: MessageFn) => void;
+type ErrorFn = (messageFn: MessageFn, error: Error) => void;
 
 export function updateCatching(
   busySignal?: WritableSignal<boolean>,
@@ -25,7 +25,7 @@ export function updateCatching(
       await updateFn(messageFn);
     } catch (error) {
       if (errorFn) {
-        errorFn(errorMessageFn);
+        errorFn(errorMessageFn, error);
       } else {
         errorMessageFn(error);
       }
