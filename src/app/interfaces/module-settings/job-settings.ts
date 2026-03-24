@@ -23,5 +23,6 @@ export const JobsSettings = z.object({
   productCategories: z.array(ProductCategory),
   jobStates: z.array(JobState),
   productUnits: z.array(ProductUnit),
+  jobRootPath: z.string().default(''),
 });
 export type JobsSettings = z.infer<typeof JobsSettings>;

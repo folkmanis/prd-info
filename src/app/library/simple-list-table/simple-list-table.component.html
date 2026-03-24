@@ -16,12 +16,12 @@
 
   <ng-container matColumnDef="button">
     <mat-header-cell *matHeaderCellDef>
-      <button matIconButton (click)="onAddRow()" matTooltip="Pievienot jaunu" [disabled]="disabled()">
+      <button type="button" matIconButton (click)="onAddRow()" matTooltip="Pievienot jaunu" [disabled]="disabled()">
         <mat-icon> add_circle_outline </mat-icon>
       </button>
     </mat-header-cell>
     <mat-cell *matCellDef="let row; index as idx">
-      <button matIconButton (click)="onRemoveRow(idx)" [disabled]="disabled()" matTooltip="Dzēst">
+      <button type="button" matIconButton (click)="onRemoveRow(idx)" [disabled]="disabled()" matTooltip="Dzēst">
         <mat-icon> delete_outline </mat-icon>
       </button>
     </mat-cell>

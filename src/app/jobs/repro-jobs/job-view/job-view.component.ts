@@ -1,15 +1,20 @@
+import { Clipboard } from '@angular/cdk/clipboard';
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, linkedSignal } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
+import { MatButton, MatIconButton } from '@angular/material/button';
 import { MAT_CARD_CONFIG, MatCardModule } from '@angular/material/card';
 import { MatDivider } from '@angular/material/divider';
 import { MatIcon } from '@angular/material/icon';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { firstValueFrom } from 'rxjs';
-import { assertArray, ConfirmationDialogService, CopyJobIdAndNameDirective, notNullOrThrow } from 'src/app/library';
+import { assertArray, CopyJobIdAndNameDirective, notNullOrThrow } from 'src/app/library';
+import { ConfirmationDirective } from 'src/app/library/confirmation-dialog';
 import { KeyPressDirective } from 'src/app/library/directives';
-import { navigateRelative, RouterLinkToReturnDirective, RouterLinkWithReturnDirective } from 'src/app/library/navigation';
+import {
+  navigateRelative,
+  RouterLinkToReturnDirective,
+  RouterLinkWithReturnDirective,
+} from 'src/app/library/navigation';
+import { updateCatching } from 'src/app/library/update-catching';
 import { ViewSizeDirective, ViewSmallDirective } from 'src/app/library/view-size';
 import { LoginService } from 'src/app/login';
 import { configuration } from 'src/app/services/config.provider';
@@ -20,13 +25,12 @@ import { JobCopyDirective } from './job-copy.directive';
 import { JobPathPipe } from './job-path.pipe';
 import { JobProductsComponent } from './job-products/job-products.component';
 
-const FOLDER_CREATE_CONFIRMATION = 'Iespējams, darba mape jau pastāv. Vai tiešām vēlreiz izveidot mapi?';
-
 @Component({
   selector: 'app-job-view',
   imports: [
     DatePipe,
-    MatButtonModule,
+    MatButton,
+    MatIconButton,
     MatIcon,
     KeyPressDirective,
     MatDivider,
@@ -39,6 +43,7 @@ const FOLDER_CREATE_CONFIRMATION = 'Iespējams, darba mape jau pastāv. Vai tie�
     ViewSmallDirective,
     CopyJobIdAndNameDirective,
     MatTooltipModule,
+    ConfirmationDirective,
   ],
   templateUrl: './job-view.component.html',
   styleUrl: './job-view.component.scss',
@@ -52,70 +57,79 @@ const FOLDER_CREATE_CONFIRMATION = 'Iespējams, darba mape jau pastāv. Vai tie�
   ],
 })
 export class JobViewComponent {
-  private categories = configuration('jobs', 'productCategories');
-  private productionStages = configuration('jobs', 'jobStates');
-  private confirm = inject(ConfirmationDialogService);
-  private jobService = inject(ReproJobService);
-  private snack = inject(MatSnackBar);
-  private navigate = navigateRelative();
+  #jobsConfig = configuration('jobs');
+  #clipboard = inject(Clipboard);
+  #jobService = inject(ReproJobService);
+  #navigate = navigateRelative();
+  #update = updateCatching();
 
   initialValue = input.required<Omit<Job, 'jobId'>>({ alias: 'job' });
-  job = linkedSignal(this.initialValue);
   jobId = input.required({ transform: parseJobIdRequired });
-  jobWithId = computed(() => ({ ...this.job(), jobId: this.jobId() }));
+  protected job = linkedSignal(this.initialValue);
+  protected jobWithId = computed(() => ({ ...this.job(), jobId: this.jobId() }));
 
-  showPrices = inject(LoginService).isModule('calculations');
+  protected showPrices = inject(LoginService).isModule('calculations');
 
-  editDisabled = computed(() => !!this.job().invoiceId);
+  protected editDisabled = computed(() => !!this.job().invoiceId);
 
-  productionCategory = computed(() => this.getJobCategoryName(this.job().production.category));
-  generalStatus = computed(() => this.getProductionStageName(this.job().jobStatus.generalStatus));
+  protected productionCategory = computed(() => this.#getJobCategoryName(this.job().production.category));
+  protected generalStatus = computed(() => this.#getProductionStageName(this.job().jobStatus.generalStatus));
 
   async onCreateFolder() {
-    if (Array.isArray(this.job().files?.path) && (await this.confirmFolderCreation()) === false) {
-      return;
-    }
-    const jobId = notNullOrThrow(this.jobId());
-    const update = await this.jobService.createFolder(jobId);
-    this.job.set(update);
-    assertArray(update?.files?.path);
-    this.snack.open(`Izveidota mape ${update.files.path.join('/')}`, 'OK');
+    this.#update(async (message) => {
+      const jobId = notNullOrThrow(this.jobId());
+      const update = await this.#jobService.createFolder(jobId);
+      this.job.set(update);
+      assertArray(update?.files?.path);
+      message(`Izveidota mape ${update.files.path.join('/')}`);
+    });
   }
 
   async onUpdateFolderLocation() {
-    try {
-      const jobId = notNullOrThrow(this.jobId());
-      const update = await this.jobService.updateFilesLocation(jobId);
-      this.job.set(update);
-
-      assertArray(update?.files?.path);
-      this.snack.open(`Mape pārvietota uz ${update.files.path.join('/')}`, 'OK');
-    } catch (error) {
-      this.snack.open(`Mape nevar tikt pārvietota: ${error.error?.message ?? error.message}`, 'OK');
-    }
+    this.#update(
+      async (message) => {
+        const jobId = notNullOrThrow(this.jobId());
+        const update = await this.#jobService.updateFilesLocation(jobId);
+        this.job.set(update);
+        assertArray(update?.files?.path);
+        message(`Mape pārvietota uz ${update.files.path.join('/')}`);
+      },
+      async (message, error) => {
+        message(`Mape nevar tikt pārvietota: ${error.message}`);
+      },
+    );
   }
 
   async onSetGatavs() {
-    const jobId = notNullOrThrow(this.jobId());
-    await this.jobService.updateJob({
-      jobId,
-      jobStatus: {
-        generalStatus: 30,
-        timestamp: new Date(),
-      },
+    this.#update(async (message) => {
+      const jobId = notNullOrThrow(this.jobId());
+      await this.#jobService.updateJob({
+        jobId,
+        jobStatus: {
+          generalStatus: 30,
+          timestamp: new Date(),
+        },
+      });
+      message(`Darbs ${jobId} saglabāts`);
+      this.#navigate(['..']);
     });
-    this.navigate(['..']);
   }
 
-  private getJobCategoryName(category: string): string {
-    return this.categories().find((c) => c.category === category)?.description || category;
+  async onCopyPath() {
+    this.#update(async (message) => {
+      const path = this.job().files?.path;
+      assertArray(path);
+      const fullPath = `${this.#jobsConfig().jobRootPath}\\${path.join('\\')}`;
+      this.#clipboard.copy(fullPath);
+      message(`${fullPath} nokopēts`);
+    });
   }
 
-  private getProductionStageName(stage: number): string | null {
-    return this.productionStages().find((s) => s.state === stage)?.description || null;
+  #getJobCategoryName(category: string): string {
+    return this.#jobsConfig().productCategories.find((c) => c.category === category)?.description || category;
   }
 
-  private async confirmFolderCreation() {
-    return firstValueFrom(this.confirm.confirm(FOLDER_CREATE_CONFIRMATION));
+  #getProductionStageName(stage: number): string | null {
+    return this.#jobsConfig().jobStates.find((s) => s.state === stage)?.description || null;
   }
 }

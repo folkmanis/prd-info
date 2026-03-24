@@ -1,24 +1,26 @@
 <h2 mat-dialog-title>Mērvienība</h2>
-<form [formGroup]="unitsForm" (submit)="onSubmit()">
+<form [formRoot]="unitsForm">
   <mat-dialog-content>
     <div class="input-fields">
       <mat-form-field>
         <mat-label> Kods (nav maināms) </mat-label>
-        <input matInput formControlName="shortName" required />
+        <input matInput [formField]="unitsForm.shortName" [tabIndex]="unitsForm.shortName().readonly() ? -1 : 0" />
       </mat-form-field>
 
       <mat-form-field>
         <mat-label> Nosaukums </mat-label>
-        <input matInput formControlName="description" />
+        <input matInput [formField]="unitsForm.description" />
       </mat-form-field>
     </div>
-    <div>
-      <mat-checkbox formControlName="disabled">Neaktīvs</mat-checkbox>
+    <div class="input-fields">
+      <mat-checkbox [formField]="unitsForm.disabled">Neaktīvs</mat-checkbox>
     </div>
   </mat-dialog-content>
 
   <mat-dialog-actions>
-    <button matButton="elevated" [disabled]="!unitsForm.valid || unitsForm.pristine" type="submit">Ok</button>
-    <button matButton="elevated" class="tertiary" mat-dialog-close>Atcelt</button>
+    <button matButton [disabled]="unitsForm().valid() === false || unitsForm().dirty() === false" type="submit">
+      Ok
+    </button>
+    <button type="button" matButton class="tertiary" mat-dialog-close>Atcelt</button>
   </mat-dialog-actions>
 </form>

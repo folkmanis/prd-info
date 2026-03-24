@@ -1,21 +1,28 @@
 <h2 mat-dialog-title>Preču kategorija</h2>
-<form [formGroup]="productForm" (submit)="onSubmit()">
+<form [formRoot]="categoryForm">
   <mat-dialog-content>
     <div class="controls">
       <mat-form-field>
         <mat-label> Kods (nav maināms) </mat-label>
-        <input type="text" matInput formControlName="category" required />
+        <input
+          type="text"
+          matInput
+          [formField]="categoryForm.category"
+          [tabIndex]="categoryForm.category().readonly() ? -1 : 0"
+        />
       </mat-form-field>
 
       <mat-form-field>
         <mat-label> Nosaukums </mat-label>
-        <input type="text" matInput formControlName="description" />
+        <input type="text" matInput [formField]="categoryForm.description" />
       </mat-form-field>
     </div>
   </mat-dialog-content>
 
   <mat-dialog-actions>
-    <button matButton="elevated" [disabled]="!productForm.valid || productForm.pristine" type="submit">OK</button>
-    <button matButton="elevated" mat-dialog-close>ATCELT</button>
+    <button matButton [disabled]="categoryForm().valid() === false || categoryForm().dirty() === false" type="submit">
+      OK
+    </button>
+    <button matButton mat-dialog-close type="button" class="tertiary">Atcelt</button>
   </mat-dialog-actions>
 </form>

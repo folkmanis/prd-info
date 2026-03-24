@@ -124,10 +124,21 @@
     <mat-card-content>
       @if (job().files; as files) {
         {{ files.path | jobPath }}
+        <button matIconButton (click)="onCopyPath()">
+          <mat-icon> filter_none </mat-icon>
+        </button>
       }
     </mat-card-content>
     <mat-card-actions>
-      <button matButton="elevated" (click)="onCreateFolder()" [disabled]="editDisabled()">Izveidot mapi</button>
+      <button
+        matButton="elevated"
+        appConfirmation
+        appConfirmationMessage="Vai tiešām vēlreiz izveidot mapi?"
+        (appConfirmedClick)="onCreateFolder()"
+        [disabled]="editDisabled()"
+      >
+        Izveidot mapi
+      </button>
       <button matButton (click)="onUpdateFolderLocation()" [disabled]="!job().files || editDisabled()">
         Atjaunot mapes atrašanās vietu
       </button>

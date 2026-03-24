@@ -1,52 +1,29 @@
-import { ChangeDetectionStrategy, Component, forwardRef, inject } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
-import { ProductCategory, ProductUnit } from 'src/app/interfaces';
+import { ChangeDetectionStrategy, Component, input, model } from '@angular/core';
+import { disabled, form, FormField, FormValueControl } from '@angular/forms/signals';
+import { JobsSettings } from 'src/app/interfaces';
 import { SimpleListTableComponent } from 'src/app/library/simple-list-table/simple-list-table.component';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
 import { UnitsDialogComponent } from './units-dialog/units-dialog.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatDivider } from '@angular/material/divider';
 
 @Component({
   selector: 'app-jobs-preferences',
   templateUrl: './jobs-preferences.component.html',
   styleUrls: ['./jobs-preferences.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => JobsPreferencesComponent),
-      multi: true,
-    },
-  ],
-  imports: [FormsModule, ReactiveFormsModule, SimpleListTableComponent],
+  imports: [SimpleListTableComponent, FormField, MatFormFieldModule, MatInput, MatDivider],
 })
-export class JobsPreferencesComponent implements ControlValueAccessor {
-  controls = inject(FormBuilder).group({
-    productCategories: [[]] as Array<ProductCategory[]>,
-    productUnits: [[]] as Array<ProductUnit[]>,
-  });
+export class JobsPreferencesComponent implements FormValueControl<JobsSettings> {
+  value = model<JobsSettings>({ productCategories: [], jobStates: [], productUnits: [], jobRootPath: '' });
 
-  onTouchFn = () => {};
+  disabled = input(false);
+
+  protected settingsForm = form(this.value, (s) => {
+    disabled(s, () => this.disabled());
+  });
 
   categoryDialog = CategoryDialogComponent;
   unitsDialog = UnitsDialogComponent;
-
-  writeValue(obj: any): void {
-    this.controls.patchValue(obj, { emitEvent: false });
-  }
-
-  registerOnChange(fn: any): void {
-    this.controls.valueChanges.subscribe(fn);
-  }
-
-  registerOnTouched(fn: any): void {
-    this.onTouchFn = fn;
-  }
-
-  setDisabledState(isDisabled: boolean): void {
-    if (isDisabled) {
-      this.controls.disable({ emitEvent: false });
-    } else {
-      this.controls.enable({ emitEvent: false });
-    }
-  }
 }

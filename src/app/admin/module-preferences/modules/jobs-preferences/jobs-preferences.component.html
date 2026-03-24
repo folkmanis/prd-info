@@ -1,7 +1,30 @@
-<section [formGroup]="controls">
-  <app-simple-list-table formControlName="productCategories" [columns]="['category', 'description']" [editDialog]="categoryDialog"> Kategorijas </app-simple-list-table>
+<section>
+  <mat-form-field>
+    <mat-label> Serveris </mat-label>
+    <input matInput [formField]="settingsForm.jobRootPath" />
+  </mat-form-field>
+</section>
 
-  <div class="spacer"></div>
+<mat-divider />
 
-  <app-simple-list-table formControlName="productUnits" [columns]="['shortName', 'description']" [editDialog]="unitsDialog"> Mērvienības </app-simple-list-table>
+<section>
+  <app-simple-list-table
+    [formField]="settingsForm.productCategories"
+    [columns]="['category', 'description']"
+    [editDialog]="categoryDialog"
+  >
+    Kategorijas
+  </app-simple-list-table>
+</section>
+
+<mat-divider />
+
+<section>
+  <app-simple-list-table
+    [formField]="settingsForm.productUnits"
+    [columns]="['shortName', 'description']"
+    [editDialog]="unitsDialog"
+  >
+    Mērvienības
+  </app-simple-list-table>
 </section>

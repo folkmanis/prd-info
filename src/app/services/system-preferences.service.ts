@@ -1,7 +1,7 @@
 import { computed, inject, Injectable } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { PRIMARY_OUTLET, Router, UrlSegment } from '@angular/router';
-import { concatMap, map, merge, Observable, of, retry, shareReplay, Subject, switchMap, tap } from 'rxjs';
+import { firstValueFrom, map, merge, Observable, of, retry, shareReplay, Subject, switchMap, tap } from 'rxjs';
 import { LoginService } from 'src/app/login';
 import { getAppParams } from '../app-params';
 import { MODULES, PreferencesDbModules, SystemPreferences, UserModule } from '../interfaces';
@@ -11,13 +11,12 @@ import { SystemPreferencesApiService } from './system-preferences-api';
   providedIn: 'root',
 })
 export class SystemPreferencesService {
-  #reloadFromServer$: Subject<void> = new Subject();
   #router = inject(Router);
   #loginService = inject(LoginService);
   #api = inject(SystemPreferencesApiService);
   #currentUrl = this.#router.routerState.snapshot.url;
 
-  readonly #preferencesUpdate$ = new Subject<PreferencesDbModules[]>();
+  readonly #preferencesUpdate$ = new Subject<SystemPreferences>();
 
   #url = computed(() => {
     this.#currentUrl =
@@ -36,12 +35,7 @@ export class SystemPreferencesService {
       // mainoties user, ielādē no servera
       switchMap((usr) => (usr ? this.#systemPreferences() : of(this.defaultPreferences))),
     ),
-    this.#reloadFromServer$.pipe(switchMap((_) => this.#systemPreferences())),
-    this.#preferencesUpdate$.pipe(
-      concatMap((pref) => this.#api.updateMany(pref)),
-      retry(3),
-      switchMap((_) => this.#systemPreferences()),
-    ),
+    this.#preferencesUpdate$,
   ).pipe(
     tap((pref) => (this.defaultPreferences = pref)),
     shareReplay(1),
@@ -51,7 +45,9 @@ export class SystemPreferencesService {
 
   modules$ = this.#loginService.user$.pipe(
     switchMap((usr) =>
-      of(this.userModules.filter((mod) => usr && usr.preferences.modules.includes(mod.route))).pipe(map((modules) => (usr?.google ? modules : this.#removeGmail(modules)))),
+      of(this.userModules.filter((mod) => usr && usr.preferences.modules.includes(mod.route))).pipe(
+        map((modules) => (usr?.google ? modules : this.#removeGmail(modules))),
+      ),
     ),
   );
   modules = toSignal(this.modules$, { initialValue: [] });
@@ -60,13 +56,18 @@ export class SystemPreferencesService {
 
   childMenu = computed(() => this.activeModules()[0]?.childMenu || []);
 
-  updatePreferences(pref: SystemPreferences) {
-    this.#preferencesUpdate$.next(
-      MODULES.map((module) => ({
-        module,
-        settings: pref[module],
-      })) as PreferencesDbModules[],
+  async updatePreferences(pref: SystemPreferences): Promise<SystemPreferences> {
+    const update = MODULES.map((module) => ({
+      module,
+      settings: pref[module],
+    })) as PreferencesDbModules[];
+    const updated$ = this.#api.updateMany(update).pipe(
+      retry(3),
+      switchMap((_) => this.#systemPreferences()),
     );
+    const updated = await firstValueFrom(updated$);
+    this.#preferencesUpdate$.next(updated);
+    return updated;
   }
 
   async #systemPreferences(): Promise<SystemPreferences> {
@@ -75,7 +76,9 @@ export class SystemPreferencesService {
   }
 
   #removeGmail(modules: UserModule[]): UserModule[] {
-    return modules.filter((module) => module.name !== 'gmail').map((module) => (module.childMenu ? { ...module, childMenu: this.#removeGmail(module.childMenu) } : module));
+    return modules
+      .filter((module) => module.name !== 'gmail')
+      .map((module) => (module.childMenu ? { ...module, childMenu: this.#removeGmail(module.childMenu) } : module));
   }
 }
 

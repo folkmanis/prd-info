@@ -1,5 +1,22 @@
+form {
+  display: block;
+  overflow: auto;
+  height: 100%;
+}
+
+mat-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.container {
+  padding: 8px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
 app-preferences-card {
   flex: 0 1 400px;
-  margin: 8px;
-  overflow: hidden;
 }

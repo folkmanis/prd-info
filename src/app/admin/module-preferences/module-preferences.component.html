@@ -1,26 +1,47 @@
-<app-module-group [formGroup]="prefForm" (resetForm)="onResetAll()" (save)="onSaveAll()" [pristine]="prefForm.pristine" [valid]="prefForm.valid">
-  <app-preferences-card>
-    <ng-container appCardTitle> Vispārīgie iestatījumi </ng-container>
-    <app-system-preferences formControlName="system" />
-  </app-preferences-card>
+<form [formRoot]="preferencesForm">
+  <mat-toolbar>
+    <button
+      matButton="elevated"
+      [disabled]="preferencesForm().dirty() === false || preferencesForm().valid() === false || busy()"
+      type="submit"
+    >
+      Saglabāt
+    </button>
+    <button
+      matButton
+      class="tertiary"
+      (click)="onResetAll()"
+      [disabled]="preferencesForm().dirty() === false || busy()"
+      type="reset"
+    >
+      Atiestatīt
+    </button>
+  </mat-toolbar>
 
-  <app-preferences-card>
-    <ng-container appCardTitle> Darbu uzskaites iestatījumi </ng-container>
-    <app-jobs-preferences formControlName="jobs" />
-  </app-preferences-card>
+  <div class="container">
+    <app-preferences-card>
+      <ng-container appCardTitle> Vispārīgie iestatījumi </ng-container>
+      <app-system-preferences [formField]="preferencesForm.system" />
+    </app-preferences-card>
 
-  <app-preferences-card>
-    <ng-container appCardTitle> PayTraq grāmatvedības savienojums </ng-container>
-    <app-paytraq-preferences formControlName="paytraq" />
-  </app-preferences-card>
+    <app-preferences-card>
+      <ng-container appCardTitle> Darbu uzskaites iestatījumi </ng-container>
+      <app-jobs-preferences [formField]="preferencesForm.jobs" />
+    </app-preferences-card>
 
-  <app-preferences-card>
-    <ng-container appCardTitle> Pakošanas saraksta iestatījumi </ng-container>
-    <app-kastes-preferences formControlName="kastes" />
-  </app-preferences-card>
+    <app-preferences-card>
+      <ng-container appCardTitle> PayTraq grāmatvedības savienojums </ng-container>
+      <app-paytraq-preferences [formField]="preferencesForm.paytraq" />
+    </app-preferences-card>
 
-  <app-preferences-card>
-    <ng-container appCardTitle> Transportēšanas iestatījumi </ng-container>
-    <app-transportation-preferences formControlName="transportation" />
-  </app-preferences-card>
-</app-module-group>
+    <app-preferences-card>
+      <ng-container appCardTitle> Pakošanas saraksta iestatījumi </ng-container>
+      <app-kastes-preferences [formField]="preferencesForm.kastes" />
+    </app-preferences-card>
+
+    <app-preferences-card>
+      <ng-container appCardTitle> Transportēšanas iestatījumi </ng-container>
+      <app-transportation-preferences [formField]="preferencesForm.transportation" />
+    </app-preferences-card>
+  </div>
+</form>

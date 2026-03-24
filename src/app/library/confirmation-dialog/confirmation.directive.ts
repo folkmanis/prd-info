@@ -9,7 +9,7 @@ import { firstValueFrom } from 'rxjs';
   },
 })
 export class ConfirmationDirective {
-  type = input<'delete' | 'discard' | null | undefined>(undefined, { alias: 'appConfirmation' });
+  type = input<'delete' | 'discard' | any>(undefined, { alias: 'appConfirmation' });
 
   message = input<string>('Apstipriniet', { alias: 'appConfirmationMessage' });
 
