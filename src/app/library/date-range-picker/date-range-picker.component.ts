@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, inject, input, model } from '@angular/core';
+import { FormValueControl, ValidationError } from '@angular/forms/signals';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -18,82 +18,57 @@ export interface NullableInterval {
   templateUrl: './date-range-picker.component.html',
   styleUrl: './date-range-picker.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: DateRangePickerComponent,
-      multi: true,
-    },
-  ],
 })
-export class DateRangePickerComponent implements ControlValueAccessor {
-  private dateUtils = inject(DateUtilsService);
+export class DateRangePickerComponent implements FormValueControl<NullableInterval> {
+  #dateUtils = inject(DateUtilsService);
 
-  disabled = signal(false);
+  readonly disabled = input(false);
 
-  interval = signal<NullableInterval>({
+  readonly touched = model(false);
+
+  readonly errors = input<readonly ValidationError.WithOptionalFieldTree[]>([]);
+
+  readonly required = input(false);
+
+  readonly value = model<NullableInterval>({
     start: null,
     end: null,
   });
 
-  onChange = (_: NullableInterval) => {};
-  onTouch = () => {};
-
-  writeValue(obj: any): void {
-    this.interval.set({
-      start: obj?.start || null,
-      end: obj?.end || null,
-    });
-  }
-
-  registerOnChange(fn: any): void {
-    this.onChange = fn;
-  }
-
-  registerOnTouched(fn: any): void {
-    this.onTouch = fn;
-  }
-
-  setDisabledState(isDisabled: boolean): void {
-    this.disabled.set(isDisabled);
-  }
-
   onThisWeek() {
-    this.setInterval(this.dateUtils.thisWeek());
+    this.#setInterval(this.#dateUtils.thisWeek());
   }
 
   onThisYear() {
-    this.setInterval(this.dateUtils.thisYear());
+    this.#setInterval(this.#dateUtils.thisYear());
   }
 
   onThisMonth() {
-    this.setInterval(this.dateUtils.thisMonth());
+    this.#setInterval(this.#dateUtils.thisMonth());
   }
 
   onPastYear() {
-    this.setInterval(this.dateUtils.pastYear());
+    this.#setInterval(this.#dateUtils.pastYear());
   }
 
   onChangeStart(event: MatDatepickerInputEvent<Date>) {
-    this.updateInterval({ start: event.value });
+    this.#updateInterval({ start: event.value });
   }
 
   onChangeEnd(event: MatDatepickerInputEvent<Date>) {
-    this.updateInterval({ end: event.value });
+    this.#updateInterval({ end: event.value });
   }
 
-  private updateInterval(update: Partial<NullableInterval>) {
-    this.interval.update((value) => ({ ...value, ...update }));
-    this.onChange(this.interval());
-    this.onTouch();
+  #updateInterval(update: Partial<NullableInterval>) {
+    this.value.update((value) => ({ ...value, ...update }));
+    this.touched.set(true);
   }
 
-  private setInterval({ start, end }: NullableInterval) {
-    this.interval.set({
+  #setInterval({ start, end }: NullableInterval) {
+    this.value.set({
       start: start,
       end: end,
     });
-    this.onChange(this.interval());
-    this.onTouch();
+    this.touched.set(true);
   }
 }

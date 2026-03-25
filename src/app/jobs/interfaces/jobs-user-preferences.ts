@@ -2,8 +2,8 @@ import { z } from 'zod';
 
 export const SavedJobsProductionQuery = z.object({
   sort: z.string().default('name,1'),
-  fromDate: z.coerce.date().default(new Date()),
-  toDate: z.coerce.date().default(new Date()),
+  fromDate: z.coerce.date().nullable(),
+  toDate: z.coerce.date().nullable(),
   jobStatus: z.array(z.number()).default([10, 20]),
   category: z.array(z.string()).default(['repro']),
   customer: z.string().nullable().default(null),

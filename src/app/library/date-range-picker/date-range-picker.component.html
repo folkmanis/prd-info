@@ -1,14 +1,21 @@
 <mat-form-field>
   <mat-label> Laiks </mat-label>
-  <mat-date-range-input [rangePicker]="picker" [disabled]="disabled()">
-    <input matStartDate [value]="interval().start" (dateChange)="onChangeStart($event)" [disabled]="disabled()" />
-    <input matEndDate [value]="interval().end" (dateChange)="onChangeEnd($event)" [disabled]="disabled()" />
+  <mat-date-range-input [rangePicker]="picker" [disabled]="disabled()" [required]="required()">
+    <input matStartDate [value]="value().start" (dateChange)="onChangeStart($event)" [disabled]="disabled()" />
+    <input matEndDate [value]="value().end" (dateChange)="onChangeEnd($event)" [disabled]="disabled()" />
   </mat-date-range-input>
-  <mat-datepicker-toggle matIconSuffix [for]="picker" [disabled]="disabled()" />
-  <button matIconButton matIconSuffix [matMenuTriggerFor]="intervalMenu" [disabled]="disabled()">
-    <mat-icon> more_vert </mat-icon>
-  </button>
-  <mat-date-range-picker #picker></mat-date-range-picker>
+  <span matIconSuffix>
+    <mat-datepicker-toggle [for]="picker" [disabled]="disabled()" />
+    <button matIconButton [matMenuTriggerFor]="intervalMenu" [disabled]="disabled()">
+      <mat-icon> more_vert </mat-icon>
+    </button>
+  </span>
+  <mat-error>
+    @for (error of errors(); track $index) {
+      {{ error.message }}
+    }
+  </mat-error>
+  <mat-date-range-picker #picker />
   <mat-menu #intervalMenu="matMenu">
     <button mat-menu-item (click)="onThisWeek()">Nedēļa</button>
     <button mat-menu-item (click)="onThisMonth()">Mēnesis</button>
