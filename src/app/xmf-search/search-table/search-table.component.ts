@@ -2,7 +2,7 @@ import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } 
 import { ChangeDetectionStrategy, Component, computed, effect, input, viewChild } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
-import { SearchQuery } from '../interfaces';
+import { ArchiveRecord, SearchQuery } from '../interfaces';
 import { SearchData } from '../services/search-data';
 import { DataCardComponent } from './data-card/data-card.component';
 
@@ -11,7 +11,14 @@ import { DataCardComponent } from './data-card/data-card.component';
   templateUrl: './search-table.component.html',
   styleUrls: ['./search-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, ScrollTopDirective, CdkVirtualForOf, MatProgressSpinnerModule, DataCardComponent],
+  imports: [
+    CdkVirtualScrollViewport,
+    CdkFixedSizeVirtualScroll,
+    ScrollTopDirective,
+    CdkVirtualForOf,
+    MatProgressSpinnerModule,
+    DataCardComponent,
+  ],
 })
 export class SearchTableComponent {
   private content = viewChild(CdkVirtualScrollViewport);
@@ -20,7 +27,7 @@ export class SearchTableComponent {
 
   searchString = computed(() => this.search()?.q || '');
 
-  data = input<SearchData | null>(null);
+  data = input<SearchData<ArchiveRecord> | null>(null);
 
   constructor() {
     effect(() => {

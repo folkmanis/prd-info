@@ -31,13 +31,6 @@
 
       <!-- Klients -->
       <app-customer-input formControlName="customer" [customers]="customers.value()"> Klients </app-customer-input>
-      <!-- <mat-form-field>
-        <mat-label>Klients</mat-label>
-        <input matInput type="text" formControlName="customer" [matAutocomplete]="auto" />
-        <button matIconButton matSuffix (click)="onReset('customer')">
-          <mat-icon>clear</mat-icon>
-        </button>
-      </mat-form-field> -->
 
       <!-- Darbu statusi -->
       <mat-form-field>
@@ -73,11 +66,3 @@
     </div>
   </div>
 </mat-expansion-panel>
-
-<!-- <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
-  @for (customer of customersFiltered(); track customer.CustomerName) {
-    <mat-option [value]="customer.CustomerName">
-      {{ customer.CustomerName }}
-    </mat-option>
-  }
-</mat-autocomplete> -->

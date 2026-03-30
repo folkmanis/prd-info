@@ -18,7 +18,7 @@ import { HttpResourceRef } from '@angular/common/http';
 export class ProductsService {
   private api = inject(ProductsApiService);
 
-  getProductsResource(filterSignal?: FilterInput<ProductsFilter>) {
+  getProductsResource(filterSignal?: FilterInput<ProductsFilter | undefined>) {
     return this.api.productsResource(toFilterSignal(filterSignal));
   }
 

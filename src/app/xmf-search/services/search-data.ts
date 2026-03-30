@@ -1,14 +1,13 @@
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { debounceTime, Observable, startWith, switchMap } from 'rxjs';
-import { ArchiveRecord } from '../interfaces';
-import { PagedCache } from './paged-cache';
+import { PagedCache } from '../../library/rxjs/paged-cache';
 
-export class SearchData extends DataSource<ArchiveRecord | undefined> {
-  constructor(private cache: PagedCache<ArchiveRecord>) {
+export class SearchData<T> extends DataSource<T | undefined> {
+  constructor(private cache: PagedCache<T>) {
     super();
   }
 
-  connect(collectionViewer: CollectionViewer): Observable<(ArchiveRecord | undefined)[]> {
+  connect(collectionViewer: CollectionViewer): Observable<(T | undefined)[]> {
     return collectionViewer.viewChange.pipe(
       startWith({ start: 0, end: 99 }),
       debounceTime(100),

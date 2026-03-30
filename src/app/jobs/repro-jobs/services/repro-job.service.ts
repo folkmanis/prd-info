@@ -1,8 +1,28 @@
 import { Injectable, inject } from '@angular/core';
 import { flatten } from 'lodash-es';
-import { Observable, OperatorFunction, concatMap, distinctUntilChanged, filter, from, map, of, pipe, reduce, switchMap } from 'rxjs';
+import {
+  Observable,
+  OperatorFunction,
+  concatMap,
+  distinctUntilChanged,
+  filter,
+  from,
+  map,
+  of,
+  pipe,
+  reduce,
+  switchMap,
+} from 'rxjs';
 import { JobFilesService } from 'src/app/filesystem';
-import { CustomerProduct, DropFolder, JobProductionStage, JobProductionStageMaterial, Material, ProductProductionStage, ProductProductionStageMaterial } from 'src/app/interfaces';
+import {
+  CustomerProduct,
+  DropFolder,
+  JobProductionStage,
+  JobProductionStageMaterial,
+  Material,
+  ProductProductionStage,
+  ProductProductionStageMaterial,
+} from 'src/app/interfaces';
 import { MaterialsService } from 'src/app/jobs-admin/materials/services/materials.service';
 import { ProductsService } from 'src/app/services';
 import { ProductionStagesService } from 'src/app/services/production-stages.service';
@@ -139,7 +159,10 @@ export class ReproJobService {
     };
   }
 
-  private async productionStageMaterial(stageMaterial: ProductProductionStageMaterial, productCount: number): Promise<JobProductionStageMaterial> {
+  private async productionStageMaterial(
+    stageMaterial: ProductProductionStageMaterial,
+    productCount: number,
+  ): Promise<JobProductionStageMaterial> {
     const material = await this.#materialsService.getMaterial(stageMaterial.materialId);
     const amount = stageMaterial.amount * productCount;
     const cost = this.getMaterialCost(material, amount + stageMaterial.fixedAmount);

@@ -20,7 +20,10 @@ export const kastesTotalsFromVeikali = (veikali: Veikals[]): [number, number][] 
 };
 
 export const jobProductsToColorTotals = (products: JobProduct[]): Record<Colors, number> => {
-  const totals: Record<Colors, number> = COLORS.reduce((acc, curr) => ((acc[curr] = 0), acc), {} as Record<Colors, number>);
+  const totals: Record<Colors, number> = COLORS.reduce(
+    (acc, curr) => ((acc[curr] = 0), acc),
+    {} as Record<Colors, number>,
+  );
 
   products.forEach((product) => {
     if (COLORS.includes(product.name as Colors)) {

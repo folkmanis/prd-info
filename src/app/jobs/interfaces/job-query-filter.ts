@@ -8,6 +8,8 @@ export interface JobFilter {
 
   fromDate?: Date;
 
+  toDate?: Date;
+
   customer?: string;
 
   name?: string;
@@ -36,6 +38,9 @@ export function queryParamsToJobFilter(queryParams: ParamMap): JobFilter {
   }
   if (queryParams.has('fromDate')) {
     filter.fromDate = new Date(queryParams.get('fromDate')!);
+  }
+  if (queryParams.has('toDate')) {
+    filter.fromDate = new Date(queryParams.get('toDate')!);
   }
   if (queryParams.has('customer')) {
     filter.customer = queryParams.get('customer')!;
@@ -70,6 +75,7 @@ export function jobFilterToRequestQuery<T extends JobFilter | undefined>(filter:
         jobsId: filter.jobsId ? filter.jobsId.join(',') : undefined,
         jobStatus: filter.jobStatus ? filter.jobStatus.join(',') : undefined,
         fromDate: filter.fromDate ? new Date(filter.fromDate).toISOString() : undefined,
+        toDate: filter.toDate ? new Date(filter.toDate).toISOString() : undefined,
       }
     : undefined;
 }

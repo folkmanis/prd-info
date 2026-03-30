@@ -3,10 +3,9 @@ import { inject, Injectable, Signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
 import { firstValueFrom, map } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
-import { CustomerProduct, Product, ProductSchema, ProductPartial, ProductProductionStage } from 'src/app/interfaces';
+import { CustomerProduct, Product, ProductPartial, ProductProductionStage, ProductSchema } from 'src/app/interfaces';
 import { ValidatorService } from 'src/app/library';
 import { HttpOptions, httpResponseRequest } from 'src/app/library/http';
-import { string } from 'zod';
 
 export interface ProductsFilter {
   name?: string;

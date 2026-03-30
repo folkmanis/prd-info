@@ -1,17 +1,19 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
-import { MatProgressBar } from '@angular/material/progress-bar';
+import { AsyncPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { Router } from '@angular/router';
 import { isEqual } from 'lodash-es';
-import { EMPTY, from } from 'rxjs';
+import { EMPTY, from, map, Subject } from 'rxjs';
 import { navigateRelative } from 'src/app/library/navigation';
+import { combineReload } from 'src/app/library/rxjs';
 import { NotificationsService } from 'src/app/services';
 import { ProductsService } from 'src/app/services/products.service';
-import { ScrollTopDirective } from '../../../library/scroll-to-top/scroll-top.directive';
 import { DrawerButtonDirective } from '../../../library/side-button/drawer-button.directive';
 import { JobFilter } from '../../interfaces';
 import { JobFilterComponent } from '../job-filter/job-filter.component';
 import { ProductsSummaryComponent } from '../products-summary/products-summary.component';
+import { ReproJobListService } from '../services/repro-job-list.service';
 import { PartialJob, ReproJobService } from '../services/repro-job.service';
 import { UploadRefService } from '../services/upload-ref.service';
 import { JobTableComponent } from './job-table/job-table.component';
@@ -22,45 +24,50 @@ import { NewJobButtonComponent } from './new-job-button/new-job-button.component
   templateUrl: './job-list.component.html',
   styleUrls: ['./job-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatSidenavModule, DrawerButtonDirective, ProductsSummaryComponent, NewJobButtonComponent, JobFilterComponent, ScrollTopDirective, MatProgressBar, JobTableComponent],
+  imports: [
+    MatSidenavModule,
+    DrawerButtonDirective,
+    ProductsSummaryComponent,
+    NewJobButtonComponent,
+    JobFilterComponent,
+    JobTableComponent,
+    AsyncPipe,
+  ],
 })
 export class JobListComponent {
   #router = inject(Router);
   #uploadRefService = inject(UploadRefService);
   #reproJobService = inject(ReproJobService);
 
-  #notifications$ = inject(NotificationsService).wsMultiplex('jobs');
+  #jobListService = inject(ReproJobListService);
+
+  #notifications$ = inject(NotificationsService)
+    .wsMultiplex('jobs')
+    .pipe(map(() => undefined));
+  #reload$ = new Subject<void>();
 
   #navigate = navigateRelative();
 
   filter = input.required<JobFilter>();
   #filterChanges = computed(() => this.filter(), { equal: isEqual });
 
-  jobsRef = this.#reproJobService.getJobsResource(this.#filterChanges);
+  data$ = this.#jobListService.getData(
+    combineReload(toObservable(this.#filterChanges), this.#notifications$, this.#reload$),
+  );
 
   activeProducts = inject(ProductsService).getProductsResource({ disabled: false }).asReadonly();
 
-  highlited: string | null = null;
+  protected productsSummary = this.#jobListService.productsSummaryResource(this.#filterChanges);
 
-  constructor() {
-    effect((onCleanup) => {
-      const subs = this.#notifications$.subscribe(() => {
-        this.jobsRef.reload();
-      });
-      onCleanup(() => subs.unsubscribe());
-    });
-  }
+  highlited: string | null = null;
 
   onJobFilter(filter: JobFilter) {
     this.#navigate(['.'], { queryParams: filter });
   }
 
   async onUpdateJob(jobUpdate: PartialJob) {
-    if (this.jobsRef.hasValue()) {
-      this.jobsRef.update((jobs) => jobs.map((job) => (job.jobId === jobUpdate.jobId ? { ...job, ...jobUpdate } : job)));
-    }
     await this.#reproJobService.updateJob(jobUpdate);
-    this.jobsRef.reload();
+    this.#reload$.next();
   }
 
   onFileDrop(fileList: FileList) {

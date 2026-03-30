@@ -41,6 +41,16 @@ export class PagedCache<T> {
     return this._cachedData;
   }
 
+  getAt(idx: number): T | undefined {
+    return this._cachedData[idx];
+  }
+
+  updateAt(idx: number, update: T) {
+    if (this._cachedPages.has(this.getPageForIndex(idx))) {
+      this._cachedData = this._cachedData.map((data, i) => (i === idx ? update : data));
+    }
+  }
+
   private async fetchPage(page: number) {
     this._cachedPages.add(page);
     const start = page * this._pageSize;

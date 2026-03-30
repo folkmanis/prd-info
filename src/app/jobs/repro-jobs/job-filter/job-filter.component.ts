@@ -18,6 +18,7 @@ import { configuration } from 'src/app/services/config.provider';
 import { JobFilter } from '../../interfaces';
 import { CustomerInputComponent } from '../customer-input/customer-input.component';
 import { FilterSummaryComponent } from './filter-summary/filter-summary.component';
+import { DateRangePickerComponent } from 'src/app/library/date-range-picker';
 
 export interface JobFilterSelections {
   customer: string;

@@ -56,7 +56,10 @@ export const InvoiceSchema = z.object({
 });
 export type Invoice = z.infer<typeof InvoiceSchema>;
 
-export type InvoiceForReport = Pick<Invoice, 'invoiceId' | 'customer' | 'createdDate' | 'jobs' | 'products' | 'total' | 'customerInfo'>;
+export type InvoiceForReport = Pick<
+  Invoice,
+  'invoiceId' | 'customer' | 'createdDate' | 'jobs' | 'products' | 'total' | 'customerInfo'
+>;
 
 export const INVOICE_UPDATE_FIELDS = ['comment', 'paytraq'] as const;
 

@@ -3,7 +3,7 @@ import { cloneDeep } from 'lodash-es';
 import { Observable, OperatorFunction, pipe } from 'rxjs';
 import { map, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { ArchiveFacet, ArchiveRecord, SearchQuery } from '../interfaces';
-import { PagedCache } from './paged-cache';
+import { PagedCache } from '../../library/rxjs/paged-cache';
 import { SearchData } from './search-data';
 import { XmfArchiveApiService } from './xmf-archive-api.service';
 
@@ -24,7 +24,7 @@ export class ArchiveSearchService {
     return query.pipe(facetCache((q) => this.api.getFacet(q)));
   }
 
-  getData(query$: Observable<SearchQuery>, count$: Observable<number>): Observable<SearchData> {
+  getData(query$: Observable<SearchQuery>, count$: Observable<number>): Observable<SearchData<ArchiveRecord>> {
     return count$.pipe(
       withLatestFrom(query$),
       map(([count, query]) => new PagedCache<ArchiveRecord>(count, this.fetchRecordsFn(query))),
@@ -37,7 +37,9 @@ export class ArchiveSearchService {
   }
 }
 
-function facetCache(fetchFn: (query: SearchQuery) => Observable<ArchiveFacet>): OperatorFunction<SearchQuery, ArchiveFacet> {
+function facetCache(
+  fetchFn: (query: SearchQuery) => Observable<ArchiveFacet>,
+): OperatorFunction<SearchQuery, ArchiveFacet> {
   let query = new SearchQuery();
   let facetData: ArchiveFacet | undefined;
   return pipe(
@@ -54,7 +56,9 @@ function facetCache(fetchFn: (query: SearchQuery) => Observable<ArchiveFacet>): 
       const facetFiltered: ArchiveFacet = cloneDeep(facetData);
       for (const key of Object.keys(facetFiltered)) {
         // pa grupām
-        facetFiltered[key] = facetFiltered[key].map((val) => newFacet[key].find((nVal) => nVal._id === val._id) || { ...val, count: 0 });
+        facetFiltered[key] = facetFiltered[key].map(
+          (val) => newFacet[key].find((nVal) => nVal._id === val._id) || { ...val, count: 0 },
+        );
       }
       return facetFiltered;
     }),

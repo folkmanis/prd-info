@@ -1,5 +1,15 @@
 import { ChangeDetectionStrategy, Component, inject, input, viewChildren } from '@angular/core';
-import { ControlValueAccessor, FormArray, FormControl, FormsModule, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator } from '@angular/forms';
+import {
+  ControlValueAccessor,
+  FormArray,
+  FormControl,
+  FormsModule,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validator,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDivider } from '@angular/material/divider';
@@ -37,7 +47,17 @@ const DEFAULT_PRODUCT: NullableType<JobProduct> = {
       useExisting: ReproProductsEditorComponent,
     },
   ],
-  imports: [MatCardModule, ReproProductComponent, FormsModule, ReactiveFormsModule, MatButtonModule, KeyPressDirective, MatTooltipModule, MatIconModule, MatDivider],
+  imports: [
+    MatCardModule,
+    ReproProductComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    KeyPressDirective,
+    MatTooltipModule,
+    MatIconModule,
+    MatDivider,
+  ],
 })
 export class ReproProductsEditorComponent implements ControlValueAccessor, Validator {
   productComponents = viewChildren(ReproProductComponent);

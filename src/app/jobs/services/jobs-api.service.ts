@@ -1,12 +1,13 @@
 import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http';
 import { computed, inject, Injectable, Signal } from '@angular/core';
 import { isEqual, pickBy } from 'lodash-es';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { ValidatorService } from 'src/app/library';
 import { HttpOptions, httpResponseRequest } from 'src/app/library/http';
 import { Job, JobPartial, JobsProduction, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
 import { JobsUserPreferences } from '../interfaces/jobs-user-preferences';
+import { z } from 'zod';
 
 export interface JobUpdateParams {
   createFolder?: boolean;
@@ -23,6 +24,18 @@ export class JobsApiService {
   #path = getAppParams('apiPath') + 'jobs/';
   #http = inject(HttpClient);
   #validator = inject(ValidatorService);
+
+  getAll(filter?: Record<string, any>): Promise<JobPartial[]> {
+    const params = filter ?? {};
+    params.unwindProducts = 0;
+    const response$ = this.#http.get<Record<string, any>[]>(this.#path, new HttpOptions(params));
+    return this.#validator.validateArrayAsync(JobPartial, response$);
+  }
+
+  getJobsCount(filter?: Record<string, any>): Observable<{ count: number }> {
+    const response$ = this.#http.get<Record<string, any>[]>(this.#path + 'count', new HttpOptions(filter));
+    return response$.pipe(map(this.#validator.validatorFn(z.object({ count: z.number().gte(0) }))));
+  }
 
   getAllUnwinded(filter: Record<string, any>): Promise<JobUnwindedPartial[]> {
     const response$ = this.#http.get<Record<string, any>[]>(

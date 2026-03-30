@@ -170,7 +170,7 @@ export class QuickCreateInputComponent {
           units: cProduct.units,
           comment: '',
           count: m.count,
-          price: m.count * (cProduct.price ?? 0),
+          price: cProduct.price ?? 0,
         },
       ],
       jobStatus: {

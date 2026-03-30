@@ -1,23 +1,15 @@
 <mat-drawer-container>
   <mat-drawer appDrawerButton>
-    <app-products-summary [jobs]="jobsRef.value() || []" (productHover)="highlited = $event" />
+    @if (productsSummary.hasValue()) {
+      <app-products-summary [productsSummary]="productsSummary.value()" (productHover)="highlited = $event" />
+    }
   </mat-drawer>
 
   <mat-drawer-content>
-    <app-job-filter class="mat-elevation-z4" [filter]="filter()" (filterChange)="onJobFilter($event)" [products]="activeProducts.value()" />
-    <div class="progress-container">
-      @if (jobsRef.isLoading()) {
-        <mat-progress-bar mode="indeterminate" />
-      }
-    </div>
-    @if (jobsRef.error(); as err) {
-      <div class="error">
-        <span>{{ err }}</span>
-      </div>
-    }
-    @if (jobsRef.hasValue()) {
-      <app-job-table scroll-to-top #scroll="scrollToTop" [jobs]="jobsRef.value()" [highlitedJobId]="highlited" (jobChange)="onUpdateJob($event)" />
-      <app-new-job-button (fileList)="onFileDrop($event)" [class.rised]="scroll.visible()" />
+    <app-job-filter [filter]="filter()" (filterChange)="onJobFilter($event)" [products]="activeProducts.value()" />
+    @if (data$ | async; as data) {
+      <app-job-table #jobTable [jobs]="data" [highlitedJobId]="highlited" (jobChange)="onUpdateJob($event)" />
+      <app-new-job-button (fileList)="onFileDrop($event)" [class.rised]="jobTable.scrollTopVisible()" />
     }
   </mat-drawer-content>
 </mat-drawer-container>

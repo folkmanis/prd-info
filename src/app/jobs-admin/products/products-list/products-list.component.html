@@ -1,7 +1,12 @@
-<app-simple-list-container [(filter)]="name" plusButton filterInput hideFilterWhenActive editorWidth="60%">
+<app-simple-list-container plusButton [filterInput]="filterTemplate" hideFilterWhenActive editorWidth="60%">
   <mat-table [dataSource]="products.value()" class="app-table">
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let prod; columns: displayedColumns" [routerLink]="[prod._id]" routerLinkActive="selected" [class.disabled]="prod.inactive"></mat-row>
+    <mat-row
+      *matRowDef="let prod; columns: displayedColumns"
+      [routerLink]="[prod._id]"
+      routerLinkActive="selected"
+      [class.disabled]="prod.inactive"
+    ></mat-row>
 
     <ng-container matColumnDef="name">
       <mat-header-cell *matHeaderCellDef> Nosaukums </mat-header-cell>
@@ -18,3 +23,21 @@
     </ng-container>
   </mat-table>
 </app-simple-list-container>
+
+<ng-template #filterTemplate>
+  <mat-form-field subscriptSizing="dynamic">
+    <input matInput [formField]="filterForm.name" />
+    <span matIconSuffix>
+      @if (filterForm.name().value().length === 0) {
+        <button matIconButton matIconSuffix disabled>
+          <mat-icon>search</mat-icon>
+        </button>
+      }
+      @if (filterForm.name().value().length > 0) {
+        <button matIconButton matIconSuffix (click)="filterForm.name().value.set('')">
+          <mat-icon>clear</mat-icon>
+        </button>
+      }
+    </span>
+  </mat-form-field>
+</ng-template>

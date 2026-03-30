@@ -1,5 +1,5 @@
 <ul>
-  @for (product of productSums(); track $index) {
+  @for (product of productsSummary(); track product.name) {
     <li (mouseenter)="onMouseEnter(product.name)" (mouseleave)="onMouseLeave()">
       <span>
         {{ product.name }}
