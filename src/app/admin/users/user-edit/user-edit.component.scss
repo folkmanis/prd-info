@@ -1,9 +1,13 @@
+.container {
+    padding: 16px;
+}
+
 mat-form-field {
     width: 100%;
 }
 
 mat-card {
-    margin: 16px 0;
+    margin-block: 16px;
 }
 
 section {

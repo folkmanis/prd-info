@@ -73,9 +73,16 @@ export const LoginUserUpdateSchema = LoginUserSchema.partial()
   .partial();
 export type LoginUserUpdate = z.infer<typeof LoginUserUpdateSchema>;
 
-export const UserUpdateSchema = UserSchema.partial().omit({
+export const UserUpdateSchema = UserSchema.omit({
   last_login: true,
-});
+  username: true,
+  preferences: true,
+})
+  .extend({
+    'preferences.customers': z.string().array(),
+    'preferences.modules': z.string().array(),
+  })
+  .partial();
 export type UserUpdate = z.infer<typeof UserUpdateSchema>;
 
 export const UserCreateSchema = UserSchema.omit({

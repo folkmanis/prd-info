@@ -35,6 +35,11 @@
 
 @mixin app-table() {
 
+  .cdk-virtual-scroll-content-wrapper {
+    width: 100%;
+  }
+
+
   .app-table {
     width: 100%;
     cursor: default;

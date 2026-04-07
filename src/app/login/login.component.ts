@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { FocusedDirective } from 'src/app/library/directives/focused.directive';
 import { DEMO_MODE } from '../services/app-mode.provider';
 import { LoginService } from './services/login.service';
+import { EMPTY, switchMap, take } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -30,7 +31,7 @@ export class LoginComponent {
 
   error = input<string>();
 
-  busy = signal(true);
+  busy = signal(false);
 
   constructor() {
     this.checkLogout();
@@ -51,21 +52,24 @@ export class LoginComponent {
 
     try {
       await this.loginService.logIn(loginData);
-      this.router.navigateByUrl('/');
+      setTimeout(() => {
+        this.router.navigateByUrl('/');
+      });
     } catch (error) {
       this.snack.open('Nepareiza parole vai lietotājs', 'OK', { duration: 5000 });
       this.password.set('');
       this.usernameInput().focus();
+    } finally {
+      this.busy.set(false);
     }
-
-    this.busy.set(false);
   }
 
   private async checkLogout() {
-    const isLoggedIn = await this.loginService.isLoggedIn();
-    if (isLoggedIn) {
-      await this.loginService.logOut();
-    }
-    this.busy.set(false);
+    this.loginService.user$
+      .pipe(
+        take(1),
+        switchMap((user) => (user ? this.loginService.logOut() : EMPTY)),
+      )
+      .subscribe(() => this.busy.set(false));
   }
 }

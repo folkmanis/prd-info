@@ -1,5 +1,6 @@
 import { inject, Injectable, Signal } from '@angular/core';
-import { User } from 'src/app/interfaces';
+import { SchemaPath } from '@angular/forms/signals';
+import { User, UserUpdate } from 'src/app/interfaces';
 import { FilterInput, toFilterSignal } from 'src/app/library';
 import { UsersApiService } from 'src/app/services/prd-api/users-api.service';
 import { XmfCustomer } from 'src/app/xmf-search/interfaces';
@@ -29,7 +30,7 @@ export class UsersService {
     return this.api.getOne(username);
   }
 
-  async updateUser({ username, ...update }: Partial<User> & Pick<User, 'username'>): Promise<User> {
+  async updateUser(username: string, update: UserUpdate): Promise<User> {
     await this.api.updateOne(username, update);
     return this.getUser(username);
   }
@@ -60,8 +61,7 @@ export class UsersService {
     return this.api.uploadToFirestore(username);
   }
 
-  async validateUsername(username: string): Promise<boolean> {
-    const existngUsernames = await this.api.validatorData('username');
-    return existngUsernames.includes(username) === false;
+  validateHttpUsername(schema: SchemaPath<string>): void {
+    this.api.validate(schema, 'username');
   }
 }

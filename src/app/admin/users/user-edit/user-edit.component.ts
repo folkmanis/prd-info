@@ -1,7 +1,16 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { AbstractControl, AsyncValidatorFn, FormBuilder, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  linkedSignal,
+  signal,
+  untracked,
+} from '@angular/core';
+import { disabled, email, form, FormField, maxLength, minLength, pattern, required } from '@angular/forms/signals';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckbox } from '@angular/material/checkbox';
@@ -9,20 +18,33 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatOption, MatSelect } from '@angular/material/select';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { isEqual, pickBy } from 'lodash-es';
+import { pick } from 'lodash-es';
 import { getAppParams } from 'src/app/app-params';
-import { User } from 'src/app/interfaces';
-import { ConfirmationDialogService, stringOrThrow } from 'src/app/library';
+import { User, UserCreate, UserUpdate } from 'src/app/interfaces';
+import { stringOrThrow } from 'src/app/library';
+import { ConfirmationDirective } from 'src/app/library/confirmation-dialog';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { navigateRelative } from 'src/app/library/navigation';
 import { PasswordInputDirective } from 'src/app/library/password-input';
 import { PasswordInputGroupComponent } from 'src/app/library/password-input/password-input-group/password-input-group.component';
-import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
+import { computedSignalChanges } from 'src/app/library/signals';
+import { SimpleContentContainerComponent } from 'src/app/library/simple-form/simple-content-container/simple-content-container.component';
+import { updateCatching } from 'src/app/library/update-catching';
 import { LoginService } from 'src/app/login';
 import { UsersListComponent } from '../users-list/users-list.component';
 import { UsersService } from '../users.service';
 import { SessionsComponent } from './sessions/sessions.component';
+
+interface UserModel {
+  username: string;
+  name: string;
+  password: string;
+  userDisabled: boolean;
+  eMail: string;
+  prefersDarkMode: boolean;
+  preferencesCustomers: string[];
+  preferencesModules: string[];
+}
 
 @Component({
   selector: 'app-user-edit',
@@ -30,11 +52,10 @@ import { SessionsComponent } from './sessions/sessions.component';
   styleUrls: ['./user-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     SessionsComponent,
     PasswordInputDirective,
-    SimpleFormContainerComponent,
+    SimpleContentContainerComponent,
     PasswordInputGroupComponent,
     MatFormFieldModule,
     MatSelect,
@@ -45,160 +66,199 @@ import { SessionsComponent } from './sessions/sessions.component';
     MatCheckbox,
     MatProgressSpinner,
     AsyncPipe,
+    ConfirmationDirective,
   ],
 })
 export class UserEditComponent implements CanComponentDeactivate {
-  private navigate = navigateRelative();
-  private usersList = inject(UsersListComponent);
-  private snackBar = inject(MatSnackBar);
-  private usersService = inject(UsersService);
-  private confirmationDialog = inject(ConfirmationDialogService);
+  #usersList = inject(UsersListComponent);
+  #navigate = navigateRelative();
 
-  private username = computed(() => this.initialValue().username);
+  #usersService = inject(UsersService);
 
-  protected customers = this.usersService.getXmfCustomers();
+  protected busy = signal(false);
+  #update = updateCatching(this.busy);
 
+  user = input.required<User>();
+  protected initialValue = linkedSignal(() => this.user());
+  #initialModel = computed(() => this.#toModel(this.initialValue()));
+
+  #username = computed(() => this.initialValue().username);
+  protected isNew = computed(() => !this.#username());
+
+  protected customers = this.#usersService.getXmfCustomers();
   protected userModules = getAppParams('userModules');
-
-  protected sessions = this.usersService.getUserSessionsResource(this.username);
-
+  protected sessions = this.#usersService.getUserSessionsResource(this.#username);
   protected currentSessionId = inject(LoginService).getSessionId();
 
-  private fb = inject(FormBuilder).nonNullable;
-  protected form = this.fb.group({
-    username: ['', [Validators.required, this.usernamePatternValidator()], [this.existingUsernameValidator()]],
-    name: ['', [Validators.required]],
-    password: ['', [Validators.required]],
-    userDisabled: [false],
-    eMail: [null as string | null, [Validators.required]],
-    prefersDarkMode: [false],
-    preferences: this.fb.group({
-      customers: [[] as string[]],
-      modules: [[] as string[]],
-    }),
+  #userModel = linkedSignal(() => this.#initialModel());
+  protected userForm = form(this.#userModel, (s) => {
+    required(s.name);
+
+    disabled(s.username, () => !this.isNew());
+    required(s.username);
+    minLength(s.username, 3, { message: `Jāsatur vismaz 3 zīmes` });
+    maxLength(s.username, 12, { message: `Ne vairāk kā 12 zīmes` });
+    pattern(s.username, /^[A-Za-z0-9_]+$/, { message: `Atļauti tikai burti un skaitļi` });
+    this.#usersService.validateHttpUsername(s.username);
+
+    disabled(s.password, () => !this.isNew());
+    minLength(s.password, 3, { message: `Parolei jāsatur vismaz 3 zīmes` });
+    required(s.password);
+
+    email(s.eMail, { message: `Neatbilst e-pasta formātam` });
+
+    disabled(s, () => this.busy());
   });
 
-  initialValue = input.required<User>({ alias: 'user' });
-
-  private formValue = toSignal(this.form.valueChanges, {
-    initialValue: this.form.value,
-  });
-
-  protected formStatus = toSignal(this.form.statusChanges, {
-    initialValue: this.form.status,
-  });
-
-  protected changes = computed(() => {
-    const value = this.formValue();
-    const initialValue = this.initialValue();
-    const diff = pickBy(value, (v, key) => !isEqual(v, initialValue[key]));
-    return Object.keys(diff).length ? diff : undefined;
-  });
-
-  protected isNew = computed(() => !this.initialValue().username);
-
-  get unameCtrl() {
-    return this.form.controls.username;
-  }
+  protected changes = computedSignalChanges(this.#userModel, this.#initialModel);
 
   constructor() {
     effect(() => {
-      const initialValue = this.initialValue();
-      this.form.reset(initialValue);
-      if (initialValue.username) {
-        this.form.controls.password.disable();
-      }
+      this.initialValue();
+      untracked(() => {
+        this.userForm().reset();
+      });
     });
   }
 
   canDeactivate(): boolean {
-    return this.form.pristine || !this.changes();
+    return this.userForm().touched() === false || this.changes() === null;
   }
 
   protected onReset() {
-    this.form.reset(this.initialValue());
+    this.#userModel.set(this.#toModel(this.initialValue()));
+    this.userForm().reset();
   }
 
   protected async onSave() {
-    if (this.isNew()) {
-      const newUser = pickBy(this.form.getRawValue(), (val) => val !== null);
-      const { username } = await this.usersService.addUser(newUser);
-      this.afterUserSaved(username);
+    const username = this.initialValue().username;
+    if (username) {
+      this.#updateUser(username);
     } else {
-      const update = { ...this.changes(), username: this.initialValue().username };
-      const { username } = await this.usersService.updateUser(update);
-      this.afterUserSaved(username);
+      this.#createUser();
     }
+  }
+
+  #createUser() {
+    this.#update(async (message) => {
+      const { username } = await this.#usersService.addUser(this.#toUserCreate(this.#userModel()));
+      message(`Lietotājs ${username} izveidots`);
+      this.#usersList.onReload();
+      this.userForm().reset();
+      this.#navigate(['..', username]);
+    });
+  }
+
+  #updateUser(username: string) {
+    this.#update(async (message) => {
+      const changes = this.changes();
+      if (!changes) {
+        return;
+      }
+      const updated = await this.#usersService.updateUser(username, this.#toUserUpdate(changes));
+      message(`Lietotājs saglabāts!`);
+      this.initialValue.set(updated);
+    });
   }
 
   protected async onPasswordChange(password: string) {
-    const username = stringOrThrow(this.form.value.username);
-    try {
-      await this.usersService.updatePassword(username, password);
-      this.snackBar.open(`Lietotāja ${username} parole nomainita!`, 'OK', { duration: 3000 });
-    } catch (err) {
-      this.snackBar.open(`Paroli nomainīt neizdevās`, 'OK', { duration: 5000 });
+    if (this.userForm().dirty()) {
+      return;
     }
+    this.#update(
+      async (message) => {
+        const username = stringOrThrow(this.#username());
+        const user = await this.#usersService.updatePassword(username, password);
+        this.initialValue.set(user);
+        message(`Lietotāja ${username} parole nomainita!`);
+      },
+      (message) => {
+        message(`Paroli nomainīt neizdevās`);
+      },
+    );
   }
 
   protected async onDeleteUser() {
-    const username = stringOrThrow(this.form.value.username);
-    const confirmation = await this.confirmationDialog.confirmDelete();
-    if (!confirmation) {
+    if (this.userForm().dirty()) {
       return;
     }
-
-    try {
-      await this.usersService.deleteUser(username);
-      this.snackBar.open(`Lietotājs izdzēsts`, 'OK', { duration: 5000 });
-      this.usersList.onReload();
-      this.form.markAsPristine();
-      this.navigate(['..']);
-    } catch (error) {
-      this.snackBar.open(`Neizdevās izdzēst`, 'OK', { duration: 5000 });
-    }
+    this.#update(
+      async (message) => {
+        const username = stringOrThrow(this.#username());
+        await this.#usersService.deleteUser(username);
+        message(`Lietotājs izdzēsts`);
+        this.#usersList.onReload();
+        this.userForm().reset();
+        this.#navigate(['..']);
+      },
+      (message) => message(`Neizdevās izdzēst`),
+    );
   }
 
   protected async onDeleteSessions(sessionIds: string[]) {
-    const username = stringOrThrow(this.form.value.username);
-    if ((await this.confirmationDialog.confirmDelete()) !== true) {
+    if (this.userForm().dirty()) {
       return;
     }
-
-    try {
-      const deletedSessionsCount = await this.usersService.deleteSessions(username, sessionIds);
-      this.sessions.reload();
-      this.snackBar.open(`Deleted ${deletedSessionsCount} sessions`, 'OK', { duration: 5000 });
-    } catch (err) {
-      this.snackBar.open(`Neizdevās izdzēst`, 'OK', { duration: 5000 });
-    }
+    this.#update(
+      async (message) => {
+        const username = stringOrThrow(this.#username());
+        const deletedSessionsCount = await this.#usersService.deleteSessions(username, sessionIds);
+        this.sessions.reload();
+        message(`Deleted ${deletedSessionsCount} sessions`);
+      },
+      (message) => message(`Neizdevās izdzēst`),
+    );
   }
 
   protected async onUploadToFirestore() {
-    const username = stringOrThrow(this.form.value.username);
-    try {
-      await this.usersService.uploadToFirestore(username);
-      this.snackBar.open('Dati saglabāti lietotnē', 'OK', { duration: 5000 });
-    } catch (err) {
-      this.snackBar.open(`Neizdevās saglabāt. Kļūda ${err?.message}`, 'OK');
-    }
+    this.#update(
+      async (message) => {
+        const username = stringOrThrow(this.#username());
+        await this.#usersService.uploadToFirestore(username);
+        message('Dati saglabāti lietotnē');
+      },
+      (message, err) => message(`Neizdevās saglabāt. Kļūda ${err.message}`),
+    );
   }
 
-  private afterUserSaved(username: string) {
-    this.usersList.onReload();
-    this.form.markAsPristine();
-    this.navigate(['..', username]);
-  }
-
-  private existingUsernameValidator(): AsyncValidatorFn {
-    return async ({ value }: AbstractControl<string>) =>
-      value === this.initialValue()?.username || (await this.usersService.validateUsername(value)) ? null : { existing: 'Esošs lietotājvārds' };
-  }
-
-  private usernamePatternValidator(): ValidatorFn {
-    return (control) => {
-      const val: string = control.value || '';
-      return val.match(/ /) ? { symbol: 'Atstarpi nedrīkst izmantot' } : null;
+  #toModel(user: User): UserModel {
+    return {
+      username: user.username,
+      name: user.name,
+      password: '',
+      userDisabled: user.userDisabled,
+      eMail: user.eMail ?? '',
+      prefersDarkMode: user.prefersDarkMode,
+      preferencesCustomers: user.preferences.customers,
+      preferencesModules: user.preferences.modules,
     };
+  }
+
+  #toUserCreate(model: UserModel): UserCreate {
+    return {
+      username: model.username,
+      name: model.name,
+      admin: false,
+      userDisabled: model.userDisabled,
+      eMail: model.eMail,
+      preferences: {
+        customers: model.preferencesCustomers,
+        modules: model.preferencesModules,
+      },
+      google: null,
+      prefersDarkMode: model.prefersDarkMode,
+      password: model.password,
+    };
+  }
+
+  #toUserUpdate(model: Partial<UserModel>): UserUpdate {
+    const update = pick(model, 'username', 'name', 'admin', 'eMail', 'prefersDarkMode') as UserUpdate;
+    if (model.preferencesCustomers) {
+      update['preferences.customers'] = model.preferencesCustomers;
+    }
+    if (model.preferencesModules) {
+      update['preferences.modules'] = model.preferencesModules;
+    }
+    return update;
   }
 }

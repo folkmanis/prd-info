@@ -3,10 +3,23 @@ import { inject, Injectable, Signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
 import { firstValueFrom, map } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
-import { User, UserCreate, UserCreateSchema, UserList, UserListSchema, UserSchema, UserSession, UserSessionSchema, UserUpdate, UserUpdateSchema } from 'src/app/interfaces';
+import {
+  User,
+  UserCreate,
+  UserCreateSchema,
+  UserList,
+  UserListSchema,
+  UserSchema,
+  UserSession,
+  UserSessionSchema,
+  UserUpdate,
+  UserUpdateSchema,
+} from 'src/app/interfaces';
 import { ValidatorService } from 'src/app/library';
 import { HttpOptions, httpResponseRequest } from 'src/app/library/http';
 import { DEMO_MODE } from '../app-mode.provider';
+import { SchemaPath, validateHttp } from '@angular/forms/signals';
+import { NETWORK_ERROR } from 'src/app/library/http/network-error';
 
 type Params = Record<string, any>;
 
@@ -34,21 +47,27 @@ export class UsersApiService {
   }
 
   userSessionsResource(username: Signal<string>): HttpResourceRef<UserSession[] | undefined> {
-    return httpResource(() => (username() ? httpResponseRequest(this.#path + username() + '/sessions', new HttpOptions().cacheable()) : undefined), {
-      parse: this.#validator.arrayValidatorFn(UserSessionSchema),
-      equal: isEqual,
-    });
+    return httpResource(
+      () =>
+        username()
+          ? httpResponseRequest(this.#path + username() + '/sessions', new HttpOptions().cacheable())
+          : undefined,
+      {
+        parse: this.#validator.arrayValidatorFn(UserSessionSchema),
+        equal: isEqual,
+      },
+    );
   }
 
-  updateOne(id: string | number, data: Partial<User>, params?: Params): Promise<UserUpdate> {
+  updateOne(id: string | number, data: Partial<User>, params?: Params): Promise<User> {
     this.#checkDemoMode();
     const data$ = this.#http.patch(this.#path + id, data, new HttpOptions(params));
-    return this.#validator.validateAsync(UserUpdateSchema, data$);
+    return this.#validator.validateAsync(UserSchema, data$);
   }
 
-  insertOne(data: Partial<User>, params?: Params): Promise<UserCreate> {
+  insertOne(data: Partial<User>, params?: Params): Promise<User> {
     this.#checkDemoMode();
-    return this.#validator.validateAsync(UserCreateSchema, this.#http.put(this.#path, data, new HttpOptions(params)));
+    return this.#validator.validateAsync(UserSchema, this.#http.put(this.#path, data, new HttpOptions(params)));
   }
 
   async deleteOne(id: string): Promise<boolean> {
@@ -57,13 +76,27 @@ export class UsersApiService {
     return data.deletedCount > 0;
   }
 
-  validatorData<K extends keyof User & string>(key: K): Promise<User[K][]> {
-    return firstValueFrom(this.#http.get<User[K][]>(this.#path + 'validate/' + key, new HttpOptions().cacheable()));
+  validate<K extends keyof Pick<User, 'username'>>(schema: SchemaPath<User[K]>, key: K): void {
+    validateHttp(schema, {
+      request: () => httpResponseRequest(this.#path + 'validate/' + key, new HttpOptions().cacheable()),
+      onSuccess: (response: User[K][], { value }) => {
+        const current = value()?.toUpperCase();
+        if (response.some((r) => r && r.toUpperCase() === current)) {
+          return {
+            kind: 'used',
+            message: `"${value()}" jau tiek izmantots!`,
+          };
+        }
+      },
+      onError: () => NETWORK_ERROR,
+    });
   }
 
   uploadToFirestore(id: string): Promise<number> {
     this.#checkDemoMode();
-    const data$ = this.#http.post<{ updatedCount: number }>(this.#path + id + '/firestore/upload', new HttpOptions()).pipe(map((data) => data.updatedCount));
+    const data$ = this.#http
+      .post<{ updatedCount: number }>(this.#path + id + '/firestore/upload', new HttpOptions())
+      .pipe(map((data) => data.updatedCount));
     return firstValueFrom(data$);
   }
 
@@ -75,7 +108,12 @@ export class UsersApiService {
 
   async deleteSessions(username: string, sessionIds: string[]): Promise<number> {
     this.#checkDemoMode();
-    const data = await firstValueFrom(this.#http.delete<{ deletedCount: number }>(this.#path + username + '/session', new HttpOptions({ ids: sessionIds })));
+    const data = await firstValueFrom(
+      this.#http.delete<{ deletedCount: number }>(
+        this.#path + username + '/session',
+        new HttpOptions({ ids: sessionIds }),
+      ),
+    );
     return data.deletedCount;
   }
 

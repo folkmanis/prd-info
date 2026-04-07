@@ -9,9 +9,8 @@ import {
   TransportationVehicleCreate,
   TransportationVehicleUpdate,
 } from '../interfaces/transportation-vehicle';
-import { SchemaPath, validateHttp, ValidationError } from '@angular/forms/signals';
-
-const NETWORK_ERROR: ValidationError = { kind: 'network_error', message: 'Tīkla kļūda' };
+import { SchemaPath, validateHttp } from '@angular/forms/signals';
+import { NETWORK_ERROR } from '../../library/http/network-error';
 
 @Injectable({
   providedIn: 'root',

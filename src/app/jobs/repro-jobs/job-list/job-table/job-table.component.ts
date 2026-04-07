@@ -1,17 +1,18 @@
+import { CdkFixedSizeVirtualScroll, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, output, viewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { JobPartial } from 'src/app/jobs/interfaces';
 import { CopyJobIdAndNameDirective } from 'src/app/library';
 import { RouterLinkWithReturnDirective } from 'src/app/library/navigation';
-import { ViewSizeDirective } from 'src/app/library/view-size';
-import { PartialJob } from '../../services/repro-job.service';
-import { JobsData } from '../../services/repro-job-list.service';
-import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
+import { ViewSizeDirective } from 'src/app/library/view-size';
+import { JobsData } from '../../services/repro-job-list.service';
+import { PartialJob } from '../../services/repro-job.service';
 
 @Component({
   selector: 'app-job-table',
@@ -25,8 +26,8 @@ import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.dir
     MatTooltipModule,
     CdkVirtualScrollViewport,
     CdkFixedSizeVirtualScroll,
-    CdkVirtualForOf,
     ScrollTopDirective,
+    MatTableModule,
   ],
   templateUrl: './job-table.component.html',
   styleUrl: './job-table.component.scss',
@@ -36,6 +37,10 @@ import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.dir
 export class JobTableComponent {
   protected isLarge = inject(ViewSizeDirective).isLarge;
   protected scroll = viewChild.required(ScrollTopDirective);
+
+  protected visibleColumns = computed(() =>
+    this.isLarge() ? ['state', 'jobId', 'customer', 'date', 'name'] : ['state', 'jobId', 'customer', 'name'],
+  );
 
   scrollTopVisible = computed(() => this.scroll().visible());
 

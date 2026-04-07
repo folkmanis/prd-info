@@ -4,24 +4,33 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { UserSession } from 'src/app/interfaces';
+import { ConfirmationDirective } from 'src/app/library/confirmation-dialog';
 
 @Component({
   selector: 'app-sessions',
   templateUrl: './sessions.component.html',
   styleUrls: ['./sessions.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DatePipe, MatListModule, MatButtonModule, MatIconModule],
+  imports: [DatePipe, MatListModule, MatButtonModule, MatIconModule, ConfirmationDirective],
 })
 export class SessionsComponent {
   sessions = input([] as UserSession[]);
+
+  disabled = input(false);
 
   currentSession = input<string | null>();
 
   deleteSession = output<string[]>();
 
-  protected deleteAllDisabled = computed(() => this.sessions().length === 0 || this.sessions().every((s) => s._id === this.currentSession()));
+  protected deleteAllDisabled = computed(
+    () =>
+      this.disabled() || this.sessions().length === 0 || this.sessions().every((s) => s._id === this.currentSession()),
+  );
 
   protected onDeleteAll() {
+    if (this.disabled()) {
+      return;
+    }
     const currentSession = this.currentSession();
     this.deleteSession.emit(
       this.sessions()

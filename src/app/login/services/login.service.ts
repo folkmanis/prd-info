@@ -1,5 +1,16 @@
 import { computed, inject, Injectable, Signal } from '@angular/core';
-import { BehaviorSubject, catchError, firstValueFrom, map, merge, Observable, of, shareReplay, Subject, switchMap } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  firstValueFrom,
+  map,
+  merge,
+  Observable,
+  of,
+  shareReplay,
+  Subject,
+  switchMap,
+} from 'rxjs';
 import { LoginUser, LoginUserUpdate } from 'src/app/interfaces';
 import { Login } from '../login.interface';
 import { LoginApiService } from './login-api.service';
@@ -14,17 +25,16 @@ export class LoginService {
   private loginUpdate$ = new Subject<LoginUser | null>();
   private reload$ = new BehaviorSubject<void>(undefined);
 
-  user$: Observable<LoginUser | null> = merge(this.reload$.pipe(switchMap(() => this.api.getLogin())), this.loginUpdate$).pipe(
+  user$: Observable<LoginUser | null> = merge(
+    this.reload$.pipe(switchMap(() => this.api.getLogin())),
+    this.loginUpdate$,
+  ).pipe(
     catchError(() => of(null)),
     shareReplay(1),
   );
   user = toSignal(this.user$);
 
   isModule = (module: string): Signal<boolean> => computed(() => !!this.user()?.preferences.modules.includes(module));
-
-  async isLoggedIn(): Promise<boolean> {
-    return !!(await firstValueFrom(this.user$));
-  }
 
   async logIn(login: Login): Promise<LoginUser> {
     const user = await this.api.login(login);

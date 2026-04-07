@@ -1,109 +1,107 @@
 import { A11yModule } from '@angular/cdk/a11y';
-import { ChangeDetectionStrategy, Component, input, numberAttribute, OnChanges } from '@angular/core';
 import {
-  ControlValueAccessor,
-  FormControl,
-  FormGroup,
-  FormsModule,
-  NG_VALIDATORS,
-  NG_VALUE_ACCESSOR,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validator,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  input,
+  InputSignal,
+  model,
+  ModelSignal,
+  Signal,
+  signal,
+  viewChild,
+} from '@angular/core';
+import { FormValueControl, ValidationError } from '@angular/forms/signals';
+import { MatIconButton } from '@angular/material/button';
+import { ErrorStateMatcher } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
 
-const MIN_LENGTH = 6;
+export class SignalErrorStateMatcher implements ErrorStateMatcher {
+  constructor(private isError: Signal<boolean>) {}
+
+  isErrorState(): boolean {
+    return this.isError();
+  }
+}
 
 @Component({
   selector: 'app-password-input-group',
   templateUrl: './password-input-group.component.html',
   styleUrls: ['./password-input-group.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, FormsModule, A11yModule, MatFormFieldModule, MatIconModule, MatButtonModule, MatInputModule],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: PasswordInputGroupComponent,
-      multi: true,
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: PasswordInputGroupComponent,
-      multi: true,
-    },
-  ],
+  imports: [A11yModule, MatFormFieldModule, MatIcon, MatIconButton, MatInput],
 })
-export class PasswordInputGroupComponent implements ControlValueAccessor, Validator, OnChanges {
-  hide = true;
+export class PasswordInputGroupComponent implements FormValueControl<string> {
+  protected confirmationMatInput = viewChild<MatInput>('confirmationMatInput');
+  protected passwordMatInput = viewChild<MatInput>('passwordMatInput');
 
-  passwordForm = new FormGroup(
-    {
-      password: new FormControl(''),
-      confirmation: new FormControl(''),
-    },
-    {
-      validators: equalityValidator(),
-    },
-  );
+  protected password = signal('');
+  protected confirmation = signal('');
 
-  onTouchFn: () => void = () => {};
+  protected hide = true;
 
-  passwordValidatorFn = input<ValidatorFn>();
+  value: ModelSignal<string> = model('');
 
-  passwordMinimumLength = input(MIN_LENGTH, { transform: numberAttribute });
+  touched = model(false);
 
-  ngOnChanges(): void {
-    this.setValidators();
+  minLength: InputSignal<number | undefined> = input();
+
+  errors = input([] as readonly ValidationError[]);
+  #passwordError = computed(() => this.errors().length > 0);
+  protected passwordErrorMatcher = new SignalErrorStateMatcher(this.#passwordError);
+
+  disabled = input(false);
+
+  required = input(false);
+
+  hidden = input(false);
+
+  protected confirmationError = signal(false);
+  protected confirmationErrorMatcher = new SignalErrorStateMatcher(this.confirmationError);
+
+  constructor() {
+    effect(() => {
+      this.#passwordError();
+      this.passwordMatInput()?.updateErrorState();
+    });
+    effect(() => {
+      this.confirmationError();
+      this.confirmationMatInput()?.updateErrorState();
+    });
   }
 
-  writeValue(value: any): void {
-    this.passwordForm.reset({ password: value, confirmation: value }, { emitEvent: false });
+  protected onPasswordInput(value: string) {
+    this.password.set(value);
+    this.confirmationError.set(false);
+    this.#updateValue();
   }
 
-  registerOnChange(fn: any): void {
-    this.passwordForm.valueChanges.subscribe((value) => fn(value.password));
-  }
-
-  registerOnTouched(fn: any): void {
-    this.onTouchFn = fn;
-  }
-
-  setDisabledState(isDisabled: boolean): void {
-    if (isDisabled) {
-      this.passwordForm.disable({ emitEvent: false });
-    } else {
-      this.passwordForm.enable({ emitEvent: false });
+  protected onConfirmationInput(value: string) {
+    this.confirmation.set(value);
+    this.#updateValue();
+    if (this.password() === this.confirmation()) {
+      this.confirmationError.set(false);
     }
   }
 
-  validate(): ValidationErrors | null {
-    return this.passwordForm.valid ? null : { invalid: 'password invalid' };
-  }
-
-  private setValidators() {
-    const validators: ValidatorFn[] = [Validators.required, Validators.minLength(this.passwordMinimumLength())];
-
-    if (typeof this.passwordValidatorFn() === 'function') {
-      if (this.passwordValidatorFn()) {
-        validators.push(this.passwordValidatorFn() as ValidatorFn);
-      }
+  protected onPasswordBlur() {
+    if (this.confirmation()) {
+      this.confirmationError.set(this.password() !== this.confirmation());
     }
-
-    this.passwordForm.controls.password.setValidators(validators);
   }
-}
 
-function equalityValidator(): ValidatorFn {
-  return (control: FormGroup) => {
-    const isEqual = control.value.password === control.value.confirmation;
-    const error = !isEqual ? { notEqual: true } : null;
-    control.controls.confirmation.setErrors(error);
-    return error;
-  };
+  protected onConfirmationBlur() {
+    this.confirmationError.set(this.password() !== this.confirmation());
+  }
+
+  #updateValue() {
+    const password = this.password();
+    const confirmation = this.confirmation();
+
+    const value = password === confirmation ? password : '';
+    this.value.set(value);
+  }
 }

@@ -1,7 +1,7 @@
 import { computed, Signal, isSignal } from '@angular/core';
 import { isEqual, pickBy } from 'lodash-es';
 
-export function computedSignalChanges<T extends Record<string, unknown>>(
+export function computedSignalChanges<T extends object>(
   current: Signal<T>,
   initial: Signal<unknown> | unknown,
 ): Signal<Partial<T> | null> {
@@ -12,10 +12,7 @@ export function computedSignalChanges<T extends Record<string, unknown>>(
   });
 }
 
-export function computedChanges<T extends Record<string, unknown>>(
-  current: T,
-  initialValue: unknown,
-): Partial<T> | null {
+export function computedChanges<T extends object>(current: T, initialValue: unknown): Partial<T> | null {
   const diff = pickBy(
     current,
     (v, key) => v !== null && !isEqual(v, initialValue?.[key as keyof typeof initialValue]),

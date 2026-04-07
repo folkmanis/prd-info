@@ -6,106 +6,123 @@ cdk-virtual-scroll-viewport {
     height: 100%;
 }
 
-table {
-    table-layout: fixed;
-    border-spacing: 0;
-    border-collapse: separate;
-}
-
-tbody tr:hover {
+mat-table mat-row:hover {
     cursor: pointer;
 }
 
-td,
-th {
-    display: table-cell;
+mat-cell,
+mat-header-cell {
     padding: 0 4px;
-    font-size: 14px;
-    color: var(--sys-on-surface);
-    border-bottom-color: var(--sys-outline-variant);
-    border-bottom-width: 1px;
-    border-bottom-style: solid;
-    text-align: left;
-    height: 41px;
-
-    >* {
-        max-height: 41px;
-    }
 }
 
-.job-completed td {
+.job-completed mat-column {
     color: var(--sys-on-surface-variant);
 }
 
-th:first-of-type,
-td:first-of-type {
+mat-cell:first-of-type,
+mat-header-cell:first-of-type {
     padding-left: 8px;
 }
 
-.column-state {
-    width: 24px;
+mat-cell:last-of-type,
+mat-header-cell:last-of-type {
+    padding-right: 8px;
 }
 
-.column-jobId {
-    width: 2.7em;
+.mat-column-state {
+    flex: 48px 0 0;
 }
 
-.column-customer {
-    width: 1.8em;
+.mat-column-jobId {
+    flex: 4em 0 0;
 }
 
-.column-date {
-    width: 5.5em;
+.mat-column-customer {
+    flex: 3em 0 0;
 }
 
-.column-productsObj-name {
-    width: 25%;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.mat-column-date {
+    flex: 6em 0 0;
 }
 
-.column-productsObj-count,
-.column-productsObj-units {
-    width: 4em;
-    overflow: hidden;
-    text-overflow: ellipsis;
+mat-row:hover .mat-column-name {
+    .job-name .buttons {
+        display: inherit;
+    }
 }
 
-.column-productsObj-count {
-    text-align: right;
+.mat-column-name {
+    align-items: center;
+    max-width: 100%;
+
+    .job-name {
+
+        width: 100%;
+        display: flex;
+        align-items: center;
+        max-width: 100%;
+
+        &.job-name-large {
+            width: 60%;
+        }
+
+        .name-text {
+            flex: 1 1 400px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .buttons {
+            display: none;
+            flex: 0 0 40px;
+            padding-inline: 8px;
+
+            .mat-icon {
+                font-size: 18px;
+            }
+        }
+    }
+
+    .product {
+        width: 40%;
+        display: flex;
+
+        .product-name {
+            flex: 1 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .product-count,
+        .product-units {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .product-count {
+            flex: 4em 0 0;
+            text-align: right;
+        }
+
+        .product-units {
+            flex: 4em 0 0;
+            padding-inline-start: 4px;
+        }
+
+
+    }
+
+
 }
 
 .column-jobId button[matButton].matButton {
     padding: 0;
 }
 
-.column-name div {
-    display: flex;
-    align-items: center;
-}
-
-.column-name span.name {
-    flex: 1 1 700px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.column-name span.buttons {
-    display: none;
-    flex: 0 0 40px;
-}
-
-.column-name .mat-icon {
-    font-size: 18px;
-}
-
-tr:hover td.column-name span.buttons {
-    display: inherit;
-}
-
 .highlited {
-    background-color: var(--sys-surface-container-high);
+    background-color: var(--mat-sys-surface-container-high);
     transition-duration: 0.5s;
 }
 
