@@ -75,8 +75,8 @@ export class ReproJobService {
 
   jobNameFromFiles(fileNames: string[]): string {
     return fileNames
-      .reduce((acc, curr) => [...acc, curr.replace(/\.[^/.]+$/, '')], [])
-      .reduce((acc, curr, _, names) => [...acc, curr.slice(0, MAX_JOB_NAME_LENGTH / names.length)], [])
+      .reduce((acc, curr) => [...acc, curr.replace(/\.[^/.]+$/, '')], [] as string[])
+      .reduce((acc, curr, _, names) => [...acc, curr.slice(0, MAX_JOB_NAME_LENGTH / names.length)], [] as string[])
       .join('_');
   }
 
