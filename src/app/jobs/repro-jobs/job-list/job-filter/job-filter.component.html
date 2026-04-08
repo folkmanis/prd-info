@@ -1,0 +1,98 @@
+<div class="container" appViewSize>
+  <div class="filter-row">
+    <!-- Darba numurs -->
+    <mat-form-field>
+      <mat-label>Darba numurs</mat-label>
+      <input matInput type="text" [formField]="filterForm.jobsId" />
+      <button matIconButton matSuffix (click)="onReset('jobsId')">
+        <mat-icon>clear</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <!-- Teksta meklēšana -->
+    <mat-form-field class="search">
+      <mat-label>Nosaukums</mat-label>
+      <input matInput type="text" [formField]="filterForm.name" />
+      <button matIconButton matSuffix (click)="onReset('name')">
+        <mat-icon>clear</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <!-- Klients -->
+    <mat-form-field>
+      <mat-label> Klients </mat-label>
+      <input
+        matInput
+        [formField]="filterForm.customer"
+        [matAutocomplete]="autoC"
+        [appAutocompleteFilter]="customerNames()"
+        #filterC="appAutocompleteFilter"
+      />
+      <button matIconSuffix matIconButton tabIndex="-1" (click)="filterForm.customer().value.set('')">
+        <mat-icon> clear </mat-icon>
+      </button>
+
+      <mat-autocomplete
+        #autoC="matAutocomplete"
+        requireSelection
+        hideSingleSelectionIndicator
+        (optionSelected)="filterC.reset()"
+      >
+        @for (customer of filterC.options(); track customer) {
+          <mat-option [value]="customer">
+            {{ customer }}
+          </mat-option>
+        }
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <!-- Darbu statusi -->
+    <mat-form-field>
+      <mat-label> Statuss </mat-label>
+      <mat-select [formField]="filterForm.jobStatus" multiple #statesSelect>
+        @for (status of jobStates(); track $index) {
+          <mat-option [value]="status.state">
+            {{ status.description }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Produkta Nosaukums -->
+    <mat-form-field>
+      <mat-label> Prece </mat-label>
+      <input
+        matInput
+        [formField]="filterForm.productsName"
+        [matAutocomplete]="autoP"
+        [appAutocompleteFilter]="productNames()"
+        #filterP="appAutocompleteFilter"
+      />
+      <button matIconSuffix matIconButton tabindex="-1" (click)="filterForm.productsName().value.set('')">
+        <mat-icon> clear </mat-icon>
+      </button>
+
+      <mat-autocomplete
+        #autoP="matAutocomplete"
+        requireSelection
+        hideSingleSelectionIndicator
+        (optionSelected)="filterP.reset()"
+      >
+        @for (product of filterP.options(); track product) {
+          <mat-option [value]="product">
+            {{ product }}
+          </mat-option>
+        }
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <app-date-range-picker [formField]="filterForm.interval" />
+  </div>
+
+  <div>
+    <!-- Atiestatīt formu -->
+    <button matMiniFab (click)="onReset()" matTooltip="Atiestatīt">
+      <mat-icon> clear </mat-icon>
+    </button>
+  </div>
+</div>

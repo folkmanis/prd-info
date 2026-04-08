@@ -6,7 +6,27 @@
   </mat-drawer>
 
   <mat-drawer-content>
-    <app-job-filter [filter]="filter()" (filterChange)="onJobFilter($event)" [products]="activeProducts.value()" />
+    <mat-expansion-panel id="filterPanel" appViewSize #viewSize="viewSize" [expanded]="false">
+      <mat-expansion-panel-header>
+        @if (viewSize.isLarge()) {
+          <mat-panel-title> Filtrs </mat-panel-title>
+        }
+
+        <mat-panel-description>
+          <app-filter-summary [filter]="filter()" />
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <ng-template matExpansionPanelContent>
+        <app-job-filter
+          [filter]="filter()"
+          (filterChange)="onJobFilter($event)"
+          [products]="activeProducts$ | async"
+          [customers]="customers$ | async"
+        />
+      </ng-template>
+    </mat-expansion-panel>
+
     @if (data$ | async; as data) {
       <app-job-table #jobTable [jobs]="data" [highlitedJobId]="highlited" (jobChange)="onUpdateJob($event)" />
       <app-new-job-button (fileList)="onFileDrop($event)" [class.rised]="jobTable.scrollTopVisible()" />

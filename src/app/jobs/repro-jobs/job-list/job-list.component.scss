@@ -17,8 +17,9 @@ mat-drawer {
   width: 240px;
 }
 
-.progress-container {
-  min-height: 4px;
+#filterPanel {
+  margin: 16px;
+  overflow: unset;
 }
 
 app-new-job-button {

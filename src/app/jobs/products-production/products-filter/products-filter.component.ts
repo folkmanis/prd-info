@@ -25,7 +25,7 @@ import { DateRangePickerComponent } from 'src/app/library/date-range-picker';
 import { ViewSizeDirective } from 'src/app/library/view-size';
 import { configuration } from 'src/app/services/config.provider';
 import { JobsProductionQuery } from '../../interfaces';
-import { FilterSummaryComponent } from './filter-summary/filter-summary.component';
+import { ProductsFilterSummaryComponent } from '../products-filter-summary/products-filter-summary.component';
 
 export const REPRO_DEFAULTS = {
   jobStatus: [10, 20],
@@ -70,15 +70,15 @@ function modelToFilter(model: FilterModel): JobsProductionFilter {
 }
 
 @Component({
-  selector: 'app-filter',
-  templateUrl: './filter.component.html',
-  styleUrls: ['./filter.component.scss'],
+  selector: 'app-products-filter',
+  templateUrl: './products-filter.component.html',
+  styleUrls: ['./products-filter.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormField,
     ViewSizeDirective,
     MatExpansionModule,
-    FilterSummaryComponent,
+    ProductsFilterSummaryComponent,
     MatFormFieldModule,
     MatSelectModule,
     MatOptionModule,
@@ -92,7 +92,7 @@ function modelToFilter(model: FilterModel): JobsProductionFilter {
     AutocompleteFilterDirective,
   ],
 })
-export class FilterComponent {
+export class ProductsFilterComponent {
   filter = model.required<JobsProductionFilter>();
 
   jobStates = configuration('jobs', 'jobStates');

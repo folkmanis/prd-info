@@ -13,7 +13,7 @@ export const FtpUserData = z.object({
 });
 
 export const CustomerContact = z.object({
-  email: z.string().email(),
+  email: z.email(),
 });
 
 export const Customer = z.object({

@@ -2,26 +2,14 @@ import { ParamMap } from '@angular/router';
 import { JobCategories } from './job-categories';
 
 export interface JobFilter {
-  start?: number;
-
-  limit?: number;
-
   fromDate?: Date;
-
   toDate?: Date;
-
   customer?: string;
-
   name?: string;
-
   invoice?: 0 | 1;
-
   jobStatus?: number[];
-
   jobsId?: number[];
-
   productsName?: string;
-
   category?: JobCategories;
 }
 
@@ -30,17 +18,11 @@ export function queryParamsToJobFilter(queryParams: ParamMap): JobFilter {
     jobStatus: [10, 20],
   };
 
-  if (queryParams.has('start')) {
-    filter.start = +queryParams.get('start')!;
-  }
-  if (queryParams.has('limit')) {
-    filter.limit = +queryParams.get('limit')!;
-  }
   if (queryParams.has('fromDate')) {
     filter.fromDate = new Date(queryParams.get('fromDate')!);
   }
   if (queryParams.has('toDate')) {
-    filter.fromDate = new Date(queryParams.get('toDate')!);
+    filter.toDate = new Date(queryParams.get('toDate')!);
   }
   if (queryParams.has('customer')) {
     filter.customer = queryParams.get('customer')!;
@@ -63,7 +45,10 @@ export function queryParamsToJobFilter(queryParams: ParamMap): JobFilter {
   }
   if (queryParams.has('jobStatus')) {
     const jobStatus = queryParams.getAll('jobStatus');
-    filter.jobStatus = jobStatus.map((n) => +n).filter((n) => !isNaN(n));
+    filter.jobStatus = jobStatus
+      .flatMap((n) => n.split(','))
+      .map((n) => +n)
+      .filter((n) => !isNaN(n));
   }
   return filter;
 }

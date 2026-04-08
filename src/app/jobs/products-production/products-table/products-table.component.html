@@ -1,6 +1,15 @@
-<table mat-table [dataSource]="data()" appProductsSort [(sortString)]="sortString" matSortDisableClear class="app-table">
+<mat-table
+  [dataSource]="data()"
+  appProductsSort
+  #sortHeader="appProductsSort"
+  [matSortActive]="sortHeader.sort().active"
+  [matSortDirection]="sortHeader.sort().direction"
+  [(sortString)]="sortString"
+  matSortDisableClear
+  class="app-table"
+>
   <ng-container matColumnDef="selection">
-    <th mat-header-cell *matHeaderCellDef>
+    <mat-header-cell *matHeaderCellDef>
       <mat-checkbox
         [checked]="selector.hasValue() && isAllSelected()"
         [indeterminate]="selector.hasValue() && !isAllSelected()"
@@ -8,62 +17,62 @@
         [disabled]="data().length === 0"
       >
       </mat-checkbox>
-    </th>
-    <td mat-cell *matCellDef="let product">
+    </mat-header-cell>
+    <mat-cell *matCellDef="let product">
       <mat-checkbox [checked]="selector.isSelected(product)" (change)="selector.toggle(product)"> </mat-checkbox>
-    </td>
-    <td mat-footer-cell *matFooterCellDef></td>
+    </mat-cell>
+    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
   </ng-container>
 
   <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Izstrādājums</th>
-    <td mat-cell *matCellDef="let product">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Izstrādājums</mat-header-cell>
+    <mat-cell *matCellDef="let product">
       {{ product.name }}
-    </td>
-    <td mat-footer-cell *matFooterCellDef></td>
+    </mat-cell>
+    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
   </ng-container>
 
   <ng-container matColumnDef="category">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Grupa</th>
-    <td mat-cell *matCellDef="let product">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Grupa</mat-header-cell>
+    <mat-cell *matCellDef="let product">
       {{ product.category }}
-    </td>
-    <td mat-footer-cell *matFooterCellDef></td>
+    </mat-cell>
+    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
   </ng-container>
 
   <ng-container matColumnDef="units">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Vienības</th>
-    <td mat-cell *matCellDef="let product">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Vienības</mat-header-cell>
+    <mat-cell *matCellDef="let product">
       {{ product.units }}
-    </td>
-    <td mat-footer-cell *matFooterCellDef>Kopā:</td>
+    </mat-cell>
+    <mat-footer-cell *matFooterCellDef>Kopā:</mat-footer-cell>
   </ng-container>
 
   <ng-container matColumnDef="count">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Darbu skaits</th>
-    <td mat-cell *matCellDef="let product">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Darbu skaits</mat-header-cell>
+    <mat-cell *matCellDef="let product">
       {{ product.count | number }}
-    </td>
-    <td mat-footer-cell *matFooterCellDef>{{ totals().count | number }}</td>
+    </mat-cell>
+    <mat-footer-cell *matFooterCellDef>{{ totals().count | number }}</mat-footer-cell>
   </ng-container>
 
   <ng-container matColumnDef="sum">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Skaits</th>
-    <td mat-cell *matCellDef="let product">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Skaits</mat-header-cell>
+    <mat-cell *matCellDef="let product">
       {{ product.sum | number }}
-    </td>
-    <td mat-footer-cell *matFooterCellDef>{{ totals().sum | number }}</td>
+    </mat-cell>
+    <mat-footer-cell *matFooterCellDef>{{ totals().sum | number }}</mat-footer-cell>
   </ng-container>
 
   <ng-container matColumnDef="total">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>EUR</th>
-    <td mat-cell *matCellDef="let product">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>EUR</mat-header-cell>
+    <mat-cell *matCellDef="let product">
       {{ product.total | currency }}
-    </td>
-    <td mat-footer-cell *matFooterCellDef>{{ totals().total | currency }}</td>
+    </mat-cell>
+    <mat-footer-cell *matFooterCellDef>{{ totals().total | currency }}</mat-footer-cell>
   </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="isAdmin() ? adminColumns : columns; sticky: true"></tr>
-  <tr mat-row *matRowDef="let product; columns: isAdmin() ? adminColumns : columns"></tr>
-  <tr mat-footer-row *matFooterRowDef="isAdmin() ? adminColumns : columns; sticky: true"></tr>
-</table>
+  <mat-header-row *matHeaderRowDef="isAdmin() ? adminColumns : columns; sticky: true" />
+  <mat-row *matRowDef="let product; columns: isAdmin() ? adminColumns : columns" />
+  <mat-footer-row *matFooterRowDef="isAdmin() ? adminColumns : columns; sticky: true" />
+</mat-table>

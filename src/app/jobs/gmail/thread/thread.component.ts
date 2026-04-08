@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router, RouterLink } from '@angular/router';
-import { defer, EMPTY, Observable } from 'rxjs';
+import { defer, EMPTY, firstValueFrom, Observable } from 'rxjs';
 import { ReproJobService } from 'src/app/jobs/repro-jobs/services/repro-job.service';
 import { UploadRefService } from 'src/app/jobs/repro-jobs/services/upload-ref.service';
 import { assertNoNullProperties } from 'src/app/library';
@@ -20,7 +20,15 @@ import { GmailService } from '../services/gmail.service';
   templateUrl: './thread.component.html',
   styleUrls: ['./thread.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatCardModule, MatButtonModule, RouterLink, MatProgressBarModule, MatExpansionModule, MatIconModule, MessageComponent],
+  imports: [
+    MatCardModule,
+    MatButtonModule,
+    RouterLink,
+    MatProgressBarModule,
+    MatExpansionModule,
+    MatIconModule,
+    MessageComponent,
+  ],
 })
 export class ThreadComponent {
   private gmailService = inject(GmailService);
@@ -62,7 +70,7 @@ export class ThreadComponent {
             attachment: item,
           })),
         ],
-        [],
+        [] as { messageId: string; attachment: Attachment }[],
       );
       await this.createJobWithAttachments(attachments, thread, EMPTY, thread.subject);
     }
@@ -110,7 +118,7 @@ export class ThreadComponent {
   private async resolveCustomer(from: string): Promise<string | undefined> {
     const email = extractEmail(from);
 
-    const customers = await this.customersService.getCustomerList({ email });
+    const customers = await firstValueFrom(this.customersService.getCustomerList({ email }));
     return customers.length === 1 ? customers[0].CustomerName : undefined;
   }
 

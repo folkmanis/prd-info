@@ -11,6 +11,7 @@ import {
 import { ProductsApiService, ProductsFilter } from 'src/app/services/prd-api/products-api.service';
 import { assertNotNull, FilterInput, toFilterSignal } from '../library';
 import { HttpResourceRef } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +23,7 @@ export class ProductsService {
     return this.api.productsResource(toFilterSignal(filterSignal));
   }
 
-  getProducts(filter: ProductsFilter = {}): Promise<ProductPartial[]> {
+  getProducts(filter: ProductsFilter = {}): Observable<ProductPartial[]> {
     return this.api.getProducts(filter);
   }
 

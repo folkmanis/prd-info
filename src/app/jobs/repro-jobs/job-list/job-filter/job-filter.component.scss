@@ -1,21 +1,17 @@
-:host {
-  display: block;
-  padding: 16px;
-}
-
 .container {
   display: flex;
   column-gap: 16px;
   flex-direction: column;
 
-  .large & {
+  &.large {
     flex-direction: row-reverse;
+  }
+
+  &.small mat-form-field {
+    width: 100%;
   }
 }
 
-.small .container mat-form-field {
-  width: 100%;
-}
 
 .filter-row {
   display: flex;

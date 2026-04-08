@@ -5,7 +5,7 @@ import { notNullOrThrow } from 'src/app/library';
 import { resolveCatching } from 'src/app/library/guards';
 import { InvoicesService } from '../services/invoices.service';
 
-export const resolveInvoice: ResolveFn<Invoice> = async (route) => {
+export const resolveInvoice: ResolveFn<Invoice> = (route) => {
   const invoicesService = inject(InvoicesService);
 
   const invoiceId = notNullOrThrow(route.paramMap.get('invoiceId'));

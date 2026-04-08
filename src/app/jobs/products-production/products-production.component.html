@@ -1,5 +1,5 @@
 @if (query(); as query) {
-  <app-filter [filter]="query" (filterChange)="onFilter($event)" [customers]="customers | async" />
+  <app-products-filter [filter]="query" (filterChange)="onFilter($event)" [customers]="customers | async" />
 
   @if (data.hasValue() && data.value(); as value) {
     <div>

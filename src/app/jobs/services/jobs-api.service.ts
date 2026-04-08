@@ -58,7 +58,7 @@ export class JobsApiService {
   #jobsResource<P extends 0 | 1, Result = P extends 0 ? JobPartial : JobUnwindedPartial>(
     filter: Signal<Record<string, any> | undefined>,
     unwindProducts: P,
-    parse: (value: Record<string, any>[]) => Result[],
+    parse: (value: any) => Result[],
   ): HttpResourceRef<Result[] | undefined> {
     const params = computed(() =>
       filter()

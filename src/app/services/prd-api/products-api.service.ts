@@ -1,7 +1,7 @@
 import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http';
 import { inject, Injectable, Signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
-import { firstValueFrom, map } from 'rxjs';
+import { firstValueFrom, map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { CustomerProduct, Product, ProductPartial, ProductProductionStage, ProductSchema } from 'src/app/interfaces';
 import { ValidatorService } from 'src/app/library';
@@ -44,9 +44,9 @@ export class ProductsApiService {
     });
   }
 
-  getProducts(filter: Record<string, any>) {
+  getProducts(filter: Record<string, any>): Observable<ProductPartial[]> {
     const data$ = this.#http.get<Record<string, any>[]>(this.#path, new HttpOptions(filter).cacheable());
-    return this.#validator.validateArrayAsync(ProductPartial, data$);
+    return data$.pipe(map(this.#validator.arrayValidatorFn(ProductPartial)));
   }
 
   getOne(id: string): Promise<Product> {

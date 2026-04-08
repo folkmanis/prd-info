@@ -1,16 +1,16 @@
 <ul class="filter-description">
-  @if (summary().jobsId; as jobsId) {
+  @if (jobsId(); as jobsId) {
     <li>
       {{ jobsId }}
     </li>
   }
 
-  @if (summary().name; as name) {
+  @if (filter().name; as name) {
     <li>
       {{ name }}
     </li>
   }
-  @if (summary().customer; as customer) {
+  @if (filter().customer; as customer) {
     <li>
       {{ customer }}
     </li>
@@ -20,7 +20,7 @@
       {{ states }}
     </li>
   }
-  @if (summary().productsName; as productsName) {
+  @if (filter().productsName; as productsName) {
     <li>
       {{ productsName }}
     </li>

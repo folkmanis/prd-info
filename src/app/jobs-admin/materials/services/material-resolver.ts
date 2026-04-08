@@ -5,7 +5,7 @@ import { resolveCatching } from 'src/app/library/guards';
 import { MaterialsService } from './materials.service';
 import { notNullOrThrow } from 'src/app/library';
 
-export const resolveMaterial: ResolveFn<Material> = async (route, state) => {
+export const resolveMaterial: ResolveFn<Material> = (route, state) => {
   const id = notNullOrThrow(route.paramMap.get('id'));
   return resolveCatching(state.url, () => inject(MaterialsService).getMaterial(id));
 };

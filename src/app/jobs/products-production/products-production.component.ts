@@ -5,7 +5,7 @@ import { LoginService } from 'src/app/login';
 import { CustomersService } from 'src/app/services';
 import { ScrollTopDirective } from '../../library/scroll-to-top/scroll-top.directive';
 import { JobsProduction } from '../interfaces';
-import { FilterComponent, JobsProductionFilter } from './filter/filter.component';
+import { ProductsFilterComponent, JobsProductionFilter } from './products-filter/products-filter.component';
 import { ProductsTableComponent } from './products-table/products-table.component';
 import { ProductsProductionService } from './services/products-production.service';
 import { Totals } from './services/totals';
@@ -16,7 +16,7 @@ import { MatAnchor, MatButton } from '@angular/material/button';
   templateUrl: './products-production.component.html',
   styleUrls: ['./products-production.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FilterComponent, ProductsTableComponent, ScrollTopDirective, AsyncPipe, MatAnchor, MatButton],
+  imports: [ProductsFilterComponent, ProductsTableComponent, ScrollTopDirective, AsyncPipe, MatAnchor, MatButton],
 })
 export class ProductsProductionComponent {
   #service = inject(ProductsProductionService);

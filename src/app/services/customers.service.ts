@@ -2,6 +2,8 @@ import { inject, Injectable } from '@angular/core';
 import { Customer, CustomerContact, CustomerPartial, CustomerUpdate, NewCustomer } from 'src/app/interfaces';
 import { FilterInput, toFilterSignal } from 'src/app/library';
 import { CustomersApiService } from './prd-api/customers-api.service';
+import { HttpResourceRef } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 export interface CustomerRequestFilter {
   name?: string;
@@ -15,7 +17,9 @@ export interface CustomerRequestFilter {
 export class CustomersService {
   #api = inject(CustomersApiService);
 
-  getCustomersResource(filterSignal: FilterInput<CustomerRequestFilter>) {
+  getCustomersResource(
+    filterSignal: FilterInput<CustomerRequestFilter>,
+  ): HttpResourceRef<CustomerPartial[] | undefined> {
     return this.#api.customersResource(toFilterSignal(filterSignal));
   }
 
@@ -36,7 +40,7 @@ export class CustomersService {
     return this.#api.insertOne(customer);
   }
 
-  getCustomerList(filter: CustomerRequestFilter = {}): Promise<CustomerPartial[]> {
+  getCustomerList(filter: CustomerRequestFilter = {}): Observable<CustomerPartial[]> {
     return this.#api.getAll(filter);
   }
 

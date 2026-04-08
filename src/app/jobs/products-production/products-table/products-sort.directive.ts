@@ -1,9 +1,10 @@
-import { Directive, computed, model } from '@angular/core';
+import { Directive, computed, effect, model } from '@angular/core';
 import { MatSort, Sort } from '@angular/material/sort';
 
 @Directive({
   selector: '[appProductsSort]',
   standalone: true,
+  exportAs: 'appProductsSort',
   hostDirectives: [
     {
       directive: MatSort,
@@ -12,8 +13,9 @@ import { MatSort, Sort } from '@angular/material/sort';
     },
   ],
   host: {
-    matSortActive: 'sort().active',
-    matSortDirection: 'sort().direction',
+    // disabled due to compiler bug
+    // '[matSortActive]': 'sort().active',
+    // '[matSortDirection]': 'sort().direction',
     '(matSortChange)': 'onSortChange($event)',
   },
 })

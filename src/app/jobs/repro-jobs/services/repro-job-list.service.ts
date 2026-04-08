@@ -39,7 +39,7 @@ export class ReproJobListService {
 
   getData(filter$: Observable<JobFilter>): Observable<JobsData> {
     return filter$.pipe(
-      map(({ start, limit, ...filter }) => jobFilterToRequestQuery(filter)),
+      map((filter) => jobFilterToRequestQuery(filter)),
       switchMap((query) =>
         this.#api.getJobsCount(query).pipe(
           map(({ count }) => new PagedCache<JobPartial>(count, this.#fetchRecordsFn(query))),

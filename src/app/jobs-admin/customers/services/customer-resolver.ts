@@ -5,7 +5,7 @@ import { notNullOrThrow } from 'src/app/library';
 import { resolveCatching } from 'src/app/library/guards';
 import { CustomersService } from 'src/app/services';
 
-export const resolveCustomer: ResolveFn<Customer> = async (route, state) => {
+export const resolveCustomer: ResolveFn<Customer> = (route, state) => {
   const id = notNullOrThrow(route.paramMap.get('id'));
   return resolveCatching(state.url, () => inject(CustomersService).getCustomer(id));
 };

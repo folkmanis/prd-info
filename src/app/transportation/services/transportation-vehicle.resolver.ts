@@ -5,7 +5,4 @@ import { TransportationVehicleService } from './transportation-vehicle.service';
 import { TransportationVehicle } from '../interfaces/transportation-vehicle';
 
 export const transportationVehicleResolver: ResolveFn<TransportationVehicle> = (route, state) =>
-  resolveCatching(state.url, async () => {
-    const id = route.params.id;
-    return await inject(TransportationVehicleService).getVehicle(id);
-  });
+  resolveCatching(state.url, () => inject(TransportationVehicleService).getVehicle(route.params.id));

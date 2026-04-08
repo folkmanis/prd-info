@@ -4,13 +4,13 @@ import { JobsProductionQuery } from 'src/app/jobs/interfaces';
 import { DateUtilsService } from 'src/app/library/date-services';
 
 @Component({
-  selector: 'app-filter-summary',
-  templateUrl: './filter-summary.component.html',
-  styleUrls: ['./filter-summary.component.scss'],
+  selector: 'app-products-filter-summary',
+  templateUrl: './products-filter-summary.component.html',
+  styleUrls: ['./products-filter-summary.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
 })
-export class FilterSummaryComponent {
+export class ProductsFilterSummaryComponent {
   private dateUtils = inject(DateUtilsService);
 
   query = input.required<Pick<JobsProductionQuery, 'category' | 'customer' | 'fromDate' | 'toDate' | 'jobStatus'>>();
