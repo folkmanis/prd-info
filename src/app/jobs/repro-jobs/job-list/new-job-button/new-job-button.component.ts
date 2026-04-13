@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { ChangeDetectionStrategy, Component, output } from '@angular/core';
+import { MatFabButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterLink } from '@angular/router';
 import { FileDropDirective } from 'src/app/library/directives/file-drop.directive';
@@ -10,18 +10,18 @@ import { FileDropDirective } from 'src/app/library/directives/file-drop.directiv
   templateUrl: './new-job-button.component.html',
   styleUrls: ['./new-job-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatButtonModule, MatMenuModule, MatIconModule, RouterLink, FileDropDirective],
+  imports: [MatMenuModule, RouterLink, FileDropDirective, MatFabButton, MatIcon],
 })
 export class NewJobButtonComponent {
-  @Output() fileList = new EventEmitter<FileList>();
+  fileList = output<FileList>();
 
   onFileSelected(event: any) {
     if (event.target?.files instanceof FileList && event.target.files.length > 0) {
-      this.fileList.next(event.target.files);
+      this.fileList.emit(event.target.files);
     }
   }
 
   onFileDrop(fileList: FileList) {
-    this.fileList.next(fileList);
+    this.fileList.emit(fileList);
   }
 }

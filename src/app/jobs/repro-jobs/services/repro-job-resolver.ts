@@ -23,7 +23,7 @@ export const resolveReproJob: ResolveFn<Omit<Job, 'jobId'>> = async (route) => {
     const { jobId: _, ...job } = await inject(JobService).getJob(jobId);
     return job;
   } catch (error) {
-    dialog.confirmDataError(notFoundMessage(jobId, error));
+    dialog.confirmDataError(notFoundMessage(jobId, error as Error));
     return new RedirectCommand(jobList);
   }
 };

@@ -1,0 +1,49 @@
+@if (filterIsSet()) {
+  @let fl = filter();
+
+  <ul class="filter-description">
+    @if (jobsId(); as jobsId) {
+      <li>
+        {{ jobsId }}
+      </li>
+    }
+
+    @if (fl.name; as name) {
+      <li>
+        {{ name }}
+      </li>
+    }
+    @if (fl.customer; as customer) {
+      <li>
+        {{ customer }}
+      </li>
+    }
+    @if (selectedStates(); as states) {
+      <li>
+        {{ states }}
+      </li>
+    }
+    @if (fl.productsName; as productsName) {
+      <li>
+        {{ productsName }}
+      </li>
+    }
+    @if (fl.productsName; as productsName) {
+      <li>
+        {{ productsName }}
+      </li>
+    }
+    @if (fl.fromDate) {
+      <li>
+        <span> No {{ fl.fromDate | date }} </span>
+      </li>
+    }
+    @if (fl.toDate) {
+      <li>
+        <span> Līdz {{ fl.toDate | date }} </span>
+      </li>
+    }
+  </ul>
+} @else {
+  Visi darbi
+}

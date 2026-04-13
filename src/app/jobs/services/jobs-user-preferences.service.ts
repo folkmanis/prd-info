@@ -44,7 +44,7 @@ export class JobsUserPreferencesService {
     }
   }
 
-  #setMissingPreferences(error: Error): Promise<JobsUserPreferences> {
+  #setMissingPreferences(error: unknown): Promise<JobsUserPreferences> {
     if (error instanceof HttpErrorResponse && error.status === 404) {
       return this.#setUserPreferences(defaultJobsUserPreferences());
     }

@@ -1,0 +1,19 @@
+@let filter = filter$ | async;
+<mat-drawer-container>
+  <mat-drawer appDrawerButton>
+    @if (filter) {
+      <app-job-list-filter
+        [filter]="filter"
+        (filterChange)="onJobFilter($event)"
+        [customers]="customers$ | async"
+        [products]="activeProducts$ | async"
+      />
+    }
+  </mat-drawer>
+
+  <mat-drawer-content>
+    @if (data$ | async; as data) {
+      <app-job-list-table [jobs]="data" [filter]="filter" />
+    }
+  </mat-drawer-content>
+</mat-drawer-container>

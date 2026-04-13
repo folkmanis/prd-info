@@ -1,5 +1,16 @@
 import { AsyncPipe } from '@angular/common';
-import { afterNextRender, ChangeDetectionStrategy, Component, computed, effect, inject, Injector, input, signal, viewChild } from '@angular/core';
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  Injector,
+  input,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
@@ -76,10 +87,13 @@ export class NewInvoiceComponent {
 
   async onCreateInvoice() {
     try {
-      const { invoiceId } = await this.invoicesService.createInvoice({ jobIds: this.selection(), customerId: this.customer() });
+      const { invoiceId } = await this.invoicesService.createInvoice({
+        jobIds: this.selection(),
+        customerId: this.customer(),
+      });
       this.router.navigate(['calculations', 'plate-invoice', invoiceId]);
     } catch (error) {
-      this.snack.open(`Error ${error.message}`, 'OK');
+      this.snack.open(`Error ${(error as Error).message}`, 'OK');
     }
   }
 

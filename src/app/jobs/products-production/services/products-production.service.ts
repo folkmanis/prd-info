@@ -14,7 +14,7 @@ export class ProductsProductionService {
 
   getJobsProductionResource(filter: Signal<JobsUserPreferences['jobsProductionQuery'] | null>) {
     const params = computed(() => this.#savedQueryToRequest(filter()));
-    return this.#api.getJobsProductionResource(params);
+    return this.#api.getJobsProductionSummaryResource(params);
   }
 
   getSavedQuery(): Signal<JobsUserPreferences['jobsProductionQuery'] | null> {

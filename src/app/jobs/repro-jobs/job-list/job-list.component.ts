@@ -1,26 +1,22 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { Router } from '@angular/router';
-import { isEqual } from 'lodash-es';
-import { EMPTY, from, map, Subject } from 'rxjs';
-import { navigateRelative } from 'src/app/library/navigation';
+import { EMPTY, from, map, of, shareReplay, Subject, switchMap } from 'rxjs';
 import { combineReload } from 'src/app/library/rxjs';
-import { CustomersService, NotificationsService } from 'src/app/services';
-import { ProductsService } from 'src/app/services/products.service';
+import { NotificationsService } from 'src/app/services';
 import { DrawerButtonDirective } from '../../../library/side-button/drawer-button.directive';
-import { JobFilter, jobFilterToRequestQuery } from '../../interfaces';
-import { JobFilterComponent } from './job-filter/job-filter.component';
+import { JobFilter } from '../../interfaces';
+import { JobListService } from '../../services/job-list.service';
 import { ProductsSummaryComponent } from '../products-summary/products-summary.component';
-import { ReproJobListService } from '../services/repro-job-list.service';
 import { PartialJob, ReproJobService } from '../services/repro-job.service';
 import { UploadRefService } from '../services/upload-ref.service';
 import { JobTableComponent } from './job-table/job-table.component';
 import { NewJobButtonComponent } from './new-job-button/new-job-button.component';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { FilterSummaryComponent } from './filter-summary/filter-summary.component';
-import { ViewSizeDirective } from 'src/app/library/view-size';
+
+const DEFAULT_FILTER: JobFilter = {
+  jobStatus: [10, 20],
+};
 
 @Component({
   selector: 'app-job-list',
@@ -30,14 +26,10 @@ import { ViewSizeDirective } from 'src/app/library/view-size';
   imports: [
     MatSidenavModule,
     DrawerButtonDirective,
-    MatExpansionModule,
     ProductsSummaryComponent,
     NewJobButtonComponent,
-    JobFilterComponent,
     JobTableComponent,
     AsyncPipe,
-    FilterSummaryComponent,
-    ViewSizeDirective,
   ],
 })
 export class JobListComponent {
@@ -45,32 +37,20 @@ export class JobListComponent {
   #uploadRefService = inject(UploadRefService);
   #reproJobService = inject(ReproJobService);
 
-  #jobListService = inject(ReproJobListService);
+  #jobListService = inject(JobListService);
 
   #notifications$ = inject(NotificationsService)
     .wsMultiplex('jobs')
     .pipe(map(() => undefined));
   #reload$ = new Subject<void>();
 
-  #navigate = navigateRelative();
+  readonly #filter$ = combineReload(of(DEFAULT_FILTER), this.#notifications$, this.#reload$).pipe(shareReplay());
 
-  filter = input.required<JobFilter>();
-  #filterChanges = computed(() => this.filter(), { equal: isEqual });
+  protected data$ = this.#jobListService.getData(this.#filter$);
 
-  data$ = this.#jobListService.getData(
-    combineReload(toObservable(this.#filterChanges), this.#notifications$, this.#reload$),
-  );
-
-  protected activeProducts$ = inject(ProductsService).getProducts({ disabled: false });
-  protected customers$ = inject(CustomersService).getCustomerList({ disabled: false });
-
-  protected productsSummary = this.#jobListService.productsSummaryResource(this.#filterChanges);
+  protected productsSummary$ = this.#filter$.pipe(switchMap((filter) => this.#jobListService.productsSummary(filter)));
 
   highlited: string | null = null;
-
-  onJobFilter(filter: JobFilter) {
-    this.#navigate(['.'], { queryParams: jobFilterToRequestQuery(filter) });
-  }
 
   async onUpdateJob(jobUpdate: PartialJob) {
     await this.#reproJobService.updateJob(jobUpdate);

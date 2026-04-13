@@ -25,16 +25,12 @@ export class JobsApiService {
   #http = inject(HttpClient);
   #validator = inject(ValidatorService);
 
-  getAll(filter?: Record<string, any>): Promise<JobPartial[]> {
-    const params = filter ?? {};
-    params.unwindProducts = 0;
-    const response$ = this.#http.get<Record<string, any>[]>(this.#path, new HttpOptions(params));
+  getAll(filter: Record<string, any> = {}): Promise<JobPartial[]> {
+    const response$ = this.#http.get<Record<string, any>[]>(
+      this.#path,
+      new HttpOptions({ ...filter, unwindProducts: 0 }),
+    );
     return this.#validator.validateArrayAsync(JobPartial, response$);
-  }
-
-  getJobsCount(filter?: Record<string, any>): Observable<{ count: number }> {
-    const response$ = this.#http.get<Record<string, any>[]>(this.#path + 'count', new HttpOptions(filter));
-    return response$.pipe(map(this.#validator.validatorFn(z.object({ count: z.number().gte(0) }))));
   }
 
   getAllUnwinded(filter: Record<string, any>): Promise<JobUnwindedPartial[]> {
@@ -43,6 +39,11 @@ export class JobsApiService {
       new HttpOptions({ ...filter, unwindProducts: 1 }),
     );
     return this.#validator.validateArrayAsync(JobUnwindedPartial, response$);
+  }
+
+  getJobsCount(filter?: Record<string, any>): Observable<{ count: number }> {
+    const response$ = this.#http.get<Record<string, any>[]>(this.#path + 'count', new HttpOptions(filter));
+    return response$.pipe(map(this.#validator.validatorFn(z.object({ count: z.number().gte(0) }))));
   }
 
   jobsResource(filter: Signal<Record<string, any> | undefined>): HttpResourceRef<JobPartial[] | undefined> {
@@ -112,7 +113,7 @@ export class JobsApiService {
     return this.#validator.validateArrayAsync(JobsWithoutInvoicesTotals, data$);
   }
 
-  getJobsProductionResource(query: Signal<Record<string, any> | undefined>) {
+  getJobsProductionSummaryResource(query: Signal<Record<string, any> | undefined>) {
     return httpResource(
       () => (query() ? httpResponseRequest(this.#path + 'products', new HttpOptions(query())) : undefined),
       {
@@ -120,6 +121,11 @@ export class JobsApiService {
         equal: isEqual,
       },
     );
+  }
+
+  jobsProductionSummary(query: Record<string, any>): Observable<JobsProduction[]> {
+    const data$ = this.#http.get(this.#path + 'products', new HttpOptions(query));
+    return data$.pipe(map(this.#validator.arrayValidatorFn(JobsProduction)));
   }
 
   getUserPreferences(): Promise<JobsUserPreferences> {

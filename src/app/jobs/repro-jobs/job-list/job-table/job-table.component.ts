@@ -11,7 +11,7 @@ import { CopyJobIdAndNameDirective } from 'src/app/library';
 import { RouterLinkWithReturnDirective } from 'src/app/library/navigation';
 import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
 import { ViewSizeDirective } from 'src/app/library/view-size';
-import { JobsData } from '../../services/repro-job-list.service';
+import { JobsData } from '../../../services/job-list.service';
 import { PartialJob } from '../../services/repro-job.service';
 
 @Component({
@@ -44,7 +44,7 @@ export class JobTableComponent {
 
   scrollTopVisible = computed(() => this.scroll().visible());
 
-  jobs = input.required<JobsData>();
+  jobs = input.required<JobsData<JobPartial>>();
 
   highlitedJobId = input<string | null | undefined>(null);
 

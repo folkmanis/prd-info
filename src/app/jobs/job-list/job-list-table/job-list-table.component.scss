@@ -1,0 +1,77 @@
+:host {
+    height: 100%;
+}
+
+cdk-virtual-scroll-viewport {
+    height: 100%;
+}
+
+mat-table mat-row:hover {
+    cursor: pointer;
+}
+
+mat-cell,
+mat-header-cell {
+    padding: 0 4px;
+}
+
+mat-cell:first-of-type,
+mat-header-cell:first-of-type {
+    padding-left: 8px;
+}
+
+mat-cell:last-of-type,
+mat-header-cell:last-of-type {
+    padding-right: 8px;
+}
+
+.mat-column-state {
+    flex: 48px 0 0;
+}
+
+.mat-column-jobId {
+    flex: 4em 0 0;
+}
+
+.mat-column-customer {
+    flex: 3em 0 0;
+}
+
+.mat-column-date {
+    flex: 6em 0 0;
+}
+
+.mat-column-name {
+    flex: 400px 2;
+}
+
+.mat-column-products-name {
+    flex: 200px 1;
+}
+
+.mat-column-name,
+.mat-column-products-name,
+.mat-column-products-count,
+.mat-column-products-units {
+    span {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+}
+
+.mat-column-products-count {
+    flex: 4em 0 0;
+    display: flex;
+    justify-content: flex-end;
+
+    span {
+        text-align: right;
+    }
+}
+
+.mat-column-products-units {
+    flex: 4em 0 0;
+    padding-inline-start: 4px;
+}

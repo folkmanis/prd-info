@@ -1,0 +1,99 @@
+<cdk-virtual-scroll-viewport
+  appViewSize
+  #viewSize="viewSize"
+  itemSize="48"
+  templateCacheSize="0"
+  scroll-to-top
+  minBufferPx="1000"
+  maxBufferPx="3000"
+>
+  <mat-table [dataSource]="jobs()" class="app-table" [trackBy]="trackByFn">
+    <ng-container matColumnDef="filter-summary">
+      <mat-header-cell *matHeaderCellDef>
+        @if (filter(); as filter) {
+          <app-job-list-filter-summary [filter]="filter" />
+        }
+      </mat-header-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="state">
+      <mat-header-cell *matHeaderCellDef>State</mat-header-cell>
+      <mat-cell *matCellDef="let job">
+        @if (job?.jobStatus?.generalStatus === 20) {
+          <mat-icon> label_important </mat-icon>
+        }
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="jobId">
+      <mat-header-cell *matHeaderCellDef>ID</mat-header-cell>
+      <mat-cell *matCellDef="let job">{{ job?.jobId }}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="customer">
+      <mat-header-cell *matHeaderCellDef> Kl. </mat-header-cell>
+      <mat-cell *matCellDef="let job">
+        {{ job?.custCode }}
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="date">
+      <mat-header-cell *matHeaderCellDef> Datums </mat-header-cell>
+      <mat-cell *matCellDef="let job">
+        {{ job?.dueDate | date: 'dd.MM.yyyy' }}
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef> Nosaukums </mat-header-cell>
+      <mat-cell *matCellDef="let job">
+        @if (job) {
+          <span>
+            {{ job.name }}
+          </span>
+        }
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="products-name">
+      <mat-header-cell *matHeaderCellDef> Izstrādājums </mat-header-cell>
+      <mat-cell *matCellDef="let job">
+        @if (job?.products) {
+          <span>
+            {{ job.products.name }}
+          </span>
+        }
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="products-count">
+      <mat-header-cell *matHeaderCellDef> Skaits </mat-header-cell>
+      <mat-cell *matCellDef="let job">
+        @if (job?.products) {
+          <span>
+            {{ job.products.count }}
+          </span>
+        }
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="products-units">
+      <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+      <mat-cell *matCellDef="let job">
+        @if (job?.products) {
+          <span>
+            {{ job.products.units }}
+          </span>
+        }
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="['filter-summary']; sticky: true" />
+    <mat-header-row *matHeaderRowDef="viewSize.isLarge() ? columnsLarge : columnsSmall; sticky: true" />
+    <mat-row
+      *matRowDef="let job; columns: viewSize.isLarge() ? columnsLarge : columnsSmall"
+      [class.job-completed]="job?.invoiceId"
+      [appRouterLinkWithReturn]="['/', 'jobs', 'repro', job?.jobId]"
+    />
+  </mat-table>
+</cdk-virtual-scroll-viewport>

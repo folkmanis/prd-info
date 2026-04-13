@@ -20,6 +20,10 @@ export default [
     loadChildren: () => import('./quick-create/quick-create.routes'),
   },
   {
+    path: 'job-list',
+    loadComponent: () => import('./job-list/job-list.component').then((c) => c.JobListComponent),
+  },
+  {
     path: '',
     component: JobsComponent,
   },

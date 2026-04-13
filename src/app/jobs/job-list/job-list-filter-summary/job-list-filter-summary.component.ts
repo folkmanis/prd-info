@@ -1,18 +1,21 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { configuration } from 'src/app/services/config.provider';
-import { JobFilter } from '../../../interfaces';
+import { JobFilter } from '../../interfaces';
+import { DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-filter-summary',
-  imports: [],
-  templateUrl: './filter-summary.component.html',
-  styleUrl: './filter-summary.component.scss',
+  selector: 'app-job-list-filter-summary',
+  imports: [DatePipe],
+  templateUrl: './job-list-filter-summary.component.html',
+  styleUrl: './job-list-filter-summary.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FilterSummaryComponent {
+export class JobListFilterSummaryComponent {
   #jobStates = configuration('jobs', 'jobStates');
 
-  filter = input.required<Pick<JobFilter, 'jobsId' | 'name' | 'customer' | 'productsName' | 'jobStatus'>>();
+  filter = input.required<JobFilter>();
+
+  protected filterIsSet = computed(() => Object.keys(this.filter()).length > 0);
 
   protected jobsId = computed(() => this.filter().jobsId?.join(', '));
 

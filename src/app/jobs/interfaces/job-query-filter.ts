@@ -1,17 +1,34 @@
 import { ParamMap } from '@angular/router';
-import { JobCategories } from './job-categories';
+import { JOB_CATEGORIES, JobCategories } from './job-categories';
+import { z } from 'zod';
 
-export interface JobFilter {
-  fromDate?: Date;
-  toDate?: Date;
-  customer?: string;
-  name?: string;
-  invoice?: 0 | 1;
-  jobStatus?: number[];
-  jobsId?: number[];
-  productsName?: string;
-  category?: JobCategories;
-}
+export const JobFilterSchema = z
+  .object({
+    fromDate: z.coerce.date(),
+    toDate: z.coerce.date(),
+    customer: z.string(),
+    name: z.string(),
+    invoice: z.union([z.literal(0), z.literal(1)]),
+    jobStatus: z.array(z.number()),
+    jobsId: z.array(z.number()),
+    productsName: z.string(),
+    category: JOB_CATEGORIES,
+  })
+  .partial();
+
+export type JobFilter = z.infer<typeof JobFilterSchema>;
+
+// export interface JobFilter {
+//   fromDate?: Date;
+//   toDate?: Date;
+//   customer?: string;
+//   name?: string;
+//   invoice?: 0 | 1;
+//   jobStatus?: number[];
+//   jobsId?: number[];
+//   productsName?: string;
+//   category?: JobCategories;
+// }
 
 export function queryParamsToJobFilter(queryParams: ParamMap): JobFilter {
   const filter: JobFilter = {

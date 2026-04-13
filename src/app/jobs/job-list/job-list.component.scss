@@ -1,0 +1,24 @@
+:host {
+    height: 100%;
+
+    mat-drawer {
+        width: 320px;
+        padding: 16px;
+    }
+
+    &.large mat-drawer {
+        width: 400px;
+    }
+
+}
+
+mat-drawer-container {
+    height: 100%;
+}
+
+mat-drawer-content {
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}

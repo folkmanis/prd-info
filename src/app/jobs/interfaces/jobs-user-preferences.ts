@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { JobFilterSchema } from './job-query-filter';
 
 export const SavedJobsProductionQuery = z.object({
   sort: z.string().default('name,1'),
@@ -30,6 +31,7 @@ export const JobsUserPreferences = z.object({
   jobsProductionQuery: SavedJobsProductionQuery,
   gmail: GmailUserSettings,
   quickCreateJob: QuickCreateJobSchema,
+  jobListFilter: JobFilterSchema.default({}),
 });
 export type JobsUserPreferences = z.infer<typeof JobsUserPreferences>;
 
@@ -50,5 +52,6 @@ export function defaultJobsUserPreferences(): JobsUserPreferences {
       customerName: '',
       productName: '',
     },
+    jobListFilter: {},
   };
 }
