@@ -43,42 +43,51 @@
       </mat-header-cell>
       <mat-cell *matCellDef="let job; index as idx">
         <div class="job-name" [class.job-name-large]="large">
-          <span class="name-text">
-            {{ job?.name }}
-          </span>
-          @if (large) {
-            <span class="buttons">
-              <button
-                matIconButton
-                [appCopyJobIdAndName]="job"
-                (click)="$event.stopPropagation()"
-                matTooltip="Kopēt nosaukumu"
-              >
-                <mat-icon>filter_none</mat-icon>
-              </button>
-              @switch (job?.jobStatus?.generalStatus) {
-                @case (20) {
-                  <button
-                    matIconButton
-                    matToolTip="Atzīmēt pabeigtu"
-                    (click)="$event.stopPropagation(); onSetJobStatus(idx, job.jobId, 30)"
-                  >
-                    <mat-icon>check</mat-icon>
-                  </button>
-                }
-                @case (10) {
-                  <button
-                    matIconButton
-                    matToolTip="Darbs aktīvs"
-                    (click)="$event.stopPropagation(); onSetJobStatus(idx, job.jobId, 20)"
-                  >
-                    <mat-icon>label_important</mat-icon>
-                  </button>
-                }
-              }
+          @if (job) {
+            <span class="name-text">
+              {{ job.name }}
             </span>
-          } @else {
-            @if (job) {
+
+            @if (large) {
+              <span class="buttons">
+                <button
+                  matIconButton
+                  [appCopyFolderPath]="job.jobId"
+                  (click)="$event.stopPropagation()"
+                  matTooltip="Kopēt atrašanās vietu diskā"
+                >
+                  <mat-icon>folder_copy</mat-icon>
+                </button>
+                <button
+                  matIconButton
+                  [appCopyJobIdAndName]="job"
+                  (click)="$event.stopPropagation()"
+                  matTooltip="Kopēt nosaukumu"
+                >
+                  <mat-icon>filter_none</mat-icon>
+                </button>
+                @switch (job.jobStatus.generalStatus) {
+                  @case (20) {
+                    <button
+                      matIconButton
+                      matToolTip="Atzīmēt pabeigtu"
+                      (click)="$event.stopPropagation(); onSetJobStatus(idx, job.jobId, 30)"
+                    >
+                      <mat-icon>check</mat-icon>
+                    </button>
+                  }
+                  @case (10) {
+                    <button
+                      matIconButton
+                      matToolTip="Darbs aktīvs"
+                      (click)="$event.stopPropagation(); onSetJobStatus(idx, job.jobId, 20)"
+                    >
+                      <mat-icon>label_important</mat-icon>
+                    </button>
+                  }
+                }
+              </span>
+            } @else {
               <button
                 matIconButton
                 [matMenuTriggerFor]="jobMenu"

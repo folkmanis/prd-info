@@ -13,6 +13,7 @@ import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.dir
 import { ViewSizeDirective } from 'src/app/library/view-size';
 import { JobsData } from '../../../services/job-list.service';
 import { PartialJob } from '../../services/repro-job.service';
+import { CopyFolderPathDirective } from './copy-folder-path.directive';
 
 @Component({
   selector: 'app-job-table',
@@ -28,6 +29,7 @@ import { PartialJob } from '../../services/repro-job.service';
     CdkFixedSizeVirtualScroll,
     ScrollTopDirective,
     MatTableModule,
+    CopyFolderPathDirective,
   ],
   templateUrl: './job-table.component.html',
   styleUrl: './job-table.component.scss',

@@ -1,4 +1,3 @@
-import { Clipboard } from '@angular/cdk/clipboard';
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, linkedSignal } from '@angular/core';
 import { MatButton, MatIconButton } from '@angular/material/button';
@@ -6,7 +5,7 @@ import { MAT_CARD_CONFIG, MatCardModule } from '@angular/material/card';
 import { MatDivider } from '@angular/material/divider';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { assertArray, CopyJobIdAndNameDirective, notNullOrThrow } from 'src/app/library';
+import { assertArray, ClipboardService, CopyJobIdAndNameDirective, notNullOrThrow } from 'src/app/library';
 import { ConfirmationDirective } from 'src/app/library/confirmation-dialog';
 import { KeyPressDirective } from 'src/app/library/directives';
 import {
@@ -58,7 +57,7 @@ import { JobProductsComponent } from './job-products/job-products.component';
 })
 export class JobViewComponent {
   #jobsConfig = configuration('jobs');
-  #clipboard = inject(Clipboard);
+  #clipboard = inject(ClipboardService);
   #jobService = inject(ReproJobService);
   #navigate = navigateRelative();
   #update = updateCatching();
@@ -116,12 +115,11 @@ export class JobViewComponent {
   }
 
   async onCopyPath() {
-    this.#update(async (message) => {
+    this.#update(async () => {
       const path = this.job().files?.path;
       assertArray(path);
       const fullPath = `${this.#jobsConfig().jobRootPath}\\${path.join('\\')}`;
       this.#clipboard.copy(fullPath);
-      message(`${fullPath} nokopēts`);
     });
   }
 

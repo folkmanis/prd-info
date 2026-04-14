@@ -102,6 +102,11 @@ export class ReproJobService {
     }
   }
 
+  async getFolderLocation(jobId: number): Promise<string[] | null> {
+    const job = await this.#jobService.getJob(jobId);
+    return job.files?.path ?? null;
+  }
+
   createFolder(jobId: number) {
     return this.#jobService.createFolder(jobId);
   }
