@@ -40,7 +40,7 @@ export class JobListService {
     return filter$.pipe(
       map((filter) => jobFilterToRequestQuery(filter)),
       switchMap((query) =>
-        this.#api.getJobsCount(query).pipe(
+        this.#api.getJobsCount({ ...query, unwindProducts: 0 }).pipe(
           map(({ count }) => new PagedCache<JobPartial>(count, this.#fetchRecordsFn(query))),
           map((cache) => new JobsData(cache)),
         ),
@@ -52,7 +52,7 @@ export class JobListService {
     return filter$.pipe(
       map((filter) => jobFilterToRequestQuery(filter)),
       switchMap((query) =>
-        this.#api.getJobsCount(query).pipe(
+        this.#api.getJobsCount({ ...query, unwindProducts: 1 }).pipe(
           map(({ count }) => new PagedCache<JobUnwindedPartial>(count, this.#fetchUnwindedRecordsFn(query))),
           map((cache) => new JobsData(cache)),
         ),
