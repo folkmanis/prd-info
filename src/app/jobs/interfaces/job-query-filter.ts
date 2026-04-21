@@ -1,6 +1,7 @@
 import { ParamMap } from '@angular/router';
 import { JOB_CATEGORIES, JobCategories } from './job-categories';
 import { z } from 'zod';
+import { pickNotNull } from 'src/app/library';
 
 export const JobFilterSchema = z
   .object({
@@ -17,18 +18,6 @@ export const JobFilterSchema = z
   .partial();
 
 export type JobFilter = z.infer<typeof JobFilterSchema>;
-
-// export interface JobFilter {
-//   fromDate?: Date;
-//   toDate?: Date;
-//   customer?: string;
-//   name?: string;
-//   invoice?: 0 | 1;
-//   jobStatus?: number[];
-//   jobsId?: number[];
-//   productsName?: string;
-//   category?: JobCategories;
-// }
 
 export function queryParamsToJobFilter(queryParams: ParamMap): JobFilter {
   const filter: JobFilter = {
@@ -71,13 +60,15 @@ export function queryParamsToJobFilter(queryParams: ParamMap): JobFilter {
 }
 
 export function jobFilterToRequestQuery<T extends JobFilter | undefined>(filter: T): Record<string, any> | undefined {
-  return filter
-    ? {
-        ...filter,
-        jobsId: filter.jobsId ? filter.jobsId.join(',') : undefined,
-        jobStatus: filter.jobStatus ? filter.jobStatus.join(',') : undefined,
-        fromDate: filter.fromDate ? new Date(filter.fromDate).toISOString() : undefined,
-        toDate: filter.toDate ? new Date(filter.toDate).toISOString() : undefined,
-      }
-    : undefined;
+  if (!filter) {
+    return undefined;
+  }
+  const query = {
+    ...filter,
+    jobsId: filter.jobsId ? filter.jobsId.join(',') : undefined,
+    jobStatus: filter.jobStatus ? filter.jobStatus.join(',') : undefined,
+    fromDate: filter.fromDate ? new Date(filter.fromDate).toISOString() : undefined,
+    toDate: filter.toDate ? new Date(filter.toDate).toISOString() : undefined,
+  };
+  return pickNotNull(query);
 }

@@ -1,20 +1,16 @@
 import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http';
 import { computed, inject, Injectable, Signal } from '@angular/core';
-import { isEqual, pickBy } from 'lodash-es';
+import { isEqual } from 'lodash-es';
 import { firstValueFrom, map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { ValidatorService } from 'src/app/library';
 import { HttpOptions, httpResponseRequest } from 'src/app/library/http';
+import { z } from 'zod';
 import { Job, JobPartial, JobsProduction, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
 import { JobsUserPreferences } from '../interfaces/jobs-user-preferences';
-import { z } from 'zod';
 
 export interface JobUpdateParams {
   createFolder?: boolean;
-}
-
-export function pickNotNull<T extends object>(obj: T): Partial<T> {
-  return pickBy(obj, (val) => val !== undefined && val !== null);
 }
 
 @Injectable({

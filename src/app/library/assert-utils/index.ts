@@ -4,3 +4,4 @@ export * from './assert-string';
 export * from './assert-not-null';
 export * from './assert-array';
 export * from './assert-object';
+export * from './pick-not-null';

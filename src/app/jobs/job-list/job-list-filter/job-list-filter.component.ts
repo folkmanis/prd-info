@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { debounce, form, FormField, pattern } from '@angular/forms/signals';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatIconButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
@@ -18,12 +18,12 @@ import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
 import { isEqual } from 'lodash-es';
 import { CustomerPartial, ProductPartial } from 'src/app/interfaces';
+import { pickNotNull } from 'src/app/library/assert-utils';
 import { AutocompleteFilterDirective } from 'src/app/library/autocomplete';
 import { DateRangePickerComponent } from 'src/app/library/date-range-picker';
 import { ViewSizeDirective } from 'src/app/library/view-size';
 import { configuration } from 'src/app/services/config.provider';
-import { JobFilter } from '../../interfaces';
-import { pickNotNull } from '../../services/jobs-api.service';
+import { JobFilter, jobFilterToRequestQuery } from '../../interfaces';
 
 export interface JobFilterModel {
   customer: string;
@@ -65,7 +65,6 @@ const DEFAULT_FILTER_MODEL: JobFilterModel = {
     AutocompleteFilterDirective,
     MatAutocompleteModule,
     DateRangePickerComponent,
-    MatButton,
   ],
   hostDirectives: [ViewSizeDirective],
 })
@@ -84,6 +83,8 @@ export class JobListFilterComponent {
     pattern(s.jobsId, /^[0-9]+$/);
     debounce(s, 300);
   });
+
+  reportUrl = computed(() => this.#toReportURL(this.filter()));
 
   filterChange = output<JobFilter>();
 
@@ -132,5 +133,13 @@ export class JobListFilterComponent {
       fromDate: model.interval.start || undefined,
       toDate: model.interval.end || undefined,
     });
+  }
+
+  #toReportURL(query: JobFilter): URL {
+    const url = new URL('/data/jobs/report', window.location.origin);
+    const params = new URLSearchParams(jobFilterToRequestQuery(query));
+
+    url.search = params.toString();
+    return url;
   }
 }

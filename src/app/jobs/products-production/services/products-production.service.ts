@@ -1,9 +1,10 @@
 import { Injectable, Signal, computed, inject } from '@angular/core';
-import { JobsUserPreferences } from '../../interfaces/jobs-user-preferences';
-import { JobsApiService, pickNotNull } from '../../services/jobs-api.service';
-import { JobsUserPreferencesService } from '../../services/jobs-user-preferences.service';
 import { formatISO } from 'date-fns';
 import { notNullOrThrow } from 'src/app/library';
+import { pickNotNull } from 'src/app/library/assert-utils';
+import { JobsUserPreferences } from '../../interfaces/jobs-user-preferences';
+import { JobsApiService } from '../../services/jobs-api.service';
+import { JobsUserPreferencesService } from '../../services/jobs-user-preferences.service';
 
 @Injectable({
   providedIn: 'root',

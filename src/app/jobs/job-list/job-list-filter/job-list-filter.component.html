@@ -90,5 +90,11 @@
 
 <div>
   <!-- Atiestatīt formu -->
-  <button matButton="outlined" class="tertiary" (click)="onReset()">Atiestatīt</button>
+  <a matIconButton [href]="reportUrl()" target="_blank">
+    <mat-icon> picture_as_pdf </mat-icon>
+  </a>
+
+  <button matIconButton class="tertiary" (click)="onReset()">
+    <mat-icon> filter_alt_off </mat-icon>
+  </button>
 </div>
