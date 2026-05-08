@@ -2,6 +2,7 @@ import { ParamMap } from '@angular/router';
 import { JOB_CATEGORIES, JobCategories } from './job-categories';
 import { z } from 'zod';
 import { pickNotNull } from 'src/app/library';
+import { formatISO } from 'date-fns';
 
 export const JobFilterSchema = z
   .object({
@@ -67,8 +68,8 @@ export function jobFilterToRequestQuery<T extends JobFilter | undefined>(filter:
     ...filter,
     jobsId: filter.jobsId ? filter.jobsId.join(',') : undefined,
     jobStatus: filter.jobStatus ? filter.jobStatus.join(',') : undefined,
-    fromDate: filter.fromDate ? new Date(filter.fromDate).toISOString() : undefined,
-    toDate: filter.toDate ? new Date(filter.toDate).toISOString() : undefined,
+    fromDate: filter.fromDate ? formatISO(filter.fromDate, { representation: 'date' }) : undefined,
+    toDate: filter.toDate ? formatISO(filter.toDate, { representation: 'date' }) : undefined,
   };
   return pickNotNull(query);
 }
