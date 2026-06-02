@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, booleanAttribute, computed, input }
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
-import { Invoice } from 'src/app/interfaces';
+import { InvoiceForReport } from 'src/app/interfaces';
 
 const COLUMNS = ['_id', 'count', 'price', 'total'];
 
@@ -15,7 +15,7 @@ const COLUMNS = ['_id', 'count', 'price', 'total'];
   imports: [MatTableModule, CurrencyPipe, MatButtonModule, RouterLink],
 })
 export class InvoiceProductsComponent {
-  invoice = input.required<Invoice>();
+  invoice = input.required<InvoiceForReport>();
 
   pyatraqEnabled = input(false, { transform: booleanAttribute });
 

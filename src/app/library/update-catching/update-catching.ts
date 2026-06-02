@@ -25,7 +25,7 @@ export function updateCatching(
       await updateFn(messageFn);
     } catch (error) {
       if (errorFn) {
-        errorFn(errorMessageFn, error);
+        errorFn(errorMessageFn, error as Error);
       } else {
         errorMessageFn(error);
       }

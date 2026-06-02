@@ -26,3 +26,7 @@ mat-drawer-content {
 .mat-mdc-card>* {
     margin-right: 16px;
 }
+
+mat-card-actions>:last-child {
+    margin-left: auto;
+}

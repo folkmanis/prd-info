@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { Invoice, InvoiceProduct } from 'src/app/interfaces';
+import { InvoiceForReport, InvoiceProduct } from 'src/app/interfaces';
 import { configuration } from 'src/app/services/config.provider';
 
 @Component({
@@ -12,7 +12,7 @@ import { configuration } from 'src/app/services/config.provider';
   imports: [MatCardModule, MatButtonModule],
 })
 export class InvoicePaytraqComponent {
-  invoice = input.required<Invoice>();
+  invoice = input.required<InvoiceForReport>();
   busy = input(false);
 
   #connectionParams = configuration('paytraq', 'connectionParams');

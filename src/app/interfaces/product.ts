@@ -20,7 +20,7 @@ export type ProductPrice = z.infer<typeof ProductPrice>;
 
 export const ProductSchema = z.object({
   _id: z.string(),
-  inactive: z.any().transform(Boolean),
+  inactive: z.coerce.boolean(),
   category: z.string(),
   name: z.string(),
   units: z.string().default(''),

@@ -26,18 +26,25 @@
         <button
           matButton="elevated"
           (click)="onCreateInvoice()"
-          [disabled]="selectedJobs().length === 0 || !customer()"
+          [disabled]="selectedJobs().length === 0 || !customer() || busy()"
         >
           Aprēķins
         </button>
-        <button matButton (click)="onPrintList()" [disabled]="selectedJobs().length === 0">Izdrukāt</button>
+        <mat-checkbox
+          [checked]="detailedJobs()"
+          (change)="detailedJobs.set($event.checked)"
+          matTooltip="Negrupēt darbus pa izstrādājumiem. Atsevišķs ieraksts katram darbam."
+        >
+          Pa darbiem
+        </mat-checkbox>
+        <button matButton (click)="onPrintList()" [disabled]="selectedJobs().length === 0 || busy()">Izdruka</button>
       </mat-card-actions>
     </mat-card>
 
-    @if (jobs.value(); as jobs) {
+    @if (jobs.hasValue()) {
       <!-- Darbu atlase -->
       <app-job-selection-table
-        [jobs]="jobs"
+        [jobs]="jobs.value()"
         [large]="viewSize.isLarge()"
         [selected]="selectedJobs()"
         (selectedChange)="selectedJobs.set($event)"

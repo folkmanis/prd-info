@@ -101,12 +101,10 @@ export class JobsApiService {
     return this.#validator.validateAsync(Job, data$);
   }
 
-  jobsWithoutInvoicesTotals(): Promise<JobsWithoutInvoicesTotals[]> {
-    const data$ = this.#http.get<Record<string, any>[]>(
-      this.#path + 'jobs-without-invoices-totals',
-      new HttpOptions().cacheable(),
-    );
-    return this.#validator.validateArrayAsync(JobsWithoutInvoicesTotals, data$);
+  jobsWithoutInvoicesTotals(): Observable<JobsWithoutInvoicesTotals[]> {
+    return this.#http
+      .get<Record<string, any>[]>(this.#path + 'jobs-without-invoices-totals', new HttpOptions().cacheable())
+      .pipe(map(this.#validator.arrayValidatorFn(JobsWithoutInvoicesTotals)));
   }
 
   getJobsProductionSummaryResource(query: Signal<Record<string, any> | undefined>) {

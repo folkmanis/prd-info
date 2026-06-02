@@ -15,7 +15,8 @@ export const resolveProduct: ResolveFn<Product> = async (route) => {
     if (regex.test(idOrName)) {
       return await productsService.getProduct(idOrName);
     } else {
-      return await productsService.getProductByName(idOrName);
+      const { _id: id } = await productsService.getProductByName(idOrName);
+      return new RedirectCommand(router.parseUrl(`/jobs-admin/products/${id}`));
     }
   } catch (error) {
     return new RedirectCommand(router.parseUrl('/jobs-admin/products'));

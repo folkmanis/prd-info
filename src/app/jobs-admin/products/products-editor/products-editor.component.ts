@@ -9,12 +9,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { isEqual, pickBy } from 'lodash-es';
 import { Observable } from 'rxjs';
-import { NewProduct, Product, ProductPrice, ProductProductionStage } from 'src/app/interfaces';
+import { NewProduct, Product, ProductPrice, ProductProductionStage, ProductUpdate } from 'src/app/interfaces';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { navigateRelative } from 'src/app/library/navigation';
+import { computedChanges } from 'src/app/library/signals';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { CustomersService, ProductsService } from 'src/app/services';
 import { configuration } from 'src/app/services/config.provider';
@@ -89,11 +89,7 @@ export class ProductsEditorComponent implements CanComponentDeactivate {
     initialValue: this.form.value,
   });
 
-  changes = computed(() => {
-    const initialValue = this.initialValue();
-    const diff = pickBy(this.valueChanges(), (value, key) => !isEqual(value, initialValue[key]));
-    return Object.keys(diff).length ? diff : null;
-  });
+  changes = computed(() => computedChanges(this.valueChanges(), this.initialValue()));
 
   constructor() {
     effect(() => {
@@ -106,7 +102,7 @@ export class ProductsEditorComponent implements CanComponentDeactivate {
     const changes = this.changes();
     try {
       if (id && changes) {
-        const updated = await this.#productService.updateProduct(id, changes);
+        const updated = await this.#productService.updateProduct(id, changes as ProductUpdate);
         this.initialValue.set(updated);
         this.form.markAsPristine();
         this.#listComponent.onReload();
@@ -117,7 +113,7 @@ export class ProductsEditorComponent implements CanComponentDeactivate {
         this.#navigate(['..', inserted._id]);
       }
     } catch (error) {
-      this.#dialog.confirmDataError(error.message);
+      this.#dialog.confirmDataError((error as Error).message);
     }
   }
 

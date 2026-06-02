@@ -1,27 +1,19 @@
 import { AsyncPipe } from '@angular/common';
-import {
-  afterNextRender,
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  Injector,
-  input,
-  signal,
-  viewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, linkedSignal, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatCheckbox } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTooltip } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
+import { pick } from 'lodash-es';
 import { InvoiceForReport, ProductTotals } from 'src/app/interfaces';
 import { JobUnwindedPartial } from 'src/app/jobs';
 import { navigateRelative } from 'src/app/library/navigation';
 import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
 import { DrawerButtonDirective } from 'src/app/library/side-button/drawer-button.directive';
+import { updateCatching } from 'src/app/library/update-catching';
 import { ViewSizeDirective } from 'src/app/library/view-size';
 import { InvoicesTotals } from '../interfaces';
 import { JobSelectionTableComponent } from '../job-selection-table/job-selection-table.component';
@@ -48,71 +40,70 @@ import { SelectionTotalsComponent } from './selection-totals/selection-totals.co
     ScrollTopDirective,
     MatButtonModule,
     AsyncPipe,
+    MatCheckbox,
+    MatTooltip,
   ],
 })
 export class NewInvoiceComponent {
-  private invoicesService = inject(InvoicesService);
-  private navigate = navigateRelative();
-  private router = inject(Router);
-  private snack = inject(MatSnackBar);
-  private injector = inject(Injector);
+  #invoicesService = inject(InvoicesService);
+  #navigate = navigateRelative();
+  #router = inject(Router);
 
-  private scroll = viewChild(ScrollTopDirective);
+  protected busy = signal(false);
+  #update = updateCatching(this.busy);
 
-  noInvoices$ = this.invoicesService.getJobsWithoutInvoicesTotals();
+  protected detailedJobs = signal(false);
+
+  noInvoices$ = this.#invoicesService.getJobsWithoutInvoicesTotals();
 
   customer = input('');
 
-  filter = computed(() => ({
+  #jobsFilter = computed(() => ({
     customer: this.customer(),
     invoice: 0 as 0,
     limit: 1000,
   }));
 
-  jobs = this.invoicesService.jobsUnwindedResource(this.filter);
+  protected jobs = this.#invoicesService.jobsUnwindedResource(this.#jobsFilter);
 
-  selectedJobs = signal<JobUnwindedPartial[]>([]);
+  protected selectedJobs = linkedSignal(() => this.jobs.value() ?? []);
 
-  selection = computed(() => this.selectedJobs().map((job) => job.jobId));
+  #selectedIds = computed(() => this.selectedJobs().map((job) => job.jobId));
 
-  invoicesTotals = computed(() => this.jobTotalsFromJobs(this.selectedJobs()));
-  grandTotal = computed(() => this.invoicesTotals().grandTotal);
+  protected invoicesTotals = computed(() => this.jobTotalsFromJobs(this.selectedJobs()));
+  protected grandTotal = computed(() => this.invoicesTotals().grandTotal);
 
-  constructor() {
-    effect(() => {
-      this.selectedJobs.set(this.jobs.value() ?? []);
-      this.scroll()?.scrollToTop();
+  async onCreateInvoice() {
+    this.#update(async (message) => {
+      const { invoiceId } = await this.#invoicesService.createInvoice({
+        jobIds: this.#selectedIds(),
+        customerId: this.customer(),
+        detailedJobs: this.detailedJobs(),
+      });
+      message(`Izveidots aprēķins ${invoiceId}`);
+      this.#router.navigate(['calculations', 'plate-invoice', invoiceId]);
     });
   }
 
-  async onCreateInvoice() {
-    try {
-      const { invoiceId } = await this.invoicesService.createInvoice({
-        jobIds: this.selection(),
-        customerId: this.customer(),
-      });
-      this.router.navigate(['calculations', 'plate-invoice', invoiceId]);
-    } catch (error) {
-      this.snack.open(`Error ${(error as Error).message}`, 'OK');
-    }
-  }
-
   async onPrintList() {
-    const { totals, grandTotal } = this.invoicesTotals();
-    const invoice: InvoiceForReport = {
-      customer: this.customer() ?? '',
-      createdDate: new Date(),
-      jobs: this.selectedJobs(),
-      products: totals.map((tot) => ({ ...tot, price: tot.total / tot.count, jobsCount: 0 })),
-      total: grandTotal,
-      invoiceId: '',
-    };
-    const data = await this.invoicesService.getReport(invoice);
-    afterNextRender(() => window.open(URL.createObjectURL(data), 'new'), { injector: this.injector });
+    this.#update(async () => {
+      const { totals, grandTotal } = this.invoicesTotals();
+      const invoice: InvoiceForReport = {
+        customer: this.customer() ?? '',
+        createdDate: new Date(),
+        jobs: this.selectedJobs().map((p) => pick(p, ['products', 'receivedDate', 'name', 'jobId'])),
+        products: totals.map((tot) => ({ ...tot, price: tot.total / tot.count, jobsCount: 0 })),
+        total: grandTotal,
+        invoiceId: '',
+      };
+      const data = await this.#invoicesService.getReport(invoice);
+      window.open(URL.createObjectURL(data), 'new');
+    });
   }
 
   onSelectCustomer(customer: string) {
-    this.navigate(['.'], { queryParams: { customer } });
+    const queryParams = customer ? { customer } : undefined;
+    this.#navigate(['.'], { queryParams });
   }
 
   private jobTotalsFromJobs(jobs: JobUnwindedPartial[]): InvoicesTotals {

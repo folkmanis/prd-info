@@ -3,9 +3,18 @@ import { inject, Injectable, Signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
 import { firstValueFrom } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
-import { Invoice, InvoiceForReport, InvoiceSchema, InvoiceTableSchema } from 'src/app/interfaces';
+import {
+  Invoice,
+  InvoiceCreate,
+  InvoiceCreateSchema,
+  InvoiceForReport,
+  InvoiceForReportSchema,
+  InvoiceTableSchema,
+  InvoiceUpdateSchema,
+} from 'src/app/interfaces';
 import { ValidatorService } from 'src/app/library';
 import { HttpOptions, httpResponseRequest } from 'src/app/library/http';
+import { z } from 'zod';
 
 @Injectable({
   providedIn: 'root',
@@ -15,9 +24,9 @@ export class InvoicesApiService {
   #http = inject(HttpClient);
   #validator = inject(ValidatorService);
 
-  getOne(id: string): Promise<Invoice> {
+  getOne(id: string): Promise<InvoiceForReport> {
     const data$ = this.#http.get(this.#path + id, new HttpOptions().cacheable());
-    return this.#validator.validateAsync(InvoiceSchema, data$);
+    return this.#validator.validateAsync(InvoiceForReportSchema, data$);
   }
 
   invoicesResource(params: Signal<Record<string, any>>) {
@@ -27,27 +36,27 @@ export class InvoicesApiService {
     });
   }
 
-  updateOne(id: string, data: Partial<Invoice>): Promise<Invoice> {
-    const data$ = this.#http.patch(this.#path + id, data, new HttpOptions());
-    return this.#validator.validateAsync(InvoiceSchema, data$);
+  createInvoice(params: InvoiceCreate): Promise<InvoiceForReport> {
+    const body = InvoiceCreateSchema.encode(params);
+    const data$ = this.#http.put(this.#path, body, new HttpOptions());
+    return this.#validator.validateAsync(InvoiceForReportSchema, data$);
   }
 
-  async deleteOne(id: string): Promise<number> {
+  updateOne(id: string, data: Partial<Invoice>): Promise<InvoiceForReport> {
+    const body = InvoiceUpdateSchema.encode(data);
+    const data$ = this.#http.patch(this.#path + id, body, new HttpOptions());
+    return this.#validator.validateAsync(InvoiceForReportSchema, data$);
+  }
+
+  async deleteOne(id: string): Promise<{ deletedCount: number }> {
     const data$ = this.#http.delete<{ deletedCount: number }>(this.#path + id, new HttpOptions());
-    const { deletedCount } = await firstValueFrom(data$);
-    if (!deletedCount) {
-      throw new Error('Not deleted');
-    }
-    return deletedCount;
-  }
-
-  createInvoice(params: { jobIds: number[]; customerId: string }): Promise<Invoice> {
-    const data$ = this.#http.put(this.#path, params, new HttpOptions());
-    return this.#validator.validateAsync(InvoiceSchema, data$);
+    return this.#validator.validateAsync(z.object({ deletedCount: z.number() }), data$);
   }
 
   getReport(data: InvoiceForReport): Promise<Blob> {
-    const data$ = this.#http.put(this.#path + 'report', data, { responseType: 'blob' });
+    const body = InvoiceForReportSchema.encode(data);
+
+    const data$ = this.#http.put(this.#path + 'report', body, { responseType: 'blob' });
     return firstValueFrom(data$);
   }
 }

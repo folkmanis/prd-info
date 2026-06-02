@@ -1,19 +1,14 @@
 import { Job, JobProduct } from 'src/app/jobs';
 import { z } from 'zod';
 import { Customer } from './customer';
+import { isoDateToDate } from '../library/validator';
 
 export const InvoiceJobSchema = Job.pick({
   jobId: true,
-  customer: true,
   name: true,
-  customerJobId: true,
-  receivedDate: true,
-  dueDate: true,
-  products: true,
-  invoiceId: true,
-  jobStatus: true,
 }).extend({
   products: JobProduct.optional(),
+  receivedDate: isoDateToDate,
 });
 
 export const InvoiceProductSchema = z.object({
@@ -35,35 +30,44 @@ export type PaytraqInvoice = z.infer<typeof PaytraqInvoiceSchema>;
 
 export const InvoiceSchema = z.object({
   invoiceId: z.string(),
-
   customer: z.string(),
-
-  createdDate: z.coerce.date(),
-
+  createdDate: isoDateToDate,
   jobsId: z.array(z.number()),
-
   jobs: z.array(InvoiceJobSchema).optional(),
-
   products: z.array(InvoiceProductSchema),
-
   total: z.number().nullish(),
-
   comment: z.string().nullish(),
-
   customerInfo: Customer.nullish(),
-
   paytraq: PaytraqInvoiceSchema.nullish(),
 });
 export type Invoice = z.infer<typeof InvoiceSchema>;
 
-export type InvoiceForReport = Pick<
-  Invoice,
-  'invoiceId' | 'customer' | 'createdDate' | 'jobs' | 'products' | 'total' | 'customerInfo'
->;
+export const InvoiceForReportSchema = InvoiceSchema.pick({
+  invoiceId: true,
+  customer: true,
+  createdDate: true,
+  products: true,
+  paytraq: true,
+  comment: true,
+}).extend({
+  total: z.number(),
+  customerInfo: Customer.nullish(),
+  jobs: z.array(InvoiceJobSchema).optional(),
+});
+export type InvoiceForReport = z.infer<typeof InvoiceForReportSchema>;
 
-export const INVOICE_UPDATE_FIELDS = ['comment', 'paytraq'] as const;
+export const InvoiceCreateSchema = z.object({
+  jobIds: z.array(z.number()),
+  customerId: z.string(),
+  detailedJobs: z.boolean().default(false),
+});
+export type InvoiceCreate = z.infer<typeof InvoiceCreateSchema>;
 
-export type InvoiceUpdate = Partial<Pick<Invoice, (typeof INVOICE_UPDATE_FIELDS)[number]>>;
+export const InvoiceUpdateSchema = InvoiceSchema.pick({
+  comment: true,
+  paytraq: true,
+}).partial();
+export type InvoiceUpdate = z.infer<typeof InvoiceUpdateSchema>;
 
 export const InvoiceTableSchema = InvoiceSchema.pick({
   invoiceId: true,
@@ -81,7 +85,7 @@ export interface InvoicesFilter {
   customer?: string;
 }
 
-export class ProductTotals {
+export interface ProductTotals {
   _id: string;
   count: number;
   total: number;

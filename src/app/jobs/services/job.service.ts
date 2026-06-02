@@ -3,6 +3,7 @@ import { endOfDay } from 'date-fns';
 import { FilterInput, toFilterSignal } from 'src/app/library';
 import { Job, JobFilter, jobFilterToRequestQuery, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
 import { JobsApiService, JobUpdateParams } from './jobs-api.service';
+import { Observable } from 'rxjs';
 
 export function filterInputToRequestQuery(
   filter: FilterInput<JobFilter | undefined>,
@@ -66,7 +67,7 @@ export class JobService {
     return this.#api.getAllUnwinded(filterInputToRequestQuery(filter));
   }
 
-  getJobsWithoutInvoicesTotals(): Promise<JobsWithoutInvoicesTotals[]> {
+  getJobsWithoutInvoicesTotals(): Observable<JobsWithoutInvoicesTotals[]> {
     return this.#api.jobsWithoutInvoicesTotals();
   }
 }
