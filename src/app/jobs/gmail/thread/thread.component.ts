@@ -90,7 +90,7 @@ export class ThreadComponent {
   private async createJobWithAttachments(
     attachments: { messageId: string; attachment: Attachment }[],
     messageOrThread: { from: string; plain: string },
-    afterAddedToJob: Observable<unknown>,
+    afterAddedToJob: Observable<any>,
     name?: string,
   ) {
     const fileNames = await this.gmailService.saveAttachments(attachments);
@@ -111,8 +111,8 @@ export class ThreadComponent {
     this.userFileUploadService.setSavedFile(fileNames, afterAddedToJob);
   }
 
-  private markAsRead(component: MessageComponent): Observable<unknown> {
-    return component.markAsRead ? defer(() => this.gmailService.markAsRead(component.message())) : EMPTY;
+  private markAsRead(component: MessageComponent): Observable<any> {
+    return component.markAsRead ? this.gmailService.markAsRead(component.message()) : EMPTY;
   }
 
   private async resolveCustomer(from: string): Promise<string | undefined> {

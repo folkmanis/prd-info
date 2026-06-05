@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, input, output, viewChild } from '@a
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule, MatSelectionList } from '@angular/material/list';
-import { FacetCount } from '../../interfaces';
+import { FacetCount, FacetFilter } from '../../interfaces';
 import { FacetPipe } from './facet.pipe';
 
 @Component({
@@ -12,13 +12,16 @@ import { FacetPipe } from './facet.pipe';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatButtonModule, MatIconModule, MatListModule, FacetPipe],
 })
-export class FacetCheckerComponent {
+export class FacetCheckerComponent<
+  K extends keyof FacetFilter,
+  T extends FacetFilter[K] extends Array<any> ? FacetFilter[K][number] : never,
+> {
   selection = viewChild.required(MatSelectionList);
 
   title = input('');
   data = input.required<FacetCount[]>();
 
-  filterValue = output<Array<number | string> | null>();
+  filterValue = output<FacetFilter[K]>();
 
   deselect() {
     this.selection().deselectAll();
@@ -31,7 +34,7 @@ export class FacetCheckerComponent {
 
   onSelectionChange(): void {
     const { selected } = this.selection().selectedOptions; // event.source.selectedOptions.selected;
-    const filter = selected.length ? selected.map((element) => element.value as number | string) : null; // Ja nekas nav atzīmēts, tad vispār nav
+    const filter = selected.length ? selected.map((element) => element.value as T) : undefined; // Ja nekas nav atzīmēts, tad vispār nav
     this.filterValue.emit(filter);
   }
 }

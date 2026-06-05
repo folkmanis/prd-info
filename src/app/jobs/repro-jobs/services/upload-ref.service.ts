@@ -1,12 +1,33 @@
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { last } from 'lodash-es';
-import { concatMap, EMPTY, filter, map, merge, mergeMap, Observable, of, OperatorFunction, partition, pipe, scan, share, switchMap, throttleTime } from 'rxjs';
+import {
+  concatMap,
+  EMPTY,
+  filter,
+  map,
+  merge,
+  mergeMap,
+  Observable,
+  of,
+  OperatorFunction,
+  partition,
+  pipe,
+  scan,
+  share,
+  switchMap,
+  throttleTime,
+} from 'rxjs';
 import { JobFilesService } from 'src/app/filesystem';
 import { notNullOrDefault, stringOrThrow } from 'src/app/library';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { Job } from '../../interfaces';
-import { FileUploadEventType, FileUploadMessage, UploadMessageBase, UploadWaitingMessage } from '../../interfaces/file-upload-message';
+import {
+  FileUploadEventType,
+  FileUploadMessage,
+  UploadMessageBase,
+  UploadWaitingMessage,
+} from '../../interfaces/file-upload-message';
 import { UploadRef } from './upload-ref';
 
 const SIMULTANEOUS_UPLOADS = 2;
@@ -21,7 +42,8 @@ export class UploadRefService {
   private sanitize = inject(SanitizeService);
   private jobFilesService = inject(JobFilesService);
 
-  private isImportant = ({ type }: FileUploadMessage) => type === FileUploadEventType.UploadFinish || type === FileUploadEventType.UploadStart;
+  private isImportant = ({ type }: FileUploadMessage) =>
+    type === FileUploadEventType.UploadFinish || type === FileUploadEventType.UploadStart;
 
   private uploadRef: UploadRef | null = null;
 
@@ -69,7 +91,7 @@ export class UploadRefService {
     this.uploadRef = uploadRef;
   }
 
-  setSavedFile(fileNames: string[], afterAddedToJob: Observable<unknown>) {
+  setSavedFile(fileNames: string[], afterAddedToJob: Observable<any>) {
     const messages: FileUploadMessage[] = fileNames.map((name) => ({
       type: FileUploadEventType.UploadFinish,
       id: name,
@@ -132,7 +154,10 @@ export class UploadRefService {
     return merge(important$, nonImportant$.pipe(throttleTime(PERCENT_REPORT_INTERVAL)));
   }
 
-  private progressMessage(event: HttpEvent<{ names: string[] }>, messageBase: UploadMessageBase): FileUploadMessage | null {
+  private progressMessage(
+    event: HttpEvent<{ names: string[] }>,
+    messageBase: UploadMessageBase,
+  ): FileUploadMessage | null {
     /* New upload started */
     if (event.type === HttpEventType.Sent) {
       return {

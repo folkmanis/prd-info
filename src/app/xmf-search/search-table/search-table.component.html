@@ -1,7 +1,14 @@
-<cdk-virtual-scroll-viewport itemSize="168" class="scroll-container" templateCacheSize="0" scroll-to-top minBufferPx="1000" maxBufferPx="3000">
+<cdk-virtual-scroll-viewport
+  itemSize="168"
+  class="scroll-container"
+  templateCacheSize="0"
+  scroll-to-top
+  minBufferPx="1000"
+  maxBufferPx="3000"
+>
   <div *cdkVirtualFor="let dataItem of data(); let idx = index" class="item">
     @if (dataItem) {
-      <app-data-card [data]="dataItem" [searchString]="searchString()" />
+      <app-archive-record [data]="dataItem" [searchString]="searchString()" />
     } @else {
       <div class="empty-item">
         <mat-spinner />

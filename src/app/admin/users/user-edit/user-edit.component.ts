@@ -85,7 +85,7 @@ export class UserEditComponent implements CanComponentDeactivate {
   #username = computed(() => this.initialValue().username);
   protected isNew = computed(() => !this.#username());
 
-  protected customers = this.#usersService.getXmfCustomers();
+  protected customers$ = this.#usersService.getXmfCustomers();
   protected userModules = getAppParams('userModules');
   protected sessions = this.#usersService.getUserSessionsResource(this.#username);
   protected currentSessionId = inject(LoginService).getSessionId();

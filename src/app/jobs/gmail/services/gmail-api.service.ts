@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { ValidatorService } from 'src/app/library';
 import { HttpOptions } from 'src/app/library/http';
@@ -10,13 +11,12 @@ import {
   LabelListItem,
   LabelListItemSchema,
   LabelSchema,
-  Message,
   MessageModifyDto,
-  MessageSchema,
   Thread,
   Threads,
   ThreadSchema,
-  ThreadsFilterQuery,
+  ThreadsFilter,
+  threadsQueryToFilter,
   ThreadsSchema,
 } from '../interfaces';
 
@@ -28,19 +28,14 @@ export class GmailApiService {
   readonly #path = getAppParams('apiPath') + 'google/gmail/';
   #validator = inject(ValidatorService);
 
-  async getMessage(id: string): Promise<Message> {
-    const data$ = this.#http.get<Record<string, any>>(this.#path + 'message/' + id, new HttpOptions().cacheable());
-    const data = await this.#validator.validateAsync(MessageSchema, data$);
-    return new Message(data);
+  modifyMessage(id: string, messageModify: MessageModifyDto): Observable<string> {
+    return this.#http
+      .patch(this.#path + 'message/' + id, messageModify, new HttpOptions())
+      .pipe(map(this.#validator.validatorFn(z.string())));
   }
 
-  async modifyMessage(id: string, messageModify: MessageModifyDto): Promise<Message> {
-    const data$ = this.#http.patch<Record<string, any>>(this.#path + 'message/' + id, messageModify, new HttpOptions());
-    const data = await this.#validator.validateAsync(MessageSchema, data$);
-    return new Message(data);
-  }
-
-  getThreads(query: ThreadsFilterQuery): Promise<Threads> {
+  getThreads(filter: ThreadsFilter): Promise<Threads> {
+    const query = threadsQueryToFilter.encode(filter);
     const data$ = this.#http.get<Record<string, any>>(this.#path + 'threads', new HttpOptions(query));
     return this.#validator.validateAsync(ThreadsSchema, data$);
   }

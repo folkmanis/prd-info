@@ -2,31 +2,26 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 
 interface Chunk {
   text: string;
-  style?: Record<string, string>;
+  highlighted: boolean;
 }
 
-const DEFAULT_STYLE = {
-  'font-weight': 'bold',
-  color: 'var(--sys-tertiary)',
-};
 @Component({
   selector: 'app-tagged-string',
   templateUrl: 'tagged-string.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
+  styleUrls: ['tagged-string.component.scss'],
 })
 export class TaggedStringComponent {
   text = input.required<string>();
 
   styledString = input('');
 
-  highlightedStyle = input<Record<string, string>>(DEFAULT_STYLE);
+  protected chunks = computed(() => this.#createChunks(this.text(), this.styledString()));
 
-  chunks = computed(() => this.createChunks(this.text(), this.styledString(), this.highlightedStyle()));
-
-  private createChunks(text: string, styledString: string, style: Record<string, string>): Chunk[] {
+  #createChunks(text: string, styledString: string): Chunk[] {
     if (!styledString) {
-      return [{ text, style: undefined }];
+      return [{ text, highlighted: false }];
     }
 
     const chunks = [] as Chunk[];
@@ -36,18 +31,18 @@ export class TaggedStringComponent {
       const idx = remainder.toUpperCase().indexOf(styledString.toUpperCase());
 
       if (idx === -1) {
-        chunks.push({ text: remainder, style: undefined });
+        chunks.push({ text: remainder, highlighted: false });
         remainder = '';
       }
       if (idx > 0) {
-        chunks.push({ text: remainder.slice(0, idx), style: undefined });
+        chunks.push({ text: remainder.slice(0, idx), highlighted: false });
         remainder = remainder.slice(idx);
       }
       if (idx === 0) {
         const end = styledString.length + idx;
         chunks.push({
           text: remainder.slice(idx, end),
-          style,
+          highlighted: true,
         });
         remainder = remainder.slice(end);
       }

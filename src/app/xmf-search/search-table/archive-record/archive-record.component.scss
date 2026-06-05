@@ -1,0 +1,34 @@
+:host {
+  display: block;
+  padding: 8px;
+  padding-bottom: 12px;
+  background-color: var(--mat-sys-surface-variant);
+  border-radius: 12px;
+}
+
+.job-id {
+  font: var(--sys-title-large);
+
+  &.full-match {
+    font-weight: bold;
+  }
+}
+
+.archive-item {
+  margin-block-start: 8px;
+  position: relative;
+  border-radius: 12px;
+  padding: 8px;
+  color: var(--mat-sys-primary);
+  background-color: var(--mat-sys-primary-container);
+
+  .file-location {
+    overflow-wrap: anywhere;
+    cursor: copy;
+  }
+
+  .archive-info {
+    display: flex;
+    column-gap: 16px;
+  }
+}

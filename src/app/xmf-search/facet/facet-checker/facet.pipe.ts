@@ -5,9 +5,22 @@ import { Pipe, PipeTransform } from '@angular/core';
   standalone: true,
 })
 export class FacetPipe implements PipeTransform {
-  names = ['Janvāris', 'Februāris', 'Marts', 'Aprīlis', 'Maijs', 'Jūnijs', 'Jūlijs', 'Augusts', 'Septembris', 'Oktobris', 'Novembris', 'Decembris'];
+  names = [
+    'Janvāris',
+    'Februāris',
+    'Marts',
+    'Aprīlis',
+    'Maijs',
+    'Jūnijs',
+    'Jūlijs',
+    'Augusts',
+    'Septembris',
+    'Oktobris',
+    'Novembris',
+    'Decembris',
+  ];
 
-  transform(value: number | string): any {
+  transform(value: number | string | null): any {
     if (!value) {
       return '--';
     }

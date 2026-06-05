@@ -1,10 +1,10 @@
 import { inject, Injectable, Signal } from '@angular/core';
 import { SchemaPath } from '@angular/forms/signals';
+import { map, Observable } from 'rxjs';
 import { User, UserUpdate } from 'src/app/interfaces';
 import { FilterInput, toFilterSignal } from 'src/app/library';
 import { UsersApiService } from 'src/app/services/prd-api/users-api.service';
-import { XmfCustomer } from 'src/app/xmf-search/interfaces';
-import { XmfArchiveApiService } from 'src/app/xmf-search/services/xmf-archive-api.service';
+import { XmfSearchService } from 'src/app/xmf-search/services/xmf-search.service';
 
 export type UsersFilter = {
   name?: string;
@@ -15,15 +15,16 @@ export type UsersFilter = {
 })
 export class UsersService {
   private api = inject(UsersApiService);
-  private xmfApi = inject(XmfArchiveApiService);
+  private xmfService = inject(XmfSearchService);
 
   getUsersResource(filterSignal?: FilterInput<UsersFilter>) {
     return this.api.usersResource(toFilterSignal(filterSignal));
   }
 
-  async getXmfCustomers(): Promise<XmfCustomer[]> {
-    const customers = await this.xmfApi.getXmfCustomers();
-    return customers.map((cust) => ({ name: cust || 'Nenoteikts', value: cust }));
+  getXmfCustomers(): Observable<{ name: string; value: string }[]> {
+    return this.xmfService
+      .getXmfCustomers()
+      .pipe(map((customers) => customers.map((cust) => ({ name: cust || 'Nenoteikts', value: cust }))));
   }
 
   getUser(username: string): Promise<User> {

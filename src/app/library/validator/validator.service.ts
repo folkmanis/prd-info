@@ -7,44 +7,33 @@ import { ValidationError } from './validation-error.class';
   providedIn: 'root',
 })
 export class ValidatorService {
-  validate<T, V extends Record<string, any>>(schema: z.ZodObject<V>, data: T): z.infer<typeof schema> {
+  validate<V>(schema: z.ZodType<V>, data: unknown): z.infer<typeof schema> {
     return this.#parse(schema, data);
   }
 
-  validateArray<T, V extends Record<string, any>>(schema: z.ZodObject<V>, data: T[]): z.infer<typeof schema>[] {
+  validateArray<V>(schema: z.ZodType<V>, data: unknown): z.infer<typeof schema>[] {
     return this.#parse(z.array(schema), data);
   }
 
-  validatorFn<T, V extends Record<string, any>>(schema: z.ZodObject<V>): (data: T) => z.infer<typeof schema> {
-    return (data: T) => this.validate(schema, data);
+  validatorFn<V>(schema: z.ZodType<V>): (data: unknown) => z.infer<typeof schema> {
+    return (data) => this.validate(schema, data);
   }
 
-  arrayValidatorFn<T, V extends Record<string, any>>(schema: z.ZodObject<V>): (data: any) => z.infer<typeof schema>[] {
-    return (data: any) => this.validateArray(schema, data);
+  arrayValidatorFn<V>(schema: z.ZodType<V>): (data: unknown) => z.infer<typeof schema>[] {
+    return (data) => this.validateArray(schema, data);
   }
 
-  async validateAsync<T, V extends Record<string, any>>(
-    schema: z.ZodObject<V>,
-    data$: Observable<T>,
-  ): Promise<z.infer<typeof schema>> {
+  async validateAsync<V>(schema: z.ZodType<V>, data$: Observable<unknown>): Promise<z.infer<typeof schema>> {
     const data = await firstValueFrom(data$);
     return this.validate(schema, data);
   }
 
-  async validateArrayAsync<T, V extends Record<string, any>>(
-    schema: z.ZodObject<V>,
-    data$: Observable<T[]>,
-  ): Promise<z.infer<typeof schema>[]> {
+  async validateArrayAsync<V>(schema: z.ZodType<V>, data$: Observable<unknown>): Promise<z.infer<typeof schema>[]> {
     const data = await firstValueFrom(data$);
     return this.validateArray(schema, data);
   }
 
-  async validateStringArrayAsync(data$: Observable<string[]>): Promise<string[]> {
-    const data = await firstValueFrom(data$);
-    return z.array(z.string()).parse(data);
-  }
-
-  #parse<T, V extends Record<string, any>>(schema: z.Schema<V>, data: T): z.infer<typeof schema> {
+  #parse<V>(schema: z.ZodType<V>, data: unknown): z.infer<typeof schema> {
     const result = schema.safeParse(data);
     if (result.success) {
       return result.data;

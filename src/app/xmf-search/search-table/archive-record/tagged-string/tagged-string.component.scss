@@ -1,0 +1,10 @@
+:host {
+    display: block;
+    font: var(--mat-sys-title-medium);
+    overflow-wrap: anywhere;
+}
+
+span.highlighted {
+    font-weight: bold;
+    color: var(--mat-sys-tertiary);
+}

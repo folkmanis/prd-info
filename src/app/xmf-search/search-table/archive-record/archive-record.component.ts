@@ -1,17 +1,17 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { CopyClipboardDirective } from 'src/app/library/clipboard/copy-clipboard.directive';
-import { TaggedStringComponent } from 'src/app/library/tagged-string/tagged-string.component';
+import { TaggedStringComponent } from './tagged-string/tagged-string.component';
 import { ArchiveRecord } from '../../interfaces';
 import { DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-data-card',
+  selector: 'app-archive-record',
   imports: [CopyClipboardDirective, TaggedStringComponent, DatePipe],
-  templateUrl: './data-card.component.html',
-  styleUrl: './data-card.component.scss',
+  templateUrl: './archive-record.component.html',
+  styleUrl: './archive-record.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DataCardComponent {
+export class ArchiveRecordComponent {
   data = input.required<ArchiveRecord>();
 
   searchString = input.required<string>();

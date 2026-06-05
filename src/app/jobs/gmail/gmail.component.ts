@@ -10,13 +10,13 @@ import { Observable, combineLatest, concatMap, filter, map, scan, shareReplay, t
 import { ScrollTopDirective } from '../../library/scroll-to-top/scroll-top.directive';
 import { JobsUserPreferencesService } from '../services/jobs-user-preferences.service';
 import { GmailPaginatorComponent } from './gmail-paginator/gmail-paginator.component';
-import { Thread, Threads, ThreadsFilterQuery } from './interfaces';
+import { Thread, Threads, ThreadsFilter } from './interfaces';
 import { GmailService } from './services/gmail.service';
 import { ThreadsFilterComponent } from './threads-filter/threads-filter.component';
 
 export type ThreadsListItem = Pick<Thread, 'id' | 'historyId' | 'snippet'>;
 
-const DEFAULT_FILTER: ThreadsFilterQuery = {
+const DEFAULT_FILTER: ThreadsFilter = {
   maxResults: 20,
   labelIds: ['CATEGORY_PERSONAL'],
 };
@@ -26,7 +26,16 @@ const DEFAULT_FILTER: ThreadsFilterQuery = {
   templateUrl: './gmail.component.html',
   styleUrls: ['./gmail.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatButtonModule, MatIconModule, ThreadsFilterComponent, GmailPaginatorComponent, MatProgressBarModule, MatTableModule, ScrollTopDirective, RouterLink],
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    ThreadsFilterComponent,
+    GmailPaginatorComponent,
+    MatProgressBarModule,
+    MatTableModule,
+    ScrollTopDirective,
+    RouterLink,
+  ],
 })
 export class GmailComponent {
   private gmailService = inject(GmailService);
@@ -40,11 +49,11 @@ export class GmailComponent {
 
   loading = signal(true);
 
-  loadingThread: Thread | null;
+  loadingThread: Thread | null = null;
 
   pageIdx = signal(0);
 
-  threadsFilter$: Observable<ThreadsFilterQuery> = toObservable(this.gmailPreferences).pipe(
+  threadsFilter$: Observable<ThreadsFilter> = toObservable(this.gmailPreferences).pipe(
     filter((preference) => !!preference),
     map((preference) => ({ labelIds: preference.activeLabelId })),
     scan((acc, update) => ({ ...acc, ...update }), DEFAULT_FILTER),
@@ -91,7 +100,7 @@ export class GmailComponent {
     this.pageIdx.set(idx);
   }
 
-  private async getThreadsPage(fltr: ThreadsFilterQuery, idx: number): Promise<Threads | null> {
+  private async getThreadsPage(fltr: ThreadsFilter, idx: number): Promise<Threads | null> {
     if (idx === 0) {
       const data = await this.gmailService.getThreads(fltr);
       this.threadsCache = [data];

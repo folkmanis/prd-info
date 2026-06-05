@@ -13,18 +13,18 @@ import { FacetCheckerComponent } from './facet-checker/facet-checker.component';
 export class FacetComponent {
   private blocks = viewChildren(FacetCheckerComponent);
 
-  private facetFilter = new FacetFilter();
+  private facetFilter: FacetFilter = {};
 
-  facet = input.required<ArchiveFacet>();
+  facet = input.required<ArchiveFacet | null>();
 
   filter = output<FacetFilter>();
 
   deselectAll() {
-    this.facetFilter = new FacetFilter();
+    this.facetFilter = {};
     this.blocks().forEach((block) => block.deselect());
   }
 
-  onSelect(selected: (string | number)[] | null, key: keyof FacetFilter) {
+  onSelect<K extends keyof FacetFilter>(selected: FacetFilter[K], key: K) {
     this.facetFilter[key] = selected;
     this.filter.emit(this.facetFilter);
   }

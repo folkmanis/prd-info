@@ -2,9 +2,9 @@ import { Injectable, inject } from '@angular/core';
 import { cloneDeep } from 'lodash-es';
 import { Observable, OperatorFunction, pipe } from 'rxjs';
 import { map, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators';
-import { ArchiveFacet, ArchiveRecord, SearchQuery } from '../interfaces';
+import { ArchiveFacet, ArchiveRecord, SearchFilter } from '../interfaces';
 import { PagedCache } from '../../library/rxjs/paged-cache';
-import { SearchData } from './search-data';
+import { SearchDataSource } from './search-data';
 import { XmfArchiveApiService } from './xmf-archive-api.service';
 
 @Injectable({
@@ -13,39 +13,39 @@ import { XmfArchiveApiService } from './xmf-archive-api.service';
 export class ArchiveSearchService {
   private api = inject(XmfArchiveApiService);
 
-  getCount(query: Observable<SearchQuery>): Observable<number> {
-    return query.pipe(
+  getCount(filter$: Observable<SearchFilter>): Observable<number> {
+    return filter$.pipe(
       switchMap((q) => this.api.getCount(q)),
       shareReplay(1),
     );
   }
 
-  getFacet(query: Observable<SearchQuery>): Observable<ArchiveFacet> {
-    return query.pipe(facetCache((q) => this.api.getFacet(q)));
+  getFacet(filter$: Observable<SearchFilter>): Observable<ArchiveFacet> {
+    return filter$.pipe(facetCache((q) => this.api.getFacet(q)));
   }
 
-  getData(query$: Observable<SearchQuery>, count$: Observable<number>): Observable<SearchData<ArchiveRecord>> {
+  getData(filter$: Observable<SearchFilter>, count$: Observable<number>): Observable<SearchDataSource<ArchiveRecord>> {
     return count$.pipe(
-      withLatestFrom(query$),
-      map(([count, query]) => new PagedCache<ArchiveRecord>(count, this.fetchRecordsFn(query))),
-      map((cache) => new SearchData(cache)),
+      withLatestFrom(filter$),
+      map(([count, filter]) => new PagedCache<ArchiveRecord>(count, this.fetchRecordsFn(filter))),
+      map((cache) => new SearchDataSource(cache)),
     );
   }
 
-  private fetchRecordsFn(query: SearchQuery): (start: number, limit: number) => Promise<ArchiveRecord[]> {
-    return (start, limit) => this.api.getArchive(query, start, limit);
+  private fetchRecordsFn(filter: SearchFilter): (start: number, limit: number) => Promise<ArchiveRecord[]> {
+    return (start, limit) => this.api.getArchive(filter, start, limit);
   }
 }
 
 function facetCache(
-  fetchFn: (query: SearchQuery) => Observable<ArchiveFacet>,
-): OperatorFunction<SearchQuery, ArchiveFacet> {
-  let query = new SearchQuery();
+  fetchFn: (filter: SearchFilter) => Observable<ArchiveFacet>,
+): OperatorFunction<SearchFilter, ArchiveFacet> {
+  let filter: SearchFilter = { search: '', facet: {} };
   let facetData: ArchiveFacet | undefined;
   return pipe(
-    tap((newQuery) => newQuery.q !== query.q && facetData === undefined),
-    tap((newQuery) => (query = newQuery)),
-    switchMap((newQuery) => fetchFn(newQuery)),
+    tap((newFilter) => newFilter.search !== filter.search && facetData === undefined),
+    tap((newFilter) => (filter = newFilter)),
+    switchMap((newFilter) => fetchFn(newFilter)),
     map((newFacet) => {
       if (!facetData) {
         // ja prasa pirmo reizi
@@ -56,8 +56,8 @@ function facetCache(
       const facetFiltered: ArchiveFacet = cloneDeep(facetData);
       for (const key of Object.keys(facetFiltered)) {
         // pa grupām
-        facetFiltered[key] = facetFiltered[key].map(
-          (val) => newFacet[key].find((nVal) => nVal._id === val._id) || { ...val, count: 0 },
+        facetFiltered[key as keyof ArchiveFacet] = facetFiltered[key as keyof ArchiveFacet].map(
+          (val) => newFacet[key as keyof ArchiveFacet].find((nVal) => nVal._id === val._id) || { ...val, count: 0 },
         );
       }
       return facetFiltered;

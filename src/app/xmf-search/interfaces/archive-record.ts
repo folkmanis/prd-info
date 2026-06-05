@@ -1,22 +1,7 @@
-import { KeysMap } from 'src/app/library';
 import { z } from 'zod';
 
-export const archiveRecordKeysMap: KeysMap = {
-  JDFJobID: 'jdfJobId',
-  DescriptiveName: 'descriptiveName',
-  CustomerName: 'customerName',
-  Archives: {
-    name: 'archives',
-    keysMap: {
-      Location: 'location',
-      Date: 'date',
-      Action: 'action',
-    },
-  },
-};
-
 export const Archive = z.object({
-  location: z.string().transform((val) => val.replace(/\//g, '\\')),
+  location: z.string(),
   date: z.string(),
   action: z.number(),
 });

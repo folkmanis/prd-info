@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { firstValueFrom, map, Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
-import { renameKeys, ValidatorService } from 'src/app/library';
+import { ValidatorService } from 'src/app/library';
 import { HttpOptions } from 'src/app/library/http/http-options';
-import { ArchiveFacet, ArchiveRecord, archiveRecordKeysMap, SearchQuery } from '../interfaces';
+import { z } from 'zod';
+import { ArchiveFacet, ArchiveFacetSchema, ArchiveRecord, SearchFilter, searchFilterToQuery } from '../interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -14,30 +15,30 @@ export class XmfArchiveApiService {
   #http = inject(HttpClient);
   #validator = inject(ValidatorService);
 
-  #queryStr = (query: SearchQuery, start?: number, limit?: number) => ({
-    query: query.searialize(),
-    start,
-    limit,
-  });
-
-  async getXmfCustomers(): Promise<string[]> {
-    const data$ = this.#http.get<string[]>(this.#path + 'customers', new HttpOptions());
-    return this.#validator.validateStringArrayAsync(data$);
+  getXmfCustomers(): Observable<string[]> {
+    return this.#http
+      .get(this.#path + 'customers', new HttpOptions())
+      .pipe(map(this.#validator.arrayValidatorFn(z.string())));
   }
 
-  async getArchive(query: SearchQuery, start?: number, limit?: number): Promise<ArchiveRecord[]> {
-    const data = await firstValueFrom(this.#http.get<Record<string, any>[]>(this.#path, new HttpOptions(this.#queryStr(query, start, limit))));
-    return this.#validator.validateArray(
-      ArchiveRecord,
-      data.map((record) => renameKeys(archiveRecordKeysMap, record)),
+  async getArchive(filter: SearchFilter, start?: number, limit?: number): Promise<ArchiveRecord[]> {
+    const query = searchFilterToQuery.encode(filter);
+    const data$ = this.#http.get(this.#path, new HttpOptions({ ...query, start, limit }));
+    return this.#validator.validateArrayAsync(ArchiveRecord, data$);
+  }
+
+  getCount(filter: SearchFilter): Observable<number> {
+    const query = searchFilterToQuery.encode(filter);
+    return this.#http.get(this.#path + 'count', new HttpOptions(query)).pipe(
+      map(this.#validator.validatorFn(z.object({ count: z.number() }))),
+      map((data) => data.count),
     );
   }
 
-  getCount(query: SearchQuery): Observable<number> {
-    return this.#http.get<{ count: number }>(this.#path + 'count', new HttpOptions(this.#queryStr(query))).pipe(map((data) => data['count']));
-  }
-
-  getFacet(query: SearchQuery): Observable<ArchiveFacet> {
-    return this.#http.get<ArchiveFacet>(this.#path + 'facet', new HttpOptions(this.#queryStr(query)));
+  getFacet(filter: SearchFilter): Observable<ArchiveFacet> {
+    const query = searchFilterToQuery.encode(filter);
+    return this.#http
+      .get(this.#path + 'facet', new HttpOptions(query))
+      .pipe(map(this.#validator.validatorFn(ArchiveFacetSchema)));
   }
 }

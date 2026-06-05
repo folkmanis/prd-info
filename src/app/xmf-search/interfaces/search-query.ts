@@ -1,19 +1,33 @@
-import { FacetFilter } from './facet-filter';
+import { facetFilterToQuery } from './facet-filter';
+import { z } from 'zod';
 
-export class SearchQuery {
-  constructor(
-    public q: string = '',
-    private facet = new FacetFilter(),
-  ) {}
+const SearchFilterSchema = z.object({
+  search: z.string(),
+  facet: facetFilterToQuery,
+});
 
-  setFacet(facet: FacetFilter): SearchQuery {
-    return new SearchQuery(this.q, facet);
-  }
+const SearchQuerySchema = z
+  .object({
+    search: z.string(),
+    customerName: z.string(),
+    year: z.string(),
+    month: z.string(),
+  })
+  .partial();
 
-  searialize(): string {
-    return JSON.stringify({
-      q: this.q,
-      ...this.facet,
-    });
-  }
-}
+export const searchFilterToQuery = z.codec(SearchQuerySchema, SearchFilterSchema, {
+  encode: ({ search, facet }) => ({
+    search: search || undefined,
+    ...facet,
+  }),
+  decode: ({ search, customerName, year, month }) => ({
+    search: search ?? '',
+    facet: {
+      customerName,
+      year,
+      month,
+    },
+  }),
+});
+
+export type SearchFilter = z.output<typeof searchFilterToQuery>;

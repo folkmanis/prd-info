@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
-import { Attachment, Message, Threads, ThreadsFilterQuery } from '../interfaces';
+import { Attachment, Message, Threads, ThreadsFilter } from '../interfaces';
 import { GmailApiService } from './gmail-api.service';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -8,16 +9,12 @@ import { GmailApiService } from './gmail-api.service';
 export class GmailService {
   private api = inject(GmailApiService);
 
-  getThreads(filter: ThreadsFilterQuery): Promise<Threads> {
+  getThreads(filter: ThreadsFilter): Promise<Threads> {
     return this.api.getThreads(filter);
   }
 
   thread(id: string) {
     return this.api.getThread(id);
-  }
-
-  message(id: string) {
-    return this.api.getMessage(id);
   }
 
   labels() {
@@ -28,11 +25,11 @@ export class GmailService {
     return this.api.getLabel(id);
   }
 
-  markAsRead(message: Message): Promise<Message> {
+  markAsRead(message: Message): Observable<string> {
     if (message.hasLabel('UNREAD')) {
       return this.api.modifyMessage(message.id, { removeLabelIds: ['UNREAD'] });
     } else {
-      return Promise.resolve(message);
+      return of(message.id);
     }
   }
 
