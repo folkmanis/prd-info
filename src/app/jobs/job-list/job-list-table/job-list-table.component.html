@@ -40,7 +40,7 @@
     <ng-container matColumnDef="date">
       <mat-header-cell *matHeaderCellDef> Datums </mat-header-cell>
       <mat-cell *matCellDef="let job">
-        {{ job?.dueDate | date: 'dd.MM.yyyy' }}
+        {{ $safeNavigationMigration(job?.dueDate) | date: 'dd.MM.yyyy' }}
       </mat-cell>
     </ng-container>
 
@@ -93,7 +93,7 @@
     <mat-row
       *matRowDef="let job; columns: viewSize.isLarge() ? columnsLarge : columnsSmall"
       [class.job-completed]="job?.invoiceId"
-      [appRouterLinkWithReturn]="['/', 'jobs', 'repro', job?.jobId]"
+      [appRouterLinkWithReturn]="['/', 'jobs', 'repro', $safeNavigationMigration(job?.jobId)]"
     />
   </mat-table>
 </cdk-virtual-scroll-viewport>

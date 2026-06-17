@@ -1,4 +1,10 @@
-<app-simple-form-container buttons [status]="form.status" [isChanges]="changes()" (save)="onSave()" (resetForm)="onReset()">
+<app-simple-form-container
+  buttons
+  [status]="form.status"
+  [isChanges]="changes()"
+  (save)="onSave()"
+  (resetForm)="onReset()"
+>
   <form [formGroup]="form">
     @if (!customer()._id) {
       <mat-form-field class="customer-name full-width">
@@ -74,7 +80,10 @@
       </mat-card-header>
 
       <mat-card-content>
-        <app-shipping-address formControlName="shippingAddress" [paytraqClientId]="formValue().financial?.paytraqId" />
+        <app-shipping-address
+          formControlName="shippingAddress"
+          [paytraqClientId]="$safeNavigationMigration(formValue().financial?.paytraqId)"
+        />
       </mat-card-content>
     </mat-card>
 

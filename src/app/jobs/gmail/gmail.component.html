@@ -5,7 +5,7 @@
     </button>
 
     <app-threads-filter
-      [labelIds]="threadsFilter()?.labelIds"
+      [labelIds]="$safeNavigationMigration(threadsFilter()?.labelIds)"
       (labelIdsChange)="scroll.scrollToTop(); onSetFilter($event)"
     />
   </div>
@@ -16,7 +16,7 @@
       [activePage]="pageIdx()"
       (indexChanges)="scroll.scrollToTop(); onSetPageIdx($event)"
       [loadedCount]="loadedCount()"
-      [pageSize]="threadsFilter()?.maxResults"
+      [pageSize]="$safeNavigationMigration(threadsFilter()?.maxResults)"
       [lastPage]="lastPage()"
     />
   </div>

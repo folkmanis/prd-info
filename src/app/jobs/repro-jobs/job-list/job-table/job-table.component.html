@@ -26,7 +26,7 @@
     <ng-container matColumnDef="date">
       <mat-header-cell *matHeaderCellDef> Datums </mat-header-cell>
       <mat-cell *matCellDef="let job">
-        {{ job?.dueDate | date: 'dd.MM.yyyy' }}
+        {{ $safeNavigationMigration(job?.dueDate) | date: 'dd.MM.yyyy' }}
       </mat-cell>
     </ng-container>
 
@@ -101,7 +101,7 @@
         </div>
         @if (large) {
           <!-- Izstrādājums -->
-          @let products = job?.products;
+          @let products = $safeNavigationMigration(job?.products);
           <div class="product">
             @if (products && products.length > 0) {
               <div class="product-name">
@@ -129,7 +129,7 @@
       *matRowDef="let job; columns: visibleColumns()"
       [class.job-completed]="job?.invoiceId"
       [class.highlited]="hasProduct(job, highlited)"
-      [appRouterLinkWithReturn]="[job?.jobId]"
+      [appRouterLinkWithReturn]="[$safeNavigationMigration(job?.jobId)]"
     />
     <mat-header-row *matHeaderRowDef="visibleColumns()" />
   </mat-table>

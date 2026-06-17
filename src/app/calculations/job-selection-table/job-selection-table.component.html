@@ -67,14 +67,14 @@
   <ng-container matColumnDef="price">
     <mat-header-cell *matHeaderCellDef> Cena </mat-header-cell>
     <mat-cell *matCellDef="let job">
-      {{ job.products?.price | currency }}
+      {{ $safeNavigationMigration(job.products?.price) | currency }}
     </mat-cell>
   </ng-container>
   <!-- Summa -->
   <ng-container matColumnDef="total">
     <mat-header-cell *matHeaderCellDef> Kopā </mat-header-cell>
     <mat-cell *matCellDef="let job">
-      {{ job.products?.price * job.products?.count | currency }}
+      {{ $safeNavigationMigration(job.products?.price) * $safeNavigationMigration(job.products?.count) | currency }}
     </mat-cell>
     <mat-footer-cell *matFooterCellDef>
       @if (isNumber(total())) {
