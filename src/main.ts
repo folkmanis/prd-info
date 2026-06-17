@@ -1,5 +1,5 @@
 import { registerLocaleData } from '@angular/common';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import localeLv from '@angular/common/locales/lv';
 import {
   DEFAULT_CURRENCY_CODE,
@@ -55,7 +55,7 @@ bootstrapApplication(AppComponent, {
       withComponentInputBinding(),
       withRouterConfig({ onSameUrlNavigation: 'reload', paramsInheritanceStrategy: 'always' }),
     ),
-    provideHttpClient(withInterceptors(httpInterceptors)),
+    provideHttpClient(withXhr(), withInterceptors(httpInterceptors)),
     provideDateFnsAdapter(),
   ],
   // eslint-disable-next-line no-console
