@@ -1,25 +1,60 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { AsyncValidatorFn, FormBuilder, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import { AsyncPipe } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  linkedSignal,
+  signal,
+  untracked,
+} from '@angular/core';
+import {
+  applyEach,
+  applyWhen,
+  applyWhenValue,
+  disabled,
+  email,
+  FieldTree,
+  form,
+  FormField,
+  FormRoot,
+  maxLength,
+  minLength,
+  readonly,
+  required,
+  SchemaPath,
+} from '@angular/forms/signals';
+import { MatButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatDividerModule } from '@angular/material/divider';
+import { MatDivider } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
-import { isEqual, isNull, omitBy } from 'lodash-es';
-import { Customer, CustomerContact, CustomerFinancial, FtpUserData, NewCustomer, ShippingAddress } from 'src/app/interfaces';
+import { MatList, MatListItem } from '@angular/material/list';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatOption, MatSelect } from '@angular/material/select';
+import { Customer, CustomerContact, defaultCustomerContact } from 'src/app/interfaces';
+import { notNullOrThrow } from 'src/app/library';
 import { InputUppercaseDirective } from 'src/app/library/directives/input-uppercase.directive';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { navigateRelative } from 'src/app/library/navigation';
-import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
+import { computedSignalChanges, pickChanges } from 'src/app/library/signals';
+import { SimpleContentContainerComponent } from 'src/app/library/simple-form/simple-content-container/simple-content-container.component';
+import { updateCatching } from 'src/app/library/update-catching';
 import { CustomersService } from 'src/app/services';
 import { configuration } from 'src/app/services/config.provider';
 import { CustomersListComponent } from '../customers-list/customers-list.component';
-import { CustomerContactsComponent } from './customer-contacts/customer-contacts.component';
-import { FtpUserComponent } from './ftp-user/ftp-user.component';
-import { PaytraqCustomerComponent } from './paytraq-customer/paytraq-customer.component';
-import { ShippingAddressComponent } from './shipping-address/shipping-address.component';
-import { assertNotNull } from 'src/app/library';
+import {
+  CustomerModel,
+  customerToModel,
+  defaultShippingAddressModel,
+  modelToCreateCustomer,
+  modelToUpdateCustomer,
+} from './customer-edit.model';
+import { CustomerEditService } from './customer-edit.service';
 
 @Component({
   selector: 'app-customer-edit',
@@ -27,119 +62,227 @@ import { assertNotNull } from 'src/app/library';
   styleUrls: ['./customer-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    ReactiveFormsModule,
-    SimpleFormContainerComponent,
-    PaytraqCustomerComponent,
+    FormField,
+    FormRoot,
+    SimpleContentContainerComponent,
     InputUppercaseDirective,
-    FtpUserComponent,
-    CustomerContactsComponent,
-    ShippingAddressComponent,
     MatFormFieldModule,
     MatCardModule,
-    MatDividerModule,
+    MatDivider,
     MatCheckboxModule,
     MatInput,
+    MatIcon,
+    MatProgressSpinner,
+    MatButton,
+    AsyncPipe,
+    MatSelect,
+    MatOption,
+    MatList,
+    MatListItem,
   ],
 })
 export class CustomerEditComponent implements CanComponentDeactivate {
-  private customersService = inject(CustomersService);
+  protected paytraqEnabled = configuration('paytraq', 'enabled');
+  protected busy = signal(false);
+  #update = updateCatching(this.busy);
+  #customersService = inject(CustomersService);
+  #formService = inject(CustomerEditService);
+  #navigate = navigateRelative();
 
-  private navigate = navigateRelative();
+  #customersListComponent = inject(CustomersListComponent);
 
-  paytraqEnabled = configuration('paytraq', 'enabled');
+  protected ftpFolders$ = this.#formService.ftpFolders$;
 
-  form = inject(FormBuilder).group(
-    {
-      CustomerName: [null as string | null, [Validators.required, Validators.minLength(3)], [this.validateName()]],
-      code: [null as string | null, [Validators.required, Validators.minLength(2), Validators.maxLength(3)], [this.validateCode()]],
-      disabled: [false as boolean | null],
-      description: [null as string | null],
-      financial: [null as CustomerFinancial | null],
-      ftpUser: [false as boolean | null],
-      ftpUserData: [null as FtpUserData | null],
-      contacts: [[] as CustomerContact[]],
-      insertedFromXmf: [null as Date | null],
-      shippingAddress: [null as ShippingAddress | null],
+  protected activeContact = signal<FieldTree<CustomerContact> | null>(null);
+
+  customer = input.required<Customer>();
+  #initialCustomer = linkedSignal(() => this.customer());
+  #initialModel = linkedSignal(() => customerToModel(this.#initialCustomer()));
+  #customerModel = linkedSignal(() => {
+    const initial = this.#initialModel();
+    untracked(() => this.form().reset(initial));
+    return initial;
+  });
+
+  protected changes = computedSignalChanges(this.#customerModel, this.#initialModel, { includeNull: true });
+
+  form = form(
+    this.#customerModel,
+    (schema) => {
+      required(schema.customerName, { message: `Nosaukums jāievada obligāti!` });
+      readonly(schema.customerName, { when: () => this.isNew() === false });
+      required(schema.code, { message: `Kodu jāievada obligāti!` });
+      minLength(schema.code, 2, { message: `Kodam jābūt 2-3 zīmes garam` });
+      maxLength(schema.code, 3, { message: `Kodam jābūt 2-3 zīmes garam` });
+      this.#validateName(schema.customerName);
+      this.#validateCode(schema.code);
+
+      // contact
+      applyEach(schema.contacts, (s) => {
+        required(s.email);
+        email(s.email);
+      });
+
+      // address
+      applyWhenValue(
+        schema.shippingAddress,
+        (value) => !!value.address,
+        (s) => {
+          required(s.country);
+          required(s.zip);
+        },
+      );
     },
     {
-      validators: [this.validateFtp()],
+      submission: {
+        action: async (schema) => {
+          await this.#saveCustomer(schema().value());
+        },
+        ignoreValidators: 'none',
+      },
     },
   );
 
-  customer = input.required<Customer>();
+  protected isNew = computed(() => !this.#initialCustomer()._id);
 
-  customersListComponent = inject(CustomersListComponent);
+  canDeactivate(): boolean {
+    return this.form().dirty() === false || this.changes() === null;
+  }
 
-  formValue = toSignal(this.form.valueChanges, {
-    initialValue: this.form.value,
-  });
+  protected onReset() {
+    this.form().reset(this.#initialModel());
+  }
 
-  changes = computed(() => {
-    const value = this.formValue();
-    const initialValue = this.customer();
-    const diff = omitBy(value, (val, key) => isEqual(val, initialValue[key]));
-    return Object.keys(diff).length ? diff : null;
-  });
+  protected onAddContact() {
+    this.#customerModel.update((customer) => ({
+      ...customer,
+      contacts: [...customer.contacts, defaultCustomerContact()],
+    }));
+    const contact = this.form.contacts[this.form.contacts.length - 1];
+    this.activeContact.set(contact);
+    setTimeout(() => {
+      contact().focusBoundControl();
+    }, 100);
+  }
 
-  constructor() {
-    effect(() => {
-      this.form.reset(this.customer());
+  protected onRemoveContact(idx: number) {
+    this.#customerModel.update((customer) => ({
+      ...customer,
+      contacts: customer.contacts.filter((c, i) => i !== idx),
+    }));
+  }
+
+  protected async onSelectFinancial() {
+    const { customerName } = this.#customerModel();
+    const result = await this.#formService.selectPaytraqCustomer(customerName);
+    if (result) {
+      this.#customerModel.update((customer) => ({
+        ...customer,
+        financial: {
+          clientName: result.clientName,
+          paytraqId: result.paytraqId.toString(),
+        },
+      }));
+    }
+  }
+
+  protected onRemoveFinancial() {
+    this.#customerModel.update((customer) => ({
+      ...customer,
+      financial: {
+        clientName: '',
+        paytraqId: '',
+      },
+    }));
+  }
+
+  protected async onAddressMap() {
+    const address = this.form.shippingAddress().value();
+    const update = await this.#formService.getShippingMarker(address.address || undefined);
+    if (update) {
+      this.#customerModel.update((customer) => ({
+        ...customer,
+        shippingAddress: {
+          ...customer.shippingAddress,
+          ...update,
+        },
+      }));
+    }
+  }
+
+  protected async onPaytraqAddress(paytraqId: string) {
+    this.#update(async (message) => {
+      const update = await this.#formService.getPaytraqAddress(Number.parseInt(paytraqId));
+      if (update) {
+        this.#customerModel.update((customer) => ({
+          ...customer,
+          shippingAddress: {
+            ...customer.shippingAddress,
+            ...update,
+          },
+        }));
+        message(`Adrese no Paytraq pievienota`);
+      }
     });
   }
 
-  onReset(): void {
-    this.form.reset(this.customer());
+  protected onResetAddress() {
+    this.form.shippingAddress().value.set(defaultShippingAddressModel());
   }
 
-  async onSave() {
-    let id = this.customer()._id;
-    if (id) {
-      const changes = this.changes();
-      assertNotNull(changes);
-      await this.customersService.updateCustomer(id, changes);
-      this.onReload();
-    } else {
-      const customer = omitBy(this.formValue(), isNull) as NewCustomer;
-      const createdCustomer = await this.customersService.saveNewCustomer(customer);
-      id = createdCustomer._id;
-      this.onReload();
-    }
-
-    this.form.markAsPristine();
-    this.navigate(['..', id], { queryParams: { upd: Date.now() } });
+  #validateCode(schema: SchemaPath<string>) {
+    applyWhen(
+      schema,
+      ({ value }) => value() !== this.#initialModel().code,
+      (s) => {
+        this.#customersService.isCustomerCodeAvailable(s);
+      },
+    );
   }
 
-  canDeactivate(): boolean {
-    return this.form.pristine || !this.changes();
+  #validateName(schema: SchemaPath<string>) {
+    applyWhen(
+      schema,
+      ({ value }) => value() !== this.#initialModel().customerName,
+      (s) => {
+        this.#customersService.isNameAvailable(s);
+      },
+    );
   }
 
-  private validateCode(): AsyncValidatorFn {
-    return async (control) => {
-      if (this.customer().code === control.value) {
-        return null;
+  #onReload() {
+    this.#customersListComponent.onReload();
+  }
+
+  async #saveCustomer(value: CustomerModel) {
+    this.#update(async (message) => {
+      const { _id } = this.#initialCustomer();
+      if (_id) {
+        const customer = await this.#createCustomer(value);
+        message(`Jauns lietotājs ${customer.customerName} izveidots!`);
       } else {
-        return (await this.customersService.isCustomerCodeAvailable(control.value)) ? null : { occupied: control.value };
+        await this.#updateCustomer(_id, value);
+        message(`Izmaiņas saglabātas`);
       }
-    };
+    });
   }
 
-  private validateName(): AsyncValidatorFn {
-    return async (control) => {
-      if (this.customer().CustomerName === control.value) {
-        return null;
-      } else {
-        return (await this.customersService.isNameAvailable(control.value)) ? null : { occupied: control.value };
-      }
-    };
+  async #createCustomer(value: CustomerModel): Promise<Customer> {
+    const create = modelToCreateCustomer(value);
+    const customer = await this.#customersService.createCustomer(create);
+    this.#onReload();
+    this.form().reset();
+    this.#navigate(['..', customer._id]);
+    return customer;
   }
 
-  private validateFtp(): ValidatorFn {
-    return (control) => {
-      return control.value.ftpUser === false || !!control.value.ftpUserData ? null : { ftpUserData: 'ftp data not set' };
-    };
-  }
-
-  private onReload() {
-    this.customersListComponent.onReload();
+  async #updateCustomer(id: string, value: CustomerModel): Promise<Customer> {
+    const changes = notNullOrThrow(pickChanges(value, this.#initialModel(), { includeNull: true }));
+    const update = modelToUpdateCustomer(changes);
+    const customer = await this.#customersService.updateCustomer(id, update);
+    this.#initialCustomer.set(customer);
+    this.#onReload();
+    this.form().reset();
+    return customer;
   }
 }

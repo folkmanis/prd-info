@@ -26,8 +26,8 @@
 
 <mat-autocomplete #customerAuto="matAutocomplete" (optionSelected)="onSetCustomer($event)">
   @for (customer of filteredCustomers(); track customer._id) {
-    <mat-option [value]="customer.CustomerName">
-      {{ customer.CustomerName }}
+    <mat-option [value]="customer.customerName">
+      {{ customer.customerName }}
     </mat-option>
   }
 </mat-autocomplete>

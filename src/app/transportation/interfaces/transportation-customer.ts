@@ -1,9 +1,9 @@
-import { Customer } from 'src/app/interfaces';
+import { CustomerSchema } from 'src/app/interfaces';
 import { z } from 'zod';
 
-export const TransportationCustomer = Customer.pick({
+export const TransportationCustomer = CustomerSchema.pick({
   _id: true,
-  CustomerName: true,
+  customerName: true,
   shippingAddress: true,
 });
 export type TransportationCustomer = z.infer<typeof TransportationCustomer>;

@@ -47,7 +47,7 @@ export class JobFilesService {
     );
   }
 
-  ftpFolders(path?: string[]): Promise<FileElement[]> {
+  ftpFolders(path?: string[]): Observable<FileElement[]> {
     return this.#api.readFtp(path?.join('/'));
   }
 
@@ -57,7 +57,9 @@ export class JobFilesService {
 
   copyJobFolderToDropFolder(path: string[], dropFolder: string[]): Promise<number> {
     const dstPath = dropFolder.join('/') + '/' + last(path);
-    return firstValueFrom(this.#api.copyFile(FileLocationTypes.JOB, FileLocationTypes.DROPFOLDER, path.join('/'), dstPath));
+    return firstValueFrom(
+      this.#api.copyFile(FileLocationTypes.JOB, FileLocationTypes.DROPFOLDER, path.join('/'), dstPath),
+    );
   }
 
   copyJobFilesToJobFiles(oldJobId: number, newJobId: number): Observable<Job> {

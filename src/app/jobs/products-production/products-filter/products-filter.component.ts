@@ -100,7 +100,7 @@ export class ProductsFilterComponent {
   categories = configuration('jobs', 'productCategories');
 
   customers = input<CustomerPartial[] | null>();
-  protected customerNames = computed(() => this.customers()?.map((c) => c.CustomerName));
+  protected customerNames = computed(() => this.customers()?.map((c) => c.customerName));
 
   disabled = input(false);
 

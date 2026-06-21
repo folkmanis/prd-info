@@ -1,15 +1,23 @@
-import { inject, Injectable } from '@angular/core';
-import { Customer, CustomerContact, CustomerPartial, CustomerUpdate, NewCustomer } from 'src/app/interfaces';
-import { FilterInput, toFilterSignal } from 'src/app/library';
+import { computed, inject, Injectable } from '@angular/core';
+import { CreateCustomerDto, Customer, CustomerList, UpdateCustomerDto } from 'src/app/interfaces';
+import { FilterInput, stringToInt, toFilterSignal } from 'src/app/library';
 import { CustomersApiService } from './prd-api/customers-api.service';
 import { HttpResourceRef } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
+import { z } from 'zod';
+import { SchemaPath } from '@angular/forms/signals';
 
-export interface CustomerRequestFilter {
-  name?: string;
-  email?: string;
-  disabled?: boolean;
-}
+const CustomersQuerySchema = z
+  .object({
+    start: stringToInt,
+    limit: stringToInt,
+    name: z.string(),
+    email: z.string(),
+    disabled: z.stringbool(),
+  })
+  .partial();
+export type CustomerFilter = z.output<typeof CustomersQuerySchema>;
+export type CustomerQuery = z.input<typeof CustomersQuerySchema>;
 
 @Injectable({
   providedIn: 'root',
@@ -17,69 +25,44 @@ export interface CustomerRequestFilter {
 export class CustomersService {
   #api = inject(CustomersApiService);
 
-  getCustomersResource(
-    filterSignal: FilterInput<CustomerRequestFilter>,
-  ): HttpResourceRef<CustomerPartial[] | undefined> {
-    return this.#api.customersResource(toFilterSignal(filterSignal));
+  getCustomersResource(filter: FilterInput<CustomerFilter>): HttpResourceRef<CustomerList[] | undefined> {
+    const filterSignal = toFilterSignal(filter);
+    const query = computed(() => CustomersQuerySchema.encode(filterSignal()));
+    return this.#api.customersResource(query);
   }
 
-  updateCustomer(id: string, update: CustomerUpdate): Promise<Customer> {
-    return this.#api.updateOne(id, update);
+  updateCustomer(id: string, update: UpdateCustomerDto): Promise<Customer> {
+    return firstValueFrom(this.#api.updateOne(id, update));
   }
 
-  getCustomer(id: string): Promise<Customer | never> {
-    this.isValidId(id);
-    return this.#api.getOne(id);
+  getCustomer(id: string): Promise<Customer> {
+    return firstValueFrom(this.#api.getOne(id));
   }
 
-  getCustomerByName(name: string): Promise<Customer> {
-    return this.#api.getOne(name);
+  createCustomer(customer: CreateCustomerDto): Promise<Customer> {
+    return firstValueFrom(this.#api.insertOne(customer));
   }
 
-  saveNewCustomer(customer: NewCustomer): Promise<Customer> {
-    return this.#api.insertOne(customer);
+  getCustomerList(filter: CustomerFilter = {}): Observable<CustomerList[]> {
+    const query = CustomersQuerySchema.encode(filter);
+    return this.#api.getAll(query);
   }
 
-  getCustomerList(filter: CustomerRequestFilter = {}): Observable<CustomerPartial[]> {
-    return this.#api.getAll(filter);
+  isNameAvailable(schema: SchemaPath<string>): void {
+    this.#api.validate(schema, 'customerName');
   }
 
-  async isNameAvailable(name?: string): Promise<boolean> {
-    if (!name) {
-      return true;
-    }
-    name = name.toUpperCase();
-    const values = await this.#api.validatorData('CustomerName');
-    return values.every((value) => value.toUpperCase() !== name);
+  isCustomerCodeAvailable(schema: SchemaPath<string>): void {
+    this.#api.validate(schema, 'code');
   }
 
-  async isCustomerCodeAvailable(code?: string): Promise<boolean> {
-    if (!code) {
-      return true;
-    }
-    code = code.toUpperCase();
-    const values = await this.#api.validatorData('code');
-    return values.every((value) => value.toUpperCase() !== code);
-  }
-
-  newCustomerContact(email: string): CustomerContact {
-    return { email };
-  }
-
-  newCustomer(): NewCustomer {
+  newCustomer(): Customer {
     return {
-      CustomerName: '',
+      _id: '',
+      customerName: '',
       code: '',
       disabled: false,
-      description: '',
-      ftpUser: false,
       contacts: [],
     };
-  }
-
-  private isValidId(str: any): asserts str is string {
-    if (!/^[a-f\d]{24}$/i.test(str)) {
-      throw new Error(`Invalid id ${str}`);
-    }
   }
 }

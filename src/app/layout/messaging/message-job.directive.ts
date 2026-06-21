@@ -8,6 +8,7 @@ import { UploadRefService } from 'src/app/jobs/repro-jobs/services/upload-ref.se
 import { notNullOrThrow } from 'src/app/library';
 import { JobMessageData, Message, MessageFtpUser } from './interfaces';
 import { MessagingService } from './services/messaging.service';
+import { firstValueFrom } from 'rxjs';
 
 export interface UserFile {
   name: string;
@@ -48,7 +49,7 @@ export class MessageJobDirective {
         this.#uploadRefService.setFtpUpload(path, this.#setMessageReadFn(message));
         this.#reproJobService.setJobTemplate({
           name,
-          customer: ftpUser?.CustomerName,
+          customer: ftpUser?.customerName,
         });
         await this.#router.navigate(['/', 'jobs', 'repro', 'new']);
       } else {
@@ -60,7 +61,7 @@ export class MessageJobDirective {
 
   async #checkFileExists(path: string[]): Promise<boolean> {
     const fileName = last(path);
-    const folders = await this.#filesService.ftpFolders(path.slice(0, -1));
+    const folders = await firstValueFrom(this.#filesService.ftpFolders(path.slice(0, -1)));
 
     return folders.filter((element) => !element.isFolder).some((file) => file.name === fileName);
   }

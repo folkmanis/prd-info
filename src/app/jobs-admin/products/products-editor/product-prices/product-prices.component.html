@@ -11,9 +11,9 @@
         <!-- Klients -->
         <td class="customer-name">
           <mat-select [formControl]="control.controls.customerName">
-            @for (customer of customers(); track customer.CustomerName) {
-              <mat-option [value]="customer.CustomerName" [disabled]="customer.disabled">
-                {{ customer.CustomerName }}
+            @for (customer of customers(); track customer.customerName) {
+              <mat-option [value]="customer.customerName" [disabled]="customer.disabled">
+                {{ customer.customerName }}
               </mat-option>
             }
           </mat-select>

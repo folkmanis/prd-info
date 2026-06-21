@@ -1,4 +1,13 @@
-import { booleanAttribute, ChangeDetectionStrategy, Component, computed, effect, ElementRef, input, viewChild } from '@angular/core';
+import {
+  booleanAttribute,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  ElementRef,
+  input,
+  viewChild,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   ControlValueAccessor,
@@ -41,14 +50,23 @@ function emptyArray<T>(value: T[] | undefined | null): T[] {
       useExisting: CustomerInputComponent,
     },
   ],
-  imports: [MatFormFieldModule, MatInputModule, FormsModule, ReactiveFormsModule, MatAutocompleteModule, MatButtonModule, MatIconModule, MatOptionModule],
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatIconModule,
+    MatOptionModule,
+  ],
 })
 export class CustomerInputComponent implements ControlValueAccessor, Validator {
   private inputElement = viewChild.required<ElementRef<HTMLInputElement>>('customerInput');
 
   customers = input.required({ transform: emptyArray<CustomerPartial> });
 
-  customerNames = computed(() => this.customers().map((c) => c.CustomerName));
+  customerNames = computed(() => this.customers().map((c) => c.customerName));
 
   control = new FormControl('', [this.nameValidator()]);
 
@@ -106,7 +124,7 @@ export class CustomerInputComponent implements ControlValueAccessor, Validator {
 
   private filterCustomer(customers: CustomerPartial[], value: string | null): CustomerPartial[] {
     const filterValue = new RegExp(value || '', 'i');
-    return customers.filter((customer) => filterValue.test(customer.CustomerName));
+    return customers.filter((customer) => filterValue.test(customer.customerName));
   }
 
   private nameValidator(): ValidatorFn {

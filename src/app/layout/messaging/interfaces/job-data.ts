@@ -13,7 +13,7 @@ const FS_ACTIONS: {
 
 export const MessageFtpUser = z.object({
   _id: z.string(),
-  CustomerName: z.string(),
+  customerName: z.string(),
   code: z.string(),
   folder: z.string(),
 });

@@ -23,8 +23,8 @@
       >
         <mat-option value="**"> Noklusējuma </mat-option>
         @for (customer of customers(); track $index) {
-          <mat-option [value]="customer.CustomerName" [disabled]="customerSelection.value[0] === '**'">
-            {{ customer.CustomerName }}
+          <mat-option [value]="customer.customerName" [disabled]="customerSelection.value[0] === '**'">
+            {{ customer.customerName }}
           </mat-option>
         }
       </mat-select>

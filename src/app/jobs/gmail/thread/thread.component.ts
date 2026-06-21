@@ -119,7 +119,7 @@ export class ThreadComponent {
     const email = extractEmail(from);
 
     const customers = await firstValueFrom(this.customersService.getCustomerList({ email }));
-    return customers.length === 1 ? customers[0].CustomerName : undefined;
+    return customers.length === 1 ? customers[0].customerName : undefined;
   }
 
   private navigateToNew() {

@@ -29,3 +29,32 @@ section#ftp-user {
     margin-top: 8px;
   }
 }
+
+mat-card#shipping-address {
+  .flex-row {
+    display: flex;
+    column-gap: 16px;
+    align-items: baseline;
+
+    .flex-1 {
+      flex: 1;
+    }
+  }
+
+}
+
+mat-card#email {
+  .email {
+    cursor: pointer;
+  }
+
+  .invalid .email {
+    color: var(--mat-sys-error);
+  }
+
+  div.email-row {
+    display: flex;
+    align-items: baseline;
+  }
+
+}

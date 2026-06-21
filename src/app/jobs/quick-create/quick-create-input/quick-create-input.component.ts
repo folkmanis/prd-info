@@ -57,13 +57,13 @@ export class QuickCreateInputComponent {
 
   customerNameSelected = output<string | null>();
 
-  protected customerNames = computed(() => this.customers().map((c) => c.CustomerName));
+  protected customerNames = computed(() => this.customers().map((c) => c.customerName));
 
   protected productNames = computed(() => this.products().map((p) => p.name));
 
   #customerName = computed(() => {
     const name = this.#jobModel().customer?.toUpperCase();
-    return this.customers().find((c) => c.CustomerName.toUpperCase() === name)?.CustomerName;
+    return this.customers().find((c) => c.customerName.toUpperCase() === name)?.customerName;
   });
 
   #productsCustomer = this.#service.productsCustomerResource(this.#customerName);
