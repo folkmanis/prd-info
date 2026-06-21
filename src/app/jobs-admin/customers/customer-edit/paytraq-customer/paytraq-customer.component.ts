@@ -46,7 +46,7 @@ export class PaytraqCustomerComponent implements ControlValueAccessor {
     effect(() => {
       const customer = this.customer();
       if (customer) {
-        this.search.set(customer.financial?.clientName || customer.CustomerName || '');
+        this.search.set(customer.financial?.clientName || customer.customerName || '');
       }
     });
   }

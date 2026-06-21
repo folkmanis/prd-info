@@ -1,11 +1,11 @@
 import { z } from 'zod';
 
-export const ShippingAddress = z.object({
+export const ShippingAddressSchema = z.object({
   address: z.string(),
   zip: z.string(),
   country: z.string(),
-  paytraqId: z.coerce.number().nullish(),
-  googleId: z.string().nullish(),
+  paytraqId: z.number().optional(),
+  googleId: z.string().optional(),
 });
 
-export type ShippingAddress = z.infer<typeof ShippingAddress>;
+export type ShippingAddress = z.infer<typeof ShippingAddressSchema>;

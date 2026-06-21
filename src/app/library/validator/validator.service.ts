@@ -11,6 +11,10 @@ export class ValidatorService {
     return this.#parse(schema, data);
   }
 
+  validateId(id: unknown): string {
+    return this.validate(z.string().regex(/^[a-f\d]{24}$/i, { error: (iss) => `Invalid id ${iss.input}` }), id);
+  }
+
   validateArray<V>(schema: z.ZodType<V>, data: unknown): z.infer<typeof schema>[] {
     return this.#parse(z.array(schema), data);
   }

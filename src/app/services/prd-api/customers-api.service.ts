@@ -1,10 +1,19 @@
 import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http';
 import { inject, Injectable, Signal } from '@angular/core';
+import { SchemaPath, validateHttp } from '@angular/forms/signals';
 import { isEqual } from 'lodash-es';
-import { firstValueFrom, map, Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
-import { Customer, CustomerPartial, CustomerUpdate, NewCustomer } from 'src/app/interfaces';
+import {
+  CreateCustomerDto,
+  Customer,
+  CustomerList,
+  CustomerListSchema,
+  CustomerSchema,
+  UpdateCustomerDto,
+} from 'src/app/interfaces';
 import { HttpOptions, httpResponseRequest, ValidatorService } from 'src/app/library';
+import { NETWORK_ERROR } from 'src/app/library/http/network-error';
 
 @Injectable({
   providedIn: 'root',
@@ -13,45 +22,57 @@ export class CustomersApiService {
   #path = getAppParams('apiPath') + 'customers/';
   #http = inject(HttpClient);
   #validator = inject(ValidatorService);
+  #customerValidatorFn = map(this.#validator.validatorFn(CustomerSchema));
+  #customerArrayValidatorFn = map(this.#validator.validatorFn(CustomerListSchema.array()));
 
-  getAll(params?: Record<string, any>): Observable<CustomerPartial[]> {
-    const data$ = this.#http.get<Record<string, any>[]>(this.#path, new HttpOptions(params).cacheable());
-    return data$.pipe(map(this.#validator.arrayValidatorFn(CustomerPartial)));
+  getAll(query: Record<string, string>): Observable<CustomerList[]> {
+    return this.#http.get(this.#path, new HttpOptions(query).cacheable()).pipe(this.#customerArrayValidatorFn);
   }
 
-  customersResource(params: Signal<Record<string, any>>): HttpResourceRef<CustomerPartial[] | undefined> {
-    return httpResource(() => httpResponseRequest(this.#path, new HttpOptions(params()).cacheable()), {
-      parse: this.#validator.arrayValidatorFn(CustomerPartial),
-      equal: isEqual,
-    });
-  }
-
-  async getOne(idOrName: string, params?: Record<string, any>): Promise<Customer> {
-    return this.#validator.validateAsync(
-      Customer,
-      this.#http.get(this.#path + idOrName, new HttpOptions(params).cacheable()),
+  customersResource(query: Signal<Record<string, string> | undefined>): HttpResourceRef<CustomerList[] | undefined> {
+    return httpResource(
+      () => (query() ? httpResponseRequest(this.#path, new HttpOptions(query()).cacheable()) : undefined),
+      {
+        parse: this.#validator.arrayValidatorFn(CustomerListSchema),
+        equal: isEqual,
+      },
     );
   }
 
-  async updateOne(id: string, data: CustomerUpdate): Promise<Customer> {
-    const result$ = this.#http.patch<Record<string, any>>(this.#path + id, data, new HttpOptions());
-    const result = await firstValueFrom(result$);
-    return this.#validator.validate(Customer, result);
+  getOne(idOrName: string): Observable<Customer> {
+    return this.#http.get(this.#path + idOrName, new HttpOptions().cacheable()).pipe(this.#customerValidatorFn);
   }
 
-  insertOne(customer: NewCustomer, params?: Record<string, any>): Promise<Customer> {
-    const result$ = this.#http.put<Record<string, any>>(this.#path, customer, new HttpOptions(params));
-    return this.#validator.validateAsync(Customer, result$);
+  updateOne(id: string, data: UpdateCustomerDto): Observable<Customer> {
+    return this.#http.patch(this.#path + id, data, new HttpOptions()).pipe(this.#customerValidatorFn);
   }
 
-  deleteOne(id: string, params?: Record<string, any>): Promise<number> {
-    const result$ = this.#http
-      .delete<{ deletedCount: number }>(this.#path + id, new HttpOptions(params))
+  insertOne(customer: CreateCustomerDto, params?: Record<string, any>): Observable<Customer> {
+    return this.#http.put(this.#path, customer, new HttpOptions(params)).pipe(this.#customerValidatorFn);
+  }
+
+  deleteOne(id: string): Observable<number> {
+    return this.#http
+      .delete<{ deletedCount: number }>(this.#path + id, new HttpOptions())
       .pipe(map((data) => data.deletedCount));
-    return firstValueFrom(result$);
   }
 
-  validatorData<K extends keyof Customer & string>(key: K): Promise<Customer[K][]> {
-    return firstValueFrom(this.#http.get<Customer[K][]>(this.#path + 'validate/' + key, new HttpOptions().cacheable()));
+  validate<K extends keyof Pick<Customer, 'customerName' | 'code'>>(schema: SchemaPath<Customer[K]>, key: K): void {
+    validateHttp(schema, {
+      request: ({ value }) =>
+        httpResponseRequest(this.#path + 'validate/' + key, new HttpOptions({ value: value() }).cacheable()),
+      onSuccess: (response: boolean, { value }) => {
+        const current = value()?.toUpperCase();
+        if (!response) {
+          return {
+            kind: 'used',
+            message: `"${value()}" jau tiek izmantots!`,
+          };
+        } else {
+          return null;
+        }
+      },
+      onError: () => NETWORK_ERROR,
+    });
   }
 }

@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, linkedSignal, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  linkedSignal,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AsyncValidatorFn, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,6 +29,7 @@ import { ProductionStagesService } from 'src/app/services/production-stages.serv
 import { EquipmentService } from '../../equipment/services/equipment.service';
 import { DropFoldersComponent } from '../drop-folders/drop-folders.component';
 import { ProductionStagesListComponent } from '../production-stages-list/production-stages-list.component';
+import { computedChanges } from 'src/app/library/signals';
 
 @Component({
   selector: 'app-production-stages-edit',
@@ -79,16 +89,7 @@ export class ProductionStagesEditComponent implements CanComponentDeactivate {
     initialValue: this.form.status,
   });
 
-  changes = computed(() => {
-    const value = this.#value();
-    if (this.isNew()) {
-      return value;
-    } else {
-      const initial = this.#initialValue();
-      const diff = pickBy(value, (v, key) => !isEqual(v, initial[key])) as Partial<ProductionStage>;
-      return Object.keys(diff).length ? diff : null;
-    }
-  });
+  changes = computed(() => computedChanges(this.#value(), this.#initialValue()));
 
   constructor() {
     effect(() => {

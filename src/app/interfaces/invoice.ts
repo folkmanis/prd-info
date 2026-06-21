@@ -1,7 +1,7 @@
 import { Job, JobProduct } from 'src/app/jobs';
 import { z } from 'zod';
-import { Customer } from './customer';
 import { isoDateToDate } from '../library/validator';
+import { CustomerSchema } from './customer';
 
 export const InvoiceJobSchema = Job.pick({
   jobId: true,
@@ -37,7 +37,6 @@ export const InvoiceSchema = z.object({
   products: z.array(InvoiceProductSchema),
   total: z.number().nullish(),
   comment: z.string().nullish(),
-  customerInfo: Customer.nullish(),
   paytraq: PaytraqInvoiceSchema.nullish(),
 });
 export type Invoice = z.infer<typeof InvoiceSchema>;
@@ -51,7 +50,7 @@ export const InvoiceForReportSchema = InvoiceSchema.pick({
   comment: true,
 }).extend({
   total: z.number(),
-  customerInfo: Customer.nullish(),
+  customerInfo: CustomerSchema.omit({ customerName: true }).extend({ customerName: z.string() }).nullish(),
   jobs: z.array(InvoiceJobSchema).optional(),
 });
 export type InvoiceForReport = z.infer<typeof InvoiceForReportSchema>;

@@ -1,0 +1,36 @@
+<h2 mat-dialog-title>Meklēt savienojumu</h2>
+
+<mat-dialog-content>
+  <section>
+    <mat-form-field>
+      <input matInput [(ngModel)]="name" name="nameControl" [disabled]="busy()" />
+      <mat-label> Nosaukums Paytraq sistēmā </mat-label>
+      <button matIconSuffix matIconButton (click)="name.set('')" [disabled]="!name() || busy()">
+        <mat-icon> clear </mat-icon>
+      </button>
+      <button matIconSuffix matIconButton [disabled]="!name() || busy()" (click)="onSearch()">
+        <mat-icon> search </mat-icon>
+      </button>
+    </mat-form-field>
+  </section>
+  <mat-divider />
+  <section>
+    <mat-list>
+      @for (client of clients(); track client.clientID) {
+        <mat-list-item [mat-dialog-close]="{ clientName: client.name, paytraqId: client.clientID }">
+          <h4 matListItemTitle>
+            {{ client.name }}
+          </h4>
+          <p matListItemLine>
+            <span> PayTraq ID: {{ client.clientID }} </span>
+            <span> Reģ. nr.: {{ client.regNumber }} </span>
+          </p>
+        </mat-list-item>
+      }
+    </mat-list>
+  </section>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button matDialogClose matButton="text" class="tertiary">Atcelt</button>
+</mat-dialog-actions>

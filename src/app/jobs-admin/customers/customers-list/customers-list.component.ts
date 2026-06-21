@@ -3,7 +3,7 @@ import { MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { isEqual } from 'lodash-es';
 import { SimpleListContainerComponent } from 'src/app/library/simple-form';
-import { CustomerRequestFilter, CustomersService } from 'src/app/services';
+import { CustomerFilter, CustomersService } from 'src/app/services';
 
 @Component({
   selector: 'app-customers-list',
@@ -19,7 +19,7 @@ export class CustomersListComponent {
 
   filter = computed(
     () => {
-      const filter: CustomerRequestFilter = { disabled: true };
+      const filter: CustomerFilter = { disabled: true };
       const name = this.name().trim();
       if (name) {
         filter.name = name;
@@ -31,7 +31,7 @@ export class CustomersListComponent {
 
   customers = this.customersService.getCustomersResource(this.filter);
 
-  displayedColumns = ['CustomerName'];
+  displayedColumns = ['customerName'];
 
   onReload() {
     this.customers.reload();

@@ -15,9 +15,9 @@
 </mat-form-field>
 
 <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
-  @for (customer of customersFiltered(); track customer.CustomerName) {
-    <mat-option [value]="customer.CustomerName">
-      {{ customer.CustomerName }}
+  @for (customer of customersFiltered(); track customer.customerName) {
+    <mat-option [value]="customer.customerName">
+      {{ customer.customerName }}
     </mat-option>
   }
 </mat-autocomplete>

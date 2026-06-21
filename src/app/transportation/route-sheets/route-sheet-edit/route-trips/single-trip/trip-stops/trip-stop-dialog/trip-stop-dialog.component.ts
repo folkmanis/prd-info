@@ -82,19 +82,19 @@ export class TripStopDialogComponent {
   }
 
   onSetCustomer(event: MatAutocompleteSelectedEvent) {
-    const customer = this.#data.customers.find((c) => c.CustomerName === event.option.value);
+    const customer = this.#data.customers.find((c) => c.customerName === event.option.value);
     if (customer) {
       this.#tripStopModel.set({
         customerId: customer._id,
         address: customer.shippingAddress?.address ?? '',
         googleLocationId: customer.shippingAddress?.googleId ?? '',
-        name: customer.CustomerName,
+        name: customer.customerName,
       });
     }
   }
 
   private filterCustomers(value: string): TransportationCustomer[] {
     const filterValue = value.toUpperCase();
-    return this.#data.customers.filter((customer) => customer.CustomerName.toUpperCase().includes(filterValue));
+    return this.#data.customers.filter((customer) => customer.customerName.toUpperCase().includes(filterValue));
   }
 }

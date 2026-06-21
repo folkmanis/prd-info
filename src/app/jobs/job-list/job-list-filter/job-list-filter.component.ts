@@ -72,7 +72,7 @@ export class JobListFilterComponent {
   protected jobStates = configuration('jobs', 'jobStates');
 
   customers = input<CustomerPartial[] | null>();
-  protected customerNames = computed(() => this.customers()?.map((c) => c.CustomerName) ?? []);
+  protected customerNames = computed(() => this.customers()?.map((c) => c.customerName) ?? []);
 
   products = input<ProductPartial[] | null>();
   protected productNames = computed(() => this.products()?.map((p) => p.name) ?? []);

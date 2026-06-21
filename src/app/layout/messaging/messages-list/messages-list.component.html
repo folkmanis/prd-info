@@ -45,7 +45,7 @@
   <ng-template matMenuContent let-users="users" let-message="message">
     @for (ftpUser of users; track $index) {
       <button mat-menu-item [appMessageJob]="message" [appMessageJobFtpUser]="ftpUser">
-        {{ ftpUser.CustomerName }}
+        {{ ftpUser.customerName }}
       </button>
     }
     <button mat-menu-item [appMessageJob]="message" [appMessageJobFtpUser]="null">---Uz darbu---</button>

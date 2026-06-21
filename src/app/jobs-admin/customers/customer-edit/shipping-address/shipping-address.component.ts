@@ -1,5 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule, Validators, ValueChangeEvent } from '@angular/forms';
+import {
+  ControlValueAccessor,
+  FormBuilder,
+  FormsModule,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+  Validators,
+  ValueChangeEvent,
+} from '@angular/forms';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -17,11 +25,20 @@ import { PaytraqClientService } from '../../services/paytraq-client.service';
 import {
   PaytraqShippingAddressSelectDialogComponent,
   PaytraqShippingAddressSelectDialogData,
-} from './paytraq-shipping-address-select-dialog/paytraq-shipping-address-select-dialog.component';
+} from '../paytraq-shipping-address-select-dialog/paytraq-shipping-address-select-dialog.component';
 
 @Component({
   selector: 'app-shipping-address',
-  imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInput, MatSelectModule, MatButton, MatIconButton, MatIcon],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInput,
+    MatSelectModule,
+    MatButton,
+    MatIconButton,
+    MatIcon,
+  ],
   templateUrl: './shipping-address.component.html',
   styleUrl: './shipping-address.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -102,7 +119,9 @@ export class ShippingAddressComponent implements ControlValueAccessor {
         paytraqAddresses,
       },
     };
-    const result: PaytraqShippingAddress | undefined = await firstValueFrom(this.dialog.open(PaytraqShippingAddressSelectDialogComponent, config).afterClosed());
+    const result: PaytraqShippingAddress | undefined = await firstValueFrom(
+      this.dialog.open(PaytraqShippingAddressSelectDialogComponent, config).afterClosed(),
+    );
     if (!result) {
       return;
     }

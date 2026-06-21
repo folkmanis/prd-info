@@ -46,13 +46,17 @@ export class JobsFilesApiService {
     );
   }
 
-  readFtp(path?: string): Promise<FileElement[]> {
-    const data$ = this.#http.get<Record<string, any>[]>(this.#path + 'read/ftp', new HttpOptions({ path }).cacheable());
-    return this.#validator.validateArrayAsync(FileElement, data$);
+  readFtp(path?: string): Observable<FileElement[]> {
+    return this.#http
+      .get<Record<string, any>[]>(this.#path + 'read/ftp', new HttpOptions({ path }).cacheable())
+      .pipe(map(this.#validator.arrayValidatorFn(FileElement)));
   }
 
   readDropFolders(path?: string): Promise<FileElement[]> {
-    const request$ = this.#http.get<Record<string, any>[]>(this.#path + 'read/drop-folder', new HttpOptions({ path }).cacheable());
+    const request$ = this.#http.get<Record<string, any>[]>(
+      this.#path + 'read/drop-folder',
+      new HttpOptions({ path }).cacheable(),
+    );
     return this.#validator.validateArrayAsync(FileElement, request$);
   }
 
@@ -65,7 +69,12 @@ export class JobsFilesApiService {
     return this.#http.put<Job>(this.#path + srcJobId + '/copy/' + dstJobId, {}, new HttpOptions());
   }
 
-  copyFile(srcType: FileLocationTypes, dstType: FileLocationTypes, srcPath: string, dstPath: string): Observable<number> {
+  copyFile(
+    srcType: FileLocationTypes,
+    dstType: FileLocationTypes,
+    srcPath: string,
+    dstPath: string,
+  ): Observable<number> {
     return this.#http
       .patch<{ copied: number }>(
         this.#path + `copy/${srcType}/${dstType}`,
