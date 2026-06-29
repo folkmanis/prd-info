@@ -23,6 +23,7 @@ import { JobProduct } from 'src/app/jobs/interfaces';
 import { ViewSizeDirective } from 'src/app/library/view-size';
 import { ProductAutocompleteComponent } from '../product-autocomplete/product-autocomplete.component';
 import { ProductControlDirective } from './product-control.directive';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-repro-product',
@@ -102,7 +103,9 @@ export class ReproProductComponent implements ControlValueAccessor, Validator {
   }
 
   registerOnChange(fn: any): void {
-    this.productForm.valueChanges.subscribe(fn);
+    this.productForm.valueChanges
+      .pipe(map((value) => ({ ...value, price: Number(value.price), count: Number(value.count) })))
+      .subscribe(fn);
   }
 
   registerOnTouched(fn: any): void {
