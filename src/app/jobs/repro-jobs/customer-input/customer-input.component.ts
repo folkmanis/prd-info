@@ -27,7 +27,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { CustomerPartial } from 'src/app/interfaces';
+import { CustomerList } from 'src/app/interfaces';
 
 function emptyArray<T>(value: T[] | undefined | null): T[] {
   return Array.isArray(value) ? value : [];
@@ -64,7 +64,7 @@ function emptyArray<T>(value: T[] | undefined | null): T[] {
 export class CustomerInputComponent implements ControlValueAccessor, Validator {
   private inputElement = viewChild.required<ElementRef<HTMLInputElement>>('customerInput');
 
-  customers = input.required({ transform: emptyArray<CustomerPartial> });
+  customers = input.required({ transform: emptyArray<CustomerList> });
 
   customerNames = computed(() => this.customers().map((c) => c.customerName));
 
@@ -94,7 +94,7 @@ export class CustomerInputComponent implements ControlValueAccessor, Validator {
     this.control.setValue(obj, { emitEvent: false });
   }
 
-  registerOnChange(fn: (value: string) => void): void {
+  registerOnChange(fn: (value: string | null) => void): void {
     this.control.valueChanges.subscribe(fn);
   }
 
@@ -122,7 +122,7 @@ export class CustomerInputComponent implements ControlValueAccessor, Validator {
     this.inputElement().nativeElement.focus();
   }
 
-  private filterCustomer(customers: CustomerPartial[], value: string | null): CustomerPartial[] {
+  private filterCustomer(customers: CustomerList[], value: string | null): CustomerList[] {
     const filterValue = new RegExp(value || '', 'i');
     return customers.filter((customer) => filterValue.test(customer.customerName));
   }

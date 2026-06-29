@@ -16,14 +16,20 @@
 
       <mat-form-field>
         <mat-label> Skaitītājs sākumā </mat-label>
-        <input matInput [formField]="tripForm.odoStartKm" prdExpressionInput #odoStartExp="prdExpressionInput" />
+        <input
+          matInput
+          type="number"
+          [formField]="tripForm.odoStartKm"
+          prdExpressionInput
+          #odoStartExp="prdExpressionInput"
+        />
         <span matTextSuffix> km </span>
         <span matIconSuffix>
           @if (lastOdometer$ | async; as lastOdometer) {
             <button
               type="button"
               matIconButton
-              (click)="tripForm.odoStartKm().value.set(lastOdometer.toString())"
+              (click)="tripForm.odoStartKm().value.set(lastOdometer)"
               matTooltip="Iepriekšējais rādījums: {{ lastOdometer }} km"
             >
               <mat-icon> chevron_left </mat-icon>
@@ -37,7 +43,13 @@
 
       <mat-form-field>
         <mat-label> Skaitītājs beigās </mat-label>
-        <input matInput [formField]="tripForm.odoStopKm" prdExpressionInput #odoStopExp="prdExpressionInput" />
+        <input
+          matInput
+          type="number"
+          [formField]="tripForm.odoStopKm"
+          prdExpressionInput
+          #odoStopExp="prdExpressionInput"
+        />
         <span matTextSuffix> km </span>
         <mat-error>
           @for (error of tripForm.odoStopKm().errors(); track $index) {
@@ -53,7 +65,13 @@
     <div class="flex-inputs" appViewSize>
       <mat-form-field>
         <mat-label> Pavisam nobraukti</mat-label>
-        <input matInput [formField]="tripForm.tripLengthKm" prdExpressionInput #tripLenExp="prdExpressionInput" />
+        <input
+          matInput
+          type="number"
+          [formField]="tripForm.tripLengthKm"
+          prdExpressionInput
+          #tripLenExp="prdExpressionInput"
+        />
         <span matTextSuffix> km </span>
         <mat-hint align="end">
           {{ tripLenExp.calculatedUpdate() }}

@@ -1,37 +1,50 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { debounce, form, FormField } from '@angular/forms/signals';
+import { MatIconButton } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { isEqual } from 'lodash-es';
 import { SimpleListContainerComponent } from 'src/app/library/simple-form';
-import { CustomerFilter, CustomersService } from 'src/app/services';
+import { CustomersQuerySchema, CustomersService } from 'src/app/services';
 
 @Component({
   selector: 'app-customers-list',
   templateUrl: './customers-list.component.html',
   styleUrls: ['./customers-list.component.scss'],
-  imports: [MatTableModule, RouterLink, RouterLinkActive, SimpleListContainerComponent],
+  imports: [
+    MatTableModule,
+    RouterLink,
+    RouterLinkActive,
+    SimpleListContainerComponent,
+    MatFormFieldModule,
+    MatInput,
+    MatIcon,
+    MatIconButton,
+    FormField,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CustomersListComponent {
-  private readonly customersService = inject(CustomersService);
+  #customersService = inject(CustomersService);
+  protected displayedColumns = ['customerName'];
 
-  name = signal('');
+  #searchModel = signal({ name: '' });
+  protected searchForm = form(this.#searchModel, (schema) => {
+    debounce(schema.name, 300);
+  });
 
-  filter = computed(
+  #filter = computed(
     () => {
-      const filter: CustomerFilter = { disabled: true };
-      const name = this.name().trim();
-      if (name) {
-        filter.name = name;
-      }
-      return filter;
+      const filter = CustomersQuerySchema.decode(this.#searchModel());
+      return { ...filter, disabled: true };
     },
     { equal: isEqual },
   );
 
-  customers = this.customersService.getCustomersResource(this.filter);
-
-  displayedColumns = ['customerName'];
+  protected customers = this.#customersService.getCustomersResource(this.#filter);
 
   onReload() {
     this.customers.reload();

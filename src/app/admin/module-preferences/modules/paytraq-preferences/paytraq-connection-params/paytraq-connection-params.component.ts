@@ -1,6 +1,16 @@
 import { FocusMonitor } from '@angular/cdk/a11y';
 import { ChangeDetectionStrategy, Component, effect, forwardRef, inject, output, viewChild } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, FormsModule, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator, Validators } from '@angular/forms';
+import {
+  ControlValueAccessor,
+  FormBuilder,
+  FormsModule,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validator,
+  Validators,
+} from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { map } from 'rxjs';
@@ -72,7 +82,7 @@ export class PaytraqConnectionParamsComponent implements ControlValueAccessor, V
     this.controls.setValue({ ...DEFAULT_VALUE, ...obj }, { emitEvent: false });
   }
 
-  registerOnChange(fn: (obj: PaytraqConnectionParams) => void) {
+  registerOnChange(fn: (obj: any) => void) {
     this.controls.valueChanges.pipe(map((value) => (isMissingParams(value) ? null : value))).subscribe(fn);
   }
 
@@ -92,7 +102,7 @@ export class PaytraqConnectionParamsComponent implements ControlValueAccessor, V
     const values = this.controls.value;
     if (isMissingParams(values)) {
       return {
-        missing: Object.keys(values).filter((key) => !values[key]),
+        missing: 'Missing values',
       };
     } else {
       return null;

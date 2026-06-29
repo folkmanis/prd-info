@@ -26,7 +26,7 @@ export default [
         resolve: {
           customer: resolveCustomer,
         },
-        runGuardsAndResolvers: 'always',
+        title: 'Klients',
       },
     ],
   },

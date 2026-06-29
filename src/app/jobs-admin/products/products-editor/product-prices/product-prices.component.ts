@@ -17,7 +17,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
-import { CustomerPartial, ProductPrice } from 'src/app/interfaces';
+import { CustomerList, ProductPrice } from 'src/app/interfaces';
 import { InputDirective } from 'src/app/library/directives/input.directive';
 
 type PricesForm = ReturnType<typeof productPriceGroup>;
@@ -27,7 +27,15 @@ type PricesForm = ReturnType<typeof productPriceGroup>;
   templateUrl: './product-prices.component.html',
   styleUrls: ['./product-prices.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, FormsModule, MatSelectModule, MatOptionModule, MatIconModule, MatButtonModule, InputDirective],
+  imports: [
+    ReactiveFormsModule,
+    FormsModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatIconModule,
+    MatButtonModule,
+    InputDirective,
+  ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -44,7 +52,7 @@ type PricesForm = ReturnType<typeof productPriceGroup>;
 export class ProductPricesComponent implements ControlValueAccessor, Validator {
   private chDetector = inject(ChangeDetectorRef);
 
-  customers = input<CustomerPartial[] | undefined | null>([]);
+  customers = input<CustomerList[] | undefined | null>([]);
 
   pricesFormArray = new FormArray<PricesForm>([], [this.duplicateCustomersValidator]);
 
@@ -65,7 +73,7 @@ export class ProductPricesComponent implements ControlValueAccessor, Validator {
     this.chDetector.markForCheck();
   }
 
-  registerOnChange(fn: (p: ProductPrice[]) => void): void {
+  registerOnChange(fn: (p: any) => void): void {
     this.pricesFormArray.valueChanges.subscribe(fn);
   }
 

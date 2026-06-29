@@ -23,9 +23,10 @@ export function navigateToReturn(): (extras?: ExtrasType) => Promise<boolean> {
   const route = inject(ActivatedRoute);
 
   return (extras = {}) => {
-    const returnUrl = location.getState()?.['returnUrl'];
-    if (typeof returnUrl === 'string') {
-      return router.navigate([returnUrl], { ...extras });
+    const state = location.getState();
+
+    if (typeof state === 'object' && state !== null && 'returnUrl' in state && typeof state.returnUrl === 'string') {
+      return router.navigate([state.returnUrl], { ...extras });
     } else {
       return router.navigate(['..'], { relativeTo: route, ...extras });
     }

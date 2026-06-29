@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, linkedSignal } from '@angular/core';
-import { CustomerPartial, ProductPartial } from 'src/app/interfaces';
+import { CustomerList, ProductPartial } from 'src/app/interfaces';
 import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
 import { JobFilter } from '../interfaces';
 import { JobsUserPreferencesService } from '../services/jobs-user-preferences.service';
@@ -35,7 +35,7 @@ export class QuickCreateComponent {
   protected jobs = inject(QuickCreateService).jobsResource(this.#filter);
 
   products = input.required<ProductPartial[]>();
-  customers = input.required<CustomerPartial[]>();
+  customers = input.required<CustomerList[]>();
 
   initialJob = computed(() => this.#preferences()?.quickCreateJob);
 

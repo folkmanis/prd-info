@@ -19,7 +19,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
-import { CustomerPartial, ProductPartial } from 'src/app/interfaces';
+import { CustomerList, ProductPartial } from 'src/app/interfaces';
 import { AutocompleteFilterDirective } from 'src/app/library/autocomplete';
 import { JobCategories, JobCreate } from '../../interfaces';
 import { QuickCreateJob } from '../../interfaces/jobs-user-preferences';
@@ -50,7 +50,7 @@ export class QuickCreateInputComponent {
   #injector = inject(Injector);
 
   products = input.required<ProductPartial[]>();
-  customers = input.required<CustomerPartial[]>();
+  customers = input.required<CustomerList[]>();
   initialJob = input.required<QuickCreateJob>();
 
   updated = output<void>();

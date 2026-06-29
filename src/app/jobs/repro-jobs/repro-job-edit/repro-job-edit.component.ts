@@ -1,5 +1,16 @@
 import { AsyncPipe } from '@angular/common';
-import { afterNextRender, ChangeDetectionStrategy, Component, computed, effect, inject, Injector, input, linkedSignal, viewChild } from '@angular/core';
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  Injector,
+  input,
+  linkedSignal,
+  viewChild,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,7 +22,21 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterLink } from '@angular/router';
 import { isEqual, pickBy } from 'lodash-es';
-import { combineLatest, concat, concatMap, distinctUntilChanged, EMPTY, filter, map, merge, Observable, of, Subscription, switchMap, throttleTime } from 'rxjs';
+import {
+  combineLatest,
+  concat,
+  concatMap,
+  distinctUntilChanged,
+  EMPTY,
+  filter,
+  map,
+  merge,
+  Observable,
+  of,
+  Subscription,
+  switchMap,
+  throttleTime,
+} from 'rxjs';
 import { DropFolder } from 'src/app/interfaces';
 import { notNullOrThrow } from 'src/app/library';
 import { KeyPressDirective } from 'src/app/library/directives';
@@ -26,6 +51,7 @@ import { UploadProgressComponent } from '../upload-progress/upload-progress.comp
 import { DropFolderComponent } from './drop-folder/drop-folder.component';
 import { FolderPathComponent } from './folder-path/folder-path.component';
 import { JobFormComponent } from './job-form/job-form.component';
+import { computedChanges } from 'src/app/library/signals';
 
 @Component({
   selector: 'app-repro-job-edit',
@@ -68,15 +94,13 @@ export class ReproJobEditComponent {
 
   form = new FormControl<Partial<Omit<Job, 'jobId'>>>({});
 
-  value$: Observable<Partial<Omit<Job, 'jobId'>>> = merge(of(null), this.form.valueChanges).pipe(map(() => this.form.getRawValue() as Partial<Job>));
+  value$: Observable<Partial<Omit<Job, 'jobId'>>> = merge(of(null), this.form.valueChanges).pipe(
+    map(() => this.form.getRawValue() as Partial<Job>),
+  );
   value = toSignal(this.value$, { requireSync: true });
   status = toSignal(this.form.statusChanges, { initialValue: this.form.status });
 
-  changes = computed(() => {
-    const initial = this.initialValue();
-    const diff = pickBy(this.value(), (value, key) => !isEqual(value, initial[key]));
-    return Object.keys(diff).length ? diff : null;
-  });
+  changes = computed(() => computedChanges(this.value(), this.initialValue(), { includeNull: true }));
 
   uploadRef = inject(UploadRefService).retrieveUploadRef();
 
@@ -166,7 +190,9 @@ export class ReproJobEditComponent {
       if (this.uploadRef && this.dropFolderActive() && dropFolder !== null) {
         this.uploadRef
           .onAddedToJob()
-          .pipe(concatMap((job) => (job.files ? this.jobService.copyToDropFolder(job.files.path, dropFolder.path) : EMPTY)))
+          .pipe(
+            concatMap((job) => (job.files ? this.jobService.copyToDropFolder(job.files.path, dropFolder.path) : EMPTY)),
+          )
           .subscribe();
       }
       if (this.uploadRef) {
@@ -203,12 +229,15 @@ export class ReproJobEditComponent {
   }
 }
 
-function isProductChanged<T extends Pick<Job, 'customer' | 'products'>>(previous: T, current: T): boolean {
+function isProductChanged<T extends Partial<Pick<Job, 'customer' | 'products'>> | null>(
+  previous: T,
+  current: T,
+): boolean {
   return (
-    previous.customer === current.customer &&
+    previous?.customer === current?.customer &&
     isEqual(
-      previous.products.map((p) => p.name),
-      current.products.map((p) => p.name),
+      previous?.products?.map((p) => p.name),
+      current?.products?.map((p) => p.name),
     )
   );
 }

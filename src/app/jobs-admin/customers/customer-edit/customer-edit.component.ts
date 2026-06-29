@@ -26,7 +26,7 @@ import {
   required,
   SchemaPath,
 } from '@angular/forms/signals';
-import { MatButton } from '@angular/material/button';
+import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDivider } from '@angular/material/divider';
@@ -34,14 +34,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatList, MatListItem } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { MatOption, MatSelect } from '@angular/material/select';
 import { Customer, CustomerContact, defaultCustomerContact } from 'src/app/interfaces';
 import { notNullOrThrow } from 'src/app/library';
 import { InputUppercaseDirective } from 'src/app/library/directives/input-uppercase.directive';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { navigateRelative } from 'src/app/library/navigation';
-import { computedSignalChanges, pickChanges } from 'src/app/library/signals';
+import { computedChanges, pickChanges } from 'src/app/library/signals';
 import { SimpleContentContainerComponent } from 'src/app/library/simple-form/simple-content-container/simple-content-container.component';
 import { updateCatching } from 'src/app/library/update-catching';
 import { CustomersService } from 'src/app/services';
@@ -73,12 +73,12 @@ import { CustomerEditService } from './customer-edit.service';
     MatInput,
     MatIcon,
     MatProgressSpinner,
+    MatIconButton,
     MatButton,
-    AsyncPipe,
-    MatSelect,
-    MatOption,
     MatList,
     MatListItem,
+    MatMenuModule,
+    AsyncPipe,
   ],
 })
 export class CustomerEditComponent implements CanComponentDeactivate {
@@ -98,17 +98,13 @@ export class CustomerEditComponent implements CanComponentDeactivate {
   customer = input.required<Customer>();
   #initialCustomer = linkedSignal(() => this.customer());
   #initialModel = linkedSignal(() => customerToModel(this.#initialCustomer()));
-  #customerModel = linkedSignal(() => {
-    const initial = this.#initialModel();
-    untracked(() => this.form().reset(initial));
-    return initial;
-  });
-
-  protected changes = computedSignalChanges(this.#customerModel, this.#initialModel, { includeNull: true });
+  #customerModel = linkedSignal(() => this.#initialModel());
 
   form = form(
     this.#customerModel,
     (schema) => {
+      disabled(schema, { when: () => this.busy() });
+
       required(schema.customerName, { message: `Nosaukums jāievada obligāti!` });
       readonly(schema.customerName, { when: () => this.isNew() === false });
       required(schema.code, { message: `Kodu jāievada obligāti!` });
@@ -143,14 +139,35 @@ export class CustomerEditComponent implements CanComponentDeactivate {
     },
   );
 
-  protected isNew = computed(() => !this.#initialCustomer()._id);
+  protected isNew = computed(() => !this.customer()._id);
+
+  constructor() {
+    effect(() => {
+      this.#initialCustomer();
+      untracked(() => {
+        this.form().reset();
+      });
+    });
+  }
 
   canDeactivate(): boolean {
-    return this.form().dirty() === false || this.changes() === null;
+    return this.form().dirty() === false;
   }
 
   protected onReset() {
-    this.form().reset(this.#initialModel());
+    this.form().reset(customerToModel(this.#initialCustomer()));
+  }
+
+  protected onRemoveFtpData() {
+    this.#customerModel.update((customer) => ({
+      ...customer,
+      ftpUserData: {
+        folder: '',
+        password: '',
+        username: '',
+      },
+    }));
+    this.form.ftpUserData().markAsDirty();
   }
 
   protected onAddContact() {
@@ -158,6 +175,7 @@ export class CustomerEditComponent implements CanComponentDeactivate {
       ...customer,
       contacts: [...customer.contacts, defaultCustomerContact()],
     }));
+    this.form.contacts().markAsDirty();
     const contact = this.form.contacts[this.form.contacts.length - 1];
     this.activeContact.set(contact);
     setTimeout(() => {
@@ -170,6 +188,7 @@ export class CustomerEditComponent implements CanComponentDeactivate {
       ...customer,
       contacts: customer.contacts.filter((c, i) => i !== idx),
     }));
+    this.form.contacts().markAsDirty();
   }
 
   protected async onSelectFinancial() {
@@ -183,6 +202,7 @@ export class CustomerEditComponent implements CanComponentDeactivate {
           paytraqId: result.paytraqId.toString(),
         },
       }));
+      this.form.financial().markAsDirty();
     }
   }
 
@@ -194,6 +214,7 @@ export class CustomerEditComponent implements CanComponentDeactivate {
         paytraqId: '',
       },
     }));
+    this.form.financial().markAsDirty();
   }
 
   protected async onAddressMap() {
@@ -207,6 +228,7 @@ export class CustomerEditComponent implements CanComponentDeactivate {
           ...update,
         },
       }));
+      this.form.shippingAddress().markAsDirty();
     }
   }
 
@@ -222,12 +244,17 @@ export class CustomerEditComponent implements CanComponentDeactivate {
           },
         }));
         message(`Adrese no Paytraq pievienota`);
+        this.form.shippingAddress().markAsDirty();
       }
     });
   }
 
   protected onResetAddress() {
-    this.form.shippingAddress().value.set(defaultShippingAddressModel());
+    this.#customerModel.update((customer) => ({
+      ...customer,
+      shippingAddress: defaultShippingAddressModel(),
+    }));
+    this.form.shippingAddress().markAsDirty();
   }
 
   #validateCode(schema: SchemaPath<string>) {
@@ -235,7 +262,7 @@ export class CustomerEditComponent implements CanComponentDeactivate {
       schema,
       ({ value }) => value() !== this.#initialModel().code,
       (s) => {
-        this.#customersService.isCustomerCodeAvailable(s);
+        this.#customersService.isPropertyAvailable(s, 'code');
       },
     );
   }
@@ -245,24 +272,20 @@ export class CustomerEditComponent implements CanComponentDeactivate {
       schema,
       ({ value }) => value() !== this.#initialModel().customerName,
       (s) => {
-        this.#customersService.isNameAvailable(s);
+        this.#customersService.isPropertyAvailable(s, 'customerName');
       },
     );
   }
 
-  #onReload() {
-    this.#customersListComponent.onReload();
-  }
-
   async #saveCustomer(value: CustomerModel) {
-    this.#update(async (message) => {
-      const { _id } = this.#initialCustomer();
+    await this.#update(async (message) => {
+      const { _id } = this.customer();
       if (_id) {
-        const customer = await this.#createCustomer(value);
-        message(`Jauns lietotājs ${customer.customerName} izveidots!`);
-      } else {
         await this.#updateCustomer(_id, value);
         message(`Izmaiņas saglabātas`);
+      } else {
+        const customer = await this.#createCustomer(value);
+        message(`Jauns lietotājs ${customer.customerName} izveidots!`);
       }
     });
   }
@@ -270,19 +293,22 @@ export class CustomerEditComponent implements CanComponentDeactivate {
   async #createCustomer(value: CustomerModel): Promise<Customer> {
     const create = modelToCreateCustomer(value);
     const customer = await this.#customersService.createCustomer(create);
-    this.#onReload();
+    this.#customersListComponent.onReload();
     this.form().reset();
     this.#navigate(['..', customer._id]);
     return customer;
   }
 
-  async #updateCustomer(id: string, value: CustomerModel): Promise<Customer> {
-    const changes = notNullOrThrow(pickChanges(value, this.#initialModel(), { includeNull: true }));
-    const update = modelToUpdateCustomer(changes);
-    const customer = await this.#customersService.updateCustomer(id, update);
+  async #updateCustomer(id: string, value: CustomerModel): Promise<void> {
+    const changes = computedChanges(value, this.#initialModel(), { includeNull: true });
+    let customer: Customer;
+    if (changes) {
+      const update = modelToUpdateCustomer(changes);
+      customer = await this.#customersService.updateCustomer(id, update);
+    } else {
+      customer = await this.#customersService.getCustomer(id);
+    }
     this.#initialCustomer.set(customer);
-    this.#onReload();
-    this.form().reset();
-    return customer;
+    this.#customersListComponent.onReload();
   }
 }

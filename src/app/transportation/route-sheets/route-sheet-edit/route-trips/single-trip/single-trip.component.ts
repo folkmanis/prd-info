@@ -31,6 +31,7 @@ import { TransportationCustomer } from 'src/app/transportation/interfaces/transp
 import { RouteStop, RouteTrip } from 'src/app/transportation/interfaces/transportation-route-sheet';
 import { RouteSheetService } from 'src/app/transportation/services/route-sheet.service';
 import { TripStopsComponent } from './trip-stops/trip-stops.component';
+import { updateCatching } from 'src/app/library/update-catching';
 
 export interface TripDialogData {
   trip: RouteTrip;
@@ -46,10 +47,10 @@ export interface TripDialogData {
 
 interface TripModel {
   date: Date;
-  tripLengthKm: string;
+  tripLengthKm: number;
   fuelConsumed: number;
-  odoStartKm: string;
-  odoStopKm: string;
+  odoStartKm: number;
+  odoStopKm: number;
   description: string;
   stops: {
     customerId: string;
@@ -89,8 +90,8 @@ export class SingleTripComponent {
   #data = inject<TripDialogData>(MAT_DIALOG_DATA);
   #dialogRef = inject(MatDialogRef);
   #snack = inject(MatSnackBar);
-
   protected busy = signal(false);
+  #update = updateCatching(this.busy);
 
   protected lastOdometer$ = this.#data.lastOdometer$;
   protected fuelUnits = this.#data.fuelUnits;
@@ -103,7 +104,7 @@ export class SingleTripComponent {
   #initialModel = this.#toModel(this.#data.trip);
   #tripModel = signal(this.#initialModel);
   protected tripForm = form(this.#tripModel, (s) => {
-    disabled(s, () => this.busy());
+    disabled(s, { when: () => this.busy() });
 
     required(s.date);
     validate(s.date, ({ value }) =>
@@ -123,8 +124,8 @@ export class SingleTripComponent {
 
     required(s.odoStopKm);
     validate(s.odoStopKm, ({ value, valueOf }) => {
-      const odoStartKm = Number(valueOf(s.odoStartKm));
-      const tripLengthKm = Number(valueOf(s.tripLengthKm));
+      const odoStartKm = valueOf(s.odoStartKm);
+      const tripLengthKm = valueOf(s.tripLengthKm);
       return Number(value()) < odoStartKm + tripLengthKm
         ? {
             kind: 'invalid_odo',
@@ -160,9 +161,9 @@ export class SingleTripComponent {
   #toModel(trip: RouteTrip): TripModel {
     return {
       ...trip,
-      odoStartKm: trip.odoStartKm.toString(),
-      odoStopKm: trip.odoStopKm.toString(),
-      tripLengthKm: trip.tripLengthKm.toString(),
+      odoStartKm: trip.odoStartKm,
+      odoStopKm: trip.odoStopKm,
+      tripLengthKm: trip.tripLengthKm,
       stops: trip.stops.map((s) => ({
         ...s,
         customerId: s.customerId ?? '',
@@ -174,9 +175,9 @@ export class SingleTripComponent {
   #fromModel(model: TripModel): RouteTrip {
     return {
       ...model,
-      tripLengthKm: Number(model.tripLengthKm),
-      odoStartKm: Number(model.odoStartKm),
-      odoStopKm: Number(model.odoStopKm),
+      tripLengthKm: model.tripLengthKm,
+      odoStartKm: model.odoStartKm,
+      odoStopKm: model.odoStopKm,
       stops: model.stops.map((s) => ({
         ...s,
         customerId: s.customerId || null,
@@ -194,21 +195,17 @@ export class SingleTripComponent {
 
     const { stops, odoStartKm } = this.#tripModel();
 
-    try {
+    this.#update(async () => {
       const tripLengthKm = await this.#routeService.getTripLength(stops);
-      const odoStopKm = Number(odoStartKm) + tripLengthKm;
+      const odoStopKm = odoStartKm + tripLengthKm;
       const { fuelConsumption } = this.#data;
       const fuelConsumed = round((fuelConsumption * tripLengthKm) / 100, 1);
       this.#tripModel.update((trip) => ({
         ...trip,
-        tripLengthKm: tripLengthKm.toString(),
-        odoStopKm: odoStopKm.toString(),
+        tripLengthKm: tripLengthKm,
+        odoStopKm: odoStopKm,
         fuelConsumed,
       }));
-    } catch (error) {
-      this.#snack.open(`Neizdevās aprēķināt ceļu: ${error.message}`, 'OK');
-    } finally {
-      this.busy.set(false);
-    }
+    });
   }
 }

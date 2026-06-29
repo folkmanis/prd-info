@@ -5,6 +5,7 @@ import { LogRecordSchema } from 'src/app/admin/logfile/services/logfile-record';
 import { getAppParams } from 'src/app/app-params';
 import { ValidatorService } from 'src/app/library';
 import { HttpOptions, httpResponseRequest } from 'src/app/library/http';
+import { z } from 'zod';
 
 @Injectable({
   providedIn: 'root',
@@ -31,15 +32,12 @@ export class LogfileApiService {
 
   datesGroupsResource(level: Signal<number | null>) {
     return httpResource(
-      () => {
-        if (typeof level() !== 'number') {
-          return undefined;
-        } else {
-          return httpResponseRequest(this.#path + 'dates-groups', new HttpOptions({ level: level() }));
-        }
-      },
+      () =>
+        typeof level() === 'number'
+          ? httpResponseRequest(this.#path + 'dates-groups', new HttpOptions({ level: level() }))
+          : undefined,
       {
-        parse: (dates: string[]) => dates.map((date) => parse(date, 'y-MM-dd', 0)),
+        parse: this.#validator.arrayValidatorFn(z.coerce.date()),
         defaultValue: [],
       },
     );

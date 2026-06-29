@@ -2,9 +2,23 @@
   @for (value of values(); track $index) {
     <mat-list-item>
       {{ value[0] | titlecase }}:&nbsp;
-      <span class="value" (click)="clickEvent.emit(value)">
-        {{ value[1] }}
-      </span>
+      @switch (value[0]) {
+        @case ('name') {
+          <span class="value" (click)="onValueSelected('name', value)">
+            {{ value[1] }}
+          </span>
+        }
+        @case ('email') {
+          <span class="value" (click)="onValueSelected('email', value)">
+            {{ value[1] }}
+          </span>
+        }
+        @default {
+          <span>
+            {{ value[1] }}
+          </span>
+        }
+      }
     </mat-list-item>
   }
 </mat-list>

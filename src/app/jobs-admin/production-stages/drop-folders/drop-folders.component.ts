@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, input } from '@angular/core';
 import {
+  AbstractControl,
   ControlValueAccessor,
   FormArray,
   FormControl,
@@ -19,7 +20,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { isEqual } from 'lodash-es';
-import { CustomerPartial, DropFolder } from 'src/app/interfaces';
+import { CustomerList, DropFolder } from 'src/app/interfaces';
 import { ProductionStagesService } from 'src/app/services/production-stages.service';
 
 type DropFolderForm = FormGroup<{
@@ -32,7 +33,15 @@ type DropFolderForm = FormGroup<{
   templateUrl: './drop-folders.component.html',
   styleUrls: ['./drop-folders.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, FormsModule, MatIconModule, MatButtonModule, MatFormFieldModule, MatSelectModule, MatOptionModule],
+  imports: [
+    ReactiveFormsModule,
+    FormsModule,
+    MatIconModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+  ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -52,7 +61,7 @@ export class DropFoldersComponent implements ControlValueAccessor, Validator {
 
   dropFolders = input.required<{ value: string[]; name: string }[]>();
 
-  customers = input.required<CustomerPartial[] | undefined | null>();
+  customers = input.required<CustomerList[] | undefined | null>();
 
   form = new FormArray<DropFolderForm>([], {
     validators: [this.duplicateDefaultValidator()],
@@ -125,9 +134,12 @@ export class DropFoldersComponent implements ControlValueAccessor, Validator {
   }
 
   private duplicateDefaultValidator(): ValidatorFn {
-    return (control: FormArray<DropFolderForm>) => {
-      const defaults = control.value?.filter((val) => val.customers?.includes('**'));
-      return defaults.length > 1 ? { duplicateDefaults: defaults } : null;
+    return (control: AbstractControl<DropFolderForm>) => {
+      if (control instanceof FormArray) {
+        const defaults = control.value?.filter((val: any) => val.customers?.includes('**'));
+        return defaults.length > 1 ? { duplicateDefaults: defaults } : null;
+      }
+      return null;
     };
   }
 }

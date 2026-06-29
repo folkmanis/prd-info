@@ -19,7 +19,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
-import { CustomerPartial } from 'src/app/interfaces';
+import { CustomerList } from 'src/app/interfaces';
 import { AutocompleteFilterDirective } from 'src/app/library/autocomplete';
 import { DateRangePickerComponent } from 'src/app/library/date-range-picker';
 import { ViewSizeDirective } from 'src/app/library/view-size';
@@ -99,16 +99,16 @@ export class ProductsFilterComponent {
 
   categories = configuration('jobs', 'productCategories');
 
-  customers = input<CustomerPartial[] | null>();
+  customers = input<CustomerList[] | null>();
   protected customerNames = computed(() => this.customers()?.map((c) => c.customerName));
 
   disabled = input(false);
 
   #filterModel = linkedSignal(() => untracked(() => filterToModel(this.filter())));
   protected filterForm = form(this.#filterModel, (s) => {
-    disabled(s.customer, () => !this.customerNames());
+    disabled(s.customer, { when: () => !this.customerNames() });
 
-    disabled(s, () => this.disabled());
+    disabled(s, { when: () => this.disabled() });
   });
 
   constructor() {

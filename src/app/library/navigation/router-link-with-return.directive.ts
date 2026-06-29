@@ -14,7 +14,7 @@ export class RouterLinkWithReturnDirective extends RouterLink implements OnChang
   }
 
   @Input()
-  returnUrl: string;
+  returnUrl?: string;
 
   onClick(...args: [number, boolean, boolean, boolean, boolean]): boolean {
     this.state = this.state ?? {};

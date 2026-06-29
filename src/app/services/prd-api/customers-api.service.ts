@@ -12,7 +12,14 @@ import {
   CustomerSchema,
   UpdateCustomerDto,
 } from 'src/app/interfaces';
-import { HttpOptions, httpResponseRequest, ValidatorService } from 'src/app/library';
+import { CustomerModel, CustomerModelSchema } from 'src/app/jobs-admin/customers/customer-edit/customer-edit.model';
+import {
+  HttpOptions,
+  httpResponseRequest,
+  ValidationResult,
+  ValidationResultSchema,
+  ValidatorService,
+} from 'src/app/library';
 import { NETWORK_ERROR } from 'src/app/library/http/network-error';
 
 @Injectable({
@@ -57,19 +64,30 @@ export class CustomersApiService {
       .pipe(map((data) => data.deletedCount));
   }
 
-  validate<K extends keyof Pick<Customer, 'customerName' | 'code'>>(schema: SchemaPath<Customer[K]>, key: K): void {
+  validate<K extends keyof Pick<CustomerModel, 'customerName' | 'code'>>(
+    schema: SchemaPath<CustomerModel[K]>,
+    key: K,
+  ): void {
     validateHttp(schema, {
-      request: ({ value }) =>
-        httpResponseRequest(this.#path + 'validate/' + key, new HttpOptions({ value: value() }).cacheable()),
-      onSuccess: (response: boolean, { value }) => {
-        const current = value()?.toUpperCase();
-        if (!response) {
+      debounce: 300,
+      request: ({ value }) => {
+        const request = CustomerModelSchema.partial().encode({ [key]: value() });
+        return httpResponseRequest(
+          this.#path + 'validate/' + key,
+          new HttpOptions({ value: request[key] }).cacheable(),
+        );
+      },
+      options: {
+        parse: this.#validator.validatorFn(ValidationResultSchema),
+      },
+      onSuccess: (response: ValidationResult) => {
+        if (response.valid === true) {
+          return null;
+        } else {
           return {
             kind: 'used',
-            message: `"${value()}" jau tiek izmantots!`,
+            message: `"${response.value}" jau tiek izmantots!`,
           };
-        } else {
-          return null;
         }
       },
       onError: () => NETWORK_ERROR,

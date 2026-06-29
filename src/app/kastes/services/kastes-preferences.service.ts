@@ -5,6 +5,7 @@ import { KastesSettings } from 'src/app/interfaces';
 import { configuration } from 'src/app/services/config.provider';
 import { KastesUserPreferences } from '../interfaces';
 import { DEFAULT_USER_PREFERENCES, KastesApiService } from './kastes-api.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 type P = KastesUserPreferences & KastesSettings;
 // KastesPreferencesService['preferences$'] extends Observable<infer K> ? K : never;
@@ -32,7 +33,8 @@ export class KastesPreferencesService {
 
   constructor() {
     effect((onCleanup) => {
-      if (this.userPreferencesResource.error()?.['status'] === 404) {
+      const err = this.userPreferencesResource.error();
+      if (err && 'status' in err && err.status === 404) {
         const subs = this.updateUserPreferences(DEFAULT_USER_PREFERENCES).subscribe();
         onCleanup(() => subs?.unsubscribe());
       }
@@ -46,6 +48,8 @@ export class KastesPreferencesService {
   });
 
   updateUserPreferences(prefs: Partial<KastesUserPreferences>): Observable<KastesUserPreferences> {
-    return this.api.setUserPreferences(prefs).pipe(tap((newPreferences) => this.userPreferencesResource.set(newPreferences)));
+    return this.api
+      .setUserPreferences(prefs)
+      .pipe(tap((newPreferences) => this.userPreferencesResource.set(newPreferences)));
   }
 }

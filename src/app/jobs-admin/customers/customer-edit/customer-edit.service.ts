@@ -1,21 +1,20 @@
 import { inject, Injectable } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { firstValueFrom, map } from 'rxjs';
-import { notNullOrThrow } from 'src/app/library/assert-utils';
-import { PaytraqClientService } from '../services/paytraq-client.service';
-import { LocationSelectService, ShippingMarker } from 'src/app/library/location-select';
-import {
-  PaytraqShippingAddressSelectDialogComponent,
-  PaytraqShippingAddressSelectDialogData,
-} from './paytraq-shipping-address-select-dialog/paytraq-shipping-address-select-dialog.component';
-import { PaytraqShippingAddress } from 'src/app/interfaces/paytraq';
-import { CustomerFinancialModel, ShippingAddressModel } from './customer-edit.model';
 import { JobFilesService } from 'src/app/filesystem';
 import { CustomerFinancial } from 'src/app/interfaces';
+import { PaytraqShippingAddress } from 'src/app/interfaces/paytraq';
+import { LocationSelectService } from 'src/app/library/location-select';
+import { PaytraqClientService } from '../services/paytraq-client.service';
+import { ShippingAddressModel } from './customer-edit.model';
 import {
   PaytraqCustomerSelectComponent,
   PaytraqCustomerSelectDialogData,
 } from './paytraq-customer-select/paytraq-customer-select.component';
+import {
+  PaytraqShippingAddressSelectDialogComponent,
+  PaytraqShippingAddressSelectDialogData,
+} from './paytraq-shipping-address-select-dialog/paytraq-shipping-address-select-dialog.component';
 
 @Injectable({
   providedIn: 'root',
@@ -68,7 +67,7 @@ export class CustomerEditService {
       address: result.address,
       zip: result.zip,
       country: result.country,
-      paytraqId: result.addressID,
+      paytraqId: result.addressID.toString(),
     };
   }
 }
