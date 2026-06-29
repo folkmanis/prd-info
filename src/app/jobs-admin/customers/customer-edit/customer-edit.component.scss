@@ -1,3 +1,11 @@
+form {
+  height: 100%;
+}
+
+.content {
+  padding: 16px;
+}
+
 mat-form-field.full-width {
   width: 100%;
 }
@@ -18,16 +26,10 @@ section {
   margin: 8px 0;
 }
 
-section#ftp-user {
-
-  mat-checkbox[formControlName="ftpUser"] {
-    margin: 8px 0;
-  }
-
-  app-ftp-user:not([hidden]) {
-    display: block;
-    margin-top: 8px;
-  }
+span[matIconSuffix].spinner {
+  width: 28px;
+  padding-right: 8px;
+  display: flex;
 }
 
 mat-card#shipping-address {

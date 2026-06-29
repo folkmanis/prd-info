@@ -67,5 +67,5 @@ function toSideMenu(item: UserModule[], rte: string[] = []): SideMenuNode[] {
       childMenu: userModule.childMenu && toSideMenu(userModule.childMenu, route),
     };
     return [...acc, mItem];
-  }, []);
+  }, [] as SideMenuNode[]);
 }

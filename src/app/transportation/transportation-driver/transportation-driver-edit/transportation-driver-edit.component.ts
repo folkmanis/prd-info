@@ -19,9 +19,10 @@ import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/c
 import { CanComponentDeactivate } from 'src/app/library/guards';
 import { navigateRelative } from 'src/app/library/navigation';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
-import { TransportationDriver } from '../../interfaces/transportation-driver';
+import { TransportationDriver, TransportationDriverUpdate } from '../../interfaces/transportation-driver';
 import { TransportationDriverService } from '../../services/transportation-driver.service';
 import { TransportationDriverListComponent } from '../transportation-driver-list/transportation-driver-list.component';
+import { computedChanges } from 'src/app/library/signals';
 
 type FormValue = { [K in 'name' | 'disabled']?: TransportationDriver[K] | null };
 
@@ -63,12 +64,7 @@ export class TransportationDriverEditComponent implements CanComponentDeactivate
 
   value = toSignal(this.value$, { initialValue: this.form.value });
 
-  changes = computed(() => {
-    const value = this.value();
-    const initialValue = this.initialValue();
-    const diff = omitBy(value, (val, key) => isEqual(val, initialValue[key])) as Partial<TransportationDriver>;
-    return Object.keys(diff).length ? diff : null;
-  });
+  changes = computed(() => computedChanges(this.value(), this.initialValue()));
 
   constructor() {
     effect(() => {
@@ -91,7 +87,7 @@ export class TransportationDriverEditComponent implements CanComponentDeactivate
     }
     let id = this.initialValue()._id;
     if (id) {
-      await this.#driverService.update(id, update);
+      await this.#driverService.update(id, update as TransportationDriverUpdate);
       this.#listComponent.onReload();
     } else {
       const created = await this.#driverService.create(update as Omit<TransportationDriver, 'id'>);

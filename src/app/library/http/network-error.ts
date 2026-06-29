@@ -1,3 +1,3 @@
-import { ValidationError } from 'node_modules/@angular/forms/types/_structure-chunk';
+import { ValidationError } from '@angular/forms/signals';
 
 export const NETWORK_ERROR: ValidationError = { kind: 'network_error', message: 'Tīkla kļūda' };

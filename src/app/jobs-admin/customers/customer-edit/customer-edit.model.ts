@@ -1,16 +1,14 @@
 import { ShippingAddressSchema } from 'src/app/interfaces';
 import {
   CreateCustomerDto,
-  CreateCustomerDtoSchema,
   Customer,
   CustomerContactSchema,
   CustomerFinancialSchema,
   FtpUserData,
   FtpUserDataSchema,
   UpdateCustomerDto,
-  UpdateCustomerDtoSchema,
 } from 'src/app/interfaces/customer';
-import { nullableString, optionalNumber, optionalString, pickNotNull, pickNotNullOrEmpty } from 'src/app/library';
+import { nullableString, optionalString, pickNotNull } from 'src/app/library';
 import { z } from 'zod';
 
 const numberToString = z.codec(z.number().optional(), z.string(), {
@@ -25,12 +23,12 @@ const FtpUserDataModelSchema = z
   .codec(
     FtpUserDataSchema.nullable().optional(),
     z.object({
-      folder: z.string().nullable(),
+      folder: z.string(),
       username: optionalString,
       password: optionalString,
     }),
     {
-      decode: (value) => value ?? { folder: null },
+      decode: (value) => value ?? { folder: '' },
       encode: (value) => {
         if (value.folder) {
           return value as FtpUserData;
@@ -84,13 +82,22 @@ const CustomerFinancialModelSchema = z.codec(
 );
 export type CustomerFinancialModel = z.infer<typeof CustomerFinancialModelSchema>;
 
-const CustomerModelSchema = z.object({
+const CustomerContactsModelSchema = z.codec(
+  CustomerContactSchema.array().nullable().optional(),
+  CustomerContactSchema.array(),
+  {
+    decode: (value) => value ?? [],
+    encode: (value) => (value.length === 0 ? null : value),
+  },
+);
+
+export const CustomerModelSchema = z.object({
   customerName: z.string(),
-  code: z.string(),
+  code: z.string().toUpperCase(),
   description: nullableString,
   ftpUserData: FtpUserDataModelSchema,
   disabled: z.boolean(),
-  contacts: CustomerContactSchema.array(),
+  contacts: CustomerContactsModelSchema,
   shippingAddress: ShippingAddressModelSchema,
   financial: CustomerFinancialModelSchema,
 });

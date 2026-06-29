@@ -17,10 +17,10 @@ export class ViewSizeBase implements OnInit, OnDestroy {
 
   private readonly elseTemplate$ = new BehaviorSubject<TemplateRef<any> | null>(null);
 
-  private thenViewRef: EmbeddedViewRef<any> | null;
-  private elseViewRef: EmbeddedViewRef<any> | null;
+  private thenViewRef: EmbeddedViewRef<any> | null = null;
+  private elseViewRef: EmbeddedViewRef<any> | null = null;
 
-  private subs: Subscription;
+  private subs?: Subscription;
 
   setViewSize(breakPoint: AppBreakpoints, not = false) {
     if (typeof breakPoint === 'string' && BREAKPOINTS.includes(breakPoint)) {
@@ -35,7 +35,9 @@ export class ViewSizeBase implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const matches$ = this.viewSize$.pipe(switchMap((size) => this.layout.matches(size.breakPoint).pipe(map((match) => (size.not ? !match : match)))));
+    const matches$ = this.viewSize$.pipe(
+      switchMap((size) => this.layout.matches(size.breakPoint).pipe(map((match) => (size.not ? !match : match)))),
+    );
 
     this.subs = combineLatest([matches$, this.elseTemplate$])
       .pipe()
@@ -43,7 +45,7 @@ export class ViewSizeBase implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subs.unsubscribe();
+    this.subs?.unsubscribe();
   }
 
   private setView(matches: boolean, elseTemplate: TemplateRef<any> | null) {

@@ -13,6 +13,7 @@ import { navigateRelative } from 'src/app/library/navigation';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { EquipmentListComponent } from '../equipment-list/equipment-list.component';
 import { EquipmentService } from '../services/equipment.service';
+import { computedChanges } from 'src/app/library/signals';
 
 @Component({
   selector: 'app-equipment-edit',
@@ -53,15 +54,7 @@ export class EquipmentEditComponent implements CanComponentDeactivate {
     initialValue: this.form.status,
   });
 
-  changes = computed(() => {
-    const value = this.value();
-    if (this.isNew()) {
-      return value;
-    } else {
-      const diff = pickBy(value, (v, key) => !isEqual(v, this.initialValue()[key]));
-      return Object.keys(diff).length ? diff : null;
-    }
-  });
+  changes = computed(() => computedChanges(this.value(), this.initialValue()));
 
   constructor() {
     effect(() => {
@@ -109,7 +102,7 @@ export class EquipmentEditComponent implements CanComponentDeactivate {
         const name = (control.value as string).trim().toUpperCase();
         return (await this.equipmentService.validateName(name)) ? null : { occupied: name };
       } catch (error) {
-        return { checkFailed: error.message };
+        return { checkFailed: `Invalid value` };
       }
     };
   }

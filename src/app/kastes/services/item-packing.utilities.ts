@@ -28,21 +28,28 @@ function addressPackage(): AddressPackage {
     uzlime: false,
   };
 
-  COLORS.forEach((color) => (obj[color] = 0));
+  COLORS.forEach((color) => ({ ...obj, [color]: 0 }));
 
   return obj as AddressPackage;
 }
 
-class SelectedFields {
-  kods: number = 0;
-  adrese: string = '';
-
-  constructor() {
-    COLORS.forEach((color) => (this[color] = 0));
-  }
+type SelectedFields = Record<Colors, number> & {
+  kods: number;
+  adrese: string;
+};
+function selectedFields(): SelectedFields {
+  const obj = {
+    kods: 0,
+    adrese: '',
+  };
+  COLORS.forEach((color) => ({ ...obj, [color]: 0 }));
+  return obj as SelectedFields;
 }
 
-export function rawArrayToAddressWithPackage(rowArray: Array<string | number>[], columnMap: [number, ColumnNames][]): AddressWithPackages[] {
+export function rawArrayToAddressWithPackage(
+  rowArray: Array<string | number>[],
+  columnMap: [number, ColumnNames][],
+): AddressWithPackages[] {
   const result: SelectedFields[] = [];
 
   rowArray.forEach((row) => {
@@ -55,7 +62,10 @@ export function rawArrayToAddressWithPackage(rowArray: Array<string | number>[],
   return result.map((fieldsObject) => packagesFromAdddress(fieldsObject));
 }
 
-export function addOrderId<T = AddressWithPackages>(addresesWithPackages: T[], orderId: number): Array<T & { pasutijums: number }> {
+export function addOrderId<T = AddressWithPackages>(
+  addresesWithPackages: T[],
+  orderId: number,
+): Array<T & { pasutijums: number }> {
   return addresesWithPackages.map((address) => ({
     ...address,
     pasutijums: orderId,
@@ -66,10 +76,7 @@ export function totalsFromAddresesWithPackages(addressesWithPackages: AddressWit
   const totalColors = {} as Record<Colors, number>;
   COLORS.forEach((color) => (totalColors[color] = 0));
 
-  const sizes = {} as Record<number, number>;
-  for (let i = 1; i <= MAX_ITEMS_BOX; i++) {
-    sizes[i] = 0;
-  }
+  const sizes = new Map(Array.from({ length: MAX_ITEMS_BOX }, (_, i) => [i + 1, 0]));
 
   let packages = 0;
   let items = 0;
@@ -78,7 +85,7 @@ export function totalsFromAddresesWithPackages(addressesWithPackages: AddressWit
     address.kastes.forEach((pack) => {
       COLORS.forEach((color) => (totalColors[color] += pack[color]));
       items += pack.total;
-      sizes[pack.total]++;
+      sizes.set(pack.total, (sizes.get(pack.total) ?? 0) + 1);
     });
     packages += address.kastes.length;
   });
@@ -88,9 +95,7 @@ export function totalsFromAddresesWithPackages(addressesWithPackages: AddressWit
     addresses: addressesWithPackages.length,
     packages,
     items,
-    packagesBySize: Object.keys(sizes)
-      .sort()
-      .map((size) => [+size, sizes[size]]),
+    packagesBySize: [...sizes.entries()].sort(([a], [b]) => a - b),
   };
 }
 
@@ -106,18 +111,14 @@ export function totalsByColor(packages: Array<Record<Colors, number>>): Record<C
 }
 
 export function totalsBySize(packages: Array<{ total: number }>): Array<[number, number]> {
-  const sizes = {} as Record<number, number>;
-  for (let i = 1; i <= MAX_ITEMS_BOX; i++) {
-    sizes[i] = 0;
-  }
+  const sizes = new Map(Array.from({ length: MAX_ITEMS_BOX }, (_, i) => [i + 1, 0]));
 
   packages.forEach((pack) => {
-    sizes[pack.total]++;
+    const total = sizes.get(pack.total) ?? 0;
+    sizes.set(pack.total, total + 1);
   });
 
-  return Object.keys(sizes)
-    .sort()
-    .map((size) => [+size, sizes[size]]);
+  return [...sizes.entries()].sort(([a], [b]) => a - b);
 }
 
 function assertedType(data: number | string, field: string | number): typeof field {
@@ -130,7 +131,11 @@ function assertedType(data: number | string, field: string | number): typeof fie
 }
 
 function assertNotEmptyRecord(selectedFieldsObject: SelectedFields): boolean {
-  return selectedFieldsObject.kods !== 0 && Boolean(selectedFieldsObject.adrese) && COLORS.some((color) => selectedFieldsObject[color] > 0);
+  return (
+    selectedFieldsObject.kods !== 0 &&
+    Boolean(selectedFieldsObject.adrese) &&
+    COLORS.some((color) => selectedFieldsObject[color] > 0)
+  );
 }
 
 function normalizeCount(count: number): number {
@@ -138,9 +143,12 @@ function normalizeCount(count: number): number {
 }
 
 function rowToFieldsObject(row: Array<string | number>, columnMap: [number, ColumnNames][]): SelectedFields {
-  const selectedFieldsObject = new SelectedFields();
+  const selectedFieldsObject = selectedFields();
   columnMap.forEach(([columnIndex, columnName]) => {
-    (selectedFieldsObject as Record<ColumnNames, string | number>)[columnName] = assertedType(row[columnIndex], selectedFieldsObject[columnName]);
+    (selectedFieldsObject as Record<ColumnNames, string | number>)[columnName] = assertedType(
+      row[columnIndex],
+      selectedFieldsObject[columnName],
+    );
   });
   COLORS.forEach((color) => (selectedFieldsObject[color] = normalizeCount(selectedFieldsObject[color])));
   return selectedFieldsObject;

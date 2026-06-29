@@ -95,7 +95,7 @@ export function findModulesPath(url: string | UrlSegment[], modules: UserModule[
   const activeModules: UserModule[] = [];
 
   for (const segm of segments) {
-    const module = userModules?.find((mod) => mod.route === segm);
+    const module: UserModule | undefined = userModules?.find((mod) => mod.route === segm);
 
     if (!module) {
       break;

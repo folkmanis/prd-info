@@ -28,7 +28,7 @@ export const CustomerSchema = z
     insertedFromXmf: isoDatetimeToDate.optional(),
     financial: CustomerFinancialSchema.optional(),
     ftpUserData: FtpUserDataSchema.optional(),
-    contacts: z.array(CustomerContactSchema),
+    contacts: z.array(CustomerContactSchema).optional(),
     shippingAddress: ShippingAddressSchema.optional(),
   })
   .meta({ id: 'CustomerSchema' });
@@ -49,7 +49,7 @@ export const UpdateCustomerDtoSchema = z
     description: z.string().nullable(),
     financial: CustomerFinancialSchema.nullable(),
     ftpUserData: FtpUserDataSchema.nullable(),
-    contacts: z.array(CustomerContactSchema),
+    contacts: z.array(CustomerContactSchema).nullable(),
     shippingAddress: ShippingAddressSchema.nullable(),
   })
   .partial();

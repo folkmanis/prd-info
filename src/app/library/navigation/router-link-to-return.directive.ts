@@ -12,8 +12,8 @@ export class RouterLinkToReturnDirective {
     const routerLink = inject(RouterLink);
     const state = inject(Location).getState();
 
-    if (typeof state?.['returnUrl'] === 'string') {
-      routerLink.routerLink = inject(Router).parseUrl(state['returnUrl']);
+    if (typeof state === 'object' && state !== null && 'returnUrl' in state && typeof state.returnUrl === 'string') {
+      routerLink.routerLink = inject(Router).parseUrl(state.returnUrl);
     } else {
       routerLink.routerLink = '..';
     }

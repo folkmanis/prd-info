@@ -17,7 +17,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
 import { isEqual } from 'lodash-es';
-import { CustomerPartial, ProductPartial } from 'src/app/interfaces';
+import { CustomerList, ProductPartial } from 'src/app/interfaces';
 import { pickNotNull } from 'src/app/library/assert-utils';
 import { AutocompleteFilterDirective } from 'src/app/library/autocomplete';
 import { DateRangePickerComponent } from 'src/app/library/date-range-picker';
@@ -71,7 +71,7 @@ const DEFAULT_FILTER_MODEL: JobFilterModel = {
 export class JobListFilterComponent {
   protected jobStates = configuration('jobs', 'jobStates');
 
-  customers = input<CustomerPartial[] | null>();
+  customers = input<CustomerList[] | null>();
   protected customerNames = computed(() => this.customers()?.map((c) => c.customerName) ?? []);
 
   products = input<ProductPartial[] | null>();

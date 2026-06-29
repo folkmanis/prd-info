@@ -23,8 +23,8 @@ import { PaytraqProductTableComponent } from './paytraq-product-table/paytraq-pr
 export class PaytraqProductComponent implements ControlValueAccessor {
   private paytraqService = inject(PaytraqProductsService);
 
-  private onChanges: (obj: number | null) => void;
-  private onTouched: () => void;
+  private onChanges: (obj: number | null) => void = () => {};
+  private onTouched: () => void = () => {};
 
   productName = input<string>('');
 
@@ -51,7 +51,7 @@ export class PaytraqProductComponent implements ControlValueAccessor {
     this.value.set(obj);
   }
 
-  registerOnChange(fn: (obj: number) => void) {
+  registerOnChange(fn: (obj: any) => void) {
     this.onChanges = fn;
   }
 

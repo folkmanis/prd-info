@@ -26,7 +26,7 @@ export class MaterialUnitsDirective {
     return this._units;
   }
 
-  private _id: string;
+  private _id: string | null = null;
   @Input('appMaterialUnitsId') set id(value: string | null) {
     if (typeof value === 'string' && value.length > 0) {
       this._id = value;

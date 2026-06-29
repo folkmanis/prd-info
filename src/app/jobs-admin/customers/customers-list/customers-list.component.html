@@ -1,21 +1,35 @@
-<app-simple-list-container [(filter)]="name" plusButton filterInput editorWidth="60%">
+<app-simple-list-container [filterInput]="filterTemplate" plusButton editorWidth="60%">
   @if (customers.hasValue()) {
-    <table mat-table [dataSource]="customers.value()">
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr
-        mat-row
+    <mat-table [dataSource]="customers.value()" class="app-table">
+      <mat-header-row *matHeaderRowDef="displayedColumns" />
+      <mat-row
         *matRowDef="let customer; columns: displayedColumns"
         [routerLink]="customer._id"
         routerLinkActive="selected"
         [class.disabled]="customer.disabled"
-      ></tr>
+      />
 
       <ng-container matColumnDef="customerName">
-        <th mat-header-cell *matHeaderCellDef>Klients</th>
-        <td mat-cell *matCellDef="let customer">
+        <mat-header-cell *matHeaderCellDef>Klients</mat-header-cell>
+        <mat-cell *matCellDef="let customer">
           {{ customer.customerName }}
-        </td>
+        </mat-cell>
       </ng-container>
-    </table>
+    </mat-table>
   }
 </app-simple-list-container>
+
+<ng-template #filterTemplate>
+  <mat-form-field subscriptSizing="dynamic">
+    <input matInput [formField]="searchForm.name" />
+    @if (searchForm.name().value().length === 0) {
+      <button matIconButton matIconSuffix disabled>
+        <mat-icon>search</mat-icon>
+      </button>
+    } @else {
+      <button matIconButton matIconSuffix (click)="searchForm.name().reset('')">
+        <mat-icon>clear</mat-icon>
+      </button>
+    }
+  </mat-form-field>
+</ng-template>

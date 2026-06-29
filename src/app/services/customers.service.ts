@@ -1,17 +1,18 @@
 import { computed, inject, Injectable } from '@angular/core';
 import { CreateCustomerDto, Customer, CustomerList, UpdateCustomerDto } from 'src/app/interfaces';
-import { FilterInput, stringToInt, toFilterSignal } from 'src/app/library';
+import { FilterInput, optionalString, stringToInt, toFilterSignal } from 'src/app/library';
 import { CustomersApiService } from './prd-api/customers-api.service';
 import { HttpResourceRef } from '@angular/common/http';
 import { firstValueFrom, Observable } from 'rxjs';
 import { z } from 'zod';
 import { SchemaPath } from '@angular/forms/signals';
+import { CustomerModel } from '../jobs-admin/customers/customer-edit/customer-edit.model';
 
-const CustomersQuerySchema = z
+export const CustomersQuerySchema = z
   .object({
     start: stringToInt,
     limit: stringToInt,
-    name: z.string(),
+    name: optionalString.pipe(z.string().trim()),
     email: z.string(),
     disabled: z.stringbool(),
   })
@@ -48,12 +49,11 @@ export class CustomersService {
     return this.#api.getAll(query);
   }
 
-  isNameAvailable(schema: SchemaPath<string>): void {
-    this.#api.validate(schema, 'customerName');
-  }
-
-  isCustomerCodeAvailable(schema: SchemaPath<string>): void {
-    this.#api.validate(schema, 'code');
+  isPropertyAvailable<K extends keyof Pick<CustomerModel, 'customerName' | 'code'>>(
+    schema: SchemaPath<CustomerModel[K]>,
+    key: K,
+  ): void {
+    this.#api.validate(schema, key);
   }
 
   newCustomer(): Customer {

@@ -10,32 +10,36 @@
       </mat-card-subtitle>
     </mat-card-header>
 
-    <mat-card-content [formGroup]="userForm">
+    <mat-card-content>
       <section>
         <mat-form-field class="name">
           <mat-label> Pilns vārds </mat-label>
-          <input appInputTrim matInput formControlName="name" />
+          <input appInputTrim matInput [formField]="form.name" />
         </mat-form-field>
       </section>
 
       <section>
         <mat-form-field class="name">
           <mat-label> e-pasts </mat-label>
-          <input type="email" appInputTrim matInput formControlName="eMail" />
+          <input type="email" appInputTrim matInput [formField]="form.eMail" />
         </mat-form-field>
       </section>
     </mat-card-content>
 
-    <mat-divider></mat-divider>
+    <mat-divider />
 
     <mat-card-actions>
-      <button matButton (click)="onSave()" [disabled]="!userForm.valid || !isChanged() || userForm.disabled">
+      <button
+        matButton
+        (click)="onSave()"
+        [disabled]="form().valid() === false || changes() === null || busy() || form().disabled()"
+      >
         Saglabāt
       </button>
       <button
         matButton
         (click)="onReset()"
-        [disabled]="userForm.pristine || userForm.disabled || !isChanged()"
+        [disabled]="changes() === null || busy() || form().disabled() || form().dirty() === false"
         class="tertiary"
       >
         Atiestatīt
@@ -66,7 +70,7 @@
         }
       </mat-card-content>
 
-      <mat-divider></mat-divider>
+      <mat-divider />
 
       <mat-card-actions>
         <a matButton href="/data/login/google?redirect=/{{ returnPath }}" [disabled]="staticUser.google"> Savienot </a>

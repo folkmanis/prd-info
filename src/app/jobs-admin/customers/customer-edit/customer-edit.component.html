@@ -1,65 +1,107 @@
-<app-simple-content-container buttons>
-  <form [formRoot]="form">
+<form [formRoot]="form" (reset)="$event.preventDefault(); onReset()">
+  <app-simple-content-container buttons>
     <ng-container appSimpleContentContainerToolbar>
-      <button matButton type="submit" [disabled]="busy() || changes() === null" [showProgress]="form().submitting()">
+      <button
+        matButton="outlined"
+        type="submit"
+        [disabled]="busy() || form().valid() === false || form().dirty() === false"
+        [showProgress]="form().submitting()"
+      >
         {{ isNew() ? 'Izveidot' : 'Saglabāt' }}
         <mat-progress-spinner progressIndicator mode="indeterminate" diameter="20" aria-label="Loading" tabindex="" />
       </button>
-      <button type="reset" [disabled]="busy() || changes() === null">Atiestatīt</button>
+      <button
+        matButton
+        class="tertiary"
+        type="reset"
+        [disabled]="busy() || form().dirty() === false || form().pending() === true"
+      >
+        Atiestatīt
+      </button>
     </ng-container>
 
-    <mat-form-field class="customer-name full-width">
-      <mat-label>Klienta nosaukums (nav maināms)</mat-label>
-      <input matInput [formField]="form.customerName" />
-      <mat-error>
-        @for (error of form.customerName().errors(); track $index) {
-          {{ error.message }}
-        }
-      </mat-error>
-    </mat-form-field>
+    <div class="content">
+      <!-- customerName -->
+      <mat-form-field class="customer-name full-width">
+        <mat-label>Klienta nosaukums (nav maināms)</mat-label>
+        <input matInput [formField]="form.customerName" />
+        <mat-error>
+          @for (error of form.customerName().errors(); track $index) {
+            {{ error.message }}
+          }
+        </mat-error>
+        <span matIconSuffix class="spinner">
+          @if (form.customerName().pending()) {
+            <mat-progress-spinner mode="indeterminate" diameter="20" aria-label="Checking" tabindex="" />
+          }
+        </span>
+      </mat-form-field>
 
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title> Pamatinformācija </mat-card-title>
-      </mat-card-header>
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title> Pamatinformācija </mat-card-title>
+        </mat-card-header>
 
-      <mat-card-content>
-        <!-- Kods -->
-        <section>
-          <mat-form-field>
-            <mat-label>Klienta kods</mat-label>
-            <input matInput appInputUppercase [formField]="form.code" placeholder="Kods" />
-            <mat-error>
-              @for (error of form.customerName().errors(); track $index) {
-                {{ error.message }}
-              }
-            </mat-error>
-          </mat-form-field>
-        </section>
-        <!-- apraksts -->
-        <section>
-          <mat-form-field class="full-width">
-            <mat-label>Apraksts</mat-label>
-            <input matInput [formField]="form.description" placeholder="Apraksts" />
-          </mat-form-field>
-        </section>
-        <mat-divider />
-        <!-- Neaktīvs -->
-        <section>
-          <mat-checkbox class="input-element" [formField]="form.disabled"> Neaktīvs </mat-checkbox>
-        </section>
-        <!-- ftp folderis -->
-        <section id="ftp-user">
+        <mat-card-content>
+          <!-- Kods -->
+          <section>
+            <mat-form-field>
+              <mat-label>Klienta kods</mat-label>
+              <input matInput appInputUppercase [formField]="form.code" placeholder="Kods" />
+              <span matIconSuffix class="spinner">
+                @if (form.code().pending()) {
+                  <mat-progress-spinner mode="indeterminate" diameter="20" aria-label="Checking" tabindex="" />
+                }
+              </span>
+              <mat-error>
+                @for (error of form.code().errors(); track $index) {
+                  {{ error.message }}
+                }
+              </mat-error>
+            </mat-form-field>
+          </section>
+          <!-- apraksts -->
+          <section>
+            <mat-form-field class="full-width">
+              <mat-label>Apraksts</mat-label>
+              <input matInput [formField]="form.description" placeholder="Apraksts" />
+            </mat-form-field>
+          </section>
+          <mat-divider />
+          <!-- Neaktīvs -->
+          <section>
+            <mat-checkbox class="input-element" [formField]="form.disabled"> Neaktīvs </mat-checkbox>
+          </section>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- ftp folderis -->
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title> FTP folderis </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
           <mat-form-field class="full-width">
             <mat-label> Lietotāja folderis </mat-label>
-            <mat-select [formField]="form.ftpUserData.folder">
-              <mat-option [value]="null"> --Nav norādīts-- </mat-option>
-              @for (folder of ftpFolders$ | async; track folder) {
-                <mat-option [value]="folder">
-                  {{ folder }}
-                </mat-option>
-              }
-            </mat-select>
+            <input matInput [formField]="form.ftpUserData.folder" />
+            <button
+              type="button"
+              matIconButton
+              matIconSuffix
+              [matMenuTriggerFor]="folderMenu"
+              [disabled]="form.ftpUserData.folder().disabled()"
+            >
+              <mat-icon> more_vert </mat-icon>
+            </button>
+            <button
+              type="button"
+              matIconButton
+              matIconSuffix
+              [disabled]="form.ftpUserData.folder().disabled()"
+              (click)="onRemoveFtpData()"
+            >
+              <mat-icon> clear </mat-icon>
+            </button>
           </mat-form-field>
 
           @if (form.ftpUserData.folder().value()) {
@@ -73,133 +115,161 @@
               <mat-label> FTP lietotāja parole </mat-label>
             </mat-form-field>
           }
-        </section>
-        <mat-divider />
-      </mat-card-content>
-    </mat-card>
+        </mat-card-content>
+      </mat-card>
 
-    <!-- Contacts -->
-    <mat-card id="email">
-      <mat-card-header>
-        <mat-card-title> Kontaktinformācija </mat-card-title>
-        <mat-card-subtitle> Klienta e-pasti </mat-card-subtitle>
-      </mat-card-header>
-
-      <mat-card-content>
-        <mat-list>
-          @for (contact of form.contacts; track contact) {
-            <mat-list-item [class.invalid]="contact().valid() === false">
-              <div class="email-row">
-                <button matIconButton (click)="onRemoveContact($index)">
-                  <mat-icon> delete </mat-icon>
-                </button>
-
-                @if (activeContact() === contact) {
-                  <input appInput type="email" [formField]="contact.email" (blur)="activeContact.set(null)" />
-                } @else {
-                  <span (click)="activeContact.set(contact)" class="email">
-                    {{ contact().value().email }}
-                  </span>
-                }
-              </div>
-            </mat-list-item>
-          }
-
-          <mat-list-item>
-            <button matIconButton [disabled]="form.contacts().valid() === false" (click)="onAddContact()">
-              <mat-icon> add </mat-icon>
-            </button>
-          </mat-list-item>
-        </mat-list>
-      </mat-card-content>
-    </mat-card>
-
-    <!-- Address -->
-    <mat-card id="shipping-address">
-      <mat-card-header>
-        <mat-card-title> Piegādes adrese </mat-card-title>
-      </mat-card-header>
-
-      <mat-card-content>
-        <section>
-          <mat-form-field class="full-width">
-            <mat-label> Adrese </mat-label>
-            <input matInput [formField]="form.shippingAddress.address" />
-            <button matSuffix matIconButton (click)="onAddressMap()">
-              <mat-icon>map</mat-icon>
-            </button>
-            <button matSuffix matIconButton aria-label="Clear" (click)="onResetAddress()">
-              <mat-icon>close</mat-icon>
-            </button>
-          </mat-form-field>
-        </section>
-
-        <section class="flex-row">
-          <mat-form-field class="flex-1">
-            <mat-label> Pasta indekss </mat-label>
-            <input matInput [formField]="form.shippingAddress.zip" />
-          </mat-form-field>
-          <mat-form-field class="flex-1">
-            <mat-label> Valsts </mat-label>
-            <input matInput [formField]="form.shippingAddress.country" />
-          </mat-form-field>
-        </section>
-
-        <section>
-          <mat-form-field class="full-width">
-            <mat-label> Google Address ID </mat-label>
-            <input matInput [formField]="form.shippingAddress.googleId" />
-          </mat-form-field>
-        </section>
-      </mat-card-content>
-      <mat-card-actions>
-        @if (paytraqEnabled()) {
-          @if (form.financial.paytraqId().value(); as paytraqId) {
-            <button matButton="elevated" (click)="onPaytraqAddress(paytraqId)" [showProgress]="busy()">
-              No PayTraq (id: {{ paytraqId }})
-              <mat-progress-spinner
-                progressIndicator
-                mode="indeterminate"
-                diameter="20"
-                tabindex=""
-                aria-label="Loading"
-              />
-            </button>
-          }
-          @if (form.shippingAddress.paytraqId().value(); as paytraqAddressId) {
-            <span> Paytraq adreses ID: {{ paytraqAddressId }} </span>
-          }
-        }
-      </mat-card-actions>
-    </mat-card>
-
-    @if (paytraqEnabled()) {
-      @let financial = form.financial().value();
-      <mat-card>
+      <!-- Contacts -->
+      <mat-card id="email">
         <mat-card-header>
-          <mat-card-title> Sasaiste ar Paytraq </mat-card-title>
-          @if (financial.paytraqId) {
-            <mat-card-subtitle>
-              {{ financial.paytraqId }} /
-              {{ financial.clientName }}
-            </mat-card-subtitle>
-          }
+          <mat-card-title> Kontaktinformācija </mat-card-title>
+          <mat-card-subtitle> Klienta e-pasti </mat-card-subtitle>
         </mat-card-header>
 
+        <mat-card-content>
+          <mat-list>
+            @for (contact of form.contacts; track $index) {
+              <mat-list-item [class.invalid]="contact().valid() === false">
+                <div class="email-row">
+                  <button matIconButton type="button" (click)="onRemoveContact($index)">
+                    <mat-icon> delete </mat-icon>
+                  </button>
+
+                  @if (activeContact() === contact) {
+                    <input appInput type="email" [formField]="contact.email" (blur)="activeContact.set(null)" />
+                  } @else {
+                    <span (click)="activeContact.set(contact)" class="email">
+                      {{ contact().value().email }}
+                    </span>
+                  }
+                </div>
+              </mat-list-item>
+            }
+
+            <mat-list-item>
+              <button
+                type="button"
+                matIconButton
+                [disabled]="form.contacts().valid() === false"
+                (click)="onAddContact()"
+              >
+                <mat-icon> add </mat-icon>
+              </button>
+            </mat-list-item>
+          </mat-list>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Address -->
+      <mat-card id="shipping-address">
+        <mat-card-header>
+          <mat-card-title> Piegādes adrese </mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+          <section>
+            <mat-form-field class="full-width">
+              <mat-label> Adrese </mat-label>
+              <input matInput [formField]="form.shippingAddress.address" />
+              <button type="button" matSuffix matIconButton (click)="onAddressMap()">
+                <mat-icon>map</mat-icon>
+              </button>
+              <button type="button" matSuffix matIconButton aria-label="Clear" (click)="onResetAddress()">
+                <mat-icon>close</mat-icon>
+              </button>
+            </mat-form-field>
+          </section>
+
+          <section class="flex-row">
+            <mat-form-field class="flex-1">
+              <mat-label> Pasta indekss </mat-label>
+              <input matInput [formField]="form.shippingAddress.zip" />
+            </mat-form-field>
+            <mat-form-field class="flex-1">
+              <mat-label> Valsts </mat-label>
+              <input matInput [formField]="form.shippingAddress.country" />
+            </mat-form-field>
+          </section>
+
+          <section>
+            <mat-form-field class="full-width">
+              <mat-label> Google Address ID </mat-label>
+              <input matInput [formField]="form.shippingAddress.googleId" />
+            </mat-form-field>
+          </section>
+        </mat-card-content>
         <mat-card-actions>
-          <button matButton [disabled]="form.customerName().valid() === false || busy()" (click)="onSelectFinancial()">
-            {{ financial.clientName ? 'Labot' : 'Pievienot' }}
-          </button>
-          <button
-            matButton="text"
-            class="tertiary"
-            [disabled]="financial.clientName.length === 0 || busy()"
-            (click)="onRemoveFinancial()"
-          >
-            Atvienot
-          </button>
+          @if (paytraqEnabled()) {
+            @if (form.financial.paytraqId().value(); as paytraqId) {
+              <button type="button" matButton="elevated" (click)="onPaytraqAddress(paytraqId)" [showProgress]="busy()">
+                No PayTraq (id: {{ paytraqId }})
+                <mat-progress-spinner
+                  progressIndicator
+                  mode="indeterminate"
+                  diameter="20"
+                  tabindex=""
+                  aria-label="Loading"
+                />
+              </button>
+            }
+            @if (form.shippingAddress.paytraqId().value(); as paytraqAddressId) {
+              <span> Paytraq adreses ID: {{ paytraqAddressId }} </span>
+            }
+          }
         </mat-card-actions>
       </mat-card>
+
+      @if (paytraqEnabled()) {
+        @let financial = form.financial().value();
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title> Sasaiste ar Paytraq </mat-card-title>
+            @if (financial.paytraqId) {
+              <mat-card-subtitle>
+                {{ financial.paytraqId }} /
+                {{ financial.clientName }}
+              </mat-card-subtitle>
+            }
+          </mat-card-header>
+
+          <mat-card-actions>
+            <button
+              type="button"
+              matButton
+              [disabled]="form.customerName().valid() === false || busy()"
+              (click)="onSelectFinancial()"
+            >
+              {{ financial.clientName ? 'Labot' : 'Pievienot' }}
+            </button>
+            <button
+              type="button"
+              matButton="text"
+              class="tertiary"
+              [disabled]="financial.clientName.length === 0 || busy()"
+              (click)="onRemoveFinancial()"
+            >
+              Atvienot
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      }
+    </div>
+  </app-simple-content-container>
+</form>
+
+<mat-menu #folderMenu="matMenu">
+  <ng-template matMenuContent>
+    @if (ftpFolders$ | async; as ftpFolders) {
+      @for (folder of ftpFolders$ | async; track folder) {
+        <button
+          mat-menu-item
+          (click)="form.ftpUserData.folder().value.set(folder); form.ftpUserData.folder().markAsDirty()"
+        >
+          <mat-icon> folder </mat-icon>
+          <span>
+            {{ folder }}
+          </span>
+        </button>
+      }
     }
-  </form>
-</app-simple-content-container>
+  </ng-template>
+</mat-menu>

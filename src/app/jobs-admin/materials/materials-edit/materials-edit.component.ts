@@ -1,6 +1,13 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AbstractControl, AsyncValidatorFn, FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  AsyncValidatorFn,
+  FormBuilder,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -18,6 +25,7 @@ import { configuration } from 'src/app/services/config.provider';
 import { MaterialsListComponent } from '../materials-list/materials-list.component';
 import { MaterialsService } from '../services/materials.service';
 import { MaterialsPricesComponent } from './materials-prices/materials-prices.component';
+import { computedChanges } from 'src/app/library/signals';
 
 @Component({
   selector: 'app-materials-edit',
@@ -78,12 +86,7 @@ export class MaterialsEditComponent implements CanComponentDeactivate {
     initialValue: this.form.status,
   });
 
-  changes = computed(() => {
-    const value = this.formValue();
-    const initialValue = this.material();
-    const diff = pickBy(value, (v, key) => !isEqual(v, initialValue[key]));
-    return Object.keys(diff).length ? diff : undefined;
-  });
+  changes = computed(() => computedChanges(this.formValue(), this.material(), { includeNull: true }));
 
   constructor() {
     effect(() => this.form.reset(this.material()));
@@ -97,7 +100,7 @@ export class MaterialsEditComponent implements CanComponentDeactivate {
     let id = this.material()._id;
     if (id) {
       const update = { ...this.changes(), _id: id };
-      await this.#materialsService.updateMaterial(update);
+      await this.#materialsService.updateMaterial(update as Partial<Material>);
     } else {
       const { _id, ...newMaterial } = this.form.getRawValue();
       const created = await this.#materialsService.insertMaterial(newMaterial as Partial<Material>);

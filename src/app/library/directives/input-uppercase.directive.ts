@@ -1,33 +1,36 @@
-import { Directive, inject } from '@angular/core';
-import { ControlValueAccessor, NgControl } from '@angular/forms';
-import { assertNotNull } from '../assert-utils';
-
-// https://netbasal.com/how-to-trim-the-value-of-angulars-form-control-87660941e6cb
+import { Directive, ElementRef, inject } from '@angular/core';
 
 @Directive({
-  selector: 'input[appInputUppercase]',
+  selector: 'input[appInputUppercase],textarea[appInputUppercase]',
   standalone: true,
   host: {
-    style: 'text-transform: uppercase',
+    '(input)': 'onInput()',
   },
 })
 export class InputUppercaseDirective {
-  constructor() {
-    const ngControl = inject(NgControl, { optional: true });
-    if (ngControl?.valueAccessor) {
-      upperCaseAccessor(ngControl.valueAccessor);
+  private readonly el = inject(ElementRef<HTMLInputElement | HTMLTextAreaElement>);
+  private syncing = false;
+
+  onInput() {
+    if (this.syncing) return;
+
+    const input = this.el.nativeElement;
+    const value = input.value;
+    const upper = value.toUpperCase();
+
+    if (value === upper) return;
+
+    const start = input.selectionStart;
+    const end = input.selectionEnd;
+
+    this.syncing = true;
+    input.value = upper;
+
+    if (start !== null && end !== null) {
+      queueMicrotask(() => input.setSelectionRange(start, end));
     }
+
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    this.syncing = false;
   }
-}
-
-function upperCaseAccessor(valueAccessor: ControlValueAccessor) {
-  assertNotNull(valueAccessor);
-
-  const original = valueAccessor.registerOnChange;
-
-  valueAccessor.registerOnChange = (fn: (_: unknown) => void) => {
-    return original.call(valueAccessor, (value: unknown) => {
-      return fn(typeof value === 'string' ? value.toUpperCase().trim() : value);
-    });
-  };
 }

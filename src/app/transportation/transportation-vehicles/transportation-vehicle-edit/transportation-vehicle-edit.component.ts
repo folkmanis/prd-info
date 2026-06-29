@@ -232,12 +232,11 @@ export class TransportationVehicleEditComponent implements CanComponentDeactivat
   }
 
   #toVehicleUpdate(value: Partial<FormValue>): TransportationVehicleUpdate {
-    const update: TransportationVehicleUpdate = { ...value };
-    for (const key of ['licencePlate', 'passportNumber', 'vin'] as const) {
-      if (value[key] !== undefined) {
-        update[key] = value[key].toUpperCase() || null;
-      }
-    }
-    return update;
+    return {
+      ...value,
+      licencePlate: value.licencePlate?.toUpperCase(),
+      passportNumber: value.passportNumber ?? null,
+      vin: value.vin ?? null,
+    };
   }
 }

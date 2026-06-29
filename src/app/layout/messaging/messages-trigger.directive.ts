@@ -12,7 +12,7 @@ export class MessagesTriggerDirective extends CdkOverlayOrigin implements OnInit
   private overlay = inject(Overlay);
   private destroyRef = inject(DestroyRef);
 
-  private overlayRef: OverlayRef;
+  private overlayRef!: OverlayRef;
 
   private readonly connectedPositions: ConnectedPosition[] = [
     {
@@ -56,7 +56,12 @@ export class MessagesTriggerDirective extends CdkOverlayOrigin implements OnInit
 
   private overlayConfig(): OverlayConfig {
     return new OverlayConfig({
-      positionStrategy: this.overlay.position().flexibleConnectedTo(this.elementRef).withPositions(this.connectedPositions).withGrowAfterOpen().withLockedPosition(),
+      positionStrategy: this.overlay
+        .position()
+        .flexibleConnectedTo(this.elementRef)
+        .withPositions(this.connectedPositions)
+        .withGrowAfterOpen()
+        .withLockedPosition(),
       scrollStrategy: this.overlay.scrollStrategies.block(),
       width: '320px',
       hasBackdrop: true,

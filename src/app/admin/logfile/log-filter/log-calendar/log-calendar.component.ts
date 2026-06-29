@@ -12,7 +12,15 @@ import { isFirstDate, isLastDate, isValidDate, lastDate, shiftDate, validDate } 
   selector: 'app-log-calendar',
   templateUrl: './log-calendar.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, MatFormFieldModule, MatInputModule, MatDatepickerModule, MatTooltipModule, MatButtonModule, MatIconModule],
+  imports: [
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatTooltipModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
 })
 export class LogCalendarComponent {
   date = model.required<Date>();
@@ -24,7 +32,7 @@ export class LogCalendarComponent {
   isMinDate = computed(() => isFirstDate(this.date(), this.availableDates()));
   isMaxDate = computed(() => isLastDate(this.date(), this.availableDates()));
 
-  isValiddate = (date: Date) => isValidDate(date, this.availableDates());
+  isValiddate = (date: Date | null) => isValidDate(date, this.availableDates());
 
   onDateShift(days: 1 | -1): void {
     const currentDate = this.date();

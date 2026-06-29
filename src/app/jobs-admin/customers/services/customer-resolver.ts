@@ -7,5 +7,6 @@ import { CustomersService } from 'src/app/services';
 
 export const resolveCustomer: ResolveFn<Customer> = (route, state) => {
   const id = inject(ValidatorService).validateId(route.paramMap.get('id'));
+  console.log(id);
   return resolveCatching(state.url, () => inject(CustomersService).getCustomer(id));
 };

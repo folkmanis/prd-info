@@ -3,7 +3,15 @@ import { ChangeDetectionStrategy, Component, computed, input, output } from '@an
 import { MatListModule } from '@angular/material/list';
 import { GoogleUser } from 'src/app/interfaces';
 
-const FIELDS_FOR_DISPLAY: (keyof GoogleUser)[] = ['id', 'email', 'name', 'given_name', 'family_name', 'gender', 'locale'];
+const FIELDS_FOR_DISPLAY: (keyof GoogleUser)[] = [
+  'id',
+  'email',
+  'name',
+  'given_name',
+  'family_name',
+  'gender',
+  'locale',
+];
 
 @Component({
   selector: 'app-google-info',
@@ -14,13 +22,21 @@ const FIELDS_FOR_DISPLAY: (keyof GoogleUser)[] = ['id', 'email', 'name', 'given_
 })
 export class GoogleInfoComponent {
   values = computed(() => {
-    return Object.entries(this.googleInfo() || {}).filter((val) => FIELDS_FOR_DISPLAY.includes(val[0] as keyof GoogleUser)) as [
-      (typeof FIELDS_FOR_DISPLAY)[number],
-      string | boolean,
-    ][];
+    return Object.entries(this.googleInfo() || {}).filter((val) =>
+      FIELDS_FOR_DISPLAY.includes(val[0] as keyof GoogleUser),
+    ) as [(typeof FIELDS_FOR_DISPLAY)[number], string | boolean][];
   });
 
   googleInfo = input<GoogleUser>();
 
-  clickEvent = output<[(typeof FIELDS_FOR_DISPLAY)[number], string | boolean]>({ alias: 'valueClicked' });
+  clickEvent = output<['name' | 'eMail', string]>({ alias: 'valueClicked' });
+
+  protected onValueSelected(key: string, value: unknown) {
+    if (key === 'name' && typeof value === 'string') {
+      this.clickEvent.emit(['name', value]);
+    }
+    if (key === 'email' && typeof value === 'string') {
+      this.clickEvent.emit(['eMail', value]);
+    }
+  }
 }

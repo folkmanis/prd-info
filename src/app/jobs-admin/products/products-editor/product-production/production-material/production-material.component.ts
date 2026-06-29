@@ -60,7 +60,7 @@ export class ProductionMaterialComponent implements ControlValueAccessor, Valida
     this.#chDetector.markForCheck();
   }
 
-  registerOnChange(fn: (obj: ProductProductionStageMaterial[]) => void): void {
+  registerOnChange(fn: (obj: any) => void): void {
     this.form.valueChanges.subscribe(fn);
   }
 
