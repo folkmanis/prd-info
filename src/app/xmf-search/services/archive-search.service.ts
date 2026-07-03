@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { cloneDeep } from 'lodash-es';
 import { Observable, OperatorFunction, pipe } from 'rxjs';
 import { map, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators';
@@ -7,9 +7,7 @@ import { PagedCache } from '../../library/rxjs/paged-cache';
 import { SearchDataSource } from './search-data';
 import { XmfArchiveApiService } from './xmf-archive-api.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class ArchiveSearchService {
   private api = inject(XmfArchiveApiService);
 

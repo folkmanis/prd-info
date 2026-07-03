@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Equipment, ProductionStage } from 'src/app/interfaces';
@@ -10,7 +10,6 @@ import { EquipmentService } from '../../equipment/services/equipment.service';
   selector: 'app-production-stages-list',
   templateUrl: './production-stages-list.component.html',
   styleUrls: ['./production-stages-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [SimpleListContainerComponent, RouterLink, RouterLinkActive, MatTableModule],
 })
 export class ProductionStagesListComponent {
@@ -24,7 +23,8 @@ export class ProductionStagesListComponent {
   private mapStages(stages: ProductionStage[], equipments: Equipment[]) {
     return stages.map((stage) => ({
       ...stage,
-      equipment: stage.equipmentIds?.map((eqId) => equipments.find((eq) => eq._id === eqId)?.name || '???').join(', ') || '',
+      equipment:
+        stage.equipmentIds?.map((eqId) => equipments.find((eq) => eq._id === eqId)?.name || '???').join(', ') || '',
     }));
   }
 

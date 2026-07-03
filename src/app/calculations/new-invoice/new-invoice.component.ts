@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input, linkedSignal, signal } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckbox } from '@angular/material/checkbox';
@@ -26,7 +26,6 @@ import { SelectionTotalsComponent } from './selection-totals/selection-totals.co
   selector: 'app-new-invoice',
   templateUrl: './new-invoice.component.html',
   styleUrls: ['./new-invoice.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CustomerSelectorComponent,
     MatSidenavModule,

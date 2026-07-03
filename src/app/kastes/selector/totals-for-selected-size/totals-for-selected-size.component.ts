@@ -1,5 +1,5 @@
 import { TitleCasePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { Colors, COLORS } from 'src/app/interfaces';
 import { totalsByColor } from '../../services/item-packing.utilities';
 import { kastesPreferences } from '../../services/kastes-preferences.service';
@@ -14,7 +14,6 @@ type TotalsInput = Record<Colors, number> & {
   imports: [TitleCasePipe],
   templateUrl: './totals-for-selected-size.component.html',
   styleUrl: './totals-for-selected-size.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TotalsForSelectedSizeComponent {
   readonly colors = COLORS;

@@ -1,4 +1,4 @@
-import { inject, Injectable, Signal } from '@angular/core';
+import { inject, Service, Signal } from '@angular/core';
 import { assertNotNull, FilterInput } from 'src/app/library';
 import { ProductsService } from 'src/app/services';
 import { JobCreate, JobFilter } from '../interfaces';
@@ -6,9 +6,7 @@ import { filterInputToRequestQuery } from '../services/job.service';
 import { JobsApiService } from '../services/jobs-api.service';
 import { JobsUserPreferencesService } from '../services/jobs-user-preferences.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class QuickCreateService {
   #productsService = inject(ProductsService);
   #jobsApi = inject(JobsApiService);

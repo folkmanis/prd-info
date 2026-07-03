@@ -1,6 +1,6 @@
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { AsyncPipe, DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import {
   applyEach,
   disabled,
@@ -83,7 +83,6 @@ interface TripModel {
   ],
   templateUrl: './single-trip.component.html',
   styleUrl: './single-trip.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SingleTripComponent {
   #routeService = inject(RouteSheetService);

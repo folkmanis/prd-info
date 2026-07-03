@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input, linkedSignal, signal, viewChild } from '@angular/core';
+import { Component, inject, input, linkedSignal, signal, viewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { assertNotNull } from 'src/app/library';
 import { CanComponentDeactivate } from 'src/app/library/guards';
@@ -29,7 +29,6 @@ import { RouteTripsComponent } from './route-trips/route-trips.component';
   ],
   templateUrl: './route-sheet-edit.component.html',
   styleUrl: './route-sheet-edit.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RouteSheetEditComponent implements CanComponentDeactivate {
   readonly #routeSheetService = inject(RouteSheetService);

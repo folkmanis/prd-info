@@ -1,4 +1,4 @@
-import { computed, inject, Injectable } from '@angular/core';
+import { computed, inject, Service } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import {
   LocationSelectDialogComponent,
@@ -14,9 +14,7 @@ export interface Location {
   googleId?: string;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class LocationSelectService {
   private dialog = inject(MatDialog);
 

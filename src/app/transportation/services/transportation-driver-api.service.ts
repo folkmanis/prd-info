@@ -1,5 +1,5 @@
 import { HttpClient, httpResource } from '@angular/common/http';
-import { inject, Injectable, Signal } from '@angular/core';
+import { inject, Service, Signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
 import { firstValueFrom } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
@@ -11,9 +11,7 @@ import {
   TransportationDriverUpdate,
 } from '../interfaces/transportation-driver';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class TransportationDriverApiService {
   readonly #path = getAppParams('apiPath') + 'transportation/driver';
   #http = inject(HttpClient);

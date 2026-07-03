@@ -67,7 +67,6 @@ type FormValue = {
   ],
   templateUrl: './transportation-vehicle-edit.component.html',
   styleUrl: './transportation-vehicle-edit.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransportationVehicleEditComponent implements CanComponentDeactivate {
   #vehicleService = inject(TransportationVehicleService);

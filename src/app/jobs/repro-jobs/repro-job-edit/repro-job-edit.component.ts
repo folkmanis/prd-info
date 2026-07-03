@@ -57,7 +57,6 @@ import { computedChanges } from 'src/app/library/signals';
   selector: 'app-repro-job-edit',
   templateUrl: './repro-job-edit.component.html',
   styleUrls: ['./repro-job-edit.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
     MatButtonModule,

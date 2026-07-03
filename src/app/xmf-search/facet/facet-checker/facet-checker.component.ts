@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output, viewChild } from '@angular/core';
+import { Component, input, output, viewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule, MatSelectionList } from '@angular/material/list';
@@ -9,7 +9,6 @@ import { FacetPipe } from './facet.pipe';
   selector: 'app-facet-checker',
   templateUrl: './facet-checker.component.html',
   styleUrls: ['./facet-checker.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatButtonModule, MatIconModule, MatListModule, FacetPipe],
 })
 export class FacetCheckerComponent<

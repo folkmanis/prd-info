@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, input } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, input } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -32,7 +32,6 @@ type DropFolderForm = FormGroup<{
   selector: 'app-drop-folders',
   templateUrl: './drop-folders.component.html',
   styleUrls: ['./drop-folders.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
     FormsModule,

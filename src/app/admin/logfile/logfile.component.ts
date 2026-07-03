@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, Signal, untracked } from '@angular/core';
+import { Component, computed, effect, inject, signal, Signal, untracked } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,7 +15,6 @@ import { LogfileService } from './services/logfile.service';
   selector: 'app-logfile',
   templateUrl: './logfile.component.html',
   styleUrls: ['./logfile.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     LogfileTableComponent,
     MatButtonModule,

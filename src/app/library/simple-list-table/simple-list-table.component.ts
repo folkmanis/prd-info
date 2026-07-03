@@ -1,5 +1,5 @@
 import { ComponentType } from '@angular/cdk/portal';
-import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -11,7 +11,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   selector: 'app-simple-list-table',
   templateUrl: './simple-list-table.component.html',
   styleUrls: ['./simple-list-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

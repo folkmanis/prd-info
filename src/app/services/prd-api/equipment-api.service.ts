@@ -1,14 +1,12 @@
 import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http';
-import { inject, Injectable, Signal } from '@angular/core';
+import { inject, Service, Signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
 import { firstValueFrom, map } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { Equipment, EquipmentCreate } from 'src/app/interfaces';
 import { HttpOptions, httpResponseRequest, ValidatorService } from 'src/app/library';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class EquipmentApiService {
   #path = getAppParams('apiPath') + 'equipment/';
   #http = inject(HttpClient);
@@ -37,7 +35,9 @@ export class EquipmentApiService {
   }
 
   deleteOne(id: string): Promise<number> {
-    const response$ = this.#http.delete<{ deletedCount: number }>(this.#path + id, new HttpOptions()).pipe(map((data) => data.deletedCount));
+    const response$ = this.#http
+      .delete<{ deletedCount: number }>(this.#path + id, new HttpOptions())
+      .pipe(map((data) => data.deletedCount));
     return firstValueFrom(response$);
   }
 

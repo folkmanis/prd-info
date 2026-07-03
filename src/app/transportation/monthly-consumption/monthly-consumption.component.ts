@@ -1,5 +1,5 @@
 import { DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, resource, signal } from '@angular/core';
+import { Component, computed, inject, resource, signal } from '@angular/core';
 import { disabled, form, FormField, required } from '@angular/forms/signals';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -23,7 +23,6 @@ function getYears(odometerReadings: OdometerReading[]): string[] {
   imports: [FormField, MatFormFieldModule, MatSelect, MatOption, MatCardModule, ConsumptionTableComponent, DecimalPipe],
   templateUrl: './monthly-consumption.component.html',
   styleUrl: './monthly-consumption.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MonthlyConsumptionComponent {
   #vehiclesService = inject(TransportationVehicleService);

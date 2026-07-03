@@ -1,9 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import sanitize from 'sanitize-filename';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class SanitizeService {
   constructor() {}
 

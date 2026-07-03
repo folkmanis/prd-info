@@ -1,5 +1,13 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, NG_VALUE_ACCESSOR, ReactiveFormsModule, TouchedChangeEvent, Validators, ValueChangeEvent } from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
+import {
+  ControlValueAccessor,
+  FormBuilder,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+  TouchedChangeEvent,
+  Validators,
+  ValueChangeEvent,
+} from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -12,7 +20,6 @@ import { FtpUserData } from 'src/app/interfaces';
   selector: 'app-ftp-user',
   templateUrl: './ftp-user.component.html',
   styleUrls: ['./ftp-user.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -41,7 +48,9 @@ export class FtpUserComponent implements ControlValueAccessor {
 
   constructor() {
     this.getFtpFolders();
-    this.form.events.pipe(filter((event) => event instanceof TouchedChangeEvent && event.touched === true)).subscribe(() => this.onTouchFn());
+    this.form.events
+      .pipe(filter((event) => event instanceof TouchedChangeEvent && event.touched === true))
+      .subscribe(() => this.onTouchFn());
   }
 
   writeValue(obj: FtpUserData | null): void {
@@ -71,7 +80,9 @@ export class FtpUserComponent implements ControlValueAccessor {
   }
 
   private async getFtpFolders() {
-    const folders = (await this.filesApi.ftpFolders()).filter((element) => element.isFolder).map((element) => element.name);
+    const folders = (await this.filesApi.ftpFolders())
+      .filter((element) => element.isFolder)
+      .map((element) => element.name);
     this.ftpFolders.set(folders);
   }
 

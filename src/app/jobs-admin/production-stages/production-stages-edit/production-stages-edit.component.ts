@@ -35,7 +35,6 @@ import { computedChanges } from 'src/app/library/signals';
   selector: 'app-production-stages-edit',
   templateUrl: './production-stages-edit.component.html',
   styleUrls: ['./production-stages-edit.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     SimpleFormContainerComponent,
     ReactiveFormsModule,

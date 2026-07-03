@@ -1,5 +1,5 @@
 import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { ChangeDetectionStrategy, Component, effect, input, viewChild } from '@angular/core';
+import { Component, effect, input, viewChild } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
 import { ArchiveRecord } from '../interfaces';
@@ -10,7 +10,6 @@ import { ArchiveRecordComponent } from './archive-record/archive-record.componen
   selector: 'app-search-table',
   templateUrl: './search-table.component.html',
   styleUrls: ['./search-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CdkVirtualScrollViewport,
     CdkFixedSizeVirtualScroll,

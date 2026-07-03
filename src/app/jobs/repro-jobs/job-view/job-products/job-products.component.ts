@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { JobProduct } from 'src/app/jobs/interfaces';
 import { IfViewSizeDirective } from 'src/app/library/view-size';
 import { JobProductsLargeComponent } from './job-products-large/job-products-large.component';
@@ -9,7 +9,6 @@ import { JobProductsSmallComponent } from './job-products-small/job-products-sma
   imports: [JobProductsLargeComponent, JobProductsSmallComponent, IfViewSizeDirective],
   templateUrl: './job-products.component.html',
   styleUrl: './job-products.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JobProductsComponent {
   products = input<JobProduct[]>([]);

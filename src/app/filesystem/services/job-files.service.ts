@@ -1,5 +1,5 @@
 import { HttpEvent } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { last } from 'lodash-es';
 import { firstValueFrom, map, Observable, tap } from 'rxjs';
 import { JobsFilesApiService } from 'src/app/filesystem';
@@ -8,9 +8,7 @@ import { Job } from '../../jobs';
 import { FileElement } from '../interfaces/file-element';
 import { FileLocationTypes } from '../interfaces/file-location-types';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class JobFilesService {
   #api = inject(JobsFilesApiService);
   #sanitize = inject(SanitizeService);

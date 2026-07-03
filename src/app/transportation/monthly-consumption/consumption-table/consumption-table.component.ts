@@ -1,5 +1,5 @@
 import { DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 
 export interface ConsumptionData {
@@ -14,7 +14,6 @@ export interface ConsumptionData {
   imports: [MatTableModule, DecimalPipe],
   templateUrl: './consumption-table.component.html',
   styleUrl: './consumption-table.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConsumptionTableComponent {
   protected columns = ['month', 'mileage', 'consumed', 'consumptionRate'];

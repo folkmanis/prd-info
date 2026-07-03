@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, computed, input, viewChild } from '@angular/core';
+import { Component, ElementRef, computed, input, viewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
@@ -25,8 +25,16 @@ import { CustomerProduct } from 'src/app/interfaces';
   selector: 'app-product-autocomplete',
   templateUrl: './product-autocomplete.component.html',
   styleUrls: ['./product-autocomplete.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatFormFieldModule, MatInputModule, FormsModule, MatAutocompleteModule, ReactiveFormsModule, MatButtonModule, MatIconModule, MatOptionModule],
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    MatAutocompleteModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatOptionModule,
+  ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

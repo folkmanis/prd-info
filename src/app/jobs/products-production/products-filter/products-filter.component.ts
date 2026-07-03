@@ -73,7 +73,6 @@ function modelToFilter(model: FilterModel): JobsProductionFilter {
   selector: 'app-products-filter',
   templateUrl: './products-filter.component.html',
   styleUrls: ['./products-filter.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormField,
     ViewSizeDirective,

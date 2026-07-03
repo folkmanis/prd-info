@@ -1,13 +1,11 @@
 import { Clipboard } from '@angular/cdk/clipboard';
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SanitizeService } from '../services/sanitize.service';
 
 const SNACKBAR_TEXT = (txt: string) => `"${txt}" izkopēts!`;
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class ClipboardService {
   private snack = inject(MatSnackBar);
   private cdkClipboard = inject(Clipboard);

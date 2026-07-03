@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { form, FormField, minLength, required } from '@angular/forms/signals';
 import { MatButton } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -12,7 +12,6 @@ export interface PasswordDialogData {
   selector: 'app-password-input-dialog',
   templateUrl: './password-input-dialog.component.html',
   styleUrls: ['./password-input-dialog.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormField, MatDialogModule, MatButton, PasswordInputGroupComponent],
   standalone: true,
 })

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import {
   ControlValueAccessor,
   FormBuilder,
@@ -41,7 +41,6 @@ import {
   ],
   templateUrl: './shipping-address.component.html',
   styleUrl: './shipping-address.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

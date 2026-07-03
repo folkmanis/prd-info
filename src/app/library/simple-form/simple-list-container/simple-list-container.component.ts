@@ -1,5 +1,14 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, TemplateRef, booleanAttribute, input, model, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  TemplateRef,
+  booleanAttribute,
+  input,
+  model,
+  signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -14,7 +23,6 @@ import { ViewSizeDirective } from 'src/app/library/view-size';
   selector: 'app-simple-list-container',
   templateUrl: './simple-list-container.component.html',
   styleUrls: ['./simple-list-container.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     RouterOutlet,

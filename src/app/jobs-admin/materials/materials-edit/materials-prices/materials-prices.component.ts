@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -15,7 +15,6 @@ import { MaterialsPricesDataSource } from './materials-prices-data-source';
   selector: 'app-materials-prices',
   templateUrl: './materials-prices.component.html',
   styleUrls: ['./materials-prices.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatTableModule, MatButtonModule, MatIconModule, CurrencyPipe],
   providers: [
     {

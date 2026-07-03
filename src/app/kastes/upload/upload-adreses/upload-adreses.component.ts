@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { ChangeDetectionStrategy, Component, Output, computed, effect, model, signal } from '@angular/core';
+import { Component, Output, computed, effect, model, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -17,14 +17,24 @@ import { DragableDirective } from './dragable.directive';
   selector: 'app-upload-adreses',
   templateUrl: './upload-adreses.component.html',
   styleUrls: ['./upload-adreses.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatButtonModule, MatCheckboxModule, MatChipsModule, DragableDirective, MatTableModule, DragDropDirective, MatIconModule, ScrollTopDirective],
+  imports: [
+    MatButtonModule,
+    MatCheckboxModule,
+    MatChipsModule,
+    DragableDirective,
+    MatTableModule,
+    DragDropDirective,
+    MatIconModule,
+    ScrollTopDirective,
+  ],
 })
 export class UploadAdresesComponent {
   rowSelection = new SelectionModel<number>(true);
   columnSelection = new SelectionModel<number>(true);
 
-  selectedRows = toSignal(this.rowSelection.changed.pipe(map((change) => change.source)), { initialValue: this.rowSelection });
+  selectedRows = toSignal(this.rowSelection.changed.pipe(map((change) => change.source)), {
+    initialValue: this.rowSelection,
+  });
 
   adreses = model<Array<number | string>[]>([], { alias: 'data' });
 

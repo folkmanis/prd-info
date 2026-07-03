@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, input } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, input } from '@angular/core';
 import {
   ControlValueAccessor,
   FormBuilder,
@@ -30,8 +30,16 @@ type ProductProductionStageControlType = FormGroup<{
   selector: 'app-product-production',
   templateUrl: './product-production.component.html',
   styleUrls: ['./product-production.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, ProductionMaterialComponent, SelectDirective, MatDividerModule, MatCardModule, MatIconModule, MatButtonModule, MatTooltip],
+  imports: [
+    ReactiveFormsModule,
+    ProductionMaterialComponent,
+    SelectDirective,
+    MatDividerModule,
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule,
+    MatTooltip,
+  ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -110,7 +118,9 @@ export class ProductProductionComponent implements ControlValueAccessor, Validat
     }
   }
 
-  private stageControl(stage: ProductProductionStage = this.#productsService.newProductProductionStage()): ProductProductionStageControlType {
+  private stageControl(
+    stage: ProductProductionStage = this.#productsService.newProductProductionStage(),
+  ): ProductProductionStageControlType {
     return this.#fb.nonNullable.group({
       productionStageId: [stage.productionStageId, [Validators.required]],
       amount: [stage.amount],

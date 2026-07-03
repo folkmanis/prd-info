@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, input, numberAttribute } from '@angular/core';
+import { Component, inject, input, numberAttribute } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -28,8 +28,15 @@ const firebaseCopyFromResultMessage = (count: number) => `Saņemti ${count} iera
   selector: 'app-pasutijums-edit',
   templateUrl: './pasutijums-edit.component.html',
   styleUrls: ['./pasutijums-edit.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [SimpleFormContainerComponent, JobInfoComponent, MatTabsModule, PakosanasSarakstsComponent, AsyncPipe, RouterLink, MatButtonModule],
+  imports: [
+    SimpleFormContainerComponent,
+    JobInfoComponent,
+    MatTabsModule,
+    PakosanasSarakstsComponent,
+    AsyncPipe,
+    RouterLink,
+    MatButtonModule,
+  ],
 })
 export class PasutijumsEditComponent {
   private pasutijumiService = inject(KastesPasutijumiService);
@@ -92,7 +99,11 @@ export class PasutijumsEditComponent {
     if (await this.confirmationDialog.confirm(FIREBASE_COPY_TO_CONFIRMATION)) {
       this.pasutijumiService
         .copyToFirestore(jobId)
-        .pipe(tap((result) => this.snack.open(firebaseCopyToResultMessage(result.recordsUpdated), 'OK', { duration: 3000 })))
+        .pipe(
+          tap((result) =>
+            this.snack.open(firebaseCopyToResultMessage(result.recordsUpdated), 'OK', { duration: 3000 }),
+          ),
+        )
         .subscribe();
     }
   }
@@ -102,7 +113,11 @@ export class PasutijumsEditComponent {
     if (await this.confirmationDialog.confirm(FIREBASE_COPY_FROM_CONFIRMATION)) {
       this.pasutijumiService
         .copyFromFirestore(jobId)
-        .pipe(tap((result) => this.snack.open(firebaseCopyFromResultMessage(result.modifiedCount), 'OK', { duration: 3000 })))
+        .pipe(
+          tap((result) =>
+            this.snack.open(firebaseCopyFromResultMessage(result.modifiedCount), 'OK', { duration: 3000 }),
+          ),
+        )
         .subscribe();
     }
   }

@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { flatten } from 'lodash-es';
 import {
   Observable,
@@ -36,9 +36,7 @@ export type JobTemplate = Partial<Omit<Job, 'jobId'>>;
 
 const MAX_JOB_NAME_LENGTH = 100; // TODO take from global config
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class ReproJobService {
   #productsService = inject(ProductsService);
   #jobService = inject(JobService);

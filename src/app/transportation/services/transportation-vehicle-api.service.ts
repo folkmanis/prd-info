@@ -1,5 +1,5 @@
 import { HttpClient, httpResource } from '@angular/common/http';
-import { inject, Injectable, Signal } from '@angular/core';
+import { inject, Service, Signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
 import { firstValueFrom } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
@@ -13,9 +13,7 @@ import {
 import { SchemaPath, validateHttp } from '@angular/forms/signals';
 import { NETWORK_ERROR } from '../../library/http/network-error';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class TransportationVehicleApiService {
   readonly #path = getAppParams('apiPath') + 'transportation/vehicle';
   #http = inject(HttpClient);

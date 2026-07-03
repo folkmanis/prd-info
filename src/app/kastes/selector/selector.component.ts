@@ -1,4 +1,15 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, model, numberAttribute, signal, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  model,
+  numberAttribute,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -26,7 +37,6 @@ import { KastesJob } from 'src/app/jobs';
   selector: 'app-selector',
   templateUrl: './selector.component.html',
   styleUrls: ['./selector.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatSidenavModule,
     MatTabsModule,
@@ -126,7 +136,11 @@ export class SelectorComponent {
       return;
     }
 
-    const updatedPackage = await this.tabulaService.setCompleted(addressPackage.documentId, addressPackage.boxSequence, result);
+    const updatedPackage = await this.tabulaService.setCompleted(
+      addressPackage.documentId,
+      addressPackage.boxSequence,
+      result,
+    );
 
     this.replacePackage(updatedPackage);
   }

@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, Signal } from '@angular/core';
+import { computed, inject, Service, Signal } from '@angular/core';
 import {
   BehaviorSubject,
   catchError,
@@ -16,9 +16,7 @@ import { Login } from '../login.interface';
 import { LoginApiService } from './login-api.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class LoginService {
   private api = inject(LoginApiService);
 

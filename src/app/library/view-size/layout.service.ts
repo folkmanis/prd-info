@@ -1,5 +1,5 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 
@@ -17,9 +17,7 @@ const MEDIA_BREAKPOINTS = {
   medium: '1000px',
 };
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class LayoutService {
   private breakpointObserver = inject(BreakpointObserver);
 
@@ -30,7 +28,9 @@ export class LayoutService {
     handset: Breakpoints.Handset,
   };
 
-  toolbarHeight$ = this.matches('handset').pipe(map((mobile) => (mobile ? TOOLBAR_HEIGHT.mobile : TOOLBAR_HEIGHT.desktop)));
+  toolbarHeight$ = this.matches('handset').pipe(
+    map((mobile) => (mobile ? TOOLBAR_HEIGHT.mobile : TOOLBAR_HEIGHT.desktop)),
+  );
 
   matches(matcher: AppBreakpoints): Observable<boolean> {
     return this.breakpointObserver.observe(this.breakpoints[matcher]).pipe(

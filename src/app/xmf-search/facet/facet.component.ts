@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output, viewChildren } from '@angular/core';
+import { Component, input, output, viewChildren } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { ArchiveFacet, FacetFilter } from '../interfaces';
 import { FacetCheckerComponent } from './facet-checker/facet-checker.component';
@@ -7,7 +7,6 @@ import { FacetCheckerComponent } from './facet-checker/facet-checker.component';
   selector: 'app-facet',
   templateUrl: './facet.component.html',
   styleUrls: ['./facet.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FacetCheckerComponent, MatDividerModule],
 })
 export class FacetComponent {

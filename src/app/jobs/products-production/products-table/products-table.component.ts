@@ -1,6 +1,6 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { CurrencyPipe, DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, input, model } from '@angular/core';
+import { Component, computed, effect, input, model } from '@angular/core';
 import { outputFromObservable } from '@angular/core/rxjs-interop';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSortModule } from '@angular/material/sort';
@@ -14,7 +14,6 @@ import { ProductsSortDirective } from './products-sort.directive';
   selector: 'app-products-table',
   templateUrl: './products-table.component.html',
   styleUrls: ['./products-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatTableModule, ProductsSortDirective, MatCheckboxModule, MatSortModule, DecimalPipe, CurrencyPipe],
 })
 export class ProductsTableComponent {

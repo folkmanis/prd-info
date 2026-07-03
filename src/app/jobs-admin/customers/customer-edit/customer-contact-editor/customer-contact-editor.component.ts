@@ -1,5 +1,22 @@
-import { afterNextRender, ChangeDetectionStrategy, Component, ElementRef, inject, output, viewChild } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator, Validators } from '@angular/forms';
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  inject,
+  output,
+  viewChild,
+} from '@angular/core';
+import {
+  ControlValueAccessor,
+  FormBuilder,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validator,
+  Validators,
+} from '@angular/forms';
 import { map } from 'rxjs';
 import { CustomerContact } from 'src/app/interfaces';
 import { CustomersService } from 'src/app/services';
@@ -8,7 +25,6 @@ import { CustomersService } from 'src/app/services';
   selector: 'app-customer-contact-editor',
   templateUrl: './customer-contact-editor.component.html',
   styleUrls: ['./customer-contact-editor.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -54,7 +70,9 @@ export class CustomerContactEditorComponent implements ControlValueAccessor, Val
   }
 
   registerOnChange(fn: (value: CustomerContact) => void): void {
-    this.emailControl.valueChanges.pipe(map((value) => (value ? this.#customersService.newCustomerContact(value) : null))).subscribe(fn);
+    this.emailControl.valueChanges
+      .pipe(map((value) => (value ? this.#customersService.newCustomerContact(value) : null)))
+      .subscribe(fn);
   }
 
   registerOnTouched(fn: () => void): void {

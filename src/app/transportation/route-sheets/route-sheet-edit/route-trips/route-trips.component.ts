@@ -1,5 +1,5 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
@@ -36,7 +36,6 @@ import { SingleTripComponent, TripDialogData } from './single-trip/single-trip.c
   ],
   templateUrl: './route-trips.component.html',
   styleUrl: './route-trips.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RouteTripsComponent {
   readonly #routeSheetService = inject(RouteSheetService);

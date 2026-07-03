@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, booleanAttribute, input, model, output } from '@angular/core';
+import { Component, booleanAttribute, input, model, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -9,7 +9,6 @@ import { MatInputModule } from '@angular/material/input';
   selector: 'app-paytraq-search-header',
   templateUrl: './paytraq-search-header.component.html',
   styleUrls: ['./paytraq-search-header.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatFormFieldModule, MatIconModule, MatInputModule, FormsModule, MatButtonModule],
 })
 export class PaytraqSearchHeaderComponent {

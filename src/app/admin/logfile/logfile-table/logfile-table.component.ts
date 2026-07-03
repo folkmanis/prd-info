@@ -1,5 +1,5 @@
 import { DatePipe, JsonPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { ShortenTextPipe } from 'prd-cdk';
 import { ViewSizeDirective } from 'src/app/library/view-size';
@@ -10,7 +10,6 @@ import { LogRecord } from '../services/logfile-record';
   selector: 'app-logfile-table',
   templateUrl: './logfile-table.component.html',
   styleUrls: ['./logfile-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatTableModule, JsonPipe, DatePipe, ShortenTextPipe, ViewSizeDirective],
 })
 export class LogfileTableComponent {

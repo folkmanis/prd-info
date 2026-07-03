@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, model } from '@angular/core';
+import { Component, computed, input, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -9,7 +9,6 @@ import { JobsWithoutInvoicesTotals } from 'src/app/jobs';
   selector: 'app-customer-selector',
   templateUrl: './customer-selector.component.html',
   styleUrls: ['./customer-selector.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatFormFieldModule, MatSelectModule, MatOptionModule, FormsModule],
 })
 export class CustomerSelectorComponent {

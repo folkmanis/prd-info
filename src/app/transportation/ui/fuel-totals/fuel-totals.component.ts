@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { isObject } from 'lodash-es';
 import { FuelPurchase } from '../../interfaces/fuel-purchase';
@@ -7,7 +7,6 @@ import { FuelPurchase } from '../../interfaces/fuel-purchase';
 @Component({
   selector: 'app-fuel-totals',
   imports: [CurrencyPipe, MatChipsModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './fuel-totals.component.html',
 })
 export class FuelTotalsComponent {
@@ -17,7 +16,10 @@ export class FuelTotalsComponent {
 
   defaultUnits = input<string>();
 
-  units = computed(() => [...new Set(this.validPurchases().map((fuelPurchase) => fuelPurchase.units))].join(',') || this.defaultUnits());
+  units = computed(
+    () =>
+      [...new Set(this.validPurchases().map((fuelPurchase) => fuelPurchase.units))].join(',') || this.defaultUnits(),
+  );
 
   totalAmount = computed(() =>
     this.validPurchases()

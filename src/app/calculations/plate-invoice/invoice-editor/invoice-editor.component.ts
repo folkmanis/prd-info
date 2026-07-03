@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
+import { Component, inject, input, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -24,7 +24,6 @@ import { InvoiceProductsComponent } from './invoice-products/invoice-products.co
   selector: 'app-invoice-editor',
   templateUrl: './invoice-editor.component.html',
   styleUrls: ['./invoice-editor.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatMenuModule,
     MatIconModule,

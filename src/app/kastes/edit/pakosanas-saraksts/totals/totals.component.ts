@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { Veikals } from 'src/app/kastes/interfaces';
 import { kastesPreferences } from 'src/app/kastes/services/kastes-preferences.service';
 import { PlusSignPipe } from 'prd-cdk';
@@ -9,7 +9,6 @@ import { VeikalsValidationErrors } from '../../services/veikals-validation-error
   selector: 'app-totals',
   templateUrl: './totals.component.html',
   styleUrls: ['./totals.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [PlusSignPipe],
 })
 export class TotalsComponent {

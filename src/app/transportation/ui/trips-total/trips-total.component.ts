@@ -1,5 +1,5 @@
 import { DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { isObject } from 'lodash-es';
 import { RouteTrip } from 'src/app/transportation/interfaces/transportation-route-sheet';
@@ -8,7 +8,6 @@ import { RouteTrip } from 'src/app/transportation/interfaces/transportation-rout
   selector: 'app-trips-total',
   imports: [MatChipsModule, DecimalPipe],
   templateUrl: './trips-total.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TripsTotalComponent {
   private validTrips = computed(() => this.routeTrips().filter(isObject) as RouteTrip[]);

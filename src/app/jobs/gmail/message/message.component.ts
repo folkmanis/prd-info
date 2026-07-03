@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, linkedSignal, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  linkedSignal,
+  output,
+  signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -15,8 +24,17 @@ import { Attachment, Message } from '../interfaces';
   selector: 'app-message',
   templateUrl: './message.component.html',
   styleUrls: ['./message.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatExpansionModule, MatButtonModule, MatIcon, MatMenuModule, MatCardModule, MatProgressBarModule, MatListModule, FilesizePipe, FormsModule],
+  imports: [
+    MatExpansionModule,
+    MatButtonModule,
+    MatIcon,
+    MatMenuModule,
+    MatCardModule,
+    MatProgressBarModule,
+    MatListModule,
+    FilesizePipe,
+    FormsModule,
+  ],
 })
 export class MessageComponent {
   private sanitizer = inject(DomSanitizer);

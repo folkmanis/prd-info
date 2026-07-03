@@ -43,7 +43,6 @@ import { QuickCreateService } from '../quick-create.service';
   ],
   templateUrl: './quick-create-input.component.html',
   styleUrl: './quick-create-input.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QuickCreateInputComponent {
   #service = inject(QuickCreateService);

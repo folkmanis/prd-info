@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { Material, MaterialPrice } from 'src/app/interfaces';
 import { FilterInput, toFilterSignal } from 'src/app/library';
 import { MaterialsApiService } from 'src/app/services/prd-api/materials-api.service';
@@ -12,9 +12,7 @@ export interface MaterialsFilter {
   categories?: string[];
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class MaterialsService {
   private api = inject(MaterialsApiService);
 

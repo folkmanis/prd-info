@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, viewChild } from '@angular/core';
+import { Component, computed, effect, inject, input, output, viewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   ControlValueAccessor,
@@ -29,7 +29,6 @@ import { map } from 'rxjs';
   selector: 'app-repro-product',
   templateUrl: './repro-product.component.html',
   styleUrls: ['./repro-product.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     ReactiveFormsModule,

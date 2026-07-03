@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { ValidatorService } from 'src/app/library';
@@ -20,9 +20,7 @@ import {
   ThreadsSchema,
 } from '../interfaces';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class GmailApiService {
   readonly #http = inject(HttpClient);
   readonly #path = getAppParams('apiPath') + 'google/gmail/';

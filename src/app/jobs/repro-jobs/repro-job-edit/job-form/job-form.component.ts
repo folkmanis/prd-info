@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input, viewChild } from '@angular/core';
+import { Component, computed, inject, input, viewChild } from '@angular/core';
 import {
   ControlValueAccessor,
   FormBuilder,
@@ -35,7 +35,6 @@ import { ReproProductsEditorComponent } from '../repro-products-editor/repro-pro
   selector: 'app-job-form',
   templateUrl: './job-form.component.html',
   styleUrls: ['./job-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     ReactiveFormsModule,

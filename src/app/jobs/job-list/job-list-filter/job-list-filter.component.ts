@@ -53,7 +53,6 @@ const DEFAULT_FILTER_MODEL: JobFilterModel = {
   selector: 'app-job-list-filter',
   templateUrl: './job-list-filter.component.html',
   styleUrl: './job-list-filter.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormField,
     MatIconButton,

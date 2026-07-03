@@ -1,5 +1,5 @@
 import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http';
-import { inject, Injectable, Signal } from '@angular/core';
+import { inject, Service, Signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
 import { firstValueFrom, map } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
@@ -7,9 +7,7 @@ import { CreateProductionStage, ProductionStage } from 'src/app/interfaces';
 import { httpResponseRequest, ValidatorService } from 'src/app/library';
 import { HttpOptions } from 'src/app/library/http/http-options';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class ProductionStageApiService {
   #path = getAppParams('apiPath') + 'production-stages/';
   #http = inject(HttpClient);
@@ -39,11 +37,15 @@ export class ProductionStageApiService {
   }
 
   deleteOne(id: string): Promise<number> {
-    const data$ = this.#http.delete<{ deletedCount: number }>(this.#path + id, new HttpOptions()).pipe(map((data) => data.deletedCount));
+    const data$ = this.#http
+      .delete<{ deletedCount: number }>(this.#path + id, new HttpOptions())
+      .pipe(map((data) => data.deletedCount));
     return firstValueFrom(data$);
   }
 
   validatorData<K extends keyof ProductionStage & string>(key: K): Promise<ProductionStage[K][]> {
-    return firstValueFrom(this.#http.get<ProductionStage[K][]>(this.#path + 'validate/' + key, new HttpOptions().cacheable()));
+    return firstValueFrom(
+      this.#http.get<ProductionStage[K][]>(this.#path + 'validate/' + key, new HttpOptions().cacheable()),
+    );
   }
 }

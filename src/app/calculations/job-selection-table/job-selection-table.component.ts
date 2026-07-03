@@ -1,5 +1,5 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { booleanAttribute, ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { booleanAttribute, Component, computed, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTableModule } from '@angular/material/table';
@@ -7,7 +7,17 @@ import { JobUnwinded } from 'src/app/jobs/interfaces/job-unwinded';
 import { RouterLinkWithReturnDirective } from 'src/app/library/navigation';
 import { z } from 'zod';
 
-const TABLE_COLUMNS = ['selected', 'jobId', 'receivedDate', 'custCode', 'name', 'productName', 'count', 'price', 'total'];
+const TABLE_COLUMNS = [
+  'selected',
+  'jobId',
+  'receivedDate',
+  'custCode',
+  'name',
+  'productName',
+  'count',
+  'price',
+  'total',
+];
 
 export const JobSelectionTableDataScheme = JobUnwinded.pick({
   jobId: true,
@@ -21,7 +31,6 @@ export type JobSelectionTableData = z.infer<typeof JobSelectionTableDataScheme>;
   selector: 'app-job-selection-table',
   templateUrl: './job-selection-table.component.html',
   styleUrls: ['./job-selection-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatTableModule, MatCheckboxModule, DatePipe, CurrencyPipe, MatButtonModule, RouterLinkWithReturnDirective],
 })
 export class JobSelectionTableComponent<D extends JobSelectionTableData> {
@@ -30,7 +39,9 @@ export class JobSelectionTableComponent<D extends JobSelectionTableData> {
 
   selectedUniqueIds = computed(() => this.toUniqueIds(this.selected()));
 
-  isAllSelected = computed(() => this.uniqueJobIds().length > 0 && this.uniqueJobIds().length === this.selectedUniqueIds().length);
+  isAllSelected = computed(
+    () => this.uniqueJobIds().length > 0 && this.uniqueJobIds().length === this.selectedUniqueIds().length,
+  );
   isSelection = computed(() => this.selectedUniqueIds().length > 0);
 
   jobs = input.required<D[]>();

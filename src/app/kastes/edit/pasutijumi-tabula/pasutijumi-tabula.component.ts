@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterLinkActive } from '@angular/router';
@@ -14,13 +14,14 @@ import { kastesPreferences } from '../../services/kastes-preferences.service';
   selector: 'app-pasutijumi-tabula',
   templateUrl: './pasutijumi-tabula.component.html',
   styleUrls: ['./pasutijumi-tabula.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatTableModule, MatIconModule, SimpleListContainerComponent, RouterLink, RouterLinkActive, DatePipe],
 })
 export class PasutijumiTabulaComponent {
   private kastesPasutijumiService = inject(KastesPasutijumiService);
 
-  private filter = computed(() => (this.name().trim().length > 0 ? { name: this.name().trim() } : {}), { equal: isEqual });
+  private filter = computed(() => (this.name().trim().length > 0 ? { name: this.name().trim() } : {}), {
+    equal: isEqual,
+  });
 
   readonly columns = ['active', 'jobId', 'name', 'receivedDate', 'dueDate'];
   readonly columnsActive = ['active', 'jobId', 'name'];

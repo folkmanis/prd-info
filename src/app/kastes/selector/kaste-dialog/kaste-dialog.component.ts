@@ -1,7 +1,13 @@
 import { TitleCasePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogActions,
+  MatDialogClose,
+  MatDialogContent,
+  MatDialogTitle,
+} from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { COLORS } from 'src/app/interfaces';
 import { AddressPackage } from '../../interfaces/address-package';
@@ -16,7 +22,6 @@ export interface KasteDialogData {
   selector: 'app-kaste-dialog',
   templateUrl: './kaste-dialog.component.html',
   styleUrls: ['./kaste-dialog.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatIcon, MatDialogClose, TitleCasePipe, MatIconButton],
 })
 export class KasteDialogComponent {

@@ -1,5 +1,5 @@
 import { CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ChangeDetectionStrategy, Component, inject, input, model, output } from '@angular/core';
+import { Component, inject, input, model, output } from '@angular/core';
 import { FormValueControl } from '@angular/forms/signals';
 import { MatIconButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -17,7 +17,6 @@ import { TripStopDialogComponent, TripStopDialogData } from './trip-stop-dialog/
   imports: [MatIcon, MatIconButton, MatDivider, CdkDropList, CdkDrag, CdkDragHandle],
   templateUrl: './trip-stops.component.html',
   styleUrl: './trip-stops.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TripStopsComponent implements FormValueControl<RouteStop[]> {
   value = model.required<RouteStop[]>();

@@ -60,7 +60,6 @@ interface RouteSheetModel {
   ],
   templateUrl: './general-setup.component.html',
   styleUrl: './general-setup.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GeneralSetupComponent implements CanComponentDeactivate {
   readonly #routeSheetService = inject(RouteSheetService);

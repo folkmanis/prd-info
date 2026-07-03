@@ -1,4 +1,4 @@
-import { afterNextRender, ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { afterNextRender, Component, inject, signal } from '@angular/core';
 import { GoogleMap, MapAdvancedMarker, MapGeocoder } from '@angular/google-maps';
 import { MatButton } from '@angular/material/button';
 import {
@@ -30,7 +30,6 @@ export interface LocationSelectDialogData {
   ],
   templateUrl: './location-select-dialog.component.html',
   styleUrl: './location-select-dialog.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LocationSelectDialogComponent {
   #geoCoder = inject(MapGeocoder);

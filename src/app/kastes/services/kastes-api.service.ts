@@ -1,5 +1,5 @@
 import { HttpClient, httpResource } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { KastesUserPreferences, Veikals, VeikalsKaste, VeikalsUpload } from 'src/app/kastes/interfaces';
@@ -13,16 +13,16 @@ export const DEFAULT_USER_PREFERENCES: KastesUserPreferences = {
   pasutijums: null,
 };
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class KastesApiService {
   private readonly path = getAppParams('apiPath') + 'kastes/';
   private http = inject(HttpClient);
 
   getAddressPackages(jobId: number): Observable<AddressPackage[]> {
     const options = new HttpOptions();
-    return this.http.get<VeikalsKaste[]>(this.path + jobId, options).pipe(map((data) => data.map((row) => veikalsKasteToAddressPackage(row))));
+    return this.http
+      .get<VeikalsKaste[]>(this.path + jobId, options)
+      .pipe(map((data) => data.map((row) => veikalsKasteToAddressPackage(row))));
   }
 
   getVeikali(jobId: number): Observable<Veikals[]> {
@@ -34,26 +34,37 @@ export class KastesApiService {
   }
 
   userPreferencesResource() {
-    return httpResource<KastesUserPreferences>(() => this.path + 'preferences', { defaultValue: DEFAULT_USER_PREFERENCES });
+    return httpResource<KastesUserPreferences>(() => this.path + 'preferences', {
+      defaultValue: DEFAULT_USER_PREFERENCES,
+    });
   }
 
   setUserPreferences(prefs: Partial<KastesUserPreferences>): Observable<KastesUserPreferences> {
     return this.http.patch<KastesUserPreferences>(this.path + 'preferences', prefs, new HttpOptions());
   }
 
-  setCompleteState({ documentId, boxSequence }: Pick<AddressPackage, 'documentId' | 'boxSequence'>, state: boolean): Observable<AddressPackage> {
+  setCompleteState(
+    { documentId, boxSequence }: Pick<AddressPackage, 'documentId' | 'boxSequence'>,
+    state: boolean,
+  ): Observable<AddressPackage> {
     // `192.168.8.73:4030/data/kastes/60f9214bf0b8622f7cedccaa/0/gatavs/false`
     const path = `${this.path}${documentId}/${boxSequence}/gatavs/${state}`;
-    return this.http.patch<VeikalsKaste>(path, {}, new HttpOptions()).pipe(map((data) => veikalsKasteToAddressPackage(data)));
+    return this.http
+      .patch<VeikalsKaste>(path, {}, new HttpOptions())
+      .pipe(map((data) => veikalsKasteToAddressPackage(data)));
   }
 
   setHasLabel(jobId: number, addressId: number): Observable<AddressPackage> {
     const path = `${this.path}${jobId}/${addressId}/label`;
-    return this.http.patch<VeikalsKaste>(path, {}, new HttpOptions()).pipe(map((data) => veikalsKasteToAddressPackage(data)));
+    return this.http
+      .patch<VeikalsKaste>(path, {}, new HttpOptions())
+      .pipe(map((data) => veikalsKasteToAddressPackage(data)));
   }
 
   putTable(veikali: VeikalsUpload[]): Observable<number> {
-    return this.http.put<{ modifiedCount: number }>(this.path, veikali, new HttpOptions()).pipe(map((data) => data.modifiedCount));
+    return this.http
+      .put<{ modifiedCount: number }>(this.path, veikali, new HttpOptions())
+      .pipe(map((data) => data.modifiedCount));
   }
 
   updateVeikals(veikali: Veikals): Observable<Veikals> {
@@ -61,7 +72,9 @@ export class KastesApiService {
   }
 
   deleteVeikali(pasutijumsId: number): Observable<number> {
-    return this.http.delete<{ deletedCount: number }>(this.path + pasutijumsId, new HttpOptions()).pipe(map((data) => data.deletedCount));
+    return this.http
+      .delete<{ deletedCount: number }>(this.path + pasutijumsId, new HttpOptions())
+      .pipe(map((data) => data.deletedCount));
   }
 
   parseXlsx(form: FormData): Observable<Array<string | number>[]> {

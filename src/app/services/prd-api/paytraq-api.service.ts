@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { firstValueFrom, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { getAppParams } from 'src/app/app-params';
@@ -10,24 +10,28 @@ function asArray<T>(val: T | T[]): T[] {
   return Array.isArray(val) ? val : [val];
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class PaytraqApiService {
   readonly path = getAppParams('apiPath') + 'paytraq/';
   private http = inject(HttpClient);
 
   getClients(query: Pt.RequestOptions): Observable<Pt.PaytraqClients> {
-    return this.http.get<{ clients: Pt.PaytraqClients }>(this.path + 'clients', new HttpOptions(query).cacheable()).pipe(map((data) => data.clients));
+    return this.http
+      .get<{ clients: Pt.PaytraqClients }>(this.path + 'clients', new HttpOptions(query).cacheable())
+      .pipe(map((data) => data.clients));
   }
 
   async getClientShippingAddresses(id: number): Promise<Pt.PaytraqShippingAddress[]> {
-    const { shippingAddresses } = await firstValueFrom(this.http.get<Pt.PaytraqShippingAddresses>(this.path + 'client/shippingAddresses/' + id));
+    const { shippingAddresses } = await firstValueFrom(
+      this.http.get<Pt.PaytraqShippingAddresses>(this.path + 'client/shippingAddresses/' + id),
+    );
     return shippingAddresses.length > 0 ? asArray(shippingAddresses[0].shippingAddress) : [];
   }
 
   getProducts(query: Pt.RequestOptions): Observable<Pt.PaytraqProducts> {
-    return this.http.get<{ products: Pt.PaytraqProducts }>(this.path + 'products', new HttpOptions(query).cacheable()).pipe(map((data) => data.products));
+    return this.http
+      .get<{ products: Pt.PaytraqProducts }>(this.path + 'products', new HttpOptions(query).cacheable())
+      .pipe(map((data) => data.products));
   }
 
   async getSale(id: number): Promise<Pt.PaytraqInvoice> {

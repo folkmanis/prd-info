@@ -1,6 +1,27 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input, Output, Signal, afterNextRender, computed, output, signal, viewChildren } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  Input,
+  Output,
+  Signal,
+  afterNextRender,
+  computed,
+  output,
+  signal,
+  viewChildren,
+} from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { Observable, filter, map } from 'rxjs';
 import { COLORS, Colors } from 'src/app/interfaces';
 import { Kaste, MAX_ITEMS_BOX, Veikals } from 'src/app/kastes/interfaces';
@@ -16,7 +37,6 @@ type ColorsGroup = FormGroup<{
   selector: 'app-veikals-edit',
   templateUrl: './veikals-edit.component.html',
   styleUrls: ['./veikals-edit.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule, ReactiveFormsModule, InputDirective],
 })
 export class VeikalsEditComponent {
@@ -54,7 +74,9 @@ export class VeikalsEditComponent {
   });
 
   @Output()
-  errors: Observable<null | VeikalsValidationErrors> = this.form.valueChanges.pipe(map((_) => (this.form.valid ? null : this.form.errors || {})));
+  errors: Observable<null | VeikalsValidationErrors> = this.form.valueChanges.pipe(
+    map((_) => (this.form.valid ? null : this.form.errors || {})),
+  );
 
   @Output()
   valueChanges: Observable<Veikals> = toObservable(this.veikalsValueChanges).pipe(filter((value) => value !== null));
@@ -131,7 +153,10 @@ function totalsValidator(kastes: Record<Colors, number>[]): ValidatorFn {
     const totals = colorTotals(control.getRawValue());
     const initTotals = colorTotals(kastes);
 
-    const diff: Record<Colors, number> = Object.assign({}, ...COLORS.map((col) => ({ [col]: totals[col] - initTotals[col] })));
+    const diff: Record<Colors, number> = Object.assign(
+      {},
+      ...COLORS.map((col) => ({ [col]: totals[col] - initTotals[col] })),
+    );
 
     if (COLORS.some((color) => diff[color] !== 0)) {
       return { diff };

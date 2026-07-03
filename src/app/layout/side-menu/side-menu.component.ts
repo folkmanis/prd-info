@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, viewChild } from '@angular/core';
+import { Component, computed, effect, inject, viewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -19,7 +19,6 @@ interface SideMenuNode {
   selector: 'app-side-menu',
   templateUrl: './side-menu.component.html',
   styleUrls: ['./side-menu.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatListModule, MatTreeModule, RouterLink, MatButtonModule, MatIconModule],
 })
 export class SideMenuComponent {

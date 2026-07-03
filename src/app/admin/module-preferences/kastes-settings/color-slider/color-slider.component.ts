@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, model, ModelSignal } from '@angular/core';
+import { Component, computed, input, model, ModelSignal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FormValueControl } from '@angular/forms/signals';
 import { MatSliderModule } from '@angular/material/slider';
@@ -8,7 +8,6 @@ import { lightness } from './hsl-color';
   selector: 'app-color-slider',
   templateUrl: './color-slider.component.html',
   styleUrls: ['./color-slider.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatSliderModule, FormsModule],
 })
 export class ColorSliderComponent implements FormValueControl<string> {

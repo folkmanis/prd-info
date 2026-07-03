@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { form, FormField, min, required } from '@angular/forms/signals';
 import { MatButton } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -12,7 +12,6 @@ import { OdometerReading } from 'src/app/transportation/interfaces/transportatio
   imports: [FormField, MatDialogModule, MatFormFieldModule, MatInputModule, MatButton, MatDatepickerModule],
   templateUrl: './odometer-readings-dialog.component.html',
   styleUrl: './odometer-readings-dialog.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OdometerReadingsDialogComponent {
   private data = inject<OdometerReading>(MAT_DIALOG_DATA, { optional: true });

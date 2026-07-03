@@ -1,10 +1,8 @@
-import { computed, inject, Injectable, linkedSignal, resource } from '@angular/core';
+import { computed, inject, Service, linkedSignal, resource } from '@angular/core';
 import { LoginService } from 'src/app/login';
 import { MessagesApiService } from './messages-api.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class MessagingService {
   #api = inject(MessagesApiService);
   #login = inject(LoginService);

@@ -1,5 +1,5 @@
 import { HttpResourceRef } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { InvoiceCreate, InvoiceForReport, InvoicesFilter, InvoiceUpdate } from 'src/app/interfaces';
 import { PaytraqInvoice, Sale } from 'src/app/interfaces/paytraq';
@@ -11,9 +11,7 @@ import { PaytraqApiService } from 'src/app/services/prd-api/paytraq-api.service'
 const WAREHOUSE_ID = 213;
 const LOADING_AREA_ID = 301;
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class InvoicesService {
   #api = inject(InvoicesApiService);
   #paytraqApi = inject(PaytraqApiService);

@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { FilesizePipe } from 'prd-cdk';
 import { XmfUploadProgress } from '../interfaces/xmf-upload-progress';
@@ -8,7 +8,6 @@ import { XmfUploadProgress } from '../interfaces/xmf-upload-progress';
   selector: 'app-tabula',
   templateUrl: './tabula.component.html',
   styleUrls: ['./tabula.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatTableModule, FilesizePipe, DatePipe],
 })
 export class TabulaComponent {

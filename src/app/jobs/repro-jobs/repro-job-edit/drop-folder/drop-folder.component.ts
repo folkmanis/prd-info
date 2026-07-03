@@ -1,4 +1,4 @@
-import { booleanAttribute, ChangeDetectionStrategy, Component, computed, input, model } from '@angular/core';
+import { booleanAttribute, Component, computed, input, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatOptionModule } from '@angular/material/core';
@@ -10,7 +10,6 @@ import { DropFolder } from 'src/app/interfaces';
   selector: 'app-drop-folder',
   templateUrl: './drop-folder.component.html',
   styleUrls: ['./drop-folder.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatCheckbox, FormsModule, MatFormFieldModule, MatSelectModule, MatOptionModule],
 })
 export class DropFolderComponent {

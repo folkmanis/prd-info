@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { FileUploadEventType, FileUploadMessage } from '../../interfaces/file-upload-message';
@@ -7,7 +7,6 @@ import { FileUploadEventType, FileUploadMessage } from '../../interfaces/file-up
   selector: 'app-upload-progress',
   templateUrl: './upload-progress.component.html',
   styleUrls: ['./upload-progress.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatProgressBarModule, MatDividerModule],
 })
 export class UploadProgressComponent {

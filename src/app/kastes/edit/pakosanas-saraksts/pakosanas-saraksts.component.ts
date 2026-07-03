@@ -1,6 +1,15 @@
 import { A11yModule } from '@angular/cdk/a11y';
 import { AsyncPipe, TitleCasePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, booleanAttribute, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  booleanAttribute,
+  input,
+  signal,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
@@ -19,15 +28,27 @@ import { VeikalsEditComponent } from './veikals-edit/veikals-edit.component';
   selector: 'app-pakosanas-saraksts',
   templateUrl: './pakosanas-saraksts.component.html',
   styleUrls: ['./pakosanas-saraksts.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatTableModule, KastesTotalsComponent, MatIconModule, TotalsComponent, VeikalsEditComponent, MatButtonModule, TitleCasePipe, AsyncPipe, A11yModule, KeyPressDirective],
+  imports: [
+    MatTableModule,
+    KastesTotalsComponent,
+    MatIconModule,
+    TotalsComponent,
+    VeikalsEditComponent,
+    MatButtonModule,
+    TitleCasePipe,
+    AsyncPipe,
+    A11yModule,
+    KeyPressDirective,
+  ],
 })
 export class PakosanasSarakstsComponent {
   colorCodes = kastesPreferences('colors');
 
   dataSource$ = new BehaviorSubject<Veikals[]>([]);
 
-  kastesTotals$: Observable<[number, number][]> = this.dataSource$.pipe(map((veikali) => kastesTotalsFromVeikali(veikali)));
+  kastesTotals$: Observable<[number, number][]> = this.dataSource$.pipe(
+    map((veikali) => kastesTotalsFromVeikali(veikali)),
+  );
 
   displayedColumnsTop = ['kods', 'adrese', 'pakas'];
   displayedColumnsBottom = ['spacer', 'buttons', 'editor'];

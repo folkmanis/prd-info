@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { RouterStateSnapshot, TitleStrategy } from '@angular/router';
 import { getAppParams } from '../app-params';
@@ -6,7 +6,7 @@ import { findModulesPath } from './layout.service';
 
 const DEFAULT_TITLE = 'Darbu meklētājs';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class ModulePageTitleStrategy extends TitleStrategy {
   private readonly title = inject(Title);
   private userModules = getAppParams('userModules');

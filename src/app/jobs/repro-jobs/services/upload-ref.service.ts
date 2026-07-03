@@ -1,5 +1,5 @@
 import { HttpEvent, HttpEventType } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { last } from 'lodash-es';
 import {
   concatMap,
@@ -35,9 +35,7 @@ const PERCENT_REPORT_INTERVAL = 500;
 
 const uploadId = (file: File): string => file.name;
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class UploadRefService {
   private sanitize = inject(SanitizeService);
   private jobFilesService = inject(JobFilesService);

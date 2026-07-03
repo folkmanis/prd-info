@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { disabled, form, FormField, FormRoot, readonly, required } from '@angular/forms/signals';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -28,7 +28,6 @@ import { ProductCategoryModel, ProductCategoryModelSchema } from '../jobs-settin
     MatButtonModule,
     MatDialogClose,
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoryDialogComponent {
   #data = inject(MAT_DIALOG_DATA, { optional: true });

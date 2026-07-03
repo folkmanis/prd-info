@@ -1,6 +1,6 @@
 import { CdkFixedSizeVirtualScroll, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, viewChild } from '@angular/core';
+import { Component, computed, inject, input, output, viewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -33,7 +33,6 @@ import { CopyFolderPathDirective } from './copy-folder-path.directive';
   ],
   templateUrl: './job-table.component.html',
   styleUrl: './job-table.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   hostDirectives: [ViewSizeDirective],
 })
 export class JobTableComponent {

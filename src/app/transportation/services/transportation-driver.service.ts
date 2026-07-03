@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { FilterInput, toFilterSignal } from 'src/app/library';
 import {
   TransportationDriver,
@@ -13,9 +13,7 @@ export interface TransportationDriverRequestFilter {
   disabled?: boolean;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class TransportationDriverService {
   #api = inject(TransportationDriverApiService);
 

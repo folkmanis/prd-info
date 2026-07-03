@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_SNACK_BAR_DATA, MatSnackBarRef } from '@angular/material/snack-bar';
 import { delay, finalize, Observable, of } from 'rxjs';
@@ -17,7 +17,6 @@ export interface SnackBarMessageData {
   selector: 'app-snackbar-message',
   templateUrl: './snackbar-message.component.html',
   styleUrls: ['./snackbar-message.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatButtonModule, UploadProgressComponent, AsyncPipe],
 })
 export class SnackbarMessageComponent {

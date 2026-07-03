@@ -1,4 +1,4 @@
-import { computed, inject, Injectable } from '@angular/core';
+import { computed, inject, Service } from '@angular/core';
 import { CreateCustomerDto, Customer, CustomerList, UpdateCustomerDto } from 'src/app/interfaces';
 import { FilterInput, optionalString, stringToInt, toFilterSignal } from 'src/app/library';
 import { CustomersApiService } from './prd-api/customers-api.service';
@@ -20,9 +20,7 @@ export const CustomersQuerySchema = z
 export type CustomerFilter = z.output<typeof CustomersQuerySchema>;
 export type CustomerQuery = z.input<typeof CustomersQuerySchema>;
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class CustomersService {
   #api = inject(CustomersApiService);
 

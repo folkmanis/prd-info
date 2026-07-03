@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, model } from '@angular/core';
+import { Component, computed, effect, inject, model } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AsyncValidatorFn, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -19,7 +19,6 @@ import { computedChanges } from 'src/app/library/signals';
   selector: 'app-equipment-edit',
   templateUrl: './equipment-edit.component.html',
   styleUrls: ['./equipment-edit.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, SimpleFormContainerComponent, MatFormFieldModule, MatInputModule, MatCardModule],
 })
 export class EquipmentEditComponent implements CanComponentDeactivate {

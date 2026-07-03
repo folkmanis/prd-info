@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { HttpRequest, HttpResponse } from '@angular/common/http';
 
 export abstract class Cache {
@@ -15,9 +15,7 @@ export interface CacheEntry {
 
 const MAX_CACHE_AGE = 30000;
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class HttpCacheService implements Cache {
   private cacheMap: Map<string, CacheEntry> = new Map();
 

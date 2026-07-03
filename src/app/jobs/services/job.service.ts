@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, Signal } from '@angular/core';
+import { computed, inject, Service, Signal } from '@angular/core';
 import { endOfDay } from 'date-fns';
 import { FilterInput, toFilterSignal } from 'src/app/library';
 import { Job, JobFilter, jobFilterToRequestQuery, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
@@ -12,9 +12,7 @@ export function filterInputToRequestQuery(
   return computed(() => jobFilterToRequestQuery(filterSignal()));
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class JobService {
   #api = inject(JobsApiService);
 

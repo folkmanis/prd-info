@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
+import { Component, computed, effect, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
@@ -31,7 +31,6 @@ import { computedChanges } from 'src/app/library/signals';
   selector: 'app-materials-edit',
   templateUrl: './materials-edit.component.html',
   styleUrls: ['./materials-edit.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     SimpleFormContainerComponent,
     FormsModule,

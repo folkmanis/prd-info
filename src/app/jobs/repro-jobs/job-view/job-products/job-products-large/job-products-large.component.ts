@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { JobProduct } from 'src/app/jobs/interfaces';
 
@@ -11,7 +11,6 @@ const PRICE_COLUMNS = ['price', 'total'];
   imports: [CurrencyPipe, MatTableModule],
   templateUrl: './job-products-large.component.html',
   styleUrl: './job-products-large.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JobProductsLargeComponent {
   products = input<JobProduct[]>([]);

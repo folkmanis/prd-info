@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
+import { Component, computed, effect, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   AsyncValidatorFn,
@@ -40,7 +40,6 @@ type FormValue = { [K in 'name' | 'disabled']?: TransportationDriver[K] | null }
   ],
   templateUrl: './transportation-driver-edit.component.html',
   styleUrl: './transportation-driver-edit.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransportationDriverEditComponent implements CanComponentDeactivate {
   #driverService = inject(TransportationDriverService);

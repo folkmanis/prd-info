@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input, linkedSignal } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal } from '@angular/core';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MAT_CARD_CONFIG, MatCardModule } from '@angular/material/card';
 import { MatDivider } from '@angular/material/divider';
@@ -46,7 +46,6 @@ import { JobProductsComponent } from './job-products/job-products.component';
   ],
   templateUrl: './job-view.component.html',
   styleUrl: './job-view.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   hostDirectives: [ViewSizeDirective],
   providers: [
     {

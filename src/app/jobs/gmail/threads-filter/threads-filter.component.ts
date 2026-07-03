@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, resource } from '@angular/core';
+import { Component, computed, inject, input, output, resource } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -16,7 +16,6 @@ export interface ThreadsFilterData {
   selector: 'app-threads-filter',
   templateUrl: './threads-filter.component.html',
   styleUrls: ['./threads-filter.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatButtonModule, MatMenuModule, MatIconModule, MatProgressSpinnerModule],
 })
 export class ThreadsFilterComponent {

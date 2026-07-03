@@ -1,12 +1,10 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as Pt from 'src/app/interfaces/paytraq';
 import { PaytraqApiService } from 'src/app/services/prd-api/paytraq-api.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class PaytraqProductsService {
   private api = inject(PaytraqApiService);
 

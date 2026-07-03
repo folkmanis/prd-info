@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { Observable, firstValueFrom, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Veikals, VeikalsUpload } from '../interfaces';
@@ -10,9 +10,7 @@ export interface KastesJobFilter {
   name?: string;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class KastesPasutijumiService {
   private api = inject(KastesApiService);
 

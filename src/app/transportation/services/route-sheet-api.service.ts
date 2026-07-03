@@ -1,5 +1,5 @@
 import { HttpClient, httpResource } from '@angular/common/http';
-import { inject, Injectable, Signal } from '@angular/core';
+import { inject, Service, Signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
 import { firstValueFrom, map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
@@ -13,9 +13,7 @@ import {
   TransportationRouteSheetUpdate,
 } from '../interfaces/transportation-route-sheet';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class RouteSheetApiService {
   readonly #path = getAppParams('apiPath') + 'transportation';
   #http = inject(HttpClient);

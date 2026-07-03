@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -15,7 +15,6 @@ const updateMessage = (n: number) => `Izmainīti ${n} ieraksti.`;
   selector: 'app-job-prices',
   templateUrl: './job-prices.component.html',
   styleUrls: ['./job-prices.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CustomerSelectorComponent, MatButtonModule, MatBadgeModule, MatCardModule, JobPricesTableComponent],
 })
 export class JobPricesComponent {

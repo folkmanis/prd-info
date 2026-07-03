@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -15,7 +15,6 @@ export interface DialogData {
   selector: 'app-materials-price-dialog',
   templateUrl: './materials-price-dialog.component.html',
   styleUrls: ['./materials-price-dialog.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatDialogModule, MatFormFieldModule, ReactiveFormsModule, MatButtonModule, MatInputModule],
 })
 export class MaterialsPriceDialogComponent {

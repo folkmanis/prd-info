@@ -1,4 +1,4 @@
-import { inject, Injectable, Signal } from '@angular/core';
+import { inject, Service, Signal } from '@angular/core';
 import { SchemaPath } from '@angular/forms/signals';
 import { map, Observable } from 'rxjs';
 import { User, UserUpdate } from 'src/app/interfaces';
@@ -10,9 +10,7 @@ export type UsersFilter = {
   name?: string;
 };
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class UsersService {
   private api = inject(UsersApiService);
   private xmfService = inject(XmfSearchService);

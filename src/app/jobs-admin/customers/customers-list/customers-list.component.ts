@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { debounce, form, FormField } from '@angular/forms/signals';
 import { MatIconButton } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -25,7 +25,6 @@ import { CustomersQuerySchema, CustomersService } from 'src/app/services';
     MatIconButton,
     FormField,
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CustomersListComponent {
   #customersService = inject(CustomersService);

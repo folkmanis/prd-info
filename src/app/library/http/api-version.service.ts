@@ -1,11 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, shareReplay } from 'rxjs/operators';
 import { ApiVersion } from './api-version';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class ApiVersionService {
   private _version$ = new Subject<ApiVersion>();
   version$: Observable<ApiVersion> = this._version$.pipe(distinctUntilChanged(this.isEqual), shareReplay(1));

@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, signal, viewChild } from '@angular/core';
+import { Component, computed, inject, signal, viewChild } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatProgressBar } from '@angular/material/progress-bar';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -17,7 +17,6 @@ import { StatusCountComponent } from './status-count/status-count.component';
   selector: 'app-xmf-search',
   templateUrl: './xmf-search.component.html',
   styleUrls: ['./xmf-search.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatSidenavModule,
     DrawerSmallDirective,

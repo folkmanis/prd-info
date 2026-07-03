@@ -1,4 +1,14 @@
-import { ChangeDetectionStrategy, Component, effect, ElementRef, EventEmitter, input, model, Output, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  ElementRef,
+  EventEmitter,
+  input,
+  model,
+  Output,
+  viewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { ErrorStateMatcher } from '@angular/material/core';
@@ -22,7 +32,6 @@ export class NoopErrorStateMatcher implements ErrorStateMatcher {
   selector: 'app-labels',
   templateUrl: './labels.component.html',
   styleUrls: ['./labels.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{ provide: ErrorStateMatcher, useClass: NoopErrorStateMatcher }],
   imports: [FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, HideZeroPipe],
 })

@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -10,7 +10,6 @@ import { ConfirmationDirective } from 'src/app/library/confirmation-dialog';
   selector: 'app-sessions',
   templateUrl: './sessions.component.html',
   styleUrls: ['./sessions.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [DatePipe, MatListModule, MatButtonModule, MatIconModule, ConfirmationDirective],
 })
 export class SessionsComponent {

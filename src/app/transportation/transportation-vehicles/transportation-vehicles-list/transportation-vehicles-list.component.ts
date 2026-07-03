@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { TransportationVehicleService } from '../../services/transportation-vehicle.service';
 import { MatTableModule } from '@angular/material/table';
 import { SimpleListContainerComponent } from 'src/app/library/simple-form';
@@ -10,7 +10,6 @@ import { DecimalPipe } from '@angular/common';
   imports: [SimpleListContainerComponent, MatTableModule, RouterLink, RouterLinkActive, DecimalPipe],
   templateUrl: './transportation-vehicles-list.component.html',
   styleUrl: './transportation-vehicles-list.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransportationVehiclesListComponent {
   vehicles = inject(TransportationVehicleService).getVehiclesResource();

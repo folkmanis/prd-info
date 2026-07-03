@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, Signal } from '@angular/core';
+import { computed, inject, Service, Signal } from '@angular/core';
 import { round } from 'lodash-es';
 import { FilterInput, toFilterSignal } from 'src/app/library';
 import { HistoricalData } from '../interfaces/historical-data';
@@ -21,7 +21,7 @@ interface RouteSheetFilter {
   vehicleId?: string;
 }
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class RouteSheetService {
   #api = inject(RouteSheetApiService);
   #driverService = inject(TransportationDriverService);

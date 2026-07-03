@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { firstValueFrom, map } from 'rxjs';
 import { JobFilesService } from 'src/app/filesystem';
@@ -15,9 +15,7 @@ import {
   PaytraqShippingAddressSelectDialogData,
 } from './paytraq-shipping-address-select-dialog/paytraq-shipping-address-select-dialog.component';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class CustomerEditService {
   private dialog = inject(MatDialog);
   private paytraqService = inject(PaytraqClientService);

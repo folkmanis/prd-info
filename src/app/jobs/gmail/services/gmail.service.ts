@@ -1,11 +1,9 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { Attachment, Message, Threads, ThreadsFilter } from '../interfaces';
 import { GmailApiService } from './gmail-api.service';
 import { Observable, of } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class GmailService {
   private api = inject(GmailApiService);
 

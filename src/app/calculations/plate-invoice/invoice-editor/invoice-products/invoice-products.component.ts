@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, booleanAttribute, computed, input } from '@angular/core';
+import { Component, booleanAttribute, computed, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
@@ -11,7 +11,6 @@ const COLUMNS = ['_id', 'count', 'price', 'total'];
   selector: 'app-invoice-products',
   templateUrl: './invoice-products.component.html',
   styleUrls: ['./invoice-products.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatTableModule, CurrencyPipe, MatButtonModule, RouterLink],
 })
 export class InvoiceProductsComponent {

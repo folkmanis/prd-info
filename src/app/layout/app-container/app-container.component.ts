@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { RouterOutlet } from '@angular/router';
 import { DrawerCloseDirective, DrawerSmallDirective } from 'src/app/library/view-size';
@@ -11,7 +11,6 @@ import { ToolbarComponent } from '../toolbar/toolbar.component';
   selector: 'app-app-container',
   templateUrl: './app-container.component.html',
   styleUrls: ['./app-container.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ToolbarComponent,
     MatSidenavModule,

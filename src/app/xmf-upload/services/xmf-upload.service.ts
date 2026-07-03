@@ -1,10 +1,8 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { XmfUploadProgress } from '../interfaces/xmf-upload-progress';
 import { XmfArchiveUploadApiService } from './xmf-archive-upload-api.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class XmfUploadService {
   private api = inject(XmfArchiveUploadApiService);
 

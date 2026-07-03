@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { Router } from '@angular/router';
 import { EMPTY, from, map, of, shareReplay, Subject, switchMap } from 'rxjs';
@@ -22,7 +22,6 @@ const DEFAULT_FILTER: JobFilter = {
   selector: 'app-job-list',
   templateUrl: './job-list.component.html',
   styleUrls: ['./job-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatSidenavModule,
     DrawerButtonDirective,

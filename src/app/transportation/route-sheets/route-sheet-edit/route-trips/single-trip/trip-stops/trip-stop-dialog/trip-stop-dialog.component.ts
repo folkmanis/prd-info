@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { debounce, form, FormField, required, submit } from '@angular/forms/signals';
 import {
   MatAutocomplete,
@@ -42,7 +42,6 @@ export interface TripStopDialogData {
   ],
   templateUrl: './trip-stop-dialog.component.html',
   styleUrl: './trip-stop-dialog.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TripStopDialogComponent {
   #data = inject<TripStopDialogData>(MAT_DIALOG_DATA);

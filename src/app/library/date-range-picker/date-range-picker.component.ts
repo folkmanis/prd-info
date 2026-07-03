@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input, model } from '@angular/core';
+import { Component, inject, input, model } from '@angular/core';
 import { FormValueControl, ValidationError } from '@angular/forms/signals';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
@@ -17,7 +17,6 @@ export interface NullableInterval {
   imports: [MatFormFieldModule, MatMenuModule, MatDatepickerModule, MatIcon, MatButtonModule],
   templateUrl: './date-range-picker.component.html',
   styleUrl: './date-range-picker.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DateRangePickerComponent implements FormValueControl<NullableInterval> {
   #dateUtils = inject(DateUtilsService);

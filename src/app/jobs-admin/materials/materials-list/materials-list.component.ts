@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, model, TrackByFunction } from '@angular/core';
+import { Component, computed, inject, model, TrackByFunction } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterLinkActive } from '@angular/router';
@@ -12,8 +12,14 @@ import { configuration } from 'src/app/services/config.provider';
   selector: 'app-materials-list',
   templateUrl: './materials-list.component.html',
   styleUrls: ['./materials-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatTableModule, MaterialsFilterComponent, SimpleListContainerComponent, MatCardModule, RouterLink, RouterLinkActive],
+  imports: [
+    MatTableModule,
+    MaterialsFilterComponent,
+    SimpleListContainerComponent,
+    MatCardModule,
+    RouterLink,
+    RouterLinkActive,
+  ],
 })
 export class MaterialsListComponent {
   private productCategories = configuration('jobs', 'productCategories');

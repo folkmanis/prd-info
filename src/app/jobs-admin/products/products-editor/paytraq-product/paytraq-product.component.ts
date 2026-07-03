@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, model, signal } from '@angular/core';
+import { Component, effect, inject, input, model, signal } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { PaytraqProduct } from 'src/app/interfaces/paytraq';
@@ -10,7 +10,6 @@ import { PaytraqProductTableComponent } from './paytraq-product-table/paytraq-pr
   selector: 'app-paytraq-product',
   templateUrl: './paytraq-product.component.html',
   styleUrls: ['./paytraq-product.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [PaytraqProductTableComponent, PaytraqSearchHeaderComponent, MatButtonModule],
   providers: [
     {

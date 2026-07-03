@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { format, Locale } from 'date-fns';
 import { InvoiceForReport } from 'src/app/interfaces';
 import { DATE_FNS_LOCALE } from 'src/app/library/date-services';
@@ -23,9 +23,7 @@ const wrapField: (r: string) => string = (r) => '"' + r + '"';
 const stringify = (r: string[][], separator: string): string =>
   r.map((row) => row.map(wrapField).join(separator)).join('\n');
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class InvoiceCsvService {
   #locale = inject<Locale>(DATE_FNS_LOCALE, { optional: true });
 

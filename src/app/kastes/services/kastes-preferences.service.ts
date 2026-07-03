@@ -1,4 +1,4 @@
-import { computed, effect, inject, Injectable, Signal } from '@angular/core';
+import { computed, effect, inject, Service, Signal } from '@angular/core';
 import { get } from 'lodash-es';
 import { Observable, tap } from 'rxjs';
 import { KastesSettings } from 'src/app/interfaces';
@@ -21,9 +21,7 @@ export function kastesPreferences(...path: string[]): Signal<any> {
   });
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class KastesPreferencesService {
   private api = inject(KastesApiService);
 

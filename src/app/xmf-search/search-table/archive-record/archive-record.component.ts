@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { CopyClipboardDirective } from 'src/app/library/clipboard/copy-clipboard.directive';
 import { TaggedStringComponent } from './tagged-string/tagged-string.component';
 import { ArchiveRecord } from '../../interfaces';
@@ -9,7 +9,6 @@ import { DatePipe } from '@angular/common';
   imports: [CopyClipboardDirective, TaggedStringComponent, DatePipe],
   templateUrl: './archive-record.component.html',
   styleUrl: './archive-record.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ArchiveRecordComponent {
   data = input.required<ArchiveRecord>();

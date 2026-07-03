@@ -1,5 +1,5 @@
 import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http';
-import { inject, Injectable, Signal } from '@angular/core';
+import { inject, Service, Signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
 import { firstValueFrom } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
@@ -8,9 +8,7 @@ import { MaterialsFilter } from 'src/app/jobs-admin/materials/services/materials
 import { httpResponseRequest, ValidatorService } from 'src/app/library';
 import { HttpOptions } from 'src/app/library/http/http-options';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class MaterialsApiService {
   #path = getAppParams('apiPath') + 'materials/';
   #http = inject(HttpClient);

@@ -1,5 +1,5 @@
 import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http';
-import { computed, inject, Injectable, Signal } from '@angular/core';
+import { computed, inject, Service, Signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
 import { firstValueFrom, map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
@@ -13,9 +13,7 @@ export interface JobUpdateParams {
   createFolder?: boolean;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class JobsApiService {
   #path = getAppParams('apiPath') + 'jobs/';
   #http = inject(HttpClient);

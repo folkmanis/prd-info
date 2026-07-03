@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, booleanAttribute, computed, input, output } from '@angular/core';
+import { Component, booleanAttribute, computed, input, output } from '@angular/core';
 import { FormControlStatus } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
@@ -8,7 +8,6 @@ import { SimpleContentContainerComponent } from '../simple-content-container/sim
   selector: 'app-simple-form-container',
   templateUrl: './simple-form-container.component.html',
   styleUrls: ['./simple-form-container.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatButton, SimpleContentContainerComponent],
   providers: [{ provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher }],
   host: {

@@ -1,13 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { inject, Injectable, resource } from '@angular/core';
+import { inject, Service, resource } from '@angular/core';
 import { isEqual } from 'lodash-es';
 import { notNullOrThrow } from 'src/app/library';
 import { defaultJobsUserPreferences, JobsUserPreferences } from '../interfaces/jobs-user-preferences';
 import { JobsApiService } from './jobs-api.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class JobsUserPreferencesService {
   readonly #api = inject(JobsApiService);
   #preferencesResource = resource<JobsUserPreferences, void>({

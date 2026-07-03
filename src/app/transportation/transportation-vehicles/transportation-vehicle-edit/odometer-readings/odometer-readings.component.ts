@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
@@ -14,7 +14,6 @@ import { OdometerReadingsDialogComponent } from '../odometer-readings-dialog/odo
   imports: [DatePipe, MatIcon, MatIconButton],
   templateUrl: './odometer-readings.component.html',
   styleUrl: './odometer-readings.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OdometerReadingsComponent {
   odometerReadings = input.required<OdometerReading[]>();

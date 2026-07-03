@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, linkedSignal } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal } from '@angular/core';
 import { CustomerList, ProductPartial } from 'src/app/interfaces';
 import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
 import { JobFilter } from '../interfaces';
@@ -15,7 +15,6 @@ const DEFAULT_FILTER = { limit: 100, jobStatus: [30] };
   imports: [QuickCreateInputComponent, JobsTableComponent],
   templateUrl: './quick-create.component.html',
   styleUrl: './quick-create.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   hostDirectives: [ScrollTopDirective],
 })
 export class QuickCreateComponent {

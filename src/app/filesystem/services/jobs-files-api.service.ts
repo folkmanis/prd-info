@@ -1,5 +1,5 @@
 import { HttpClient, HttpEvent, HttpRequest } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { concatMap, from, map, Observable, reduce } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { Job } from 'src/app/jobs';
@@ -8,9 +8,7 @@ import { HttpOptions } from 'src/app/library/http';
 import { FileElement } from '../interfaces/file-element';
 import { FileLocationTypes } from '../interfaces/file-location-types';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class JobsFilesApiService {
   #path = getAppParams('apiPath') + 'jobs/files/';
   #http = inject(HttpClient);

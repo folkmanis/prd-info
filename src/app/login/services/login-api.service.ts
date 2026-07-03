@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { firstValueFrom, map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { LoginUser, LoginUserSchema, LoginUserUpdate } from 'src/app/interfaces';
@@ -8,9 +8,7 @@ import { HttpOptions } from 'src/app/library/http';
 import { DEMO_MODE } from 'src/app/services/app-mode.provider';
 import { Login } from '../login.interface';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class LoginApiService {
   readonly #path = getAppParams('apiPath') + 'login/';
   #http = inject(HttpClient);
@@ -41,7 +39,10 @@ export class LoginApiService {
 
   async patchUser(update: LoginUserUpdate): Promise<LoginUser> {
     this.checkDemoMode();
-    return this.#validator.validateAsync(LoginUserSchema, this.#http.patch<Record<string, any>>(this.#path, update, new HttpOptions()));
+    return this.#validator.validateAsync(
+      LoginUserSchema,
+      this.#http.patch<Record<string, any>>(this.#path, update, new HttpOptions()),
+    );
   }
 
   private checkDemoMode(): void | never {

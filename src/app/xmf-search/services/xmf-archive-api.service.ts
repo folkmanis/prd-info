@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { ValidatorService } from 'src/app/library';
@@ -7,9 +7,7 @@ import { HttpOptions } from 'src/app/library/http/http-options';
 import { z } from 'zod';
 import { ArchiveFacet, ArchiveFacetSchema, ArchiveRecord, SearchFilter, searchFilterToQuery } from '../interfaces';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class XmfArchiveApiService {
   #path = getAppParams('apiPath') + 'xmf-search/';
   #http = inject(HttpClient);

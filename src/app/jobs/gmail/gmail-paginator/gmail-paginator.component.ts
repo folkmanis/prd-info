@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, numberAttribute, output } from '@angular/core';
+import { Component, computed, input, numberAttribute, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -7,7 +7,6 @@ import { MatMenuModule } from '@angular/material/menu';
   selector: 'app-gmail-paginator',
   templateUrl: './gmail-paginator.component.html',
   styleUrls: ['./gmail-paginator.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatButtonModule, MatMenuModule, MatIconModule],
 })
 export class GmailPaginatorComponent {

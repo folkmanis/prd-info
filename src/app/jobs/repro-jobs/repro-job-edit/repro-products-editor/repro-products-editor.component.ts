@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input, viewChildren } from '@angular/core';
+import { Component, inject, input, viewChildren } from '@angular/core';
 import {
   ControlValueAccessor,
   FormArray,
@@ -34,7 +34,6 @@ const DEFAULT_PRODUCT: NullableType<JobProduct> = {
   selector: 'app-repro-products-editor',
   templateUrl: './repro-products-editor.component.html',
   styleUrls: ['./repro-products-editor.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

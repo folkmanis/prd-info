@@ -1,4 +1,4 @@
-import { inject, Injectable, DOCUMENT } from '@angular/core';
+import { inject, Service, DOCUMENT } from '@angular/core';
 import { ReplaySubject, retry, timer } from 'rxjs';
 import { ModulesWithNotifications, Notification } from 'src/app/interfaces';
 import { MultiplexConfig, WsAuthSubject } from 'src/app/library/ws-token/ws-auth-subject';
@@ -13,9 +13,7 @@ interface WsEvent {
   };
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class NotificationsService {
   private readonly wsPath = getAppParams('wsPath');
   private document = inject(DOCUMENT);

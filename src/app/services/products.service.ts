@@ -1,4 +1,4 @@
-import { inject, Injectable, Signal } from '@angular/core';
+import { inject, Service, Signal } from '@angular/core';
 import {
   CustomerProduct,
   NewProduct,
@@ -13,9 +13,7 @@ import { assertNotNull, FilterInput, toFilterSignal } from '../library';
 import { HttpResourceRef } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class ProductsService {
   private api = inject(ProductsApiService);
 

@@ -1,5 +1,17 @@
-import { Injectable, InjectionToken, inject } from '@angular/core';
-import { endOfMonth, endOfWeek, endOfYear, format, formatDistanceToNow, formatDistanceToNowStrict, Locale, startOfMonth, startOfWeek, startOfYear, subYears } from 'date-fns';
+import { Service, InjectionToken, inject } from '@angular/core';
+import {
+  endOfMonth,
+  endOfWeek,
+  endOfYear,
+  format,
+  formatDistanceToNow,
+  formatDistanceToNowStrict,
+  Locale,
+  startOfMonth,
+  startOfWeek,
+  startOfYear,
+  subYears,
+} from 'date-fns';
 import { enUS } from 'date-fns/locale';
 
 export const DATE_FNS_LOCALE = new InjectionToken<Locale>('date-fns locale', {
@@ -7,13 +19,14 @@ export const DATE_FNS_LOCALE = new InjectionToken<Locale>('date-fns locale', {
   factory: () => enUS,
 });
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class DateUtilsService {
   private locale = inject<Locale>(DATE_FNS_LOCALE);
 
-  relative(date: Date | string | number, { strict, ...options }: { addSuffix?: boolean; strict?: boolean } = {}): string {
+  relative(
+    date: Date | string | number,
+    { strict, ...options }: { addSuffix?: boolean; strict?: boolean } = {},
+  ): string {
     const defaultOptions = {
       addSuffix: true,
     };

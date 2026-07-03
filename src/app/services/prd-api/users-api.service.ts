@@ -1,5 +1,5 @@
 import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http';
-import { inject, Injectable, Signal } from '@angular/core';
+import { inject, Service, Signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
 import { firstValueFrom, map } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
@@ -23,9 +23,7 @@ import { NETWORK_ERROR } from 'src/app/library/http/network-error';
 
 type Params = Record<string, any>;
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class UsersApiService {
   readonly #path = getAppParams('apiPath') + 'users/';
   #http = inject(HttpClient);

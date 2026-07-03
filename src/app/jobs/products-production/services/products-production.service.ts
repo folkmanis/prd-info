@@ -1,4 +1,4 @@
-import { Injectable, Signal, computed, inject } from '@angular/core';
+import { Service, Signal, computed, inject } from '@angular/core';
 import { formatISO } from 'date-fns';
 import { notNullOrThrow } from 'src/app/library';
 import { pickNotNull } from 'src/app/library/assert-utils';
@@ -6,9 +6,7 @@ import { JobsUserPreferences } from '../../interfaces/jobs-user-preferences';
 import { JobsApiService } from '../../services/jobs-api.service';
 import { JobsUserPreferencesService } from '../../services/jobs-user-preferences.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class ProductsProductionService {
   #preferencesService = inject(JobsUserPreferencesService);
   #api = inject(JobsApiService);

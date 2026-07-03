@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { ValidatorService } from 'src/app/library';
@@ -7,9 +7,7 @@ import { HttpOptions } from 'src/app/library/http';
 import { z } from 'zod';
 import { JobMessageData, Message, XmfUploadMessageData } from '../interfaces';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class MessagesApiService {
   #path = getAppParams('apiPath') + 'messages/';
   #validator = inject(ValidatorService);
@@ -22,7 +20,9 @@ export class MessagesApiService {
   }
 
   async setOneMessageRead(id: string): Promise<Message> {
-    const data = await firstValueFrom(this.#http.patch<Record<string, any>>(this.#path + 'read/' + id, new HttpOptions()));
+    const data = await firstValueFrom(
+      this.#http.patch<Record<string, any>>(this.#path + 'read/' + id, new HttpOptions()),
+    );
     const message = this.#addDataType(data);
     return this.#validator.validate(Message, message);
   }

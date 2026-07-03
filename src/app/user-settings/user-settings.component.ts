@@ -33,7 +33,6 @@ type UserModel = { name: string; eMail: string };
   selector: 'app-user-settings',
   templateUrl: './user-settings.component.html',
   styleUrls: ['./user-settings.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormField,
     MatCardModule,

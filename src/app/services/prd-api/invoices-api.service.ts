@@ -1,5 +1,5 @@
 import { HttpClient, httpResource } from '@angular/common/http';
-import { inject, Injectable, Signal } from '@angular/core';
+import { inject, Service, Signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
 import { firstValueFrom } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
@@ -16,9 +16,7 @@ import { ValidatorService } from 'src/app/library';
 import { HttpOptions, httpResponseRequest } from 'src/app/library/http';
 import { z } from 'zod';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class InvoicesApiService {
   readonly #path = getAppParams('apiPath') + 'invoices/';
   #http = inject(HttpClient);

@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { filter, map, Subject } from 'rxjs';
@@ -18,7 +18,6 @@ import { JobListTableComponent } from './job-list-table/job-list-table.component
   imports: [MatSidenavModule, DrawerButtonDirective, AsyncPipe, JobListTableComponent, JobListFilterComponent],
   templateUrl: './job-list.component.html',
   styleUrl: './job-list.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   hostDirectives: [ViewSizeDirective],
 })
 export class JobListComponent {

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, input } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, input } from '@angular/core';
 import {
   ControlValueAccessor,
   FormBuilder,
@@ -27,7 +27,6 @@ type MaterialGroup = FormGroup<{
   selector: 'app-production-material',
   templateUrl: './production-material.component.html',
   styleUrls: ['./production-material.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, MaterialUnitsDirective, SelectDirective, MatIcon, MatButtonModule, MatTooltip],
   providers: [
     {

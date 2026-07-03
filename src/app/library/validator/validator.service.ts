@@ -1,11 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { firstValueFrom, Observable } from 'rxjs';
 import { z } from 'zod';
 import { ValidationError } from './validation-error.class';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class ValidatorService {
   validate<V>(schema: z.ZodType<V>, data: unknown): z.infer<typeof schema> {
     return this.#parse(schema, data);

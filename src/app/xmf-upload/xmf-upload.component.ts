@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -16,8 +16,15 @@ import { TabulaComponent } from './tabula/tabula.component';
   selector: 'app-xmf-upload',
   templateUrl: './xmf-upload.component.html',
   styleUrls: ['./xmf-upload.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatCardModule, FilesizePipe, AsyncPipe, MatProgressBarModule, FileDropDirective, TabulaComponent, MatButtonModule],
+  imports: [
+    MatCardModule,
+    FilesizePipe,
+    AsyncPipe,
+    MatProgressBarModule,
+    FileDropDirective,
+    TabulaComponent,
+    MatButtonModule,
+  ],
 })
 export class XmfUploadComponent {
   #uploadService = inject(XmfUploadService);
@@ -25,7 +32,9 @@ export class XmfUploadComponent {
 
   busy = signal(false);
 
-  history$: Observable<XmfUploadProgress[]> = from(this.#uploadService.getHistory()).pipe(cacheWithUpdate(this.#historyUpdate$, (o1, o2) => o1._id === o2._id));
+  history$: Observable<XmfUploadProgress[]> = from(this.#uploadService.getHistory()).pipe(
+    cacheWithUpdate(this.#historyUpdate$, (o1, o2) => o1._id === o2._id),
+  );
 
   file: File | null = null;
 

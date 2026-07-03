@@ -37,7 +37,6 @@ function emptyArray<T>(value: T[] | undefined | null): T[] {
   selector: 'app-customer-input',
   templateUrl: './customer-input.component.html',
   styleUrls: ['./customer-input.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

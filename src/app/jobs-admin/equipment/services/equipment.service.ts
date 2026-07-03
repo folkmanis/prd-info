@@ -1,4 +1,4 @@
-import { inject, Injectable, signal, Signal } from '@angular/core';
+import { inject, Service, signal, Signal } from '@angular/core';
 import { Equipment, EquipmentCreate, EquipmentUpdate } from 'src/app/interfaces';
 import { EquipmentApiService } from 'src/app/services/prd-api/equipment-api.service';
 
@@ -6,9 +6,7 @@ export interface EquipmentFilter {
   name?: string;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class EquipmentService {
   #api = inject(EquipmentApiService);
 

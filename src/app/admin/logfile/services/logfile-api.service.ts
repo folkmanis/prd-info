@@ -1,15 +1,12 @@
 import { httpResource } from '@angular/common/http';
-import { inject, Injectable, Signal } from '@angular/core';
-import { parse } from 'date-fns';
+import { inject, Service, Signal } from '@angular/core';
 import { LogRecordSchema } from 'src/app/admin/logfile/services/logfile-record';
 import { getAppParams } from 'src/app/app-params';
 import { ValidatorService } from 'src/app/library';
 import { HttpOptions, httpResponseRequest } from 'src/app/library/http';
 import { z } from 'zod';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class LogfileApiService {
   #path = getAppParams().apiPath + 'logging/';
   #validator = inject(ValidatorService);

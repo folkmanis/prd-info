@@ -1,6 +1,6 @@
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { TitleCasePipe, UpperCasePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input, model, output, viewChild, viewChildren } from '@angular/core';
+import { Component, input, model, output, viewChild, viewChildren } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { HideZeroPipe } from 'prd-cdk';
 import { COLORS } from 'src/app/interfaces';
@@ -15,8 +15,15 @@ const COLUMNS = ['label', 'kods', 'adrese'];
   selector: 'app-tabula',
   templateUrl: './tabula.component.html',
   styleUrls: ['./tabula.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ScrollTopDirective, MatTableModule, RowIdDirective, UpperCasePipe, TitleCasePipe, HideZeroPipe, CdkScrollable],
+  imports: [
+    ScrollTopDirective,
+    MatTableModule,
+    RowIdDirective,
+    UpperCasePipe,
+    TitleCasePipe,
+    HideZeroPipe,
+    CdkScrollable,
+  ],
 })
 export class TabulaComponent {
   private scrollTopDirective = viewChild.required(ScrollTopDirective);

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { getAppParams } from 'src/app/app-params';
 import { HttpOptions, ValidatorService } from 'src/app/library';
 import { XmfUploadProgress } from '../interfaces/xmf-upload-progress';
@@ -9,9 +9,7 @@ interface Params {
   limit?: number;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class XmfArchiveUploadApiService {
   #path = getAppParams('apiPath') + 'xmf-upload/';
   #validator = inject(ValidatorService);

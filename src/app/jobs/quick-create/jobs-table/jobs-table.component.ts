@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input, TrackByFunction } from '@angular/core';
+import { Component, input, TrackByFunction } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLinkWithReturnDirective } from 'src/app/library/navigation';
@@ -10,7 +10,6 @@ import { JobUnwindedPartial } from '../../interfaces';
   imports: [MatTableModule, DatePipe, RouterLinkWithReturnDirective, MatButton],
   templateUrl: './jobs-table.component.html',
   styleUrl: './jobs-table.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JobsTableComponent {
   jobs = input.required<JobUnwindedPartial[]>();

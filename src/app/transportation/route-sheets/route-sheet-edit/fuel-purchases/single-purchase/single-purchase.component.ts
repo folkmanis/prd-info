@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, Signal, signal } from '@angular/core';
+import { Component, inject, Signal, signal } from '@angular/core';
 import { form, FormField, min, required, submit, validate } from '@angular/forms/signals';
 import { MatButton } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -46,7 +46,6 @@ interface FuelModel {
   ],
   templateUrl: './single-purchase.component.html',
   styleUrl: './single-purchase.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SinglePurchaseComponent {
   #dialogRef = inject(MatDialogRef);

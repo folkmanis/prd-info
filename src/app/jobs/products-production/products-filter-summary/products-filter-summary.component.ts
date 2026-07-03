@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { JobState, ProductCategory } from 'src/app/interfaces';
 import { JobsProductionQuery } from 'src/app/jobs/interfaces';
 import { DateUtilsService } from 'src/app/library/date-services';
@@ -7,7 +7,6 @@ import { DateUtilsService } from 'src/app/library/date-services';
   selector: 'app-products-filter-summary',
   templateUrl: './products-filter-summary.component.html',
   styleUrls: ['./products-filter-summary.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
 })
 export class ProductsFilterSummaryComponent {

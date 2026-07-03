@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { PaytraqClient } from 'src/app/interfaces/paytraq';
 
@@ -6,7 +6,6 @@ import { PaytraqClient } from 'src/app/interfaces/paytraq';
   selector: 'app-paytraq-customer-table',
   templateUrl: './paytraq-customer-table.component.html',
   styleUrls: ['./paytraq-customer-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatTableModule],
 })
 export class PaytraqCustomerTableComponent {

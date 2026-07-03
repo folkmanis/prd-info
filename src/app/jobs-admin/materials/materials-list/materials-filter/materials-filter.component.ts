@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
+import { Component, effect, inject, input } from '@angular/core';
 import { outputFromObservable } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,8 +16,17 @@ import { MaterialsFilter } from '../../services/materials.service';
   selector: 'app-materials-filter',
   templateUrl: './materials-filter.component.html',
   styleUrls: ['./materials-filter.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, FormsModule, MatFormFieldModule, MatIcon, MatOptionModule, MatInputModule, IfViewSizeDirective, MatSelectModule, MatButtonModule],
+  imports: [
+    ReactiveFormsModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatIcon,
+    MatOptionModule,
+    MatInputModule,
+    IfViewSizeDirective,
+    MatSelectModule,
+    MatButtonModule,
+  ],
 })
 export class MaterialsFilterComponent {
   filterGroup = inject(FormBuilder).nonNullable.group({

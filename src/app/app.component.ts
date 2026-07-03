@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, afterNextRender, computed, inject } from '@angular/core';
+import { Component, afterNextRender, computed, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { ApiVersionService } from 'src/app/library/http/api-version.service';
@@ -9,7 +9,6 @@ import { LoginService } from './login';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterOutlet],
   host: {
     '[style.color-scheme]': 'colorScheme()',

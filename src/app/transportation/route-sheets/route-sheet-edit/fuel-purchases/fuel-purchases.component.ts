@@ -1,5 +1,5 @@
 import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
@@ -39,7 +39,6 @@ function sortByDate(values: FuelPurchase[]): FuelPurchase[] {
   ],
   templateUrl: './fuel-purchases.component.html',
   styleUrl: './fuel-purchases.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FuelPurchasesComponent {
   readonly #dialog = inject(MatDialog);

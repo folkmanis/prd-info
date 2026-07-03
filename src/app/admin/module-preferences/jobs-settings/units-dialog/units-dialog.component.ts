@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { disabled, form, FormField, FormRoot, readonly, required } from '@angular/forms/signals';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -19,7 +19,6 @@ import { ProductUnitModel, ProductUnitModelSchema } from '../jobs-settings.model
   selector: 'app-units-dialog',
   templateUrl: './units-dialog.component.html',
   styleUrls: ['./units-dialog.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormField,
     FormRoot,

@@ -1,5 +1,5 @@
 import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http';
-import { inject, Injectable, Signal } from '@angular/core';
+import { inject, Service, Signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
 import { firstValueFrom, map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
@@ -14,9 +14,7 @@ export interface ProductsFilter {
   disabled?: boolean;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class ProductsApiService {
   readonly #path = getAppParams('apiPath') + 'products/';
   #http = inject(HttpClient);

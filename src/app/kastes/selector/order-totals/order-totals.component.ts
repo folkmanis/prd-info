@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { Colors, COLORS } from 'src/app/interfaces';
 import { totalsByColor, totalsBySize } from '../../services/item-packing.utilities';
 import { kastesPreferences } from '../../services/kastes-preferences.service';
@@ -11,7 +11,6 @@ type OrderTotalsInput = Record<Colors, number> & {
   selector: 'app-order-totals',
   templateUrl: './order-totals.component.html',
   styleUrls: ['./order-totals.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
 })
 export class OrderTotalsComponent {

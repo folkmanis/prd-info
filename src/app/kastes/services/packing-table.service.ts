@@ -1,12 +1,10 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { AddressPackage } from '../interfaces/address-package';
 import { KastesApiService } from './kastes-api.service';
 import { KastesPasutijumiService } from './kastes-pasutijumi.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class PackingTableService {
   private api = inject(KastesApiService);
 
@@ -40,7 +38,9 @@ export class PackingTableService {
   }
 
   replacePackage(packages: AddressPackage[], update: AddressPackage): AddressPackage[] {
-    const idx = packages.findIndex((pack) => pack.documentId === update.documentId && pack.boxSequence === update.boxSequence);
+    const idx = packages.findIndex(
+      (pack) => pack.documentId === update.documentId && pack.boxSequence === update.boxSequence,
+    );
 
     if (idx > -1) {
       return [...packages.slice(0, idx), update, ...packages.slice(idx + 1)];

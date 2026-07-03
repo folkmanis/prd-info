@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, linkedSignal, signal } from '@angular/core';
+import { Component, inject, linkedSignal, signal } from '@angular/core';
 import { disabled, form, FormField, FormRoot } from '@angular/forms/signals';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatCheckbox } from '@angular/material/checkbox';
@@ -31,7 +31,6 @@ import { MatInput } from '@angular/material/input';
   selector: 'app-module-preferences',
   templateUrl: './module-preferences.component.html',
   styleUrls: ['./module-preferences.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormField,
     FormRoot,

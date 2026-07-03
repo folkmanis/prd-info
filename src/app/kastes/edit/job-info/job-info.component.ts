@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { Veikals } from 'src/app/kastes/interfaces';
 import { jobProductsToColorTotals } from '../../common/color-totals-from-veikali';
 import { ColorTotalsComponent } from '../../common/color-totals/color-totals.component';
@@ -11,7 +11,6 @@ import { KastesJob } from 'src/app/jobs';
   selector: 'app-job-info',
   templateUrl: './job-info.component.html',
   styleUrls: ['./job-info.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ColorTotalsComponent, KastesTotalsComponent, DatePipe],
 })
 export class JobInfoComponent {

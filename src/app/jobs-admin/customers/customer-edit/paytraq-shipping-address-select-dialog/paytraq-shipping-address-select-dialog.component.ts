@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
@@ -14,7 +14,6 @@ export interface PaytraqShippingAddressSelectDialogData {
   imports: [MatButtonModule, MatDialogModule, MatListModule, AsyncPipe, MatIcon],
   templateUrl: './paytraq-shipping-address-select-dialog.component.html',
   styleUrl: './paytraq-shipping-address-select-dialog.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaytraqShippingAddressSelectDialogComponent {
   private data: PaytraqShippingAddressSelectDialogData = inject(MAT_DIALOG_DATA);

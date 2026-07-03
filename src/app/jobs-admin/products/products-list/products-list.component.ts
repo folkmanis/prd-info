@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { debounce, form, FormField } from '@angular/forms/signals';
 import { MatIconButton } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,7 +15,6 @@ import { ProductsFilter } from 'src/app/services/prd-api/products-api.service';
   selector: 'app-products-list',
   templateUrl: './products-list.component.html',
   styleUrls: ['./products-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     SimpleListContainerComponent,
     MatTableModule,

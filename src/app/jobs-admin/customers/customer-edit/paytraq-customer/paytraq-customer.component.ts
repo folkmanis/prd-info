@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, model, signal } from '@angular/core';
+import { Component, effect, inject, input, model, signal } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { Customer, CustomerFinancial } from 'src/app/interfaces';
@@ -12,7 +12,6 @@ import { NullableType } from 'src/app/library';
   selector: 'app-paytraq-customer',
   templateUrl: './paytraq-customer.component.html',
   styleUrls: ['./paytraq-customer.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

@@ -1,6 +1,6 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { CurrencyPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, input } from '@angular/core';
+import { Component, effect, input } from '@angular/core';
 import { outputFromObservable } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -17,8 +17,15 @@ import { COLUMNS, COLUMNS_SMALL, JobData, JobWithUpdate } from '../interfaces';
   selector: 'app-job-prices-table',
   templateUrl: './job-prices-table.component.html',
   styleUrls: ['./job-prices-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatTableModule, MatCheckboxModule, MatButtonModule, MatIconModule, RouterLink, CurrencyPipe, ViewSizeDirective],
+  imports: [
+    MatTableModule,
+    MatCheckboxModule,
+    MatButtonModule,
+    MatIconModule,
+    RouterLink,
+    CurrencyPipe,
+    ViewSizeDirective,
+  ],
   hostDirectives: [ScrollTopDirective],
 })
 export class JobPricesTableComponent {
@@ -44,7 +51,9 @@ export class JobPricesTableComponent {
     });
   }
 
-  private jobUpdateFields(jobs: Pick<JobWithUpdate, 'jobId' | 'productsIdx' | 'products.priceUpdate'>[]): Partial<Job>[] {
+  private jobUpdateFields(
+    jobs: Pick<JobWithUpdate, 'jobId' | 'productsIdx' | 'products.priceUpdate'>[],
+  ): Partial<Job>[] {
     return jobs.map((job) => ({
       jobId: job.jobId,
       [`products.${job.productsIdx}.price`]: job['products.priceUpdate'],

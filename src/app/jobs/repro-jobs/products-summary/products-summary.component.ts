@@ -1,11 +1,10 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { JobsProduction } from '../../interfaces';
 
 @Component({
   selector: 'app-products-summary',
   templateUrl: './products-summary.component.html',
   styleUrls: ['./products-summary.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
 })
 export class ProductsSummaryComponent {

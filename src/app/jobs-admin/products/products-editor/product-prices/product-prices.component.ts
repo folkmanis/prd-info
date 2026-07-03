@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, input } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, input } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -26,7 +26,6 @@ type PricesForm = ReturnType<typeof productPriceGroup>;
   selector: 'app-product-prices',
   templateUrl: './product-prices.component.html',
   styleUrls: ['./product-prices.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
     FormsModule,

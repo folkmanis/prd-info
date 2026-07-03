@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { form, FormField, FormRoot } from '@angular/forms/signals';
 import { MatButton } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -11,7 +11,6 @@ import { FuelTypeModelSchema, validateFuelType } from '../transportation-setting
   imports: [FormField, FormRoot, MatFormFieldModule, MatInput, MatButton, MatDialogModule],
   templateUrl: './fuel-type-dialog.component.html',
   styleUrl: './fuel-type-dialog.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FuelTypeDialogComponent {
   #data = inject(MAT_DIALOG_DATA, { optional: true });

@@ -1,5 +1,5 @@
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { debounceTime, map, Observable, startWith, Subject, switchMap } from 'rxjs';
 import { JobsApiService } from 'src/app/jobs/services/jobs-api.service';
 import { FilterInput } from 'src/app/library';
@@ -30,9 +30,7 @@ export class JobsData<T extends object> extends DataSource<T | undefined> {
   }
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class JobListService {
   #api = inject(JobsApiService);
 

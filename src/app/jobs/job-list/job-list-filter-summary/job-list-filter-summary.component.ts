@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { configuration } from 'src/app/services/config.provider';
 import { JobFilter } from '../../interfaces';
 import { DatePipe } from '@angular/common';
@@ -8,7 +8,6 @@ import { DatePipe } from '@angular/common';
   imports: [DatePipe],
   templateUrl: './job-list-filter-summary.component.html',
   styleUrl: './job-list-filter-summary.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JobListFilterSummaryComponent {
   #jobStates = configuration('jobs', 'jobStates');

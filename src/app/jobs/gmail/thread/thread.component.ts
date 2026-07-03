@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input, signal, viewChildren } from '@angular/core';
+import { Component, inject, input, signal, viewChildren } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -19,7 +19,6 @@ import { GmailService } from '../services/gmail.service';
   selector: 'app-thread',
   templateUrl: './thread.component.html',
   styleUrls: ['./thread.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatCardModule,
     MatButtonModule,

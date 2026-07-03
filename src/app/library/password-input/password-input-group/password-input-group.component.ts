@@ -31,7 +31,6 @@ export class SignalErrorStateMatcher implements ErrorStateMatcher {
   selector: 'app-password-input-group',
   templateUrl: './password-input-group.component.html',
   styleUrls: ['./password-input-group.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [A11yModule, MatFormFieldModule, MatIcon, MatIconButton, MatInput],
 })
 export class PasswordInputGroupComponent implements FormValueControl<string> {

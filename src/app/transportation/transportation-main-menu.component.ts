@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CardMenuComponent } from 'src/app/library/card-menu/card-menu.component';
 import { LayoutService } from '../layout/layout.service';
 
@@ -7,7 +7,6 @@ import { LayoutService } from '../layout/layout.service';
   imports: [CardMenuComponent],
   template: `<app-card-menu [modules]="modules()" />`,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransportationMainMenuComponent {
   modules = inject(LayoutService).childMenu;

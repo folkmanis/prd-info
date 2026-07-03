@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { filter, from, Observable, switchMap, toArray } from 'rxjs';
 import { CreateProductionStage, DropFolder, ProductionStage, UpdateProductionStage } from 'src/app/interfaces';
 import { assertNotNull, FilterInput, toFilterSignal } from '../library';
@@ -8,9 +8,7 @@ interface ProductionStagesFilter {
   name?: string;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class ProductionStagesService {
   private api = inject(ProductionStageApiService);
 

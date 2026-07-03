@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 
 interface Chunk {
   text: string;
@@ -8,7 +8,6 @@ interface Chunk {
 @Component({
   selector: 'app-tagged-string',
   templateUrl: 'tagged-string.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   styleUrls: ['tagged-string.component.scss'],
 })

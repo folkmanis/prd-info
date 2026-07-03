@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { LoginService } from 'src/app/login';
 import { CustomersService } from 'src/app/services';
@@ -15,7 +15,6 @@ import { MatAnchor, MatButton } from '@angular/material/button';
   selector: 'app-products-production',
   templateUrl: './products-production.component.html',
   styleUrls: ['./products-production.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ProductsFilterComponent, ProductsTableComponent, ScrollTopDirective, AsyncPipe, MatAnchor, MatButton],
 })
 export class ProductsProductionComponent {
