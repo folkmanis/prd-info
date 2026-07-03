@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, computed, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { configuration } from 'src/app/services/config.provider';
+import { LOG_LEVELS } from '../../services/log-levels';
 
 @Component({
   selector: 'app-log-level',
@@ -12,11 +12,7 @@ import { configuration } from 'src/app/services/config.provider';
   imports: [FormsModule, MatFormFieldModule, MatSelectModule, MatOptionModule],
 })
 export class LogLevelComponent {
-  #logLevels = configuration('system', 'logLevels');
+  protected levelsSorted = LOG_LEVELS;
 
-  protected levelsSorted = computed(() => {
-    return [...this.#logLevels()].sort((a, b) => a[0] - b[0]);
-  });
-
-  level = model.required<number | null>();
+  level = model.required<number>();
 }

@@ -5,8 +5,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatTree, MatTreeModule } from '@angular/material/tree';
 import { RouterLink } from '@angular/router';
 import { UserModule } from 'src/app/interfaces';
-import { SystemPreferencesService } from 'src/app/services';
 import { configuration } from 'src/app/services/config.provider';
+import { LayoutService } from '../layout.service';
 
 interface SideMenuNode {
   name: string;
@@ -26,8 +26,8 @@ export class SideMenuComponent {
   private tree = viewChild.required(MatTree);
   private expandedByDefault = configuration('system', 'menuExpandedByDefault');
 
-  private modules = inject(SystemPreferencesService).modules;
-  private activeModules = inject(SystemPreferencesService).activeModules;
+  private modules = inject(LayoutService).modules;
+  private activeModules = inject(LayoutService).activeModules;
 
   data = computed(() => toSideMenu(this.modules()));
 

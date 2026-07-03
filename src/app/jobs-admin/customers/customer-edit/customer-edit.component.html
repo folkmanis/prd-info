@@ -170,9 +170,11 @@
             <mat-form-field class="full-width">
               <mat-label> Adrese </mat-label>
               <input matInput [formField]="form.shippingAddress.address" />
-              <button type="button" matSuffix matIconButton (click)="onAddressMap()">
-                <mat-icon>map</mat-icon>
-              </button>
+              @if (locationServiceEnabled()) {
+                <button type="button" matSuffix matIconButton (click)="onAddressMap()">
+                  <mat-icon>map</mat-icon>
+                </button>
+              }
               <button type="button" matSuffix matIconButton aria-label="Clear" (click)="onResetAddress()">
                 <mat-icon>close</mat-icon>
               </button>

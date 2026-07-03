@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { LayoutService } from '../layout/layout.service';
 import { CardMenuComponent } from '../library/card-menu/card-menu.component';
-import { SystemPreferencesService } from '../services/system-preferences.service';
 
 @Component({
   selector: 'app-calculations',
@@ -9,5 +9,5 @@ import { SystemPreferencesService } from '../services/system-preferences.service
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalculationsComponent {
-  modules = inject(SystemPreferencesService).childMenu;
+  modules = inject(LayoutService).childMenu;
 }

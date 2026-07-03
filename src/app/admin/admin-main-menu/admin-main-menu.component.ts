@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { LayoutService } from 'src/app/layout/layout.service';
 import { CardMenuComponent } from 'src/app/library/card-menu/card-menu.component';
-import { SystemPreferencesService } from 'src/app/services';
 
 @Component({
   selector: 'app-admin-main-menu',
@@ -9,5 +9,5 @@ import { SystemPreferencesService } from 'src/app/services';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminMainMenuComponent {
-  modules = inject(SystemPreferencesService).childMenu;
+  modules = inject(LayoutService).childMenu;
 }

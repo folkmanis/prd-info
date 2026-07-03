@@ -1,3 +1,4 @@
+import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, resource, signal } from '@angular/core';
 import { disabled, form, FormField, required } from '@angular/forms/signals';
 import { MatCardModule } from '@angular/material/card';
@@ -6,9 +7,8 @@ import { MatOption, MatSelect } from '@angular/material/select';
 import { OdometerReading } from '../interfaces/transportation-vehicle';
 import { RouteSheetService } from '../services/route-sheet.service';
 import { TransportationVehicleService } from '../services/transportation-vehicle.service';
-import { ConsumptionData, ConsumptionTableComponent } from './consumption-table/consumption-table.component';
-import { DecimalPipe } from '@angular/common';
 import { calculateMonthlyConsumption } from './calculate-monthly-consumption';
+import { ConsumptionData, ConsumptionTableComponent } from './consumption-table/consumption-table.component';
 
 function getYears(odometerReadings: OdometerReading[]): string[] {
   const years = new Set<number>();

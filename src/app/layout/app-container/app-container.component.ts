@@ -3,7 +3,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { RouterOutlet } from '@angular/router';
 import { DrawerCloseDirective, DrawerSmallDirective } from 'src/app/library/view-size';
 import { LoginService } from 'src/app/login';
-import { SystemPreferencesService } from 'src/app/services';
+import { LayoutService } from '../layout.service';
 import { SideMenuComponent } from '../side-menu/side-menu.component';
 import { ToolbarComponent } from '../toolbar/toolbar.component';
 
@@ -22,7 +22,7 @@ import { ToolbarComponent } from '../toolbar/toolbar.component';
   ],
 })
 export class AppContainerComponent {
-  private activeModules = inject(SystemPreferencesService).activeModules;
+  private activeModules = inject(LayoutService).activeModules;
   private loginService = inject(LoginService);
 
   user = this.loginService.user;

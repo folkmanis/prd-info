@@ -1,9 +1,9 @@
 import { z } from 'zod';
-import { FuelType } from './fuel-type';
+import { FuelTypeSchema } from './fuel-type';
 import { ShippingAddressSchema } from './shipping-address';
 
-export const TransportationSettings = z.object({
+export const TransportationSettingsSchema = z.object({
   shippingAddress: ShippingAddressSchema.nullable(),
-  fuelTypes: z.array(FuelType),
+  fuelTypes: z.array(FuelTypeSchema),
 });
-export type TransportationSettings = z.infer<typeof TransportationSettings>;
+export type TransportationSettings = z.infer<typeof TransportationSettingsSchema>;

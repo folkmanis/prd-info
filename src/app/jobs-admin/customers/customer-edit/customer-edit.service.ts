@@ -2,11 +2,10 @@ import { inject, Injectable } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { firstValueFrom, map } from 'rxjs';
 import { JobFilesService } from 'src/app/filesystem';
-import { CustomerFinancial } from 'src/app/interfaces';
+import { CustomerFinancial, ShippingAddressModel } from 'src/app/interfaces';
 import { PaytraqShippingAddress } from 'src/app/interfaces/paytraq';
 import { LocationSelectService } from 'src/app/library/location-select';
 import { PaytraqClientService } from '../services/paytraq-client.service';
-import { ShippingAddressModel } from './customer-edit.model';
 import {
   PaytraqCustomerSelectComponent,
   PaytraqCustomerSelectDialogData,
@@ -24,6 +23,8 @@ export class CustomerEditService {
   private paytraqService = inject(PaytraqClientService);
   private locationSelect = inject(LocationSelectService);
   private filesService = inject(JobFilesService);
+
+  locationServiceEnabled = this.locationSelect.serviceEnabled;
 
   ftpFolders$ = this.filesService.ftpFolders().pipe(map((f) => f.filter((e) => e.isFolder).map((e) => e.name)));
 

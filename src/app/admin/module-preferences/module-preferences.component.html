@@ -1,47 +1,176 @@
-<form [formRoot]="preferencesForm">
+<form [formRoot]="form" (reset)="$event.preventDefault(); onResetAll()">
   <mat-toolbar>
-    <button
-      matButton="elevated"
-      [disabled]="preferencesForm().dirty() === false || preferencesForm().valid() === false || busy()"
-      type="submit"
-    >
+    <button matButton="elevated" [disabled]="form().dirty() === false || form().valid() === false || busy()">
       Saglabāt
     </button>
-    <button
-      matButton
-      class="tertiary"
-      (click)="onResetAll()"
-      [disabled]="preferencesForm().dirty() === false || busy()"
-      type="reset"
-    >
-      Atiestatīt
-    </button>
+    <button matButton class="tertiary" [disabled]="form().dirty() === false || busy()" type="reset">Atiestatīt</button>
   </mat-toolbar>
 
+  <!-- System -->
   <div class="container">
     <app-preferences-card>
       <ng-container appCardTitle> Vispārīgie iestatījumi </ng-container>
-      <app-system-preferences [formField]="preferencesForm.system" />
+
+      <div>
+        <mat-checkbox [formField]="form.system.menuExpandedByDefault">Sānu izvēlne izvērsta</mat-checkbox>
+      </div>
+
+      <div>
+        <mat-form-field class="full-width">
+          <mat-label> Hostname </mat-label>
+          <input matInput [formField]="form.system.hostname" />
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field class="full-width">
+          <mat-label> Uzņēmuma nosaukums </mat-label>
+          <input matInput [formField]="form.system.companyName" />
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field class="full-width">
+          <mat-label> mapId </mat-label>
+          <input matInput [formField]="form.system.mapId" />
+        </mat-form-field>
+      </div>
     </app-preferences-card>
 
+    <!-- Jobs -->
     <app-preferences-card>
       <ng-container appCardTitle> Darbu uzskaites iestatījumi </ng-container>
-      <app-jobs-preferences [formField]="preferencesForm.jobs" />
+
+      <section>
+        <mat-form-field class="full-width">
+          <mat-label> Serveris </mat-label>
+          <input matInput [formField]="form.jobs.jobRootPath" />
+        </mat-form-field>
+      </section>
+
+      <mat-divider />
+
+      <section>
+        <app-simple-list-table
+          [formField]="form.jobs.productCategories"
+          [columns]="['category', 'description']"
+          [editDialog]="categoryDialog"
+        >
+          Kategorijas
+        </app-simple-list-table>
+      </section>
+
+      <mat-divider />
+
+      <section>
+        <app-simple-list-table
+          [formField]="form.jobs.productUnits"
+          [columns]="['shortName', 'description']"
+          [editDialog]="unitsDialog"
+        >
+          Mērvienības
+        </app-simple-list-table>
+      </section>
     </app-preferences-card>
 
+    <!-- PayTraq savienojums -->
     <app-preferences-card>
       <ng-container appCardTitle> PayTraq grāmatvedības savienojums </ng-container>
-      <app-paytraq-preferences [formField]="preferencesForm.paytraq" />
+
+      <section>
+        <mat-checkbox [formField]="form.paytraq.enabled"> Iespējots </mat-checkbox>
+      </section>
+
+      <mat-divider></mat-divider>
+
+      <section>
+        <mat-form-field class="full-width">
+          <mat-label> PayTraq Connect Url </mat-label>
+          <input matInput [formField]="form.paytraq.connectionParams.connectUrl" />
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <mat-label> PayTraq Connect Key </mat-label>
+          <input matInput [formField]="form.paytraq.connectionParams.connectKey" />
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <mat-label> PayTraq API Url </mat-label>
+          <input matInput [formField]="form.paytraq.connectionParams.apiUrl" />
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <mat-label> PayTraq API Key </mat-label>
+          <input matInput [formField]="form.paytraq.connectionParams.apiKey" />
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <mat-label> PayTraq API Token </mat-label>
+          <input matInput [formField]="form.paytraq.connectionParams.apiToken" />
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <mat-label> PayTraq Invoice URL base </mat-label>
+          <input matInput [formField]="form.paytraq.connectionParams.invoiceUrl" />
+        </mat-form-field>
+      </section>
     </app-preferences-card>
 
+    <!-- Kastes -->
     <app-preferences-card>
       <ng-container appCardTitle> Pakošanas saraksta iestatījumi </ng-container>
-      <app-kastes-preferences [formField]="preferencesForm.kastes" />
+      <app-color-slider [formField]="form.kastes.colors.white" label="Balta" />
+      <app-color-slider [formField]="form.kastes.colors.yellow" label="Dzeltena" />
+      <app-color-slider [formField]="form.kastes.colors.rose" label="Rozā" />
     </app-preferences-card>
 
+    <!-- Transports -->
     <app-preferences-card>
       <ng-container appCardTitle> Transportēšanas iestatījumi </ng-container>
-      <app-transportation-preferences [formField]="preferencesForm.transportation" />
+
+      <h3>Noliktavas adrese</h3>
+      <section>
+        <mat-form-field class="full-width">
+          <mat-label> Adrese </mat-label>
+          <input matInput [formField]="form.transportation.shippingAddress.address" />
+          <button matIconButton matIconSuffix (click)="onMap()" type="button" [disabled]="locationEnabled() === false">
+            <mat-icon> map </mat-icon>
+          </button>
+        </mat-form-field>
+      </section>
+
+      <section class="flex-width">
+        <mat-form-field class="flex-1">
+          <mat-label> Indekss </mat-label>
+          <input matInput [formField]="form.transportation.shippingAddress.zip" />
+        </mat-form-field>
+
+        <mat-form-field class="flex-1">
+          <mat-label> Valsts </mat-label>
+          <input matInput [formField]="form.transportation.shippingAddress.country" />
+        </mat-form-field>
+      </section>
+
+      <section>
+        <mat-form-field class="full-width">
+          <mat-label> PayTraq ID </mat-label>
+          <input matInput [formField]="form.transportation.shippingAddress.paytraqId" />
+        </mat-form-field>
+      </section>
+
+      <section>
+        <mat-form-field class="full-width">
+          <mat-label> Google Address ID </mat-label>
+          <input matInput [formField]="form.transportation.shippingAddress.googleId" />
+        </mat-form-field>
+      </section>
+      <section>
+        <app-simple-list-table
+          [formField]="form.transportation.fuelTypes"
+          [columns]="['type', 'units', 'description']"
+          [editDialog]="fuelTypeDialog"
+        >
+          Degvielas veidi
+        </app-simple-list-table>
+      </section>
     </app-preferences-card>
   </div>
 </form>

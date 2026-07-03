@@ -32,12 +32,10 @@ export const optionalString = z.codec(z.string().optional(), z.string(), {
   encode: (str) => str || undefined,
 });
 
-export const nullableNumber = z.codec(z.number().nullable().optional(), z.number(), {
-  decode: (val) => val ?? Number.NaN,
-  encode: (val) => (typeof val === 'number' && isNaN(val) === false ? val : null),
-});
-
-export const optionalNumber = z.codec(z.number().optional(), z.number(), {
-  decode: (val) => val ?? Number.NaN,
-  encode: (val) => (typeof val === 'number' && isNaN(val) === false ? val : undefined),
+export const optionalNumberToString = z.codec(z.number().optional(), z.string(), {
+  decode: (value) => (typeof value === 'number' ? value.toString() : ''),
+  encode: (value) => {
+    const num = Number.parseInt(value);
+    return Number.isFinite(num) ? num : undefined;
+  },
 });

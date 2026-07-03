@@ -1,13 +1,13 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { firstValueFrom } from 'rxjs';
-import { OdometerReading } from 'src/app/transportation/interfaces/transportation-vehicle';
-import { OdometerReadingsDialogComponent } from '../odometer-readings-dialog/odometer-readings-dialog.component';
 import { ConfirmationDialogService } from 'src/app/library';
+import { OdometerReading, OdometerReadingSchema } from 'src/app/transportation/interfaces/transportation-vehicle';
+import { OdometerReadingsDialogComponent } from '../odometer-readings-dialog/odometer-readings-dialog.component';
 
 @Component({
   selector: 'app-odometer-readings',
@@ -75,7 +75,7 @@ export class OdometerReadingsComponent {
     }
     const initialReading = readings[0].value;
     const isAsc = readings.every(
-      (reading) => OdometerReading.safeParse(reading).success && reading.value >= initialReading,
+      (reading) => OdometerReadingSchema.safeParse(reading).success && reading.value >= initialReading,
     );
     if (isAsc === false) {
       this.#snack.open('Nepareizi dati. Rādījumiem jābūt augošā secībā.', 'OK');

@@ -1,4 +1,4 @@
-import { ShippingAddressSchema } from 'src/app/interfaces';
+import { ShippingAddressModelSchema } from 'src/app/interfaces';
 import {
   CreateCustomerDto,
   Customer,
@@ -8,16 +8,8 @@ import {
   FtpUserDataSchema,
   UpdateCustomerDto,
 } from 'src/app/interfaces/customer';
-import { nullableString, optionalString, pickNotNull } from 'src/app/library';
+import { nullableString, optionalNumberToString, optionalString, pickNotNull } from 'src/app/library';
 import { z } from 'zod';
-
-const numberToString = z.codec(z.number().optional(), z.string(), {
-  decode: (value) => (typeof value === 'number' ? value.toString() : ''),
-  encode: (value) => {
-    const num = Number.parseInt(value);
-    return Number.isFinite(num) ? num : undefined;
-  },
-});
 
 const FtpUserDataModelSchema = z
   .codec(
@@ -40,34 +32,13 @@ const FtpUserDataModelSchema = z
   )
   .prefault({ folder: '' });
 
-const ShippingAddressModelSchema = z.codec(
-  ShippingAddressSchema.nullable().optional(),
-  z.object({
-    address: z.string(),
-    zip: z.string(),
-    country: z.string(),
-    paytraqId: numberToString,
-    googleId: optionalString,
-  }),
-  {
-    decode: (value) => value ?? { address: '', zip: '', country: '' },
-    encode: (value) => {
-      if (value.address) {
-        return value;
-      } else {
-        return null;
-      }
-    },
-  },
-);
-export type ShippingAddressModel = z.infer<typeof ShippingAddressModelSchema>;
-export const defaultShippingAddressModel = (): ShippingAddressModel => ShippingAddressModelSchema.decode(undefined);
+export const defaultShippingAddressModel = () => ShippingAddressModelSchema.decode(undefined);
 
 const CustomerFinancialModelSchema = z.codec(
   CustomerFinancialSchema.nullable().optional(),
   z.object({
     clientName: optionalString,
-    paytraqId: numberToString,
+    paytraqId: optionalNumberToString,
   }),
   {
     decode: (value) => value ?? {},

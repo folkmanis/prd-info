@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { GoogleMap, MapAdvancedMarker, MapGeocoder } from '@angular/google-maps';
 import { MatButton } from '@angular/material/button';
 import {
@@ -12,11 +12,10 @@ import { filter, map } from 'rxjs';
 import { ShippingMarker } from '../shipping-marker';
 
 export interface LocationSelectDialogData {
-  address?: string | null;
-  googleId?: string | null;
+  address?: string;
+  googleId?: string;
+  mapId: string;
 }
-
-const MAP_ID = 'ef56afe33b02cace';
 
 @Component({
   selector: 'app-location-select-dialog',
@@ -34,9 +33,10 @@ const MAP_ID = 'ef56afe33b02cace';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LocationSelectDialogComponent {
-  private geoCoder = inject(MapGeocoder);
+  #geoCoder = inject(MapGeocoder);
+  #data = inject<LocationSelectDialogData>(MAT_DIALOG_DATA);
 
-  mapOptions: google.maps.MapOptions = { fullscreenControl: false, mapId: MAP_ID };
+  protected mapOptions: google.maps.MapOptions = { fullscreenControl: false, mapId: this.#data.mapId };
 
   center = signal<google.maps.LatLngLiteral>({
     lat: 57.0,
@@ -48,13 +48,16 @@ export class LocationSelectDialogComponent {
   shippingMarker = signal<ShippingMarker | null>(null);
 
   constructor() {
-    const data = inject<LocationSelectDialogData>(MAT_DIALOG_DATA);
-
-    if (data.googleId) {
-      this.setMarker({ placeId: data.googleId });
-    } else if (data.address) {
-      this.setMarker({ address: data.address });
-    }
+    afterNextRender({
+      write: () => {
+        const { googleId, address } = this.#data;
+        if (googleId) {
+          this.setMarker({ placeId: googleId });
+        } else if (address) {
+          this.setMarker({ address: address });
+        }
+      },
+    });
   }
 
   onMarkerDragEnd(event: google.maps.MapMouseEvent) {
@@ -66,7 +69,7 @@ export class LocationSelectDialogComponent {
   }
 
   private setMarker(request: google.maps.GeocoderRequest) {
-    this.geoCoder
+    this.#geoCoder
       .geocode(request)
       .pipe(
         filter((response) => response.status === 'OK'),

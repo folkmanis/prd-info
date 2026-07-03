@@ -20,7 +20,7 @@ import { DATE_FNS_LOCALE } from './app/library/date-services';
 import { ErrorsService } from './app/library/errors/errors.service';
 import { httpInterceptors } from './app/library/http/http-interceptors';
 import { environment } from './environments/environment';
-import { ModulePageTitleStrategy } from './app/services/module-page-title.strategy';
+import { ModulePageTitleStrategy } from './app/layout/module-page-title.strategy';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 
 if (environment.production) {

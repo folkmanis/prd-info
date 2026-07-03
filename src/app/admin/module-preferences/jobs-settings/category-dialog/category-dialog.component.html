@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>Preču kategorija</h2>
+<form [formRoot]="form">
+  <mat-dialog-content>
+    <div class="controls">
+      <mat-form-field>
+        <mat-label>
+          Kods
+          @if (form.category().disabled() === false) {
+            (nebūs maināms vēlāk)
+          }
+        </mat-label>
+        <input type="text" matInput [formField]="form.category" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label> Nosaukums </mat-label>
+        <input type="text" matInput [formField]="form.description" />
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button matButton [disabled]="form().valid() === false || form().dirty() === false" type="submit">OK</button>
+    <button matButton mat-dialog-close type="button" class="tertiary">Atcelt</button>
+  </mat-dialog-actions>
+</form>

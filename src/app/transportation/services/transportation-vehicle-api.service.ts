@@ -7,6 +7,7 @@ import { HttpOptions, httpResponseRequest, ValidatorService } from 'src/app/libr
 import {
   TransportationVehicle,
   TransportationVehicleCreate,
+  TransportationVehicleSchema,
   TransportationVehicleUpdate,
 } from '../interfaces/transportation-vehicle';
 import { SchemaPath, validateHttp } from '@angular/forms/signals';
@@ -22,35 +23,35 @@ export class TransportationVehicleApiService {
 
   vehiclesResource(params: Signal<Record<string, any>>) {
     return httpResource(() => httpResponseRequest(this.#path, new HttpOptions(params()).cacheable()), {
-      parse: this.#validator.arrayValidatorFn(TransportationVehicle),
+      parse: this.#validator.arrayValidatorFn(TransportationVehicleSchema),
       equal: isEqual,
     });
   }
 
   vehicleResource(id: Signal<string | undefined>) {
     return httpResource(() => (id() ? httpResponseRequest(`${this.#path}/${id()}`) : undefined), {
-      parse: this.#validator.validatorFn(TransportationVehicle),
+      parse: this.#validator.validatorFn(TransportationVehicleSchema),
     });
   }
 
   getVehicles(params: Record<string, any>): Promise<TransportationVehicle[]> {
     const response$ = this.#http.get<Record<string, any>[]>(this.#path, new HttpOptions(params).cacheable());
-    return this.#validator.validateArrayAsync(TransportationVehicle, response$);
+    return this.#validator.validateArrayAsync(TransportationVehicleSchema, response$);
   }
 
   getOne(id: string): Promise<TransportationVehicle> {
     const response = this.#http.get<Record<string, any>>(`${this.#path}/${id}`, new HttpOptions());
-    return this.#validator.validateAsync(TransportationVehicle, response);
+    return this.#validator.validateAsync(TransportationVehicleSchema, response);
   }
 
   createOne(data: TransportationVehicleCreate): Promise<TransportationVehicle> {
     const response = this.#http.put(this.#path, data, new HttpOptions());
-    return this.#validator.validateAsync(TransportationVehicle, response);
+    return this.#validator.validateAsync(TransportationVehicleSchema, response);
   }
 
   updateOne(id: string, data: TransportationVehicleUpdate): Promise<TransportationVehicle> {
     const response = this.#http.patch(`${this.#path}/${id}`, data, new HttpOptions());
-    return this.#validator.validateAsync(TransportationVehicle, response);
+    return this.#validator.validateAsync(TransportationVehicleSchema, response);
   }
 
   async deleteOne(id: string): Promise<number> {

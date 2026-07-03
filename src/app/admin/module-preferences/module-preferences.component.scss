@@ -1,8 +1,8 @@
 form {
-  display: block;
   overflow: auto;
   height: 100%;
 }
+
 
 mat-toolbar {
   position: sticky;
@@ -17,6 +17,28 @@ mat-toolbar {
   flex-wrap: wrap;
 }
 
+.full-width {
+  width: 100%;
+}
+
+.flex-width {
+  display: flex;
+  column-gap: 16px;
+  align-items: baseline;
+
+  .flex-1 {
+    flex: 1;
+  }
+}
+
 app-preferences-card {
   flex: 0 1 400px;
+}
+
+app-color-slider {
+  width: 100%;
+}
+
+section {
+  margin-block: 8px;
 }

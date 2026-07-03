@@ -1,5 +1,3 @@
-import { MODULES } from './system-preferences';
-
 export enum SystemOperations {
   MessageDeleted,
   MessageAdded,
@@ -8,7 +6,7 @@ export enum SystemOperations {
   UserUpdated,
 }
 
-export type ModulesWithNotifications = ((typeof MODULES)[number] & 'jobs') | 'system';
+export type ModulesWithNotifications = 'jobs' | 'system';
 
 export interface NotificationBase {
   module: ModulesWithNotifications;

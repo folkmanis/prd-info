@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CardMenuComponent } from 'src/app/library/card-menu/card-menu.component';
-import { SystemPreferencesService } from 'src/app/services';
+import { LayoutService } from '../layout/layout.service';
 
 @Component({
   selector: 'app-transportation-main-menu',
@@ -10,5 +10,5 @@ import { SystemPreferencesService } from 'src/app/services';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransportationMainMenuComponent {
-  modules = inject(SystemPreferencesService).childMenu;
+  modules = inject(LayoutService).childMenu;
 }

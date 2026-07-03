@@ -23,7 +23,6 @@ export const PRD_DEFAULTS: AppParams = {
     system: {
       menuExpandedByDefault: false,
       hostname: '',
-      logLevels: [],
       companyName: '',
     },
     jobs: {

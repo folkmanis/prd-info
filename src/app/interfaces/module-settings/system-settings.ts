@@ -1,9 +1,9 @@
 import { z } from 'zod';
 
-export const SystemSettings = z.object({
+export const SystemSettingsSchema = z.object({
   menuExpandedByDefault: z.boolean(),
-  logLevels: z.array(z.tuple([z.number(), z.string()])),
   hostname: z.string(),
   companyName: z.string(),
+  mapId: z.string().nullable().optional(), // TODO remove null, when config refactor is done
 });
-export type SystemSettings = z.infer<typeof SystemSettings>;
+export type SystemSettings = z.infer<typeof SystemSettingsSchema>;

@@ -1,0 +1,7 @@
+<span class="label" [style.color]="value()"> {{ label() }}: </span>
+
+<mat-slider [min]="0" [max]="100" [step]="1" [disabled]="disabled()">
+  <input [value]="lightness()" matSliderThumb (valueChange)="onValueChange($event)" (focus)="touched.set(true)" />
+</mat-slider>
+
+<span [style.color]="value()">{{ lightness() }}%</span>

@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>Mērvienība</h2>
+<form [formRoot]="form">
+  <mat-dialog-content>
+    <div class="input-fields">
+      <mat-form-field>
+        <mat-label>
+          Kods
+          @if (form.shortName().disabled() === false) {
+            (nebūs maināms vēlāk)
+          }
+        </mat-label>
+        <input matInput [formField]="form.shortName" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label> Nosaukums </mat-label>
+        <input matInput [formField]="form.description" />
+      </mat-form-field>
+    </div>
+    <div class="input-fields">
+      <mat-checkbox [formField]="form.disabled">Neaktīvs</mat-checkbox>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button matButton [disabled]="form().valid() === false || form().dirty() === false" type="submit">Ok</button>
+    <button type="button" matButton class="tertiary" mat-dialog-close>Atcelt</button>
+  </mat-dialog-actions>
+</form>

@@ -1,13 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, model, Signal, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, Signal, untracked } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { isEqual } from 'lodash-es';
-import { configuration } from 'src/app/services/config.provider';
 import { LogCalendarComponent } from './log-filter/log-calendar/log-calendar.component';
 import { LogLevelComponent } from './log-filter/log-level/log-level.component';
 import { LogfileTableComponent } from './logfile-table/logfile-table.component';
 import { validDate } from './services/log-dates-utils';
+import { LOG_LEVELS } from './services/log-levels';
 import { createLogQueryFilter, LogQueryFilter } from './services/logfile-record';
 import { LogfileService } from './services/logfile.service';
 
@@ -16,26 +16,25 @@ import { LogfileService } from './services/logfile.service';
   templateUrl: './logfile.component.html',
   styleUrls: ['./logfile.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LogfileTableComponent, MatButtonModule, MatIconModule, LogLevelComponent, LogCalendarComponent, MatCardModule],
+  imports: [
+    LogfileTableComponent,
+    MatButtonModule,
+    MatIconModule,
+    LogLevelComponent,
+    LogCalendarComponent,
+    MatCardModule,
+  ],
 })
 export class LogfileComponent {
   #service = inject(LogfileService);
 
-  #levelsMap = configuration('system', 'logLevels');
+  protected logLevel = signal(LOG_LEVELS.slice(-1)[0][0]);
 
-  protected logLevel = model<number | null>(null);
+  protected logDate = signal(new Date());
 
-  protected logDate = model<Date>(new Date());
-
-  protected logFilter: Signal<LogQueryFilter | null> = computed(
+  protected logFilter: Signal<LogQueryFilter> = computed(
     () => {
-      const logLevel = this.logLevel();
-      const logDate = this.logDate();
-      if (typeof logLevel !== 'number' || !(logDate instanceof Date)) {
-        return null;
-      } else {
-        return createLogQueryFilter(logLevel, logDate);
-      }
+      return createLogQueryFilter(this.logLevel(), this.logDate());
     },
     { equal: isEqual },
   );
@@ -45,15 +44,6 @@ export class LogfileComponent {
   protected availableDates = this.#service.getDatesGroupResource(this.logLevel);
 
   constructor() {
-    effect(() => {
-      const levels = this.#levelsMap();
-      if (levels.length > 0) {
-        this.logLevel.set(Math.max(...levels.map((level) => level[0])));
-      } else {
-        this.logLevel.set(null);
-      }
-    });
-
     effect(() => {
       const availableDates = this.availableDates.value();
       const logDate = untracked(this.logDate);

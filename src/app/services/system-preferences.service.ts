@@ -1,109 +1,28 @@
-import { computed, inject, Injectable } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { PRIMARY_OUTLET, Router, UrlSegment } from '@angular/router';
-import { firstValueFrom, map, merge, Observable, of, retry, shareReplay, Subject, switchMap, tap } from 'rxjs';
+import { computed, inject, Service } from '@angular/core';
+import { merge } from 'lodash-es';
+import { firstValueFrom, retry } from 'rxjs';
 import { LoginService } from 'src/app/login';
-import { getAppParams } from '../app-params';
-import { MODULES, PreferencesDbModules, SystemPreferences, UserModule } from '../interfaces';
+import { DeepPartial } from 'ts-essentials';
+import { SystemPreferences } from '../interfaces';
 import { SystemPreferencesApiService } from './system-preferences-api';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class SystemPreferencesService {
-  #router = inject(Router);
-  #loginService = inject(LoginService);
   #api = inject(SystemPreferencesApiService);
-  #currentUrl = this.#router.routerState.snapshot.url;
 
-  readonly #preferencesUpdate$ = new Subject<SystemPreferences>();
+  #user = inject(LoginService).user;
+  #loggedIn = computed(() => !!this.#user());
 
-  #url = computed(() => {
-    this.#currentUrl =
-      this.#router
-        .currentNavigation()
-        ?.finalUrl?.root.children[PRIMARY_OUTLET].segments.map((s) => s.path)
-        .join('/') || this.#router.routerState.snapshot.url;
-    return this.#currentUrl;
-  });
+  #preferencesResource = this.#api.getPreferencesResource(this.#loggedIn);
 
-  defaultPreferences: SystemPreferences = getAppParams('defaultSystemPreferences');
+  preferences = this.#preferencesResource.value.asReadonly();
 
-  preferences$: Observable<SystemPreferences> = merge(
-    of(this.defaultPreferences),
-    this.#loginService.user$.pipe(
-      // mainoties user, ielādē no servera
-      switchMap((usr) => (usr ? this.#systemPreferences() : of(this.defaultPreferences))),
-    ),
-    this.#preferencesUpdate$,
-  ).pipe(
-    tap((pref) => (this.defaultPreferences = pref)),
-    shareReplay(1),
-  );
+  async updatePreferences(changes: DeepPartial<SystemPreferences>): Promise<void> {
+    const update = merge(this.preferences(), changes);
 
-  private readonly userModules = getAppParams('userModules');
+    const update$ = this.#api.updateMany(update).pipe(retry(3));
 
-  modules$ = this.#loginService.user$.pipe(
-    switchMap((usr) =>
-      of(this.userModules.filter((mod) => usr && usr.preferences.modules.includes(mod.route))).pipe(
-        map((modules) => (usr?.google ? modules : this.#removeGmail(modules))),
-      ),
-    ),
-  );
-  modules = toSignal(this.modules$, { initialValue: [] });
-
-  activeModules = computed(() => findModulesPath(this.#url(), this.modules()));
-
-  childMenu = computed(() => this.activeModules()[0]?.childMenu || []);
-
-  async updatePreferences(pref: SystemPreferences): Promise<SystemPreferences> {
-    const update = MODULES.map((module) => ({
-      module,
-      settings: pref[module],
-    })) as PreferencesDbModules[];
-    const updated$ = this.#api.updateMany(update).pipe(
-      retry(3),
-      switchMap((_) => this.#systemPreferences()),
-    );
-    const updated = await firstValueFrom(updated$);
-    this.#preferencesUpdate$.next(updated);
-    return updated;
+    const preferences = await firstValueFrom(update$);
+    this.#preferencesResource.set(preferences);
   }
-
-  async #systemPreferences(): Promise<SystemPreferences> {
-    const dbPreferences = await this.#api.getAll();
-    return Object.assign({}, ...dbPreferences.map((mod) => ({ [mod.module]: mod.settings })));
-  }
-
-  #removeGmail(modules: UserModule[]): UserModule[] {
-    return modules
-      .filter((module) => module.name !== 'gmail')
-      .map((module) => (module.childMenu ? { ...module, childMenu: this.#removeGmail(module.childMenu) } : module));
-  }
-}
-
-export function findModulesPath(url: string | UrlSegment[], modules: UserModule[]): UserModule[] {
-  let segments: string[];
-  if (typeof url === 'string') {
-    const [, ...path] = url.split(/[/;?]/);
-    segments = path;
-  } else {
-    segments = url.map((segm) => segm.path);
-  }
-
-  let userModules: UserModule[] | undefined = [...modules];
-  const activeModules: UserModule[] = [];
-
-  for (const segm of segments) {
-    const module: UserModule | undefined = userModules?.find((mod) => mod.route === segm);
-
-    if (!module) {
-      break;
-    }
-
-    userModules = module.childMenu;
-    activeModules.push(module);
-  }
-
-  return activeModules;
 }

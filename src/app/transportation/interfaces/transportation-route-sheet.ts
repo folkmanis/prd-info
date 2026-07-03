@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { TransportationDriverSchema } from './transportation-driver';
-import { TransportationVehicle } from './transportation-vehicle';
 import { FuelPurchase } from './fuel-purchase';
+import { TransportationDriverSchema } from './transportation-driver';
+import { TransportationVehicleSchema } from './transportation-vehicle';
 
 export const RouteStop = z.object({
   customerId: z.string().nullish(),
@@ -40,7 +40,7 @@ export const TransportationRouteSheet = z.object({
   month: z.number(),
   fuelRemainingStartLitres: z.number(),
   driver: TransportationDriverSchema,
-  vehicle: TransportationVehicle,
+  vehicle: TransportationVehicleSchema,
   trips: z.array(RouteTrip),
   fuelPurchases: z.array(FuelPurchase),
 });

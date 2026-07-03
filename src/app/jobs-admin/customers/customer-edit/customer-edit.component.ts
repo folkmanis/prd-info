@@ -95,6 +95,8 @@ export class CustomerEditComponent implements CanComponentDeactivate {
 
   protected activeContact = signal<FieldTree<CustomerContact> | null>(null);
 
+  protected locationServiceEnabled = this.#formService.locationServiceEnabled;
+
   customer = input.required<Customer>();
   #initialCustomer = linkedSignal(() => this.customer());
   #initialModel = linkedSignal(() => customerToModel(this.#initialCustomer()));

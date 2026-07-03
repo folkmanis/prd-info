@@ -1,11 +1,9 @@
-@let levels = logLevels();
-
 @if (log(); as log) {
   <mat-table multiTemplateDataRows [dataSource]="log" class="app-table" appViewSize #viewSize="viewSize">
     <!-- Log level -->
     <ng-container matColumnDef="level">
       <mat-header-cell *matHeaderCellDef>Nozīmīgums</mat-header-cell>
-      <mat-cell *matCellDef="let record">{{ levels[record.level] || record.level }}</mat-cell>
+      <mat-cell *matCellDef="let record">{{ logLevels[record.level] || record.level }}</mat-cell>
     </ng-container>
     <!-- Date -->
     <ng-container matColumnDef="timestamp">
@@ -20,7 +18,9 @@
     <!-- Metadata -->
     <ng-container matColumnDef="metadata">
       <mat-header-cell *matHeaderCellDef>Papildus dati</mat-header-cell>
-      <mat-cell *matCellDef="let record">{{ record.metadata | json | shortenText: (viewSize.isLarge() ? 70 : 30) }}</mat-cell>
+      <mat-cell *matCellDef="let record">{{
+        record.metadata | json | shortenText: (viewSize.isLarge() ? 70 : 30)
+      }}</mat-cell>
     </ng-container>
     <!-- Izvērsts skats -->
     <ng-container matColumnDef="expandedRecord">
@@ -37,7 +37,15 @@
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
-    <mat-row *matRowDef="let record; columns: displayedColumns" class="record-row" (click)="expandedRecord = expandedRecord === record ? null : record"></mat-row>
-    <mat-row *matRowDef="let record; columns: ['expandedRecord']" class="detail-row" [class.expanded-row]="expandedRecord === record"></mat-row>
+    <mat-row
+      *matRowDef="let record; columns: displayedColumns"
+      class="record-row"
+      (click)="expandedRecord = expandedRecord === record ? null : record"
+    ></mat-row>
+    <mat-row
+      *matRowDef="let record; columns: ['expandedRecord']"
+      class="detail-row"
+      [class.expanded-row]="expandedRecord === record"
+    ></mat-row>
   </mat-table>
 }

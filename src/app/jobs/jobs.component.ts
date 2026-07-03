@@ -1,5 +1,5 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
-import { SystemPreferencesService } from '../services/system-preferences.service';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { LayoutService } from '../layout/layout.service';
 import { CardMenuComponent } from '../library/card-menu/card-menu.component';
 
 @Component({
@@ -8,5 +8,5 @@ import { CardMenuComponent } from '../library/card-menu/card-menu.component';
   imports: [CardMenuComponent],
 })
 export class JobsComponent {
-  modules = inject(SystemPreferencesService).childMenu;
+  modules = inject(LayoutService).childMenu;
 }

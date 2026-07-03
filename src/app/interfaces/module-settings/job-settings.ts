@@ -1,28 +1,28 @@
 import { z } from 'zod';
 
-export const ProductCategory = z.object({
+export const ProductCategorySchema = z.object({
   category: z.string(),
   description: z.string(),
 });
-export type ProductCategory = z.infer<typeof ProductCategory>;
+export type ProductCategory = z.infer<typeof ProductCategorySchema>;
 
-export const JobState = z.object({
+export const JobStateSchema = z.object({
   state: z.number(),
   description: z.string(),
 });
-export type JobState = z.infer<typeof JobState>;
+export type JobState = z.infer<typeof JobStateSchema>;
 
-export const ProductUnit = z.object({
+export const ProductUnitSchema = z.object({
   shortName: z.string(),
   description: z.string(),
   disabled: z.boolean(),
 });
-export type ProductUnit = z.infer<typeof ProductUnit>;
+export type ProductUnit = z.infer<typeof ProductUnitSchema>;
 
-export const JobsSettings = z.object({
-  productCategories: z.array(ProductCategory),
-  jobStates: z.array(JobState),
-  productUnits: z.array(ProductUnit),
+export const JobsSettingsSchema = z.object({
+  productCategories: z.array(ProductCategorySchema),
+  jobStates: z.array(JobStateSchema),
+  productUnits: z.array(ProductUnitSchema),
   jobRootPath: z.string().default(''),
 });
-export type JobsSettings = z.infer<typeof JobsSettings>;
+export type JobsSettings = z.infer<typeof JobsSettingsSchema>;
