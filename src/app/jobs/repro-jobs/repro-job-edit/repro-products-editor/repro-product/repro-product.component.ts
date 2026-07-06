@@ -10,6 +10,7 @@ import {
   ReactiveFormsModule,
   ValidationErrors,
   Validator,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -72,8 +73,8 @@ export class ReproProductComponent implements ControlValueAccessor, Validator {
 
   productForm = inject(FormBuilder).nonNullable.group({
     name: [null as string | null, Validators.required],
-    price: [null as number | null, [Validators.required, Validators.min(0)]],
-    count: [null as number | null, [Validators.required, Validators.min(0)]],
+    price: [null as number | null, [Validators.required, this.#numberValidator(), Validators.min(0)]],
+    count: [null as number | null, [Validators.required, this.#numberValidator(), Validators.min(0)]],
     units: [null as string | null, Validators.required],
     comment: [null as string | null],
   });
@@ -149,5 +150,12 @@ export class ReproProductComponent implements ControlValueAccessor, Validator {
     if (price && (priceControl.value === null || priceControl.value === 0) && priceControl.value !== price) {
       priceControl.setValue(price);
     }
+  }
+
+  #numberValidator(): ValidatorFn {
+    return (control) => {
+      const numeric = Number.parseFloat(control.value);
+      return isNaN(numeric) ? { nonNumber: `Not a valid number` } : null;
+    };
   }
 }
