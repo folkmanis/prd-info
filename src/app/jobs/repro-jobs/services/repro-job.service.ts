@@ -6,6 +6,7 @@ import {
   concatMap,
   distinctUntilChanged,
   filter,
+  firstValueFrom,
   from,
   map,
   of,
@@ -166,7 +167,7 @@ export class ReproJobService {
     stageMaterial: ProductProductionStageMaterial,
     productCount: number,
   ): Promise<JobProductionStageMaterial> {
-    const material = await this.#materialsService.getMaterial(stageMaterial.materialId);
+    const material = await firstValueFrom(this.#materialsService.getMaterial(stageMaterial.materialId));
     const amount = stageMaterial.amount * productCount;
     const cost = this.getMaterialCost(material, amount + stageMaterial.fixedAmount);
     return {

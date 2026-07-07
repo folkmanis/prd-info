@@ -1,12 +1,13 @@
-import { Component, computed, inject, model, TrackByFunction } from '@angular/core';
+import { Component, computed, inject, signal, TrackByFunction } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { MaterialList, ProductCategory } from 'src/app/interfaces';
 import { SimpleListContainerComponent } from 'src/app/library/simple-form';
-import { MaterialsFilter, MaterialsService, MaterialWithDescription } from '../services/materials.service';
-import { MaterialsFilterComponent } from './materials-filter/materials-filter.component';
-import { Material } from 'src/app/interfaces';
 import { configuration } from 'src/app/services/config.provider';
+import { MaterialsFilter } from '../schemas/materials.filter.schema';
+import { MaterialsService } from '../services/materials.service';
+import { MaterialsFilterComponent, MaterialsFilterModel } from './materials-filter/materials-filter.component';
 
 @Component({
   selector: 'app-materials-list',
@@ -22,27 +23,31 @@ import { configuration } from 'src/app/services/config.provider';
   ],
 })
 export class MaterialsListComponent {
-  private productCategories = configuration('jobs', 'productCategories');
+  protected userFilter = signal<MaterialsFilterModel>({
+    name: '',
+    categories: [],
+  });
+  #filter = computed<MaterialsFilter>(() => this.#modelToFilter(this.userFilter()));
 
-  filter = model<MaterialsFilter>({});
+  protected productCategories = configuration('jobs', 'productCategories');
+  protected materials = inject(MaterialsService).getMaterialsResource(this.#filter);
 
-  private materials = inject(MaterialsService).getMaterialsResource(this.filter);
-
-  materialsWithDescriptions = computed(() => this.appendDescriptions(this.materials.value()));
-
-  trackByFn: TrackByFunction<MaterialWithDescription> = (_, material) => material._id;
-
-  displayedColumns = ['name', 'category'];
+  protected displayedColumns = ['name', 'category'];
+  protected trackByFn: TrackByFunction<MaterialList> = (_, material) => material._id;
 
   onReload() {
     this.materials.reload();
   }
 
-  private appendDescriptions(materials: Material[]): MaterialWithDescription[] {
-    const categories = this.productCategories();
-    return materials.map((material) => ({
-      ...material,
-      catDes: categories.find((cat) => cat.category === material.category)?.description || '',
-    }));
+  protected categoryDescription(material: MaterialList, categories: ProductCategory[]): string {
+    return categories.find((cat) => cat.category === material.category)?.description || '';
+  }
+
+  #modelToFilter({ name, categories }: MaterialsFilterModel): MaterialsFilter {
+    return {
+      name: name || undefined,
+      categories: categories.length > 0 ? categories : undefined,
+      inactive: true,
+    };
   }
 }

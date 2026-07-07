@@ -1,44 +1,40 @@
-import { inject, Service } from '@angular/core';
-import { Material, MaterialPrice } from 'src/app/interfaces';
+import { computed, inject, Service } from '@angular/core';
+import { Material, MaterialCreate, MaterialPrice, MaterialUpdate } from 'src/app/interfaces';
 import { FilterInput, toFilterSignal } from 'src/app/library';
 import { MaterialsApiService } from 'src/app/services/prd-api/materials-api.service';
-
-export type MaterialWithDescription = Material & {
-  catDes: string;
-};
-
-export interface MaterialsFilter {
-  name?: string;
-  categories?: string[];
-}
+import { MaterialQuerySchema, MaterialsFilter } from '../schemas/materials.filter.schema';
+import { Observable } from 'rxjs';
+import { MaterialModel } from '../schemas/material-model.schema';
+import { SchemaPath } from '@angular/forms/signals';
 
 @Service()
 export class MaterialsService {
-  private api = inject(MaterialsApiService);
+  #api = inject(MaterialsApiService);
 
   getMaterialsResource(filter?: FilterInput<MaterialsFilter>) {
-    return this.api.materialsResource(toFilterSignal(filter));
+    const filterSignal = toFilterSignal(filter);
+    const query = computed(() => MaterialQuerySchema.encode(filterSignal()));
+    return this.#api.materialsResource(query);
   }
 
-  getMaterial(id: string): Promise<Material> {
-    return this.api.getOne(id);
+  getMaterial(id: string): Observable<Material> {
+    return this.#api.getOne(id);
   }
 
   getNamesForValidation(): Promise<string[]> {
-    return this.api.validatorData('name');
+    return this.#api.validatorData('name');
   }
 
-  updateMaterial(material: Partial<Material>): Promise<Material> {
-    const { _id: id, ...upd } = material;
-    if (!id) {
-      throw new Error('id not set');
-    }
-    return this.api.updateOne(id, upd);
+  updateMaterial(id: string, update: MaterialUpdate): Observable<Material> {
+    return this.#api.updateOne(id, update);
   }
 
-  insertMaterial(material: Partial<Material>): Promise<Material> {
-    const { _id, ...data } = material;
-    return this.api.insertOne(data);
+  insertMaterial(material: MaterialCreate): Observable<Material> {
+    return this.#api.insertOne(material);
+  }
+
+  isPropertyAvailable<K extends keyof Pick<MaterialModel, 'name'>>(schema: SchemaPath<MaterialModel[K]>, key: K): void {
+    this.#api.validate(schema, key);
   }
 
   newMaterialPrice(): MaterialPrice {
