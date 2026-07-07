@@ -1,4 +1,4 @@
-import { Material, MaterialCreate, MaterialPriceSchema, MaterialSchema, MaterialUpdate } from 'src/app/interfaces';
+import { Material, MaterialCreate, MaterialSchema, MaterialUpdate } from 'src/app/interfaces';
 import { nullableString, numberToString, optionalString, pickNotNull } from 'src/app/library';
 import { z } from 'zod';
 
@@ -36,5 +36,3 @@ export const newMaterialPrice: () => MaterialPriceModel = () => ({
   price: '',
   description: '',
 });
-
-

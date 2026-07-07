@@ -1,21 +1,20 @@
 <form [formRoot]="form" (reset)="$event.preventDefault(); onReset()">
   <app-simple-content-container buttons appViewSize>
     <ng-container appSimpleContentContainerToolbar>
-
-      <button matButton="elevated" [disabled]="form().valid()===false || form().dirty()===false || form().submitting()">
+      <button
+        matButton="elevated"
+        [disabled]="form().valid() === false || form().dirty() === false || form().submitting()"
+      >
         Saglabāt
       </button>
-      <button matButton type="reset" [disabled]="form().dirty()==false || form().submitting()" class="tertiary">
-        Atiestatīt </button>
+      <button matButton type="reset" [disabled]="form().dirty() == false || form().submitting()" class="tertiary">
+        Atiestatīt
+      </button>
     </ng-container>
-    Valid: {{form().valid()}}
-    Dirty: {{form().dirty()}}
-    Submitting: {{form().submitting()}}
+    Valid: {{ form().valid() }} Dirty: {{ form().dirty() }} Submitting: {{ form().submitting() }}
     <mat-card>
       <mat-card-header>
-        <mat-card-title>
-          Nosaukums
-        </mat-card-title>
+        <mat-card-title> Nosaukums </mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <section>
@@ -24,12 +23,12 @@
             <input matInput [formField]="form.name" />
             <mat-error>
               @for (error of form.name().errors(); track $index) {
-              {{ error.message }}
+                {{ error.message }}
               }
             </mat-error>
             <mat-hint>
               @if (form.name().disabled() === false) {
-              Vēlāk nebūs labojams
+                Vēlāk nebūs labojams
               }
             </mat-hint>
           </mat-form-field>
@@ -39,9 +38,7 @@
 
     <mat-card>
       <mat-card-header>
-        <mat-card-title>
-          Pamatinformācija
-        </mat-card-title>
+        <mat-card-title> Pamatinformācija </mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <section class="input-container">
@@ -50,9 +47,9 @@
             <mat-label> Grupa </mat-label>
             <mat-select [formField]="form.category">
               @for (category of categories(); track category.category) {
-              <mat-option [value]="category.category">
-                {{ category.description }}
-              </mat-option>
+                <mat-option [value]="category.category">
+                  {{ category.description }}
+                </mat-option>
               }
             </mat-select>
           </mat-form-field>
@@ -64,9 +61,9 @@
             <mat-label> Mērvienības </mat-label>
             <mat-select [formField]="form.units">
               @for (unit of activeUnits(); track unit.shortName) {
-              <mat-option [value]="unit.shortName">
-                {{ unit.description }}
-              </mat-option>
+                <mat-option [value]="unit.shortName">
+                  {{ unit.description }}
+                </mat-option>
               }
             </mat-select>
           </mat-form-field>
@@ -94,8 +91,12 @@
         <section>
           <mat-form-field>
             <mat-label> Fiksētā cena </mat-label>
-            <input matInput [formField]="form.fixedPrice" prdExpressionInput
-              #fixedPriceExpression="prdExpressionInput" />
+            <input
+              matInput
+              [formField]="form.fixedPrice"
+              prdExpressionInput
+              #fixedPriceExpression="prdExpressionInput"
+            />
             <span matTextSuffix>&nbsp;&euro;</span>
             <mat-hint>
               {{ fixedPriceExpression.calculatedUpdate() }}
@@ -110,8 +111,12 @@
       </mat-card-content>
 
       <mat-card-actions>
-        <button matButton="elevated" type="button" (click)="prices.onAddPrice()"
-          [disabled]="form().valid() === false || form().submitting()">
+        <button
+          matButton="elevated"
+          type="button"
+          (click)="prices.onAddPrice()"
+          [disabled]="form().valid() === false || form().submitting()"
+        >
           Pievienot
         </button>
       </mat-card-actions>
