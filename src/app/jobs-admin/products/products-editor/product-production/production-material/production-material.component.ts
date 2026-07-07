@@ -14,7 +14,7 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
-import { Material, ProductProductionStageMaterial } from 'src/app/interfaces';
+import { Material, MaterialList, ProductProductionStageMaterial } from 'src/app/interfaces';
 import { SelectDirective } from 'src/app/library/directives/select.directive';
 import { ProductsService } from 'src/app/services';
 import { MaterialUnitsDirective } from './material-units.directive';
@@ -48,7 +48,7 @@ export class ProductionMaterialComponent implements ControlValueAccessor, Valida
 
   form = this.#fb.array<MaterialGroup>([]);
 
-  materials = input<Material[]>([]);
+  materials = input<MaterialList[]>([]);
 
   trackByFn = (idx: number) => this.form.controls[idx];
 

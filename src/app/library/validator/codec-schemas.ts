@@ -35,7 +35,25 @@ export const optionalString = z.codec(z.string().optional(), z.string(), {
 export const optionalNumberToString = z.codec(z.number().optional(), z.string(), {
   decode: (value) => (typeof value === 'number' ? value.toString() : ''),
   encode: (value) => {
-    const num = Number.parseInt(value);
+    const num = Number(value);
     return Number.isFinite(num) ? num : undefined;
+  },
+});
+
+export const numberToString = z.codec(z.number(), z.string(), {
+  decode: (value) => (typeof value === 'number' ? value.toString() : ''),
+  encode: (value, ctx) => {
+    const num = Number(value);
+    if (Number.isFinite(num)) {
+      return num;
+    } else {
+      ctx.issues.push({
+        code: 'invalid_value',
+        input: value,
+        message: 'Nepareizs skaitļa formāts',
+        values: [num],
+      });
+      return z.NEVER;
+    }
   },
 });

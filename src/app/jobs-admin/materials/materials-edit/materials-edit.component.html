@@ -1,22 +1,19 @@
-<app-simple-form-container
-  buttons
-  appViewSize
-  [status]="formStatus()"
-  [isChanges]="changes()"
-  (save)="onSave()"
-  (resetForm)="onReset()"
->
-  <form [formGroup]="form">
+<app-simple-content-container buttons appViewSize>
+  <form [formRoot]="form">
     <h2>
       <mat-form-field class="full-width">
         <mat-label>Nosaukums</mat-label>
-        <input matInput formControlName="name" autocomplete="off" required />
-        @if (form.controls.name.hasError('required')) {
-          <mat-error> Nosaukums jāievada obligāti! </mat-error>
-        }
-        @if (form.controls.name.hasError('occupied')) {
-          <mat-error> Nosaukums jau tiek izmantots </mat-error>
-        }
+        <input matInput [formField]="form.name" />
+        <mat-error>
+          @for (error of form.name().errors(); track $index) {
+            {{ error.message }}
+          }
+        </mat-error>
+        <mat-hint>
+          @if (form.name().disabled() === false) {
+            Vēlāk nebūs labojams
+          }
+        </mat-hint>
       </mat-form-field>
     </h2>
 
@@ -26,7 +23,7 @@
           <!-- Grupa -->
           <mat-form-field class="full-width">
             <mat-label> Grupa </mat-label>
-            <mat-select formControlName="category" required>
+            <mat-select [formField]="form.category">
               @for (category of categories(); track category.category) {
                 <mat-option [value]="category.category">
                   {{ category.description }}
@@ -40,7 +37,7 @@
           <!-- Mērvienības -->
           <mat-form-field class="full-width">
             <mat-label> Mērvienības </mat-label>
-            <mat-select formControlName="units" required>
+            <mat-select [formField]="form.units">
               @for (unit of activeUnits(); track unit.shortName) {
                 <mat-option [value]="unit.shortName">
                   {{ unit.description }}
@@ -51,13 +48,13 @@
         </section>
 
         <section>
-          <mat-checkbox formControlName="inactive"> Neaktīvs </mat-checkbox>
+          <mat-checkbox [formField]="form.inactive"> Neaktīvs </mat-checkbox>
         </section>
 
         <section>
           <mat-form-field class="full-width">
             <mat-label> Apraksts </mat-label>
-            <textarea matInput formControlName="description"></textarea>
+            <textarea matInput [formField]="form.description"></textarea>
           </mat-form-field>
         </section>
       </mat-card-content>
@@ -72,20 +69,30 @@
         <section>
           <mat-form-field>
             <mat-label> Fiksētā cena </mat-label>
-            <input matInput type="number" formControlName="fixedPrice" />
+            <input
+              matInput
+              [formField]="form.fixedPrice"
+              prdExpressionInput
+              #fixedPriceExpression="prdExpressionInput"
+            />
             <span matTextSuffix>&nbsp;&euro;</span>
+            <mat-hint>
+              {{ fixedPriceExpression.calculatedUpdate() }}
+            </mat-hint>
           </mat-form-field>
         </section>
 
         <section>
-          <app-materials-prices #prices formControlName="prices" [units]="form.value.units ?? ''">
+          <app-materials-prices #prices [formField]="form.prices" [units]="form.units().value()">
           </app-materials-prices>
         </section>
       </mat-card-content>
 
       <mat-card-actions>
-        <button matButton="elevated" (click)="prices.onAddPrice()" [disabled]="!form.valid">Pievienot</button>
+        <button matButton="elevated" type="button" (click)="prices.onAddPrice()" [disabled]="form().valid() === false">
+          Pievienot
+        </button>
       </mat-card-actions>
     </mat-card>
   </form>
-</app-simple-form-container>
+</app-simple-content-container>
