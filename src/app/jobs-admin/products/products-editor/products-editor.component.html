@@ -102,26 +102,28 @@
         <app-paytraq-product formControlName="paytraqId" [productName]="form.value.name ?? ''"> </app-paytraq-product>
       </mat-expansion-panel>
 
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title> Ražošanas procesi </mat-panel-title>
-        </mat-expansion-panel-header>
+      @if (materials.hasValue()) {
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title> Ražošanas procesi </mat-panel-title>
+          </mat-expansion-panel-header>
 
-        <section>
-          <app-product-production
-            formControlName="productionStages"
-            [materials]="materials.value()"
-            [productionStages]="productionStages.value()"
-            #production
-          />
-        </section>
+          <section>
+            <app-product-production
+              formControlName="productionStages"
+              [materials]="materials.value()"
+              [productionStages]="productionStages.value()"
+              #production
+            />
+          </section>
 
-        <mat-action-row>
-          <button matMiniFab (click)="production.onNewProductionStage()" [disabled]="!form.valid">
-            <mat-icon> add </mat-icon>
-          </button>
-        </mat-action-row>
-      </mat-expansion-panel>
+          <mat-action-row>
+            <button matMiniFab (click)="production.onNewProductionStage()" [disabled]="!form.valid">
+              <mat-icon> add </mat-icon>
+            </button>
+          </mat-action-row>
+        </mat-expansion-panel>
+      }
     </mat-accordion>
   </form>
 </app-simple-form-container>

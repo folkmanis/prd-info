@@ -1,20 +1,38 @@
 import { z } from 'zod';
 
-export const MaterialPrice = z.object({
+export const MaterialPriceSchema = z.object({
   min: z.number(),
-  price: z.number().default(0),
-  description: z.string().nullish(),
+  price: z.number(),
+  description: z.string().optional(),
 });
-export type MaterialPrice = z.infer<typeof MaterialPrice>;
+export type MaterialPrice = z.infer<typeof MaterialPriceSchema>;
 
-export const Material = z.object({
+export const MaterialSchema = z.object({
   _id: z.string(),
   name: z.string(),
   units: z.string(),
   category: z.string(),
-  inactive: z.coerce.boolean().default(false),
-  prices: z.array(MaterialPrice).default([]),
-  fixedPrice: z.coerce.number().default(0),
-  description: z.string().nullish(),
+  inactive: z.boolean(),
+  prices: z.array(MaterialPriceSchema),
+  fixedPrice: z.number(),
+  description: z.string().optional(),
 });
-export type Material = z.infer<typeof Material>;
+export type Material = z.infer<typeof MaterialSchema>;
+
+export const MaterialListSchema = MaterialSchema.pick({
+  _id: true,
+  name: true,
+  description: true,
+  category: true,
+  inactive: true,
+  units: true,
+});
+export type MaterialList = z.infer<typeof MaterialListSchema>;
+
+export const MaterialCreateSchema = MaterialSchema.omit({ _id: true });
+export type MaterialCreate = z.infer<typeof MaterialCreateSchema>;
+
+export const MaterialUpdateSchema = z
+  .object({ ...MaterialCreateSchema.shape, description: z.string().nullable() })
+  .partial();
+export type MaterialUpdate = z.infer<typeof MaterialUpdateSchema>;

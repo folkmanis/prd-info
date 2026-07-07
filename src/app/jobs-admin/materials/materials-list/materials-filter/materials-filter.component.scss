@@ -2,12 +2,11 @@
     font-size: 0.75em;
     align-items: center;
     display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
 }
 
 .name {
     max-width: 200px;
-}
-
-.categories {
-    margin-left: 16px;
+    width: 100%;
 }
