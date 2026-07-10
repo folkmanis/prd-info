@@ -13,8 +13,8 @@
     <mat-cell *matCellDef="let price; index as idx">
       No&nbsp;
       <span [class.error]="isDuplicate(fieldTree[idx].min().errors())">
-        {{ price.min }}
-      </span>&nbsp;
+        {{ price.min }} </span
+      >&nbsp;
       {{ units() }}
       {{ fieldTree[idx]().errors() }}
     </mat-cell>
@@ -24,7 +24,7 @@
     <mat-cell *matCellDef="let price">
       {{ price.price | currency }}
       @if (units()) {
-      <span> /{{ units() }} </span>
+        <span> /{{ units() }} </span>
       }
     </mat-cell>
   </ng-container>

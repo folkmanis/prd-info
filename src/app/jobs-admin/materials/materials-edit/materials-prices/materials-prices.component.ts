@@ -30,7 +30,7 @@ export class MaterialsPricesComponent {
   async onAddPrice() {
     const newPrice = await this.#openEditor(newMaterialPrice());
     if (newPrice) {
-      this.fieldTree().value.update(value => [...value, newPrice].sort((a, b) => Number(a.min) - Number(b.min)));
+      this.fieldTree().value.update((value) => [...value, newPrice].sort((a, b) => Number(a.min) - Number(b.min)));
       this.fieldTree().markAsDirty();
     }
   }
@@ -39,13 +39,15 @@ export class MaterialsPricesComponent {
     const price = this.fieldTree[idx]().value();
     const result = await this.#openEditor(price);
     if (result) {
-      this.fieldTree().value.update(value => value.map((p, i) => i === idx ? result : p).sort((a, b) => Number(a.min) - Number(b.min)));
+      this.fieldTree().value.update((value) =>
+        value.map((p, i) => (i === idx ? result : p)).sort((a, b) => Number(a.min) - Number(b.min)),
+      );
       this.fieldTree().markAsDirty();
     }
   }
 
   protected onDeletePrice(idx: number) {
-    this.fieldTree().value.update(prices => prices.filter((_, i) => i !== idx));
+    this.fieldTree().value.update((prices) => prices.filter((_, i) => i !== idx));
     this.fieldTree().markAsDirty();
   }
 
@@ -61,7 +63,6 @@ export class MaterialsPricesComponent {
   }
 
   protected isDuplicate(errors: ValidationError[]): boolean {
-    return errors.some(err => err.kind === 'duplicate');
+    return errors.some((err) => err.kind === 'duplicate');
   }
-
 }
