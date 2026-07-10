@@ -6,12 +6,12 @@
         <input matInput [formField]="form.name" />
         <mat-error>
           @for (error of form.name().errors(); track $index) {
-            {{ error.message }}
+          {{ error.message }}
           }
         </mat-error>
         <mat-hint>
           @if (form.name().disabled() === false) {
-            Vēlāk nebūs labojams
+          Vēlāk nebūs labojams
           }
         </mat-hint>
       </mat-form-field>
@@ -25,9 +25,9 @@
             <mat-label> Grupa </mat-label>
             <mat-select [formField]="form.category">
               @for (category of categories(); track category.category) {
-                <mat-option [value]="category.category">
-                  {{ category.description }}
-                </mat-option>
+              <mat-option [value]="category.category">
+                {{ category.description }}
+              </mat-option>
               }
             </mat-select>
           </mat-form-field>
@@ -39,9 +39,9 @@
             <mat-label> Mērvienības </mat-label>
             <mat-select [formField]="form.units">
               @for (unit of activeUnits(); track unit.shortName) {
-                <mat-option [value]="unit.shortName">
-                  {{ unit.description }}
-                </mat-option>
+              <mat-option [value]="unit.shortName">
+                {{ unit.description }}
+              </mat-option>
               }
             </mat-select>
           </mat-form-field>
@@ -69,12 +69,8 @@
         <section>
           <mat-form-field>
             <mat-label> Fiksētā cena </mat-label>
-            <input
-              matInput
-              [formField]="form.fixedPrice"
-              prdExpressionInput
-              #fixedPriceExpression="prdExpressionInput"
-            />
+            <input matInput [formField]="form.fixedPrice" prdExpressionInput
+              #fixedPriceExpression="prdExpressionInput" />
             <span matTextSuffix>&nbsp;&euro;</span>
             <mat-hint>
               {{ fixedPriceExpression.calculatedUpdate() }}
@@ -83,7 +79,7 @@
         </section>
 
         <section>
-          <app-materials-prices #prices [formField]="form.prices" [units]="form.units().value()">
+          <app-materials-prices #prices [fieldTree]="form.prices" [units]="form.units().value()">
           </app-materials-prices>
         </section>
       </mat-card-content>

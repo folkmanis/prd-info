@@ -1,36 +1,35 @@
-<mat-dialog-content [formGroup]="priceControl">
-  <section>
-    <mat-form-field>
-      <mat-label> Skaits </mat-label>
-      <span matTextPrefix>No &nbsp;</span>
-      <input type="number" matInput formControlName="min" required />
-      <span matTextSuffix> {{ units }} </span>
-    </mat-form-field>
-  </section>
+<h2 mat-dialog-title>Materiāla cena</h2>
+<form [formRoot]="form">
+  <mat-dialog-content>
+    <section>
+      <mat-form-field>
+        <mat-label> Skaits </mat-label>
+        <span matTextPrefix>No &nbsp;</span>
+        <input matInput prdExpressionInput [formField]="form.min" #minInput="prdExpressionInput" />
+        <span matTextSuffix> {{ units }} </span>
+      </mat-form-field>
+    </section>
 
-  <section>
-    <mat-form-field>
-      <mat-label> Cena </mat-label>
-      <input type="number" matInput formControlName="price" required />
-      <span matTextSuffix>&nbsp; &euro;/{{ units }}</span>
-    </mat-form-field>
-  </section>
+    <section>
+      <mat-form-field>
+        <mat-label> Cena </mat-label>
+        <input matInput prdExpressionInput [formField]="form.price" #priceInput="prdExpressionInput" />
+        <span matTextSuffix>&nbsp; &euro;/{{ units }}</span>
+      </mat-form-field>
+    </section>
 
-  <section>
-    <mat-form-field>
-      <mat-label> Apraksts </mat-label>
-      <input matInput formControlName="description" />
-    </mat-form-field>
-  </section>
-</mat-dialog-content>
+    <section>
+      <mat-form-field>
+        <mat-label> Apraksts </mat-label>
+        <input matInput [formField]="form.description" />
+      </mat-form-field>
+    </section>
+  </mat-dialog-content>
 
-<mat-dialog-actions>
-  <button
-    matButton="elevated"
-    [disabled]="!priceControl.valid || priceControl.pristine"
-    [mat-dialog-close]="priceControl.value"
-  >
-    Saglabāt
-  </button>
-  <button matButton="elevated" class="tertiary" mat-dialog-close>Atcelt</button>
-</mat-dialog-actions>
+  <mat-dialog-actions>
+    <button matButton="elevated" [disabled]="form().valid() === false">
+      Saglabāt
+    </button>
+    <button matButton type="button" class="tertiary" mat-dialog-close> Atcelt </button>
+  </mat-dialog-actions>
+</form>

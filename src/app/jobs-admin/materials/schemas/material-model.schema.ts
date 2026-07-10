@@ -30,3 +30,11 @@ export function modelToMaterialUpdate(model: Partial<MaterialModel>): MaterialUp
   const update = MaterialModelSchema.partial().encode(model);
   return update;
 }
+
+export const newMaterialPrice: () => MaterialPriceModel = () => ({
+  min: '',
+  price: '',
+  description: '',
+});
+
+
