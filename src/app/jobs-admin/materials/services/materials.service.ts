@@ -37,14 +37,6 @@ export class MaterialsService {
     this.#api.validate(schema, key);
   }
 
-  newMaterialPrice(): MaterialPrice {
-    return {
-      min: 0,
-      price: 0,
-      description: '',
-    };
-  }
-
   newMaterial(): Material {
     return {
       _id: '',

@@ -1,98 +1,64 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, Input, input } from '@angular/core';
 import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-import { filter, Observable } from 'rxjs';
-import { MaterialPrice } from 'src/app/interfaces';
+import { filter, firstValueFrom, Observable } from 'rxjs';
 import { MaterialsService } from '../../services/materials.service';
 import { DialogData, MaterialsPriceDialogComponent } from '../materials-price-dialog/materials-price-dialog.component';
-import { MaterialsPricesDataSource } from './materials-prices-data-source';
+import { MaterialPriceModel, newMaterialPrice } from '../../schemas/material-model.schema';
+import { FieldTree } from '@angular/forms/signals';
 
 @Component({
   selector: 'app-materials-prices',
   templateUrl: './materials-prices.component.html',
   styleUrls: ['./materials-prices.component.scss'],
   imports: [MatTableModule, MatButtonModule, MatIconModule, CurrencyPipe],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: MaterialsPricesComponent,
-      multi: true,
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: MaterialsPricesComponent,
-      multi: true,
-    },
-  ],
 })
-export class MaterialsPricesComponent implements ControlValueAccessor, Validator {
+export class MaterialsPricesComponent {
   #dialogService = inject(MatDialog);
-  #materialsService = inject(MaterialsService);
 
-  dataSource = new MaterialsPricesDataSource();
-
-  displayedColumns = ['min', 'price', 'description', 'actions'];
-
-  disabled = false;
+  @Input({ required: true })
+  fieldTree!: FieldTree<MaterialPriceModel[]>;
 
   readonly units = input<string>('');
 
-  onTouchFn: () => void = () => {};
+  protected displayedColumns = ['min', 'price', 'description', 'actions'];
 
-  isDuplicate = (price: number): boolean => {
-    const dup: number[] | undefined = this.dataSource.errors?.duplicates;
-    return !!dup && dup.includes(price);
-  };
-
-  writeValue(obj: MaterialPrice[]): void {
-    this.dataSource.setValue(obj);
+  async onAddPrice() {
+    const newPrice = await this.#openEditor(newMaterialPrice());
+    if (newPrice) {
+      this.fieldTree().value.update(value => [...value, newPrice].sort((a, b) => Number(a.min) - Number(b.min)));
+    }
   }
 
-  registerOnChange(fn: any): void {
-    this.dataSource.valueChanges.subscribe(fn);
+  protected async onEditPrice(idx: number) {
+    const price = this.fieldTree[idx]().value();
+    const result = await this.#openEditor(price);
+    if (result) {
+      this.fieldTree().value.update(value => value.map((p, i) => i === idx ? result : p).sort((a, b) => Number(a.min) - Number(b.min)));
+    }
   }
 
-  registerOnTouched(fn: any): void {
-    this.onTouchFn = fn;
+  protected onDeletePrice(idx: number) {
+    this.fieldTree().value.update(prices => prices.filter((_, i) => i !== idx));
   }
 
-  setDisabledState(isDisabled: boolean): void {
-    this.disabled = isDisabled;
-  }
-
-  validate(): ValidationErrors | null {
-    return this.dataSource.errors;
-  }
-
-  onAddPrice() {
-    this.onTouchFn();
-    this.openEditor(this.#materialsService.newMaterialPrice()).subscribe((data) => {
-      this.dataSource.addPrice(data);
-    });
-  }
-
-  onEditPrice(value: MaterialPrice, idx: number) {
-    this.onTouchFn();
-    this.openEditor(value).subscribe((data) => this.dataSource.updatePrice(data, idx));
-  }
-
-  onDeletePrice(index: number) {
-    this.onTouchFn();
-    this.dataSource.deletePrice(index);
-  }
-
-  private openEditor(price: MaterialPrice): Observable<MaterialPrice> {
+  async #openEditor(price: MaterialPriceModel): Promise<MaterialPriceModel | undefined> {
     const data: DialogData = {
       value: price,
       units: this.units(),
     };
-    return this.#dialogService
-      .open<MaterialsPriceDialogComponent, DialogData, MaterialPrice>(MaterialsPriceDialogComponent, { data })
-      .afterClosed()
-      .pipe(filter((response) => !!response));
+    const response$ = this.#dialogService
+      .open<MaterialsPriceDialogComponent, DialogData, MaterialPriceModel>(MaterialsPriceDialogComponent, { data })
+      .afterClosed();
+    return firstValueFrom(response$);
   }
+
+  protected isDuplicate(idx: number): boolean {
+    return this.fieldTree[idx]().errors().some(err => err.kind === 'duplicate');
+  }
+
 }
