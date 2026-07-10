@@ -1,38 +1,4 @@
 import { Component, computed, effect, inject, input, linkedSignal, signal, untracked } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import {
-  AbstractControl,
-  AsyncValidatorFn,
-  FormBuilder,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { MatButton, MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatCheckbox, MatCheckboxModule } from '@angular/material/checkbox';
-import { MatOptionModule } from '@angular/material/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInput, MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { isEqual, pickBy } from 'lodash-es';
-import { Material, MaterialCreate, MaterialPrice, MaterialUpdate } from 'src/app/interfaces';
-import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
-import { navigateRelative } from 'src/app/library/navigation';
-import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
-import { ViewSizeDirective } from 'src/app/library/view-size';
-import { configuration } from 'src/app/services/config.provider';
-import { MaterialsListComponent } from '../materials-list/materials-list.component';
-import { MaterialsService } from '../services/materials.service';
-import { MaterialsPricesComponent } from './materials-prices/materials-prices.component';
-import { computedChanges } from 'src/app/library/signals';
-import { firstValueFrom } from 'rxjs';
-import {
-  MaterialModel,
-  materialToModel,
-  modelToMaterialCreate,
-  modelToMaterialUpdate,
-} from '../schemas/material-model.schema';
 import {
   applyEach,
   applyWhenValue,
@@ -44,16 +10,37 @@ import {
   required,
   SchemaPath,
   validate,
-  validateStandardSchema,
+  validateStandardSchema
 } from '@angular/forms/signals';
-import { z } from 'zod';
-import { updateCatching } from 'src/app/library/update-catching';
+import { MatButton } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatOptionModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { ExpressionInputDirective } from 'prd-cdk';
+import { firstValueFrom } from 'rxjs';
+import { Material } from 'src/app/interfaces';
+import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
+import { navigateRelative } from 'src/app/library/navigation';
+import { computedChanges } from 'src/app/library/signals';
 import { SimpleContentContainerComponent } from 'src/app/library/simple-form/simple-content-container/simple-content-container.component';
-
-function validateNumeric(path: SchemaPath<string>) {
-  validateStandardSchema(path, z.coerce.number().positive());
-}
+import { updateCatching } from 'src/app/library/update-catching';
+import { ViewSizeDirective } from 'src/app/library/view-size';
+import { configuration } from 'src/app/services/config.provider';
+import { z } from 'zod';
+import { MaterialsListComponent } from '../materials-list/materials-list.component';
+import {
+  MaterialModel,
+  materialToModel,
+  modelToMaterialCreate,
+  modelToMaterialUpdate,
+} from '../schemas/material-model.schema';
+import { MaterialsService } from '../services/materials.service';
+import { MaterialsPricesComponent } from './materials-prices/materials-prices.component';
+import { materialPrice, materialPrices } from './materials-prices/validate-materials-price';
+import { positiveNumericString } from 'src/app/library';
 
 @Component({
   selector: 'app-materials-edit',
@@ -115,15 +102,12 @@ export class MaterialsEditComponent implements CanComponentDeactivate {
       required(schema.units);
       required(schema.category);
       required(schema.fixedPrice);
-      validateStandardSchema(schema.fixedPrice, z.coerce.number().min(0));
       applyEach(schema.prices, (p) => {
-        required(p.min);
-        validateNumeric(p.min);
-        required(p.price);
-        validateNumeric(p.price);
+        materialPrice(p);
       });
-      validateNumeric(schema.fixedPrice);
+      positiveNumericString(schema.fixedPrice);
       this.#validateName(schema.name);
+      materialPrices(schema.prices);
     },
     {
       submission: {
