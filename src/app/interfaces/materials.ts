@@ -36,3 +36,13 @@ export const MaterialUpdateSchema = z
   .object({ ...MaterialCreateSchema.shape, description: z.string().nullable() })
   .partial();
 export type MaterialUpdate = z.infer<typeof MaterialUpdateSchema>;
+
+export const newMaterial: () => Material = () => ({
+  _id: '',
+  name: '',
+  units: '',
+  category: '',
+  inactive: false,
+  prices: [],
+  fixedPrice: 0,
+});

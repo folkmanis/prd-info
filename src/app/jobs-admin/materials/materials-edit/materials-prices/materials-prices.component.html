@@ -11,11 +11,12 @@
 
   <ng-container matColumnDef="min">
     <mat-cell *matCellDef="let price; index as idx">
-      No
-      <span [class.error]="isDuplicate(idx)">
+      No&nbsp;
+      <span [class.error]="isDuplicate(fieldTree[idx].min().errors())">
         {{ price.min }}
-      </span>
+      </span>&nbsp;
       {{ units() }}
+      {{ fieldTree[idx]().errors() }}
     </mat-cell>
   </ng-container>
 

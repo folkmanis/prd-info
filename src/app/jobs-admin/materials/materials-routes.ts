@@ -1,9 +1,9 @@
-import { inject } from '@angular/core';
 import { Route } from '@angular/router';
+import { newMaterial } from 'src/app/interfaces';
+import { canComponentDeactivate } from 'src/app/library/guards';
 import { MaterialsEditComponent } from './materials-edit/materials-edit.component';
 import { MaterialsListComponent } from './materials-list/materials-list.component';
 import { resolveMaterial } from './services/material-resolver';
-import { MaterialsService } from './services/materials.service';
 
 export default [
   {
@@ -14,8 +14,9 @@ export default [
         path: 'new',
         component: MaterialsEditComponent,
         resolve: {
-          material: () => inject(MaterialsService).newMaterial(),
+          material: newMaterial,
         },
+        canDeactivate: [canComponentDeactivate],
       },
       {
         path: ':id',
@@ -23,7 +24,7 @@ export default [
         resolve: {
           material: resolveMaterial,
         },
-        runGuardsAndResolvers: 'always',
+        canDeactivate: [canComponentDeactivate],
       },
     ],
   },
