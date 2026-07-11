@@ -26,11 +26,13 @@ function addressPackage(): AddressPackage {
     total: 0,
     gatavs: false,
     uzlime: false,
-  };
+  } as AddressPackage;
 
-  COLORS.forEach((color) => ({ ...obj, [color]: 0 }));
+  COLORS.forEach((color) => {
+    obj[color] = 0;
+  });
 
-  return obj as AddressPackage;
+  return obj;
 }
 
 type SelectedFields = Record<Colors, number> & {
@@ -41,12 +43,14 @@ function selectedFields(): SelectedFields {
   const obj = {
     kods: 0,
     adrese: '',
-  };
-  COLORS.forEach((color) => ({ ...obj, [color]: 0 }));
-  return obj as SelectedFields;
+  } as SelectedFields;
+  COLORS.forEach((color) => {
+    obj[color] = 0;
+  });
+  return obj;
 }
 
-export function rawArrayToAddressWithPackage(
+export function rowArrayToAddressWithPackage(
   rowArray: Array<string | number>[],
   columnMap: [number, ColumnNames][],
 ): AddressWithPackages[] {

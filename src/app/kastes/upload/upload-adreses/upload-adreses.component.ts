@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, Output, computed, effect, model, signal } from '@angular/core';
+import { Component, Output, Signal, computed, effect, model, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -9,7 +9,7 @@ import { MatTableModule } from '@angular/material/table';
 import { map } from 'rxjs';
 import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
 import { ColumnNames, TABLE_COLUMNS } from '../../services/column-names';
-import { rawArrayToAddressWithPackage } from '../../services/item-packing.utilities';
+import { rowArrayToAddressWithPackage } from '../../services/item-packing.utilities';
 import { DragDropDirective } from './drag-drop.directive';
 import { DragableDirective } from './dragable.directive';
 
@@ -32,8 +32,8 @@ export class UploadAdresesComponent {
   rowSelection = new SelectionModel<number>(true);
   columnSelection = new SelectionModel<number>(true);
 
-  selectedRows = toSignal(this.rowSelection.changed.pipe(map((change) => change.source)), {
-    initialValue: this.rowSelection,
+  selectedRows: Signal<number[]> = toSignal(this.rowSelection.changed.pipe(map(() => this.rowSelection.selected)), {
+    initialValue: this.rowSelection.selected,
   });
 
   adreses = model<Array<number | string>[]>([], { alias: 'data' });
@@ -71,11 +71,11 @@ export class UploadAdresesComponent {
 
   adresesPackages = computed(() => {
     const selectedRows = this.selectedRows();
-    if (this.assignedChips().length < TABLE_COLUMNS.length || this.selectedRows().isEmpty()) {
+    if (this.assignedChips().length < TABLE_COLUMNS.length || selectedRows.length === 0) {
       return null;
     }
-    const rows = this.adreses().filter((_, idx) => selectedRows.isSelected(idx));
-    return rawArrayToAddressWithPackage(rows, this.assignedChips());
+    const rows = this.adreses().filter((_, idx) => selectedRows.includes(idx));
+    return rowArrayToAddressWithPackage(rows, this.assignedChips());
   });
 
   @Output() adresesBox = toObservable(this.adresesPackages);
