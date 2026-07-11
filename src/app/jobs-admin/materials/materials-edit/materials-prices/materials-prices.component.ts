@@ -9,7 +9,7 @@ import { filter, firstValueFrom, Observable } from 'rxjs';
 import { MaterialsService } from '../../services/materials.service';
 import { DialogData, MaterialsPriceDialogComponent } from '../materials-price-dialog/materials-price-dialog.component';
 import { MaterialPriceModel, newMaterialPrice } from '../../schemas/material-model.schema';
-import { FieldTree } from '@angular/forms/signals';
+import { FieldTree, ValidationError } from '@angular/forms/signals';
 
 @Component({
   selector: 'app-materials-prices',
@@ -31,6 +31,7 @@ export class MaterialsPricesComponent {
     const newPrice = await this.#openEditor(newMaterialPrice());
     if (newPrice) {
       this.fieldTree().value.update(value => [...value, newPrice].sort((a, b) => Number(a.min) - Number(b.min)));
+      this.fieldTree().markAsDirty();
     }
   }
 
@@ -39,11 +40,13 @@ export class MaterialsPricesComponent {
     const result = await this.#openEditor(price);
     if (result) {
       this.fieldTree().value.update(value => value.map((p, i) => i === idx ? result : p).sort((a, b) => Number(a.min) - Number(b.min)));
+      this.fieldTree().markAsDirty();
     }
   }
 
   protected onDeletePrice(idx: number) {
     this.fieldTree().value.update(prices => prices.filter((_, i) => i !== idx));
+    this.fieldTree().markAsDirty();
   }
 
   async #openEditor(price: MaterialPriceModel): Promise<MaterialPriceModel | undefined> {
@@ -57,8 +60,8 @@ export class MaterialsPricesComponent {
     return firstValueFrom(response$);
   }
 
-  protected isDuplicate(idx: number): boolean {
-    return this.fieldTree[idx]().errors().some(err => err.kind === 'duplicate');
+  protected isDuplicate(errors: ValidationError[]): boolean {
+    return errors.some(err => err.kind === 'duplicate');
   }
 
 }

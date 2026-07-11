@@ -1,10 +1,13 @@
-section {
-    margin: 8px 0;
+form {
+    height: 100%;
 }
 
+mat-card {
+    margin: 16px;
+}
 
-mat-card:not(:first-of-type) {
-    margin-top: 16px;
+section {
+    margin: 8px 0;
 }
 
 mat-form-field.full-width {

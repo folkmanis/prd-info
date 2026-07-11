@@ -36,16 +36,4 @@ export class MaterialsService {
   isPropertyAvailable<K extends keyof Pick<MaterialModel, 'name'>>(schema: SchemaPath<MaterialModel[K]>, key: K): void {
     this.#api.validate(schema, key);
   }
-
-  newMaterial(): Material {
-    return {
-      _id: '',
-      name: '',
-      units: '',
-      category: '',
-      inactive: false,
-      prices: [],
-      fixedPrice: 0,
-    };
-  }
 }

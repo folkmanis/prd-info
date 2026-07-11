@@ -1,23 +1,48 @@
-<app-simple-content-container buttons appViewSize>
-  <form [formRoot]="form">
-    <h2>
-      <mat-form-field class="full-width">
-        <mat-label>Nosaukums</mat-label>
-        <input matInput [formField]="form.name" />
-        <mat-error>
-          @for (error of form.name().errors(); track $index) {
-          {{ error.message }}
-          }
-        </mat-error>
-        <mat-hint>
-          @if (form.name().disabled() === false) {
-          Vēlāk nebūs labojams
-          }
-        </mat-hint>
-      </mat-form-field>
-    </h2>
+<form [formRoot]="form" (reset)="$event.preventDefault(); onReset()">
+  <app-simple-content-container buttons appViewSize>
+    <ng-container appSimpleContentContainerToolbar>
+
+      <button matButton="elevated" [disabled]="form().valid()===false || form().dirty()===false || form().submitting()">
+        Saglabāt
+      </button>
+      <button matButton type="reset" [disabled]="form().dirty()==false || form().submitting()" class="tertiary">
+        Atiestatīt </button>
+    </ng-container>
+    Valid: {{form().valid()}}
+    Dirty: {{form().dirty()}}
+    Submitting: {{form().submitting()}}
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>
+          Nosaukums
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <section>
+          <mat-form-field class="full-width">
+            <mat-label>Nosaukums</mat-label>
+            <input matInput [formField]="form.name" />
+            <mat-error>
+              @for (error of form.name().errors(); track $index) {
+              {{ error.message }}
+              }
+            </mat-error>
+            <mat-hint>
+              @if (form.name().disabled() === false) {
+              Vēlāk nebūs labojams
+              }
+            </mat-hint>
+          </mat-form-field>
+        </section>
+      </mat-card-content>
+    </mat-card>
 
     <mat-card>
+      <mat-card-header>
+        <mat-card-title>
+          Pamatinformācija
+        </mat-card-title>
+      </mat-card-header>
       <mat-card-content>
         <section class="input-container">
           <!-- Grupa -->
@@ -85,10 +110,11 @@
       </mat-card-content>
 
       <mat-card-actions>
-        <button matButton="elevated" type="button" (click)="prices.onAddPrice()" [disabled]="form().valid() === false">
+        <button matButton="elevated" type="button" (click)="prices.onAddPrice()"
+          [disabled]="form().valid() === false || form().submitting()">
           Pievienot
         </button>
       </mat-card-actions>
     </mat-card>
-  </form>
-</app-simple-content-container>
+  </app-simple-content-container>
+</form>

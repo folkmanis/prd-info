@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input, linkedSignal, signal, untracked } from '@angular/core';
+import { Component, computed, effect, inject, input, linkedSignal, untracked } from '@angular/core';
 import {
   applyEach,
   applyWhenValue,
@@ -9,8 +9,6 @@ import {
   FormRoot,
   required,
   SchemaPath,
-  validate,
-  validateStandardSchema
 } from '@angular/forms/signals';
 import { MatButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -22,6 +20,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { ExpressionInputDirective } from 'prd-cdk';
 import { firstValueFrom } from 'rxjs';
 import { Material } from 'src/app/interfaces';
+import { positiveNumericString } from 'src/app/library';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { navigateRelative } from 'src/app/library/navigation';
 import { computedChanges } from 'src/app/library/signals';
@@ -29,7 +28,6 @@ import { SimpleContentContainerComponent } from 'src/app/library/simple-form/sim
 import { updateCatching } from 'src/app/library/update-catching';
 import { ViewSizeDirective } from 'src/app/library/view-size';
 import { configuration } from 'src/app/services/config.provider';
-import { z } from 'zod';
 import { MaterialsListComponent } from '../materials-list/materials-list.component';
 import {
   MaterialModel,
@@ -40,14 +38,16 @@ import {
 import { MaterialsService } from '../services/materials.service';
 import { MaterialsPricesComponent } from './materials-prices/materials-prices.component';
 import { materialPrice, materialPrices } from './materials-prices/validate-materials-price';
-import { positiveNumericString } from 'src/app/library';
 
 @Component({
   selector: 'app-materials-edit',
   templateUrl: './materials-edit.component.html',
   styleUrls: ['./materials-edit.component.scss'],
   imports: [
+    FormRoot,
+    FormField,
     SimpleContentContainerComponent,
+    ViewSizeDirective,
     MaterialsPricesComponent,
     MatFormFieldModule,
     MatInput,
@@ -56,32 +56,25 @@ import { positiveNumericString } from 'src/app/library';
     MatButton,
     MatSelectModule,
     MatCheckbox,
-    ViewSizeDirective,
-    FormField,
     ExpressionInputDirective,
-    FormRoot,
   ],
 })
 export class MaterialsEditComponent implements CanComponentDeactivate {
   #materialsService = inject(MaterialsService);
 
-  #listComppoent = inject(MaterialsListComponent);
+  #listComponent = inject(MaterialsListComponent);
 
   #navigate = navigateRelative();
 
-  protected busy = signal(false);
-  #update = updateCatching(this.busy);
+  #update = updateCatching();
 
   #units = configuration('jobs', 'productUnits');
-  activeUnits = computed(() => this.#units().filter((unit) => !unit.disabled));
-
+  protected activeUnits = computed(() => this.#units().filter((unit) => !unit.disabled));
   protected categories = configuration('jobs', 'productCategories');
 
   materialInput = input.required<Material>({ alias: 'material' });
   #initialMaterial = linkedSignal(() => this.materialInput());
-  #initialModel = linkedSignal(() => {
-    return materialToModel(this.#initialMaterial());
-  });
+  #initialModel = linkedSignal(() => materialToModel(this.#initialMaterial()));
   #formModel = linkedSignal(() => this.#initialModel());
 
   constructor() {
@@ -118,6 +111,7 @@ export class MaterialsEditComponent implements CanComponentDeactivate {
           } else {
             await this.#createMaterial(f);
           }
+          this.#listComponent.onReload();
         },
         ignoreValidators: 'none',
       },
@@ -125,7 +119,7 @@ export class MaterialsEditComponent implements CanComponentDeactivate {
   );
 
   protected onReset() {
-    this.form().reset(this.#initialModel());
+    this.form().reset(materialToModel(this.#initialMaterial()));
   }
 
   canDeactivate(): boolean {
@@ -144,7 +138,6 @@ export class MaterialsEditComponent implements CanComponentDeactivate {
     await this.#update(async (message) => {
       const material = modelToMaterialCreate(field().value());
       const { _id: id } = await firstValueFrom(this.#materialsService.insertMaterial(material));
-      this.#listComppoent.onReload();
       this.form().reset();
       await this.#navigate(['..', id]);
       message(`Materiāla veids izveidots`);
@@ -154,12 +147,13 @@ export class MaterialsEditComponent implements CanComponentDeactivate {
   async #updateMaterial(id: string, field: FieldTree<MaterialModel>) {
     await this.#update(async (message) => {
       const modelUpdate = computedChanges(field().value(), this.#initialModel(), { includeNull: true });
-      if (!modelUpdate) return;
-      const materialUpdate = modelToMaterialUpdate(modelUpdate);
-      const updated = await firstValueFrom(this.#materialsService.updateMaterial(id, materialUpdate));
-      this.#initialMaterial.set(updated);
+      if (modelUpdate) {
+        const materialUpdate = modelToMaterialUpdate(modelUpdate);
+        const updated = await firstValueFrom(this.#materialsService.updateMaterial(id, materialUpdate));
+        this.#initialMaterial.set(updated);
+        message(`Izmaiņas saglabātas`);
+      }
       this.form().reset();
-      message(`Izmaiņas saglabātas`);
     });
   }
 }
