@@ -16,12 +16,12 @@ export class XmfArchiveUploadApiService {
   #http = inject(HttpClient);
 
   getHistory(params: Params = {}): Promise<XmfUploadProgress[]> {
-    const data$ = this.#http.get<Record<string, any>[]>(this.#path, new HttpOptions(params).cacheable());
+    const data$ = this.#http.get<Record<string, unknown>[]>(this.#path, new HttpOptions(params).cacheable());
     return this.#validator.validateArrayAsync(XmfUploadProgress, data$);
   }
 
   uploadArchive(formData: FormData): Promise<XmfUploadProgress> {
-    const data$ = this.#http.post<Record<string, any>>(this.#path, formData);
+    const data$ = this.#http.post(this.#path, formData);
     return this.#validator.validateAsync(XmfUploadProgress, data$);
   }
 }
