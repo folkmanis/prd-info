@@ -1,13 +1,17 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, inject, Input, input } from '@angular/core';
+import { Component, inject, Input, input } from '@angular/core';
 import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { filter, firstValueFrom, Observable } from 'rxjs';
+import { filter, firstValueFrom, Observable } from 'rxjs';
 import { MaterialsService } from '../../services/materials.service';
 import { DialogData, MaterialsPriceDialogComponent } from '../materials-price-dialog/materials-price-dialog.component';
+import { MaterialPriceModel, newMaterialPrice } from '../../schemas/material-model.schema';
+import { FieldTree, ValidationError } from '@angular/forms/signals';
 import { MaterialPriceModel, newMaterialPrice } from '../../schemas/material-model.schema';
 import { FieldTree, ValidationError } from '@angular/forms/signals';
 
@@ -18,7 +22,11 @@ import { FieldTree, ValidationError } from '@angular/forms/signals';
   imports: [MatTableModule, MatButtonModule, MatIconModule, CurrencyPipe],
 })
 export class MaterialsPricesComponent {
+export class MaterialsPricesComponent {
   #dialogService = inject(MatDialog);
+
+  @Input({ required: true })
+  fieldTree!: FieldTree<MaterialPriceModel[]>;
 
   @Input({ required: true })
   fieldTree!: FieldTree<MaterialPriceModel[]>;
@@ -52,6 +60,7 @@ export class MaterialsPricesComponent {
   }
 
   async #openEditor(price: MaterialPriceModel): Promise<MaterialPriceModel | undefined> {
+  async #openEditor(price: MaterialPriceModel): Promise<MaterialPriceModel | undefined> {
     const data: DialogData = {
       value: price,
       units: this.units(),
@@ -65,4 +74,5 @@ export class MaterialsPricesComponent {
   protected isDuplicate(errors: ValidationError[]): boolean {
     return errors.some((err) => err.kind === 'duplicate');
   }
+
 }

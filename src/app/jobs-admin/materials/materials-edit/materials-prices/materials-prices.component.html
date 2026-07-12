@@ -1,11 +1,16 @@
 <mat-table [dataSource]="fieldTree().value()" class="app-table" fixedLayout>
   <mat-row *matRowDef="let price; columns: displayedColumns; index as idx" (click)="onEditPrice(idx)"></mat-row>
+<mat-table [dataSource]="fieldTree().value()" class="app-table" fixedLayout>
+  <mat-row *matRowDef="let price; columns: displayedColumns; index as idx" (click)="onEditPrice(idx)"></mat-row>
 
   <ng-container matColumnDef="actions">
     <mat-cell *matCellDef="let price; index as idx">
       <button matIconButton type="button" class="warn" (click)="onDeletePrice(idx); $event.stopPropagation()">
+    <mat-cell *matCellDef="let price; index as idx">
+      <button matIconButton type="button" class="warn" (click)="onDeletePrice(idx); $event.stopPropagation()">
         <mat-icon> delete_outline </mat-icon>
       </button>
+    </mat-cell>
     </mat-cell>
   </ng-container>
 
@@ -18,20 +23,26 @@
       {{ units() }}
       {{ fieldTree[idx]().errors() }}
     </mat-cell>
+      {{ fieldTree[idx]().errors() }}
+    </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="price">
     <mat-cell *matCellDef="let price">
+    <mat-cell *matCellDef="let price">
       {{ price.price | currency }}
       @if (units()) {
-        <span> /{{ units() }} </span>
+      <span> /{{ units() }} </span>
       }
+    </mat-cell>
     </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="description">
     <mat-cell *matCellDef="let price">
+    <mat-cell *matCellDef="let price">
       {{ price.description }}
+    </mat-cell>
     </mat-cell>
   </ng-container>
 </mat-table>
