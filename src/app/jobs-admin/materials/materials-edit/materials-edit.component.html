@@ -11,7 +11,7 @@
         Atiestatīt
       </button>
     </ng-container>
-    Valid: {{ form().valid() }} Dirty: {{ form().dirty() }} Submitting: {{ form().submitting() }}
+
     <mat-card>
       <mat-card-header>
         <mat-card-title> Nosaukums </mat-card-title>
@@ -46,11 +46,10 @@
           <mat-form-field class="full-width">
             <mat-label> Grupa </mat-label>
             <mat-select [formField]="form.category">
-            <mat-select [formField]="form.category">
               @for (category of categories(); track category.category) {
-              <mat-option [value]="category.category">
-                {{ category.description }}
-              </mat-option>
+                <mat-option [value]="category.category">
+                  {{ category.description }}
+                </mat-option>
               }
             </mat-select>
           </mat-form-field>
@@ -61,11 +60,10 @@
           <mat-form-field class="full-width">
             <mat-label> Mērvienības </mat-label>
             <mat-select [formField]="form.units">
-            <mat-select [formField]="form.units">
               @for (unit of activeUnits(); track unit.shortName) {
-              <mat-option [value]="unit.shortName">
-                {{ unit.description }}
-              </mat-option>
+                <mat-option [value]="unit.shortName">
+                  {{ unit.description }}
+                </mat-option>
               }
             </mat-select>
           </mat-form-field>
@@ -73,13 +71,11 @@
 
         <section>
           <mat-checkbox [formField]="form.inactive"> Neaktīvs </mat-checkbox>
-          <mat-checkbox [formField]="form.inactive"> Neaktīvs </mat-checkbox>
         </section>
 
         <section>
           <mat-form-field class="full-width">
             <mat-label> Apraksts </mat-label>
-            <textarea matInput [formField]="form.description"></textarea>
             <textarea matInput [formField]="form.description"></textarea>
           </mat-form-field>
         </section>
@@ -105,16 +101,11 @@
             <mat-hint>
               {{ fixedPriceExpression.calculatedUpdate() }}
             </mat-hint>
-            <mat-hint>
-              {{ fixedPriceExpression.calculatedUpdate() }}
-            </mat-hint>
           </mat-form-field>
         </section>
 
         <section>
-          <app-materials-prices #prices [fieldTree]="form.prices" [units]="form.units().value()">
-          <app-materials-prices #prices [fieldTree]="form.prices" [units]="form.units().value()">
-          </app-materials-prices>
+          <app-materials-prices #prices [fieldTree]="form.prices" [units]="form.units().value()" />
         </section>
       </mat-card-content>
 
