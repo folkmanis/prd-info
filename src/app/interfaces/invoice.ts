@@ -1,6 +1,6 @@
 import { Job, JobProduct } from 'src/app/jobs';
 import { z } from 'zod';
-import { isoDateToDate } from '../library/validator';
+import { isoDateToDate, optionalString } from '../library/validator';
 import { CustomerSchema } from './customer';
 
 export const InvoiceJobSchema = Job.pick({
@@ -80,9 +80,12 @@ export const InvoiceTableSchema = InvoiceSchema.pick({
 });
 export type InvoiceTable = z.infer<typeof InvoiceTableSchema>;
 
-export interface InvoicesFilter {
-  customer?: string;
-}
+export const InvoicesFilterSchema = z
+  .object({
+    customer: optionalString,
+  })
+  .partial();
+export type InvoicesFilter = z.infer<typeof InvoicesFilterSchema>;
 
 export interface ProductTotals {
   _id: string;

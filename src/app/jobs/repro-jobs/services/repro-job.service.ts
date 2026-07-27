@@ -27,9 +27,8 @@ import {
 import { MaterialsService } from 'src/app/jobs-admin/materials/services/materials.service';
 import { ProductsService } from 'src/app/services';
 import { ProductionStagesService } from 'src/app/services/production-stages.service';
-import { Job, JobFilter, JobProduct } from '../../interfaces';
+import { Job, JobProduct } from '../../interfaces';
 import { JobService } from '../../services/job.service';
-import { FilterInput } from 'src/app/library';
 
 export type PartialJob = Pick<Job, 'jobId'> & Partial<Job>;
 
@@ -46,10 +45,6 @@ export class ReproJobService {
   #materialsService = inject(MaterialsService);
 
   #jobTemplate: JobTemplate | null = null;
-
-  getJobsResource(filterInput: FilterInput<JobFilter>) {
-    return this.#jobService.getJobsResource(filterInput);
-  }
 
   setJobTemplate(template: JobTemplate) {
     this.#jobTemplate = template;

@@ -5,7 +5,7 @@ import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/c
 import { JobService } from '../../services/job.service';
 import { parseJobId } from './parse-job-id';
 
-const invalidJobIdMessage = (id: any) => `Nepareizs darba numurs ${id}`;
+const invalidJobIdMessage = (id: unknown) => `Nepareizs darba numurs ${id}`;
 const notFoundMessage = (id: number, err: Error) => `Darbs nr. ${id} nav atrasts. Kļūda ${err.message}`;
 
 export const resolveReproJob: ResolveFn<Omit<Job, 'jobId'>> = async (route) => {

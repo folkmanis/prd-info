@@ -59,7 +59,7 @@ export class NewInvoiceComponent {
 
   #jobsFilter = computed(() => ({
     customer: this.customer(),
-    invoice: 0 as 0,
+    invoice: false,
     limit: 1000,
   }));
 

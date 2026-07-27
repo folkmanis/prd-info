@@ -8,7 +8,8 @@ import { MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { isEqual } from 'lodash-es';
 import { SimpleListContainerComponent } from 'src/app/library/simple-form';
-import { CustomersQuerySchema, CustomersService } from 'src/app/services';
+import { CustomersService } from 'src/app/services';
+import { CustomersQuerySchema } from 'src/app/services/prd-api/customers-api.service';
 
 @Component({
   selector: 'app-customers-list',

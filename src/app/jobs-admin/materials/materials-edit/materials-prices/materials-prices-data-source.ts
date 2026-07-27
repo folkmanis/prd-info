@@ -44,7 +44,9 @@ export class MaterialsPricesDataSource implements DataSource<MaterialPrice> {
   }
 
   get errors() {
-    const duplicates = this.data.value.filter((el, idx, a) => a.findIndex((m) => m.min === el.min) !== idx).map((ctrl) => ctrl.min);
+    const duplicates = this.data.value
+      .filter((el, idx, a) => a.findIndex((m) => m.min === el.min) !== idx)
+      .map((ctrl) => ctrl.min);
     return duplicates.length === 0 ? null : { duplicates };
   }
 }

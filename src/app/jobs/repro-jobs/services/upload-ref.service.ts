@@ -89,7 +89,7 @@ export class UploadRefService {
     this.uploadRef = uploadRef;
   }
 
-  setSavedFile(fileNames: string[], afterAddedToJob: Observable<any>) {
+  setSavedFile(fileNames: string[], afterAddedToJob: Observable<unknown>) {
     const messages: FileUploadMessage[] = fileNames.map((name) => ({
       type: FileUploadEventType.UploadFinish,
       id: name,

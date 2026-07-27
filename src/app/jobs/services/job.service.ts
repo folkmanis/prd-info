@@ -1,16 +1,10 @@
-import { computed, inject, Service, Signal } from '@angular/core';
+import { HttpResourceRef } from '@angular/common/http';
+import { inject, Service } from '@angular/core';
 import { endOfDay } from 'date-fns';
-import { FilterInput, toFilterSignal } from 'src/app/library';
-import { Job, JobFilter, jobFilterToRequestQuery, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
-import { JobsApiService, JobUpdateParams } from './jobs-api.service';
 import { Observable } from 'rxjs';
-
-export function filterInputToRequestQuery(
-  filter: FilterInput<JobFilter | undefined>,
-): Signal<Record<string, any> | undefined> {
-  const filterSignal = toFilterSignal(filter);
-  return computed(() => jobFilterToRequestQuery(filterSignal()));
-}
+import { FilterInput, toFilterSignal } from 'src/app/library';
+import { Job, JobFilter, JobPartial, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
+import { JobsApiService, JobUpdateParams } from './jobs-api.service';
 
 @Service()
 export class JobService {
@@ -53,16 +47,18 @@ export class JobService {
     return this.#api.getOne(jobId);
   }
 
-  getJobsResource(filter: FilterInput<JobFilter | undefined>) {
-    return this.#api.jobsResource(filterInputToRequestQuery(filter));
+  getJobsResource(filter: FilterInput<JobFilter | undefined>): HttpResourceRef<JobPartial[] | undefined> {
+    return this.#api.jobsResource(toFilterSignal(filter));
   }
 
-  getJobsUnwindedResource(filter: FilterInput<JobFilter | undefined>) {
-    return this.#api.jobsUnwindedResource(filterInputToRequestQuery(filter));
+  getJobsUnwindedResource(
+    filter: FilterInput<JobFilter | undefined>,
+  ): HttpResourceRef<JobUnwindedPartial[] | undefined> {
+    return this.#api.jobsUnwindedResource(toFilterSignal(filter));
   }
 
-  getJobListUnwinded(filter: FilterInput<JobFilter> = {}): Promise<JobUnwindedPartial[]> {
-    return this.#api.getAllUnwinded(filterInputToRequestQuery(filter));
+  getJobListUnwinded(filter: JobFilter = {}): Promise<JobUnwindedPartial[]> {
+    return this.#api.getAllUnwinded(filter);
   }
 
   getJobsWithoutInvoicesTotals(): Observable<JobsWithoutInvoicesTotals[]> {

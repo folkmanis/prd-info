@@ -133,7 +133,6 @@ export class RouteTripsComponent {
     let date = 1;
     for (const trip of this.trips()) {
       const d = trip.date.getDate();
-      console.log(d);
       if (d > date) {
         date = d;
       }

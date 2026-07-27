@@ -1,42 +1,35 @@
-import { httpResource } from '@angular/common/http';
-import { inject, Service, Signal } from '@angular/core';
-import { LogRecordSchema } from 'src/app/admin/logfile/services/logfile-record';
+import { httpResource, HttpResourceRef } from '@angular/common/http';
+import { Service, Signal } from '@angular/core';
+import { LogFilter, LogFilterSchema, LogRecord, LogRecordSchema } from 'src/app/admin/logfile/services/logfile-record';
 import { getAppParams } from 'src/app/app-params';
-import { ValidatorService } from 'src/app/library';
-import { HttpOptions, httpResponseRequest } from 'src/app/library/http';
+import { httpFilter } from 'src/app/library';
+import { httpParams, httpResponseRequest } from 'src/app/library/http';
 import { z } from 'zod';
 
 @Service()
 export class LogfileApiService {
   #path = getAppParams().apiPath + 'logging/';
-  #validator = inject(ValidatorService);
 
-  logResource(filter: Signal<Record<string, any> | null>) {
+  logResource(filter: Signal<LogFilter | undefined>): HttpResourceRef<LogRecord[] | undefined> {
     return httpResource(
       () => {
         const params = filter();
-        if (params === null) {
-          return undefined;
+        if (params) {
+          return httpResponseRequest(this.#path, httpFilter(LogFilterSchema, params));
         } else {
-          return httpResponseRequest(this.#path, new HttpOptions(params));
+          return undefined;
         }
       },
       {
-        parse: this.#validator.arrayValidatorFn(LogRecordSchema),
+        parse: LogRecordSchema.array().parse,
       },
     );
   }
 
-  datesGroupsResource(level: Signal<number | null>) {
-    return httpResource(
-      () =>
-        typeof level() === 'number'
-          ? httpResponseRequest(this.#path + 'dates-groups', new HttpOptions({ level: level() }))
-          : undefined,
-      {
-        parse: this.#validator.arrayValidatorFn(z.coerce.date()),
-        defaultValue: [],
-      },
-    );
+  datesGroupsResource(level: Signal<number>): HttpResourceRef<Date[]> {
+    return httpResource(() => httpResponseRequest(this.#path + 'dates-groups', httpParams({ level: level() })), {
+      parse: z.coerce.date().array().parse,
+      defaultValue: [],
+    });
   }
 }

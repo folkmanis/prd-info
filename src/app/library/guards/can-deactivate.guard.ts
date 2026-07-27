@@ -17,5 +17,7 @@ export const canComponentDeactivate: CanDeactivateFn<CanComponentDeactivate> = (
 
   const cD = component.canDeactivate();
 
-  return (typeof cD === 'boolean' ? of(cD) : from(cD)).pipe(switchMap((can) => (can ? of(can) : dialog.discardChanges())));
+  return (typeof cD === 'boolean' ? of(cD) : from(cD)).pipe(
+    switchMap((can) => (can ? of(can) : dialog.discardChanges())),
+  );
 };

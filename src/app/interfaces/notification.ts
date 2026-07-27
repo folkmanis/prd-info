@@ -10,7 +10,7 @@ export type ModulesWithNotifications = 'jobs' | 'system';
 
 export interface NotificationBase {
   module: ModulesWithNotifications;
-  payload: any;
+  payload: unknown;
   timestamp: Date;
   instanceId?: string;
 }

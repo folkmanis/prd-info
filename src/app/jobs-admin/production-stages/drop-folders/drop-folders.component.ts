@@ -66,6 +66,7 @@ export class DropFoldersComponent implements ControlValueAccessor, Validator {
     validators: [this.duplicateDefaultValidator()],
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   touchFn: () => void = () => {};
 
   pathCompare: (o1: string[], o2: string[]) => boolean = isEqual;
@@ -81,6 +82,7 @@ export class DropFoldersComponent implements ControlValueAccessor, Validator {
     this.#chDetector.markForCheck();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   registerOnChange(fn: any): void {
     this.form.valueChanges.subscribe(fn);
   }
@@ -135,6 +137,7 @@ export class DropFoldersComponent implements ControlValueAccessor, Validator {
   private duplicateDefaultValidator(): ValidatorFn {
     return (control: AbstractControl<DropFolderForm>) => {
       if (control instanceof FormArray) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const defaults = control.value?.filter((val: any) => val.customers?.includes('**'));
         return defaults.length > 1 ? { duplicateDefaults: defaults } : null;
       }

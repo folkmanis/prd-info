@@ -30,13 +30,13 @@ export const jobMesageDataSchema = z.object({
 });
 
 export class JobMessageData implements MessageData, z.infer<typeof jobMesageDataSchema> {
-  action: 'ftpUpload' = 'ftpUpload';
+  readonly action = 'ftpUpload';
   operation: FsOperations = 'add';
   path: string[] = [];
 
   ftpUsers: MessageFtpUser[] = [];
 
-  constructor(obj: Record<string, any> = {}) {
+  constructor(obj: Record<string, unknown> = {}) {
     Object.assign(this, obj);
   }
 

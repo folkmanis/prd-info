@@ -67,6 +67,7 @@ export class ReproProductsEditorComponent implements ControlValueAccessor, Valid
 
   productsControl = new FormArray<FormControl<NullableType<JobProduct> | null>>([]);
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   onTouched: () => void = () => {};
 
   writeValue(obj: JobProduct[] | null): void {
@@ -82,7 +83,7 @@ export class ReproProductsEditorComponent implements ControlValueAccessor, Valid
     this.onTouched = fn;
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (value: unknown) => void): void {
     this.productsControl.valueChanges.subscribe(fn);
   }
 

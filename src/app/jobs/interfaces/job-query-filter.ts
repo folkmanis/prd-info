@@ -1,75 +1,32 @@
 import { ParamMap } from '@angular/router';
-import { JOB_CATEGORIES, JobCategories } from './job-categories';
+import { isoDateToDate, stringToArray, stringToInt } from 'src/app/library';
 import { z } from 'zod';
-import { pickNotNull } from 'src/app/library';
-import { formatISO } from 'date-fns';
+import { JOB_CATEGORIES } from './job-categories';
 
 export const JobFilterSchema = z
   .object({
-    fromDate: z.coerce.date(),
-    toDate: z.coerce.date(),
+    fromDate: isoDateToDate,
+    toDate: isoDateToDate,
     customer: z.string(),
     name: z.string(),
-    invoice: z.union([z.literal(0), z.literal(1)]),
-    jobStatus: z.array(z.number()),
-    jobsId: z.array(z.number()),
+    invoice: z.stringbool({ truthy: ['1'], falsy: ['0'] }),
+    jobStatus: stringToArray(z.number()).default([10, 20]),
+    jobsId: stringToArray(z.number()),
     productsName: z.string(),
     category: JOB_CATEGORIES,
+    unwindProducts: z.stringbool({ truthy: ['1'], falsy: ['0'] }),
+    start: stringToInt,
+    limit: stringToInt,
   })
   .partial();
-
 export type JobFilter = z.infer<typeof JobFilterSchema>;
 
 export function queryParamsToJobFilter(queryParams: ParamMap): JobFilter {
-  const filter: JobFilter = {
-    jobStatus: [10, 20],
-  };
-
-  if (queryParams.has('fromDate')) {
-    filter.fromDate = new Date(queryParams.get('fromDate')!);
-  }
-  if (queryParams.has('toDate')) {
-    filter.toDate = new Date(queryParams.get('toDate')!);
-  }
-  if (queryParams.has('customer')) {
-    filter.customer = queryParams.get('customer')!;
-  }
-  if (queryParams.has('name')) {
-    filter.name = queryParams.get('name')!;
-  }
-  if (queryParams.has('category')) {
-    filter.category = queryParams.get('category') as JobCategories;
-  }
-  if (queryParams.has('jobsId')) {
-    const jobsId = queryParams.getAll('jobsId');
-    filter.jobsId = [jobsId].map((n) => +n).filter((n) => !isNaN(n));
-  }
-  if (queryParams.has('productsName')) {
-    filter.productsName = queryParams.get('productsName')!;
-  }
-  if (queryParams.has('invoice')) {
-    filter.invoice = queryParams.get('invoice') ? 1 : 0;
-  }
-  if (queryParams.has('jobStatus')) {
-    const jobStatus = queryParams.getAll('jobStatus');
-    filter.jobStatus = jobStatus
-      .flatMap((n) => n.split(','))
-      .map((n) => +n)
-      .filter((n) => !isNaN(n));
-  }
-  return filter;
+  return JobFilterSchema.parse(queryParams);
 }
 
-export function jobFilterToRequestQuery<T extends JobFilter | undefined>(filter: T): Record<string, any> | undefined {
-  if (!filter) {
-    return undefined;
-  }
-  const query = {
-    ...filter,
-    jobsId: filter.jobsId ? filter.jobsId.join(',') : undefined,
-    jobStatus: filter.jobStatus ? filter.jobStatus.join(',') : undefined,
-    fromDate: filter.fromDate ? formatISO(filter.fromDate, { representation: 'date' }) : undefined,
-    toDate: filter.toDate ? formatISO(filter.toDate, { representation: 'date' }) : undefined,
-  };
-  return pickNotNull(query);
+export function jobFilterToRequestQuery(
+  filter?: z.infer<typeof JobFilterSchema>,
+): z.input<typeof JobFilterSchema> | undefined {
+  return JobFilterSchema.optional().encode(filter);
 }

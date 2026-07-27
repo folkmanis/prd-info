@@ -6,7 +6,7 @@
   <mat-card-content>
     <div>Nomest šeit!</div>
     <div>
-      @if (file) {
+      @if (file(); as file) {
         <span> {{ file.name }} // {{ file.size | filesize }} </span>
       }
     </div>
@@ -15,7 +15,7 @@
   <mat-card-actions>
     <button matButton (click)="fileInput.click()" [disabled]="busy()">Atvērt</button>
     <input hidden (change)="onFileSelected($event)" #fileInput type="file" accept=".dbd" />
-    <button matButton="elevated" (click)="onUpload()" [disabled]="file === null || busy()">Apstrādāt!</button>
+    <button matButton="elevated" (click)="onUpload()" [disabled]="file() === null || busy()">Apstrādāt!</button>
   </mat-card-actions>
 
   <mat-card-footer>
@@ -23,4 +23,6 @@
   </mat-card-footer>
 </mat-card>
 
-<app-tabula [history]="history$ | async" scroll-to-top />
+@if (history.hasValue()) {
+  <app-tabula [history]="history.value()" scroll-to-top />
+}

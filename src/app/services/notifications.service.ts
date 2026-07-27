@@ -6,7 +6,7 @@ import { LoginService } from 'src/app/login';
 import { getAppParams } from '../app-params';
 
 interface WsEvent {
-  event?: 'auth';
+  event?: 'auth' | 'subs' | 'unsubs';
   module?: ModulesWithNotifications;
   data: {
     token: string;
@@ -19,7 +19,7 @@ export class NotificationsService {
   private document = inject(DOCUMENT);
   private loginService = inject(LoginService);
 
-  openObserver$: ReplaySubject<Event> = new ReplaySubject(1);
+  openObserver$ = new ReplaySubject<Event>(1);
 
   wsNotifications = new WsAuthSubject<Notification | WsEvent>({
     url: this.wsUrl(),
@@ -36,7 +36,7 @@ export class NotificationsService {
       }),
       unsubMsg: () => ({
         event: 'unsubs',
-        data: { module },
+        data: { module, token: '' },
       }),
       messageFilter: (data) => data.module === module,
       tokenFn: () => this.loginService.sessionToken(),

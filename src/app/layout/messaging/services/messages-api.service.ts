@@ -1,57 +1,33 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, map } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
-import { ValidatorService } from 'src/app/library';
-import { HttpOptions } from 'src/app/library/http';
-import { z } from 'zod';
-import { JobMessageData, Message, XmfUploadMessageData } from '../interfaces';
+import { pluckDeletedCount, pluckModifiedCount } from 'src/app/interfaces';
+import { validatorFn } from 'src/app/library';
+import { Message } from '../interfaces';
 
 @Service()
 export class MessagesApiService {
   #path = getAppParams('apiPath') + 'messages/';
-  #validator = inject(ValidatorService);
   #http = inject(HttpClient);
 
-  async getAllMessages(): Promise<Message[]> {
-    const data = await firstValueFrom(this.#http.get<Record<string, any>[]>(this.#path, new HttpOptions()));
-    const messages = data.map((message) => this.#addDataType(message));
-    return this.#validator.validateArray(Message, messages);
+  getAllMessages(): Promise<Message[]> {
+    const data$ = this.#http.get(this.#path).pipe(map(validatorFn(Message.array())));
+    return firstValueFrom(data$);
   }
 
-  async setOneMessageRead(id: string): Promise<Message> {
-    const data = await firstValueFrom(
-      this.#http.patch<Record<string, any>>(this.#path + 'read/' + id, new HttpOptions()),
-    );
-    const message = this.#addDataType(data);
-    return this.#validator.validate(Message, message);
+  setOneMessageRead(id: string): Promise<Message> {
+    const data$ = this.#http.patch(this.#path + 'read/' + id, {}).pipe(map(validatorFn(Message)));
+    return firstValueFrom(data$);
   }
 
-  async setAllMessagesRead(): Promise<number> {
-    const data$ = this.#http.patch<{ modifiedCount: number }>(this.#path + 'read', new HttpOptions());
-    const obj = await this.#validator.validateAsync(z.object({ modifiedCount: z.number() }), data$);
-    return obj.modifiedCount;
+  setAllMessagesRead(): Promise<number> {
+    const data$ = this.#http.patch(this.#path + 'read', {}).pipe(pluckModifiedCount());
+    return firstValueFrom(data$);
   }
 
-  async deleteMessage(id: string): Promise<number> {
-    const data$ = this.#http.delete<{ deletedCount: 0 | 1 }>(this.#path + id, new HttpOptions());
-    const obj = await this.#validator.validateAsync(z.object({ deletedCount: z.number() }), data$);
-    return obj.deletedCount;
-  }
-
-  #addDataType(message: Record<string, any>) {
-    switch (message.module) {
-      case 'jobs':
-        return {
-          ...message,
-          data: new JobMessageData(message.data),
-        };
-      case 'xmf-upload':
-        return {
-          ...message,
-          data: new XmfUploadMessageData(message.data),
-        };
-    }
-    return message;
+  deleteMessage(id: string): Promise<number> {
+    const data$ = this.#http.delete(this.#path + id).pipe(pluckDeletedCount());
+    return firstValueFrom(data$);
   }
 }

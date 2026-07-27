@@ -3,7 +3,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { SimpleListContainerComponent } from 'src/app/library/simple-form';
-import { UsersFilter, UsersService } from '../users.service';
+import { UsersService } from '../users.service';
 
 @Component({
   selector: 'app-users-list',
@@ -16,13 +16,7 @@ export class UsersListComponent {
 
   protected name = signal('');
 
-  protected filter = computed(() => {
-    const filter: UsersFilter = {};
-    if (this.name()) {
-      filter.name = this.name().trim();
-    }
-    return filter;
-  });
+  protected filter = computed(() => ({ name: this.name().trim() || undefined }));
 
   protected users = inject(UsersService).getUsersResource(this.filter);
 

@@ -11,7 +11,7 @@ export class IfViewSizeDirective extends ViewSizeBase {
     this.setViewSize(value);
   }
 
-  @Input('appIfViewSizeElse') set elseTemplate(value: TemplateRef<any> | null) {
+  @Input('appIfViewSizeElse') set elseTemplate(value: TemplateRef<unknown> | null) {
     this.setElseTemplate(value);
   }
 }

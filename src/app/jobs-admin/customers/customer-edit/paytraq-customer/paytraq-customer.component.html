@@ -1,9 +1,0 @@
-<app-paytraq-search-header [(search)]="search" (submitSearch)="onSearchClient()" [disabled]="searchDisabled()">
-  <button matButton (click)="onClearValue()" [disabled]="!value()?.paytraqId">ATVIENOT</button>
-</app-paytraq-search-header>
-
-<div>
-  @if (clients(); as clientsArray) {
-    <app-paytraq-customer-table [clients]="clientsArray" (clientSelected)="onClientSelected($event)" />
-  }
-</div>

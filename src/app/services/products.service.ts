@@ -11,13 +11,13 @@ import {
 import { ProductsApiService, ProductsFilter } from 'src/app/services/prd-api/products-api.service';
 import { assertNotNull, FilterInput, toFilterSignal } from '../library';
 import { HttpResourceRef } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, Observable, of } from 'rxjs';
 
 @Service()
 export class ProductsService {
   private api = inject(ProductsApiService);
 
-  getProductsResource(filterSignal?: FilterInput<ProductsFilter | undefined>) {
+  getProductsResource(filterSignal?: FilterInput<ProductsFilter>) {
     return this.api.productsResource(toFilterSignal(filterSignal));
   }
 
@@ -41,12 +41,8 @@ export class ProductsService {
     return this.api.getOneByName(name);
   }
 
-  async productsCustomer(customer: string): Promise<CustomerProduct[]> {
-    try {
-      return await this.api.productsCustomer(customer);
-    } catch (error) {
-      return [];
-    }
+  productsCustomer(customer: string): Observable<CustomerProduct[]> {
+    return this.api.productsCustomer(customer).pipe(catchError(() => of([] as CustomerProduct[])));
   }
 
   productsCustomerResource(name: Signal<string | undefined>) {

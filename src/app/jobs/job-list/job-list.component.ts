@@ -42,7 +42,7 @@ export class JobListComponent {
 
   highlited: string | null = null;
 
-  onJobFilter(filter: JobFilter) {
-    this.#userPreferencesService.patchUserPreferences({ jobListFilter: filter });
+  onJobFilter(jobListFilter: JobFilter) {
+    this.#userPreferencesService.patchUserPreferences({ jobListFilter });
   }
 }

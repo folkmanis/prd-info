@@ -2,11 +2,7 @@ import { inject, Service } from '@angular/core';
 import { filter, from, Observable, switchMap, toArray } from 'rxjs';
 import { CreateProductionStage, DropFolder, ProductionStage, UpdateProductionStage } from 'src/app/interfaces';
 import { assertNotNull, FilterInput, toFilterSignal } from '../library';
-import { ProductionStageApiService } from './prd-api/production-stage-api.service';
-
-interface ProductionStagesFilter {
-  name?: string;
-}
+import { ProductionStageApiService, ProductionStagesFilter } from './prd-api/production-stage-api.service';
 
 @Service()
 export class ProductionStagesService {

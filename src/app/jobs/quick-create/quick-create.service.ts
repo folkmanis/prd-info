@@ -2,14 +2,13 @@ import { inject, Service, Signal } from '@angular/core';
 import { assertNotNull, FilterInput } from 'src/app/library';
 import { ProductsService } from 'src/app/services';
 import { JobCreate, JobFilter } from '../interfaces';
-import { filterInputToRequestQuery } from '../services/job.service';
-import { JobsApiService } from '../services/jobs-api.service';
+import { JobService } from '../services/job.service';
 import { JobsUserPreferencesService } from '../services/jobs-user-preferences.service';
 
 @Service()
 export class QuickCreateService {
   #productsService = inject(ProductsService);
-  #jobsApi = inject(JobsApiService);
+  #jobService = inject(JobService);
   #preferencesService = inject(JobsUserPreferencesService);
 
   productResource(id: Signal<string | undefined>) {
@@ -21,11 +20,11 @@ export class QuickCreateService {
   }
 
   jobsResource(filter: FilterInput<JobFilter | undefined>) {
-    return this.#jobsApi.jobsUnwindedResource(filterInputToRequestQuery(filter));
+    return this.#jobService.getJobsUnwindedResource(filter);
   }
 
   async saveJob(job: JobCreate) {
-    const inserted = await this.#jobsApi.insertOne(job, {});
+    const inserted = await this.#jobService.newJob(job);
     this.#updatePreferences(job);
     return inserted;
   }

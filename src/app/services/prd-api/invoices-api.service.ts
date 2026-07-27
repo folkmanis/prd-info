@@ -1,7 +1,7 @@
-import { HttpClient, httpResource } from '@angular/common/http';
+import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http';
 import { inject, Service, Signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
-import { firstValueFrom } from 'rxjs';
+import { Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import {
   Invoice,
@@ -9,52 +9,52 @@ import {
   InvoiceCreateSchema,
   InvoiceForReport,
   InvoiceForReportSchema,
+  InvoicesFilter,
+  InvoicesFilterSchema,
+  InvoiceTable,
   InvoiceTableSchema,
   InvoiceUpdateSchema,
+  pluckDeletedCount,
 } from 'src/app/interfaces';
-import { ValidatorService } from 'src/app/library';
-import { HttpOptions, httpResponseRequest } from 'src/app/library/http';
-import { z } from 'zod';
+import { httpFilterSignal, validateAsync, validatorFn } from 'src/app/library';
+import { cacheable, httpResponseRequest } from 'src/app/library/http';
 
 @Service()
 export class InvoicesApiService {
   readonly #path = getAppParams('apiPath') + 'invoices/';
   #http = inject(HttpClient);
-  #validator = inject(ValidatorService);
 
   getOne(id: string): Promise<InvoiceForReport> {
-    const data$ = this.#http.get(this.#path + id, new HttpOptions().cacheable());
-    return this.#validator.validateAsync(InvoiceForReportSchema, data$);
+    const data$ = this.#http.get(this.#path + id, cacheable());
+    return validateAsync(InvoiceForReportSchema, data$);
   }
 
-  invoicesResource(params: Signal<Record<string, any>>) {
-    return httpResource(() => httpResponseRequest(this.#path, new HttpOptions(params()).cacheable()), {
-      parse: this.#validator.arrayValidatorFn(InvoiceTableSchema),
+  invoicesResource(filter: Signal<InvoicesFilter | undefined>): HttpResourceRef<InvoiceTable[] | undefined> {
+    const params = httpFilterSignal(InvoicesFilterSchema, filter);
+    return httpResource(() => httpResponseRequest(this.#path, params().cacheable()), {
+      parse: validatorFn(InvoiceTableSchema.array()),
       equal: isEqual,
     });
   }
 
   createInvoice(params: InvoiceCreate): Promise<InvoiceForReport> {
     const body = InvoiceCreateSchema.encode(params);
-    const data$ = this.#http.put(this.#path, body, new HttpOptions());
-    return this.#validator.validateAsync(InvoiceForReportSchema, data$);
+    const data$ = this.#http.put(this.#path, body);
+    return validateAsync(InvoiceForReportSchema, data$);
   }
 
   updateOne(id: string, data: Partial<Invoice>): Promise<InvoiceForReport> {
     const body = InvoiceUpdateSchema.encode(data);
-    const data$ = this.#http.patch(this.#path + id, body, new HttpOptions());
-    return this.#validator.validateAsync(InvoiceForReportSchema, data$);
+    const data$ = this.#http.patch(this.#path + id, body);
+    return validateAsync(InvoiceForReportSchema, data$);
   }
 
-  async deleteOne(id: string): Promise<{ deletedCount: number }> {
-    const data$ = this.#http.delete<{ deletedCount: number }>(this.#path + id, new HttpOptions());
-    return this.#validator.validateAsync(z.object({ deletedCount: z.number() }), data$);
+  deleteOne(id: string): Observable<number> {
+    return this.#http.delete(this.#path + id).pipe(pluckDeletedCount());
   }
 
-  getReport(data: InvoiceForReport): Promise<Blob> {
+  getReport(data: InvoiceForReport): Observable<Blob> {
     const body = InvoiceForReportSchema.encode(data);
-
-    const data$ = this.#http.put(this.#path + 'report', body, { responseType: 'blob' });
-    return firstValueFrom(data$);
+    return this.#http.put(this.#path + 'report', body, { responseType: 'blob' });
   }
 }

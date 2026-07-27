@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { disabled, form, FormField, FormRoot, readonly, required } from '@angular/forms/signals';
+import { disabled, form, FormField, FormRoot, required } from '@angular/forms/signals';
 import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,

@@ -78,15 +78,16 @@ export class JobFormComponent implements ControlValueAccessor, Validator {
 
   customerProducts$ = this.form.controls.customer.valueChanges.pipe(this.jobService.customerProducts());
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   writeValue(obj: any): void {
     this.form.reset(obj, { emitEvent: false });
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (value: unknown) => void): void {
     this.form.valueChanges.subscribe(fn);
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.form.events.pipe(filter((event) => event instanceof TouchedChangeEvent)).subscribe(fn);
   }
 

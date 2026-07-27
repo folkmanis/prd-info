@@ -1,4 +1,6 @@
-import { Service, inject } from '@angular/core';
+import { HttpResourceRef } from '@angular/common/http';
+import { inject, Service } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { XmfUploadProgress } from '../interfaces/xmf-upload-progress';
 import { XmfArchiveUploadApiService } from './xmf-archive-upload-api.service';
 
@@ -6,12 +8,12 @@ import { XmfArchiveUploadApiService } from './xmf-archive-upload-api.service';
 export class XmfUploadService {
   private api = inject(XmfArchiveUploadApiService);
 
-  getHistory(): Promise<XmfUploadProgress[]> {
-    return this.api.getHistory();
+  getHistory(): HttpResourceRef<XmfUploadProgress[] | undefined> {
+    return this.api.getHistoryResource();
   }
 
   postFile(formData: FormData): Promise<XmfUploadProgress> {
-    return this.api.uploadArchive(formData);
+    return firstValueFrom(this.api.uploadArchive(formData));
   }
 
   validateFile(fl: File): boolean {

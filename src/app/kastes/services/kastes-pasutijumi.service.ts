@@ -3,12 +3,8 @@ import { Observable, firstValueFrom, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Veikals, VeikalsUpload } from '../interfaces';
 import { KastesJobPartial } from '../interfaces/kastes-job-partial';
-import { KastesApiService } from './kastes-api.service';
+import { KastesApiService, KastesJobFilter } from './kastes-api.service';
 import { KastesJob } from 'src/app/jobs';
-
-export interface KastesJobFilter {
-  name?: string;
-}
 
 @Service()
 export class KastesPasutijumiService {
@@ -42,7 +38,7 @@ export class KastesPasutijumiService {
     return this.api.postFirestoreUpload(pasutijumsId);
   }
 
-  copyFromFirestore(pasutijumsId: number) {
+  copyFromFirestore(pasutijumsId: number): Observable<number> {
     return this.api.postFirestoreDownload(pasutijumsId);
   }
 
@@ -55,7 +51,7 @@ export class KastesPasutijumiService {
     return this.api.parseXlsx(form).pipe(map((data) => this.normalizeTable(data)));
   }
 
-  private normalizeTable(data: any[][]): Array<string | number>[] {
+  private normalizeTable(data: unknown[][]): (string | number)[][] {
     const width = data.reduce((acc, row) => (row.length > acc ? row.length : acc), 0);
     return data
       .filter((row) => row.length > 0)

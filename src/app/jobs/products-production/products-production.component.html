@@ -7,7 +7,7 @@
     </div>
     <app-products-table
       [data]="value"
-      [sortString]="query.sort"
+      [sortString]="query.sort ?? 'name,1'"
       (sortStringChange)="onSort($event)"
       [totals]="totals()"
       [(selection)]="selection"

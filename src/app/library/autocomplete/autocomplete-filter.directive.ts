@@ -8,17 +8,18 @@ import { computed, Directive, input, signal } from '@angular/core';
   },
 })
 export class AutocompleteFilterDirective {
-  values = input.required<string[]>({ alias: 'appAutocompleteFilter' });
-
-  options = computed(() => {
-    const input = this.#inputValue()?.toUpperCase() ?? '';
-    return this.values().filter((p) => p.toUpperCase().includes(input));
-  });
+  autocompleteValues = input.required<string[]>({ alias: 'appAutocompleteFilter' });
 
   #inputValue = signal('');
 
-  protected onInput(event: any) {
-    this.#inputValue.set(event.target.value);
+  options = computed(() => {
+    const i = this.#inputValue()?.toUpperCase() ?? '';
+    return this.autocompleteValues().filter((p) => p.toUpperCase().includes(i));
+  });
+
+  protected onInput(event: Event) {
+    const target = event.target as HTMLInputElement;
+    this.#inputValue.set(target.value);
   }
 
   reset() {

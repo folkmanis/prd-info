@@ -7,7 +7,7 @@
       >
         Saglabāt
       </button>
-      <button matButton type="reset" [disabled]="form().dirty() == false || form().submitting()" class="tertiary">
+      <button matButton type="reset" [disabled]="form().dirty() === false || form().submitting()" class="tertiary">
         Atiestatīt
       </button>
     </ng-container>

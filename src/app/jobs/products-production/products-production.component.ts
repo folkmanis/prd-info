@@ -1,15 +1,16 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { MatAnchor, MatButton } from '@angular/material/button';
+import { notNullOrThrow } from 'src/app/library';
 import { LoginService } from 'src/app/login';
 import { CustomersService } from 'src/app/services';
 import { ScrollTopDirective } from '../../library/scroll-to-top/scroll-top.directive';
 import { JobsProduction } from '../interfaces';
-import { ProductsFilterComponent, JobsProductionFilter } from './products-filter/products-filter.component';
+import { FilterUpdate, ProductsFilterComponent } from './products-filter/products-filter.component';
 import { ProductsTableComponent } from './products-table/products-table.component';
 import { ProductsProductionService } from './services/products-production.service';
 import { Totals } from './services/totals';
-import { MatAnchor, MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'app-products-production',
@@ -42,27 +43,24 @@ export class ProductsProductionComponent {
     });
   }
 
-  onSort(sort: string) {
-    const query = this.query();
-    if (query) {
-      this.#service.setSavedQuery({
-        ...query,
-        sort,
-      });
-    }
+  onSort(sort: string | undefined) {
+    const query = notNullOrThrow(this.query());
+    this.#service.setSavedQuery({
+      ...query,
+      sort,
+    });
   }
 
-  async onFilter(filter: JobsProductionFilter | undefined) {
-    const query = this.query();
-    if (query && filter) {
-      this.#service.setSavedQuery({
-        ...query,
-        ...filter,
-      });
-    }
+  async onFilter(filter: FilterUpdate) {
+    const { sort } = notNullOrThrow(this.query());
+    this.#service.setSavedQuery({
+      sort,
+      ...filter,
+    });
   }
 
   openPrintReport() {
-    window.open(this.#service.getReportURL(this.query()), '_blank', 'noopener,noreferrer');
+    const query = notNullOrThrow(this.query());
+    window.open(this.#service.getReportURL(query), '_blank', 'noopener,noreferrer');
   }
 }

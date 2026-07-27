@@ -6,6 +6,8 @@ import { resolveCatching } from 'src/app/library/guards';
 import { notNullOrThrow } from 'src/app/library';
 
 export const resolveEquipment: ResolveFn<Equipment> = (route, state) => {
-  const id = notNullOrThrow(route.paramMap.get('id'));
-  return resolveCatching(state.url, () => inject(EquipmentService).getOne(id));
+  return resolveCatching(state.url, () => {
+    const id = notNullOrThrow(route.paramMap.get('id'));
+    return inject(EquipmentService).getOne(id);
+  });
 };

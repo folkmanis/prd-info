@@ -53,10 +53,14 @@ export class JobSelectionTableComponent<D extends JobSelectionTableData> {
 
   displayedColumns = computed(() => this.setDisplayedColumns(this.disabled(), this.large()));
 
-  isNumber = (value: any) => !isNaN(value);
+  isNumber = (value: unknown) => typeof value === 'number' && !isNaN(value);
 
   toggleAll() {
-    this.isAllSelected() ? this.deselectAll() : this.selectAll();
+    if (this.isAllSelected()) {
+      this.deselectAll();
+    } else {
+      this.selectAll();
+    }
   }
 
   selectAll(): void {

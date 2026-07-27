@@ -37,7 +37,7 @@ export class MonthlyConsumptionComponent {
   protected selectionForm = form(this.selectionModel, (schema) => {
     required(schema.vehicle);
     required(schema.year);
-    disabled(schema.year, ({ stateOf }) => stateOf(schema.vehicle).invalid());
+    disabled(schema.year, { when: ({ stateOf }) => stateOf(schema.vehicle).invalid() });
   });
 
   protected vehicleResource = this.#vehiclesService.getVehicleResource(computed(() => this.selectionModel().vehicle));

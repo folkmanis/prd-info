@@ -9,7 +9,7 @@ export class RouterLinkWithReturnDirective extends RouterLink implements OnChang
   private localRouter = inject(Router);
 
   @Input('appRouterLinkWithReturn')
-  set appRouterLinkWithReturn(commandsOrUrlTree: any[] | string | UrlTree | null | undefined) {
+  set appRouterLinkWithReturn(commandsOrUrlTree: unknown[] | string | UrlTree | null | undefined) {
     this.routerLink = commandsOrUrlTree;
   }
 

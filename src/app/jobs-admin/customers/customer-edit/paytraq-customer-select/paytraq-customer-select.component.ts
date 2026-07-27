@@ -1,4 +1,4 @@
-import { Component, Inject, input, linkedSignal, model, output, signal } from '@angular/core';
+import { Component, inject, model, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -34,16 +34,15 @@ export interface PaytraqCustomerSelectDialogData {
 export class PaytraqCustomerSelectComponent {
   protected busy = signal(false);
   #update = updateCatching(this.busy);
+  #data = inject<PaytraqCustomerSelectDialogData>(MAT_DIALOG_DATA);
 
-  protected name = model(this.data.name);
+  protected name = model(this.#data.name);
 
   protected clients = signal([] as PaytraqClient[]);
 
-  constructor(@Inject(MAT_DIALOG_DATA) private data: PaytraqCustomerSelectDialogData) {}
-
   async onSearch() {
     this.#update(async () => {
-      const result = await firstValueFrom(this.data.searchFn(this.name()));
+      const result = await firstValueFrom(this.#data.searchFn(this.name()));
       this.clients.set(result);
     });
   }

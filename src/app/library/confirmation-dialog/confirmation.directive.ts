@@ -1,6 +1,5 @@
 import { Directive, inject, input, output } from '@angular/core';
 import { ConfirmationDialogService } from './confirmation-dialog.service';
-import { firstValueFrom } from 'rxjs';
 
 @Directive({
   selector: '[appConfirmation]',
@@ -9,7 +8,7 @@ import { firstValueFrom } from 'rxjs';
   },
 })
 export class ConfirmationDirective {
-  type = input<'delete' | 'discard' | any>(undefined, { alias: 'appConfirmation' });
+  type = input<'delete' | 'discard' | unknown>(undefined, { alias: 'appConfirmation' });
 
   message = input<string>('Apstipriniet', { alias: 'appConfirmationMessage' });
 
@@ -26,11 +25,11 @@ export class ConfirmationDirective {
         break;
 
       case 'discard':
-        result = await firstValueFrom(this.#confirmationService.discardChanges());
+        result = await this.#confirmationService.discardChanges();
         break;
 
       default:
-        result = await firstValueFrom(this.#confirmationService.confirm(this.message()));
+        result = await this.#confirmationService.confirm(this.message());
         break;
     }
     if (result) {

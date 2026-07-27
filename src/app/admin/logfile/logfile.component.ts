@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, signal, Signal, untracked } from '@angular/core';
+import { Component, computed, inject, linkedSignal, signal, Signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,8 +8,15 @@ import { LogLevelComponent } from './log-filter/log-level/log-level.component';
 import { LogfileTableComponent } from './logfile-table/logfile-table.component';
 import { validDate } from './services/log-dates-utils';
 import { LOG_LEVELS } from './services/log-levels';
-import { createLogQueryFilter, LogQueryFilter } from './services/logfile-record';
+import { LogFilter } from './services/logfile-record';
 import { LogfileService } from './services/logfile.service';
+
+const logFilter = (logDate: Date | undefined, logLevel: number): LogFilter | undefined =>
+  logDate && {
+    level: logLevel,
+    dateFrom: logDate,
+    dateTo: logDate,
+  };
 
 @Component({
   selector: 'app-logfile',
@@ -29,31 +36,17 @@ export class LogfileComponent {
 
   protected logLevel = signal(LOG_LEVELS.slice(-1)[0][0]);
 
-  protected logDate = signal(new Date());
+  protected logDate = linkedSignal<Date[], Date | undefined>({
+    source: () => this.availableDates.value(),
+    computation: (availableDates, previous) => validDate(previous?.value, availableDates),
+  });
 
-  protected logFilter: Signal<LogQueryFilter> = computed(
-    () => {
-      return createLogQueryFilter(this.logLevel(), this.logDate());
-    },
-    { equal: isEqual },
-  );
+  protected logFilter: Signal<LogFilter | undefined> = computed(() => logFilter(this.logDate(), this.logLevel()), {
+    equal: isEqual,
+  });
 
+  protected availableDates = this.#service.getDatesGroupSnapshot(this.logLevel);
   protected log = this.#service.getLogfileResource(this.logFilter);
-
-  protected availableDates = this.#service.getDatesGroupResource(this.logLevel);
-
-  constructor() {
-    effect(() => {
-      const availableDates = this.availableDates.value();
-      const logDate = untracked(this.logDate);
-      this.logDate.set(validDate(logDate, availableDates));
-    });
-
-    effect(() => {
-      this.logLevel();
-      this.availableDates.reload();
-    });
-  }
 
   protected onReload() {
     this.log.reload();

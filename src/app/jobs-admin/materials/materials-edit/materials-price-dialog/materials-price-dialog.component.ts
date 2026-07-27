@@ -17,11 +17,7 @@ export interface DialogData {
   selector: 'app-materials-price-dialog',
   templateUrl: './materials-price-dialog.component.html',
   styleUrls: ['./materials-price-dialog.component.scss'],
-  imports: [
-    FormField,
-    ExpressionInputDirective,
-    FormRoot,
-    MatDialogModule, MatFormFieldModule, MatButton, MatInput],
+  imports: [FormField, ExpressionInputDirective, FormRoot, MatDialogModule, MatFormFieldModule, MatButton, MatInput],
 })
 export class MaterialsPriceDialogComponent {
   #data = inject<DialogData>(MAT_DIALOG_DATA);
@@ -30,16 +26,19 @@ export class MaterialsPriceDialogComponent {
   protected units: string = this.#data.units;
 
   #formModel = signal(this.#data.value);
-  protected form = form(this.#formModel, (schema) => {
-    materialPrice(schema);
-  }, {
-    submission: {
-      action: async (f) => {
-        if (f().valid()) {
-          this.#dialogRef.close(f().value());
-        }
-      }
-    }
-  });
-
+  protected form = form(
+    this.#formModel,
+    (schema) => {
+      materialPrice(schema);
+    },
+    {
+      submission: {
+        action: async (f) => {
+          if (f().valid()) {
+            this.#dialogRef.close(f().value());
+          }
+        },
+      },
+    },
+  );
 }

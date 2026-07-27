@@ -1,6 +1,6 @@
-import { Service, inject } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { firstValueFrom, Observable } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { ConfirmDeleteComponent } from './confirm-delete/confirm-delete.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog.component';
 
@@ -8,7 +8,7 @@ import { ConfirmationDialogComponent } from './confirmation-dialog.component';
 export class ConfirmationDialogService {
   private dialog = inject(MatDialog);
 
-  confirm(prompt: string, config: MatDialogConfig = {}): Observable<boolean> {
+  confirm(prompt: string, config: MatDialogConfig = {}): Promise<boolean> {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       ...config,
       data: {
@@ -18,10 +18,10 @@ export class ConfirmationDialogService {
         prompt,
       },
     });
-    return dialogRef.afterClosed();
+    return firstValueFrom(dialogRef.afterClosed());
   }
 
-  discardChanges(): Observable<boolean> {
+  discardChanges(): Promise<boolean> {
     return this.confirm('Vai tiešām vēlaties pamest nesaglabātu?', {
       data: {
         yes: 'Jā, pamest!',
@@ -35,14 +35,12 @@ export class ConfirmationDialogService {
   }
 
   async confirmDataError(message?: string): Promise<boolean> {
-    return firstValueFrom(
-      this.confirm(message || 'Radusies problēma ar serveri. Mēģiniet vēlreiz vēlāk vai sazinieties ar atbalstu', {
-        data: {
-          title: 'Kļūda!',
-          yes: 'OK',
-          no: undefined,
-        },
-      }),
-    );
+    return this.confirm(message || 'Radusies problēma ar serveri. Mēģiniet vēlreiz vēlāk vai sazinieties ar atbalstu', {
+      data: {
+        title: 'Kļūda!',
+        yes: 'OK',
+        no: undefined,
+      },
+    });
   }
 }

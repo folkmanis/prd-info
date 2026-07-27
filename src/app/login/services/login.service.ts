@@ -1,20 +1,9 @@
 import { computed, inject, Service, Signal } from '@angular/core';
-import {
-  BehaviorSubject,
-  catchError,
-  firstValueFrom,
-  map,
-  merge,
-  Observable,
-  of,
-  shareReplay,
-  Subject,
-  switchMap,
-} from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { BehaviorSubject, catchError, map, merge, Observable, of, shareReplay, Subject, switchMap } from 'rxjs';
 import { LoginUser, LoginUserUpdate } from 'src/app/interfaces';
 import { Login } from '../login.interface';
 import { LoginApiService } from './login-api.service';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 @Service()
 export class LoginService {

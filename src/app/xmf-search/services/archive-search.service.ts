@@ -31,7 +31,7 @@ export class ArchiveSearchService {
   }
 
   private fetchRecordsFn(filter: SearchFilter): (start: number, limit: number) => Promise<ArchiveRecord[]> {
-    return (start, limit) => this.api.getArchive(filter, start, limit);
+    return (start, limit) => this.api.getArchive({ ...filter, start, limit });
   }
 }
 

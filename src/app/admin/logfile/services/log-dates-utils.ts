@@ -4,11 +4,11 @@ export function isValidDate(date: Date | null, availableDates: Date[]): boolean 
   return !!date && availableDates.some((d) => isSameDay(date, d));
 }
 
-export function validDate(date: Date | null, availableDates: Date[]): Date {
-  if (date === null || availableDates.length === 0) {
-    return new Date();
+export function validDate(date: Date | undefined, availableDates: Date[]): Date | undefined {
+  if (availableDates.length === 0) {
+    return;
   }
-  if (isValidDate(date, availableDates)) {
+  if (date && isValidDate(date, availableDates)) {
     return date;
   } else {
     return max(availableDates);
@@ -22,12 +22,12 @@ export function lastDate(availableDates: Date[]): Date | null {
   return max(availableDates);
 }
 
-export function isFirstDate(date: Date, availableDates: Date[]): boolean {
-  return isSameDay(date, min(availableDates));
+export function isFirstDate(date: Date | undefined, availableDates: Date[]): boolean {
+  return !date || isSameDay(date, min(availableDates));
 }
 
-export function isLastDate(date: Date, availableDates: Date[]): boolean {
-  return isSameDay(date, max(availableDates));
+export function isLastDate(date: Date | undefined, availableDates: Date[]): boolean {
+  return !date || isSameDay(date, max(availableDates));
 }
 
 export function shiftDate(date: Date, days: 1 | -1, availableDates: Date[]): Date {

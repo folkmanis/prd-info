@@ -87,7 +87,9 @@ export class ReproProductComponent implements ControlValueAccessor, Validator {
 
   remove = output<void>();
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   onTouched: () => void = () => {};
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   onValidatorChange = () => {};
 
   constructor() {
@@ -102,13 +104,13 @@ export class ReproProductComponent implements ControlValueAccessor, Validator {
     this.productForm.reset(value, { emitEvent: false });
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (value: unknown) => void): void {
     this.productForm.valueChanges
       .pipe(map((value) => ({ ...value, price: Number(value.price), count: Number(value.count) })))
       .subscribe(fn);
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 

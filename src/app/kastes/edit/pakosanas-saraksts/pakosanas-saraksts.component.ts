@@ -1,15 +1,6 @@
 import { A11yModule } from '@angular/cdk/a11y';
 import { AsyncPipe, TitleCasePipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-  booleanAttribute,
-  input,
-  signal,
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output, booleanAttribute, input, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';

@@ -1,7 +1,13 @@
 <app-simple-list-container [(filter)]="name" plusButton filterInput>
   <table mat-table [dataSource]="users.value()">
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let user; columns: displayedColumns" [routerLink]="user.username" [class.disabled]="user.userDisabled" routerLinkActive="selected"></tr>
+    <tr
+      mat-row
+      *matRowDef="let user; columns: displayedColumns"
+      [routerLink]="user.username"
+      [class.disabled]="user.userDisabled"
+      routerLinkActive="selected"
+    ></tr>
 
     <ng-container matColumnDef="username">
       <th mat-header-cell *matHeaderCellDef>Lietotājvārds</th>

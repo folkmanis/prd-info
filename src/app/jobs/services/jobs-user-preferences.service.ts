@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { inject, Service, resource } from '@angular/core';
+import { inject, resource, Service } from '@angular/core';
 import { isEqual } from 'lodash-es';
 import { notNullOrThrow } from 'src/app/library';
 import { defaultJobsUserPreferences, JobsUserPreferences } from '../interfaces/jobs-user-preferences';

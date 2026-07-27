@@ -1,15 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  input,
-  linkedSignal,
-  signal,
-  untracked,
-} from '@angular/core';
+import { Component, computed, effect, inject, input, linkedSignal, signal, untracked } from '@angular/core';
 import { disabled, email, form, FormField, maxLength, minLength, pattern, required } from '@angular/forms/signals';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -93,20 +83,20 @@ export class UserEditComponent implements CanComponentDeactivate {
   protected userForm = form(this.#userModel, (s) => {
     required(s.name);
 
-    disabled(s.username, () => !this.isNew());
+    disabled(s.username, { when: () => !this.isNew() });
     required(s.username);
     minLength(s.username, 3, { message: `Jāsatur vismaz 3 zīmes` });
     maxLength(s.username, 12, { message: `Ne vairāk kā 12 zīmes` });
     pattern(s.username, /^[A-Za-z0-9_]+$/, { message: `Atļauti tikai burti un skaitļi` });
     this.#usersService.validateHttpUsername(s.username);
 
-    disabled(s.password, () => !this.isNew());
+    disabled(s.password, { when: () => !this.isNew() });
     minLength(s.password, 3, { message: `Parolei jāsatur vismaz 3 zīmes` });
     required(s.password);
 
     email(s.eMail, { message: `Neatbilst e-pasta formātam` });
 
-    disabled(s, () => this.busy());
+    disabled(s, { when: () => this.busy() });
   });
 
   protected changes = computedSignalChanges(this.#userModel, this.#initialModel);

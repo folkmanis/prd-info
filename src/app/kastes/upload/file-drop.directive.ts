@@ -9,27 +9,27 @@ export class FileDropDirective {
 
   @Output('appFileDrop') filesEmitter = new EventEmitter<FileList>();
 
-  @HostListener('dragover', ['$event']) onDragOver(event: any) {
+  @HostListener('dragover', ['$event']) onDragOver(event: Event) {
     event.preventDefault();
     event.stopPropagation();
   }
 
-  @HostListener('dragenter', ['$event']) onDragEnter(event: any) {
+  @HostListener('dragenter', ['$event']) onDragEnter(event: Event) {
     event.stopPropagation();
     this.element.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
   }
 
-  @HostListener('dragleave', ['$event']) onDragLeave(event: any) {
+  @HostListener('dragleave', ['$event']) onDragLeave(event: Event) {
     event.stopPropagation();
     this.element.style.backgroundColor = null;
   }
 
-  @HostListener('drop', ['$event']) onDrop(event: any) {
+  @HostListener('drop', ['$event']) onDrop(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
     this.element.style.backgroundColor = null;
-    const files: FileList = event.dataTransfer.files;
-    if (files.length > 0) {
+    const files = event.dataTransfer?.files;
+    if (files && files.length > 0) {
       this.filesEmitter.emit(files);
     }
   }

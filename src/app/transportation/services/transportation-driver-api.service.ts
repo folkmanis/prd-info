@@ -1,9 +1,11 @@
-import { HttpClient, httpResource } from '@angular/common/http';
+import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http';
 import { inject, Service, Signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
 import { firstValueFrom } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
-import { HttpOptions, httpResponseRequest, ValidatorService } from 'src/app/library';
+import { pluckDeletedCount } from 'src/app/interfaces';
+import { cacheable, httpFilterSignal, httpResponseRequest, validateAsync, validatorFn } from 'src/app/library';
+import { z } from 'zod';
 import {
   TransportationDriver,
   TransportationDriverCreate,
@@ -11,46 +13,52 @@ import {
   TransportationDriverUpdate,
 } from '../interfaces/transportation-driver';
 
+const TransportationDriverRequestFilterSchema = z
+  .object({
+    name: z.string(),
+    email: z.string(),
+    disabled: z.stringbool(),
+  })
+  .partial();
+export type TransportationDriverRequestFilter = z.infer<typeof TransportationDriverRequestFilterSchema>;
+
 @Service()
 export class TransportationDriverApiService {
   readonly #path = getAppParams('apiPath') + 'transportation/driver';
   #http = inject(HttpClient);
-  #validator = inject(ValidatorService);
 
-  driversResource(params: Signal<Record<string, any>>) {
-    return httpResource(() => httpResponseRequest(this.#path, new HttpOptions(params()).cacheable()), {
-      parse: this.#validator.arrayValidatorFn(TransportationDriverSchema),
+  driversResource(
+    filter: Signal<TransportationDriverRequestFilter | undefined>,
+  ): HttpResourceRef<TransportationDriver[] | undefined> {
+    const query = httpFilterSignal(TransportationDriverRequestFilterSchema, filter);
+    return httpResource(() => httpResponseRequest(this.#path, query().cacheable()), {
+      parse: validatorFn(TransportationDriverSchema.array()),
       equal: isEqual,
     });
   }
 
   async getOne(id: string): Promise<TransportationDriver> {
-    const response = this.#http.get<Record<string, any>>(`${this.#path}/${id}`, new HttpOptions().cacheable());
-    return this.#validator.validateAsync(TransportationDriverSchema, response);
+    const response = this.#http.get(`${this.#path}/${id}`, cacheable());
+    return validateAsync(TransportationDriverSchema, response);
   }
 
   async createOne(data: TransportationDriverCreate): Promise<TransportationDriver> {
-    const response = this.#http.put(this.#path, data, new HttpOptions());
-    return this.#validator.validateAsync(TransportationDriverSchema, response);
+    const response = this.#http.put(this.#path, data);
+    return validateAsync(TransportationDriverSchema, response);
   }
 
   async updateOne(id: string, data: TransportationDriverUpdate): Promise<TransportationDriver> {
-    const response = this.#http.patch(`${this.#path}/${id}`, data, new HttpOptions());
-    return this.#validator.validateAsync(TransportationDriverSchema, response);
+    const response = this.#http.patch(`${this.#path}/${id}`, data);
+    return validateAsync(TransportationDriverSchema, response);
   }
 
   async deleteOne(id: string): Promise<number> {
-    const { deletedCount } = await firstValueFrom(
-      this.#http.delete<{ deletedCount: number }>(`${this.#path}/${id}`, new HttpOptions()),
-    );
-    return deletedCount;
+    const data$ = this.#http.delete(`${this.#path}/${id}`).pipe(pluckDeletedCount());
+    return firstValueFrom(data$);
   }
 
   async validate<K extends keyof TransportationDriver>(key: K) {
-    const data = this.#http.get<TransportationDriver[K][]>(
-      `${this.#path}/validate/${key}`,
-      new HttpOptions().cacheable(),
-    );
+    const data = this.#http.get<TransportationDriver[K][]>(`${this.#path}/validate/${key}`, cacheable());
     return firstValueFrom(data);
   }
 }

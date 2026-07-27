@@ -13,5 +13,5 @@ import { LOG_LEVELS } from '../../services/log-levels';
 export class LogLevelComponent {
   protected levelsSorted = LOG_LEVELS;
 
-  level = model.required<number>();
+  level = model.required<number | null>();
 }

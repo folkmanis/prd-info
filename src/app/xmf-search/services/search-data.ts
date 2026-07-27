@@ -15,5 +15,6 @@ export class SearchDataSource<T> extends DataSource<T | undefined> {
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   disconnect() {}
 }

@@ -1,82 +1,53 @@
-import { NETWORK_ERROR } from 'src/app/library/http/network-error';
 import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http';
 import { inject, Service, Signal } from '@angular/core';
+import { SchemaPath } from '@angular/forms/signals';
 import { isEqual } from 'lodash-es';
-import { firstValueFrom, map, Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import {
   Material,
-  MaterialSchema,
-  MaterialList,
-  MaterialListSchema,
   MaterialCreate,
   MaterialCreateSchema,
+  MaterialList,
+  MaterialListSchema,
+  MaterialSchema,
   MaterialUpdate,
   MaterialUpdateSchema,
 } from 'src/app/interfaces';
-import { MaterialsQuery } from 'src/app/jobs-admin/materials/schemas/materials.filter.schema';
-import { httpResponseRequest, ValidationResult, ValidationResultSchema, ValidatorService } from 'src/app/library';
-import { HttpOptions } from 'src/app/library/http/http-options';
 import { MaterialModel, MaterialModelSchema } from 'src/app/jobs-admin/materials/schemas/material-model.schema';
-import { SchemaPath, validateHttp } from '@angular/forms/signals';
+import { MaterialQuerySchema, MaterialsFilter } from 'src/app/jobs-admin/materials/schemas/materials.filter.schema';
+import { httpFilterSignal, httpResponseRequest, validatePropertyHttp, validatorFn } from 'src/app/library';
 
 @Service()
 export class MaterialsApiService {
   #path = getAppParams('apiPath') + 'materials/';
   #http = inject(HttpClient);
-  #validator = inject(ValidatorService);
 
-  #materialValdator = map(this.#validator.validatorFn(MaterialSchema));
+  #materialValdator = map(validatorFn(MaterialSchema));
 
-  materialsResource(filterSignal: Signal<MaterialsQuery>): HttpResourceRef<MaterialList[] | undefined> {
-    return httpResource(() => httpResponseRequest(this.#path, new HttpOptions(filterSignal()).cacheable()), {
-      parse: this.#validator.arrayValidatorFn(MaterialListSchema),
+  materialsResource(filter: Signal<MaterialsFilter | undefined>): HttpResourceRef<MaterialList[] | undefined> {
+    const query = httpFilterSignal(MaterialQuerySchema, filter);
+    return httpResource(() => httpResponseRequest(this.#path, query().cacheable()), {
+      parse: validatorFn(MaterialListSchema.array()),
       equal: isEqual,
     });
   }
 
   getOne(id: string): Observable<Material> {
-    return this.#http.get(this.#path + id, new HttpOptions()).pipe(this.#materialValdator);
+    return this.#http.get(this.#path + id).pipe(this.#materialValdator);
   }
 
   updateOne(id: string, material: MaterialUpdate): Observable<Material> {
     const data = MaterialUpdateSchema.encode(material);
-    return this.#http.patch(this.#path + id, data, new HttpOptions()).pipe(this.#materialValdator);
+    return this.#http.patch(this.#path + id, data).pipe(this.#materialValdator);
   }
 
   insertOne(material: MaterialCreate): Observable<Material> {
     const data = MaterialCreateSchema.encode(material);
-    return this.#http.put(this.#path, data, new HttpOptions()).pipe(this.#materialValdator);
-  }
-
-  validatorData<K extends keyof Material & string>(key: K): Promise<Material[K][]> {
-    return firstValueFrom(this.#http.get<Material[K][]>(this.#path + 'validate/' + key, new HttpOptions().cacheable()));
+    return this.#http.put(this.#path, data).pipe(this.#materialValdator);
   }
 
   validate<K extends keyof Pick<MaterialModel, 'name'>>(schema: SchemaPath<MaterialModel[K]>, key: K): void {
-    validateHttp(schema, {
-      debounce: 300,
-      request: ({ value }) => {
-        const request = MaterialModelSchema.partial().encode({ [key]: value() });
-        return httpResponseRequest(
-          this.#path + 'validate/' + key,
-          new HttpOptions({ value: request[key] }).cacheable(),
-        );
-      },
-      options: {
-        parse: this.#validator.validatorFn(ValidationResultSchema),
-      },
-      onSuccess: (response: ValidationResult) => {
-        if (response.valid === true) {
-          return null;
-        } else {
-          return {
-            kind: 'used',
-            message: `"${response.value}" jau tiek izmantots!`,
-          };
-        }
-      },
-      onError: () => NETWORK_ERROR,
-    });
+    validatePropertyHttp(this.#path, schema, key, MaterialModelSchema.shape[key]);
   }
 }

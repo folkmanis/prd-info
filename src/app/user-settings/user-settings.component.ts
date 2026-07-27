@@ -1,33 +1,24 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  linkedSignal,
-  signal,
-  untracked,
-} from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { MatButton, MatButtonModule } from '@angular/material/button';
+import { Component, computed, effect, inject, linkedSignal, signal, untracked } from '@angular/core';
+import { email, form, FormField, required } from '@angular/forms/signals';
+import { MatButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatDivider, MatDividerModule } from '@angular/material/divider';
+import { MatDivider } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInput, MatInputModule } from '@angular/material/input';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatInput } from '@angular/material/input';
 import { ActivatedRoute } from '@angular/router';
-import { isEqual, pick, pickBy } from 'lodash-es';
-import { LoginUser, User } from 'src/app/interfaces';
+import { User } from 'src/app/interfaces';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { LoginService } from 'src/app/login';
 import { PasswordInputDirective } from '../library/password-input';
+import { computedChanges } from '../library/signals';
+import { updateCatching } from '../library/update-catching';
 import { DEMO_MODE } from '../services/app-mode.provider';
 import { GoogleInfoComponent } from './google-info/google-info.component';
-import { computedChanges } from '../library/signals';
-import { email, form, FormField, required } from '@angular/forms/signals';
-import { updateCatching } from '../library/update-catching';
 
-type UserModel = { name: string; eMail: string };
+interface UserModel {
+  name: string;
+  eMail: string;
+}
 
 @Component({
   selector: 'app-user-settings',

@@ -6,7 +6,7 @@
         [routeSheet]="initialValue()"
         (update)="onUpdate($event)"
         (create)="onCreate($event)"
-        (cancel)="editActive.set(false)"
+        (cancelSetup)="editActive.set(false)"
       />
     } @else {
       <app-general-info

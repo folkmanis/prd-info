@@ -9,7 +9,7 @@ export interface AddressWithPackages {
 }
 
 export type Totals = Record<Colors, number> & {
-  packagesBySize: Array<[number, number]>;
+  packagesBySize: [number, number][];
   addresses: number;
   packages: number;
   items: number;
@@ -51,7 +51,7 @@ function selectedFields(): SelectedFields {
 }
 
 export function rowArrayToAddressWithPackage(
-  rowArray: Array<string | number>[],
+  rowArray: (string | number)[][],
   columnMap: [number, ColumnNames][],
 ): AddressWithPackages[] {
   const result: SelectedFields[] = [];
@@ -69,7 +69,7 @@ export function rowArrayToAddressWithPackage(
 export function addOrderId<T = AddressWithPackages>(
   addresesWithPackages: T[],
   orderId: number,
-): Array<T & { pasutijums: number }> {
+): (T & { pasutijums: number })[] {
   return addresesWithPackages.map((address) => ({
     ...address,
     pasutijums: orderId,
@@ -103,7 +103,7 @@ export function totalsFromAddresesWithPackages(addressesWithPackages: AddressWit
   };
 }
 
-export function totalsByColor(packages: Array<Record<Colors, number>>): Record<Colors, number> {
+export function totalsByColor(packages: Record<Colors, number>[]): Record<Colors, number> {
   const totalColors = {} as Record<Colors, number>;
   COLORS.forEach((color) => (totalColors[color] = 0));
 
@@ -114,7 +114,7 @@ export function totalsByColor(packages: Array<Record<Colors, number>>): Record<C
   return totalColors;
 }
 
-export function totalsBySize(packages: Array<{ total: number }>): Array<[number, number]> {
+export function totalsBySize(packages: { total: number }[]): [number, number][] {
   const sizes = new Map(Array.from({ length: MAX_ITEMS_BOX }, (_, i) => [i + 1, 0]));
 
   packages.forEach((pack) => {
@@ -146,7 +146,7 @@ function normalizeCount(count: number): number {
   return count < SINGLE_ITEM_CONTENTS ? count : Math.ceil(count / 500);
 }
 
-function rowToFieldsObject(row: Array<string | number>, columnMap: [number, ColumnNames][]): SelectedFields {
+function rowToFieldsObject(row: (string | number)[], columnMap: [number, ColumnNames][]): SelectedFields {
   const selectedFieldsObject = selectedFields();
   columnMap.forEach(([columnIndex, columnName]) => {
     (selectedFieldsObject as Record<ColumnNames, string | number>)[columnName] = assertedType(

@@ -1,15 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  input,
-  linkedSignal,
-  signal,
-  untracked,
-} from '@angular/core';
+import { Component, computed, effect, inject, input, linkedSignal, signal, untracked } from '@angular/core';
 import {
   applyEach,
   applyWhen,
@@ -37,11 +27,10 @@ import { MatList, MatListItem } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { Customer, CustomerContact, defaultCustomerContact } from 'src/app/interfaces';
-import { notNullOrThrow } from 'src/app/library';
 import { InputUppercaseDirective } from 'src/app/library/directives/input-uppercase.directive';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { navigateRelative } from 'src/app/library/navigation';
-import { computedChanges, pickChanges } from 'src/app/library/signals';
+import { computedChanges } from 'src/app/library/signals';
 import { SimpleContentContainerComponent } from 'src/app/library/simple-form/simple-content-container/simple-content-container.component';
 import { updateCatching } from 'src/app/library/update-catching';
 import { CustomersService } from 'src/app/services';

@@ -3,8 +3,6 @@ import sanitize from 'sanitize-filename';
 
 @Service()
 export class SanitizeService {
-  constructor() {}
-
   sanitizeFileName(s: string): string {
     if (typeof s !== 'string') {
       return 'unknown';

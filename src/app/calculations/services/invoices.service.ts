@@ -1,6 +1,6 @@
 import { HttpResourceRef } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { firstValueFrom, map, Observable } from 'rxjs';
 import { InvoiceCreate, InvoiceForReport, InvoicesFilter, InvoiceUpdate } from 'src/app/interfaces';
 import { PaytraqInvoice, Sale } from 'src/app/interfaces/paytraq';
 import { JobFilter, JobService, JobsWithoutInvoicesTotals, JobUnwindedPartial } from 'src/app/jobs';
@@ -33,15 +33,15 @@ export class InvoicesService {
     return this.#api.getOne(invoiceId);
   }
 
-  async getReport(data: InvoiceForReport) {
-    return this.#api.getReport(data);
+  getReport(data: InvoiceForReport): Promise<Blob> {
+    return firstValueFrom(this.#api.getReport(data));
   }
 
   async updateInvoice(id: string, update: InvoiceUpdate): Promise<InvoiceForReport> {
     return this.#api.updateOne(id, update);
   }
 
-  getInvoicesResource(params?: FilterInput<InvoicesFilter>) {
+  getInvoicesResource(params?: FilterInput<InvoicesFilter | undefined>) {
     return this.#api.invoicesResource(toFilterSignal(params));
   }
 
@@ -60,9 +60,8 @@ export class InvoicesService {
     return documentRef;
   }
 
-  async deleteInvoice(invoiceId: string): Promise<number> {
-    const { deletedCount } = await this.#api.deleteOne(invoiceId);
-    return deletedCount;
+  deleteInvoice(invoiceId: string): Promise<number> {
+    return firstValueFrom(this.#api.deleteOne(invoiceId));
   }
 }
 

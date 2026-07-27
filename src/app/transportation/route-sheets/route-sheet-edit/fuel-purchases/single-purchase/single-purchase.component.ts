@@ -1,4 +1,4 @@
-import { Component, inject, Signal, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { form, FormField, min, required, submit, validate } from '@angular/forms/signals';
 import { MatButton } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -81,7 +81,7 @@ export class SinglePurchaseComponent {
   });
 
   protected changes = computedSignalChanges(
-    this.#fuelModel as Signal<Record<string, any>>,
+    this.#fuelModel,
     signal(this.#toModel(this.#data.fuelPurchase)).asReadonly(),
   );
 

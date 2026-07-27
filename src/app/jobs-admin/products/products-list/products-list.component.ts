@@ -30,15 +30,10 @@ import { ProductsFilter } from 'src/app/services/prd-api/products-api.service';
 export class ProductsListComponent {
   private productsService = inject(ProductsService);
 
-  private readonly filter = computed<ProductsFilter | undefined>(
-    () => {
-      const name = this.#filterModel().name;
-      if (name) {
-        return { name };
-      } else {
-        return;
-      }
-    },
+  private readonly filter = computed<ProductsFilter>(
+    () => ({
+      name: this.#filterModel().name,
+    }),
     { equal: isEqual },
   );
 

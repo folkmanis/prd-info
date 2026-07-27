@@ -1,70 +1,73 @@
 import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http';
-import { computed, inject, Service, Signal } from '@angular/core';
+import { inject, Service, Signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
 import { firstValueFrom, map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
-import { ValidatorService } from 'src/app/library';
-import { HttpOptions, httpResponseRequest } from 'src/app/library/http';
+import { cacheable, httpFilter, httpResponseRequest, validateAsync, validatorFn } from 'src/app/library';
 import { z } from 'zod';
-import { Job, JobPartial, JobsProduction, JobsWithoutInvoicesTotals, JobUnwindedPartial } from '../interfaces';
+import {
+  Job,
+  JobFilter,
+  JobFilterSchema,
+  JobPartial,
+  JobsProduction,
+  JobsProductionFilter,
+  JobsProductionFilterSchema,
+  JobsWithoutInvoicesTotals,
+  JobUnwindedPartial,
+} from '../interfaces';
 import { JobsUserPreferences } from '../interfaces/jobs-user-preferences';
 
-export interface JobUpdateParams {
-  createFolder?: boolean;
-}
+export const JobUpdateParamsSchema = z.object({
+  createFolder: z.stringbool().optional(),
+});
+export type JobUpdateParams = z.infer<typeof JobUpdateParamsSchema>;
 
 @Service()
 export class JobsApiService {
   #path = getAppParams('apiPath') + 'jobs/';
   #http = inject(HttpClient);
-  #validator = inject(ValidatorService);
 
-  getAll(filter: Record<string, any> = {}): Promise<JobPartial[]> {
-    const response$ = this.#http.get<Record<string, any>[]>(
-      this.#path,
-      new HttpOptions({ ...filter, unwindProducts: 0 }),
-    );
-    return this.#validator.validateArrayAsync(JobPartial, response$);
+  getAll(filter: JobFilter = {}): Promise<JobPartial[]> {
+    filter.unwindProducts = false;
+    const options = httpFilter(JobFilterSchema, filter);
+    const response$ = this.#http.get(this.#path, options);
+    return validateAsync(JobPartial.array(), response$);
   }
 
-  getAllUnwinded(filter: Record<string, any>): Promise<JobUnwindedPartial[]> {
-    const response$ = this.#http.get<Record<string, any>[]>(
-      this.#path,
-      new HttpOptions({ ...filter, unwindProducts: 1 }),
-    );
-    return this.#validator.validateArrayAsync(JobUnwindedPartial, response$);
+  getAllUnwinded(filter: JobFilter = {}): Promise<JobUnwindedPartial[]> {
+    filter.unwindProducts = true;
+    const options = httpFilter(JobFilterSchema, filter);
+    const response$ = this.#http.get(this.#path, options);
+    return validateAsync(JobUnwindedPartial.array(), response$);
   }
 
-  getJobsCount(filter?: Record<string, any>): Observable<{ count: number }> {
-    const response$ = this.#http.get<Record<string, any>[]>(this.#path + 'count', new HttpOptions(filter));
-    return response$.pipe(map(this.#validator.validatorFn(z.object({ count: z.number().gte(0) }))));
+  getJobsCount(filter?: JobFilter): Observable<{ count: number }> {
+    const options = httpFilter(JobFilterSchema, filter);
+    const response$ = this.#http.get(this.#path + 'count', options);
+    return response$.pipe(map(validatorFn(z.object({ count: z.number().nonnegative() }))));
   }
 
-  jobsResource(filter: Signal<Record<string, any> | undefined>): HttpResourceRef<JobPartial[] | undefined> {
-    return this.#jobsResource(filter, 0, this.#validator.arrayValidatorFn(JobPartial));
+  jobsResource(filter: Signal<JobFilter | undefined>): HttpResourceRef<JobPartial[] | undefined> {
+    return this.#jobsResource(filter, false, validatorFn(JobPartial.array()));
   }
 
-  jobsUnwindedResource(
-    filter: Signal<Record<string, any> | undefined>,
-  ): HttpResourceRef<JobUnwindedPartial[] | undefined> {
-    return this.#jobsResource(filter, 1, this.#validator.arrayValidatorFn(JobUnwindedPartial));
+  jobsUnwindedResource(filter: Signal<JobFilter | undefined>): HttpResourceRef<JobUnwindedPartial[] | undefined> {
+    return this.#jobsResource(filter, true, validatorFn(JobUnwindedPartial.array()));
   }
 
-  #jobsResource<P extends 0 | 1, Result = P extends 0 ? JobPartial : JobUnwindedPartial>(
-    filter: Signal<Record<string, any> | undefined>,
+  #jobsResource<P extends boolean, Result = P extends false ? JobPartial : JobUnwindedPartial>(
+    filter: Signal<JobFilter | undefined>,
     unwindProducts: P,
-    parse: (value: any) => Result[],
+    parse: (value: unknown) => Result[],
   ): HttpResourceRef<Result[] | undefined> {
-    const params = computed(() =>
-      filter()
-        ? {
-            ...filter(),
-            unwindProducts,
-          }
-        : undefined,
-    );
     return httpResource(
-      () => (params() ? httpResponseRequest(this.#path, new HttpOptions(params()).cacheable()) : undefined),
+      () => {
+        const f = filter();
+        if (!f) return;
+        const options = httpFilter(JobFilterSchema, f).setParam('unwindProducts', unwindProducts ? '1' : '0');
+        return httpResponseRequest(this.#path, options);
+      },
       {
         equal: isEqual,
         parse,
@@ -73,60 +76,69 @@ export class JobsApiService {
   }
 
   async updateMany(jobs: Partial<Job>[], params?: JobUpdateParams): Promise<number> {
-    const response = await firstValueFrom(
-      this.#http.patch<{ count: number }>(this.#path, jobs, new HttpOptions(params)),
-    );
+    const options = httpFilter(JobUpdateParamsSchema, params);
+    const response = await firstValueFrom(this.#http.patch<{ count: number }>(this.#path, jobs, options));
     return response.count;
   }
 
   getOne(jobId: number) {
-    const data$ = this.#http.get(this.#path + jobId, new HttpOptions());
-    return this.#validator.validateAsync(Job, data$);
+    const data$ = this.#http.get(this.#path + jobId);
+    return validateAsync(Job, data$);
   }
 
   insertOne(job: Partial<Job>, params: JobUpdateParams): Promise<Job> {
-    const data$ = this.#http.put<Job>(this.#path, job, new HttpOptions(params));
-    return this.#validator.validateAsync(Job, data$);
+    const options = httpFilter(JobUpdateParamsSchema, params);
+    const data$ = this.#http.put<Job>(this.#path, job, options);
+    return validateAsync(Job, data$);
   }
 
   updateOne(jobId: number, job: Partial<Job>, params: JobUpdateParams): Promise<Job> {
-    const data$ = this.#http.patch(this.#path + jobId, job, new HttpOptions(params));
-    return this.#validator.validateAsync(Job, data$);
+    const options = httpFilter(JobUpdateParamsSchema, params);
+    const data$ = this.#http.patch(this.#path + jobId, job, options);
+    return validateAsync(Job, data$);
   }
 
   createFolder(jobId: number): Promise<Job> {
-    const data$ = this.#http.patch<Job>(this.#path + jobId + '/createFolder', {}, new HttpOptions());
-    return this.#validator.validateAsync(Job, data$);
+    const data$ = this.#http.patch<Job>(this.#path + jobId + '/createFolder', {});
+    return validateAsync(Job, data$);
   }
 
   jobsWithoutInvoicesTotals(): Observable<JobsWithoutInvoicesTotals[]> {
     return this.#http
-      .get<Record<string, any>[]>(this.#path + 'jobs-without-invoices-totals', new HttpOptions().cacheable())
-      .pipe(map(this.#validator.arrayValidatorFn(JobsWithoutInvoicesTotals)));
+      .get(this.#path + 'jobs-without-invoices-totals', cacheable())
+      .pipe(map(validatorFn(JobsWithoutInvoicesTotals.array())));
   }
 
-  getJobsProductionSummaryResource(query: Signal<Record<string, any> | undefined>) {
+  getJobsProductionSummaryResource(
+    filter: Signal<JobsProductionFilter | undefined>,
+  ): HttpResourceRef<JobsProduction[] | undefined> {
     return httpResource(
-      () => (query() ? httpResponseRequest(this.#path + 'products', new HttpOptions(query())) : undefined),
+      () => {
+        const f = filter();
+        if (!f) return;
+        const params = httpFilter(JobsProductionFilterSchema, f);
+        return httpResponseRequest(this.#path + 'products', params);
+      },
       {
-        parse: this.#validator.arrayValidatorFn(JobsProduction),
+        parse: validatorFn(JobsProduction.array()),
         equal: isEqual,
       },
     );
   }
 
-  jobsProductionSummary(query: Record<string, any>): Observable<JobsProduction[]> {
-    const data$ = this.#http.get(this.#path + 'products', new HttpOptions(query));
-    return data$.pipe(map(this.#validator.arrayValidatorFn(JobsProduction)));
+  jobsProductionSummary(filter: JobFilter): Observable<JobsProduction[]> {
+    const params = httpFilter(JobFilterSchema, filter);
+    const data$ = this.#http.get(this.#path + 'products', params);
+    return data$.pipe(map(validatorFn(JobsProduction.array())));
   }
 
   getUserPreferences(): Promise<JobsUserPreferences> {
-    const data$ = this.#http.get(this.#path + 'preferences', new HttpOptions());
-    return this.#validator.validateAsync(JobsUserPreferences, data$);
+    const data$ = this.#http.get(this.#path + 'preferences');
+    return validateAsync(JobsUserPreferences, data$);
   }
 
   setUserPreferences(preferences: JobsUserPreferences): Promise<JobsUserPreferences> {
-    const data$ = this.#http.patch(this.#path + 'preferences', preferences, new HttpOptions());
-    return this.#validator.validateAsync(JobsUserPreferences, data$);
+    const data$ = this.#http.patch(this.#path + 'preferences', preferences);
+    return validateAsync(JobsUserPreferences, data$);
   }
 }

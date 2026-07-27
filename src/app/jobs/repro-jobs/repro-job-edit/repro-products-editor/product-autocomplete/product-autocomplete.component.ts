@@ -63,17 +63,18 @@ export class ProductAutocompleteComponent implements ControlValueAccessor, Valid
   firstProducts = computed(() => this.filtered().filter((pr) => pr.price !== undefined));
   restProducts = computed(() => this.filtered().filter((pr) => pr.price == undefined));
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   onTouchFn = () => {};
 
-  writeValue(obj: any): void {
+  writeValue(obj: string): void {
     this.control.reset(obj || '', { emitEvent: false });
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (value: string | null) => void): void {
     this.control.valueChanges.subscribe(fn);
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouchFn = fn;
   }
 

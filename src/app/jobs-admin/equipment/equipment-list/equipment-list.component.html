@@ -8,6 +8,10 @@
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let equipment; columns: displayedColumns" [routerLink]="[equipment._id]" routerLinkActive="selected"></mat-row>
+    <mat-row
+      *matRowDef="let equipment; columns: displayedColumns"
+      [routerLink]="[equipment._id]"
+      routerLinkActive="selected"
+    ></mat-row>
   </mat-table>
 </app-simple-list-container>

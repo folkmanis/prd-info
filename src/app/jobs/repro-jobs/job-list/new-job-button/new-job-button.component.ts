@@ -14,9 +14,10 @@ import { FileDropDirective } from 'src/app/library/directives/file-drop.directiv
 export class NewJobButtonComponent {
   fileList = output<FileList>();
 
-  onFileSelected(event: any) {
-    if (event.target?.files instanceof FileList && event.target.files.length > 0) {
-      this.fileList.emit(event.target.files);
+  onFileSelected(event: Event) {
+    const target = event.target as HTMLInputElement;
+    if (target?.files instanceof FileList && target.files.length > 0) {
+      this.fileList.emit(target.files);
     }
   }
 

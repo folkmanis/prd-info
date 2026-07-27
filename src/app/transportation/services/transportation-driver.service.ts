@@ -5,13 +5,7 @@ import {
   TransportationDriverCreate,
   TransportationDriverUpdate,
 } from '../interfaces/transportation-driver';
-import { TransportationDriverApiService } from './transportation-driver-api.service';
-
-export interface TransportationDriverRequestFilter {
-  name?: string;
-  email?: string;
-  disabled?: boolean;
-}
+import { TransportationDriverApiService, TransportationDriverRequestFilter } from './transportation-driver-api.service';
 
 @Service()
 export class TransportationDriverService {

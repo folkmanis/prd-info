@@ -1,15 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  input,
-  model,
-  numberAttribute,
-  signal,
-  viewChild,
-} from '@angular/core';
+import { Component, computed, effect, inject, input, model, numberAttribute, signal, viewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -21,6 +10,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
+import { KastesJob } from 'src/app/jobs';
+import { notNullOrThrow } from 'src/app/library';
 import { DrawerButtonDirective } from '../../library/side-button/drawer-button.directive';
 import { AddressPackage } from '../interfaces/address-package';
 import { kastesPreferences } from '../services/kastes-preferences.service';
@@ -30,8 +21,6 @@ import { LabelStatus, LabelsComponent } from './labels/labels.component';
 import { OrderTotalsComponent } from './order-totals/order-totals.component';
 import { TabulaComponent } from './tabula/tabula.component';
 import { TotalsForSelectedSizeComponent } from './totals-for-selected-size/totals-for-selected-size.component';
-import { notNullOrThrow } from 'src/app/library';
-import { KastesJob } from 'src/app/jobs';
 
 @Component({
   selector: 'app-selector',

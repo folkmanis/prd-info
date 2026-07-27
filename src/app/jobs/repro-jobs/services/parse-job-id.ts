@@ -1,7 +1,7 @@
 import { assertNumber } from 'src/app/library';
 
 export function parseJobId(value: unknown): number | null {
-  const numberValue = parseFloat(value as any) || Number(value);
+  const numberValue = Number(value);
   if (Number.isInteger(numberValue)) {
     return numberValue;
   } else {

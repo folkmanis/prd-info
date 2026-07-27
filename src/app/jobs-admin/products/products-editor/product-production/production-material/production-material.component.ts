@@ -14,7 +14,7 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
-import { Material, MaterialList, ProductProductionStageMaterial } from 'src/app/interfaces';
+import { MaterialList, ProductProductionStageMaterial } from 'src/app/interfaces';
 import { SelectDirective } from 'src/app/library/directives/select.directive';
 import { ProductsService } from 'src/app/services';
 import { MaterialUnitsDirective } from './material-units.directive';
@@ -52,6 +52,7 @@ export class ProductionMaterialComponent implements ControlValueAccessor, Valida
 
   trackByFn = (idx: number) => this.form.controls[idx];
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   touchFn = () => {};
 
   writeValue(obj: ProductProductionStageMaterial[]): void {
@@ -59,11 +60,11 @@ export class ProductionMaterialComponent implements ControlValueAccessor, Valida
     this.#chDetector.markForCheck();
   }
 
-  registerOnChange(fn: (obj: any) => void): void {
+  registerOnChange(fn: (obj: unknown) => void): void {
     this.form.valueChanges.subscribe(fn);
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.touchFn = fn;
   }
 

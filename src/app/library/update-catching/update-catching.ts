@@ -13,6 +13,7 @@ export function updateCatching(
     snack.open(message, 'OK', { duration: 3000 });
   };
   const errorMessageFn: (message: unknown) => void = (message) => {
+    // eslint-disable-next-line no-console
     console.error(message);
     snack.open(`Neizdevās ${message}`, 'OK');
   };

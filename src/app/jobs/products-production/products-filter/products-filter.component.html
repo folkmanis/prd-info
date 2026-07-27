@@ -41,15 +41,10 @@
           [appAutocompleteFilter]="customers"
           #filterC="appAutocompleteFilter"
         />
-        <button matIconSuffix matIconButton tabindex="-1" (click)="filterForm.customer().value.set('')">
+        <button matIconSuffix matIconButton tabindex="-1" (click)="filterForm.customer().value.set(null)">
           <mat-icon> clear </mat-icon>
         </button>
-        <mat-autocomplete
-          #autoC="matAutocomplete"
-          requireSelection
-          (optionSelected)="filterC.reset()"
-          hideSingleSelectionIndicator
-        >
+        <mat-autocomplete #autoC="matAutocomplete" (optionSelected)="filterC.reset()" hideSingleSelectionIndicator>
           @for (customer of filterC.options(); track customer) {
             <mat-option [value]="customer">
               {{ customer }}

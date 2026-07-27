@@ -17,10 +17,10 @@ export const cacheInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(tap((event) => event instanceof HttpResponse && cache.put(req, event)));
 };
 
-function isCacheable(req: HttpRequest<any>): boolean {
+function isCacheable(req: HttpRequest<unknown>): boolean {
   return req.method === 'GET' && req.headers.get('Cache') === 'Ok';
 }
 
-function isCacheDirty(req: HttpRequest<any>): boolean {
+function isCacheDirty(req: HttpRequest<unknown>): boolean {
   return req.method !== 'GET';
 }

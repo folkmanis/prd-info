@@ -3,8 +3,8 @@ import { take } from 'rxjs/operators';
 import { WebSocketSubject } from 'rxjs/webSocket';
 
 export interface MultiplexConfig<U> {
-  subMsg: (token: string) => any;
-  unsubMsg: () => any;
+  subMsg: (token: string) => U;
+  unsubMsg: () => U;
   messageFilter: (value: U) => boolean;
   tokenFn: () => Observable<string>;
 }

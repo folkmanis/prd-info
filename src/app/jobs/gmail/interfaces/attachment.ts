@@ -13,7 +13,7 @@ export class Attachment implements z.infer<typeof AttachmentSchema> {
   }
 
   constructor(
-    public filename: string = 'unnamed',
+    public filename = 'unnamed',
     public attachmentId: string,
     public size: number,
   ) {}

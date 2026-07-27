@@ -114,8 +114,8 @@ export class PasutijumsEditComponent {
       this.pasutijumiService
         .copyFromFirestore(jobId)
         .pipe(
-          tap((result) =>
-            this.snack.open(firebaseCopyFromResultMessage(result.modifiedCount), 'OK', { duration: 3000 }),
+          tap((modifiedCount) =>
+            this.snack.open(firebaseCopyFromResultMessage(modifiedCount), 'OK', { duration: 3000 }),
           ),
         )
         .subscribe();

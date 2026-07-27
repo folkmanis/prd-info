@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   Component,
   ElementRef,
   Input,
@@ -29,9 +28,7 @@ import { InputDirective } from 'src/app/library/directives/input.directive';
 import { kastesPreferences } from '../../../services/kastes-preferences.service';
 import { VeikalsValidationErrors } from '../../services/veikals-validation-errors';
 
-type ColorsGroup = FormGroup<{
-  [color in Colors]: FormControl<number>;
-}>;
+type ColorsGroup = FormGroup<Record<Colors, FormControl<number>>>;
 
 @Component({
   selector: 'app-veikals-edit',
@@ -127,7 +124,7 @@ export class VeikalsEditComponent {
     const colors = COLORS.map((color) => ({
       [color]: [kaste[color], [Validators.required, Validators.min(0), Validators.max(MAX_ITEMS_BOX)]],
     }));
-    const controls: { [key in Colors]: [number, ValidatorFn[]] } = Object.assign({}, ...colors);
+    const controls: Record<Colors, [number, ValidatorFn[]]> = Object.assign({}, ...colors);
     return this.fb.group(controls, {
       validators: [maxItemsValidator(MAX_ITEMS_BOX)],
     });

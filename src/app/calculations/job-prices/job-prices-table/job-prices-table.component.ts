@@ -47,7 +47,9 @@ export class JobPricesTableComponent {
 
   constructor() {
     effect(() => {
-      this.jobs() && this.selection.clear();
+      if (this.jobs()) {
+        this.selection.clear();
+      }
     });
   }
 

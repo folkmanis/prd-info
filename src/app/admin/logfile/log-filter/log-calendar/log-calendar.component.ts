@@ -22,7 +22,7 @@ import { isFirstDate, isLastDate, isValidDate, lastDate, shiftDate, validDate } 
   ],
 })
 export class LogCalendarComponent {
-  date = model.required<Date>();
+  date = model.required<Date | undefined>();
 
   availableDates = input<Date[]>([]);
 
@@ -35,6 +35,7 @@ export class LogCalendarComponent {
 
   onDateShift(days: 1 | -1): void {
     const currentDate = this.date();
+    if (!currentDate) return;
     const newDate = shiftDate(currentDate, days, this.availableDates());
     this.date.set(newDate);
   }

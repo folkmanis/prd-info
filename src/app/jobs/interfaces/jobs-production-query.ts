@@ -1,20 +1,16 @@
+import { isoDateToDate, stringToArray, stringToInt } from 'src/app/library';
 import { z } from 'zod';
 
-export const jobsProductionQuerySchema = z.object({
-  start: z.number(),
-  limit: z.number(),
-  sort: z.string(),
-  fromDate: z.date().nullable(),
-  toDate: z.date().nullable(),
-  jobStatus: z.array(z.number()),
-  category: z.array(z.string()),
-  customer: z.string().nullable(),
-});
-export type JobsProductionQuery = z.infer<typeof jobsProductionQuerySchema>;
-
-export const jobsProductionFilterQuerySchema = jobsProductionQuerySchema.omit({
-  start: true,
-  limit: true,
-  sort: true,
-});
-export type JobsProductionFilterQuery = z.infer<typeof jobsProductionFilterQuerySchema>;
+export const JobsProductionFilterSchema = z
+  .object({
+    start: stringToInt,
+    limit: stringToInt,
+    sort: z.string(),
+    fromDate: isoDateToDate,
+    toDate: isoDateToDate,
+    jobStatus: stringToArray(z.number()),
+    category: stringToArray(z.string()),
+    customer: z.string(),
+  })
+  .partial();
+export type JobsProductionFilter = z.infer<typeof JobsProductionFilterSchema>;

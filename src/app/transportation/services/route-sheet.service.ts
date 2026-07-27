@@ -1,5 +1,6 @@
-import { computed, inject, Service, Signal } from '@angular/core';
+import { inject, Service, Signal } from '@angular/core';
 import { round } from 'lodash-es';
+import { catchError, Observable, of } from 'rxjs';
 import { FilterInput, toFilterSignal } from 'src/app/library';
 import { HistoricalData } from '../interfaces/historical-data';
 import {
@@ -8,18 +9,9 @@ import {
   TransportationRouteSheetCreate,
   TransportationRouteSheetUpdate,
 } from '../interfaces/transportation-route-sheet';
-import { RouteSheetApiService } from './route-sheet-api.service';
+import { RouteSheetApiService, RouteSheetFilter } from './route-sheet-api.service';
 import { TransportationDriverService } from './transportation-driver.service';
 import { TransportationVehicleService } from './transportation-vehicle.service';
-import { catchError, Observable, of } from 'rxjs';
-
-interface RouteSheetFilter {
-  name?: string;
-  fuelTypes?: string[];
-  year?: number;
-  month?: number;
-  vehicleId?: string;
-}
 
 @Service()
 export class RouteSheetService {
@@ -27,18 +19,8 @@ export class RouteSheetService {
   #driverService = inject(TransportationDriverService);
   #vehicleService = inject(TransportationVehicleService);
 
-  getRouteSheetsResource(filter: FilterInput<RouteSheetFilter>) {
-    const filterSignal = toFilterSignal(filter);
-    const params = computed(() => {
-      const { name, year, month, fuelTypes } = filterSignal();
-      return {
-        name,
-        year: year?.toString(),
-        month: month?.toString(),
-        fuelTypes: fuelTypes ? fuelTypes.join(',') : undefined,
-      };
-    });
-    return this.#api.routeSheetResource(params);
+  getRouteSheetsResource(filter?: FilterInput<RouteSheetFilter>) {
+    return this.#api.routeSheetResource(toFilterSignal(filter));
   }
 
   getRouteSheets(filter: RouteSheetFilter = {}): Promise<TransportationRouteSheet[]> {

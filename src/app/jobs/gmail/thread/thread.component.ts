@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router, RouterLink } from '@angular/router';
-import { defer, EMPTY, firstValueFrom, Observable } from 'rxjs';
+import { EMPTY, firstValueFrom, Observable } from 'rxjs';
 import { ReproJobService } from 'src/app/jobs/repro-jobs/services/repro-job.service';
 import { UploadRefService } from 'src/app/jobs/repro-jobs/services/upload-ref.service';
 import { assertNoNullProperties } from 'src/app/library';
@@ -89,7 +89,7 @@ export class ThreadComponent {
   private async createJobWithAttachments(
     attachments: { messageId: string; attachment: Attachment }[],
     messageOrThread: { from: string; plain: string },
-    afterAddedToJob: Observable<any>,
+    afterAddedToJob: Observable<unknown>,
     name?: string,
   ) {
     const fileNames = await this.gmailService.saveAttachments(attachments);
@@ -110,7 +110,7 @@ export class ThreadComponent {
     this.userFileUploadService.setSavedFile(fileNames, afterAddedToJob);
   }
 
-  private markAsRead(component: MessageComponent): Observable<any> {
+  private markAsRead(component: MessageComponent): Observable<unknown> {
     return component.markAsRead ? this.gmailService.markAsRead(component.message()) : EMPTY;
   }
 

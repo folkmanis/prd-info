@@ -13,14 +13,14 @@ import { FacetPipe } from './facet.pipe';
 })
 export class FacetCheckerComponent<
   K extends keyof FacetFilter,
-  T extends FacetFilter[K] extends Array<any> ? FacetFilter[K][number] : never,
+  T extends (FacetFilter[K] extends readonly (infer U)[] ? U : never),
 > {
   selection = viewChild.required(MatSelectionList);
 
   title = input('');
   data = input.required<FacetCount[]>();
 
-  filterValue = output<FacetFilter[K]>();
+  filterValue = output<T[] | undefined>();
 
   deselect() {
     this.selection().deselectAll();

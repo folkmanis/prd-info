@@ -6,15 +6,8 @@ import {
   TransportationVehicleCreate,
   TransportationVehicleUpdate,
 } from '../interfaces/transportation-vehicle';
-import { TransportationVehicleApiService } from './transportation-vehicle-api.service';
+import { TransportationVehicleApiService, VehiclesFilter } from './transportation-vehicle-api.service';
 import { applyWhen, SchemaPath } from '@angular/forms/signals';
-
-export interface VehiclesFilter {
-  name?: string;
-  licencePlate?: string;
-  fuelType?: string;
-  disabled?: boolean;
-}
 
 @Service()
 export class TransportationVehicleService {
@@ -25,10 +18,6 @@ export class TransportationVehicleService {
 
   getVehiclesResource(filter?: FilterInput<VehiclesFilter>) {
     return this.#api.vehiclesResource(toFilterSignal(filter));
-  }
-
-  getVehicles(filter: VehiclesFilter = {}): Promise<TransportationVehicle[]> {
-    return this.#api.getVehicles(filter);
   }
 
   getVehicle(id: string): Promise<TransportationVehicle> {

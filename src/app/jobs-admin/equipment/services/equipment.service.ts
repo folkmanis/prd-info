@@ -1,17 +1,15 @@
-import { inject, Service, signal, Signal } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { Equipment, EquipmentCreate, EquipmentUpdate } from 'src/app/interfaces';
+import { FilterInput, toFilterSignal } from 'src/app/library';
 import { EquipmentApiService } from 'src/app/services/prd-api/equipment-api.service';
-
-export interface EquipmentFilter {
-  name?: string;
-}
+import { EquipmentFilter } from './equipmanet-filter.schema';
 
 @Service()
 export class EquipmentService {
   #api = inject(EquipmentApiService);
 
-  getEquipmentResource(filterSignal?: Signal<EquipmentFilter>) {
-    return this.#api.equipmentResource(filterSignal ?? signal({}));
+  getEquipmentResource(filter?: FilterInput<EquipmentFilter>) {
+    return this.#api.equipmentResource(toFilterSignal(filter));
   }
 
   getOne(id: string): Promise<Equipment> {

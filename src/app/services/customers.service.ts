@@ -1,33 +1,18 @@
-import { computed, inject, Service } from '@angular/core';
-import { CreateCustomerDto, Customer, CustomerList, UpdateCustomerDto } from 'src/app/interfaces';
-import { FilterInput, optionalString, stringToInt, toFilterSignal } from 'src/app/library';
-import { CustomersApiService } from './prd-api/customers-api.service';
 import { HttpResourceRef } from '@angular/common/http';
-import { firstValueFrom, Observable } from 'rxjs';
-import { z } from 'zod';
+import { inject, Service } from '@angular/core';
 import { SchemaPath } from '@angular/forms/signals';
+import { firstValueFrom, Observable } from 'rxjs';
+import { CreateCustomerDto, Customer, CustomerList, UpdateCustomerDto } from 'src/app/interfaces';
+import { FilterInput, toFilterSignal } from 'src/app/library';
 import { CustomerModel } from '../jobs-admin/customers/customer-edit/customer-edit.model';
-
-export const CustomersQuerySchema = z
-  .object({
-    start: stringToInt,
-    limit: stringToInt,
-    name: optionalString.pipe(z.string().trim()),
-    email: z.string(),
-    disabled: z.stringbool(),
-  })
-  .partial();
-export type CustomerFilter = z.output<typeof CustomersQuerySchema>;
-export type CustomerQuery = z.input<typeof CustomersQuerySchema>;
+import { CustomerFilter, CustomersApiService } from './prd-api/customers-api.service';
 
 @Service()
 export class CustomersService {
   #api = inject(CustomersApiService);
 
   getCustomersResource(filter: FilterInput<CustomerFilter>): HttpResourceRef<CustomerList[] | undefined> {
-    const filterSignal = toFilterSignal(filter);
-    const query = computed(() => CustomersQuerySchema.encode(filterSignal()));
-    return this.#api.customersResource(query);
+    return this.#api.customersResource(toFilterSignal(filter));
   }
 
   updateCustomer(id: string, update: UpdateCustomerDto): Promise<Customer> {
@@ -42,9 +27,8 @@ export class CustomersService {
     return firstValueFrom(this.#api.insertOne(customer));
   }
 
-  getCustomerList(filter: CustomerFilter = {}): Observable<CustomerList[]> {
-    const query = CustomersQuerySchema.encode(filter);
-    return this.#api.getAll(query);
+  getCustomerList(filter?: CustomerFilter): Observable<CustomerList[]> {
+    return this.#api.getAll(filter);
   }
 
   isPropertyAvailable<K extends keyof Pick<CustomerModel, 'customerName' | 'code'>>(

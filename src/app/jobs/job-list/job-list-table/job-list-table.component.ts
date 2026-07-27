@@ -1,13 +1,13 @@
-import { Component, computed, input, TrackByFunction } from '@angular/core';
-import { JobFilter, JobUnwindedPartial } from '../../interfaces';
-import { JobsData } from '../../services/job-list.service';
-import { CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll } from '@angular/cdk/scrolling';
+import { CdkFixedSizeVirtualScroll, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { DatePipe } from '@angular/common';
+import { Component, input, TrackByFunction } from '@angular/core';
+import { MatIcon } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLinkWithReturnDirective } from 'src/app/library/navigation';
 import { ScrollTopDirective } from 'src/app/library/scroll-to-top/scroll-top.directive';
 import { ViewSizeDirective } from 'src/app/library/view-size';
-import { MatIcon } from '@angular/material/icon';
+import { JobFilter, JobUnwindedPartial } from '../../interfaces';
+import { JobsData } from '../../services/job-list.service';
 import { JobListFilterSummaryComponent } from '../job-list-filter-summary/job-list-filter-summary.component';
 
 @Component({

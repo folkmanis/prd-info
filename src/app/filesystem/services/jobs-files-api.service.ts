@@ -1,10 +1,10 @@
-import { HttpClient, HttpEvent, HttpRequest } from '@angular/common/http';
+import { HttpClient, HttpEvent } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { concatMap, from, map, Observable, reduce } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { Job } from 'src/app/jobs';
-import { ValidatorService } from 'src/app/library';
-import { HttpOptions } from 'src/app/library/http';
+import { validateAsync, validatorFn } from 'src/app/library';
+import { cacheable, httpParams } from 'src/app/library/http';
 import { FileElement } from '../interfaces/file-element';
 import { FileLocationTypes } from '../interfaces/file-location-types';
 
@@ -12,28 +12,27 @@ import { FileLocationTypes } from '../interfaces/file-location-types';
 export class JobsFilesApiService {
   #path = getAppParams('apiPath') + 'jobs/files/';
   #http = inject(HttpClient);
-  #validator = inject(ValidatorService);
-
-  fileUpload(jobId: number, form: FormData): Observable<HttpEvent<Job>> {
-    const request = new HttpRequest('PUT', this.#path + jobId + '/upload', form, { reportProgress: true });
-    return this.#http.request<Job>(request);
-  }
 
   userFileUpload(form: FormData): Observable<HttpEvent<{ names: string[] }>> {
-    const request = new HttpRequest('PUT', this.#path + 'user/upload', form, { reportProgress: true });
-    return this.#http.request(request);
+    return this.#http.put<{ names: string[] }>(this.#path + 'user/upload', form, {
+      observe: 'events',
+    });
   }
 
   transferUserfilesToJob(jobId: number, fileNames: string[]): Observable<Job> {
-    return this.#http.patch<Job>(this.#path + 'move/user/' + jobId, {
-      fileNames,
-    });
+    return this.#http
+      .patch(this.#path + 'move/user/' + jobId, {
+        fileNames,
+      })
+      .pipe(map(validatorFn(Job)));
   }
 
   transferFtpFilesToJob(jobId: number, fileNames: string[][]): Observable<Job> {
-    return this.#http.patch<Job>(`${this.#path}copy/ftp/${jobId}`, {
-      files: fileNames,
-    });
+    return this.#http
+      .patch(`${this.#path}copy/ftp/${jobId}`, {
+        files: fileNames,
+      })
+      .pipe(map(validatorFn(Job)));
   }
 
   deleteUserFiles(fileNames: string[]) {
@@ -46,25 +45,22 @@ export class JobsFilesApiService {
 
   readFtp(path?: string): Observable<FileElement[]> {
     return this.#http
-      .get<Record<string, any>[]>(this.#path + 'read/ftp', new HttpOptions({ path }).cacheable())
-      .pipe(map(this.#validator.arrayValidatorFn(FileElement)));
+      .get(this.#path + 'read/ftp', httpParams({ path }).cacheable())
+      .pipe(map(validatorFn(FileElement.array())));
   }
 
   readDropFolders(path?: string): Promise<FileElement[]> {
-    const request$ = this.#http.get<Record<string, any>[]>(
-      this.#path + 'read/drop-folder',
-      new HttpOptions({ path }).cacheable(),
-    );
-    return this.#validator.validateArrayAsync(FileElement, request$);
+    const request$ = this.#http.get(this.#path + 'read/drop-folder', cacheable({ path }));
+    return validateAsync(FileElement.array(), request$);
   }
 
   updateFilesLocation(jobId: number): Promise<Job> {
-    const result$ = this.#http.patch<Job>(this.#path + jobId + '/update-files-location', new HttpOptions());
-    return this.#validator.validateAsync(Job, result$);
+    const result$ = this.#http.patch(this.#path + jobId + '/update-files-location', {});
+    return validateAsync(Job, result$);
   }
 
   copyFromJobToJob(srcJobId: number, dstJobId: number): Observable<Job> {
-    return this.#http.put<Job>(this.#path + srcJobId + '/copy/' + dstJobId, {}, new HttpOptions());
+    return this.#http.put(this.#path + srcJobId + '/copy/' + dstJobId, {}).pipe(map(validatorFn(Job)));
   }
 
   copyFile(
@@ -73,15 +69,12 @@ export class JobsFilesApiService {
     srcPath: string,
     dstPath: string,
   ): Observable<number> {
+    const body = {
+      ['source-path']: srcPath,
+      ['destination-path']: dstPath,
+    };
     return this.#http
-      .patch<{ copied: number }>(
-        this.#path + `copy/${srcType}/${dstType}`,
-        {
-          ['source-path']: srcPath,
-          ['destination-path']: dstPath,
-        },
-        new HttpOptions(),
-      )
-      .pipe(map((resp) => resp?.copied));
+      .patch<{ copied: number }>(this.#path + `copy/${srcType}/${dstType}`, body)
+      .pipe(map((resp) => resp.copied));
   }
 }

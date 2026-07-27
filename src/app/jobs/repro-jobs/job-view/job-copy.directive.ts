@@ -1,7 +1,5 @@
 import { Directive, inject, input } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
-import { ConfirmationDialogService } from 'src/app/library';
-import { navigateRelative } from 'src/app/library/navigation';
+import { ConfirmationDialogService, navigateRelative } from 'src/app/library';
 import { Job } from '../../interfaces';
 
 @Directive({
@@ -19,8 +17,9 @@ export class JobCopyDirective {
   async onCopy() {
     const queryParams = { copyId: this.job().jobId, copyFiles: null as boolean | null };
     if (this.hasFolder()) {
-      const shouldCopyFiles$ = this.dialog.confirm('Vai kopēt arī visus failus?', { data: { title: 'Kopēt darbu' } });
-      queryParams.copyFiles = await firstValueFrom(shouldCopyFiles$);
+      queryParams.copyFiles = await this.dialog.confirm('Vai kopēt arī visus failus?', {
+        data: { title: 'Kopēt darbu' },
+      });
     }
     this.navigate(['..', 'new'], { queryParams, state: { returnUrl: '/jobs/repro' } });
   }

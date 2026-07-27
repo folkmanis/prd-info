@@ -1,15 +1,18 @@
+import { isoDatetimeToDate } from 'src/app/library';
 import { z } from 'zod';
 import { JobFilterSchema } from './job-query-filter';
 
-export const SavedJobsProductionQuery = z.object({
-  sort: z.string().default('name,1'),
-  fromDate: z.coerce.date().nullable(),
-  toDate: z.coerce.date().nullable(),
-  jobStatus: z.array(z.number()).default([10, 20]),
-  category: z.array(z.string()).default(['repro']),
-  customer: z.string().nullable().default(null),
-});
-export type SavedJobsProductionQuery = z.infer<typeof SavedJobsProductionQuery>;
+export const SavedJobsProductionFilterSchema = z
+  .object({
+    sort: z.string(),
+    fromDate: isoDatetimeToDate,
+    toDate: isoDatetimeToDate,
+    jobStatus: z.array(z.number()),
+    category: z.array(z.string()),
+    customer: z.string(),
+  })
+  .partial();
+export type SavedJobsProductionFilter = z.infer<typeof SavedJobsProductionFilterSchema>;
 
 export const QuickCreateJobSchema = z
   .object({
@@ -27,11 +30,24 @@ export const GmailUserSettings = z.object({
 });
 export type GmailUserSettings = z.infer<typeof GmailUserSettings>;
 
+export const SavedJobFilterSchema = z
+  .object({
+    ...JobFilterSchema.shape,
+    invoice: z.boolean(),
+    jobStatus: z.array(z.number()).default([10, 20]),
+    jobsId: z.array(z.number()),
+    unwindProducts: z.boolean(),
+    start: z.number().int().nonnegative(),
+    limit: z.number().int().nonnegative(),
+  })
+  .partial();
+export type SavedJobFilter = z.output<typeof SavedJobFilterSchema>;
+
 export const JobsUserPreferences = z.object({
-  jobsProductionQuery: SavedJobsProductionQuery,
+  jobsProductionQuery: SavedJobsProductionFilterSchema,
   gmail: GmailUserSettings,
   quickCreateJob: QuickCreateJobSchema,
-  jobListFilter: JobFilterSchema.default({}),
+  jobListFilter: SavedJobFilterSchema.default({}),
 });
 export type JobsUserPreferences = z.infer<typeof JobsUserPreferences>;
 
@@ -39,11 +55,6 @@ export function defaultJobsUserPreferences(): JobsUserPreferences {
   return {
     jobsProductionQuery: {
       sort: 'name,1',
-      fromDate: new Date(),
-      toDate: new Date(),
-      jobStatus: [10, 20],
-      category: ['repro'],
-      customer: null,
     },
     gmail: {
       activeLabelId: ['CATEGORY_PERSONAL'],

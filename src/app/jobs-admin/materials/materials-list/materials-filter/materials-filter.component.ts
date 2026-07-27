@@ -8,10 +8,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { configuration } from 'src/app/services/config.provider';
 
-export type MaterialsFilterModel = {
+export interface MaterialsFilterModel {
   name: string;
   categories: string[];
-};
+}
 
 @Component({
   selector: 'app-materials-filter',

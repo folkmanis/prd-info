@@ -1,6 +1,6 @@
 import { Component, computed, inject, input } from '@angular/core';
 import { JobState, ProductCategory } from 'src/app/interfaces';
-import { JobsProductionQuery } from 'src/app/jobs/interfaces';
+import { JobsProductionFilter } from 'src/app/jobs/interfaces';
 import { DateUtilsService } from 'src/app/library/date-services';
 
 @Component({
@@ -12,7 +12,7 @@ import { DateUtilsService } from 'src/app/library/date-services';
 export class ProductsFilterSummaryComponent {
   private dateUtils = inject(DateUtilsService);
 
-  query = input.required<Pick<JobsProductionQuery, 'category' | 'customer' | 'fromDate' | 'toDate' | 'jobStatus'>>();
+  query = input.required<Pick<JobsProductionFilter, 'category' | 'customer' | 'fromDate' | 'toDate' | 'jobStatus'>>();
 
   states = input<JobState[]>([]);
 

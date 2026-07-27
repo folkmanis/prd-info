@@ -24,17 +24,17 @@ export class DragDropDirective {
 
   dragActive = signal(false);
 
-  onDragOver(event: any) {
+  onDragOver(event: Event) {
     event.preventDefault();
     event.stopPropagation();
   }
 
-  onDragEnter(event: any) {
+  onDragEnter(event: Event) {
     event.stopPropagation();
     this.dragActive.set(true);
   }
 
-  onDragLeave(event: any) {
+  onDragLeave(event: Event) {
     event.stopPropagation();
     this.dragActive.set(false);
   }

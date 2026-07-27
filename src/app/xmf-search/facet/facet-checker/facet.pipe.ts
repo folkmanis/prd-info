@@ -20,11 +20,11 @@ export class FacetPipe implements PipeTransform {
     'Decembris',
   ];
 
-  transform(value: number | string | null): any {
+  transform<T extends number | string | null>(value: T): string | number {
     if (!value) {
       return '--';
     }
-    if (+value === value && value > 0 && value <= this.names.length) {
+    if (typeof value === 'number' && value > 0 && value <= this.names.length) {
       return value.toString().padStart(2, '0') + '-' + this.names[value - 1];
     }
     return value;

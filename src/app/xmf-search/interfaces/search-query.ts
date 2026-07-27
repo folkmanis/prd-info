@@ -1,9 +1,12 @@
+import { optionalNumberToString } from 'src/app/library';
 import { facetFilterToQuery } from './facet-filter';
 import { z } from 'zod';
 
 const SearchFilterSchema = z.object({
   search: z.string(),
   facet: facetFilterToQuery,
+  start: z.number().int().optional(),
+  limit: z.number().int().optional(),
 });
 
 const SearchQuerySchema = z
@@ -12,6 +15,8 @@ const SearchQuerySchema = z
     customerName: z.string(),
     year: z.string(),
     month: z.string(),
+    start: optionalNumberToString,
+    limit: optionalNumberToString,
   })
   .partial();
 

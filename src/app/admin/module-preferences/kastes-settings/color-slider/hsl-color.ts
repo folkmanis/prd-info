@@ -4,7 +4,7 @@ export interface HslColor {
   lightness: number;
 }
 
-export const lightness = (hsl: string) => Number(hsl.match(/(\d+(?:\.\d+)?)%(?=\s*\)$)/)?.[1]);
+export const getLightness = (hsl: string) => Number(hsl.match(/(\d+(?:\.\d+)?)%(?=\s*\)$)/)?.[1]);
 
 export function stringToHsl(color: string): HslColor | null {
   const hslRegex = /hsl\((?<hue>\d+),(?<saturation>\d+)%,(?<lightness>\d+)%\)/;

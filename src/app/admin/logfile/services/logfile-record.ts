@@ -1,8 +1,7 @@
-import { endOfDay, startOfDay } from 'date-fns';
+import { isoDateToDate, stringToInt } from 'src/app/library';
 import { z } from 'zod';
 
 export const LogRecordSchema = z.object({
-  _id: z.string(),
   level: z.number(),
   timestamp: z.coerce.date(),
   info: z.string(),
@@ -10,20 +9,13 @@ export const LogRecordSchema = z.object({
 });
 export type LogRecord = z.infer<typeof LogRecordSchema>;
 
-export interface LogQueryFilter {
-  level: number;
-  dateFrom: string;
-  dateTo: string;
-  limit?: number;
-  start?: number;
-}
-
-export function createLogQueryFilter(level: number, date: Date, limit?: number, start?: number): LogQueryFilter {
-  return {
-    level,
-    dateFrom: startOfDay(date).toISOString(),
-    dateTo: endOfDay(date).toISOString(),
-    limit,
-    start,
-  };
-}
+export const LogFilterSchema = z
+  .object({
+    level: stringToInt,
+    dateFrom: isoDateToDate,
+    dateTo: isoDateToDate,
+    limit: stringToInt,
+    start: stringToInt,
+  })
+  .partial();
+export type LogFilter = z.infer<typeof LogFilterSchema>;

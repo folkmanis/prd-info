@@ -5,7 +5,7 @@ import { JobsApiService } from 'src/app/jobs/services/jobs-api.service';
 import { FilterInput } from 'src/app/library';
 import { combineReload } from 'src/app/library/rxjs';
 import { PagedCache } from 'src/app/library/rxjs/paged-cache';
-import { JobFilter, jobFilterToRequestQuery, JobPartial, JobsProduction, JobUnwindedPartial } from '../interfaces';
+import { JobFilter, JobPartial, JobsProduction, JobUnwindedPartial } from '../interfaces';
 
 export class JobsData<T extends object> extends DataSource<T | undefined> {
   private reload$ = new Subject<void>();
@@ -19,6 +19,7 @@ export class JobsData<T extends object> extends DataSource<T | undefined> {
     return combineReload(range$, this.reload$).pipe(switchMap((range) => this.cache.fetchRange(range)));
   }
 
+  // eslint-disable-next-line
   disconnect() {}
 
   updateAt(idx: number, update: Partial<T>) {
@@ -36,10 +37,9 @@ export class JobListService {
 
   getData(filter$: Observable<JobFilter>): Observable<JobsData<JobPartial>> {
     return filter$.pipe(
-      map((filter) => jobFilterToRequestQuery(filter)),
-      switchMap((query) =>
-        this.#api.getJobsCount({ ...query, unwindProducts: 0 }).pipe(
-          map(({ count }) => new PagedCache<JobPartial>(count, this.#fetchRecordsFn(query))),
+      switchMap((filter) =>
+        this.#api.getJobsCount({ ...filter, unwindProducts: false }).pipe(
+          map(({ count }) => new PagedCache<JobPartial>(count, this.#fetchRecordsFn(filter))),
           map((cache) => new JobsData(cache)),
         ),
       ),
@@ -48,10 +48,9 @@ export class JobListService {
 
   getUnwindedData(filter$: Observable<JobFilter>): Observable<JobsData<JobUnwindedPartial>> {
     return filter$.pipe(
-      map((filter) => jobFilterToRequestQuery(filter)),
-      switchMap((query) =>
-        this.#api.getJobsCount({ ...query, unwindProducts: 1 }).pipe(
-          map(({ count }) => new PagedCache<JobUnwindedPartial>(count, this.#fetchUnwindedRecordsFn(query))),
+      switchMap((filter) =>
+        this.#api.getJobsCount({ ...filter, unwindProducts: true }).pipe(
+          map(({ count }) => new PagedCache<JobUnwindedPartial>(count, this.#fetchUnwindedRecordsFn(filter))),
           map((cache) => new JobsData(cache)),
         ),
       ),
@@ -62,13 +61,13 @@ export class JobListService {
     return this.#api.jobsProductionSummary(filter);
   }
 
-  #fetchRecordsFn(query: Record<string, any> | undefined): (start: number, limit: number) => Promise<JobPartial[]> {
-    return (start, limit) => this.#api.getAll({ ...query, start, limit });
+  #fetchRecordsFn(filter: JobFilter): (start: number, limit: number) => Promise<JobPartial[]> {
+    return (start, limit) => this.#api.getAll({ ...filter, start, limit });
   }
 
   #fetchUnwindedRecordsFn(
-    query: FilterInput<JobFilter>,
+    filter: FilterInput<JobFilter>,
   ): (start: number, limit: number) => Promise<JobUnwindedPartial[]> {
-    return (start, limit) => this.#api.getAllUnwinded({ ...query, start, limit });
+    return (start, limit) => this.#api.getAllUnwinded({ ...filter, start, limit });
   }
 }

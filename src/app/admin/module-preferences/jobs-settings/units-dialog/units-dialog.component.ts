@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { disabled, form, FormField, FormRoot, readonly, required } from '@angular/forms/signals';
+import { disabled, form, FormField, FormRoot, required } from '@angular/forms/signals';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import {
@@ -12,7 +12,6 @@ import {
 } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ProductUnitSchema } from 'src/app/interfaces';
 import { ProductUnitModel, ProductUnitModelSchema } from '../jobs-settings.model';
 
 @Component({

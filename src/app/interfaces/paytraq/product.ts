@@ -14,8 +14,8 @@ export interface PaytraqProduct {
   orderLeadTime: number;
   group: Group;
   hasLots: boolean;
-  taxKeys: TaxKeysOrAccounts;
-  accounts: TaxKeysOrAccounts;
+  // taxKeys: TaxKeysOrAccounts;
+  // accounts: TaxKeysOrAccounts;
   timeStamps: TimeStamps;
 }
 export interface Unit {
@@ -26,4 +26,4 @@ export interface Group {
   groupID: number;
   groupName: string;
 }
-export interface TaxKeysOrAccounts {}
+// export interface TaxKeysOrAccounts {}

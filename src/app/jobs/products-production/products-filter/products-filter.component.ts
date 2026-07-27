@@ -1,14 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  input,
-  linkedSignal,
-  model,
-  untracked,
-} from '@angular/core';
-import { disabled, form, FormField } from '@angular/forms/signals';
+import { Component, computed, effect, input, linkedSignal, model, untracked } from '@angular/core';
+import { debounce, disabled, form, FormField } from '@angular/forms/signals';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -19,12 +10,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
+import { endOfDay, startOfDay } from 'date-fns';
+import { isEqual } from 'lodash-es';
 import { CustomerList } from 'src/app/interfaces';
+import { pickNotNull } from 'src/app/library';
 import { AutocompleteFilterDirective } from 'src/app/library/autocomplete';
 import { DateRangePickerComponent } from 'src/app/library/date-range-picker';
 import { ViewSizeDirective } from 'src/app/library/view-size';
 import { configuration } from 'src/app/services/config.provider';
-import { JobsProductionQuery } from '../../interfaces';
+import { z, ZodType } from 'zod';
+import { JobsProductionFilter } from '../../interfaces';
 import { ProductsFilterSummaryComponent } from '../products-filter-summary/products-filter-summary.component';
 
 export const REPRO_DEFAULTS = {
@@ -32,41 +27,66 @@ export const REPRO_DEFAULTS = {
   category: ['repro'],
 };
 
-export type JobsProductionFilter = Pick<
-  JobsProductionQuery,
-  'category' | 'customer' | 'fromDate' | 'toDate' | 'jobStatus'
->;
+const optionalNullableString = z.codec(z.string().optional(), z.string().nullable(), {
+  decode: (str) => str ?? '',
+  encode: (str) => str || undefined,
+});
 
-interface FilterModel {
-  jobStatus: number[];
-  category: string[];
-  customer: string;
-  interval: {
-    start: Date | null;
-    end: Date | null;
-  };
-}
+const notEmptyArray = <T>(schema: ZodType<T, T>) =>
+  z.codec(z.array(schema).optional(), z.array(schema), {
+    decode: (arr) => arr || [],
+    encode: (arr) => (arr.length === 0 ? undefined : (arr as T[])),
+  });
+
+const nullableOptionalDate = z.codec(z.date().optional(), z.date().nullable(), {
+  decode: (value) => value ?? null,
+  encode: (value) => value ?? undefined,
+});
+const IntervalModelSchema = z.object({
+  start: nullableOptionalDate,
+  end: nullableOptionalDate,
+});
+const JobsProductionFilterModelSchema = z.codec(
+  z
+    .object({
+      jobStatus: notEmptyArray(z.number()),
+      category: notEmptyArray(z.string()),
+      customer: z.string(),
+      fromDate: z.date(),
+      toDate: z.date(),
+    })
+    .partial(),
+  z.object({
+    jobStatus: z.array(z.number()).default([]),
+    category: z.array(z.string()).default([]),
+    customer: optionalNullableString,
+    interval: IntervalModelSchema,
+  }),
+  {
+    encode: ({ interval, ...rest }) => {
+      const { start, end } = interval;
+      const fromDate = start && startOfDay(start);
+      const toDate = end && endOfDay(end);
+      return { ...pickNotNull(rest), fromDate, toDate };
+    },
+    decode: ({ fromDate: start, toDate: end, ...rest }) => ({
+      interval: {
+        start,
+        end,
+      },
+      ...rest,
+    }),
+  },
+);
+type FilterModel = z.infer<typeof JobsProductionFilterModelSchema>;
+export type FilterUpdate = z.input<typeof JobsProductionFilterModelSchema>;
 
 function filterToModel(filter: JobsProductionFilter): FilterModel {
-  return {
-    jobStatus: filter.jobStatus,
-    category: filter.category,
-    customer: filter.customer ?? '',
-    interval: {
-      start: filter.fromDate,
-      end: filter.toDate,
-    },
-  };
+  return JobsProductionFilterModelSchema.decode(filter);
 }
 
-function modelToFilter(model: FilterModel): JobsProductionFilter {
-  return {
-    fromDate: model.interval.start,
-    toDate: model.interval.end,
-    jobStatus: model.jobStatus,
-    category: model.category,
-    customer: model.customer || null,
-  };
+function modelToFilter(filterModel: FilterModel): FilterUpdate {
+  return JobsProductionFilterModelSchema.encode(filterModel);
 }
 
 @Component({
@@ -108,12 +128,15 @@ export class ProductsFilterComponent {
     disabled(s.customer, { when: () => !this.customerNames() });
 
     disabled(s, { when: () => this.disabled() });
+    debounce(s, 300);
   });
 
   constructor() {
     effect(() => {
-      if (this.filterForm().valid()) {
-        this.filter.set(modelToFilter(this.filterForm().value()));
+      const update = this.filterForm().value();
+      const current = untracked(() => filterToModel(this.filter()));
+      if (this.filterForm().valid() && isEqual(update, current) === false) {
+        this.filter.set(modelToFilter(update));
       }
     });
   }

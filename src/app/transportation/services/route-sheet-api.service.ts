@@ -3,7 +3,19 @@ import { inject, Service, Signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
 import { firstValueFrom, map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
-import { HttpOptions, httpResponseRequest, ValidatorService } from 'src/app/library';
+import { pluckDeletedCount } from 'src/app/interfaces';
+import {
+  cacheable,
+  httpFilter,
+  httpFilterSignal,
+  httpParams,
+  httpResponseRequest,
+  stringToArray,
+  stringToInt,
+  validateAsync,
+  validatorFn,
+} from 'src/app/library';
+import { z } from 'zod';
 import { HistoricalData } from '../interfaces/historical-data';
 import { TransportationCustomer } from '../interfaces/transportation-customer';
 import {
@@ -13,79 +25,88 @@ import {
   TransportationRouteSheetUpdate,
 } from '../interfaces/transportation-route-sheet';
 
+const RouteSheetFilterSchema = z
+  .object({
+    name: z.string(),
+    fuelTypes: stringToArray(z.number()),
+    year: stringToInt,
+    month: stringToInt,
+    vehicleId: z.string(),
+  })
+  .partial();
+export type RouteSheetFilter = z.infer<typeof RouteSheetFilterSchema>;
+
 @Service()
 export class RouteSheetApiService {
   readonly #path = getAppParams('apiPath') + 'transportation';
   #http = inject(HttpClient);
-  #validator = inject(ValidatorService);
 
-  routeSheetResource(params: Signal<Record<string, any>>) {
-    return httpResource(() => httpResponseRequest(this.#path, new HttpOptions(params()).cacheable()), {
-      parse: this.#validator.arrayValidatorFn(TransportationRouteSheet),
+  routeSheetResource(filter: Signal<RouteSheetFilter | undefined>) {
+    const query = httpFilterSignal(RouteSheetFilterSchema, filter);
+    return httpResource(() => httpResponseRequest(this.#path, query().cacheable()), {
+      parse: validatorFn(TransportationRouteSheet.array()),
       defaultValue: [],
       equal: isEqual,
     });
   }
 
-  getRouteSheets(params: Record<string, any>): Promise<TransportationRouteSheet[]> {
-    const response$ = this.#http.get<Record<string, any>[]>(this.#path, new HttpOptions(params));
-    return this.#validator.validateArrayAsync(TransportationRouteSheet, response$);
+  getRouteSheets(filter: RouteSheetFilter | undefined): Promise<TransportationRouteSheet[]> {
+    const query = httpFilter(RouteSheetFilterSchema, filter);
+    const response$ = this.#http.get(this.#path, query);
+    return validateAsync(TransportationRouteSheet.array(), response$);
   }
 
   getOne(id: string): Promise<TransportationRouteSheet> {
-    const response$ = this.#http.get<Record<string, any>>(`${this.#path}/${id}`, new HttpOptions());
-    return this.#validator.validateAsync(TransportationRouteSheet, response$);
+    const response$ = this.#http.get(`${this.#path}/${id}`);
+    return validateAsync(TransportationRouteSheet, response$);
   }
 
   createOne(data: TransportationRouteSheetCreate): Promise<TransportationRouteSheet> {
-    const response$ = this.#http.put<Record<string, any>>(this.#path, data, new HttpOptions());
-    return this.#validator.validateAsync(TransportationRouteSheet, response$);
+    const response$ = this.#http.put(this.#path, data);
+    return validateAsync(TransportationRouteSheet, response$);
   }
 
   updateOne(id: string, update: TransportationRouteSheetUpdate): Promise<TransportationRouteSheet> {
-    const response$ = this.#http.patch<Record<string, any>>(`${this.#path}/${id}`, update, new HttpOptions());
-    return this.#validator.validateAsync(TransportationRouteSheet, response$);
+    const response$ = this.#http.patch(`${this.#path}/${id}`, update);
+    return validateAsync(TransportationRouteSheet, response$);
   }
 
   async deleteOne(id: string): Promise<number> {
-    const response$ = this.#http.delete<{ deletedCount: number }>(`${this.#path}/${id}`, new HttpOptions());
-    const { deletedCount } = await firstValueFrom(response$);
-    return deletedCount;
+    const response$ = this.#http.delete(`${this.#path}/${id}`).pipe(pluckDeletedCount());
+    return firstValueFrom(response$);
   }
 
-  getCustomers() {
+  getCustomers(): Observable<TransportationCustomer[]> {
     return this.#http
-      .get<Record<string, any>[]>(this.#path + '/customers', new HttpOptions().cacheable())
-      .pipe(map(this.#validator.arrayValidatorFn(TransportationCustomer)));
+      .get(this.#path + '/customers', cacheable())
+      .pipe(map(validatorFn(TransportationCustomer.array())));
   }
 
   async distanceRequest(request: {
     tripStops: Pick<RouteStop, 'address' | 'googleLocationId'>[];
   }): Promise<{ distance: number }> {
-    const response$ = this.#http.post<{ distance: number }>(
-      this.#path + '/distance-request',
-      request,
-      new HttpOptions(),
-    );
-    return await firstValueFrom(response$);
+    const response$ = this.#http
+      .post(this.#path + '/distance-request', request)
+      .pipe(map(validatorFn(z.object({ distance: z.number() }))));
+    return firstValueFrom(response$);
   }
 
   getDescriptions(count?: number): Observable<string[]> {
-    return this.#http.get<string[]>(this.#path + '/descriptions', new HttpOptions({ count }).cacheable());
+    return this.#http.get<string[]>(this.#path + '/descriptions', httpParams({ count }).cacheable());
   }
 
   getHistoricalDataResource(licencePlate: Signal<string | null | undefined>) {
     return httpResource(
       () => (licencePlate() ? httpResponseRequest(this.#path + '/historical-data/' + licencePlate()) : undefined),
       {
-        parse: this.#validator.validatorFn(HistoricalData),
+        parse: validatorFn(HistoricalData),
       },
     );
   }
 
   getHistoricalData(licencePlate: string): Observable<HistoricalData> {
     return this.#http
-      .get<HistoricalData>(this.#path + '/historical-data/' + licencePlate, new HttpOptions())
-      .pipe(map(this.#validator.validatorFn(HistoricalData)));
+      .get<HistoricalData>(this.#path + '/historical-data/' + licencePlate)
+      .pipe(map(validatorFn(HistoricalData)));
   }
 }

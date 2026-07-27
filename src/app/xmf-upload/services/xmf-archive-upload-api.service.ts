@@ -1,27 +1,22 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
+import { map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
-import { HttpOptions, ValidatorService } from 'src/app/library';
+import { httpResponseRequest, validatorFn } from 'src/app/library';
 import { XmfUploadProgress } from '../interfaces/xmf-upload-progress';
-
-interface Params {
-  start?: number;
-  limit?: number;
-}
 
 @Service()
 export class XmfArchiveUploadApiService {
   #path = getAppParams('apiPath') + 'xmf-upload/';
-  #validator = inject(ValidatorService);
   #http = inject(HttpClient);
 
-  getHistory(params: Params = {}): Promise<XmfUploadProgress[]> {
-    const data$ = this.#http.get<Record<string, unknown>[]>(this.#path, new HttpOptions(params).cacheable());
-    return this.#validator.validateArrayAsync(XmfUploadProgress, data$);
+  getHistoryResource(): HttpResourceRef<XmfUploadProgress[] | undefined> {
+    return httpResource(() => httpResponseRequest(this.#path), {
+      parse: validatorFn(XmfUploadProgress.array()),
+    });
   }
 
-  uploadArchive(formData: FormData): Promise<XmfUploadProgress> {
-    const data$ = this.#http.post(this.#path, formData);
-    return this.#validator.validateAsync(XmfUploadProgress, data$);
+  uploadArchive(formData: FormData): Observable<XmfUploadProgress> {
+    return this.#http.post(this.#path, formData).pipe(map(validatorFn(XmfUploadProgress)));
   }
 }

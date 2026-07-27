@@ -48,7 +48,7 @@ export class UploadComponent {
   orderId = model<number | null>(null);
   plannedTotals = signal<Record<Colors, number> | null>(null);
 
-  inputData = signal<Array<string | number>[]>([]);
+  inputData = signal<(string | number)[][]>([]);
 
   orders = toSignal(this.pasutijumiService.getKastesJobs({}), { initialValue: [] });
 

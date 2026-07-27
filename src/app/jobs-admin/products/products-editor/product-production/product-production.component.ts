@@ -16,7 +16,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
-import { Material, MaterialList, ProductionStage } from 'src/app/interfaces';
+import { MaterialList, ProductionStage } from 'src/app/interfaces';
 import { ProductProductionStage } from 'src/app/interfaces/product-production-stage';
 import { SelectDirective } from 'src/app/library/directives/select.directive';
 import { ProductsService } from 'src/app/services';
@@ -64,6 +64,7 @@ export class ProductProductionComponent implements ControlValueAccessor, Validat
   materials = input<MaterialList[]>([]);
   productionStages = input<ProductionStage[]>([]);
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   onTouched: () => void = () => {};
 
   writeValue(obj: ProductProductionStage[]): void {
@@ -74,7 +75,7 @@ export class ProductProductionComponent implements ControlValueAccessor, Validat
     this.form.valueChanges.subscribe(fn);
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 

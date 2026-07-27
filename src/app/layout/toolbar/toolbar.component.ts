@@ -1,11 +1,9 @@
 import { Component, OnInit, inject, input, model, output } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
-import { MatButton, MatButtonModule, MatIconButton } from '@angular/material/button';
+import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { MatToolbar } from '@angular/material/toolbar';
 import { RouterLink } from '@angular/router';
 import { Observable, timer } from 'rxjs';

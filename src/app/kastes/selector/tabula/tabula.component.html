@@ -1,4 +1,11 @@
-<mat-table [dataSource]="addressPackages()" [trackBy]="trackByFn" class="app-table container" #scrollContainer scroll-to-top cdk-scrollable>
+<mat-table
+  [dataSource]="addressPackages()"
+  [trackBy]="trackByFn"
+  class="app-table container"
+  #scrollContainer
+  scroll-to-top
+  cdk-scrollable
+>
   <!-- Sleja ar atzīmi par uzlīmes esamību -->
   <ng-container matColumnDef="label">
     <mat-header-cell *matHeaderCellDef></mat-header-cell>
@@ -14,7 +21,9 @@
   <!-- Adrese sleja -->
   <ng-container matColumnDef="adrese">
     <mat-header-cell *matHeaderCellDef mat>Adrese</mat-header-cell>
-    <mat-cell *matCellDef="let addressPackage"> {{ addressPackage.address | titlecase }} ({{ addressPackage.total }}) </mat-cell>
+    <mat-cell *matCellDef="let addressPackage">
+      {{ addressPackage.address | titlecase }} ({{ addressPackage.total }})
+    </mat-cell>
   </ng-container>
 
   <!-- Krāsu slejas -->

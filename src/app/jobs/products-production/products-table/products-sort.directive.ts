@@ -1,4 +1,4 @@
-import { Directive, computed, effect, model } from '@angular/core';
+import { Directive, computed, model } from '@angular/core';
 import { MatSort, Sort } from '@angular/material/sort';
 
 @Directive({

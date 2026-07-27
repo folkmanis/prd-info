@@ -1,6 +1,7 @@
 import { computed, inject, Service, linkedSignal, resource } from '@angular/core';
 import { LoginService } from 'src/app/login';
 import { MessagesApiService } from './messages-api.service';
+import { Message } from '../interfaces/message';
 
 @Service()
 export class MessagingService {
@@ -9,16 +10,11 @@ export class MessagingService {
 
   messagesResource = resource({
     params: () => ({ user: this.#login.user() }),
-    loader: ({ params }) => {
-      if (params.user) {
-        return this.#api.getAllMessages();
-      } else {
-        return Promise.resolve([]);
-      }
-    },
+    loader: async ({ params }) => (params.user ? this.#api.getAllMessages() : ([] as Message[])),
+    defaultValue: [],
   });
 
-  messages = linkedSignal(() => this.messagesResource.value() ?? []);
+  messages = linkedSignal(() => this.messagesResource.value());
 
   messagesCount = computed(() => this.messages().length);
 

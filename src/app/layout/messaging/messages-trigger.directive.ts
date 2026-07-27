@@ -27,7 +27,11 @@ export class MessagesTriggerDirective extends CdkOverlayOrigin implements OnInit
 
   @HostListener('click')
   onClick() {
-    this.overlayRef.hasAttached() ? this.overlayRef.detach() : this.openOverlay();
+    if (this.overlayRef.hasAttached()) {
+      this.overlayRef.detach();
+    } else {
+      this.openOverlay();
+    }
   }
 
   ngOnInit(): void {

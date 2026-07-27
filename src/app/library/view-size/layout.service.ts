@@ -21,7 +21,7 @@ const MEDIA_BREAKPOINTS = {
 export class LayoutService {
   private breakpointObserver = inject(BreakpointObserver);
 
-  private readonly breakpoints: { [key in AppBreakpoints]: string | string[] } = {
+  private readonly breakpoints: Record<AppBreakpoints, string | string[]> = {
     small: `(max-width: ${MEDIA_BREAKPOINTS.small})`,
     medium: [`(max-width: ${MEDIA_BREAKPOINTS.medium}) and (min-width: ${MEDIA_BREAKPOINTS.small})`],
     large: `(min-width: ${MEDIA_BREAKPOINTS.medium})`,

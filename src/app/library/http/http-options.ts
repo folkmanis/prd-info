@@ -1,40 +1,54 @@
-import { HttpParams, HttpHeaders, HttpContext, HttpContextToken } from '@angular/common/http';
+import { HttpParams, HttpHeaders, HttpContext, HttpContextToken, HttpClientCommonOptions } from '@angular/common/http';
 
-export class HttpOptions {
-  headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-  params: HttpParams = new HttpParams();
-  context = new HttpContext();
-  /**
-   * Objekts lietošanai kā HttpClient.get() options parametrs
-   *
-   * @param par: { [key: string]: any } http query parametri
-   * tiks nodoti kā ?key=value&key=value...
-   */
-  constructor(par: { [key: string]: any } = {}) {
+export function cacheable(
+  httpOptionsOrParameters?: HttpOptions | ConstructorParameters<typeof HttpOptions>[0],
+): HttpOptions {
+  if (httpOptionsOrParameters instanceof HttpOptions) {
+    return httpOptionsOrParameters.cacheable();
+  }
+  return new HttpOptions(httpOptionsOrParameters).cacheable();
+}
+
+export function httpParams(httpOptionsOrParameters?: ConstructorParameters<typeof HttpOptions>[0]): HttpOptions {
+  return new HttpOptions(httpOptionsOrParameters);
+}
+
+export class HttpOptions implements HttpClientCommonOptions {
+  headers?: HttpHeaders;
+  params: HttpParams;
+  context? = new HttpContext();
+
+  constructor(par: string | HttpParams | Record<string, unknown> = {}) {
+    if (typeof par === 'string') {
+      this.params = new HttpParams({ fromString: par });
+      return;
+    }
+    if (par instanceof HttpParams) {
+      this.params = par;
+      return;
+    }
+
+    this.params = new HttpParams();
     Object.keys(par).forEach((key) => {
-      if (par[key] !== undefined) {
-        this.params = this.params.set(key, par[key]);
+      const parameter = par[key];
+      if (typeof parameter === 'string' || typeof parameter === 'number' || typeof parameter === 'boolean') {
+        this.params = this.params.set(key, parameter);
       }
     });
   }
-  /**
-   * Pievieno vērtību params objektam
-   *
-   * @param key parametrs
-   * @param val vērtība
-   */
-  set(key: string, val: string): HttpOptions {
+
+  setParam(key: string, val: string): HttpOptions {
     this.params = this.params.set(key, val);
     return this;
   }
 
   setHeader(name: string, value: string | string[]): HttpOptions {
-    this.headers = this.headers.set(name, value);
+    this.headers = (this.headers ?? new HttpHeaders()).set(name, value);
     return this;
   }
 
   setContext<T>(token: HttpContextToken<T>, value: T) {
-    this.context.set(token, value);
+    this.context = (this.context ?? new HttpContext()).set(token, value);
     return this;
   }
 

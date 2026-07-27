@@ -1,16 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import {
-  afterNextRender,
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  Injector,
-  input,
-  linkedSignal,
-  viewChild,
-} from '@angular/core';
+import { afterNextRender, Component, computed, effect, inject, input, linkedSignal, viewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -21,7 +10,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterLink } from '@angular/router';
-import { isEqual, pickBy } from 'lodash-es';
+import { isEqual } from 'lodash-es';
 import {
   combineLatest,
   concat,
@@ -41,6 +30,7 @@ import { DropFolder } from 'src/app/interfaces';
 import { notNullOrThrow } from 'src/app/library';
 import { KeyPressDirective } from 'src/app/library/directives';
 import { navigateToReturn, RouterLinkToReturnDirective } from 'src/app/library/navigation';
+import { computedChanges } from 'src/app/library/signals';
 import { ViewSizeDirective } from 'src/app/library/view-size';
 import { FileUploadMessage, Job } from '../../interfaces';
 import { parseJobId } from '../services/parse-job-id';
@@ -51,7 +41,6 @@ import { UploadProgressComponent } from '../upload-progress/upload-progress.comp
 import { DropFolderComponent } from './drop-folder/drop-folder.component';
 import { FolderPathComponent } from './folder-path/folder-path.component';
 import { JobFormComponent } from './job-form/job-form.component';
-import { computedChanges } from 'src/app/library/signals';
 
 @Component({
   selector: 'app-repro-job-edit',
@@ -82,7 +71,6 @@ import { computedChanges } from 'src/app/library/signals';
 export class ReproJobEditComponent {
   private snack = inject(MatSnackBar);
   private jobService = inject(ReproJobService);
-  private injector = inject(Injector);
 
   private customerInput = viewChild(JobFormComponent);
 
@@ -131,12 +119,11 @@ export class ReproJobEditComponent {
       const initial = this.initialValue();
       this.form.reset(initial);
       this.updateDisabledState(initial);
-      afterNextRender(
-        () => {
-          initial.customer || this.customerInput()?.focusCustomer();
-        },
-        { injector: this.injector },
-      );
+    });
+    afterNextRender(() => {
+      if (!this.initialValue().customer) {
+        this.customerInput()?.focusCustomer();
+      }
     });
 
     effect((onCleanup) => {

@@ -1,13 +1,12 @@
-import { AsyncPipe } from '@angular/common';
+import { HttpResourceRef } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
+import { MatButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressBar } from '@angular/material/progress-bar';
 import { FilesizePipe } from 'prd-cdk';
-import { Observable, Subject, from } from 'rxjs';
-import { cacheWithUpdate } from 'src/app/library/rxjs';
 import { notNullOrThrow } from '../library';
 import { FileDropDirective } from '../library/directives/file-drop.directive';
+import { updateCatching } from '../library/update-catching';
 import { XmfUploadProgress } from './interfaces/xmf-upload-progress';
 import { XmfUploadService } from './services/xmf-upload.service';
 import { TabulaComponent } from './tabula/tabula.component';
@@ -16,56 +15,50 @@ import { TabulaComponent } from './tabula/tabula.component';
   selector: 'app-xmf-upload',
   templateUrl: './xmf-upload.component.html',
   styleUrls: ['./xmf-upload.component.scss'],
-  imports: [
-    MatCardModule,
-    FilesizePipe,
-    AsyncPipe,
-    MatProgressBarModule,
-    FileDropDirective,
-    TabulaComponent,
-    MatButtonModule,
-  ],
+  imports: [MatCardModule, FilesizePipe, MatProgressBar, FileDropDirective, TabulaComponent, MatButton],
 })
 export class XmfUploadComponent {
   #uploadService = inject(XmfUploadService);
-  #historyUpdate$ = new Subject<XmfUploadProgress>();
 
-  busy = signal(false);
+  protected busy = signal(false);
+  #update = updateCatching(this.busy);
 
-  history$: Observable<XmfUploadProgress[]> = from(this.#uploadService.getHistory()).pipe(
-    cacheWithUpdate(this.#historyUpdate$, (o1, o2) => o1._id === o2._id),
-  );
+  protected history: HttpResourceRef<XmfUploadProgress[] | undefined> = this.#uploadService.getHistory();
 
-  file: File | null = null;
+  protected file = signal<File | null>(null);
 
-  onFileSelected(ev: any): void {
-    this.setFile(ev.target.files[0]);
+  protected onFileSelected({ target }: Event): void {
+    const input = target as HTMLInputElement;
+    const files = input.files;
+
+    if (!files?.length) {
+      return;
+    }
+    this.#setFile(files[0]);
   }
 
-  onFileDropped(ev: FileList): void {
+  protected onFileDropped(ev: FileList): void {
     const file = notNullOrThrow(ev.item(0), 'Filelist empty');
-    this.setFile(file);
+    this.#setFile(file);
   }
 
   async onUpload() {
-    const file = notNullOrThrow(this.file, 'Filelist empty');
-    this.busy.set(true);
-    const formData: FormData = new FormData();
-    formData.append('archive', file, file.name);
+    this.#update(async (message) => {
+      const file = notNullOrThrow(this.file(), 'Filelist empty');
+      const formData: FormData = new FormData();
+      formData.append('archive', file, file.name);
 
-    try {
-      const result = await this.#uploadService.postFile(formData);
-      this.#historyUpdate$.next(result);
-    } catch (error) {
-    } finally {
-      this.busy.set(false);
-      this.file = null;
-    }
+      await this.#uploadService.postFile(formData);
+      this.history.reload();
+      this.file.set(null);
+
+      message(`Augšupielāde pabeigta`);
+    });
   }
 
-  private setFile(file: File): void {
+  #setFile(file: File): void {
     if (this.#uploadService.validateFile(file)) {
-      this.file = file;
+      this.file.set(file);
     }
   }
 }

@@ -1,13 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  input,
-  linkedSignal,
-  signal,
-} from '@angular/core';
+import { Component, computed, effect, inject, input, linkedSignal, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AsyncValidatorFn, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,19 +8,18 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { isEqual, pickBy } from 'lodash-es';
 import { JobFilesService } from 'src/app/filesystem';
 import { CreateProductionStage, DropFolder, ProductionStage, UpdateProductionStage } from 'src/app/interfaces';
 import { notNullOrThrow } from 'src/app/library';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { navigateRelative } from 'src/app/library/navigation';
+import { computedChanges } from 'src/app/library/signals';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { CustomersService } from 'src/app/services';
 import { ProductionStagesService } from 'src/app/services/production-stages.service';
 import { EquipmentService } from '../../equipment/services/equipment.service';
 import { DropFoldersComponent } from '../drop-folders/drop-folders.component';
 import { ProductionStagesListComponent } from '../production-stages-list/production-stages-list.component';
-import { computedChanges } from 'src/app/library/signals';
 
 @Component({
   selector: 'app-production-stages-edit',

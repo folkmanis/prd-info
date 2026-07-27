@@ -22,7 +22,9 @@ import { PaytraqProductTableComponent } from './paytraq-product-table/paytraq-pr
 export class PaytraqProductComponent implements ControlValueAccessor {
   private paytraqService = inject(PaytraqProductsService);
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   private onChanges: (obj: number | null) => void = () => {};
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   private onTouched: () => void = () => {};
 
   productName = input<string>('');
@@ -50,7 +52,7 @@ export class PaytraqProductComponent implements ControlValueAccessor {
     this.value.set(obj);
   }
 
-  registerOnChange(fn: (obj: any) => void) {
+  registerOnChange(fn: (obj: unknown) => void) {
     this.onChanges = fn;
   }
 

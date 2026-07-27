@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const labelMap: Map<string, string> = new Map([
+const labelMap = new Map<string, string>([
   ['IMPORTANT', 'Svarīgi'],
   ['TRASH', 'Miskaste'],
   ['DRAFT', 'Melnraksti'],

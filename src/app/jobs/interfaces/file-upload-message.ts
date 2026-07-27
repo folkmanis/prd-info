@@ -35,4 +35,5 @@ interface UploadAbortMessage extends UploadMessageBase {
   type: FileUploadEventType.UploadAbort;
 }
 
-export type FileUploadMessage = UploadStartMessage | UploadProgressMessage | UploadFinishMessage | UploadWaitingMessage | UploadAbortMessage;
+export type FileUploadMessage =
+  UploadStartMessage | UploadProgressMessage | UploadFinishMessage | UploadWaitingMessage | UploadAbortMessage;

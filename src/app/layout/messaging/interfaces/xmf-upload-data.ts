@@ -17,7 +17,7 @@ export class XmfUploadMessageData implements MessageData, XmfUploadProgress {
   };
   finished = new Date();
 
-  constructor(obj: Record<string, any> = {}) {
+  constructor(obj: Record<string, unknown> = {}) {
     Object.assign(this, obj);
   }
 

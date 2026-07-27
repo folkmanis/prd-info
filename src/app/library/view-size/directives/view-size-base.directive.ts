@@ -9,16 +9,16 @@ interface ViewSize {
 
 @Directive()
 export class ViewSizeBase implements OnInit, OnDestroy {
-  private templateRef = inject<TemplateRef<any>>(TemplateRef);
+  private templateRef = inject<TemplateRef<unknown>>(TemplateRef);
   private viewContainer = inject(ViewContainerRef);
   private layout = inject(LayoutService);
 
   private readonly viewSize$ = new BehaviorSubject<ViewSize>({ breakPoint: 'large', not: false });
 
-  private readonly elseTemplate$ = new BehaviorSubject<TemplateRef<any> | null>(null);
+  private readonly elseTemplate$ = new BehaviorSubject<TemplateRef<unknown> | null>(null);
 
-  private thenViewRef: EmbeddedViewRef<any> | null = null;
-  private elseViewRef: EmbeddedViewRef<any> | null = null;
+  private thenViewRef: EmbeddedViewRef<unknown> | null = null;
+  private elseViewRef: EmbeddedViewRef<unknown> | null = null;
 
   private subs?: Subscription;
 
@@ -28,7 +28,7 @@ export class ViewSizeBase implements OnInit, OnDestroy {
     }
   }
 
-  setElseTemplate(value: TemplateRef<any> | null) {
+  setElseTemplate(value: TemplateRef<unknown> | null) {
     if (value instanceof TemplateRef) {
       this.elseTemplate$.next(value);
     }
@@ -48,7 +48,7 @@ export class ViewSizeBase implements OnInit, OnDestroy {
     this.subs?.unsubscribe();
   }
 
-  private setView(matches: boolean, elseTemplate: TemplateRef<any> | null) {
+  private setView(matches: boolean, elseTemplate: TemplateRef<unknown> | null) {
     if (matches) {
       if (!this.thenViewRef) {
         this.viewContainer.clear();

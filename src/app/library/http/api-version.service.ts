@@ -5,16 +5,14 @@ import { ApiVersion } from './api-version';
 
 @Service()
 export class ApiVersionService {
-  private _version$ = new Subject<ApiVersion>();
-  version$: Observable<ApiVersion> = this._version$.pipe(distinctUntilChanged(this.isEqual), shareReplay(1));
-
-  constructor() {}
+  #version$ = new Subject<ApiVersion>();
+  version$: Observable<ApiVersion> = this.#version$.pipe(distinctUntilChanged(this.#isEqual), shareReplay(1));
 
   setVersion(ver: ApiVersion): void {
-    this._version$.next(ver);
+    this.#version$.next(ver);
   }
 
-  private isEqual(a: ApiVersion, b: ApiVersion): boolean {
+  #isEqual(a: ApiVersion, b: ApiVersion): boolean {
     return a.appBuild === b.appBuild;
   }
 }

@@ -5,7 +5,6 @@ import { KastesSettings } from 'src/app/interfaces';
 import { configuration } from 'src/app/services/config.provider';
 import { KastesUserPreferences } from '../interfaces';
 import { DEFAULT_USER_PREFERENCES, KastesApiService } from './kastes-api.service';
-import { HttpErrorResponse } from '@angular/common/http';
 
 type P = KastesUserPreferences & KastesSettings;
 // KastesPreferencesService['preferences$'] extends Observable<infer K> ? K : never;
@@ -13,7 +12,7 @@ type P = KastesUserPreferences & KastesSettings;
 export function kastesPreferences(): Signal<P>;
 export function kastesPreferences<K1 extends keyof P>(k1: K1): Signal<P[K1]>;
 export function kastesPreferences<K1 extends keyof P, K2 extends keyof P[K1]>(k1: K1, k2: K2): Signal<P[K1][K2]>;
-export function kastesPreferences(...path: string[]): Signal<any> {
+export function kastesPreferences(...path: string[]): Signal<unknown> {
   const preferences = inject(KastesPreferencesService).preferences;
   return computed(() => {
     const value = preferences();

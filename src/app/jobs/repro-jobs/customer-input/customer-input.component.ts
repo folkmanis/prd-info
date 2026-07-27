@@ -1,13 +1,4 @@
-import {
-  booleanAttribute,
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  ElementRef,
-  input,
-  viewChild,
-} from '@angular/core';
+import { booleanAttribute, Component, computed, effect, ElementRef, input, viewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   ControlValueAccessor,
@@ -73,7 +64,9 @@ export class CustomerInputComponent implements ControlValueAccessor, Validator {
 
   customersFiltered = computed(() => this.filterCustomer(this.customers(), this.inputValue()));
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   onTouched: () => void = () => {};
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   onValidationChange: () => void = () => {};
 
   required = input(false, { transform: booleanAttribute });
@@ -89,7 +82,7 @@ export class CustomerInputComponent implements ControlValueAccessor, Validator {
     });
   }
 
-  writeValue(obj: any): void {
+  writeValue(obj: string): void {
     this.control.setValue(obj, { emitEvent: false });
   }
 
@@ -97,7 +90,7 @@ export class CustomerInputComponent implements ControlValueAccessor, Validator {
     this.control.valueChanges.subscribe(fn);
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 

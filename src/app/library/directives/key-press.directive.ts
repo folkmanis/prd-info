@@ -1,4 +1,5 @@
 import { computed, Directive, ElementRef, inject, input } from '@angular/core';
+import { isEqual } from 'lodash-es';
 
 export type Events = 'escape' | 'ctrlPlus' | 'ctrlEnter' | 'enter';
 
@@ -23,23 +24,11 @@ export class KeyPressDirective {
 
   eventToListen = computed(() => KEYS.get(this.appKeyPress()) || {});
 
-  keyEvent(event: KeyboardEvent) {
+  keyEvent(event: Event) {
     if (isEqual(this.eventToListen(), event)) {
       this.elRef.nativeElement.click();
       event.preventDefault();
       event.stopPropagation();
     }
   }
-}
-
-function isEqual(obj1: Record<string, any>, obj2: Record<string, any>): boolean {
-  const props1 = Object.getOwnPropertyNames(obj1);
-
-  for (const prop of props1) {
-    if (obj1[prop] !== obj2[prop]) {
-      return false;
-    }
-  }
-
-  return true;
 }

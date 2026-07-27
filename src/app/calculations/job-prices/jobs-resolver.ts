@@ -4,19 +4,22 @@ import { CustomerProduct } from 'src/app/interfaces';
 import { JobFilter, JobService, JobUnwindedPartial } from 'src/app/jobs';
 import { ProductsService } from 'src/app/services/products.service';
 import { JobData, JobWithUpdate } from './interfaces';
+import { firstValueFrom } from 'rxjs';
 
 export const resolveJobData: ResolveFn<JobData[]> = async (route) => {
   const jobService = inject(JobService);
   const productsService = inject(ProductsService);
   const customer = route.queryParamMap.get('customer');
 
-  let products: CustomerProduct[] = [];
+  let products: CustomerProduct[];
   if (customer) {
-    products = (await productsService.productsCustomer(customer)).filter((prod) => prod.price !== undefined);
+    products = await firstValueFrom(productsService.productsCustomer(customer));
+  } else {
+    products = [];
   }
 
   const filterQuery: JobFilter = {
-    invoice: 0,
+    invoice: false,
   };
   if (customer) {
     filterQuery.customer = customer;
@@ -37,7 +40,8 @@ function addProductPrice(job: JobUnwindedPartial, cProducts: CustomerProduct[]):
     return product && !product.price
       ? {
           ...job,
-          'products.priceUpdate': cProducts.find((cp) => cp.productName === product.name)?.price,
+          'products.priceUpdate': cProducts.find((cp) => cp.productName === product.name && cp.price !== undefined)
+            ?.price,
         }
       : job;
   }

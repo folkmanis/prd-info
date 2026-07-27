@@ -1,12 +1,12 @@
 import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http';
 import { inject, Service, Signal } from '@angular/core';
+import { SchemaPath, validateHttp } from '@angular/forms/signals';
 import { isEqual } from 'lodash-es';
-import { firstValueFrom, map } from 'rxjs';
+import { firstValueFrom, map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import {
+  pluckDeletedCount,
   User,
-  UserCreate,
-  UserCreateSchema,
   UserList,
   UserListSchema,
   UserSchema,
@@ -15,68 +15,69 @@ import {
   UserUpdate,
   UserUpdateSchema,
 } from 'src/app/interfaces';
-import { ValidatorService } from 'src/app/library';
-import { HttpOptions, httpResponseRequest } from 'src/app/library/http';
-import { DEMO_MODE } from '../app-mode.provider';
-import { SchemaPath, validateHttp } from '@angular/forms/signals';
+import { httpFilterSignal, optionalString, validateAsync, validatorFn } from 'src/app/library';
+import { cacheable, httpParams, httpResponseRequest } from 'src/app/library/http';
 import { NETWORK_ERROR } from 'src/app/library/http/network-error';
+import { z } from 'zod';
+import { DEMO_MODE } from '../app-mode.provider';
 
-type Params = Record<string, any>;
+export const UsersFilterSchema = z
+  .object({
+    name: optionalString,
+  })
+  .partial();
+export type UsersFilter = z.infer<typeof UsersFilterSchema>;
 
 @Service()
 export class UsersApiService {
   readonly #path = getAppParams('apiPath') + 'users/';
   #http = inject(HttpClient);
-  #validator = inject(ValidatorService);
 
   private isDemo = inject(DEMO_MODE);
 
   getOne(name: string): Promise<User> {
-    const data$ = this.#http.get(this.#path + name, new HttpOptions().cacheable());
-    return this.#validator.validateAsync(UserSchema, data$);
+    const data$ = this.#http.get(this.#path + name, cacheable());
+    return validateAsync(UserSchema, data$);
   }
 
-  usersResource(filterSignal: Signal<Record<string, any>>): HttpResourceRef<UserList[]> {
-    return httpResource(() => httpResponseRequest(this.#path, new HttpOptions(filterSignal()).cacheable()), {
+  usersResource(filter: Signal<UsersFilter | undefined>): HttpResourceRef<UserList[]> {
+    const query = httpFilterSignal(UsersFilterSchema, filter);
+    return httpResource(() => httpResponseRequest(this.#path, query().cacheable()), {
       defaultValue: [],
-      parse: this.#validator.arrayValidatorFn(UserListSchema),
+      parse: validatorFn(UserListSchema.array()),
       equal: isEqual,
     });
   }
 
   userSessionsResource(username: Signal<string>): HttpResourceRef<UserSession[] | undefined> {
     return httpResource(
-      () =>
-        username()
-          ? httpResponseRequest(this.#path + username() + '/sessions', new HttpOptions().cacheable())
-          : undefined,
+      () => (username() ? httpResponseRequest(this.#path + username() + '/sessions', cacheable()) : undefined),
       {
-        parse: this.#validator.arrayValidatorFn(UserSessionSchema),
+        parse: validatorFn(UserSessionSchema.array()),
         equal: isEqual,
       },
     );
   }
 
-  updateOne(id: string | number, data: Partial<User>, params?: Params): Promise<User> {
+  updateOne(id: string | number, data: Partial<User>): Promise<User> {
     this.#checkDemoMode();
-    const data$ = this.#http.patch(this.#path + id, data, new HttpOptions(params));
-    return this.#validator.validateAsync(UserSchema, data$);
+    const data$ = this.#http.patch(this.#path + id, data);
+    return validateAsync(UserSchema, data$);
   }
 
-  insertOne(data: Partial<User>, params?: Params): Promise<User> {
+  insertOne(data: Partial<User>): Promise<User> {
     this.#checkDemoMode();
-    return this.#validator.validateAsync(UserSchema, this.#http.put(this.#path, data, new HttpOptions(params)));
+    return validateAsync(UserSchema, this.#http.put(this.#path, data));
   }
 
-  async deleteOne(id: string): Promise<boolean> {
+  deleteOne(id: string): Observable<boolean> {
     this.#checkDemoMode();
-    const data = await firstValueFrom(this.#http.delete<{ deletedCount: number }>(this.#path + id, new HttpOptions()));
-    return data.deletedCount > 0;
+    return this.#http.delete<{ deletedCount: number }>(this.#path + id).pipe(pluckDeletedCount(), map(Boolean));
   }
 
   validate<K extends keyof Pick<User, 'username'>>(schema: SchemaPath<User[K]>, key: K): void {
     validateHttp(schema, {
-      request: () => httpResponseRequest(this.#path + 'validate/' + key, new HttpOptions().cacheable()),
+      request: () => httpResponseRequest(this.#path + 'validate/' + key, cacheable()),
       onSuccess: (response: User[K][], { value }) => {
         const current = value()?.toUpperCase();
         if (response.some((r) => r && r.toUpperCase() === current)) {
@@ -93,7 +94,7 @@ export class UsersApiService {
   uploadToFirestore(id: string): Promise<number> {
     this.#checkDemoMode();
     const data$ = this.#http
-      .post<{ updatedCount: number }>(this.#path + id + '/firestore/upload', new HttpOptions())
+      .post<{ updatedCount: number }>(this.#path + id + '/firestore/upload', {})
       .pipe(map((data) => data.updatedCount));
     return firstValueFrom(data$);
   }
@@ -101,18 +102,16 @@ export class UsersApiService {
   passwordUpdate(username: string, password: string): Promise<UserUpdate> {
     this.#checkDemoMode();
     const data$ = this.#http.patch(this.#path + username + '/password', { password });
-    return this.#validator.validateAsync(UserUpdateSchema, data$);
+    return validateAsync(UserUpdateSchema, data$);
   }
 
   async deleteSessions(username: string, sessionIds: string[]): Promise<number> {
     this.#checkDemoMode();
-    const data = await firstValueFrom(
-      this.#http.delete<{ deletedCount: number }>(
-        this.#path + username + '/session',
-        new HttpOptions({ ids: sessionIds }),
-      ),
-    );
-    return data.deletedCount;
+    const data$ = this.#http
+      .delete(this.#path + username + '/session', httpParams({ ids: sessionIds }))
+      .pipe(pluckDeletedCount());
+
+    return firstValueFrom(data$);
   }
 
   #checkDemoMode(): void | never {

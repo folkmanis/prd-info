@@ -36,7 +36,7 @@ export class UploadAdresesComponent {
     initialValue: this.rowSelection.selected,
   });
 
-  adreses = model<Array<number | string>[]>([], { alias: 'data' });
+  adreses = model<(number | string)[][]>([], { alias: 'data' });
 
   assignedChips = signal<[number, ColumnNames][]>([]);
 

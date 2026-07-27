@@ -1,15 +1,5 @@
 import { DatePipe, TitleCasePipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  input,
-  output,
-  signal,
-  untracked,
-} from '@angular/core';
+import { Component, computed, effect, inject, input, output, signal, untracked } from '@angular/core';
 import { disabled, form, FormField, FormRoot, max, min, required } from '@angular/forms/signals';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -71,7 +61,7 @@ export class GeneralSetupComponent implements CanComponentDeactivate {
 
   create = output<TransportationRouteSheetCreate>();
   update = output<TransportationRouteSheetUpdate>();
-  cancel = output<void>();
+  cancelSetup = output<void>();
 
   routeSheet = input.required<TransportationRouteSheet>();
   #initialModel = computed(() => this.#toFormModel(this.routeSheet()));

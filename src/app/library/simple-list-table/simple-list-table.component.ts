@@ -23,13 +23,15 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 export class SimpleListTableComponent<T, K extends keyof T & string> implements ControlValueAccessor {
   private dialog = inject(MatDialog);
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   private onChangeFn: (obj: T[]) => void = () => {};
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   private onTouchedFn: () => void = () => {};
 
   columns = input.required<K[]>();
   displayedColumns = computed(() => ['button', ...this.columns()]);
 
-  editDialog = input<ComponentType<any>>();
+  editDialog = input<ComponentType<unknown>>();
 
   disabled = signal(false);
 
@@ -58,7 +60,7 @@ export class SimpleListTableComponent<T, K extends keyof T & string> implements 
     }
     this.onTouchedFn();
     this.dialog
-      .open<any, T, T | undefined>(dialogComponent)
+      .open<unknown, T, T | undefined>(dialogComponent)
       .afterClosed()
       .subscribe((newRecord) => newRecord && this.updateData(() => this.addRecord(newRecord)));
   }
@@ -70,7 +72,7 @@ export class SimpleListTableComponent<T, K extends keyof T & string> implements 
     }
     this.onTouchedFn();
     this.dialog
-      .open<any, T, T | undefined>(dialogComponent, { data: obj })
+      .open<unknown, T, T | undefined>(dialogComponent, { data: obj })
       .afterClosed()
       .subscribe((update) => update && this.updateData(() => this.updateRecord(idx, update)));
   }

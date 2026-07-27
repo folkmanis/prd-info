@@ -6,7 +6,7 @@ export interface Range {
  * Cache objekts.
  */
 export class PagedCache<T> {
-  private _cachedData: Array<T | undefined>;
+  private _cachedData: (T | undefined)[];
   private _pageSize = 100;
   private _cachedPages = new Set<number>();
   /**
@@ -28,7 +28,7 @@ export class PagedCache<T> {
     }
   }
 
-  async fetchRange(range: Range): Promise<Array<T | undefined>> {
+  async fetchRange(range: Range): Promise<(T | undefined)[]> {
     const startPage = this.getPageForIndex(range.start);
     const endPage = this.getPageForIndex(range.end);
     const fetch$: Promise<void>[] = [];

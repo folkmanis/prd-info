@@ -1,14 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  input,
-  linkedSignal,
-  signal,
-  untracked,
-} from '@angular/core';
+import { Component, computed, effect, inject, input, linkedSignal, signal, untracked } from '@angular/core';
 import { debounce, disabled, form, FormField, min, required, submit, validate } from '@angular/forms/signals';
 import { MatButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -34,17 +24,8 @@ import { TransportationVehicleService } from '../../services/transportation-vehi
 import { TransportationVehiclesListComponent } from '../transportation-vehicles-list/transportation-vehicles-list.component';
 import { OdometerReadingsComponent } from './odometer-readings/odometer-readings.component';
 
-const EDITABLE_PROPERTIES = [
-  'name',
-  'licencePlate',
-  'passportNumber',
-  'vin',
-  'consumption',
-  'fuelType',
-  'disabled',
-] as const;
 type FormValue = {
-  [P in keyof Pick<TransportationVehicle, (typeof EDITABLE_PROPERTIES)[number]>]-?: NonNullable<
+  [P in 'name' | 'licencePlate' | 'passportNumber' | 'vin' | 'consumption' | 'fuelType' | 'disabled']-?: NonNullable<
     TransportationVehicle[P]
   >;
 };

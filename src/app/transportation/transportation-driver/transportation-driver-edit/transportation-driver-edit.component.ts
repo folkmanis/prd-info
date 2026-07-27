@@ -13,16 +13,15 @@ import { MatCheckbox } from '@angular/material/checkbox';
 import { MatDivider } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { isEqual, omitBy } from 'lodash-es';
 import { filter, map } from 'rxjs';
 import { ConfirmationDialogService } from 'src/app/library/confirmation-dialog/confirmation-dialog.service';
 import { CanComponentDeactivate } from 'src/app/library/guards';
 import { navigateRelative } from 'src/app/library/navigation';
+import { computedChanges } from 'src/app/library/signals';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { TransportationDriver, TransportationDriverUpdate } from '../../interfaces/transportation-driver';
 import { TransportationDriverService } from '../../services/transportation-driver.service';
 import { TransportationDriverListComponent } from '../transportation-driver-list/transportation-driver-list.component';
-import { computedChanges } from 'src/app/library/signals';
 
 type FormValue = { [K in 'name' | 'disabled']?: TransportationDriver[K] | null };
 

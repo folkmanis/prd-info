@@ -55,6 +55,7 @@ export class ProductPricesComponent implements ControlValueAccessor, Validator {
 
   pricesFormArray = new FormArray<PricesForm>([], [this.duplicateCustomersValidator]);
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   touchFn = () => {};
 
   writeValue(obj: ProductPrice[]): void {
@@ -72,7 +73,7 @@ export class ProductPricesComponent implements ControlValueAccessor, Validator {
     this.chDetector.markForCheck();
   }
 
-  registerOnChange(fn: (p: any) => void): void {
+  registerOnChange(fn: (p: unknown) => void): void {
     this.pricesFormArray.valueChanges.subscribe(fn);
   }
 

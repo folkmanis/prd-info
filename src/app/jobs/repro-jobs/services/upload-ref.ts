@@ -63,7 +63,15 @@ export class UploadRef {
     );
   }
 
-  private cancelMessageWhen(messages$: Observable<FileUploadMessage[]>, canceller$: Observable<void>): Observable<FileUploadMessage[]> {
-    return merge(messages$, canceller$).pipe(scan((acc, messages) => messages || acc.map((msg) => ({ ...msg, type: FileUploadEventType.UploadAbort })), [] as FileUploadMessage[]));
+  private cancelMessageWhen(
+    messages$: Observable<FileUploadMessage[]>,
+    canceller$: Observable<void>,
+  ): Observable<FileUploadMessage[]> {
+    return merge(messages$, canceller$).pipe(
+      scan(
+        (acc, messages) => messages || acc.map((msg) => ({ ...msg, type: FileUploadEventType.UploadAbort })),
+        [] as FileUploadMessage[],
+      ),
+    );
   }
 }

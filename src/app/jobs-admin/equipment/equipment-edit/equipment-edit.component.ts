@@ -5,15 +5,14 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { isEqual, pickBy } from 'lodash-es';
 import { Equipment, EquipmentCreate, EquipmentUpdate } from 'src/app/interfaces';
 import { notNullOrThrow } from 'src/app/library';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { navigateRelative } from 'src/app/library/navigation';
+import { computedChanges } from 'src/app/library/signals';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { EquipmentListComponent } from '../equipment-list/equipment-list.component';
 import { EquipmentService } from '../services/equipment.service';
-import { computedChanges } from 'src/app/library/signals';
 
 @Component({
   selector: 'app-equipment-edit',

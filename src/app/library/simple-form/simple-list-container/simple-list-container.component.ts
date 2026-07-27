@@ -1,14 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  TemplateRef,
-  booleanAttribute,
-  input,
-  model,
-  signal,
-} from '@angular/core';
+import { Component, Input, TemplateRef, booleanAttribute, input, model, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -38,7 +29,7 @@ import { ViewSizeDirective } from 'src/app/library/view-size';
   ],
 })
 export class SimpleListContainerComponent {
-  filterTemplate: TemplateRef<any> | null = null;
+  filterTemplate: TemplateRef<unknown> | null = null;
 
   editorWidth = input('50%');
 
@@ -47,7 +38,7 @@ export class SimpleListContainerComponent {
   plusButton = input(false, { transform: booleanAttribute });
 
   @Input()
-  set filterInput(val: any) {
+  set filterInput(val: unknown) {
     this._filterInput = booleanAttribute(val);
     this.filterTemplate = val instanceof TemplateRef ? val : null;
   }
