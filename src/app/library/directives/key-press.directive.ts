@@ -1,14 +1,15 @@
 import { computed, Directive, ElementRef, inject, input } from '@angular/core';
-import { isEqual } from 'lodash-es';
 
 export type Events = 'escape' | 'ctrlPlus' | 'ctrlEnter' | 'enter';
 
-const KEYS = new Map<Events, Partial<KeyboardEvent>>([
-  ['escape', { key: 'Escape' }],
-  ['ctrlPlus', { key: '+', ctrlKey: true, altKey: false }],
-  ['ctrlEnter', { key: 'Enter', ctrlKey: true }],
-  ['enter', { key: 'Enter', ctrlKey: false }],
-]);
+type EventConfig = { [K in Events]: Pick<KeyboardEvent, 'key' | 'ctrlKey' | 'altKey'> };
+
+const eventsMap: EventConfig = {
+  escape: { key: 'Escape', ctrlKey: false, altKey: false },
+  ctrlPlus: { key: '+', ctrlKey: true, altKey: false },
+  ctrlEnter: { key: 'Enter', ctrlKey: true, altKey: false },
+  enter: { key: 'Enter', ctrlKey: false, altKey: false },
+};
 
 @Directive({
   selector: 'button[appKeyPress],a[appKeyPress]',
@@ -22,10 +23,12 @@ export class KeyPressDirective {
 
   appKeyPress = input.required<Events>();
 
-  eventToListen = computed(() => KEYS.get(this.appKeyPress()) || {});
+  eventToListen = computed(() => eventsMap[this.appKeyPress()]);
 
   keyEvent(event: Event) {
-    if (isEqual(this.eventToListen(), event)) {
+    const etl = this.eventToListen();
+    const { key, ctrlKey, altKey } = event as KeyboardEvent;
+    if (key === etl.key && ctrlKey === etl.ctrlKey && altKey === etl.altKey) {
       this.elRef.nativeElement.click();
       event.preventDefault();
       event.stopPropagation();
