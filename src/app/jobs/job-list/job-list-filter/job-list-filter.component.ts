@@ -14,7 +14,7 @@ import { AutocompleteFilterDirective } from 'src/app/library/autocomplete';
 import { DateRangePickerComponent } from 'src/app/library/date-range-picker';
 import { ViewSizeDirective } from 'src/app/library/view-size';
 import { configuration } from 'src/app/services/config.provider';
-import { JobFilter, jobFilterToRequestQuery } from '../../interfaces';
+import { JobFilter, JobFilterSchema } from '../../interfaces';
 
 export interface JobFilterModel {
   customer: string;
@@ -99,6 +99,7 @@ export class JobListFilterComponent {
 
   #toModel(jobFilter: JobFilter): JobFilterModel {
     const { customer, jobsId, name, productsName, jobStatus } = jobFilter;
+
     const model = {
       customer: customer ?? '',
       jobsId: jobsId ? jobsId.join(',') : '',
@@ -125,9 +126,11 @@ export class JobListFilterComponent {
     });
   }
 
-  #toReportURL(query: JobFilter): URL {
+  #toReportURL(filter: JobFilter): URL {
     const url = new URL('/data/jobs/report', window.location.origin);
-    const params = new URLSearchParams(jobFilterToRequestQuery(query));
+
+    const query = JobFilterSchema.optional().encode(filter);
+    const params = new URLSearchParams(query);
 
     url.search = params.toString();
     return url;

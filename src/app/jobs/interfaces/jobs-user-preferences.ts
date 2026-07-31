@@ -34,7 +34,7 @@ export const SavedJobFilterSchema = z
   .object({
     ...JobFilterSchema.shape,
     invoice: z.boolean(),
-    jobStatus: z.array(z.number()).default([10, 20]),
+    jobStatus: z.array(z.number()),
     jobsId: z.array(z.number()),
     unwindProducts: z.boolean(),
     start: z.number().int().nonnegative(),
