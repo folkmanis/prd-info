@@ -1,7 +1,7 @@
 import { inject, Service } from '@angular/core';
 import { Attachment, Message, Threads, ThreadsFilter } from '../interfaces';
 import { GmailApiService } from './gmail-api.service';
-import { Observable, of } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 
 @Service()
 export class GmailService {
@@ -25,7 +25,9 @@ export class GmailService {
 
   markAsRead(message: Message): Observable<string> {
     if (message.hasLabel('UNREAD')) {
-      return this.api.modifyMessage(message.id, { removeLabelIds: ['UNREAD'] });
+      return this.api
+        .modifyMessage(message.id, { removeLabelIds: ['UNREAD'] })
+        .pipe(map(({ modifiedId }) => modifiedId));
     } else {
       return of(message.id);
     }

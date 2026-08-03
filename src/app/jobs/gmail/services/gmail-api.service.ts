@@ -18,14 +18,17 @@ import {
   threadsQueryToFilter,
   ThreadsSchema,
 } from '../interfaces';
+import { MessageModifiedResponse, MessageModifiedResponseSchema } from '../interfaces/message-modified-response';
 
 @Service()
 export class GmailApiService {
   readonly #http = inject(HttpClient);
   readonly #path = getAppParams('apiPath') + 'google/gmail/';
 
-  modifyMessage(id: string, messageModify: MessageModifyDto): Observable<string> {
-    return this.#http.patch(this.#path + 'message/' + id, messageModify).pipe(map(validatorFn(z.string())));
+  modifyMessage(id: string, messageModify: MessageModifyDto): Observable<MessageModifiedResponse> {
+    return this.#http
+      .patch(this.#path + 'message/' + id, messageModify)
+      .pipe(map(validatorFn(MessageModifiedResponseSchema)));
   }
 
   getThreads(filter: ThreadsFilter): Promise<Threads> {
