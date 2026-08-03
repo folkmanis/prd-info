@@ -4,6 +4,7 @@ import { isEqual } from 'lodash-es';
 import { firstValueFrom, map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import {
+  CustomerProductSchema,
   CustomerProduct,
   pluckDeletedCount,
   Product,
@@ -91,7 +92,7 @@ export class ProductsApiService {
 
   productsCustomerResource(name: Signal<string | undefined>): HttpResourceRef<CustomerProduct[] | undefined> {
     return httpResource(() => (name() ? httpResponseRequest(this.#path + 'prices/customer/' + name()) : undefined), {
-      parse: validatorFn(CustomerProduct.array()),
+      parse: validatorFn(CustomerProductSchema.array()),
       equal: isEqual,
     });
   }
@@ -99,7 +100,7 @@ export class ProductsApiService {
   productsCustomer(customer: string): Observable<CustomerProduct[]> {
     return this.#http
       .get(this.#path + 'prices/customer/' + customer, cacheable())
-      .pipe(map(validatorFn(CustomerProduct.array())));
+      .pipe(map(validatorFn(CustomerProductSchema.array())));
   }
 
   productionStages(productName: string): Promise<ProductProductionStage[]> {

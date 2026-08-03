@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { ProductProductionStage } from './product-production-stage';
 
-export const CustomerProduct = z.object({
+export const CustomerProductSchema = z.object({
   category: z.string(),
   description: z.string().nullish(),
   productName: z.string(),
@@ -9,14 +9,14 @@ export const CustomerProduct = z.object({
   price: z.number().optional(),
   units: z.string(),
 });
-export type CustomerProduct = z.infer<typeof CustomerProduct>;
+export type CustomerProduct = z.infer<typeof CustomerProductSchema>;
 
-export const ProductPrice = z.object({
+export const ProductPriceSchema = z.object({
   customerName: z.string(),
   price: z.number(),
-  lastUsed: z.coerce.date().nullable(),
+  lastUsed: z.coerce.date().optional(),
 });
-export type ProductPrice = z.infer<typeof ProductPrice>;
+export type ProductPrice = z.infer<typeof ProductPriceSchema>;
 
 export const ProductSchema = z.object({
   _id: z.string(),
@@ -26,7 +26,7 @@ export const ProductSchema = z.object({
   units: z.string().default(''),
   paytraqId: z.number().nullish(),
   description: z.string().nullish(),
-  prices: z.array(ProductPrice).default([]),
+  prices: z.array(ProductPriceSchema).default([]),
   productionStages: z.array(ProductProductionStage).default([]),
 });
 export type Product = z.infer<typeof ProductSchema>;
