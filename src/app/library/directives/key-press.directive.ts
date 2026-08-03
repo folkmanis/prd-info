@@ -2,7 +2,7 @@ import { computed, Directive, ElementRef, inject, input } from '@angular/core';
 
 export type Events = 'escape' | 'ctrlPlus' | 'ctrlEnter' | 'enter';
 
-type EventConfig = { [K in Events]: Pick<KeyboardEvent, 'key' | 'ctrlKey' | 'altKey'> };
+type EventConfig = Record<Events, Pick<KeyboardEvent, 'key' | 'ctrlKey' | 'altKey'>>;
 
 const eventsMap: EventConfig = {
   escape: { key: 'Escape', ctrlKey: false, altKey: false },
