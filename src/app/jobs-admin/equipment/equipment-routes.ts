@@ -4,6 +4,7 @@ import { EquipmentEditComponent } from './equipment-edit/equipment-edit.componen
 import { EquipmentListComponent } from './equipment-list/equipment-list.component';
 import { resolveEquipment } from './services/equipment-resolver';
 import { EquipmentService } from './services/equipment.service';
+import { canComponentDeactivate } from 'src/app/library/guards';
 
 export default [
   {
@@ -16,6 +17,7 @@ export default [
         resolve: {
           equipment: () => inject(EquipmentService).newEquipment(),
         },
+        canDeactivate: [canComponentDeactivate],
       },
       {
         path: ':id',
@@ -23,6 +25,7 @@ export default [
         resolve: {
           equipment: resolveEquipment,
         },
+        canDeactivate: [canComponentDeactivate],
       },
     ],
   },

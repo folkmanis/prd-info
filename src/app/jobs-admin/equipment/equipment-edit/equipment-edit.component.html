@@ -1,29 +1,62 @@
-<app-simple-form-container
-  buttons
-  [status]="formStatus()"
-  [isChanges]="changes()"
-  (save)="onSave()"
-  (resetForm)="onReset()"
-  [formGroup]="form"
->
-  <h2>
-    <mat-form-field class="full-width">
-      <mat-label> Nosaukums </mat-label>
-      <input matInput required formControlName="name" />
-      @if (form.controls.name.hasError('occupied')) {
-        <mat-error> Iekārta ar šādu nosaukumu ir jau saglabāta </mat-error>
-      }
-    </mat-form-field>
-  </h2>
+<form [formRoot]="form" (reset)="$event.preventDefault(); onReset()">
+  <app-simple-content-container buttons>
+    <ng-container appSimpleContentContainerToolbar>
+      <button
+        matButton="outlined"
+        type="submit"
+        [disabled]="form().disabled() || form().valid() === false || form().dirty() === false"
+        [showProgress]="form().submitting()"
+      >
+        {{ isNew() ? 'Izveidot' : 'Saglabāt' }}
+        <mat-progress-spinner progressIndicator mode="indeterminate" diameter="20" aria-label="Loading" tabindex="" />
+      </button>
+      <button
+        matButton
+        class="tertiary"
+        type="reset"
+        [disabled]="form().disabled() || form().dirty() === false || form().pending() === true"
+      >
+        Atiestatīt
+      </button>
+    </ng-container>
+    <div class="content">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title> Pamatinformācija </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <!-- nosaukums -->
+          <section>
+            <mat-form-field class="full-width">
+              <mat-label> Nosaukums </mat-label>
+              <input matInput [formField]="form.name" />
+              <mat-error>
+                @for (error of form.name().errors(); track $index) {
+                  {{ error.message }}
+                }
+              </mat-error>
+              <span matIconSuffix class="spinner">
+                @if (form.name().pending()) {
+                  <mat-progress-spinner mode="indeterminate" diameter="20" aria-label="Checking" tabindex="" />
+                }
+              </span>
+            </mat-form-field>
+          </section>
 
-  <mat-card>
-    <mat-card-content>
-      <div>
-        <mat-form-field class="full-width">
-          <mat-label> Apraksts </mat-label>
-          <textarea matInput formControlName="description"></textarea>
-        </mat-form-field>
-      </div>
-    </mat-card-content>
-  </mat-card>
-</app-simple-form-container>
+          <!-- Neaktīvs -->
+          <section>
+            <mat-checkbox class="input-element" [formField]="form.disabled"> Neaktīvs </mat-checkbox>
+          </section>
+
+          <!-- apraksts -->
+          <section>
+            <mat-form-field class="full-width">
+              <mat-label> Apraksts </mat-label>
+              <textarea matInput [formField]="form.description"></textarea>
+            </mat-form-field>
+          </section>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </app-simple-content-container>
+</form>

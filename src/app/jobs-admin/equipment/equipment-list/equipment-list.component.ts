@@ -3,6 +3,8 @@ import { MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { SimpleListContainerComponent } from 'src/app/library/simple-form';
 import { EquipmentService } from '../services/equipment.service';
+import { EquipmentFilter } from '../services/equipment-filter.schema';
+import { nonNullResource, withPreviousValue } from 'src/app/library/signals';
 
 @Component({
   selector: 'app-equipment-list',
@@ -13,16 +15,14 @@ import { EquipmentService } from '../services/equipment.service';
 export class EquipmentListComponent {
   name = signal('');
 
-  filter = computed(() => {
-    const name = this.name()?.trim() || '';
-    return name.length > 0 ? { name } : {};
-  });
+  protected filter = computed<EquipmentFilter>(() => ({ name: this.name().trim(), disabled: true }));
 
-  equipment = inject(EquipmentService).getEquipmentResource(this.filter);
+  #equipment = inject(EquipmentService).getEquipmentResource(this.filter);
+  protected equipmentNonNull = nonNullResource(withPreviousValue(this.#equipment), []);
 
-  displayedColumns = ['name'];
+  protected displayedColumns = ['name'];
 
   onReload() {
-    this.equipment.reload();
+    this.#equipment.reload();
   }
 }

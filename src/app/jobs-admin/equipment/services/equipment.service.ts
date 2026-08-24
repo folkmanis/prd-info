@@ -1,14 +1,15 @@
-import { inject, Service } from '@angular/core';
-import { Equipment, EquipmentCreate, EquipmentUpdate } from 'src/app/interfaces';
+import { inject, ResourceRef, Service } from '@angular/core';
+import { SchemaPath } from '@angular/forms/signals';
+import { Equipment, EquipmentCreate, EquipmentList, EquipmentUpdate } from 'src/app/interfaces';
 import { FilterInput, toFilterSignal } from 'src/app/library';
 import { EquipmentApiService } from 'src/app/services/prd-api/equipment-api.service';
-import { EquipmentFilter } from './equipmanet-filter.schema';
+import { EquipmentFilter } from './equipment-filter.schema';
 
 @Service()
 export class EquipmentService {
   #api = inject(EquipmentApiService);
 
-  getEquipmentResource(filter?: FilterInput<EquipmentFilter>) {
+  getEquipmentResource(filter?: FilterInput<EquipmentFilter>): ResourceRef<EquipmentList[] | undefined> {
     return this.#api.equipmentResource(toFilterSignal(filter));
   }
 
@@ -32,12 +33,11 @@ export class EquipmentService {
     return {
       _id: '',
       name: '',
-      description: '',
+      disabled: false,
     };
   }
 
-  async validateName(value: string): Promise<boolean> {
-    const names = await this.#api.validatorData('name');
-    return names.map((name) => name.toUpperCase()).includes(value) === false;
+  isNameAvailable(schema: SchemaPath<string>) {
+    this.#api.validate(schema, 'name');
   }
 }

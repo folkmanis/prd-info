@@ -1,38 +1,57 @@
 import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http';
 import { inject, Service, Signal } from '@angular/core';
+import { SchemaPath } from '@angular/forms/signals';
 import { isEqual } from 'lodash-es';
 import { firstValueFrom } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
-import { Equipment, EquipmentCreate, pluckDeletedCount } from 'src/app/interfaces';
-import { EquipmentFilter, EquipmentFilterSchema } from 'src/app/jobs-admin/equipment/services/equipmanet-filter.schema';
-import { cacheable, httpFilterSignal, httpResponseRequest, validateAsync, validatorFn } from 'src/app/library';
+import {
+  Equipment,
+  EquipmentCreate,
+  EquipmentCreateSchema,
+  EquipmentList,
+  EquipmentListSchema,
+  EquipmentSchema,
+  EquipmentUpdate,
+  EquipmentUpdateSchema,
+  pluckDeletedCount,
+} from 'src/app/interfaces';
+import { EquipmentFilter, EquipmentFilterSchema } from 'src/app/jobs-admin/equipment/services/equipment-filter.schema';
+import {
+  cacheable,
+  httpFilterSignal,
+  httpResponseRequest,
+  validateAsync,
+  validatePropertyHttp,
+  validatorFn,
+} from 'src/app/library';
 
 @Service()
 export class EquipmentApiService {
   #path = getAppParams('apiPath') + 'equipment/';
   #http = inject(HttpClient);
 
-  equipmentResource(filter: Signal<EquipmentFilter | undefined>): HttpResourceRef<Equipment[]> {
+  equipmentResource(filter: Signal<EquipmentFilter | undefined>): HttpResourceRef<EquipmentList[] | undefined> {
     const query = httpFilterSignal(EquipmentFilterSchema, filter);
     return httpResource(() => httpResponseRequest(this.#path, query().cacheable()), {
-      defaultValue: [],
-      parse: validatorFn(Equipment.array()),
+      parse: validatorFn(EquipmentListSchema.array()),
       equal: isEqual,
     });
   }
 
   getOne(id: string): Promise<Equipment> {
-    return validateAsync(Equipment, this.#http.get(this.#path + id, cacheable()));
+    return validateAsync(EquipmentSchema, this.#http.get(this.#path + id, cacheable()));
   }
 
-  updateOne(id: string, data: Partial<Equipment>): Promise<Equipment> {
+  updateOne(id: string, update: EquipmentUpdate): Promise<Equipment> {
+    const data = EquipmentUpdateSchema.encode(update);
     const response$ = this.#http.patch(this.#path + id, data);
-    return validateAsync(Equipment, response$);
+    return validateAsync(EquipmentSchema, response$);
   }
 
-  insertOne(data: EquipmentCreate): Promise<Equipment> {
+  insertOne(create: EquipmentCreate): Promise<Equipment> {
+    const data = EquipmentCreateSchema.encode(create);
     const response$ = this.#http.put(this.#path, data);
-    return validateAsync(Equipment, response$);
+    return validateAsync(EquipmentSchema, response$);
   }
 
   deleteOne(id: string): Promise<number> {
@@ -40,8 +59,7 @@ export class EquipmentApiService {
     return firstValueFrom(response$);
   }
 
-  validatorData<K extends keyof Equipment>(key: K): Promise<Equipment[K][]> {
-    const response$ = this.#http.get<Equipment[K][]>(this.#path + 'validate/' + key, cacheable());
-    return firstValueFrom(response$);
+  validate<K extends keyof Pick<Equipment, 'name'>>(schema: SchemaPath<Equipment[K]>, key: K): void {
+    validatePropertyHttp(this.#path, schema, key, EquipmentSchema.shape[key]);
   }
 }

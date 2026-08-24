@@ -1,3 +1,25 @@
+form {
+    height: 100%;
+}
+
 .full-width {
     width: 100%;
+}
+
+.content {
+    padding: 16px;
+}
+
+mat-card {
+    margin-top: 16px;
+}
+
+section {
+    margin: 8px 0;
+}
+
+span[matIconSuffix].spinner {
+    width: 28px;
+    padding-right: 8px;
+    display: flex;
 }

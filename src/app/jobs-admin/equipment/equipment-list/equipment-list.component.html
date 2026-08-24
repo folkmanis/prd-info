@@ -1,5 +1,5 @@
-<app-simple-list-container plusButton filterInput hideFilterWhenActive [(filter)]="name">
-  <mat-table [dataSource]="equipment.value()" class="app-table">
+<app-simple-list-container plusButton filterInput [(filter)]="name">
+  <mat-table [dataSource]="equipmentNonNull.value()" class="app-table">
     <ng-container matColumnDef="name">
       <mat-header-cell *matHeaderCellDef> Nosaukums </mat-header-cell>
       <mat-cell *matCellDef="let equipment">
@@ -12,6 +12,7 @@
       *matRowDef="let equipment; columns: displayedColumns"
       [routerLink]="[equipment._id]"
       routerLinkActive="selected"
+      [class.disabled]="equipment.disabled"
     ></mat-row>
   </mat-table>
 </app-simple-list-container>
