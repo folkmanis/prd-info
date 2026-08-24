@@ -3,7 +3,13 @@ import { inject, Service, Signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
 import { firstValueFrom } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
-import { CreateProductionStage, pluckDeletedCount, ProductionStage } from 'src/app/interfaces';
+import {
+  CreateProductionStage,
+  pluckDeletedCount,
+  ProductionStage,
+  ProductionStageList,
+  ProductionStageListSchema,
+} from 'src/app/interfaces';
 import { httpFilterSignal, httpResponseRequest, validateAsync, validatorFn } from 'src/app/library';
 import { cacheable } from 'src/app/library/http/http-options';
 import { z } from 'zod';
@@ -22,11 +28,10 @@ export class ProductionStageApiService {
 
   productionStageResource(
     filterSignal: Signal<ProductionStagesFilter | undefined>,
-  ): HttpResourceRef<ProductionStage[]> {
+  ): HttpResourceRef<ProductionStageList[] | undefined> {
     const query = httpFilterSignal(ProductionStagesFilterSchema, filterSignal);
     return httpResource(() => httpResponseRequest(this.#path, query().cacheable()), {
-      defaultValue: [],
-      parse: validatorFn(ProductionStage.array()),
+      parse: validatorFn(ProductionStageListSchema.array()),
       equal: isEqual,
     });
   }

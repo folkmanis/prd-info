@@ -20,6 +20,13 @@ export const ProductionStage = z.object({
 });
 export type ProductionStage = z.infer<typeof ProductionStage>;
 
+export const ProductionStageListSchema = ProductionStage.pick({
+  _id: true,
+  name: true,
+  equipmentIds: true,
+});
+export type ProductionStageList = z.infer<typeof ProductionStageListSchema>;
+
 export const CreateProductionStage = ProductionStage.omit({ _id: true });
 export type CreateProductionStage = z.infer<typeof CreateProductionStage>;
 

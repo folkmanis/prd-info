@@ -59,7 +59,7 @@ export class ProductionStagesEditComponent implements CanComponentDeactivate {
     dropFolders: [[] as DropFolder[]],
   });
 
-  equipment = inject(EquipmentService).getEquipmentResource().asReadonly();
+  equipment = inject(EquipmentService).getEquipmentResource({ disabled: true }).asReadonly();
   dropFolders = signal<{ value: string[]; name: string }[]>([]);
 
   customers = inject(CustomersService).getCustomersResource({ disabled: false }).asReadonly();

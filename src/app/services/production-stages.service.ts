@@ -1,6 +1,12 @@
-import { inject, Service } from '@angular/core';
+import { inject, ResourceRef, Service } from '@angular/core';
 import { filter, from, Observable, switchMap, toArray } from 'rxjs';
-import { CreateProductionStage, DropFolder, ProductionStage, UpdateProductionStage } from 'src/app/interfaces';
+import {
+  CreateProductionStage,
+  DropFolder,
+  ProductionStage,
+  ProductionStageList,
+  UpdateProductionStage,
+} from 'src/app/interfaces';
 import { assertNotNull, FilterInput, toFilterSignal } from '../library';
 import { ProductionStageApiService, ProductionStagesFilter } from './prd-api/production-stage-api.service';
 
@@ -8,7 +14,9 @@ import { ProductionStageApiService, ProductionStagesFilter } from './prd-api/pro
 export class ProductionStagesService {
   private api = inject(ProductionStageApiService);
 
-  getProductionStagesResource(filterSignal?: FilterInput<ProductionStagesFilter>) {
+  getProductionStagesResource(
+    filterSignal?: FilterInput<ProductionStagesFilter>,
+  ): ResourceRef<ProductionStageList[] | undefined> {
     return this.api.productionStageResource(toFilterSignal(filterSignal));
   }
 

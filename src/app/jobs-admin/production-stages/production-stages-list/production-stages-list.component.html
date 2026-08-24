@@ -1,25 +1,22 @@
 <app-simple-list-container plusButton>
-  <table mat-table [dataSource]="stages()">
+  <mat-table [dataSource]="stages.value()" [trackBy]="trackByFn">
     <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef>Nosaukums</th>
-      <td mat-cell *matCellDef="let stage">
+      <mat-header-cell *matHeaderCellDef>Nosaukums</mat-header-cell>
+      <mat-cell *matCellDef="let stage">
         {{ stage.name }}
-      </td>
+      </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="equipment">
-      <th mat-header-cell *matHeaderCellDef>Saistītās iekārtas</th>
-      <td mat-cell *matCellDef="let stage">
-        {{ stage.equipment }}
-      </td>
+      <mat-header-cell *matHeaderCellDef>Saistītās iekārtas</mat-header-cell>
+      <mat-cell *matCellDef="let stage">
+        @if (stage.equipmentIds && equipments.hasValue()) {
+          {{ mapStage(stage.equipmentIds, equipments.value()) }}
+        }
+      </mat-cell>
     </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr
-      mat-row
-      *matRowDef="let stage; columns: displayedColumns"
-      [routerLink]="stage._id"
-      routerLinkActive="selected"
-    ></tr>
-  </table>
+    <mat-header-row *matHeaderRowDef="displayedColumns" />
+    <mat-row *matRowDef="let stage; columns: displayedColumns" [routerLink]="stage._id" routerLinkActive="selected" />
+  </mat-table>
 </app-simple-list-container>

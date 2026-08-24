@@ -102,7 +102,7 @@
         <app-paytraq-product formControlName="paytraqId" [productName]="form.value.name ?? ''"> </app-paytraq-product>
       </mat-expansion-panel>
 
-      @if (materials.hasValue()) {
+      @if (materials.hasValue() && productionStages.hasValue()) {
         <mat-expansion-panel>
           <mat-expansion-panel-header>
             <mat-panel-title> Ražošanas procesi </mat-panel-title>
