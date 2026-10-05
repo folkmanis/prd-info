@@ -3,8 +3,9 @@ import { z } from 'zod';
 import { cacheable } from '../http';
 import { httpResponseRequest } from '../http/http-resource-request';
 import { ValidationResult, ValidationResultSchema } from '../http/validation-result.schema';
+import { NETWORK_ERROR } from '../http/network-error';
 
-export function validatePropertyHttp<T, Z extends z.ZodType<T, string>>(
+export function validatePropertyHttp<T, Z extends z.ZodType<T, string | undefined | null>>(
   reqPath: string,
   schema: SchemaPath<T>,
   key: string,
@@ -15,6 +16,9 @@ export function validatePropertyHttp<T, Z extends z.ZodType<T, string>>(
     debounce: 300,
     request: ({ value }) => {
       const request = z.encode(validatorSchema, value() as z.infer<Z>);
+      if (!request) {
+        return undefined;
+      }
       return httpResponseRequest(`${reqPath}${subpath}/${key}`, cacheable({ value: request }));
     },
     options: {
@@ -30,6 +34,6 @@ export function validatePropertyHttp<T, Z extends z.ZodType<T, string>>(
         };
       }
     },
-    onError: () => ({ kind: 'network_error', message: 'Tīkla kļūda' }),
+    onError: () => NETWORK_ERROR,
   });
 }

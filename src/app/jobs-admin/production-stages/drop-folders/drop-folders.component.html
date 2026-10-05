@@ -1,22 +1,29 @@
-@for (control of form.controls; track $index) {
+@for (control of fieldTree(); track $index) {
   <div class="container">
-    <button matIconButton class="tertiary" (click)="delete($index); $event.stopPropagation()">
+    <button matIconButton class="tertiary" type="button" (click)="delete($index); $event.stopPropagation()">
       <mat-icon> delete_outline </mat-icon>
     </button>
 
     <mat-form-field>
-      <mat-select [formControl]="control.controls.path" required [compareWith]="pathCompare">
-        @for (folder of dropFolders(); track $index) {
+      <mat-select [formField]="control.path" [compareWith]="pathCompare">
+        @for (folder of folderNames(); track $index) {
           <mat-option [value]="folder.value">
             {{ folder.name }}
           </mat-option>
         }
       </mat-select>
+      <mat-error>
+        @for (error of control.path().errors(); track $index) {
+          <span>
+            {{ error.message }}
+          </span>
+        }
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field>
       <mat-select
-        [formControl]="control.controls.customers"
+        [formField]="control.customers"
         multiple
         #customerSelection
         (selectionChange)="onCustomerSelection($event)"
@@ -28,10 +35,13 @@
           </mat-option>
         }
       </mat-select>
+      <mat-error>
+        @for (error of control.customers().errors(); track $index) {
+          <span>
+            {{ error.message }}
+          </span>
+        }
+      </mat-error>
     </mat-form-field>
   </div>
-}
-
-@if (form.hasError('duplicateDefaults')) {
-  <div class="mat-error">Var būt tikai viena noklusējuma vērtība.</div>
 }

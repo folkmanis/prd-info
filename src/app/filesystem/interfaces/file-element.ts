@@ -1,9 +1,9 @@
 import { z } from 'zod';
 
-export const FileElement = z.object({
+export const FileElementSchema = z.object({
   id: z.string().nullish(),
   isFolder: z.boolean().default(false),
   name: z.string(),
   parent: z.array(z.string()).default([]),
 });
-export type FileElement = z.infer<typeof FileElement>;
+export type FileElement = z.infer<typeof FileElementSchema>;

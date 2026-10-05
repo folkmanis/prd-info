@@ -1,12 +1,21 @@
-import { HttpClient, HttpEvent } from '@angular/common/http';
-import { inject, Service } from '@angular/core';
+import { HttpClient, HttpEvent, httpResource, HttpResourceRef } from '@angular/common/http';
+import { inject, Service, Signal } from '@angular/core';
+import { isEqual } from 'lodash-es';
 import { concatMap, from, map, Observable, reduce } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { Job } from 'src/app/jobs';
-import { validateAsync, validatorFn } from 'src/app/library';
-import { cacheable, httpParams } from 'src/app/library/http';
-import { FileElement } from '../interfaces/file-element';
+import { httpFilterSignal, stringToArray, validateAsync, validatorFn } from 'src/app/library';
+import { httpParams, httpResponseRequest } from 'src/app/library/http';
+import { z } from 'zod';
+import { FileElement, FileElementSchema } from '../interfaces/file-element';
 import { FileLocationTypes } from '../interfaces/file-location-types';
+
+const PathFilterSchema = z
+  .object({
+    path: stringToArray(z.string(), '/'),
+  })
+  .partial();
+export type PathFilter = z.infer<typeof PathFilterSchema>;
 
 @Service()
 export class JobsFilesApiService {
@@ -46,12 +55,15 @@ export class JobsFilesApiService {
   readFtp(path?: string): Observable<FileElement[]> {
     return this.#http
       .get(this.#path + 'read/ftp', httpParams({ path }).cacheable())
-      .pipe(map(validatorFn(FileElement.array())));
+      .pipe(map(validatorFn(FileElementSchema.array())));
   }
 
-  readDropFolders(path?: string): Promise<FileElement[]> {
-    const request$ = this.#http.get(this.#path + 'read/drop-folder', cacheable({ path }));
-    return validateAsync(FileElement.array(), request$);
+  dropFoldersResource(filter: Signal<PathFilter | undefined>): HttpResourceRef<FileElement[] | undefined> {
+    const query = httpFilterSignal(PathFilterSchema, filter);
+    return httpResource(() => httpResponseRequest(this.#path + 'read/drop-folder', query()), {
+      parse: validatorFn(FileElementSchema.array()),
+      equal: isEqual,
+    });
   }
 
   updateFilesLocation(jobId: number): Promise<Job> {

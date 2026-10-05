@@ -36,9 +36,9 @@
 </mat-card>
 
 @if (vehicleResource.hasValue()) {
-  @if (consumption(); as consumption) {
+  @if (consumptionData.hasValue()) {
     <app-consumption-table
-      [consumptionData]="consumption"
+      [consumptionData]="consumptionData.value()"
       [units]="consumptionUnits()"
       [average]="vehicleResource.value().consumption"
     />

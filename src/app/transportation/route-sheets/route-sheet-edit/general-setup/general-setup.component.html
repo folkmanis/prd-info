@@ -37,7 +37,7 @@
                 type="button"
                 (click)="setRemainingFuel(h.fuelRemaining)"
                 matTooltip="Atlikums uz {{ h.lastMonth }}.{{ h.lastYear }} beigām: 
-                  {{ h.fuelRemaining }}&nbsp;{{ v.fuelType.units }}"
+                  {{ h.fuelRemaining | number: '1.0-1' }}&nbsp;{{ v.fuelType.units }}"
               >
                 <mat-icon> chevron_left </mat-icon>
               </button>
@@ -48,7 +48,7 @@
 
       <mat-form-field class="full-width">
         <mat-label> Vadītājs </mat-label>
-        <mat-select [formField]="routeSheetForm.driverId">
+        <mat-select [formField]="routeSheetForm.driver">
           @for (driver of activeDrivers(); track driver._id) {
             <mat-option [value]="driver._id">
               {{ driver.name }}
@@ -64,7 +64,7 @@
 
       <mat-form-field class="full-width">
         <mat-label> Auto </mat-label>
-        <mat-select [formField]="routeSheetForm.vehicleId">
+        <mat-select [formField]="routeSheetForm.vehicle">
           @for (vehicle of activeVehicles(); track vehicle._id) {
             <mat-option [value]="vehicle._id">
               {{ vehicle.licencePlate }}, {{ vehicle.name }}, {{ vehicle.consumption }}&nbsp;{{
@@ -81,10 +81,17 @@
           }
         </mat-select>
       </mat-form-field>
+      <section>
+        @for (error of routeSheetForm().errors(); track $index) {
+          @if (error.kind === 'duplicate') {
+            <div class="label-small error">Maršuru lapa par šo periodu ir jau ievadīta!</div>
+          }
+        }
+      </section>
     </mat-card-content>
 
     <mat-card-actions class="actions">
-      @if (routeSheet()._id) {
+      @if (routeSheet() !== null) {
         <button matButton [disabled]="busy() || routeSheetForm().valid() === false || changes() === null" type="submit">
           Saglabāt
         </button>

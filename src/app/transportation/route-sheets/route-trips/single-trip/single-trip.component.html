@@ -1,0 +1,138 @@
+<h2 mat-dialog-title>Maršruts</h2>
+<form [formRoot]="tripForm">
+  <mat-dialog-content>
+    <div class="flex-inputs" appViewSize>
+      <mat-form-field>
+        <mat-label> Brauciena datums </mat-label>
+        <input matInput [matDatepicker]="datePicker" [formField]="tripForm.date" [min]="startDate" [max]="endDate" />
+        <mat-datepicker-toggle matIconSuffix [for]="datePicker" />
+        <mat-datepicker #datePicker />
+        <mat-error>
+          @for (error of tripForm.date().errors(); track $index) {
+            {{ error.message }}
+          }
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label> Skaitītājs sākumā </mat-label>
+        <input
+          matInput
+          type="number"
+          [formField]="tripForm.odoStartKm"
+          prdExpressionInput
+          #odoStartExp="prdExpressionInput"
+        />
+        <span matTextSuffix> km </span>
+        <span matIconSuffix>
+          @if (lastOdometer$ | async; as lastOdometer) {
+            <button
+              type="button"
+              matIconButton
+              (click)="tripForm.odoStartKm().value.set(lastOdometer)"
+              matTooltip="Iepriekšējais rādījums: {{ lastOdometer }} km"
+            >
+              <mat-icon> chevron_left </mat-icon>
+            </button>
+          }
+        </span>
+        <mat-hint align="end">
+          {{ odoStartExp.calculatedUpdate() }}
+        </mat-hint>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label> Skaitītājs beigās </mat-label>
+        <input
+          matInput
+          type="number"
+          [formField]="tripForm.odoStopKm"
+          prdExpressionInput
+          #odoStopExp="prdExpressionInput"
+        />
+        <span matTextSuffix> km </span>
+        <mat-error>
+          @for (error of tripForm.odoStopKm().errors(); track $index) {
+            {{ error.message }}
+          }
+        </mat-error>
+        <mat-hint align="end">
+          {{ odoStopExp.calculatedUpdate() }}
+        </mat-hint>
+      </mat-form-field>
+    </div>
+
+    <div class="flex-inputs" appViewSize>
+      <mat-form-field>
+        <mat-label> Pavisam nobraukti</mat-label>
+        <input
+          matInput
+          type="number"
+          [formField]="tripForm.tripLengthKm"
+          prdExpressionInput
+          #tripLenExp="prdExpressionInput"
+        />
+        <span matTextSuffix> km </span>
+        <mat-hint align="end">
+          {{ tripLenExp.calculatedUpdate() }}
+        </mat-hint>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label> Pavisam izlietota degviela </mat-label>
+        <input matInput type="number" step="any" [formField]="tripForm.fuelConsumed" />
+        <span matTextSuffix>
+          {{ fuelUnits }}
+        </span>
+        <mat-hint align="start">
+          {{ consumptionRate() | number: '1.2-2' }}
+          {{ fuelUnits }}/100&nbsp;km
+        </mat-hint>
+      </mat-form-field>
+    </div>
+
+    <div class="flex-inputs" appViewSize>
+      <mat-form-field>
+        <mat-label> Pamatojums </mat-label>
+        <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="1" [formField]="tripForm.description"></textarea>
+        <span matIconSuffix>
+          @let descriptions = descriptions$ | async;
+          @if (descriptions && descriptions.length > 0) {
+            <button
+              type="button"
+              matIconButton
+              [matMenuTriggerFor]="descriptionsMenu"
+              [matMenuTriggerData]="{ descriptions }"
+              [disabled]="tripForm.description().disabled()"
+            >
+              <mat-icon> more_vert </mat-icon>
+            </button>
+          }
+        </span>
+        <mat-error>
+          @for (error of tripForm.description().errors(); track $index) {
+            {{ error.message }}
+          }
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <h4>Maršruts:</h4>
+    <app-trip-stops [formField]="tripForm.stops" [customers]="customers$ | async" (calculateRoute)="calculateRoute()" />
+
+    <mat-menu #descriptionsMenu="matMenu">
+      <ng-template matMenuContent let-descriptions="descriptions">
+        @for (d of descriptions; track $index) {
+          <button type="button" mat-menu-item (click)="tripForm.description().value.set(d)">{{ d }}</button>
+        }
+      </ng-template>
+    </mat-menu>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button matButton="outlined" [disabled]="busy() || tripForm().valid() === false || changes() === null">
+      Saglabāt
+    </button>
+    <button matButton class="tertiary" type="button" mat-dialog-close>Atcelt</button>
+  </mat-dialog-actions>
+</form>

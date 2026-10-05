@@ -9,11 +9,11 @@ export default [
   },
   {
     path: 'drivers',
-    loadChildren: () => import('./transportation-driver/transportation-driver-routes'),
+    loadChildren: () => import('./drivers/transportation-driver-routes'),
   },
   {
     path: 'vehicles',
-    loadChildren: () => import('./transportation-vehicles/transportation-vehicles-routes'),
+    loadChildren: () => import('./vehicles/transportation-vehicles-routes'),
   },
   {
     path: 'route-sheets',

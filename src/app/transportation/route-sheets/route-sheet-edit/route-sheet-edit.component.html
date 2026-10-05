@@ -1,31 +1,33 @@
 <app-simple-content-container>
+  @let rs = routeSheet();
   <div id="content">
     @if (editActive()) {
       <app-general-setup
         #generalSetup
-        [routeSheet]="initialValue()"
+        [routeSheet]="rs"
         (update)="onUpdate($event)"
         (create)="onCreate($event)"
         (cancelSetup)="editActive.set(false)"
       />
-    } @else {
-      <app-general-info
-        [routeSheet]="initialValue()"
-        (edit)="editActive.set(true)"
-        (delete)="onDelete()"
-        [busy]="busy()"
-      />
+    } @else if (rs !== null) {
+      <app-general-info [routeSheet]="rs" (edit)="editActive.set(true)" (delete)="onDelete()" [busy]="busy()" />
     }
 
-    @if (initialValue()._id) {
+    @if (rs !== null) {
       <app-fuel-purchases
-        [routeSheet]="initialValue()"
+        [fuelPurchases]="rs.fuelPurchases"
+        [month]="rs.month"
+        [year]="rs.year"
+        [fuelType]="rs.vehicle.fuelType"
         (update)="onUpdate({ fuelPurchases: $event })"
         [busy]="busy()"
         [disabled]="editActive()"
       />
       <app-route-trips
-        [routeSheet]="initialValue()"
+        [trips]="rs.trips"
+        [month]="rs.month"
+        [year]="rs.year"
+        [vehicle]="rs.vehicle"
         (update)="onUpdate({ trips: $event })"
         [busy]="busy()"
         [disabled]="editActive()"

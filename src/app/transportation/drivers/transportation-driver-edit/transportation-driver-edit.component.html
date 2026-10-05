@@ -1,0 +1,76 @@
+<form [formRoot]="form" (reset)="$event.preventDefault(); onReset()">
+  <app-simple-content-container buttons>
+    <ng-container appSimpleContentContainerToolbar>
+      <button
+        matButton="outlined"
+        type="submit"
+        [disabled]="form().disabled() || form().valid() === false || form().dirty() === false"
+        [showProgress]="form().submitting()"
+      >
+        {{ isNew() ? 'Izveidot' : 'Saglabāt' }}
+        <app-pending-suffix progressIndicator />
+      </button>
+      <button
+        matButton
+        class="tertiary"
+        type="reset"
+        [disabled]="form().disabled() || form().dirty() === false || form().pending() === true"
+      >
+        Atiestatīt
+      </button>
+    </ng-container>
+
+    <div class="container"></div>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title> Pamatinformācija </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <!-- nosaukums -->
+        <section>
+          <mat-form-field class="full-width">
+            <mat-label> Vārds, uzvārds</mat-label>
+            <input matInput [formField]="form.name" />
+            <mat-error>
+              @for (error of form.name().errors(); track $index) {
+                <span>
+                  {{ error.message }}
+                </span>
+              }
+            </mat-error>
+            <app-pending-suffix matIconSuffix [pending]="form.name().pending()" />
+          </mat-form-field>
+        </section>
+
+        <!-- Neaktīvs -->
+        <section>
+          <mat-checkbox [formField]="form.disabled"> Atspējots </mat-checkbox>
+        </section>
+
+        <!-- apraksts -->
+        <section>
+          <mat-form-field class="full-width">
+            <mat-label> Apraksts </mat-label>
+            <textarea matInput [formField]="form.description"></textarea>
+          </mat-form-field>
+        </section>
+      </mat-card-content>
+      <mat-card-actions>
+        @if (isNew() === false) {
+          <button
+            type="button"
+            matButton
+            (click)="onDelete()"
+            class="tertiary"
+            [disabled]="busy() || deleting()"
+            [showProgress]="deleting()"
+          >
+            Dzēst!
+            <app-pending-suffix progressIndicator />
+          </button>
+        }
+      </mat-card-actions>
+    </mat-card>
+  </app-simple-content-container>
+</form>

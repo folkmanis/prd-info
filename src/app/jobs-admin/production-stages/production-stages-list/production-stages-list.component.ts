@@ -1,11 +1,11 @@
-import { Component, computed, inject, TrackByFunction } from '@angular/core';
+import { Component, inject, TrackByFunction } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { Equipment, ProductionStage, ProductionStageList } from 'src/app/interfaces';
-import { SimpleListContainerComponent } from 'src/app/library/simple-form';
-import { ProductionStagesService } from 'src/app/services/production-stages.service';
-import { EquipmentService } from '../../equipment/services/equipment.service';
+import { Equipment, ProductionStageList } from 'src/app/interfaces';
+import { ProductionStagesService } from 'src/app/jobs-admin/production-stages/services/production-stages.service';
 import { nonNullResource, withPreviousValue } from 'src/app/library/signals';
+import { SimpleListContainerComponent } from 'src/app/library/simple-form';
+import { EquipmentService } from '../../equipment/services/equipment.service';
 
 @Component({
   selector: 'app-production-stages-list',
@@ -14,7 +14,7 @@ import { nonNullResource, withPreviousValue } from 'src/app/library/signals';
   imports: [SimpleListContainerComponent, RouterLink, RouterLinkActive, MatTableModule],
 })
 export class ProductionStagesListComponent {
-  #productionStages = inject(ProductionStagesService).getProductionStagesResource();
+  #productionStages = inject(ProductionStagesService).getProductionStagesResource({ disabled: true });
   protected stages = nonNullResource(withPreviousValue(this.#productionStages), []);
 
   protected equipments = inject(EquipmentService).getEquipmentResource({ disabled: true });

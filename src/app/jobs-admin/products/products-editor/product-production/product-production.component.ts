@@ -16,7 +16,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
-import { MaterialList, ProductionStage, ProductionStageList } from 'src/app/interfaces';
+import { MaterialList, ProductionStageList } from 'src/app/interfaces';
 import { ProductProductionStage } from 'src/app/interfaces/product-production-stage';
 import { SelectDirective } from 'src/app/library/directives/select.directive';
 import { ProductsService } from 'src/app/services';

@@ -16,10 +16,10 @@ export const stringToInt = z.codec(z.string().regex(z.regexes.integer), z.int(),
   encode: (num) => num.toString(),
 });
 
-export const stringToArray = <T>(schema: ZodType<T>) =>
+export const stringToArray = <T>(schema: ZodType<T>, separator = ',') =>
   z.codec(z.string(), z.array(schema), {
-    decode: (str) => str.split(','),
-    encode: (arr) => arr.join(','),
+    decode: (str) => str.split(separator),
+    encode: (arr) => arr.join(separator),
   });
 
 export const nullableString = z.codec(z.string().nullable().optional(), z.string(), {
@@ -57,3 +57,16 @@ export const numberToString = z.codec(z.number(), z.string(), {
     }
   },
 });
+
+type OptionalToNullableShape<S extends z.ZodRawShape> = {
+  [K in keyof S]: S[K] extends z.ZodOptional<infer U> ? z.ZodNullable<U> : S[K];
+};
+export const optionalToNullable = <T extends z.ZodRawShape>(schema: z.ZodObject<T>) =>
+  z.object(
+    Object.fromEntries(
+      Object.entries(schema.shape).map(([key, value]) => [
+        key,
+        value instanceof z.ZodOptional ? value.nullable() : value,
+      ]),
+    ) as OptionalToNullableShape<T>,
+  );

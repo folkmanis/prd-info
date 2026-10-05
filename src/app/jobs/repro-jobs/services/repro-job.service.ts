@@ -26,7 +26,7 @@ import {
 } from 'src/app/interfaces';
 import { MaterialsService } from 'src/app/jobs-admin/materials/services/materials.service';
 import { ProductsService } from 'src/app/services';
-import { ProductionStagesService } from 'src/app/services/production-stages.service';
+import { ProductionStagesService } from 'src/app/jobs-admin/production-stages/services/production-stages.service';
 import { Job, JobProduct } from '../../interfaces';
 import { JobService } from '../../services/job.service';
 

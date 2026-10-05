@@ -17,6 +17,11 @@
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns" />
-    <mat-row *matRowDef="let stage; columns: displayedColumns" [routerLink]="stage._id" routerLinkActive="selected" />
+    <mat-row
+      *matRowDef="let stage; columns: displayedColumns"
+      [routerLink]="stage._id"
+      routerLinkActive="selected"
+      [class.disabled]="stage.disabled"
+    />
   </mat-table>
 </app-simple-list-container>

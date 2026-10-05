@@ -15,8 +15,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { Equipment } from 'src/app/interfaces';
+import { PendingSuffix } from 'src/app/library';
 import { CanComponentDeactivate } from 'src/app/library/guards/can-deactivate.guard';
 import { navigateRelative } from 'src/app/library/navigation';
 import { computedChanges } from 'src/app/library/signals';
@@ -45,8 +45,8 @@ const NAME_MIN_LENGTH = 3;
     MatFormFieldModule,
     MatInputModule,
     MatCardModule,
-    MatProgressSpinner,
     MatCheckbox,
+    PendingSuffix,
   ],
 })
 export class EquipmentEditComponent implements CanComponentDeactivate {

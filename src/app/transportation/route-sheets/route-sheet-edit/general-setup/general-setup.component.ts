@@ -1,6 +1,6 @@
-import { DatePipe, TitleCasePipe } from '@angular/common';
-import { Component, computed, effect, inject, input, output, signal, untracked } from '@angular/core';
-import { disabled, form, FormField, FormRoot, max, min, required } from '@angular/forms/signals';
+import { DatePipe, DecimalPipe, TitleCasePipe } from '@angular/common';
+import { Component, computed, effect, inject, input, linkedSignal, output } from '@angular/core';
+import { applyWhen, disabled, form, FormField, FormRoot, max, min, required, SchemaPath } from '@angular/forms/signals';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -8,28 +8,14 @@ import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { MatTooltip } from '@angular/material/tooltip';
-import { pick } from 'lodash-es';
-import { assertNotNull, notNullOrThrow } from 'src/app/library/assert-utils';
+import { notNullOrThrow } from 'src/app/library/assert-utils';
 import { CanComponentDeactivate } from 'src/app/library/guards';
-import { computedSignalChanges } from 'src/app/library/signals';
-import { TransportationDriver } from 'src/app/transportation/interfaces/transportation-driver';
-import {
-  TransportationRouteSheet,
-  TransportationRouteSheetCreate,
-  TransportationRouteSheetUpdate,
-} from 'src/app/transportation/interfaces/transportation-route-sheet';
-import { TransportationVehicle } from 'src/app/transportation/interfaces/transportation-vehicle';
-import { RouteSheetService } from 'src/app/transportation/services/route-sheet.service';
-import { TransportationDriverService } from 'src/app/transportation/services/transportation-driver.service';
-import { TransportationVehicleService } from 'src/app/transportation/services/transportation-vehicle.service';
-
-interface RouteSheetModel {
-  year: number;
-  month: number;
-  fuelRemainingStartLitres: number;
-  driverId: string;
-  vehicleId: string;
-}
+import { computedSignalChanges, nonNullResource } from 'src/app/library/signals';
+import { RouteSheet, RouteSheetCreate, RouteSheetUpdate } from '../../schemas';
+import { RouteSheetService } from '../../services/route-sheet.service';
+import { TransportationDriverService } from '../../../drivers';
+import { TransportationVehicleService } from '../../../vehicles';
+import { GeneralSetupModel, GeneralSetupModelService } from './general-setup.model.service';
 
 @Component({
   selector: 'app-general-setup',
@@ -47,36 +33,31 @@ interface RouteSheetModel {
     MatCardModule,
     MatButton,
     FormRoot,
+    DecimalPipe,
   ],
   templateUrl: './general-setup.component.html',
   styleUrl: './general-setup.component.scss',
 })
 export class GeneralSetupComponent implements CanComponentDeactivate {
   readonly #routeSheetService = inject(RouteSheetService);
+  readonly #modelService = inject(GeneralSetupModelService);
 
-  #year = new Date().getFullYear();
-  protected months = Array.from({ length: 12 }, (_, k) => k).map((month) => new Date(this.#year, month));
+  protected months = this.#monthsArray();
 
   busy = input(false);
 
-  create = output<TransportationRouteSheetCreate>();
-  update = output<TransportationRouteSheetUpdate>();
+  create = output<RouteSheetCreate>();
+  update = output<RouteSheetUpdate>();
   cancelSetup = output<void>();
 
-  routeSheet = input.required<TransportationRouteSheet>();
-  #initialModel = computed(() => this.#toFormModel(this.routeSheet()));
+  routeSheet = input.required<RouteSheet | null>();
 
-  #routeSheetModel = signal({
-    year: this.#year,
-    month: new Date().getMonth() + 1,
-    fuelRemainingStartLitres: 0,
-    vehicleId: '',
-    driverId: '',
-  });
+  #initialModel = computed(() => this.#modelService.routeSheetToModel(this.routeSheet()));
+  #routeSheetModel = linkedSignal(() => this.#initialModel());
   protected routeSheetForm = form(
     this.#routeSheetModel,
     (schema) => {
-      disabled(schema, () => this.busy());
+      disabled(schema, { when: () => this.busy() });
 
       required(schema.year);
       min(schema.year, 1990);
@@ -88,17 +69,19 @@ export class GeneralSetupComponent implements CanComponentDeactivate {
       required(schema.fuelRemainingStartLitres);
       min(schema.fuelRemainingStartLitres, 0);
 
-      required(schema.vehicleId);
-      required(schema.driverId);
+      required(schema.vehicle);
+      required(schema.driver);
+
+      this.#validateDuplicate(schema);
     },
     {
       submission: {
         action: async () => {
-          const { _id: id } = this.routeSheet();
+          const id = this.routeSheet()?._id;
           if (id) {
-            this.update.emit(this.#toUpdate(notNullOrThrow(this.changes())));
+            this.update.emit(await this.#modelService.modelToRouteSheetUpdate(notNullOrThrow(this.changes())));
           } else {
-            this.create.emit(this.#toCreate(this.#routeSheetModel()));
+            this.create.emit(await this.#modelService.modelToRouteSheetCreate(this.#routeSheetModel()));
             this.routeSheetForm().reset();
           }
         },
@@ -108,26 +91,20 @@ export class GeneralSetupComponent implements CanComponentDeactivate {
 
   protected changes = computedSignalChanges(this.#routeSheetModel, this.#initialModel);
 
-  #drivers = inject(TransportationDriverService).getDriversResource();
-  protected activeDrivers = computed(() =>
-    this.#drivers.hasValue() ? this.#drivers.value().filter((d) => !d.disabled) : [],
-  );
-  protected disabledDrivers = computed(() =>
-    this.#drivers.hasValue() ? this.#drivers.value().filter((d) => d.disabled) : [],
-  );
+  readonly #driverService = inject(TransportationDriverService);
+  #drivers = nonNullResource(this.#driverService.getDriversResource(), []);
+  protected activeDrivers = computed(() => this.#drivers.value().filter((d) => !d.disabled));
+  protected disabledDrivers = computed(() => this.#drivers.value().filter((d) => d.disabled));
 
-  #vehicles = inject(TransportationVehicleService).getVehiclesResource();
-  protected activeVehicles = computed(() =>
-    this.#vehicles.hasValue() ? this.#vehicles.value().filter((v) => !v.disabled) : [],
-  );
-  protected disabledVehicles = computed(() =>
-    this.#vehicles.hasValue() ? this.#vehicles.value().filter((v) => v.disabled) : [],
-  );
+  #vehicleService = inject(TransportationVehicleService);
+  #vehicles = nonNullResource(this.#vehicleService.getVehiclesResource(), []);
+  protected activeVehicles = computed(() => this.#vehicles.value().filter((v) => !v.disabled));
+  protected disabledVehicles = computed(() => this.#vehicles.value().filter((v) => v.disabled));
 
   protected vehicle = computed(() => {
     if (this.#vehicles.hasValue()) {
-      const { vehicleId } = this.#routeSheetModel();
-      return this.#vehicles.value().find((v) => v._id === vehicleId);
+      const { vehicle } = this.#routeSheetModel();
+      return this.#vehicles.value().find((v) => v._id === vehicle);
     } else {
       return undefined;
     }
@@ -137,10 +114,8 @@ export class GeneralSetupComponent implements CanComponentDeactivate {
 
   constructor() {
     effect(() => {
-      this.#routeSheetModel.set(this.#initialModel());
-      untracked(() => {
-        this.routeSheetForm().reset();
-      });
+      this.#initialModel();
+      this.routeSheetForm().reset();
     });
   }
 
@@ -150,46 +125,22 @@ export class GeneralSetupComponent implements CanComponentDeactivate {
 
   canDeactivate = () => this.routeSheetForm().touched() === false || this.changes() === null;
 
-  #toFormModel(data: TransportationRouteSheet) {
-    return {
-      year: data.year,
-      month: data.month,
-      fuelRemainingStartLitres: data.fuelRemainingStartLitres,
-      vehicleId: data.vehicle._id,
-      driverId: data.driver._id,
-    };
+  #monthsArray(): Date[] {
+    const year = new Date().getFullYear();
+    return Array.from({ length: 12 }, (_, k) => k).map((month) => new Date(year, month));
   }
 
-  #toUpdate(model: Partial<RouteSheetModel>): TransportationRouteSheetUpdate {
-    const update: TransportationRouteSheetUpdate = pick(model, ['month', 'year', 'fuelRemainingStartLitres']);
-    if (model.driverId) {
-      update.driver = this.#findDriver(model.driverId);
-    }
-    if (model.vehicleId) {
-      update.vehicle = this.#findVehicle(model.vehicleId);
-    }
-    return update;
-  }
-
-  #toCreate(model: RouteSheetModel): TransportationRouteSheetCreate {
-    return {
-      ...model,
-      driver: this.#findDriver(model.driverId),
-      vehicle: this.#findVehicle(model.vehicleId),
-      fuelPurchases: [],
-      trips: [],
-    };
-  }
-
-  #findDriver(id: string): TransportationDriver {
-    const driver = this.#drivers.hasValue() ? this.#drivers.value().find((d) => d._id === id) : null;
-    assertNotNull(driver);
-    return driver;
-  }
-
-  #findVehicle(id: string): TransportationVehicle {
-    const vehicle = this.#vehicles.hasValue() ? this.#vehicles.value().find((v) => v._id === id) : null;
-    assertNotNull(vehicle);
-    return vehicle;
+  #validateDuplicate(schema: SchemaPath<GeneralSetupModel>): void {
+    applyWhen(
+      schema,
+      ({ value }) => {
+        const { year, month, vehicle, driver } = value();
+        const initial = this.#initialModel();
+        return (
+          year !== initial.year || month !== initial.month || vehicle !== initial.vehicle || driver !== initial.driver
+        );
+      },
+      (s) => this.#routeSheetService.validateDuplicateRouteSheet(s),
+    );
   }
 }

@@ -3,7 +3,7 @@ import { Component, computed, input, output } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { ConfirmationDirective } from 'src/app/library/confirmation-dialog';
-import { TransportationRouteSheet } from 'src/app/transportation/interfaces/transportation-route-sheet';
+import { RouteSheet } from '../../schemas';
 
 @Component({
   selector: 'app-general-info',
@@ -12,7 +12,7 @@ import { TransportationRouteSheet } from 'src/app/transportation/interfaces/tran
   styleUrl: './general-info.component.scss',
 })
 export class GeneralInfoComponent {
-  routeSheet = input.required<TransportationRouteSheet>();
+  routeSheet = input.required<RouteSheet>();
   busy = input(false);
   edit = output<void>();
   delete = output<void>();

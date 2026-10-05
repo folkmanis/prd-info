@@ -3,3 +3,4 @@ export * from './http-options';
 export { httpResponseRequest } from './http-resource-request';
 export { toFilterSignal, FilterInput } from './to-filter-signal';
 export * from './validation-result.schema';
+export { NETWORK_ERROR } from './network-error';

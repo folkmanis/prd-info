@@ -1,10 +1,8 @@
-import { inject } from '@angular/core';
 import { Route } from '@angular/router';
 import { canComponentDeactivate } from 'src/app/library/guards';
-import { routeSheetResolver } from '../services/route-sheet.resolver';
-import { RouteSheetService } from '../services/route-sheet.service';
 import { RouteSheetEditComponent } from './route-sheet-edit/route-sheet-edit.component';
 import { RouteSheetListComponent } from './route-sheet-list/route-sheet-list.component';
+import { routeSheetResolver } from './services/route-sheet.resolver';
 
 export default [
   {
@@ -14,8 +12,8 @@ export default [
       {
         path: 'new',
         component: RouteSheetEditComponent,
-        resolve: {
-          routeSheet: () => inject(RouteSheetService).newTransportationRouteSheet(),
+        data: {
+          routeSheet: null,
         },
         canDeactivate: [canComponentDeactivate],
       },

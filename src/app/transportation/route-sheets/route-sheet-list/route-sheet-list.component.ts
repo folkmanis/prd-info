@@ -1,9 +1,10 @@
 import { Component, inject, TrackByFunction } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { RouteSheetService } from '../../services/route-sheet.service';
+import { nonNullResource } from 'src/app/library/signals';
 import { SimpleListContainerComponent } from 'src/app/library/simple-form';
-import { TransportationRouteSheet } from '../../interfaces/transportation-route-sheet';
+import { RouteSheet } from '../schemas';
+import { RouteSheetService } from '../services/route-sheet.service';
 
 @Component({
   selector: 'app-route-sheet-list',
@@ -12,13 +13,13 @@ import { TransportationRouteSheet } from '../../interfaces/transportation-route-
   styleUrl: './route-sheet-list.component.scss',
 })
 export class RouteSheetListComponent {
-  private routeSheetService = inject(RouteSheetService);
-  routeSheets = this.routeSheetService.getRouteSheetsResource({});
+  #resource = inject(RouteSheetService).getRouteSheetsResource();
+  protected routeSheets = nonNullResource(this.#resource, []);
 
   displayedColumns = ['month-year', 'driver', 'licencePlate']; // , 'totalKm'
-  trackByFn: TrackByFunction<TransportationRouteSheet> = (_, route) => route._id;
+  trackByFn: TrackByFunction<RouteSheet> = (_, route) => route._id;
 
   onReload() {
-    this.routeSheets.reload();
+    this.#resource.reload();
   }
 }

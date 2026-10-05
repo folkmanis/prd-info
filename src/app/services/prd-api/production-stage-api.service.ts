@@ -1,25 +1,32 @@
 import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http';
 import { inject, Service, Signal } from '@angular/core';
+import { SchemaPath } from '@angular/forms/signals';
 import { isEqual } from 'lodash-es';
-import { firstValueFrom } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import {
   CreateProductionStage,
+  CreateProductionStageSchema,
   pluckDeletedCount,
   ProductionStage,
   ProductionStageList,
   ProductionStageListSchema,
+  ProductionStageSchema,
+  UpdateProductionStage,
+  UpdateProductionStageSchema,
 } from 'src/app/interfaces';
-import { httpFilterSignal, httpResponseRequest, validateAsync, validatorFn } from 'src/app/library';
+import {
+  ProductionStagesFilter,
+  ProductionStagesFilterSchema,
+} from 'src/app/jobs-admin/production-stages/services/production-stages-filter';
+import {
+  httpFilterSignal,
+  httpResponseRequest,
+  validateAsync,
+  validatePropertyHttp,
+  validatorFn,
+} from 'src/app/library';
 import { cacheable } from 'src/app/library/http/http-options';
-import { z } from 'zod';
-
-const ProductionStagesFilterSchema = z
-  .object({
-    name: z.string(),
-  })
-  .partial();
-export type ProductionStagesFilter = z.infer<typeof ProductionStagesFilterSchema>;
 
 @Service()
 export class ProductionStageApiService {
@@ -36,27 +43,27 @@ export class ProductionStageApiService {
     });
   }
 
-  getOne(id: string): Promise<ProductionStage> {
-    const response$ = this.#http.get(this.#path + id, cacheable());
-    return validateAsync(ProductionStage, response$);
+  getOne(id: string): Observable<ProductionStage> {
+    return this.#http.get(this.#path + id, cacheable()).pipe(map(validatorFn(ProductionStageSchema)));
   }
 
-  updateOne(id: string, update: Partial<Omit<ProductionStage, '_id'>>): Promise<ProductionStage> {
-    const response$ = this.#http.patch(this.#path + id, update);
-    return validateAsync(ProductionStage, response$);
+  updateOne(id: string, update: UpdateProductionStage): Promise<ProductionStage> {
+    const data = UpdateProductionStageSchema.encode(update);
+    const response$ = this.#http.patch(this.#path + id, data);
+    return validateAsync(ProductionStageSchema, response$);
   }
 
-  insertOne(data: CreateProductionStage): Promise<ProductionStage> {
+  insertOne(create: CreateProductionStage): Promise<ProductionStage> {
+    const data = CreateProductionStageSchema.encode(create);
     const response$ = this.#http.put(this.#path, data);
-    return validateAsync(ProductionStage, response$);
+    return validateAsync(ProductionStageSchema, response$);
   }
 
-  deleteOne(id: string): Promise<number> {
-    const data$ = this.#http.delete(this.#path + id).pipe(pluckDeletedCount());
-    return firstValueFrom(data$);
+  deleteOne(id: string): Observable<number> {
+    return this.#http.delete(this.#path + id).pipe(pluckDeletedCount());
   }
 
-  validatorData<K extends keyof ProductionStage & string>(key: K): Promise<ProductionStage[K][]> {
-    return firstValueFrom(this.#http.get<ProductionStage[K][]>(this.#path + 'validate/' + key, cacheable()));
+  validate<K extends keyof Pick<ProductionStage, 'name'>>(schema: SchemaPath<ProductionStage[K]>, key: K): void {
+    validatePropertyHttp(this.#path, schema, key, ProductionStageSchema.shape[key]);
   }
 }

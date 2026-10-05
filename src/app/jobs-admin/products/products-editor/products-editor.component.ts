@@ -18,7 +18,7 @@ import { computedChanges } from 'src/app/library/signals';
 import { SimpleFormContainerComponent } from 'src/app/library/simple-form';
 import { CustomersService, ProductsService } from 'src/app/services';
 import { configuration } from 'src/app/services/config.provider';
-import { ProductionStagesService } from 'src/app/services/production-stages.service';
+import { ProductionStagesService } from 'src/app/jobs-admin/production-stages/services/production-stages.service';
 import { MaterialsService } from '../../materials/services/materials.service';
 import { ProductsListComponent } from '../products-list/products-list.component';
 import { PaytraqProductComponent } from './paytraq-product/paytraq-product.component';

@@ -13,9 +13,7 @@ export function updateCatching(
     snack.open(message, 'OK', { duration: 3000 });
   };
   const errorMessageFn: (message: unknown) => void = (message) => {
-    // eslint-disable-next-line no-console
-    console.error(message);
-    snack.open(`Neizdevās ${message}`, 'OK');
+    snack.open(`${message}`, 'OK');
   };
 
   return async (updateFn, errorFn) => {
@@ -25,10 +23,12 @@ export function updateCatching(
     try {
       await updateFn(messageFn);
     } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
       if (errorFn) {
         errorFn(errorMessageFn, error as Error);
       } else {
-        errorMessageFn(error);
+        snack.open(`Neizdevās ${error}`, 'OK');
       }
     }
     if (isSignal(busySignal)) {

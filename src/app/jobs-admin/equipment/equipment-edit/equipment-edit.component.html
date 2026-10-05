@@ -8,7 +8,7 @@
         [showProgress]="form().submitting()"
       >
         {{ isNew() ? 'Izveidot' : 'Saglabāt' }}
-        <mat-progress-spinner progressIndicator mode="indeterminate" diameter="20" aria-label="Loading" tabindex="" />
+        <app-pending-suffix progressIndicator />
       </button>
       <button
         matButton
@@ -35,11 +35,7 @@
                   {{ error.message }}
                 }
               </mat-error>
-              <span matIconSuffix class="spinner">
-                @if (form.name().pending()) {
-                  <mat-progress-spinner mode="indeterminate" diameter="20" aria-label="Checking" tabindex="" />
-                }
-              </span>
+              <app-pending-suffix matIconSuffix [pending]="form.name().pending()" />
             </mat-form-field>
           </section>
 

@@ -1,5 +1,5 @@
+import { ProductPriceSchema, ProductProductionStage } from 'src/app/interfaces';
 import { z } from 'zod';
-import { Product, ProductPriceSchema, ProductProductionStage, ProductSchema } from 'src/app/interfaces';
 
 export const ProductEditSchema = z.object({
   inactive: z.boolean().default(false),

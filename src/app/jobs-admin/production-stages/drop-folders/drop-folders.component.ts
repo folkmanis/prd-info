@@ -1,147 +1,52 @@
-import { ChangeDetectorRef, Component, inject, input } from '@angular/core';
-import {
-  AbstractControl,
-  ControlValueAccessor,
-  FormArray,
-  FormControl,
-  FormGroup,
-  FormsModule,
-  NG_VALIDATORS,
-  NG_VALUE_ACCESSOR,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validator,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule } from '@angular/material/core';
+import { Component, computed, input } from '@angular/core';
+import { FieldTree, FormField } from '@angular/forms/signals';
+import { MatIconButton } from '@angular/material/button';
+import { MatOption } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import { MatIcon } from '@angular/material/icon';
+import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { isEqual } from 'lodash-es';
-import { CustomerList, DropFolder } from 'src/app/interfaces';
-import { ProductionStagesService } from 'src/app/services/production-stages.service';
+import { FileElement } from 'src/app/filesystem';
+import { CustomerList } from 'src/app/interfaces';
+import { ProductionStageModel } from '../production-stages-edit/production-stage-edit.model';
 
-type DropFolderForm = FormGroup<{
-  path: FormControl<string[] | null>;
-  customers: FormControl<string[] | null>;
-}>;
+const folderNames = (elements: FileElement[]): { value: string[]; name: string }[] =>
+  elements
+    .filter((el) => el.isFolder)
+    .map((el) => ({
+      value: [...el.parent, el.name],
+      name: [...el.parent, el.name].join('/'),
+    }));
 
 @Component({
   selector: 'app-drop-folders',
   templateUrl: './drop-folders.component.html',
   styleUrls: ['./drop-folders.component.scss'],
-  imports: [
-    ReactiveFormsModule,
-    FormsModule,
-    MatIconModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatOptionModule,
-  ],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: DropFoldersComponent,
-      multi: true,
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: DropFoldersComponent,
-      multi: true,
-    },
-  ],
+  imports: [MatIconButton, MatIcon, MatFormFieldModule, MatSelect, MatOption, FormField],
 })
-export class DropFoldersComponent implements ControlValueAccessor, Validator {
-  #chDetector = inject(ChangeDetectorRef);
-  #productionStagesService = inject(ProductionStagesService);
+export class DropFoldersComponent {
+  fieldTree = input.required<FieldTree<ProductionStageModel['dropFolders']>>();
 
-  dropFolders = input.required<{ value: string[]; name: string }[]>();
+  dropFolders = input.required<FileElement[]>();
+  protected folderNames = computed(() => folderNames(this.dropFolders()));
 
-  customers = input.required<CustomerList[] | undefined | null>();
+  customers = input.required<CustomerList[]>();
 
-  form = new FormArray<DropFolderForm>([], {
-    validators: [this.duplicateDefaultValidator()],
-  });
+  protected pathCompare: (o1: string[], o2: string[]) => boolean = isEqual;
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  touchFn: () => void = () => {};
-
-  pathCompare: (o1: string[], o2: string[]) => boolean = isEqual;
-
-  writeValue(obj: DropFolder[]): void {
-    obj = Array.isArray(obj) ? obj : [];
-    if (this.form.length === obj.length) {
-      this.form.setValue(obj, { emitEvent: false });
-    } else {
-      this.form.clear({ emitEvent: false });
-      obj.forEach((o) => this.form.push(this.dropFolderForm(o), { emitEvent: false }));
-    }
-    this.#chDetector.markForCheck();
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  registerOnChange(fn: any): void {
-    this.form.valueChanges.subscribe(fn);
-  }
-
-  registerOnTouched(fn: () => void): void {
-    this.touchFn = fn;
-  }
-
-  setDisabledState(isDisabled: boolean): void {
-    if (isDisabled) {
-      this.form.disable({ emitEvent: false });
-    } else {
-      this.form.enable({ emitEvent: false });
-    }
-  }
-
-  validate(): ValidationErrors | null {
-    return this.form.valid ? null : { dropFolders: this.folderErrors };
-  }
-
-  onCustomerSelection({ value, source }: MatSelectChange): void {
+  protected onCustomerSelection({ value, source }: MatSelectChange): void {
     if (Array.isArray(value) && value.includes('**')) {
       source.value = ['**'];
     }
   }
 
   append() {
-    this.form.push(this.dropFolderForm(this.#productionStagesService.newDropFolder()));
-    this.#chDetector.markForCheck();
+    this.fieldTree()().value.update((value) => [...value, { path: [], customers: [] }]);
+    this.fieldTree()().markAsDirty();
   }
 
   delete(idx: number) {
-    this.form.removeAt(idx);
-    this.#chDetector.markForCheck();
-  }
-
-  private folderErrors() {
-    return this.form.controls.filter((c) => !c.valid).map((c) => c.errors);
-  }
-
-  private dropFolderForm(value: DropFolder): DropFolderForm {
-    return new FormGroup({
-      path: new FormControl<string[]>(value.path, {
-        validators: [Validators.required],
-      }),
-      customers: new FormControl<string[]>(value.customers || [], {
-        validators: [Validators.required],
-      }),
-    });
-  }
-
-  private duplicateDefaultValidator(): ValidatorFn {
-    return (control: AbstractControl<DropFolderForm>) => {
-      if (control instanceof FormArray) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const defaults = control.value?.filter((val: any) => val.customers?.includes('**'));
-        return defaults.length > 1 ? { duplicateDefaults: defaults } : null;
-      }
-      return null;
-    };
+    this.fieldTree()().value.update((value) => value.filter((_, i) => i !== idx));
+    this.fieldTree()().markAsDirty();
   }
 }

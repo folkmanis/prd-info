@@ -1,0 +1,83 @@
+import { DatePipe } from '@angular/common';
+import { Component, inject, input, output } from '@angular/core';
+import { MatIconButton } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIcon } from '@angular/material/icon';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { firstValueFrom } from 'rxjs';
+import { ConfirmationDialogService } from 'src/app/library';
+import { OdometerReading, OdometerReadingSchema } from '../../schemas/transportation-vehicle';
+import { OdometerReadingsDialogComponent } from '../odometer-readings-dialog/odometer-readings-dialog.component';
+
+@Component({
+  selector: 'app-odometer-readings',
+  imports: [DatePipe, MatIcon, MatIconButton],
+  templateUrl: './odometer-readings.component.html',
+  styleUrl: './odometer-readings.component.scss',
+})
+export class OdometerReadingsComponent {
+  odometerReadings = input.required<OdometerReading[]>();
+
+  disabled = input(false);
+
+  odometerReadingsChange = output<OdometerReading[]>();
+
+  #dialog = inject(MatDialog);
+  #snack = inject(MatSnackBar);
+  #confirmation = inject(ConfirmationDialogService);
+
+  async onAdd() {
+    const dialogRef = this.#dialog.open(OdometerReadingsDialogComponent, {
+      data: null,
+    });
+    const result = await firstValueFrom(dialogRef.afterClosed());
+    if (!result) {
+      return;
+    }
+    const sorted = this.#sortByDate([...this.odometerReadings(), result]);
+    if (this.#validate(sorted) === false) {
+      return;
+    }
+    this.odometerReadingsChange.emit(sorted);
+  }
+
+  async onEdit(index: number) {
+    const dialogRef = this.#dialog.open(OdometerReadingsDialogComponent, {
+      data: this.odometerReadings()[index],
+    });
+    const result = await firstValueFrom(dialogRef.afterClosed());
+    if (!result) {
+      return;
+    }
+    const updated = [...this.odometerReadings()];
+    updated[index] = result;
+    const sorted = this.#sortByDate(updated);
+    if (this.#validate(sorted) === false) {
+      return;
+    }
+    this.odometerReadingsChange.emit(sorted);
+  }
+
+  async onRemove(index: number) {
+    const resp = await this.#confirmation.confirmDelete();
+    if (resp) {
+      const updated = this.odometerReadings().filter((_, i) => i !== index);
+      this.odometerReadingsChange.emit(updated);
+    }
+  }
+
+  #sortByDate = (readings: OdometerReading[]) => [...readings].sort((a, b) => a.date.getTime() - b.date.getTime());
+
+  #validate(readings: OdometerReading[]): boolean {
+    const isAsc = readings.every((reading, idx) => {
+      const prev = readings[idx - 1] ?? { value: 0, date: 0 };
+      const result = OdometerReadingSchema.safeEncode(reading);
+      return result.success && reading.value >= prev.value && reading.date >= prev.date;
+    });
+    if (isAsc === false) {
+      this.#snack.open('Nepareizi dati. Rādījumiem jābūt augošā secībā.', 'OK');
+      return false;
+    }
+    return true;
+  }
+}

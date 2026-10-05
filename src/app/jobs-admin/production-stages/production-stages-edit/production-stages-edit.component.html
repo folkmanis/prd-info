@@ -1,64 +1,125 @@
-<app-simple-form-container
-  buttons
-  [status]="formStatus()"
-  [isChanges]="changes()"
-  (save)="isNew() ? onCreateStage() : onUpdateStage()"
-  (resetForm)="onReset()"
->
-  <form [formGroup]="form">
-    <h2>
-      <mat-form-field class="full-width">
-        <mat-label>Nosaukums</mat-label>
-        <input matInput formControlName="name" />
-        @if (form.controls.name.hasError('occupied')) {
-          <mat-error> Nosaukums jau tiek izmantots </mat-error>
-        }
-      </mat-form-field>
-    </h2>
+<form [formRoot]="form" (reset)="$event.preventDefault(); onReset()">
+  <app-simple-content-container buttons>
+    <ng-container appSimpleContentContainerToolbar>
+      <button
+        matButton="outlined"
+        type="submit"
+        [disabled]="form().disabled() || form().valid() === false || form().dirty() === false"
+        [showProgress]="form().submitting()"
+      >
+        {{ isNew() ? 'Izveidot' : 'Saglabāt' }}
+        <mat-progress-spinner progressIndicator mode="indeterminate" diameter="20" aria-label="Loading" tabindex="" />
+      </button>
+      <button
+        matButton
+        class="tertiary"
+        type="reset"
+        [disabled]="form().disabled() || form().dirty() === false || form().pending() === true"
+      >
+        Atiestatīt
+      </button>
+    </ng-container>
 
-    <mat-card>
-      <mat-card-content>
-        <div>
-          <mat-form-field class="full-width">
-            <mat-label> Iekārtas </mat-label>
-            <mat-select multiple formControlName="equipmentIds">
-              @if (equipment.hasValue()) {
-                @for (option of equipment.value(); track option._id) {
-                  <mat-option [value]="option._id" [disabled]="option.disabled">
-                    {{ option.name }}
-                  </mat-option>
+    <div class="content">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title> Pamatinformācija </mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+          <section>
+            <mat-form-field class="full-width">
+              <mat-label>Nosaukums</mat-label>
+              <input matInput [formField]="form.name" />
+              <mat-error>
+                @for (error of form.name().errors(); track $index) {
+                  <span>
+                    {{ error.message }}
+                  </span>
                 }
-              }
-            </mat-select>
-          </mat-form-field>
-        </div>
+              </mat-error>
+              <span matIconSuffix class="spinner">
+                @if (form.name().pending()) {
+                  <mat-progress-spinner mode="indeterminate" diameter="20" aria-label="Checking" tabindex="" />
+                }
+              </span>
+            </mat-form-field>
+          </section>
+          <!-- Neaktīvs -->
+          <section>
+            <mat-checkbox class="input-element" [formField]="form.disabled"> Neaktīvs </mat-checkbox>
+          </section>
 
-        <div>
-          <mat-form-field class="full-width">
-            <mat-label> Apraksts </mat-label>
-            <textarea matInput formControlName="description"></textarea>
-          </mat-form-field>
-        </div>
-      </mat-card-content>
-    </mat-card>
+          <!-- apraksts -->
+          <section>
+            <mat-form-field class="full-width">
+              <mat-label> Apraksts </mat-label>
+              <textarea matInput [formField]="form.description"></textarea>
+            </mat-form-field>
+          </section>
+        </mat-card-content>
+      </mat-card>
 
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title> Dropfolderi </mat-card-title>
-      </mat-card-header>
+      <mat-card>
+        <mat-card-content>
+          <section>
+            <mat-form-field class="full-width">
+              <mat-label> Iekārtas </mat-label>
+              <mat-select multiple [formField]="form.equipmentIds" (selectionChange)="onEquipmentSelect($event)">
+                @if (equipment.hasValue()) {
+                  @for (option of equipment.value(); track option._id) {
+                    <mat-option [value]="option._id" [disabled]="option.disabled">
+                      {{ option.name }}
+                    </mat-option>
+                  }
+                }
+              </mat-select>
+            </mat-form-field>
+          </section>
+          <section>
+            <mat-form-field class="full-width">
+              <mat-label> Noklusējuma iekārta </mat-label>
+              <mat-select [formField]="form.defaultEquipmentId">
+                <mat-option [value]="null"> Nav norādīta </mat-option>
+                @if (equipment.hasValue() && equipment.value(); as es) {
+                  @for (equipmentId of form.equipmentIds().value(); track equipmentId) {
+                    @if (findEquipment(equipmentId, es); as e) {
+                      <mat-option [value]="equipmentId">
+                        {{ e.name }}
+                      </mat-option>
+                    } @else {
+                      <mat-option disabled> Dzēsts </mat-option>
+                    }
+                  }
+                }
+              </mat-select>
+            </mat-form-field>
+          </section>
+        </mat-card-content>
+      </mat-card>
 
-      <mat-card-content>
-        <app-drop-folders
-          #dropControl
-          formControlName="dropFolders"
-          [dropFolders]="dropFolders()"
-          [customers]="customers.value()"
-        />
-      </mat-card-content>
+      @if (customers.hasValue() && dropFolders.hasValue()) {
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title> Dropfolderi </mat-card-title>
+          </mat-card-header>
 
-      <mat-card-actions>
-        <button matButton (click)="dropControl.append()" [disabled]="form.valid === false">PIEVIENOT</button>
-      </mat-card-actions>
-    </mat-card>
-  </form>
-</app-simple-form-container>
+          <mat-card-content>
+            <app-drop-folders
+              #dropControl
+              [fieldTree]="form.dropFolders"
+              [dropFolders]="dropFolders.value()"
+              [customers]="customers.value()"
+            />
+          </mat-card-content>
+
+          <mat-card-actions>
+            <button matButton type="button" (click)="dropControl.append()" [disabled]="form().valid() === false">
+              Pievienot
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      }
+    </div>
+  </app-simple-content-container>
+</form>

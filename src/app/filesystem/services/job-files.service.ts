@@ -1,12 +1,13 @@
-import { HttpEvent } from '@angular/common/http';
+import { HttpEvent, HttpResourceRef } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { last } from 'lodash-es';
 import { firstValueFrom, map, Observable, tap } from 'rxjs';
-import { JobsFilesApiService } from 'src/app/filesystem';
+import { JobsFilesApiService, PathFilter } from 'src/app/filesystem';
 import { SanitizeService } from 'src/app/library/services/sanitize.service';
 import { Job } from '../../jobs';
 import { FileElement } from '../interfaces/file-element';
 import { FileLocationTypes } from '../interfaces/file-location-types';
+import { FilterInput, toFilterSignal } from 'src/app/library';
 
 @Service()
 export class JobFilesService {
@@ -49,8 +50,8 @@ export class JobFilesService {
     return this.#api.readFtp(path?.join('/'));
   }
 
-  async dropFolders(path?: string[]): Promise<FileElement[]> {
-    return this.#api.readDropFolders(path?.join('/'));
+  dropFoldersResource(filter?: FilterInput<PathFilter>): HttpResourceRef<FileElement[] | undefined> {
+    return this.#api.dropFoldersResource(toFilterSignal(filter));
   }
 
   copyJobFolderToDropFolder(path: string[], dropFolder: string[]): Promise<number> {
