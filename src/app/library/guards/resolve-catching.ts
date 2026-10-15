@@ -17,6 +17,8 @@ export function resolveCatching<T>(
     catchError((err) => {
       const redirectUrl = router.createUrlTree(url.split('/').slice(0, -1));
       if (err instanceof HttpErrorResponse) {
+        snack.open(`Tīkla kļūda: ${err.message}`);
+      } else {
         snack.open(`Kļūda: ${err.message}`);
       }
       return of(new RedirectCommand(redirectUrl));
