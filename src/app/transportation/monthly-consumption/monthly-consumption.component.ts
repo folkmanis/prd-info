@@ -1,5 +1,6 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, computed, inject, resource, signal } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { disabled, form, FormField, required } from '@angular/forms/signals';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -39,19 +40,19 @@ export class MonthlyConsumptionComponent {
     disabled(schema.year, { when: ({ stateOf }) => stateOf(schema.vehicle).invalid() });
   });
 
-  protected vehicleResource = resource({
+  protected vehicleResource = rxResource({
     params: () => {
       if (this.selectionForm.vehicle().valid()) {
         return this.selectionForm.vehicle().value();
       }
     },
-    loader: ({ params }) => this.#vehiclesService.getVehicle(params),
+    stream: ({ params }) => this.#vehiclesService.getVehicle(params),
   });
   protected years = computed(() =>
     this.vehicleResource.hasValue() ? getYears(this.vehicleResource.value().odometerReadings) : [],
   );
 
-  protected consumptionData = resource({
+  protected consumptionData = rxResource({
     params: () => {
       if (this.routeSheetResource.hasValue() === false || this.vehicleResource.hasValue() === false) {
         return;
@@ -66,7 +67,7 @@ export class MonthlyConsumptionComponent {
         rsIds: this.routeSheetResource.value(),
       };
     },
-    loader: ({ params }) =>
+    stream: ({ params }) =>
       this.#consumptionService.calculateMonthlyConsumption(params.year, params.odometerReadings, params.rsIds),
   });
   protected consumptionUnits = computed(() =>

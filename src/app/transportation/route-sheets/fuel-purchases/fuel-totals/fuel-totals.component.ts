@@ -1,4 +1,4 @@
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { isObject } from 'lodash-es';
@@ -6,7 +6,7 @@ import { FuelPurchase } from '../../schemas';
 
 @Component({
   selector: 'app-fuel-totals',
-  imports: [CurrencyPipe, MatChipsModule],
+  imports: [CurrencyPipe, MatChipsModule, DecimalPipe],
   templateUrl: './fuel-totals.component.html',
 })
 export class FuelTotalsComponent {

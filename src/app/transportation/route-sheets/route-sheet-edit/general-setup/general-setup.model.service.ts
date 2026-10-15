@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { Driver, TransportationDriverService } from '../../../drivers';
 import { TransportationVehicleService, Vehicle } from '../../../vehicles';
 import { RouteSheet, RouteSheetCreate, RouteSheetSchema, RouteSheetUpdate } from '../../schemas';
+import { firstValueFrom } from 'rxjs';
 
 export type GeneralSetupModel = z.infer<typeof GeneralSetupModelService.prototype.generalSetupModelSchema>;
 
@@ -74,13 +75,11 @@ export class GeneralSetupModelService {
   }
 
   #findDriver(id: string): Promise<Driver> {
-    const driver = this.#driverService.getDriver(id);
-    return driver;
+    return firstValueFrom(this.#driverService.getDriver(id));
   }
 
   #findVehicle(id: string): Promise<Vehicle> {
-    const vehicle = this.#vehicleService.getVehicle(id);
-    return vehicle;
+    return firstValueFrom(this.#vehicleService.getVehicle(id));
   }
 
   #newRouteSheetModel(): GeneralSetupModel {

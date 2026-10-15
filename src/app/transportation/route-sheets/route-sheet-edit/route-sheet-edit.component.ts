@@ -1,4 +1,4 @@
-import { Component, computed, inject, model, signal, viewChild } from '@angular/core';
+import { Component, computed, inject, linkedSignal, model, signal, viewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { notNullOrThrow } from 'src/app/library';
 import { CanComponentDeactivate } from 'src/app/library/guards';
@@ -39,7 +39,7 @@ export class RouteSheetEditComponent implements CanComponentDeactivate {
 
   protected isNew = computed(() => this.routeSheet() === null);
 
-  protected editActive = signal(false);
+  protected editActive = linkedSignal(() => this.isNew());
 
   canDeactivate = () => this.editActive() === false || this.generalSetup().canDeactivate();
 

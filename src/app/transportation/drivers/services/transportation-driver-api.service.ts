@@ -1,13 +1,15 @@
 import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http';
 import { inject, Service, Signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable, switchMap } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { pluckDeletedCount } from 'src/app/interfaces';
 import {
   cacheable,
   httpFilterSignal,
   httpResponseRequest,
+  rxId,
+  rxValidator,
   validateAsync,
   validatePropertyHttp,
   validatorFn,
@@ -39,25 +41,30 @@ export class TransportationDriverApiService {
     });
   }
 
-  async getOne(id: string): Promise<Driver> {
-    const response = this.#http.get(this.#path + id, cacheable());
-    return validateAsync(DriverSchema, response);
+  getOne(id: unknown): Observable<Driver> {
+    return rxId(id).pipe(
+      switchMap((i) => this.#http.get(this.#path + i, cacheable())),
+      rxValidator(DriverSchema),
+    );
   }
 
-  async createOne(create: DriverCreate): Promise<Driver> {
+  createOne(create: DriverCreate): Promise<Driver> {
     const data = DriverCreateSchema.encode(create);
     const response = this.#http.put(this.#path, data);
     return validateAsync(DriverSchema, response);
   }
 
-  async updateOne(id: string, update: DriverUpdate): Promise<Driver> {
+  updateOne(id: string, update: DriverUpdate): Promise<Driver> {
     const data = DriverUpdateSchema.encode(update);
-    const response = this.#http.patch(this.#path + id, data);
+    const response = rxId(id).pipe(switchMap((i) => this.#http.patch(this.#path + i, data)));
     return validateAsync(DriverSchema, response);
   }
 
   async deleteOne(id: string): Promise<number> {
-    const data$ = this.#http.delete(this.#path + id).pipe(pluckDeletedCount());
+    const data$ = rxId(id).pipe(
+      switchMap((i) => this.#http.delete(this.#path + id)),
+      pluckDeletedCount(),
+    );
     return firstValueFrom(data$);
   }
 

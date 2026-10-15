@@ -2,13 +2,16 @@ import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http'
 import { inject, Service, Signal } from '@angular/core';
 import { SchemaPath } from '@angular/forms/signals';
 import { isEqual } from 'lodash-es';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable, switchMap } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { pluckDeletedCount } from 'src/app/interfaces';
 import {
   httpFilterSignal,
   httpResponseRequest,
+  rxId,
+  rxValidator,
   validateAsync,
+  validateId,
   validatePropertyHttp,
   validatorFn,
 } from 'src/app/library';
@@ -33,7 +36,7 @@ export class TransportationVehicleApiService {
   vehiclesResource(filter: Signal<VehiclesQuery | undefined>): HttpResourceRef<VehicleList[] | undefined> {
     const query = httpFilterSignal(VehiclesQuerySchema, filter);
     return httpResource(() => httpResponseRequest(this.#path, query().cacheable()), {
-      parse: validatorFn(VehicleListSchema.array()),
+      parse: validatorFn([VehicleListSchema]),
       equal: isEqual,
     });
   }
@@ -44,9 +47,11 @@ export class TransportationVehicleApiService {
     });
   }
 
-  getOne(id: string): Promise<Vehicle> {
-    const response = this.#http.get(this.#path + id);
-    return validateAsync(VehicleSchema, response);
+  getOne(id: string): Observable<Vehicle> {
+    return rxId(id).pipe(
+      switchMap((i) => this.#http.get(this.#path + i)),
+      rxValidator(VehicleSchema),
+    );
   }
 
   createOne(create: VehicleCreate): Promise<Vehicle> {
@@ -62,7 +67,8 @@ export class TransportationVehicleApiService {
   }
 
   async deleteOne(id: string): Promise<number> {
-    const result$ = this.#http.delete<{ deletedCount: number }>(this.#path + id).pipe(pluckDeletedCount());
+    const data = validateId(id);
+    const result$ = this.#http.delete<{ deletedCount: number }>(this.#path + data).pipe(pluckDeletedCount());
     return firstValueFrom(result$);
   }
 

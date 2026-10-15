@@ -6,6 +6,7 @@ import { Vehicle, VehicleCreate, VehicleUpdate } from '../schemas/transportation
 import { VehiclesQuery } from '../schemas/vehicles-query.schema';
 import { VehicleEdit } from '../transportation-vehicle-edit/vehicle-edit.model';
 import { TransportationVehicleApiService } from './transportation-vehicle-api.service';
+import { Observable } from 'rxjs';
 
 @Service()
 export class TransportationVehicleService {
@@ -18,7 +19,7 @@ export class TransportationVehicleService {
     return this.#api.vehiclesResource(toFilterSignal(filter));
   }
 
-  getVehicle(id: string): Promise<Vehicle> {
+  getVehicle(id: string): Observable<Vehicle> {
     return this.#api.getOne(id);
   }
 

@@ -1,17 +1,54 @@
 import { inject, Service } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { combineLatest, concatMap, filter, from, last, map, mergeMap, Observable, of } from 'rxjs';
 import { RouteSheetList, RouteSheetQuery, RouteSheetService } from '../route-sheets';
 import { OdometerReading } from '../vehicles/schemas/transportation-vehicle';
-import { ConsumptionData } from './consumption-table/consumption-table.component';
+import { ConsumptionData, emptyConsumption } from './consumption-data';
 
 const getMonthKeyFromDate = (date: Date): string => getMonthKey(date.getUTCFullYear(), date.getUTCMonth() + 1);
 
 const getMonthKey = (year: number, month: number): string => `${year}-${String(month).padStart(2, '0')}`;
 
-function calculateMonthlyIntervals(data: OdometerReading[]): Map<string, number> {
+const newMonthlyMap = (year: number) =>
+  new Map<string, ConsumptionData>(
+    Array.from({ length: 12 }, (_, i) => [getMonthKey(year, i), emptyConsumption(getMonthKey(year, i))]),
+  );
+
+function addMileage(
+  consumptionMap: Map<string, ConsumptionData>,
+  date: Date,
+  interval: number,
+): Map<string, ConsumptionData> {
+  const key = getMonthKeyFromDate(date);
+  const data = consumptionMap.get(key);
+  if (data) {
+    consumptionMap.set(key, {
+      ...data,
+      mileage: data.mileage + interval,
+    });
+  }
+  return consumptionMap;
+}
+
+function addFuelPurchase(
+  consumptionMap: Map<string, ConsumptionData>,
+  date: Date,
+  amount: number,
+): Map<string, ConsumptionData> {
+  const key = getMonthKeyFromDate(date);
+  const data = consumptionMap.get(key);
+  if (data) {
+    consumptionMap.set(key, {
+      ...data,
+      consumed: data.consumed + amount,
+    });
+  }
+  return consumptionMap;
+}
+
+function calculateMonthlyIntervals(year: number, data: OdometerReading[]): Map<string, ConsumptionData> {
   const sorted = [...data].sort((a, b) => a.date.getTime() - b.date.getTime());
 
-  const monthlyMap = new Map<string, number>();
+  const monthlyMap = newMonthlyMap(year);
 
   for (let i = 1; i < sorted.length; i++) {
     const start = sorted[i - 1].date;
@@ -31,8 +68,7 @@ function calculateMonthlyIntervals(data: OdometerReading[]): Map<string, number>
       const segmentMs = segmentEnd.getTime() - segmentStart.getTime();
       const proportionalValue = (segmentMs / totalMs) * valueDiff;
 
-      const key = getMonthKeyFromDate(segmentStart);
-      monthlyMap.set(key, (monthlyMap.get(key) || 0) + proportionalValue);
+      addMileage(monthlyMap, segmentStart, proportionalValue);
 
       cursor = segmentEnd;
     }
@@ -41,40 +77,35 @@ function calculateMonthlyIntervals(data: OdometerReading[]): Map<string, number>
   return monthlyMap;
 }
 
+function calculateConsumption(consumptionMap: Map<string, ConsumptionData>): ConsumptionData[] {
+  return [...consumptionMap.values()].map((c) => ({ ...c, consumptionRate: (c.consumed / c.mileage) * 100 }));
+}
+
 @Service()
 export class MonthlyConsumptionService {
   #routeService = inject(RouteSheetService);
-
-  async calculateMonthlyConsumption(year: number, odometerData: OdometerReading[], rsIds: { _id: string }[]) {
-    const monthlyIntervals = calculateMonthlyIntervals(odometerData);
-    const monthlyConsumption = new Map<string, ConsumptionData>();
-
-    for (let month = 1; month <= 12; month++) {
-      let consumed = 0;
-      const monthKey = getMonthKey(year, month);
-      for await (const rs of this.#getRouteSheets(rsIds))
-        if (rs.year === year && rs.month === month) {
-          rs.fuelPurchases.forEach((fp) => (consumed += fp.amount));
-        }
-      const mileage = monthlyIntervals.get(monthKey) ?? 0;
-      monthlyConsumption.set(monthKey, {
-        month: monthKey,
-        mileage,
-        consumed,
-        consumptionRate: (consumed / mileage) * 100,
-      });
-    }
-    return [...monthlyConsumption.values()];
-  }
 
   getRouteSheetList(params: RouteSheetQuery): Promise<RouteSheetList[]> {
     return this.#routeService.getRouteSheets(params);
   }
 
-  async *#getRouteSheets(ids: { _id: string }[]) {
-    for (const { _id } of ids) {
-      const rs = firstValueFrom(this.#routeService.getRouteSheet(_id));
-      yield rs;
-    }
+  calculateMonthlyConsumption(
+    year: number,
+    odometerData: OdometerReading[],
+    rsIds: { _id: string }[],
+  ): Observable<ConsumptionData[]> {
+    const monthlyConsumption$ = of(calculateMonthlyIntervals(year, odometerData));
+
+    const rss$ = from(rsIds).pipe(
+      concatMap(({ _id: i }) => this.#routeService.getRouteSheet(i)),
+      mergeMap(({ fuelPurchases }) => from(fuelPurchases)),
+      filter((fp) => fp.date.getUTCFullYear() === year),
+    );
+
+    return combineLatest([monthlyConsumption$, rss$]).pipe(
+      map(([monthlyConsumption, { date, amount }]) => addFuelPurchase(monthlyConsumption, date, amount)),
+      last(),
+      map(calculateConsumption),
+    );
   }
 }

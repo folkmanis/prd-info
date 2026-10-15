@@ -1,13 +1,7 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
-
-export interface ConsumptionData {
-  month: string;
-  mileage: number;
-  consumed: number;
-  consumptionRate: number;
-}
+import { ConsumptionData } from '../consumption-data';
 
 @Component({
   selector: 'app-consumption-table',

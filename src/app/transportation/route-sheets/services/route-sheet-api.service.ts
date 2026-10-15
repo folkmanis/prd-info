@@ -1,7 +1,7 @@
 import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http';
 import { inject, Service, Signal } from '@angular/core';
 import { isEqual } from 'lodash-es';
-import { firstValueFrom, map, Observable } from 'rxjs';
+import { firstValueFrom, map, Observable, of, switchMap } from 'rxjs';
 import { getAppParams } from 'src/app/app-params';
 import { pluckDeletedCount } from 'src/app/interfaces';
 import {
@@ -11,7 +11,10 @@ import {
   httpParams,
   httpResponseRequest,
   NETWORK_ERROR,
+  rxId,
+  rxValidator,
   validateAsync,
+  validateId,
   ValidationResult,
   ValidationResultSchema,
   validatorFn,
@@ -45,10 +48,10 @@ export class RouteSheetApiService {
   readonly #path = getAppParams('apiPath') + 'transportation/';
   #http = inject(HttpClient);
 
-  routeSheetResource(filter: Signal<RouteSheetQuery | undefined>): HttpResourceRef<RouteSheetList[] | undefined> {
+  routeSheetsResource(filter: Signal<RouteSheetQuery | undefined>): HttpResourceRef<RouteSheetList[] | undefined> {
     const query = httpFilterSignal(RouteSheetQuerySchema, filter);
     return httpResource(() => httpResponseRequest(this.#path, query().cacheable()), {
-      parse: validatorFn(RouteSheetListSchema.array()),
+      parse: validatorFn([RouteSheetListSchema]),
       equal: isEqual,
     });
   }
@@ -56,11 +59,14 @@ export class RouteSheetApiService {
   getRouteSheets(filter: RouteSheetQuery | undefined): Promise<RouteSheetList[]> {
     const query = httpFilter(RouteSheetQuerySchema, filter);
     const response$ = this.#http.get(this.#path, query);
-    return validateAsync(RouteSheetListSchema.array(), response$);
+    return validateAsync([RouteSheetListSchema], response$);
   }
 
-  getOne(id: string): Observable<RouteSheet> {
-    return this.#http.get(this.#path + id).pipe(map(validatorFn(RouteSheetSchema)));
+  getOne(id: unknown): Observable<RouteSheet> {
+    return rxId(id).pipe(
+      switchMap((data) => this.#http.get(this.#path + data)),
+      rxValidator(RouteSheetSchema),
+    );
   }
 
   createOne(create: RouteSheetCreate): Promise<RouteSheet> {
@@ -81,16 +87,14 @@ export class RouteSheetApiService {
   }
 
   getCustomers(): Observable<TransportationCustomer[]> {
-    return this.#http
-      .get(this.#path + 'customers', cacheable())
-      .pipe(map(validatorFn(TransportationCustomerSchema.array())));
+    return this.#http.get(this.#path + 'customers', cacheable()).pipe(rxValidator([TransportationCustomerSchema]));
   }
 
   async distanceRequest(request: DistanceRequest): Promise<CalculatedDistance> {
     const data = DistanceRequestSchema.encode(request);
     const response$ = this.#http
       .post(this.#path + 'distance-request', data)
-      .pipe(map(validatorFn(CalculatedDistanceSchema)));
+      .pipe(rxValidator(CalculatedDistanceSchema));
     return firstValueFrom(response$);
   }
 
@@ -110,7 +114,7 @@ export class RouteSheetApiService {
   getHistoricalData(licencePlate: string): Observable<HistoricalData> {
     return this.#http
       .get<HistoricalData>(this.#path + 'historical-data/' + licencePlate)
-      .pipe(map(validatorFn(HistoricalDataSchema)));
+      .pipe(rxValidator(HistoricalDataSchema));
   }
 
   validateDuplicateRouteSheet(schema: SchemaPath<GeneralSetupModel>): void {

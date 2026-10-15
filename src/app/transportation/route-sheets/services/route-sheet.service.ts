@@ -1,7 +1,9 @@
 import { inject, Service, Signal } from '@angular/core';
+import { SchemaPath } from '@angular/forms/signals';
 import { round } from 'lodash-es';
 import { catchError, Observable, of } from 'rxjs';
 import { FilterInput, toFilterSignal } from 'src/app/library';
+import { GeneralSetupModel } from '../route-sheet-edit/general-setup/general-setup.model.service';
 import {
   HistoricalData,
   RouteSheet,
@@ -13,8 +15,6 @@ import {
   RouteTripStop,
 } from '../schemas';
 import { RouteSheetApiService } from './route-sheet-api.service';
-import { SchemaPath } from '@angular/forms/signals';
-import { GeneralSetupModel } from '../route-sheet-edit/general-setup/general-setup.model.service';
 
 export function newRouteTrip(): RouteTrip {
   return {
@@ -33,7 +33,7 @@ export class RouteSheetService {
   #api = inject(RouteSheetApiService);
 
   getRouteSheetsResource(filter?: FilterInput<RouteSheetQuery>) {
-    return this.#api.routeSheetResource(toFilterSignal(filter));
+    return this.#api.routeSheetsResource(toFilterSignal(filter));
   }
 
   getRouteSheets(filter: RouteSheetQuery = {}): Promise<RouteSheetList[]> {

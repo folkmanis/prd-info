@@ -12,7 +12,7 @@ import { TransportationVehicleService } from '../services/transportation-vehicle
   styleUrl: './transportation-vehicles-list.component.scss',
 })
 export class TransportationVehiclesListComponent {
-  vehicles = inject(TransportationVehicleService).getVehiclesResource();
+  vehicles = inject(TransportationVehicleService).getVehiclesResource({ disabled: true });
   displayedColumns = ['name', 'licencePlate', 'fuelType', 'consuption'];
 
   onReload() {
