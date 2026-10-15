@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ValidationError } from './validation-error.class';
-import { firstValueFrom, Observable } from 'rxjs';
+import { firstValueFrom, map, Observable, of, OperatorFunction } from 'rxjs';
 
 type ValidatorResult<T> = T extends readonly [infer S]
   ? S extends z.ZodType
@@ -9,6 +9,8 @@ type ValidatorResult<T> = T extends readonly [infer S]
   : T extends z.ZodType
     ? z.output<T>
     : never;
+
+const IdSchema = z.string().regex(/^[a-f\d]{24}$/i, { error: (iss) => `Invalid id ${iss.input}` });
 
 export function parse<V extends z.ZodType>(schema: V, data: unknown): z.output<typeof schema> {
   const result = z.safeParse(schema, data);
@@ -32,6 +34,12 @@ export function validatorFn<T extends z.ZodType | readonly [z.ZodType]>(
   }
 }
 
+export function rxValidator<T extends z.ZodType | readonly [z.ZodType]>(
+  schema: T,
+): OperatorFunction<unknown, ValidatorResult<T>> {
+  return map(validatorFn(schema));
+}
+
 export async function validateAsync<T extends z.ZodType | readonly [z.ZodType]>(
   schema: T,
   data$: Observable<unknown>,
@@ -42,5 +50,9 @@ export async function validateAsync<T extends z.ZodType | readonly [z.ZodType]>(
 }
 
 export function validateId(id: unknown): string {
-  return parse(z.string().regex(/^[a-f\d]{24}$/i, { error: (iss) => `Invalid id ${iss.input}` }), id);
+  return parse(IdSchema, id);
+}
+
+export function rxId(id: unknown): Observable<string> {
+  return of(id).pipe(rxValidator(IdSchema));
 }
